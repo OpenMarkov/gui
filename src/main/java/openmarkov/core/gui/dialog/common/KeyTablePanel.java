@@ -1,0 +1,518 @@
+package openmarkov.core.gui.dialog.common;
+
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.LayoutStyle;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+
+import openmarkov.gui.components.ElementObservable;
+import openmarkov.gui.localize.StringResource;
+import openmarkov.gui.localize.StringResourceLoader;
+import openmarkov.gui.resources.icons.IconLoader;
+
+
+
+/**
+ * This panel contains a table whose first column represents a key data.
+ * 
+ * @author jmendoza
+ * @version 1.0 jmendoza
+ * @version 1.1 jlgozalo Add support for i18N by having setName() property to
+ *          all components Change attributes to protected to allow extension
+ */
+public class KeyTablePanel extends JPanel implements ActionListener,
+				ListSelectionListener {
+
+	/**
+	 * Static field for serializable class.
+	 */
+	private static final long serialVersionUID = 6257314234781632512L;
+
+	/**
+	 * Panel to scroll the table.
+	 */
+	protected JScrollPane valuesTableScrollPane = null;
+
+	/**
+	 * Table where show the values.
+	 */
+	protected KeyTable valuesTable = null;
+
+	/**
+	 * Model table.
+	 */
+	protected DefaultTableModel tableModel = null;
+
+	/**
+	 * Panel of buttons.
+	 */
+	protected JPanel buttonPanel = null;
+
+	/**
+	 * Name of the columns of the table.
+	 */
+	protected String[] columns = null;
+
+	/**
+	 * Data of the cells.
+	 */
+	protected Object[][] data = null;
+
+	/**
+	 * This variable enables the buttons to reorder the elements of the table.
+	 */
+	protected boolean reorderEnabled;
+
+	/**
+	 * Indicates if the data of the table is modifiable.
+	 */
+	private boolean modifiable;
+
+	/**
+	 * Button to bring one value up.
+	 */
+	protected JButton upValueButton = null;
+
+	/**
+	 * Button to bring one value down.
+	 */
+	protected JButton downValueButton = null;
+
+	/**
+	 * Button to add a new value.
+	 */
+	protected JButton addValueButton = null;
+
+	/**
+	 * Button to delete an existing value.
+	 */
+	protected JButton removeValueButton = null;
+
+	/**
+	 * String resource.
+	 */
+	protected StringResource stringResource = null;
+
+	/**
+	 * Icon loader.
+	 */
+	protected IconLoader iconLoader = null;
+
+	/**
+	 * this is a default constructor with no construction parameters
+	 */
+	public KeyTablePanel() {
+
+		stringResource =
+			StringResourceLoader.getUniqueInstance().getBundleButtons();
+		iconLoader = new IconLoader();
+		reorderEnabled = false;
+		modifiable = false;
+	}
+
+	/**
+	 * This is the default constructor
+	 * 
+	 * @param newColumns
+	 *            array of texts that appear in the header of the columns.
+	 * @param newData
+	 *            content of the cells.
+	 * @param newReorderEnabled
+	 *            if true, the elements of the table can be reorder.
+	 * @param newModifiable
+	 *            if true, the cells of the table (except the first) are
+	 *            modifiable.
+	 * @param notifier - ElementObservable notifier
+	 */
+	public KeyTablePanel(String[] newColumns, Object[][] newData,
+							boolean newReorderEnabled, boolean newModifiable) {
+
+		stringResource =
+			StringResourceLoader.getUniqueInstance().getBundleButtons();
+		iconLoader = new IconLoader();
+		columns = newColumns.clone();
+		data = newData.clone();
+		reorderEnabled = newReorderEnabled;
+		modifiable = newModifiable;
+		
+	}
+
+	/**
+	 * This method initializes this instance.
+	 */
+	protected void initialize() {
+
+		setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),
+			1, false ) );
+
+		final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
+		groupLayout.setHorizontalGroup( groupLayout.createParallelGroup(
+			GroupLayout.Alignment.LEADING ).addGroup(
+			groupLayout.createSequentialGroup().addContainerGap().addComponent(
+				getValuesTableScrollPane(), GroupLayout.PREFERRED_SIZE, 406,
+				GroupLayout.PREFERRED_SIZE ).addPreferredGap(
+				LayoutStyle.ComponentPlacement.RELATED )
+				.addComponent(
+					getButtonPanel(), GroupLayout.DEFAULT_SIZE, 74,
+					Short.MAX_VALUE ) ) );
+		groupLayout.setVerticalGroup( groupLayout.createParallelGroup(
+			GroupLayout.Alignment.TRAILING ).addGroup(
+			groupLayout.createSequentialGroup().addComponent(
+				getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 274,
+				Short.MAX_VALUE ).addGap( 24, 24, 24 ) ).addGroup(
+			GroupLayout.Alignment.LEADING,
+			groupLayout.createSequentialGroup().addComponent(
+				getButtonPanel(), GroupLayout.DEFAULT_SIZE, 262,
+				Short.MAX_VALUE ).addContainerGap() ) );
+		setLayout( groupLayout );
+	}
+
+	/**
+	 * This method initializes valuesTableScrollPane.
+	 * 
+	 * @return a new values table scroll pane.
+	 */
+	protected JScrollPane getValuesTableScrollPane() {
+
+		if (valuesTableScrollPane == null) {
+			valuesTableScrollPane = new JScrollPane();
+			valuesTableScrollPane
+				.setName( "KeyTablePanel.valuesTableScrollPane" );
+			valuesTableScrollPane.setViewportView( getValuesTable() );
+		}
+		return valuesTableScrollPane;
+	}
+
+	/**
+	 * This method initializes valuesTable.
+	 * 
+	 * @return a new values table.
+	 */
+	protected KeyTable getValuesTable() {
+
+		if (valuesTable == null) {
+			valuesTable = new KeyTable( getTableModel(), modifiable, true );
+			valuesTable.setName( "KeyTablePanel.valuesTable" );
+			valuesTable.setListSelectionListener( this );
+		}
+		return valuesTable;
+	}
+
+	/**
+	 * This method initializes tableModel.
+	 * 
+	 * @return a new tableModel.
+	 */
+	protected DefaultTableModel getTableModel() {
+
+		if (tableModel == null) {
+			tableModel = new DefaultTableModel( data, columns );
+			
+		}
+		return tableModel;
+	}
+
+	/**
+	 * This method initializes buttonPanel.
+	 * 
+	 * @return a new button panel.
+	 */
+	protected JPanel getButtonPanel() {
+
+		if (buttonPanel == null) {
+			buttonPanel = new JPanel();
+			buttonPanel.setName( "KeyTablePanel.buttonPanel" );
+			final GroupLayout groupLayout =
+				new GroupLayout( (JComponent) buttonPanel );
+			groupLayout.setHorizontalGroup( groupLayout.createParallelGroup(
+				GroupLayout.Alignment.TRAILING ).addGroup(
+				groupLayout.createSequentialGroup().addGroup(
+					groupLayout.createParallelGroup(
+						GroupLayout.Alignment.TRAILING ).addComponent(
+						getAddValueButton(), GroupLayout.DEFAULT_SIZE, 62,
+						Short.MAX_VALUE ).addComponent(
+						getDownValueButton(), GroupLayout.Alignment.LEADING,
+						GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE )
+						.addComponent(
+							getUpValueButton(), GroupLayout.Alignment.LEADING,
+							GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE )
+						.addComponent(
+							getRemoveValueButton(),
+							GroupLayout.Alignment.LEADING,
+							GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE ) )
+					.addContainerGap() ) );
+			groupLayout.setVerticalGroup( groupLayout.createParallelGroup(
+				GroupLayout.Alignment.LEADING ).addGroup(
+				groupLayout.createSequentialGroup().addComponent(
+					getAddValueButton() ).addGap( 5, 5, 5 ).addComponent(
+					getRemoveValueButton() ).addGap( 5, 5, 5 ).addComponent(
+					getUpValueButton() ).addGap( 5, 5, 5 ).addComponent(
+					getDownValueButton() ).addGap( 88, 88, 88 ) ) );
+			buttonPanel.setLayout( groupLayout );
+		}
+		return buttonPanel;
+	}
+
+	/**
+	 * This method initializes upValueButton.
+	 * 
+	 * @return a new up value button.
+	 */
+	protected JButton getUpValueButton() {
+
+		if (upValueButton == null) {
+			upValueButton = new JButton();
+			upValueButton.setName( "KeyTablePanel.upValueButton" );
+			upValueButton.setText( stringResource.getString( "Up.Text.Label" ) );
+			upValueButton.setMnemonic( stringResource.getString(
+				"Up.Text.Mnemonic" ).charAt( 0 ) );
+			upValueButton.setIcon( iconLoader
+				.load( IconLoader.ICON_ARROW_UP_ENABLED ) );
+			upValueButton.setVisible( reorderEnabled );
+			upValueButton.setEnabled( false );
+			upValueButton.addActionListener( this );
+		}
+		return upValueButton;
+	}
+
+	/**
+	 * This method initializes downValueButton.
+	 * 
+	 * @return a new down value button.
+	 */
+	protected JButton getDownValueButton() {
+
+		if (downValueButton == null) {
+			downValueButton = new JButton();
+			downValueButton.setName( "KeyTablePanel.downValueButton" );
+			downValueButton.setText( stringResource
+				.getString( "Down.Text.Label" ) );
+			downValueButton.setMnemonic( stringResource.getString(
+				"Down.Text.Mnemonic" ).charAt( 0 ) );
+			downValueButton.setIcon( iconLoader
+				.load( IconLoader.ICON_ARROW_DOWN_ENABLED ) );
+			downValueButton.setVisible( reorderEnabled );
+			downValueButton.setEnabled( false );
+			downValueButton.addActionListener( this );
+		}
+		return downValueButton;
+	}
+
+	/**
+	 * This method initializes addValueButton.
+	 * 
+	 * @return a new add value button.
+	 */
+	protected JButton getAddValueButton() {
+
+		if (addValueButton == null) {
+			addValueButton = new JButton();
+			addValueButton.setName( "KeyTablePanel.addValueButton" );
+			addValueButton
+				.setText( stringResource.getString( "Add.Text.Label" ) );
+			addValueButton.setMnemonic( stringResource.getString(
+				"Add.Text.Mnemonic" ).charAt( 0 ) );
+			addValueButton.setIcon( iconLoader
+				.load( IconLoader.ICON_PLUS_ENABLED ) );
+			addValueButton.addActionListener( this );
+		}
+		return addValueButton;
+	}
+
+	/**
+	 * Enables or disabled the AddValue button.
+	 * 
+	 * @param enabled
+	 *            if true, it will be enabled; otherwise, disabled.
+	 */
+	public void setEnabledAddValue(boolean enabled) {
+
+		addValueButton.setEnabled( enabled );
+	}
+
+	/**
+	 * This method initializes removeValueButton.
+	 * 
+	 * @return a new delete value button.
+	 */
+	protected JButton getRemoveValueButton() {
+
+		if (removeValueButton == null) {
+			removeValueButton = new JButton();
+			removeValueButton.setName( "KeyTablePanel.removeValueButton" );
+			removeValueButton.setText( stringResource
+				.getString( "Delete.Text.Label" ) );
+			removeValueButton.setMnemonic( stringResource.getString(
+				"Delete.Text.Mnemonic" ).charAt( 0 ) );
+			removeValueButton.setIcon( iconLoader
+				.load( IconLoader.ICON_MINUS_ENABLED ) );
+			removeValueButton.setEnabled( false );
+			removeValueButton.addActionListener( this );
+		}
+		return removeValueButton;
+	}
+
+	/**
+	 * Invoked when an action occurs.
+	 * 
+	 * @param e
+	 *            event information.
+	 */
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource().equals( addValueButton )) {
+			actionPerformedAddValue();
+		} else if (e.getSource().equals( removeValueButton )) {
+			actionPerformedRemoveValue();
+		} else if (e.getSource().equals( upValueButton )) {
+			actionPerformedUpValue();
+		} else if (e.getSource().equals( downValueButton )) {
+			actionPerformedDownValue();
+		}
+	}
+
+	/**
+	 * Invoked when the button 'add' is pressed.
+	 */
+	protected void actionPerformedAddValue() {
+
+	};
+
+	/**
+	 * Invoked when the button 'remove' is pressed.
+	 */
+	protected void actionPerformedRemoveValue() {
+
+	};
+
+	/**
+	 * Invoked when the button 'up' is pressed.
+	 */
+	protected void actionPerformedUpValue() {
+
+	};
+
+	/**
+	 * Invoked when the button 'down' is pressed.
+	 */
+	protected void actionPerformedDownValue() {
+
+	};
+
+	/**
+	 * Invoked when the row selection changes.
+	 * 
+	 * @param e
+	 *            selection event information.
+	 */
+	@SuppressWarnings("unused")
+	public void valueChanged(ListSelectionEvent e) {
+
+		int index = valuesTable.getSelectedRow();
+		int rowCount = valuesTable.getRowCount();
+
+		if ((rowCount == 0) || (index == -1)) {
+			removeValueButton.setEnabled( false );
+			upValueButton.setEnabled( false );
+			downValueButton.setEnabled( false );
+		} else {
+			removeValueButton.setEnabled( true );
+			if (index == 0) {
+				upValueButton.setEnabled( false );
+				if (index == (rowCount - 1)) {
+					downValueButton.setEnabled( false );
+				} else {
+					downValueButton.setEnabled( true );
+				}
+			} else if (index == (valuesTable.getRowCount() - 1)) {
+				downValueButton.setEnabled( false );
+				if (index == 0) {
+					upValueButton.setEnabled( false );
+				} else {
+					upValueButton.setEnabled( true );
+				}
+				upValueButton.setEnabled( true );
+			} else {
+				upValueButton.setEnabled( true );
+				downValueButton.setEnabled( true );
+			}
+		}
+	}
+
+	/**
+	 * Cancels the editing in any cell of the table, avoiding its new value is
+	 * recorded.
+	 */
+	public void cancelCellEditing() {
+
+		TableCellEditor actualEditor = valuesTable.getCellEditor();
+
+		if (actualEditor != null) {
+			actualEditor.cancelCellEditing();
+		}
+	}
+
+	/**
+	 * Stops the editing in any cell of the table, recording the new value.
+	 */
+	public void stopCellEditing() {
+
+		TableCellEditor actualEditor = valuesTable.getCellEditor();
+
+		if (actualEditor != null) {
+			actualEditor.stopCellEditing();
+		}
+	}
+
+	/**
+	 * Returns the content of the table.
+	 * 
+	 * @return the content of the table.
+	 */
+	@SuppressWarnings("unchecked")
+	public Object[][] getData() {
+
+		DefaultTableModel model = (DefaultTableModel) valuesTable.getModel();
+		int columnCount = model.getColumnCount();
+		int rowCount = model.getRowCount();
+		int i = 0;
+		int j = 0;
+		Object[][] datatmp = new Object[ rowCount ][ columnCount ];
+		Vector vectorData = model.getDataVector();
+		Vector vectorRow = null;
+
+		for (i = 0; i < rowCount; i++) {
+			vectorRow = (Vector) vectorData.get( i );
+			for (j = 0; j < columnCount; j++) {
+				datatmp[i][j] = vectorRow.get( j );
+			}
+		}
+		return datatmp;
+	}
+
+	// ESCA-JAVA0173:
+	/**
+	 * Sets a new table model with new data.
+	 * 
+	 * @param newData
+	 *            new data for the table.
+	 */
+	public void setData(Object[][] newData) {
+
+	}
+
+}

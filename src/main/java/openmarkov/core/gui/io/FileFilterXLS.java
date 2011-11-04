@@ -1,0 +1,87 @@
+package openmarkov.core.gui.io;
+
+
+import java.io.File;
+
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
+
+
+
+/**
+ * Class that filter only the XLS files.
+ * 
+ * @author mkpalacio
+
+ */
+public class FileFilterXLS extends FileFilterBasic {
+
+	/**
+	 * String resource.
+	 */
+	private StringResource stringResource;
+
+	/**
+	 * Extension of the files that match this filter.
+	 */
+	static final String xlsExtension = "xls";
+
+	/**
+	 * Create a new instance and create a new string resource.
+	 */
+	public FileFilterXLS() {
+
+		stringResource =
+			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+
+	}
+
+	/**
+	 * Accepts all the directories (by default in OpenMarkovtFileFilter) and files
+	 * whose extension is 'xls'.
+	 * 
+	 * @return true if the file is a directory; false otherwise
+	 */
+	@Override
+	public boolean accept(File file) {
+
+		boolean result = super.accept(file);
+		String fileExtension = null;
+
+		if (!result) {
+			fileExtension = getExtension(file);
+
+			return (fileExtension.equals(xlsExtension));
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Returns the description of the OpenMarkov files
+	 * 
+	 * @return a string representing the description of the files type
+	 */
+	@Override
+	public String getDescription() {
+
+		return stringResource.getString("OpenMarkovFileExtension.Description")
+			+ " (*." + xlsExtension + ")";
+
+	}
+
+	/**
+	 * Returns the extension of the files that match this filter.
+	 * 
+	 * @return accepted extension by the filter.
+	 */
+	@Override
+	protected String getFilterExtension() {
+
+		return xlsExtension;
+
+	}
+
+}
+
