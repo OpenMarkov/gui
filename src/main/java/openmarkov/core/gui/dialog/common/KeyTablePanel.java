@@ -15,14 +15,12 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
-import openmarkov.gui.components.ElementObservable;
-import openmarkov.gui.localize.StringResource;
-import openmarkov.gui.localize.StringResourceLoader;
-import openmarkov.gui.resources.icons.IconLoader;
+import openmarkov.core.gui.loader.element.IconLoader;
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
 
 
 

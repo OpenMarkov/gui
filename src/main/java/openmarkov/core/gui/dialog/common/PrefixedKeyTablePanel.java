@@ -9,20 +9,19 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import openmarkov.exceptions.CanNotDoEditException;
-import openmarkov.exceptions.ConstraintViolationException;
-import openmarkov.exceptions.DoEditException;
-import openmarkov.exceptions.NonProjectablePotentialException;
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.exceptions.WrongCriterionException;
-import openmarkov.gui.components.ElementObservable;
-import openmarkov.gui.edit.NodeStateEdit;
-import openmarkov.gui.edit.StateAction;
-import openmarkov.gui.localize.StringResource;
-import openmarkov.gui.localize.StringResourceLoader;
-import openmarkov.gui.networks.DefaultStates;
-import openmarkov.gui.utils.Util;
-import openmarkov.networks.ProbNode;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.action.NodeStateEdit;
+import org.openmarkov.core.action.StateAction;
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
+import openmarkov.core.gui.network.GUIDefaultStates;
+import openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.model.network.ProbNode;
 
 
 

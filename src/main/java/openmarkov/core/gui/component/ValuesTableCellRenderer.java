@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -16,8 +15,8 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import openmarkov.gui.resources.icons.IconLoader;
-import openmarkov.gui.utils.OpenMarkovPreferences;
+import openmarkov.core.gui.loader.element.IconLoader;
+import openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
 

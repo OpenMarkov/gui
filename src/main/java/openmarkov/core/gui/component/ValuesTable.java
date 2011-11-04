@@ -30,9 +30,11 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbabilisticValueNotAllowedException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
-import openmarkov.gui.dialogs.common.KeyTable;
-import org.openmarkov.core.action.NodePotentialEdit;
+import openmarkov.core.gui.dialog.common.KeyTable;
+import openmarkov.core.gui.action.NodePotentialEdit;
 import org.openmarkov.core.action.NodeStateEdit;
+import org.openmarkov.core.action.PNUndoableEditEvent;
+import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import openmarkov.core.gui.localize.StringResource;
 import openmarkov.core.gui.localize.StringResourceLoader;
@@ -42,8 +44,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-//import openmarkov.undo.PNUndoableEditEvent;
-//import openmarkov.undo.PNUndoableEditListener;
+
 
 
 
