@@ -4,10 +4,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openmarkov</groupId>
-	<artifactId>org.openmarkov.guicore</artifactId>
+	<artifactId>org.openmarkov.core.gui</artifactId>
 	<version>0.0.1</version>
 	<name>Graphical User Interface core</name>
-	<url>http://openmarkov.org/guicore</url>
+	<url>http://openmarkov.org/core/gui</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
