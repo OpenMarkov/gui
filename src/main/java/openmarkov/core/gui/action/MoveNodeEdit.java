@@ -3,24 +3,13 @@ package openmarkov.core.gui.action;
 
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
-import java.util.HashSet;
 
-import openmarkov.exceptions.ProbNodeNotFoundException;
-import openmarkov.gui.edition.visual.VisualNode;
-import openmarkov.gui.localize.StringResource;
-import openmarkov.gui.localize.StringResourceLoader;
-import openmarkov.gui.networks.DefaultStates;
-import openmarkov.gui.networks.NodeWrapper;
-import openmarkov.gui.undo.MovedNodeInfo;
-import openmarkov.networks.NodeType;
-import openmarkov.networks.ProbNode;
-import openmarkov.networks.Variable;
-import openmarkov.networks.constraints.OnlyContinuousVariables;
-import openmarkov.networks.potentials.Potential;
-import openmarkov.networks.potentials.TablePotential;
-import openmarkov.undo.edit.SimplePNEdit;
+import openmarkov.core.gui.edition.visual.VisualNode;
+
+import org.openmarkov.core.action.SimplePNEdit;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.model.network.ProbNode;
 
 /**
  * <code>MoveNodeEdi</code> is a simple edit that allow to modify the position of

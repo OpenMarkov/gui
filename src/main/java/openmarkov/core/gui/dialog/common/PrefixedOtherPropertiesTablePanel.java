@@ -1,10 +1,9 @@
 package openmarkov.core.gui.dialog.common;
 
-import java.awt.event.FocusEvent;
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
 
-import openmarkov.gui.localize.StringResource;
-import openmarkov.gui.localize.StringResourceLoader;
-import openmarkov.networks.ProbNode;
+import org.openmarkov.core.model.network.ProbNode;
 
 
 

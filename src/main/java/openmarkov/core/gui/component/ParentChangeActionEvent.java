@@ -3,7 +3,7 @@
  */
 package openmarkov.core.gui.component;
 
-import openmarkov.networks.Variable;
+import org.openmarkov.core.model.network.Variable;
 
 
 /**

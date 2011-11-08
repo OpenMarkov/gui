@@ -5,14 +5,14 @@ package openmarkov.core.gui.component;
 
 import java.util.ArrayList;
 
-import openmarkov.exceptions.NullListPotentialsException;
-import openmarkov.graphs.Node;
-import openmarkov.networks.NodeType;
-import openmarkov.networks.ProbNode;
-import openmarkov.networks.Variable;
-import openmarkov.networks.potentials.Potential;
-import openmarkov.networks.potentials.PotentialRole;
-import openmarkov.networks.potentials.TablePotential;
+import org.openmarkov.core.exception.NullListPotentialsException;
+import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 
 

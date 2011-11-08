@@ -10,12 +10,13 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
 
+import openmarkov.core.gui.OpenMarkov;
 import openmarkov.core.gui.localize.LocaleChangeEvent;
 import openmarkov.core.gui.localize.StringResourceLoader;
 import openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
 import openmarkov.core.gui.utils.OpenMarkovPreferences;
+
 import org.apache.log4j.Logger;
-import org.openmarkov.core.action.CompoundPNEdit;
 
 
 /**

@@ -7,8 +7,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.ArrayList;
 
 import openmarkov.core.gui.localize.StringResourceLoader;
-import openmarkov.core.gui.network.LinkProperties;
-import openmarkov.core.gui.network.NodeProperties;
 
 
 

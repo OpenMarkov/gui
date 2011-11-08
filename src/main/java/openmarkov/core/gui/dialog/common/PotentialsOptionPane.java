@@ -1,10 +1,6 @@
 package openmarkov.core.gui.dialog.common;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -15,14 +11,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpringLayout;
 import javax.swing.table.DefaultTableModel;
 
-import openmarkov.gui.localize.StringResource;
-import openmarkov.gui.localize.StringResourceLoader;
-import openmarkov.networks.potentials.PotentialRole;
-import openmarkov.networks.potentials.PotentialType;
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
+
+import org.openmarkov.core.model.network.potential.PotentialType;
 
 /**
  * This class implements a dialog box where the user can select various elements
@@ -279,7 +273,7 @@ public class PotentialsOptionPane extends OkCancelHorizontalDialog implements
 
 	}
 
-	@Override
+	
 	public void itemStateChanged(ItemEvent e) {
 		if ( e.getStateChange() == ItemEvent.SELECTED ){
 			selectedOption = true;

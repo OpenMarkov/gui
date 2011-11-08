@@ -2,6 +2,8 @@ package openmarkov.core.gui.action;
 
 import java.util.ArrayList;
 
+import openmarkov.core.gui.network.GUIDefaultStates;
+
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
@@ -294,7 +296,7 @@ public class NodeStateEdit extends SimplePNEdit {
 			secondSymbol = (belongsToLeftSide[stateSelected + 1]? "]" : ")");
 					
 		}
-		return new Object[] {"", DefaultStates.getString(probNode.getVariable().
+		return new Object[] {"", GUIDefaultStates.getString(probNode.getVariable().
  				getStates()[stateSelected].getName()) , firstSymbol, 
  				limits[ stateSelected], "," , limits[ stateSelected + 1], 
  				secondSymbol };

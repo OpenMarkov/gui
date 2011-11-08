@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import openmarkov.core.gui.utils.Util;
+
+import org.openmarkov.core.action.LinkEdit;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -11,10 +15,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.action.LinkEdit;
-import openmarkov.core.gui.utils.Util;
 import org.openmarkov.core.model.network.ProbNode;
-import openmarkov.undo.edit.PNEdit;
 
 /**
  * This class implements a key table with the following features:

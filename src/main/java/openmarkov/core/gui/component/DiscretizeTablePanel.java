@@ -1306,7 +1306,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		}
 	}
 
-	@Override
+	
 	public void tableChanged(TableModelEvent arg0) {
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();

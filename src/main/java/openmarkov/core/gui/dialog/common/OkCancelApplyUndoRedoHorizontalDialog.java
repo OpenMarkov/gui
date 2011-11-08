@@ -8,8 +8,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import openmarkov.exceptions.NotEnoughMemoryException;
-import openmarkov.gui.resources.icons.IconLoader;
+import openmarkov.core.gui.loader.element.IconLoader;
+
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 
 
 

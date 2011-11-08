@@ -303,7 +303,8 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		set( LAST_OPEN_FILE_3, "", OPENMARKOV_DIRECTORIES );
 		set( LAST_OPEN_FILE_4, "", OPENMARKOV_DIRECTORIES );
 		set( LAST_OPEN_FILE_5, "", OPENMARKOV_DIRECTORIES );
-		set( STRING_RESOURCES_PATH, "openmarkov/gui/localize/", OPENMARKOV_LANGUAGES );
+		//set( STRING_RESOURCES_PATH, "openmarkov/gui/localize/", OPENMARKOV_LANGUAGES );
+		set( STRING_RESOURCES_PATH, Util.getResourcesPath(), OPENMARKOV_LANGUAGES );
 	}
 
 	/**

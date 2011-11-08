@@ -1295,7 +1295,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	
 	
 	
-	@Override
+
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		
 		UndoableEdit edit = arg0.getEdit();
@@ -1390,14 +1390,14 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		}
 	}
 
-	@Override
+
 	public void undoableEditWillHappen(PNUndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void undoEditHappened(PNUndoableEditEvent event) {
 		int position = 0;
 		if (event.getEdit() instanceof NodePotentialEdit){

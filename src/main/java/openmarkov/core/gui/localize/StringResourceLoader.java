@@ -17,11 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import openmarkov.core.gui.component.LastRecentFilesMenuItem;
+import openmarkov.core.gui.dialog.message.NonEditableTextArea;
+import openmarkov.core.gui.mdi.MDIMenu;
+import openmarkov.core.gui.menutoolbar.toolbar.ZoomComboBox;
 import openmarkov.core.gui.utils.OpenMarkovPreferences;
-import openmarkov.gui.components.LastRecentFilesMenuItem;
-import openmarkov.gui.dialogs.message.NonEditableTextArea;
-import openmarkov.gui.mdi.MDIMenu;
-import openmarkov.gui.menutoolbar.toolbar.ZoomComboBox;
+import openmarkov.core.gui.utils.Util;
 
 
 
@@ -172,7 +173,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 	private StringResource getBundle(String resourceFile) {
 		StringResource stringResource = null;
 		ResourceBundle bundle = null;
-		String file = STRING_RESOURCE_PATH + resourceFile;
+		String file = Util.getResourcesPath() + "\\localize\\" + resourceFile;
 		//String bundleLanguage = "";
 		Locale tempLocale = null;
 		String tempLanguage = "";

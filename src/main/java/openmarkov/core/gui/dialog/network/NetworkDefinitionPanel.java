@@ -1,0 +1,483 @@
+package openmarkov.core.gui.dialog.network;
+
+
+import java.awt.Dimension;
+import java.awt.ItemSelectable;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.text.MessageFormat;
+
+import javax.swing.GroupLayout;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle;
+
+import openmarkov.core.gui.dialog.comment.CommentHTMLScrollPane;
+import openmarkov.core.gui.localize.StringResource;
+import openmarkov.core.gui.localize.StringResourceLoader;
+import openmarkov.core.gui.network.NetworkType;
+
+import org.openmarkov.core.action.ChangeNetworkTypeEdit;
+import org.openmarkov.core.action.NetworkCommentEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.PropertyNames;
+import org.openmarkov.core.model.network.constraint.compound.BNConstraint;
+import org.openmarkov.core.model.network.constraint.compound.IDConstraint;
+import org.openmarkov.core.model.network.constraint.compound.MDPConstraint;
+import org.openmarkov.core.model.network.constraint.compound.POMDPConstraint;
+import org.openmarkov.core.model.network.constraint.compound.SMMConstraint;
+
+
+
+/**
+ * Panel to set the definition of a network. It will have no title field, a
+ * TypeNetwork group (with two radio buttons) and a HTML comment text field
+ * 
+ * @author jlgozalo
+ * @version 1.0 jlgozalo
+ */
+public class NetworkDefinitionPanel extends JPanel implements ItemListener, 
+PropertyNames, CommentListener {
+
+	/*/**
+	 * default constructor without construction parameters to allow GUI builders
+	 * to do visual representation
+	
+	public NetworkDefinitionPanel() {
+
+		dialogStringResource =
+			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		networkProperties = new NetworkProperties();
+		setName("NetworkDefinitionPanel");
+		initialize();
+	}*/
+	
+	private ProbNet probNet;
+	
+	private String comment = null;
+	/**
+	 * This method initialises this instance.
+	 * 
+	 * @param newNetwork
+	 *            to indicate if the panel is for new networks
+	 * @wbp.parser.constructor
+	 */
+	public NetworkDefinitionPanel(final boolean newNetwork) {
+
+		dialogStringResource =
+			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+
+		this.newNetwork = newNetwork;
+		setName("NetworkDefinitionPanel");
+		initialize();
+
+	}
+	/**
+	 * This method initialises this instance.
+	 * 
+	 * @param newNetwork
+	 *            to indicate if the panel is for new networks
+	 * @param probNet2
+	 *            manage the network access 
+	 */
+	public NetworkDefinitionPanel(final boolean newNetwork, ProbNet probNet) {
+
+	    this.probNet = probNet;
+		dialogStringResource =
+			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		this.newNetwork = newNetwork;
+		setName("NetworkDefinitionPanel");
+		initialize();
+
+	}
+
+	/**
+	 * initialises the panel
+	 */
+	private void initialize() {
+
+		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(getJTextAreaLabelNetworkDefinitionComment(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(getCommentHTMLScrollPaneNetworkDefinition(), GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+							.addContainerGap())
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+								.addComponent(getJLabelNetworkTypes(), GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJComboBoxNetworkTypes(), GroupLayout.PREFERRED_SIZE, 182, GroupLayout.PREFERRED_SIZE)
+									.addContainerGap())
+								))))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(getJLabelNetworkTypes(), GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+						.addComponent(getJComboBoxNetworkTypes(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+						.addComponent(getJTextAreaLabelNetworkDefinitionComment())
+						.addComponent(getCommentHTMLScrollPaneNetworkDefinition(), GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+					.addContainerGap(189, Short.MAX_VALUE))
+		);
+		setLayout(groupLayout);
+	}
+
+	/**
+	 * initializes the getJLabelNetworkTypes
+	 * 
+	 * @return jLabelNetworkTypes the label for the NetworkTypes field
+	 */
+	private JLabel getJLabelNetworkTypes() {
+
+		if (jLabelNetworkTypes == null) {
+			jLabelNetworkTypes = new JLabel();
+			jLabelNetworkTypes.setText("a Label :");
+			jLabelNetworkTypes.setText(dialogStringResource
+				.getString("NetworkDefinitionPanel.NetworkTypes.Text"));
+			jLabelNetworkTypes.setMinimumSize(new Dimension(25, 0));
+			jLabelNetworkTypes.setName("jLabelNetworkTypes");
+			jLabelNetworkTypes.setDisplayedMnemonic(dialogStringResource
+				.getString("NetworkDefinitionPanel.NetworkTypes.Mnemonic")
+				.charAt(0));
+			jLabelNetworkTypes.setLabelFor(getJComboBoxNetworkTypes());
+		}
+		return jLabelNetworkTypes;
+	}
+
+	/**
+	 * initialises the jComboBoxNetworkTypes
+	 * 
+	 * @return jComboBoxNetworkTypes the comboBox of the Network Types field
+	 */
+	private JComboBox getJComboBoxNetworkTypes() {
+
+		if (jComboBoxNetworkTypes == null) {
+			jComboBoxNetworkTypes = new JComboBox();
+			jComboBoxNetworkTypes.setName("jComboBoxNetworkTypes");
+			jComboBoxNetworkTypes.setEditable(false);
+			// TODO must be read from external configuration files
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+				.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+					+ NetworkType.BAYESIAN_NET.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+						+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+				.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+					+ NetworkType.INFLUENCE_DIAGRAM.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+						+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+						+ NetworkType.POMDP.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+						+ NetworkType.DAN.toString()));
+					
+			if (!newNetwork) {
+				jComboBoxNetworkTypes.setEnabled(false);
+			}
+		}
+		return jComboBoxNetworkTypes;
+	}
+
+	/**
+	 * initialises the getJTextAreaLabelNetworkDefinitionComment
+	 * 
+	 * @return jTextAreaLabelNetworkDefinitionComment the extended label for the
+	 *         comment field of Network Definition
+	 */
+	protected JTextArea getJTextAreaLabelNetworkDefinitionComment() {
+
+		if (jTextAreaLabelNetworkDefinitionComment == null) {
+			jTextAreaLabelNetworkDefinitionComment = new JTextArea();
+			jTextAreaLabelNetworkDefinitionComment.setLineWrap(true);
+			jTextAreaLabelNetworkDefinitionComment.setOpaque(false);
+			jTextAreaLabelNetworkDefinitionComment
+				.setName("jTextAreaLabelNetworkDefinitionComment");
+			jTextAreaLabelNetworkDefinitionComment.setFocusable(false);
+			jTextAreaLabelNetworkDefinitionComment.setEditable(false);
+			jTextAreaLabelNetworkDefinitionComment
+				.setFont(getJLabelNetworkTypes().getFont());
+			jTextAreaLabelNetworkDefinitionComment.setText("an Extended Label");
+			jTextAreaLabelNetworkDefinitionComment.setText(dialogStringResource
+				.getString("NetworkDefinitionPanel.NetworkDefinitionComment.Text"));
+		}
+		return jTextAreaLabelNetworkDefinitionComment;
+	}
+
+	/**
+	 * initialises the getCommentHTMLScrollPaneForNetworkDefinition
+	 * 
+	 * @return commentHTMLScrollPaneNetworkDefinition the comment for the Node
+	 *         definition
+	 */
+	private CommentHTMLScrollPane getCommentHTMLScrollPaneNetworkDefinition() {
+
+		if (commentHTMLScrollPaneNetworkDefinition == null) {
+			commentHTMLScrollPaneNetworkDefinition =
+				new CommentHTMLScrollPane();
+			commentHTMLScrollPaneNetworkDefinition
+			.setName("commentHTMLScrollPaneNetworkDefinition");
+			
+			commentHTMLScrollPaneNetworkDefinition.addCommentListener(this);
+			
+		}
+		return commentHTMLScrollPaneNetworkDefinition;
+	}
+	
+		
+	/**
+	 * This method fills the content of the fields from a NetworkProperties
+	 * object.
+	 * 
+	 * @param propNet
+	 *            network from where load the information.
+	 */
+	public void setFieldsFromProperties(ProbNet network) {
+		
+		getJComboBoxNetworkTypes().removeItemListener(this);
+		
+		if (network.hasConstraint(BNConstraint.class)){
+			
+			getJComboBoxNetworkTypes().setSelectedItem(
+					dialogStringResource
+						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.BAYESIAN_NET.toString()));
+		
+			
+		}else if (network.hasConstraint(IDConstraint.class)){
+			getJComboBoxNetworkTypes().setSelectedItem(
+					dialogStringResource
+						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.INFLUENCE_DIAGRAM.toString()));
+			
+		} else if (network.hasConstraint(IDConstraint.class)){
+			getJComboBoxNetworkTypes().setSelectedItem(
+					dialogStringResource
+						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.DAN.toString()));
+			
+		}	else if (network.hasConstraint(SMMConstraint.class)){
+			getJComboBoxNetworkTypes().setSelectedItem(
+					dialogStringResource
+						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
+		}else if (network.hasConstraint(MDPConstraint.class)){
+				getJComboBoxNetworkTypes().setSelectedItem(
+						dialogStringResource
+							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+								+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
+		} else if (network.hasConstraint(POMDPConstraint.class)){
+				getJComboBoxNetworkTypes().setSelectedItem(
+						dialogStringResource
+							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+								+ NetworkType.POMDP.toString()));
+		} 
+		
+		getJComboBoxNetworkTypes().addItemListener(this);
+			
+	/*	
+		case CHAIN_GRAPH: {
+			getJComboBoxNetworkTypes().setSelectedItem(
+				dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+						+ NetworkType.CHAIN_GRAPH.toString()));
+			break;
+		}
+		}*/
+		
+        //set the title for comment
+		MessageFormat messageForm =
+			new MessageFormat(
+				dialogStringResource
+					.getString("NetworkDefinitionPanel." +
+							"CommentHTMLScrollPaneNetworkDefinition.Text"));
+
+		//String shortNetworkName = (String)network.properties.
+		//get(netPropertyNames.NAME.toString());
+		String shortNetworkName = network.getName();
+		int lastIndexOfSlashPath = shortNetworkName.lastIndexOf("\\");
+		shortNetworkName =
+			shortNetworkName.substring(lastIndexOfSlashPath + 1);
+		Object[] labelArgs = new Object[] { shortNetworkName };
+		getCommentHTMLScrollPaneNetworkDefinition().setTitle(messageForm
+			.format(labelArgs));
+		
+		//String comment = (String)network.properties.get(
+			//	netPropertyNames.COMMENT.toString());
+		
+		getCommentHTMLScrollPaneNetworkDefinition().
+		setCommentHTMLTextPaneText(network.getComment());
+     }
+	
+	
+	/**
+	 * This method checks the name field.
+	 * 
+	 * @return true, if the name field isn't empty; otherwise, false.
+	 */
+	protected boolean checkName() {
+
+		// String name = getJTextFieldNetworkName().getText();
+		return true;
+
+	}
+
+	/**
+	 * internal serial id
+	 */
+	private static final long serialVersionUID = 1047978130482205148L;
+
+	/**
+	 * The Network Type Label
+	 */
+	private JLabel jLabelNetworkTypes = null;
+	/**
+	 * The Network Types Combo Box Drop Down List
+	 */
+	private JComboBox jComboBoxNetworkTypes = null;
+	/**
+	 * The Network Definition Comment Label
+	 */
+	private JTextArea jTextAreaLabelNetworkDefinitionComment;
+	/**
+	 * The Network Comment Scroll Panel box
+	 */
+	private CommentHTMLScrollPane commentHTMLScrollPaneNetworkDefinition = null;
+
+	/**
+	 * Dialog string resource.
+	 */
+	private StringResource dialogStringResource;
+
+	/**
+	 * Specifies if the network whose adittionalProperties are edited is new.
+	 */
+	private boolean newNetwork = false;
+
+	
+	public void itemStateChanged(ItemEvent iE) {
+		ItemSelectable itemSelectable = iE.getItemSelectable();
+
+		Object selected[] = itemSelectable.getSelectedObjects();
+		String itemSelected = selected.length == 0 ? "null" :
+			(String)selected[0];
+		if (!(itemSelected==null)){
+			ChangeNetworkTypeEdit changeNetworkType = null;
+			if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.BAYESIAN_NET.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							BNConstraint.getUniqueInstance());
+				
+			} else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.INFLUENCE_DIAGRAM.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							IDConstraint.getUniqueInstance());
+			}else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.DAN.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							IDConstraint.getUniqueInstance());
+			} else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							SMMConstraint.getUniqueInstance());
+			} else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.MARKOV_DECISION_PROCESS.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							MDPConstraint.getUniqueInstance());
+			} else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.POMDP.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+							POMDPConstraint.getUniqueInstance());
+			}
+			if (changeNetworkType != null)
+				try {
+					probNet.getPNESupport().announceEdit(changeNetworkType);
+					probNet.getPNESupport().doEdit(changeNetworkType);
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}; 
+			}
+		
+	}
+
+	public void commentHasChanged() {
+			
+		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(
+				probNet, 
+				getCommentHTMLScrollPaneNetworkDefinition().getCommentText());
+		try {
+			probNet.getPNESupport().announceEdit(networkCommentEdit);
+			probNet.getPNESupport().doEdit(networkCommentEdit);
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+		
+	
+
+
+}

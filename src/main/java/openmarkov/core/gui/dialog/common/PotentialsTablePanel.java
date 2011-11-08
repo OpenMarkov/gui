@@ -19,9 +19,14 @@ import openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import openmarkov.core.gui.component.ValuesTable;
 import openmarkov.core.gui.component.ValuesTableCellRenderer;
 import openmarkov.core.gui.component.ValuesTableModel;
+import openmarkov.core.gui.dialog.node.UncertainValuesDialog;
 import openmarkov.core.gui.loader.element.IconLoader;
 import openmarkov.core.gui.localize.StringResource;
 import openmarkov.core.gui.localize.StringResourceLoader;
+import openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
+import openmarkov.core.gui.utils.Util;
 
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
@@ -44,7 +49,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.Util;
+
 
 
 
@@ -1423,7 +1428,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	}
 	
 
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		if (actionCommand.equals( ActionCommands.UNCERTAINTY_ASSIGN )) {
