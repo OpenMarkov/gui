@@ -3,6 +3,9 @@ package openmarkov.core.gui.localize;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -173,7 +176,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 	private StringResource getBundle(String resourceFile) {
 		StringResource stringResource = null;
 		ResourceBundle bundle = null;
-		String file = Util.getResourcesPath() + "\\localize\\" + resourceFile;
+		String file =  "localize/" + resourceFile;
 		//String bundleLanguage = "";
 		Locale tempLocale = null;
 		String tempLanguage = "";
@@ -186,12 +189,14 @@ public class StringResourceLoader implements LocaleChangeListener {
 		tempLocale = new Locale(tempLanguage);
 		setLocale(tempLocale);
 		try {
-    		bundle = ResourceBundle.getBundle(file, tempLocale);
+			 bundle = ResourceBundle.getBundle(file, tempLocale);
+    	   		
 		} catch (MissingResourceException e) {
 			throw new MissingResourceException("Any of the "
 				+ resourceFile.toLowerCase()
 				+ " resource string files is missing",
 				StringResourceLoader.class.getName(), getLocale().getLanguage());
+		
 		}
 		stringResource = new StringResource(bundle);
 		//bundleLanguage = bundle.getLocale().getLanguage();

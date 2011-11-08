@@ -25,8 +25,7 @@ public class IconLoader {
 	 * Folder where icons are saved.
 	 */
 	// TODO must be externalize in a property
-	private static final String RESOURCE_ICONS_PATH =
-		"/openmarkov/gui/resources/icons/";
+	private static final String RESOURCE_ICONS_PATH = "icons/";
 
 	/**
 	 * Name of the 'new' enabled icon.
@@ -237,7 +236,7 @@ public class IconLoader {
 	 */
 	public ImageIcon load(String iconName) throws MissingResourceException {
 
-		URL icon = getClass().getResource(RESOURCE_ICONS_PATH + iconName);
+		URL icon = getClass().getClassLoader().getResource(RESOURCE_ICONS_PATH + iconName);
 
 		if (icon == null) {
 			throw new MissingResourceException(stringResource

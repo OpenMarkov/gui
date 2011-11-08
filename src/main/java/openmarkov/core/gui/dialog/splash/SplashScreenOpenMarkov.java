@@ -26,8 +26,7 @@ public class SplashScreenOpenMarkov {
 	/**
 	 * the logo file
 	 */
-	private final String logoFile = Util.getResourcesPath() + 
-			"\\images\\OpenMarkovSplash2.jpg" ;
+	private final String logoFile =	"images/OpenMarkovSplash2.jpg" ;
 	
 	/**
 	 * start the splash screen, do work and destroy
@@ -48,20 +47,15 @@ public class SplashScreenOpenMarkov {
 
 		// TODO externalize to OpenMarkov Properties the string for the icon
 		
-		//URL url = getClass().getResource(logoFile);
-		URL url;
-		try {
-			url = new File(logoFile).toURI().toURL();
-			ImageIcon myImage =
-					new ImageIcon(url);
-				splash = new SplashScreen(myImage);
-				splash.setLocationRelativeTo(null);
-				splash.setProgressMax(100);
-				splash.setScreenVisible(true);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		
+		URL url = this.getClass().getClassLoader().getResource(logoFile);
+		ImageIcon myImage =
+				new ImageIcon(url);
+			splash = new SplashScreen(myImage);
+			splash.setLocationRelativeTo(null);
+			splash.setProgressMax(100);
+			splash.setScreenVisible(true);
 		
 		
 		
