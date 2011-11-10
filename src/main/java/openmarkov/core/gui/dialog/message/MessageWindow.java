@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import openmarkov.core.gui.loader.OpenMarkovLogoIcon;
+import openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import openmarkov.core.gui.localize.StringResource;
 import openmarkov.core.gui.localize.StringResourceLoader;
 

@@ -29,17 +29,15 @@ public class AboutBoxDevEnv extends JDialog implements ActionListener {
 
 	private AboutBoxDevEnv anAboutBox = null;
 	static final String product = "Development Environment for OpenMarkov";
-	static final String version = "Version 1.0";
-	static final String copyright = " (c) UNED - 2008-2009";
+	static final String version = "Version 0.0.1";
+	static final String copyright = " (c) UNED - 2008-2011";
 	static final String copyright2 = "All rights reserved";
 	static final String authors = "J.L.Gozalo";
 	static final String advertisement =
 		"Please visit OpenMarkov Web pages for the latest update";
 	static final String trademark = "OpenMarkov is a registered product";
-	static final String openMarkovLogoImage =
-		Util.getResourcesPath() + "\\images\\wizard_hat_green.jpeg";
-	static final String lineSeparatorImage =
-			Util.getResourcesPath() + "\\images\\lineSeparator.jpg";
+	static final String openMarkovLogoImage = "images/wizard_hat_green.jpeg";
+	static final String lineSeparatorImage ="/images/lineSeparator.jpg";
 	BorderLayout borderLayoutAboutBox = new BorderLayout();
 	JPanel jPanelAboutText = new JPanel();
 	JPanel jPanelAboutButton = new JPanel();
@@ -130,10 +128,11 @@ public class AboutBoxDevEnv extends JDialog implements ActionListener {
 		try {
 			// look for the images to show in the box
 			openMarkovLogo =
-				new ImageIcon(OpenMarkov.class.getResource(openMarkovLogoImage));
+				new ImageIcon(OpenMarkov.class.getClassLoader().
+						getResource(openMarkovLogoImage));
 			lineSeparator =
-				new ImageIcon(OpenMarkov.class
-					.getResource(lineSeparatorImage));
+				new ImageIcon(OpenMarkov.class.getClassLoader().
+						getResource(lineSeparatorImage));
 			// put the title of the box
 			this.setTitle(product);
 			// mark the layout and the size for the About box

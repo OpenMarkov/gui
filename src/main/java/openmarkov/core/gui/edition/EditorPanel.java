@@ -27,6 +27,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import openmarkov.core.gui.action.MoveNodeEdit;
+import openmarkov.core.gui.dialog.CostEffectivenessDialog;
 import openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
 import openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
@@ -75,6 +76,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.costEffectiveness.CostEffectivenessAnalysis;
+import org.openmarkov.costEffectiveness.ExcelIO;
+import org.openmarkov.costEffectiveness.ExcelSensitivityAnalysis;
+import org.openmarkov.costEffectiveness.Intervention;
 
 
 /**

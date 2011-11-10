@@ -100,6 +100,7 @@ import openmarkov.core.gui.dialog.comment.hexidec.ekit.component.UnicodeDialog;
 import openmarkov.core.gui.dialog.comment.hexidec.ekit.thirdparty.print.DocumentRenderer;
 import openmarkov.core.gui.dialog.comment.hexidec.util.Base64Codec;
 import openmarkov.core.gui.dialog.comment.hexidec.util.Translatrix;
+import openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
 
@@ -390,8 +391,9 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 
 		/* Localize for language */
 		// TODO must externalize the path for the language resources
+		
 		Translatrix
-			.setBundleName("openmarkov/gui/dialogs/comment/hexidec/ekit/LanguageResources");
+			.setBundleName("localize/LanguageResources");
 		Locale baseLocale = (Locale) null;
 		if (sLanguage != null && sCountry != null) {
 			baseLocale = new Locale(sLanguage, sCountry);

@@ -92,6 +92,7 @@ public class HelpViewer extends javax.swing.JFrame implements
 		try {
 			// find HelpSet from within the library of OpenMarkov
 			Locale locale =StringResourceLoader.getUniqueInstance().getLocale();
+			//URL hsURL = HelpSet.findHelpSet(OpenMarkov.class.getClassLoader(), aHelpSet);
 			URL hsURL = HelpSet.findHelpSet(OpenMarkov.class.getClassLoader(), aHelpSet);
 			URL realHsURL = hsURL;
 			String language = StringResourceLoader.getUniqueInstance().getLanguage();

@@ -8,7 +8,7 @@ import java.util.HashSet;
 import javax.swing.JInternalFrame;
 import javax.swing.WindowConstants;
 
-import openmarkov.core.gui.loader.OpenMarkovLogoIcon;
+import openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 
 
 

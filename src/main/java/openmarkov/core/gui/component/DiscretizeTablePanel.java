@@ -33,7 +33,7 @@ import openmarkov.core.gui.localize.StringResource;
 import openmarkov.core.gui.localize.StringResourceLoader;
 import openmarkov.core.gui.network.GUIDefaultStates;
 
-import org.openmarkov.core.action.NodeStateEdit;
+import openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;

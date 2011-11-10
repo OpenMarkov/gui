@@ -14,7 +14,9 @@ import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
-import openmarkov.core.gui.loader.OpenMarkovLogoIcon;
+import org.apache.log4j.Logger;
+
+import openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import openmarkov.core.gui.localize.Languages;
 import openmarkov.core.gui.localize.LocaleChangeEvent;
 import openmarkov.core.gui.localize.StringResource;
@@ -61,6 +63,9 @@ public class ChangeLanguageDialog extends JDialog implements
 	 * to store temporally the old language to set
 	 */
 	private String oldLanguage;
+	
+	
+	private Logger logger;
 
 	/**
 	 * singleton for ChangeLanguageDialog
@@ -97,6 +102,7 @@ public class ChangeLanguageDialog extends JDialog implements
 
 		super( parent, "", true );
 		setName( "ChangeLanguageDialog" );
+		this.logger = Logger.getLogger(ChangeLanguageDialog.class);
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		this.oldLanguage =
@@ -109,7 +115,8 @@ public class ChangeLanguageDialog extends JDialog implements
 			this.setVisible( true );
 			changeLanguageDialog = this;
 		} catch (Exception e) {
-			ExceptionsHandler.handleException( e, null, true );
+			//ExceptionsHandler.handleException( e, null, true );
+			logger.fatal(e);
 		}
 	}
 

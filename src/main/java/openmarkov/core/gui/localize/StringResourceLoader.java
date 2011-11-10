@@ -44,10 +44,10 @@ public class StringResourceLoader implements LocaleChangeListener {
 	/**
 	 * Path of the resource files.
 	 */
-	private static final String STRING_RESOURCE_PATH  = 
-		OpenMarkovPreferences.get(OpenMarkovPreferences.STRING_RESOURCES_PATH, 
+	private static final String STRING_LANGUAGE_PATH  = 
+		OpenMarkovPreferences.get(OpenMarkovPreferences.STRING_LANGUAGES_PATH, 
 			OpenMarkovPreferences.OPENMARKOV_LANGUAGES,
-			"openmarkov/gui/localize/");
+			"localize/");
 	/**
 	 * Default language.
 	 */

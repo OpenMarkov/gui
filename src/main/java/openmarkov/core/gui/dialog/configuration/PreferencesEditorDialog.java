@@ -33,6 +33,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 
+import org.apache.log4j.Logger;
+
 import openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
@@ -75,6 +77,7 @@ public class PreferencesEditorDialog extends JDialog implements ActionListener {
 	private static final int DIVIDER_LOCATION = 250;
     private static final int PREFERENCE_WIDTH = 640;
     private static final int PREFERENCE_HEIGHT = 480;
+    private Logger logger;
 	/**
 	 * Creates PreferencesEditor dialog that show all System and User
 	 * preferences.
@@ -144,6 +147,7 @@ public class PreferencesEditorDialog extends JDialog implements ActionListener {
 		createButtonPanel();
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
+		this.logger = Logger.getLogger(PreferencesEditorDialog.class);
 	}
 
 	/**
@@ -460,8 +464,10 @@ public class PreferencesEditorDialog extends JDialog implements ActionListener {
 			this.jTreePreferences.repaint();
 			this.repaint();
     	} catch (Exception ex) {
-			ExceptionsHandler.handleException(
-				ex, "Error reseting Preferences", false );
+			//ExceptionsHandler.handleException(
+				//ex, "Error reseting Preferences", false );
+    		logger.error("Error reseting Preferences");
+    		
 		}
 	}
 

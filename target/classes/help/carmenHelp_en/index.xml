@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN"
+                       "http://java.sun.com/products/javahelp/index_2_0.dtd">
+
+<index version="2.0">
+	<indexitem text="Algorithms" target="Algorithms" />
+	<indexitem text="Bayesian networks and Influence Diagrams" target="Bayesian networks and Influence Diagrams" />
+	<indexitem text="Can I use XML files?" />
+	<indexitem text="Canonical Models" target="Canonical Models" />
+	<indexitem text="CARMEN advanced features" target="CARMEN advanced features" />
+	<indexitem text="Cover Page PDF" target="Cover Page PDF" />
+	<indexitem text="Creating a chance node" target="Creating a chance node" />
+	<indexitem text="Creating a decision node" target="Creating a decision node" />
+	<indexitem text="Creating a new network" target="Creating a new network" />
+	<indexitem text="Creating an utility node" target="Creating an utility node" />
+	<indexitem text="Creating CARMEN Help JAR files" />
+	<indexitem text="Creating links" target="Creating links between nodes" />
+	<indexitem text="End User Manual Topics" target="End User Manual Topics" />
+	<indexitem text="Explanation in Expert Systems" target="Explanation in Expert Systems" />
+	<indexitem text="Frequent asked questions" target="FAQ" />
+	<indexitem text="Getting Started" target="Getting_Started" />
+	<indexitem text="How to add a new user preference" target="How to add a new user preference" />
+	<indexitem text="How to change the value of a preference" target="How to change the value of a preference" />
+	<indexitem text="How to configure ResourceBundle Editor" />
+	<indexitem text="How to configure Swing Designer for CARMEN" />
+	<indexitem text="How to export user preferences" target="How to export user preferences" />
+	<indexitem text="How to import user preferences" target="How to import user preferences" />
+	<indexitem text="How to install Swing Designer" />
+	<indexitem text="How to retrieve the default preference configuration" target="How to retrieve the default preference configuration" />
+	<indexitem text="Installation" target="Installation" />
+	<indexitem text="Internationalitation Guide" />
+	<indexitem text="Learning" target="Learning" />
+	<indexitem text="Main Concepts" target="Main_Concepts" />
+	<indexitem text="ResourceBundle Editor" />
+	<indexitem text="Saving the network" target="Saving the network" />
+	<indexitem text="Selecting algorithms" target="Selecting algorithms" />
+	<indexitem text="Setting node properties" target="Setting node properties" />
+	<indexitem text="Setting probability tables" target="Setting probability tables" />
+	<indexitem text="Setting User Preferences" target="Setting User Preferences" />
+	<indexitem text="Using Help facilities and HELEN2000" />
+	<indexitem text="Welcome" target="Welcome" />
+	<indexitem text="What you must keep in mind" />
+	<indexitem text="Window Builder 7.0" />
+</index>

@@ -28,6 +28,7 @@ import openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
 import openmarkov.core.gui.utils.Util;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -154,6 +155,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	protected boolean showProbabilitiesValues = true;
 	protected boolean showTPCvalues = true;
 	protected boolean showNetValues = true;
+	
+	
 
 	private ProbNode probNode;
 	/**
@@ -168,6 +171,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	private int selectedColumn = -1;
 
 	private UncertaintyPopup uncertaintyPopup;
+	
+	private Logger logger;
 
 	/**
 	 * this is a default constructor with no construction parameters
@@ -198,7 +203,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		iconLoader = new IconLoader();
 		columns = newColumns.clone();
 		data = newData.clone();
-		
+		this.logger = Logger.getLogger(PotentialsTablePanel.class);
 		this.probNode = probNode;
 		modifiable = true; // table is modifiable
 		initialize();
@@ -697,8 +702,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		try {
 			aPotential = ((TablePotential) listPotentials.get( 0 ));
 		} catch (Exception ex) {
-			ExceptionsHandler.handleException(
-				ex, "no Potential.get(0) !!!", false );
+			//ExceptionsHandler.handleException(
+				//ex, "no Potential.get(0) !!!", false );
+			logger.error("no Potential.get(0) !!!");
+			
 		}
 
 		return aPotential;
@@ -909,8 +916,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 			}	
 		} catch (NullPointerException exception) {
 			numPositions = 0;
-			ExceptionsHandler.handleException(
-				exception, "not enougth memory", false );
+			//ExceptionsHandler.handleException(
+				//exception, "not enougth memory", false );
+			logger.error("not enougth memory");
 		}
 		setPosition( numPositions);
 		return numPositions;
@@ -994,8 +1002,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				DiscretePotentialOperations.reorder(
 					tablePotential, newOrderVariables );
 		} catch (NotEnoughMemoryException exception) {
-			ExceptionsHandler.handleException(
-				exception, "not enougth memory", true );
+			//ExceptionsHandler.handleException(
+				//exception, "not enougth memory", true );
+			logger.fatal("not enougth memory");
 		}
 		
 		/*for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {

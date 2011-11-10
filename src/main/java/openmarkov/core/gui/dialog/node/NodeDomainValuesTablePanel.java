@@ -38,6 +38,7 @@ import openmarkov.core.gui.localize.StringResourceLoader;
 import openmarkov.core.gui.network.GUIDefaultStates;
 import openmarkov.core.gui.utils.Util;
 
+import org.apache.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -98,6 +99,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * panel, buttonGroup and radioButtons to define monotony in the panel
 	 */
 	private JPanel jPanelNodeType;
+	
+	/**
+	 * Logger
+	 * 
+	 */
+	
+	private Logger logger;
 	
 	private JLabel jLabelNodeVariableType;
 	
@@ -196,7 +204,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		setName("NodeDomainValuesTablePanel");
 		this.newNode = newNode;
 		this.listener = new NodeDiscretizeValuesTablePanelListener(this);
-		//this.notifier = notifier;
+		this.logger = Logger.getLogger(NodeDomainValuesTablePanel.class);
 		
 
 	}
@@ -829,9 +837,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			data[i][position++] = upperSymbol; // position 5
 		}
 		} catch (StringIndexOutOfBoundsException ex) {
-			ExceptionsHandler.handleException(ex,
-					"Error accessing position in Intervals " + i + position--,
-					false );
+			//ExceptionsHandler.handleException(ex,
+				//	"Error accessing position in Intervals " + i + position--,
+					//false );
+			logger.info("Error accessing position in Intervals " + i + position--);
+			
 		}
 		return data;
 	}

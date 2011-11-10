@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Modifying the visual node representation</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="296" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Modifying the visual node
+      representation
+    </h1>
+    <table border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" width="490">
+      <col width="234">
+      <col width="238">
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Use case: Modifying the visual node representation</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="justify">
+             <b><font size="3">Comment:</font></b> <font size="3">In this case the user chooses the
+            content that will appear within the network nodes currently selected, that is, their
+            name or their title.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="238">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">1.The user selects one of the options to see the nodes by their name or
+            their title.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" class=
+          "western" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.In the current network the type of display for the nodes that already
+            are and for new ones, is established.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">3.The option chosen by the user is marked on the menu.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">4.If the type of presentation has changed, the contents of the nodes is
+            updated.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

@@ -24,7 +24,7 @@ public class ImageLoader {
 	 */
 	// TODO must be externalize in a property
 	private static final String RESOURCE_IMAGES_PATH =
-		"/openmarkov/gui/resources/images/";
+		"images/";
 
 	/**
 	 * String resource.
@@ -43,7 +43,7 @@ public class ImageLoader {
 	 */
 	public ImageIcon load(String imageName) throws MissingResourceException {
 
-		URL icon = getClass().getResource(RESOURCE_IMAGES_PATH + imageName);
+		URL icon = getClass().getClassLoader().getResource(RESOURCE_IMAGES_PATH + imageName);
 
 		if (icon == null) {
 			throw new MissingResourceException(messagesResource

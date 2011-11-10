@@ -13,7 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import openmarkov.core.gui.dialog.splash.SplashScreenOpenMarkov;
-import openmarkov.core.gui.loader.OpenMarkovLogoIcon;
+import openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import openmarkov.core.gui.utils.OpenMarkovPreferences;
 import openmarkov.core.gui.utils.OpenMarkovPreferencesKeys;
 

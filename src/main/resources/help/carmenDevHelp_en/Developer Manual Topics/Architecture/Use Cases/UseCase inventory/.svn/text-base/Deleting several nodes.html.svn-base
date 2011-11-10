@@ -1,0 +1,193 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Deleting several nodes</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp; Deleting several nodes
+    </h1>
+    <p>
+       &nbsp;
+    </p>
+    <table border="1" cellpadding="4" style=
+    " page-break-inside: auto; page-break-before: auto; page-break-after: auto;" cellspacing="0"
+    bordercolor="#000000" width="490">
+      <col width="235">
+      <col width="237"><THEAD>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Use case: Deleting several nodes</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Comment:</font></b> <font size="3">After selecting one or several
+            elements (nodes and / or links), the user can delete them all.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      </THEAD><TBODY>
+      <tr valign="top">
+        <td width="235">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="237">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal;" align="justify">
+             <font size="3">1.The user selects one or several items using any of the use cases that
+            explained how to do it.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=
+          " font-style: normal; margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;"
+          align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">2.When the type of editing is the selection of objects, the user
+            presses the DELETE key or uses the option to delete which is the main menu on the
+            standard toolbar or popup menus.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">3.All links selected are deleted.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">4.All the links that go out or come in to some of the nodes selected
+            are deleted.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">5.The nodes selected are deleted.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">6.The use case <i>Updating the menus when changing the selected
+            element</i> is executed.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">7.A new point to undo and redo the deletion of the items is
+            created.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">8.The use case <i>Updating menus when modifying a network</i> is
+            executed.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="235">
+          <p style=" font-style: normal; widows: 2; orphans: 2;" align="justify">
+             <font size="3">9.The network is marked as modified (if it was not already), placing an
+            asterisk at the title of the window in which is being editing.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      </TBODY>
+    </table>
+  </body>
+</html>
