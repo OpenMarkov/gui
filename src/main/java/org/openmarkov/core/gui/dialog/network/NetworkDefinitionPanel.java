@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
 
-
 import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.NetworkCommentEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -30,11 +29,11 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.network.NetworkType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
-import org.openmarkov.core.model.network.constraint.compound.BNConstraint;
-import org.openmarkov.core.model.network.constraint.compound.IDConstraint;
-import org.openmarkov.core.model.network.constraint.compound.MDPConstraint;
-import org.openmarkov.core.model.network.constraint.compound.POMDPConstraint;
-import org.openmarkov.core.model.network.constraint.compound.SMMConstraint;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MDPType;
+import org.openmarkov.core.model.network.type.POMDPType;
+import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 
 
@@ -259,7 +258,7 @@ PropertyNames, CommentListener {
 		
 		getJComboBoxNetworkTypes().removeItemListener(this);
 		
-		if (network.hasConstraint(BNConstraint.class)){
+		if (network.hasConstraint(BayesianNetworkType.class)){
 			
 			getJComboBoxNetworkTypes().setSelectedItem(
 					dialogStringResource
@@ -267,29 +266,29 @@ PropertyNames, CommentListener {
 							+ NetworkType.BAYESIAN_NET.toString()));
 		
 			
-		}else if (network.hasConstraint(IDConstraint.class)){
+		}else if (network.hasConstraint(InfluenceDiagramType.class)){
 			getJComboBoxNetworkTypes().setSelectedItem(
 					dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.INFLUENCE_DIAGRAM.toString()));
 			
-		} else if (network.hasConstraint(IDConstraint.class)){
+		} else if (network.hasConstraint(InfluenceDiagramType.class)){
 			getJComboBoxNetworkTypes().setSelectedItem(
 					dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.DAN.toString()));
 			
-		}	else if (network.hasConstraint(SMMConstraint.class)){
+		}	else if (network.hasConstraint(SimpleMarkovModelType.class)){
 			getJComboBoxNetworkTypes().setSelectedItem(
 					dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
-		}else if (network.hasConstraint(MDPConstraint.class)){
+		}else if (network.hasConstraint(MDPType.class)){
 				getJComboBoxNetworkTypes().setSelectedItem(
 						dialogStringResource
 							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 								+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
-		} else if (network.hasConstraint(POMDPConstraint.class)){
+		} else if (network.hasConstraint(POMDPType.class)){
 				getJComboBoxNetworkTypes().setSelectedItem(
 						dialogStringResource
 							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
@@ -390,33 +389,33 @@ PropertyNames, CommentListener {
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.BAYESIAN_NET.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							BNConstraint.getUniqueInstance());
+							BayesianNetworkType.getUniqueInstance());
 				
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.INFLUENCE_DIAGRAM.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							IDConstraint.getUniqueInstance());
+							InfluenceDiagramType.getUniqueInstance());
 			}else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.DAN.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							IDConstraint.getUniqueInstance());
+				                                              InfluenceDiagramType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							SMMConstraint.getUniqueInstance());
+							SimpleMarkovModelType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.MARKOV_DECISION_PROCESS.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							MDPConstraint.getUniqueInstance());
+							MDPType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.POMDP.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							POMDPConstraint.getUniqueInstance());
+							POMDPType.getUniqueInstance());
 			}
 			if (changeNetworkType != null)
 				try {

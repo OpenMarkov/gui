@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -40,7 +39,7 @@ import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
 import org.openmarkov.core.gui.utils.Util;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.constraint.compound.BNConstraint;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
 
@@ -622,7 +621,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		ProbNet probNet=null;
 		PartitionedInterval partitionedInterval = null;
-		probNet = new ProbNet(BNConstraint.getUniqueInstance());
+		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance ());
 		probNet.setName(new String (stringResource.
 			getString( "InternalFrame.Title.Label" )+
 				" " + frameIndex));

@@ -37,6 +37,8 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NoPropagationCanBeDoneException;
+import org.openmarkov.core.exception.NoPropagationOnInfluenceDiagramsException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -2008,7 +2010,27 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 		}
 		//Set the values of the visualStates of nodes without finding
-		Propagation propagation = new Propagation(probNet, evidenceCase);
+		Propagation propagation = null;
+        try
+        {
+            propagation = new Propagation(probNet, evidenceCase);
+        }
+        catch (NoPropagationCanBeDoneException e)
+        {
+            JOptionPane.showMessageDialog(null, "ERROR\n" +
+                    stringResource.getString("NoPropagationCanBeDoneMessage1.Text.Label") +
+                    "\n" + stringResource.getString("NoPropagationCanBeDoneMessage2.Text.Label") +
+                    "\n\n" + e.getConstraints (), 
+                    stringResource.getString("NoPropagationCanBeDoneMessage.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NoPropagationOnInfluenceDiagramsException e)
+        {
+            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(null, "ERROR\nThis Network is an ID\n\n" +
+                    "Propagation cannot be done in Influence Diagrams by the moment", 
+                    "Error - IDConstraint in this Network", JOptionPane.ERROR_MESSAGE);
+        }
 		HashMap<Variable, Potential> individualProbabilities = 
 				propagation.getIndividualProbabilities();
 		if (individualProbabilities != null) {

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import javax.swing.event.UndoableEditEvent;
 
-
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
@@ -24,10 +23,10 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.constraint.compound.IDConstraint;
-import org.openmarkov.core.model.network.constraint.compound.MDPConstraint;
-import org.openmarkov.core.model.network.constraint.compound.POMDPConstraint;
-import org.openmarkov.core.model.network.constraint.compound.SMMConstraint;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MDPType;
+import org.openmarkov.core.model.network.type.POMDPType;
+import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
 
 
@@ -189,9 +188,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
-			boolean enable = currentNetworkPanel.getProbNet().getNetworkTypeConstraint() instanceof
-					IDConstraint || currentNetworkPanel.getProbNet().getNetworkTypeConstraint() instanceof
-					SMMConstraint;
+			boolean enable = currentNetworkPanel.getProbNet().getNetworkType() instanceof
+					InfluenceDiagramType || currentNetworkPanel.getProbNet().getNetworkType() instanceof
+					SimpleMarkovModelType;
 			setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
 			setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, enable);
 			
@@ -296,13 +295,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-			if (networkPanel.getProbNet().getNetworkTypeConstraint() instanceof 
-						IDConstraint || networkPanel.getProbNet().
-						getNetworkTypeConstraint() instanceof SMMConstraint 
-						|| networkPanel.getProbNet().
-						getNetworkTypeConstraint() instanceof MDPConstraint
-						|| networkPanel.getProbNet().
-						getNetworkTypeConstraint() instanceof POMDPConstraint){
+            if (networkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType
+                || networkPanel.getProbNet ().getNetworkType () instanceof SimpleMarkovModelType
+                || networkPanel.getProbNet ().getNetworkType () instanceof MDPType
+                || networkPanel.getProbNet ().getNetworkType () instanceof POMDPType)
+            {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
 				setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
