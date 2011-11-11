@@ -39,7 +39,7 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.treeadd.TreeADDBuilder;
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;

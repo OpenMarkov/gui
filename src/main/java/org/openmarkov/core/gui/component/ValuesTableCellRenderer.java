@@ -15,8 +15,8 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
 

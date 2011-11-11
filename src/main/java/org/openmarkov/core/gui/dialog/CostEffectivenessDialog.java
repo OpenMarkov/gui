@@ -19,9 +19,9 @@ import javax.swing.border.EmptyBorder;
 
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.io.FileChooser;
-import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 

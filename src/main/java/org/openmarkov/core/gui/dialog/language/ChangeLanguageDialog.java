@@ -15,13 +15,13 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.gui.localize.Languages;
 import org.openmarkov.core.gui.localize.LocaleChangeEvent;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
-import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
 

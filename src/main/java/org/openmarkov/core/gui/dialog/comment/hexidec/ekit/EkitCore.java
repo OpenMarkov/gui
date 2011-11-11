@@ -79,6 +79,7 @@ import javax.swing.text.rtf.RTFEditorKit;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.comment.hexidec.ekit.action.CustomAction;
 import org.openmarkov.core.gui.dialog.comment.hexidec.ekit.action.FormatAction;
 import org.openmarkov.core.gui.dialog.comment.hexidec.ekit.action.ListAutomationAction;
@@ -100,7 +101,6 @@ import org.openmarkov.core.gui.dialog.comment.hexidec.ekit.component.UnicodeDial
 import org.openmarkov.core.gui.dialog.comment.hexidec.ekit.thirdparty.print.DocumentRenderer;
 import org.openmarkov.core.gui.dialog.comment.hexidec.util.Base64Codec;
 import org.openmarkov.core.gui.dialog.comment.hexidec.util.Translatrix;
-import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
 
 
 

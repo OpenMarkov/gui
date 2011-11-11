@@ -46,7 +46,7 @@ import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.network.GUIDefaultStates;
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;

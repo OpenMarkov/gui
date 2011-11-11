@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 
 
 

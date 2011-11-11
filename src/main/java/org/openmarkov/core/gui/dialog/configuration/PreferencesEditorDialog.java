@@ -34,7 +34,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.gui.utils.OpenMarkovPreferences;
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 
 
 

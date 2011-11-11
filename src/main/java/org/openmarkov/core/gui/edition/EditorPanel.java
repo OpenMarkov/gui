@@ -66,7 +66,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.main.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.network.LinkWrapper;
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;

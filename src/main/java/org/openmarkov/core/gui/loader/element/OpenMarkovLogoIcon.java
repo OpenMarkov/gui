@@ -7,7 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 
 import org.openmarkov.core.gui.OpenMarkov;
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 
 
 

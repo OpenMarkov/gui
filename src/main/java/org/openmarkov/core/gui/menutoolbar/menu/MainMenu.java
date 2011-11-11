@@ -16,6 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
+import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.help.HelpViewer;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -24,7 +25,6 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.core.gui.utils.LastOpenFiles;
 
 
 

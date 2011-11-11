@@ -28,7 +28,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialsDialog;
-import org.openmarkov.core.gui.utils.Util;
+import org.openmarkov.core.gui.util.Util;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.LabelledLink;
 import org.openmarkov.core.model.graph.Link;
