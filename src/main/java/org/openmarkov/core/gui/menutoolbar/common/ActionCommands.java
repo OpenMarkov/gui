@@ -290,11 +290,6 @@ public class ActionCommands {
 	public static final String OBJECT_REMOVAL = "ObjectRemoval";
 
 	/**
-	 * Action invoked when the user wants to learn a network.
-	 */
-	public static final String LEARNING = "Tools.Learning";
-	
-	/**
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */
 	public static final String COST_EFFECTIVENESS_DETERMINISTIC = "Tools.CostEffectivenessDeterministic";

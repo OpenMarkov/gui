@@ -21,6 +21,12 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
  */
 abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic {
 
+    /**
+     * Suffix to retrieve tooltip strings from a string resource.
+     */
+    String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
+    
+    
 	/**
 	 * Object that listen to the user's actions.
 	 */

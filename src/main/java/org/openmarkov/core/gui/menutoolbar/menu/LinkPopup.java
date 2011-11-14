@@ -6,8 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 
 
@@ -39,11 +38,6 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem propertiesMenuItem = null;
 
 	/**
-	 * String resource.
-	 */
-	private StringResource stringResource = null;
-
-	/**
 	 * This constructor creates a new instance.
 	 * 
 	 * @param newListener
@@ -62,8 +56,6 @@ class LinkPopup extends PopupMenuBasic {
 	 */
 	private void initialize() {
 
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMenus();
 		add(getRemoveMenuItem());
 		/*
 		 * This item must be added to the menu when is active the possibility of
@@ -83,13 +75,9 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem getRemoveMenuItem() {
 
 		if (removeMenuItem == null) {
-			removeMenuItem = new JMenuItem();
-			removeMenuItem.setName("Edit.Remove");
-			removeMenuItem.setText(stringResource
-				.getString(MainMenu.EDIT_REMOVE_MENUITEM + LABEL_SUFFIX));
-			removeMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_REMOVE_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			removeMenuItem.setActionCommand(ActionCommands.OBJECT_REMOVAL);
+            removeMenuItem = new LocalizedMenuItem (
+                                                    MainMenu.EDIT_REMOVE_MENUITEM,
+                                                    ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
 
@@ -105,16 +93,9 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem getPropertiesMenuItem() {
 
 		if (propertiesMenuItem == null) {
-			propertiesMenuItem = new JMenuItem();
-			propertiesMenuItem.setName("Edit.LinkProperties");
-			propertiesMenuItem
-				.setText(stringResource
-					.getString(MainMenu.EDIT_LINKPROPERTIES_MENUITEM
-						+ LABEL_SUFFIX));
-			propertiesMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_LINKPROPERTIES_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			propertiesMenuItem.setActionCommand(ActionCommands.LINK_PROPERTIES);
+            propertiesMenuItem = new LocalizedMenuItem (
+                                                        MainMenu.EDIT_LINKPROPERTIES_MENUITEM,
+                                                        ActionCommands.LINK_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}
 

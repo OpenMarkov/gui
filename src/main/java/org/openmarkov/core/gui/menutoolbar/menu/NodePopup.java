@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -118,13 +119,8 @@ class NodePopup extends PopupMenuBasic {
 
 	private JMenuItem getLogMenuItem() {
 		if (logMenuItem == null) {
-		logMenuItem = new JMenuItem();
-		logMenuItem.setName("Edit.Log");
-		logMenuItem.setText(stringResource
-			.getString(MainMenu.EDIT_LOG_MENUITEM + LABEL_SUFFIX));
-		logMenuItem.setMnemonic(stringResource.getString(
-			MainMenu.EDIT_LOG_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-		logMenuItem.setActionCommand(ActionCommands.LOG);
+            logMenuItem = new LocalizedMenuItem (MainMenu.EDIT_LOG_MENUITEM,
+                                                 ActionCommands.LOG);
 		logMenuItem.addActionListener(listener);
 	}
 
@@ -139,13 +135,8 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getCutMenuItem() {
 
 		if (cutMenuItem == null) {
-			cutMenuItem = new JMenuItem();
-			cutMenuItem.setName("Edit.Cut");
-			cutMenuItem.setText(stringResource
-				.getString(MainMenu.EDIT_CUT_MENUITEM + LABEL_SUFFIX));
-			cutMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_CUT_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			cutMenuItem.setActionCommand(ActionCommands.CLIPBOARD_CUT);
+            cutMenuItem = new LocalizedMenuItem (MainMenu.EDIT_CUT_MENUITEM,
+                                                 ActionCommands.CLIPBOARD_CUT);
 			cutMenuItem.addActionListener(listener);
 		}
 
@@ -161,13 +152,8 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getCopyMenuItem() {
 
 		if (copyMenuItem == null) {
-			copyMenuItem = new JMenuItem();
-			copyMenuItem.setName("Edit.Copy");
-			copyMenuItem.setText(stringResource
-				.getString(MainMenu.EDIT_COPY_MENUITEM + LABEL_SUFFIX));
-			copyMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_COPY_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			copyMenuItem.setActionCommand(ActionCommands.CLIPBOARD_COPY);
+            copyMenuItem = new LocalizedMenuItem (MainMenu.EDIT_COPY_MENUITEM,
+                                                  ActionCommands.CLIPBOARD_COPY);
 			copyMenuItem.addActionListener(listener);
 		}
 
@@ -183,13 +169,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRemoveMenuItem() {
 
 		if (removeMenuItem == null) {
-			removeMenuItem = new JMenuItem();
-			removeMenuItem.setName("Edit.Remove");
-			removeMenuItem.setText(stringResource
-				.getString(MainMenu.EDIT_REMOVE_MENUITEM + LABEL_SUFFIX));
-			removeMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_REMOVE_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			removeMenuItem.setActionCommand(ActionCommands.OBJECT_REMOVAL);
+            removeMenuItem = new LocalizedMenuItem (
+                                                    MainMenu.EDIT_REMOVE_MENUITEM,
+                                                    ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
 
@@ -205,16 +187,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getPropertiesMenuItem() {
 
 		if (propertiesMenuItem == null) {
-			propertiesMenuItem = new JMenuItem();
-			propertiesMenuItem.setName("Edit.NodeProperties");
-			propertiesMenuItem
-				.setText(stringResource
-					.getString(MainMenu.EDIT_NODEPROPERTIES_MENUITEM
-						+ LABEL_SUFFIX));
-			propertiesMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_NODEPROPERTIES_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			propertiesMenuItem.setActionCommand(ActionCommands.NODE_PROPERTIES);
+            propertiesMenuItem = new LocalizedMenuItem (
+                                                        MainMenu.EDIT_NODEPROPERTIES_MENUITEM,
+                                                        ActionCommands.NODE_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}
 
@@ -230,16 +205,7 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRelationMenuItem() {
 
 		if (relationMenuItem == null) {
-			relationMenuItem = new JMenuItem();
-			relationMenuItem.setName("Edit.Table");
-			relationMenuItem
-				.setText(stringResource
-					.getString(MainMenu.EDIT_NODERELATION_MENUITEM
-						+ LABEL_SUFFIX));
-			relationMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_NODERELATION_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-		relationMenuItem.setActionCommand(ActionCommands.CHANGE_POTENTIAL);
+			relationMenuItem = new LocalizedMenuItem(MainMenu.EDIT_NODERELATION_MENUITEM, ActionCommands.CHANGE_POTENTIAL);
 			relationMenuItem.addActionListener(listener);
 		}
 
@@ -255,16 +221,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getExpandMenuItem() {
 
 		if (expandMenuItem == null) {
-			expandMenuItem = new JMenuItem();
-			expandMenuItem.setName("Inference.Expansion");
-			expandMenuItem
-				.setText(stringResource
-					.getString(MainMenu.INFERENCE_EXPAND_NODE_MENUITEM
-						+ LABEL_SUFFIX));
-			expandMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.INFERENCE_EXPAND_NODE_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			expandMenuItem.setActionCommand(ActionCommands.NODE_EXPANSION);
+            expandMenuItem = new LocalizedMenuItem (
+                                                    MainMenu.INFERENCE_EXPAND_NODE_MENUITEM,
+                                                    ActionCommands.NODE_EXPANSION);
 			expandMenuItem.addActionListener(listener);
 		}
 
@@ -280,16 +239,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getContractMenuItem() {
 
 		if (contractMenuItem == null) {
-			contractMenuItem = new JMenuItem();
-			contractMenuItem.setName("Inference.Contraction");
-			contractMenuItem
-				.setText(stringResource
-					.getString(MainMenu.INFERENCE_CONTRACT_NODE_MENUITEM
-						+ LABEL_SUFFIX));
-			contractMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.INFERENCE_CONTRACT_NODE_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			contractMenuItem.setActionCommand(ActionCommands.NODE_CONTRACTION);
+            contractMenuItem = new LocalizedMenuItem (
+                                                      MainMenu.INFERENCE_CONTRACT_NODE_MENUITEM,
+                                                      ActionCommands.NODE_CONTRACTION);
 			contractMenuItem.addActionListener(listener);
 		}
 
@@ -305,16 +257,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getAddFindingMenuItem() {
 
 		if (addFindingMenuItem == null) {
-			addFindingMenuItem = new JMenuItem();
-			addFindingMenuItem.setName("Inference.AddFinding");
-			addFindingMenuItem
-				.setText(stringResource
-					.getString(MainMenu.INFERENCE_ADD_FINDING_MENUITEM
-						+ LABEL_SUFFIX));
-			addFindingMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.INFERENCE_ADD_FINDING_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			addFindingMenuItem.setActionCommand(ActionCommands.NODE_ADD_FINDING);
+            addFindingMenuItem = new LocalizedMenuItem (
+                                                        MainMenu.INFERENCE_ADD_FINDING_MENUITEM,
+                                                        ActionCommands.NODE_ADD_FINDING);
 			addFindingMenuItem.addActionListener(listener);
 		}
 
@@ -330,16 +275,9 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRemoveFindingMenuItem() {
 
 		if (removeFindingMenuItem == null) {
-			removeFindingMenuItem = new JMenuItem();
-			removeFindingMenuItem.setName("Inference.RemoveFinding");
-			removeFindingMenuItem
-				.setText(stringResource
-					.getString(MainMenu.INFERENCE_REMOVE_FINDING_MENUITEM
-						+ LABEL_SUFFIX));
-			removeFindingMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.INFERENCE_REMOVE_FINDING_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			removeFindingMenuItem.setActionCommand(ActionCommands.NODE_REMOVE_FINDING);
+            removeFindingMenuItem = new LocalizedMenuItem (
+                                                           MainMenu.INFERENCE_REMOVE_FINDING_MENUITEM,
+                                                           ActionCommands.NODE_REMOVE_FINDING);
 			removeFindingMenuItem.addActionListener(listener);
 		}
 

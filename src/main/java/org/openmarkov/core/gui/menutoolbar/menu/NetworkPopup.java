@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -58,7 +59,7 @@ class NetworkPopup extends PopupMenuBasic {
 	}
 
 	/**
-	 * This method initialises this instance.
+	 * This method initializes this instance.
 	 */
 	private void initialize() {
 
@@ -71,21 +72,17 @@ class NetworkPopup extends PopupMenuBasic {
 	}
 
 	/**
-	 * This method initialises pasteMenuItem.
+	 * This method initializes pasteMenuItem.
 	 * 
 	 * @return a new 'Paste' menu item.
 	 */
 	private JMenuItem getPasteMenuItem() {
 
 		if (pasteMenuItem == null) {
-			pasteMenuItem = new JMenuItem();
-			pasteMenuItem.setName("Edit.Paste");
-			pasteMenuItem.setText(stringResource
-				.getString(MainMenu.EDIT_PASTE_MENUITEM + LABEL_SUFFIX));
-			pasteMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.EDIT_PASTE_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
+            pasteMenuItem = new LocalizedMenuItem (
+                                                   MainMenu.EDIT_PASTE_MENUITEM,
+                                                   ActionCommands.CLIPBOARD_PASTE);
 			pasteMenuItem.setEnabled(false);
-			pasteMenuItem.setActionCommand(ActionCommands.CLIPBOARD_PASTE);
 			pasteMenuItem.addActionListener(listener);
 		}
 
@@ -94,23 +91,16 @@ class NetworkPopup extends PopupMenuBasic {
 	}
 
 	/**
-	 * This method initialises networkPropertiesMenuItem.
+	 * This method initializes networkPropertiesMenuItem.
 	 * 
 	 * @return a new 'Network adittionalProperties' menu item.
 	 */
 	private JMenuItem getNetworkPropertiesMenuItem() {
 
 		if (networkPropertiesMenuItem == null) {
-			networkPropertiesMenuItem = new JMenuItem();
-			networkPropertiesMenuItem.setName("File.NetworkProperties");
-			networkPropertiesMenuItem.setText(stringResource
-				.getString(MainMenu.FILE_NETWORKPROPERTIES_MENUITEM
-					+ LABEL_SUFFIX));
-			networkPropertiesMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.FILE_NETWORKPROPERTIES_MENUITEM + MNEMONIC_SUFFIX)
-				.charAt(0));
-			networkPropertiesMenuItem
-				.setActionCommand(ActionCommands.NETWORK_PROPERTIES);
+            networkPropertiesMenuItem = new LocalizedMenuItem (
+                                                               MainMenu.FILE_NETWORKPROPERTIES_MENUITEM,
+                                                               ActionCommands.NETWORK_PROPERTIES);
 			networkPropertiesMenuItem.addActionListener(listener);
 		}
 

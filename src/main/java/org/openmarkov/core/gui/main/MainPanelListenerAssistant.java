@@ -241,7 +241,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				.getValueZoomActionCommand( actionCommand ) );
 		} else if (actionCommand.equals( ActionCommands.MESSAGE_WINDOW )) {
 			showMessageWindow();
-		} else if (actionCommand.equals( ActionCommands.LEARNING )) {
+//TODO: Make this dynamic 
+//		} else if (actionCommand.equals( ActionCommands.LEARNING )) {
 			//learning();
 		} else if (actionCommand.equals( ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC )) {
 			getCurrentNetworkPanel().showCostEffectivenessDialog(false);

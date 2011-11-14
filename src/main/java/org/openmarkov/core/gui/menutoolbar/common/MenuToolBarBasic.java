@@ -12,21 +12,6 @@ package org.openmarkov.core.gui.menutoolbar.common;
 public interface MenuToolBarBasic {
 
 	/**
-	 * Suffix that has label string resources.
-	 */
-	String LABEL_SUFFIX = ".Label";
-
-	/**
-	 * Suffix that has mnemonic string resources.
-	 */
-	String MNEMONIC_SUFFIX = ".Mnemonic";
-
-	/**
-	 * Suffix to retrieve tooltip strings from a string resource.
-	 */
-	String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
-
-	/**
 	 * Enables or disabled an option identified by an action command.
 	 * 
 	 * @param actionCommand

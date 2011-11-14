@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -73,15 +74,9 @@ public class UncertaintyPopup extends PopupMenuBasic{
 	private JMenuItem getAssignMenuItem() {
 
 		if (assignMenuItem == null) {
-			assignMenuItem = new JMenuItem();
-			assignMenuItem.setName("Uncertainty.assign");
-			//TODO revisar si las opciones se mostrarán también en el 
-			//menú principal
-			assignMenuItem.setText(stringResource
-				.getString(MainMenu.UNCERTAINTY_ASSIGN_MENUITEM + LABEL_SUFFIX));
-			assignMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.UNCERTAINTY_ASSIGN_MENUITEM + MNEMONIC_SUFFIX ).charAt(0));
-			assignMenuItem.setActionCommand(ActionCommands.UNCERTAINTY_ASSIGN);
+            assignMenuItem = new LocalizedMenuItem (
+                                                    MainMenu.UNCERTAINTY_ASSIGN_MENUITEM,
+                                                    ActionCommands.UNCERTAINTY_ASSIGN);
 			assignMenuItem.addActionListener(listener);
 		}
 
@@ -97,13 +92,9 @@ public class UncertaintyPopup extends PopupMenuBasic{
 	private JMenuItem getEditMenuItem() {
 
 		if (editMenuItem == null) {
-			editMenuItem = new JMenuItem();
-			editMenuItem.setName("Uncertaint.Edit");
-			editMenuItem.setText(stringResource
-				.getString(MainMenu.UNCERTAINTY_EDIT_MENUITEM + LABEL_SUFFIX));
-			editMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.UNCERTAINTY_EDIT_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			editMenuItem.setActionCommand(ActionCommands.UNCERTAINTY_EDIT);
+            editMenuItem = new LocalizedMenuItem (
+                                                  MainMenu.UNCERTAINTY_EDIT_MENUITEM,
+                                                  ActionCommands.UNCERTAINTY_EDIT);
 			editMenuItem.addActionListener(listener);
 		}
 
@@ -119,13 +110,9 @@ public class UncertaintyPopup extends PopupMenuBasic{
 	private JMenuItem getRemoveMenuItem() {
 
 		if (removeMenuItem == null) {
-			removeMenuItem = new JMenuItem();
-			removeMenuItem.setName("Uncertaint.Remove");
-			removeMenuItem.setText(stringResource
-				.getString(MainMenu.UNCERTAINTY_REMOVE_MENUITEM + LABEL_SUFFIX));
-			removeMenuItem.setMnemonic(stringResource.getString(
-				MainMenu.UNCERTAINTY_REMOVE_MENUITEM + MNEMONIC_SUFFIX).charAt(0));
-			removeMenuItem.setActionCommand(ActionCommands.UNCERTAINTY_REMOVE);
+            removeMenuItem = new LocalizedMenuItem (
+                                                    MainMenu.UNCERTAINTY_REMOVE_MENUITEM,
+                                                    ActionCommands.UNCERTAINTY_REMOVE);
 			removeMenuItem.addActionListener(listener);
 		}
 
