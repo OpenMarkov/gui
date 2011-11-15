@@ -10,7 +10,6 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.gui.clipboard.ClipboardListener;
 import org.openmarkov.core.gui.edition.EditionState;
 import org.openmarkov.core.gui.edition.NetworkPanel;
 import org.openmarkov.core.gui.edition.visual.SelectionListener;
@@ -39,7 +38,7 @@ import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
  *          instead != method and add default statement for case sentences
  */
 public class MainPanelMenuAssistant extends MenuAssistant implements
-				SelectionListener, ClipboardListener,  PNUndoableEditListener {
+				SelectionListener, PNUndoableEditListener {
 
 	/**
 	 * Composed action command that contains all the save and close actions

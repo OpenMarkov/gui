@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 
-import org.openmarkov.core.gui.clipboard.ClipboardContent;
-import org.openmarkov.core.gui.clipboard.ClipboardManager;
-import org.openmarkov.core.gui.network.LinkWrapper;
+
 import org.openmarkov.core.model.network.ProbNet;
 
 
@@ -21,10 +19,6 @@ import org.openmarkov.core.model.network.ProbNet;
  */
 public class EditorPanelClipboardAssistant {
 
-	/**
-	 * Clipboard manager.
-	 */
-	private ClipboardManager clipboardManager = null;
 
 	/**
 	 * Network panel that this object assists.
@@ -40,7 +34,7 @@ public class EditorPanelClipboardAssistant {
 	 */
 	public EditorPanelClipboardAssistant(ProbNet newNetwork) {
 //TODO review the clipboard function
-		clipboardManager = ClipboardManager.getUniqueInstance();
+	
 		network = newNetwork;
 
 	}
@@ -124,7 +118,7 @@ public class EditorPanelClipboardAssistant {
 	 */
 	public boolean isThereDataStored() {
 
-		return clipboardManager.isThereDataStored();
+		return false ;
 
 	}
 }

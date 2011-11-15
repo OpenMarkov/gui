@@ -46,13 +46,13 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.MoveNodeEdit;
 import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
+import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialsDialog;
-import org.openmarkov.core.gui.dialog.option.OptionsInferenceDialog;
-import org.openmarkov.core.gui.dialog.zoom.SelectZoomDialog;
 import org.openmarkov.core.gui.edition.visual.FSVariableBox;
 import org.openmarkov.core.gui.edition.visual.SelectionListener;
 import org.openmarkov.core.gui.edition.visual.SelectionRectangle;
@@ -65,7 +65,6 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.main.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.network.LinkWrapper;
 import org.openmarkov.core.gui.util.Util;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -904,7 +903,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		Point2D.Double point =
 			new Point2D.Double(zoom.screenToPanel(e.getX()), zoom
 				.screenToPanel(e.getY()));
-		LinkWrapper link = null;
+		
 
 		if (newLink != null) {
 			newLink = null;
@@ -930,7 +929,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								stringResource
 									.getString("ErrorWindow.Title.Label"),
 								JOptionPane.ERROR_MESSAGE);
-							link = null;
+							
 						}
 						/*if (link != null) {
 							undoManager.addEditAddLink(visualNetwork

@@ -2084,7 +2084,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			toolsMenu.setName(TOOLS_MENU);
             toolsMenu.setText (MenuLocalizer.getLabel (TOOLS_MENU));
             toolsMenu.setMnemonic (MenuLocalizer.getMnemonic (TOOLS_MENU).charAt (0));			
-			ToolsMenuManager toolsMenuManager = new ToolsMenuManager ();
+			//ToolsMenuManager toolsMenuManager = new ToolsMenuManager ();
 //			for(JMenuItem menuItem : toolsMenuManager.getMenuItems())
 //			{
 //			    menuItem.addActionListener(listener);

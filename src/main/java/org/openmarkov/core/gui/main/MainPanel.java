@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.openmarkov.core.gui.clipboard.ClipboardManager;
+
 import org.openmarkov.core.gui.dialog.message.MessageWindow;
 import org.openmarkov.core.gui.edition.NetworkPanel;
 import org.openmarkov.core.gui.mdi.MDI;
@@ -173,7 +173,7 @@ public class MainPanel extends JPanel {
 		
 		add(getMdi(), BorderLayout.CENTER);
 		//add(splitPane);//, BorderLayout.CENTER);
-		ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
+		//ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
 		getMessageWindow();
 
 	}

@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
-
-import org.openmarkov.core.gui.component.ElementObservable;
 import org.openmarkov.core.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -39,7 +37,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	public NodeOtherPropsTablePanel() {
 
-		this( true, new ElementObservable() );
+		this( true );
 	}
 
 	/**
@@ -48,14 +46,12 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
 	 */
-	public NodeOtherPropsTablePanel(final boolean newNode,
-									ElementObservable notifier) {
+	public NodeOtherPropsTablePanel(final boolean newNode) {
 
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 
 		this.newNode = newNode;
-		this.notifier = notifier;
 		setName( "NodeOtherPropsTablePanel" );
 		try {
 			initialize();
@@ -222,10 +218,6 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
 
-	/**
-	 * Observable pattern - notifier
-	 */
-	private ElementObservable notifier = null;
 
 	/**
 	 * Dialog string resource.

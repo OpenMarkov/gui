@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
-import org.openmarkov.core.gui.component.ElementObservable;
 import org.openmarkov.core.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -33,38 +32,21 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 */
 	public NetworkOtherPropertiesPanel() {
 
-		this(true, new ElementObservable());
+		this(true);
 	}
 
-	/**
-	 * 
-	 * constructor with one parameter	 */
-	public NetworkOtherPropertiesPanel(final boolean newNode) {
-
-		this(newNode, new ElementObservable());
-	}
 	
-	/**
-	 * constructor 
-	 * @param notifier - Observable element pattern
-	 */
-	public NetworkOtherPropertiesPanel(ElementObservable notifier) {
-
-		this(true, notifier);
-	}
-
 	/**
 	 * This method initialises this instance.
 	 * 
 	 * @param newNetwork
 	 *            is true if the network is first created
 	 */
-	public NetworkOtherPropertiesPanel(final boolean newNetwork, ElementObservable notifier) {
+	public NetworkOtherPropertiesPanel(final boolean newNetwork) {
 
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		this.newNetwork = newNetwork;
-		this.notifier = notifier;
 		this.setName("NetworkOtherPropertiesPanel");
 		initialize();
 	}
@@ -162,10 +144,6 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 2760077067652885395L;
 
-	/**
-	 * Observable pattern - notifier
-	 */
-	private ElementObservable notifier = null;
 	
 	/**
 	 * 
