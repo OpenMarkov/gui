@@ -63,16 +63,41 @@
 			<artifactId>org.openmarkov.core.gui.helpes</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.costEffectiveness</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-
 	</dependencies>
-	
 
+     <repositories>
+        <repository>
+            <id>release</id>
+            <name>OpenMarkov</name>
+            <url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <name>OpenMarkov Snapshots</name>
+            <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>snapshots</id>
+            <name>Snapshots</name>
+            <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>  
 
 
 </project>
