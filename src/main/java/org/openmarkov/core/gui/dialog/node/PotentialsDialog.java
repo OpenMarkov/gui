@@ -83,7 +83,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 * Panel that contains the panel where probability table are. It is used to
 	 * place the fields at the top of the panel.
 	 */
-	private NodeTablePotentialPanel nodeTablePotentialPanel;
+	private TablePotentialPanel tablePotentialPanel;
 
 	/**
 	 * The node edited
@@ -237,20 +237,20 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		return jComboBoxRelationType;
 	}
 	/**
-	 * This method initializes nodeTablePotentialPanel.
+	 * This method initializes tablePotentialPanel.
 	 * 
-	 * @return a NodeTablePotentialPanel instance
+	 * @return a TablePotentialPanel instance
 	 */
-	private NodeTablePotentialPanel getNodeTablePotentialPanel() {
+	private TablePotentialPanel getTablePotentialPanel() {
 
-		if (nodeTablePotentialPanel == null) {
-			nodeTablePotentialPanel = new NodeTablePotentialPanel(probNode);
+		if (tablePotentialPanel == null) {
+			tablePotentialPanel = new TablePotentialPanel(probNode);
 			boolean newNode = true;
-			nodeTablePotentialPanel.setNewNode(newNode);
-			//nodeTablePotentialPanel.setNodeProperties(probNode);
+			tablePotentialPanel.setNewNode(newNode);
+			//tablePotentialPanel.setNodeProperties(probNode);
 		}
 		
-		return nodeTablePotentialPanel;
+		return tablePotentialPanel;
 	}
 	/**
 	 * This method initializes nodeADDPotentialPanel and treeADDBuilder.
@@ -285,7 +285,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				get(0) instanceof TreeADDPotential ){
 			return getADDPotentialPanel ();
 		}else{
-			return getNodeTablePotentialPanel ();
+			return getTablePotentialPanel ();
 		}
 	}
 	/**
@@ -308,9 +308,9 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		}
 		setVisible(true);
 		//TODO revisar el acceso a los componentes en la siguiente línea
-		if ( getPotentialPanel() instanceof NodeTablePotentialPanel ){
+		if ( getPotentialPanel() instanceof TablePotentialPanel ){
 			probNode.getProbNet().getPNESupport().removeUndoableEditListener(
-				((NodeTablePotentialPanel)getPotentialPanel ()).
+				((TablePotentialPanel)getPotentialPanel ()).
 				getNodePotentialsTablePanel().getValuesTable());
 		}
 		return selectedButton;
@@ -349,10 +349,10 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		setTitle(dialogStringResource.getString(
 				"NodePropertiesDialog.Title.Label")+ ": " + probNode.getName());
 
-		if ( getPotentialPanel() instanceof NodeTablePotentialPanel ){
-			nodeTablePotentialPanel.setNodeProperties(probNode);
+		if ( getPotentialPanel() instanceof TablePotentialPanel ){
+			tablePotentialPanel.setNodeProperties(probNode);
 			// set the NodeProbsValuesTablePanel fields
-			nodeTablePotentialPanel.setFieldsFromProperties( probNode );
+			tablePotentialPanel.setFieldsFromProperties( probNode );
 			if ( probNode.getNodeType() == NodeType.DECISION ){
 				setEnabledDecisionOptions(true);
 			}
@@ -496,8 +496,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			//optionDeselected = comboBox.getSelectedIndex();
 			previousPolicy = Policy.PROBABILISTIC;
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
-			if ( getPotentialPanel() instanceof NodeTablePotentialPanel){
-				((NodeTablePotentialPanel)getPotentialPanel()).
+			if ( getPotentialPanel() instanceof TablePotentialPanel){
+				((TablePotentialPanel)getPotentialPanel()).
 				hideElementsWhenIsDecisionNodeOrUniformPotential();
 			}
 		}*/
@@ -544,8 +544,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				}
 			}
 			
-			if ( getPotentialPanel() instanceof NodeTablePotentialPanel){
-				((NodeTablePotentialPanel)getPotentialPanel()).
+			if ( getPotentialPanel() instanceof TablePotentialPanel){
+				((TablePotentialPanel)getPotentialPanel()).
 				hideElementsWhenIsDecisionNodeOrUniformPotential();
 				getJComboBoxRelationType().setEnabled(false);
 			}
@@ -598,8 +598,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			}
 			
 		}
-		if ( getPotentialPanel() instanceof NodeTablePotentialPanel){
-			((NodeTablePotentialPanel)getPotentialPanel()).
+		if ( getPotentialPanel() instanceof TablePotentialPanel){
+			((TablePotentialPanel)getPotentialPanel()).
 			showElementsWhenOptimalDeselected();
 		}
 		
@@ -755,7 +755,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-		if (! ( getPotentialPanel() instanceof NodeTablePotentialPanel ) ){
+		if (! ( getPotentialPanel() instanceof TablePotentialPanel ) ){
 			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(probNode, 
 					treeADDBuilder.getTreePotential() );
 			try {
@@ -809,8 +809,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			Potential newPotential = ( ( SetPotentialEdit) edit ).getNewPotential();
 			if ( ( ( SetPotentialEdit) edit ).getNewPotential() instanceof 
 					TreeADDPotential){
-				if ( nodeTablePotentialPanel != null ){
-					getComponentsPanel().remove(nodeTablePotentialPanel);
+				if ( tablePotentialPanel != null ){
+					getComponentsPanel().remove(tablePotentialPanel);
 				}
 				getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
 				//TODO desactivar las opciones de decisión
@@ -823,7 +823,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				if ( !(newPotential instanceof SameAsPrevious) && !(newPotential 
 						instanceof CycleLengthShift) && !(newPotential instanceof 
 								ProductPotential) ){
-					((NodeTablePotentialPanel) getPotentialPanel()).
+					((TablePotentialPanel) getPotentialPanel()).
 					setFieldsFromProperties(probNode);
 					if (probNode.getNodeType() == NodeType.DECISION){
 						setEnabledDecisionOptions(true);
@@ -831,7 +831,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 						setEnabledDecisionOptions(false);
 					}
 				}else{ 
-					nodeTablePotentialPanel.
+					tablePotentialPanel.
 						hideElementsWhenIsDecisionNodeOrUniformPotential();
 				}
 			}

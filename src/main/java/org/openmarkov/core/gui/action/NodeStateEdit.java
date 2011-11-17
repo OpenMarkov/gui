@@ -8,7 +8,6 @@ import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.gui.network.GUIDefaultStates;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -25,7 +24,12 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  *
  */
 public class NodeStateEdit extends SimplePNEdit {
-	//Default increment between in discretized intervals
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4325259909756103849L;
+	
+	//Default increment between discretized intervals
 	private final int increment = 2;
 	/**
 	 * The new state
@@ -55,6 +59,9 @@ public class NodeStateEdit extends SimplePNEdit {
 	 * 	The last partitioned interval before the edition
 	 */
 	private PartitionedInterval currentPartitionedInterval;
+	/**
+	 * 	The last states before the edition
+	 */
 	private State[] lastStates;
 	/**
 	 * Creates a new <code>NodeStateEdit</code> to carry out the specified 

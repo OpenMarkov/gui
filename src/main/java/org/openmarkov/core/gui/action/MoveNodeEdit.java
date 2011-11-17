@@ -12,7 +12,7 @@ import org.openmarkov.core.gui.edition.visual.VisualNode;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
- * <code>MoveNodeEdi</code> is a simple edit that allow to modify the position of
+ * <code>MoveNodeEdi</code> is a simple edit that allows to modify the position of
  * a group of nodes
  *  
  * @version 1.0 21/12/10
@@ -22,33 +22,22 @@ import org.openmarkov.core.model.network.ProbNode;
 public class MoveNodeEdit extends SimplePNEdit {
 	
 	/**
-	 * 	The node
+	 * 
 	 */
-	//protected ArrayList<VisualNode> probNodes;
+	private static final long serialVersionUID = 7578733825996342882L;
 	/**
-	 * Current X position of node
+	 * The nodes last positions before the action
 	 */
-	private double currentX;
-	/**
-	 * Current Y position of node
-	 */
-	private double currentY;
-	/**
-	 * New X position of node
-	 */
-	private double newX;
-	/**
-	 * New Y position of node
-	 */
-	private double newY;
-	private double diffX;
-	private double diffY;
-	
 	private ArrayList<Point2D.Double> lastPositions = 
 		new ArrayList<Point2D.Double>();
+	/**
+	 * The new positions of the nodes to move
+	 */
 	private ArrayList<Point2D.Double> newPositions = 
 		new ArrayList<Point2D.Double>();
-
+	/**
+	 * The node's name to move
+	 */
 	private ArrayList<String> namesNode = 
 		new ArrayList<String>();
 
@@ -106,20 +95,9 @@ public class MoveNodeEdit extends SimplePNEdit {
 				e.printStackTrace();
 			}
 			i++;
-				
-		
 		}
 	}
-	/**
-	 * Gets the node 
-	 * 
-	 *  @return probNode  
-	 *  */
-	
-	public ProbNode getProbNode() {
-		return null;
-		//return probNode;
-	}
+
 	
 	
 }

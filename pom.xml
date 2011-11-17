@@ -42,17 +42,19 @@
 			<artifactId>poi</artifactId>
 			<version>3.0-FINAL</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>full</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>full</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.core.gui.helpen</artifactId>
@@ -69,21 +71,18 @@
 			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
-
-     <repositories>
+	<repositories>
         <repository>
             <id>release</id>
             <name>OpenMarkov</name>
             <url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
-            <layout>default</layout>
         </repository>
         <repository>
             <id>snapshots</id>
             <name>OpenMarkov Snapshots</name>
             <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
-            <layout>legacy</layout>
         </repository>
-    </repositories>
+    </repositories> 
     <distributionManagement>
         <repository>
             <uniqueVersion>false</uniqueVersion>

@@ -32,7 +32,7 @@ import org.openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
  * @author jlgozalo
  * @version 1.0 26 Jun 2009
  */
-public class ChangeLanguageDialog extends JDialog implements
+public class LanguageDialog extends JDialog implements
 				StringResourceLocaleChangeListener {
 
 	/**
@@ -43,7 +43,7 @@ public class ChangeLanguageDialog extends JDialog implements
 	/**
 	 * singleton
 	 */
-	private static ChangeLanguageDialog changeLanguageDialog = null;
+	private static LanguageDialog languageDialog = null;
 
 	/**
 	 * components of the dialog
@@ -68,29 +68,29 @@ public class ChangeLanguageDialog extends JDialog implements
 	private Logger logger;
 
 	/**
-	 * singleton for ChangeLanguageDialog
+	 * singleton for LanguageDialog
 	 * 
-	 * @return a ChangeLanguageDialog dialog
+	 * @return a LanguageDialog dialog
 	 */
-	public static ChangeLanguageDialog getUniqueInstance() {
+	public static LanguageDialog getUniqueInstance() {
 
 		return getUniqueInstance( null );
 	}
 
 	/**
-	 * singleton for ChangeLanguageDialog
+	 * singleton for LanguageDialog
 	 * 
 	 * @param parent
-	 *            the parent for the ChangeLanguageDialog frame
-	 * @return a ChangeLanguageDialog dialog
+	 *            the parent for the LanguageDialog frame
+	 * @return a LanguageDialog dialog
 	 */
-	public static ChangeLanguageDialog getUniqueInstance(JFrame parent) {
+	public static LanguageDialog getUniqueInstance(JFrame parent) {
 
-		if (changeLanguageDialog == null) { // singleton
-			changeLanguageDialog = new ChangeLanguageDialog( parent );
+		if (languageDialog == null) { // singleton
+			languageDialog = new LanguageDialog( parent );
 		}
-		changeLanguageDialog.setVisible( true );
-		return changeLanguageDialog;
+		languageDialog.setVisible( true );
+		return languageDialog;
 	}
 
 	/**
@@ -98,11 +98,11 @@ public class ChangeLanguageDialog extends JDialog implements
 	 * 
 	 * @param parent
 	 */
-	public ChangeLanguageDialog(JFrame parent) {
+	public LanguageDialog(JFrame parent) {
 
 		super( parent, "", true );
-		setName( "ChangeLanguageDialog" );
-		this.logger = Logger.getLogger(ChangeLanguageDialog.class);
+		setName( "LanguageDialog" );
+		this.logger = Logger.getLogger(LanguageDialog.class);
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		this.oldLanguage =
@@ -113,7 +113,7 @@ public class ChangeLanguageDialog extends JDialog implements
 			this.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
 			initialize();
 			this.setVisible( true );
-			changeLanguageDialog = this;
+			languageDialog = this;
 		} catch (Exception e) {
 			//ExceptionsHandler.handleException( e, null, true );
 			logger.fatal(e);
@@ -190,7 +190,7 @@ public class ChangeLanguageDialog extends JDialog implements
 				getJButtonAccept(), getJButtonCancel(), getJButtonApply() } );
 		getContentPane().setLayout( groupLayout );
 		setTitle( dialogStringResource
-			.getString( "ChangeLanguageDialog.Title.Text" ) );
+			.getString( "LanguageDialog.Title.Text" ) );
 		setModal( true );
 		setIconImage( OpenMarkovLogoIcon.getUniqueInstance()
 			.getOpenMarkovLogoIconImage16() );
@@ -207,10 +207,10 @@ public class ChangeLanguageDialog extends JDialog implements
 		if (jLabelLanguageChoice == null) {
 			jLabelLanguageChoice = new JLabel();
 			jLabelLanguageChoice
-				.setName( "ChangeLanguageDialog.jLabelLanguageChoice" );
+				.setName( "LanguageDialog.jLabelLanguageChoice" );
 			jLabelLanguageChoice.setText( "a Label" );
 			jLabelLanguageChoice.setText( dialogStringResource
-				.getString( "ChangeLanguageDialog.jLabelLanguageChoice.Text" ) );
+				.getString( "LanguageDialog.jLabelLanguageChoice.Text" ) );
 		}
 		return jLabelLanguageChoice;
 	}
@@ -223,7 +223,7 @@ public class ChangeLanguageDialog extends JDialog implements
 		if (jComboBoxLanguages == null) {
 			jComboBoxLanguages = new JComboBox( Languages.getListStrings() );
 			jComboBoxLanguages
-				.setName( "ChangeLanguageDialog.jComboBoxLanguages" );
+				.setName( "LanguageDialog.jComboBoxLanguages" );
 			jComboBoxLanguages.setEditable( false );
 			// jComboBoxLanguages.setMaximumRowCount(2); // two languages by now
 			// jComboBoxLanguages.setSelectedIndex(findLanguageIndex(this.oldLanguage));
@@ -289,10 +289,10 @@ public class ChangeLanguageDialog extends JDialog implements
 						.getParent().setVisible( false );
 				}
 			} );
-			jButtonAccept.setName( "ChangeLanguageDialog.jButtonAccept" );
+			jButtonAccept.setName( "LanguageDialog.jButtonAccept" );
 			jButtonAccept.setText( "OK Button" );
 			jButtonAccept.setText( dialogStringResource
-				.getString( "ChangeLanguageDialog.jButtonAccept.Text" ) );
+				.getString( "LanguageDialog.jButtonAccept.Text" ) );
 		}
 		return jButtonAccept;
 	}
@@ -319,10 +319,10 @@ public class ChangeLanguageDialog extends JDialog implements
 						.getParent().setVisible( false );
 				}
 			} );
-			jButtonCancel.setName( "ChangeLanguageDialog.jButtonCancel" );
+			jButtonCancel.setName( "LanguageDialog.jButtonCancel" );
 			jButtonCancel.setText( "Cancel Button" );
 			jButtonCancel.setText( dialogStringResource
-				.getString( "ChangeLanguageDialog.jButtonCancel.Text" ) );
+				.getString( "LanguageDialog.jButtonCancel.Text" ) );
 		}
 		return jButtonCancel;
 	}
@@ -352,10 +352,10 @@ public class ChangeLanguageDialog extends JDialog implements
 					}
 				}
 			} );
-			jButtonApply.setName( "ChangeLanguageDialog.jButtonApply" );
+			jButtonApply.setName( "LanguageDialog.jButtonApply" );
 			jButtonApply.setText( "Apply Button" );
 			jButtonApply.setText( dialogStringResource
-				.getString( "ChangeLanguageDialog.jButtonApply.Text" ) );
+				.getString( "LanguageDialog.jButtonApply.Text" ) );
 		}
 		return jButtonApply;
 	}
@@ -371,11 +371,11 @@ public class ChangeLanguageDialog extends JDialog implements
 			jTextAreaInstructions.setWrapStyleWord( true );
 			jTextAreaInstructions.setEditable( false );
 			jTextAreaInstructions
-				.setName( "ChangeLanguageDialog.jTextAreaInstructions" );
+				.setName( "LanguageDialog.jTextAreaInstructions" );
 			jTextAreaInstructions.setText( "jTextAreaInstructions" );
 			jTextAreaInstructions
 				.setText( dialogStringResource
-					.getString( "ChangeLanguageDialog.jTextAreaInstructions.Text" ) );
+					.getString( "LanguageDialog.jTextAreaInstructions.Text" ) );
 		}
 		return jTextAreaInstructions;
 	}

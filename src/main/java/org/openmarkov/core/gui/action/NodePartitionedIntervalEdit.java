@@ -5,12 +5,11 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.gui.network.GUIDefaultStates;
-import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
- * <code>NodePartitionedIntervalEdit</code> is a simple edit that allow modify
+ * <code>NodePartitionedIntervalEdit</code> is a simple edit that allows to modify
  * the node partitioned interval. 
  *    
  * @version 1.0 21/12/10

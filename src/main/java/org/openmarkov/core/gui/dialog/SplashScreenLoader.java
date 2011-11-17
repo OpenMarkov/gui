@@ -20,7 +20,7 @@ import org.openmarkov.core.gui.util.Util;
  * @author jlgozalo
  * @version 1.0 16/11/2008
  */
-public class SplashScreenOpenMarkov {
+public class SplashScreenLoader {
 
 	private SplashScreen splash;
 
@@ -33,7 +33,7 @@ public class SplashScreenOpenMarkov {
 	 * start the splash screen, do work and destroy
 	 * @wbp.parser.entryPoint
 	 */
-	public SplashScreenOpenMarkov() {
+	public SplashScreenLoader() {
 
 		/*
 		 * splashScreenInit(); simulateDoingWork(); splashScreenDestroy();

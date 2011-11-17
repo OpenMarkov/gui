@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.action.SimplePNEdit;
 
 /**
- * <code>NodePotentialEdit</code> is a simple edit that allow modify
+ * <code>NodePotentialEdit</code> is a simple edit that allows to modify
  * the node's <code>Potential</code> values.
  * It is implemented for TablePotential Only
  *    
@@ -153,7 +153,6 @@ public class NodePotentialEdit extends SimplePNEdit {
 		
 	}
 
-	// Methods
 	@Override
 	/** @throws exception <code>Exception</code> */
 	public void doEdit() throws DoEditException {
@@ -320,9 +319,6 @@ public class NodePotentialEdit extends SimplePNEdit {
 	public int getColumnPosition() {
 		return col;
 	}
-	private int getRelativePosition(int position){
- 
-		return 0;
-	}
+	
     
 }

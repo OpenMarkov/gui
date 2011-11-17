@@ -23,7 +23,7 @@ import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.AboutBox;
-import org.openmarkov.core.gui.dialog.ChangeLanguageDialog;
+import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesEditorDialog;
 import org.openmarkov.core.gui.edition.EditionState;
 import org.openmarkov.core.gui.edition.NetworkPanel;
@@ -291,9 +291,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * 
 	 * @return a change language dialog to allow language change
 	 */
-	private ChangeLanguageDialog showLanguageChangeDialog() {
+	private LanguageDialog showLanguageChangeDialog() {
 
-		return ChangeLanguageDialog
+		return LanguageDialog
 			.getUniqueInstance( mainPanel.getMainFrame() );
 
 	}
@@ -621,7 +621,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private void createNewNetwork() {
 
 		ProbNet probNet=null;
-		PartitionedInterval partitionedInterval = null;
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance ());
 		probNet.setName(new String (stringResource.
 			getString( "InternalFrame.Title.Label" )+

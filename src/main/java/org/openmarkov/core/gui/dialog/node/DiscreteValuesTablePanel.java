@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.ProbNode;
  * @author jlgozalo
  * @version 1.0 jlgozalo
  */
-public class NodeDiscreteValuesTablePanel extends JPanel implements
+public class DiscreteValuesTablePanel extends JPanel implements
 				ItemListener {
 
 	/**
@@ -97,7 +97,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public NodeDiscreteValuesTablePanel() {
+	public DiscreteValuesTablePanel() {
 
         this(true);//,new ElementObservable());
 
@@ -106,7 +106,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 	/**
 	 * constructor 
 	 */
-	/*public NodeDiscreteValuesTablePanel(ElementObservable notifier) {
+	/*public DiscreteValuesTablePanel(ElementObservable notifier) {
 
         this(true,notifier);
 
@@ -117,13 +117,13 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
 	 */
-	public NodeDiscreteValuesTablePanel(final boolean newNode){//, ElementObservable notifier) {
+	public DiscreteValuesTablePanel(final boolean newNode){//, ElementObservable notifier) {
 
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		messageStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleMessages();
-		setName("NodeDiscreteValuesTablePanel");
+		setName("DiscreteValuesTablePanel");
 		this.newNode = newNode;
 		//this.notifier = notifier;
 		try {
@@ -252,7 +252,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 			jLabelStatesValues.setText("a Label");
 			jLabelStatesValues
 				.setText(dialogStringResource
-					.getString("NodeDiscreteValuesTablePanel.jLabelStatesValues.Text"));
+					.getString("DiscreteValuesTablePanel.jLabelStatesValues.Text"));
 		}
 		return jLabelStatesValues;
 	}
@@ -268,9 +268,9 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 			String[] columnNames =
 				{
 					dialogStringResource
-						.getString("NodeDiscreteValuesTablePanel.ValuesTable.Columns.Name.Text"),
+						.getString("DiscreteValuesTablePanel.ValuesTable.Columns.Name.Text"),
 					dialogStringResource
-						.getString("NodeDiscreteValuesTablePanel.ValuesTable.Columns.Value.Text") 
+						.getString("DiscreteValuesTablePanel.ValuesTable.Columns.Value.Text") 
 					};
 
 			prefixedKeyTablePanelNodeStatesValues =
@@ -278,7 +278,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 					columnNames,
 					new Object[][] {},
 					dialogStringResource
-						.getString("NodeDiscreteValuesTablePanel.ValuesTable.Columns.Id.Prefix"),
+						.getString("DiscreteValuesTablePanel.ValuesTable.Columns.Id.Prefix"),
 					true);//, notifier);
 		}
 		prefixedKeyTablePanelNodeStatesValues.setBorder(new EmptyBorder(0,0,0,0));
@@ -310,7 +310,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 			jLabelValuesPanel.setText("a Label");
 			jLabelValuesPanel
 				.setText(dialogStringResource
-					.getString("NodeDiscreteValuesTablePanel.jLabelValuesPanel.Text"));
+					.getString("DiscreteValuesTablePanel.jLabelValuesPanel.Text"));
 		}
 		return jLabelValuesPanel;
 	}
@@ -334,7 +334,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 				.getFont());
 			jTextAreaLabelNodeValuesComment.setText("an Extended Label");
 			jTextAreaLabelNodeValuesComment.setText(dialogStringResource
-				.getString("NodeDiscreteValuesTablePanel.jTextAreaLabelNodeValuesComment.Text"));
+				.getString("DiscreteValuesTablePanel.jTextAreaLabelNodeValuesComment.Text"));
 		}
 		return jTextAreaLabelNodeValuesComment;
 	}
@@ -351,7 +351,7 @@ public class NodeDiscreteValuesTablePanel extends JPanel implements
 			commentHTMLScrollPaneNodeValuesComment =
 				new CommentHTMLScrollPane();
 			commentHTMLScrollPaneNodeValuesComment
-				.setName("NodeDiscreteValuesTablePanel.commentHTMLScrollPaneNodeValuesComment");
+				.setName("DiscreteValuesTablePanel.commentHTMLScrollPaneNodeValuesComment");
 		}
 		return commentHTMLScrollPaneNodeValuesComment;
 	}*/

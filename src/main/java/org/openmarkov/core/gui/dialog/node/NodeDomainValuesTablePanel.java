@@ -425,7 +425,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				// node comment title
 				MessageFormat messageForm =
 					new MessageFormat(dialogStringResource.getString(
-							"NodeDiscreteValuesTablePanel." +
+							"DiscreteValuesTablePanel." +
 							"commentHTMLScrollPaneNodeValuesComment.Text"));
 				String shortNodeName = properties.getName();
 				Object[] labelArgs = new Object[] { shortNodeName };
@@ -560,17 +560,17 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			String[] columnNames =
 				{
 					dialogStringResource.getString(
-							"NodeDiscreteValuesTablePanel.ValuesTable." +
+							"DiscreteValuesTablePanel.ValuesTable." +
 							"Columns.Name.Text"),
 					dialogStringResource.getString(
-							"NodeDiscreteValuesTablePanel.ValuesTable." +
+							"DiscreteValuesTablePanel.ValuesTable." +
 							"Columns.Value.Text") 
 					};
 
 			prefixedKeyTablePanelNodeStatesValues =
 				new PrefixedKeyTablePanel(columnNames, new Object[][] {},
 					dialogStringResource.getString(
-							"NodeDiscreteValuesTablePanel.ValuesTable." +
+							"DiscreteValuesTablePanel.ValuesTable." +
 							"Columns.Id.Prefix"),true, probNode);
 		}
 		prefixedKeyTablePanelNodeStatesValues.setBorder(new EmptyBorder(0,0,0,0));

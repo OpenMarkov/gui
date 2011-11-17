@@ -38,10 +38,7 @@ import org.openmarkov.core.gui.menutoolbar.toolbar.StandardToolBar;
  */
 public class MainPanel extends JPanel {
 
-	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 3478438880321789440L;
+	
 
 	/**
 	 * Object that manages the MultiDocument Interface.

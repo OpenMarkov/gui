@@ -64,7 +64,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 			if (varType != null) {
 				if (varType.equals(VariableType.FINITE_STATES)|| varType.equals(VariableType.DISCRETIZED)) {
 					//changed by mpalacios
-					//result = ((NodeDiscreteValuesTablePanel) getNodeDiscreteValuesTablePanel())
+					//result = ((DiscreteValuesTablePanel) getNodeDiscreteValuesTablePanel())
 						//			.checkStates();
 					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel())
 					.checkStates();

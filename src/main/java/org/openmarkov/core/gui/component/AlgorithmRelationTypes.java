@@ -62,8 +62,6 @@ public class AlgorithmRelationTypes {
 	 */
 	public static String RELATION_TYPE_SUM = "Sum";
 	
-	
-	
 	/**
 	 * String resource.
 	 */

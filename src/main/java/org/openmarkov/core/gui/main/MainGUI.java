@@ -14,7 +14,7 @@ import javax.swing.WindowConstants;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferencesKeys;
-import org.openmarkov.core.gui.dialog.SplashScreenOpenMarkov;
+import org.openmarkov.core.gui.dialog.SplashScreenLoader;
 import org.openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 
 
@@ -71,7 +71,7 @@ public class MainGUI {
 		/**
 		 * Splash Screen panel
 		 */
-		final SplashScreenOpenMarkov splash = new SplashScreenOpenMarkov();
+		final SplashScreenLoader splash = new SplashScreenLoader();
 
 		configureUI();
 		splash.splashScreenInit();

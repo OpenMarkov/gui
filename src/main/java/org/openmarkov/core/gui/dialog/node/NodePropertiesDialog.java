@@ -34,6 +34,11 @@ public abstract class NodePropertiesDialog extends
 				OkCancelApplyUndoRedoHorizontalDialog implements ChangeListener{
 
 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+/**
 	 * Constant that defines the height of the tables that are shown into the
 	 * dialog box.
 	 */
@@ -58,7 +63,7 @@ public abstract class NodePropertiesDialog extends
 	private NodeDomainValuesTablePanel nodeDomainValuesTablePanel =
 		null;
 
-	private NodeDiscreteValuesTablePanel nodeDiscreteValuesTablePanel =
+	private DiscreteValuesTablePanel discreteValuesTablePanel =
 		null;
 	/**
 	 * Panel that contains the panel where parents fields are. It is used to
@@ -326,23 +331,23 @@ public abstract class NodePropertiesDialog extends
 	}
 
 	/**
-	 * This method initialises nodeDiscreteValuesTablePanel.
+	 * This method initialises discreteValuesTablePanel.
 	 * 
 	 * @return a new node discrete values table panel
 	 */
 	protected JPanel getNodeDiscreteValuesTablePanel() {
 
-		if (nodeDiscreteValuesTablePanel == null) {
-			nodeDiscreteValuesTablePanel = new NodeDiscreteValuesTablePanel();
-			nodeDiscreteValuesTablePanel
-				.setName("nodeDiscreteValuesTablePanel");
-			nodeDiscreteValuesTablePanel.setNewNode(newNode);
-			nodeDiscreteValuesTablePanel.setNodeProperties(probNode);
+		if (discreteValuesTablePanel == null) {
+			discreteValuesTablePanel = new DiscreteValuesTablePanel();
+			discreteValuesTablePanel
+				.setName("discreteValuesTablePanel");
+			discreteValuesTablePanel.setNewNode(newNode);
+			discreteValuesTablePanel.setNodeProperties(probNode);
 			
 
 		}
 
-		return nodeDiscreteValuesTablePanel;
+		return discreteValuesTablePanel;
 	}
 	
 	/**

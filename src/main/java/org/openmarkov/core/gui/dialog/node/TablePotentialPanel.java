@@ -37,7 +37,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
  * @author jlgozalo
  * @version 1.0 jlgozalo
  */
-public class NodeTablePotentialPanel extends JPanel implements 
+public class TablePotentialPanel extends JPanel implements 
 	PNUndoableEditListener{
 
 	/**
@@ -113,7 +113,7 @@ public class NodeTablePotentialPanel extends JPanel implements
 	/**
 	 * object to manage the ItemChange events of the panel
 	 */
-	private NodeProbsValuesTablePanelItemListenerAssistant listener = null;
+	private TablePotentialPanelListenerAssistant listener = null;
 
 	private ProbNode probNode;
 
@@ -122,7 +122,7 @@ public class NodeTablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public NodeTablePotentialPanel() {
+	public TablePotentialPanel() {
 
 		this( true); //new ElementObservable() );
 
@@ -131,7 +131,7 @@ public class NodeTablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public NodeTablePotentialPanel( ProbNode probNode) {
+	public TablePotentialPanel( ProbNode probNode) {
 
 		this( true);//, notifier );
 		this.probNode = probNode;
@@ -151,13 +151,13 @@ public class NodeTablePotentialPanel extends JPanel implements
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
 	 */
-	public NodeTablePotentialPanel(final boolean newNode){
+	public TablePotentialPanel(final boolean newNode){
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
 		this.newNode = newNode;
 		//this.listener =
-		//	new NodeProbsValuesTablePanelItemListenerAssistant( this );
+		//	new TablePotentialPanelListenerAssistant( this );
 	
 
 	}
