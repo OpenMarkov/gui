@@ -2,7 +2,7 @@ package org.openmarkov.core.gui;
 
 import org.openmarkov.core.gui.configuration.ComponentConfiguration;
 import org.openmarkov.core.gui.configuration.OpenMarkovConfiguration;
-import org.openmarkov.core.gui.main.MainGUI;
+import org.openmarkov.core.gui.window.MainGUI;
 
 /** This class stores a set of adittionalProperties and the <code>main</code> method.<p>
  * If there is some other main method in other class is only for 

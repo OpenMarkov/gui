@@ -8,7 +8,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 import org.openmarkov.core.gui.OpenMarkov;
-import org.openmarkov.core.gui.util.Util;
+import org.openmarkov.core.gui.network.Util;
 
 
 

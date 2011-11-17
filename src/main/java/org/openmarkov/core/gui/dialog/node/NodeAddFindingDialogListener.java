@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.openmarkov.core.gui.edition.EditorPanel;
-import org.openmarkov.core.gui.edition.visual.FSVariableBox;
-import org.openmarkov.core.gui.edition.visual.InnerBox;
-import org.openmarkov.core.gui.edition.visual.VisualNode;
-import org.openmarkov.core.gui.edition.visual.VisualState;
+import org.openmarkov.core.gui.graphic.FSVariableBox;
+import org.openmarkov.core.gui.graphic.InnerBox;
+import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.graphic.VisualState;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 

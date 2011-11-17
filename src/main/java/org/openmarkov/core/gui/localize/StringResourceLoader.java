@@ -22,10 +22,10 @@ import javax.swing.JTextField;
 
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.core.gui.dialog.message.NonEditableTextArea;
-import org.openmarkov.core.gui.mdi.MDIMenu;
 import org.openmarkov.core.gui.menutoolbar.toolbar.ZoomComboBox;
-import org.openmarkov.core.gui.util.Util;
+import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.window.mdi.MDIMenu;
+import org.openmarkov.core.gui.window.message.NonEditableTextArea;
 
 
 

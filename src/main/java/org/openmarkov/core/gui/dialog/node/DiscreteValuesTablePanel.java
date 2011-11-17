@@ -204,10 +204,6 @@ public class DiscreteValuesTablePanel extends JPanel implements
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-						//.addGroup(groupLayout.createSequentialGroup()
-							//.addComponent(getJTextAreaLabelNodeValuesComment(), GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
-							//.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							//.addComponent(getCommentHTMLScrollPaneNodeValuesComment(), GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
 								.addComponent(getJLabelStatesValues(), GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -218,7 +214,7 @@ public class DiscreteValuesTablePanel extends JPanel implements
 									.addComponent(getJComboBoxStatesValues(), 0, 431, Short.MAX_VALUE)
 									.addGap(179, 179, 179))
 								.addComponent(getNodeValuesTablePanel(), GroupLayout.PREFERRED_SIZE, 610, Short.MAX_VALUE))))
-					/*.addContainerGap() changed by mpalacios, added ) */));
+					));
 		
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -232,9 +228,6 @@ public class DiscreteValuesTablePanel extends JPanel implements
 						.addComponent(getJLabelValuesPanel())
 						.addComponent(getNodeValuesTablePanel(), GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					//.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						//.addComponent(getCommentHTMLScrollPaneNodeValuesComment(), GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-						//.addComponent(getJTextAreaLabelNodeValuesComment(), GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(26, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
@@ -338,23 +331,6 @@ public class DiscreteValuesTablePanel extends JPanel implements
 		}
 		return jTextAreaLabelNodeValuesComment;
 	}
-
-	/**
-	 * This method initialises commentHTMLScrollPaneNodeValuesComment
-	 * 
-	 * @return a new comment HTML scroll pane.
-	 */
-/*	Changed by mpalacios
- * protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeValuesComment() {
-
-		if (commentHTMLScrollPaneNodeValuesComment == null) {
-			commentHTMLScrollPaneNodeValuesComment =
-				new CommentHTMLScrollPane();
-			commentHTMLScrollPaneNodeValuesComment
-				.setName("DiscreteValuesTablePanel.commentHTMLScrollPaneNodeValuesComment");
-		}
-		return commentHTMLScrollPaneNodeValuesComment;
-	}*/
 
 	/**
 	 * Invoked when an item has been selected.

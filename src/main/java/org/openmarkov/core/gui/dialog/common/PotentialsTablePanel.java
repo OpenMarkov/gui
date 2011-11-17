@@ -39,7 +39,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
-import org.openmarkov.core.gui.util.Util;
+import org.openmarkov.core.gui.network.Util;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;

@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
 
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
-import org.openmarkov.core.gui.help.HelpViewer;
+import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.LocalizedCheckBoxMenuItem;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
@@ -890,7 +890,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			fileMenu = new JMenu();
 			fileMenu.setName(FILE_MENU);
 			fileMenu
-				.setText(MenuLocalizer.getString(FILE_MENU));
+				.setText(MenuLocalizer.getLabel(FILE_MENU));
 			fileMenu.setMnemonic(MenuLocalizer.getMnemonic(FILE_MENU).charAt(0));
 			getBasicFileMenu();
 			getLastOpenFiles();

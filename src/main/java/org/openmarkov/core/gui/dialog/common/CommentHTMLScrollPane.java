@@ -13,9 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.StyledEditorKit;
 
+import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLDocument;
-import org.openmarkov.core.gui.dialog.network.CommentListener;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 

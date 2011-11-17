@@ -7,8 +7,8 @@ import javax.help.BadIDException;
 import javax.swing.JTabbedPane;
 
 
+import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.gui.help.HelpViewer;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.network.PropertyNames;

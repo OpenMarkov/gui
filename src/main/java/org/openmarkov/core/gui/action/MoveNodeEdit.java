@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.gui.edition.visual.VisualNode;
+import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**

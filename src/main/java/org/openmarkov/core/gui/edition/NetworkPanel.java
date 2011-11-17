@@ -17,12 +17,12 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.gui.edition.visual.SelectionListener;
-import org.openmarkov.core.gui.edition.visual.VisualNode;
-import org.openmarkov.core.gui.main.MainPanel;
-import org.openmarkov.core.gui.main.MainPanelMenuAssistant;
-import org.openmarkov.core.gui.mdi.FrameContentPanel;
+import org.openmarkov.core.gui.graphic.SelectionListener;
+import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.window.MainPanel;
+import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
+import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
 

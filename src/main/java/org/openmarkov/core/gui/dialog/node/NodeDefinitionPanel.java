@@ -32,12 +32,12 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.gui.dialog.network.CommentListener;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.network.Purpose;
-import org.openmarkov.core.gui.util.Util;
+import org.openmarkov.core.gui.network.Util;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
 

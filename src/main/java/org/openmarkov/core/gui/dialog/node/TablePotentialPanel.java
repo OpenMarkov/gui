@@ -113,7 +113,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * object to manage the ItemChange events of the panel
 	 */
-	private TablePotentialPanelListenerAssistant listener = null;
+	//private TablePotentialPanelListenerAssistant listener = null;
 
 	private ProbNode probNode;
 
@@ -298,7 +298,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonTPC.setText( "New JRadioButton" );
 			jRadioButtonTPC.setText( dialogStringResource
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
-			jRadioButtonTPC.addItemListener( this.listener );
+		//	jRadioButtonTPC.addItemListener( this.listener );
 			jRadioButtonTPC.setEnabled( false );
 		}
 		return jRadioButtonTPC;
@@ -317,7 +317,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonCanonical
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
-			jRadioButtonCanonical.addItemListener( this.listener );
+	//		jRadioButtonCanonical.addItemListener( this.listener );
 			jRadioButtonCanonical.setEnabled( false );
 		}
 		return jRadioButtonCanonical;
@@ -366,7 +366,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonNeto
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonNeto.Text" ) );
-			jRadioButtonNeto.addItemListener( this.listener );
+			//jRadioButtonNeto.addItemListener( this.listener );
 			jRadioButtonNeto.setEnabled( false );
 		}
 		return jRadioButtonNeto;
@@ -385,7 +385,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonCompound
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCompound.Text" ) );
-			jRadioButtonCompound.addItemListener( this.listener );
+			//jRadioButtonCompound.addItemListener( this.listener );
 			jRadioButtonCompound.setEnabled( false );
 		}
 		return jRadioButtonCompound;
@@ -435,7 +435,7 @@ public class TablePotentialPanel extends JPanel implements
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonProbabilities." +
 						"Text" ) );
-			jRadioButtonProbabilities.addItemListener( this.listener );
+			//jRadioButtonProbabilities.addItemListener( this.listener );
 			jRadioButtonProbabilities.setEnabled( false );
 		}
 		return jRadioButtonProbabilities;
@@ -454,7 +454,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonValues
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonValues.Text" ) );
-			jRadioButtonValues.addItemListener( this.listener );
+			//jRadioButtonValues.addItemListener( this.listener );
 			jRadioButtonValues.setEnabled( false );
 		}
 		return jRadioButtonValues;
@@ -503,7 +503,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonAll.setBounds( 1, 1, 170, 24 );
 			jRadioButtonAll.setText( dialogStringResource
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonAll.Text" ) );
-			jRadioButtonAll.addItemListener( this.listener );
+		//	jRadioButtonAll.addItemListener( this.listener );
 			jRadioButtonAll.setEnabled( false );
 			jRadioButtonAll.setSelected( true );
 		}
@@ -523,7 +523,7 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonIndependant
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonIndependant.Text" ) );
-			jRadioButtonIndependant.addItemListener( this.listener );
+			//jRadioButtonIndependant.addItemListener( this.listener );
 			jRadioButtonIndependant.setEnabled( true );
 		}
 		return jRadioButtonIndependant;
