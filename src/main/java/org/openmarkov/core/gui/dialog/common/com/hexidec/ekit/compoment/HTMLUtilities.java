@@ -36,6 +36,9 @@ public class HTMLUtilities {
 	EkitCore parent;
 	Hashtable tags = new Hashtable();
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public HTMLUtilities(EkitCore newParent) {
 
 		parent = newParent;

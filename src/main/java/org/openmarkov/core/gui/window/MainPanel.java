@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 
-import org.openmarkov.core.gui.edition.NetworkPanel;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
@@ -20,6 +19,7 @@ import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.StandardToolBar;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.MDI;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 

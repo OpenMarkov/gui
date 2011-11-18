@@ -116,6 +116,9 @@ public class PropertiesDialog extends JDialog {
 		this.pack();
 	}
 
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public PropertiesDialog(Frame parent, String[] fields, String[] types,
 							String title, boolean bModal) {
 

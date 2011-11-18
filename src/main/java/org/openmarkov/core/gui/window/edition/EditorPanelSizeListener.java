@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.edition;
+package org.openmarkov.core.gui.window.edition;
 
 
 /**

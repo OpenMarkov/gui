@@ -14,11 +14,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import org.openmarkov.core.gui.edition.EditorPanel;
 import org.openmarkov.core.gui.graphic.FSVariableBox;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
 
 
 /**

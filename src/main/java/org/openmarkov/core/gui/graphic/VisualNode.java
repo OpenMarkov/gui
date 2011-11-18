@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 
 
-import org.openmarkov.core.gui.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.ProbNode;
 
 

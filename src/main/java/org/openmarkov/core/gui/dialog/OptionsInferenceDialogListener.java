@@ -3,11 +3,11 @@ package org.openmarkov.core.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.openmarkov.core.gui.edition.EditorPanel;
-import org.openmarkov.core.gui.edition.NetworkPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.toolbar.InferenceToolBar;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.edition.zoom;
+package org.openmarkov.core.gui.window.edition;
 
 
 /**

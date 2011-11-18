@@ -8,12 +8,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 
-import org.openmarkov.core.gui.edition.NetworkPanel;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 
 
 

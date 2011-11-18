@@ -88,13 +88,13 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyUp() )) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				// set table behaviour to be UP
-				getPanel().getNodeDiscretizedValuesTablePanel().setUpMonotony( true );
+				getPanel().getNodeDiscretizedStatesTablePanel().setUpMonotony( true );
 			}
 		}
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyDown() )) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				// set table behaviour to be DOWN
-				getPanel().getNodeDiscretizedValuesTablePanel().setUpMonotony( false );
+				getPanel().getNodeDiscretizedStatesTablePanel().setUpMonotony( false );
 			}
 		}
 		subItemStateChanged( e );

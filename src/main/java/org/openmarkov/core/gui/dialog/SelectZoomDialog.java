@@ -18,9 +18,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.gui.edition.zoom.Zoom;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.window.edition.Zoom;
 
 
 

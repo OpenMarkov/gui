@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.edition;
+package org.openmarkov.core.gui.window.edition;
 
 
 import java.awt.Dimension;
@@ -53,7 +53,6 @@ import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialsDialog;
-import org.openmarkov.core.gui.edition.zoom.Zoom;
 import org.openmarkov.core.gui.graphic.FSVariableBox;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
@@ -278,7 +277,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		//undoManager = new UndoManagerWrapper();
 		
 		
-		//changed by mpalacios Clipboard disable
+		//Clipboard disabled
 		//clipboardAssistant =
 			//new EditorPanelClipboardAssistant(visualNetwork.getNetwork());
 
