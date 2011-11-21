@@ -20,28 +20,10 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
 
 /** checks that the name field is filled and there isn't any node with the same 
  * name. */
-public class ValidName implements PNConstraint {
+public class ValidName extends PNConstraint {
 
 	// Attributes.
-	private static ValidName constraint = null;
 	private String message;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private ValidName() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>DistinctVariableNames</code> */
-	public static PNConstraint getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new ValidName();
-		}
-		return constraint;
-	}
-	
 
 	public boolean checkEvent(UndoableEditEvent event) 
 	throws NonProjectablePotentialException, WrongCriterionException {
@@ -91,19 +73,6 @@ public class ValidName implements PNConstraint {
 		}*/
 		return true;
 	}
-
-	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NonProjectablePotentialException, WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(message);
-		}
-	}
-
-	
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-	}
 	
 	/**
 	 * This method checks if exists the specified node.
@@ -122,15 +91,6 @@ public class ValidName implements PNConstraint {
 		}
 	}
 
-
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	
-	public void undoEditHappened(PNUndoableEditEvent event) {
-	}
-
 	
 	public boolean checkProbNet(ProbNet probNet) {
 		ArrayList<Variable> variables = probNet.getVariables();
@@ -142,6 +102,12 @@ public class ValidName implements PNConstraint {
 		}
 		return true;
 	}
+
+    @Override
+    protected String getMessage ()
+    {
+        return message;
+    }
 
 
 	

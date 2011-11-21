@@ -4,12 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.event.UndoableEditEvent;
 
-
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -24,28 +20,10 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
 
 /** Checks that the state field is filled and there isn't any node
  * with the same name. */
-public class ValidState implements PNConstraint, PropertyNames {
+public class ValidState extends PNConstraint implements PropertyNames {
 
 	// Attributes.
-	private static ValidState constraint = null;
 	private String message;
-	
-	// Constructor
-	/** This constructor is private to not allow anyone to invoke it. */
-	private ValidState() {
-	}
-	
-	// Methods
-	/** Singleton pattern.
-	 * @return The unique instance. 
-	 *  <code>DistinctVariableNames</code> */
-	public static PNConstraint getUniqueInstance() {
-		if (constraint == null) {
-			constraint = new ValidState();
-		}
-		return constraint;
-	}
-	
 	
 	public boolean checkEvent(UndoableEditEvent event) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
@@ -98,20 +76,6 @@ public class ValidState implements PNConstraint, PropertyNames {
 		
 	}
 
-	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
-	throws ConstraintViolationException, CanNotDoEditException, 
-	NotEnoughMemoryException, NonProjectablePotentialException, 
-	WrongCriterionException {
-		if (!checkEvent(event)) {
-			throw new ConstraintViolationException(message);
-		}
-	}
-
-	
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-	}
-	
 	/**
 	 * This method checks if exists the state specified.
 	 * 
@@ -141,13 +105,11 @@ public class ValidState implements PNConstraint, PropertyNames {
 		return true;
 	}
 
-	public String toString() {
-		return this.getClass().getName();
-	}
-
-	
-	public void undoEditHappened(PNUndoableEditEvent event) {
-	}
+    @Override
+    protected String getMessage ()
+    {
+        return message;
+    }
 
 	
 }

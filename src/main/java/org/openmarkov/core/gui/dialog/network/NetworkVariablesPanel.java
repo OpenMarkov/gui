@@ -313,7 +313,7 @@ public class NetworkVariablesPanel extends JPanel implements ItemListener {
 				
 					variableTypeCE =
 					new VariableTypeConstraintEdit(probNet,
-							OnlyDiscreteVariables.getUniqueInstance());
+							new OnlyDiscreteVariables());
 					try {
 						probNet.getPNESupport().announceEdit(variableTypeCE);
 						probNet.getPNESupport().doEdit(variableTypeCE);
@@ -344,7 +344,7 @@ public class NetworkVariablesPanel extends JPanel implements ItemListener {
 				
 					variableTypeCE =
 					new VariableTypeConstraintEdit(probNet,
-							OnlyContinuousVariables.getUniqueInstance());
+							new OnlyContinuousVariables());
 					try {
 						probNet.getPNESupport().announceEdit(variableTypeCE);
 						probNet.getPNESupport().doEdit(variableTypeCE);
