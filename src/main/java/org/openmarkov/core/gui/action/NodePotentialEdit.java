@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
@@ -143,7 +143,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 		case CHANCE:
 		case DECISION:
 		case UTILITY:
-			this.potentialSelected = Util.toPositionOnPotentialReordered(row, col, 
+			this.potentialSelected = Utilities.toPositionOnPotentialReordered(row, col, 
 					probNode.getVariable().getNumStates(), probNode.getNode().
 					getNumParents());
 			break;
@@ -299,7 +299,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 */
 	public int getRowPosition(int position) {
 		
-		return Util.toPositionOnJtable(position, col, probNode.getVariable().
+		return Utilities.toPositionOnJtable(position, col, probNode.getVariable().
 				getNumStates(), probNode.getNode().getNumParents());
 			
 		

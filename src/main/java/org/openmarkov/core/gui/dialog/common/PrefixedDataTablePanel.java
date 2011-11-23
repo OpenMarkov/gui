@@ -13,7 +13,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -135,7 +135,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		newIndex = valuesTable.getRowCount();
 		if (absentData == null){
 			JOptionPane.showMessageDialog(
-					Util.getOwner(this), "Ningún nodo disponible",
+					Utilities.getOwner(this), "Ningún nodo disponible",
 					stringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.INFORMATION_MESSAGE);
 		}else{
@@ -157,7 +157,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 								JOptionPane.showMessageDialog(
-										Util.getOwner(this), e.getMessage(),
+										Utilities.getOwner(this), e.getMessage(),
 										stringResource
 										.getString("ErrorWindow.Title.Label"),
 										JOptionPane.ERROR_MESSAGE);
@@ -197,7 +197,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		Object[][] possibleData = absentData;
 		KeyListSelectionDialog dialog = null;
 		dialog =
-			new KeyListSelectionDialog(Util.getOwner(this), titleToSelectRows,
+			new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows,
 				possibleData, columns);
 
 		return (dialog.requestSelectRows() == KeyListSelectionDialog.OK_BUTTON)
@@ -282,20 +282,20 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-			Util.getOwner(this), e.getMessage(),
+			Utilities.getOwner(this), e.getMessage(),
 			stringResource.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-			Util.getOwner(this), e.getMessage(),
+			Utilities.getOwner(this), e.getMessage(),
 			stringResource.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-			Util.getOwner(this), e.getMessage(),
+			Utilities.getOwner(this), e.getMessage(),
 			stringResource.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
 		} catch (NotEnoughMemoryException e) {

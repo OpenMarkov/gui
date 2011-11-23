@@ -19,7 +19,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  * @version 1.0 initial version
  * @version 1.1 jlgozalo - 28/05/2010 - enhance use of For loop 
  */
-public class AlgorithmRelationTypes {
+public class RelationTypes {
 
 	/**
 	 * Internal names of the different relation types.
@@ -167,7 +167,7 @@ public class AlgorithmRelationTypes {
 	 */
 	public static String listToString() {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("[AlgorithmRelationTypes :(" + list.size() );
+		strBuf.append("[RelationTypes :(" + list.size() );
 		for (String item: list) {
 			strBuf.append(item);
         }

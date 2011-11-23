@@ -27,7 +27,7 @@ import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.NetworkType;
+import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;

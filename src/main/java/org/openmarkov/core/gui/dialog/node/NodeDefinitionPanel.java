@@ -36,8 +36,8 @@ import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.Purpose;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Purpose;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -1030,7 +1030,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				JOptionPane.ERROR_MESSAGE );
 			result = false;
 		} else if (!probNode.getName().equals( name )
-			&& Util.existNode(probNode.getProbNet(), name )) {
+			&& Utilities.existNode(probNode.getProbNet(), name )) {
 			JOptionPane
 				.showMessageDialog(
 					this, messageStringResource

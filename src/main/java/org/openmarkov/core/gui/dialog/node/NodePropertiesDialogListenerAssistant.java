@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.ProbNode;
 
 
@@ -114,7 +114,7 @@ public class NodePropertiesDialogListenerAssistant
 				JOptionPane.ERROR_MESSAGE);
 			result = false;
 		} else if (!properties.getName().equals(name)
-			&& Util.existNode(properties.getProbNet(),name)) {
+			&& Utilities.existNode(properties.getProbNet(),name)) {
 			JOptionPane.showMessageDialog(
 				definitionPanel, messageStringResource
 					.getString("DuplicatedNode.Text.Label"),

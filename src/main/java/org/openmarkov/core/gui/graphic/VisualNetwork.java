@@ -19,7 +19,7 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.gui.network.NetworkChangeListener;
+
 import org.openmarkov.core.gui.undo.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
@@ -38,8 +38,7 @@ import org.openmarkov.core.model.network.ProbNode;
  * @version 1.2 asaez - modified the constructor, the creation of
  *              visual nodes and the order of painting nodes
  */
-public class VisualNetwork implements NetworkChangeListener, 
-PNUndoableEditListener {
+public class VisualNetwork implements PNUndoableEditListener {
 
 	
 	/**
@@ -115,19 +114,6 @@ PNUndoableEditListener {
 		//changed by mpalacios
 		constructVisualInfo();
 
-	}
-
-	/**
-	 * This method notifies that a network has been changed.
-	 * 
-	 * @param newNetwork
-	 *            changed network.
-	 */
-	@SuppressWarnings("unused")
-	public void networkChanged(ProbNet newNetwork) {
-
-		//constructVisualInfo();
-		//changed by mpalacios
 	}
 
 	/**
@@ -944,7 +930,7 @@ PNUndoableEditListener {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 				//JOptionPane.showMessageDialog(
-					//	Util.getOwner(this), e2.getMessage(), stringResource
+					//	Utilities.getOwner(this), e2.getMessage(), stringResource
 						//	.getString("ErrorWindow.Title.Label"),
 						//JOptionPane.ERROR_MESSAGE);
 					}
@@ -1206,7 +1192,7 @@ PNUndoableEditListener {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 				//JOptionPane.showMessageDialog(
-					//	Util.getOwner(this), e2.getMessage(), stringResource
+					//	Utilities.getOwner(this), e2.getMessage(), stringResource
 						//	.getString("ErrorWindow.Title.Label"),
 						//JOptionPane.ERROR_MESSAGE);
 					}

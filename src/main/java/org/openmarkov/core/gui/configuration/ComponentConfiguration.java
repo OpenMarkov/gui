@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 
 
 
@@ -53,11 +53,11 @@ public class ComponentConfiguration
     	String ioTest = "tests\\openmarkov\\nets\\";
 
     	if ((Boolean)componentVariables.get("unix") == true) {
-    		netsPath = Util.windows2unixPath(netsPath);
-    		localizePath = Util.windows2unixPath(localizePath);
-    		ceNetTest = Util.windows2unixPath(ceNetTest);
-    		netTest = Util.windows2unixPath(netTest);
-    		ioTest = Util.windows2unixPath(ioTest);
+    		netsPath = Utilities.windows2unixPath(netsPath);
+    		localizePath = Utilities.windows2unixPath(localizePath);
+    		ceNetTest = Utilities.windows2unixPath(ceNetTest);
+    		netTest = Utilities.windows2unixPath(netTest);
+    		ioTest = Utilities.windows2unixPath(ioTest);
     	}
     	
     	componentVariables.put("netsDirectory", netsPath);

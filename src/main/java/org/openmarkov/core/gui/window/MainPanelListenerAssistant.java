@@ -31,8 +31,8 @@ import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.network.PropertyNames;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.PropertyNames;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
@@ -210,7 +210,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			} catch (NotEvaluableNetworkException e1) {
 				// TODO Enviar mensaje
 /*				JOptionPane.showMessageDialog(
-						Util.getOwner(getCurrentNetworkPanel().getRootPane()), e1.getMessage(), 
+						Utilities.getOwner(getCurrentNetworkPanel().getRootPane()), e1.getMessage(), 
 						"Network not evaluable", MessageType.ERROR);*/
 			} catch (NotEnoughMemoryException e2) {
 				// TODO Auto-generated catch block
@@ -363,7 +363,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			response =
 				JOptionPane
 					.showConfirmDialog(
-						Util.getOwner( mainPanel ), stringResource.getString(
+						Utilities.getOwner( mainPanel ), stringResource.getString(
 							"NetworkNotSaved.Text.Label", networkPanel
 								.getTitle() ), stringResource
 							.getString( "NetworkNotSaved.Title.Label" ),
@@ -469,21 +469,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			result = true;
 		} catch (NotRecognisedNetworkFileExtensionException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), stringResource
+				Utilities.getOwner( mainPanel ), stringResource
 					.getString( "CanNotRecognisedFileExtension.Text.Label" ),
 				stringResource.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
 
 		} catch (CanNotWriteNetworkToFileException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), stringResource
+				Utilities.getOwner( mainPanel ), stringResource
 					.getString( "ErrorSavingNetwork.Text.Label" ),
 				stringResource.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(
-					Util.getOwner( mainPanel ), stringResource
+					Utilities.getOwner( mainPanel ), stringResource
 						.getString( "Generic I/O error" ),
 					stringResource.getString( "ErrorWindow.Title.Label" ),
 					JOptionPane.ERROR_MESSAGE );
@@ -606,7 +606,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		fileChooser.setPGMXFilter();
 		fileChooser.setSelectedFile( new File( suggestedFileName ) );
 
-		return (fileChooser.showSaveDialog( Util.getOwner( mainPanel ) ) == 
+		return (fileChooser.showSaveDialog( Utilities.getOwner( mainPanel ) ) == 
 			JFileChooser.APPROVE_OPTION)
 			? fileChooser.getSelectedFile().getAbsolutePath() : null;
 
@@ -629,7 +629,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		probNet.getPNESupport().setWithUndo(false);
 		
 		if (NetworkPanel.requestNetworkProperties(probNet,
-			Util.getOwner( mainPanel ),true )) {
+			Utilities.getOwner( mainPanel ),true )) {
 				probNet.getPNESupport().setWithUndo(true);
 				createNewFrame2(probNet);
 				frameIndex++;
@@ -673,7 +673,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 							getCurrentNetworkPanel().isPropagationActive());
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), e.getMessage(), stringResource
+				Utilities.getOwner( mainPanel ), e.getMessage(), stringResource
 					.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
 		}
@@ -701,7 +701,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 							getCurrentNetworkPanel().isPropagationActive());
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), e.getMessage(), stringResource
+				Utilities.getOwner( mainPanel ), e.getMessage(), stringResource
 					.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
 		}
@@ -758,7 +758,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			} catch (Exception e) {
 				mainPanel.getMessageWindow().getErrorMessageStream().println( 
 						e.getMessage() );
-				JOptionPane.showMessageDialog( Util.getOwner( mainPanel ), 
+				JOptionPane.showMessageDialog( Utilities.getOwner( mainPanel ), 
 						stringResource.getString( 
 								"ErrorLoadingNetwork.Text.Label" ),
 						stringResource.getString( "ErrorWindow.Title.Label" ),
@@ -786,7 +786,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		fileChooser.setCurrentDirectory( currentDirectory );
 		fileChooser.setPGMXFilter();
 		String fileName =
-			(fileChooser.showOpenDialog( Util.getOwner( mainPanel ) ) == JFileChooser.APPROVE_OPTION)
+			(fileChooser.showOpenDialog( Utilities.getOwner( mainPanel ) ) == JFileChooser.APPROVE_OPTION)
 				? fileChooser.getSelectedFile().getAbsolutePath() : null;
 
 		return fileName;
@@ -841,7 +841,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			
 		} catch (CannotUndoException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), stringResource
+				Utilities.getOwner( mainPanel ), stringResource
 					.getString( "CannotUndo.Text.Label" ), stringResource
 					.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
@@ -858,7 +858,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			undoRedo( false );
 		} catch (CannotRedoException e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner( mainPanel ), stringResource
+				Utilities.getOwner( mainPanel ), stringResource
 					.getString( "CannotRedo.Text.Label" ), stringResource
 					.getString( "ErrorWindow.Title.Label" ),
 				JOptionPane.ERROR_MESSAGE );
@@ -1060,7 +1060,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		double newZoom = 0.0;
 
 		if (dialogBox) {
-			networkPanel.requestZoomToUser( Util.getOwner( mainPanel ) );
+			networkPanel.requestZoomToUser( Utilities.getOwner( mainPanel ) );
 		} else {
 			networkPanel.setZoom( value );
 		}

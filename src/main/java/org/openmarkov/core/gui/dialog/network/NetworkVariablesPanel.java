@@ -25,7 +25,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.GUIDefaultStates;
+import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;

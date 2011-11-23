@@ -11,7 +11,7 @@ import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.PropertyNames;
+import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.model.network.ProbNet;
 
 

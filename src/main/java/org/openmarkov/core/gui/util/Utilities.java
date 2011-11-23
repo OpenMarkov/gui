@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.network;
+package org.openmarkov.core.gui.util;
 
 
 import java.awt.Container;
@@ -26,12 +26,12 @@ import org.openmarkov.core.model.network.State;
  * @version 1.2 jlgozalo - 10/05/10 - set private constructor, remove functions 
  * and fix warnings
  */
-public class Util {
+public class Utilities {
 	
 	/**
 	 * private constructor for a class with only static methods
 	 */
-	private Util () {
+	private Utilities () {
 		
 	}
 	/**

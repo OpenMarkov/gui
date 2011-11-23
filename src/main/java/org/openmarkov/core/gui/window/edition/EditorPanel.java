@@ -63,7 +63,7 @@ import org.openmarkov.core.gui.graphic.VisualState;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -535,7 +535,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (e.getClickCount() == 2) {
-				if (Util.noMouseModifiers(e)) {
+				if (Utilities.noMouseModifiers(e)) {
 					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
 						//If we are in Edition Mode a double click must open the corresponding
 						//properties dialog (for node, link or network)
@@ -643,7 +643,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
 			.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (Util.noMouseModifiers(e)) {
+			if (Utilities.noMouseModifiers(e)) {
 				if (visualNetwork.whatElementInPosition(cursorPosition, g) == 
 					null) {
 					
@@ -653,7 +653,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			        for (ProbNode node : probNet.getProbNodes()) {
 						existingNames.add(node.getName());
 					}
-			        String nodeName = Util.getNextNodeName(nodeType, 
+			        String nodeName = Utilities.getNextNodeName(nodeType, 
 							existingNames);    
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
 							probNet, nodeName , nodeType, cursorPosition);
@@ -717,7 +717,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
 			.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (Util.noMouseModifiers(e)) {
+			if (Utilities.noMouseModifiers(e)) {
 				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					newLink = new VisualLink(node.getPosition(), cursorPosition);
 					newLinkSource = node;
@@ -924,7 +924,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 							
 						} catch (Exception ex) {
 							JOptionPane.showMessageDialog(
-								Util.getOwner(this), ex.getMessage(),
+								Utilities.getOwner(this), ex.getMessage(),
 								stringResource
 									.getString("ErrorWindow.Title.Label"),
 								JOptionPane.ERROR_MESSAGE);
@@ -1244,7 +1244,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(
-					Util.getOwner(this), ex.getMessage(),
+					Utilities.getOwner(this), ex.getMessage(),
 					stringResource
 						.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
@@ -1292,7 +1292,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			removeSelectedObjects(false);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner(this), e.getMessage(), stringResource
+				Utilities.getOwner(this), e.getMessage(), stringResource
 					.getString("ErrorWindow.Title.Label"),
 				JOptionPane.ERROR_MESSAGE);
 		}
@@ -1312,7 +1312,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0).getProbNode();
-			if (requestNodePropertiesToUser2(Util.getOwner(this),node, false)) {	
+			if (requestNodePropertiesToUser2(Utilities.getOwner(this),node, false)) {	
 				adjustPanelDimension();
 				repaint();
 				if (selectedNode.get(0).getInnerBox() instanceof FSVariableBox) {
@@ -1333,7 +1333,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0).getProbNode();
-			if (requestPotentialValues(Util.getOwner(this),node, false)) {	
+			if (requestPotentialValues(Utilities.getOwner(this),node, false)) {	
 				adjustPanelDimension();
 				repaint();
 				networkChanged = true;
@@ -1401,7 +1401,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void changeNetworkProperties() {
 		//TODO be careful with local pNESupport and extern pNESupport
-		if (!requestNetworkProperties(Util.getOwner(this), probNet, false)) {
+		if (!requestNetworkProperties(Utilities.getOwner(this), probNet, false)) {
 			probNet.getPNESupport().undoAndDelete();
 		}
 
@@ -1462,7 +1462,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		if (clipboardAssistant == null) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner(this), stringResource
+				Utilities.getOwner(this), stringResource
 					.getString("ClipboardNotSet.Text.Label"), stringResource
 					.getString("ErrorWindow.Title.Label"),
 				JOptionPane.ERROR_MESSAGE);
@@ -1480,7 +1480,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						removeSelectedObjects(true);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(
-							Util.getOwner(this), e.getMessage(), stringResource
+							Utilities.getOwner(this), e.getMessage(), stringResource
 								.getString("ErrorWindow.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
 					}
@@ -1504,7 +1504,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		if (clipboardAssistant == null) {
 			JOptionPane.showMessageDialog(
-				Util.getOwner(this), stringResource
+				Utilities.getOwner(this), stringResource
 					.getString("ClipboardNotSet.Text.Label"), stringResource
 					.getString("ErrorWindow.Title.Label"),
 				JOptionPane.ERROR_MESSAGE);
@@ -1527,7 +1527,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			if (!result) {
 				JOptionPane.showMessageDialog(
-					Util.getOwner(this), stringResource
+					Utilities.getOwner(this), stringResource
 						.getString("CannotPasteAllNodes.Text.Label"),
 					stringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.WARNING_MESSAGE);
@@ -1597,7 +1597,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			NodeAddFindingDialog nodeAddFinding = 
-				new NodeAddFindingDialog(Util.getOwner(this), node, g, this);
+				new NodeAddFindingDialog(Utilities.getOwner(this), node, g, this);
 		}
 		repaint();
 		setSelectedAllNodes(false);
@@ -1622,7 +1622,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					evidenceCases.get(currentCase).removeFinding(variable);
 					node.setFindingInNode(false);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 							stringResource.getString("ExceptionNoFinding.Text.Label") +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionNoFinding.Title.Label"),
@@ -1853,7 +1853,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				evidenceCases.get(currentCase).removeFinding(findings.get(i).getVariable());
 				doPropagation(evidenceCases.get(currentCase), currentCase);
 			} catch (NoFindingException exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +  
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
 						stringResource.getString("ExceptionNoFinding.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionNoFinding.Title.Label"),
@@ -1898,7 +1898,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					evidenceCases.get(currentCase).removeFinding(variable);
 					visualState.getVisualNode().setFindingInNode(false);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 							stringResource.getString("ExceptionNoFinding.Text.Label") +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionNoFinding.Title.Label"),
@@ -1911,25 +1911,25 @@ public class EditorPanel extends JPanel implements MouseListener,
 					evidenceCases.get(currentCase).addFinding(finding);
 					visualState.getVisualNode().setFindingInNode(true);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" + 
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
 							stringResource.getString("ExceptionNoFinding.Text.Label") +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionNoFinding.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
 				} catch (InvalidStateException exc) {		
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 							stringResource.getString("ExceptionInvalidState.Text.Label") +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionInvalidState.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
 				} catch (IncompatibleEvidenceException exc) {		
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 							stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
 				} catch (Exception exc) {
-					JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR" +
+					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
 							"\n\n" + exc.getMessage(), 
 							stringResource.getString("ExceptionGeneric.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
@@ -1941,19 +1941,19 @@ public class EditorPanel extends JPanel implements MouseListener,
 				evidenceCases.get(currentCase).addFinding(finding);
 				visualState.getVisualNode().setFindingInNode(true);
 			} catch (InvalidStateException exc) {	
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" + 
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
 						stringResource.getString("ExceptionInvalidState.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionInvalidState.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (IncompatibleEvidenceException exc) {		
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" + 
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
 						stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (Exception exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR" +
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionGeneric.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
@@ -2080,7 +2080,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						}
 					//END OF PROVISIONAL............................
 					} else { 
-						JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+						JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 								"Table Potential of " + variable.getName() + " has " +
 								tablePotential.getNumVariables() + " variables.\n It cannot be treated by now", 
 								"Error",
@@ -2123,7 +2123,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void showCostEffectivenessDeterministicDialog() {
 
 		
-		if (requestCostEffectiveness(Util.getOwner(this),"cea", false)) {
+		if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false)) {
 			ArrayList<Intervention> interventions = new ArrayList<Intervention>();
 			final String RESOURCE_EXCEL_TEMPLATE =
 				"/openmarkov/gui/resources/" +
@@ -2156,7 +2156,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					excelTarget.writeExcelReportOptimalInterventions(interventions,frontier,
 							costEffectivenessDialog.getOutputFileName());	
 					JOptionPane.showMessageDialog(
-							Util.getOwner(this), "Report has been created",
+							Utilities.getOwner(this), "Report has been created",
 							//stringResource
 							//.getString("ErrorWindow.Title.Label"),
 							"Cost effectiveness Analysis",
@@ -2168,7 +2168,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(
-							Util.getOwner(this), e.getMessage(),
+							Utilities.getOwner(this), e.getMessage(),
 							stringResource
 							.getString("ErrorWindow.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
@@ -2177,7 +2177,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 			} catch (NotEnoughMemoryException e1) {
 				JOptionPane.showMessageDialog(
-						Util.getOwner(this), e1.getMessage(),
+						Utilities.getOwner(this), e1.getMessage(),
 						stringResource
 						.getString("ErrorWindow.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
@@ -2203,13 +2203,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (IncompatibleEvidenceException exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 						stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"), 
 						JOptionPane.ERROR_MESSAGE);
 			} catch (InvalidStateException exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +  
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
 						stringResource.getString("ExceptionInvalidState.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionInvalidState.Title.Label"), 
@@ -2232,12 +2232,12 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 	}
 	if (decisionsWithoutPolicy.size()!=1){
 		JOptionPane.showMessageDialog(
-				Util.getOwner(this), "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model.",
+				Utilities.getOwner(this), "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model.",
 				stringResource
 				.getString("ErrorWindow.Title.Label"),
 				JOptionPane.ERROR_MESSAGE);
 	}else{
-		if (requestCostEffectiveness(Util.getOwner(this),"sa", true)) {
+		if (requestCostEffectiveness(Utilities.getOwner(this),"sa", true)) {
 			
 			//Perform a simulation with the reference values
 			ArrayList<Intervention> interventionsDeterministic = null;
@@ -2252,7 +2252,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 					costEffectivenessAnalysisDeterministic.getAllInterventions(0)[0];
 			} catch (NotEnoughMemoryException e2) {
 				JOptionPane.showMessageDialog(
-						Util.getOwner(this), e2.getMessage(),
+						Utilities.getOwner(this), e2.getMessage(),
 						stringResource
 						.getString("ErrorWindow.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
@@ -2271,13 +2271,13 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 			} catch (WrongCriterionException e2) {
 					e2.printStackTrace();
 			} catch (IncompatibleEvidenceException exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 						stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"), 
 						JOptionPane.ERROR_MESSAGE);
 			} catch (InvalidStateException exc) {
-				JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +  
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
 						stringResource.getString("ExceptionInvalidState.Text.Label") + 
 						"\n\n" + exc.getMessage(), 
 						stringResource.getString("ExceptionInvalidState.Title.Label"), 
@@ -2303,7 +2303,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 					//interventionsProbabilistic	= costEffectivenessAnalysis.getAllInterventions(costEffectivenessDialog.getSimulationsNumber());
 				} catch (NotEnoughMemoryException e1) {
 					JOptionPane.showMessageDialog(
-							Util.getOwner(this), e1.getMessage(),
+							Utilities.getOwner(this), e1.getMessage(),
 							stringResource
 							.getString("ErrorWindow.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
@@ -2332,7 +2332,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 						excelTarget.useTemplate(numStatesDecisionToAnalyze,RESOURCE_EXCEL_TEMPLATE_2_STATES,RESOURCE_EXCEL_TEMPLATE_3_STATES);
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(
-								Util.getOwner(this), e.getMessage(),
+								Utilities.getOwner(this), e.getMessage(),
 								stringResource
 								.getString("ErrorWindow.Title.Label"),
 								JOptionPane.ERROR_MESSAGE);
@@ -2342,13 +2342,13 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 								costEffectivenessDialog.getOutputFileName());
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(
-								Util.getOwner(this), e.getMessage(),
+								Utilities.getOwner(this), e.getMessage(),
 								stringResource
 								.getString("ErrorWindow.Title.Label"),
 								JOptionPane.ERROR_MESSAGE);
 					}	
 					JOptionPane.showMessageDialog(
-							Util.getOwner(this), "Report has been created",
+							Utilities.getOwner(this), "Report has been created",
 							"Cost effectiveness Analysis",
 							JOptionPane.INFORMATION_MESSAGE);			
 				}
@@ -2380,19 +2380,19 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} catch (InvalidStateException exc) {
-			JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +  
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
 					stringResource.getString("ExceptionInvalidState.Text.Label") +
 					"\n\n" + exc.getMessage(), 
 					stringResource.getString("ExceptionInvalidState.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (IncompatibleEvidenceException exc) {		
-			JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 					stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
 					"\n\n" + exc.getMessage(), 
 					stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (Exception exc) {
-			JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR" +
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
 					"\n\n" + exc.getMessage(), 
 					stringResource.getString("ExceptionGeneric.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
@@ -2431,7 +2431,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} else {
-			JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" +
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
 					stringResource.getString("NoPreviousEvidenceCaseMessage.Text.Label"), 
 					stringResource.getString("NoPreviousEvidenceCaseMessage.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
@@ -2454,7 +2454,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} else {
-			JOptionPane.showMessageDialog(Util.getOwner(this), "ERROR\n" + 
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
 					stringResource.getString("NoNextEvidenceCaseMessage.Text.Label"), 
 					stringResource.getString("NoNextEvidenceCaseMessage.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
@@ -2556,7 +2556,7 @@ public void showSensitivityAnalysisCostEffectivenessDialog() {
 	 */
 	public void setInferenceOptions() {		
 		OptionsInferenceDialog optionsInferenceDialog = 
-				new OptionsInferenceDialog(Util.getOwner(this), this, 
+				new OptionsInferenceDialog(Utilities.getOwner(this), this, 
 						networkPanel.getMainPanel().getExistingInferenceToolBar()); 
 	}
 	

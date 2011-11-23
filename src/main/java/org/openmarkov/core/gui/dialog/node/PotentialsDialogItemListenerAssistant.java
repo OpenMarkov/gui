@@ -124,8 +124,8 @@ public class PotentialsDialogItemListenerAssistant implements
 			//TODO activar las siguientes instrucciones cuando la validación
 			//de visualizaciones sea activada
 			
-			/*String familia = AlgorithmRelationTypes.getByIndex(index);
-			if (familia.equals(AlgorithmRelationTypes.RELATION_TYPE_UNIFORM)) {
+			/*String familia = RelationTypes.getByIndex(index);
+			if (familia.equals(RelationTypes.RELATION_TYPE_UNIFORM)) {
 				// is a general relation
 				getPotentialsDialog().getJPanelTpcOrCanonical().setEnabled(false);
 				getPotentialsDialog().getJRadioButtonCanonical().setSelected(false);

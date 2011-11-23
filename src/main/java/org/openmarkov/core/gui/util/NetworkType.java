@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.network;
+package org.openmarkov.core.gui.util;
 
 
 import java.util.HashSet;

@@ -45,8 +45,8 @@ import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.network.GUIDefaultStates;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.GUIDefaultStates;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -380,7 +380,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				// with limit brackets no exists.
 				if (jComboBoxStatesValues.getSelectedIndex() == 
 					(jComboBoxStatesValues.getItemCount() - 1) 
-					&& Util.hasLimitBracketSymbols(states)) { 
+					&& Utilities.hasLimitBracketSymbols(states)) { 
 						// if the values are others and there are partitioned intervals 
 						// described
 						tableData = convertStringsToTableFormat(states);

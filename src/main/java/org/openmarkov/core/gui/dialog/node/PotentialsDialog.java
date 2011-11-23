@@ -33,13 +33,13 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.component.AlgorithmRelationTypes;
+import org.openmarkov.core.gui.component.RelationTypes;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDBuilder;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
@@ -226,7 +226,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
 		if (jComboBoxRelationType == null) {
 			jComboBoxRelationType =
-				new JComboBox( AlgorithmRelationTypes.getListStrings() );
+				new JComboBox( RelationTypes.getListStrings() );
 			jComboBoxRelationType.setBorder( new LineBorder( UIManager.getColor(
 					"List.dropLineColor" ), 1, false ) );
 			jComboBoxRelationType.setName( "jComboBoxRelationType" );
@@ -336,7 +336,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		
 		// Elvira do not distinguish between DISCRETE and DISCRETIZED
 		// so here we will see if there are intervals in the states
-		if (Util.hasLimitBracketSymbols(probNode.getVariable().getStates())
+		if (Utilities.hasLimitBracketSymbols(probNode.getVariable().getStates())
 						&& (probNode.getVariable().getVariableType() == 
 							VariableType.FINITE_STATES)) {
 			// really DISCRETIZED, so change the value of the VariableType

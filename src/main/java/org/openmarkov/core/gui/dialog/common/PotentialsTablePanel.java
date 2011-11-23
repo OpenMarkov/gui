@@ -39,7 +39,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -1254,7 +1254,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		
 		int [] parentsConfiguration = new int [variables.size()];
 		//Gets the start position of a reordered potential
-		int startPosition = Util.toPositionOnPotentialReordered(variable.
+		int startPosition = Utilities.toPositionOnPotentialReordered(variable.
 				getNumStates()+ variables.size()-1, col, variable.getNumStates(), 
 				variables.size());
 		int finalPosition = startPosition + variable.getNumStates() - 1;
@@ -1341,7 +1341,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		
 		try {
 			UncertainValuesDialog uncertDialog = new UncertainValuesDialog(
-					Util.getOwner(this), evidenceCase,  
+					Utilities.getOwner(this), evidenceCase,  
 					(TablePotential)probNode.getPotentials().get( 0 ));
 			int button = uncertDialog.requestUncertainValues();
 			 if (button == UncertainValuesDialog.OK_BUTTON){

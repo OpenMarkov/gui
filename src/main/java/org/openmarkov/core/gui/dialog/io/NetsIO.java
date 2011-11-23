@@ -8,8 +8,8 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.io.elvira.ElviraParser;
-import org.openmarkov.io.elvira.ElviraWriter;
+import org.openmarkov.io.probmodel.PGMXReader;
+import org.openmarkov.io.probmodel.PGMXWriter;
 import org.xml.sax.XMLReader;
 
 
@@ -44,15 +44,15 @@ public class NetsIO {
 		String fileExtension = getFileExtension(fileName);
 
 		if (fileExtension.contentEquals("elv")) {
-				return ElviraParser.getUniqueInstance().loadProbNet(fileName);
+				//return ElviraParser.getUniqueInstance().loadProbNet(fileName);
 		} else if (fileExtension.contentEquals("xml")) {
-			ProbNet probNet = 
+			/*ProbNet probNet = 
 				XMLReader.getUniqueInstance().loadProbNet(fileName);
 			if (probNet == null) {
 				System.out.println("NetsIO.openNetworkFile from "
 						+ fileName + ": probNet null");
 			}
-			return probNet;
+			return probNet;*/
 		} else if (fileExtension.contentEquals("pgmx")) {
 			ProbNet probNet = 
 				PGMXReader.getUniqueInstance().loadProbNet(fileName);
@@ -82,20 +82,20 @@ public class NetsIO {
 
 		try {
 			if (fileExtension.contentEquals("elv")) {
-				ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
+				//ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
 			} else if (fileExtension.contentEquals("xml")) {
-				XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
+				//XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
 			} else if (fileExtension.contentEquals("pgmx")) {
 				PGMXWriter.getUniqueInstance().writeProbNet(fileName, network);
 			} else if (fileExtension.contentEquals("bif")) {
-				HuginWriter.getUniqueInstance().writeProbNet(fileName, network);
+				//HuginWriter.getUniqueInstance().writeProbNet(fileName, network);
 			} else {
 				throw new NotRecognisedNetworkFileExtensionException(fileName);
 			}
-		} catch (IOException ex) {
+		/*} catch (IOException ex) {
 			throw new CanNotWriteNetworkToFileException(fileName);
 		} catch (NotEnoughMemoryException ex)  {
-			throw new CanNotWriteNetworkToFileException(fileName);
+			throw new CanNotWriteNetworkToFileException(fileName); */
 		} catch (WriterException ex) {
 			throw new CanNotWriteNetworkToFileException(fileName);
 		}

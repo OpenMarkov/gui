@@ -28,7 +28,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialsDialog;
-import org.openmarkov.core.gui.network.Util;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.LabelledLink;
 import org.openmarkov.core.model.graph.Link;
@@ -1220,7 +1220,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			throw new RuntimeException("Unexpected Potential Role found: " + treePotential.getPotentialRole());
 		}
 		
-		PotentialsDialog dialog= new PotentialsDialog(Util.getOwner(this), dummy, false);
+		PotentialsDialog dialog= new PotentialsDialog(Utilities.getOwner(this), dummy, false);
 		if (dialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
 			Potential retPotential= dummy.getPotentials().get(0);
 

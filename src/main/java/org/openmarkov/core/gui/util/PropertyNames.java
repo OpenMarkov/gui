@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.network;
+package org.openmarkov.core.gui.util;
 
 /** This interface defines (in alphabetical order) a set of tokens used 
  *  adittionalProperties. */
