@@ -55,16 +55,7 @@
 			<version>1.1.2</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.openmarkov</groupId>
-			<artifactId>org.openmarkov.core.gui.helpen</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openmarkov</groupId>
-			<artifactId>org.openmarkov.core.gui.helpes</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.costEffectiveness</artifactId>
@@ -76,6 +67,16 @@
 			<version>0.0.1</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.core.gui.helpen</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.core.gui.helpes</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	
 	</dependencies>
 	<repositories>
