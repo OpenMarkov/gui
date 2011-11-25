@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.undo;
+package org.openmarkov.core.gui.util;
 
 
 import java.awt.geom.Point2D;

@@ -26,7 +26,7 @@ public class CursorLoader {
 	/**
 	 * Folder where cursors are saved.
 	 */
-	private static final String CURSORS_PATH = "/openmarkov/gui/resources/cursors/";
+	private static final String CURSORS_PATH = "cursors/";
 
 	/**
 	 * Name of the cursor that represents the default one.
@@ -110,8 +110,9 @@ public class CursorLoader {
 
 		try {
 			Toolkit tk = java.awt.Toolkit.getDefaultToolkit();
+			String  path =CURSORS_PATH + cursorName;
 			URL resource =
-				CursorLoader.class.getResource(CURSORS_PATH + cursorName);
+				CursorLoader.class.getClassLoader().getResource(path);
 			Image image = null;
 			if (resource == null) {
 				return null;
