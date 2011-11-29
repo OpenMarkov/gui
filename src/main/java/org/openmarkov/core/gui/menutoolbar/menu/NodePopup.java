@@ -10,6 +10,7 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 
@@ -119,7 +120,7 @@ class NodePopup extends PopupMenuBasic {
 
 	private JMenuItem getLogMenuItem() {
 		if (logMenuItem == null) {
-            logMenuItem = new LocalizedMenuItem (MainMenu.EDIT_LOG_MENUITEM,
+            logMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_LOG_MENUITEM,
                                                  ActionCommands.LOG);
 		logMenuItem.addActionListener(listener);
 	}
@@ -135,7 +136,7 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getCutMenuItem() {
 
 		if (cutMenuItem == null) {
-            cutMenuItem = new LocalizedMenuItem (MainMenu.EDIT_CUT_MENUITEM,
+            cutMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_CUT_MENUITEM,
                                                  ActionCommands.CLIPBOARD_CUT);
 			cutMenuItem.addActionListener(listener);
 		}
@@ -152,7 +153,7 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getCopyMenuItem() {
 
 		if (copyMenuItem == null) {
-            copyMenuItem = new LocalizedMenuItem (MainMenu.EDIT_COPY_MENUITEM,
+            copyMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_COPY_MENUITEM,
                                                   ActionCommands.CLIPBOARD_COPY);
 			copyMenuItem.addActionListener(listener);
 		}
@@ -170,7 +171,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem (
-                                                    MainMenu.EDIT_REMOVE_MENUITEM,
+                                                    MenuItemNames.EDIT_REMOVE_MENUITEM,
                                                     ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
@@ -188,7 +189,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (propertiesMenuItem == null) {
             propertiesMenuItem = new LocalizedMenuItem (
-                                                        MainMenu.EDIT_NODEPROPERTIES_MENUITEM,
+                                                        MenuItemNames.EDIT_NODEPROPERTIES_MENUITEM,
                                                         ActionCommands.NODE_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}
@@ -205,7 +206,7 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRelationMenuItem() {
 
 		if (relationMenuItem == null) {
-			relationMenuItem = new LocalizedMenuItem(MainMenu.EDIT_NODERELATION_MENUITEM, ActionCommands.CHANGE_POTENTIAL);
+			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.CHANGE_POTENTIAL);
 			relationMenuItem.addActionListener(listener);
 		}
 
@@ -222,7 +223,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (expandMenuItem == null) {
             expandMenuItem = new LocalizedMenuItem (
-                                                    MainMenu.INFERENCE_EXPAND_NODE_MENUITEM,
+                                                    MenuItemNames.INFERENCE_EXPAND_NODE_MENUITEM,
                                                     ActionCommands.NODE_EXPANSION);
 			expandMenuItem.addActionListener(listener);
 		}
@@ -240,7 +241,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (contractMenuItem == null) {
             contractMenuItem = new LocalizedMenuItem (
-                                                      MainMenu.INFERENCE_CONTRACT_NODE_MENUITEM,
+                                                      MenuItemNames.INFERENCE_CONTRACT_NODE_MENUITEM,
                                                       ActionCommands.NODE_CONTRACTION);
 			contractMenuItem.addActionListener(listener);
 		}
@@ -258,7 +259,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (addFindingMenuItem == null) {
             addFindingMenuItem = new LocalizedMenuItem (
-                                                        MainMenu.INFERENCE_ADD_FINDING_MENUITEM,
+                                                        MenuItemNames.INFERENCE_ADD_FINDING_MENUITEM,
                                                         ActionCommands.NODE_ADD_FINDING);
 			addFindingMenuItem.addActionListener(listener);
 		}
@@ -276,7 +277,7 @@ class NodePopup extends PopupMenuBasic {
 
 		if (removeFindingMenuItem == null) {
             removeFindingMenuItem = new LocalizedMenuItem (
-                                                           MainMenu.INFERENCE_REMOVE_FINDING_MENUITEM,
+                                                           MenuItemNames.INFERENCE_REMOVE_FINDING_MENUITEM,
                                                            ActionCommands.NODE_REMOVE_FINDING);
 			removeFindingMenuItem.addActionListener(listener);
 		}

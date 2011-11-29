@@ -12,6 +12,7 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 /**
@@ -75,7 +76,7 @@ public class UncertaintyPopup extends PopupMenuBasic{
 
 		if (assignMenuItem == null) {
             assignMenuItem = new LocalizedMenuItem (
-                                                    MainMenu.UNCERTAINTY_ASSIGN_MENUITEM,
+                                                    MenuItemNames.UNCERTAINTY_ASSIGN_MENUITEM,
                                                     ActionCommands.UNCERTAINTY_ASSIGN);
 			assignMenuItem.addActionListener(listener);
 		}
@@ -93,7 +94,7 @@ public class UncertaintyPopup extends PopupMenuBasic{
 
 		if (editMenuItem == null) {
             editMenuItem = new LocalizedMenuItem (
-                                                  MainMenu.UNCERTAINTY_EDIT_MENUITEM,
+                                                  MenuItemNames.UNCERTAINTY_EDIT_MENUITEM,
                                                   ActionCommands.UNCERTAINTY_EDIT);
 			editMenuItem.addActionListener(listener);
 		}
@@ -111,7 +112,7 @@ public class UncertaintyPopup extends PopupMenuBasic{
 
 		if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem (
-                                                    MainMenu.UNCERTAINTY_REMOVE_MENUITEM,
+                                                    MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
                                                     ActionCommands.UNCERTAINTY_REMOVE);
 			removeMenuItem.addActionListener(listener);
 		}

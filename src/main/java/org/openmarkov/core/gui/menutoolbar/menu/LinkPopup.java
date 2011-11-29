@@ -8,6 +8,7 @@ import javax.swing.JMenuItem;
 
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 
@@ -76,7 +77,7 @@ class LinkPopup extends PopupMenuBasic {
 
 		if (removeMenuItem == null) {
             removeMenuItem = new LocalizedMenuItem (
-                                                    MainMenu.EDIT_REMOVE_MENUITEM,
+                                                    MenuItemNames.EDIT_REMOVE_MENUITEM,
                                                     ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
@@ -94,7 +95,7 @@ class LinkPopup extends PopupMenuBasic {
 
 		if (propertiesMenuItem == null) {
             propertiesMenuItem = new LocalizedMenuItem (
-                                                        MainMenu.EDIT_LINKPROPERTIES_MENUITEM,
+                                                        MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
                                                         ActionCommands.LINK_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}

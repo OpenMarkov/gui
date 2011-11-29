@@ -31,13 +31,13 @@ import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
-import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
@@ -258,7 +258,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			showHelp();
 		} else if (actionCommand.equals( ActionCommands.HELP_ABOUT )) {
 			showAbout();
-		} 
+		}  else 
+        {
+            ToolPluginManager.getInstance ().processCommand (actionCommand, mainPanel.getMainFrame());
+        }
 	}
 
 	private void createExpandeNetwork(ProbNet probNet) 

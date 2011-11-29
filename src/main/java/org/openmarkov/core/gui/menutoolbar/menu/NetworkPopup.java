@@ -10,6 +10,7 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 
@@ -80,7 +81,7 @@ class NetworkPopup extends PopupMenuBasic {
 
 		if (pasteMenuItem == null) {
             pasteMenuItem = new LocalizedMenuItem (
-                                                   MainMenu.EDIT_PASTE_MENUITEM,
+                                                   MenuItemNames.EDIT_PASTE_MENUITEM,
                                                    ActionCommands.CLIPBOARD_PASTE);
 			pasteMenuItem.setEnabled(false);
 			pasteMenuItem.addActionListener(listener);
@@ -99,7 +100,7 @@ class NetworkPopup extends PopupMenuBasic {
 
 		if (networkPropertiesMenuItem == null) {
             networkPropertiesMenuItem = new LocalizedMenuItem (
-                                                               MainMenu.FILE_NETWORKPROPERTIES_MENUITEM,
+                                                               MenuItemNames.FILE_NETWORKPROPERTIES_MENUITEM,
                                                                ActionCommands.NETWORK_PROPERTIES);
 			networkPropertiesMenuItem.addActionListener(listener);
 		}
