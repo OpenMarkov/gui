@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core.gui</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Graphical User Interface core</name>
 	<url>http://openmarkov.org/core/gui</url>
-
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.core</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -56,7 +56,7 @@
 		</dependency>
 		
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.costEffectiveness</artifactId>
 			<version>0.0.1</version>
@@ -66,6 +66,7 @@
 			<artifactId>org.openmarkov.io.probmodel</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		 -->
 		
 		<dependency>
 			<groupId>org.openmarkov</groupId>

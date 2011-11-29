@@ -76,10 +76,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.costEffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.costEffectiveness.ExcelIO;
-import org.openmarkov.costEffectiveness.ExcelSensitivityAnalysis;
-import org.openmarkov.costEffectiveness.Intervention;
+//import org.openmarkov.costEffectiveness.CostEffectivenessAnalysis;
+//import org.openmarkov.costEffectiveness.ExcelIO;
+//import org.openmarkov.costEffectiveness.ExcelSensitivityAnalysis;
+//import org.openmarkov.costEffectiveness.Intervention;
 
 
 /**
@@ -2122,7 +2122,7 @@ MouseMotionListener {
 
 	public void showCostEffectivenessDeterministicDialog() {
 
-
+/**
 		if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false)) {
 			ArrayList<Intervention> interventions = new ArrayList<Intervention>();
 			final String RESOURCE_EXCEL_TEMPLATE =
@@ -2216,13 +2216,13 @@ MouseMotionListener {
 						JOptionPane.ERROR_MESSAGE);
 			}
 
-		}
+		}*/
 	}
 
 
 
 	public void showSensitivityAnalysisCostEffectivenessDialog() {
-
+/*
 		ArrayList<Variable> decisionsWithoutPolicy = null;
 		try {
 			decisionsWithoutPolicy = VarEliminationSMM.getDecisionVariablesWithoutPolicies(this.probNet);
@@ -2353,7 +2353,7 @@ MouseMotionListener {
 						JOptionPane.INFORMATION_MESSAGE);			
 			}
 
-		}
+		}*/
 	}
 
 	/** 
