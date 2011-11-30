@@ -78,6 +78,12 @@
 			<artifactId>org.openmarkov.core.gui.helpes</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.io.probmodel</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 	
 	</dependencies>
 	<repositories>

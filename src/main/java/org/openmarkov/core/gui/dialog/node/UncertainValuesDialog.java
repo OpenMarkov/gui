@@ -472,11 +472,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 			
 			if (verify){
 				
-				//After verifying the domains the SSJ connectors can be created
-				for (UncertainValue aux:arrayUncertain){
-					aux.getProbDensityFunction().createSSJPDF();
-				}
-				
+						
 				if (isChanceVariable){
 					if (!doVerifyGlobalConstraintUncertainty(arrayUncertain)){
 					//System.out.println("Distribution "+typeDistrib+" does not verify the constraints associated to its domain.");
