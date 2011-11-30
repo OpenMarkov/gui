@@ -9,6 +9,7 @@ import javax.swing.UIManager;
 
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.io.format.annotation.FormatManager;
 
 
 
@@ -64,15 +65,23 @@ public class FileChooser extends JFileChooser {
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleMessages();
 		setTextsInLocale();
+		
+		
+		
 		elviraFilter = new FileFilterElv();
 		openMarkovXmlFilter = new FileFilterXML();
 		openMarkovPgmxFilter = new FileFilterPGMX();
 		openMarkovXLSFilter = new FileFilterXLS();
 		
+		FormatManager formatManager = FormatManager.getInstance();
+		for (String item:formatManager.getItemsByRole("Writer")){
+			addChoosableFileFilter(new FileFilterAll(item));
+		}
 		
-		addChoosableFileFilter(elviraFilter);
+		
+		/*addChoosableFileFilter(elviraFilter);
 		addChoosableFileFilter(openMarkovXmlFilter);
-		addChoosableFileFilter(openMarkovPgmxFilter);
+		addChoosableFileFilter(openMarkovPgmxFilter);*/
 		setCurrentDirectory(new File(directoryPath));
 		rescanCurrentDirectory();
 

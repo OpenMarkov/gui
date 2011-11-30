@@ -606,7 +606,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "." ) );
 		fileChooser.setCurrentDirectory( currentDirectory );
-		fileChooser.setPGMXFilter();
+		//fileChooser.setPGMXFilter();
 		fileChooser.setSelectedFile( new File( suggestedFileName ) );
 
 		return (fileChooser.showSaveDialog( Utilities.getOwner( mainPanel ) ) == 
@@ -787,7 +787,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "." ) );
 		fileChooser.setCurrentDirectory( currentDirectory );
-		fileChooser.setPGMXFilter();
+		//fileChooser.setPGMXFilter();
 		String fileName =
 			(fileChooser.showOpenDialog( Utilities.getOwner( mainPanel ) ) == JFileChooser.APPROVE_OPTION)
 				? fileChooser.getSelectedFile().getAbsolutePath() : null;

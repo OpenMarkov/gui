@@ -3,10 +3,16 @@ package org.openmarkov.core.gui.dialog.io;
 
 import java.io.IOException;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.WriterException;
+import org.openmarkov.core.io.ProbNetReader;
+import org.openmarkov.core.io.ProbNetWriter;
+import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.io.probmodel.PGMXReader;
 import org.openmarkov.io.probmodel.PGMXWriter;
@@ -42,8 +48,19 @@ public class NetsIO {
 	 */
 	public static ProbNet openNetworkFile(String fileName) throws Exception {
 		String fileExtension = getFileExtension(fileName);
+		FormatManager formatManager = FormatManager.getInstance();
+		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
+		
+		ProbNet probNet = probNetReader.loadProbNet(fileName);
+		
+		if (probNet == null) {
+			System.out.println("NetsIO.openNetworkFile from "
+					+ fileName + ": probNet null");
+		}
+		return probNet;
+		
 
-		if (fileExtension.contentEquals("elv")) {
+	/*	if (fileExtension.contentEquals("elv")) {
 				//return ElviraParser.getUniqueInstance().loadProbNet(fileName);
 		} else if (fileExtension.contentEquals("xml")) {
 			/*ProbNet probNet = 
@@ -53,7 +70,7 @@ public class NetsIO {
 						+ fileName + ": probNet null");
 			}
 			return probNet;*/
-		} else if (fileExtension.contentEquals("pgmx")) {
+		/*} else if (fileExtension.contentEquals("pgmx")) {
 			ProbNet probNet = 
 				PGMXReader.getUniqueInstance().loadProbNet(fileName);
 			if (probNet == null) {
@@ -62,8 +79,8 @@ public class NetsIO {
 			}
 			return probNet;
 		
-		}
-		return null;
+		}*/
+		
 
 	}
 
@@ -79,9 +96,13 @@ public class NetsIO {
 					throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
 
 		String fileExtension = getFileExtension(fileName);
-
+		
+		FormatManager formatManager = FormatManager.getInstance();
+		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension);
 		try {
-			if (fileExtension.contentEquals("elv")) {
+			probNetWriter.writeProbNet(fileName, network);
+		
+			/*if (fileExtension.contentEquals("elv")) {
 				//ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
 			} else if (fileExtension.contentEquals("xml")) {
 				//XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
@@ -92,7 +113,7 @@ public class NetsIO {
 			} else {
 				throw new NotRecognisedNetworkFileExtensionException(fileName);
 			}
-		/*} catch (IOException ex) {
+		} catch (IOException ex) {
 			throw new CanNotWriteNetworkToFileException(fileName);
 		} catch (NotEnoughMemoryException ex)  {
 			throw new CanNotWriteNetworkToFileException(fileName); */
