@@ -7,16 +7,14 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
+import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.io.probmodel.PGMXReader;
-import org.openmarkov.io.probmodel.PGMXWriter;
-import org.xml.sax.XMLReader;
+
 
 
 
@@ -52,6 +50,7 @@ public class NetsIO {
 		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
 		
 		ProbNet probNet = probNetReader.loadProbNet(fileName);
+		
 		
 		if (probNet == null) {
 			System.out.println("NetsIO.openNetworkFile from "
