@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.io;
+package org.openmarkov.core.gui.io.format.annotation;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;

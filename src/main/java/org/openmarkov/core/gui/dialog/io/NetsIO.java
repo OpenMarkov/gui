@@ -1,14 +1,8 @@
 package org.openmarkov.core.gui.dialog.io;
 
 
-import java.io.IOException;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;

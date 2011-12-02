@@ -1,9 +1,12 @@
 package org.openmarkov.core.gui.io;
 
-import junit.framework.*;
-import junit.textui.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.Test;
+import junit.textui.TestRunner;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openmarkov.core.gui.io.format.annotation.NetsIOTest;
 
 
 /**
