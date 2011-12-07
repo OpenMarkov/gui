@@ -89,25 +89,25 @@ public class MoveNodeEditTest {
 	@Test
 	public final void testUndoRedo() throws Exception {
 		
-		assertEquals(node1.getNode().getCoordinateX(), 21.0);
-		assertEquals(node1.getNode().getCoordinateY(), 160.0);
-		assertEquals(node2.getNode().getCoordinateX(), 101.0);
-		assertEquals(node2.getNode().getCoordinateY(), 99.0);
+		assertEquals(node1.getNode().getCoordinateX(), 21.0, 0.1);
+		assertEquals(node1.getNode().getCoordinateY(), 160.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateX(), 101.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateY(), 99.0, 0.1);
 		probNet.getPNESupport().undo();
-		assertEquals(node1.getNode().getCoordinateX(), 100.0);
-		assertEquals(node1.getNode().getCoordinateY(), 150.0);
-		assertEquals(node2.getNode().getCoordinateX(), 57.0);
-		assertEquals(node2.getNode().getCoordinateY(), 49.0);
+		assertEquals(node1.getNode().getCoordinateX(), 100.0, 0.1);
+		assertEquals(node1.getNode().getCoordinateY(), 150.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateX(), 57.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateY(), 49.0, 0.1);
 		probNet.getPNESupport().redo();
-		assertEquals(node1.getNode().getCoordinateX(), 21.0);
-		assertEquals(node1.getNode().getCoordinateY(), 160.0);
-		assertEquals(node2.getNode().getCoordinateX(), 101.0);
-		assertEquals(node2.getNode().getCoordinateY(), 99.0);
+		assertEquals(node1.getNode().getCoordinateX(), 21.0, 0.1);
+		assertEquals(node1.getNode().getCoordinateY(), 160.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateX(), 101.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateY(), 99.0, 0.1);
 		probNet.getPNESupport().undo();
-		assertEquals(node1.getNode().getCoordinateX(), 100.0);
-		assertEquals(node1.getNode().getCoordinateY(), 150.0);
-		assertEquals(node2.getNode().getCoordinateX(), 57.0);
-		assertEquals(node2.getNode().getCoordinateY(), 49.0);
+		assertEquals(node1.getNode().getCoordinateX(), 100.0, 0.1);
+		assertEquals(node1.getNode().getCoordinateY(), 150.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateX(), 57.0, 0.1);
+		assertEquals(node2.getNode().getCoordinateY(), 49.0, 0.1);
 		probNet.getPNESupport().redo();
 	}
 }

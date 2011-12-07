@@ -44,12 +44,12 @@ public class ActionCommandsTest {
 	 */
 	@Test
 	public final void testGetValueZoomActionCommand() {
-		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_100"), 1.0);
-		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_200"), 2.0);
-		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_75"), 0.75);
-		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_1"), 0.01);
+		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_100"), 1.0, 0.1);
+		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_200"), 2.0, 0.1);
+		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_75"), 0.75, 0.1);
+		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_1"), 0.01, 0.1);
 		assertEquals(ActionCommands.getValueZoomActionCommand("Zoom_4357"),
-				43.57);
+				43.57, 0.1);
 	}
 
 
