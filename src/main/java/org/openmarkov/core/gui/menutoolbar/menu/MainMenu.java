@@ -22,8 +22,6 @@ import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.LocalizedCheckBoxMenuItem;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.MenuLocalizer;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;

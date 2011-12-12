@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,9 +39,7 @@ import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NoPropagationCanBeDoneException;
 import org.openmarkov.core.exception.NoPropagationOnInfluenceDiagramsException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.MoveNodeEdit;
 import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
@@ -477,7 +474,7 @@ MouseMotionListener {
 	 * @param e
 	 *            mouse event information.
 	 */
-	@SuppressWarnings("unused")
+
 	public void mouseClicked(MouseEvent e) {
 
 	}
@@ -634,12 +631,7 @@ MouseMotionListener {
 	 *            type of the node that will be created.
 	 */
 	private void mousePressedNodeCreation(MouseEvent e, NodeType nodeType) {
-		//String[] s;
-		//String[] states;
-		//Variable newVariable=null;
 		Graphics2D g = (Graphics2D) getGraphics();
-		ProbNode nodeWrapper = null;
-
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
 				.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
@@ -835,7 +827,7 @@ MouseMotionListener {
 	 * @param e
 	 *            mouse event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void mouseReleasedSelection(MouseEvent e) {
 
 		selection.clearSelectionSquare();
@@ -948,7 +940,7 @@ MouseMotionListener {
 	 * @param e
 	 *            mouse event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void mouseEntered(MouseEvent e) {
 
 	}
@@ -959,7 +951,7 @@ MouseMotionListener {
 	 * @param e
 	 *            mouse event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void mouseExited(MouseEvent e) {
 
 	}
@@ -971,7 +963,7 @@ MouseMotionListener {
 	 * @param e
 	 *            mouse event information.
 	 */
-	@SuppressWarnings("unused")
+
 	public void mouseMoved(MouseEvent e) {
 
 	}
@@ -1222,8 +1214,6 @@ MouseMotionListener {
 						.getLinksOfNodes(nodesToRemove));
 		ArrayList<ProbNode> probNodes = new ArrayList<ProbNode>();
 		ArrayList<Link> links = new ArrayList<Link>();
-		int i = 0;
-
 		visualNetwork.setSelectedAllObjects(false);
 		probNet.getPNESupport().openParenthesis();
 		for (VisualLink link : linksToRemove) {
@@ -1494,7 +1484,7 @@ MouseMotionListener {
 	 * This method imports various nodes from the clipboard and creates them in
 	 * the network.
 	 */
-	@SuppressWarnings( { "cast", "unchecked" })
+	
 	/*public void pasteFromClipboard() {
 
 		ArrayList[] pastedElements = null;

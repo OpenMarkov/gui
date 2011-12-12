@@ -49,7 +49,6 @@ public class DialogBase extends JDialog {
 		addWindowListener(new WindowAdapter() {
 
 			@Override
-			@SuppressWarnings("unused")
 			public void windowClosing(WindowEvent e) {
 
 				if (jButtonCancel != null) {
@@ -59,7 +58,6 @@ public class DialogBase extends JDialog {
 		});
 		ActionListener listener = new ActionListener() {
 
-			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent evt) {
 
 				if (jButtonCancel != null) {

@@ -1,17 +1,10 @@
 package org.openmarkov.core.gui.dialog;
 
 
-import java.io.File;
-import java.net.MalformedURLException;
+
 import java.net.URL;
 
 import javax.swing.ImageIcon;
-
-import org.openmarkov.core.gui.OpenMarkov;
-import org.openmarkov.core.gui.util.Utilities;
-
-
-
 
 /**
  * SplashScreenOpenMarkov Splash Screen Loader in OpenMarkov to prevent impatient user
@@ -57,11 +50,7 @@ public class SplashScreenLoader {
 			splash.setLocationRelativeTo(null);
 			splash.setProgressMax(100);
 			splash.setScreenVisible(true);
-		
-		
-		
-		
-		
+	
 	}	
 
 	/**

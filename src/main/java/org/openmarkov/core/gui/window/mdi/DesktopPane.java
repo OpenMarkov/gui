@@ -81,16 +81,8 @@ public class DesktopPane extends JDesktopPane {
 
 		JInternalFrame frame = null;
 		int posX = 0, posY = 0;
-
-		
-		
-		
 		//newContentPanel.add(splitPane);
 		frame = new InternalFrame(newContentPanel);
-		
-		
-		
-		
 		frame.setBounds(posX, posY, getWidth() / 2, getHeight() / 2);
 		internalIndex++;
 		add(frame);

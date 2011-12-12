@@ -121,7 +121,6 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 				"OKCancelApplyHorizontalDialog.jButtonApply.Mnemonic").charAt(0));
 			jButtonApply.addActionListener(new ActionListener() {
 
-				@SuppressWarnings("unused")
 				public void actionPerformed(ActionEvent e) {
 
 					try {
@@ -155,7 +154,6 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 				"OKCancelApplyHorizontalDialog.jButtonUndo.Mnemonic").charAt(0));
 			jButtonUndo.addActionListener(new ActionListener() {
 
-				@SuppressWarnings("unused")
 				public void actionPerformed(ActionEvent e) {
                    //TODO set actions
 					System.out.println("Doing something to Undo operation...");
@@ -182,7 +180,6 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 				"OKCancelApplyHorizontalDialog.jButtonRedo.Mnemonic").charAt(0));
 			jButtonRedo.addActionListener(new ActionListener() {
 
-				@SuppressWarnings("unused")
 				public void actionPerformed(ActionEvent e) {
 	                  //TODO set actions
 					System.out.println("Doing something to Redo operation...");

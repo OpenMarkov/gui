@@ -44,7 +44,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	/**
 	 * A list that store the edition order 
 	 */
-	private LinkedList priorityList;
+	private LinkedList<Integer> priorityList;
 	/**
 	 * The index of the value selected in the graphic table
 	 */
@@ -89,7 +89,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 * @param priorityList the priority lists for potentials update. 
 	 * */
 	public NodePotentialEdit(ProbNode probNode,Double 
-			newValue, int row, int col, LinkedList priorityList) {
+			newValue, int row, int col, LinkedList<Integer> priorityList) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.row = row;
@@ -167,7 +167,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 				priorityList.remove(new Integer (potentialSelected));
 				priorityList.add(potentialSelected);
 			}
-			Iterator listIterator = priorityList.listIterator();
+			Iterator<Integer> listIterator = priorityList.listIterator();
 			newTable[potentialSelected] = newValue;
 			Double sum = 0.0;
 			Double rest = 0.0;
@@ -266,7 +266,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 * @return the priority list initialized with the the value edited in the 
 	 * last place of the list
 	 */	
-	private LinkedList getPriorityListInitialization(){
+	private LinkedList<Integer> getPriorityListInitialization(){
 	
 		for (int i = 0; i < probNode.getVariable().getNumStates(); i++){
 			if (i!=indexSelected)
@@ -280,7 +280,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 * Gets the priority list
 	 * @return the priority list
 	 */
-	public LinkedList getPriorityList(){
+	public LinkedList<Integer> getPriorityList(){
 		
 		return priorityList;
 		

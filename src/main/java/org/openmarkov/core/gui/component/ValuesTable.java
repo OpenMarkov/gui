@@ -34,7 +34,6 @@ import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -163,7 +162,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * Define the priority list when potential values are edited
 	 */
-	private LinkedList priorityList = new LinkedList ();
+	private LinkedList<Integer> priorityList = new LinkedList<Integer> ();
 
 	/**
 	 * default constructor
@@ -1118,7 +1117,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param values -
 	 *            values to be set in the column
 	 */
-	@SuppressWarnings("unused")
 	public void betterAddColumn(Object columnHeaderName, Object[] values) {
 
 		ValuesTableModel model = (ValuesTableModel) getModel();
@@ -1356,7 +1354,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		case CHANCE:
 			
 			priorityList = edit.getPriorityList();
-			ListIterator listIterator = priorityList.listIterator();
+			ListIterator<Integer> listIterator = priorityList.listIterator();
 			
 			ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
 			ArrayList<Variable> orderVariables = probNode.getPotentials().
@@ -1409,7 +1407,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			case CHANCE:
 				
 				priorityList = edit.getPriorityList();
-				ListIterator listIterator = priorityList.listIterator();
+				ListIterator<Integer> listIterator = priorityList.listIterator();
 				
 				while (listIterator.hasNext()== true){
 					position = (Integer)listIterator.next();

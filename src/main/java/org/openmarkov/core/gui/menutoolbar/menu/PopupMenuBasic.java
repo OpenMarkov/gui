@@ -26,6 +26,10 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -792738738895619891L;
+	/**
 	 * Object that listen to the user's actions.
 	 */
 	protected ActionListener listener;

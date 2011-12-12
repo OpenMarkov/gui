@@ -67,6 +67,11 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	implements ItemListener, PNUndoableEditListener {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7344555059488539825L;
+
 	private JLabel jLabelNodeRelationComment;
 	
 	/**
@@ -267,7 +272,6 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			nodeADDPotentialPanel.add( treeADDBuilder, BorderLayout.CENTER );
 			nodeADDPotentialPanel.setName("nodeTreeADDPotentialPanel");
 			nodeADDPotentialPanel.setBackground(Color.blue);
-			boolean newNode = true;
 			//nodeADDPotentialPanel.setNewNode(newNode);
 			//nodeADDPotentialPanel.setNodeProperties(probNode);
 		}

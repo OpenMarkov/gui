@@ -418,7 +418,6 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	 * @param e
 	 *            selection event information.
 	 */
-	@SuppressWarnings("unused")
 	public void valueChanged(ListSelectionEvent e) {
 
 		int index = valuesTable.getSelectedRow();
@@ -482,7 +481,6 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	 * 
 	 * @return the content of the table.
 	 */
-	@SuppressWarnings("unchecked")
 	public Object[][] getData() {
 
 		DefaultTableModel model = (DefaultTableModel) valuesTable.getModel();

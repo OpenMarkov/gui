@@ -169,8 +169,6 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 
 	
 	public void propertyChange(PropertyChangeEvent evt) {
-		String us= evt.getPropertyName();
-		//if evt.getPropertyName().contentEquals(cs)
 		if (evt.getSource().equals( getPanel().getJFormattedTextFieldPrecision() )) {
 			PrecisionEdit precisionEdit = new PrecisionEdit (panel.getProbNode(), 
 					(Double) getPanel().getJFormattedTextFieldPrecision().

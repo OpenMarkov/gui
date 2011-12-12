@@ -2,7 +2,6 @@ package org.openmarkov.core.gui.dialog.io;
 
 import java.io.File;
 
-import javax.swing.filechooser.FileFilter;
 
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;

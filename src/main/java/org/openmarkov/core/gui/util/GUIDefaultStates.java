@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.DefaultStates;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
 
 

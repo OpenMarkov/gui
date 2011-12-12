@@ -161,7 +161,6 @@ public class ZoomComboBox extends JComboBox implements ItemListener, KeyListener
 						JOptionPane.ERROR_MESSAGE);
 					setSelectedItem(oldValue);
 				} else {
-					double value = zoomValue.doubleValue() / 100;
 					newActionCommand =
 						ActionCommands.getZoomActionCommandValue(zoomValue
 							.doubleValue() / 100);
@@ -206,7 +205,7 @@ public class ZoomComboBox extends JComboBox implements ItemListener, KeyListener
 	 * @param e
 	 *            event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void keyReleased(KeyEvent e) {
 
 	}
@@ -217,7 +216,7 @@ public class ZoomComboBox extends JComboBox implements ItemListener, KeyListener
 	 * @param e
 	 *            event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void keyTyped(KeyEvent e) {
 
 	}

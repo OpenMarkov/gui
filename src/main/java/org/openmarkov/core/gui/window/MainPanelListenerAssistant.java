@@ -110,7 +110,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            event information.
 	 */
 	@Override
-	@SuppressWarnings("unused")
+	
 	public void windowClosing(WindowEvent e) {
 
 		closeApplication();
@@ -409,7 +409,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @param contentPanel
 	 *            content panel of the frame that has been closed.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void frameClosed(FrameContentPanel contentPanel) {
 
 		if (mainPanel.getMdi().getOpenFramesNumber() == 0) {

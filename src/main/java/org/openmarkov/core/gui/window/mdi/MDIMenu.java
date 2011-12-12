@@ -28,6 +28,11 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 public class MDIMenu extends Component{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1403517409754891762L;
+
+	/**
 	 * Constant that defines the menu 'Window'.
 	 */
 	private static final String WINDOW_MENU = "Window";

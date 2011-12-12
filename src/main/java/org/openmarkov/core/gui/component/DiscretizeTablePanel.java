@@ -839,7 +839,6 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * @return the content of the table.
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public Object[][] getData() {
 
 		DiscretizeTableModel model = (DiscretizeTableModel) valuesTable.getModel();

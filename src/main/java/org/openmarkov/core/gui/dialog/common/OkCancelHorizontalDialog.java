@@ -125,7 +125,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 				"OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
 			jButtonOK.addActionListener(new ActionListener() {
 
-				@SuppressWarnings("unused")
+				
 				public void actionPerformed(ActionEvent e) {
 
 					try {
@@ -162,7 +162,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			setCancelButton(jButtonCancel);
 			jButtonCancel.addActionListener(new ActionListener() {
 
-				@SuppressWarnings("unused")
 				public void actionPerformed(ActionEvent e) {
 
 					doCancelClickBeforeHide();

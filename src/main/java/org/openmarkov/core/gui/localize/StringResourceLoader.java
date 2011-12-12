@@ -3,9 +3,6 @@ package org.openmarkov.core.gui.localize;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -23,7 +20,6 @@ import javax.swing.JTextField;
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.menutoolbar.toolbar.ZoomComboBox;
-import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.mdi.MDIMenu;
 import org.openmarkov.core.gui.window.message.NonEditableTextArea;
 

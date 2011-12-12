@@ -262,16 +262,6 @@ public class NetworkVariablesPanel extends JPanel implements ItemListener {
 	private JLabel jLabelVariablesType = null;
 
 	/**
-	 * CheckBox to set the network to use Discrete Variable
-	 */
-	private JRadioButton jRadioButtonDiscreteVariable = null;
-
-	/**
-	 * CheckBox to set the network to use Continuous Variable
-	 */
-	private JRadioButton jRadioButtonContinuousVariable = null;
-
-	/**
 	 * Label of the default states field.
 	 */
 	private JLabel jLabelDefaultStates = null;

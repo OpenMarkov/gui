@@ -7,10 +7,6 @@ import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 
 import org.openmarkov.core.gui.OpenMarkov;
-import org.openmarkov.core.gui.util.Utilities;
-
-
-
 
 /**
  * OpenMarkovLogoIcon encapsulates in a single class the icon to be used in frames

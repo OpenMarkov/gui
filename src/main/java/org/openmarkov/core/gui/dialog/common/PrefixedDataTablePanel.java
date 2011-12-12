@@ -126,9 +126,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	protected void actionPerformedAddValue() {
 
 		int newIndex = 0;
-		//int u=0;
 		int i = 0;
-		int j = 0;
 		int l = 0;
 		Object[][] newData = null;
 
@@ -212,10 +210,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @return the prefixed data that aren't in the array 'data'.
 	 */
 	private Object[][] absentPrefixedData() {
-		@SuppressWarnings("rawtypes")
 		ArrayList<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
 		ArrayList<Node> nodes = new ArrayList<Node>();
-		ArrayList<Object[]> possibleData = new ArrayList<Object[]>();
 		edits.clear();
 		
 		for (ProbNode pProbNode:probNodes){

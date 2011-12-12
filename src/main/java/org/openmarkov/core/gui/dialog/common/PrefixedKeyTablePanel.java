@@ -1,10 +1,8 @@
 package org.openmarkov.core.gui.dialog.common;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -17,7 +15,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
@@ -190,7 +187,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	@Override
 	protected void actionPerformedAddValue() {
 		//TODO warning esto afecta a la tabla de propiedades adicionales
-		@SuppressWarnings("unused")
 		String option= JOptionPane.showInputDialog(this, 
 				"Proporcione el nuevo estado", "Agregar estado", 
 				JOptionPane.QUESTION_MESSAGE);

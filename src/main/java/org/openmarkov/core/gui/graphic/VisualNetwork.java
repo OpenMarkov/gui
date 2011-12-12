@@ -8,12 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.UndoableEdit;
 
-
-import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.CRemoveLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
@@ -910,12 +905,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	
 	public void undoableEditHappened(UndoableEditEvent e) {
+			
 		
-		
-		
-		UndoableEdit edit=e.getEdit();
-		Object p=e.getSource();
-		ProbNet p2=(ProbNet)p;
 		//if (edit instanceof AddVariableEdit){
 		/*if (edit instanceof AddProbNodeEdit){
 			
@@ -943,142 +934,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 	}
 
-	private void constructVisualInfo(UndoableEdit edit) {
 		
-		
-		//UndoableEdit edit=e.getEdit();
-		//Object p=e.getSource();
-		//ProbNet p2=(ProbNet)p;
-		//if (edit instanceof AddVariableEdit){
-				
-		if (edit instanceof AddProbNodeEdit ){
-			VisualNode node1 = createVisualNode(
-					((AddProbNodeEdit)edit).getProbNode());
-			visualNodes.add(node1);
-			node1.setByTitle(byTitle);
-		}else if (edit instanceof AddLinkEdit){
-			//ProbNet probNet =((AddLinkEdit) edit).getProbNet();
-			
-			ProbNode probNodeSource =probNet.getProbNode(
-					((AddLinkEdit) edit).getVariable1());
-			ProbNode probNodeDestination =probNet.getProbNode(
-					((AddLinkEdit) edit).getVariable2());
-			
-			VisualNode node1 = null;
-			VisualNode node2 = null;
-			int i = 0;
-			int l = -1;
-			l = visualNodes.size();
-			while ((i < l) && ((node1 == null) || (node2 == null))) {
-				if (node1 == null) {
-					/*if (linkWrapper.getNode1().equals(
-						visualNodes.get(i).getNodeWrapper())) {
-						node1 = visualNodes.get(i);
-					}*/
-					if (probNodeSource.equals(
-							visualNodes.get(i).getProbNode())) {
-							node1 = visualNodes.get(i);
-					}
-				}
-				if (node2 == null) {
-					if (probNodeDestination.equals(
-						visualNodes.get(i).getProbNode())) {
-						node2 = visualNodes.get(i);
-					}
-				}
-				i++;
-			}
-							
-			if ((node1 != null) && (node2 != null)) {
-				Link lk= probNet.getGraph().getLink(probNodeSource.getNode(), probNodeDestination.getNode(), true);
-				visualLinks.add(new VisualLink(lk, node1, node2));
-			}
-					
-		}else if (edit instanceof CRemoveLinkEdit){
-			ArrayList<Link> links = null;
-			links = probNet.getGraph().getLinks();
-			Link linkToCheck = null;
-			ArrayList<VisualLink> linksToDelete = new ArrayList<VisualLink>();
-			
-			for (VisualLink vLink : visualLinks) {
-				linkToCheck = vLink.getLink();
-				if (links.contains(linkToCheck)) {
-					links.remove(linkToCheck);
-				} else {
-					linksToDelete.add(vLink);
-				}
-			}
-			visualLinks.removeAll(linksToDelete);
-		}
-		
-		
-		/*ArrayList<NodeWrapper> nodes = getNodewrappers(network.getProbNodes());
-		ArrayList<VisualNode> nodesToDelete = new ArrayList<VisualNode>();
-		ArrayList<VisualLink> linksToDelete = new ArrayList<VisualLink>();
-		ArrayList<LinkWrapper> links = null;
-		NodeWrapper nodeToCheck = null;
-		LinkWrapper linkToCheck = null;
-		VisualNode node1 = null;
-		VisualNode node2 = null;
-		int i = -1;
-		int l = -1;
-
-		//nodes = network.getNodes();
-		for (VisualNode vNode : visualNodes) {
-			nodeToCheck = vNode.getNodeWrapper();
-			if (nodes.contains(nodeToCheck)) {
-				nodes.remove(nodeToCheck);
-			} else {
-				nodesToDelete.add(vNode);
-			}
-		}
-		visualNodes.removeAll(nodesToDelete);
-		for (NodeWrapper node : nodes) {
-			node1 = VisualNodeFactory.createVisualNode(node);
-			visualNodes.add(node1);
-			node1.setByTitle(byTitle);
-			
-		}
-		links = network.getLinks();
-		for (VisualLink vLink : visualLinks) {
-			linkToCheck = vLink.getLink();
-			if (links.contains(linkToCheck)) {
-				links.remove(linkToCheck);
-			} else {
-				linksToDelete.add(vLink);
-			}
-		}
-		visualLinks.removeAll(linksToDelete);
-		l = visualNodes.size();
-		for (LinkWrapper link : links) {
-			i = 0;
-			node1 = null;
-			node2 = null;
-			while ((i < l) && ((node1 == null) || (node2 == null))) {
-				if (node1 == null) {
-					if (link.getNode1().equals(
-						visualNodes.get(i).getNodeWrapper())) {
-						node1 = visualNodes.get(i);
-					}
-				}
-				if (node2 == null) {
-					if (link.getNode2().equals(
-						visualNodes.get(i).getNodeWrapper())) {
-						node2 = visualNodes.get(i);
-					}
-				}
-				i++;
-			}
-			if ((node1 != null) && (node2 != null)) {
-				visualLinks.add(new VisualLink(link, node1, node2));
-			}
-		}*/
-
-	}
-
-	
-
-	
 	public void undoableEditWillHappen(PNUndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
@@ -1175,7 +1031,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	
 	public void undoEditHappened(PNUndoableEditEvent event) {
-		UndoableEdit edit=event.getEdit();
 		//Object p=event.getSource();
 		//ProbNet p2=(ProbNet)p;
 		//if (edit instanceof AddVariableEdit){

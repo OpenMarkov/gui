@@ -910,10 +910,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			jPanelNodeType.setName( "jPanelNodeType" );
 			jPanelNodeType.setBorder( new LineBorder( Color.BLUE, 1, false ) );
 			jPanelNodeType.setLayout( new GridLayout( 3, 1 ) );
-			//jPanelNodeType.add( getJRadioButtonChanceNodeType() );
-			//jPanelNodeType.add( getJRadioButtonDecisionNodeType() );
-			//jPanelNodeType.add( getJRadioButtonUtilityNodeType() );
-			//initButtonGroupNodeType();
+			
 
 		}
 		return jPanelNodeType;

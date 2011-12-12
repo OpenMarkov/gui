@@ -32,6 +32,11 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
 public class NodeAddFindingDialog extends JDialog {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5618641549380924577L;
+
+	/**
 	 * String resource.
 	 */
 	private StringResource stringResource = null;

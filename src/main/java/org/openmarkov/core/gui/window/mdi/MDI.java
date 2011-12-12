@@ -112,7 +112,6 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @throws UnsupportedOperationException
 	 *             if selection is vetoed.
 	 */
-	@SuppressWarnings("unchecked")
 	public void createNewFrame(FrameContentPanel newContentPanel)
 					throws UnsupportedOperationException {
 
@@ -314,7 +313,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @param e
 	 *            event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void internalFrameDeiconified(InternalFrameEvent e) {
 
 	}
@@ -325,7 +324,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @param e
 	 *            event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void internalFrameDeactivated(InternalFrameEvent e) {
 
 	}
@@ -336,7 +335,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @param e
 	 *            event information.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void internalFrameIconified(InternalFrameEvent e) {
 
 	}

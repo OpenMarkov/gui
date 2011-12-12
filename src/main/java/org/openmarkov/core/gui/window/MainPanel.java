@@ -41,6 +41,11 @@ public class MainPanel extends JPanel {
 	
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7852474978327911654L;
+
+	/**
 	 * Object that manages the MultiDocument Interface.
 	 */
 	private MDI mdi = null;

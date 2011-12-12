@@ -68,7 +68,7 @@ public class ScrollEditorPanel extends JScrollPane implements
 	 * @param incrBottom
 	 *            increase for below.
 	 */
-	@SuppressWarnings("unused")
+	
 	public void sizeChanged(double incrLeft, double incrTop, double incrRight,
 							double incrBottom) {
 

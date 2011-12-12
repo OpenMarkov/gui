@@ -730,8 +730,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 
 	
 	public void undoEditHappened(PNUndoableEditEvent event) {
-		Object u = event.getSource();
-		
+			
 		updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
 				((PNESupport)event.getSource()).getCanRedo());
 		

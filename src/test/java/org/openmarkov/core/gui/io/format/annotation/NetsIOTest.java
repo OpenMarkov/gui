@@ -4,9 +4,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
-
 import org.junit.Test;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.model.network.ProbNet;
@@ -35,8 +32,6 @@ public class NetsIOTest {
 		String fileNameOpen = null;
 		String fileNameSave = null;
 		String path = null;
-		URL url = this.getClass().getClassLoader().getResource(fileToOpen);
-		//URI uri = getClass().getResource(fileToOpen).toURI();
 		file = new File(getClass().getClassLoader().getResource(fileToOpen).toURI());
 		fileNameOpen = file.getAbsolutePath();
 		if (fileNameOpen == null) {

@@ -1102,22 +1102,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * Panel that contains the variables type options group.
 	 */
 	private JPanel jPanelNodeVariableType = null;
-	/**
-	 * The Node Variable Type Button Group
-	 */
-	private ButtonGroup jButtonGroupNodeVariableType = null;
-	/**
-	 * The Node Variable Type Discrete Radio Button
-	 */
-	private JRadioButton jRadioButtonDiscreteNodeVariableType = null;
-	/**
-	 * The Node Variable Type Discretized Radio Button
-	 */
-	private JRadioButton jRadioButtonDiscretizedNodeVariableType = null;
-	/**
-	 * The Node Variable Type Continuous Radio Button
-	 */
-	private JRadioButton jRadioButtonContinuousNodeVariableType = null;
+
+	
 	/**
 	 * internal node type item for convenience purpose
 	 */

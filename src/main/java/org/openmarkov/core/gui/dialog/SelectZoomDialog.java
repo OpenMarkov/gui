@@ -174,7 +174,6 @@ public class SelectZoomDialog extends OkCancelHorizontalDialog {
 				TitledBorder.DEFAULT_POSITION, null, new Color(51, 51, 51)));
 			radiobuttonListener = new ChangeListener() {
 
-				@SuppressWarnings("unused")
 				public void stateChanged(ChangeEvent e) {
 
 					zoomSpinner.setEnabled(zoomOther.isSelected());

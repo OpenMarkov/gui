@@ -1,14 +1,6 @@
 package org.openmarkov.core.gui.window.edition;
 
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
-
-
 import org.openmarkov.core.model.network.ProbNet;
-
-
 
 
 /**

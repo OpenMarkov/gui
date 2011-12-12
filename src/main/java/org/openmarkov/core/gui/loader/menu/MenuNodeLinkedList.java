@@ -62,7 +62,7 @@ public class MenuNodeLinkedList {
 	/**
 	 * @return the menuList
 	 */
-	public LinkedList getMenuList() {
+	public LinkedList<MenuNode> getMenuList() {
 
 		return menuList;
 	}

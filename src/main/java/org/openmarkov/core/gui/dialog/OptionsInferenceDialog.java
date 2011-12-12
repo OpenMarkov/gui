@@ -28,6 +28,11 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
 public class OptionsInferenceDialog extends JDialog {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1912979194800110113L;
+
+	/**
 	 * String resource.
 	 */
 	private StringResource stringResource = null;

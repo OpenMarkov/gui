@@ -9,7 +9,6 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
-import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.apache.log4j.Logger;
 
