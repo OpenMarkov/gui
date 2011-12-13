@@ -3785,11 +3785,11 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 	 */
 	private ImageIcon getEkitIcon(String iconName) {
 
-		URL imageURL = getClass().getResource("icons/" + iconName + "HK.png");
+		URL imageURL = getClass().getResource("icon/" + iconName + "HK.png");
 		if (imageURL != null) {
 			return new ImageIcon(Toolkit.getDefaultToolkit().getImage(imageURL));
 		}
-		imageURL = getClass().getResource("icons/" + iconName + "HK.gif");
+		imageURL = getClass().getResource("icon/" + iconName + "HK.gif");
 		if (imageURL != null) {
 			return new ImageIcon(Toolkit.getDefaultToolkit().getImage(imageURL));
 		}
