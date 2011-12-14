@@ -179,7 +179,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 	 *            file that contains the resource strings.
 	 * @return a resource bundle linked to the file.
 	 */
-	private StringResource getBundle(String resourceFile) {
+	public StringResource getBundle(String resourceFile) {
 		StringResource stringResource = null;
 		ResourceBundle bundle = null;
 		String file =  "localize/" + resourceFile;
