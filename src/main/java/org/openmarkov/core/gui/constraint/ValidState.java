@@ -11,8 +11,6 @@ package org.openmarkov.core.gui.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -34,16 +32,16 @@ public class ValidState extends PNConstraint implements PropertyNames {
 	// Attributes.
 	private String message;
 	
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {
-		ArrayList<PNEdit> edits =	UtilConstraints.getEditsType(event, 
+		ArrayList<PNEdit> edits =	UtilConstraints.getEditsType(edit, 
 				NodeStateEdit.class);
-		for (PNEdit edit : edits) {
-			State state = ((NodeStateEdit)edit).getNewState();
-			State currentState = ((NodeStateEdit)edit).getLastState();
-			ProbNode probNode =((NodeStateEdit)edit).getProbNode();
-			StateAction stateAction =((NodeStateEdit)edit).getStateAction();
+		for (PNEdit simpleEdit : edits) {
+			State state = ((NodeStateEdit)simpleEdit).getNewState();
+			State currentState = ((NodeStateEdit)simpleEdit).getLastState();
+			ProbNode probNode =((NodeStateEdit)simpleEdit).getProbNode();
+			StateAction stateAction =((NodeStateEdit)simpleEdit).getStateAction();
 			//if ((name == null) || (name.contentEquals(""))) {
 			if (!checkState(state.getName(), currentState.getName(), 
 					probNode, stateAction)){

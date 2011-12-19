@@ -11,8 +11,6 @@ package org.openmarkov.core.gui.constraint;
 
 import java.util.ArrayList;
 
-import javax.swing.event.UndoableEditEvent;
-
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -31,23 +29,20 @@ public class ValidName extends PNConstraint {
 	// Attributes.
 	private String message;
 
-	public boolean checkEvent(UndoableEditEvent event) 
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NonProjectablePotentialException, WrongCriterionException {
 		ArrayList<PNEdit> edits;
 		try {
-			edits = UtilConstraints.getEditsType(event, 
-					NodeNameEdit.class);
-			for (PNEdit edit : edits) {
-				String name = ((NodeNameEdit)edit).getNewName();
-				String currentName = ((NodeNameEdit)edit).getPreviousName();
-				ProbNet probNet =((NodeNameEdit)edit).getProbNet();
+            edits = UtilConstraints.getEditsType (edit, NodeNameEdit.class);
+			for (PNEdit simpleEdit : edits) {
+				String name = ((NodeNameEdit)simpleEdit).getNewName();
+				String currentName = ((NodeNameEdit)simpleEdit).getPreviousName();
 				//if ((name == null) || (name.contentEquals(""))) {
 				if (!checkName(name, currentName, probNet)){
 					return false;
 				}
 			}
 		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
