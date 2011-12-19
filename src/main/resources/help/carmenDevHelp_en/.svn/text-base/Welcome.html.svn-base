@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta content="Helen" name="generator">
+    <link href="javahelp.css" rel="stylesheet" type="text/css">
+    <title>Welcome to CARMEN project</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="images/carmenHelpIcons/c3_32.gif" width="32" height="32" border="0" hspace=
+      "0">&nbsp;Welcome to CARMEN project
+    </h1>
+    <hr align="left" width="100%" size="2" color="blue">
+    <p>
+       &nbsp;
+    </p>
+    <h2>
+       Welcome to the CARMEN version 1.0!
+    </h2>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       Carmen is a framework to develop PGM (Probabilistic Graphical Models).
+    </p>
+    <p>
+       The main difference Carmen will offer to you against other PGM projects is the main emphasis
+      that has been done to follow the Software Engineering Principles.The main advantange which
+      have been achieved following those principles is a full documentation project with
+      specifications and design documents, so there are less errors, it is becoming more efficient,
+      more maintainable and, as a final consequence, it will be easy to make new contributions by a
+      totally new member of the Carmen project team.
+    </p>
+    <p>
+       The Carmen application screen is divided into two main panes. The tabs on the upper side
+      provide navigation within Camen application. You can double click a menu or an icon on the
+      upper side in order to open the corresponding dialog or working area on the bottom side. On
+      the graphical items on the network, you can double click to open their corresponding
+      properties dialog.
+    </p>
+    <p>
+       Network will always maintain their integrity as you add/modify/delete elements and/or you
+      apply an algorithm.
+    </p>
+    <h3>
+       Open / Write networks
+    </h3>
+    <p>
+       Carmen allows to open networks coming from Elvira, Huggin and Carmen formats and allows to
+      write networks on Elvira and Carmen formats, so you can use also Carmen for converting
+      networks from one format to another.
+    </p>
+    <p>
+       The design is made to allow different formats to be incorporated easily.
+    </p>
+    <h3>
+       Other Features and Online Help
+    </h3>
+    <p>
+       Carmen offers lots of other features. Please explore the these features on the toolbar and
+      menus.
+    </p>
+    <p>
+       Complete online help is available under the Help menu, with Contents and Searching engines
+      both for final end users and for technical users.
+    </p>
+    <p>
+       "F1" key is also provided on the major topics around the different dialog boxes of the
+      project.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h2>
+       <u>Thank you for using CARMEN</u> <u>and... enjoy it!!!</u>
+    </h2>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

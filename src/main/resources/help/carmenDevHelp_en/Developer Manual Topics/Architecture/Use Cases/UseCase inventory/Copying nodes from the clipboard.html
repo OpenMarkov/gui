@@ -1,0 +1,235 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Copying nodes from the clipboard</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp; Copying nodes from the clipboard
+    </h1>
+    <p>
+       &nbsp;
+    </p>
+    <table border="1" cellpadding="4" style=
+    " page-break-inside: auto; page-break-before: auto; page-break-after: auto;" cellspacing="0"
+    bordercolor="#000000" width="489">
+      <col width="234">
+      <col width="237"><THEAD>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b>Use case: Copying nodes from the clipboard</b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b>Comment:</b> This use case allows to paste the information from the clipboard to
+            the current network.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b>Actor: User</b>
+          </p>
+        </td>
+      </tr>
+      </THEAD><TBODY>
+      <tr valign="top">
+        <td width="234">
+          <p align="left">
+             <b>Normal course</b>
+          </p>
+        </td>
+        <td width="237">
+          <p align="left">
+             <b>Alternative courses</b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="2">1</font><font size="3">.When the edition type is the selection of
+            objects and if the clipboard contains information, the user presses the key combination
+            CONTROL + V or selects the option to paste that is available in the main menu as in the
+            standard toolbar or presses on the option of the emerging menu on the back of the panel
+            network.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.All items are deselected.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234" height="56">
+          <p align="justify">
+             <font size="3">3.Use case <i>Updating the menus when changing the selected element</i>
+            is executed.</font>
+          </p>
+        </td>
+        <td width="237" height="56">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234" height="173">
+          <p align="justify">
+             <font size="3">4.The program takes a node from the clipboard and if it is suitable for
+            the network *, it is created in its original location.</font>
+          </p>
+          <p align="justify">
+             <font size="3">&nbsp;*A given node is suitable for a network if it can be created on
+            it. For example, decision and utility nodes are not suitable for Bayesian networks but
+            for influence diagrams.</font>
+          </p>
+        </td>
+        <td width="237" height="173">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">4.1.If the node exists, it tries to create it by adding "_X" to the
+            name until it can be created. X is an integer from one that is increased until there is
+            not a node with that name. The new node is created a little removed from its original
+            location.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">5.While there are nodes in the clipboard, it returns to point 4.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">5.1.If there are no more nodes to create, it goes to point 6.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p style=" margin-bottom: 0cm;">
+             <font size="3">6.The program takes a link from the clipboard and creates it by joining
+            the two nodes as if they are stuck as they were already in the network.<br style=
+            " background-attachment: scroll; background-repeat: repeat;">
+            </font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">6.1. If one of the nodes that join the link was not copied to the
+            clipboard and no longer exists, the link is not created.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">7. While there are links into the clipboard, it returns to point 6.<br
+            style=" background-attachment: scroll; background-repeat: repeat;">
+            </font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">7.1.If there are no more links to create, it goes to point 8.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">8.All the nodes created are selected</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">9.The use case <i>Updating the menus when changing the selected
+            element</i> is executed.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">10.A new point to undo and redo the pasting of the nodes is
+            created.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">11. The use case <i>Updating menus when modifying a network</i> is
+            executed.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3">&nbsp;</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">12.The network is marked as modified (if it was not already), placing
+            an asterisk at the title of the window in which is being editing.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      </TBODY>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../javahelp.css">
+    <title>Discretizacion de variables continuas</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace="0" height="32" width=
+      "32">&nbsp;Discretizacion de variables continuas
+    </h1>
+    <hr size="2" align="left" width="100%" color="blue">
+    <h4>
+       Discretizacion de variables continuas
+    </h4>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       La discretización de variables sólo tiene sentido cuando se está tratando con variables
+      numéricas, de modo que esta opción queda desactivada para varaibles categóricas y para
+      variables que tengan tan sólo dos estados numéricos, ya que se entiende que una variable con
+      estados, por ejemplo, '0' y '1' no es una variable discretizable.
+    </p>
+    <p>
+       El módulo de aprendizaje de Carmen da cuatro opciones para la discretización de variables:
+    </p>
+    <ol>
+      <li>
+        <p>
+           <b>No discretizar</b>: Tanto los estados de la variable como los casos almacenados en la
+          base de datos permanecen en su estado original.
+        </p>
+      </li>
+      <li>
+        <p>
+           <b>Según red modelo</b>: Los nuevos estados de la variable se copian de la variable que
+          tiene el mismo nombre en la red modelo. En caso de que dicha variable no exista, o su
+          discretización no coincida con los datos de la base de datos (supóngase por ejemplo que
+          la discretización de la variable en la red modelo está formada por los intervalos (0, 1)
+          y [1, 2) y en nuestra base de datos aparece un valor de 17 para esa variable) se muestra
+          un mensaje de error y se mantienen la variable original.<br>
+        </p>
+      </li>
+      <li>
+        <p>
+           <b>Igual frecuencia</b>: La variable se discretiza en intervalos de, aproximadamente,
+          igual frecuencia. El hecho de que los intervalos tengan la misma frecuencia o no, depende
+          de la distribución de los valores de la variable en la base de datos y del número de
+          intervalos seleccionado. Supongamos que tenemos una variable con 8 estados que en la base
+          de datos aparecen dos veces cada uno (distribución uniforme), si se nos pide realizar
+          cuatro intervalos de igual frecuencia, los intervalos resultantes, efectivamente, tendrán
+          la misma frecuencia. Sin embargo, si el primero de los valores apareciera en la base de
+          datos 25 veces y los demás una sola vez, tendríamos un intervalo de frecuencia 25 y tres
+          intervalos de frecuencia mucho menor. De ahí que resulte muy conveniente conocer la
+          distribución de los datos antes de realizar este tipo de discretización.<br>
+        </p>
+      </li>
+      <li>
+        <p>
+           <b>Igual anchura</b>: La variable se discretiza en intervalos de la misma anchura.<br>
+        </p>
+        <br>
+      </li>
+    </ol>
+    <p>
+       La manera de seleccionar cada una de estas opciones en la interfaz gráfica es similar a la
+      explicada para el tratamiento de valores ausentes. En la parte superior de la pestaña
+      'Variables' se muestra un 'ComboBox' en el que se dan cinco opciones. La opción por defecto
+      es 'Seleccionar para cada variable', la cual nos permite seleccionar la opción de
+      discretización para cada variable independientemente. Para ello, se ha de hacer uso del
+      'ComboBox' situado a la derecha del nombre de cada variable. Además de dicha opción, se
+      muestran las cuatro opciones comentadas anteriormente, que permiten aplicar la opción
+      seleccionada a todas las variables de la base de datos. De este modo, si se quiere utilizar
+      una misma política de discretización para todas las variables de la base de datos es más
+      cómodo seleccionar una de estas cuatro opciones, en caso contrario será necesario elegir la
+      opción 'Seleccionar para cada variable' y a continuación, seleccionar la opción deseada para
+      cada variable en el 'ComboBox' que aparece a la derecha de su nombre.
+    </p>
+    <p>
+       Es importante señalar que para aquellas variables que se ha optado discretizar, no se
+      permite mantener sus valores ausentes, pues no tiene mucho sentido tener en una variable
+      discretizada un estado que no esté asociado a ningún intervalo. De este modo, al seleccionar
+      una opción de discretización (obviamente, distinta de 'No discretizar'), se marcará la opción
+      de 'Mantener valores ausentes' para el tratamiento de datos.
+    </p>
+  </body>
+</html>

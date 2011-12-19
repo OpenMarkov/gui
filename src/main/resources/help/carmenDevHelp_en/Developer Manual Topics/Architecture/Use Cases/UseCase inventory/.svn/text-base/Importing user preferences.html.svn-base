@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Importing user preferences</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="282" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Importing user preferences
+    </h1>
+    <table border="1" cellpadding="7" cellspacing="0" bordercolor="#000000" width="491">
+      <col width="229">
+      <col width="232">
+      <tr>
+        <td colspan="2" valign="top" width="475">
+          <p align="justify">
+             <b><font size="3">Use case: Importing user preferences</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="475">
+          <p align="justify">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="229">
+          <p align="justify">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="232">
+          <p align="justify">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="229">
+          <p align="justify">
+             <font size="3">1.A window to select the customizable user's properties setting
+            external file&nbsp;is presented.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="229">
+          <p align="justify">
+             <font size="3">2.If the filename is valid and contents the customizable user's
+            properties, they are imported to the actual program.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p align="justify">
+             <font size="3">2.1.If the file is not valid, an error message is given and there is no
+            import.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="229">
+          <p align="justify">
+             <font size="3">3.The customizable properties tree is refreshed in the window.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p align="justify">
+             <font size="3">3.1If there has not been changes, any refresh is done.</font>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

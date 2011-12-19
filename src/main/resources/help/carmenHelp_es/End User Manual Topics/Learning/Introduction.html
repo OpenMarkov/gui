@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../javahelp.css">
+    <title>Aprendizaje en CARMEN -  Introducción</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace="0" height="32" width=
+      "32">&nbsp;Aprendizaje en CARMEN - Introducción
+    </h1>
+    <hr size="2" align="left" width="100%" color="blue">
+    <h2>
+       Módulo de aprendizaje en Carmen
+    </h2>
+    <p>
+       La funcionalidad básica del módulo de aprendizaje de Carmen es el aprendizaje de redes
+      bayesianas a partir de bases de datos en distintos formatos. Acompañando a esta funcionalidad
+      principal, se ofrecen una serie de opciones adicionales encaminadas a facilitar el
+      tratamiento y preprocesamiento de los datos.
+    </p>
+    <h4>
+       Cargar/Guardar ficheros
+    </h4>
+    <p>
+       El módulo de aprendizaje de Carmen acepta los formatos Elvira, Excel y Weka, que son
+      formatos típicamente utilizados en aprendizaje de redes bayesianas. Además, Carmen permite
+      guardar en cualquiera de estos formatos las bases de datos originales así como bases de datos
+      ya preprocesadas. De este modo, Carmen es&nbsp;una herramienta útil para transformar bases de
+      datos de un formato a otro permitiendo la comparación entre las redes obtenidas con
+      herramientas&nbsp;como Carmen, Elvira o Weka.
+    </p>
+    <h4>
+       Uso de red modelo
+    </h4>
+    <p>
+       El uso de una red modelo permite al módulo de aprendizaje&nbsp;obtener información útil
+      durante el proceso de aprendizaje de una nueva red, facilitando así la labor del usuario. La
+      información obtenida puede referirse a la posición de los nodos en pantalla, al
+      preprocesamiento de las distintas variables o al uso de enlaces fijos durante el proceso de
+      aprendizaje.
+    </p>
+    <h4>
+       Preprocesamiento de los datos
+    </h4>
+    <p>
+       El módulo de aprendizaje de Carmen permite el tratamiento de valores ausentes y la
+      discretización de variables continuas. A su vez, cada una de estas opciones se dividen en
+      distintos métodos de preprocesamiento que permiten un adecuado tratamiento de los datos.
+    </p>
+    <h4>
+       Algortimos y métricas
+    </h4>
+    <p>
+       Por último, Carmen permite la utilización de distintos algoritmos de aprendizaje, como el
+      algoritmo del gradiente,&nbsp;y distintas métricas de calidad de tipo Bayesiano, de entropía
+      o de mínima longitud de descripción.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h2>
+       Acceso al módulo de aprendizaje en Carmen
+    </h2>
+    <p>
+       Para acceder a la interfaz del módulo de aprendizaje en Carmen basta con seleccionar la
+      opción "Aprendizaje" dentro del menú desplegable "Aprendizaje" o pulsar las teclas Ctrl + L.
+    </p>
+    <p>
+       Al acceder al módulo de aprendizaje, se nos muestra una pantalla inicial en la que podemos
+      distinguir dos pestañas: La pestaña 'General'&nbsp;(fig. 1) permite cargar y guardar ficheros
+      de bases de datos, así como cargar redes previamente creadas para utilizarlas como modelo
+      durante el aprendizaje. La pestaña 'Variables' &nbsp;(fig. 2) permite seleccionar las
+      variables que van a formar parte de la red y elegir las distintas opciones de preprocesado
+      para cada una de ellas. Además, en la parte inferior de la ventana, se da la opción de elegir
+      el algoritmo de aprendizaje, la métrica y el valor del parámetro alfa a usar en la etapa de
+      aprendizaje paramétrico.&nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <div align="center">
+      <img src="../../images/LearningImages/generalPane.jpg">
+    </div>
+    <div align="center">
+      Fig. 1: Aspecto inicial de la pestaña 'General'<br>
+    </div>
+    <p>
+       &nbsp;
+    </p>
+    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td width="50%">
+          1.- Abrir fichero de casos
+        </td>
+        <td width="50%">
+          6.- Cerrar la ventana
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          2.- Selección de red modelo
+        </td>
+        <td width="50%">
+          7.- Elección de algoritmo y métrica
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          3.- Abrir red modelo
+        </td>
+        <td width="50%">
+          8.- Reiniciar los valores
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          4.- Iniciar el aprendizaje
+        </td>
+        <td width="50%">
+          9- Uso de la red modelo
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          5.- Guardar base de datos preprocesada
+        </td>
+        <td width="50%">
+          10.- Guardar fichero de casos
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+    <div align="center">
+      <img src="../../images/LearningImages/variablesPane.jpg">
+    </div>
+    <div align="center">
+      Fig. 2: Aspecto inicial de la pestaña 'Variables'
+    </div>
+    <p>
+       &nbsp;
+    </p>
+    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td width="50%">
+          1.- Selección de variables
+        </td>
+        <td width="50%">
+          6.- Elección de algoritmo y métrica
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          2.- Variables y opciones de preprocesamiento
+        </td>
+        <td width="50%">
+          7.- Número de intervalos en la discretización
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          3.- Iniciar el aprendizaje
+        </td>
+        <td width="50%">
+          8.- Opciones de tratamiento de valores ausentes
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          4.- Guardar base de datos preprocesada
+        </td>
+        <td width="50%">
+          9.- Opciones de discretización
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          5.- Cerrar la ventana
+        </td>
+        <td width="50%">
+          &nbsp;
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

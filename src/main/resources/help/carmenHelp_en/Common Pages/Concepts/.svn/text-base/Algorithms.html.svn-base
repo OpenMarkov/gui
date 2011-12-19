@@ -1,0 +1,179 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+<meta name="generator" content="Helen">
+<link href="../../javahelp.css" type="text/css" rel="stylesheet">
+<title>Algorithms</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img src="../../images/carmenHelpIcons/c2_32.gif" border="0"
+	height="32" width="32" hspace="0">&nbsp;Algorithms</h1>
+<hr size="2" align="left" color="blue" width="100%">
+<h3>Algorithms</h3>
+<p>define here why are required and what are the Algorithms used in
+CARMEN</p>
+<table border="2">
+	<tr>
+		<td>
+		<center><b>Y</b></center>
+		</td>
+		<td><b>pos<sub>y</sub>(Y)</b></td>
+		<td>
+		<center><b>Y<sup>X</sup></b></center>
+		</td>
+		<td><b>pos<sub>X</sub>(Y<sup>X</sup>)</b></td>
+		<td><b>varToIncr(Y)</b></td>
+		<td><b>accOffset</b></td>
+	</tr>
+	<tr>
+		<td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>0</center>
+		</td>
+		<td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>0</center>
+		</td>
+		<td>
+		<center>0(B)</center>
+		</td>
+		<td>
+		<center>+2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>1</center>
+		</td>
+		<td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>2</center>
+		</td>
+		<td>
+		<center>1(D)</center>
+		</td>
+		<td>
+		<center>-2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>2</center>
+		</td>
+		<td>[a<sub>0</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>0</center>
+		</td>
+		<td>
+		<center>0(B)</center>
+		</td>
+		<td>
+		<center>+2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>3</center>
+		</td>
+		<td>[a<sub>0</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>2</center>
+		</td>
+		<td>
+		<center>2(A)</center>
+		</td>
+		<td>
+		<center>-1</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>0</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>4</center>
+		</td>
+		<td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>1</center>
+		</td>
+		<td>
+		<center>0(B)</center>
+		</td>
+		<td>
+		<center>+2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>1</sub>,d<sub>0</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>5</center>
+		</td>
+		<td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>3</center>
+		</td>
+		<td>
+		<center>1(D)</center>
+		</td>
+		<td>
+		<center>-2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>0</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>6</center>
+		</td>
+		<td>[a<sub>1</sub>,b<sub>0</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>1</center>
+		</td>
+		<td>
+		<center>0(B)</center>
+		</td>
+		<td>
+		<center>+2</center>
+		</td>
+	</tr>
+	<tr>
+		<td>[b<sub>1</sub>,d<sub>1</sub>,a<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>7</center>
+		</td>
+		<td>[a<sub>1</sub>,b<sub>1</sub>,c<sub>0</sub>]</td>
+		<td>
+		<center>3</center>
+		</td>
+		<td>
+		<center>3(C)</center>
+		</td>
+		<td>
+		<center>+1</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<center>...</center>
+		</td>
+		<td>
+		<center>...</center>
+		</td>
+		<td>
+		<center>...</center>
+		</td>
+		<td>
+		<center>...</center>
+		</td>
+		<td>
+		<center>...</center>
+		</td>
+		<td>
+		<center>...</center>
+		</td>
+	</tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

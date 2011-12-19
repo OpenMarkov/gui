@@ -1,0 +1,88 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+<meta name="generator" content="Helen">
+<link href="../../javahelp.css" type="text/css" rel="stylesheet">
+<title>Canonical Models</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img src="../../images/carmenHelpIcons/c2_32.gif" border="0"
+	height="32" width="32" hspace="0">&nbsp;Canonical Models</h1>
+<p>&nbsp;</p>
+<hr size="2" align="left" color="blue" width="100%">
+<p>&nbsp;</p>
+<h3>What is a canonical model</h3>
+<p>&nbsp;</p>
+<p>En una red bayesiana, para un nodo Y cuyos padres son X = {X<i><sub>1</sub></i>;...;X<i><sub>n</sub></i>},
+la tabla de probabilidad condicional (TPC) consta de un número de
+parámetros que crece exponencialmente con <i>n</i>. En concreto, si la
+variable Y puede tomar <i>m</i> valores, la distribucióon de
+probabilidad P(<i><sup>y</sup>/<sub>x</sub></i>) tiene <i>m</i>
+parámetros, de los cuales m - 1 son independientes (porque su suma ha de
+ser la unidad) y, si cada padre puede tomar <i>m</i> valores, habría <i>2m</i>
+configuraciones de X, de modo que el número total de parámetros es mn+1,
+de los cuales (m-1)x mn son independendientes. Por ejemplo, para un nodo
+binario con 5 padres binarios necesitamos 32 parámetros independientes.
+Si tenemos una familia con 4 padres y cada nodo toma 3 valores,
+necesitamos 162 parámetros.</p>
+<p>En la práctica, construir una TPC con más de 3 o 4 padres es muy
+difícil, casi imposible, no sólo por el elevado número de parámetros que
+se necesita, sino también porque cada uno de ellos es muy difícil de
+estimar. Por ejemplo, para estimar la probabilidad P(<i><sup>y</sup>/<sub>x</sub></i>)
+un experto debe recordar los casos en que ha visto la configuración <i>x</i>
+y decir aproximadamente en cuantos de ellos la variable Y tomaba el
+valor y. El problema es que si la configuración <i>x</i> es muy poco
+frecuente, la estimación no va a ser fiable. Por ejemplo, la estimación
+de P(<i><sup>fiebre</sup>/<sub>paludismo,neumonía, bronquitis</sub></i>)
+puede ser muy difícil porque es casi seguro que ningún médico ha visto
+nunca un paciente que padezca simultáneamente las tres enfermedades.
+Igualmente, en una base de datos tampoco habría ningún paciente con esa
+configuración de enfermedades, ni es previsible que encontremos un
+número suficiente de pacientes en esa situación al hacer un estudio
+epidemiológico, ni es esperable encontrar ese dato en la literatura
+médica.</p>
+<p>En estas situaciones pueden ser útiles los modelos canónicos,
+denominados así porque son como los bloques elementales a partir de los
+cuales se pueden construir modelos probabilistas más sofisticados. En
+esta sección vamos a presentar los dos tipos de modelos canónicos más
+importantes: los modelos deterministas y los basados en la hipótesis de
+independencia de influencia causal (IIC). Los primeros no necesitan
+ningún parámetro. Los segundos, que se basan en los primeros, requieren
+un número de parámetros proporcional al número de padres, en vez de ser
+exponencial, y además los parámetros suelen ser más fáciles de estimar
+que en el caso de una TPC general.</p>
+<p>&nbsp;</p>
+<h3>Modelos deterministas</h3>
+<p><br>
+El tipo de modelo canóonico más sencillo es aquél en que el valor de Y
+es una función de los valores de los padres: <i>y = f(x<sub>1</sub>;...;
+x<sub>n</sub>)</i>. En este caso la tabla de probabilidad condicional (TPC)
+es</p>
+<table cellpadding="0" align="center" border="0" height="57"
+	cellspacing="0" width="358">
+	<tr>
+		<td rowspan="2" align="center" height="68" width="65">P(<sup>y</sup>/<sub>x</sub>)
+		=</td>
+		<td valign="middle" rowspan="2" align="center" height="68" width="30">
+		<font size="+7">{</font></td>
+		<td align="center" height="41" width="30">1</td>
+		<td align="left" height="41" width="226">if y = f(x)</td>
+	</tr>
+	<tr>
+		<td align="center" height="41" width="30">0</td>
+		<td align="left" height="41" width="226">otherwise</td>
+	</tr>
+</table>
+<p>&nbsp;</p>
+<p>Por tanto, la principal ventaja de estos modelos es que no
+necesitan ningún parámetro<br>
+numérico.<br>
+<img src="../../images/Formulas/Spanish - Table Canonical Models.jpg"
+	vspace="2" hspace="5"><br>
+Nota: Algunas de las funciones más comunes utilizadas para construir
+modelos canónicos.<br>
+En el caso de variables booleanas, pos(<i>x</i>) indica el número de
+variables dentro de la configuración <i>x</i> que toman el valor
+"verdadero", "presente" o "positivo".</p>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+                     "http://java.sun.com/products/javahelp/map_2_0.dtd">
+
+<map version="1.0">
+	<mapID target="1fe2ade8-3a60-11df-a939-000c290d44c0" url="images/Diagrama clases/1fe2ade8-3a60-11df-a939-000c290d44c0.png"/>
+	<mapID target="Adding a father node to a node in a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Adding a parent node to a node in a network.html"/>
+	<mapID target="Adding states to a node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Adding states to a node.html"/>
+	<mapID target="Algorithms" url="Common Pages/Concepts/Algorithms.html"/>
+	<mapID target="arrowDown" url="images/carmenIcons/arrowDown.gif"/>
+	<mapID target="arrowUp" url="images/carmenIcons/arrowUp.gif"/>
+	<mapID target="Bayesian networks and Influence Diagrams" url="Common Pages/Concepts/Bayesian networks and Influence Diagrams.html"/>
+	<mapID target="c2_16" url="images/carmenHelpIcons/c2_16.gif"/>
+	<mapID target="c2_32" url="images/carmenHelpIcons/c2_32.gif"/>
+	<mapID target="c2_64" url="images/carmenHelpIcons/C2_64.gif"/>
+	<mapID target="c3_16" url="images/carmenHelpIcons/c3_16.gif"/>
+	<mapID target="c3_32" url="images/carmenHelpIcons/c3_32.gif"/>
+	<mapID target="c3_64" url="images/carmenHelpIcons/c3_64.gif"/>
+	<mapID target="caminos1" url="images/carmenHelpIcons/caminos.gif"/>
+	<mapID target="Canceling edition user preferences" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Canceling edition user preferences.html"/>
+	<mapID target="Canonical Models" url="Common Pages/Concepts/Canonical Models.html"/>
+	<mapID target="CARMEN main window screen" url="images/screens/CARMEN main window screen.jpg"/>
+	<mapID target="CARMEN message window screen" url="images/screens/CARMEN message window screen.jpg"/>
+	<mapID target="CARMEN message window with error" url="images/screens/CARMEN message window with error.jpg"/>
+	<mapID target="Carmen User Preferences - Exporting preferences" url="images/screens/Carmen User Preferences - Exporting preferences.JPG"/>
+	<mapID target="Carmen User Preferences - Importing preferences" url="images/screens/Carmen User Preferences - Importing preferences.JPG"/>
+	<mapID target="CARMEN User Preferences Main Screen" url="images/screens/CARMEN User Preferences Main Screen.jpg"/>
+	<mapID target="Carmen User Preferences - Setting a preference" url="images/screens/Carmen User Preferences - Setting a preference.JPG"/>
+	<mapID target="chance" url="images/carmenIcons/chance.gif"/>
+	<mapID target="Changing the application language" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Changing the application language.html"/>
+	<mapID target="Changing the name of a node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Changing the name of a node.html"/>
+	<mapID target="Changing the name of a state from a node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Changing the name of a state from a node.html"/>
+	<mapID target="Class diagrams - package carmen.gui.main" url="images/Diagrama clases/Class diagrams - package carmen.gui.main.png"/>
+	<mapID target="Cleaning window message" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Cleaning window message.html"/>
+	<mapID target="close" url="images/carmenIcons/close.gif"/>
+	<mapID target="Closing a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Closing a network.html"/>
+	<mapID target="Closing user preferences configuration window" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Closing user preferences configuration window.html"/>
+	<mapID target="Closing window message" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Closing window message.html"/>
+	<mapID target="Code generation" url="images/Swing Designer/Code generation.JPG"/>
+	<mapID target="Code parsing" url="images/Swing Designer/Code parsing.JPG"/>
+	<mapID target="Component tree" url="images/Swing Designer/Component tree.JPG"/>
+	<mapID target="copy" url="images/carmenIcons/copy.gif"/>
+	<mapID target="Copying nodes from the clipboard" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Copying nodes from the clipboard.html"/>
+	<mapID target="Copying nodes to the clipboard" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Copying nodes to the clipboard.html"/>
+	<mapID target="Copying window message content" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Copying window message content.html"/>
+	<mapID target="Creating a link" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Creating a link.html"/>
+	<mapID target="Creating a node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Creating a node.html"/>
+	<mapID target="Creating CARMEN Help JAR files" url="Developer Manual Topics/Help System/Creating CARMEN Help topic files.html"/>
+	<mapID target="cut" url="images/carmenIcons/cut.gif"/>
+	<mapID target="Cutting nodes to the clipboard" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Cutting nodes to the clipboard.html"/>
+	<mapID target="decision" url="images/carmenIcons/decision.gif"/>
+	<mapID target="Deleting a father node to a node in a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Deleting a parent node to a node in a network.html"/>
+	<mapID target="Deleting several nodes" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Deleting several nodes.html"/>
+	<mapID target="Deleting states from a node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Deleting states from a node.html"/>
+	<mapID target="Deselecting all the visual elements" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Deselecting all the visual elements.html"/>
+	<mapID target="Deselecting one single node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Deselecting one single node.html"/>
+	<mapID target="Development Topics" url="Developer Manual Topics/Development Topics.html"/>
+	<mapID target="Diagrama de clases - Clases de componente Menu y Barra de Herramientas" url="images/Diagrama clases/Diagrama de clases - Clases de componente Menu y Barra de Herramientas.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Cursores" url="images/Diagrama clases/Diagrama de clases - Clases del componente Cursores.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente de deshacimiento" url="images/Diagrama clases/Diagrama de clases - Clases del componente de deshacimiento.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Dialogs para cambiar Propiedades de Nodo" url="images/Diagrama clases/Diagrama de clases - Clases del componente Dialogs para cambiar Propiedades de Nodo.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Dialogs para cambiar Propiedades de Red" url="images/Diagrama clases/Diagrama de clases - Clases del componente Dialogs para cambiar Propiedades de Red.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Entrada y Salida" url="images/Diagrama clases/Diagrama de clases - Clases del componente Entrada y Salida.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente gui.networks" url="images/Diagrama clases/Diagrama de clases - Clases del componente gui.networks.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Lenguaje" url="images/Diagrama clases/Diagrama de clases - Clases del componente Lenguaje.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente MDI" url="images/Diagrama clases/Diagrama de clases - Clases del componente MDI.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente menu emergentes" url="images/Diagrama clases/Diagrama de clases - Clases del componente menu emergentes.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Portapapeles" url="images/Diagrama clases/Diagrama de clases - Clases del componente Portapapeles.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente principal" url="images/Diagrama clases/Diagrama de clases - Clases del componente principal.jpg"/>
+	<mapID target="Diagrama de clases - Clases del componente Ventana de mensajes" url="images/Diagrama clases/Diagrama de clases - Clases del componente Ventana de mensajes.jpg"/>
+	<mapID target="Diagrama de clases - Clases del subcomponente principal" url="images/Diagrama clases/Diagrama de clases - Clases del subcomponente principal.jpg"/>
+	<mapID target="Diagrama de clases - Clases del subcomponente visual" url="images/Diagrama clases/Diagrama de clases - Clases del subcomponente visual.jpg"/>
+	<mapID target="Diagrama de clases - Clases del subcomponente visual y su notificador" url="images/Diagrama clases/Diagrama de clases - Clases del subcomponente visual y su notificador.jpg"/>
+	<mapID target="Diagrama de secuencia - Inicio de la aplicación con splash" url="images/Diagrama Secuencia/Diagrama de secuencia - Inicio de la aplicación con splash.jpg"/>
+	<mapID target="Diagrama Secuencia - Actualizacion de una red visual" url="images/Diagrama Secuencia/Diagrama Secuencia - Actualizacion de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Actualizacion de una red visual1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Actualizacion de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Cambio del tipo de ediciíon" url="images/Diagrama Secuencia/Diagrama Secuencia - Cambio del tipo de ediciíon.jpg"/>
+	<mapID target="Diagrama Secuencia - Cambio del tipo de ediciíon1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Cambio del tipo de ediciíon.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación del asistente del portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Creación del asistente del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación del asistente del portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Creación del asistente del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación de una red visual" url="images/Diagrama Secuencia/Diagrama Secuencia - Creación de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación de una red visual1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Creación de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación de un panel de red" url="images/Diagrama Secuencia/Diagrama Secuencia - Creación de un panel de red.jpg"/>
+	<mapID target="Diagrama Secuencia - Creación de un panel de red1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Creación de un panel de red.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Creacion del gestor de deshacimiento" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Creacion del gestor de deshacimiento.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Creacion del gestor de deshacimiento1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Creacion del gestor de deshacimiento.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un enlace" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un enlace1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento de la creación de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la eliminación de varios nodos y enlaces" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento de la eliminación de varios nodos y enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de la eliminación de varios nodos y enlaces1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento de la eliminación de varios nodos y enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento del movimiento de varios nodos y enlaces" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento del movimiento de varios nodos y enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento del movimiento de varios nodos y enlaces1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento del movimiento de varios nodos y enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de la red" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de la red.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de la red1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de la red.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Deshacimiento de modificacion de propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Eliminación de varios elementos al deshacer por UndoAddRemove" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Eliminación de varios elementos al deshacer por UndoAddRemove.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Eliminación de varios elementos al deshacer por UndoAddRemove1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Eliminación de varios elementos al deshacer por UndoAddRemove.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Notificación de deshacimiento" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Notificación de deshacimiento.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Notificación de deshacimiento1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Notificación de deshacimiento.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al cortar varios nodos" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al cortar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al cortar varios nodos1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al cortar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un enlace" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un enlace1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al crear un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al dsplazar varios nodos" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al dsplazar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al dsplazar varios nodos1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al dsplazar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al eliminar nodos o enlaces" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al eliminar nodos o enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al eliminar nodos o enlaces1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al eliminar nodos o enlaces.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de una red" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de una red.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de una red1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de una red.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al modificar propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al pegar varios nodos" url="images/Diagrama Secuencia/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al pegar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al pegar varios nodos1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Deshacimiento - Registro de acción con posible deshacimiento al pegar varios nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Añadir un padre a un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Añadir un padre a un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Añadir un padre a un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Añadir un padre a un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Asignar nuevas propiedades a un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Asignar nuevas propiedades a un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Asignar nuevas propiedades a un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Asignar nuevas propiedades a un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nueva red desde fichero" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear nueva red desde fichero.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nueva red desde fichero1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear nueva red desde fichero.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nueva red desde propiedades" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear nueva red desde propiedades.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nueva red desde propiedades1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear nueva red desde propiedades.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nuevo enlace a partir de unir dos nodos" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear nuevo enlace a partir de unir dos nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear nuevo enlace a partir de unir dos nodos1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear nuevo enlace a partir de unir dos nodos.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear un nodo a partir del icono de su tipo" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear un nodo a partir del icono de su tipo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear un nodo a partir del icono de su tipo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear un nodo a partir del icono de su tipo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear un nodo a partir de sus propiedades" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear un nodo a partir de sus propiedades.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear un nodo a partir de sus propiedades1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear un nodo a partir de sus propiedades.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear ventana dialogo de edición de propiedades de un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Crear ventana dialogo de edición de propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Crear ventana dialogo de edición de propiedades de un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Crear ventana dialogo de edición de propiedades de un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Editar propiedades de la red de modo visual" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Editar propiedades de la red de modo visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Editar propiedades de la red de modo visual1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Editar propiedades de la red de modo visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Editar propiedades del nodo de modo visual" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Editar propiedades del nodo de modo visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Editar propiedades del nodo de modo visual1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Editar propiedades del nodo de modo visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Eliminar un enlace" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Eliminar un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Eliminar un enlace1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Eliminar un enlace.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Eliminar un nodo" url="images/Diagrama Secuencia/Diagrama Secuencia - Edicion Redes - Eliminar un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Edicion Redes - Eliminar un nodo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Edicion Redes - Eliminar un nodo.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Almacenar una red a un archivo" url="images/Diagrama Secuencia/Diagrama Secuencia - Entrada y Salida - Almacenar una red a un archivo.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Almacenar una red a un archivo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Entrada y Salida - Almacenar una red a un archivo.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Cargar una red desde un archivo" url="images/Diagrama Secuencia/Diagrama Secuencia - Entrada y Salida - Cargar una red desde un archivo.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Cargar una red desde un archivo1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Entrada y Salida - Cargar una red desde un archivo.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Seleccion de un archivo para cargar o guardar una red" url="images/Diagrama Secuencia/Diagrama Secuencia - Entrada y Salida - Seleccion de un archivo para cargar o guardar una red.jpg"/>
+	<mapID target="Diagrama Secuencia - Entrada y Salida - Seleccion de un archivo para cargar o guardar una red1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Entrada y Salida - Seleccion de un archivo para cargar o guardar una red.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Activación de opciones de menu y barra de herramientas" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Activación de opciones de menu y barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Activación de opciones de menu y barra de herramientas1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Activación de opciones de menu y barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Actualización de menus emergentes" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Actualización de menus emergentes.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Actualización de menus emergentes1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Actualización de menus emergentes.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Actualización de opciones de menu y barra de herramientas" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Actualización de opciones de menu y barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Actualización de opciones de menu y barra de herramientas1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Actualización de opciones de menu y barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Cambio de titulo en una ventana" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Cambio de titulo en una ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Cambio de titulo en una ventana1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Cambio de titulo en una ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de barra de herramientas" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Creación de barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de barra de herramientas1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Creación de barra de herramientas.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de MainPanel" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Creación de MainPanel.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de MainPanel1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Creación de MainPanel.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de menu principal" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Creación de menu principal.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Creación de menu principal1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Creación de menu principal.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Elección de nuevo factor de escala" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Elección de nuevo factor de escala.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Elección de nuevo factor de escala1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Elección de nuevo factor de escala.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Presentación de nuevo factor de escala" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Presentación de nuevo factor de escala.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Presentación de nuevo factor de escala1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Presentación de nuevo factor de escala.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Recuperación de texto dependiente de lenguaje" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Recuperación de texto dependiente de lenguaje.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Recuperación de texto dependiente de lenguaje1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Recuperación de texto dependiente de lenguaje.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Seleccion de una ventana" url="images/Diagrama Secuencia/Diagrama Secuencia - Gestión entorno visual - Seleccion de una ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Gestión entorno visual - Seleccion de una ventana1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Gestión entorno visual - Seleccion de una ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Actualización de menus cuando se cierra la ultima ventana MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Actualización de menus cuando se cierra la ultima ventana MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Actualización de menus cuando se cierra la ultima ventana MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Actualización de menus cuando se cierra la ultima ventana MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cambio de disposición de las ventanas en MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Cambio de disposición de las ventanas en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cambio de disposición de las ventanas en MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Cambio de disposición de las ventanas en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cierre de todas las ventanas en MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Cierre de todas las ventanas en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cierre de todas las ventanas en MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Cierre de todas las ventanas en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cierre de una ventana en MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Cierre de una ventana en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Cierre de una ventana en MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Cierre de una ventana en MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Creación de entorno MDI multidocumento" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Creación de entorno MDI multidocumento.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Creación de entorno MDI multidocumento1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Creación de entorno MDI multidocumento.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Creación de ventana nueva en entorno MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Creación de ventana nueva en entorno MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Creación de ventana nueva en entorno MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Creación de ventana nueva en entorno MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Marcar titulo de ventana con asterisco indicando red modificada" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Marcar titulo de ventana con asterisco indicando red modificada.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Marcar titulo de ventana con asterisco indicando red modificada1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Marcar titulo de ventana con asterisco indicando red modificada.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Selección de una ventana desde el menu MDI" url="images/Diagrama Secuencia/Diagrama Secuencia - MDI - Selección de una ventana desde el menu MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - MDI - Selección de una ventana desde el menu MDI1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - MDI - Selección de una ventana desde el menu MDI.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Clonación de datos del portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Portapapeles - Clonación de datos del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Clonación de datos del portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Portapapeles - Clonación de datos del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Copia de información al portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Portapapeles - Copia de información al portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Copia de información al portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Portapapeles - Copia de información al portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Creación del portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Portapapeles - Creación del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Creación del portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Portapapeles - Creación del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Obtener los datos del portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Portapapeles - Obtener los datos del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Portapapeles - Obtener los datos del portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Portapapeles - Obtener los datos del portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Principal - Finalizacion de aplicación" url="images/Diagrama Secuencia/Diagrama Secuencia - Principal - Finalizacion de aplicación.jpg"/>
+	<mapID target="Diagrama Secuencia - Principal - Finalizacion de aplicación1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Principal - Finalizacion de aplicación.jpg"/>
+	<mapID target="Diagrama Secuencia - Principal - Inicio de aplicación" url="images/Diagrama Secuencia/Diagrama Secuencia - Principal - Inicio de aplicación.jpg"/>
+	<mapID target="Diagrama Secuencia - Principal - Inicio de aplicación1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Principal - Inicio de aplicación.jpg"/>
+	<mapID target="Diagrama Secuencia - Redibujado de una red visual" url="images/Diagrama Secuencia/Diagrama Secuencia - Redibujado de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Redibujado de una red visual1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Redibujado de una red visual.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Copiar contenido a portapapeles" url="images/Diagrama Secuencia/Diagrama Secuencia - Ventana de mensajes - Copiar contenido a portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Copiar contenido a portapapeles1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Ventana de mensajes - Copiar contenido a portapapeles.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Creación" url="images/Diagrama Secuencia/Diagrama Secuencia - Ventana de mensajes - Creación.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Creación1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Ventana de mensajes - Creación.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Envio de información de System.out a Ventana" url="images/Diagrama Secuencia/Diagrama Secuencia - Ventana de mensajes - Envio de información de System.out a Ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Envio de información de System.out a Ventana1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Ventana de mensajes - Envio de información de System.out a Ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Limpieza del contenido de la ventana" url="images/Diagrama Secuencia/Diagrama Secuencia - Ventana de mensajes - Limpieza del contenido de la ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Limpieza del contenido de la ventana1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Ventana de mensajes - Limpieza del contenido de la ventana.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Paso a primer plano" url="images/Diagrama Secuencia/Diagrama Secuencia - Ventana de mensajes - Paso a primer plano.jpg"/>
+	<mapID target="Diagrama Secuencia - Ventana de mensajes - Paso a primer plano1" url="images/Diagrama Secuencia/fase 1/Diagrama Secuencia - Ventana de mensajes - Paso a primer plano.jpg"/>
+	<mapID target="Editor Layout" url="images/Swing Designer/Editor Layout.JPG"/>
+	<mapID target="Ending the application" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Ending the program.html"/>
+	<mapID target="Error Msg Network cannot be loaded" url="images/screens/Error Msg Network cannot be loaded.jpg"/>
+	<mapID target="Events handler" url="images/Swing Designer/Events handler.JPG"/>
+	<mapID target="Explanation in Expert Systems" url="Common Pages/Concepts/Explanation in Expert Systems.html"/>
+	<mapID target="Exporting user preferences" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Exporting user preferences.html"/>
+	<mapID target="General" url="images/Swing Designer/General.JPG"/>
+	<mapID target="HELEN publishing a project" url="images/screens/HELEN publishing a project.jpg"/>
+	<mapID target="Help System Index" url="Developer Manual Topics/Help System/Help System Index.html"/>
+	<mapID target="High Level overview diagrams" url="Developer Manual Topics/Architecture/Use Cases/High Level overview diagrams.html"/>
+	<mapID target="How to add a new Property to ProbNode, NodeWrapper and NodeProperties" url="Developer Manual Topics/Development Tasks/How to ....html"/>
+	<mapID target="How to configure ResourceBundle Editor" url="Developer Manual Topics/Software Configuration/How to configure ResourceBundle Editor.html"/>
+	<mapID target="How to configure Swing Designer for CARMEN" url="Developer Manual Topics/Software Configuration/How to configure Swing Designer for CARMEN.html"/>
+	<mapID target="How to install ResourceBundle Editor" url="Developer Manual Topics/Software Configuration/How to install ResourceBundle Editor.html"/>
+	<mapID target="How to install Swing Designer" url="Developer Manual Topics/Software Configuration/How to install Swing Designer.html"/>
+	<mapID target="Importing user preferences" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Importing user preferences.html"/>
+	<mapID target="Internationalitation Guide" url="Developer Manual Topics/Internationalitation Guide.html"/>
+	<mapID target="javaHelp_duke_logo1" url="images/carmenHelpIcons/javaHelp_duke_logo.gif"/>
+	<mapID target="JFace Data bindings" url="images/Swing Designer/JFace Data bindings.JPG"/>
+	<mapID target="License" url="images/Swing Designer/License.JPG"/>
+	<mapID target="link" url="images/carmenIcons/link.gif"/>
+	<mapID target="List of GUI Use Cases" url="Developer Manual Topics/Architecture/Use Cases/List of GUI Use Cases.html"/>
+	<mapID target="Loading a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Loading a network.html"/>
+	<mapID target="Local variables" url="images/Swing Designer/Local variables.JPG"/>
+	<mapID target="Logo Uned" url="images/carmenHelpIcons/Logo Uned.jpg"/>
+	<mapID target="Main_Concepts" url="Common Pages/Concepts/Main_Concepts.html"/>
+	<mapID target="Main Packages" url="Developer Manual Topics/Architecture/Main Packages.html"/>
+	<mapID target="minus" url="images/carmenIcons/minus.gif"/>
+	<mapID target="Modifying network properties" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying network properties.html"/>
+	<mapID target="Modifying node properties" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying node properties.html"/>
+	<mapID target="Modifying the visual node representation" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying the visual node representation.html"/>
+	<mapID target="Modifying the window layout" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying the window layout.html"/>
+	<mapID target="Modifying the zoom scale" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying the zoom scale.html"/>
+	<mapID target="Modifying the zoom scale from the dialog window" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Modifying the zoom scale from the dialog window.html"/>
+	<mapID target="Moving several nodes" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Moving several nodes.html"/>
+	<mapID target="Network creation" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Network creation.html"/>
+	<mapID target="Network Properties Definition Screen" url="images/screens/Network Properties Definition Screen.jpg"/>
+	<mapID target="Network Properties Other Properties Screen" url="images/screens/Network Properties Other Properties Screen.jpg"/>
+	<mapID target="Network Properties Variables Screen" url="images/screens/Network Properties Variables Screen.jpg"/>
+	<mapID target="new" url="images/carmenIcons/new.gif"/>
+	<mapID target="NewCarmenSplashLogo" url="images/carmenHelpIcons/NewCarmenSplashLogo.jpg"/>
+	<mapID target="NLS" url="images/Swing Designer/NLS.JPG"/>
+	<mapID target="Node Properties - Definition" url="images/screens/Node Properties - Definition.JPG"/>
+	<mapID target="Node Properties - Other Properties" url="images/screens/Node Properties - Other Properties.JPG"/>
+	<mapID target="Node Properties - Parents" url="images/screens/Node Properties - Parents.JPG"/>
+	<mapID target="Node Properties - States - Discrete" url="images/screens/Node Properties - States - Discrete.JPG"/>
+	<mapID target="Node Properties - States - Discretize" url="images/screens/Node Properties - States - Discretize.JPG"/>
+	<mapID target="Node Properties - Table" url="images/screens/Node Properties - Table.JPG"/>
+	<mapID target="open" url="images/carmenIcons/open.gif"/>
+	<mapID target="Opening application help window" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Opening application help window.html"/>
+	<mapID target="Opening specific window or element help window" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Opening specific window or element help window.html"/>
+	<mapID target="Opening user preferences configuration window" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Opening user preferences configuration window.html"/>
+	<mapID target="paste" url="images/carmenIcons/paste.gif"/>
+	<mapID target="plus" url="images/carmenIcons/plus.gif"/>
+	<mapID target="Property Manager" url="images/Swing Designer/Property Manager.JPG"/>
+	<mapID target="Property pane" url="images/Swing Designer/Property pane.JPG"/>
+	<mapID target="redo" url="images/carmenIcons/redo.gif"/>
+	<mapID target="Redo a link creation" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Redo a link creation.html"/>
+	<mapID target="remove" url="images/carmenIcons/remove.gif"/>
+	<mapID target="save" url="images/carmenIcons/save.gif"/>
+	<mapID target="Save network Screen" url="images/screens/Save network Screen.jpg"/>
+	<mapID target="Saving a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Saving a network.html"/>
+	<mapID target="Saving a network as" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Saving a network as.html"/>
+	<mapID target="Saving user preferences configuration" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Saving user preferences configuration.html"/>
+	<mapID target="Seeking element help" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Seeking element help.html"/>
+	<mapID target="Selecting all visual elements" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting all visual elements.html"/>
+	<mapID target="Selecting an additional node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting an additional node.html"/>
+	<mapID target="Selecting a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting a network.html"/>
+	<mapID target="Selecting one single node" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting one single node.html"/>
+	<mapID target="Selecting several nodes with a rectangle" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting several nodes with a rectangle.html"/>
+	<mapID target="Selecting the next or previous network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting the next or previous network.html"/>
+	<mapID target="Selecting the type of edition" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Selecting the type of editing.html"/>
+	<mapID target="selection" url="images/carmenIcons/selection.gif"/>
+	<mapID target="Setting window message at front" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Setting message window at front.html"/>
+	<mapID target="Spanish - Simple TPC" url="images/Formulas/Spanish - Simple TPC.jpg"/>
+	<mapID target="Spanish - Table Canonical Models" url="images/Formulas/Spanish - Table Canonical Models.jpg"/>
+	<mapID target="Starting the application" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Starting the application.html"/>
+	<mapID target="Swing" url="images/Swing Designer/Swing.JPG"/>
+	<mapID target="Type specific" url="images/Swing Designer/Type specific.JPG"/>
+	<mapID target="undo" url="images/carmenIcons/undo.gif"/>
+	<mapID target="Undo a link creation" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Undo a link creation.html"/>
+	<mapID target="Undo a node creation" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Undo a node creation.html"/>
+	<mapID target="Updating menus when modifying a network" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Updating menus when modifying a network.html"/>
+	<mapID target="Updating the menus when changing the selected element" url="Developer Manual Topics/Architecture/Use Cases/UseCase inventory/Updating the menus when changing the selected element.html"/>
+	<mapID target="Use Cases" url="Developer Manual Topics/Architecture/Use Cases.html"/>
+	<mapID target="Using Help facilities and HELEN2000" url="Developer Manual Topics/Help System/Using Help facilities and HELEN2000.html"/>
+	<mapID target="utility" url="images/carmenIcons/utility.gif"/>
+	<mapID target="Variable Names" url="images/Swing Designer/Variable Names.JPG"/>
+	<mapID target="Welcome" url="Welcome.html"/>
+	<mapID target="What you must keep in mind" url="Developer Manual Topics/What you must keep in mind.html"/>
+	<mapID target="Window Builder 7.0" url="Developer Manual Topics/Software Configuration/Window Builder 7.0.html"/>
+	<mapID target="zoomin" url="images/carmenIcons/zoomin.gif"/>
+	<mapID target="zoomout" url="images/carmenIcons/zoomout.gif"/>
+</map>
