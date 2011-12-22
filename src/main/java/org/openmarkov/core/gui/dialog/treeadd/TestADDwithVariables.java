@@ -67,7 +67,7 @@ public class TestADDwithVariables {
 		TablePotential dummyPot= new TablePotential (variables, PotentialRole.UTILITY);
 		dummyPot.setUtilityVariable(new Variable("U"));
 		
-		TreeADDBuilder treeBuilder= new TreeADDBuilder (dummyPot);
+		TreeADDController treeBuilder= new TreeADDController (dummyPot);
 		frame.add (treeBuilder, BorderLayout.CENTER);
 		
 		frame.setSize (500, 620);

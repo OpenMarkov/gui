@@ -57,7 +57,7 @@ public class SummaryBox {
 
 		String txtIzq="<html><table border=1>";
 
-		if( parent==null ) {
+		if (parent == null ) {
 			throw new RuntimeException();
 		}
 		else {
@@ -78,7 +78,7 @@ public class SummaryBox {
 				}
 				
 				// TODO: test cardinality of variable states and InnerNode
-				BranchData branchData= (BranchData) labelledLink.getLabel();
+				BranchData branchData = (BranchData) labelledLink.getLabel();
 				
 				// TODO: Use branchData
 				if (parentVar.getVariableType()==VariableType.NUMERIC) {

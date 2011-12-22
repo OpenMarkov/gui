@@ -55,74 +55,69 @@ import org.openmarkov.core.model.network.potential.treeadd.BranchData;
 import org.openmarkov.core.model.network.potential.treeadd.BranchInterval;
 import org.openmarkov.core.model.network.potential.treeadd.BranchIntervalComparator;
 import org.openmarkov.core.model.network.potential.treeadd.EpsilonValueAproximation;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 
-public class TreeADDBuilder extends JScrollPane implements ActionListener {
+/**
+ * <code>JScrollPane<code> for creating and modifying <code>TreeADDModel<code>s
+ * 
+ * @author jfernandez
+ * @author myebra
+ *
+ */
+public class TreeADDController extends JScrollPane implements ActionListener {
 
-	protected TreeADDPotential treePotential;	
-	protected JTree tree;
+	protected TreeADDPotential2 treeADDPotential;	
+	protected JTree jTree;
 	protected TreeADDCellRenderer cellRenderer;
 	
 	protected boolean readOnlyMode;
+	// Variables of the treeADDPotential
 	protected ArrayList<Variable> treeVariables;
 
 	private int referenceCount= 0;
 	
 	/** Shows the tree in read only mode
-	 * @param treePotential
+	 * @param treeADDPotential
+	 * @throws CloneNotSupportedException 
 	 */
-	public TreeADDBuilder (Potential potential) {
-		readOnlyMode= false;
-		treeVariables= potential.getVariables();
-		
-		if (potential instanceof TreeADDPotential) {
-			try {
-				treePotential= new TreeADDPotential ((TreeADDPotential) potential);
-
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else {
-			treePotential= new TreeADDPotential (potential.getVariables(), potential.getPotentialRole());
-			treePotential.setUtilityVariable (potential.getUtilityVariable());
-		}
-
+	public TreeADDController (TreeADDPotential2 treeADDPotential) throws CloneNotSupportedException {
+		this.treeADDPotential = (TreeADDPotential2) treeADDPotential.clone();
+		readOnlyMode = false;
+		treeVariables = treeADDPotential.getVariables();
 		setupUserInterface();
 	}
 	
 	void setupUserInterface() {
-		TreeADDModel model= null;
+		TreeADDModel model= new TreeADDModel (treeADDPotential);
 		
-		if (treePotential.getGraph().getNumNodes()>0) {
-			model= new TreeADDModel (treePotential.getRoot());
-		}
-		tree= new JTree (model);
-
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		jTree= new JTree (model);//model can be null if we are in a node that don´t have any treeAdd assigned
 		
-	    tree.addTreeExpansionListener(new ADDTreeViewer_tree_treeExpansionAdapter(this));
-	    tree.addTreeWillExpandListener(new ADDTreeViewer_tree_treeWillExpandAdapter(this));
+		jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		
+	    jTree.addTreeExpansionListener(new ADDTreeViewer_tree_treeExpansionAdapter(this));
+	    jTree.addTreeWillExpandListener(new ADDTreeViewer_tree_treeWillExpandAdapter(this));
 		
 		// Allows JTree nodes to accept CR/LF codes
-	    tree.setShowsRootHandles(true);
-		tree.setRowHeight(0);
+	    jTree.setShowsRootHandles(true);
+		jTree.setRowHeight(0);
 		
 		cellRenderer= new TreeADDCellRenderer(); 
-		tree.setCellRenderer(cellRenderer);
-		tree.setUI(new TreeADDUserInterface());	    
+		jTree.setCellRenderer(cellRenderer);
+		jTree.setUI(new TreeADDUserInterface());	    
 		
-		for (int i=0; i<tree.getRowCount(); i++) {
-		     tree.expandRow (i);
+		//In case we are opening an existing tree
+		for (int i=0; i<jTree.getRowCount(); i++) {
+		     jTree.expandRow (i);
 		} 
 
-		setViewportView(tree);
+		setViewportView(jTree);
 		
 		// Menu text initialization
 		if (!readOnlyMode) {
-			tree.addMouseListener(new ADDTreeViewer_tree_mouseAdapter(this));
-			popupMenu.setInvoker(tree);
+			jTree.addMouseListener(new ADDTreeViewer_tree_mouseAdapter(this));
+			popupMenu.setInvoker(jTree);
 			
 			submenuAddStartNode.setText("Set start node");
 			submenuAddNewBranch.setText("Add new branch");
@@ -159,34 +154,46 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		}
 	}
 	
-	public TreeADDPotential getTreePotential() {
-		return treePotential;
+	public TreeADDPotential2 getTreePotential() {
+		return treeADDPotential;
 	}
 	
 	public void tree_treeExpanded(TreeExpansionEvent event) {
-		TreePath tp1= event.getPath();
-		Object tn1= tp1.getLastPathComponent();
+		TreePath treepath= event.getPath();
+		Object tn1= treepath.getLastPathComponent();
 		
-		if( tn1 instanceof SummaryBox ) {
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+	
+		if(!model.isLeaf(tn1)) {//the object is a treeADDPotential
+			for (int i = 0; i < model.getChildCount(tn1); i++ ) {//Expand path adding branches to the treeADD path
+				Object hijo = model.getChild(tn1,i);//this must be a branch
+				TreePath tp2= treepath.pathByAddingChild(hijo);
+				jTree.expandPath(tp2);
+			}
+		} 
+		/*
+		 * TreePath treepath= event.getPath();
+		Object tn1= treepath.getLastPathComponent();
+		 * if( tn1 instanceof SummaryBox ) {
 			Node n= ((SummaryBox) tn1).getSource();
 			
 			if( !(n.getObject() instanceof Potential) ) {
-				TreeADDModel model= (TreeADDModel) tree.getModel();
+				TreeADDModel model= (TreeADDModel) jTree.getModel();
 			
-				for( int i=0; i< model.getChildCount(tn1); i++ ) {
+				for (int i = 0; i < model.getChildCount(tn1); i++ ) {
 					Object hijo = model.getChild(tn1,i);
-					TreePath tp2= tp1.pathByAddingChild(hijo);
-					tree.expandPath(tp2);
+					TreePath tp2= treepath.pathByAddingChild(hijo);
+					jTree.expandPath(tp2);
 				}
 			}
 			else {
-				TreeADDModel model= (TreeADDModel) tree.getModel();
+				TreeADDModel model= (TreeADDModel) jTree.getModel();
 				
 				Object hijo = model.getChild(tn1,0);
-				TreePath tp2= tp1.pathByAddingChild(hijo);				
+				TreePath tp2= treepath.pathByAddingChild(hijo);				
 				model.fireNodesChanged (tp2);					
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -194,7 +201,13 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 	 * @throws ExpandVetoException
 	 */
 	public void tree_treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-		Object o= event.getPath().getLastPathComponent();
+		Object triedToExpand= event.getPath().getLastPathComponent();
+		
+		if (!(triedToExpand instanceof TreeADDPotential2)) {
+			throw new ExpandVetoException(event);//Exception used to stop and expand/collapse from happening.
+		}
+		
+		/*Object o= event.getPath().getLastPathComponent();
 		
 		if (!(o instanceof SummaryBox)) {
 			if (!(o instanceof Node)) {
@@ -204,9 +217,9 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			Node n= (Node) o;
 			
 			if (!(n.getObject() instanceof Potential)) {
-				throw new ExpandVetoException(event);
+				throw new ExpandVetoException(event);//Exception used to stop and expand/collapse from happening.
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -238,6 +251,54 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 	protected JMenu submenuAddNewPotentialVariable = new JMenu();
 	protected JMenu submenuRemovePotentialVariable = new JMenu();
 	
+	protected void setPopupItemFiniteStates (MouseEvent e, TreeADDBranch branch) {
+		
+		//Possible states in the branch
+		ArrayList<State> statesUsed= new ArrayList<State>();
+		ArrayList<State> statesThisBranch= null;
+		
+		int numberOfOtherBranchesWithoutStates= 0;
+		TreeADDPotential2 treeADD = branch.getTreeADDParent();
+		ArrayList<TreeADDBranch> siblings = treeADD.getBranches();
+		for (int i = 0 ; i < siblings.size(); i++) {
+			ArrayList<State> branchStates = siblings.get(i).getBranchStates();
+			
+			if (siblings.get(i) == branch) {
+				statesThisBranch= branchStates;
+				statesUsed.addAll (statesThisBranch);
+			}
+			else if (branchStates.isEmpty()) {
+				numberOfOtherBranchesWithoutStates++;
+			}
+			else {
+				statesUsed.addAll (branchStates);
+			}
+		}
+
+		if (statesThisBranch==null) {
+			throw new RuntimeException("Tree structured is corrupted");											
+		}
+		
+		Variable var = treeADD.getTopVariable();
+		
+		// The states election might be conditioned by previous branch values
+				HashSet<State> hashStates= new HashSet<State>();
+				HashSet<Node> visited= new HashSet<Node>();
+				findConditionVarStates(treeADD, var, hashStates, visited);
+				
+				int maxStates= var.getNumStates();
+				if (!hashStates.isEmpty()) {
+					maxStates= hashStates.size();
+				}
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param e
+	 * @param r
+	 */
 	protected void setPopupItemsFiniteStates (MouseEvent e, SummaryBox r) {
 		Variable var= (Variable) r.parent.getObject();
 		
@@ -246,8 +307,8 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		int numberOfOtherBranchesWithoutStates= 0;
 		
-		Graph graph= treePotential.getGraph();
-		for (Node child : r.parent.getChildren()) {
+		Graph graph= treeADDPotential.getGraph();
+		for (Node child : r.parent.getChildren()) {//sibligs of node source of the summaryBox
 			Link link= graph.getLink(r.parent, child, true);
 			
 			if (!(link instanceof LabelledLink)) {
@@ -280,7 +341,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		}
 
 		// The states election might be conditioned by previous branch values
-		HashSet<State> hashStates= new HashSet<State>();
+		HashSet<State> hashStates= new HashSet<State>();//conditioned variable state
 		HashSet<Node> visited= new HashSet<Node>();
 		findConditionVarStates(r.parent, var, hashStates, visited);
 		
@@ -370,6 +431,12 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		popupMenu.add (submenuRemoveState);		
 	}
 	
+	
+	/**
+	 * 
+	 * @param e
+	 * @param r
+	 */
 	protected void setPopupItems(MouseEvent e, SummaryBox r) {
 		popupMenu.removeAll();
 		
@@ -440,14 +507,20 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		popupMenu.add (menuitemRemoveBranch);
 
-		TreePath path = tree.getPathForLocation (xx, yy);
+		TreePath path = jTree.getPathForLocation (xx, yy);
 		// Option active only if the SummaryBox is collapsed and its child is a TablePotential
-		if (tree.isCollapsed(path) && r.getSource().getObject() instanceof TablePotential) {
+		if (jTree.isCollapsed(path) && r.getSource().getObject() instanceof TablePotential) {
 			popupMenu.add (new JSeparator());
 			setPopupItemsTablePotentialNode (e, r.getSource(), "AddNewVariableToPotentialFromSummaryBox", "RemoveVariableFromPotentialFromSummaryBox");
 		}
 	}	
 
+	/**
+	 * 
+	 * @param n
+	 * @param hashSet
+	 * @param visited
+	 */
 	void findConditionVars (Node n, HashSet<Variable> hashSet, HashSet<Node> visited) {
 		visited.add (n);
 
@@ -468,7 +541,63 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			}
 		}
 	}
+	
+/*	void findConditionVarStates (TreeADDPotential2 treeADD, Variable variable, ArrayList<State> states, ArrayList<TreeADDPotential2> visited) {
+		if (variable.getVariableType()!=VariableType.FINITE_STATES) {
+			throw new RuntimeException("Expected FINITE_STATES Variable type: found " + variable.getVariableType());
+		}
+		
+		visited.add (treeADD);
 
+		Graph graph= treeADDPotential.getGraph();
+		
+		for (Node parent : n.getParents()) {
+			if (visited.contains(parent)) {
+				continue;
+			}
+			
+			Link link= graph.getLink(parent, n, true);
+			if (link==null) {
+				throw new RuntimeException("Expected link not found");
+			}
+			
+			if (!(link instanceof LabelledLink)) {
+				throw new RuntimeException("Expected LabelledLink class: found " + link.getClass().getName());				
+			}
+			
+			LabelledLink labelledLink= (LabelledLink) link;
+			if (!(labelledLink.getLabel() instanceof BranchData)) {
+				throw new RuntimeException("Expected BranchData class: found " + labelledLink.getLabel().getClass().getName());
+			}
+			
+			BranchData branchData= (BranchData) labelledLink.getLabel();
+			if (branchData.getBranchVariable()==variable) {
+				hashSet.addAll (branchData.getBranchStates());
+				
+				/*
+				for (State state : branchData.getBranchStates()) {
+					// Check for structural damage of the tree
+					if (hashSet.contains(state)) {
+						throw new RuntimeException("Tree structured is corrupted");											
+					}
+					hashSet.add (state);
+				}
+				
+				
+				return;
+			}
+			
+			findConditionVarStates (parent, variable, hashSet, visited);
+		}
+	}*/
+	
+	/**
+	 * 
+	 * @param n
+	 * @param variable
+	 * @param hashSet
+	 * @param visited
+	 */
 	void findConditionVarStates (Node n, Variable variable, HashSet<State> hashSet, HashSet<Node> visited) {
 		if (variable.getVariableType()!=VariableType.FINITE_STATES) {
 			throw new RuntimeException("Expected FINITE_STATES Variable type: found " + variable.getVariableType());
@@ -476,7 +605,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		visited.add (n);
 
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		
 		for (Node parent : n.getParents()) {
 			if (visited.contains(parent)) {
@@ -518,8 +647,16 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param node
+	 * @param variable
+	 * @param hashStates
+	 * @param visited
+	 * @return
+	 */
 	boolean findDependingStates (Node node, Variable variable, HashSet<State> hashStates, HashSet<Node> visited) {
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		visited.add (node);
 
 		if (!(node.getObject() instanceof Variable)) {
@@ -605,7 +742,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		findConditionVars (n, hashSet, visited);
 
 		for (Variable v : treeVariables) {
-			if (v==variable || v==treePotential.getConditionedVariable()) {
+			if (v==variable || v==treeADDPotential.getConditionedVariable()) {
 				continue;
 			}
 			
@@ -650,7 +787,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		submenuAddNewBranch.add (new JSeparator());
 		
 		submenuReferencePotential.removeAll();
-		for (String reference : treePotential.getHashReferences().keySet()) {
+		for (String reference : treeADDPotential.getHashReferences().keySet()) {
 			JMenuItem menu= new JMenuItem (reference);
 			menu.setActionCommand("AddNewBranchToReference");
 			menu.addActionListener(this);
@@ -677,7 +814,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 				continue;
 			}
 			
-			if (treePotential.getConditionedVariable()==v) {
+			if (treeADDPotential.getConditionedVariable()==v) {
 				continue;
 			}
 			
@@ -694,6 +831,13 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 
 	static private double epsilon= EpsilonValueAproximation.value;
 	
+	/**
+	 * 
+	 * @param n
+	 * @param variable
+	 * @param hashSet
+	 * @param visited
+	 */
 	void findConditionVarInterval (Node n, Variable variable, HashSet<BranchInterval> hashSet, HashSet<Node> visited) {
 		if (variable.getVariableType()!=VariableType.NUMERIC) {
 			throw new RuntimeException("Expected NUMERIC Variable type: found " + variable.getVariableType());
@@ -701,7 +845,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		visited.add (n);
 
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		
 		for (Node parent : n.getParents()) {
 			if (visited.contains(parent)) {
@@ -893,7 +1037,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		findConditionVars (n, hashSet, visited);
 
 		for (Variable v : treeVariables) {
-			if (v==variable || v==treePotential.getConditionedVariable()) {
+			if (v==variable || v==treeADDPotential.getConditionedVariable()) {
 				continue;
 			}
 			
@@ -957,6 +1101,11 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		popupMenu.add (submenuAddNewBranch);			
 		popupMenu.add (submenuChangeVariable);	}
 	
+	/**
+	 * 
+	 * @param e
+	 * @param n
+	 */
 	protected void setPopupItemsVariableNode (MouseEvent e, Node n) {
 		Variable variable= (Variable) n.getObject();
 		
@@ -970,7 +1119,14 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			throw new RuntimeException("Unexpected type of Variable: found " + variable.getVariableType());			
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param e
+	 * @param n
+	 * @param actionAdd
+	 * @param actionDel
+	 */
 	protected void setPopupItemsTablePotentialNode (MouseEvent e, Node n, String actionAdd, String actionDel) {
 		TablePotential tablePotential= (TablePotential) n.getObject();
 		
@@ -983,7 +1139,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		submenuAddNewPotentialVariable.removeAll();
 		submenuRemovePotentialVariable.removeAll();
 		
-		for (Variable var : treePotential.getVariables()) {
+		for (Variable var : treeADDPotential.getVariables()) {
 			if (hashSet.contains(var)) {
 				continue;
 			}
@@ -1003,7 +1159,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			}
 			
 			// If this is a Conditional Potential, the conditioned var can't be removed
-			if (treePotential.getConditionedVariable()==var) {
+			if (treeADDPotential.getConditionedVariable()==var) {
 				continue;
 			}
 			
@@ -1022,6 +1178,11 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		popupMenu.add (menuitemSetTablePotentialValues);
 	}
 	
+	/**
+	 * 
+	 * @param e
+	 * @param n
+	 */
 	protected void setPopupItems(MouseEvent e, Node n) {
 		popupMenu.removeAll();
 
@@ -1035,14 +1196,17 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			throw new RuntimeException("Unexpected node class found: " + n.getObject().getClass().getName());			
 		}
 	}
-
+	
+	/**
+	 * 
+	 */
 	protected void setPopupItemsBlankTree() {
 		popupMenu.removeAll();
 
 		submenuAddStartNode.removeAll();
 		
 		for (Variable v : treeVariables) {
-			if (treePotential.getConditionedVariable()==v) {
+			if (treeADDPotential.getConditionedVariable()==v) {
 				continue;
 			}
 			
@@ -1059,23 +1223,25 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 	// Mouse event detection
 	int xx, yy;
 	
-
+	/**
+	 * 
+	 */
 	public void actionPerformed(ActionEvent ae) {
 		// TODO Auto-generated method stub
 		
-		String cmd= ae.getActionCommand();		
-		if (cmd.equals ("SetStartNode")) {
+		String actionComand= ae.getActionCommand();		
+		if (actionComand.equals ("SetStartNode")) {
 			JMenuItem menu= (JMenuItem) ae.getSource();
 
 			for (Variable v : treeVariables) {
 				if (v.getName().equals (menu.getText())) {
-					Graph graph= treePotential.getGraph();
+					Graph graph= treeADDPotential.getGraph();
 					Node n= new Node (graph, v);
 					
 					TreeADDModel model= new TreeADDModel (n);
-					tree.setModel (model); 
+					jTree.setModel (model); 
 
-					treePotential.setStartNode();
+					treeADDPotential.setStartNode();
 					return;
 				}
 			}
@@ -1083,41 +1249,41 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			throw new RuntimeException("variable not found: " + menu.getText());							
 		}
 		
-		TreePath path = tree.getPathForLocation(xx,yy); 
+		TreePath path = jTree.getPathForLocation(xx,yy); 
 		Object r= path.getLastPathComponent();
 		
-		if (cmd.equals ("ChangeVariable")) {
+		if (actionComand.equals ("ChangeVariable")) {
 			actionChangeVariable (ae, r, path);
 		}
-		else if (cmd.equals ("AddNewBranchToVariable")) {
+		else if (actionComand.equals ("AddNewBranchToVariable")) {
 			actionAddNewBranchToVariable (ae, r, path);			
 		}
-		else if (cmd.equals ("AddBranchState")) {
+		else if (actionComand.equals ("AddBranchState")) {
 			actionNewBranchState (ae, r, path);
 		}
-		else if (cmd.equals ("RemoveBranchState")) {
+		else if (actionComand.equals ("RemoveBranchState")) {
 			actionRemoveBranchState (ae, r, path);
 		}
-		else if (cmd.equals ("SplitInterval")) {
+		else if (actionComand.equals ("SplitInterval")) {
 			actionSplitInterval (ae, r, path);			
 		}
-		else if (cmd.equals("SetInterval")) {
+		else if (actionComand.equals("SetInterval")) {
 			actionSetInterval (ae, r, path);			
 		}
-		else if (cmd.equals ("RemoveBranch")) {
+		else if (actionComand.equals ("RemoveBranch")) {
 			actionRemoveBranch (ae, r, path);
 		}
-		else if (cmd.equals ("AddNewTablePotential")) {
+		else if (actionComand.equals ("AddNewTablePotential")) {
 			actionAddNewTablePotential (ae, r, path);			
 		}
-		else if (cmd.equals ("AddNewVariableToPotential")) {
+		else if (actionComand.equals ("AddNewVariableToPotential")) {
 			if (!(r instanceof Node)) {
 				throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
 			}
 			
 			actionNewVariableToPotential (ae, (Node) r, path);
 		}
-		else if (cmd.equals ("AddNewVariableToPotentialFromSummaryBox")) {
+		else if (actionComand.equals ("AddNewVariableToPotentialFromSummaryBox")) {
 			if (!(r instanceof SummaryBox)) {
 				throw new RuntimeException("Expected SummaryBox class, found: " + r.getClass().getName());											
 			}
@@ -1125,14 +1291,14 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			SummaryBox summaryBox= (SummaryBox) r;
 			actionNewVariableToPotential (ae, summaryBox.getSource(), path);
 		}
-		else if (cmd.equals ("RemoveVariableFromPotential")) {
+		else if (actionComand.equals ("RemoveVariableFromPotential")) {
 			if (!(r instanceof Node)) {
 				throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
 			}
 			
 			actionRemoveVariableFromPotential (ae, (Node) r, path);
 		}
-		else if (cmd.equals ("RemoveVariableFromPotentialFromSummaryBox")) {
+		else if (actionComand.equals ("RemoveVariableFromPotentialFromSummaryBox")) {
 			if (!(r instanceof SummaryBox)) {
 				throw new RuntimeException("Expected SummaryBox class, found: " + r.getClass().getName());											
 			}
@@ -1140,7 +1306,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			SummaryBox summaryBox= (SummaryBox) r;			
 			actionRemoveVariableFromPotential (ae, summaryBox.getSource(), path);
 		}
-		else if (cmd.equals("SetTablePotentialValues")) {
+		else if (actionComand.equals("SetTablePotentialValues")) {
 			Node node= null;
 			
 			if (r instanceof SummaryBox) {
@@ -1157,7 +1323,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			
 			actionSetTablePotentialValues (node, path);
 		}
-		else if (cmd.equals("ChangePotentialReferenceName")) {
+		else if (actionComand.equals("ChangePotentialReferenceName")) {
 			Node node= null;
 			
 			if (r instanceof SummaryBox) {
@@ -1174,14 +1340,19 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			
 			actionChangePotentialReferenceName (node, path);			
 		}
-		else if (cmd.equals("AddNewBranchToReference")) {
+		else if (actionComand.equals("AddNewBranchToReference")) {
 			actionAddNewBranchToReference (ae, r, path);			
 		}
 		else {
-			throw new RuntimeException("Unexpected menu action found: " + cmd);			
+			throw new RuntimeException("Unexpected menu action found: " + actionComand);			
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param node
+	 * @param path
+	 */
 	void actionSetTablePotentialValues (Node node, TreePath path) {
 		
 		TablePotential tablePotential= (TablePotential) node.getObject();
@@ -1193,8 +1364,8 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		boolean isScalar= tablePotential.getVariables().isEmpty();
 		
-		if (treePotential.getPotentialRole()==PotentialRole.UTILITY) {
-			Variable utilityVariable= treePotential.getUtilityVariable();
+		if (treeADDPotential.getPotentialRole()==PotentialRole.UTILITY) {
+			Variable utilityVariable= treeADDPotential.getUtilityVariable();
 			dummy= dummyProbNet.getProbNode (utilityVariable);
 
 			for (Variable v : tablePotential.getVariables()) {
@@ -1209,8 +1380,8 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 				}
 			}
 		}
-		else if (treePotential.getPotentialRole()==PotentialRole.CONDITIONAL_PROBABILITY) {
-			Variable conditionedVariable= treePotential.getConditionedVariable();
+		else if (treeADDPotential.getPotentialRole()==PotentialRole.CONDITIONAL_PROBABILITY) {
+			Variable conditionedVariable= treeADDPotential.getConditionedVariable();
 			dummy= dummyProbNet.getProbNode (conditionedVariable);
 
 			for (Variable v : tablePotential.getVariables()) {
@@ -1226,7 +1397,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			}
 		}
 		else {
-			throw new RuntimeException("Unexpected Potential Role found: " + treePotential.getPotentialRole());
+			throw new RuntimeException("Unexpected Potential Role found: " + treeADDPotential.getPotentialRole());
 		}
 		
 		PotentialsDialog dialog= new PotentialsDialog(Utilities.getOwner(this), dummy, false);
@@ -1237,25 +1408,30 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 				throw new RuntimeException("Expected TablePotential found: " + retPotential.getClass().getSimpleName());
 			}
 			
-			if (treePotential.getPotentialRole()!=retPotential.getPotentialRole()) {
-				throw new RuntimeException("Expected role " + treePotential.getPotentialRole() +", found: " + retPotential.getPotentialRole());
+			if (treeADDPotential.getPotentialRole()!=retPotential.getPotentialRole()) {
+				throw new RuntimeException("Expected role " + treeADDPotential.getPotentialRole() +", found: " + retPotential.getPotentialRole());
 			}
 			
 			node.setObject (retPotential);
 			
 			if (node.getParents().size()>1) {
-				TreeADDModel model= (TreeADDModel) tree.getModel();
+				TreeADDModel model= (TreeADDModel) jTree.getModel();
 				model.fireRecursiveNodeChanged (node);				
 			}
 			else if (isScalar) {
-				TreeADDModel model= (TreeADDModel) tree.getModel();
+				TreeADDModel model= (TreeADDModel) jTree.getModel();
 				model.fireNodesChanged (path);				
 			}
 		}
 	}
 	
+	/**
+	 * 
+	 * @param node
+	 * @param path
+	 */
 	void actionChangePotentialReferenceName (Node node, TreePath path) {
-		String referenceName= treePotential.getReference (node);
+		String referenceName= treeADDPotential.getReference (node);
 		if (referenceName==null) {
 			throw new RuntimeException("Reference not found for node: " + node);
 		}
@@ -1270,23 +1446,28 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		                    referenceName);
 		
 		if (result!=null && !result.equals(referenceName)) {
-			if (treePotential.getHashReferences().containsKey(result)) {
+			if (treeADDPotential.getHashReferences().containsKey(result)) {
 				throw new RuntimeException("Can't change reference name: Duplicated reference: " + result);
 			}
 			
-			treePotential.getHashReferences().remove(referenceName);
-			treePotential.getHashReferences().put(result, node);
+			treeADDPotential.getHashReferences().remove(referenceName);
+			treeADDPotential.getHashReferences().put(result, node);
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionChangeVariable (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof Node)) {
 			throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
 		}
 		
 		Node node= (Node) r;
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		
 		Variable newVariable= null;
 		JMenuItem menu= (JMenuItem) ae.getSource();
@@ -1303,7 +1484,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		node.setObject (newVariable);		
 
-		TreeADDModel model= (TreeADDModel) tree.getModel();
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		
 		// Delete depending subtrees
 		for (Node child : node.getChildren()) {
@@ -1326,14 +1507,20 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		model.fireTreeStructureChanged(path);
 	}
-
+	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionAddNewBranchToVariable (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof Node)) {
 			throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
 		}
 
 		Node node= (Node) r;
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Node newNode= null;
 
 		// Find the new variable
@@ -1351,12 +1538,18 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 
 		new LabelledLink (node, newNode, true, new BranchData ((Variable) node.getObject()));
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 		model.fireTreeInsert(path, newNode);
 		
-		tree.expandPath(path.pathByAddingChild(newNode));
+		jTree.expandPath(path.pathByAddingChild(newNode));
 	}
 	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionNewBranchState (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof SummaryBox)) {
 			throw new RuntimeException("Expected SummaryBox class, found: " + r.getClass().getName());											
@@ -1366,7 +1559,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= summaryBox.getParent();
 		Node child=  summaryBox.getSource();
 		
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Link link= graph.getLink(parent, child, true);
 		
 		if (!(link instanceof LabelledLink)) {
@@ -1395,16 +1588,11 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		}
 		
 		branchData.add (variable.getStates()[index]);
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 
 		model.fireNodesChanged(path);
 	}
 
-	/**
-	 * @param ae
-	 * @param r
-	 * @param path
-	 */
 	/**
 	 * @param ae
 	 * @param r
@@ -1422,7 +1610,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= summaryBox.getParent();
 		Node child=  summaryBox.getSource();
 		
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Link link= graph.getLink(parent, child, true);
 		
 		if (!(link instanceof LabelledLink)) {
@@ -1450,12 +1638,18 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		if (interval!=null) {
 			branchData.getBranchIntervals().clear();
 			branchData.add(interval);
-			TreeADDModel model= (TreeADDModel) tree.getModel();			
+			TreeADDModel model= (TreeADDModel) jTree.getModel();			
 
 			model.fireNodesChanged(path);
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionSetInterval (ActionEvent ae, Object r, TreePath path) {		
 		if (!(r instanceof SummaryBox)) {
 			throw new RuntimeException("Expected SummaryBox class, found: " + r.getClass().getName());											
@@ -1468,7 +1662,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= summaryBox.getParent();
 		Node child=  summaryBox.getSource();
 		
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Link link= graph.getLink(parent, child, true);
 		
 		if (!(link instanceof LabelledLink)) {
@@ -1492,11 +1686,17 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		branchData.getBranchIntervals().clear();
 		branchData.add (intervalToSet);
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 
 		model.fireNodesChanged(path);
 	}
 	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionRemoveBranchState (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof SummaryBox)) {
 			throw new RuntimeException("Expected Summary class, found: " + r.getClass().getName());											
@@ -1506,7 +1706,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= summaryBox.getParent();
 		Node child=  summaryBox.getSource();
 		
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Link link= graph.getLink(parent, child, true);
 		
 		if (!(link instanceof LabelledLink)) {
@@ -1536,10 +1736,16 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		// TODO: comprobar que la variable es FiniteStates
 		branchData.remove (stateToRemove);
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 		model.fireNodesChanged (path);			
 	}
-
+	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionRemoveBranch (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof SummaryBox)) {
 			throw new RuntimeException("Expected Summary class, found: " + r.getClass().getName());											
@@ -1549,11 +1755,11 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= summaryBox.getParent();
 		Node child=  summaryBox.getSource();
 		
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		
 		deleteUnusedGraphNodes (graph, child);
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		
 		model.fireTreeRemove (path.getParentPath(), child);
 		model.removeBox (summaryBox);
@@ -1584,40 +1790,46 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			
 			if (child.getObject() instanceof Potential) {
 				Potential potential= (Potential) child.getObject();
-				treePotential.removePotential(potential);
+				treeADDPotential.removePotential(potential);
 				
-				String referenceName= treePotential.getReference(child);
+				String referenceName= treeADDPotential.getReference(child);
 				if (referenceName==null) {
 					throw new RuntimeException("Reference unknown: " + referenceName);			
 				}
 				
-				treePotential.removeNodeReference (referenceName);
+				treeADDPotential.removeNodeReference (referenceName);
 			}			
 		}
 	}
 	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionAddNewTablePotential (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof Node)) {
 			throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
 		}
 
-		Graph graph= treePotential.getGraph();
+		Graph graph= treeADDPotential.getGraph();
 		Node newNode= null;
 		try {
 			TablePotential newPotential= null;
-			PotentialRole role= treePotential.getPotentialRole();
+			PotentialRole role= treeADDPotential.getPotentialRole();
 			
-			if (treePotential.isUtility()) {
+			if (treeADDPotential.isUtility()) {
 				if (role!=PotentialRole.UTILITY) {
 					throw new RuntimeException("Expected UTILITY PotentialRole, found: " + role);					
 				}
 				
 				newPotential= new TablePotential (null, role);
-				newPotential.setUtilityVariable(treePotential.getUtilityVariable());
+				newPotential.setUtilityVariable(treeADDPotential.getUtilityVariable());
 			}
 			else if (role==PotentialRole.CONDITIONAL_PROBABILITY) {
 				ArrayList<Variable> varList= new ArrayList<Variable>();
-				varList.add (treePotential.getConditionedVariable());
+				varList.add (treeADDPotential.getConditionedVariable());
 				newPotential= new TablePotential (varList, role);
 			}
 			else {
@@ -1630,8 +1842,8 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			String referenceName= newPotential.getClass().getSimpleName() + "@@" + referenceCount;
 			referenceCount++;
 			
-			treePotential.addPotential (newPotential);
-			treePotential.addNodeReference (referenceName, newNode);
+			treeADDPotential.addPotential (newPotential);
+			treeADDPotential.addNodeReference (referenceName, newNode);
 			
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();											
@@ -1644,12 +1856,18 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		Node parent= (Node) r;			
 		new LabelledLink (parent, newNode, true, new BranchData ((Variable) parent.getObject()));
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 		model.fireTreeInsert(path, newNode);
 		
-		tree.expandPath(path);		
+		jTree.expandPath(path);		
 	}
 	
+	/**
+	 * 
+	 * @param ae
+	 * @param r
+	 * @param path
+	 */
 	void actionAddNewBranchToReference (ActionEvent ae, Object r, TreePath path) {
 		if (!(r instanceof Node)) {
 			throw new RuntimeException("Expected Node class, found: " + r.getClass().getName());											
@@ -1658,21 +1876,27 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		JMenuItem menu= (JMenuItem) ae.getSource();
 		String referenceName= menu.getText();
 		
-		if (!treePotential.getHashReferences().containsKey(referenceName)) {
+		if (!treeADDPotential.getHashReferences().containsKey(referenceName)) {
 			throw new RuntimeException("Reference unknown: " + referenceName);			
 		}
 		
-		Node repeatedNode= treePotential.getHashReferences().get(referenceName);
+		Node repeatedNode= treeADDPotential.getHashReferences().get(referenceName);
 
 		Node parent= (Node) r;			
 		new LabelledLink (parent, repeatedNode, true, new BranchData ((Variable) parent.getObject()));
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();			
+		TreeADDModel model= (TreeADDModel) jTree.getModel();			
 		model.fireTreeInsert(path, repeatedNode);
 		
-		tree.expandPath(path);		
+		jTree.expandPath(path);		
 	}
 	
+	/**
+	 * 
+	 * @param ae
+	 * @param node
+	 * @param path
+	 */
 	void actionNewVariableToPotential (ActionEvent ae, Node node, TreePath path) {
 		// Find the new variable
 		Variable varToAdd= null;
@@ -1702,7 +1926,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		newPotentialVars.add (varToAdd);
 		
 		try {
-			TablePotential newPotential= new TablePotential (newPotentialVars, treePotential.getPotentialRole());
+			TablePotential newPotential= new TablePotential (newPotentialVars, treeADDPotential.getPotentialRole());
 			newPotential.setUtilityVariable(oldTablePotential.getUtilityVariable());
 			
 			node.setObject (newPotential);
@@ -1712,7 +1936,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			e.printStackTrace();
 		}
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
 
 		if (node.getParents().size()>1) {
 			model.fireRecursiveNodeChanged (node);				
@@ -1721,7 +1945,13 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			model.fireNodesChanged (path);
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param ae
+	 * @param node
+	 * @param path
+	 */
 	void actionRemoveVariableFromPotential (ActionEvent ae, Node node, TreePath path) {
 		// Find the new variable
 		Variable varToRemove= null;
@@ -1751,7 +1981,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		newPotentialVars.remove (varToRemove);
 		
 		try {
-			TablePotential newPotential= new TablePotential (newPotentialVars, treePotential.getPotentialRole()); 
+			TablePotential newPotential= new TablePotential (newPotentialVars, treeADDPotential.getPotentialRole()); 
 			newPotential.setUtilityVariable(oldTablePotential.getUtilityVariable());
 			
 			node.setObject (newPotential);
@@ -1761,7 +1991,7 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 			e.printStackTrace();
 		}
 		
-		TreeADDModel model= (TreeADDModel) tree.getModel();
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		
 		if (node.getParents().size()>1) {
 			model.fireRecursiveNodeChanged (node);				
@@ -1771,6 +2001,11 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param graph
+	 * @param node
+	 */
 	void deleteUnusedGraphNodes (Graph graph, Node node) {
 		if (!node.getParents().isEmpty()) {
 			// This node have another active branch
@@ -1782,14 +2017,14 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
 		
 		if (node.getObject() instanceof Potential) {
 			Potential potential= (Potential) node.getObject();
-			treePotential.removePotential(potential);
+			treeADDPotential.removePotential(potential);
 			
-			String referenceName= treePotential.getReference(node);
+			String referenceName= treeADDPotential.getReference(node);
 			if (referenceName==null) {
 				throw new RuntimeException("Reference unknown: " + referenceName);			
 			}
 			
-			treePotential.removeNodeReference (referenceName);
+			treeADDPotential.removeNodeReference (referenceName);
 		}
 		
 		for (Node child : children) {
@@ -1802,8 +2037,8 @@ public class TreeADDBuilder extends JScrollPane implements ActionListener {
  * TODO: Convert to Inner Class of the Viewer?
  */
 class ADDTreeViewer_tree_treeExpansionAdapter implements TreeExpansionListener {
-	private TreeADDBuilder adaptee;
-	ADDTreeViewer_tree_treeExpansionAdapter (TreeADDBuilder adaptee) {
+	private TreeADDController adaptee;
+	ADDTreeViewer_tree_treeExpansionAdapter (TreeADDController adaptee) {
 		this.adaptee = adaptee;
 	}
 	
@@ -1819,8 +2054,8 @@ class ADDTreeViewer_tree_treeExpansionAdapter implements TreeExpansionListener {
  * TODO: Convert to Inner Class of the Viewer?
  */
 class ADDTreeViewer_tree_treeWillExpandAdapter implements TreeWillExpandListener {
-	private TreeADDBuilder adaptee;
-	ADDTreeViewer_tree_treeWillExpandAdapter (TreeADDBuilder adaptee) {
+	private TreeADDController adaptee;
+	ADDTreeViewer_tree_treeWillExpandAdapter (TreeADDController adaptee) {
 		this.adaptee = adaptee;
 	}
 	
@@ -1832,9 +2067,14 @@ class ADDTreeViewer_tree_treeWillExpandAdapter implements TreeWillExpandListener
 	}
 }
 
+/**
+ * @author jfernandez 
+ * @author myebra
+ *
+ */
 class ADDTreeViewer_tree_mouseAdapter extends MouseAdapter {
-	private TreeADDBuilder adaptee;
-	ADDTreeViewer_tree_mouseAdapter(TreeADDBuilder adaptee) {
+	private TreeADDController adaptee;
+	ADDTreeViewer_tree_mouseAdapter(TreeADDController adaptee) {
 		this.adaptee = adaptee;
 	}
 	
@@ -1851,7 +2091,7 @@ class ADDTreeViewer_tree_mouseAdapter extends MouseAdapter {
 			adaptee.xx= e.getX();
 			adaptee.yy= e.getY();
 			
-			TreePath path = adaptee.tree.getPathForLocation (adaptee.xx, adaptee.yy);
+			TreePath path = adaptee.jTree.getPathForLocation (adaptee.xx, adaptee.yy);
 			if( path != null ) {
 				Object node = path.getLastPathComponent();
 				
@@ -1865,7 +2105,7 @@ class ADDTreeViewer_tree_mouseAdapter extends MouseAdapter {
 				adaptee.popupMenu.show (e.getComponent(), adaptee.xx, adaptee.yy);
 			}
 			else {
-				if (adaptee.tree.getModel()==null) {
+				if (adaptee.jTree.getModel()==null) {
 					adaptee.setPopupItemsBlankTree();				
 					adaptee.popupMenu.show(e.getComponent(), adaptee.xx, adaptee.yy);
 				}

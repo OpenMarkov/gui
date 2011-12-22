@@ -22,26 +22,44 @@ import javax.swing.tree.TreePath;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 
+/**
+ * Model of a <code>TreeADDPotential</code>. It is used by a <code>JTree</code> and by <code>TreeADDController</code>.
+ * 
+ * @author jfernandez
+ * @author myebra
+ *
+ */
 public class TreeADDModel implements TreeModel {
-	/**
-	 * 
-	 */
-	protected Node tree;
 	
 	/**
 	 * 
 	 */
-	protected Vector<TreeModelListener> treeModelListeners = new Vector<TreeModelListener>();
+	protected TreeADDPotential2 treeADDPotential;
 	
+	/**
+	 * 
+	 */
+	protected ArrayList<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
+	
+	/**
+	 * @param treeADDPotential  The treeADDPotential represented by this model
+	 */
+	public TreeADDModel(TreeADDPotential2 treeADDPotential) {
+		this.treeADDPotential = treeADDPotential;
+	}
+
 	/**
 	 * 
 	 */
 	// private HashMap<Pair<Node,Node>,SummaryBox> boxesHash= new HashMap< Pair<Node, Node>,SummaryBox>();
-	protected HashMap<Link, SummaryBox> boxesHash= new HashMap<Link, SummaryBox>();
+	protected HashMap<Link, SummaryBox> boxesHash = new HashMap<Link, SummaryBox>();
 	
+/*
 	public ArrayList<SummaryBox> getBoxes (Object obj) {
-		ArrayList<SummaryBox> result= new ArrayList<SummaryBox>();
+		ArrayList<SummaryBox> result = new ArrayList<SummaryBox>();
 		
 		for (SummaryBox box : boxesHash.values()) {
 			if (box.getSource()==obj) {
@@ -51,7 +69,9 @@ public class TreeADDModel implements TreeModel {
 		
 		return result;
 	}
+*/
 	
+/*
 	public void removeBox (SummaryBox obj) {
 		ArrayList<Link> linksToErase= new ArrayList<Link>();
 		
@@ -65,136 +85,157 @@ public class TreeADDModel implements TreeModel {
 			boxesHash.remove (link);
 		}		
 	}
-	/**
-	 * @param ADD/Tree
-	 */
-	public TreeADDModel(Node tree) {
-		this.tree= tree;
+*/
+
+	public Object getRoot() {
+		return treeADDPotential;
 	}
 	
-	/* (non-Javadoc)
-	 * @see javax.swing.tree.TreeModel#getRoot()
-	 */
-	public Object getRoot() {
-		return tree;
-	}
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
-	public int getChildCount(Object parent) {
-		if( isLeaf(parent) ) {
+	public int getChildCount(Object node) {
+		if ( isLeaf(node) ) {
 			return 0;
+		} else {
+			return ((TreeADDPotential2)node).getBranches().size();
 		}
-		
-		// SummaryBoxes have only one child
-		if( parent instanceof SummaryBox ) {
-			return 1;
-		}
-		
-		if (!(parent instanceof Node)) {
-			throw new RuntimeException("Expected Node class: found " + parent.getClass().getName());
-		}
-		
-		return ((Node) parent).getNumChildren();
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object node) {
-		return node instanceof Potential;
+		return !(node instanceof TreeADDPotential2);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
-	public void addTreeModelListener(TreeModelListener l) {
-		treeModelListeners.addElement(l);
+	public void addTreeModelListener(TreeModelListener listener) {
+		treeModelListeners.add(listener);
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
-	public void removeTreeModelListener(TreeModelListener l) {
-		treeModelListeners.removeElement(l);
+	public void removeTreeModelListener(TreeModelListener listener) {
+		treeModelListeners.remove(listener);
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
 	 */
 	public Object getChild(Object parent, int index) {
-		if( parent instanceof SummaryBox ) {
-			return ((SummaryBox) parent).getSource();
+		return ((TreeADDPotential2)parent).getBranches().get(index);
+		//Así estoy devolviendo la branch correspondiente como hijo
+		//igual debería devolver el potencial que cuelga de la branch que puede ser un TreeADDPotential,
+		//un Tablepotential o un Reference o comprobarlo donde lo use
+	}
+	
+	/**
+	 * It can returns three different kind of objects: a reference (String), a TreeADDPotential or a Table potential
+	 * It is assumed that object parent will be always a TreeADDPotential, it could be the root
+	 * or a subtree.
+	 * It children could be a TablePotential, another TreADDPotential (subtree) or a reference to another TreADDPotential (subtree) or a TablePotential
+	 * linked by a TreeADDBranch 
+	 * 
+	 */
+	public Object getChild2(Object parent, int index) {
+		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
+		String reference = branch.getReference();
+		if(reference == null){
+			//If reference is null that means that this branch has a potential
+			return branch.getPotential();
+		}else{
+			return reference;
 		}
 		
-		if (!(parent instanceof Node)) {
-			throw new RuntimeException("Expected InnerNode class: found " + parent.getClass().getName());
-		}
-		
-		// Get the child at this branch
-		Node child= ((Node) parent).getChildren().get(index);
-		
-		Link link= tree.getGraph().getLink ((Node) parent, child, true);
-		SummaryBox summaryBox= boxesHash.get(link);
-
-		if( summaryBox == null ) {
-			summaryBox= new SummaryBox (child, (Node) parent, index);
-			boxesHash.put (link, summaryBox);	// Don't forget to remove this link when a branch is deleted
-		}
-		
-		return summaryBox;
+	}
+	
+	/**
+	 * Even better
+	 * It is assumed that Object parent is a TreeADDPotential
+	 * It could returns two different kind of Potentials: a TreeADDPotential or a Table potential
+	 * It is assumed that object parent will be always a TreeADDPotential, it could be the root
+	 * or a subtree.
+	 * It children could be a TablePotential, another TreADDPotential (subtree) or a reference to another TreADDPotential (subtree) or a TablePotential
+	 * linked by a TreeADDBranch 
+	 * 
+	 */
+	//revisar!!!!mira las branches de todo el tree con subtrees??
+	public Object getChild3(Object parent, int index) {
+		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
+		return ((TreeADDPotential2)parent).getAssignedPotential(branch);
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
 	 */
+	/**
+	 * @param parent , It is usually a TreeADDPotential 
+	 * @param objChild, It is usually a TreeADDBranch
+	 */
+	//Si no estamos pasando como hijo un branch no me va a devolver el indice
+	//Si queremos poder pasarle como hijo un potencial (ya sea TreeADDPotential o TablePotentia o una referencia a un potential)
+	//tendremos que cambiar getChild(parent, i) para que haga las comprobaciones pertinentes y no devu
 	public int getIndexOfChild(Object parent, Object objChild) {
-		if( parent==null || objChild==null ) {
-			return -1;
+		if (parent==null || objChild==null ) {
+			return -1;//If either parent or child is null, returns -1
 		}
-		
-		// Every summary box must have only one Node child
-		if( parent instanceof SummaryBox ) {
-			return ((SummaryBox)parent).getSource()== objChild ? 0 : -1;
-		}
-		
-		if (!(parent instanceof Node)) {
-			throw new RuntimeException("Expected InnerNode class: found " + parent.getClass().getName());
-		}
-		
-		Node father= (Node) parent;
-		for( int i=0; i< father.getNumChildren(); i++ ) {
-			Node child= father.getChildren().get(i);
-
-			if (child==objChild) {
-				return i;
+		if (isLeaf(parent)) {//getChildrenCount(parent)=0
+			return 0;
+		} else {
+			for (int i = 0; i < getChildCount(parent); i++) {
+				if (getChild(parent,i) == objChild) {
+					return i;
+				}
 			}
 		}
-		
-		return -1;
+		return -1;//If either parent or child don't belong to this tree model, returns -1.
+				  
 	}
 	
+	/**
+	 * Alerts tree model listeners that a node (or a set of siblings) has changed in some way 
+	 * node´s attributes have changed and may affect presentation
+	 * The node(s) have not changed locations in the tree or altered their children 
+	 * 
+	 * @param path
+	 */
 	public void fireNodesChanged(TreePath path) {
-        int len = treeModelListeners.size();
+        int numTreeModelListeners = treeModelListeners.size();
 
         TreeModelEvent e = new TreeModelEvent(this, path);
         
-        for (int i = 0; i < len; i++) {
-            ((TreeModelListener)treeModelListeners.elementAt(i)).treeNodesChanged(e);
+        for (int i = 0; i < numTreeModelListeners; i++) {
+            ((TreeModelListener)treeModelListeners.get(i)).treeNodesChanged(e);
         }
 	}
-
+	
+	/**
+	 * Alerts tree model listeners that the tree has drastically changed structure from a given node down
+	 *  
+	 * @param path
+	 */
 	public void fireTreeStructureChanged(TreePath path) {
         int len = treeModelListeners.size();
 
         TreeModelEvent e = new TreeModelEvent(this, path);
         
         for (int i = 0; i < len; i++) {
-        	((TreeModelListener)treeModelListeners.elementAt(i)).treeStructureChanged(e);
+        	((TreeModelListener)treeModelListeners.get(i)).treeStructureChanged(e);
         }
 	}
 	
+	/**
+	 * Alerts tree model listeners that a node has been inserted in the tree
+	 * 
+	 * @param path
+	 * @param child
+	 */
 	public void fireTreeInsert(TreePath path, Object child) {
 		  Object[] children = {child};
 		  int index = this.getIndexOfChild(path.getLastPathComponent(), child);
@@ -203,10 +244,16 @@ public class TreeADDModel implements TreeModel {
 		  
 		  int len = treeModelListeners.size();
 		  for (int i = 0; i < len; i++) {
-			  ((TreeModelListener)treeModelListeners.elementAt(i)).treeNodesInserted(e);
+			  ((TreeModelListener)treeModelListeners.get(i)).treeNodesInserted(e);
 		  }
 	}
 	
+	/**
+	 * Alerts tree model listeners that a node has been removed in the tree
+	 * 
+	 * @param path
+	 * @param child
+	 */
 	public void fireTreeRemove(TreePath path, Object child) {
 		Object[] children = {child};
 		int index = this.getIndexOfChild(path.getLastPathComponent(), child);
@@ -215,10 +262,16 @@ public class TreeADDModel implements TreeModel {
   
 		int len = treeModelListeners.size();
 		for (int i = 0; i < len; i++) {
-			((TreeModelListener)treeModelListeners.elementAt(i)).treeNodesRemoved (e);
+			((TreeModelListener)treeModelListeners.get(i)).treeNodesRemoved (e);
 		}
 	}	
 	
+	/**
+	 * 
+	 * @param obj
+	 * @param goal
+	 * @param path
+	 */
 	private void fireRecursiveNodeChanged (Object obj, Object goal, TreePath path) {
 		TreePath newPath= path.pathByAddingChild(obj);
 		
@@ -233,8 +286,12 @@ public class TreeADDModel implements TreeModel {
 			fireRecursiveNodeChanged (child, goal, newPath);
 		}
 	}
-
-	public void fireRecursiveNodeChanged (Node goal) {
+	
+	/**
+	 * 
+	 * @param goal
+	 */
+	/*public void fireRecursiveNodeChanged (Node goal) {
 		Node root= (Node) getRoot();
 		
 		TreePath path= new TreePath (root);
@@ -248,7 +305,7 @@ public class TreeADDModel implements TreeModel {
 			Object child= getChild (root, i);
 			fireRecursiveNodeChanged (child, goal, path);
 		}
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)

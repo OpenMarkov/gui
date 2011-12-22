@@ -44,7 +44,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.component.RelationTypes;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.dialog.treeadd.TreeADDBuilder;
+import org.openmarkov.core.gui.dialog.treeadd.TreeADDController;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
@@ -152,7 +152,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	/**
 	 * The builder object of Tree - ADDs
 	 */
-	private TreeADDBuilder treeADDBuilder;
+	private TreeADDController treeADDBuilder;
 	/**
 	 * Option deselected in the jComboboxRelationType
 	 */
@@ -276,7 +276,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		if (nodeADDPotentialPanel == null) {
 			nodeADDPotentialPanel = new JPanel ();
 			nodeADDPotentialPanel.setLayout(new BorderLayout());
-			treeADDBuilder = new TreeADDBuilder ( 
+			treeADDBuilder = new TreeADDController ( 
 					(TreeADDPotential)probNode.getPotentials().get( 0 ));
 			nodeADDPotentialPanel.add( treeADDBuilder, BorderLayout.CENTER );
 			nodeADDPotentialPanel.setName("nodeTreeADDPotentialPanel");
