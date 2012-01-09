@@ -18,6 +18,7 @@ import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.TreePath;
 
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 
 public class TreeADDUserInterface extends BasicTreeUI {
 	
@@ -48,13 +49,13 @@ public class TreeADDUserInterface extends BasicTreeUI {
 			
 			if (isExpanded) {
 				Icon expandedIcon = getExpandedIcon();
-				if(expandedIcon != null && (value instanceof SummaryBox || value instanceof Potential) ) {
+				if(expandedIcon != null && (value instanceof TreeADDBranch || value instanceof Potential) ) {
 					drawCentered(tree, g, expandedIcon, middleXOfKnob, middleYOfKnob );
 				}
 			}
 			else {
 				Icon collapsedIcon = getCollapsedIcon();
-				if(collapsedIcon != null && (value instanceof SummaryBox || value instanceof Potential) ) {
+				if(collapsedIcon != null && (value instanceof TreeADDBranch || value instanceof Potential) ) {
 					drawCentered(tree, g, collapsedIcon, middleXOfKnob, middleYOfKnob);
 				}
 			}
