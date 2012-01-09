@@ -61,6 +61,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). 
@@ -276,8 +277,13 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		if (nodeADDPotentialPanel == null) {
 			nodeADDPotentialPanel = new JPanel ();
 			nodeADDPotentialPanel.setLayout(new BorderLayout());
+			try{
 			treeADDBuilder = new TreeADDController ( 
-					(TreeADDPotential)probNode.getPotentials().get( 0 ));
+					(TreeADDPotential2)probNode.getPotentials().get( 0 ));
+			}catch (Exception CloneNotSupportedException){
+				//new mesage();
+				//TODO handle with a mesage
+			}
 			nodeADDPotentialPanel.add( treeADDBuilder, BorderLayout.CENTER );
 			nodeADDPotentialPanel.setName("nodeTreeADDPotentialPanel");
 			nodeADDPotentialPanel.setBackground(Color.blue);

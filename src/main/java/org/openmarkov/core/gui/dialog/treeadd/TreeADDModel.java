@@ -35,9 +35,9 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 public class TreeADDModel implements TreeModel {
 	
 	/**
-	 * 
+	 * This is the root of the tree, within it could exists another subtrees or other type of potentials
 	 */
-	protected TreeADDPotential2 treeADDPotential;
+	protected TreeADDPotential2 treeADDPotentialRoot;
 	
 	/**
 	 * 
@@ -48,14 +48,14 @@ public class TreeADDModel implements TreeModel {
 	 * @param treeADDPotential  The treeADDPotential represented by this model
 	 */
 	public TreeADDModel(TreeADDPotential2 treeADDPotential) {
-		this.treeADDPotential = treeADDPotential;
+		this.treeADDPotentialRoot = treeADDPotential;
 	}
 
 	/**
 	 * 
 	 */
 	// private HashMap<Pair<Node,Node>,SummaryBox> boxesHash= new HashMap< Pair<Node, Node>,SummaryBox>();
-	protected HashMap<Link, SummaryBox> boxesHash = new HashMap<Link, SummaryBox>();
+	//protected HashMap<Link, SummaryBox> boxesHash = new HashMap<Link, SummaryBox>();
 	
 /*
 	public ArrayList<SummaryBox> getBoxes (Object obj) {
@@ -88,7 +88,7 @@ public class TreeADDModel implements TreeModel {
 */
 
 	public Object getRoot() {
-		return treeADDPotential;
+		return treeADDPotentialRoot;
 	}
 	
 	
@@ -127,12 +127,12 @@ public class TreeADDModel implements TreeModel {
 	
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-	 */
+	
 	public Object getChild(Object parent, int index) {
+		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
+		
 		return ((TreeADDPotential2)parent).getBranches().get(index);
-		//Así estoy devolviendo la branch correspondiente como hijo
-		//igual debería devolver el potencial que cuelga de la branch que puede ser un TreeADDPotential,
-		//un Tablepotential o un Reference o comprobarlo donde lo use
+		//aquí tengo que delvolverun treeADD o un potencial lo que cuelgue de la rama.
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class TreeADDModel implements TreeModel {
 	 * It children could be a TablePotential, another TreADDPotential (subtree) or a reference to another TreADDPotential (subtree) or a TablePotential
 	 * linked by a TreeADDBranch 
 	 * 
-	 */
+	
 	public Object getChild2(Object parent, int index) {
 		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
 		String reference = branch.getReference();
@@ -153,10 +153,10 @@ public class TreeADDModel implements TreeModel {
 			return reference;
 		}
 		
-	}
+	}*/
 	
 	/**
-	 * Even better
+	 
 	 * It is assumed that Object parent is a TreeADDPotential
 	 * It could returns two different kind of Potentials: a TreeADDPotential or a Table potential
 	 * It is assumed that object parent will be always a TreeADDPotential, it could be the root
@@ -165,8 +165,10 @@ public class TreeADDModel implements TreeModel {
 	 * linked by a TreeADDBranch 
 	 * 
 	 */
-	//revisar!!!!mira las branches de todo el tree con subtrees??
-	public Object getChild3(Object parent, int index) {
+	
+	
+	//The child must be a potential a tablePotential or a treeADDPotential (subtree)	
+	public Object getChild(Object parent, int index) {
 		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
 		return ((TreeADDPotential2)parent).getAssignedPotential(branch);
 	}
@@ -178,9 +180,7 @@ public class TreeADDModel implements TreeModel {
 	 * @param parent , It is usually a TreeADDPotential 
 	 * @param objChild, It is usually a TreeADDBranch
 	 */
-	//Si no estamos pasando como hijo un branch no me va a devolver el indice
-	//Si queremos poder pasarle como hijo un potencial (ya sea TreeADDPotential o TablePotentia o una referencia a un potential)
-	//tendremos que cambiar getChild(parent, i) para que haga las comprobaciones pertinentes y no devu
+	//parent must be a treeADD and child a treeADD or a potential
 	public int getIndexOfChild(Object parent, Object objChild) {
 		if (parent==null || objChild==null ) {
 			return -1;//If either parent or child is null, returns -1
@@ -232,6 +232,7 @@ public class TreeADDModel implements TreeModel {
 	
 	/**
 	 * Alerts tree model listeners that a node has been inserted in the tree
+	 * Tree nodes could be treeADDs or potentials
 	 * 
 	 * @param path
 	 * @param child
