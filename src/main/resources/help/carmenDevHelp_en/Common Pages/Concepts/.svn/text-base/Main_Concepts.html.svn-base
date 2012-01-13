@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+<meta name="generator" content="Helen">
+<link type="text/css" href="../../javahelp.css" rel="stylesheet">
+<title>Main Concepts</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img hspace="0" height="32" width="32"
+	src="../../images/carmenHelpIcons/c2_32.gif" border="0">&nbsp;Concepts
+</h1>
+<hr size="2" align="left" width="100%" color="blue">
+<p>To know and properly understand the use of CARMEN tool, it is
+required to know the main concepts and terminology behind the Graphical
+Probabilistic Models and the Expert Systems.</p>
+<p>These terms are:</p>
+<ul>
+	<li><a href="Bayesian networks and Influence Diagrams.html">Type
+	of networks</a></li>
+	<li><a href="Explanation in Expert Systems.html">Explanation
+	in Expert Systems</a></li>
+	<li><a href="Canonical Models.html">Canonical Models</a></li>
+	<li><a href="Algorithms.html">Algorithms</a></li>
+</ul>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Moving several nodes</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="276" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Moving several nodes
+    </h1>
+    <table border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" width="488">
+      <col width="234">
+      <col width="236">
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Use case: Moving several nodes</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Comment:</font></b> <font size="3">After selecting one or more
+            nodes, the user can move them all at once as shown in the following table.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="236">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">1.The user selects one or several nodes using any of the use cases
+            explained. No matter if there is a link selected.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.When the type of editing is the selection of objects, the user
+            presses (and keeping pressed) with the left mouse button, without pressing any other
+            key, on a network node which is already selected.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">3.The cursor takes the shape of a cross with arrowheads.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td rowspan="2" width="234">
+          <p align="justify">
+             <font size="3">4.If the user moves the mouse, all the selected nodes will move,
+            adapting the links that come from or end in them. The use case remains at this
+            point.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p align="justify">
+             <font size="3">4.1.If the user does not move the mouse, the use case goes to point
+            4.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="236">
+          <p align="justify">
+             <font size="3">4.2.If the user releases the mouse button, the use case goes to point
+            5.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">5.The mouse cursor resumes its normal shape.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">6.A new point to undo and redo the moving of the nodes is
+            created.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">7.If necessary, the network panel is resized to house the entire
+            network.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">8.The use case <i>Updating menus when modifying a network</i> is
+            executed.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">9.The network is marked as modified (if it was not already), placing an
+            asterisk at the title of the window in which is being editing.</font>
+          </p>
+        </td>
+        <td width="236">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

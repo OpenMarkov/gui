@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" href="../../javahelp.css" type="text/css">
+    <title>Valores ausentes</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img width="32" src="../../images/carmenHelpIcons/c2_32.gif" hspace="0" border="0" height=
+      "32">&nbsp;Tratamiento de Valores ausentes
+    </h1>
+    <hr width="100%" color="blue" size="2" align="left">
+    <p>
+       &nbsp;Existen dos opciones para el tratamiento de valores ausentes:
+    </p>
+    <ol>
+      <li>
+        <p>
+           <b>Eliminar registros</b>: Se eliminan de la base de datos aquellos registros que
+          contengan un valor ausente en alguna de las variables para las que se ha elegido esta
+          opción. Es importante tener en cuenta que la elección de esta opción puede tener
+          consecuencias muy negativas en el aprendizaje dependiendo de la densidad de la base de
+          datos. Si la base de datos contiene gran cantidad de valores ausentes, la elección de
+          esta opción puede reducir el número de casos para el aprendizaje hasta valores demasiado
+          pequeños, reduciéndose así enormemente la calidad del aprendizaje. Por tanto, antes de
+          elegir esta opción, es recomendable tener cierto conocimiento de la base de datos para
+          evitar sesgar el aprendizaje de una manera muy importante.
+        </p>
+      </li>
+      <li>
+        <b>Mantener valores ausentes</b>: Se mantienen los valores ausentes que aparecen en la base
+        de datos, añadiendo a cada variable para la que se haya seleccionado esta opción, un nuevo
+        estado que recoge dichos valores ausentes.<br>
+      </li>
+    </ol>
+    <p>
+       En la interfaz gráfica, en la parte superior de la pestaña 'Variables' se muestra un
+      'ComboBox' en el que se dan tres opciones. La opción por defecto es 'Seleccionar para cada
+      variable', la cual nos permite seleccionar la opción de tratamiento de valores ausentes para
+      cada variable independientemente. Para ello, se ha de hacer uso del 'ComboBox' situado a la
+      derecha del nombre de cada variable. Además de dicha opción, se muestran otras dos opciones:
+      'Eliminar registros' y 'Mantener valores ausentes' (cuyo efecto es el comentado
+      anteriormente) que permiten aplicar la opción seleccionada a todas las variables de la base
+      de datos. De este modo, si se quiere utilizar una misma política de tratamiento de valores
+      ausentes para todas las variables de la base de datos es más cómodo seleccionar una de estas
+      dos opciones, sin embargo, si se quieren mantener los valores ausentes para algunas variables
+      y eliminarlos para otras, será necesario elegir la opción 'Seleccionar para cada variable' y
+      a continuación, seleccionar la opción deseada para cada variable en el 'ComboBox' que aparece
+      a la derecha de su nombre.
+    </p>
+  </body>
+</html>

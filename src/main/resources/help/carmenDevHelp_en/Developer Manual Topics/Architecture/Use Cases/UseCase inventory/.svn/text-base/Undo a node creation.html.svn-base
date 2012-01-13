@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Undo a node creation</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="276" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Deshacimiento de la creación de
+      un nodo
+    </h1>
+    <table border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" width="487">
+      <col width="234">
+      <col width="235">
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="left">
+             <b><font size="3">Use case: Undo a node creation</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="left">
+             <b><font size="3">Comment:</font></b> <font size="3">When undoing the creation of a
+            node, the network remains in the same state that it was right before the amendment. The
+            option to enable the undo of the creation of the node is the same for all kinds of
+            undo. Depending on the order in which amendments have been made, undo one or the other.
+            The steps that the use case have are as follows.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="235">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">1.No matter what kind of edition and when the last action not undid is
+            the creation of a node, the user clicks on the option to undo.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.All elements of the actual network are deselected.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">3.The use case <i>Updating the menus when changing the selected
+            element</i> is executed.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">4.Las node created in the network is deleted.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">5.The use case <i>Updating the menus when modifying a network</i> is
+            executed.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">6.The network is marked as modified (if it was not already), placing an
+            asterisk at the title of the window in which is being editing.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
