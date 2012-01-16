@@ -274,6 +274,34 @@ public class VisualLink extends VisualElement {
 		return polygon;
 
 	}
+	
+	/**
+	 * Returns the line to be painted for undirected links.
+	 * 
+	 * @return shape of the line.
+	 */
+	private Shape getLineToPaint(Point2D.Double start, Point2D.Double end) {
+
+		GeneralPath polygon = null;
+		int index = 0;
+		int length = 0;
+
+		Point2D.Double[] points = new Point2D.Double[2];
+
+		points[0] = start;
+		points[1] = end;
+
+		polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, points.length);
+		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
+		length = points.length;
+		for (index = 1; index < length; index++) {
+			polygon.lineTo((float) points[index].getX(), (float) points[index]
+				.getY());
+		}
+		polygon.closePath();
+
+		return polygon;
+	}
 
 	
 	/**
@@ -417,6 +445,28 @@ public class VisualLink extends VisualElement {
 		}
 	}
 	
+	/**
+	 * Paints the line into the graphics object.
+	 * 
+	 * @param g
+	 *            graphics object where paint the link.
+	 */
+
+	public void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end) {
+		Shape shape = null;
+		if ((start != null) && (end != null)) {
+			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
+				if (isSelected()) {
+					g.setStroke(WIDE_STROKE);
+				} else {
+					g.setStroke(NORMAL_STROKE);
+				}
+				g.setPaint(FOREGROUND_COLOR);
+				shape = getLineToPaint(start, end);
+				g.draw(shape);
+			}
+		}
+	}
 	
 	/**
 	 * Paints the visual link into the graphics object.
@@ -453,12 +503,19 @@ public class VisualLink extends VisualElement {
 			}
 			sPoint = source.cutPoint(line, g);
 			ePoint = destination.cutPoint(line, g);
-			if ((sPoint != null) && (ePoint != null)) {
+			if ((sPoint != null) && (ePoint != null) && (link.isDirected())) {
 				paintArrow(g, sPoint, ePoint);
 			}
-		} else {
+			else if ((sPoint != null) && (ePoint != null) && 
+					(!link.isDirected())) {
+				paintLine(g, sPoint, ePoint);
+			}
+		} else if (link.isDirected()){
 			//Paint the arrow while the user has not released the button of the mouse
 			paintArrow(g, startPoint, endPoint);			
+		}
+		else{
+			paintLine(g, startPoint, endPoint);
 		}
 	}
 
