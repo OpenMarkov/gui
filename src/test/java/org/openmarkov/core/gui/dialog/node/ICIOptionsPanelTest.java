@@ -34,9 +34,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @author jlgozalo
  * @version 1.0
  */
-public class TablePotentialPanelTest {
+public class ICIOptionsPanelTest {
 
-	TablePotentialPanel panel = null;
+	ICIOptionsPanel panel = null;
 
 	private  ProbNet probNet = null;
 	private  ProbNode probNode = null;
@@ -50,7 +50,7 @@ public class TablePotentialPanelTest {
 	public void setUp() throws Exception {
  
 	
-		panel = new TablePotentialPanel(false);
+		panel = new ICIOptionsPanel(false);
 		
 		probNet = createSimpleProbNet();
 		probNode = probNet.getProbNodes().get(0);

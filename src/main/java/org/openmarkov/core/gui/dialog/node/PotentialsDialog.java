@@ -97,7 +97,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 * Panel that contains the panel where probability table are. It is used to
 	 * place the fields at the top of the panel.
 	 */
-	private TablePotentialPanel tablePotentialPanel;
+	private ICIOptionsPanel iciOptionsPanel;
 
 	/**
 	 * The node edited
@@ -257,18 +257,17 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 * 
 	 * @return a TablePotentialPanel instance
 	 */
-	// TODO Cambiar nombre de TablePotentialPanel a ICIOptionsPanel
 	// TODO Sacarlo de aquí para que sea un sub-panel de ICIModelPanel
-	private TablePotentialPanel getTablePotentialPanel() {
+	private ICIOptionsPanel getICIOptionsPanel() {
 
-		if (tablePotentialPanel == null) {
-			tablePotentialPanel = new TablePotentialPanel(probNode);
+		if (iciOptionsPanel == null) {
+			iciOptionsPanel = new ICIOptionsPanel(probNode);
 			boolean newNode = true;
-			tablePotentialPanel.setNewNode(newNode);
+			iciOptionsPanel.setNewNode(newNode);
 			//tablePotentialPanel.setNodeProperties(probNode);
 		}
 		
-		return tablePotentialPanel;
+		return iciOptionsPanel;
 	}
 	/**
 	 * This method initializes nodeADDPotentialPanel and treeADDBuilder.
@@ -306,7 +305,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			probNode.getPotentials().get(0) instanceof TreeADDPotential ){
 			return getADDPotentialPanel ();
 		} else {
-			return getTablePotentialPanel ();
+			return getICIOptionsPanel ();
 		}
 	}
 	
@@ -324,9 +323,9 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		}
 		setVisible(true);
 		//TODO revisar el acceso a los componentes en la siguiente línea
-		if ( getPotentialPanel() instanceof TablePotentialPanel ){
+		if ( getPotentialPanel() instanceof ICIOptionsPanel ){
 			probNode.getProbNet().getPNESupport().removeUndoableEditListener(
-				((TablePotentialPanel)getPotentialPanel ()).
+				((ICIOptionsPanel)getPotentialPanel ()).
 				getNodePotentialsTablePanel().getValuesTable());
 		}
 		return selectedButton;
@@ -366,10 +365,10 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		setTitle(dialogStringResource.getString(
 				"NodePropertiesDialog.Title.Label")+ ": " + probNode.getName());
 
-		if ( getPotentialPanel() instanceof TablePotentialPanel ){
-			tablePotentialPanel.setNodeProperties(probNode);
+		if ( getPotentialPanel() instanceof ICIOptionsPanel ){
+			iciOptionsPanel.setNodeProperties(probNode);
 			// set the NodeProbsValuesTablePanel fields
-			tablePotentialPanel.setFieldsFromProperties( probNode );
+			iciOptionsPanel.setFieldsFromProperties( probNode );
 			if ( probNode.getNodeType() == NodeType.DECISION ){
 				setEnabledDecisionOptions(true);
 			}
@@ -573,8 +572,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				}
 			}
 			
-			if ( getPotentialPanel() instanceof TablePotentialPanel){
-				((TablePotentialPanel)getPotentialPanel()).
+			if ( getPotentialPanel() instanceof ICIOptionsPanel){
+				((ICIOptionsPanel)getPotentialPanel()).
 				hideElementsWhenIsDecisionNodeOrUniformPotential();
 				getPotentialTypeJCombobox().setEnabled(false);
 			}
@@ -629,8 +628,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			}
 			
 		}
-		if ( getPotentialPanel() instanceof TablePotentialPanel){
-			((TablePotentialPanel)getPotentialPanel()).
+		if ( getPotentialPanel() instanceof ICIOptionsPanel){
+			((ICIOptionsPanel)getPotentialPanel()).
 			showElementsWhenOptimalDeselected();
 		}
 		
@@ -782,7 +781,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-		if (! ( getPotentialPanel() instanceof TablePotentialPanel ) ){
+		if (! ( getPotentialPanel() instanceof ICIOptionsPanel ) ){
 			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(probNode, 
 					treeADDBuilder.getTreePotential() );
 			try {
@@ -837,8 +836,8 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			Potential newPotential = ( ( SetPotentialEdit) edit ).getNewPotential();
 			if ( ( ( SetPotentialEdit) edit ).getNewPotential() instanceof 
 					TreeADDPotential){
-				if ( tablePotentialPanel != null ){
-					getComponentsPanel().remove(tablePotentialPanel);
+				if ( iciOptionsPanel != null ){
+					getComponentsPanel().remove(iciOptionsPanel);
 				}
 				getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
 				//TODO desactivar las opciones de decisión
@@ -851,7 +850,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				if ( !(newPotential instanceof SameAsPrevious) && !(newPotential 
 						instanceof CycleLengthShift) && !(newPotential instanceof 
 								ProductPotential) ){
-					((TablePotentialPanel) getPotentialPanel()).
+					((ICIOptionsPanel) getPotentialPanel()).
 					setFieldsFromProperties(probNode);
 					if (probNode.getNodeType() == NodeType.DECISION){
 						setEnabledDecisionOptions(true);
@@ -859,7 +858,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 						setEnabledDecisionOptions(false);
 					}
 				}else{ 
-					tablePotentialPanel.
+					iciOptionsPanel.
 						hideElementsWhenIsDecisionNodeOrUniformPotential();
 				}
 			}

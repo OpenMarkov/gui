@@ -46,7 +46,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
  * @author jlgozalo
  * @version 1.0 jlgozalo
  */
-public class TablePotentialPanel extends JPanel implements 
+public class ICIOptionsPanel extends JPanel implements 
 	PNUndoableEditListener{
 
 	/**
@@ -129,7 +129,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public TablePotentialPanel() {
+	public ICIOptionsPanel() {
 
 		this( true); //new ElementObservable() );
 
@@ -138,7 +138,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public TablePotentialPanel( ProbNode probNode) {
+	public ICIOptionsPanel( ProbNode probNode) {
 
 		this( true);//, notifier );
 		this.probNode = probNode;
@@ -158,7 +158,7 @@ public class TablePotentialPanel extends JPanel implements
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
 	 */
-	public TablePotentialPanel(final boolean newNode){
+	public ICIOptionsPanel(final boolean newNode){
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
