@@ -38,7 +38,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbabilisticValueNotAllowedException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.action.NodePotentialEdit;
+import org.openmarkov.core.gui.action.TablePotentialValueEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -69,7 +69,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * <li>Net or Compound values (for the Canonical families)</li>
  * 
  * @author jlgozalo
- * @author mkpalacio
+ * @author mpalacios
  * @version 1.0 7 Jul 2009
  * @version 1.1 15/Nov 2009 - sets the attributes for behaviour: deterministic
  *          (yes/no)
@@ -413,7 +413,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 						lastCol = col;
 					}
 					
-					NodePotentialEdit nodePotentialEdit = new NodePotentialEdit(
+					TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
 						probNode, (Double)newValue, row, col, priorityList);
 					try {
 						probNode.getProbNet().getPNESupport().announceEdit(
@@ -444,7 +444,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				//checkProbabilistic( oldValue, newValue, row, col );
 				}
 			} else if (nodeType == NodeType.UTILITY ) {
-				NodePotentialEdit nodePotentialEdit = new NodePotentialEdit(
+				TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
 						probNode, (Double)newValue, row, col, priorityList);
 					try {
 						probNode.getProbNet().getPNESupport().announceEdit(
@@ -1164,6 +1164,33 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 		return numColumns;
 	}
+	
+	/**
+	 * set the number of columns in the table for canonical models adding one column per parent state
+	 *  and adding one more for the id column (hidden)
+	 * 
+	 * @param parents -
+	 *            parents of the variable
+	 * @return the number of columns in the table
+	 */
+	public static int howManyCanonicalColumns(ProbNode properties) {
+
+		int numColumns = 0;
+		if (properties.getNode().getParents() != null) {
+			int aux = 1;// first column for child states
+			for (Node parent : properties.getNode().getParents()) {
+				State[] parentStates = ((ProbNode)parent.getObject()).
+					getVariable().getStates();
+				aux += parentStates.length;
+			}
+			numColumns = aux + 1; //last column for the leak potential
+		} else {
+			numColumns = 1;
+		}
+		numColumns = FIRST_EDITABLE_COLUMN + numColumns;
+
+		return numColumns;
+	}
 
 	/**
 	 * set a default id for the columns (Excel format)
@@ -1306,7 +1333,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		
 		UndoableEdit edit = arg0.getEdit();
-		if (edit instanceof NodePotentialEdit){
+		if (edit instanceof TablePotentialValueEdit){
 			auxUndoableEditHappenedNodePotentialEdit(arg0);
 		}
 		else if (edit instanceof UncertainValuesEdit){
@@ -1355,7 +1382,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	
 		int position = 0;
 		
-		NodePotentialEdit edit = (NodePotentialEdit) arg0.
+		TablePotentialValueEdit edit = (TablePotentialValueEdit) arg0.
 			getEdit();
 		TablePotential tablePotential = edit.getPotential();
 		switch (edit.getProbNode().getNodeType()){
@@ -1407,9 +1434,9 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	
 	public void undoEditHappened(PNUndoableEditEvent event) {
 		int position = 0;
-		if (event.getEdit() instanceof NodePotentialEdit){
+		if (event.getEdit() instanceof TablePotentialValueEdit){
 			
-			NodePotentialEdit edit = (NodePotentialEdit) event.
+			TablePotentialValueEdit edit = (TablePotentialValueEdit) event.
 				getEdit();
 			TablePotential tablePotential = edit.getPotential();
 			switch (edit.getProbNode().getNodeType()){

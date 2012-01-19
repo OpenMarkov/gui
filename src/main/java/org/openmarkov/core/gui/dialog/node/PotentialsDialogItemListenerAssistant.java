@@ -82,7 +82,7 @@ public class PotentialsDialogItemListenerAssistant implements
 	 */
 	public void itemStateChanged(ItemEvent e) {
 
-		if (e.getItemSelectable().equals(getPotentialsDialog().getJComboBoxRelationType())) {
+		if (e.getItemSelectable().equals(getPotentialsDialog().getPotentialTypeJCombobox())) {
 			itemStateChangedComboBoxRelationType(e.getStateChange());
 		}
 		if (e.getItem().equals(getPotentialsDialog().getJRadioButtonProbabilisticType())) {
@@ -128,7 +128,7 @@ public class PotentialsDialogItemListenerAssistant implements
 
 		if (itemEvent == ItemEvent.SELECTED) {
 			int index =
-				getPotentialsDialog().getJComboBoxRelationType().getSelectedIndex();
+				getPotentialsDialog().getPotentialTypeJCombobox().getSelectedIndex();
 			
 			//TODO activar las siguientes instrucciones cuando la validación
 			//de visualizaciones sea activada

@@ -30,10 +30,10 @@ import org.openmarkov.core.action.SimplePNEdit;
  * It is implemented for TablePotential Only
  *    
  * @version 1.0 21/12/10
- * @author Miguel Palacios
+ * @author mpalacios
  */
 @SuppressWarnings("serial")
-public class NodePotentialEdit extends SimplePNEdit {
+public class TablePotentialValueEdit extends SimplePNEdit {
 	/**
 	 * The column of the table where is the potential
 	 */
@@ -97,7 +97,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 * @param row the row in the edited table
 	 * @param priorityList the priority lists for potentials update. 
 	 * */
-	public NodePotentialEdit(ProbNode probNode,Double 
+	public TablePotentialValueEdit(ProbNode probNode,Double 
 			newValue, int row, int col, LinkedList<Integer> priorityList) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
@@ -180,11 +180,11 @@ public class NodePotentialEdit extends SimplePNEdit {
 			newTable[potentialSelected] = newValue;
 			Double sum = 0.0;
 			Double rest = 0.0;
-			int pos=0;
+			int position=0;
 		
 			while (listIterator.hasNext()== true){
-				pos = (Integer) listIterator.next();
-				sum = roundingDouble(sum + newTable[pos]);
+				position = (Integer) listIterator.next();
+				sum = roundingDouble(sum + newTable[position]);
 				//sum += newTable[pos];
 			}
 			rest = Math.abs(roundingDouble(1-sum));
@@ -193,19 +193,19 @@ public class NodePotentialEdit extends SimplePNEdit {
 			if (sum > 1.0){
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true && rest != 0){
-					pos = (Integer) listIterator.next();
-					rest = roundingDouble(rest - newTable[pos]);
+					position = (Integer) listIterator.next();
+					rest = roundingDouble(rest - newTable[position]);
 					//rest = rest - newTable[pos];
 					if (rest < 0){
-						newTable[pos] = Math.abs(rest);
+						newTable[position] = Math.abs(rest);
 						break;
 					}else
-						newTable[pos] = 0;
+						newTable[position] = 0;
 				
 					}
 			}else{
-				pos = (Integer) priorityList.getFirst();
-				newTable[pos] = roundingDouble(newTable[pos] + rest);
+				position = (Integer) priorityList.getFirst();
+				newTable[position] = roundingDouble(newTable[position] + rest);
 				//newTable[pos] = newTable[pos] + rest;
 			}
 				

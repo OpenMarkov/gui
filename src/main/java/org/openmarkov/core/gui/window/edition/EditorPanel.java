@@ -89,7 +89,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 
 /**
- * This class implements the behaviour of a panel where a network will be edited.
+ * This class implements the behavior of a panel where a network will be edited.
  * 
 
  * @author jmendoza

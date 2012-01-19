@@ -89,9 +89,7 @@ public class TablePotentialPanel extends JPanel implements
 	private ButtonGroup buttonGroupProbabilityOrValue = null;
 
 	/** radio buttons for the different options of the panel * */
-	//private JRadioButton jRadioButtonOptimal;
-	//private JRadioButton jRadioButtonProbabilisticType;
-	//private JRadioButton jRadioButtonDeterministicType;
+	
 	private JRadioButton jRadioButtonNeto;
 	private JRadioButton jRadioButtonCompound;
 	private JRadioButton jRadioButtonTPC;
