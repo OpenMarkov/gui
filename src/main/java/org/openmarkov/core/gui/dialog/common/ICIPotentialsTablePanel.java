@@ -16,9 +16,12 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
+import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
@@ -30,11 +33,13 @@ import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
 //TODO review setData methods
+@PotentialPanelPlugin(potentialType="Max")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	
 	protected Logger logger;
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super(probNode);
+		setData(probNode);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -113,13 +118,13 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 				probNode.getPotentials()));
 			setData( tableData, newColumns, firstEditableRow, lastEditableRow , properties.getNodeType() );
 			//TODO setCellRenderes
-			//setCellRenderers();
+			setCellRenderers();
 		} else {
 			tableData = new Object[ 0 ][ 0 ];
 			setFirstEditableRow( 0 );
 			setData( tableData );
 			//TODO setCellRenderes
-			//setCellRenderers();
+			setCellRenderers();
 		}
 	}
 	/**
@@ -150,8 +155,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		int row = 0;
 		if (listPotentials != null) {
 		
-				row = 2; //In a canonical table there are always only two rows one for the parents names
-							//and another for the parent´s states
+				row = 2; //In a canonical table there are always two rows: one for parent´s names
+							//and another for parent´s states
 			
 		} else {
 			row = 0;
@@ -373,18 +378,69 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	private Object[][] setCanonicalTableProbabilities(Object[][] oldValues,
 			ProbNode properties) {
 		Object[][] values = oldValues;
-		int position = 0;
-		int numColumns = (values.length == 0 ? 0 : values[0].length);
+		//int position = 0;
+		//int numColumns = (values.length == 0 ? 0 : values[0].length);
 		
 		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		//ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();
-		int pos = getFirstEditableRow();
-		for (TablePotential subpotential : iciPotential.getSubPotentials()) {
-			double [] potentialValues = subpotential.getValues();
+		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();
+		//int begin = getFirstEditableRow();//begin 2
+		//int end = getLastEditableRow();
+		
+		
+		for (int i = 0; i < subpotentials.size() ; i++) {
+			int numChildStates = subpotentials.get(i).getDimensions()[0];//Number of states of the child (conditioned variable)
+			int lastRow = numChildStates+1;
+			double [] subpotentialValues = subpotentials.get(i).getValues();
+			int numColumns = (i == subpotentials.size()-1 ? 1 :subpotentials.get(i).getDimensions()[1] ); //of the subpotential
+				int column= 1;
+				int row = lastRow; 
+					for (int m = 0; m < subpotentialValues.length && row < 1 ; m++) {
+					
+						values [row][column] = subpotentialValues[m];
+						if ((m+1)%(numChildStates)==0 && (column < numColumns )) {
+							column ++; row = lastRow;
+							} else {
+								row--;}
+						
+						//if m+1 is a multiple of numChildStates then continue with the next column
+			}
+		}
+	
+		return values;
+	}
+	
+
+	/**
+	 * set renders for the cells in the table. Only has to be called when set data.
+	 */
+	protected void setCellRenderers() {
+		int size = valuesTable.getColumnCount();//returns number of columns in the column model
+		boolean [] editableColumns = new boolean [size-1];
+		
+		for (int i=1; i<size;i++){
+			editableColumns [i] = true;
 		}
 		
+		/*boolean hasUncertainty;
+		if ( probNode.getPotentials().size() > 0 && probNode.getNodeType() != NodeType.DECISION ){
+			TablePotential tablePotential = (TablePotential)probNode.getPotentials().get(0);
+			
+			for (int i=1; i<size;i++){
+				hasUncertainty = false;
+		
+					hasUncertainty = tablePotential.hasUncertainty(getConfiguration(tablePotential,i));
+		
+					aux[i-1]= hasUncertainty;
+			}
+			
+		}*/
 		
 		
-		return values;
+		valuesTable.setDefaultRenderer(
+			Double.class, new ValuesTableCellRenderer(
+				getFirstEditableRow(), editableColumns ) );
+		valuesTable.setDefaultRenderer(
+			String.class, new ValuesTableCellRenderer(
+				getFirstEditableRow(), editableColumns ) );
 	}
 }

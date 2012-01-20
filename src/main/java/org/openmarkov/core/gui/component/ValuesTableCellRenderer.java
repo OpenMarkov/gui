@@ -67,7 +67,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 			OpenMarkovPreferences.OPENMARKOV_COLORS,
 			Color.BLACK);
 	
-	private boolean [] marked;
+	private boolean [] editableColumns;
 
 	/**
 	 * to define the first editable row of the table
@@ -83,11 +83,11 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 * @param firstEditableRow
 	 *            value of the first editable row
-	 * @param marked boolean array with the columns with (1)/without (0) mark. 
+	 * @param editableColumns boolean array with the columns with (1)/without (0) mark. 
 	 * The array only has to contain indexes for the editables columns
 	 */
-	public ValuesTableCellRenderer(int firstEditableRow, boolean [] marked) {
-		this.marked = marked;
+	public ValuesTableCellRenderer(int firstEditableRow, boolean [] editableColumns) {
+		this.editableColumns = editableColumns;
 
 		this.firstEditableRow = firstEditableRow;
 	}
@@ -102,8 +102,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 													boolean isSelected,
 													boolean hasFocus, int row,
 													int column) {
-		if ( marked == null ){
-			marked = new boolean[table.getColumnCount()-2];
+		if ( editableColumns == null ){
+			editableColumns = new boolean[table.getColumnCount()-2];
 		}
 		
 		setHorizontalAlignment( SwingConstants.CENTER );
@@ -113,7 +113,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 		
 		
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN)
-				&& (row >= firstEditableRow) && !hasFocus && marked[column-1])
+				&& (row >= firstEditableRow) && !hasFocus && editableColumns[column-1])
 			return jLabelIcon;
 		else
 			return super.getTableCellRendererComponent(
@@ -325,8 +325,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column index of the column to mark
 	 */
 	public void setMark(int column) {
-		if ( column < marked.length){
-			marked [column] = true;
+		if ( column < editableColumns.length){
+			editableColumns [column] = true;
 		}
 		
 	}
@@ -335,8 +335,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column index of the column to unmark
 	 */
 	public void unMark(int column) {
-		if ( column < marked.length){
-			marked [column] = false;
+		if ( column < editableColumns.length){
+			editableColumns [column] = false;
 		}
 		
 	}
