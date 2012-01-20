@@ -38,6 +38,8 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
+@SuppressWarnings("serial")
+@PotentialPanelPlugin(potentialType="Table potential")
 public class CPTablePanel extends ProbabilityTablePanel {
 
 	protected Logger logger;
@@ -45,6 +47,7 @@ public class CPTablePanel extends ProbabilityTablePanel {
 	public CPTablePanel(ProbNode probNode) {
 		super(probNode);
 		setTableSpecificListeners();
+		setData(probNode);
 		// TODO Auto-generated constructor stub
 	}
 	/**

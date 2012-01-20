@@ -1,72 +1,34 @@
-	/*
-	* Copyright 2011 CISIAD, UNED, Spain
-	*
-	* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-	*
-	* Unless required by applicable law, this code is distributed
-	* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-	*/
+/*
+ * Copyright 2011 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
-	package org.openmarkov.core.gui.dialog.common;
+package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-	import java.awt.event.ActionEvent;
-	import java.awt.event.ActionListener;
-	import java.util.ArrayList;
-	import java.util.ListIterator;
+import javax.swing.GroupLayout;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 
-	import javax.swing.GroupLayout;
-	import javax.swing.JComponent;
-	import javax.swing.JPanel;
-	import javax.swing.JPopupMenu;
-	import javax.swing.JScrollPane;
-	import javax.swing.SwingUtilities;
-	import javax.swing.UIManager;
-	import javax.swing.border.LineBorder;
-
-
-	import org.apache.log4j.Logger;
-	import org.openmarkov.core.action.UncertainValuesEdit;
-	import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-	import org.openmarkov.core.exception.CanNotDoEditException;
-	import org.openmarkov.core.exception.ConstraintViolationException;
-	import org.openmarkov.core.exception.DoEditException;
-	import org.openmarkov.core.exception.IncompatibleEvidenceException;
-	import org.openmarkov.core.exception.InvalidStateException;
-	import org.openmarkov.core.exception.NonProjectablePotentialException;
-	import org.openmarkov.core.exception.NotEnoughMemoryException;
-	import org.openmarkov.core.exception.NullListPotentialsException;
-	import org.openmarkov.core.exception.WrongCriterionException;
-	import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
-	import org.openmarkov.core.gui.component.ValuesTable;
-	import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
-	import org.openmarkov.core.gui.component.ValuesTableModel;
-	import org.openmarkov.core.gui.dialog.node.UncertainValuesDialog;
-	import org.openmarkov.core.gui.loader.element.IconLoader;
-	import org.openmarkov.core.gui.localize.StringResource;
-	import org.openmarkov.core.gui.localize.StringResourceLoader;
-	import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-	import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-	import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
-	import org.openmarkov.core.gui.util.Utilities;
-	import org.openmarkov.core.model.network.EvidenceCase;
-	import org.openmarkov.core.model.network.Finding;
-	import org.openmarkov.core.model.network.NodeType;
-	import org.openmarkov.core.model.network.ProbNode;
-	import org.openmarkov.core.model.network.State;
-	import org.openmarkov.core.model.network.Variable;
-	import org.openmarkov.core.model.network.potential.Potential;
-	import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
-	import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-	import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
-	import org.openmarkov.core.model.network.potential.canonical.TuningModelPotential;
-	import org.openmarkov.core.model.network.potential.PotentialRole;
-	import org.openmarkov.core.model.network.potential.TablePotential;
-	import org.openmarkov.core.model.network.potential.UniformPotential;
-	import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-
-
-
+import org.apache.log4j.Logger;
+import org.openmarkov.core.gui.component.ValuesTable;
+import org.openmarkov.core.gui.component.ValuesTableModel;
+import org.openmarkov.core.gui.loader.element.IconLoader;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 
 	/**
 	 * This class implements a potentials table with the following features:
@@ -89,7 +51,7 @@
 	 * @author jlgozalo
 	 * @version 1.0 jlgozalo
 	 */
-	public class ProbabilityTablePanel  extends JPanel implements ActionListener {
+	public class ProbabilityTablePanel  extends PotentialPanel implements ActionListener {
 
 		/**
 		 * Static field for serializable class.
@@ -194,11 +156,8 @@
 		 */
 		public ProbabilityTablePanel(ProbNode probNode) {
 
-			this( probNode, new String[] { "id", "states", "values" },
-				new Object[][] { new Object[] { 0, null, 0 } } ); // default init
-			
-			this.modifiable=false;
-			showValuesTable( false );
+        this (probNode, new String[] {"id", "states", "values"}, new Object[][] {new Object[] {0,
+                null, 0}}); // default init
 		}
 
 		/**

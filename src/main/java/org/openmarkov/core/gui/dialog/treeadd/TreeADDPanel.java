@@ -20,13 +20,15 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.dialog.node.PotentialPanel;
+import org.openmarkov.core.gui.dialog.common.PotentialPanel;
+import org.openmarkov.core.gui.dialog.common.PotentialPanelPlugin;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
+@PotentialPanelPlugin(potentialType="TreeADD")
 public class TreeADDPanel extends PotentialPanel
 {
     

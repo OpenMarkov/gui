@@ -4,7 +4,7 @@
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.dialog.node;
+package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -26,11 +26,13 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.plugin.RelationType;
 
 @SuppressWarnings("serial")
 public class PolicyTypePanel extends JPanel
@@ -201,7 +203,7 @@ public class PolicyTypePanel extends JPanel
         }
         else if (e.getStateChange () == ItemEvent.SELECTED)
         {
-            parent.getPotentialTypeJCombobox ().setEnabled (true);
+            parent.setEnabledPotentialTypeCombobox (true);
             if (previousPolicy == PolicyType.PROBABILISTIC)
             {
                 RemovePolicyEdit removePolicyEdit = null;
@@ -258,11 +260,11 @@ public class PolicyTypePanel extends JPanel
         }
         else if (e.getStateChange () == ItemEvent.SELECTED)
         {
-            parent.getPotentialTypeJCombobox ().setEnabled (true);
+            parent.setEnabledPotentialTypeCombobox (true);
             if (previousPolicy == PolicyType.OPTIMAL)
             {
                 SetPotentialEdit setPotentialEdit = null;
-                setPotentialEdit = new SetPotentialEdit (probNode, PotentialType.TABLE);
+                setPotentialEdit = new SetPotentialEdit (probNode, TablePotential.class.getAnnotation (RelationType.class).name ());
                 try
                 {
                     probNode.getProbNet ().getPNESupport ().announceEdit (setPotentialEdit);

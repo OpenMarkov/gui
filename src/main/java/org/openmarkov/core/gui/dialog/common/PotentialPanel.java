@@ -6,7 +6,7 @@
 * Unless required by applicable law, this code is distributed
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
-package org.openmarkov.core.gui.dialog.node;
+package org.openmarkov.core.gui.dialog.common;
 
 import javax.swing.JPanel;
 import javax.swing.event.UndoableEditEvent;

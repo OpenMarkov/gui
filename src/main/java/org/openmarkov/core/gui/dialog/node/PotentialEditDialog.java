@@ -37,7 +37,9 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.dialog.treeadd.TreeADDPanel;
+import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
+import org.openmarkov.core.gui.dialog.common.PotentialPanel;
+import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
@@ -168,9 +170,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     private void configureComponentsPanel() {
         getComponentsPanel().setLayout(new BorderLayout(5, 5));
         getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH );
-        // TODO
-        // getComponentsPanel().add(panelDeComentario);
+        getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
     }
+    
     /**
      * Gets the label object for the Comment object. If it does not exist,
      * creates it
@@ -222,6 +224,16 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         }
         return cbPotentialType;
     }
+    
+    
+    /**
+     * Enables or disables the potential type combo box
+     * @param enable
+     */
+    public void setEnabledPotentialTypeCombobox(boolean enable)
+    {
+        getPotentialTypeJCombobox() .setEnabled (enable);
+    }
 
     /**
      * Gets the panel that matches the type of potential to be edited 
@@ -232,7 +244,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
         if(potentialPanel == null)
         {
-            potentialPanel = new PotentialPanel();
+            PotentialPanelManager potentialPanelManager = new PotentialPanelManager(); 
+            potentialPanel = potentialPanelManager.getPotentialPanel((String) cbPotentialType.getSelectedItem (), probNode);
         }
         return potentialPanel;
     }
@@ -342,8 +355,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         JComboBox comboBox= (JComboBox)e.getSource();
         if (e.getStateChange() == ItemEvent.DESELECTED){
             String h = e.getItem().toString();
-            //optionDeselected = comboBox.getSelectedIndex();
-            optionDeselected = PotentialType.getEnumMember(h).ordinal();
+            optionDeselected = comboBox.getSelectedIndex();
         }
             
         if (comboBox.getName().equals( "jComboBoxRelationType" )){
@@ -351,22 +363,20 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             if (!(itemSelected == null) && e.getStateChange() == ItemEvent.
                 SELECTED){
                 
-                PotentialType potentialType = PotentialType.getEnumMember(itemSelected);
-                
-                if ((!(probNode.getVariable().isTemporal()) ||
+                String potentialType = itemSelected;
+                // TODO Each potential type will have to know which combination of variables it accepts
+/*                if ((!(probNode.getVariable().isTemporal()) ||
                         probNode.getVariable().getTimeSlice()==0)
                         &&  (potentialType == PotentialType.SAME_AS_PREVIOUS || 
                             potentialType == PotentialType.CYCLE_LENGTH_SHIFT)){
                     comboBox.removeItemListener(this);
                     comboBox.setSelectedIndex(optionDeselected);
                     comboBox.addItemListener(this);
-                    
-                    JOptionPane.showMessageDialog( this, messageStringResource
-                            .getString( "Potential undefined for no " +
-                                    "temporal variables or time slice 0" ),
-                        messageStringResource.getString( 
-                                "Variable potential message" ),
-                        JOptionPane.INFORMATION_MESSAGE );
+                    JOptionPane.showMessageDialog (this,
+                                                   messageStringResource.getString ("Potential undefined for no "
+                                                                                    + "temporal variables or time slice 0"),
+                                                   messageStringResource.getString ("Variable potential message"),
+                                                   JOptionPane.INFORMATION_MESSAGE);
                     //TODO agregar método en potencial que compruebe si puede aplicarse a un conjunto de variables
                 } else if (( probNode.getVariable().getVariableType() == VariableType.NUMERIC
                         && probNode.getNodeType() == NodeType.CHANCE)
@@ -374,32 +384,30 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                         potentialType == PotentialType.SAME_AS_PREVIOUS || 
                         potentialType == PotentialType.CYCLE_LENGTH_SHIFT)){
                     
-                    JOptionPane.showMessageDialog( this, messageStringResource
-                            .getString( "Potential undefined for numeric " +
-                                    "variables" ),
-                        messageStringResource.getString( 
-                                "Variable potential" ),
-                        JOptionPane.INFORMATION_MESSAGE );
+                    JOptionPane.showMessageDialog (this,
+                                                   messageStringResource.getString ("Potential undefined for numeric "
+                                                                                    + "variables"),
+                                                   messageStringResource.getString ("Variable potential"),
+                                                   JOptionPane.INFORMATION_MESSAGE);
                         comboBox.removeItemListener(this);
                         comboBox.setSelectedIndex(optionDeselected);
                         comboBox.addItemListener(this);
-                                                            
-                }else if ( !(probNode.getNodeType() ==  NodeType.UTILITY)  && potentialType == 
-                                        PotentialType.PRODUCT){
-                        comboBox.removeItemListener(this);
-                        comboBox.setSelectedIndex(optionDeselected);
-                        comboBox.addItemListener(this);
-                        JOptionPane.showMessageDialog( this, messageStringResource
-                                            .getString( "Potential undefined for no " +
-                                                    "utility variables" ),
-                                        messageStringResource.getString( 
-                                                "Variable potential message" ),
-                                        JOptionPane.INFORMATION_MESSAGE );
+                }
+                else if (!(probNode.getNodeType () == NodeType.UTILITY)
+                         && potentialType == PotentialType.PRODUCT)
+                {
+                    comboBox.removeItemListener (this);
+                    comboBox.setSelectedIndex (optionDeselected);
+                    comboBox.addItemListener (this);
+                    JOptionPane.showMessageDialog (this,
+                                                   messageStringResource.getString ("Potential undefined for no "
+                                                                                    + "utility variables"),
+                                                   messageStringResource.getString ("Variable potential message"),
+                                                   JOptionPane.INFORMATION_MESSAGE);
                                         
                                         //comboBox.requestFocus(); 
-                } else {
-                        SetPotentialEdit setPotentialEdit = null;
-                        setPotentialEdit =  new SetPotentialEdit(probNode, potentialType);
+                } else {*/
+                        SetPotentialEdit setPotentialEdit = new SetPotentialEdit(probNode, potentialType);
                         try {
                             probNode.getProbNet().doEdit(setPotentialEdit );
                             } catch (ConstraintViolationException e1) {
@@ -428,7 +436,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                                 // TODO Auto-generated catch block
                                 e1.printStackTrace();
                             }
-                        }
+                        getComponentsPanel().remove (getPotentialPanel ());
+                        potentialPanel = null;
+                        getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
+//                        }
             }
         }
         
