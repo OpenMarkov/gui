@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../javahelp.css">
+    <title>Preprocesamiento</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace="0" height="32" width=
+      "32">&nbsp;Preprocesamiento
+    </h1>
+    <hr size="2" align="left" width="100%" color="blue">
+    <h4>
+       Preprocesamiento
+    </h4>
+    <p>
+       El preprocesamiento de las variables a utilizar es un paso previo importante antes de
+      iniciar el proceso de aprendizaje. Tanto la eficacia como la eficiencia de dicho proceso
+      pueden verse afectadas por el uso del preprocesamiento. En Carmen, el preprocesamiento de las
+      variables se divide en tratamiento de los valores ausentes y discretización de variables
+      continuas. Cada una de estas dos ramas presentan distintas opciones que se comentan en las
+      siguientes secciones.
+    </p>
+    <p>
+       En la parte superior de la pestaña 'Variables' se permite elegir una misma opción de
+      tratamiento de valores ausentes y de discretización para todas las variables. En caso de que
+      se quieran elegir distintas opciones para cada una de las variables, se ha de hacer uso de
+      los 'ComboBox' situados a la derecha de los nombres de cada una de las variables.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <ul>
+      <li>
+        <a href="Tratamiento de valores ausentes.html">Tratamiento de valores ausentes.</a>
+      </li>
+      <li>
+        <a href="Discretizacion de variables continuas.html">Discretización de variables
+        continuas.</a>
+      </li>
+      <li>
+        <a href="Guardar base de datos preprocesada.html">Guardar base de datos preprocesada.</a>
+      </li>
+    </ul>
+  </body>
+</html>

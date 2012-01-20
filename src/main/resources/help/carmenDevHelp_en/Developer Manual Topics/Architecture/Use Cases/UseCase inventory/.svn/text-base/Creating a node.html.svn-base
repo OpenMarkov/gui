@@ -1,0 +1,155 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Creating a node</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="271" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Creating a node
+    </h1>
+    <table border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" width="487">
+      <col width="234">
+      <col width="235">
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="justify">
+             <b>Use case: Creating a node</b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="justify">
+             <b>Comment:</b> Although there are three types of nodes in the program the process of
+            creation is the same for all three. The difference is that it will create a certain
+            type of node depending on the type of editing.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="477">
+          <p align="justify">
+             <b>Actor: User</b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <b>Normal course</b>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <b>Alternative courses</b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">1.When the type of editing is the creation of nodes (any type), the
+            user presses with the left mouse button, without pressing any key, on the empty
+            background of the network that is being edited.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.The application creates a visual node, with all the default fields,
+            whose type is the type of editing.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">3.The node has on its properties a probability table empty, because
+            there are not statements at the time of creation, and do not have any parent node
+            associated.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">4.A new point to undo and redo the node creation is created.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">5.The use case <i>Updating menus when modifying a network</i> is
+            executed.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">6.The network is marked as modified (if it was not already), placing an
+            asterisk at the title of the window in which is being editing.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">7.If the node has been created outside the boundaries of the network
+            panel, it will enlarge itself to completely accommodate the new node.</font>
+          </p>
+        </td>
+        <td width="235">
+          <p align="justify">
+             <font size="2"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

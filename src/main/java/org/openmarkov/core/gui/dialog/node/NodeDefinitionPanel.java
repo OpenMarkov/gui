@@ -1,0 +1,1196 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
+package org.openmarkov.core.gui.dialog.node;
+
+
+import java.awt.Dimension;
+import java.awt.ItemSelectable;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.text.MessageFormat;
+
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+
+
+import org.openmarkov.core.action.NodeCommentEdit;
+import org.openmarkov.core.action.NodeNameEdit;
+import org.openmarkov.core.action.PurposeEdit;
+import org.openmarkov.core.action.RelevanceEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.CommentListener;
+import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.util.Purpose;
+import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.VariableType;
+
+
+
+
+/**
+ * Panel to set the definition of a node.
+ * 
+ * @author jlgozalo
+ * @version 1.0 jlgozalo
+ * @versión 1.5 mpalacios
+ */
+public class NodeDefinitionPanel extends JPanel implements FocusListener,
+				ItemListener,  CommentListener {
+
+
+
+	/**
+	 * constructor without construction parameters
+	 */
+	public NodeDefinitionPanel() {
+
+		this( true);//, new ElementObservable() );
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param notifier -
+	 *            the element that will sent events to this class
+	 */
+	public NodeDefinitionPanel(ProbNode probNode) {
+
+		this( true);//, notifier );
+		this.probNode = probNode;
+		getJComboBoxNodePurpose().setEnabled(true);
+		getJComboBoxNodeRelevance().setEnabled(true);
+	}
+
+	/**
+	 * This method initialises this instance.
+	 * 
+	 * @param newNode -
+	 *            true if the node is a new node; otherwise false
+	 * @param notifier -
+	 *            the element that will sent events to this class
+	 */
+	public NodeDefinitionPanel(final boolean newNode){//, ElementObservable notifier) {
+
+		dialogStringResource =
+			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		messageStringResource =
+			StringResourceLoader.getUniqueInstance().getBundleMessages();
+		this.newNode = newNode;
+
+		//this.notifier = notifier;
+		try {
+			initialize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		
+
+	}
+
+	/**
+	 * Get the node Properties in this panel
+	 * 
+	 * @return the nodeProperties
+	 */
+	public ProbNode getNodeProperties() {
+
+		return probNode;
+	}
+
+	/**
+	 * Set the node adittionalProperties in this panel with the provided ones
+	 * 
+	 * @param nodeProperties
+	 *            the nodeProperties to set
+	 */
+	public void setNodeProperties(final ProbNode nodeProperties) {
+
+		this.probNode = nodeProperties;
+	}
+
+	/**
+	 * @return the newNode
+	 */
+	public boolean isNewNode() {
+
+		return newNode;
+	}
+
+	/**
+	 * @param newNode
+	 *            the newNode to set
+	 */
+	public void setNewNode(boolean newNode) {
+
+		this.newNode = newNode;
+	}
+
+	/**
+	 * <p>
+	 * <code>Initialize</code>
+	 * <p>
+	 * initialize the layout for this panel
+	 */
+	private void initialize() throws Exception {
+
+		setName( "NodeDefinitionPanel" );
+		setFocusable( false );
+		setDoubleBuffered( false );
+		setMinimumSize( new Dimension( 500, 245 ) );
+		setMaximumSize( new Dimension( 500, 245 ) );
+		setPreferredSize( new Dimension( 500, 245 ) );
+		setFocusCycleRoot( true );
+
+		final GroupLayout groupLayout = new GroupLayout( this );
+		groupLayout
+			.setHorizontalGroup( groupLayout
+				.createParallelGroup( GroupLayout.Alignment.LEADING )
+				.addGroup(
+					groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+							groupLayout
+								.createParallelGroup(
+									GroupLayout.Alignment.LEADING )
+								.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addComponent(
+											getJLabelNodeName(),
+											GroupLayout.PREFERRED_SIZE, 98,
+											GroupLayout.PREFERRED_SIZE )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addComponent(
+											getJTextFieldNodeName(),
+											GroupLayout.PREFERRED_SIZE, 203,
+											GroupLayout.PREFERRED_SIZE ) )
+								.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addGroup(
+											groupLayout
+												.createParallelGroup(
+													GroupLayout.Alignment.LEADING )
+												.addComponent(
+													getJLabelNodePurpose(),
+													GroupLayout.PREFERRED_SIZE,
+													96,
+													GroupLayout.PREFERRED_SIZE )
+												.addComponent(
+													getJTextAreaLabelNodeDefinitionComment(),
+													GroupLayout.PREFERRED_SIZE,
+													98,
+													GroupLayout.PREFERRED_SIZE ) )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addGroup(
+											groupLayout
+												.createParallelGroup(
+													GroupLayout.Alignment.LEADING )
+												.addComponent(
+													getCommentHTMLScrollPaneNodeDefinitionComment(),
+													GroupLayout.PREFERRED_SIZE,
+													308, Short.MAX_VALUE )
+												.addGroup(
+													groupLayout
+														.createSequentialGroup()
+														.addComponent(
+															getJComboBoxNodePurpose(),
+															GroupLayout.PREFERRED_SIZE,
+															123,
+															GroupLayout.PREFERRED_SIZE )
+														.addPreferredGap(
+																LayoutStyle.ComponentPlacement.RELATED )
+														.addGroup(
+															groupLayout
+																.createParallelGroup(
+																	GroupLayout.Alignment.LEADING,
+																	false )
+																.addComponent(
+																	getJLabelNodeRelevance(),
+																	GroupLayout.DEFAULT_SIZE,
+																	180,
+																	Short.MAX_VALUE ) )
+														.addPreferredGap(
+															LayoutStyle.ComponentPlacement.RELATED )
+														.addGroup(
+															groupLayout
+																.createParallelGroup(
+																	GroupLayout.Alignment.TRAILING )
+																.addComponent(
+																	getJComboBoxNodeRelevance(),
+																	GroupLayout.PREFERRED_SIZE,
+																	123,
+																	GroupLayout.PREFERRED_SIZE )
+																
+																	) ) ) ) )
+						.addContainerGap() ) );
+		groupLayout
+			.setVerticalGroup( groupLayout
+				.createParallelGroup( GroupLayout.Alignment.LEADING )
+				.addGroup(
+					groupLayout
+						.createSequentialGroup()
+						.addGap( 12, 12, 12 )
+						.addGroup(
+							groupLayout.createParallelGroup(
+								GroupLayout.Alignment.LEADING ).addComponent(
+								getJLabelNodeName(),
+								GroupLayout.PREFERRED_SIZE, 26,
+								GroupLayout.PREFERRED_SIZE ).addComponent(
+								getJTextFieldNodeName(),
+								GroupLayout.PREFERRED_SIZE, 20,
+								GroupLayout.PREFERRED_SIZE ) )
+						.addGap( 9, 9, 9 )
+						.addGroup(
+							groupLayout.createParallelGroup(
+								GroupLayout.Alignment.LEADING ).addGroup(
+								groupLayout.createParallelGroup(
+									GroupLayout.Alignment.BASELINE )
+									.addComponent(
+										getJLabelNodePurpose(),
+										GroupLayout.DEFAULT_SIZE, 25,
+										Short.MAX_VALUE ).addComponent(
+										getJComboBoxNodePurpose(),
+										GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE ) )
+								.addGroup(
+									groupLayout.createParallelGroup(
+										GroupLayout.Alignment.BASELINE )
+										.addComponent(
+											getJLabelNodeRelevance(),
+											GroupLayout.PREFERRED_SIZE, 25,
+											Short.MAX_VALUE )
+										.addComponent(
+											getJComboBoxNodeRelevance(),
+											GroupLayout.PREFERRED_SIZE,
+											GroupLayout.DEFAULT_SIZE,
+											GroupLayout.PREFERRED_SIZE ) ) )
+						.addGap( 9, 9, 9 )
+						.addGroup(
+							groupLayout
+								.createParallelGroup(
+									GroupLayout.Alignment.LEADING )
+								.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addComponent(
+											getJTextAreaLabelNodeDefinitionComment(),
+											GroupLayout.PREFERRED_SIZE, 56,
+											GroupLayout.PREFERRED_SIZE )
+										.addGap( 38, 38, 38 ) )
+								.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addComponent(
+											getCommentHTMLScrollPaneNodeDefinitionComment(),
+											GroupLayout.DEFAULT_SIZE, 62,
+											150 ).addContainerGap() ) ) ) );
+		setLayout( groupLayout );
+	}
+
+	/**
+	 * This method initialises jLabelNodeName
+	 * 
+	 * @return a new name label.
+	 */
+	private JLabel getJLabelNodeName() {
+
+		if (jLabelNodeName == null) {
+			jLabelNodeName = new JLabel();
+			jLabelNodeName.setHorizontalAlignment( SwingConstants.LEFT );
+			jLabelNodeName.setHorizontalTextPosition( SwingConstants.LEFT );
+			jLabelNodeName.setName( "jLabelNodeName" );
+			jLabelNodeName.setText( "a Label" );
+			jLabelNodeName.setText( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodeName.Text" ) );
+			jLabelNodeName.setDisplayedMnemonic( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodeName.Mnemonic" )
+				.charAt( 0 ) );
+			jLabelNodeName.setLabelFor( getJTextFieldNodeName() );
+		}
+		return jLabelNodeName;
+	}
+
+	/**
+	 * This method initialises jTextFieldNodeName
+	 * 
+	 * @return a new name field.
+	 */
+	public JTextField getJTextFieldNodeName() {
+
+		int dis = 15;
+		if (jTextFieldNodeName == null) {
+			jTextFieldNodeName = new JTextField();
+			jTextFieldNodeName.setName( "jTextFieldNodeName" );
+			jTextFieldNodeName.setPreferredSize( new Dimension( 50, dis ) );
+			//jTextFieldNodeName.addActionListener( this );
+			jTextFieldNodeName.addFocusListener( this );
+		}
+		return jTextFieldNodeName;
+	}
+
+	/**
+	 * This method initialises jRadioButtonChanceNodeType.
+	 * 
+	 * @return a new chance type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonChanceNodeType() {
+
+		if (jRadioButtonChanceNodeType == null) {
+
+			jRadioButtonChanceNodeType = new JRadioButton();
+			jRadioButtonChanceNodeType
+				.setHorizontalTextPosition( SwingConstants.RIGHT );
+			jRadioButtonChanceNodeType
+				.setHorizontalAlignment( SwingConstants.LEFT );
+			jRadioButtonChanceNodeType.setName( "jRadioButtonChanceNodeType" );
+			jRadioButtonChanceNodeType.setText( "an option" );
+			jRadioButtonChanceNodeType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonChanceNodeType.Text" ) );
+			jRadioButtonChanceNodeType.setMnemonic( dialogStringResource
+				.getString(
+					"NodeDefinitionPanel.jRadioButtonChanceNodeType.Mnemonic" )
+				.charAt( 0 ) );
+			jRadioButtonChanceNodeType.setSelected( true );
+			// jRadioButtonChanceNodeType.setEnabled(newNode);
+
+		}
+		return jRadioButtonChanceNodeType;
+	}*/
+
+	/**
+	 * This method initialises jRadioButtonDecisionNodeType.
+	 * 
+	 * @return a new decision type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonDecisionNodeType() {
+
+		if (jRadioButtonDecisionNodeType == null) {
+			jRadioButtonDecisionNodeType = new JRadioButton();
+			jRadioButtonDecisionNodeType
+				.setHorizontalTextPosition( SwingConstants.RIGHT );
+			jRadioButtonDecisionNodeType
+				.setHorizontalAlignment( SwingConstants.LEFT );
+			jRadioButtonDecisionNodeType
+				.setName( "jRadioButtonDecisionNodeType" );
+			jRadioButtonDecisionNodeType.setText( "an option" );
+			jRadioButtonDecisionNodeType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonDecisionNodeType.Text" ) );
+			jRadioButtonDecisionNodeType
+				.setMnemonic( dialogStringResource
+					.getString(
+						"NodeDefinitionPanel.jRadioButtonDecisionNodeType.Mnemonic" )
+					.charAt( 0 ) );
+			// jRadioButtonDecisionNodeType.setEnabled(newNode);
+		}
+		return jRadioButtonDecisionNodeType;
+	}*/
+
+	/**
+	 * This method initialises jRadioButtonUtilityNodeType.
+	 * 
+	 * @return a new utility type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonUtilityNodeType() {
+
+		if (jRadioButtonUtilityNodeType == null) {
+			jRadioButtonUtilityNodeType = new JRadioButton();
+			jRadioButtonUtilityNodeType
+				.setHorizontalTextPosition( SwingConstants.RIGHT );
+			jRadioButtonUtilityNodeType
+				.setHorizontalAlignment( SwingConstants.LEFT );
+			jRadioButtonUtilityNodeType.setName( "jRadioButtonUtilityNodeType" );
+			jRadioButtonUtilityNodeType.setText( "an option" );
+			jRadioButtonUtilityNodeType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonUtilityNodeType.Text" ) );
+			jRadioButtonUtilityNodeType.setMnemonic( dialogStringResource
+				.getString(
+					"NodeDefinitionPanel.jRadioButtonUtilityNodeType.Mnemonic" )
+				.charAt( 0 ) );
+			// jRadioButtonUtilityNodeType.setEnabled(newNode);
+
+		}
+		return jRadioButtonUtilityNodeType;
+	}*/
+
+	/**
+	 * This method initialises jLabelNodeType
+	 * 
+	 * @return a new name label.
+	 */
+	/*private JLabel getJLabelNodeVariableType() {
+
+		if (jLabelNodeVariableType == null) {
+			jLabelNodeVariableType = new JLabel();
+			jLabelNodeVariableType.setName( "jLabelNodeVariableType" );
+			jLabelNodeVariableType
+				.setHorizontalAlignment( SwingConstants.RIGHT );
+			jLabelNodeVariableType
+				.setHorizontalTextPosition( SwingConstants.LEFT );
+			jLabelNodeVariableType.setText( "a Label" );
+			jLabelNodeVariableType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jLabelNodeVariableType.Text" ) );
+			jLabelNodeVariableType.setDisplayedMnemonic( dialogStringResource
+				.getString(
+					"NodeDefinitionPanel.jLabelNodeVariableType.Mnemonic" )
+				.charAt( 0 ) );
+			jLabelNodeVariableType.setLabelFor( getJPanelNodeType() );
+		}
+		return jLabelNodeVariableType;
+	}*/
+
+	/**
+	 * This method initialises jPanelNodeVariableType
+	 * 
+	 * @return a panel for the variable types of the node
+	 */
+	/*private JPanel getJPanelNodeType() {
+
+		if (jPanelNodeVariableType == null) {
+			jPanelNodeVariableType = new JPanel();
+			jPanelNodeVariableType.setName( "jPanelNodeVariableType" );
+			jPanelNodeVariableType.setBorder( new LineBorder( Color.BLUE, 1,
+				false ) );
+			jPanelNodeVariableType.setLayout( new GridLayout( 3, 1 ) );
+			jPanelNodeVariableType
+				.add( getJRadioButtonDiscreteNodeVariableType() );
+			jPanelNodeVariableType
+				.add( getJRadioButtonDiscretizedNodeVariableType() );
+			jPanelNodeVariableType
+				.add( getJRadioButtonContinuousNodeVariableType() );
+			initButtonGroupNodeVariableType();
+		}
+		return jPanelNodeVariableType;
+	}*/
+
+	/**
+	 * iniatilize the button group Node Variable Type with the three buttons
+	 */
+	/*private void initButtonGroupNodeVariableType() {
+
+		jButtonGroupNodeVariableType = new ButtonGroup();
+		jButtonGroupNodeVariableType
+			.add( getJRadioButtonDiscreteNodeVariableType() );
+		jButtonGroupNodeVariableType
+			.add( getJRadioButtonDiscretizedNodeVariableType() );
+		jButtonGroupNodeVariableType
+			.add( getJRadioButtonContinuousNodeVariableType() );
+	}*/
+
+	/**
+	 * This method initialises jRadioButtonDiscreteNodeVariableType.
+	 * 
+	 * @return a new discrete variables type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonDiscreteNodeVariableType() {
+
+		if (jRadioButtonDiscreteNodeVariableType == null) {
+			jRadioButtonDiscreteNodeVariableType = new JRadioButton();
+			jRadioButtonDiscreteNodeVariableType
+				.setName( "jRadioButtonDiscreteNodeVariableType" );
+			jRadioButtonDiscreteNodeVariableType.setText( "an option" );
+			jRadioButtonDiscreteNodeVariableType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonDiscreteNodeVariableType.Text" ) );
+			jRadioButtonDiscreteNodeVariableType
+				.setMnemonic( dialogStringResource
+					.getString(
+						"NodeDefinitionPanel.jRadioButtonDiscreteNodeVariableType.Mnemonic" )
+					.charAt( 0 ) );
+			jRadioButtonDiscreteNodeVariableType.setSelected( true );
+			// jRadioButtonDiscreteNodeVariableType.setEnabled(newNode);
+			jRadioButtonDiscreteNodeVariableType.addItemListener( this );
+
+		}
+		return jRadioButtonDiscreteNodeVariableType;
+	}*/
+
+	/**
+	 * This method initialises jRadioButtonContinuousNodeVariableType.
+	 * 
+	 * @return a new continuous variables type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonContinuousNodeVariableType() {
+
+		if (jRadioButtonContinuousNodeVariableType == null) {
+			jRadioButtonContinuousNodeVariableType = new JRadioButton();
+			jRadioButtonContinuousNodeVariableType
+				.setName( "jRadioButtonContinuousNodeVariableType" );
+			jRadioButtonContinuousNodeVariableType.setText( "an option" );
+			jRadioButtonContinuousNodeVariableType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonContinuousNodeVariableType.Text" ) );
+			jRadioButtonContinuousNodeVariableType
+				.setMnemonic( dialogStringResource
+					.getString(
+						"NodeDefinitionPanel.jRadioButtonContinuousNodeVariableType.Mnemonic" )
+					.charAt( 0 ) );
+			// this button is disabled until the management of the continuous
+			// variable is set in the source code
+			jRadioButtonContinuousNodeVariableType.setEnabled( false );
+			jRadioButtonContinuousNodeVariableType.addItemListener( this );
+
+		}
+		return jRadioButtonContinuousNodeVariableType;
+	}
+*/
+	/**
+	 * This method initialises jRadioButtonDiscretizedNodeVariableType.
+	 * 
+	 * @return a new discretized variables type radio button.
+	 */
+	/*private JRadioButton getJRadioButtonDiscretizedNodeVariableType() {
+
+		if (jRadioButtonDiscretizedNodeVariableType == null) {
+			jRadioButtonDiscretizedNodeVariableType = new JRadioButton();
+			jRadioButtonDiscretizedNodeVariableType
+				.setName( "jRadioButtonDiscretizedNodeVariableType" );
+			jRadioButtonDiscretizedNodeVariableType.setText( "an option" );
+			jRadioButtonDiscretizedNodeVariableType
+				.setText( dialogStringResource
+					.getString( "NodeDefinitionPanel.jRadioButtonDiscretizedNodeVariableType.Text" ) );
+			jRadioButtonDiscretizedNodeVariableType
+				.setMnemonic( dialogStringResource
+					.getString(
+						"NodeDefinitionPanel.jRadioButtonDiscretizedNodeVariableType.Mnemonic" )
+					.charAt( 0 ) );
+			jRadioButtonDiscretizedNodeVariableType.addItemListener( this );
+
+		}
+		return jRadioButtonDiscretizedNodeVariableType;
+	}*/
+
+	/**
+	 * This method initialises jLabelNodeName
+	 * 
+	 * @return a new name label.
+	 */
+	private JLabel getJLabelNodeRelevance() {
+
+		if (jLabelNodeRelevance == null) {
+			jLabelNodeRelevance = new JLabel();
+			jLabelNodeRelevance.setHorizontalTextPosition( SwingConstants.LEFT );
+			jLabelNodeRelevance.setHorizontalAlignment( SwingConstants.RIGHT );
+			jLabelNodeRelevance.setName( "jLabelNodeRelevance" );
+			jLabelNodeRelevance.setText( "a Label" );
+			jLabelNodeRelevance.setText( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodeRelevance.Text" ) );
+			jLabelNodeRelevance.setDisplayedMnemonic( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic" )
+				.charAt( 0 ) );
+			jLabelNodeRelevance.setLabelFor( getJComboBoxNodeRelevance() );
+		}
+		return jLabelNodeRelevance;
+	}
+
+	/**
+	 * initialize the content of the Combo box for the Node Relevance
+	 * 
+	 * @return the JComboBoxNodeRelevance
+	 */
+	private JComboBox getJComboBoxNodeRelevance() {
+
+		if (jComboBoxNodeRelevance == null) {
+			jComboBoxNodeRelevance = new JComboBox();
+			jComboBoxNodeRelevance.setName( "jComboBoxNodeRelevance" );
+			jComboBoxNodeRelevance.setEditable( true );
+			fillJComboBoxNodeRelevance();
+			jComboBoxNodeRelevance.setEnabled(false);
+		}
+		return jComboBoxNodeRelevance;
+	}
+
+	/**
+	 * fill the jComboBoxNodeRelevance with the appropriate values with an
+	 * increment of 0.1. 
+	 * If not used, mathematical addition to avoid the
+	 * Precision problems with the proccesors 
+	 * Therefore, it is using a "string" concatenation with integers 
+	 * and then a conversion to doubles
+	 */
+	private void fillJComboBoxNodeRelevance() {
+
+		String number = "0.0";
+		if (jComboBoxNodeRelevance != null) {
+			for (int realPart = 0; realPart < 10; realPart++) {
+				for (int decimalPart = 0; decimalPart < 10; decimalPart++) {
+					number =
+						Integer.toString( realPart ) + "."
+							+ Integer.toString( decimalPart );
+					jComboBoxNodeRelevance.addItem( Double.valueOf( number ) );
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method initialises jLabelNodeName
+	 * 
+	 * @return a new name label.
+	 */
+	private JLabel getJLabelNodePurpose() {
+
+		if (jLabelNodePurpose == null) {
+			jLabelNodePurpose = new JLabel();
+			jLabelNodePurpose.setName( "jLabelNodePurpose" );
+			jLabelNodePurpose.setHorizontalTextPosition( SwingConstants.LEFT );
+			jLabelNodePurpose.setHorizontalAlignment( SwingConstants.LEFT );
+			jLabelNodePurpose.setText( "a Label" );
+			jLabelNodePurpose.setText( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodePurpose.Text" ) );
+			jLabelNodePurpose.setDisplayedMnemonic( dialogStringResource
+				.getString( "NodeDefinitionPanel.jLabelNodePurpose.Mnemonic" )
+				.charAt( 0 ) );
+			jLabelNodePurpose.setLabelFor( getJTextFieldNodeName() );
+		}
+		return jLabelNodePurpose;
+	}
+
+	/**
+	 * initialize the content of the Combo box for the Node Purpose
+	 * 
+	 * @return the JComboBoxNodePurpose
+	 */
+	private JComboBox getJComboBoxNodePurpose() {
+
+		if (jComboBoxNodePurpose == null) {
+			jComboBoxNodePurpose = new JComboBox( Purpose.getListStrings(false) );
+			jComboBoxNodePurpose.setName( "jComboBoxNodePurpose" );
+			jComboBoxNodePurpose.setSelectedIndex( 0 );
+			jComboBoxNodePurpose.setMaximumRowCount( 9 );
+			//jComboBoxNodePurpose.addItemListener( this );
+			jComboBoxNodePurpose.setEditable( true );
+			
+			
+		}
+		return jComboBoxNodePurpose;
+	}
+
+	/**
+	 * This method initialises jLabelNodeDefinitionComment
+	 * 
+	 * @return a new label for the comment
+	 */
+	protected JTextArea getJTextAreaLabelNodeDefinitionComment() {
+
+		if (jTextAreaLabelNodeDefinitionComment == null) {
+			jTextAreaLabelNodeDefinitionComment = new JTextArea();
+			jTextAreaLabelNodeDefinitionComment.setLineWrap( true );
+			jTextAreaLabelNodeDefinitionComment.setOpaque( false );
+			jTextAreaLabelNodeDefinitionComment
+				.setName( "jTextAreaLabelNodeDefinitionComment" );
+			jTextAreaLabelNodeDefinitionComment.setFocusable( false );
+			jTextAreaLabelNodeDefinitionComment.setEditable( false );
+			jTextAreaLabelNodeDefinitionComment.setFont( getJLabelNodeName()
+				.getFont() );
+			jTextAreaLabelNodeDefinitionComment.setText( "an Extended Label" );
+			MessageFormat messageForm =
+				new MessageFormat(
+					dialogStringResource
+						.getString( "NodeDefinitionPanel.jTextAreaLabelNodeDefinitionComment.Text" ) );
+			Object[] labelArgs =
+				new Object[] { getJTextFieldNodeName().getText() };
+			jTextAreaLabelNodeDefinitionComment.setText( messageForm
+				.format( labelArgs ) );
+		}
+		return jTextAreaLabelNodeDefinitionComment;
+	}
+
+	/**
+	 * This method initialises commentHTMLScrollPaneNodeDefinitionComment
+	 * 
+	 * @return a new comment HTML scroll pane.
+	 */
+	private CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+
+		if (commentHTMLScrollPaneNodeDefinitionComment == null) {
+			commentHTMLScrollPaneNodeDefinitionComment =
+				new CommentHTMLScrollPane();
+			commentHTMLScrollPaneNodeDefinitionComment
+				.setName( "commentHTMLScrollPaneNodeDefinitionComment" );
+			commentHTMLScrollPaneNodeDefinitionComment.addCommentListener(this);
+		}
+		return commentHTMLScrollPaneNodeDefinitionComment;
+	}
+
+	/**
+	 * @return the variableType
+	 */
+	public VariableType getVariableType() {
+
+		return variableType;
+	}
+
+	/**
+	 * @param variableType
+	 *            the variableType to set
+	 */
+	private void setNodeVariable(VariableType variableType) {
+
+		this.variableType = variableType;
+	}
+
+	/**
+	 * Invoked when an item has been selected.
+	 * 
+	 * @param e
+	 *            event information.
+	 */
+	public void itemStateChanged(ItemEvent e) {
+		
+		int optionDeselected = 0;
+		ItemSelectable itemSelectable = e.getItemSelectable();
+		Object selected[] = itemSelectable.getSelectedObjects();
+		String itemSelected = selected.length == 0 ? "null" :
+			selected[0].toString();
+		JComboBox comboBox= (JComboBox)e.getSource();
+		if (e.getStateChange() == ItemEvent.DESELECTED){
+			optionDeselected = comboBox.getSelectedIndex();
+		}
+			
+		if (comboBox.getName().equals("jComboBoxNodePurpose")){
+			
+			if (!(itemSelected == null) && e.getStateChange() == ItemEvent.
+				SELECTED){
+				PurposeEdit purposeEdit =null;
+				for (String purposeString : Purpose.getListStrings(true)){
+					if (itemSelected.equals(Purpose.getString(purposeString))){ 
+						purposeEdit = new PurposeEdit(probNode, purposeString);
+						break;
+					}
+					
+				}
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(
+							purposeEdit);
+					probNode.getProbNet().getPNESupport().doEdit(purposeEdit);
+				} catch (ConstraintViolationException e1) {
+					JOptionPane.showMessageDialog( this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( 
+							"ConstraintViolationException" ),
+					JOptionPane.ERROR_MESSAGE );
+					comboBox.setSelectedIndex(optionDeselected);
+					comboBox.requestFocus();
+				
+				} catch (CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (DoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotEnoughMemoryException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NonProjectablePotentialException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				} catch (WrongCriterionException e3) {
+					// TODO Auto-generated catch block
+					e3.printStackTrace();
+				}
+			}
+		}else if (comboBox.getName().equals("jComboBoxNodeRelevance")){
+			if (!(itemSelected == null) && e.getStateChange() == ItemEvent.
+					SELECTED){
+					RelevanceEdit relevanceEdit =null;
+					
+					relevanceEdit = new RelevanceEdit(probNode, 
+							Double.valueOf(itemSelected));
+						
+					
+					try {
+						probNode.getProbNet().getPNESupport().announceEdit(
+								relevanceEdit);
+						probNode.getProbNet().getPNESupport().doEdit(
+								relevanceEdit);
+					} catch (ConstraintViolationException e1) {
+						JOptionPane.showMessageDialog( this, 
+								messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( 
+								"ConstraintViolationException" ),
+						JOptionPane.ERROR_MESSAGE );
+						comboBox.setSelectedIndex(optionDeselected);
+						comboBox.requestFocus();
+					
+					} catch (CanNotDoEditException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (DoEditException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (NotEnoughMemoryException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (NonProjectablePotentialException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					} catch (WrongCriterionException e3) {
+						// TODO Auto-generated catch block
+						e3.printStackTrace();
+					}
+				}
+			}
+		
+	}
+
+	
+
+	
+	/**
+	 * Invoked when a focus lost action occurs.
+	 * 
+	 * @param e - event information
+	 */
+	
+	public void focusLost(FocusEvent e) {
+		if (e.getSource().equals( this.jTextFieldNodeName )) {
+			//actionPerformedNodeNameChangeValue();
+			NodeNameEdit nodeNameEdit = new NodeNameEdit(probNode, 
+					this.jTextFieldNodeName.getText());
+			try {
+				probNode.getProbNet().getPNESupport().announceEdit(nodeNameEdit);
+				probNode.getProbNet().getPNESupport().doEdit(nodeNameEdit);
+			} catch (ConstraintViolationException e1) {
+				// TODO Auto-generated catch block
+				//e1.printStackTrace();
+				
+				JOptionPane
+				.showMessageDialog(
+					this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource
+						.getString( "ConstraintViolationException" ),
+					JOptionPane.ERROR_MESSAGE );
+				
+				jTextFieldNodeName.setText( probNode.getName() );
+				jTextFieldNodeName.requestFocus();
+				
+			} catch (CanNotDoEditException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (DoEditException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NotEnoughMemoryException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NonProjectablePotentialException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (WrongCriterionException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+		}
+		
+	}
+
+	/**
+	 * Invoked when a focus gained action occurs.
+	 * 
+	 * @param e - event information
+	 */
+	
+	public void focusGained(FocusEvent e) {
+
+		if (e.getSource().equals( this.jTextFieldNodeName )) {
+			this.getJTextFieldNodeName().selectAll();
+		}
+	}
+
+	
+	
+
+	/**
+	 * This method fills the content of the fields from a NodeProperties object.
+	 * 
+	 * @param adittionalProperties
+	 *            object from where load the information.
+	 */
+	public void setFieldsFromProperties(ProbNode properties) {
+		
+		jTextFieldNodeName.setText( properties.getName() );
+		// node type elements in the panel depending network type
+		/*NetworkType netType = adittionalProperties.getNetwork().getNetworkType();
+		if (NetworkType.BAYESIAN_NET == netType) {
+			jRadioButtonChanceNodeType.setEnabled( true );
+			jRadioButtonDecisionNodeType.setEnabled( false );
+			jRadioButtonUtilityNodeType.setEnabled( false );
+		} else if (NetworkType.INFLUENCE_DIAGRAM == netType) {
+			jRadioButtonChanceNodeType.setEnabled( false );
+			jRadioButtonDecisionNodeType.setEnabled( false );
+			jRadioButtonUtilityNodeType.setEnabled( false );
+		} else if (NetworkType.CHAIN_GRAPH == netType) {
+			// future extension
+		} else if (NetworkType.MARKOV_NET == netType) {
+			// future extension
+		}*/
+		// node type
+		/*switch (adittionalProperties.getNodeType()) {
+		case CHANCE: {
+			jRadioButtonChanceNodeType.setEnabled( true );
+			jRadioButtonChanceNodeType.setSelected( true );
+			break;
+		}
+		case DECISION: {
+			jRadioButtonDecisionNodeType.setEnabled( true );
+			jRadioButtonDecisionNodeType.setSelected( true );
+			break;
+		}
+		case UTILITY: {
+			jRadioButtonUtilityNodeType.setEnabled( true );
+			jRadioButtonUtilityNodeType.setSelected( true );
+			break;
+		}
+		default:
+			break;
+		}
+		if (adittionalProperties.getNodeType() == NodeType.UTILITY) {
+			jRadioButtonDiscreteNodeVariableType.setEnabled( false );
+			jRadioButtonDiscretizedNodeVariableType.setEnabled( false );
+			jRadioButtonContinuousNodeVariableType.setEnabled( false );
+		}*/
+		// node variable type
+		// relevance
+		
+		//if (properties.getVariable().getVariableType() == VariableType.FINITE_STATES){
+			
+			jComboBoxNodeRelevance.removeItemListener(this);
+			jComboBoxNodePurpose.removeItemListener(this);
+			
+			jComboBoxNodeRelevance.setSelectedItem( properties.getRelevance() );
+			jComboBoxNodeRelevance.setEnabled(true);
+			// purpose
+			jComboBoxNodePurpose.setSelectedIndex( Purpose.getIndex( 
+					properties.getPurpose()) );
+			jComboBoxNodePurpose.setEnabled(true);
+			
+			jComboBoxNodeRelevance.addItemListener(this);
+			jComboBoxNodePurpose.addItemListener(this);
+		//}
+		// node comment title
+		MessageFormat messageForm =
+			new MessageFormat(
+				dialogStringResource
+					.getString( "NodeDefinitionPanel.commentHTMLScrollPaneNodeDefinitionComment.Text" ) );
+		String shortNodeName = getJTextFieldNodeName().getText();
+		Object[] labelArgs = new Object[] { shortNodeName };
+		commentHTMLScrollPaneNodeDefinitionComment.setTitle( messageForm
+			.format( labelArgs ) );
+		// node def comment
+		commentHTMLScrollPaneNodeDefinitionComment
+			.setCommentHTMLTextPaneText( properties.getComment() );
+
+	}
+
+	/**
+	 * This method checks that the name field is filled and there isn't any node
+	 * with the same name.
+	 * 
+	 * @return true, if the name field isn't empty and there isn't any node with
+	 *         this name; otherwise, false.
+	 */
+	public boolean checkName() {
+
+		String name = jTextFieldNodeName.getText();
+		boolean result = true;
+
+		if ((name == null) || name.equals( "" )) {
+			JOptionPane.showMessageDialog(
+				this, messageStringResource
+					.getString( "NodeNameEmpty.Text.Label" ),
+				messageStringResource.getString( "NodeNameEmpty.Title.Label" ),
+				JOptionPane.ERROR_MESSAGE );
+			result = false;
+		} else if (!probNode.getName().equals( name )
+			&& Utilities.existNode(probNode.getProbNet(), name )) {
+			JOptionPane
+				.showMessageDialog(
+					this, messageStringResource
+						.getString( "DuplicatedNode.Text.Label" ),
+					messageStringResource
+						.getString( "DuplicatedNode.Title.Label" ),
+					JOptionPane.ERROR_MESSAGE );
+			result = false;
+		}
+		if (!result) {
+			jTextFieldNodeName.requestFocus();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * This method checks that the purpose field is filled if this field is
+	 * enabled.
+	 * 
+	 * @return true, if the purpose field isn't empty; otherwise, false.
+	 */
+	public boolean checkPurpose() {
+
+		return true;
+	}
+
+	/**
+	 * serial uid
+	 */
+	private static final long serialVersionUID = 1047978130482205148L;
+	/**
+	 * The Node Name Label
+	 */
+	private JLabel jLabelNodeName = null;
+	/**
+	 * The Node Name Text Field
+	 */
+	private JTextField jTextFieldNodeName = null;
+	/**
+	 * The Node Type Label
+	 */
+	private JLabel jLabelNodeType = null;
+	/**
+	 * Panel that contains the node type options group.
+	 */
+	private JPanel jPanelNodeType = null;
+	/**
+	 * The Node Type Button Group
+	 */
+	private ButtonGroup jButtonGroupNodeType = null;
+	/**
+	 * The Node Type Chance Radio Button
+	 */
+	private JRadioButton jRadioButtonChanceNodeType = null;
+	/**
+	 * The Node Type Decision Radio Button
+	 */
+	private JRadioButton jRadioButtonDecisionNodeType = null;
+	/**
+	 * The Node Type Utility Radio Button
+	 */
+	private JRadioButton jRadioButtonUtilityNodeType = null;
+	/**
+	 * The Node Variable Type Label
+	 */
+	private JLabel jLabelNodeVariableType = null;
+	/**
+	 * Panel that contains the variables type options group.
+	 */
+	private JPanel jPanelNodeVariableType = null;
+
+	
+	/**
+	 * internal node type item for convenience purpose
+	 */
+	private VariableType variableType = null;
+	/**
+	 * the Node Relevance Label
+	 */
+	private JLabel jLabelNodeRelevance = null;
+	/**
+	 * The Node Relevance Combo Box
+	 */
+	private JComboBox jComboBoxNodeRelevance = null;
+	/**
+	 * The Node Purpose Label
+	 */
+	private JLabel jLabelNodePurpose = null;
+	/**
+	 * The Node Purpose Combo Box
+	 */
+	private JComboBox jComboBoxNodePurpose = null;
+
+	/**
+	 * The Node Definition Comment Label
+	 */
+	private JTextArea jTextAreaLabelNodeDefinitionComment;
+	/**
+	 * The Node Comment Scroll Panel box
+	 */
+	private CommentHTMLScrollPane commentHTMLScrollPaneNodeDefinitionComment =
+		null;
+
+	/**
+	 * Dialog string resource.
+	 */
+	private StringResource dialogStringResource;
+	/**
+	 * Messages string resource.
+	 */
+	private StringResource messageStringResource;
+
+	/**
+	 * Object where all information will be saved.
+	 */
+	private ProbNode probNode = null;
+
+	/**
+	 * Specifies if the node whose adittionalProperties are edited is new.
+	 */
+	private boolean newNode = false;
+
+
+	public void commentHasChanged() {
+		NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(probNode, 
+				getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText(),
+				"DefinitionComment");
+		try {
+			probNode.getProbNet().getPNESupport().announceEdit(nodeCommentEdit);
+			probNode.getProbNet().getPNESupport().doEdit(nodeCommentEdit);
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+}

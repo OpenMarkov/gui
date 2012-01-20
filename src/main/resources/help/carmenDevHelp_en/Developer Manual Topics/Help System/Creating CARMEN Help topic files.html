@@ -1,0 +1,114 @@
+<html>
+<head>
+<meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+<meta name="generator" content="Helen">
+<link type="text/css" rel="stylesheet" href="../../javahelp.css">
+<title>Creating CARMEN Help JAR files</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img border="0" hspace="0" width="32" height="32"
+	src="../../images/carmenHelpIcons/c3_32.gif">&nbsp;Creating
+CARMEN Help topic&nbsp;files</h1>
+<hr size="2" align="left" color="blue" width="100%">
+<h2>Carmen Help conventions</h2>
+<p>To have an unique Help view, it is really important that all the
+contributors to the CARMEN&nbsp;Help System will follow the same
+convention. This section summarizes all the conventions to be done in
+the files.</p>
+<ul>
+	<li><a href="#nameOfFile">Name of the file</a></li>
+	<li><a href="#IdOfFile">Id of the file</a></li>
+	<li><a href="#FileStructure">File Structure</a></li>
+	<li><a href="#CSSTemplate">CSS Template</a></li>
+	<li><a href="#DirectoryStructure">Directory Structure</a></li>
+	<li><a href="#TableOfContentFile">Table of content file</a></li>
+	<li><a href="#Images">Images</a></li>
+</ul>
+<h3><a id="nameOfFile" name="nameOfFile">Name of the file</a></h3>
+<p>The name of the file will have enough meaning to clearly identify
+in the structure.</p>
+<p>Only HTML files are allowed.</p>
+<h3><a id="IdOfFile" name="IdOfFile">ID of the file</a></h3>
+<p>When created, the file must be clearly identify with an ID in the
+map file</p>
+<h3><a id="FileStructure" name="FileStructure">File structure</a></h3>
+<p>All the files will follow the following internal structure:</p>
+<ul>
+	<li>one head
+	<ul>
+		<li>with the reference to the CSS (be careful with the level of
+		directories)</li>
+		<li>with the title as described before</li>
+	</ul>
+	</li>
+	<li>one body (with background color WHITE)
+	<ul>
+		<li>Title of the document with style H1 and the Carmen Logo with
+		size 32
+		<ul>
+			<li>Select c3_32.gif (blue Carmen Logo) for Developer Manual
+			Topics</li>
+			<li>Select c2_32.gif&nbsp;(yellow Carmen Logo) for End User
+			Manual Topics</li>
+		</ul>
+		</li>
+		<li>A header line in Blue color and size 2</li>
+		<li>Using H2 for main sections</li>
+		<li>Using H3 for main subsections</li>
+		<li>Using H4 for internal sections</li>
+		<li>Using &lt;pre&gt; for source code descriptions</li>
+	</ul>
+	</li>
+</ul>
+<p>as in the following example:</p>
+<pre>
+&lt;html&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;head&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta content="text/html; charset=Cp1252" http-equiv="Content-Type"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta name="generator" content="Helen"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;link type="text/css" rel="stylesheet" href="../../javahelp.css"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Creating CARMEN Help JAR files&lt;/title&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/head&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;body bgcolor="#ffffff"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;img border="0" hspace="0" width="32" height="32" 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;src="../../images/carmenHelpIcons/c3_32.gif"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;nbsp;Creating CARMEN Help topic&amp;nbsp;files
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/img&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/h1&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;hr size="2" align="left" color="blue" width="100%"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carmen Help conventions
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/h2&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the content of the Help Topic
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<h3><a id="CSSTemplate" name="CSSTemplate">CSS template</a></h3>
+<p>All files will use the same Java Code Style Sheet located in the
+root Help Project directory (javahelp.css)</p>
+<h3><a id="DirectoryStructure" name="DirectoryStructure">Directory
+structure</a></h3>
+<p>All files will be located under a meaningful directory and
+grouping as much as possible.</p>
+<h3><a id="TableOfContentFile" name="TableOfContentFile">Table
+of Content File</a> (toc.xml)</h3>
+<p>Be sure to remove any item from the Table of content file
+(toc.xml) when adding new pages</p>
+<h3><a id="Images" name="Images">Images</a></h3>
+<p>All images to be used in the Help will be located under one of
+the three following directories:</p>
+<ul>
+	<li>carmenHelpIcons - if the icon is related to the Carmen help
+	system (not the Carmen project itself)</li>
+	<li>carmenIcons - if the icon is one of the Carmen icons you must
+	copy also here</li>
+	<li>screens - copy here any screen hardcopy you will take to
+	enhance the help topic description</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

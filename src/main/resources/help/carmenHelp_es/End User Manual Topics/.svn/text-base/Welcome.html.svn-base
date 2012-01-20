@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+<meta content="Helen" name="generator">
+<link type="text/css" href="../javahelp.css" rel="stylesheet">
+<title>Welcome to CARMEN project</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img border="0" width="32"
+	src="../images/carmenHelpIcons/c2_32.gif" height="32" hspace="0">&nbsp;Bienvenido
+al proyecto CARMEN</h1>
+<hr width="100%" size="2" color="blue" align="left">
+<p>&nbsp;</p>
+<h2>¡Bienvenido a la versión 1.0 de CARMEN!</h2>
+<p>&nbsp;</p>
+<p>Carmen es un marco para desarrollar MGP (Modelos Gráficos
+Probabilistas).</p>
+<p>La principal diferencia que te ofrecerá CARMEN en comparación con
+otros proyectos de MGP es que se ha realizado un especial énfasis en
+seguir los Principios de Ingeniería de Software. La principal ventaja
+que se ha conseguido siguiendo estos principios es una completa
+documentación del proyecto, con especificaciones y documentos de diseño,
+por lo que hay menos errores, se hace más eficiente, más mantenible y,
+como una consecuencia final, será fácil hacer nuevas contribuciones por
+un miembro del equipo de proyecto de CARMEN totalmente nuevo.</p>
+<p>La pantalla del programa CARMEN está dividida en dos paneles
+principales. Las pestañas del lado superior proporcionan navegación
+dentro de CARMEN. Puedes hacer doble click&nbsp;en un menú o un icono de
+la zona superior para abrir el diálogo o área de trabajo en la zona
+inferior. En los elementos gráficos de la red, puedes hacer doble click
+para abrir su diálogo de propiedades correspondiente.</p>
+<p>La red siempre mantendrá su integridad cuando
+añadas/modifiques/suprimas elementos y/o apliques un algoritmo.</p>
+<h3>Abrir / Escribir redes</h3>
+<p>CARMEN permite abrir redes que vienen de formatos Elvira, Huggin
+y CARMEN, por lo que puedes usar CARMEN también para convertir redes
+desde un formato a otro.</p>
+<p>El diseño se ha hecho para permitir que diferentes formatos sean
+incorporados fácilmente.</p>
+<h3>Otras Características y Ayuda En Línea</h3>
+<p>CARMEN ofrece una gran cantidad de características adicionales.
+Por favor, explora estas características en la barra de herramientas y
+en los menús.</p>
+<p>Hay una completa ayuda en línea desde el menú Ayuda, con
+Contenidos y motores de Búsqueda, para usuarios finales y técnicos.</p>
+<p>La tecla "F1" también proporciona ayuda en los principales temas
+acerca de los diferentes cuadros de diálogo del proyecto.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2><u>Gracias por utilizar CARMEN y... ¡¡¡disfrútalo!!!</u></h2>
+<p>&nbsp;</p>
+</body>
+</html>

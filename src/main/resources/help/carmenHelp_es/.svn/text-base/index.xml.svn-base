@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN"
+                       "http://java.sun.com/products/javahelp/index_2_0.dtd">
+
+<index version="2.0">
+	<indexitem text="Algoritmos" target="Algorithms" />
+	<indexitem text="Modelos canónicos" target="Canonical Models" />
+	<indexitem text="Funciones avanzadas de CARMEN" target="CARMEN advanced features" />
+	<indexitem text="Creación de un nodo de elección" target="Creating a chance node" />
+	<indexitem text="Creación de un nodo de decisión" target="Creating a decision node" />
+	<indexitem text="Creación de una nueva red" target="Creating a new network" />
+	<indexitem text="Creación de un nodo de utilidad" target="Creating an utility node" />
+	<indexitem text="Creación de los archivos CARMEN Help JAR" />
+	<indexitem text="Creación de enlaces" target="Creating links between nodes" />
+	<indexitem text="Diagramas de influencia" target="Bayesian networks and Influence Diagrams" />
+	<indexitem text="Manual de temas de usuario final" target="End User Manual Topics" />
+	<indexitem text="Explicación en Sistemas Expertos" target="Explanation in Expert Systems" />
+	<indexitem text="Preguntas frecuentes" target="FAQ" />
+	<indexitem text="Comenzando" target="Getting_Started" />
+	<indexitem text="Cómo añadir preferencias de un nuevo usuario" target="How to add a new user preference" />
+	<indexitem text="Cómo cambiar el valor de una preferencia" target="How to change the value of a preference" />
+	<indexitem text="Cómo configurar el editor Resource Bundle" />
+	<indexitem text="Cómo configurar el Swing Designer en CARMEN" />
+	<indexitem text="Cómo exportar las preferencias de usuario" target="How to export user preferences" />
+	<indexitem text="Cómo importar las preferencias de usuario" target="How to import user preferences" />
+	<indexitem text="Cómo instalar el Swing Designer" />
+	<indexitem text="Cómo recuperar la configuración de preferencias por defecto" target="How to retrieve the default preference configuration" />
+	<indexitem text="Instalación" target="Installation" />
+	<indexitem text="Guía de internacionalización" />
+	<indexitem text="Aprendiendo" />
+	<indexitem text="Conceptos principales" target="Main_Concepts" />
+	<indexitem text="Redes bayesianas" target="Bayesian networks and Influence Diagrams" />
+	<indexitem text="Editor Resource Bundle" />
+	<indexitem text="Grabación de una red" target="Saving the network" />
+	<indexitem text="Selección de algoritmos" target="Selecting algorithms" />
+	<indexitem text="Asignación de propiedades al nodo" target="Setting node properties" />
+	<indexitem text="Asignación de tablas de probabilidades" target="Setting probability tables" />
+	<indexitem text="Asignación de preferencias de usuario" target="Setting User Preferences" />
+	<indexitem text="Uso de las utilidades de la ayuda y HELEN2000" />
+	<indexitem text="Bienvenido" target="Welcome" />
+	<indexitem text="Lo que se debe tener en cuenta" />
+	<indexitem text="Window Builder 7.0" />
+	<indexitem text="Carmen Cover Page" target="Carmen Cover Page" />
+</index>
