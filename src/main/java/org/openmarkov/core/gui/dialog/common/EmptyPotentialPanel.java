@@ -5,8 +5,14 @@
  */
 package org.openmarkov.core.gui.dialog.common;
 
+import org.openmarkov.core.model.network.ProbNode;
+
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType="Uniform")
 public class EmptyPotentialPanel extends PotentialPanel 
 {
+    public EmptyPotentialPanel(ProbNode probNode)
+    {
+        
+    }
 }
