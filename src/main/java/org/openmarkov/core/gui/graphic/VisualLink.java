@@ -503,18 +503,19 @@ public class VisualLink extends VisualElement {
 			}
 			sPoint = source.cutPoint(line, g);
 			ePoint = destination.cutPoint(line, g);
-			if ((sPoint != null) && (ePoint != null) && (link!= null) && (link.isDirected())) {
+			if ((sPoint != null) && (ePoint != null) && (link != null) && 
+					(link.isDirected())) {
 				paintArrow(g, sPoint, ePoint);
 			}
-			else if ((sPoint != null) && (ePoint != null) && (link!= null) && 
+			else if ((sPoint != null) && (ePoint != null) && (link != null) &&
 					(!link.isDirected())) {
 				paintLine(g, sPoint, ePoint);
 			}
-		} else if (link.isDirected() || link!= null){
+		} else if ((link==null) || (link.isDirected())){
 			//Paint the arrow while the user has not released the button of the mouse
 			paintArrow(g, startPoint, endPoint);			
 		}
-		else{
+		else{ 
 			paintLine(g, startPoint, endPoint);
 		}
 	}
