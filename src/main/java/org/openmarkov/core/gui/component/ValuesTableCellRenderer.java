@@ -93,7 +93,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	}
 
 	/**
-	 * headers rows are displayed in a gray background color with red an blue
+	 * headers rows are displayed in a gray background color with red and blue
 	 * foreground alternatively non headers rows are displayed in an alternative
 	 * cyan and light gray background color with black foreground color the
 	 * first two column are in gray

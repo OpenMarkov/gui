@@ -10,6 +10,8 @@
 package org.openmarkov.core.gui.dialog.node;
 
 
+import java.awt.event.ItemEvent;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -60,7 +62,13 @@ public class ICIOptionsPanel extends JPanel implements
 	private static int PROBABILISTIC_SELECTED = 0;
 	private static int DETERMINISTIC_SELECTED = 1;
 	private static int OPTIMAL_SELECTED = 2;
-
+	/**
+	 * remember the last model selected canonical or TPC
+	 */
+	private int previousCanonicalModel = -1;
+	private static int CANONICAL = 0;
+	private static int TPC = 1;
+	
 	/**
 	 * Dialog string resource.
 	 */
@@ -731,8 +739,50 @@ public class ICIOptionsPanel extends JPanel implements
 		}
 
 	}
-
 	
+	/**
+	 * Identifies the radio button affected by the event.
+	 * @param e
+	 */
+	
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getItem().equals(getJRadioButtonTPC())) {
+			itemStateChangedTPC(e);
+		}
+		if (e.getItem().equals(getJRadioButtonCanonical())) {
+			itemStateChangedCanonical(e);
+		}
+	}
+	
+		
+	private void itemStateChangedCanonical(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED){
+			//has been deselected canonical
+			previousCanonicalModel = CANONICAL;
+		}else if (e.getStateChange() == ItemEvent.SELECTED ){}
+		if ( previousCanonicalModel == CANONICAL) {
+			
+		} else if (previousCanonicalModel == TPC) { //tpc --> Canonical
+			
+		} else {//first selection -1
+			
+		}
+	}
+
+	private void itemStateChangedTPC(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED){
+			//has been deselected tpc
+			previousCanonicalModel = TPC;			
+		}else if (e.getStateChange() == ItemEvent.SELECTED ){}
+			if ( previousCanonicalModel == CANONICAL) { //Canonical --> tpc
+				
+			} else if (previousCanonicalModel == TPC) {
+				
+			} else {//first selection -1
+				
+			}
+	}
+
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		//TODO Actualiza la tabla cuando se agrega/elimna un padre/ estado
 		//Pero si la tabla vas estar en otro cuadro de dialogo, ésto ya no 

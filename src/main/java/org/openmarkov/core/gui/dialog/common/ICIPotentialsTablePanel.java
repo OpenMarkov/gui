@@ -16,22 +16,26 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
+
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
+
+
+
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
+
+
+
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
+
+
 //TODO review setData methods
 @PotentialPanelPlugin(potentialType="Max")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
@@ -79,7 +83,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		((ValuesTableModel) valuesTable.getModel())
 			.setFirstEditableRow( firstEditableRow );
 		valuesTable.setLastEditableRow( lastEditableRow );
-		valuesTable.setShowingAllParameters( true );
+		//valuesTable.setShowingAllParameters( true );
 		valuesTable.setNodeType(nodeType);
 
 	}
@@ -143,13 +147,13 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	public static int calculateLastEditableRow(ArrayList<Potential> listPotentials) {
 		int row = 0;
 		if (listPotentials != null) {
-			row = listPotentials.get(0).getVariables().get(0).getNumStates()+2; 
-			//numStates of the child variable plus one empty cell plus a cell for child the variable´s name
+			row = listPotentials.get(0).getVariables().get(0).getNumStates()+1; 
+			//numStates of the child variable plus one empty cell plus a cell for the variable´s name
 		} else {
 			row = 0;
 		}
 
-		return row;
+		return row+1;
 	}
 	public static int calculateFirstEditableRow(ArrayList<Potential> listPotentials) {
 		int row = 0;
@@ -230,13 +234,13 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	private int getNumberOfPostions( ArrayList<Potential> listPotentials) {
 		
 		int numPositions = 0;
-		int numParentState;
-		try {
+		int numParentStates;
+				try {
 			ArrayList<Variable> variables = listPotentials.get( 0 ).getVariables();
 			int numChildStates= variables.get(0).getNumStates();
 			for (int i = 1; i < variables.size() ; i++) {
-				numParentState = variables.get(i).getNumStates();
-				numPositions += numParentState * numChildStates;
+				numParentStates = variables.get(i).getNumStates();
+				numPositions += numParentStates * numChildStates;
 			}
 		
 			numPositions +=  numChildStates; //for the leak column
@@ -271,9 +275,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			PotentialsTablePanelOperations.checkIfNoPotential( 
 					properties.getPotentials());
 			values = setCanonicalTableSize(values, properties);
-			values = setFirstCanonicalColumn(values, properties);
-			values = setFirstTwoCanonicalRows(values, properties);
-			values = setCanonicalTableProbabilities(values, properties);
+			values = setCanonicalTable(values, properties);
 			
 			
 			setPosition(getNumberOfPostions(properties.getPotentials()));
@@ -297,116 +299,91 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
                                      ProbNode properties) {
 		Object [][] values = oldValues;
 		int numRows = 0;
-		int numColumns = 1; //at least, there is one column for the child name and states
+		int numColumns = 2; //at least, there is one column for leak potential and the first one with child states and name 
 		//first editable row in a canonical table is always the third one
 		//first one for the parent´s names and second one for parent´s states
 		int row = 2; 
 					
 		setBaseIndexForCoordinates( row );
 		setFirstEditableRow( row );
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		ArrayList<Variable> variablesBeforeReorder = iciPotential.getVariables();
-		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();//tablePotential per parent variable and leak potential
 		
-		setVariables( variablesBeforeReorder );
+		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
+		ArrayList<Variable> variables = iciPotential.getVariables();
+		
+		setVariables( variables );
 		
 		numRows = getVariables().get(0).getNumStates() + row;
+		
 		setLastEditableRow(numRows-1);
-		//numRows = numRows + 1 ; // + 1 for variableValues (when used in show as Values???
-		//for (TablePotential subpotential : subpotentials) {
-		for (int i = 0; i < subpotentials.size(); i++) {
-			if (i == subpotentials.size() - 1 ) {
-				numColumns += 1; //leak column
-				break;
-			}
-			numColumns += subpotentials.get(i).getDimensions()[1]; //Parent states number
+		
+		for (int i = 1; i < variables.size(); i++) {
+			numColumns += variables.get(i).getNumStates();
 		}	
 		
        // create the array of arrays
 		values = new Object[ numRows ][ numColumns ];
 		return values;
 	}
-
-	private Object[][] setFirstCanonicalColumn(	Object[][] oldValues, ProbNode properties) {
+	
+	/**
+	 * 
+	 * @param oldValues
+	 * @param probNode
+	 * @return
+	 */
+	private Object[][] setCanonicalTable( Object [][]oldValues, ProbNode probNode) {
 		
 		Object[][] values = oldValues;
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		Variable conditioned = iciPotential.getVariables().get(0);
-		values [0][0] = ""; //First cell is empty
-		values [1][0] = conditioned.getBaseName();// name of the conditioned variable
-		State[] states = conditioned.getStates();
-		for (int i = 0; i < states.length; i++) {
-			values[i+2][0] = states[i].getName();
+		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());
+		ArrayList<Variable> variables = iciPotential.getVariables();
+		int lastRow = values.length -1;
+		int lastColumn = values[0].length-1;
+		
+		// First column - conditioned variable
+		Variable conditionedVariable = variables.get(0);
+		values[0][0] = "";
+		values[1][0] = conditionedVariable.getName();
+		State [] childStates = conditionedVariable.getStates();
+		for(int i=0; i<childStates.length; ++i)
+		{
+			values[lastRow-i][0] = childStates[i].getName();
+		}
+		
+		int columnOffset = 1;
+		for (int i = 1; i < variables.size(); ++i) {
+			
+			// Header
+			Variable variable = variables.get(i);
+			State [] states = variable.getStates();
+			for(int j = 0; j < states.length; ++j)
+			{
+				values[0][j+columnOffset] = variable.getName();
+				values[1][j+columnOffset] = states[j].getName();
 			}
-		return values;
-	}
-
-	private Object[][] setFirstTwoCanonicalRows(Object[][] oldValues, ProbNode properties) {
-		
-		Object[][] values = oldValues;
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
+			// Values
+			double[] noisyParameters = iciPotential.getNoisyParameters(variable);
+			int numStates = conditionedVariable.getNumStates();
+			for(int k = 0; k < noisyParameters.length; ++k)
+			{
 				
-		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();//tablePotential per parent variable and leak potential
-		//A->D B->D C->D first subpotential would be P(D/A) then P(D/B) then P(D/C) and then the leak potential
-		int offset = 0;
-		for (int i = 0; i<subpotentials.size() ; i++) {
-					
-			if (i == subpotentials.size()-1) { //leak potential
-				values [0][offset+1] = "Leak";
-				values [1][offset+1] = "--";
-				continue;
+				values[lastRow - k % numStates][columnOffset + k / numStates] = noisyParameters[k];
 			}
 			
-			int [] dimensions = subpotentials.get(i).getDimensions();
-			ArrayList<Variable> variables = subpotentials.get(i).getVariables();//[D,A]
-			Variable conditioned = variables.get(0);//D
-			for (int j = 0; j < variables.size();j++) {// variables = [D, A] dimensions = [2,2] => D and A have 2 states, always j=1
-				if (variables.get(j) != conditioned) {
-					for (int k = 0; k < dimensions[j] ; k++) {//offset= previous dimension
-							values [0][offset+k+1] = variables.get(j).getName();
-							values [1][offset+k+1] = variables.get(j).getStates()[k];
-					}
-				}
-			}
-			
-			offset += dimensions[1];
+			columnOffset+=variable.getNumStates();
 		}
+
+		// Leaky parent
+		// Header
+		
+		values[0][lastColumn] = "Leak";
+		values[1][lastColumn] = "--";
+		double[] leakyParameters = iciPotential.getLeakyParameters();
+		for(int i=0; i < leakyParameters.length; ++i)
+		{
+			values [lastRow-i][lastColumn] = leakyParameters[i];
+		}
+
 	return values;
-	}
-	
-	
-	private Object[][] setCanonicalTableProbabilities(Object[][] oldValues,
-			ProbNode properties) {
-		Object[][] values = oldValues;
-		//int position = 0;
-		//int numColumns = (values.length == 0 ? 0 : values[0].length);
-		
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();
-		//int begin = getFirstEditableRow();//begin 2
-		//int end = getLastEditableRow();
-		
-		
-		for (int i = 0; i < subpotentials.size() ; i++) {
-			int numChildStates = subpotentials.get(i).getDimensions()[0];//Number of states of the child (conditioned variable)
-			int lastRow = numChildStates+1;
-			double [] subpotentialValues = subpotentials.get(i).getValues();
-			int numColumns = (i == subpotentials.size()-1 ? 1 :subpotentials.get(i).getDimensions()[1] ); //of the subpotential
-				int column= 1;
-				int row = lastRow; 
-					for (int m = 0; m < subpotentialValues.length && row < 1 ; m++) {
-					
-						values [row][column] = subpotentialValues[m];
-						if ((m+1)%(numChildStates)==0 && (column < numColumns )) {
-							column ++; row = lastRow;
-							} else {
-								row--;}
-						
-						//if m+1 is a multiple of numChildStates then continue with the next column
-			}
-		}
-	
-		return values;
 	}
 	
 
@@ -418,22 +395,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		boolean [] editableColumns = new boolean [size-1];
 		
 		for (int i=1; i<size;i++){
-			editableColumns [i] = true;
+			editableColumns [i-1] = true;
 		}
-		
-		/*boolean hasUncertainty;
-		if ( probNode.getPotentials().size() > 0 && probNode.getNodeType() != NodeType.DECISION ){
-			TablePotential tablePotential = (TablePotential)probNode.getPotentials().get(0);
-			
-			for (int i=1; i<size;i++){
-				hasUncertainty = false;
-		
-					hasUncertainty = tablePotential.hasUncertainty(getConfiguration(tablePotential,i));
-		
-					aux[i-1]= hasUncertainty;
-			}
-			
-		}*/
 		
 		
 		valuesTable.setDefaultRenderer(
@@ -442,5 +405,10 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		valuesTable.setDefaultRenderer(
 			String.class, new ValuesTableCellRenderer(
 				getFirstEditableRow(), editableColumns ) );
-	}
+
 }
+
+
+
+}
+

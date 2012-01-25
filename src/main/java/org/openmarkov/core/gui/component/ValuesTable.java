@@ -196,9 +196,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		if (modifiable) {
+			int numRowsModel =tableModel.getRowCount();
+			int numColumsModel = tableModel.getColumnCount();
 			this.dataModified =
-				new boolean[ tableModel.getRowCount() ][ tableModel
-					.getColumnCount() ];
+				new boolean[ numRowsModel ][ numColumsModel ];
 			initializeDataModified( false );
 		}
 
@@ -220,8 +221,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		if (dataModified == null) {
 			dataModified =
 				new boolean[ getTableModel().getRowCount() ][ getTableModel()
-					.getColumnCount() +1 ];//adding one column for leak potential
+					.getColumnCount() ];//adding one column for leak potential
 		}
+		
+		/*new boolean[ getTableModel().getRowCount() ][ getTableModel()
+		                          					.getColumnCount() +1 ];//adding one column for leak potential Esto lo acabo de cambiar*/
 		return dataModified;
 	}
 
@@ -540,7 +544,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * Check if the value is valid on a probabilistic model
 	 * <p>
-	 * In this model, the summa of the values of the column is 1 but there are
+	 * In this model, the sum of the values of the column is 1 but there are
 	 * no restrictions to the individual values
 	 * 
 	 * @param oldValue -
@@ -843,7 +847,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	public void setUsingGeneralPotential(int indexPotential) {
 
 		this.indexPotential = indexPotential;
-		if (isUsingGeneralPotential()) {
+		if (isUsingGeneralPotential()) {//if indexPotential == 0
 			if ("leak".equals( getValueAt( 0, getColumnCount() - 1 ) )) {
 				// previous model=Optimal
 				// remove the leakColumn
@@ -1024,7 +1028,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	/**
-	 * Method to show/hide rows based upon th showingProbabilitiesValues
+	 * Method to show/hide rows based upon the showingProbabilitiesValues
 	 * attribute If showingProbabilities, table shows numerical values for all
 	 * the configurations but if showingValues, table shows the name of the
 	 * state of the node corresponding to the maximum value in a deterministic
@@ -1187,7 +1191,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		} else {
 			numColumns = 1;
 		}
-		numColumns = FIRST_EDITABLE_COLUMN + numColumns;
+		//numColumns = FIRST_EDITABLE_COLUMN + numColumns;
 
 		return numColumns;
 	}

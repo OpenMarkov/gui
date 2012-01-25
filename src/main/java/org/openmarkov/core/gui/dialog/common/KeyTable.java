@@ -250,8 +250,8 @@ public class KeyTable extends JTable {
 		TableCellEditor editorCell = null;
 
 		setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS );
-		setBackground( BACKGROUND_COLOR );
-		setSelectionBackground( SELECTION_BACKGROUND_COLOR );
+		setBackground( BACKGROUND_COLOR );//Component color
+		setSelectionBackground( SELECTION_BACKGROUND_COLOR );//Color for cell renderers
 		setSelectionForeground( SELECTION_FOREGROUND_COLOR );
 		setRowHeight( ROW_HEIGHT );
 		setShowGrid( true );

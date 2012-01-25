@@ -821,41 +821,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		return values;
 	}
 	
-	/**
-	 * Prepare the table data from the <code>Potential</code>s and States.
-	 * <p>
-	 * If the Potential is null, then the information is taken from the
-	 * <code>NodeProperties</code>
-	 * 
-	 * @param listPotentials -
-	 *            potentials of the table
-	 * @param states -
-	 *            states of the variable of this node
-	 * @param parents -
-	 *            <code>NodeWrapper</code> list of the parents
-	 * @return the table data to be set
-	 */
-	protected Object[][] convertListPotentialsToCanonicalTableFormat(ProbNode properties) {
-		Object[][] values = null;
-		try {
-			
-			PotentialsTablePanelOperations.checkIfNoPotential( 
-					properties.getPotentials());
-			values = setCanonicalTableSize(values, properties);
-			values = setFirstCanonicalColumn(values, properties);
-			values = setFirstTwoCanonicalRows(values, properties);
-			values = setCanonicalTableProbabilities(values, properties);
-			
-			
-			
-			setPosition(setNumberOfPostions(properties.getPotentials()));
-			
-		} catch (NullListPotentialsException ex) {
-			values = setBlankTable( properties );
-		}
-		return values;
-	}
-		
+
+	
 	/**
 	 * Set the Base index for the coordinates in the table related to the 
 	 * Potential of the variable of this node
@@ -920,44 +887,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		return values;
 	}
 	
-	/**
-	 * set values table size for the potential of the canonical model
-	 * 
-	 * @param values -
-	 *            the table that is being modified
-	 *
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
-	 */
+	
 
-	private Object[][] setCanonicalTableSize (Object [][]oldValues,
-                                     ProbNode properties) {
-		Object [][] values = oldValues;
-		int numRows = 0;
-		int numColumns = 1; //at least, there is one column for the chid name and states
-		//first editable row in a canonical table is always the third one
-		//first one for the parent´s names and second one for parent´s states
-		int row = 2; 
-					
-		setBaseIndexForCoordinates( row );
-		setFirstEditableRow( row );
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		ArrayList<Variable> variablesBeforeReorder = iciPotential.getVariables();
-		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();//tablePotential per parent variable and leak potential
-		
-		setVariables( variablesBeforeReorder );
-		
-		numRows = getVariables().get(0).getNumStates() + row;
-		setLastEditableRow(numRows-1);
-		//numRows = numRows + 1 ; // + 1 for variableValues (when used in show as Values???
-		for (TablePotential subpotential : subpotentials) {
-			numColumns += subpotential.getDimensions()[1]; //Parent states
-		}	
-		
-       // create the array of arrays
-		values = new Object[ numRows ][ numColumns ];
-		return values;
-	}
+	
 
 
 	/**
@@ -1003,40 +935,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		return values;
 	}
 	
-	private Object[][] setFirstTwoCanonicalRows(Object[][] oldValues, ProbNode properties) {
-		
-		Object[][] values = oldValues;
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-				
-		ArrayList<TablePotential> subpotentials = iciPotential.getSubPotentials();//tablePotential per parent variable and leak potential
-		//A->D B->D C->D first subpotential would be P(D/A) then P(D/B) then P(D/C) and then the leak potential
-		int offset = 0;
-		for (int i = 0; i<subpotentials.size() ; i++) {
-					
-			if (i == subpotentials.size()-1) { //leak potential
-				values [0][offset+1] = "Leak";
-				values [1][offset+1] = "--";
-				continue;
-			}
-			
-			int [] dimensions = subpotentials.get(i).getDimensions();
-			ArrayList<Variable> variables = subpotentials.get(i).getVariables();//[D,A]
-			Variable conditioned = variables.get(0);//D
-			for (int j = 0; j < variables.size();j++) {// variables = [D, A] dimensions = [2,2] => D and A have 2 states, always j=1
-				if (variables.get(j) != conditioned) {
-					
-					for (int k = 0; k < dimensions[j] ; k++) {//offset= previous dimension
-							values [0][offset+k+1] = variables.get(j).getName();
-							values [1][offset+k+1] = variables.get(j).getStates()[k];
-					
-					}
-				}
-			}
-			
-			offset += dimensions[1];
-		}
-	return values;
-	}
+	
 
 	/**
 	 * @param values -
@@ -1227,39 +1126,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		return values;
 	}
 	
-	private Object[][] setCanonicalTableProbabilities(Object[][] oldValues,
-			ProbNode properties) {
-		Object[][] values = oldValues;
-		int position = 0;
-		int numColumns = (values.length == 0 ? 0 : values[0].length);
-		
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		ICIModelType iciModelType = iciPotential.getModelType();
-		TablePotential potential;
-		switch (iciModelType) {
-		case CAUSAL_MAX:
-			for (Variable variable : iciPotential.getVariables()){
-				potential = ((MaxPotential) iciPotential).getSubPotential(variable);
-			}
-			break;
-		case GENERAL_MAX:
-			
-			break;
-		case CAUSAL_MIN:
-			
-			break;
-		case GENERAL_MIN:
-			
-			break;
-		case TUNING:
-			//potential = ((TuningModelPotential) iciPotential). getTuningFunctionPotential ();
-			break;
-		}
-		
-		
-		
-		return values;
-	}
+	
 
 	/**
 	 * In the lower left corner area, the last row is reserved in the model for
