@@ -6,14 +6,17 @@
 
 package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
@@ -49,6 +52,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 	 * This class is based upon KeyTablePanel without buttons
 	 * 
 	 * @author jlgozalo
+	 * @author maryebra
 	 * @version 1.0 jlgozalo
 	 */
 	public class ProbabilityTablePanel  extends PotentialPanel implements ActionListener {
@@ -146,7 +150,12 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 */
 		protected int selectedColumn = -1;
 
-		
+		private JLabel jLabelNodeRelationComment;
+		private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment = null;
+		/**
+		 * Dialog string resource.
+		 */
+		private StringResource dialogStringResource;
 		
 		private Logger logger;
 
@@ -180,37 +189,69 @@ import org.openmarkov.core.model.network.potential.Potential;
 			this.probNode = probNode;
 			modifiable = true; // table is modifiable
 			initialize();
-			showValuesTable( true );
+			//showValuesTable( true );
 			
 		}
-
 		/**
-		 * This method initialises this instance.
+		 * This method initializes this instance.
 		 */
 		protected void initialize() {
-
-			setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),
-				1, false ) );
-			final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
-			groupLayout.setHorizontalGroup( groupLayout.createParallelGroup(
-				GroupLayout.Alignment.LEADING ).addGroup(
-				groupLayout.createSequentialGroup().addComponent(
-					getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 474,
-					Short.MAX_VALUE ) ) );
-			groupLayout.setVerticalGroup( groupLayout.createParallelGroup(
-				GroupLayout.Alignment.LEADING ).addGroup(
-				GroupLayout.Alignment.TRAILING,
-				groupLayout.createSequentialGroup().addComponent(
-					getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 349,
-					Short.MAX_VALUE ) ) );
-			setLayout( groupLayout );
-			setAutoscrolls( true );
-			//setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
-			//setCellRenderers();
+			/*setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),1, false ) );
 			
-
+				final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
+				
+				groupLayout.setHorizontalGroup( 
+					groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING )
+					.addGroup(
+							groupLayout.createSequentialGroup().addComponent(
+						getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 474,
+						Short.MAX_VALUE ) ) );
+				
+				groupLayout.setVerticalGroup( 
+					groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING )
+					.addGroup(GroupLayout.Alignment.TRAILING,
+							groupLayout.createSequentialGroup().addComponent(
+						getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 349,
+						Short.MAX_VALUE ) ) );
+				
+				setLayout( groupLayout );
+				setAutoscrolls( true );
+				//setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
+				//setCellRenderers();
+		*/
+			setLayout(new BorderLayout());
+			
 		}
 		
+		/**
+		 * @return label for the node relation comment
+		 */
+		protected JLabel getJLabelNodeRelationComment() {
+
+			if (jLabelNodeRelationComment == null) {
+				jLabelNodeRelationComment = new JLabel();
+				jLabelNodeRelationComment.setName( "jLabelNodeRelationComment" );
+				jLabelNodeRelationComment.setText( "a Label" );
+				jLabelNodeRelationComment
+					.setText( dialogStringResource.getString( 
+							"NodeProbsValuesTablePanel.jLabelNodeRelationComment.Text" ) );
+			}
+			return jLabelNodeRelationComment;
+		}
+		/**
+		 * This method initialises commentHTMLScrollPaneNodeDefinitionComment
+		 * 
+		 * @return a new comment HTML scroll pane.
+		 */
+		protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+
+			if (commentHTMLScrollPaneNodeProbsComment == null) {
+				commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
+				commentHTMLScrollPaneNodeProbsComment.setName( 
+						"commentHTMLScrollPaneNodeProbsComment" );
+			}
+			return commentHTMLScrollPaneNodeProbsComment;
+		}
 		/**
 		 * This method initializes valuesTableScrollPane.
 		 * 

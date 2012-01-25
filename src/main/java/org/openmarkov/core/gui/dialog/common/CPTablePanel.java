@@ -9,12 +9,17 @@
 
 package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import javax.swing.GroupLayout;
+import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -55,10 +60,16 @@ public class CPTablePanel extends ProbabilityTablePanel {
 	
 	public CPTablePanel(ProbNode probNode) {
 		super(probNode);
+		
+		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		showValuesTable( true );
 		setTableSpecificListeners();
 		setData(probNode);
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
 	 * common KeyTable hierarchy. This method creates the evidenceCase object when

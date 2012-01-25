@@ -9,11 +9,20 @@
 */
 package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.LayoutStyle;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +31,8 @@ import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
+import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
+import org.openmarkov.core.gui.localize.StringResource;
 
 
 
@@ -36,16 +47,446 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
-//TODO review setData methods
+
 @PotentialPanelPlugin(potentialType="Max")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
+	/*
+	private CPTablePanel cpTablePanel;
 	
+	
+	private ButtonGroup buttonGroupNetOrCompound = null;
+	private ButtonGroup buttonGroupAllOrIndependent = null;
+	private ButtonGroup buttonGroupProbabilisticOrDeterministicOrOptimal = null;
+	private ButtonGroup buttonGroupTpcOrCanonical = null;
+	private ButtonGroup buttonGroupProbabilityOrValue = null;
+
+
+	
+	private JRadioButton jRadioButtonNeto;
+	private JRadioButton jRadioButtonCompound;
+	private JRadioButton jRadioButtonTPC;
+	private JRadioButton jRadioButtonCanonical;
+	private JRadioButton jRadioButtonProbabilities;
+	private JRadioButton jRadioButtonValues;
+	private JRadioButton jRadioButtonIndependent;
+	private JRadioButton jRadioButtonAll;
+
+	
+	private JPanel jPanelNetoOrCompound;
+	private JPanel jPanelTpcOrCanonical;
+	private JPanel jPanelProbabilityOrValue;
+	private JPanel jPanelAllOrIndependant;
+	private JPanel jPanelRelationTableType;
+	
+	private StringResource dialogStringResource;
+
+	
+	private JLabel jLabelNodeRelationComment;
+	private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment = null;
+	*/
+	private ICIOptionsPanel iciOptionPanel;
 	protected Logger logger;
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super(probNode);
-		setData(probNode);
+		
+		add(getICIOptionPanel(),BorderLayout.NORTH);
+		
+	
 		// TODO Auto-generated constructor stub
+		
+		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		//jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
+		showValuesTable( true );
+		setData(probNode);
 	}
+	
+	private ICIOptionsPanel getICIOptionPanel() {
+
+		if (iciOptionPanel == null) {
+			iciOptionPanel = new ICIOptionsPanel(probNode);
+			boolean newNode = true;
+			iciOptionPanel.setNewNode(newNode);
+			//tablePotentialPanel.setNodeProperties(probNode);
+		}
+		
+		return iciOptionPanel;
+	}
+	/*
+	private void initialize() throws Exception {
+
+		//setPreferredSize( new Dimension( 700, 375 ) );
+		final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
+		
+		groupLayout.setHorizontalGroup( groupLayout
+				.createParallelGroup( GroupLayout.Alignment.LEADING )
+				.addGroup(
+					groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+							groupLayout
+								.createParallelGroup(
+									GroupLayout.Alignment.LEADING )
+								.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addComponent(
+											getJLabelNodeRelationComment() )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addComponent(
+											getCommentHTMLScrollPaneNodeDefinitionComment(),
+											GroupLayout.DEFAULT_SIZE, 623,
+											Short.MAX_VALUE ) )
+								.addComponent(
+									getCPTablePanel(),GroupLayout.DEFAULT_SIZE, 184,
+									Short.MAX_VALUE )
+						.addGroup(
+									groupLayout
+										.createSequentialGroup()
+										.addComponent(
+											getJPanelTpcOrCanonical(),
+											GroupLayout.PREFERRED_SIZE, 196,
+											GroupLayout.PREFERRED_SIZE )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addComponent(
+											getJPanelNetoOrCompound(),
+											GroupLayout.PREFERRED_SIZE, 137,
+											GroupLayout.PREFERRED_SIZE )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addComponent(
+											getJPanelProbabilityOrValue(),
+											GroupLayout.PREFERRED_SIZE, 151,
+											GroupLayout.PREFERRED_SIZE )
+										.addPreferredGap(
+											LayoutStyle.ComponentPlacement.RELATED )
+										.addComponent(
+											getJPanelAllOrIndependant(),
+											GroupLayout.DEFAULT_SIZE, 174,
+											Short.MAX_VALUE ) ) 						
+						).addContainerGap() ) );
+		groupLayout.setVerticalGroup( groupLayout.createParallelGroup(
+			GroupLayout.Alignment.LEADING ).addGroup(
+			groupLayout.createSequentialGroup().addContainerGap().addGroup(
+				groupLayout.createParallelGroup( GroupLayout.Alignment.LEADING )
+				.addGroup(
+					groupLayout.createParallelGroup(
+						GroupLayout.Alignment.LEADING ).addComponent(
+						getJPanelAllOrIndependant(), GroupLayout.DEFAULT_SIZE,
+						58, Short.MAX_VALUE ).addComponent(
+						getJPanelProbabilityOrValue(),
+						GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE )
+						.addComponent(
+							getJPanelNetoOrCompound(),
+							GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE )
+						.addComponent(
+							getJPanelTpcOrCanonical(),
+							GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE ) ))
+				.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
+				.addComponent(
+					getCPTablePanel(), GroupLayout.DEFAULT_SIZE,
+					184, Short.MAX_VALUE ).addPreferredGap(
+					LayoutStyle.ComponentPlacement.RELATED ).addGroup(
+					groupLayout.createParallelGroup(
+						GroupLayout.Alignment.LEADING ).addComponent(
+						getJLabelNodeRelationComment() ).addComponent(
+						getCommentHTMLScrollPaneNodeDefinitionComment(),
+						GroupLayout.PREFERRED_SIZE, 60,
+						GroupLayout.PREFERRED_SIZE ) 
+						).addContainerGap() ));
+		setLayout( groupLayout );
+	}
+	
+	/*
+	
+	protected JPanel getJPanelTpcOrCanonical() {
+
+		if (jPanelTpcOrCanonical == null) {
+			jPanelTpcOrCanonical = new JPanel();
+			jPanelTpcOrCanonical.setLayout( null );
+			//jPanelTpcOrCanonical.setSize( 152, 58 );
+			jPanelTpcOrCanonical.setBorder( new LineBorder( UIManager
+				.getColor( "List.dropLineColor" ), 1, false ) );
+			jPanelTpcOrCanonical.setName( "jPanelTpcOrCanonical" );
+			initButtonGroupTpcOrCanonical();
+			jPanelTpcOrCanonical.add( getJRadioButtonCanonical() );
+			jPanelTpcOrCanonical.add( getJRadioButtonTPC() );
+			jPanelTpcOrCanonical.setEnabled( true);
+		}
+		return jPanelTpcOrCanonical;
+	}
+
+
+	private void initButtonGroupTpcOrCanonical() {
+
+		buttonGroupTpcOrCanonical = new ButtonGroup();
+		buttonGroupTpcOrCanonical.add( getJRadioButtonTPC() );
+		buttonGroupTpcOrCanonical.add( getJRadioButtonCanonical() );
+	}
+
+
+	protected JRadioButton getJRadioButtonTPC() {
+
+		if (jRadioButtonTPC == null) {
+			jRadioButtonTPC = new JRadioButton();
+			jRadioButtonTPC.setBounds( 1, 1, 189, 24 );
+			jRadioButtonTPC.setName( "jRadioButtonTPC" );
+			jRadioButtonTPC.setText( "New JRadioButton" );
+			jRadioButtonTPC.setText( dialogStringResource
+				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
+		//	jRadioButtonTPC.addItemListener( this.listener );
+			jRadioButtonTPC.setEnabled( true );
+		}
+		return jRadioButtonTPC;
+	}
+
+	
+	protected JRadioButton getJRadioButtonCanonical() {
+
+		if (jRadioButtonCanonical == null) {
+			jRadioButtonCanonical = new JRadioButton();
+			jRadioButtonCanonical.setBounds( 1, 25, 189, 24 );
+			jRadioButtonCanonical.setName( "jRadioButtonCanonical" );
+			jRadioButtonCanonical.setText( "New JRadioButton" );
+			jRadioButtonCanonical
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
+	//		jRadioButtonCanonical.addItemListener( this.listener );
+			jRadioButtonCanonical.setEnabled( true );
+		}
+		return jRadioButtonCanonical;
+	}
+
+
+	protected JPanel getJPanelNetoOrCompound() {
+
+		if (jPanelNetoOrCompound == null) {
+			jPanelNetoOrCompound = new JPanel();
+			jPanelNetoOrCompound.setLayout( null );
+			//jPanelNetoOrCompound.setSize( 172, 58 );
+			jPanelNetoOrCompound.setBorder( new LineBorder( UIManager
+				.getColor( "List.dropLineColor" ), 1, false ) );
+			jPanelNetoOrCompound.setName( "jPanelNetoOrCompound" );
+			initButtonGroupNetOrCompound();
+			jPanelNetoOrCompound.add( getJRadioButtonCompound() );
+			jPanelNetoOrCompound.add( getJRadioButtonNeto() );
+			jPanelNetoOrCompound.setEnabled( false );
+		}
+		return jPanelNetoOrCompound;
+	}
+
+	private void initButtonGroupNetOrCompound() {
+
+		buttonGroupNetOrCompound = new ButtonGroup();
+		buttonGroupNetOrCompound.add( getJRadioButtonNeto() );
+		buttonGroupNetOrCompound.add( getJRadioButtonCompound() );
+	}
+
+
+	protected JRadioButton getJRadioButtonNeto() {
+
+		if (jRadioButtonNeto == null) {
+			jRadioButtonNeto = new JRadioButton();
+			jRadioButtonNeto.setBounds( 1, 1, 134, 24 );
+			jRadioButtonNeto.setName( "jRadioButtonNeto" );
+			jRadioButtonNeto.setText( "New JRadioButton" );
+			jRadioButtonNeto
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonNeto.Text" ) );
+			//jRadioButtonNeto.addItemListener( this.listener );
+			jRadioButtonNeto.setEnabled( false );
+		}
+		return jRadioButtonNeto;
+	}
+
+
+	protected JRadioButton getJRadioButtonCompound() {
+
+		if (jRadioButtonCompound == null) {
+			jRadioButtonCompound = new JRadioButton();
+			jRadioButtonCompound.setBounds( 1, 25, 134, 24 );
+			jRadioButtonCompound.setName( "jRadioButtonCompound" );
+			jRadioButtonCompound.setText( "New JRadioButton" );
+			jRadioButtonCompound
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonCompound.Text" ) );
+			//jRadioButtonCompound.addItemListener( this.listener );
+			jRadioButtonCompound.setEnabled( false );
+		}
+		return jRadioButtonCompound;
+	}
+
+	protected JPanel getJPanelProbabilityOrValue() {
+
+		if (jPanelProbabilityOrValue == null) {
+			jPanelProbabilityOrValue = new JPanel();
+			jPanelProbabilityOrValue.setLayout( null );
+			//jPanelProbabilityOrValue.setSize( 143, 58 );
+			jPanelProbabilityOrValue.setBorder( new LineBorder( UIManager
+				.getColor( "List.dropLineColor" ), 1, false ) );
+			jPanelProbabilityOrValue.setName( "jPanelProbabilityOrValue" );
+			initButtonGroupProbabilityOrValue();
+			jPanelProbabilityOrValue.add( getJRadioButtonValues() );
+			jPanelProbabilityOrValue.add( getJRadioButtonProbabilities() );
+			jPanelProbabilityOrValue.setEnabled( false );// default
+		}
+		return jPanelProbabilityOrValue;
+	}
+
+
+	private void initButtonGroupProbabilityOrValue() {
+
+		buttonGroupProbabilityOrValue = new ButtonGroup();
+		buttonGroupProbabilityOrValue.add( getJRadioButtonProbabilities() );
+		buttonGroupProbabilityOrValue.add( getJRadioButtonValues() );
+	}
+
+	
+	protected JRadioButton getJRadioButtonProbabilities() {
+
+		if (jRadioButtonProbabilities == null) {
+			jRadioButtonProbabilities = new JRadioButton();
+			jRadioButtonProbabilities.setBounds( 1, 1, 149, 24 );
+			jRadioButtonProbabilities.setName( "jRadioButtonProbabilities" );
+			jRadioButtonProbabilities.setText( "New JRadioButton" );
+			jRadioButtonProbabilities
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonProbabilities." +
+						"Text" ) );
+			//jRadioButtonProbabilities.addItemListener( this.listener );
+			jRadioButtonProbabilities.setEnabled( false );
+		}
+		return jRadioButtonProbabilities;
+	}
+
+	
+	protected JRadioButton getJRadioButtonValues() {
+
+		if (jRadioButtonValues == null) {
+			jRadioButtonValues = new JRadioButton();
+			jRadioButtonValues.setBounds( 1, 25, 149, 24 );
+			jRadioButtonValues.setName( "jRadioButtonValues" );
+			jRadioButtonValues.setText( "New JRadioButton" );
+			jRadioButtonValues
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonValues.Text" ) );
+			//jRadioButtonValues.addItemListener( this.listener );
+			jRadioButtonValues.setEnabled( false );
+		}
+		return jRadioButtonValues;
+	}
+
+	
+	protected JPanel getJPanelAllOrIndependant() {
+
+		if (jPanelAllOrIndependant == null) {
+			jPanelAllOrIndependant = new JPanel();
+			jPanelAllOrIndependant.setName( "jPanelAllOrIndependant" );
+			jPanelAllOrIndependant.setLayout( null );
+			//jPanelAllOrIndependant.setSize( 110, 58 );
+			jPanelAllOrIndependant.setBorder( new LineBorder( UIManager
+				.getColor( "List.dropLineColor" ), 1, false ) );
+			jPanelAllOrIndependant.setName( "jPanelAllOrIndependant" );
+			initButtonGroupAllOrIndependent();
+			jPanelAllOrIndependant.add( getJRadioButtonAll() );
+			jPanelAllOrIndependant.add( getJRadioButtonIndependent() );
+			jPanelAllOrIndependant.setEnabled( false );
+		}
+		return jPanelAllOrIndependant;
+	}
+
+	
+	private void initButtonGroupAllOrIndependent() {
+
+		buttonGroupAllOrIndependent = new ButtonGroup();
+		buttonGroupAllOrIndependent.add( getJRadioButtonAll() );
+		buttonGroupAllOrIndependent.add( getJRadioButtonIndependent() );
+	}
+
+	
+	protected JRadioButton getJRadioButtonAll() {
+
+		if (jRadioButtonAll == null) {
+			jRadioButtonAll = new JRadioButton();
+			jRadioButtonAll.setName( "jRadioButtonAll" );
+			jRadioButtonAll.setText( "New JRadioButton" );
+			jRadioButtonAll.setBounds( 1, 1, 170, 24 );
+			jRadioButtonAll.setText( dialogStringResource
+				.getString( "NodeProbsValuesTablePanel.jRadioButtonAll.Text" ) );
+		//	jRadioButtonAll.addItemListener( this.listener );
+			jRadioButtonAll.setEnabled( false );
+			jRadioButtonAll.setSelected( false );
+		}
+		return jRadioButtonAll;
+	}
+
+	
+	protected JRadioButton getJRadioButtonIndependent() {
+
+		if (jRadioButtonIndependent == null) {
+			jRadioButtonIndependent = new JRadioButton();
+			jRadioButtonIndependent.setName( "jRadioButtonIndependent" );
+			jRadioButtonIndependent.setText( "New JRadioButton" );
+			jRadioButtonIndependent.setBounds( 1, 25, 170, 24 );
+			jRadioButtonIndependent
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jRadioButtonIndependant.Text" ) );
+			//jRadioButtonIndependent.addItemListener( this.listener );
+			jRadioButtonIndependent.setEnabled( false );
+		}
+		return jRadioButtonIndependent;
+	}
+
+
+	
+	protected JLabel getJLabelNodeRelationComment() {
+
+		if (jLabelNodeRelationComment == null) {
+			jLabelNodeRelationComment = new JLabel();
+			jLabelNodeRelationComment.setName( "jLabelNodeRelationComment" );
+			jLabelNodeRelationComment.setText( "a Label" );
+			jLabelNodeRelationComment
+				.setText( dialogStringResource.getString( 
+						"NodeProbsValuesTablePanel.jLabelNodeRelationComment.Text" ) );
+		}
+		return jLabelNodeRelationComment;
+	}
+
+	
+	protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+
+		if (commentHTMLScrollPaneNodeProbsComment == null) {
+			commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
+			commentHTMLScrollPaneNodeProbsComment.setName( 
+					"commentHTMLScrollPaneNodeProbsComment" );
+		}
+		return commentHTMLScrollPaneNodeProbsComment;
+	}
+
+	
+	
+	
+	
+	
+	
+	private CPTablePanel getCPTablePanel() {
+
+		if (cpTablePanel == null) {
+			cpTablePanel = new CPTablePanel(probNode);
+			//boolean newNode = true;
+			//cpTablePanel.setNewNode(newNode);
+			//tablePotentialPanel.setNodeProperties(probNode);
+		}
+		
+		return cpTablePanel;
+	}
+	
+	*/
+	/**
+	 * @return the panel with the two buttons
+	 */
 	
 	/**
 	 * Sets a new table model with new data.
@@ -395,7 +836,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		boolean [] editableColumns = new boolean [size-1];
 		
 		for (int i=1; i<size;i++){
-			editableColumns [i-1] = true;
+			editableColumns [i-1] = false;//Uncertainty values false for canonical models
 		}
 		
 		

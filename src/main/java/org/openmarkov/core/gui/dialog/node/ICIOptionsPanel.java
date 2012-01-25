@@ -45,6 +45,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
  * (if utility node) or policy values (if decision node)
  * 
  * @author jlgozalo
+ * @author maryebra
  * @version 1.0 jlgozalo
  */
 public class ICIOptionsPanel extends JPanel implements 
@@ -200,9 +201,9 @@ public class ICIOptionsPanel extends JPanel implements
 											getCommentHTMLScrollPaneNodeDefinitionComment(),
 											GroupLayout.DEFAULT_SIZE, 623,
 											Short.MAX_VALUE ) )
-								.addComponent(
+								/*.addComponent(
 									getNodePotentialsTablePanel(),GroupLayout.DEFAULT_SIZE, 184,
-									Short.MAX_VALUE )
+									Short.MAX_VALUE )*/
 								.addGroup(
 									groupLayout
 										.createSequentialGroup()
@@ -246,10 +247,10 @@ public class ICIOptionsPanel extends JPanel implements
 						.addComponent(
 							getJPanelTpcOrCanonical(),
 							GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE ) ))
-				.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
+				/*.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
 				.addComponent(
 					getNodePotentialsTablePanel(), GroupLayout.DEFAULT_SIZE,
-					184, Short.MAX_VALUE ).addPreferredGap(
+					184, Short.MAX_VALUE )*/.addPreferredGap(
 					LayoutStyle.ComponentPlacement.RELATED ).addGroup(
 					groupLayout.createParallelGroup(
 						GroupLayout.Alignment.LEADING ).addComponent(
@@ -277,7 +278,7 @@ public class ICIOptionsPanel extends JPanel implements
 			initButtonGroupTpcOrCanonical();
 			jPanelTpcOrCanonical.add( getJRadioButtonCanonical() );
 			jPanelTpcOrCanonical.add( getJRadioButtonTPC() );
-			jPanelTpcOrCanonical.setEnabled( false );
+			jPanelTpcOrCanonical.setEnabled( true);
 		}
 		return jPanelTpcOrCanonical;
 	}
@@ -305,7 +306,7 @@ public class ICIOptionsPanel extends JPanel implements
 			jRadioButtonTPC.setText( dialogStringResource
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
 		//	jRadioButtonTPC.addItemListener( this.listener );
-			jRadioButtonTPC.setEnabled( false );
+			jRadioButtonTPC.setEnabled( true );
 		}
 		return jRadioButtonTPC;
 	}
@@ -324,7 +325,7 @@ public class ICIOptionsPanel extends JPanel implements
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
 	//		jRadioButtonCanonical.addItemListener( this.listener );
-			jRadioButtonCanonical.setEnabled( false );
+			jRadioButtonCanonical.setEnabled( true );
 		}
 		return jRadioButtonCanonical;
 	}
@@ -511,7 +512,7 @@ public class ICIOptionsPanel extends JPanel implements
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonAll.Text" ) );
 		//	jRadioButtonAll.addItemListener( this.listener );
 			jRadioButtonAll.setEnabled( false );
-			jRadioButtonAll.setSelected( true );
+			jRadioButtonAll.setSelected( false );
 		}
 		return jRadioButtonAll;
 	}
@@ -528,9 +529,9 @@ public class ICIOptionsPanel extends JPanel implements
 			jRadioButtonIndependent.setBounds( 1, 25, 170, 24 );
 			jRadioButtonIndependent
 				.setText( dialogStringResource.getString( 
-						"NodeProbsValuesTablePanel.jRadioButtonIndependent.Text" ) );
+						"NodeProbsValuesTablePanel.jRadioButtonIndependant.Text" ) );
 			//jRadioButtonIndependent.addItemListener( this.listener );
-			jRadioButtonIndependent.setEnabled( true );
+			jRadioButtonIndependent.setEnabled( false );
 		}
 		return jRadioButtonIndependent;
 	}
