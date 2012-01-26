@@ -32,6 +32,7 @@ import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
+import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
 
@@ -878,5 +879,15 @@ public class NetworkPanel extends FrameContentPanel implements
 	public void setPropagationActive(boolean propagationActive) {
 		editorPanel.setPropagationActive(propagationActive);
 	} 
+	
+	//....asaez
+	public InferenceAlgorithm getInferenceAlgorithm() {
+		return editorPanel.getInferenceAlgorithm();
+	}
+
+	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
+		editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
+	}
+	//...asaez
 
 }

@@ -88,9 +88,9 @@ public class VisualState extends VisualElement {
 	private String stateName;
 	
 	/**
-	 * Array of values (probabilities) assigned to the state.
+	 * Array of values assigned to the state. //...asaez................................
 	 * There is one value for each evidence case in memory.
-	 * The values are in the range [0, 1].
+	 * //The values are in the range [0, 1]. //...asaez................................
 	 */
 	private ArrayList<Double> stateValues;
 	
@@ -112,7 +112,7 @@ public class VisualState extends VisualElement {
 	 * @param visualNode
 	 *            visualNode to which this State is associated.
 	 * @param number
-	 *            total number of states that has the inner box.
+	 *            order number to be assigned to this State inside the inner box.//...asaez................................
 	 * @param name
 	 *            name of this state.
 	 */
@@ -132,11 +132,11 @@ public class VisualState extends VisualElement {
 	 * @param visualNode
 	 *            visualNode to which this State is associated.
 	 * @param number
-	 *            total number of states that has the inner box.
+	 *            order number to be assigned to this State inside the inner box.//...asaez................................
 	 * @param name
 	 *            name of this state.
 	 * @param numValues
-	 *            Number of values that has to be each visual state.
+	 *            Number of values that has to have each visual state.
 	 */
 	public VisualState(VisualNode visualNode, int number, String name, int numValues) {
 		this.visualNode = visualNode;
@@ -219,7 +219,7 @@ public class VisualState extends VisualElement {
 	
 	/**
 	 * Creates a new position in the array of values of the visual state 
-	 * It initially assigned 0.0 to this new position 
+	 * It is initially assigned 0.0 to this new position //...asaez................................
 	 */
 	public void createNewStateValue() {
 		stateValues.add(0.0);
@@ -235,22 +235,24 @@ public class VisualState extends VisualElement {
 	}	
 	
 	/**
-	 * Sets the value (probability) of this state for the given position 
+	 * Sets the value of this state for the given position  //...asaez................................
 	 * of the array (this position matches the evidence case number).
-	 * The value is truncated so it only has two decimals
+	 * The value is truncated so it only has two decimals //...asaez...PENDIENTE..........
 	 * 
 	 * @param caseNumber
 	 *            the position in the array to be established
 	 * @param value
-	 *            the value (probability) to be set
+	 *            the value to be set //...asaez................................
 	 */
 	public void setStateValue(int caseNumber, double value) {
 		try {
 			double truncatedValue = (Math.rint(value*100))/100;
+			//...asaez..PENDIENTE....Ojo!! aquí hay que ver cómo 
+			//...asaez....poner el valor en el caso de que se trate de un UtilityNode
 			stateValues.set(caseNumber, truncatedValue);
 		} catch (Exception exc) {
 			JOptionPane.showMessageDialog(null, "ERROR" +
-					"\n\n" + exc.getMessage(), 
+					"\n\n" + exc.getMessage(),
 					stringResource.getString("ExceptionGeneric.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}		
@@ -273,11 +275,17 @@ public class VisualState extends VisualElement {
 	 * 
 	 * @return the position that this state occupies inside the inner box
 	 */	
-	private int getStatePosition() {
-		FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-		return (innerBox.getNumStates() - stateNumber);
-	}
+	private int getStatePosition() {//...asaez................................		
+		InnerBox innerBox = (InnerBox)visualNode.getInnerBox();
+		if (innerBox instanceof FSVariableBox) {
+			return (((FSVariableBox)innerBox).getNumStates() - stateNumber);
+		} else {
+			return 1;
+		}
+	} //................................asaez...
 
+	//...asaez................................
+	//...Sustituir las apariciones de FSVariableBox por InnerBox.........
 	/**
 	 * Returns a fictitious rectangular shape around the state. This shape
 	 * has a height equivalent to the sum of the height of all the bars of 
@@ -288,24 +296,24 @@ public class VisualState extends VisualElement {
 	 */
 	public Shape getShape(Graphics2D g) {
 		Double x = visualNode.getUpperLeftCornerX(g) + 
-				FSVariableBox.INTERNAL_MARGIN + FSVariableBox.STATES_INDENT - 1;
-		Double w = FSVariableBox.BOX_WIDTH - 
-				(FSVariableBox.STATES_INDENT *2) + 1;
+				InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
+		Double w = InnerBox.BOX_WIDTH - 
+				(InnerBox.STATES_INDENT *2) + 1;
 		Double y = 0.0;
 		Double h = 0.0;
 		if (visualNode.getEditorPanel().isPropagationActive()) {
 			y = visualNode.getUpperLeftCornerY(g) + 
-				visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-				(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
-				((stateValues.size()-1)*FSVariableBox.BAR_HEIGHT*(getStatePosition()-1)) - 
-				FSVariableBox.BAR_HEIGHT - 4;
-			h = (FSVariableBox.BAR_HEIGHT*stateValues.size()) + 4;
+				visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+				(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
+				((stateValues.size()-1)*InnerBox.BAR_HEIGHT*(getStatePosition()-1)) - 
+				InnerBox.BAR_HEIGHT - 4;
+			h = (InnerBox.BAR_HEIGHT*stateValues.size()) + 4;
 		} else {
 			y = visualNode.getUpperLeftCornerY(g) + 
-				visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-				(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition()) - 
-				FSVariableBox.BAR_HEIGHT - 4;
-			h = FSVariableBox.BAR_HEIGHT + 4;
+				visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+				(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) - 
+				InnerBox.BAR_HEIGHT - 4;
+			h = InnerBox.BAR_HEIGHT + 4;
 		}		
 		return new Rectangle2D.Double(x, y, w, h);
 	}
@@ -315,59 +323,70 @@ public class VisualState extends VisualElement {
 	 * - The state's name.
 	 * - Horizontal bars which lengths are proportional to the values 
 	 *      assigned to the state for each of the evidence cases in memory.
-	 * - The value (probability) assigned to the state for the current
-	 *      evidence case. This value has the range [0, 1].
+	 * - The value assigned to the state for the current evidence case. //...asaez................................
+	 *       //This value has the range [0, 1]. //...asaez................................
 	 * 
 	 * @param g
 	 *            graphics object where paint the node.
 	 */
 	public void paint(Graphics2D g) {
-		Double x = visualNode.getUpperLeftCornerX(g) + 
-				FSVariableBox.INTERNAL_MARGIN + FSVariableBox.STATES_INDENT;
+		Double xName = 0.0; //...asaez................................nuevo....
+		Double xBar = 0.0;
+		Double xValue = 0.0;
 		Double yText = 0.0;
 		Double yFirstBar =  0.0;
+		
+		xName = visualNode.getUpperLeftCornerX(g) +
+				InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT;
+		if (visualNode instanceof VisualUtilityNode) {
+			xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION_UTILITY;
+			xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION_UTILITY;
+		} else {
+			xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION;
+			xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION;
+		} //................................asaez...nuevo.....	
 		if (visualNode.getEditorPanel().isPropagationActive()) {
 			yText =  visualNode.getUpperLeftCornerY(g) + 
-					visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-					(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
-					((stateValues.size()-1)*FSVariableBox.BAR_HEIGHT*(getStatePosition()-1)) +
-					(((stateValues.size()-1)*FSVariableBox.BAR_HEIGHT) / 2);
+					visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+					(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
+					((stateValues.size()-1)*InnerBox.BAR_HEIGHT*(getStatePosition()-1)) +
+					(((stateValues.size()-1)*InnerBox.BAR_HEIGHT) / 2);
 			yFirstBar =  visualNode.getUpperLeftCornerY(g) +
-					visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-					(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
-					((stateValues.size()-1)*FSVariableBox.BAR_HEIGHT*(getStatePosition()-1)) -
-					FSVariableBox.BAR_HEIGHT - 1;
+					visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+					(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
+					((stateValues.size()-1)*InnerBox.BAR_HEIGHT*(getStatePosition()-1)) -
+					InnerBox.BAR_HEIGHT - 1;
 		} else {
 			yText =  visualNode.getUpperLeftCornerY(g) + 
-					visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-					(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition());
+					visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+					(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition());
 			yFirstBar =  visualNode.getUpperLeftCornerY(g) +
-					visualNode.getTextHeight(g) + FSVariableBox.INTERNAL_MARGIN + 
-					(FSVariableBox.STATES_VERTICAL_SEPARATION*getStatePosition())-
-					FSVariableBox.BAR_HEIGHT - 1;
+					visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
+					(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition())-
+					InnerBox.BAR_HEIGHT - 1;
 		}
 		g.setPaint(TEXT_COLOR);
 		g.setFont(STATES_FONT);
-		stateName = adjustText(stateName, FSVariableBox.BAR_HORIZONTAL_POSITION,
+		stateName = adjustText(stateName, InnerBox.BAR_HORIZONTAL_POSITION,
 				2, STATES_FONT, g);
-		g.drawString(stateName, x.intValue(), yText.intValue());
+		g.drawString(stateName, xName.intValue(), yText.intValue());
 		
 		if (getVisualNode().getEditorPanel().isPropagationActive()) {				
 			for (int i=0; i<stateValues.size(); i++) {
 				g.setPaint(Color.BLACK);
-				g.drawLine(new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION - 1).intValue(), 
-						new Double(yFirstBar + (i * FSVariableBox.BAR_HEIGHT) - 1).intValue(),
-						new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION - 1).intValue(),
-						new Double(yFirstBar + (i * FSVariableBox.BAR_HEIGHT) + 
-								FSVariableBox.BAR_HEIGHT).intValue()
+				g.drawLine(new Double(xBar - 1).intValue(), 
+						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
+						new Double(xBar - 1).intValue(),
+						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) + 
+								InnerBox.BAR_HEIGHT).intValue()
 						);
-				g.drawLine(new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION + 
-								FSVariableBox.BAR_FULL_LENGTH).intValue(), 
-						new Double(yFirstBar + (i * FSVariableBox.BAR_HEIGHT) - 1).intValue(),
-						new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION + 
-								FSVariableBox.BAR_FULL_LENGTH).intValue(), 
-						new Double(yFirstBar + (i * FSVariableBox.BAR_HEIGHT) + 
-								FSVariableBox.BAR_HEIGHT).intValue()
+				g.drawLine(new Double(xBar + 
+								InnerBox.BAR_FULL_LENGTH).intValue(), 
+						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
+						new Double(xBar + 
+								InnerBox.BAR_FULL_LENGTH).intValue(), 
+						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) + 
+								InnerBox.BAR_HEIGHT).intValue()
 						);
 				if (i%5 == 0) {
 					g.setPaint(EVIDENCE_CASE_0_COLOR);
@@ -380,10 +399,21 @@ public class VisualState extends VisualElement {
 				} else if (i%5 == 4) {
 					g.setPaint(EVIDENCE_CASE_4_COLOR);
 				}
-				g.fill(new Rectangle2D.Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION, 
-						yFirstBar + (i * FSVariableBox.BAR_HEIGHT),
-						(stateValues.get(i)*10000)/FSVariableBox.BAR_FULL_LENGTH,
-						FSVariableBox.BAR_HEIGHT)
+				double barLength = 0.0; //...asaez................................nuevo....
+				if (visualNode instanceof VisualUtilityNode) {
+					InnerBox innerBox = visualNode.getInnerBox();
+					Double minRange = ((ExpectedValueBox)innerBox).getMinUtilityRange();
+					Double maxRange = ((ExpectedValueBox)innerBox).getMaxUtilityRange();
+					Double range = maxRange - minRange;
+					Double value = stateValues.get(i) - minRange;
+					barLength = (value*100)/range;
+				} else {
+					barLength = (stateValues.get(i)*10000)/InnerBox.BAR_FULL_LENGTH; 
+				} //................................asaez...nuevo.....
+				g.fill(new Rectangle2D.Double(xBar, 
+						yFirstBar + (i * InnerBox.BAR_HEIGHT),
+						barLength, //...asaez....................nuevo..se sustituye..
+						InnerBox.BAR_HEIGHT)
 						);
 				if (currentStateValue%5 == 0) {
 					g.setPaint(EVIDENCE_CASE_0_COLOR);
@@ -397,24 +427,37 @@ public class VisualState extends VisualElement {
 					g.setPaint(EVIDENCE_CASE_4_COLOR);
 				}
 				g.drawString(stateValues.get(currentStateValue).toString(), 
-						(x.intValue() + new Double(FSVariableBox.VALUE_HORIZONTAL_POSITION).intValue()),
-						yText.intValue());			
+						(xValue.intValue()), //...asaez....................nuevo..se sustituye..
+						yText.intValue());
 			}
 		} else {
 			g.setPaint(Color.BLACK);
-			g.drawLine(new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION - 1).intValue(), 
+			g.drawLine(new Double(xBar - 1).intValue(), 
 					new Double(yFirstBar - 1).intValue(),
-					new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION - 1).intValue(),
-					new Double(yFirstBar + FSVariableBox.BAR_HEIGHT).intValue()
+					new Double(xBar - 1).intValue(),
+					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue()
 					);
-			g.drawLine(new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION + 
-							FSVariableBox.BAR_FULL_LENGTH).intValue(), 
+			g.drawLine(new Double(xBar + 
+							InnerBox.BAR_FULL_LENGTH).intValue(), 
 					new Double(yFirstBar - 1).intValue(),
-					new Double(x + FSVariableBox.BAR_HORIZONTAL_POSITION + 
-							FSVariableBox.BAR_FULL_LENGTH).intValue(), 
-					new Double(yFirstBar + FSVariableBox.BAR_HEIGHT).intValue()
+					new Double(xBar + 
+							InnerBox.BAR_FULL_LENGTH).intValue(), 
+					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue()
 					);
+			Double aux1 = xBar; //...asaez................................nuevo....
+			int aux2 = new Double(InnerBox.BAR_FULL_LENGTH/20).intValue();
+			while (aux1 < (xBar + InnerBox.BAR_FULL_LENGTH)) {
+				g.drawLine(aux1.intValue() + (aux2/2), 
+						new Double(yFirstBar + InnerBox.BAR_HEIGHT/2).intValue(),
+						aux1.intValue() + aux2 + (aux2/2),
+						new Double(yFirstBar + InnerBox.BAR_HEIGHT/2).intValue()
+						);
+				aux1 += (aux2 * 2);				
+			}//................................asaez...nuevo.....
 		}
-		g.setPaint(TEXT_COLOR);
+		g.setPaint(TEXT_COLOR);		
+		
 	}
+	//...Sustituir las apariciones de FSVariableBox por InnerBox.........
+	//................................asaez...
 }

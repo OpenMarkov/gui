@@ -10,11 +10,11 @@
 package org.openmarkov.core.gui.window;
 
 
-import java.awt.BorderLayout;
+import java.awt.BorderLayout;//...asaez................................
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.BoxLayout;
+//import javax.swing.BoxLayout;//...asaez................................
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,6 +44,8 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
  * @author jmendoza
  * @version 1.0 jmendoza
  * @version 1.1 jlgozalo Add getMainFrame()
+ * @version 1.2 asaez	Layout changed for having the main and the secondary toolbar//...asaez................................
+ * 						in the same line//...asaez................................
  */
 public class MainPanel extends JPanel {
 
@@ -270,10 +272,16 @@ public class MainPanel extends JPanel {
 
 		if (toolBarPanel == null) {
 			toolBarPanel = new JPanel();
+			/* This way, the main toolbar and the secondary are in different lines //...asaez................................
 			toolBarPanel.setLayout(new BoxLayout(getToolBarPanel(),
 				BoxLayout.Y_AXIS));
 			toolBarPanel.add(getStandardToolBar());
 			toolBarPanel.add(getEditionToolBar());
+			*/
+			// This way, the main toolbar and the secondary are in the same line
+			toolBarPanel.setLayout(new BorderLayout(2,0));
+			toolBarPanel.add(getStandardToolBar(),BorderLayout.WEST);
+			toolBarPanel.add(getEditionToolBar(),BorderLayout.CENTER); //................................asaez...
 		}
 
 		return toolBarPanel;

@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.graphic;
 
 
+import java.awt.Color; //...asaez................................
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -29,41 +30,85 @@ public abstract class InnerBox extends VisualElement {
 	 * Font type Helvetica, plain, size 11.
 	 */
 	protected static final Font INNERBOX_FONT = new Font("Helvetica", Font.PLAIN, 11);
+	
+	//...asaez................................
+	//... Todas las constantes movidas desde las clases derivadas.....	
+	/**
+	 * Color of the Box.
+	 */
+	protected static final Color BACKGROUND_COLOR = Color.WHITE;
+	
+	/**
+	 * Color of lines and letters.
+	 */	
+	protected static final Color FOREGROUND_COLOR = Color.BLACK;
+	
+	/**
+	 * Internal margin around the Box.
+	 */
+	protected static final double INTERNAL_MARGIN = 4;
+	
+	/**
+	 * Width of the Box.
+	 */
+	protected static final double BOX_WIDTH = 
+		VisualNode.NODE_EXPANDED_WIDTH - (2 * INTERNAL_MARGIN);
+
+	/**
+	 * Indentation of states.
+	 */
+	protected static final double STATES_INDENT = 5;
+
+	/**
+	 * Vertical separation between states.
+	 */
+	protected static final double STATES_VERTICAL_SEPARATION = 12;
+	
+	/**
+	 * Horizontal starting position of bars in Chance and Decision Nodes.
+	 */
+	protected static final double BAR_HORIZONTAL_POSITION = 52;
+	
+	/**
+	 * Horizontal starting position of bars in Utility Nodes.
+	 */
+	protected static final double BAR_HORIZONTAL_POSITION_UTILITY = 32;
+	
+	/**
+	 * Maximum length of the bar.
+	 */
+	protected static final double BAR_FULL_LENGTH = 100;
+	
+	/**
+	 * Height of the bar.
+	 */
+	protected static final double BAR_HEIGHT = 5;
+	
+	/**
+	 * Horizontal position for the value to be shown on the right 
+	 * of the bar in Chance and Decision Nodes.
+	 */
+	protected static final double VALUE_HORIZONTAL_POSITION = 
+			BAR_HORIZONTAL_POSITION + 
+			BAR_FULL_LENGTH + STATES_INDENT*2;
+	
+	/**
+	 * Horizontal position for the value to be shown on the right 
+	 * of the bar in Utility Nodes.
+	 */
+	protected static final double VALUE_HORIZONTAL_POSITION_UTILITY = 
+			BAR_HORIZONTAL_POSITION_UTILITY + 
+			BAR_FULL_LENGTH + STATES_INDENT*2;
+	//... Todas las constantes movidas desde las clases derivadas.....
+	//................................asaez...	
 
 	/**
 	 * Object used to measure text in a specific font.
 	 */
-	private static FontMetrics fontMeter =
-		new JPanel().getFontMetrics(INNERBOX_FONT);
-	
-	/**
-	 * Returns the height of the text used in the innerBox.
-	 * 
-	 * @param text
-	 *            text that appears in the innerBox.
-	 * @param g
-	 *            graphics object where to paint the element.
-	 * @return the height of the text used in the innerBox.
-	 */
-	protected static double getInnerBoxTextHeight(String text, Graphics2D g) {
-
-		return fontMeter.getStringBounds(text, g).getHeight();
-	}
-	
-	/**
-	 * Returns the width of the text used in the innerBox.
-	 * 
-	 * @param text
-	 *            text that appears in the innerBox.
-	 * @param g
-	 *            graphics object where to paint the element.
-	 * @return the width of the text used in the innerBox.
-	 */
-	protected static double getInnerBoxTextWidth(String text, Graphics2D g) {
-
-		return fontMeter.getStringBounds(text, g).getWidth();
-	}
-	
+	private static FontMetrics fontMeter = new JPanel().getFontMetrics(INNERBOX_FONT);
+		
+	//...asaez................................
+	//... Reordenación del código, atributos antes de métodos.....
 	/**
 	 * The height of this InnerBox.
 	 */
@@ -82,7 +127,35 @@ public abstract class InnerBox extends VisualElement {
 	public VisualNode getVisualNode() {
 		return visualNode;
 	}
-
+	
+	/**
+	 * Returns the height of the text used in the innerBox.
+	 * 
+	 * @param text
+	 *            text that appears in the innerBox.
+	 * @param g
+	 *            graphics object where to paint the element.
+	 * @return the height of the text used in the innerBox.
+	 */
+	protected static double getInnerBoxTextHeight(String text, Graphics2D g) {
+		return fontMeter.getStringBounds(text, g).getHeight();
+	}
+	
+	/**
+	 * Returns the width of the text used in the innerBox.
+	 * 
+	 * @param text
+	 *            text that appears in the innerBox.
+	 * @param g
+	 *            graphics object where to paint the element.
+	 * @return the width of the text used in the innerBox.
+	 */
+	protected static double getInnerBoxTextWidth(String text, Graphics2D g) {
+		return fontMeter.getStringBounds(text, g).getWidth();
+	}
+	//... Reordenación del código, atributos antes de métodos.....
+	//................................asaez...	
+	
 	/**
 	 * Returns the height of the innerBox. It's calculated depending on the
 	 * font, the number of states and the cases in memory
@@ -91,5 +164,12 @@ public abstract class InnerBox extends VisualElement {
 	 */
 	public abstract double  getInnerBoxHeight(Graphics2D g);
 
+
+	/**  //...asaez...................Método añadido.............
+	 * Returns the number of visual states of this inner box.
+	 * 
+	 * @return the number of visual states of this inner box.
+	 */
+	public abstract int getNumStates(); //................................asaez...
 
 }

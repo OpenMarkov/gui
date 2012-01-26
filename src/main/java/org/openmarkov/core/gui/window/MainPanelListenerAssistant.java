@@ -47,6 +47,8 @@ import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
+import org.openmarkov.core.inference.InferenceAlgorithm;//...asaez
+import org.openmarkov.core.inference.annotation.InferenceManager;//...asaez
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
@@ -941,12 +943,32 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode,
 				getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+			//....asaez
+			try {
+				if (getCurrentNetworkPanel().getInferenceAlgorithm() == null ) {
+					InferenceManager inferenceManager = new InferenceManager();
+					InferenceAlgorithm inferenceAlgorithm;
+					inferenceAlgorithm = inferenceManager.
+							getDefaultInferenceAlgorithm(getCurrentNetworkPanel().getProbNet());
+					getCurrentNetworkPanel().setInferenceAlgorithm(inferenceAlgorithm);
+					System.out.println("Creando el InferenceAlgorithm............");
+				}
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace(); //...
+			}
+			//....asaez
 			getCurrentNetworkPanel().updateIndividualProbabilities();
 			mainPanel.getExistingInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase(),
 							getCurrentNetworkPanel().isPropagationActive());
 		} else {
 			//getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
+			//....asaez
+			if (getCurrentNetworkPanel().getInferenceAlgorithm() != null ) {
+				getCurrentNetworkPanel().setInferenceAlgorithm(null);
+				System.out.println("Eliminando el InferenceAlgorithm............");
+			}			
+			//....asaez
 		}
 		getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
 	}

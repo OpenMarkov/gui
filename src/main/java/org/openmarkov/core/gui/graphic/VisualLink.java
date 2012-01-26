@@ -476,7 +476,7 @@ public class VisualLink extends VisualElement {
 	 */
 	@Override
 	public void paint(Graphics2D g) {
-
+		
 		if ((source != null) && (destination != null)) {
 			//Paint the final arrow when the user releases the button of the mouse 
 			Segment line;
@@ -503,19 +503,18 @@ public class VisualLink extends VisualElement {
 			}
 			sPoint = source.cutPoint(line, g);
 			ePoint = destination.cutPoint(line, g);
-			if ((sPoint != null) && (ePoint != null) && (link != null) && 
-					(link.isDirected())) {
+			if ((sPoint != null) && (ePoint != null) && (link.isDirected())) {
 				paintArrow(g, sPoint, ePoint);
 			}
-			else if ((sPoint != null) && (ePoint != null) && (link != null) &&
+			else if ((sPoint != null) && (ePoint != null) && 
 					(!link.isDirected())) {
 				paintLine(g, sPoint, ePoint);
 			}
-		} else if ((link==null) || (link.isDirected())){
+		} else if ((link != null) && (link.isDirected())){//...asaez................................
 			//Paint the arrow while the user has not released the button of the mouse
 			paintArrow(g, startPoint, endPoint);			
 		}
-		else{ 
+		else{
 			paintLine(g, startPoint, endPoint);
 		}
 	}
