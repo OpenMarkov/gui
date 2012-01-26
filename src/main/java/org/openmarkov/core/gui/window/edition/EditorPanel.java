@@ -2002,19 +2002,15 @@ MouseMotionListener {
 		//......asaez......probando...........
 		
 		//Determinamos qué tipo de red es y en función de ello, utilizamos un algoritmo u otro.
+		/*
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof BayesianNetworkType) {
 			System.out.println("La red " + probNet.getName() + " es una Red Bayesiana");
 		} else if (networkType instanceof InfluenceDiagramType) {
 			System.out.println("La red " + probNet.getName() + " es un Diagrama de Influencia");
-		}		
-		//System.out.println("Creando un objeto Inference");//.....asaez.....Borrar.......
-		//Inference inference = null;
-		//inference = new VarEliminationBN(probNet);
-		//inference.setEvidence(evidenceCase);
-		//HashMap<Variable, Potential> individualProbabilities = 
-		//		inference.getIndividualProbabilities();
-		
+		}
+		*/
+
 		try {
 			inferenceAlgorithm.setEvidence(evidenceCase);
 			HashMap<Variable, Potential> individualProbabilities = 
@@ -2077,6 +2073,7 @@ MouseMotionListener {
 						} 
 					}				
 				}
+				updateNodesFindingState(evidenceCase);//....asaez...........
 			}
 			repaint();
 			
@@ -2084,7 +2081,7 @@ MouseMotionListener {
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}//...asaez....despeinar las posibles excepciones....
 		
 
 	/*	

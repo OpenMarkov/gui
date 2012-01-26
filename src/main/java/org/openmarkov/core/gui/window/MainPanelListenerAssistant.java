@@ -951,7 +951,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 					inferenceAlgorithm = inferenceManager.
 							getDefaultInferenceAlgorithm(getCurrentNetworkPanel().getProbNet());
 					getCurrentNetworkPanel().setInferenceAlgorithm(inferenceAlgorithm);
-					System.out.println("Creando el InferenceAlgorithm............");
 				}
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace(); //...
@@ -966,7 +965,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			//....asaez
 			if (getCurrentNetworkPanel().getInferenceAlgorithm() != null ) {
 				getCurrentNetworkPanel().setInferenceAlgorithm(null);
-				System.out.println("Eliminando el InferenceAlgorithm............");
 			}			
 			//....asaez
 		}
