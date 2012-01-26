@@ -14,12 +14,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -67,9 +63,6 @@ public class CPTablePanel extends ProbabilityTablePanel {
 		setData(probNode);
 		// TODO Auto-generated constructor stub
 	}
-	
-
-	
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
 	 * common KeyTable hierarchy. This method creates the evidenceCase object when
@@ -133,25 +126,26 @@ public class CPTablePanel extends ProbabilityTablePanel {
 	 * @param parents -
 	 *            parents of the variable
 	 */
-	public void setData(ProbNode properties) {
+	public void setData(ProbNode probNode) {
+	    this.probNode = probNode;
 		Object[][] tableData = null;
 		String[] newColumns = null;
-		if (properties.getPotentials() != null) {
+		if (probNode.getPotentials() != null) {
 			//listPotentials = PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials, adittionalProperties);
 			//setListPotentials(probNode.getPotentials());
 			//tableData =
 				//convertListPotentialsToTableFormat( listPotentials, adittionalProperties );
 			tableData =
-				convertListPotentialsToTableFormat(properties );
+				convertListPotentialsToTableFormat(probNode );
 			newColumns =
 				ValuesTable
 					.getColumnsIdsSpreedSheetStyle( ValuesTable
-						.howManyColumns( properties ) );
+						.howManyColumns( probNode ) );
 			setFirstEditableRow( PotentialsTablePanelOperations.calculateFirstEditableRow(
-				probNode.getPotentials(), properties ) );
+				probNode.getPotentials(), probNode ) );
 			setLastEditableRow( PotentialsTablePanelOperations.calculateLastEditableRow(
-				probNode.getPotentials(), properties ) );
-			setData( tableData, newColumns, firstEditableRow, lastEditableRow , properties.getNodeType() );
+				probNode.getPotentials(), probNode ) );
+			setData( tableData, newColumns, firstEditableRow, lastEditableRow , probNode.getNodeType() );
 			setCellRenderers();
 		} else {
 			tableData = new Object[ 0 ][ 0 ];
@@ -948,4 +942,11 @@ public class CPTablePanel extends ProbabilityTablePanel {
 		});
 
 	}
+    @Override
+    public void saveChanges ()
+        throws NotEnoughMemoryException
+    {
+        // TODO Implement!
+        
+    }
 }

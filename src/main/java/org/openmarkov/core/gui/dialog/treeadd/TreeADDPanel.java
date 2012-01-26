@@ -14,12 +14,8 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelPlugin;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -85,25 +81,15 @@ public class TreeADDPanel extends PotentialPanel
             // comboBox.setSelectedIndex(optionDeselected);
             // comboBox.requestFocus();
         }
-        catch (CanNotDoEditException e1)
+        catch (Exception e)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace ();
-        }
-        catch (DoEditException e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace ();
-        }
-        catch (NonProjectablePotentialException e)
-        {
-            // TODO Auto-generated catch block
             e.printStackTrace ();
         }
-        catch (WrongCriterionException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
-        }
+    }
+
+    @Override
+    public void setData (ProbNode probNode)
+    {
+        // TODO Auto-generated method stub
     }
 }

@@ -26,6 +26,7 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
@@ -47,7 +48,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
-
+//TODO review setData methods
 @PotentialPanelPlugin(potentialType="Max")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	/*
@@ -848,6 +849,14 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 				getFirstEditableRow(), editableColumns ) );
 
 }
+
+    @Override
+    public void saveChanges ()
+        throws NotEnoughMemoryException
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 

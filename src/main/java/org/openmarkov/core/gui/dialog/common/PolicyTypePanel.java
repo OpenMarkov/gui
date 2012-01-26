@@ -20,12 +20,7 @@ import javax.swing.border.LineBorder;
 
 import org.openmarkov.core.action.RemovePolicyEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -97,7 +92,6 @@ public class PolicyTypePanel extends JPanel
     /**
      * @return the button for the Optimal model (when decision node)
      */
-    // TODO Move to PolicyTypePanel
     protected JRadioButton getJRadioButtonOptimalType ()
     {
         if (jRadioButtonOptimal == null)
@@ -118,7 +112,6 @@ public class PolicyTypePanel extends JPanel
     /**
      * @return the button for Probabilistic model
      */
-    // TODO Move to PolicyTypePanel
     protected JRadioButton getJRadioButtonProbabilisticType ()
     {
         if (jRadioButtonProbabilisticType == null)
@@ -138,7 +131,6 @@ public class PolicyTypePanel extends JPanel
     /**
      * @return the button for the Deterministic Model
      */
-    // TODO Move to PolicyTypePanel
     protected JRadioButton getJRadioButtonDeterministicType ()
     {
         if (jRadioButtonDeterministicType == null)
@@ -222,29 +214,8 @@ public class PolicyTypePanel extends JPanel
                     // getJComboBoxRelationType().requestFocus();
                     parent.revertPotentialTypeChange ();
                 }
-                catch (CanNotDoEditException e1)
+                catch (Exception e1)
                 {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (DoEditException e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (NotEnoughMemoryException e2)
-                {
-                    // TODO Auto-generated catch block
-                    e2.printStackTrace ();
-                }
-                catch (NonProjectablePotentialException e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (WrongCriterionException e1)
-                {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace ();
                 }
             }
@@ -278,29 +249,8 @@ public class PolicyTypePanel extends JPanel
                                                    JOptionPane.ERROR_MESSAGE);
                     // getJComboBoxRelationType().requestFocus();
                 }
-                catch (CanNotDoEditException e1)
+                catch (Exception e1)
                 {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (DoEditException e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (NotEnoughMemoryException e2)
-                {
-                    // TODO Auto-generated catch block
-                    e2.printStackTrace ();
-                }
-                catch (NonProjectablePotentialException e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                }
-                catch (WrongCriterionException e1)
-                {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace ();
                 }
             }

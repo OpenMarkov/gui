@@ -11,14 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.component.ValuesTable;
@@ -55,7 +49,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 	 * @author maryebra
 	 * @version 1.0 jlgozalo
 	 */
-	public class ProbabilityTablePanel  extends PotentialPanel implements ActionListener {
+	public abstract class ProbabilityTablePanel  extends PotentialPanel implements ActionListener {
 
 		/**
 		 * Static field for serializable class.
@@ -157,6 +151,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 */
 		private StringResource dialogStringResource;
 		
+		
 		private Logger logger;
 
 		/**
@@ -192,8 +187,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 			//showValuesTable( true );
 			
 		}
+
 		/**
-		 * This method initializes this instance.
+		 * This method initialises this instance.
 		 */
 		protected void initialize() {
 			/*setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),1, false ) );
