@@ -225,7 +225,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		}
 		
 		/*new boolean[ getTableModel().getRowCount() ][ getTableModel()
-		                          					.getColumnCount() +1 ];//adding one column for leak potential Esto lo acabo de cambiar*/
+		                          					.getColumnCount() +1 ];//le acabo de quitar ese 1*/
 		return dataModified;
 	}
 
