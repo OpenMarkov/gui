@@ -98,6 +98,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     PotentialPanelManager potentialPanelManager;
     
     /**
+     * Relation Type Manager
+     */
+    RelationTypeManager relationTypeManager;
+    
+    /**
      * Panel of the graphic editor
      */
     private PotentialPanel potentialPanel;    
@@ -133,6 +138,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
     private void initialize() {
 
+        relationTypeManager = new RelationTypeManager ();
         dialogStringResource =
             StringResourceLoader.getUniqueInstance().getBundleDialogs();
         messageStringResource =
@@ -174,12 +180,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     protected JComboBox getPotentialTypeJCombobox() {
 
         if (potentialTypeComboBox == null) {
-            RelationTypeManager relationTypeManager = new RelationTypeManager ();
-            Potential currentPotential = probNode.getPotentials ().get (0);
-//            List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (currentPotential.getVariables (),
-//                                                                                                  currentPotential.getPotentialRole ()); 
-//            potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
-            potentialTypeComboBox = new JComboBox( relationTypeManager.getAllPotentialsNames ().toArray () );
+            List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode); 
+            potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
+//            potentialTypeComboBox = new JComboBox( relationTypeManager.getAllPotentialsNames ().toArray () );
             
             potentialTypeComboBox.setBorder( new LineBorder( UIManager.getColor(
                     "List.dropLineColor" ), 1, false ) );
@@ -210,8 +213,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
         if(potentialPanel == null)
         {
-            potentialPanelManager = new PotentialPanelManager(); 
-            potentialPanel = potentialPanelManager.getPotentialPanel((String) potentialTypeComboBox.getSelectedItem (), probNode);
+            potentialPanelManager = new PotentialPanelManager();
+            String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
+            String potentialFamily = relationTypeManager.getPotentialsFamily (potentialName);
+            potentialPanel = potentialPanelManager.getPotentialPanel(potentialName, potentialFamily, probNode);
         }
         return potentialPanel;
     }

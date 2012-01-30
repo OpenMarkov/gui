@@ -10,22 +10,9 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.LayoutStyle;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
-
 import org.apache.log4j.Logger;
-
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
@@ -33,23 +20,17 @@ import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
-import org.openmarkov.core.gui.localize.StringResource;
-
-
-
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-
-
-
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
 
-@PotentialPanelPlugin(potentialType="Max")
+@SuppressWarnings("serial")
+@PotentialPanelPlugin(potentialType="ICI")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	
 	private ICIOptionsPanel iciOptionPanel;
