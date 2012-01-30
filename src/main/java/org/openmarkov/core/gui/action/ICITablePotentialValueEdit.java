@@ -84,6 +84,9 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * 
 	 */
 	private boolean leakyFlag = false;
+	
+//	
+	private int position = 0;
 	// Constructor
 	/**
 	 * Creates a new <code>NodePotentialEdit</code> specifying the node to be 
@@ -119,13 +122,13 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 			acummulativeColumns [i]= numColumnsParents [i] + acummulativeColumns[i-1];
 		}
 		
-		int position = 0;
+		
 		int columnGroup = 0;
 		//leak
 		if (col == acummulativeColumns[acummulativeColumns.length-1]){//last column for the table leak potential
 			leakyFlag = true ;
 			this.lastLeakyParameters = iciPotential.getLeakyParameters();
-			position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
+			this.position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
 			lastLeakyParameters[position] = newValue;
 			this.newLeakyParameters = lastLeakyParameters;
 			
@@ -147,7 +150,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 			}
 			this.lastNoisyParameters = iciPotential.getNoisyParameters(noisyVariable);
 			// number of previous columns of the variable*number of conditioned states + number of rows -1 - row
-			position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
+			this.position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
 			lastNoisyParameters[position] = newValue;
 			this.newNoisyParameters = lastNoisyParameters;
 			
@@ -227,6 +230,48 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 
 		return aPotential;
 	}
+	
+	/** Gets the new value 
+	 * @return */
+	public double getNewValue() {
+		return newValue;
+	}
+	
+	/** Gets the table-potential of the node 
+	 * @return */
+	public ICIPotential getPotential() {
+		return iciPotential;
+	}
+	
+	/** Gets the table-potential of the node 
+	 * @return variable1 <code>Variable</code> */
+	public Variable getNoisyVariable() {
+		return noisyVariable;
+	}
+	
+	/** Gets the position edited 
+	 * @return position <code>Integer</code> */
+	public int getPosition() {
+		return position;
+	}
+	
+	/**
+	 * Gets the row position associated to value edited if priorityList no exists
+	 * @param position position of the value in the array of values
+	 * @return the position in the table
+	 */
+	public int getRowPosition() {
+		return  row;
+	}
+	/**
+	 * Gets the column position associated to value edited if priorityList no exists
+	 * @param position position of the value in the array of values
+	 * @return the position in the table
+	 */
+	public int getColumnPosition() {
+		return  col;
+	}
+	
 	/**
 	 * First position is the noisy potential
 	 * Second position is the index within it

@@ -1,6 +1,13 @@
 package org.openmarkov.core.gui.component;
 
+
+
+import javax.swing.event.UndoableEditEvent;
+
+
+import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
+
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -8,12 +15,14 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
-import org.openmarkov.core.gui.action.TablePotentialValueEdit;
+
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 
+
+@SuppressWarnings("serial")
 public class ICIValuesTable extends ValuesTable implements PNUndoableEditListener{
 	
 	public ICIValuesTable (ProbNode probNode, ValuesTableModel tableModel,
@@ -92,5 +101,37 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 		//numColumns = FIRST_EDITABLE_COLUMN + numColumns;
 
 		return numColumns;
+	}
+	
+	
+	
+
+	public void undoableEditHappened(UndoableEditEvent arg0) {
+		
+		
+		
+		ICITablePotentialValueEdit edit =(ICITablePotentialValueEdit) arg0.getEdit();
+		if (edit instanceof ICITablePotentialValueEdit){
+			super.getModel().setValueAt( edit.getNewValue(), 
+					edit.getRowPosition(), edit.getColumnPosition());
+		}
+	}
+	
+	
+	public void undoableEditWillHappen(PNUndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	public void undoEditHappened(PNUndoableEditEvent event) {
+
+		ICITablePotentialValueEdit edit =(ICITablePotentialValueEdit) event.getEdit();
+		if (edit instanceof ICITablePotentialValueEdit){
+			super.getModel().setValueAt( edit.getNewValue(), 
+					edit.getRowPosition(), edit.getColumnPosition());
+		}
+		
 	}
 }

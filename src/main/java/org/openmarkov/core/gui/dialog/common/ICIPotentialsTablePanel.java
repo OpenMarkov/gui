@@ -110,7 +110,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		((ValuesTableModel) iciValuesTable.getModel())
 			.setFirstEditableRow( firstEditableRow );
 		iciValuesTable.setLastEditableRow( lastEditableRow );
-		//valuesTable.setShowingAllParameters( true );
+			
 		iciValuesTable.setNodeType(nodeType);
 
 	}
