@@ -162,7 +162,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	private StringResource dialogStringResource;
 
-	private ProbNode probNode;
+	protected ProbNode probNode;
 	/**
 	 * Define the last column of the table that was modified
 	 */
@@ -1169,32 +1169,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		return numColumns;
 	}
 	
-	/**
-	 * set the number of columns in the table for canonical models adding one column per parent state
-	 *  and adding one more for the id column (hidden)
-	 * 
-	 * @param parents -
-	 *            parents of the variable
-	 * @return the number of columns in the table
-	 */
-	public static int howManyCanonicalColumns(ProbNode properties) {
-
-		int numColumns = 0;
-		if (properties.getNode().getParents() != null) {
-			int aux = 1;// first column for child states
-			for (Node parent : properties.getNode().getParents()) {
-				State[] parentStates = ((ProbNode)parent.getObject()).
-					getVariable().getStates();
-				aux += parentStates.length;
-			}
-			numColumns = aux + 1; //last column for the leak potential
-		} else {
-			numColumns = 1;
-		}
-		//numColumns = FIRST_EDITABLE_COLUMN + numColumns;
-
-		return numColumns;
-	}
+	
 
 	/**
 	 * set a default id for the columns (Excel format)

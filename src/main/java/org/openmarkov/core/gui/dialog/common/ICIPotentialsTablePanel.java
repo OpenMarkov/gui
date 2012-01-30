@@ -12,11 +12,13 @@ package org.openmarkov.core.gui.dialog.common;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 
+import javax.swing.JScrollPane;
+
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
+import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
@@ -35,6 +37,11 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	
 	private ICIOptionsPanel iciOptionPanel;
 	protected Logger logger;
+	/**
+	 * JTable where show the values.
+	 */
+	private ICIValuesTable iciValuesTable;
+	
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super(probNode);
 		
@@ -94,17 +101,17 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		columns = newColumns.clone();
 		this.firstEditableRow = firstEditableRow;
 		this.lastEditableRow = lastEditableRow;
-		valuesTable.resetModel();
+		iciValuesTable.resetModel();
 		
 		//valuesTable.setVariable(probNode.getPotentials().get( 0 ).getVariable( 0 ));
 		
-		valuesTable.setModel( getTableModel() );
-		valuesTable.initializeDataModified( false );
-		((ValuesTableModel) valuesTable.getModel())
+		iciValuesTable.setModel( getTableModel() );
+		iciValuesTable.initializeDataModified( false );
+		((ValuesTableModel) iciValuesTable.getModel())
 			.setFirstEditableRow( firstEditableRow );
-		valuesTable.setLastEditableRow( lastEditableRow );
+		iciValuesTable.setLastEditableRow( lastEditableRow );
 		//valuesTable.setShowingAllParameters( true );
-		valuesTable.setNodeType(nodeType);
+		iciValuesTable.setNodeType(nodeType);
 
 	}
 	/**
@@ -134,8 +141,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			tableData =
 				convertListPotentialsToCanonicalTableFormat(properties );
 			newColumns =
-				ValuesTable
-					.getColumnsIdsSpreedSheetStyle( ValuesTable
+				ICIValuesTable
+					.getColumnsIdsSpreedSheetStyle( ICIValuesTable
 						.howManyCanonicalColumns( properties ) );
 			setFirstEditableRow(calculateFirstEditableRow(probNode.getPotentials()));
 			setLastEditableRow(calculateLastEditableRow(
@@ -218,7 +225,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 
 		Object[][] blankTable = null;
 		int numRows = howManyCanonicalRows( properties );
-		int numColumns = ValuesTable.howManyCanonicalColumns( properties );
+		int numColumns = ICIValuesTable.howManyCanonicalColumns( properties );
 		blankTable = new Object[ numRows ][ numColumns ];
 	    for (int i = 0; i < properties.getVariable().getStates().length; i++) {}
 
@@ -415,7 +422,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * set renders for the cells in the table. Only has to be called when set data.
 	 */
 	protected void setCellRenderers() {
-		int size = valuesTable.getColumnCount();//returns number of columns in the column model
+		int size = iciValuesTable.getColumnCount();//returns number of columns in the column model
 		boolean [] editableColumns = new boolean [size-1];
 		
 		for (int i=1; i<size;i++){
@@ -423,10 +430,10 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		}
 		
 		
-		valuesTable.setDefaultRenderer(
+		iciValuesTable.setDefaultRenderer(
 			Double.class, new ValuesTableCellRenderer(
 				getFirstEditableRow(), editableColumns ) );
-		valuesTable.setDefaultRenderer(
+		iciValuesTable.setDefaultRenderer(
 			String.class, new ValuesTableCellRenderer(
 				getFirstEditableRow(), editableColumns ) );
 
@@ -437,8 +444,64 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		// TODO Auto-generated method stub
 		
 	}
+	/**
+	 * This method initializes valuesTableScrollPane.
+	 * 
+	 * @return a new values table scroll pane.
+	 */
+	protected JScrollPane getValuesTableScrollPane() {
 
+		if (valuesTableScrollPane == null) {
+			valuesTableScrollPane = new JScrollPane();
+			valuesTableScrollPane
+				.setName( "ProbabilityTablePanel.valuesTableScrollPane" );
+			valuesTableScrollPane.setViewportView( getICIValuesTable() );
+		}
+		return valuesTableScrollPane;
+	}
+	/**
+	 * This method initialises valuesTable and defines that first two columns
+	 * are not selectable
+	 * 
+	 * @return a new values table.
+	 */
+	public ICIValuesTable getICIValuesTable() {
 
+		if (iciValuesTable == null) {
+			iciValuesTable = new ICIValuesTable( probNode, getTableModel(), modifiable );
+			iciValuesTable.setName( "PotentialsTablePanel.valuesTable" );
+		}
+		return iciValuesTable;
+	}
+
+	/**
+	 * This method initializes tableModel.
+	 * Uses the same table model as CPTTablePanel
+	 * 
+	 * @return a new tableModel.
+	 */
+	protected ValuesTableModel getTableModel() {
+
+		ValuesTableModel tableModel = null;
+		if (iciValuesTable == null) {
+			tableModel =
+				new ValuesTableModel( data, columns, firstEditableRow );
+		} else if (iciValuesTable.getTableModel() == null) {
+			tableModel =
+				new ValuesTableModel( data, columns, firstEditableRow );
+		} else {
+			tableModel = (ValuesTableModel) iciValuesTable.getModel();
+		}
+		return tableModel;
+	}
+	
+	/**
+	 * special method to show/hide the values table
+	 */
+	public void showValuesTable(final boolean visible) {
+
+		getICIValuesTable().setVisible( visible );
+	}
 
 }
 

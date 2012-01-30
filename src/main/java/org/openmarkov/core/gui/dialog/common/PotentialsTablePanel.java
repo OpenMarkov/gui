@@ -37,6 +37,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
@@ -741,7 +742,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 
 		Object[][] blankTable = null;
 		int numRows = howManyCanonicalRows( properties );
-		int numColumns = ValuesTable.howManyCanonicalColumns( properties );
+		int numColumns = ICIValuesTable.howManyCanonicalColumns( properties );
 		blankTable = new Object[ numRows ][ numColumns ];
 	    // TODO seria mas practico hacer un potential y luego ejecutar
 		// el resto del metodo pero esto funciona

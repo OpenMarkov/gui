@@ -71,6 +71,19 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * 
 	 */
 	private Variable noisyVariable;
+	
+	/**
+	 * 
+	 */
+	private double[] lastLeakyParameters;
+	/**
+	 * 
+	 */
+	private double[] newLeakyParameters;
+	/**
+	 * 
+	 */
+	private boolean leakyFlag = false;
 	// Constructor
 	/**
 	 * Creates a new <code>NodePotentialEdit</code> specifying the node to be 
@@ -88,51 +101,57 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		this.row = row;
 		this.col = col;
 		this.newValue = newValue;
-		this.variables = iciPotential.getVariables();
+		
 		
 		this.iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());
+		this.variables = iciPotential.getVariables();
 		
-		//To know exactly the position in the noisy parameters values from the position in the table
-				int conditionedStates = variables.get(0).getNumStates();
-				int numColumnsParents []= null;
-				for (int i = 1; i < variables.size(); ++i) {
-					numColumnsParents [i-1] = variables.get(i).getNumStates();
-				}
-				numColumnsParents [variables.size()-1] = 1;
-				
-				int limits[] = null;
-				limits[0]= numColumnsParents [0];
-				for (int i = 1; i < numColumnsParents.length ; ++i) {
-					limits [i]= numColumnsParents [i] +numColumnsParents [i-1];
-				}
-				int columnGroup = 0;
-				
-				//leak
-				if (col == limits[limits.length-1]-1){//last column for the table leak potential
-					
-				}else if (col<limits[0]){this.noisyVariable = variables.get(1);
-				}else{
-					for (int i = 1; i < limits.length ; ++i) {
-						if(limits[i-1]<=col && col<limits[i]){
-							this.noisyVariable = variables.get(i+1);
-							 columnGroup = col - limits[i-1];//offset within the noisy parameters array
-							break;
-							}
+		int conditionedStates = variables.get(0).getNumStates();
+		int numColumnsParents []= new int[variables.size()];
+		for (int i = 1; i < variables.size(); ++i) {
+			numColumnsParents [i-1] = variables.get(i).getNumStates();
+		}
+		numColumnsParents [variables.size()-1] = 1;
+		
+		int acummulativeColumns[] =  new int[variables.size()];
+		acummulativeColumns[0]= numColumnsParents [0];
+		for (int i = 1; i < numColumnsParents.length ; ++i) {
+			acummulativeColumns [i]= numColumnsParents [i] + acummulativeColumns[i-1];
+		}
+		
+		int position = 0;
+		int columnGroup = 0;
+		//leak
+		if (col == acummulativeColumns[acummulativeColumns.length-1]){//last column for the table leak potential
+			leakyFlag = true ;
+			this.lastLeakyParameters = iciPotential.getLeakyParameters();
+			position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
+			lastLeakyParameters[position] = newValue;
+			this.newLeakyParameters = lastLeakyParameters;
+			
+		//noisy	
+		}else{
+			leakyFlag = false ;
+			for (int i = 0; i < acummulativeColumns.length -1 ; ++i) {
+				if (i==0){ 
+					if (col<=acummulativeColumns[i]){
+						this.noisyVariable = variables.get(i+1);//first variable
+						break;
 					}
-				}
-				this.lastNoisyParameters = iciPotential.getNoisyParameters(noisyVariable);
-				
-				
-				int position = (columnGroup * conditionedStates) + (row-2) - Math.abs(conditionedStates-1);
-				
-				lastNoisyParameters[position] = newValue;
-				
-				this.newNoisyParameters = lastNoisyParameters;
-		
-		//setLastNoisyValues(iciPotential);
-		//setEditableValues();
-		
-		
+					
+				}else if(acummulativeColumns[i-1]<col && col<=acummulativeColumns[i]){
+					this.noisyVariable = variables.get(i+1);
+					 columnGroup = (col-1) - acummulativeColumns[i-1];//offset within the noisy parameters array
+					break;
+					}
+			}
+			this.lastNoisyParameters = iciPotential.getNoisyParameters(noisyVariable);
+			// number of previous columns of the variable*number of conditioned states + number of rows -1 - row
+			position = (columnGroup)* conditionedStates + (conditionedStates+1) - row;
+			lastNoisyParameters[position] = newValue;
+			this.newNoisyParameters = lastNoisyParameters;
+			
+		}
 		
 	}
 	/**
@@ -215,48 +234,16 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * @param column
 	 * @return
 	 */
-	/*public int getNoisyIndex(int row, int column) {
 	
-		
-		
-		//To know exactly the position in the noisy parameters values from the position in the table
-		int conditionedStates = variables.get(0).getNumStates();
-		int numColumnsParents []= null;
-		for (int i = 1; i < variables.size(); ++i) {
-			numColumnsParents [i-1] = variables.get(i).getNumStates();
-		}
-		numColumnsParents [variables.size()-1] = 1;
-		
-		int limits[] = null;
-		limits[0]= numColumnsParents [0];
-		for (int i = 1; i < numColumnsParents.length ; ++i) {
-			limits [i]= numColumnsParents [i] +numColumnsParents [i-1];
-		}
-		int columnGroup = 0;
-		Variable variable = null;
-		if (column<limits[0]){ variable = variables.get(1);
-		}else{
-			for (int i = 1; i < limits.length ; ++i) {
-				if(limits[i-1]<=column && column<limits[i]){
-					variable = variables.get(i+1);
-					 columnGroup = column - limits[i-1];//offset within the noisy parameters array
-					break;
-					}
-			}
-		}
-		double subPotentialEdited[] = iciPotential.getNoisyParameters(variable);
-		
-		
-		int position = (columnGroup*conditionedStates) + (row-2) - Math.abs(conditionedStates-1);
-		
-				
-		return position;
-	}*/
 	
 	@Override
 	public void doEdit() throws DoEditException {
 		// TODO Auto-generated method stub
-		iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
+		if (!leakyFlag){	
+			iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
+		}else if (leakyFlag) {
+			iciPotential.setLeakyParameters(newLeakyParameters);
+		}                                         
 		
 		
 		ArrayList <Potential> potentials = new ArrayList<Potential>();
@@ -266,7 +253,13 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	
 	public void undo() {
 		super.undo();
-		iciPotential.setNoisyParameters(noisyVariable, lastNoisyParameters);
+		if (!leakyFlag){	
+			iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
+		}else if (leakyFlag) {
+			iciPotential.setLeakyParameters(newLeakyParameters);
+		}                                         
+		
+		
 	}
 	
 

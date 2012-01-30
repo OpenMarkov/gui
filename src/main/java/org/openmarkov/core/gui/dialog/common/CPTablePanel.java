@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -53,6 +54,10 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 public class CPTablePanel extends ProbabilityTablePanel {
 
 	protected Logger logger;
+	/**
+	 * JTable where show the values.
+	 */
+	private ValuesTable valuesTable = null;
 	
 	public CPTablePanel(ProbNode probNode) {
 		super(probNode);
@@ -765,6 +770,155 @@ public class CPTablePanel extends ProbabilityTablePanel {
 		
 	}
 
+	/**
+	 * This method initializes valuesTable and defines that first two columns
+	 * are not selectable
+	 * 
+	 * @return a new values table.
+	 */
+	public ValuesTable getValuesTable() {
+
+		if (valuesTable == null) {
+			valuesTable = new ValuesTable( probNode, getTableModel(), modifiable );
+			valuesTable.setName( "PotentialsTablePanel.valuesTable" );
+		}
+		return valuesTable;
+	}
+	/**
+	 * This method initializes valuesTableScrollPane.
+	 * 
+	 * @return a new values table scroll pane.
+	 */
+	protected JScrollPane getValuesTableScrollPane() {
+
+		if (valuesTableScrollPane == null) {
+			valuesTableScrollPane = new JScrollPane();
+			valuesTableScrollPane
+				.setName( "ProbabilityTablePanel.valuesTableScrollPane" );
+			valuesTableScrollPane.setViewportView( getValuesTable() );
+		}
+		return valuesTableScrollPane;
+	}
+	/**
+	 * special method to show/hide the values table
+	 */
+	public void showValuesTable(final boolean visible) {
+
+		getValuesTable().setVisible( visible );
+	}
+	/**
+	 * This method initializes tableModel.
+	 * 
+	 * @return a new tableModel.
+	 */
+	protected ValuesTableModel getTableModel() {
+
+		ValuesTableModel tableModel = null;
+		if (valuesTable == null) {
+			tableModel =
+				new ValuesTableModel( data, columns, firstEditableRow );
+		} else if (valuesTable.getTableModel() == null) {
+			tableModel =
+				new ValuesTableModel( data, columns, firstEditableRow );
+		} else {
+			tableModel = (ValuesTableModel) valuesTable.getModel();
+		}
+		return tableModel;
+	}
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * deterministic
+	 */
+	public void setDeterministicModel() {
+
+		valuesTable.setDeterministic( true );
+		setShowAllParameters(true);
+	}
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * probabilistic
+	 */
+	public void setProbabilisticModel() {
+
+		valuesTable.setDeterministic( false );
+		setShowAllParameters(true);
+	}
+	
+	
+
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * optimal (decision node)
+	 */
+	public void setOptimalModel() {
+
+		valuesTable.setShowingOptimal( true );
+	}
+
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * general (TablePotential)
+	 */
+	public void setGeneralModel(int familyIndex) {
+
+		valuesTable.setUsingGeneralPotential( familyIndex );
+
+	}
+
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * canonical (ICIPotential)
+	 */
+	public void setCanonicalModel(int familyIndex) {
+
+		valuesTable.setUsingGeneralPotential( familyIndex );
+	}
+	/**
+	 * @param showAllParameters
+	 *            the showAllParameters to set
+	 */
+	public void setShowAllParameters(boolean showAllParameters) {
+
+		this.showAllParameters = showAllParameters;
+		valuesTable.setShowingAllParameters( showAllParameters );
+	}
+	
+	/**
+	 * @param showProbabilitiesValues
+	 *            the showProbabilitiesValues to set
+	 */
+	public void setShowProbabilitiesValues(boolean showProbabilitiesValues) {
+
+		this.showProbabilitiesValues = showProbabilitiesValues;
+		valuesTable.setShowingProbabilitiesValues( showProbabilitiesValues );
+	}
+	
+	/**
+	 * @param showTPCvalues
+	 *            the showTPCvalues to set
+	 */
+	public void setShowTPCvalues(boolean showTPCvalues) {
+
+		this.showTPCvalues = showTPCvalues;
+		valuesTable.setShowingTPCvalues( showTPCvalues );
+	}
+	
+	public void doUpdateVariableName(String oldName, String newName) {
+		if (oldName.equals( this.getVariables().get( 0 ).getName())) {
+		     //replace variable name in ArrayListVariables
+		     this.getVariables().get( 0 ).setName( newName ); 
+		}
+		if (oldName.equals(probNode.getPotentials().get(0).getVariables().get(0).getName())) {
+		//replace variable name in the TablePotential
+		probNode.getPotentials().get( 0 ).getVariables().get( 0 ).setName( newName );
+		}
+		//replace variable name in the NodePotentialTable 
+		if (this.getValuesTable().getVariable() != null ) {
+			if (oldName.equals( this.getValuesTable().getVariable().getName()) ) {
+				this.getValuesTable().getVariable().setName( newName );
+			}
+		}
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
