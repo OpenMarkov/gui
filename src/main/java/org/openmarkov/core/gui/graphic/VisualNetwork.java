@@ -668,8 +668,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 				node.setTemporalPosition(new Point2D.Double(node.
 						getTemporalPosition().getX() + diffX,
 						node.getTemporalPosition().getY() + diffY ));
-				
-				node.paint((Graphics2D) g2);
+				if(g2!=null)
+				{
+				    node.paint((Graphics2D) g2);
+				}
 				
 				//constructVisualInfo();
 			}
