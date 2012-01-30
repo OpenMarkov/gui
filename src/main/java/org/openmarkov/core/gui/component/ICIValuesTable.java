@@ -2,6 +2,8 @@ package org.openmarkov.core.gui.component;
 
 
 
+import java.util.ListIterator;
+
 import javax.swing.event.UndoableEditEvent;
 
 
@@ -20,6 +22,7 @@ import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
 @SuppressWarnings("serial")
@@ -43,7 +46,7 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 			if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION ) {
 				
 					ICITablePotentialValueEdit nodePotentialEdit = new ICITablePotentialValueEdit(
-							probNode, (Double)newValue, row, col);
+							probNode, (Double)newValue, row, col, priorityList);
 					try {
 						probNode.getProbNet().getPNESupport().announceEdit(
 								nodePotentialEdit);
@@ -104,16 +107,33 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 	}
 	
 	
-	
+	public static int toPositionOnJtable(int index, int col, int numOfStates, 
+			int numOfParents){
+		
+		return numOfParents -1 + numOfStates + (numOfStates * ( col - 1 ) ) - 
+			index;
+		
+	}
 
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		
-		
+		int priorityListPosition = 0;
 		
 		ICITablePotentialValueEdit edit =(ICITablePotentialValueEdit) arg0.getEdit();
 		if (edit instanceof ICITablePotentialValueEdit){
-			super.getModel().setValueAt( edit.getNewValue(), 
-					edit.getRowPosition(), edit.getColumnPosition());
+			
+			priorityList = edit.getPriorityList();
+			double [] newNoisyPotential = edit.getNewNoisyValues();
+			
+			ListIterator<Integer> listIterator = priorityList.listIterator();
+			while (listIterator.hasNext()== true){
+				priorityListPosition = (Integer)listIterator.next();
+				super.getModel().setValueAt( newNoisyPotential[priorityListPosition], 
+						edit.getRowPosition(priorityListPosition), edit.getColumnPosition());
+
+			}
+			
+			
 		}
 	}
 	

@@ -171,7 +171,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * Define the priority list when potential values are edited
 	 */
-	private LinkedList<Integer> priorityList = new LinkedList<Integer> ();
+	
+	protected LinkedList<Integer> priorityList = new LinkedList<Integer> ();
 
 	/**
 	 * default constructor
@@ -182,6 +183,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		this( null, new ValuesTableModel(), false );
 	}
 
+	
 	/**
 	 * default constructor with parameters
 	 */
