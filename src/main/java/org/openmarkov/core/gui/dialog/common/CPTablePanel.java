@@ -50,7 +50,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
-@PotentialPanelPlugin(potentialType="Table potential")
+@PotentialPanelPlugin(potentialType="Table")
 public class CPTablePanel extends ProbabilityTablePanel {
 
 	protected Logger logger;
@@ -133,6 +133,7 @@ public class CPTablePanel extends ProbabilityTablePanel {
 	 */
 	public void setData(ProbNode probNode) {
 	    this.probNode = probNode;
+	    valuesTable.setData(probNode);
 		Object[][] tableData = null;
 		String[] newColumns = null;
 		if (probNode.getPotentials() != null) {
