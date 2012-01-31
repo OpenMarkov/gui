@@ -19,6 +19,11 @@ import org.openmarkov.plugin.service.PluginLoaderIF;
 
 public class PotentialPanelManager
 {
+    /**
+     * Singleton instance
+     */
+    private static PotentialPanelManager instance = null;
+    
     private PluginLoaderIF                                   pluginsLoader;
     private HashMap<String, Class<? extends PotentialPanel>> potentialPanelClasses;
     private HashMap<String, PotentialPanel>                  potentialPanelPool;
@@ -27,7 +32,7 @@ public class PotentialPanelManager
      * Constructor for PotentialPanelManager.
      */
     @SuppressWarnings("unchecked")
-    public PotentialPanelManager ()
+    private PotentialPanelManager ()
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
@@ -47,6 +52,15 @@ public class PotentialPanelManager
             }
         }
         potentialPanelPool = new HashMap<String, PotentialPanel> ();
+    }
+    
+    public static PotentialPanelManager getInstance()
+    {
+        if(instance==null)
+        {
+            instance = new PotentialPanelManager ();
+        }
+        return instance;
     }
 
     /**
@@ -89,47 +103,59 @@ public class PotentialPanelManager
      * @param potentialFamily the potential's family.
      * @return a new Potential instance given the parameters.
      */
-    public final PotentialPanel getPotentialPanel (String potentialType, String potentialFamily, ProbNode probNode)
+    public final PotentialPanel getPotentialPanel (String potentialType,
+                                                   String potentialFamily,
+                                                   ProbNode probNode)
     {
         PotentialPanel instance = null;
-        if(potentialPanelPool.get (potentialType) !=null)
+        if (potentialPanelClasses.get (potentialFamily) != null)
         {
-            instance = potentialPanelPool.get (potentialType);
-            instance.setData (probNode);
-        }else
-        {
-            if(potentialPanelClasses.get (potentialFamily) != null)
+            if (potentialPanelPool.get (potentialFamily) != null)
+            {
+                instance = potentialPanelPool.get (potentialFamily);
+                instance.setData (probNode);
+            }
+            else
             {
                 try
                 {
                     Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (ProbNode.class);
                     instance = constructor.newInstance (probNode);
+                    potentialPanelPool.put (potentialFamily, instance);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace ();
-                }            
+                }
             }
-            if (potentialPanelClasses.get (potentialType) != null)
+        }
+        if (potentialPanelClasses.get (potentialType) != null)
+        {
+            if (potentialPanelPool.get (potentialType) != null)
+            {
+                instance = potentialPanelPool.get (potentialType);
+                instance.setData (probNode);
+            }
+            else
             {
                 try
                 {
                     Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
                     instance = constructor.newInstance (probNode);
+                    potentialPanelPool.put (potentialType, instance);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace ();
                 }
-    
-            }
-            if (instance == null)
-            {
-                instance = new EmptyPotentialPanel (probNode);
             }
         }
+        if (instance == null)
+        {
+            instance = new EmptyPotentialPanel (probNode);
+        }
         return instance;
-    }    
+    }
 
     /**
      * Returns all potential panels' names.

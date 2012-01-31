@@ -93,11 +93,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     private JLabel lblPotentialType;
     
     /**
-     * Manager handling the different Potential Panels
-     */
-    PotentialPanelManager potentialPanelManager;
-    
-    /**
      * Relation Type Manager
      */
     RelationTypeManager relationTypeManager;
@@ -213,10 +208,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
         if(potentialPanel == null)
         {
-            potentialPanelManager = new PotentialPanelManager();
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
             String potentialFamily = relationTypeManager.getPotentialsFamily (potentialName);
-            potentialPanel = potentialPanelManager.getPotentialPanel(potentialName, potentialFamily, probNode);
+            potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel(potentialName, potentialFamily, probNode);
         }
         return potentialPanel;
     }
