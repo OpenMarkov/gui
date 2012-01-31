@@ -1439,10 +1439,17 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 						edit.getRowPosition(), edit.getColumnPosition());
 			}
 		}
-		
-	
-		
 	}
+
+
+	/**
+	 * Sets probNode
+	 * @param probNode
+	 */
+    public void setData (ProbNode probNode)
+    {
+      this.probNode = probNode;
+    }
 
 	
 
