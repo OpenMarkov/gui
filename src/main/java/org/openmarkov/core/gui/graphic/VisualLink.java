@@ -510,7 +510,7 @@ public class VisualLink extends VisualElement {
 					(!link.isDirected())) {
 				paintLine(g, sPoint, ePoint);
 			}
-		} else if ((link != null) && (link.isDirected())){//...asaez................................
+		} else if ((link != null) && (link.isDirected())){
 			//Paint the arrow while the user has not released the button of the mouse
 			paintArrow(g, startPoint, endPoint);			
 		}

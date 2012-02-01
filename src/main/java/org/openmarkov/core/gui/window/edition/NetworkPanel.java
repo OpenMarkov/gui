@@ -49,6 +49,12 @@ import org.openmarkov.core.model.network.PropertyNames;
  * @version 1.1 jlgozalo Semantic corrections, adding javadoc tags and suppress
  *          super() in constructor.
  * @version 1.2 mpalacios
+ * @version 1.3 - asaez - Functionality added:
+ * 			- Explanation capabilities,
+ * 			- Management of working modes (edition/inference), 
+ * 			- Expansion and contraction of nodes, 
+ * 			- Introduction and elimination of evidence 
+ * 			- Management of multiple evidence cases.
  */
 public class NetworkPanel extends FrameContentPanel implements 
 	PNUndoableEditListener, PropertyNames{
@@ -880,14 +886,23 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.setPropagationActive(propagationActive);
 	} 
 	
-	//....asaez
+	/**
+	 * Returns the inference algorithm assigned to the panel.
+	 * 
+	 * @return the inference algorithm assigned to the panel.
+	 */
 	public InferenceAlgorithm getInferenceAlgorithm() {
 		return editorPanel.getInferenceAlgorithm();
 	}
 
+	/**
+	 * Sets the inference algorithm assigned to the panel.
+	 * 
+	 * @param inferenceAlgorithm
+	 *            the inference Algorithm to be assigned to the panel.
+	 */
 	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
 		editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
 	}
-	//...asaez
 
 }

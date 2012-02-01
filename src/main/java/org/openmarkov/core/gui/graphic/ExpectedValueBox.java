@@ -47,17 +47,14 @@ public class ExpectedValueBox extends InnerBox {
 	 */
 	private static final int SCALE_RANGE_VERTICAL_OFFSET = 4;
 	
-
-	//Variable que almacena los parámetros necesarios para representar el valor esperado ....... Eliminar..............
-	double[] expectedValue;
-	
-
-
-	//private double expectedUtility = 0.0;
-	
-	//... incluir comentarios javadoc
+	/**
+	 * Minimum value that the expected value can take.
+	 */
 	private double minUtilityRange = 0.0;
 	
+	/**
+	 * Maximum value that the expected value can take.
+	 */
 	private double maxUtilityRange = 100.0;	
 	
 	/**
@@ -65,8 +62,6 @@ public class ExpectedValueBox extends InnerBox {
 	 * of this inner box.
 	 */
 	VisualState visualState = null;
-	
-
 
 	/**
 	 * Creates a new Expected Value Variable innerBox.
@@ -77,52 +72,74 @@ public class ExpectedValueBox extends InnerBox {
 	public ExpectedValueBox(VisualNode vNode) {
 		visualNode = vNode;
 		visualState = new VisualState(visualNode, 0, "  EU");
-		expectedValue = createExpectedValue();
 	}
 	
-	
-/*	public double getExpectedUtility() {
-		return expectedUtility;
-	}
-
-
-	public void setExpectedUtility(double expectedUtility) {
-		this.expectedUtility = expectedUtility;
-	}
-*/	
-
+	/**
+	 * Returns the minimum value that the expected value can take.
+	 * 
+	 * @return minimum value that the expected value can take.
+	 */
 	public double getMinUtilityRange() {
 		return minUtilityRange;
 	}
 	
-
+	/**
+	 * Sets the minimum value that the expected value can take.
+	 * 
+	 * @param minUtilityRange
+	 *            minimum value that the expected value can take.
+	 */
 	public void setMinUtilityRange(double minUtilityRange) {
 		this.minUtilityRange = minUtilityRange;
 	}
 	
-
+	/**
+	 * Returns the maximum value that the expected value can take.
+	 * 
+	 * @return maximum value that the expected value can take.
+	 */
 	public double getMaxUtilityRange() {
 		return maxUtilityRange;
 	}
 	
-
+	/**
+	 * Sets the maximum value that the expected value can take.
+	 * 
+	 * @param maxUtilityRange
+	 *            maximum value that the expected value can take.
+	 */
 	public void setMaxUtilityRange(double maxUtilityRange) {
 		this.maxUtilityRange = maxUtilityRange;
 	}
-		
-
 	
-	
+	/**
+	 * This method recreates the visual state of the inner box.
+	 *  
+	 * @param numCases
+	 *            Number of evidence cases in memory.
+	 */
+	public void recreateVisualState(int numCases) {
+		visualState = new VisualState(visualNode, 0, "  EU", numCases);
+	}
 
+	/**
+	 * Returns the visual state contained by this inner box.
+	 * 
+	 * @return visual state contained by this inner box.
+	 */
 	public VisualState getVisualState() {
 		return visualState;
 	}
 
-
+	/**
+	 * Sets the visual state contained by this inner box.
+	 * 
+	 * @param visualState
+	 *            visual state contained by this inner box.
+	 */
 	public void setVisualState(VisualState visualState) {
 		this.visualState = visualState;
 	}
-
 	
 	/**
 	 * Returns the number of visual states of this inner box.
@@ -141,7 +158,7 @@ public class ExpectedValueBox extends InnerBox {
 	public Shape getShape(Graphics2D g) {
 		double innerNodeHeight = getInnerBoxHeight(g);
 		return new Rectangle2D.Double(
-				visualNode.getUpperLeftCornerX(g), // + INTERNAL_MARGIN, //...asaez...Antes...BOX_HORIZONTAL_OFFSET = 2
+				visualNode.getUpperLeftCornerX(g),
 				visualNode.getUpperLeftCornerY(g) + 
 						visualNode.getTextHeight(g) + INTERNAL_MARGIN, 
 				BOX_WIDTH, 
@@ -166,40 +183,13 @@ public class ExpectedValueBox extends InnerBox {
 		
 		visualState.paint(g);
 		
-		/*
-		Double stateXposition = visualNode.getUpperLeftCornerX(g) + 
-				INDENT;
-		Double stateYposition = visualNode.getUpperLeftCornerY(g) + 
-				visualNode.getTextHeight(g) + INTERNAL_MARGIN + 
-				BAR_VERTICAL_POSITION;
-	
-		//draw the line of the expected value
-		g.drawString("  EU", stateXposition.intValue(), stateYposition.intValue());
-		if (visualNode.getEditorPanel().isPropagationActive()) {
-			g.setPaint(BAR_COLOR);
-			g.fill(new Rectangle2D.Double(
-					stateXposition + BAR_HORIZONTAL_POSITION, 
-					stateYposition - BAR_HEIGHT - 1,
-					(expectedValue[2]*100)/(expectedValue[1]-expectedValue[0]),
-					BAR_HEIGHT)
-					);
-			//g.drawString("" + (Math.floor((expectedValue[2]+expectedValue[0]) * 10))/10, //...asaez................................
-			g.drawString("" + (Math.floor((expectedUtility) * 100))/100,  //...asaez................................
-					(stateXposition.intValue() + 
-							new Double(VALUE_HORIZONTAL_POSITION).intValue()),
-					stateYposition.intValue());
-			g.setPaint(FOREGROUND_COLOR);
-		}
-		*/
-		
 		//draw the scale in the bottom part
 		Double scaleXPostion = visualNode.getUpperLeftCornerX(g) + 
 				INTERNAL_MARGIN + STATES_INDENT + BAR_HORIZONTAL_POSITION_UTILITY - 1;
 		Double scaleYPostion = visualNode.getUpperLeftCornerY(g) +
 				visualNode.getTextHeight(g) + INTERNAL_MARGIN + 
 				STATES_VERTICAL_SEPARATION + SCALE_VERTICAL_SEPARATION +
-				(BAR_HEIGHT*(visualState.getNumberOfValues()-1));
-		
+				(BAR_HEIGHT*(visualState.getNumberOfValues()-1));		
 		
 		g.draw(new Line2D.Double(scaleXPostion,
 				scaleYPostion, 
@@ -233,14 +223,12 @@ public class ExpectedValueBox extends InnerBox {
 				);
 
 		g.setFont(SCALE_FONT);
-		//g.drawString(""+expectedValue[0], //...asaez................................
-		g.drawString("" + minUtilityRange, //...asaez................................
+		g.drawString("" + minUtilityRange,
 				scaleXPostion.intValue() - SCALE_RANGE_HORIZONTAL_OFFSET,
 				scaleYPostion.intValue() + g.getFont().getSize() + 
 						SCALE_RANGE_VERTICAL_OFFSET
 				);
-		//g.drawString(""+expectedValue[1],//...asaez................................
-		g.drawString("" + maxUtilityRange,//...asaez................................				
+		g.drawString("" + maxUtilityRange,			
 				(int) (scaleXPostion.intValue()+ BAR_FULL_LENGTH) - 
 						SCALE_RANGE_HORIZONTAL_OFFSET, 
 				scaleYPostion.intValue() + g.getFont().getSize() + 
@@ -275,34 +263,6 @@ public class ExpectedValueBox extends InnerBox {
 				SCALE_FONT.getSize();
 		}
 		return innerBoxHeight;
-	}
-	
-	
-	
-	//Método auxiliar para generar el valor esperado....... Eliminar..............
-	private double[] createExpectedValue () {
-		double[] expVal = new double[3];
-		double aux1 = (Math.floor(Math.random()* 1000))/10;
-		double aux2 = (Math.floor(Math.random()* 1000))/10;
-		if (aux1 > aux2) {
-			double aux3 = aux1;
-			aux1 = aux2;
-			aux2 = aux3;
-		}
-		expVal[0] = aux1; //límite inferior del valor esperado
-		expVal[1] = aux2; //límite superior del valor esperado
-		
-		//...asaez................................
-		
-		//................................asaez...
-		
-		
-		double value = ((Math.floor(Math.random()* 1000))/10);
-		while (value > (aux2-aux1)) {
-			value = value/1.4;
-		}
-		expVal[2] = (Math.floor((value) * 10))/10; //valor esperado
-		return expVal;		
 	}
 
 }

@@ -10,7 +10,7 @@
 package org.openmarkov.core.gui.graphic;
 
 
-import java.awt.Color; //...asaez................................
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -31,8 +31,6 @@ public abstract class InnerBox extends VisualElement {
 	 */
 	protected static final Font INNERBOX_FONT = new Font("Helvetica", Font.PLAIN, 11);
 	
-	//...asaez................................
-	//... Todas las constantes movidas desde las clases derivadas.....	
 	/**
 	 * Color of the Box.
 	 */
@@ -99,16 +97,12 @@ public abstract class InnerBox extends VisualElement {
 	protected static final double VALUE_HORIZONTAL_POSITION_UTILITY = 
 			BAR_HORIZONTAL_POSITION_UTILITY + 
 			BAR_FULL_LENGTH + STATES_INDENT*2;
-	//... Todas las constantes movidas desde las clases derivadas.....
-	//................................asaez...	
 
 	/**
 	 * Object used to measure text in a specific font.
 	 */
 	private static FontMetrics fontMeter = new JPanel().getFontMetrics(INNERBOX_FONT);
 		
-	//...asaez................................
-	//... Reordenación del código, atributos antes de métodos.....
 	/**
 	 * The height of this InnerBox.
 	 */
@@ -153,8 +147,6 @@ public abstract class InnerBox extends VisualElement {
 	protected static double getInnerBoxTextWidth(String text, Graphics2D g) {
 		return fontMeter.getStringBounds(text, g).getWidth();
 	}
-	//... Reordenación del código, atributos antes de métodos.....
-	//................................asaez...	
 	
 	/**
 	 * Returns the height of the innerBox. It's calculated depending on the
@@ -165,11 +157,11 @@ public abstract class InnerBox extends VisualElement {
 	public abstract double  getInnerBoxHeight(Graphics2D g);
 
 
-	/**  //...asaez...................Método añadido.............
+	/**
 	 * Returns the number of visual states of this inner box.
 	 * 
 	 * @return the number of visual states of this inner box.
 	 */
-	public abstract int getNumStates(); //................................asaez...
+	public abstract int getNumStates();
 
 }

@@ -59,9 +59,9 @@ import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.core.gui.graphic.ExpectedValueBox;//...asaez................................
+import org.openmarkov.core.gui.graphic.ExpectedValueBox;
 import org.openmarkov.core.gui.graphic.FSVariableBox;
-import org.openmarkov.core.gui.graphic.InnerBox;//...asaez................................
+import org.openmarkov.core.gui.graphic.InnerBox;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
 import org.openmarkov.core.gui.graphic.VisualLink;
@@ -73,21 +73,20 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
-import org.openmarkov.core.inference.InferenceAlgorithm; //...asaez................................
+import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.Propagation;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.type.BayesianNetworkType; //...asaez................................
-import org.openmarkov.core.model.network.type.InfluenceDiagramType; //...asaez................................
-import org.openmarkov.core.model.network.type.NetworkType; //...asaez................................
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.NetworkType;
 //import org.openmarkov.costEffectiveness.CostEffectivenessAnalysis;
 //import org.openmarkov.costEffectiveness.ExcelIO;
 //import org.openmarkov.costEffectiveness.ExcelSensitivityAnalysis;
@@ -103,6 +102,12 @@ import org.openmarkov.core.model.network.type.NetworkType; //...asaez...........
  * @version 1.1 - jlgozalo - all variables initialized and eliminate the call to 
  * 							NodePropertiesDialogFactory (to use directly call to
  * 							CommonNodePropertiesDialog method.
+ * @version 1.3 - asaez - Functionality added:
+ * 			- Explanation capabilities,
+ * 			- Management of working modes (edition/inference), 
+ * 			- Expansion and contraction of nodes, 
+ * 			- Introduction and elimination of evidence 
+ * 			- Management of multiple evidence cases.
  */
 public class EditorPanel extends JPanel implements MouseListener,
 MouseMotionListener {
@@ -125,18 +130,6 @@ MouseMotionListener {
 	 */
 	private EditionState editionState = EditionState.SELECTION;
 	
-	//....asaez
-	private InferenceAlgorithm inferenceAlgorithm = null;
-
-	public InferenceAlgorithm getInferenceAlgorithm() {
-		return inferenceAlgorithm;
-	}
-
-	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
-		this.inferenceAlgorithm = inferenceAlgorithm;
-	}
-	//...asaez
-
 	/**
 	 * Current selection state.
 	 */
@@ -162,7 +155,12 @@ MouseMotionListener {
 	 * currently being treated
 	 */
 	private int currentCase;
-
+	
+	/**
+	 * Inference algorithm used to evaluate this network
+	 */
+	private InferenceAlgorithm inferenceAlgorithm = null;
+	
 	/**
 	 * This variable indicates if the propagation mode is automatic or manual.
 	 */
@@ -1829,14 +1827,21 @@ MouseMotionListener {
 			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
 			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
 			while (iterator4.hasNext()) {
-				VisualNode visualNode = iterator4.next();
-				if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-					FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-					VisualState visualState = innerBox.getVisualState(0);
-					if (visualState.getNumberOfValues() != evidenceCases.size()) {
-						innerBox.recreateVisualStates(evidenceCases.size());
-						networkChanged = true;
+				VisualNode visualNode = iterator4.next();				
+				InnerBox innerBox = visualNode.getInnerBox();
+				VisualState visualState = null;
+				if (innerBox instanceof FSVariableBox) {
+					visualState = ((FSVariableBox)innerBox).getVisualState(0);
+				} else if (innerBox instanceof ExpectedValueBox)  {
+					visualState = ((ExpectedValueBox)innerBox).getVisualState();
+				}
+				if (visualState.getNumberOfValues() != evidenceCases.size()) {
+					if (innerBox instanceof FSVariableBox) {
+						((FSVariableBox)innerBox).recreateVisualStates(evidenceCases.size());
+					} else if (innerBox instanceof ExpectedValueBox)  {
+						((ExpectedValueBox)innerBox).recreateVisualState(evidenceCases.size());
 					}
+					networkChanged = true;
 				}
 			}	
 			//if the network has been changed, propagation must be done in
@@ -1988,6 +1993,25 @@ MouseMotionListener {
 		repaint();
 
 	}
+	
+	/**
+	 * Returns the inference algorithm assigned to the panel.
+	 * 
+	 * @return the inference algorithm assigned to the panel.
+	 */
+	public InferenceAlgorithm getInferenceAlgorithm() {
+		return inferenceAlgorithm;
+	}
+
+	/**
+	 * Sets the inference algorithm assigned to the panel.
+	 * 
+	 * @param inferenceAlgorithm
+	 *            the inference Algorithm to be assigned to the panel.
+	 */
+	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
+		this.inferenceAlgorithm = inferenceAlgorithm;
+	}
 
 	/**
 	 * This method does the propagation of the evidence in the network
@@ -1998,276 +2022,158 @@ MouseMotionListener {
 	 *            number of this evidence case.
 	 */
 	public void doPropagation(EvidenceCase evidenceCase, int caseNumber) {
-				
-		//......asaez......probando...........
-		
-		//Determinamos qué tipo de red es y en función de ello, utilizamos un algoritmo u otro.
-		/*
+		//...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
+		//...IS COMPLETE		
+		//...We obtain the type of the network. If it is a Bayesian Network, we do the real propagation;
+		//...if it is an Influence Diagram, we do a 'fictitious propagation' for painting the nodes with
+		//...dummy information; otherwise, no propagation is done and a message is shown.		
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof BayesianNetworkType) {
-			System.out.println("La red " + probNet.getName() + " es una Red Bayesiana");
-		} else if (networkType instanceof InfluenceDiagramType) {
-			System.out.println("La red " + probNet.getName() + " es un Diagrama de Influencia");
-		}
-		*/
-
-		try {
-			inferenceAlgorithm.setEvidence(evidenceCase);
-			HashMap<Variable, Potential> individualProbabilities = 
-					inferenceAlgorithm.getIndividualProbabilities();
-			
-			if (individualProbabilities != null) {
-				Set<Map.Entry<Variable, Potential>> entries = 
-						individualProbabilities.entrySet();
-				Iterator<Map.Entry<Variable, Potential>> iterator1 = entries.iterator();		
-				Map.Entry<Variable, Potential> entry;		
-				ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();	
-				while (iterator1.hasNext()) {
-					entry = iterator1.next();
-					Variable variable = entry.getKey();
-					Potential potential = entry.getValue();
-					if (potential.getPotentialType() == PotentialType.TABLE) {
-						TablePotential tablePotential = (TablePotential)potential;
-						if  (tablePotential.getNumVariables() == 1) {
-							double[] values = tablePotential.getValues();
-							Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
-							while (iterator2.hasNext()) {
-								VisualNode visualNode = iterator2.next();
-								if (variable.getName().equals(visualNode.getProbNode().getName())) { 
-									if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-										FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-										for (int i=0; i<innerBox.getNumStates(); i++) {
-											VisualState visualState = innerBox.getVisualState(i);
-											visualState.setStateValue(caseNumber, values[i]);
+			try {
+				inferenceAlgorithm.setEvidence(evidenceCase);
+				HashMap<Variable, Potential> individualProbabilities = 
+						inferenceAlgorithm.getIndividualProbabilities();
+				
+				if (individualProbabilities != null) {
+					Set<Map.Entry<Variable, Potential>> entries = 
+							individualProbabilities.entrySet();
+					Iterator<Map.Entry<Variable, Potential>> iterator1 = entries.iterator();		
+					Map.Entry<Variable, Potential> entry;		
+					ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();	
+					while (iterator1.hasNext()) {
+						entry = iterator1.next();
+						Variable variable = entry.getKey();
+						Potential potential = entry.getValue(); 
+						if (potential.getPotentialType() == PotentialType.TABLE) {
+							TablePotential tablePotential = (TablePotential)potential;
+							if  (tablePotential.getNumVariables() == 1) {
+								double[] values = tablePotential.getValues();
+								Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
+								while (iterator2.hasNext()) {
+									VisualNode visualNode = iterator2.next();
+									if (variable.getName().equals(visualNode.getProbNode().getName())) { 
+										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+											FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
+											for (int i=0; i<innerBox.getNumStates(); i++) {
+												VisualState visualState = innerBox.getVisualState(i);
+												visualState.setStateValue(caseNumber, values[i]);
+											}
 										}
+										visualNode.setFindingInNode(false);
 									}
-									visualNode.setFindingInNode(false);
-								}
-							}	
-							//PROVISIONAL: Currently the propagation algorithm is returning a TablePotential
-							// with 0 variables when the node has a Uniform relation
-						} else if (tablePotential.getNumVariables() == 0){
-							Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
-							while (iterator2.hasNext()) {
-								VisualNode visualNode = iterator2.next();
-								if (variable.getName().equals(visualNode.getProbNode().getName())) { 
-									if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-										FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-										for (int i=0; i<innerBox.getNumStates(); i++) {
-											VisualState visualState = innerBox.getVisualState(i);
-											visualState.setStateValue(caseNumber, (1.0/innerBox.getNumStates()));
-											//...asaez...revisar...da excepción al añadir un hallazgo, siempre que el nodo
-											//...tenga una relación de ascendencia/descendencia con otro
+								}	
+								//PROVISIONAL2: Currently the propagation algorithm is returning a TablePotential
+								// with 0 variables when the node has a Uniform relation
+							} else if (tablePotential.getNumVariables() == 0){
+								Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
+								while (iterator2.hasNext()) {
+									VisualNode visualNode = iterator2.next();
+									if (variable.getName().equals(visualNode.getProbNode().getName())) { 
+										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+											FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
+											for (int i=0; i<innerBox.getNumStates(); i++) {
+												VisualState visualState = innerBox.getVisualState(i);
+												visualState.setStateValue(caseNumber, (1.0/innerBox.getNumStates()));
+												//...asaez...revisar...da excepción al añadir un hallazgo, siempre que el nodo
+												//...tenga una relación de ascendencia/descendencia con otro
+											}
 										}
+										visualNode.setFindingInNode(false);
 									}
-									visualNode.setFindingInNode(false);
 								}
-							}
-							//END OF PROVISIONAL............................
-						} else { 
-							JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-									"Table Potential of " + variable.getName() + " has " +
-									tablePotential.getNumVariables() + " variables.\n It cannot be treated by now", 
-									"Error",
-									JOptionPane.ERROR_MESSAGE);
-						} 
-					}				
-				}
-				updateNodesFindingState(evidenceCase);//....asaez...........
-			}
-			repaint();
-			
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}//...asaez....despeinar las posibles excepciones....
-		
-
-	/*	
-		//Set the values of the visualStates of nodes without finding
-		ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();			
-		Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
-		while (iterator1.hasNext()) {
-			VisualNode visualNode = iterator1.next();
-			InnerBox innerBox = visualNode.getInnerBox();
-			if (innerBox instanceof FSVariableBox) {// si es un nodo aleatorio o de decisión
-				Double aux1 = 0.0;
-				Double aux2 = 0.3;
-				Double value = 0.0;
-				for (int i=0; i<innerBox.getNumStates(); i++) {
-					if ((aux1+aux2)<=1.0) {
-						value = aux2;
-					} else {
-						value = (1.0 - aux1);
+								//END OF PROVISIONAL2............................
+							} else { 
+								JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+										"Table Potential of " + variable.getName() + " has " +
+										tablePotential.getNumVariables() + " variables.\n It cannot be treated by now", 
+										"Error",
+										JOptionPane.ERROR_MESSAGE);
+							} 
+						}				
 					}
-					aux1 += value;
-					VisualState visualState = ((FSVariableBox)innerBox).getVisualState(i);
-					visualState.setStateValue(caseNumber, value); 
+					updateNodesFindingState(evidenceCase);
 				}
-			} else { //si es un nodo de utilidad
-				VisualState visualState = ((ExpectedValueBox)innerBox).getVisualState();
-				visualState.setStateValue(caseNumber, 111.55);
-				((ExpectedValueBox)innerBox).setMinUtilityRange(100.0);
-				((ExpectedValueBox)innerBox).setMaxUtilityRange(112.0);
-			}	
-			visualNode.setFindingInNode(false);
-		}
-		
-		
-		//Set the values of the visualStates of nodes with finding
-		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
-		Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
-		while (iterator3.hasNext()) {
-			Finding finding = iterator3.next();
-			Variable variable = finding.getVariable();
-			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
-			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
-			while (iterator4.hasNext()) {
-				VisualNode visualNode = iterator4.next();
-				if (variable.getName().equals(visualNode.getProbNode().getName())){ //si el nodo tiene hallazgo
-					if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-						FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-						for (int i=0; i<innerBox.getNumStates(); i++) {
-							VisualState visualState = innerBox.getVisualState(i);
-							if (visualState.getStateNumber() == finding.getStateIndex()) {
-								visualState.setStateValue(caseNumber, 1.0);
-							} else {
-								visualState.setStateValue(caseNumber, 0.0);
+				repaint();		
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+		} else if (networkType instanceof InfluenceDiagramType) {			
+			//Set the values of the visualStates of nodes without finding
+			ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();			
+			Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
+			while (iterator1.hasNext()) {
+				VisualNode visualNode = iterator1.next();
+				InnerBox innerBox = visualNode.getInnerBox();
+				if (innerBox instanceof FSVariableBox) {// si es un nodo aleatorio o de decisión
+					Double aux1 = 0.0;
+					Double aux2 = 0.3;
+					Double value = 0.0;
+					for (int i=0; i<innerBox.getNumStates()-1; i++) {
+						if ((aux1+aux2)<=1.0) {
+							value = aux2;
+						} else {
+							value = (1.0 - aux1);
+						}
+						aux1 += value;
+						VisualState visualState = ((FSVariableBox)innerBox).getVisualState(i);
+						visualState.setStateValue(caseNumber, value); 
+					}
+					VisualState visualState = ((FSVariableBox)innerBox).
+							getVisualState(innerBox.getNumStates()-1);
+					visualState.setStateValue(caseNumber, (1.0 - aux1));					
+				} else { //si es un nodo de utilidad
+					VisualState visualState = ((ExpectedValueBox)innerBox).getVisualState();
+					visualState.setStateValue(caseNumber, 111.55);
+					((ExpectedValueBox)innerBox).setMinUtilityRange(100.0);
+					((ExpectedValueBox)innerBox).setMaxUtilityRange(112.0);
+				}	
+				visualNode.setFindingInNode(false);
+			}			
+			//Set the values of the visualStates of nodes with finding
+			ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
+			Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
+			while (iterator3.hasNext()) {
+				Finding finding = iterator3.next();
+				Variable variable = finding.getVariable();
+				ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
+				Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
+				while (iterator4.hasNext()) {
+					VisualNode visualNode = iterator4.next();
+					if (variable.getName().equals(visualNode.getProbNode().getName())){ //si el nodo tiene hallazgo
+						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+							FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
+							for (int i=0; i<innerBox.getNumStates(); i++) {
+								VisualState visualState = innerBox.getVisualState(i);
+								if (visualState.getStateNumber() == finding.getStateIndex()) {
+									visualState.setStateValue(caseNumber, 1.0);
+								} else {
+									visualState.setStateValue(caseNumber, 0.0);
+								}
 							}
 						}
+						visualNode.setFindingInNode(true);
 					}
-					visualNode.setFindingInNode(true);
 				}
 			}
-		}
-		
-		repaint();
-	*/
-
-		//......asaez......probando...........
-		
-		
-		
-		
-		
-		
-		/* //...asaez.........Lo comentado a partir de aquí era el código que funcionaba con
-		   //...asaez.........con redes bayesianas cuando la clase 'Propagation' era "operativa".	
-		
-		//Set the values of the visualStates of nodes with finding
-		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
-		Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
-		while (iterator3.hasNext()) {
-			Finding finding = iterator3.next();
-			Variable variable = finding.getVariable();
-			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
-			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
-			while (iterator4.hasNext()) {
-				VisualNode visualNode = iterator4.next();
-				if (variable.getName().equals(visualNode.getProbNode().getName())){
-					if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-						FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-						for (int i=0; i<innerBox.getNumStates(); i++) {
-							VisualState visualState = innerBox.getVisualState(i);
-							if (visualState.getStateNumber() == finding.getStateIndex()) {
-								visualState.setStateValue(caseNumber, 1.0);
-							} else {
-								visualState.setStateValue(caseNumber, 0.0);
-							}
-						}
-					}
-					visualNode.setFindingInNode(true);
-				}
-			}
-		}
-		//Set the values of the visualStates of nodes without finding		
-		Propagation propagation = null;
-		try
-		{
-			propagation = new Propagation(probNet, evidenceCase);
-		}
-		catch (NoPropagationCanBeDoneException e)
-		{
-			JOptionPane.showMessageDialog(null, "ERROR\n" +
+			updateNodesFindingState(evidenceCase);			
+			repaint();		
+		} else {
+			try {
+				inferenceAlgorithm.setEvidence(evidenceCase);
+				HashMap<Variable, Potential> individualProbabilities = 
+						inferenceAlgorithm.getIndividualProbabilities();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "ERROR\n" +
 					stringResource.getString("NoPropagationCanBeDoneMessage1.Text.Label") +
 					"\n" + stringResource.getString("NoPropagationCanBeDoneMessage2.Text.Label") +
-					"\n\n" + e.getConstraints (), 
+					"\n\n" + networkType, 
 					stringResource.getString("NoPropagationCanBeDoneMessage.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
-		}
-		catch (NoPropagationOnInfluenceDiagramsException e)
-		{
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "ERROR\nThis Network is an ID\n\n" +
-					"Propagation cannot be done in Influence Diagrams by the moment", 
-					"Error - IDConstraint in this Network", JOptionPane.ERROR_MESSAGE);
-		}
-		HashMap<Variable, Potential> individualProbabilities = 
-				propagation.getIndividualProbabilities();
-		if (individualProbabilities != null) {
-			Set<Map.Entry<Variable, Potential>> entries = 
-					individualProbabilities.entrySet();
-			Iterator<Map.Entry<Variable, Potential>> iterator1 = entries.iterator();		
-			Map.Entry<Variable, Potential> entry;		
-			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();	
-			while (iterator1.hasNext()) {
-				entry = iterator1.next();
-				Variable variable = entry.getKey();
-				Potential potential = entry.getValue();
-				if (potential.getPotentialType() == PotentialType.TABLE) {
-					TablePotential tablePotential = (TablePotential)potential;
-					if  (tablePotential.getNumVariables() == 1) {
-						double[] values = tablePotential.getValues();
-						Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
-						while (iterator2.hasNext()) {
-							VisualNode visualNode = iterator2.next();
-							if (variable.getName().equals(visualNode.getProbNode().getName())) { 
-								if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-									FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-									for (int i=0; i<innerBox.getNumStates(); i++) {
-										VisualState visualState = innerBox.getVisualState(i);
-										visualState.setStateValue(caseNumber, values[i]);
-									}
-								}
-								visualNode.setFindingInNode(false);
-							}
-						}	
-						//PROVISIONAL: Currently the propagation algorithm is returning a TablePotential
-						// with 0 variables when the node has a Uniform relation
-					} else if (tablePotential.getNumVariables() == 0){
-						Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
-						while (iterator2.hasNext()) {
-							VisualNode visualNode = iterator2.next();
-							if (variable.getName().equals(visualNode.getProbNode().getName())) { 
-								if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-									FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-									for (int i=0; i<innerBox.getNumStates(); i++) {
-										VisualState visualState = innerBox.getVisualState(i);
-										visualState.setStateValue(caseNumber, (1.0/innerBox.getNumStates()));
-										//...asaez...revisar...da excepción al añadir un hallazgo, siempre que el nodo
-										//...tenga una relación de ascendencia/descendencia con otro
-									}
-								}
-								visualNode.setFindingInNode(false);
-							}
-						}
-						//END OF PROVISIONAL............................
-					} else { 
-						JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-								"Table Potential of " + variable.getName() + " has " +
-								tablePotential.getNumVariables() + " variables.\n It cannot be treated by now", 
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-					} 
-				}				
 			}
 		}
-		repaint();
-		
-		//...asaez.........Lo comentado hasta aquí era el código que funcionaba con
-		//...asaez.........con redes bayesianas cuando la clase 'Propagation' era "operativa".
-		*/ 
+		//...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
+		//...IS COMPLETE		
 	}
 
 	/**
@@ -2690,9 +2596,7 @@ MouseMotionListener {
 		Iterator<VisualNode> iterator = allVisualNodes.iterator();
 		while (iterator.hasNext()) {
 			VisualNode visualNode = iterator.next();
-			//if ((visualNode.getInnerBox()) instanceof FSVariableBox) {//...asaez................................
-				//FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();//...asaez................................
-			InnerBox innerBox = visualNode.getInnerBox();//...asaez................................
+			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
 			for (int i=0; i<innerBox.getNumStates(); i++) {
 				if (innerBox instanceof FSVariableBox) {
@@ -2707,9 +2611,6 @@ MouseMotionListener {
 				}
 				visualState.setCurrentStateValue(caseNumber);
 			}
-			//}//...asaez................................
-			//...asaez....Revisar: en todos los sitios donde aparezca "instanceof FSVariableBox"
-			//...asaez....habrá que modificar y tratar el caso del ExpectedValueBox.
 		}
 		repaint();
 	}

@@ -10,7 +10,6 @@
 package org.openmarkov.core.gui.graphic;
 
 
-//import java.awt.Color; //...asaez................................
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
@@ -28,62 +27,6 @@ import org.openmarkov.core.model.network.Variable;
  * @version 1.0
  */
 public class FSVariableBox extends InnerBox {
-
-	//...asaez................................
-	//... Todas las constantes movidas a InnerBox.....	
-	/**
-	 * Color of the Box.
-	 */
-	//private static final Color BACKGROUND_COLOR = Color.WHITE;
-	
-	/**
-	 * Color of lines and letters.
-	 */	
-	//private static final Color FOREGROUND_COLOR = Color.BLACK;
-	
-	/**
-	 * Internal margin around the Box.
-	 */
-	//protected static final double INTERNAL_MARGIN = 4;
-	
-	/**
-	 * Width of the Box.
-	 */
-	//protected static final double BOX_WIDTH = 
-	//	VisualNode.NODE_EXPANDED_WIDTH - (2 * INTERNAL_MARGIN);
-
-	/**
-	 * Indentation of states.
-	 */
-	//protected static final double STATES_INDENT = 5;
-
-	/**
-	 * Vertical separation between states.
-	 */
-	//protected static final double STATES_VERTICAL_SEPARATION = 12;
-	
-	/**
-	 * Horizontal starting position of bars.
-	 */
-	//protected static final double BAR_HORIZONTAL_POSITION = 52;
-	
-	/**
-	 * Maximum length of the bar.
-	 */
-	//protected static final double BAR_FULL_LENGTH = 100;
-	
-	/**
-	 * Height of the bar.
-	 */
-	//protected static final double BAR_HEIGHT = 5;
-	
-	/**
-	 * Horizontal position for the value to be shown on the right of the bar.
-	 */
-	//protected static final double VALUE_HORIZONTAL_POSITION = BAR_HORIZONTAL_POSITION + 
-	//		BAR_FULL_LENGTH + STATES_INDENT*2;
-	//... Todas las constantes movidas a InnerBox.....
-	//................................asaez...		
 
 	/**
 	 * This variable contains a list of all the visual states that are part

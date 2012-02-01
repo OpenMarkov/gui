@@ -45,6 +45,12 @@ import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
  * @version 1.0 jmendoza
  * @version 1.1 jlgozalo modify setZoom method to use floating point comparison
  *          instead != method and add default statement for case sentences
+ * @version 1.2 - asaez - Functionality added: Treatment of options related to 
+ * 			- Explanation capabilities,
+ * 			- Management of working modes (edition/inference), 
+ * 			- Expansion and contraction of nodes, 
+ * 			- Introduction and elimination of evidence 
+ * 			- Management of multiple evidence cases.
  */
 public class MainPanelMenuAssistant extends MenuAssistant implements
 				SelectionListener, PNUndoableEditListener {

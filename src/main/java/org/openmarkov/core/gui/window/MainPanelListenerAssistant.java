@@ -47,10 +47,11 @@ import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
-import org.openmarkov.core.inference.InferenceAlgorithm;//...asaez
-import org.openmarkov.core.inference.annotation.InferenceManager;//...asaez
+import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
 
 
 
@@ -69,6 +70,12 @@ import org.openmarkov.core.model.network.type.BayesianNetworkType;
  *          Preferences
  * @version 1.4 - jlgozalo - remove calls to System.out and System.err replacing 
  * 			by calls to MessageWindow streams
+ * @version 1.5 - asaez - Functionality added: Treatment of events related to 
+ * 			- Explanation capabilities,
+ * 			- Management of working modes (edition/inference), 
+ * 			- Expansion and contraction of nodes, 
+ * 			- Introduction and elimination of evidence 
+ * 			- Management of multiple evidence cases.
  */
 public class MainPanelListenerAssistant extends WindowAdapter implements
 				ActionListener, MDIListener, PropertyNames {
@@ -943,30 +950,36 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(newWorkingMode,
 				getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-			//....asaez
-			try {
-				if (getCurrentNetworkPanel().getInferenceAlgorithm() == null ) {
-					InferenceManager inferenceManager = new InferenceManager();
-					InferenceAlgorithm inferenceAlgorithm;
-					inferenceAlgorithm = inferenceManager.
-							getDefaultInferenceAlgorithm(getCurrentNetworkPanel().getProbNet());
-					getCurrentNetworkPanel().setInferenceAlgorithm(inferenceAlgorithm);
+			//...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
+			//...IS COMPLETE		
+			//...We obtain the type of the network. If it is a Bayesian Network,
+			//...we get the default inference algorithm; otherwise no algorithm is selected
+			//...(in EditorPanel we treat those cases)
+			NetworkType networkType = getCurrentNetworkPanel().getProbNet().getNetworkType();
+			if (networkType instanceof BayesianNetworkType) {
+				try {				
+					if (getCurrentNetworkPanel().getInferenceAlgorithm() == null ) {
+						InferenceManager inferenceManager = new InferenceManager();
+						InferenceAlgorithm inferenceAlgorithm;
+						inferenceAlgorithm = inferenceManager.
+								getDefaultInferenceAlgorithm(getCurrentNetworkPanel().getProbNet());
+						getCurrentNetworkPanel().setInferenceAlgorithm(inferenceAlgorithm);
+					}
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
 				}
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace(); //...
 			}
-			//....asaez
+			//...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
+			//...IS COMPLETE
 			getCurrentNetworkPanel().updateIndividualProbabilities();
 			mainPanel.getExistingInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase(),
 							getCurrentNetworkPanel().isPropagationActive());
 		} else {
 			//getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
-			//....asaez
 			if (getCurrentNetworkPanel().getInferenceAlgorithm() != null ) {
 				getCurrentNetworkPanel().setInferenceAlgorithm(null);
 			}			
-			//....asaez
 		}
 		getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
 	}
