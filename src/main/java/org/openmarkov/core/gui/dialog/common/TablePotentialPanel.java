@@ -57,18 +57,26 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	/**
 	 * JTable where show the values.
 	 */
-	private ValuesTable valuesTable = null;
+	protected ValuesTable valuesTable = null;
+	/**
+	 * Indicates if the data of the table is modifiable.
+	 */
+	private boolean modifiable;
+	
+	/**
+	 * Panel to scroll the table.
+	 */
+	protected JScrollPane valuesTableScrollPane = null;
 	
 	/**
 	 * Constructor use by CPTablePanel 
 	 * @param probNode
 	 */
-	/*public TablePotentialPanel(ProbNode probNode, ) {
-		
-	}*/
+	
+
 	public TablePotentialPanel(ProbNode probNode) {
 		super(probNode);
-		
+		modifiable = true;
 		
 		showValuesTable( true );
 		setTableSpecificListeners();
@@ -785,7 +793,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @return a new values table.
 	 */
-	public ValuesTable getValuesTable() {
+	protected ValuesTable getValuesTable() {
 
 		if (valuesTable == null) {
 			valuesTable = new ValuesTable( probNode, getTableModel(), modifiable );
@@ -798,7 +806,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @return a new values table scroll pane.
 	 */
-	public JScrollPane getValuesTableScrollPane() {
+	protected JScrollPane getValuesTableScrollPane() {
 
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();

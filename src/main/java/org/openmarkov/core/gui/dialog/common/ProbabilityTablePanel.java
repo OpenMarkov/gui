@@ -56,11 +56,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 */
 		private static final long serialVersionUID = 6257314234781632512L;
 
-		/**
-		 * Panel to scroll the table.
-		 */
-		protected JScrollPane valuesTableScrollPane = null;
-
+		
 		
 
 		/**
@@ -100,10 +96,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 */
 		private int baseIndexForCoordinates = -1;
 
-		/**
-		 * Indicates if the data of the table is modifiable.
-		 */
-		protected boolean modifiable;
+		
 
 		/**
 		 * String resource.
@@ -179,7 +172,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 			data = newData.clone();
 			this.logger = Logger.getLogger(PotentialsTablePanel.class);
 			this.probNode = probNode;
-			modifiable = true; // table is modifiable
+			 // table is modifiable
 			initialize();
 			//showValuesTable( true );
 			

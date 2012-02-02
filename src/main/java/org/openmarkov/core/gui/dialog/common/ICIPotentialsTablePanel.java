@@ -45,9 +45,18 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	private ICIValuesTable iciValuesTable;
 	private ValuesTable cptValuesTable;
 	
+	/**
+	 * Indicates if the data of the table is modifiable.
+	 */
+	private boolean modifiable;
+	
+	/**
+	 * Panel to scroll the table.
+	 */
+	private JScrollPane valuesTableScrollPane = null;
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super(probNode);
-		
+		modifiable = true;
 		add(getICIOptionPanel(),BorderLayout.NORTH);
 		
 		
@@ -452,7 +461,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * 
 	 * @return a new values table scroll pane.
 	 */
-	protected JScrollPane getValuesTableScrollPane() {
+	public JScrollPane getValuesTableScrollPane() {
 
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();

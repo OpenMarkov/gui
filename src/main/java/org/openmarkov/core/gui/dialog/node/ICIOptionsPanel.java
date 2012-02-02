@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -74,6 +75,7 @@ public class ICIOptionsPanel extends JPanel implements
 	 * to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
 	 */
 	private Container parentPanel;
+
 	/**
 	 * remember the last model selected (probabilistic, deterministic or optimal
 	 */
@@ -818,6 +820,7 @@ public class ICIOptionsPanel extends JPanel implements
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void itemStateChangedTPC(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			//has been deselected tpc
@@ -857,8 +860,16 @@ public class ICIOptionsPanel extends JPanel implements
 						e1.printStackTrace();
 					}
 					this.cpTablePanel = new CPTablePanel(probNodeCPT);
+					JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
+					//cptValuesTablePanel.resize(getPreferredSize());
+					//cptValuesTablePanel.repaint();
 					
-					parentPanel.add(cpTablePanel.getValuesTableScrollPane(), BorderLayout.SOUTH);
+					ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
+					JScrollPane iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
+					
+					parentPanel.remove(iciValuesTablePanel);
+					parentPanel.add(cptValuesTablePanel, BorderLayout.SOUTH);
+					//parentPanel.resize(getMinimumSize());
 					parentPanel.repaint();
 					//this.cpTablePanel = new CPTablePanel(probNodeCPT, iciOptionPanel);
 					 //getComponentsPanel().add(cpTablePanel, BorderLayout.CENTER);
