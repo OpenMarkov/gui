@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;

@@ -51,7 +51,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType="Table")
-public class CPTablePanel extends ProbabilityTablePanel {
+public class TablePotentialPanel extends ProbabilityTablePanel {
 
 	protected Logger logger;
 	/**
@@ -59,7 +59,14 @@ public class CPTablePanel extends ProbabilityTablePanel {
 	 */
 	private ValuesTable valuesTable = null;
 	
-	public CPTablePanel(ProbNode probNode) {
+	/**
+	 * Constructor use by CPTablePanel 
+	 * @param probNode
+	 */
+	/*public TablePotentialPanel(ProbNode probNode, ) {
+		
+	}*/
+	public TablePotentialPanel(ProbNode probNode) {
 		super(probNode);
 		
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
@@ -644,7 +651,7 @@ public class CPTablePanel extends ProbabilityTablePanel {
 			variables = tablePotential.getVariables();
 			
 		}else if ( tablePotential.getPotentialRole() == PotentialRole.
-				CONDITIONAL_PROBABILITY ){
+				CONDITIONAL_PROBABILITY || tablePotential.getPotentialRole() == PotentialRole.JOINT_PROBABILITY ){ //JoinProbability when is getted from a iciPotential
 			variable = tablePotential.getVariable(0);
 			variables = tablePotential.getVariables();
 			variables.remove(0);

@@ -10,7 +10,12 @@
 package org.openmarkov.core.gui.dialog.node;
 
 
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -29,14 +34,20 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialsTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
 
@@ -51,14 +62,23 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 public class ICIOptionsPanel extends JPanel implements 
 	PNUndoableEditListener{
 
+	
 	/**
 	 * serial uid
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
-
+	/**
+	 * to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
+	 */
+	Container parentPanel;
 	/**
 	 * remember the last model selected (probabilistic, deterministic or optimal
 	 */
+	/**
+	 * 
+	 */
+	private CPTablePanel cpTablePanel;
+	
 	private int prevModelPolicySelected = -1;
 	private static int PROBABILISTIC_SELECTED = 0;
 	private static int DETERMINISTIC_SELECTED = 1;
@@ -66,7 +86,7 @@ public class ICIOptionsPanel extends JPanel implements
 	/**
 	 * remember the last model selected canonical or TPC
 	 */
-	private int previousCanonicalModel = -1;
+	private int previousModel = -1;
 	private static int CANONICAL = 0;
 	private static int TPC = 1;
 	
@@ -121,6 +141,7 @@ public class ICIOptionsPanel extends JPanel implements
 	 * object to manage the ItemChange events of the panel
 	 */
 	//private TablePotentialPanelListenerAssistant listener = null;
+	private ICIOptionListenerAssistant listener;
 
 	private ProbNode probNode;
 
@@ -149,7 +170,8 @@ public class ICIOptionsPanel extends JPanel implements
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-
+		
+		
 	}
 
 	/**
@@ -163,6 +185,8 @@ public class ICIOptionsPanel extends JPanel implements
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
 		this.newNode = newNode;
+		this.listener = new ICIOptionListenerAssistant(this, probNode);
+		
 		//this.listener =
 		//	new TablePotentialPanelListenerAssistant( this );
 	
@@ -296,7 +320,7 @@ public class ICIOptionsPanel extends JPanel implements
 	/**
 	 * @return the button for the TPC option to be displayed
 	 */
-	protected JRadioButton getJRadioButtonTPC() {
+	public JRadioButton getJRadioButtonTPC() {
 
 		if (jRadioButtonTPC == null) {
 			jRadioButtonTPC = new JRadioButton();
@@ -305,7 +329,7 @@ public class ICIOptionsPanel extends JPanel implements
 			jRadioButtonTPC.setText( "New JRadioButton" );
 			jRadioButtonTPC.setText( dialogStringResource
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
-		//	jRadioButtonTPC.addItemListener( this.listener );
+			jRadioButtonTPC.addItemListener( this.listener );
 			jRadioButtonTPC.setEnabled( true );
 		}
 		return jRadioButtonTPC;
@@ -314,7 +338,7 @@ public class ICIOptionsPanel extends JPanel implements
 	/**
 	 * @return the button for the Canonical option to be displayed
 	 */
-	protected JRadioButton getJRadioButtonCanonical() {
+	public JRadioButton getJRadioButtonCanonical() {
 
 		if (jRadioButtonCanonical == null) {
 			jRadioButtonCanonical = new JRadioButton();
@@ -324,8 +348,9 @@ public class ICIOptionsPanel extends JPanel implements
 			jRadioButtonCanonical
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
-	//		jRadioButtonCanonical.addItemListener( this.listener );
+			jRadioButtonCanonical.addItemListener( this.listener );
 			jRadioButtonCanonical.setEnabled( true );
+			//jRadioButtonCanonical.setSelected( true );
 		}
 		return jRadioButtonCanonical;
 	}
@@ -740,13 +765,27 @@ public class ICIOptionsPanel extends JPanel implements
 		}
 
 	}
-	
+	public class ICIOptionListenerAssistant implements ItemListener{
 	/**
 	 * Identifies the radio button affected by the event.
 	 * @param e
 	 */
+		private ICIOptionsPanel iciOptionPanel;
+		private Container parentPanel;
+		private ProbNode probNode;
+		private ProbNode probNodeCPT;
+		private CPTablePanel cpTablePanel;
+		
+		
+			
+		public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel, ProbNode probNode){
+			this.iciOptionPanel = iciOptionPanel;
+			this.probNode = probNode;
+		}
 	
 	public void itemStateChanged(ItemEvent e) {
+		//to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
+		this.parentPanel = iciOptionPanel.getParent();
 		if (e.getItem().equals(getJRadioButtonTPC())) {
 			itemStateChangedTPC(e);
 		}
@@ -759,30 +798,68 @@ public class ICIOptionsPanel extends JPanel implements
 	private void itemStateChangedCanonical(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			//has been deselected canonical
-			previousCanonicalModel = CANONICAL;
+			previousModel = CANONICAL;
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){}
-		if ( previousCanonicalModel == CANONICAL) {
+		if ( previousModel == CANONICAL) {
+			//do nothing
+		} else if (previousModel == TPC) { //tpc --> Canonical
+			//show ICIPotentialsTablePanel
 			
-		} else if (previousCanonicalModel == TPC) { //tpc --> Canonical
 			
-		} else {//first selection -1
-			
+		} else {//first selection -1 it could be also from ICIPotentialsTablePanel
+			//show ICIPotentialsTablePanel and allow edition
+			if (parentPanel instanceof ICIPotentialsTablePanel) {
+				//no changes
+			}
 		}
 	}
 
 	private void itemStateChangedTPC(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			//has been deselected tpc
-			previousCanonicalModel = TPC;			
+			previousModel = TPC;			
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){}
-			if ( previousCanonicalModel == CANONICAL) { //Canonical --> tpc
-				
-			} else if (previousCanonicalModel == TPC) {
-				
-			} else {//first selection -1
-				
+			if ( previousModel == CANONICAL) { //Canonical --> tpc
+				//show TPC do not allow edit
+			} else if (previousModel == TPC) {
+				//do nothing
+			} else {//first selection -1 it could be also from ICIPotentialsTablePanel
+				//show TPCTablePanel 
+				//this is the first time it is created a CPTablePanel
+				previousModel = TPC;
+				if (parentPanel instanceof ICIPotentialsTablePanel) {
+					ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
+					try {
+						TablePotential tablePotential = (TablePotential)iciPotential.getCPT();
+						//New table potential from iciPotential 
+						ArrayList<Potential> potentials = new ArrayList<Potential>();
+						potentials.add(tablePotential);
+						probNodeCPT =  probNode;
+						probNodeCPT.setPotentials(potentials);
+						
+					} catch (NotEnoughMemoryException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					this.cpTablePanel = new CPTablePanel(probNodeCPT, iciOptionPanel);
+					cpTablePanel.repaint();
+				}
 			}
 	}
+	
+	}
+	
+	/*private CPTablePanel getCPTablePanel() {
+		if (cpTablePanel == null) {
+			cpTablePanel = new CPTablePanel(probNode);
+			boolean newNode = true;
+			cpTablePanel.setNewNode(newNode);
+			//tablePotentialPanel.setNodeProperties(probNode);
+		}
+		
+		return cpTablePanel;
+	}*/
 
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		//TODO Actualiza la tabla cuando se agrega/elimna un padre/ estado
@@ -803,6 +880,8 @@ public class ICIOptionsPanel extends JPanel implements
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 
 }
