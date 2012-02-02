@@ -10,9 +10,12 @@ public class CPTablePanel extends TablePotentialPanel{
 	
 	private ICIOptionsPanel iciOptionPanel;
 	
-	public CPTablePanel(ProbNode probNode, ICIOptionsPanel iciOptionPanel) {
+	public CPTablePanel(ProbNode probNode) {
 		super(probNode);
-		add(iciOptionPanel,BorderLayout.NORTH);
+		
+		//add(iciOptionPanel,BorderLayout.NORTH);
+		//repaint();
+		
 	}
 	
 	

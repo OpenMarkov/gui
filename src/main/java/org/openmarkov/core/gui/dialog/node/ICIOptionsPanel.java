@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.node;
 
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +35,9 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
@@ -70,7 +73,7 @@ public class ICIOptionsPanel extends JPanel implements
 	/**
 	 * to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
 	 */
-	Container parentPanel;
+	private Container parentPanel;
 	/**
 	 * remember the last model selected (probabilistic, deterministic or optimal
 	 */
@@ -141,7 +144,8 @@ public class ICIOptionsPanel extends JPanel implements
 	 * object to manage the ItemChange events of the panel
 	 */
 	//private TablePotentialPanelListenerAssistant listener = null;
-	private ICIOptionListenerAssistant listener;
+	private ICIOptionListenerAssistant listener=null;
+	
 
 	private ProbNode probNode;
 
@@ -185,8 +189,8 @@ public class ICIOptionsPanel extends JPanel implements
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
 		this.newNode = newNode;
-		this.listener = new ICIOptionListenerAssistant(this, probNode);
 		
+		this.listener = new ICIOptionListenerAssistant(this);
 		//this.listener =
 		//	new TablePotentialPanelListenerAssistant( this );
 	
@@ -772,15 +776,15 @@ public class ICIOptionsPanel extends JPanel implements
 	 */
 		private ICIOptionsPanel iciOptionPanel;
 		private Container parentPanel;
-		private ProbNode probNode;
+		//private ProbNode probNode;
 		private ProbNode probNodeCPT;
 		private CPTablePanel cpTablePanel;
 		
 		
 			
-		public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel, ProbNode probNode){
+		public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel){
 			this.iciOptionPanel = iciOptionPanel;
-			this.probNode = probNode;
+			//this.probNode = probNode;
 		}
 	
 	public void itemStateChanged(ItemEvent e) {
@@ -830,20 +834,36 @@ public class ICIOptionsPanel extends JPanel implements
 				if (parentPanel instanceof ICIPotentialsTablePanel) {
 					ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
 					try {
-						TablePotential tablePotential = (TablePotential)iciPotential.getCPT();
-						//New table potential from iciPotential 
-						ArrayList<Potential> potentials = new ArrayList<Potential>();
-						potentials.add(tablePotential);
-						probNodeCPT =  probNode;
-						probNodeCPT.setPotentials(potentials);
+						TablePotential tablePotential;
+						try {
+							//New table potential from iciPotential 
+							tablePotential = (TablePotential)iciPotential.getCPT();
+							ArrayList<Potential> potentials = new ArrayList<Potential>();
+							potentials.add(tablePotential);
+							probNodeCPT =  probNode;
+							probNodeCPT.setPotentials(potentials);
+						} catch (NonProjectablePotentialException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (WrongCriterionException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						
 						
 					} catch (NotEnoughMemoryException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					this.cpTablePanel = new CPTablePanel(probNodeCPT);
 					
-					this.cpTablePanel = new CPTablePanel(probNodeCPT, iciOptionPanel);
-					cpTablePanel.repaint();
+					parentPanel.add(cpTablePanel.getValuesTableScrollPane(), BorderLayout.SOUTH);
+					parentPanel.repaint();
+					//this.cpTablePanel = new CPTablePanel(probNodeCPT, iciOptionPanel);
+					 //getComponentsPanel().add(cpTablePanel, BorderLayout.CENTER);
+					//cpTablePanel.updateUI();
+					//cpTablePanel.repaint();
 				}
 			}
 	}

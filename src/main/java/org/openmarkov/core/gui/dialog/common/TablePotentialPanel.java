@@ -69,10 +69,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	public TablePotentialPanel(ProbNode probNode) {
 		super(probNode);
 		
-		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		
 		showValuesTable( true );
 		setTableSpecificListeners();
 		setData(probNode);
+		add(getValuesTableScrollPane(), BorderLayout.CENTER);
 		// TODO Auto-generated constructor stub
 	}
 	/**
@@ -797,7 +798,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @return a new values table scroll pane.
 	 */
-	protected JScrollPane getValuesTableScrollPane() {
+	public JScrollPane getValuesTableScrollPane() {
 
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();

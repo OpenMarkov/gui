@@ -20,6 +20,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
+import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
@@ -42,13 +43,14 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * JTable where show the values.
 	 */
 	private ICIValuesTable iciValuesTable;
+	private ValuesTable cptValuesTable;
 	
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super(probNode);
 		
 		add(getICIOptionPanel(),BorderLayout.NORTH);
 		
-	
+		
 		// TODO Auto-generated constructor stub
 		
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
@@ -460,6 +462,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		}
 		return valuesTableScrollPane;
 	}
+	
+	
 	/**
 	 * This method initialises valuesTable and defines that first two columns
 	 * are not selectable
@@ -474,6 +478,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		}
 		return iciValuesTable;
 	}
+	
 
 	/**
 	 * This method initializes tableModel.
