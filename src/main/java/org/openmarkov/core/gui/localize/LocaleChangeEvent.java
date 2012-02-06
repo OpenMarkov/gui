@@ -47,7 +47,7 @@ public class LocaleChangeEvent extends EventObject {
 
 		super(source);
 		this.language = language;
-		if (language.equals("en")) {
+		if (language.equals(Locale.ENGLISH.getLanguage ())) {
 			locale = Locale.ENGLISH;
 		} else if (language.equals("es")) { 
 			locale = new Locale("es");

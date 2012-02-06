@@ -57,15 +57,12 @@ public class StringResourceLoader implements LocaleChangeListener {
 	/**
 	 * Default language.
 	 */
-	private static final String DEFAULT_LANGUAGE = 
-        OpenMarkovPreferences.get(OpenMarkovPreferences.PREFERENCE_LANGUAGE, 
-        	OpenMarkovPreferences.OPENMARKOV_LANGUAGES, 
-        	System.getProperty("user.language"));
+	private static final String DEFAULT_LANGUAGE = System.getProperty("user.language");
 
 	/**
 	 * Language to use.
 	 */
-	private static String language = DEFAULT_LANGUAGE;
+	private static String language = null;
 
 	/**
 	 * Locale to use
@@ -120,11 +117,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 
 		if (instance == null) {
 			if ((language == null) || language.equals("")) {
-				//language = System.getProperty("user.language");
-				language = OpenMarkovPreferences.get( 
-						OpenMarkovPreferences.PREFERENCE_LANGUAGE, 
-						OpenMarkovPreferences.OPENMARKOV_LANGUAGES,
-						System.getProperty("user.language") );
+				language =  DEFAULT_LANGUAGE;
 			}
 			instance = new StringResourceLoader();
 		}
@@ -141,9 +134,13 @@ public class StringResourceLoader implements LocaleChangeListener {
 	 */
 	public static void setLanguage(String newLanguage) {
 
-		language = newLanguage;
-
-	}
+        if (newLanguage.equals("es")) { 
+            language = newLanguage;
+        } else {
+            language = "en";
+        }
+    }
+	
 	/**
 	 * @return the language
 	 */
@@ -473,7 +470,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 			((JMenu) c).setText(stringMenuResource.getString(temp));
 			// extract JMenuItems
 			int itemCount = ((JMenu) c).getItemCount();
-			for (int i = 1; i < itemCount; i++) {
+			for (int i = 0; i < itemCount; i++) {
 				Component item = ((JMenu) c).getItem(i);
 				if (item instanceof JMenu) {
 					temp = ((JMenu) item).getName() + ".Label";
