@@ -162,7 +162,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	private StringResource dialogStringResource;
 
-	protected ProbNode probNode;
+	private ProbNode probNode;
 	/**
 	 * Define the last column of the table that was modified
 	 */
@@ -206,7 +206,29 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		}
 
 	}
+	/**
+	 * Constructor for ICIValuesTable
+	 */
+	public ValuesTable(ValuesTableModel tableModel,
+			final boolean modifiable) {
+		
+		super( tableModel, modifiable, true, true );
+		//probNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
+		
+		this.tableModel = tableModel;
+		
+		dialogStringResource =
+		StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		if (modifiable) {
+		int numRowsModel =tableModel.getRowCount();
+		int numColumsModel = tableModel.getColumnCount();
+		this.dataModified =
+		new boolean[ numRowsModel ][ numColumsModel ];
+		initializeDataModified( false );
+		}
 
+}
+	
 	/**
 	 * @return the dialogStringResource
 	 */

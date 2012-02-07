@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.dialog.node;
 
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -166,11 +167,11 @@ public class ICIOptionsPanel extends JPanel implements
 	 * constructor without construction parameters
 	 */
 	public ICIOptionsPanel( ProbNode probNode) {
-
+		
 		this( true);//, notifier );
 		this.probNode = probNode;
 		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
-		
+		this.listener = new ICIOptionListenerAssistant(this);
 		try {
 			initialize();
 		} catch (Throwable e) {
@@ -181,7 +182,7 @@ public class ICIOptionsPanel extends JPanel implements
 	}
 
 	/**
-	 * This method initialises this instance.
+	 * This method initializes this instance.
 	 * 
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
@@ -191,10 +192,6 @@ public class ICIOptionsPanel extends JPanel implements
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
 		this.newNode = newNode;
-		
-		this.listener = new ICIOptionListenerAssistant(this);
-		//this.listener =
-		//	new TablePotentialPanelListenerAssistant( this );
 	
 
 	}
@@ -337,6 +334,7 @@ public class ICIOptionsPanel extends JPanel implements
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
 			jRadioButtonTPC.addItemListener( this.listener );
 			jRadioButtonTPC.setEnabled( true );
+			
 		}
 		return jRadioButtonTPC;
 	}
@@ -354,9 +352,9 @@ public class ICIOptionsPanel extends JPanel implements
 			jRadioButtonCanonical
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
-			jRadioButtonCanonical.addItemListener( this.listener );
 			jRadioButtonCanonical.setEnabled( true );
-			//jRadioButtonCanonical.setSelected( true );
+			jRadioButtonCanonical.setSelected( true );
+			jRadioButtonCanonical.addItemListener( this.listener );
 		}
 		return jRadioButtonCanonical;
 	}
@@ -771,17 +769,18 @@ public class ICIOptionsPanel extends JPanel implements
 		}
 
 	}
-	public class ICIOptionListenerAssistant implements ItemListener{
+	/*public class ICIOptionListenerAssistant implements ItemListener{
 	/**
 	 * Identifies the radio button affected by the event.
 	 * @param e
 	 */
+		/*
 		private ICIOptionsPanel iciOptionPanel;
 		private Container parentPanel;
 		//private ProbNode probNode;
 		private ProbNode probNodeCPT;
 		private CPTablePanel cpTablePanel;
-		
+		private JScrollPane iciValuesTablePanel =null;
 		
 			
 		public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel){
@@ -810,17 +809,20 @@ public class ICIOptionsPanel extends JPanel implements
 			//do nothing
 		} else if (previousModel == TPC) { //tpc --> Canonical
 			//show ICIPotentialsTablePanel
+			parentPanel.remove(cpTablePanel);
+			//cpTablePanel.setVisible(false);
+			parentPanel.add(iciValuesTablePanel, BorderLayout.CENTER);
+			//iciValuesTablePanel.setVisible(true);
 			
+			@SuppressWarnings("unused")
+			Component[] containers	= parentPanel.getComponents();
 			
-		} else {//first selection -1 it could be also from ICIPotentialsTablePanel
-			//show ICIPotentialsTablePanel and allow edition
-			if (parentPanel instanceof ICIPotentialsTablePanel) {
-				//no changes
-			}
+		} else {//first selection  -1 is always canonical
+			
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	
 	private void itemStateChangedTPC(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			//has been deselected tpc
@@ -828,31 +830,83 @@ public class ICIOptionsPanel extends JPanel implements
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){}
 			if ( previousModel == CANONICAL) { //Canonical --> tpc
 				//show TPC do not allow edit
+				if (iciValuesTablePanel != null){
+					parentPanel.remove(iciValuesTablePanel);
+					//iciValuesTablePanel.setVisible(false);
+				}
+				if (parentPanel instanceof ICIPotentialsTablePanel) {
+					ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
+					
+						TablePotential tablePotential;
+						try {
+							//New table potential from iciPotential 
+							try {
+								tablePotential = (TablePotential)iciPotential.getCPT();
+								ArrayList<Potential> potentials = new ArrayList<Potential>();
+								potentials.add(tablePotential);
+								probNodeCPT =  probNode;
+								probNodeCPT.setPotentials(potentials);
+							} catch (NonProjectablePotentialException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (WrongCriterionException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+						
+						
+					} catch (NotEnoughMemoryException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					this.cpTablePanel = new CPTablePanel(probNodeCPT);
+					JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
+					//cptValuesTablePanel.resize(getPreferredSize());
+					//cptValuesTablePanel.repaint();
+					
+					ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
+					this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
+					
+					Component[] containers	= parentPanel.getComponents();
+					//iciValuesTablePanel.setVisible(false);
+					parentPanel.remove(iciValuesTablePanel);
+					
+					parentPanel.add(cptValuesTablePanel, BorderLayout.CENTER);
+					//parentPanel.resize(getMinimumSize());
+					parentPanel.repaint();
+					//this.cpTablePanel = new CPTablePanel(probNodeCPT, iciOptionPanel);
+					 //getComponentsPanel().add(cpTablePanel, BorderLayout.CENTER);
+					//cpTablePanel.updateUI();
+					//cpTablePanel.repaint();
+					}
+		
 			} else if (previousModel == TPC) {
 				//do nothing
 			} else {//first selection -1 it could be also from ICIPotentialsTablePanel
 				//show TPCTablePanel 
 				//this is the first time it is created a CPTablePanel
-				previousModel = TPC;
+				/*previousModel = TPC;
 				if (parentPanel instanceof ICIPotentialsTablePanel) {
 					ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
-					try {
+					
 						TablePotential tablePotential;
 						try {
 							//New table potential from iciPotential 
-							tablePotential = (TablePotential)iciPotential.getCPT();
-							ArrayList<Potential> potentials = new ArrayList<Potential>();
-							potentials.add(tablePotential);
-							probNodeCPT =  probNode;
-							probNodeCPT.setPotentials(potentials);
-						} catch (NonProjectablePotentialException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (WrongCriterionException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						
+							try {
+								tablePotential = (TablePotential)iciPotential.getCPT();
+								ArrayList<Potential> potentials = new ArrayList<Potential>();
+								potentials.add(tablePotential);
+								probNodeCPT =  probNode;
+								probNodeCPT.setPotentials(potentials);
+							} catch (NonProjectablePotentialException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (WrongCriterionException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
 						
 						
 					} catch (NotEnoughMemoryException e1) {
@@ -875,11 +929,11 @@ public class ICIOptionsPanel extends JPanel implements
 					 //getComponentsPanel().add(cpTablePanel, BorderLayout.CENTER);
 					//cpTablePanel.updateUI();
 					//cpTablePanel.repaint();
-				}
-			}
+					}*/
+			/*}
 	}
 	
-	}
+	}*/
 	
 	/*private CPTablePanel getCPTablePanel() {
 		if (cpTablePanel == null) {

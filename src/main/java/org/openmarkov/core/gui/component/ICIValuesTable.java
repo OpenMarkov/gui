@@ -34,13 +34,15 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 	 */
 	private int lastCol = -1;
 	
-	
+	private ProbNode probNode;
 	
 	
 	public ICIValuesTable (ProbNode probNode, ValuesTableModel tableModel,
 			final boolean modifiable) { 
-		super (probNode, tableModel, modifiable) ;
-
+		super (tableModel, modifiable) ;
+		this.probNode = probNode;
+		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
+	
 	}
 
 	

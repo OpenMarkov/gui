@@ -32,7 +32,16 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
-
+/**
+ * This class implements a  ICI potential table with the following features:
+ * The headers are characteristic for this specific potential type.
+ * two first rows: The former for parent variables and the later for the parent states
+ * first column: is reserved for the child variable name and states
+ * 
+ * @author jlgozalo
+ * @author myebra
+ *
+ */
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType="ICI")
 public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
@@ -43,8 +52,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * JTable where show the values.
 	 */
 	private ICIValuesTable iciValuesTable;
-	private ValuesTable cptValuesTable;
 	
+	private ProbNode probNode;
 	/**
 	 * Indicates if the data of the table is modifiable.
 	 */
@@ -54,8 +63,10 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * Panel to scroll the table.
 	 */
 	private JScrollPane valuesTableScrollPane = null;
+	
 	public ICIPotentialsTablePanel(ProbNode probNode) {
-		super(probNode);
+		super();
+		this.probNode = probNode;
 		modifiable = true;
 		add(getICIOptionPanel(),BorderLayout.NORTH);
 		
@@ -80,7 +91,14 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		return iciOptionPanel;
 	}
 	
+	public ProbNode getProbNode() {
+		return probNode;
+	}
 	
+	public void setIciProbNode(ProbNode probNode){
+		this.probNode = probNode;
+	
+	}
 	
 	/**
 	 * @return the panel with the two buttons
@@ -456,6 +474,20 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void setVariables(ArrayList<Variable> variables) {
+		//TODO update this statement, when constructor of this class with 
+		//potential as parameter is implemented
+		if (probNode != null && probNode.getNodeType() == NodeType.UTILITY){
+			this.variables = new ArrayList<Variable>();
+			this.variables.add(probNode.getVariable());
+			for (Variable variable: variables)
+				this.variables.add(variable);
+		}else
+		
+		this.variables = variables;
+		
+	}
 	/**
 	 * This method initializes valuesTableScrollPane.
 	 * 
@@ -466,15 +498,15 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();
 			valuesTableScrollPane
-				.setName( "ProbabilityTablePanel.valuesTableScrollPane" );
+				.setName( "ICIPotentialsTablePanel.valuesTableScrollPane" );
 			valuesTableScrollPane.setViewportView( getICIValuesTable() );
 		}
 		return valuesTableScrollPane;
 	}
-	
+
 	
 	/**
-	 * This method initialises valuesTable and defines that first two columns
+	 * This method initializes ICIvaluesTable and defines that first two columns
 	 * are not selectable
 	 * 
 	 * @return a new values table.

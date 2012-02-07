@@ -16,8 +16,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-//TODO leak potentials
-//TODO check that columns sum one
+
+@SuppressWarnings("serial")
 public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	/**
 	 * The column of the table where is the potential

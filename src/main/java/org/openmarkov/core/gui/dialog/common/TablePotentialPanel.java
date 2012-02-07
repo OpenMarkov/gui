@@ -48,7 +48,25 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-
+/**
+ * This class implements a Table potential table with the following features:
+ * <li>Its elements, except the first column, are modifiable.</li>
+ * <li>New elements can be added, creating a new key row with empty data.</li> 
+ * <li>The key data (first column) consist of a key string following of the 
+ * index of the row and it is used for internal purposes only.</li>
+ * <li>The key data is hidden.</li>
+ * <li>The information of a row (except the first column) can not be taken up
+ * or down.</li>
+ * <li>The rows can not be removed.</li>
+ * <li>The first editable row is the one that has the values of the potentials.</li>
+ * <li>The rows between 0 and the first editable row are ocuppied by the values
+ * of the states of the parents of the variable.</li>
+ * <li>The header of columns is hidden.</li>
+ * 
+ * @author jlgozalo
+ * @author myebra
+ *
+ */
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType="Table")
 public class TablePotentialPanel extends ProbabilityTablePanel {
@@ -68,6 +86,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 */
 	protected JScrollPane valuesTableScrollPane = null;
 	
+	protected ProbNode probNode;
 	/**
 	 * Constructor use by CPTablePanel 
 	 * @param probNode
@@ -75,7 +94,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	
 
 	public TablePotentialPanel(ProbNode probNode) {
-		super(probNode);
+		super();
+		this.probNode = probNode;
 		modifiable = true;
 		
 		showValuesTable( true );
@@ -337,6 +357,20 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
        // create the array of arrays
 		values = new Object[ numRows ][ numColumns ];
 		return values;
+	}
+	
+	private void setVariables(ArrayList<Variable> variables) {
+		//TODO update this statement, when constructor of this class with 
+		//potential as parameter is implemented
+		if (probNode != null && probNode.getNodeType() == NodeType.UTILITY){
+			this.variables = new ArrayList<Variable>();
+			this.variables.add(probNode.getVariable());
+			for (Variable variable: variables)
+				this.variables.add(variable);
+		}else
+		
+		this.variables = variables;
+		
 	}
 	/**
 	 * This methods fills the Upper Left corner of the table with the name of
@@ -811,7 +845,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		if (valuesTableScrollPane == null) {
 			valuesTableScrollPane = new JScrollPane();
 			valuesTableScrollPane
-				.setName( "ProbabilityTablePanel.valuesTableScrollPane" );
+				.setName( "TablePotentialPanel.valuesTableScrollPane" );
 			valuesTableScrollPane.setViewportView( getValuesTable() );
 		}
 		return valuesTableScrollPane;

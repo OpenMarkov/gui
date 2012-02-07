@@ -122,7 +122,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		
 		
 
-		protected ProbNode probNode;
+		//private ProbNode probNode;
 		/**
 		 * The popupMenu that appears when there is a click on the valuesTable Object 
 		 */
@@ -148,9 +148,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 * this is a default constructor with no construction parameters
 		 * @wbp.parser.constructor
 		 */
-		public ProbabilityTablePanel(ProbNode probNode) {
+		public ProbabilityTablePanel() {
 
-        this (probNode, new String[] {"id", "states", "values"}, new Object[][] {new Object[] {0,
+        this ( new String[] {"id", "states", "values"}, new Object[][] {new Object[] {0,
                 null, 0}}); // default init
 		}
 
@@ -162,7 +162,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 * @param newData
 		 *            content of the cells.
 		 */
-		public ProbabilityTablePanel(ProbNode probNode, String[] newColumns, 
+		public ProbabilityTablePanel( String[] newColumns, 
 				Object[][] newData) {
 
 			stringResource =
@@ -171,7 +171,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 			columns = newColumns.clone();
 			data = newData.clone();
 			this.logger = Logger.getLogger(PotentialsTablePanel.class);
-			this.probNode = probNode;
+			//this.probNode = probNode;
 			 // table is modifiable
 			initialize();
 			//showValuesTable( true );
@@ -358,7 +358,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 		/**
 		 * @param variables the variables to set
 		 */
-		protected void setVariables(ArrayList<Variable> variables) {
+		
+		/*protected void setVariables(ArrayList<Variable> variables) {
 			//TODO update this statement, when constructor of this class with 
 			//potential as parameter is implemented
 			if (probNode != null && probNode.getNodeType() == NodeType.UTILITY){
@@ -370,7 +371,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 			
 			this.variables = variables;
 			
-		}
+		}*/
 		
 		/**
 		 * @param listPotentials the listPotentials to set
