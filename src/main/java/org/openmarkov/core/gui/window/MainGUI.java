@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.window;
 
 
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
 
@@ -100,10 +101,9 @@ public class MainGUI {
 					.setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
 				thisFrame.setTitle( "OpenMarkov" );
 				thisFrame.setName( "MainGUI" );
-				thisFrame.setSize( screenPortionSize() );
-				Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-				int x = (screen.width - thisFrame.getWidth()) / 2;
-				thisFrame.setLocation( x, 0 );
+		        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(thisFrame.getGraphicsConfiguration());  
+				thisFrame.setSize( screenPortionSize(screenInsets) );
+				thisFrame.setLocation( screenInsets.left, screenInsets.top );
 				splash.getSplash().setProgress( "Loading Resources", 25 );
 				// TODO here will be the plug-in loaders in future
 				splash.doingWork();
@@ -185,13 +185,13 @@ public class MainGUI {
 	 * @return new dimensions of the window.
 	 * @wbp.parser.entryPoint
 	 */
-	private static Dimension screenPortionSize() {
-
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-		return new Dimension( screen.width, (screen.height * 6) / 7 );
-
-	}
+    private Dimension screenPortionSize (Insets screenInsets)
+    {
+        Dimension screen = Toolkit.getDefaultToolkit ().getScreenSize ();
+        int width = screen.width - screenInsets.right - screenInsets.left;
+        int height = screen.height - screenInsets.top - screenInsets.bottom;
+        return new Dimension (width, (height * 6) / 7);
+    }
 
 	/**
 	 * This method initialises mainPanel.
