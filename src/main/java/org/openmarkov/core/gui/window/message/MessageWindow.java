@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -132,8 +134,9 @@ public class MessageWindow extends JFrame implements ActionListener {
 		int width = ownerFrame.getWidth();
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		Insets screenInsets = getToolkit().getScreenInsets(getGraphicsConfiguration());  
 
-		int height = screen.height - ownerFrame.getHeight();
+        int height = screen.height - ownerFrame.getHeight() - screenInsets.bottom;
 			
 		this.setBounds(x, y, width, height);
 		setContentPane(getJContentPane());
