@@ -34,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.LinkEdit;
@@ -45,8 +44,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NoPropagationCanBeDoneException;
-import org.openmarkov.core.exception.NoPropagationOnInfluenceDiagramsException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -87,10 +84,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.NetworkType;
-//import org.openmarkov.costEffectiveness.CostEffectivenessAnalysis;
-//import org.openmarkov.costEffectiveness.ExcelIO;
-//import org.openmarkov.costEffectiveness.ExcelSensitivityAnalysis;
-//import org.openmarkov.costEffectiveness.Intervention;
 
 
 /**
@@ -512,31 +505,38 @@ MouseMotionListener {
 	 */
 	public void mousePressed(MouseEvent e) {
 
-		switch (editionState) {
-		case SELECTION: {
-			mousePressedSelection(e);
-			break;
-		}
-		case CHANCE: {
-			mousePressedNodeCreation(e, NodeType.CHANCE);
-			break;
-		}
-		case DECISION: {
-			mousePressedNodeCreation(e, NodeType.DECISION);
-			break;
-		}
-		case UTILITY: {
-			mousePressedNodeCreation(e, NodeType.UTILITY);
-			break;
-		}
-		case LINK: {
-			mousePressedLinkCreation(e);
-			break;
-		}
-		default: {
-			break;
-		}
-		}
+        switch (editionState)
+        {
+            case SELECTION :
+            {
+                mousePressedSelection (e);
+                break;
+            }
+            case CHANCE :
+            {
+                mousePressedNodeCreation (e, NodeType.CHANCE);
+                break;
+            }
+            case DECISION :
+            {
+                mousePressedNodeCreation (e, NodeType.DECISION);
+                break;
+            }
+            case UTILITY :
+            {
+                mousePressedNodeCreation (e, NodeType.UTILITY);
+                break;
+            }
+            case LINK :
+            {
+                mousePressedLinkCreation (e);
+                break;
+            }
+            default :
+            {
+                break;
+            }
+        }
 
 	}
 
@@ -621,29 +621,42 @@ MouseMotionListener {
 				}
 			}
 		} else if (SwingUtilities.isRightMouseButton(e)) {
-			if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-				if (!node.isSelected()) {
-					visualNetwork.setSelectedAllObjects(false);
-					visualNetwork.setSelectedNode(node, true);
-				}
-				getPopupMenu(PopupMenuFactory.NODE).show(
-						this, e.getX(), e.getY());
-			} else if ((link =
-					visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-				if (!link.isSelected()) {
-					visualNetwork.setSelectedAllObjects(false);
-					visualNetwork.setSelectedLink(link, true);
-				}
-				getPopupMenu(PopupMenuFactory.LINK).show(
-						this, e.getX(), e.getY());
-			} else {
-				visualNetwork.setSelectedAllObjects(false);
-				getPopupMenu(PopupMenuFactory.NETWORK).show(
-						this, e.getX(), e.getY());
-			}
+		    showContextualMenu(e, g);
 		}
 		repaint();
 
+	}
+	
+	/**
+	 * Shows contextual menu
+	 * @param e MouseEvent
+	 * @param g Graphics2D
+	 */
+	private void showContextualMenu(MouseEvent e, Graphics2D g)
+	{
+	    VisualNode node = null;
+	    VisualLink link = null;
+	    
+        if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+            if (!node.isSelected()) {
+                visualNetwork.setSelectedAllObjects(false);
+                visualNetwork.setSelectedNode(node, true);
+            }
+            getPopupMenu(PopupMenuFactory.NODE).show(
+                    this, e.getX(), e.getY());
+        } else if ((link =
+                visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
+            if (!link.isSelected()) {
+                visualNetwork.setSelectedAllObjects(false);
+                visualNetwork.setSelectedLink(link, true);
+            }
+            getPopupMenu(PopupMenuFactory.LINK).show(
+                    this, e.getX(), e.getY());
+        } else {
+            visualNetwork.setSelectedAllObjects(false);
+            getPopupMenu(PopupMenuFactory.NETWORK).show(
+                    this, e.getX(), e.getY());
+        }
 	}
 
 	/**
@@ -711,10 +724,14 @@ MouseMotionListener {
 					adjustPanelDimension();
 					repaint();
 				}
-			}
-		}
-
-	}
+            }
+        }
+        else if (SwingUtilities.isRightMouseButton (e))
+        {
+            showContextualMenu (e, g);
+        }
+        repaint ();
+    }
 
 
 
@@ -738,10 +755,14 @@ MouseMotionListener {
 				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					newLink = new VisualLink(node.getPosition(), cursorPosition);
 					newLinkSource = node;
-					repaint();
 				}
 			}
 		}
+        else if (SwingUtilities.isRightMouseButton (e))
+        {
+            showContextualMenu (e, g);
+        }
+        repaint ();		
 
 	}
 
