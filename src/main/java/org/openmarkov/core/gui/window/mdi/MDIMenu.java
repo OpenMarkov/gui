@@ -205,7 +205,7 @@ public class MDIMenu extends Component{
 
 		if (windowMinimizeAllMenuItem == null) {
 			windowMinimizeAllMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_MINIMIZEALL_MENUITEM);
+			windowMinimizeAllMenuItem.setName(WINDOW_MINIMIZEALL_MENUITEM);
 			windowMinimizeAllMenuItem.setText(stringResource
 				.getString(WINDOW_MINIMIZEALL_MENUITEM + ".Label"));
 			windowMinimizeAllMenuItem.setMnemonic(stringResource.getString(
@@ -229,7 +229,7 @@ public class MDIMenu extends Component{
 
 		if (windowRestoreAllMenuItem == null) {
 			windowRestoreAllMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_RESTOREALL_MENUITEM);
+			windowRestoreAllMenuItem.setName(WINDOW_RESTOREALL_MENUITEM);
 			windowRestoreAllMenuItem.setText(stringResource
 				.getString(WINDOW_RESTOREALL_MENUITEM + ".Label"));
 			windowRestoreAllMenuItem.setMnemonic(stringResource.getString(
@@ -253,7 +253,7 @@ public class MDIMenu extends Component{
 
 		if (windowCascadeMenuItem == null) {
 			windowCascadeMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_CASCADE_MENUITEM);
+			windowCascadeMenuItem.setName(WINDOW_CASCADE_MENUITEM);
 			windowCascadeMenuItem.setText(stringResource
 				.getString(WINDOW_CASCADE_MENUITEM + ".Label"));
 			windowCascadeMenuItem.setMnemonic(stringResource.getString(
@@ -276,7 +276,7 @@ public class MDIMenu extends Component{
 
 		if (windowMosaicMenuItem == null) {
 			windowMosaicMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_MOSAIC_MENUITEM);
+			windowMosaicMenuItem.setName(WINDOW_MOSAIC_MENUITEM);
 			windowMosaicMenuItem.setText(stringResource
 				.getString(WINDOW_MOSAIC_MENUITEM + ".Label"));
 			windowMosaicMenuItem.setMnemonic(stringResource.getString(
@@ -299,7 +299,7 @@ public class MDIMenu extends Component{
 
 		if (windowPreviousMenuItem == null) {
 			windowPreviousMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_PREVIOUS_MENUITEM);
+			windowPreviousMenuItem.setName(WINDOW_PREVIOUS_MENUITEM);
 			windowPreviousMenuItem.setText(stringResource
 				.getString(WINDOW_PREVIOUS_MENUITEM + ".Label"));
 			windowPreviousMenuItem.setMnemonic(stringResource.getString(
@@ -322,7 +322,7 @@ public class MDIMenu extends Component{
 
 		if (windowNextMenuItem == null) {
 			windowNextMenuItem = new JMenuItem();
-			windowMenu.setName(WINDOW_NEXT_MENUITEM);
+			windowNextMenuItem.setName(WINDOW_NEXT_MENUITEM);
 			windowNextMenuItem.setText(stringResource
 				.getString(WINDOW_NEXT_MENUITEM + ".Label"));
 			windowNextMenuItem.setMnemonic(stringResource.getString(

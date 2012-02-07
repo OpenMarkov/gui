@@ -26,7 +26,7 @@ public class LocalizedCheckBoxMenuItem extends JCheckBoxMenuItem
     public LocalizedCheckBoxMenuItem(String name, String actionCommand, boolean useMnemonic)
     {
         this.setName(name);
-        this.setText(MenuLocalizer.getString(name));
+        this.setText(MenuLocalizer.getLabel(name));
         if(useMnemonic)
         {
             this.setMnemonic(MenuLocalizer.getMnemonic(name).charAt(0));
