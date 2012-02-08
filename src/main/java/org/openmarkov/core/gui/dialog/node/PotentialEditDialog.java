@@ -138,9 +138,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             StringResourceLoader.getUniqueInstance().getBundleDialogs();
         messageStringResource =
             StringResourceLoader.getUniqueInstance().getBundleMessages();
+        String title = dialogStringResource
+                .getString("NodePotentialDialog.Title.Label");
+        
         setTitle(dialogStringResource
             .getString("NodePotentialDialog.Title.Label")
             + ": " + (probNode == null? "":probNode.getName()));
+       
         configureComponentsPanel();
         pack();
     }
@@ -260,7 +264,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         this.probNode = probNode;
         //*******
         setTitle(dialogStringResource.getString(
-                "NodePropertiesDialog.Title.Label")+ ": " + probNode.getName());
+                "NodePotentialDialog.Title.Label")+ ": " + probNode.getName());
 
         getPotentialPanel().setData( probNode );
         if ( probNode.getNodeType() == NodeType.DECISION ){

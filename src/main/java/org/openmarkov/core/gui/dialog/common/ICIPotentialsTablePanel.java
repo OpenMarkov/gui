@@ -95,10 +95,6 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		return probNode;
 	}
 	
-	public void setIciProbNode(ProbNode probNode){
-		this.probNode = probNode;
-	
-	}
 	
 	/**
 	 * @return the panel with the two buttons
