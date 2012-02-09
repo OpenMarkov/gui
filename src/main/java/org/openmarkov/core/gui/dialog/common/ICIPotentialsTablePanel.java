@@ -467,7 +467,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 
 	@Override
 	public void saveChanges() throws NotEnoughMemoryException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	

@@ -215,7 +215,7 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRelationMenuItem() {
 
 		if (relationMenuItem == null) {
-			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.CHANGE_POTENTIAL);
+			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.EDIT_POTENTIAL);
 			relationMenuItem.addActionListener(listener);
 		}
 
@@ -315,7 +315,7 @@ class NodePopup extends PopupMenuBasic {
 			component = removeMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			component = propertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_POTENTIAL)) {
+		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
 			component = relationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
 			component = expandMenuItem;

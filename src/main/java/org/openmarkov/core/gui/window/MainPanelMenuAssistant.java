@@ -19,6 +19,9 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -187,7 +190,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
 		setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
 		setOptionEnabled(ActionCommands.NODE_PROPERTIES, false);
-		setOptionEnabled(ActionCommands.CHANGE_POTENTIAL, false);
+		setOptionEnabled(ActionCommands.EDIT_POTENTIAL, false);
 		setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
 		setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 		setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
@@ -450,7 +453,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
 			setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
 			setOptionEnabled(ActionCommands.NODE_PROPERTIES, false);
-			setOptionEnabled(ActionCommands.CHANGE_POTENTIAL, false);
+			setOptionEnabled(ActionCommands.EDIT_POTENTIAL, false);
 			setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
@@ -658,7 +661,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 							 label = stringResource.getString("Edit.Policy.Label");
 							 break;
 						 }
-						 setText(ActionCommands.CHANGE_POTENTIAL, label);
+						 setText(ActionCommands.EDIT_POTENTIAL, label);
 					}
 					VisualNode visualNode = arrayOfNodes.get(0);
 					if (visualNode.getFindingInNode()) {
@@ -684,7 +687,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.CLIPBOARD_COPY, canCopy);
 		setOptionEnabled(ActionCommands.OBJECT_REMOVAL, canRemove);
 		setOptionEnabled(ActionCommands.NODE_PROPERTIES, canNodeProperties);
-		setOptionEnabled(ActionCommands.CHANGE_POTENTIAL, canNodeTable);
+		setOptionEnabled(ActionCommands.EDIT_POTENTIAL, canNodeTable);
 		setOptionEnabled(ActionCommands.LINK_PROPERTIES, canLinkProperties);
 		setOptionEnabled(ActionCommands.NODE_EXPANSION, canExpand);
 		setOptionEnabled(ActionCommands.NODE_CONTRACTION, canContract);
@@ -748,6 +751,21 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			
 		updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
 				((PNESupport)event.getSource()).getCanRedo());
+		
+	}
+
+	@Override
+	public void undoableEditWillHappen(UndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException,
+			NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void undoEditHappened(UndoableEditEvent event) {
+		// TODO Auto-generated method stub
 		
 	}
 }

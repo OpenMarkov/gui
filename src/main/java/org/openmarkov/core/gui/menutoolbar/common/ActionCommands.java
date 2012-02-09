@@ -224,7 +224,7 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to show the table of a node.
 	 */
-	public static final String CHANGE_POTENTIAL = "NodePotential";
+	public static final String EDIT_POTENTIAL = "NodePotential";
 	
 	/**
 	 * Action invoked for testing

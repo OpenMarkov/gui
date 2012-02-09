@@ -136,7 +136,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 
 	/**
-	 * This method listens to the user actions on the main menu.
+	 * This method listens to the user actions on the main panel.
 	 * 
 	 * @param e
 	 *            menu event information.
@@ -219,8 +219,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
 		} else if (actionCommand.equals( ActionCommands.NODE_PROPERTIES )) {
 			getCurrentNetworkPanel().changeNodeProperties();
-		} else if (actionCommand.equals( ActionCommands.CHANGE_POTENTIAL )) {
-			getCurrentNetworkPanel().changePotentialValues();
+		} else if (actionCommand.equals( ActionCommands.EDIT_POTENTIAL )) {
+			getCurrentNetworkPanel().changePotential();
 		} else if (actionCommand.equals( ActionCommands.TEST )) {
 			//getCurrentNetworkPanel().changeNodeTable();	
 			try {

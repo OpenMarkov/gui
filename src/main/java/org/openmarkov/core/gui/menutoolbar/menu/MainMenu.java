@@ -1036,7 +1036,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		if (editRelationMenuItem == null) {
             editRelationMenuItem = new LocalizedMenuItem (
                                                           MenuItemNames.EDIT_NODERELATION_MENUITEM,
-                                                          ActionCommands.CHANGE_POTENTIAL);
+                                                          ActionCommands.EDIT_POTENTIAL);
 			editRelationMenuItem.addActionListener(listener);
 		}
 
@@ -1949,7 +1949,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			component = editLinkCreationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			component = editNodePropertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_POTENTIAL)) {
+		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
 			component = editRelationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_PROPERTIES)) {
 			component = editLinkPropertiesMenuItem;

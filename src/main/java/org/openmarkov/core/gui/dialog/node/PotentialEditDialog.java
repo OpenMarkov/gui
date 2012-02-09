@@ -121,6 +121,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     public PotentialEditDialog(Window owner, ProbNode probNode, boolean newElement) {
         super(owner);
         this.probNode = probNode;
+        //TODO create PNESupport
         probNode.getProbNet().getPNESupport().openParenthesis();
         initialize();
         setLocationRelativeTo(owner);
@@ -128,6 +129,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         setResizable(true);
 
     }
+    
     /**
      * This method configures the dialog box.
      */

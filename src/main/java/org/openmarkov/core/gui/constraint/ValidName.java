@@ -26,12 +26,13 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
  * name. */
 public class ValidName extends PNConstraint {
 
+	public ValidName(ProbNet probNet) {
+		super(probNet);
+		
+	}
+
 	// Attributes.
 	private String message;
-	
-    public ValidName(ProbNet probNet) {
-        super(probNet);
-    }	
 
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NonProjectablePotentialException, WrongCriterionException {

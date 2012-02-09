@@ -1473,6 +1473,23 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
       this.probNode = probNode;
     }
 
+
+	@Override
+	public void undoableEditWillHappen(UndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException,
+			NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void undoEditHappened(UndoableEditEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 

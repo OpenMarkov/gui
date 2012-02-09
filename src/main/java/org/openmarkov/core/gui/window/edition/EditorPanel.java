@@ -249,7 +249,7 @@ MouseMotionListener {
 	/**
 	 * Object Dialog for potentials edition
 	 */
-	PotentialEditDialog potentialsDialog = null;
+	PotentialEditDialog potentialEditDialog = null;
 
 	private CostEffectivenessDialog costEffectivenessDialog;
 
@@ -593,7 +593,7 @@ MouseMotionListener {
 						visualNetwork.setSelectedAllObjects(false);
 						visualNetwork.setSelectedNode(node, true);
 					}
-					changePotentialValues();
+					changePotential();
 				}
 
 			}else{
@@ -1303,8 +1303,7 @@ MouseMotionListener {
 				CRemoveProbNodeEdit cRemoveProbNodeEdit = 
 						new CRemoveProbNodeEdit( probNet, node );
 
-				probNet.getPNESupport().announceEdit(cRemoveProbNodeEdit);
-				probNet.getPNESupport().doEdit(cRemoveProbNodeEdit);
+				probNet.doEdit(cRemoveProbNodeEdit);
 			}
 			/*undoManager.addEditRemoveObjects(probNet, nodeWrappers
 				.toArray(new ProbNode[nodeWrappers.size()]), links
@@ -1361,21 +1360,31 @@ MouseMotionListener {
 		}
 
 	}
+	/**
+	 * 
+	 */
+	public void changePotential() {
+		
+		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+		
+		ProbNode probNode = selectedNodes.get(0).getProbNode();
+		/*Potential oldPotential = probNode.getPotentials().get(0);
+		PotentialEditDialog dialog =  new PotentialEditDialog(oldPotential);
+		Potential newPotential = dialog.getNewPotential();
+		if ( newPotential != null ) {
+			new edit = new ChangeNodePotentialEdit();
+			pNESupport.doedit
+			adjustPanelDimension();
+			repaint();
+			networkChanged = true;
+		}*/
 
-	public void changePotentialValues() {
-		ProbNode node = null;
-
-		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
-
-		if (selectedNode.size() == 1) {
-			node = selectedNode.get(0).getProbNode();
-			if (requestPotentialValues(Utilities.getOwner(this),node, false)) {	
-				adjustPanelDimension();
-				repaint();
-				networkChanged = true;
-			}else{
-				probNet.getPNESupport().undoAndDelete();
-			}
+		if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {	
+			adjustPanelDimension();
+			repaint();
+			networkChanged = true;
+		} else {
+			probNet.getPNESupport().undoAndDelete();
 		}
 	}	
 
@@ -1403,12 +1412,13 @@ MouseMotionListener {
 	}
 
 	private boolean requestPotentialValues(Window owner, ProbNode probNode, boolean 
-			newNode) {
-		potentialsDialog =
-				new PotentialEditDialog(owner, probNode, newNode);
-		return (potentialsDialog.requestValues()
+			isNewNode) {
+		potentialEditDialog =
+				new PotentialEditDialog(owner, probNode, isNewNode);
+		return (potentialEditDialog.requestValues()
 				== NodePropertiesDialog.OK_BUTTON);
 	}
+	
 	private boolean requestCostEffectiveness(Window owner, String suffixTypeAnalysis, boolean isProbabilistic) {
 		costEffectivenessDialog = new CostEffectivenessDialog(owner);
 		costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
