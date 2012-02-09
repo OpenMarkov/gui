@@ -118,8 +118,8 @@ public class ICIOptionsPanelTest {
 		pU.values[2] = 3;
 		pU.values[3] = 4;
 		simpleProbNet = new ProbNet();
-		simpleProbNet.addConstraint(new NoCycle(), true);
-		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
+		simpleProbNet.addConstraint(new NoCycle(simpleProbNet), true);
+		simpleProbNet.addConstraint(new OnlyDirectedLinks(simpleProbNet), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addVariable(D, NodeType.DECISION);

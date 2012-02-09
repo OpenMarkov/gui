@@ -32,6 +32,10 @@ public class ValidState extends PNConstraint implements PropertyNames {
 	// Attributes.
 	private String message;
 	
+    public ValidState(ProbNet probNet) {
+        super(probNet);
+    }   	
+	
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NotEnoughMemoryException, NonProjectablePotentialException, 
 	WrongCriterionException {

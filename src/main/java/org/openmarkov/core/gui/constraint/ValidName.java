@@ -28,6 +28,10 @@ public class ValidName extends PNConstraint {
 
 	// Attributes.
 	private String message;
+	
+    public ValidName(ProbNet probNet) {
+        super(probNet);
+    }	
 
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NonProjectablePotentialException, WrongCriterionException {
