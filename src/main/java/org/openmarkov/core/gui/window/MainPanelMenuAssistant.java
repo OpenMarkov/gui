@@ -732,9 +732,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	
 	public void undoableEditHappened(UndoableEditEvent e) {
 		 
-		
-		updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().getCanUndo(),
-				((ProbNet)e.getSource()).getPNESupport().getCanRedo());
+		ProbNet probNet = currentNetworkPanel.getProbNet ();
+		updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(),
+				probNet.getPNESupport().getCanRedo());
+		/*updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().getCanUndo(),
+				((ProbNet)e.getSource()).getPNESupport().getCanRedo());*/
 		
 
 	}
@@ -748,9 +750,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 
 	
 	public void undoEditHappened(PNUndoableEditEvent event) {
-			
+		ProbNet probNet = currentNetworkPanel.getProbNet ();
 		updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
 				((PNESupport)event.getSource()).getCanRedo());
+		
+		/*updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
+				((PNESupport)event.getSource()).getCanRedo());*/
 		
 	}
 
