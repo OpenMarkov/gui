@@ -752,7 +752,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		    }
 		}
 		// Select links
-		for(VisualLink selectedLink: getLinksOfNodes (selectedVisualNodes))
+		for(VisualLink selectedLink: getLinksOfNodes (selectedVisualNodes, true))
 		{
 		    setSelectedElement(selectedLink, true);
 		}
@@ -834,37 +834,54 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
-	/**
-	 * This method returns a list that contains all the links that leave of or
-	 * arrive in one node of the list of nodes passed as parameter.
-	 * 
-	 * @param nodes
-	 *            list of nodes whose links are returned.
-	 * @return a list of links related to the nodes.
-	 */
-	public ArrayList<VisualLink> getLinksOfNodes(ArrayList<VisualNode> nodes) {
-
-		ArrayList<VisualLink> links = new ArrayList<VisualLink>();
-		int i, l = nodes.size();
-		boolean found = false;
-
-		for (VisualLink visualLink : visualLinks) {
-			found = false;
-			i = 0;
-			while (!found && (i < l)) {
-				if (visualLink.getSourceNode().equals(nodes.get(i))
-					|| visualLink.getDestinationNode().equals(nodes.get(i))) {
-					links.add(visualLink);
-					found = true;
-				} else {
-					i++;
-				}
-			}
-		}
-
-		return links;
-
-	}
+    /**
+     * This method returns a list that contains all the links that leave of or
+     * arrive in one node of the list of nodes passed as parameter.
+     * @param nodes list of nodes whose links are returned.
+     * @param onlyBothEnds returns only those links whose two ends are selected
+     * @return a list of links related to the nodes.
+     */
+    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes, boolean onlyBothEnds)
+    {
+        ArrayList<VisualLink> links = new ArrayList<VisualLink> ();
+        int i, l = nodes.size ();
+        boolean found = false;
+        boolean foundSource = false;
+        boolean foundDestination = false;
+        for (VisualLink visualLink : visualLinks)
+        {
+            found = false;
+            foundSource = false;
+            foundDestination = false;
+            i = 0;
+            while (!found && (i < l))
+            {
+                foundSource |= visualLink.getSourceNode ().equals (nodes.get (i));
+                foundDestination |= visualLink.getDestinationNode ().equals (nodes.get (i));
+                found = (onlyBothEnds)? foundSource && foundDestination : foundSource || foundDestination;  
+                if (found)
+                {
+                    links.add (visualLink);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+        return links;
+    }
+	
+    /**
+     * This method returns a list that contains all the links that leave of or
+     * arrive in one node of the list of nodes passed as parameter.
+     * @param nodes list of nodes whose links are returned.
+     * @return a list of links related to the nodes.
+     */
+    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes)
+    {
+        return getLinksOfNodes (nodes, false);
+    }
 
 	/**
 	 * Sets a new selection listener.
