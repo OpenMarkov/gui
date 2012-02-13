@@ -502,6 +502,7 @@ MouseMotionListener {
 	 */
 	public void mousePressed(MouseEvent e) {
 
+        //  Specific functionality depending on the edition state
         switch (editionState)
         {
             case SELECTION :
@@ -534,6 +535,49 @@ MouseMotionListener {
                 break;
             }
         }
+        
+        // Generic functionality regardless of the edition state
+        VisualNode node = null;
+        VisualLink link = null;
+        
+        Graphics2D g = (Graphics2D) getGraphics();
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            if (e.getClickCount() == 2) {
+                if (Utilities.noMouseModifiers(e)) {
+                    if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+                        //If we are in Edition Mode a double click must open the corresponding
+                        //properties dialog (for node, link or network)
+                        if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+                            changeNodeProperties(node);
+                        } else if ((link = visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
+                            changeLinkProperties(link);
+                        } else {
+                            changeNetworkProperties();
+                        }
+                    } else {
+                        //If we are in Inference Mode a double click inside a visual state
+                        //must introduce evidence in the corresponding node.
+                        //If the double-click isn't inside a visual state it does nothing
+                        //(in this mode it shoudn't open any properties dialog)
+                        if (visualNetwork.whatStateInPosition(cursorPosition, g) != null) {         
+                            VisualState visualState = visualNetwork.whatStateInPosition(cursorPosition, g); 
+                            setNewFinding(visualState);
+                        }                       
+                    }
+                }
+            } else if (e.isAltDown ()) {
+                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+                    if (!node.isSelected()) {
+                        visualNetwork.setSelectedAllObjects(false);
+                        visualNetwork.setSelectedNode(node, true);
+                    }
+                    changePotential();
+                }
+            } 
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            showContextualMenu(e, g);
+        }        
+        repaint();
 
 	}
 
@@ -553,39 +597,7 @@ MouseMotionListener {
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
 				.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (e.getClickCount() == 2) {
-				if (Utilities.noMouseModifiers(e)) {
-					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-						//If we are in Edition Mode a double click must open the corresponding
-						//properties dialog (for node, link or network)
-						if (visualNetwork.whatNodeInPosition(cursorPosition, g) != null) {
-							changeNodeProperties();
-						} else if (visualNetwork.whatLinkInPosition(
-								cursorPosition, g) != null) {
-							changeLinkProperties();
-						} else {
-							changeNetworkProperties();
-						}
-					} else {
-						//If we are in Inference Mode a double click inside a visual state
-						//must introduce evidence in the corresponding node.
-						//If the double-click isn't inside a visual state it does nothing
-						//(in this mode it shoudn't open any properties dialog)
-						if (visualNetwork.whatStateInPosition(cursorPosition, g) != null) {			
-							VisualState visualState = visualNetwork.whatStateInPosition(cursorPosition, g);	
-							setNewFinding(visualState);
-						}						
-					}
-				}
-			} else if (e.isAltDown ()) {
-                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-                    if (!node.isSelected()) {
-                        visualNetwork.setSelectedAllObjects(false);
-                        visualNetwork.setSelectedNode(node, true);
-                    }
-                    changePotential();
-                }
-			} else if ( e.isControlDown() || e.isShiftDown ()){
+		    if ( e.isControlDown() || e.isShiftDown ()){
                 if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
                     visualNetwork.setSelectedNode(node, !node.isSelected());
                 } else if ((link =
@@ -616,11 +628,7 @@ MouseMotionListener {
 					setSelectionState(SelectionState.SELECTING_NODES);
 				}
 			}
-		} else if (SwingUtilities.isRightMouseButton(e)) {
-		    showContextualMenu(e, g);
-		}
-		repaint();
-
+		} 
 	}
 	
 	/**
@@ -722,11 +730,6 @@ MouseMotionListener {
 				}
             }
         }
-        else if (SwingUtilities.isRightMouseButton (e))
-        {
-            showContextualMenu (e, g);
-        }
-        repaint ();
     }
 
 
@@ -753,12 +756,7 @@ MouseMotionListener {
 					newLinkSource = node;
 				}
 			}
-		}
-        else if (SwingUtilities.isRightMouseButton (e))
-        {
-            showContextualMenu (e, g);
-        }
-        repaint ();		
+		}	
 
 	}
 
@@ -1213,32 +1211,37 @@ MouseMotionListener {
 		visualNetwork.setSelectedAllObjects(selected);
 	}
 
-	/**
-	 * This method shows a dialog box with the adittionalProperties of a node. If some
-	 * property has changed, insert a new undo point into the network undo
-	 * manager.
-	 */
-	public void changeNodeProperties() {
-
-		ProbNode node = null;
-
-		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
-
-		if (selectedNode.size() == 1) {
-			node = selectedNode.get(0).getProbNode();
-			if (requestNodePropertiesToUser2(Utilities.getOwner(this),node, false)) {	
-				adjustPanelDimension();
-				repaint();
-				if (selectedNode.get(0).getInnerBox() instanceof FSVariableBox) {
-					((FSVariableBox)selectedNode.get(0).getInnerBox()).
-					recreateVisualStates(evidenceCases.size());
-				}		
-				networkChanged = true;	
-			}else
-				probNet.getPNESupport().undoAndDelete();
-		}
-
-	}
+    /**
+     * This method shows a dialog box with the additionalProperties of a node.
+     * If some property has changed, insert a new undo point into the network
+     * undo manager.
+     * @param selectedNode
+     */
+    public void changeNodeProperties (VisualNode selectedNode)
+    {
+        if (requestNodePropertiesToUser2 (Utilities.getOwner (this), selectedNode.getProbNode (),
+                                          false))
+        {
+            adjustPanelDimension ();
+            repaint ();
+            if (selectedNode.getInnerBox () instanceof FSVariableBox)
+            {
+                ((FSVariableBox) selectedNode.getInnerBox ()).recreateVisualStates (evidenceCases.size ());
+            }
+            networkChanged = true;
+        }
+        else probNet.getPNESupport ().undoAndDelete ();
+    }
+    
+    public void changeNodeProperties ()
+    {
+        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+        if(selectedNodes.size () == 1)
+        {
+            changeNodeProperties(selectedNodes.get(0));
+        }
+    }    
+	
     /**
      * 
      */
@@ -1307,8 +1310,9 @@ MouseMotionListener {
 	 * This method shows a dialog box with the adittionalProperties of a link. If some
 	 * property has changed, insert a new undo point into the network undo
 	 * manager.
+	 * @param link 
 	 */
-	public void changeLinkProperties() {
+	public void changeLinkProperties(VisualLink link) {
 
 		/*
 		 * This method must be implemented to activate the possibility of
