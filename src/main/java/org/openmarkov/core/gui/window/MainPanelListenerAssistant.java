@@ -540,31 +540,32 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @return true if the network has been saved; otherwise, false.
 	 */
 	private void saveOpenNetwork(NetworkPanel networkPanel) {
-		String fileName = networkPanel.getNetworkFile();
-		try {
-			File inFile = new File(fileName);
-			String newFileName = toBakExtension(networkPanel.getNetworkFile());
-			
-			File outFile = new File(newFileName);
-					
-			FileInputStream in = new FileInputStream(inFile);
-			FileOutputStream out = new FileOutputStream(outFile);
- 
-			int c;
-			while( (c = in.read() ) != -1)
-				out.write(c);
- 			in.close();
-			out.close();
-			
-		} catch(IOException e) {
-			mainPanel.getMessageWindow().getNormalMessageStream().
-			println( stringResource.getString( 
-					"NetworkBackupError.Text.Label" ) );
-		}
+        String fileName = networkPanel.getNetworkFile ();
+        if (fileName != null)
+        {
+            try
+            {
+                File inFile = new File (fileName);
+                String newFileName = toBakExtension (networkPanel.getNetworkFile ());
+                File outFile = new File (newFileName);
+                FileInputStream in = new FileInputStream (inFile);
+                FileOutputStream out = new FileOutputStream (outFile);
+                int c;
+                while ((c = in.read ()) != -1)
+                    out.write (c);
+                in.close ();
+                out.close ();
+            }
+            catch (IOException e)
+            {
+                mainPanel.getMessageWindow ().getNormalMessageStream ().println (stringResource.getString ("NetworkBackupError.Text.Label"));
+            }
+        }
 		mainPanel.getMessageWindow().getNormalMessageStream().
 		println( stringResource.getString( 
 				"NetworkBackup.Text.Label" ) );
 		saveNetwork(networkPanel);
+		fileName = networkPanel.getNetworkFile ();
 		closeActualNetwork();
 		openNetwork(fileName);
 		
