@@ -35,7 +35,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -48,6 +47,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.MoveNodeEdit;
+import org.openmarkov.core.gui.action.PasteEdit;
+import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
@@ -249,7 +250,7 @@ MouseMotionListener {
 	/**
 	 * Object Dialog for potentials edition
 	 */
-	PotentialEditDialog potentialEditDialog = null;
+	PotentialEditDialog potentialsDialog = null;
 
 	private CostEffectivenessDialog costEffectivenessDialog;
 
@@ -291,11 +292,7 @@ MouseMotionListener {
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		//undoManager = new UndoManagerWrapper();
 
-
-		//Clipboard disabled
-		//clipboardAssistant =
-		//new EditorPanelClipboardAssistant(visualNetwork.getNetwork());
-
+		clipboardAssistant = new EditorPanelClipboardAssistant();
 	}
 
 	/**
@@ -815,7 +812,7 @@ MouseMotionListener {
 				selection.setSize(selection.getWidth() + diffX, selection
 						.getHeight()
 						+ diffY);
-				visualNetwork.selectNodesInsideSelection(selection);
+				visualNetwork.selectElementsInsideSelection(selection);
 			}
 			repaint();
 		}
@@ -1218,123 +1215,6 @@ MouseMotionListener {
 	}
 
 	/**
-	 * This method makes an union operation on two lists of links.
-	 * 
-	 * @param list1
-	 *            first list.
-	 * @param list2
-	 *            second list.
-	 * @return a list that is the result of an union operation of two lists of
-	 *         links.
-	 */
-	private ArrayList<VisualLink> union(ArrayList<VisualLink> list1,
-			ArrayList<VisualLink> list2) {
-
-		ArrayList<VisualLink> result = new ArrayList<VisualLink>();
-
-		result.addAll(list1);
-		for (VisualLink o : list2) {
-			if (!result.contains(o)) {
-				result.add(o);
-			}
-		}
-
-		return result;
-
-	}
-
-	/**
-	 * This method removes the selected objects. First removes the selected
-	 * links and then removes the selected nodes. Also creates a new undo point.
-	 * 
-	 * @param cut
-	 *            indicates if the nodes has been removed by a cut operation
-	 * @throws Exception
-	 *             if an error occurred.
-	 */
-	private void removeSelectedObjects(boolean cut) throws Exception {
-
-		ArrayList<VisualNode> nodesToRemove = visualNetwork.getSelectedNodes();
-		ArrayList<VisualLink> linksToRemove =
-				union(visualNetwork.getSelectedLinks(), visualNetwork
-						.getLinksOfNodes(nodesToRemove));
-		ArrayList<ProbNode> probNodes = new ArrayList<ProbNode>();
-		ArrayList<Link> links = new ArrayList<Link>();
-		visualNetwork.setSelectedAllObjects(false);
-		probNet.getPNESupport().openParenthesis();
-		for (VisualLink link : linksToRemove) {
-			links.add(link.getLink());
-			//TODO debe de hacerse con un edit
-
-			try {
-				LinkEdit linkEdit = new LinkEdit( probNet,
-						link.getSourceNode().getProbNode().getName(), 
-						link.getDestinationNode().getProbNode().getName(), true, 
-						false);
-
-				probNet.getPNESupport().announceEdit(linkEdit);
-				probNet.getPNESupport().doEdit(linkEdit);
-
-
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(
-						Utilities.getOwner(this), ex.getMessage(),
-						stringResource
-						.getString("ErrorWindow.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
-
-			}	
-		}
-
-		//TODO edits for remove nodes
-		for (VisualNode node : nodesToRemove) {
-			probNodes.add(node.getProbNode());
-			//probNet.backupProbNet.removeNode(node.getProbNode());
-		}
-		if (cut) {
-			//TODO edits for cut
-			/*undoManager.addEditCutNodes(probNet, probNodes
-				.toArray(new ProbNode[probNodes.size()]), links
-				.toArray(new LinkWrapper[links.size()]));*/
-		} else {
-			for (ProbNode node:probNodes){
-				CRemoveProbNodeEdit cRemoveProbNodeEdit = 
-						new CRemoveProbNodeEdit( probNet, node );
-
-				probNet.doEdit(cRemoveProbNodeEdit);
-			}
-			/*undoManager.addEditRemoveObjects(probNet, nodeWrappers
-				.toArray(new ProbNode[nodeWrappers.size()]), links
-				.toArray(new LinkWrapper[links.size()]));*/
-		}
-		probNet.getPNESupport().closeParenthesis();	
-		propagationActive = isAutomaticPropagation();
-		networkChanged = true;
-		repaint();
-
-	}
-
-	/**
-	 * This method removes the selected objects. First removes the selected
-	 * links and then removes the selected nodes. Also notifies that there
-	 * aren't selected elements and creates a new undo point.
-	 */
-	public void removeSelectedObjects() {
-
-		try {
-			removeSelectedObjects(false);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(
-					Utilities.getOwner(this), e.getMessage(), stringResource
-					.getString("ErrorWindow.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		}
-
-	}
-
-	/**
 	 * This method shows a dialog box with the adittionalProperties of a node. If some
 	 * property has changed, insert a new undo point into the network undo
 	 * manager.
@@ -1360,34 +1240,33 @@ MouseMotionListener {
 		}
 
 	}
-	/**
-	 * 
-	 */
-	public void changePotential() {
-		
-		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-		
-		ProbNode probNode = selectedNodes.get(0).getProbNode();
-		/*Potential oldPotential = probNode.getPotentials().get(0);
-		PotentialEditDialog dialog =  new PotentialEditDialog(oldPotential);
-		Potential newPotential = dialog.getNewPotential();
-		if ( newPotential != null ) {
-			new edit = new ChangeNodePotentialEdit();
-			pNESupport.doedit
-			adjustPanelDimension();
-			repaint();
-			networkChanged = true;
-		}*/
+    /**
+     * 
+     */
+    public void changePotential() {
+        
+        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+        
+        ProbNode probNode = selectedNodes.get(0).getProbNode();
+        /*Potential oldPotential = probNode.getPotentials().get(0);
+        PotentialEditDialog dialog =  new PotentialEditDialog(oldPotential);
+        Potential newPotential = dialog.getNewPotential();
+        if ( newPotential != null ) {
+            new edit = new ChangeNodePotentialEdit();
+            pNESupport.doedit
+            adjustPanelDimension();
+            repaint();
+            networkChanged = true;
+        }*/
 
-		if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {	
-			adjustPanelDimension();
-			repaint();
-			networkChanged = true;
-		} else {
-			probNet.getPNESupport().undoAndDelete();
-		}
-	}	
-
+        if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {    
+            adjustPanelDimension();
+            repaint();
+            networkChanged = true;
+        } else {
+            probNet.getPNESupport().undoAndDelete();
+        }
+    }
 	/**
 	 * This method requests to the user the adittionalProperties of a node.
 	 * 
@@ -1412,13 +1291,12 @@ MouseMotionListener {
 	}
 
 	private boolean requestPotentialValues(Window owner, ProbNode probNode, boolean 
-			isNewNode) {
-		potentialEditDialog =
-				new PotentialEditDialog(owner, probNode, isNewNode);
-		return (potentialEditDialog.requestValues()
+			newNode) {
+		potentialsDialog =
+				new PotentialEditDialog(owner, probNode, newNode);
+		return (potentialsDialog.requestValues()
 				== NodePropertiesDialog.OK_BUTTON);
 	}
-	
 	private boolean requestCostEffectiveness(Window owner, String suffixTypeAnalysis, boolean isProbabilistic) {
 		costEffectivenessDialog = new CostEffectivenessDialog(owner);
 		costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
@@ -1502,85 +1380,91 @@ MouseMotionListener {
 	 * @param cut
 	 *            if true, the nodes copied to the clipboard are also removed.
 	 */
-	public void exportToClipboard(boolean cut) {
+    public void exportToClipboard (boolean cut)
+    {
+        if (clipboardAssistant == null)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                           stringResource.getString ("ClipboardNotSet.Text.Label"),
+                                           stringResource.getString ("ErrorWindow.Title.Label"),
+                                           JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            ArrayList<ProbNode> selectedNodes = new ArrayList<ProbNode> ();
+            for(VisualNode visualNode : visualNetwork.getSelectedNodes ())
+            {
+                selectedNodes.add (visualNode.getProbNode ());
+            }
+                
+            ArrayList<Link> selectedLinks = new ArrayList<Link> ();
+            for(VisualLink visualLink : visualNetwork.getSelectedLinks ())
+            {
+                 selectedLinks.add (visualLink.getLink ());
+            }            
+            SelectedContent copiedContent = new SelectedContent (selectedNodes, selectedLinks);
+            
+            if (!copiedContent.isEmpty())
+            {
+                clipboardAssistant.copyToClipboard (copiedContent);
+                if (cut)
+                {
+                    removeSelectedObjects();
+                }
+            }
+        }
+    }
 
-		ArrayList<ProbNode> nodes = null;
+    /**
+     * This method imports the content from the clipboard and creates it in
+     * the network.
+     */
+    public void pasteFromClipboard ()
+    {
+        if (clipboardAssistant == null)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                           stringResource.getString ("ClipboardNotSet.Text.Label"),
+                                           stringResource.getString ("ErrorWindow.Title.Label"),
+                                           JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            if (clipboardAssistant.isThereDataStored ())
+            {
+                visualNetwork.setSelectedAllObjects (false);
+                SelectedContent clipboardContent = clipboardAssistant.paste ();
+                
+                PasteEdit pasteEdit = new PasteEdit(visualNetwork, clipboardContent);
 
-		if (clipboardAssistant == null) {
-			JOptionPane.showMessageDialog(
-					Utilities.getOwner(this), stringResource
-					.getString("ClipboardNotSet.Text.Label"), stringResource
-					.getString("ErrorWindow.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		} else {
-			nodes = new ArrayList<ProbNode>();
-			for (VisualNode visualNode : visualNetwork.getSelectedNodes()) {
-				nodes.add(visualNode.getProbNode());
-			}
-			if (nodes.size() > 0) {
-				//changed by mpalacios
-				//This line will be uncommented when clipboard is enable
-				//clipboardAssistant.exportToClipboard(nodes);
-				if (cut) {
-					try {
-						removeSelectedObjects(true);
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(
-								Utilities.getOwner(this), e.getMessage(), stringResource
-								.getString("ErrorWindow.Title.Label"),
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			}
-		}
+                try
+                {
+                    probNet.doEdit (pasteEdit);
+                    // Set the nodes and links we just pasted as selected
+                    SelectedContent pastedContent = pasteEdit.getPastedContent ();
+                    for (ProbNode node : pastedContent.getNodes ())
+                    {
+                        visualNetwork.setSelectedNode (node.getName (), true);
+                    }
+                    for (Link link : pastedContent.getLinks ())
+                    {
+                        visualNetwork.setSelectedLink (link, true);
+                    }                    
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace ();
+                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                                   stringResource.getString ("CannotPasteAllNodes.Text.Label"),
+                                                   stringResource.getString ("ErrorWindow.Title.Label"),
+                                                   JOptionPane.WARNING_MESSAGE);
+                }
 
-	}
-
-	/**
-	 * This method imports various nodes from the clipboard and creates them in
-	 * the network.
-	 */
-	
-	/*public void pasteFromClipboard() {
-
-		ArrayList[] pastedElements = null;
-		ArrayList<NodeWrapper> pastedNodes = null;
-		ArrayList<LinkWrapper> pastedLinks = null;
-		boolean result = false;
-
-		if (clipboardAssistant == null) {
-			JOptionPane.showMessageDialog(
-				Utilities.getOwner(this), stringResource
-					.getString("ClipboardNotSet.Text.Label"), stringResource
-					.getString("ErrorWindow.Title.Label"),
-				JOptionPane.ERROR_MESSAGE);
-		} else {
-			visualNetwork.setSelectedAllObjects(false);
-			pastedElements = new ArrayList[2];
-			result = clipboardAssistant.pasteFromClipboard(pastedElements);
-			pastedNodes = (ArrayList<NodeWrapper>) pastedElements[0];
-			pastedLinks = (ArrayList<LinkWrapper>) pastedElements[1];
-			for (NodeWrapper node : pastedNodes) {
-				visualNetwork.setSelectedNode(node.getName(), true);
-			}
-			if (pastedNodes.size() > 0) {
-				undoManager.addEditPasteNodes(
-					visualNetwork.getNetwork(), pastedNodes
-						.toArray(new ProbNode[pastedNodes.size()]),
-					pastedLinks.toArray(new LinkWrapper[pastedLinks.size()]));
-				adjustPanelDimension();
-				repaint();
-			}
-			if (!result) {
-				JOptionPane.showMessageDialog(
-					Utilities.getOwner(this), stringResource
-						.getString("CannotPasteAllNodes.Text.Label"),
-					stringResource.getString("ErrorWindow.Title.Label"),
-					JOptionPane.WARNING_MESSAGE);
-			}
-		}
-
-	}*/
+                adjustPanelDimension ();
+                repaint ();
+            }
+        }
+    }
 
 	/**
 	 * This method says if there is data stored in the clipboard.
@@ -1588,11 +1472,7 @@ MouseMotionListener {
 	 * @return true if there is data stored in the clipboard; otherwise, false.
 	 */
 	public boolean isThereDataStored() {
-		//changed by mpalacios clipboard disable
-		//return (clipboardAssistant != null) ? clipboardAssistant
-		//.isThereDataStored() : false;
-		return false;
-
+        return (clipboardAssistant != null) ? clipboardAssistant.isThereDataStored() : false;
 	}
 
 
@@ -2677,5 +2557,29 @@ MouseMotionListener {
 				new OptionsInferenceDialog(Utilities.getOwner(this), this, 
 						networkPanel.getMainPanel().getExistingInferenceToolBar()); 
 	}
+
+	/**
+	 * Removes selected objects
+	 */
+    public void removeSelectedObjects ()
+    {
+        RemoveSelectedEdit cutEdit = new RemoveSelectedEdit (visualNetwork);
+        visualNetwork.setSelectedAllObjects(false);
+        
+        try
+        {
+            probNet.doEdit (cutEdit);
+            propagationActive = isAutomaticPropagation ();
+            networkChanged = true;
+            repaint ();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                           e.getMessage (),
+                                           stringResource.getString ("ErrorWindow.Title.Label"),
+                                           JOptionPane.ERROR_MESSAGE);
+        }        
+    }
 
 }

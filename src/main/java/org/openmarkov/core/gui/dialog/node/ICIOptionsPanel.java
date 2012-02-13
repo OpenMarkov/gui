@@ -779,28 +779,13 @@ public class ICIOptionsPanel extends JPanel implements
 	}
 
 	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		
 		
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
-			WrongCriterionException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void undoEditHappened(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 		

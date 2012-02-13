@@ -11,10 +11,14 @@ package org.openmarkov.core.gui.menutoolbar.menu;
 
 
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
+import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -91,8 +95,10 @@ class NetworkPopup extends PopupMenuBasic {
 		if (pasteMenuItem == null) {
             pasteMenuItem = new LocalizedMenuItem (
                                                    MenuItemNames.EDIT_PASTE_MENUITEM,
-                                                   ActionCommands.CLIPBOARD_PASTE);
-			pasteMenuItem.setEnabled(false);
+                                                   ActionCommands.CLIPBOARD_PASTE,
+                                                   IconLoader.ICON_PASTE_ENABLED,                                                   
+                                                   KeyStroke.getKeyStroke (KeyEvent.VK_V,
+                                                                           InputEvent.CTRL_DOWN_MASK));                                                   
 			pasteMenuItem.addActionListener(listener);
 		}
 

@@ -136,7 +136,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 
 	/**
-	 * This method listens to the user actions on the main panel.
+	 * This method listens to the user actions on the main menu.
 	 * 
 	 * @param e
 	 *            menu event information.
@@ -171,12 +171,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else if (actionCommand.equals( ActionCommands.EXIT_APPLICATION )) {
 			closeApplication();
 		} else if (actionCommand.equals( ActionCommands.CLIPBOARD_COPY )) {
-			//Clipboard disable
-			//getCurrentNetworkPanel().exportToClipboard( false );
+			getCurrentNetworkPanel().exportToClipboard( false );
+			mainPanel.getMainPanelMenuAssistant().setOptionEnabled (ActionCommands.CLIPBOARD_PASTE, true);			
 		} else if (actionCommand.equals( ActionCommands.CLIPBOARD_CUT )) {
-			//getCurrentNetworkPanel().exportToClipboard( true );
+			getCurrentNetworkPanel().exportToClipboard( true );
+            mainPanel.getMainPanelMenuAssistant().setOptionEnabled (ActionCommands.CLIPBOARD_PASTE, true);          
 		} else if (actionCommand.equals( ActionCommands.CLIPBOARD_PASTE )) {
-			//getCurrentNetworkPanel().pasteFromClipboard();
+			getCurrentNetworkPanel().pasteFromClipboard();
 		} else if (actionCommand.equals( ActionCommands.UNDO )) {
 			undo();
 		} else if (actionCommand.equals( ActionCommands.REDO )) {

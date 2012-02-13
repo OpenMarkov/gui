@@ -19,14 +19,9 @@ import java.util.HashSet;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
-
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
@@ -546,6 +541,31 @@ public class VisualNetwork implements PNUndoableEditListener {
 		setSelectedElement(node, selected);
 
 	}
+	
+
+    /**
+     * Sets the selection state of a node identified by its name.
+     * 
+     * @param name
+     *            name of the node to be selected/deselected.
+     * @param selected
+     *            new selection state.
+     */
+    public void setSelectedNode(String name, boolean selected) {
+
+        boolean found = false;
+        int i = 0, l = visualNodes.size();
+
+        while (!found && (i < l)) {
+            if (visualNodes.get(i).getProbNode().getName().equals(name)) {
+                setSelectedElement(visualNodes.get(i), selected);
+                found = true;
+            } else {
+                i++;
+            }
+        }
+
+    }	
 
 	/**
 	 * Sets the selection state of a link.
@@ -560,30 +580,32 @@ public class VisualNetwork implements PNUndoableEditListener {
 		setSelectedElement(link, selected);
 
 	}
+	
+    /**
+     * Sets the selection state of a link.
+     * 
+     * @param link
+     *            link to be selected/deselected.
+     * @param selected
+     *            new selection state.
+     */
+    public void setSelectedLink(Link link, boolean selected) {
+        int i=0;
+        VisualLink visualLink = null;
+        while(visualLink == null && i<visualLinks.size ())
+        {
+            if( visualLinks.get (i).getLink ().equals (link))
+            {
+                visualLink = visualLinks.get (i);
+            }
+            ++i;
+        }
+        if(visualLink!=null)
+        {
+            setSelectedElement(visualLink, selected);
+        }
+    }	
 
-	/**
-	 * Sets the selection state of a node identified by its name.
-	 * 
-	 * @param name
-	 *            name of the node to be selected/deselected.
-	 * @param selected
-	 *            new selection state.
-	 */
-	public void setSelectedNode(String name, boolean selected) {
-
-		boolean found = false;
-		int i = 0, l = visualNodes.size();
-
-		while (!found && (i < l)) {
-			if (visualNodes.get(i).getProbNode().getName().equals(name)) {
-				setSelectedElement(visualNodes.get(i), selected);
-				found = true;
-			} else {
-				i++;
-			}
-		}
-
-	}
 
 	/**
 	 * Selects all nodes.
@@ -711,16 +733,28 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	/**
-	 * Selects the nodes that are inside the selection rectangle and deslects
+	 * Selects the nodes and links that are inside the selection rectangle and deselects
 	 * the ones that are outside.
 	 * 
 	 * @param selection
 	 *            object that manages the selection.
 	 */
-	public void selectNodesInsideSelection(SelectionRectangle selection) {
+	public void selectElementsInsideSelection(SelectionRectangle selection) {
 
+	    setSelectedAllNodes (false);
+	    setSelectedAllLinks (false);
+	    // Select nodes
+	    ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode> (); 
 		for (VisualNode node : visualNodes) {
-			setSelectedElement(node, selection.containsNode(node));
+		    if(selection.containsNode(node)){
+		        setSelectedElement(node, true);
+		        selectedVisualNodes.add (node);
+		    }
+		}
+		// Select links
+		for(VisualLink selectedLink: getLinksOfNodes (selectedVisualNodes))
+		{
+		    setSelectedElement(selectedLink, true);
 		}
 
 	}
@@ -949,7 +983,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 		
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		
@@ -1044,7 +1078,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		//Object p=event.getSource();
 		//ProbNet p2=(ProbNet)p;
 		//if (edit instanceof AddVariableEdit){
@@ -1071,21 +1105,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 				}*/
 	
 			constructVisualInfo();
-		
-	}
-
-	@Override
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
-			WrongCriterionException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void undoEditHappened(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
 		
 	}
 	

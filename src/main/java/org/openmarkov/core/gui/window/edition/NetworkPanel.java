@@ -26,9 +26,6 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
@@ -403,15 +400,16 @@ public class NetworkPanel extends FrameContentPanel implements
 
 	}
 	
-	/**
-	 * This method has been created for testing.
-	 * 
-	 */
-	public void changePotential() {
-		
-		editorPanel.changePotential();
-		
-	}
+    
+    /**
+     * This method has been created for testing.
+     * 
+     */
+    public void changePotential() {
+        
+        editorPanel.changePotential();
+        
+    }
 	
 	/**
 	 * This method expands a node.
@@ -502,8 +500,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void pasteFromClipboard() {
 
-		//editorPanel.pasteFromClipboard();
-
+		editorPanel.pasteFromClipboard();
 	}
 
 	/**
@@ -514,7 +511,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	public boolean isThereDataStored() {
 
 		return editorPanel.isThereDataStored();
-
 	}
 
 	/**
@@ -740,14 +736,14 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		repaint();
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		setModified(true);
 		repaint();
 	}
@@ -906,21 +902,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
 		editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
-	}
-
-	@Override
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
-			WrongCriterionException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void undoEditHappened(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -19,9 +19,6 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -617,14 +614,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			workingMode = currentNetworkPanel.getWorkingMode();
 		}	
 		if (nodes > 0) {
+            canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 				canRemove = true;
+                canCut = true;
 			}
 			if (links <= 0) {
-				canCopy = true;
-				if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-					canCut = true;
-				}
 				//if we are in Inference Mode, options about expansion and contraction can be activated
 				if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 					if (arrayOfNodes.size() > 0) {
@@ -742,35 +737,21 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	}
 
 	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
-		ProbNet probNet = currentNetworkPanel.getProbNet ();
-		updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
-				((PNESupport)event.getSource()).getCanRedo());
-		
-		/*updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
-				((PNESupport)event.getSource()).getCanRedo());*/
-		
-	}
-
-	@Override
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
-			WrongCriterionException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void undoEditHappened(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
+        ProbNet probNet = currentNetworkPanel.getProbNet ();
+        updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
+                ((PNESupport)event.getSource()).getCanRedo());
+        
+        /*updateOptionsNetworkModified(((PNESupport)event.getSource()).getCanUndo(),
+                ((PNESupport)event.getSource()).getCanRedo());*/
+        
 		
 	}
 }
