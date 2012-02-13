@@ -577,22 +577,21 @@ MouseMotionListener {
 						}						
 					}
 				}
-			} else if (e.isShiftDown()) {
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-					visualNetwork.setSelectedNode(node, !node.isSelected());
-				} else if ((link =
-						visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-					visualNetwork.setSelectedLink(link, !link.isSelected());
-				}
-			} else if ( e.isControlDown() ){
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-					if (!node.isSelected()) {
-						visualNetwork.setSelectedAllObjects(false);
-						visualNetwork.setSelectedNode(node, true);
-					}
-					changePotential();
-				}
-
+			} else if (e.isAltDown ()) {
+                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+                    if (!node.isSelected()) {
+                        visualNetwork.setSelectedAllObjects(false);
+                        visualNetwork.setSelectedNode(node, true);
+                    }
+                    changePotential();
+                }
+			} else if ( e.isControlDown() || e.isShiftDown ()){
+                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+                    visualNetwork.setSelectedNode(node, !node.isSelected());
+                } else if ((link =
+                        visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
+                    visualNetwork.setSelectedLink(link, !link.isSelected());
+                }
 			}else{
 				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					if (!node.isSelected()) {
