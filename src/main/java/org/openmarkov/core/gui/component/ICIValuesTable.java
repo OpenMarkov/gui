@@ -2,6 +2,7 @@ package org.openmarkov.core.gui.component;
 
 
 
+import java.util.LinkedList;
 import java.util.ListIterator;
 
 import javax.swing.event.UndoableEditEvent;
@@ -18,6 +19,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
+
 
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -130,6 +132,7 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 			index;
 		
 	}
+	
 
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		
@@ -142,22 +145,24 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 			priorityList = iciEdit.getPriorityList();
 			if (!iciEdit.getLeakyFlag()){//noisy parameters
 				
-				double [] newNoisyPotential = iciEdit.getNewNoisyValues();
+				double [] noisyPotential = iciEdit.getNewNoisyValues();
+				
 				
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true){
 					priorityListPosition = (Integer)listIterator.next();
-					super.getModel().setValueAt( newNoisyPotential[priorityListPosition], 
+					super.getModel().setValueAt( noisyPotential[priorityListPosition], 
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 	
 				}
 			} else {//leaky parametes
-				double [] newLeakyPotential = iciEdit.getNewLeakyValues();
+				double [] leakyPotential = iciEdit.getNewLeakyValues();
+				
 				
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true){
 					priorityListPosition = (Integer)listIterator.next();
-					super.getModel().setValueAt( newLeakyPotential[priorityListPosition], 
+					super.getModel().setValueAt( leakyPotential[priorityListPosition], 
 							iciEdit.getRowPosition(priorityListPosition), iciEdit.getColumnPosition());
 	
 				}

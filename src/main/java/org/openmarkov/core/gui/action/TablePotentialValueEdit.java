@@ -177,35 +177,43 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				priorityList.add(potentialSelected);
 			}
 			Iterator<Integer> listIterator = priorityList.listIterator();
-			newTable[potentialSelected] = newValue;
 			Double sum = 0.0;
 			Double rest = 0.0;
 			int position=0;
+			int maxDecimals=10;
+		    double epsilon;
+		     
+		    epsilon=Math.pow(10,-(maxDecimals+2));
+			
+			newTable[potentialSelected] = Utilities.roundAndReduce(newValue, epsilon, maxDecimals);
+			
 		
 			while (listIterator.hasNext()== true){
 				position = (Integer) listIterator.next();
-				sum = roundingDouble(sum + newTable[position]);
+				sum = Utilities.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
 				//sum += newTable[pos];
 			}
-			rest = Math.abs(roundingDouble(1-sum));
+			rest = Math.abs(Utilities.roundAndReduce(1-sum, epsilon, maxDecimals));
 			//rest = Math.abs( 1 - sum );
 		
 			if (sum > 1.0){
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true && rest != 0){
 					position = (Integer) listIterator.next();
-					rest = roundingDouble(rest - newTable[position]);
+					
+					rest = Utilities.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
 					//rest = rest - newTable[pos];
-					if (rest < 0){
-						newTable[position] = Math.abs(rest);
+					if (rest < 0){//it is because the value of the table is bigger than the rest
+						//and now there's nothing left to reach one
+						newTable[position] = Math.abs(Utilities.roundAndReduce(rest, epsilon, maxDecimals));
 						break;
-					}else
-						newTable[position] = 0;
+					}else 
+						newTable[position] = 0.0;
 				
 					}
-			}else{
+			}else{//=< 1
 				position = (Integer) priorityList.getFirst();
-				newTable[position] = roundingDouble(newTable[position] + rest);
+				newTable[position] = Utilities.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
 				//newTable[pos] = newTable[pos] + rest;
 			}
 				
@@ -295,11 +303,13 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		
 	}
 	
-	private double roundingDouble(double number) {
+	
+
+	/*private double roundingDouble(double number) {
 
 		double positions = Math.pow( 10, (double) decimalPositions );
 		return Math.round( number * positions ) / positions;
-	}
+	}*/
 
 	/**
 	 * Gets the row position associated to value edited if priorityList exists

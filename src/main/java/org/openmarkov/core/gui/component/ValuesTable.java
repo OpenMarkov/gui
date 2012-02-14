@@ -42,6 +42,7 @@ import org.openmarkov.core.gui.action.TablePotentialValueEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
@@ -1382,7 +1383,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	public void auxUndoableEditHappenedNodePotentialEdit(UndoableEditEvent arg0){
-	
+		
 		int position = 0;
 		
 		TablePotentialValueEdit edit = (TablePotentialValueEdit) arg0.
@@ -1413,9 +1414,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				e.printStackTrace();
 			}
 			
+			double[] values =  auxPotential.getValues();
+			
 			while (listIterator.hasNext()== true){
 				position = (Integer)listIterator.next();
-				super.getModel().setValueAt( auxPotential.values[position], 
+				super.getModel().setValueAt(values[position], 
 						edit.getRowPosition(position), edit.getColumnPosition());
 
 			}
@@ -1427,6 +1430,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		}
 	}
 
+	
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {

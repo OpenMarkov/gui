@@ -45,7 +45,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * first color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_1 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_1 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_1,
 			OpenMarkovPreferences.OPENMARKOV_COLORS,
@@ -53,7 +53,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * second color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_2 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_2 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_2,
 			OpenMarkovPreferences.OPENMARKOV_COLORS ,
@@ -61,7 +61,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * third color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_3 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_3 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_3,
 			OpenMarkovPreferences.OPENMARKOV_COLORS,
@@ -72,7 +72,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * to define the first editable row of the table
 	 */
-	private int firstEditableRow;
+	protected int firstEditableRow;
 	
 	private JLabel jLabelIcon;
 	
@@ -175,7 +175,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column -
 	 *            column of the cell
 	 */
-	private void setCellColors(JTable table, Object value, boolean isSelected,
+	protected void setCellColors(JTable table, Object value, boolean isSelected,
 								boolean hasFocus, int row, int column) {
 
 		if ((column < ValuesTable.FIRST_EDITABLE_COLUMN)
@@ -345,7 +345,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 * @return a new Apply button.
 	 */
-	private JLabel getJLabelIcon() {
+	protected JLabel getJLabelIcon() {
 
 		if (jLabelIcon == null) {
 			iconLoader = new IconLoader();

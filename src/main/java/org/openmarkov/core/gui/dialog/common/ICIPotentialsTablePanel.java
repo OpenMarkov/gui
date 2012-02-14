@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.ICIValuesTable;
+import org.openmarkov.core.gui.component.ICIValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
@@ -455,13 +456,18 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			editableColumns [i-1] = false;//Uncertainty values false for canonical models
 		}
 		
-		
 		iciValuesTable.setDefaultRenderer(
-			Double.class, new ValuesTableCellRenderer(
-				getFirstEditableRow(), editableColumns ) );
+				Double.class, new ValuesTableCellRenderer(
+					getFirstEditableRow(), editableColumns) );
+			iciValuesTable.setDefaultRenderer(
+				String.class, new ValuesTableCellRenderer(
+					getFirstEditableRow(), editableColumns ) );
+					/*iciValuesTable.setDefaultRenderer(
+			Double.class, new ICIValuesTableCellRenderer(
+				getFirstEditableRow(), editableColumns, ((ICIPotential) listPotentials.get( 0 )) ) );
 		iciValuesTable.setDefaultRenderer(
-			String.class, new ValuesTableCellRenderer(
-				getFirstEditableRow(), editableColumns ) );
+			String.class, new ICIValuesTableCellRenderer(
+				getFirstEditableRow(), editableColumns, ((ICIPotential) listPotentials.get( 0 )) ) );*/
 
 }
 

@@ -539,6 +539,19 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		TablePotential tablePotential =
 			(TablePotential) getThisPotential( properties.getPotentials());
 		
+		//rounding initial values
+		double[] initialValues = tablePotential.getValues();
+		double[] roundedValues= new double [initialValues.length];
+		
+		int maxDecimals=10;
+	    double epsilon;
+	    epsilon=Math.pow(10,-(maxDecimals+2));
+		for (int i = 0; i< initialValues.length; i++) {
+			roundedValues[i] = Utilities.roundAndReduce(initialValues[i], epsilon, maxDecimals);
+		}
+		
+		tablePotential.setValues(roundedValues);
+		
 		
 		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
 		ArrayList<Variable> variables = probNode.getPotentials().get(0).getVariables();

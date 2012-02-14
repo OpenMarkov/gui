@@ -204,6 +204,48 @@ public class Utilities {
 		}
 		return unixString;
 	}
+	
+	/**
+	* It rounds 'x' with 'numDecimals' exact decimals.
+	 * If the rounded number has got some zeros at the end,
+	 * this function removes them (E.g.: 0.234000 -> 0.234)
+	*/
+	
+	public static double roundAndReduce(double x,double epsilon,int numDecimals){
+	
+	double lastRounded;
+	double actualRounded;
+	int i;
+	boolean equals;
+	
+	lastRounded=roundWithPrecision(x,numDecimals);
+	equals=true;
+	for (i=numDecimals-1;(i>=0)&&equals;i--){
+		actualRounded=roundWithPrecision(x,i);
+		equals=((Math.abs(actualRounded-lastRounded))<epsilon);
+			if (equals){
+			    lastRounded=actualRounded;
+			}
+		}
+		return lastRounded;
+	}
+
+	/**
+	* It rounds 'x' with 'numDecimals' exact decimals
+	*/
+	
+	public static double roundWithPrecision(double x,int numDecimals){
+	
+	double xRounded;
+	double scale;
+	
+	scale=Math.pow(10, numDecimals);
+	xRounded=Math.round(x*scale);
+	xRounded=xRounded/scale;
+	
+	return xRounded;
+	}
+
 	/**
 	 * This method returns the name of a new node with a specified type. The
 	 * name of the nodes starts with a letter that depends on its type: - Chance
