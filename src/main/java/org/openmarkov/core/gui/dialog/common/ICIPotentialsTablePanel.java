@@ -456,18 +456,18 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			editableColumns [i-1] = false;//Uncertainty values false for canonical models
 		}
 		
-		iciValuesTable.setDefaultRenderer(
+		/*iciValuesTable.setDefaultRenderer(
 				Double.class, new ValuesTableCellRenderer(
 					getFirstEditableRow(), editableColumns) );
 			iciValuesTable.setDefaultRenderer(
 				String.class, new ValuesTableCellRenderer(
-					getFirstEditableRow(), editableColumns ) );
-					/*iciValuesTable.setDefaultRenderer(
+					getFirstEditableRow(), editableColumns ) );*/
+					iciValuesTable.setDefaultRenderer(
 			Double.class, new ICIValuesTableCellRenderer(
-				getFirstEditableRow(), editableColumns, ((ICIPotential) listPotentials.get( 0 )) ) );
+				getFirstEditableRow(), editableColumns, (ICIPotential) getThisICIPotential(probNode.getPotentials())) );
 		iciValuesTable.setDefaultRenderer(
 			String.class, new ICIValuesTableCellRenderer(
-				getFirstEditableRow(), editableColumns, ((ICIPotential) listPotentials.get( 0 )) ) );*/
+				getFirstEditableRow(), editableColumns, (ICIPotential) getThisICIPotential(probNode.getPotentials())) );
 
 }
 
