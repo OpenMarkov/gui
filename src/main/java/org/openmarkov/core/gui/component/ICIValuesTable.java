@@ -2,16 +2,12 @@ package org.openmarkov.core.gui.component;
 
 
 
-import java.util.LinkedList;
 import java.util.ListIterator;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
-
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
-
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -19,13 +15,10 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
-
-
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
 @SuppressWarnings("serial")
@@ -172,14 +165,14 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 	}
 	
 	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		int priorityListPosition = 0;
 		UndoableEdit edit = event.getEdit();
 		if (edit instanceof ICITablePotentialValueEdit){
