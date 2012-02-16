@@ -186,7 +186,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 	
 	/**
-	 * This method initialises editorPanel.
+	 * This method initializes editorPanel.
 	 * 
 	 * @return a new editor panel.
 	 */
@@ -201,7 +201,7 @@ public class NetworkPanel extends FrameContentPanel implements
 
 	}*/
 	/**
-	 * This method initialises editorPanel.
+	 * This method initializes editorPanel.
 	 * 
 	 * @return a new editor panel.
 	 */

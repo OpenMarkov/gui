@@ -26,10 +26,13 @@ import javax.swing.border.LineBorder;
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
+import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
+import org.openmarkov.core.gui.dialog.treeadd.TreeADDPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
@@ -405,4 +408,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         getPotentialTypeJCombobox().setSelectedIndex(optionPreviouslySelected);
     }
 
+    
+  /*  public Potential getNewPotential(){
+    	PotentialPanel potentialPanel = getPotentialPanel();
+    	
+    	if (potentialPanel instanceof ICIPotentialsTablePanel) {
+    		return ((ICIPotentialsTablePanel)potentialPanel).getThisICIPotential();
+    	}else if (potentialPanel instanceof TablePotentialPanel) {
+    		
+    	}else if (potentialPanel instanceof TreeADDPanel) {}
+    		
+    }*/
 }

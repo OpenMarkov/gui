@@ -1251,17 +1251,18 @@ MouseMotionListener {
         
         ProbNode probNode = selectedNodes.get(0).getProbNode();
         /*Potential oldPotential = probNode.getPotentials().get(0);
-        PotentialEditDialog dialog =  new PotentialEditDialog(oldPotential);
+        PotentialEditDialog dialog =  new PotentialEditDialog(owner, oldPotential, newElement);
         Potential newPotential = dialog.getNewPotential();
         if ( newPotential != null ) {
-            new edit = new ChangeNodePotentialEdit();
-            pNESupport.doedit
+            new edit = new ChangeNodePotentialEdit(newPotential);//sets the potential in the probNode
+            pNESupport.doedit //probnet PNESuport, inside panels PNESupports will be owned by the edit dialog
             adjustPanelDimension();
             repaint();
             networkChanged = true;
         }*/
 
-        if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {    
+        if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {
+        	//if the user has selected the ok button when closing the dialog
             adjustPanelDimension();
             repaint();
             networkChanged = true;
@@ -1269,6 +1270,7 @@ MouseMotionListener {
             probNet.getPNESupport().undoAndDelete();
         }
     }
+    
 	/**
 	 * This method requests to the user the adittionalProperties of a node.
 	 * 
@@ -1296,7 +1298,7 @@ MouseMotionListener {
 			newNode) {
 		potentialsDialog =
 				new PotentialEditDialog(owner, probNode, newNode);
-		return (potentialsDialog.requestValues()
+		return (potentialsDialog.requestValues()//to know if the user has selected the ok button when closing the dialog
 				== NodePropertiesDialog.OK_BUTTON);
 	}
 	private boolean requestCostEffectiveness(Window owner, String suffixTypeAnalysis, boolean isProbabilistic) {

@@ -167,6 +167,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				if (i==0){ 
 					if (col<=acummulativeColumns[i]){
 						this.noisyVariable = variables.get(i+1);//first variable
+						columnGroup = (col-1);
 						break;
 					}
 					
