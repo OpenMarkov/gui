@@ -10,10 +10,16 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -21,8 +27,6 @@ import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.ICIValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.model.network.NodeType;
@@ -175,8 +179,10 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			setLastEditableRow(calculateLastEditableRow(
 				probNode.getPotentials()));
 			setData( tableData, newColumns, firstEditableRow, lastEditableRow , properties.getNodeType() );
-			//TODO setCellRenderes
+		
 			setCellRenderers();
+			calcColumnWidths(getICIValuesTable());
+			
 		} else {
 			tableData = new Object[ 0 ][ 0 ];
 			setFirstEditableRow( 0 );
@@ -517,11 +523,87 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 
 		if (iciValuesTable == null) {
 			iciValuesTable = new ICIValuesTable( probNode, getTableModel(), modifiable );
+			//iciValuesTable.setAutoResizeMode(JTable.);
+			//calcColumnWidths(iciValuesTable);
 			iciValuesTable.setName( "PotentialsTablePanel.valuesTable" );
 		}
 		return iciValuesTable;
 	}
-	
+	/**
+	 * Adjusts columns width to its content
+	 * @param table
+	 */
+	public static void calcColumnWidths(JTable table)
+	{
+	    JTableHeader head = table.getTableHeader();
+
+	    TableCellRenderer headerRenderer = null;
+
+	    if (head != null)
+	        headerRenderer = head.getDefaultRenderer();
+
+	    TableColumnModel columns = table.getColumnModel();
+	    TableModel tableModel = table.getModel();
+	    
+
+	    int margin = columns.getColumnMargin(); 
+
+	    int rowCount = tableModel.getRowCount();
+
+	    int totalWidth = 0;
+
+	    for (int i = columns.getColumnCount() - 1; i >= 0; --i)
+	    {
+	        TableColumn column = columns.getColumn(i);
+	            
+	        int columnIndex = column.getModelIndex();
+	            
+	        int width = -1; 
+
+	        TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
+	          
+	        if (tableCellRenderer == null)
+	            tableCellRenderer = headerRenderer;
+	            
+	        if (tableCellRenderer != null && i != 0 && columnIndex != 0) 
+	        {
+	            Component component = tableCellRenderer.getTableCellRendererComponent
+	                   (table, column.getHeaderValue(),
+	                    false, false, -1, i);
+	                    
+	            width = component.getPreferredSize().width;
+	        } else if (tableCellRenderer != null && i == 0 && columnIndex == 0) {
+	        	
+	        	Component component = tableCellRenderer.getTableCellRendererComponent
+		                   (table, column.getHeaderValue(),
+		                    false, false, 1, i);
+		                    
+		            width = component.getPreferredSize().width;
+	        	
+	        }
+	       
+	        for (int row = rowCount - 1; row >= 0; --row)
+	        {
+	            TableCellRenderer cellRenderer = table.getCellRenderer(row, i);
+	                 
+	            Component c = cellRenderer.getTableCellRendererComponent
+	               (table,
+	                tableModel.getValueAt(row, columnIndex),
+	                false, false, row, i);
+	        
+	                width = Math.max(width, c.getPreferredSize().width);
+	        }
+
+	        if (width >= 0)
+	            column.setPreferredWidth(width + margin); 
+	        else
+	            ;
+	            
+	        totalWidth += column.getPreferredWidth();
+	    }
+
+
+	}
 
 	/**
 	 * This method initializes tableModel.
