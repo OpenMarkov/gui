@@ -10,7 +10,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 
@@ -54,6 +53,7 @@ public class PasteEdit extends CompoundEdit
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
+    @SuppressWarnings("unchecked")
     public void doEdit ()
         throws DoEditException,
         NotEnoughMemoryException,
@@ -71,8 +71,8 @@ public class PasteEdit extends CompoundEdit
             {
                 newName += "'";
             }
-            Variable variable = new Variable (newName,
-                                              probNode.getVariable ().getStates ());
+            Variable variable = new Variable (probNode.getVariable ());
+            variable.setName (newName);
             newVariables.put (oldName, newName);
             
             Point2D.Double position = new Point2D.Double (probNode.getNode ().getCoordinateX () + 3.0,
@@ -142,11 +142,17 @@ public class PasteEdit extends CompoundEdit
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);
+                // Copy comment too!
+                newNode.setComment (originalNode.getComment ());
+                newNode.setRelevance (originalNode.getRelevance ());
+                newNode.setPurpose (originalNode.getPurpose ());
+                newNode.additionalProperties = (HashMap<String, String>)originalNode.additionalProperties.clone ();
             }
             catch (Exception e)
             {
                 e.printStackTrace ();
             }
+            
             
         }
     }
