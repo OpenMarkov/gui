@@ -41,6 +41,16 @@ class LinkPopup extends PopupMenuBasic {
 	 * Object that represents the item 'Remove'.
 	 */
 	private JMenuItem removeMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'Add restriction'.
+	 */
+	private JMenuItem linkRestrictionMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'Add revelation arc'.
+	 */
+	private JMenuItem revelationArcMenuItem = null;
 
 	/**
 	 * Object that represents the item 'Properties'.
@@ -73,6 +83,8 @@ class LinkPopup extends PopupMenuBasic {
 		 */
 		// addSeparator();
 		// add(getPropertiesMenuItem());
+		add(getLinkRestrictionMenuItem());
+		add(getRevelationArcMenuItem());
 		getPropertiesMenuItem();
 
 	}
@@ -94,7 +106,41 @@ class LinkPopup extends PopupMenuBasic {
 		return removeMenuItem;
 
 	}
+	
+	
+	
+	private JMenuItem getLinkRestrictionMenuItem()
+	{
+		
+		
+		if (linkRestrictionMenuItem == null) {
+            linkRestrictionMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.EDIT_LINKRESTRICTION_MENUITEM,
+                                                    ActionCommands.LINK_RESTRICTION_PROPERTIES);
+			linkRestrictionMenuItem.addActionListener(listener);
+		}
 
+		return linkRestrictionMenuItem;
+		
+	}
+
+	
+	private JMenuItem getRevelationArcMenuItem()
+	{
+		
+		
+		if (revelationArcMenuItem == null) {
+			revelationArcMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.EDIT_LINKREVELATIONARC_MENUITEM,
+                                                    ActionCommands.LINK_REVELATIONARC_PROPERTIES);
+			revelationArcMenuItem.addActionListener(listener);
+		}
+
+		return revelationArcMenuItem;
+		
+	}
+	
+	
 	/**
 	 * This method initialises propertiesMenuItem.
 	 * 
@@ -127,8 +173,10 @@ class LinkPopup extends PopupMenuBasic {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_PROPERTIES)) {
-			component = propertiesMenuItem;
+		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_PROPERTIES)) {
+			component = linkRestrictionMenuItem;
+		}else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
+			component = revelationArcMenuItem;
 		}
 
 		return component;

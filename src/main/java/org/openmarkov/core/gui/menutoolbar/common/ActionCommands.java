@@ -262,6 +262,19 @@ public class ActionCommands {
 	 */
 	public static final String LINK_PROPERTIES = "LinkProperties";
 
+	/****
+	 * Action invoked when the user wants to show the linkRestrictions of a link.
+	 */
+	
+	public static final String LINK_RESTRICTION_PROPERTIES = "LinkRestrictionProperties";
+	
+	
+	/****
+	 * Action invoked when the user wants to show the revlationArc conditions of a link,
+	 */
+	
+	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
+	
 	/**
 	 * Action invoked when the user wants to change the zoom of the panel to
 	 * another value.

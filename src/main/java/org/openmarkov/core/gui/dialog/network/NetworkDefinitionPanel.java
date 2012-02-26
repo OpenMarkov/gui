@@ -1,14 +1,13 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.dialog.network;
-
 
 import java.awt.Dimension;
 import java.awt.ItemSelectable;
@@ -40,12 +39,11 @@ import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
-
-
 
 /**
  * Panel to set the definition of a network. It will have no title field, a
@@ -54,25 +52,25 @@ import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
  * @author jlgozalo
  * @version 1.0 jlgozalo
  */
-public class NetworkDefinitionPanel extends JPanel implements ItemListener, 
-PropertyNames, CommentListener {
+public class NetworkDefinitionPanel extends JPanel implements ItemListener,
+		PropertyNames, CommentListener {
 
-	/*/**
-	 * default constructor without construction parameters to allow GUI builders
-	 * to do visual representation
-	
-	public NetworkDefinitionPanel() {
+	/*
+	 * /** default constructor without construction parameters to allow GUI
+	 * builders to do visual representation
+	 * 
+	 * public NetworkDefinitionPanel() {
+	 * 
+	 * dialogStringResource =
+	 * StringResourceLoader.getUniqueInstance().getBundleDialogs();
+	 * networkProperties = new NetworkProperties();
+	 * setName("NetworkDefinitionPanel"); initialize(); }
+	 */
 
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		networkProperties = new NetworkProperties();
-		setName("NetworkDefinitionPanel");
-		initialize();
-	}*/
-	
 	private ProbNet probNet;
-	
+
 	private String comment = null;
+
 	/**
 	 * This method initialises this instance.
 	 * 
@@ -82,27 +80,28 @@ PropertyNames, CommentListener {
 	 */
 	public NetworkDefinitionPanel(final boolean newNetwork) {
 
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleDialogs();
 
 		this.newNetwork = newNetwork;
 		setName("NetworkDefinitionPanel");
 		initialize();
 
 	}
+
 	/**
 	 * This method initialises this instance.
 	 * 
 	 * @param newNetwork
 	 *            to indicate if the panel is for new networks
 	 * @param probNet2
-	 *            manage the network access 
+	 *            manage the network access
 	 */
 	public NetworkDefinitionPanel(final boolean newNetwork, ProbNet probNet) {
 
-	    this.probNet = probNet;
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		this.probNet = probNet;
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleDialogs();
 		this.newNetwork = newNetwork;
 		setName("NetworkDefinitionPanel");
 		initialize();
@@ -115,39 +114,97 @@ PropertyNames, CommentListener {
 	private void initialize() {
 
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJTextAreaLabelNetworkDefinitionComment(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addComponent(getCommentHTMLScrollPaneNetworkDefinition(), GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-								.addComponent(getJLabelNetworkTypes(), GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(getJComboBoxNetworkTypes(), GroupLayout.PREFERRED_SIZE, 182, GroupLayout.PREFERRED_SIZE)
-									.addContainerGap())
-								))))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(getJLabelNetworkTypes(), GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
-						.addComponent(getJComboBoxNetworkTypes(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-						.addComponent(getJTextAreaLabelNetworkDefinitionComment())
-						.addComponent(getCommentHTMLScrollPaneNetworkDefinition(), GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-					.addContainerGap(189, Short.MAX_VALUE))
-		);
+		groupLayout
+				.setHorizontalGroup(groupLayout
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																GroupLayout.Alignment.LEADING)
+														.addGroup(
+																groupLayout
+																		.createSequentialGroup()
+																		.addComponent(
+																				getJTextAreaLabelNetworkDefinitionComment(),
+																				GroupLayout.PREFERRED_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(
+																				getCommentHTMLScrollPaneNetworkDefinition(),
+																				GroupLayout.DEFAULT_SIZE,
+																				370,
+																				Short.MAX_VALUE)
+																		.addContainerGap())
+														.addGroup(
+																groupLayout
+																		.createSequentialGroup()
+																		.addGroup(
+																				groupLayout
+																						.createParallelGroup(
+																								GroupLayout.Alignment.LEADING,
+																								false)
+																						.addComponent(
+																								getJLabelNetworkTypes(),
+																								GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
+																								Short.MAX_VALUE))
+																		.addPreferredGap(
+																				LayoutStyle.ComponentPlacement.RELATED)
+																		.addGroup(
+																				groupLayout
+																						.createParallelGroup(
+																								GroupLayout.Alignment.LEADING)
+																						.addGroup(
+																								groupLayout
+																										.createSequentialGroup()
+																										.addComponent(
+																												getJComboBoxNetworkTypes(),
+																												GroupLayout.PREFERRED_SIZE,
+																												182,
+																												GroupLayout.PREFERRED_SIZE)
+																										.addContainerGap()))))));
+		groupLayout
+				.setVerticalGroup(groupLayout
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																GroupLayout.Alignment.BASELINE)
+														.addComponent(
+																getJLabelNetworkTypes(),
+																GroupLayout.DEFAULT_SIZE,
+																25,
+																Short.MAX_VALUE)
+														.addComponent(
+																getJComboBoxNetworkTypes(),
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(
+												LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																GroupLayout.Alignment.LEADING,
+																false)
+														.addComponent(
+																getJTextAreaLabelNetworkDefinitionComment())
+														.addComponent(
+																getCommentHTMLScrollPaneNetworkDefinition(),
+																GroupLayout.DEFAULT_SIZE,
+																117,
+																Short.MAX_VALUE))
+										.addContainerGap(189, Short.MAX_VALUE)));
 		setLayout(groupLayout);
 	}
 
@@ -162,12 +219,12 @@ PropertyNames, CommentListener {
 			jLabelNetworkTypes = new JLabel();
 			jLabelNetworkTypes.setText("a Label :");
 			jLabelNetworkTypes.setText(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkTypes.Text"));
+					.getString("NetworkDefinitionPanel.NetworkTypes.Text"));
 			jLabelNetworkTypes.setMinimumSize(new Dimension(25, 0));
 			jLabelNetworkTypes.setName("jLabelNetworkTypes");
 			jLabelNetworkTypes.setDisplayedMnemonic(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkTypes.Mnemonic")
-				.charAt(0));
+					.getString("NetworkDefinitionPanel.NetworkTypes.Mnemonic")
+					.charAt(0));
 			jLabelNetworkTypes.setLabelFor(getJComboBoxNetworkTypes());
 		}
 		return jLabelNetworkTypes;
@@ -186,24 +243,24 @@ PropertyNames, CommentListener {
 			jComboBoxNetworkTypes.setEditable(false);
 			// TODO must be read from external configuration files
 			jComboBoxNetworkTypes.addItem(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-					+ NetworkType.BAYESIAN_NET.toString()));
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.BAYESIAN_NET.toString()));
 			jComboBoxNetworkTypes.addItem(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
-			jComboBoxNetworkTypes.addItem(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-					+ NetworkType.INFLUENCE_DIAGRAM.toString()));
+							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
 			jComboBoxNetworkTypes.addItem(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
+							+ NetworkType.INFLUENCE_DIAGRAM.toString()));
 			jComboBoxNetworkTypes.addItem(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ NetworkType.POMDP.toString()));
+							+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
 			jComboBoxNetworkTypes.addItem(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ NetworkType.DAN.toString()));
-					
+							+ NetworkType.POMDP.toString()));
+			jComboBoxNetworkTypes.addItem(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.DAN.toString()));
+
 			if (!newNetwork) {
 				jComboBoxNetworkTypes.setEnabled(false);
 			}
@@ -224,14 +281,15 @@ PropertyNames, CommentListener {
 			jTextAreaLabelNetworkDefinitionComment.setLineWrap(true);
 			jTextAreaLabelNetworkDefinitionComment.setOpaque(false);
 			jTextAreaLabelNetworkDefinitionComment
-				.setName("jTextAreaLabelNetworkDefinitionComment");
+					.setName("jTextAreaLabelNetworkDefinitionComment");
 			jTextAreaLabelNetworkDefinitionComment.setFocusable(false);
 			jTextAreaLabelNetworkDefinitionComment.setEditable(false);
 			jTextAreaLabelNetworkDefinitionComment
-				.setFont(getJLabelNetworkTypes().getFont());
+					.setFont(getJLabelNetworkTypes().getFont());
 			jTextAreaLabelNetworkDefinitionComment.setText("an Extended Label");
-			jTextAreaLabelNetworkDefinitionComment.setText(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkDefinitionComment.Text"));
+			jTextAreaLabelNetworkDefinitionComment
+					.setText(dialogStringResource
+							.getString("NetworkDefinitionPanel.NetworkDefinitionComment.Text"));
 		}
 		return jTextAreaLabelNetworkDefinitionComment;
 	}
@@ -245,18 +303,16 @@ PropertyNames, CommentListener {
 	private CommentHTMLScrollPane getCommentHTMLScrollPaneNetworkDefinition() {
 
 		if (commentHTMLScrollPaneNetworkDefinition == null) {
-			commentHTMLScrollPaneNetworkDefinition =
-				new CommentHTMLScrollPane();
+			commentHTMLScrollPaneNetworkDefinition = new CommentHTMLScrollPane();
 			commentHTMLScrollPaneNetworkDefinition
-			.setName("commentHTMLScrollPaneNetworkDefinition");
-			
+					.setName("commentHTMLScrollPaneNetworkDefinition");
+
 			commentHTMLScrollPaneNetworkDefinition.addCommentListener(this);
-			
+
 		}
 		return commentHTMLScrollPaneNetworkDefinition;
 	}
-	
-		
+
 	/**
 	 * This method fills the content of the fields from a NetworkProperties
 	 * object.
@@ -265,83 +321,85 @@ PropertyNames, CommentListener {
 	 *            network from where load the information.
 	 */
 	public void setFieldsFromProperties(ProbNet network) {
-		
-		getJComboBoxNetworkTypes().removeItemListener(this);
-		
-		if (network.hasConstraint(BayesianNetworkType.class)){
-			
-			getJComboBoxNetworkTypes().setSelectedItem(
-					dialogStringResource
-						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.BAYESIAN_NET.toString()));
-		
-			
-		}else if (network.hasConstraint(InfluenceDiagramType.class)){
-			getJComboBoxNetworkTypes().setSelectedItem(
-					dialogStringResource
-						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.INFLUENCE_DIAGRAM.toString()));
-			
-		} else if (network.hasConstraint(InfluenceDiagramType.class)){
-			getJComboBoxNetworkTypes().setSelectedItem(
-					dialogStringResource
-						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.DAN.toString()));
-			
-		}	else if (network.hasConstraint(SimpleMarkovModelType.class)){
-			getJComboBoxNetworkTypes().setSelectedItem(
-					dialogStringResource
-						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()));
-		}else if (network.hasConstraint(MDPType.class)){
-				getJComboBoxNetworkTypes().setSelectedItem(
-						dialogStringResource
-							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-								+ NetworkType.MARKOV_DECISION_PROCESS.toString()));
-		} else if (network.hasConstraint(POMDPType.class)){
-				getJComboBoxNetworkTypes().setSelectedItem(
-						dialogStringResource
-							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-								+ NetworkType.POMDP.toString()));
-		} 
-		
-		getJComboBoxNetworkTypes().addItemListener(this);
-			
-	/*	
-		case CHAIN_GRAPH: {
-			getJComboBoxNetworkTypes().setSelectedItem(
-				dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ NetworkType.CHAIN_GRAPH.toString()));
-			break;
-		}
-		}*/
-		
-        //set the title for comment
-		MessageFormat messageForm =
-			new MessageFormat(
-				dialogStringResource
-					.getString("NetworkDefinitionPanel." +
-							"CommentHTMLScrollPaneNetworkDefinition.Text"));
 
-		//String shortNetworkName = (String)network.properties.
-		//get(netPropertyNames.NAME.toString());
+		getJComboBoxNetworkTypes().removeItemListener(this);
+
+		if (network.hasConstraint(BayesianNetworkType.class)) {
+
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.BAYESIAN_NET
+													.toString()));
+
+		} else if (network.hasConstraint(InfluenceDiagramType.class)) {
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.INFLUENCE_DIAGRAM
+													.toString()));
+
+		} else if (network.hasConstraint(InfluenceDiagramType.class)) {
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.DAN.toString()));
+
+		} else if (network.hasConstraint(SimpleMarkovModelType.class)) {
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.SIMPLE_MARKOV_MODEL
+													.toString()));
+		} else if (network.hasConstraint(MDPType.class)) {
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.MARKOV_DECISION_PROCESS
+													.toString()));
+		} else if (network.hasConstraint(POMDPType.class)) {
+			getJComboBoxNetworkTypes()
+					.setSelectedItem(
+							dialogStringResource
+									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+											+ NetworkType.POMDP.toString()));
+		}
+
+		getJComboBoxNetworkTypes().addItemListener(this);
+
+		/*
+		 * case CHAIN_GRAPH: { getJComboBoxNetworkTypes().setSelectedItem(
+		 * dialogStringResource
+		 * .getString("NetworkDefinitionPanel.NetworkTypes.Items." +
+		 * NetworkType.CHAIN_GRAPH.toString())); break; } }
+		 */
+
+		// set the title for comment
+		MessageFormat messageForm = new MessageFormat(
+				dialogStringResource.getString("NetworkDefinitionPanel."
+						+ "CommentHTMLScrollPaneNetworkDefinition.Text"));
+
+		// String shortNetworkName = (String)network.properties.
+		// get(netPropertyNames.NAME.toString());
 		String shortNetworkName = network.getName();
 		int lastIndexOfSlashPath = shortNetworkName.lastIndexOf("\\");
-		shortNetworkName =
-			shortNetworkName.substring(lastIndexOfSlashPath + 1);
+		shortNetworkName = shortNetworkName.substring(lastIndexOfSlashPath + 1);
 		Object[] labelArgs = new Object[] { shortNetworkName };
-		getCommentHTMLScrollPaneNetworkDefinition().setTitle(messageForm
-			.format(labelArgs));
-		
-		//String comment = (String)network.properties.get(
-			//	netPropertyNames.COMMENT.toString());
-		
-		getCommentHTMLScrollPaneNetworkDefinition().
-		setCommentHTMLTextPaneText(network.getComment());
-     }
-	
-	
+		getCommentHTMLScrollPaneNetworkDefinition().setTitle(
+				messageForm.format(labelArgs));
+
+		// String comment = (String)network.properties.get(
+		// netPropertyNames.COMMENT.toString());
+
+		getCommentHTMLScrollPaneNetworkDefinition().setCommentHTMLTextPaneText(
+				network.getComment());
+	}
+
 	/**
 	 * This method checks the name field.
 	 * 
@@ -386,46 +444,45 @@ PropertyNames, CommentListener {
 	 */
 	private boolean newNetwork = false;
 
-	
 	public void itemStateChanged(ItemEvent iE) {
 		ItemSelectable itemSelectable = iE.getItemSelectable();
 
 		Object selected[] = itemSelectable.getSelectedObjects();
-		String itemSelected = selected.length == 0 ? "null" :
-			(String)selected[0];
-		if (!(itemSelected==null)){
+		String itemSelected = selected.length == 0 ? "null"
+				: (String) selected[0];
+		if (!(itemSelected == null)) {
 			ChangeNetworkTypeEdit changeNetworkType = null;
 			if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.BAYESIAN_NET.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							BayesianNetworkType.getUniqueInstance());
-				
+						BayesianNetworkType.getUniqueInstance());
+
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.INFLUENCE_DIAGRAM.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							InfluenceDiagramType.getUniqueInstance());
-			}else if (itemSelected.equals(dialogStringResource
+						InfluenceDiagramType.getUniqueInstance());
+			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.DAN.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-				                                              InfluenceDiagramType.getUniqueInstance());
+						DecisionAnalysisNetworkType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							SimpleMarkovModelType.getUniqueInstance());
+						SimpleMarkovModelType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.MARKOV_DECISION_PROCESS.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							MDPType.getUniqueInstance());
+						MDPType.getUniqueInstance());
 			} else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.POMDP.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-							POMDPType.getUniqueInstance());
+						POMDPType.getUniqueInstance());
 			}
 			if (changeNetworkType != null)
 				try {
@@ -449,15 +506,15 @@ PropertyNames, CommentListener {
 				} catch (WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}; 
-			}
-		
+				}
+			;
+		}
+
 	}
 
 	public void commentHasChanged() {
-			
-		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(
-				probNet, 
+
+		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet,
 				getCommentHTMLScrollPaneNetworkDefinition().getCommentText());
 		try {
 			probNet.getPNESupport().announceEdit(networkCommentEdit);
@@ -481,12 +538,7 @@ PropertyNames, CommentListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-	}
-	
-		
-	
 
+	}
 
 }

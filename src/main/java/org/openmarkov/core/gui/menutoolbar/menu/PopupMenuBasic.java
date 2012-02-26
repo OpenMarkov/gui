@@ -32,7 +32,7 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
  * @author jlgozalo 
  * @version 1.1 adding StringResourceLocaleChangeListener
  */
-abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
+public abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
 
 	/**
 	 * 

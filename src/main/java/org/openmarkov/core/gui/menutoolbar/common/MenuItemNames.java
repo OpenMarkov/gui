@@ -152,6 +152,19 @@ public class MenuItemNames
      */
     public static final String EDIT_LINKPROPERTIES_MENUITEM =
         EDIT_MENU + ".LinkProperties";
+    
+    /**
+     * Constant that defines the item 'Edit - Link linkRestrictions'.
+     */
+    public static final String EDIT_LINKRESTRICTION_MENUITEM =
+        EDIT_MENU + ".LinkRestriction";
+    
+    
+    /**
+     * Constant that defines the item 'Edit - Link revelationArc'.
+     */
+    public static final String EDIT_LINKREVELATIONARC_MENUITEM =
+        EDIT_MENU + ".RevelationArc";
 
     /**
      * Constant that defines the item 'Edit - Switch to Inference mode'.
