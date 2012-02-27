@@ -84,10 +84,8 @@ public class NodePartitionedIntervalEditTest {
 			new NodePartitionedIntervalEdit(node1, 
 					StateAction.MODIFYDELIMITERINTERVAL, 0, true);
 		
-		probNet.getPNESupport().announceEdit(
-					nodePartitionedIntervalEdit);
-		probNet.getPNESupport().doEdit(
-					nodePartitionedIntervalEdit);
+        probNet.getPNESupport ().announceEdit (nodePartitionedIntervalEdit);
+        probNet.getPNESupport ().doEdit (nodePartitionedIntervalEdit);
 	}
 
 
