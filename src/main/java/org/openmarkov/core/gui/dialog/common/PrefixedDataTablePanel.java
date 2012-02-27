@@ -13,17 +13,19 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-
-import org.openmarkov.core.action.LinkEdit;
+import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
@@ -152,11 +154,11 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 				for (i = 0; i < l; i++) {
 					String name =  (String) newData[i][1];
 					for (PNEdit edit:edits){
-						if (((LinkEdit)edit).getProbNode1().getName().equals(
+						if (((AddLinkEdit)edit).getProbNode1().getName().equals(
 								name)){
 							try {
 								probNode.getProbNet().getPNESupport().doEdit(
-										(LinkEdit)edit);
+										(AddLinkEdit)edit);
 								tableModel.insertRow(newIndex + i, newData[i]);
 								edits.remove(edit);
 								break;
@@ -227,8 +229,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			if (!probNode.getNode().getParents().contains(pProbNode.getNode()) && 
 					pProbNode != probNode){
 				
-				LinkEdit linkEdit = new LinkEdit(probNode.getProbNet(),
-						pProbNode.getName(), probNode.getName(), true, true);
+				//LinkEdit linkEdit = new LinkEdit(probNode.getProbNet(),pProbNode.getName(), probNode.getName(), true, true);
+				AddLinkEdit linkEdit = new AddLinkEdit(probNode.getProbNet(),
+						pProbNode.getVariable(), probNode.getVariable(), true);
 				
 				try {
 					probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
@@ -268,13 +271,18 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		
 		String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		
-		LinkEdit linkEdit;
+		/*LinkEdit linkEdit;
 		linkEdit = new LinkEdit(probNode.getProbNet(), name,
 				probNode.getName(), true, 
-				false);
+				false);*/
+		ProbNet probNet = probNode.getProbNet();
+		RemoveLinkEdit linkEdit;
 		try {
+			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name),
+					probNode.getVariable(), true);
 			probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
 			probNode.getProbNet().getPNESupport().doEdit(linkEdit);
+				
 			tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
 			if ((rowCount > 0) && (selectedRow >= rowCount)) {
@@ -283,6 +291,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			}
 			absentData = absentPrefixedData();
 			setEnabledAddValue(true);
+			
 		} catch (DoEditException e) {
 		// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -312,6 +321,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ProbNodeNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		

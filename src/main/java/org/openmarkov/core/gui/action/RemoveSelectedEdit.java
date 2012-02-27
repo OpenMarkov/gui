@@ -13,9 +13,10 @@ import java.util.ArrayList;
 
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
-import org.openmarkov.core.action.LinkEdit;
+import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
@@ -53,10 +54,15 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         WrongCriterionException
     {
         for (VisualLink link : linksToRemove) {
-            edits.add (new LinkEdit (probNet,
-                                              link.getSourceNode ().getProbNode ().getName (),
-                                              link.getDestinationNode ().getProbNode ().getName (),
-                                              true, false));
+            try {
+				edits.add (new RemoveLinkEdit (probNet,
+				                                  probNet.getVariable(link.getSourceNode ().getProbNode ().getName ()),
+				                                  probNet.getVariable(link.getDestinationNode ().getProbNode ().getName ()),
+				                                  true));
+			} catch (ProbNodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
         }
         for (VisualNode node : nodesToRemove) {

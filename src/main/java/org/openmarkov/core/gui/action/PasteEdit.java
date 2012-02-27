@@ -13,8 +13,8 @@ import java.util.HashMap;
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 
+import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.LinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -96,10 +96,14 @@ public class PasteEdit extends CompoundEdit
             {
                 String originalSourceNodeName = probNet.getProbNode (link.getNode1 ()).getName ();
                 String originalDestinationNodeName = probNet.getProbNode (link.getNode2 ()).getName ();
-                edits.add (new LinkEdit (probNet,
+                /**edits.add (new LinkEdit (probNet,
                                          newVariables.get (originalSourceNodeName),
                                          newVariables.get (originalDestinationNodeName),
-                                         link.isDirected (), true));
+                                         link.isDirected (), true));**/
+                edits.add(new AddLinkEdit (probNet,
+                        probNet.getVariable(newVariables.get (originalSourceNodeName)),
+                        probNet.getVariable(newVariables.get (originalDestinationNodeName)),
+                        link.isDirected ()));
             }
             catch (ProbNodeNotFoundException e)
             {/* Can not possibly happen */
@@ -110,9 +114,9 @@ public class PasteEdit extends CompoundEdit
         ArrayList<Link> pastedLinks = new ArrayList<Link> ();
         for (UndoableEdit edit : edits)
         {
-            if (edit instanceof LinkEdit)
+            if (edit instanceof AddLinkEdit)
             {
-                LinkEdit linkEdit = ((LinkEdit) edit);
+                AddLinkEdit linkEdit = ((AddLinkEdit) edit);
                 linkEdit.doEdit ();
                 pastedLinks.add (linkEdit.getLink ());
             }
@@ -176,5 +180,6 @@ public class PasteEdit extends CompoundEdit
     public ProbNet getProbNet() {
         return visualNetwork.getNetwork ();
     }       
+
 
 }

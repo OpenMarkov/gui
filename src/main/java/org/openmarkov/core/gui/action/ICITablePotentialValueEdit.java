@@ -120,7 +120,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * */
 	public ICITablePotentialValueEdit(ProbNode probNode, Double 
 			newValue, int row, int col, LinkedList<Integer> priorityList) {
-	    super(probNode.getProbNet ());
+		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.row = row;
 		this.col = col;
