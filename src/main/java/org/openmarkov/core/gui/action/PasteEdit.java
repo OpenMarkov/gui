@@ -171,5 +171,10 @@ public class PasteEdit extends CompoundEdit
     {
         return pastedContent;
     }
+    
+    @Override
+    public ProbNet getProbNet() {
+        return visualNetwork.getNetwork ();
+    }       
 
 }
