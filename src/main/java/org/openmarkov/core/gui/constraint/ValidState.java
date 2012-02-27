@@ -29,11 +29,6 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
  * with the same name. */
 public class ValidState extends PNConstraint implements PropertyNames {
 
-	public ValidState(ProbNet probNet) {
-		super(probNet);
-		
-	}
-
 	// Attributes.
 	private String message;
 	

@@ -26,11 +26,6 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
  * name. */
 public class ValidName extends PNConstraint {
 
-	public ValidName(ProbNet probNet) {
-		super(probNet);
-		
-	}
-
 	// Attributes.
 	private String message;
 
