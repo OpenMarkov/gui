@@ -706,7 +706,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
-							probNet, nodeName, nodeType, cursorPosition);
+							probNet, new Variable (nodeName), nodeType, cursorPosition);
 
 					try {
 						probNet.getPNESupport().announceEdit(addProbNodeEdit);
