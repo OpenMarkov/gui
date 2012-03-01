@@ -154,10 +154,16 @@ public class MenuItemNames
         EDIT_MENU + ".LinkProperties";
     
     /**
-     * Constant that defines the item 'Edit - Link linkRestrictions'.
+     * Constant that defines the item 'Edit - Link enable linkRestrictions'.
      */
-    public static final String EDIT_LINKRESTRICTION_MENUITEM =
-        EDIT_MENU + ".LinkRestriction";
+    public static final String EDIT_LINKRESTRICTION_ENABLE_MENUITEM =
+        EDIT_MENU + ".LinkRestrictionEnable";
+    
+    /**
+     * Constant that defines the item 'Edit - Link disable linkRestrictions'.
+     */
+    public static final String EDIT_LINKRESTRICTION_DISABLE_MENUITEM =
+        EDIT_MENU + ".LinkRestrictionDisable";
     
     
     /**

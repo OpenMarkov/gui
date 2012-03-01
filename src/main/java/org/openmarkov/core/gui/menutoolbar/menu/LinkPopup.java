@@ -1,14 +1,13 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.menutoolbar.menu;
-
 
 import java.awt.event.ActionListener;
 
@@ -19,15 +18,12 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
-
-
-
 /**
  * This class implements a popup menu that is displayes when the user clicks on
  * a link.
  * 
  * @author jmendoza
- * @author jlgozalo 
+ * @author jlgozalo
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
  */
 class LinkPopup extends PopupMenuBasic {
@@ -41,12 +37,17 @@ class LinkPopup extends PopupMenuBasic {
 	 * Object that represents the item 'Remove'.
 	 */
 	private JMenuItem removeMenuItem = null;
-	
+
 	/**
 	 * Object that represents the item 'Add restriction'.
 	 */
-	private JMenuItem linkRestrictionMenuItem = null;
-	
+	private JMenuItem linkRestrictionEnableMenuItem = null;
+
+	/**
+	 * Object that represents the item 'Remove restriction'.
+	 */
+	private JMenuItem linkRestrictionDisableMenuItem = null;
+
 	/**
 	 * Object that represents the item 'Add revelation arc'.
 	 */
@@ -83,7 +84,8 @@ class LinkPopup extends PopupMenuBasic {
 		 */
 		// addSeparator();
 		// add(getPropertiesMenuItem());
-		add(getLinkRestrictionMenuItem());
+		add(getLinkRestrictionEnableMenuItem());
+		add(getLinkRestrictionDisableMenuItem());
 		add(getRevelationArcMenuItem());
 		getPropertiesMenuItem();
 
@@ -97,50 +99,71 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem getRemoveMenuItem() {
 
 		if (removeMenuItem == null) {
-            removeMenuItem = new LocalizedMenuItem (
-                                                    MenuItemNames.EDIT_REMOVE_MENUITEM,
-                                                    ActionCommands.OBJECT_REMOVAL);
+			removeMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_REMOVE_MENUITEM,
+					ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
 
 		return removeMenuItem;
 
 	}
-	
-	
-	
-	private JMenuItem getLinkRestrictionMenuItem()
-	{
-		
-		
-		if (linkRestrictionMenuItem == null) {
-            linkRestrictionMenuItem = new LocalizedMenuItem (
-                                                    MenuItemNames.EDIT_LINKRESTRICTION_MENUITEM,
-                                                    ActionCommands.LINK_RESTRICTION_PROPERTIES);
-			linkRestrictionMenuItem.addActionListener(listener);
+
+	/**
+	 * This method initialises the enableLinkRestriction menu item.
+	 * 
+	 * @return a new 'LinkRestrictionEnable' menu item.
+	 */
+	private JMenuItem getLinkRestrictionEnableMenuItem() {
+
+		if (linkRestrictionEnableMenuItem == null) {
+			linkRestrictionEnableMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_LINKRESTRICTION_ENABLE_MENUITEM,
+					ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES);
+			linkRestrictionEnableMenuItem.addActionListener(listener);
 		}
 
-		return linkRestrictionMenuItem;
-		
+		return linkRestrictionEnableMenuItem;
+
 	}
 
-	
-	private JMenuItem getRevelationArcMenuItem()
-	{
-		
-		
+	/**
+	 * This method initialises the disableLinkRestriction menu item.
+	 * 
+	 * @return a new 'LinkRestrictionDisable' menu item.
+	 */
+	private JMenuItem getLinkRestrictionDisableMenuItem() {
+
+		if (linkRestrictionDisableMenuItem == null) {
+			linkRestrictionDisableMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_LINKRESTRICTION_DISABLE_MENUITEM,
+					ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES);
+			linkRestrictionDisableMenuItem.addActionListener(listener);
+		}
+
+		return linkRestrictionDisableMenuItem;
+
+	}
+
+	/**
+	 * This method initialises the revelationArc menu item.
+	 * 
+	 * @return a new 'revelationArc' menu item.
+	 */
+
+	private JMenuItem getRevelationArcMenuItem() {
+
 		if (revelationArcMenuItem == null) {
-			revelationArcMenuItem = new LocalizedMenuItem (
-                                                    MenuItemNames.EDIT_LINKREVELATIONARC_MENUITEM,
-                                                    ActionCommands.LINK_REVELATIONARC_PROPERTIES);
+			revelationArcMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_LINKREVELATIONARC_MENUITEM,
+					ActionCommands.LINK_REVELATIONARC_PROPERTIES);
 			revelationArcMenuItem.addActionListener(listener);
 		}
 
 		return revelationArcMenuItem;
-		
+
 	}
-	
-	
+
 	/**
 	 * This method initialises propertiesMenuItem.
 	 * 
@@ -149,9 +172,9 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem getPropertiesMenuItem() {
 
 		if (propertiesMenuItem == null) {
-            propertiesMenuItem = new LocalizedMenuItem (
-                                                        MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
-                                                        ActionCommands.LINK_PROPERTIES);
+			propertiesMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
+					ActionCommands.LINK_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}
 
@@ -173,9 +196,14 @@ class LinkPopup extends PopupMenuBasic {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_PROPERTIES)) {
-			component = linkRestrictionMenuItem;
-		}else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
+		} else if (actionCommand
+				.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
+			component = linkRestrictionEnableMenuItem;
+		} else if (actionCommand
+				.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
+			component = linkRestrictionDisableMenuItem;
+		} else if (actionCommand
+				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			component = revelationArcMenuItem;
 		}
 
@@ -183,5 +211,4 @@ class LinkPopup extends PopupMenuBasic {
 
 	}
 
-	
 }

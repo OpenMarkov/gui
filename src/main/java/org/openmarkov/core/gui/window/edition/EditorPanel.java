@@ -1,14 +1,13 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.window.edition;
-
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -127,7 +126,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * Current state of the edition.
 	 */
 	private EditionState editionState = EditionState.SELECTION;
-	
+
 	/**
 	 * Current selection state.
 	 */
@@ -149,30 +148,30 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private ArrayList<EvidenceCase> evidenceCases;
 
 	/**
-	 * This variable indicates which is the evidence case that is 
-	 * currently being treated
+	 * This variable indicates which is the evidence case that is currently
+	 * being treated
 	 */
 	private int currentCase;
-	
+
 	/**
 	 * Inference algorithm used to evaluate this network
 	 */
 	private InferenceAlgorithm inferenceAlgorithm = null;
-	
+
 	/**
 	 * This variable indicates if the propagation mode is automatic or manual.
 	 */
 	private boolean automaticPropagation;
 
 	/**
-	 * This variable indicates if propagation should be done right now
-	 * (if being in Inference Mode).
+	 * This variable indicates if propagation should be done right now (if being
+	 * in Inference Mode).
 	 */
 	private boolean propagationActive;
 
 	/**
-	 * This variable indicates if it has been a change in the potential 
-	 * values in some node.
+	 * This variable indicates if it has been a change in the potential values
+	 * in some node.
 	 */
 	private boolean networkChanged = false;
 
@@ -204,21 +203,19 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Maximum width of the panel.
 	 */
-	private double maxWidth =
-			Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 20;
+	private double maxWidth = Toolkit.getDefaultToolkit().getScreenSize()
+			.getWidth() * 20;
 
 	/**
 	 * Maximum height of the panel.
 	 */
-	private double maxHeight =
-			Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 20;
+	private double maxHeight = Toolkit.getDefaultToolkit().getScreenSize()
+			.getHeight() * 20;
 
 	/**
 	 * Listener that listen to the changes of size.
 	 */
-	private HashSet<EditorPanelSizeListener> sizeListeners =
-			new HashSet<EditorPanelSizeListener>();
-
+	private HashSet<EditorPanelSizeListener> sizeListeners = new HashSet<EditorPanelSizeListener>();
 
 	/**
 	 * Information of the movement of the nodes.
@@ -261,15 +258,15 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Constructor that creates the instance.
 	 * 
-	 * @param networkPanel 
+	 * @param networkPanel
 	 *            network that will be edited.
-	 */ 
+	 */
 	public EditorPanel(NetworkPanel networkPanel) {
 
 		// super();
 		this.networkPanel = networkPanel;
-		this.probNet=networkPanel.getProbNet();
-		visualNetwork = new VisualNetwork(probNet, this); 
+		this.probNet = networkPanel.getProbNet();
+		visualNetwork = new VisualNetwork(probNet, this);
 		automaticPropagation = true;
 		propagationActive = true;
 		evidenceCases = new ArrayList<EvidenceCase>(1);
@@ -292,9 +289,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		selection = new SelectionRectangle();
 		this.setBackground(SystemColor.WHITE);
 		adjustPanelDimension();
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-		//undoManager = new UndoManagerWrapper();
+		stringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleMessages();
+		// undoManager = new UndoManagerWrapper();
 
 		clipboardAssistant = new EditorPanelClipboardAssistant();
 	}
@@ -346,7 +343,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		return visualNetwork.getByTitle();
 
 	}
-
 
 	/**
 	 * Overwrite 'paint' method to avoid to call it explicitly.
@@ -429,8 +425,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	private void adjustPanelDimension() {
 
-		double[] networkBounds =
-				visualNetwork.getNetworkBounds((Graphics2D) getGraphics());
+		double[] networkBounds = visualNetwork
+				.getNetworkBounds((Graphics2D) getGraphics());
 		Dimension newDimension = null;
 		double incrLeft = 0, incrTop = 0;
 		double incrRight = networkBounds[1];
@@ -451,15 +447,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 		maxWidth = Math.max(maxWidth, networkBounds[1]);
 		maxHeight = Math.max(maxHeight, networkBounds[3]);
-		newDimension =
-				new Dimension((int) Math.round(getMaxWidth()), (int) Math
-						.round(getMaxHeight()));
+		newDimension = new Dimension((int) Math.round(getMaxWidth()),
+				(int) Math.round(getMaxHeight()));
 		setPreferredSize(newDimension);
 		setSize(newDimension);
 		if ((incrLeft > 0) || (incrTop > 0)) {
-			notifySizeChanged(zoom.panelToScreen(incrLeft), zoom
-					.panelToScreen(incrTop), zoom.panelToScreen(incrRight), zoom
-					.panelToScreen(incrBottom));
+			notifySizeChanged(zoom.panelToScreen(incrLeft),
+					zoom.panelToScreen(incrTop), zoom.panelToScreen(incrRight),
+					zoom.panelToScreen(incrBottom));
 		}
 
 	}
@@ -506,82 +501,82 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void mousePressed(MouseEvent e) {
 
-        //  Specific functionality depending on the edition state
-        switch (editionState)
-        {
-            case SELECTION :
-            {
-                mousePressedSelection (e);
-                break;
-            }
-            case CHANCE :
-            {
-                mousePressedNodeCreation (e, NodeType.CHANCE);
-                break;
-            }
-            case DECISION :
-            {
-                mousePressedNodeCreation (e, NodeType.DECISION);
-                break;
-            }
-            case UTILITY :
-            {
-                mousePressedNodeCreation (e, NodeType.UTILITY);
-                break;
-            }
-            case LINK :
-            {
-                mousePressedLinkCreation (e);
-                break;
-            }
-            default :
-            {
-                break;
-            }
-        }
-        
-        // Generic functionality regardless of the edition state
-        VisualNode node = null;
-        VisualLink link = null;
-        
-        Graphics2D g = (Graphics2D) getGraphics();
-        if (SwingUtilities.isLeftMouseButton(e)) {
-            if (e.getClickCount() == 2) {
-                if (Utilities.noMouseModifiers(e)) {
-                    if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-                        //If we are in Edition Mode a double click must open the corresponding
-                        //properties dialog (for node, link or network)
-                        if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-                            changeNodeProperties(node);
-                        } else if ((link = visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-                            changeLinkProperties(link);
-                        } else {
-                            changeNetworkProperties();
-                        }
-                    } else {
-                        //If we are in Inference Mode a double click inside a visual state
-                        //must introduce evidence in the corresponding node.
-                        //If the double-click isn't inside a visual state it does nothing
-                        //(in this mode it shoudn't open any properties dialog)
-                        if (visualNetwork.whatStateInPosition(cursorPosition, g) != null) {         
-                            VisualState visualState = visualNetwork.whatStateInPosition(cursorPosition, g); 
-                            setNewFinding(visualState);
-                        }                       
-                    }
-                }
-            } else if (e.isAltDown ()) {
-                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-                    if (!node.isSelected()) {
-                        visualNetwork.setSelectedAllObjects(false);
-                        visualNetwork.setSelectedNode(node, true);
-                    }
-                    changePotential();
-                }
-            } 
-        } else if (SwingUtilities.isRightMouseButton(e)) {
-            showContextualMenu(e, g);
-        }        
-        repaint();
+		// Specific functionality depending on the edition state
+		switch (editionState) {
+		case SELECTION: {
+			mousePressedSelection(e);
+			break;
+		}
+		case CHANCE: {
+			mousePressedNodeCreation(e, NodeType.CHANCE);
+			break;
+		}
+		case DECISION: {
+			mousePressedNodeCreation(e, NodeType.DECISION);
+			break;
+		}
+		case UTILITY: {
+			mousePressedNodeCreation(e, NodeType.UTILITY);
+			break;
+		}
+		case LINK: {
+			mousePressedLinkCreation(e);
+			break;
+		}
+		default: {
+			break;
+		}
+		}
+
+		// Generic functionality regardless of the edition state
+		VisualNode node = null;
+		VisualLink link = null;
+
+		Graphics2D g = (Graphics2D) getGraphics();
+		if (SwingUtilities.isLeftMouseButton(e)) {
+			if (e.getClickCount() == 2) {
+				if (Utilities.noMouseModifiers(e)) {
+					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+						// If we are in Edition Mode a double click must open
+						// the corresponding
+						// properties dialog (for node, link or network)
+						if ((node = visualNetwork.whatNodeInPosition(
+								cursorPosition, g)) != null) {
+							changeNodeProperties(node);
+						} else if ((link = visualNetwork.whatLinkInPosition(
+								cursorPosition, g)) != null) {
+							changeLinkProperties(link);
+						} else {
+							changeNetworkProperties();
+						}
+					} else {
+						// If we are in Inference Mode a double click inside a
+						// visual state
+						// must introduce evidence in the corresponding node.
+						// If the double-click isn't inside a visual state it
+						// does nothing
+						// (in this mode it shoudn't open any properties dialog)
+						if (visualNetwork
+								.whatStateInPosition(cursorPosition, g) != null) {
+							VisualState visualState = visualNetwork
+									.whatStateInPosition(cursorPosition, g);
+							setNewFinding(visualState);
+						}
+					}
+				}
+			} else if (e.isAltDown()) {
+				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+					if (!node.isSelected()) {
+						visualNetwork.setSelectedAllObjects(false);
+						visualNetwork.setSelectedNode(node, true);
+					}
+					changePotential();
+				}
+			}
+		} else if (SwingUtilities.isRightMouseButton(e)) {
+			showContextualMenu(e, g);
+		}
+		repaint();
 
 	}
 
@@ -598,17 +593,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 		VisualLink link = null;
 		Graphics2D g = (Graphics2D) getGraphics();
 
-		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
-				.screenToPanel(e.getY()));
+		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
+				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
-		    if ( e.isControlDown() || e.isShiftDown ()){
-                if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-                    visualNetwork.setSelectedNode(node, !node.isSelected());
-                } else if ((link =
-                        visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-                    visualNetwork.setSelectedLink(link, !link.isSelected());
-                }
-			}else{
+			if (e.isControlDown() || e.isShiftDown()) {
+				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+					visualNetwork.setSelectedNode(node, !node.isSelected());
+				} else if ((link = visualNetwork.whatLinkInPosition(
+						cursorPosition, g)) != null) {
+					visualNetwork.setSelectedLink(link, !link.isSelected());
+				}
+			} else {
 				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					if (!node.isSelected()) {
 						visualNetwork.setSelectedAllObjects(false);
@@ -616,12 +611,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 
 					setSelectionState(SelectionState.MOVING_NODES);
-					//TODO revisar si es necesario agregar parentesis
-					//probNet.getPNESupport().openParenthesis();
+					// TODO revisar si es necesario agregar parentesis
+					// probNet.getPNESupport().openParenthesis();
 
-
-				} else if ((link =
-						visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
+				} else if ((link = visualNetwork.whatLinkInPosition(
+						cursorPosition, g)) != null) {
 					if (!link.isSelected()) {
 						visualNetwork.setSelectedAllObjects(false);
 						visualNetwork.setSelectedLink(link, true);
@@ -632,13 +626,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 					setSelectionState(SelectionState.SELECTING_NODES);
 				}
 			}
-		} 
+		}
 	}
-	
+
 	/**
 	 * Shows contextual menu
-	 * @param e MouseEvent
-	 * @param g Graphics2D
+	 * 
+	 * @param e
+	 *            MouseEvent
+	 * @param g
+	 *            Graphics2D
 	 */
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
 		VisualNode node = null;
@@ -655,23 +652,46 @@ public class EditorPanel extends JPanel implements MouseListener,
 				visualNetwork.setSelectedAllObjects(false);
 				visualNetwork.setSelectedLink(link, true);
 			}
-			boolean linkRestrictionEnabled = false;
-			if (LinkRestrictionValidator.isValid(link.getLink())) {
-				linkRestrictionEnabled = true;
-			}
-			((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-					.setOptionEnabled(
-							ActionCommands.LINK_RESTRICTION_PROPERTIES,
-							linkRestrictionEnabled);
+			if (visualNetwork.getSelectedLinksNumber() == 1) {
+				boolean linkRestrictionEnabled = false;
+				if (LinkRestrictionValidator.isValid(link.getLink())) {
+					linkRestrictionEnabled = true;
+				}
 
-			boolean revelationArcEnabled = false;
-			if (RevelationArcValidator.isValid(link.getLink())) {
-				revelationArcEnabled = true;
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
+								(linkRestrictionEnabled && !link.getLink()
+										.hasRestrictions()));
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
+								(linkRestrictionEnabled && link.getLink()
+										.hasRestrictions()));
+
+				boolean revelationArcEnabled = false;
+				if (RevelationArcValidator.isValid(link.getLink())) {
+					revelationArcEnabled = true;
+				}
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_REVELATIONARC_PROPERTIES,
+								revelationArcEnabled);
+			} else {
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
+								false);
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
+								false);
+
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+						.setOptionEnabled(
+								ActionCommands.LINK_REVELATIONARC_PROPERTIES,
+								false);
 			}
-			((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-					.setOptionEnabled(
-							ActionCommands.LINK_REVELATIONARC_PROPERTIES,
-							revelationArcEnabled);
 			getPopupMenu(PopupMenuFactory.LINK).show(this, e.getX(), e.getY());
 		} else {
 			visualNetwork.setSelectedAllObjects(false);
@@ -706,7 +726,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
-							probNet, new Variable (nodeName), nodeType, cursorPosition);
+							probNet, new Variable(nodeName), nodeType,
+							cursorPosition);
 
 					try {
 						probNet.getPNESupport().announceEdit(addProbNodeEdit);
@@ -877,7 +898,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param e
 	 *            mouse event information.
 	 */
-	
+
 	public void mouseReleasedSelection(MouseEvent e) {
 
 		selection.clearSelectionSquare();
@@ -885,14 +906,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if (nodeMoved) {
 				movedNodes = visualNetwork.fillVisualNodesSelected();
 
-				//visualNetwork.fillDifferencesNodesMovedInfo(movedNodes);
+				// visualNetwork.fillDifferencesNodesMovedInfo(movedNodes);
 
-				cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom
-						.screenToPanel(e.getY()));
-
+				cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
+						zoom.screenToPanel(e.getY()));
 
 				MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
-
 
 				try {
 					probNet.getPNESupport().announceEdit(moveNodeEdit);
@@ -907,7 +926,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				//probNet.getPNESupport().closeParenthesis();
+				// probNet.getPNESupport().closeParenthesis();
 				catch (NotEnoughMemoryException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -922,7 +941,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				nodeMoved = false;
 				adjustPanelDimension();
 			}
-		}else if (selectionState == SelectionState.DEFAULT  ) {
+		} else if (selectionState == SelectionState.DEFAULT) {
 
 		}
 		setSelectionState(SelectionState.DEFAULT);
@@ -941,41 +960,41 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		Graphics2D g = (Graphics2D) getGraphics();
 		VisualNode newLinkDestination = null;
-		Point2D.Double point =
-				new Point2D.Double(zoom.screenToPanel(e.getX()), zoom
-						.screenToPanel(e.getY()));
-
+		Point2D.Double point = new Point2D.Double(zoom.screenToPanel(e.getX()),
+				zoom.screenToPanel(e.getY()));
 
 		if (newLink != null) {
 			newLink = null;
 			if (SwingUtilities.isLeftMouseButton(e)) {
-				if ((newLinkDestination =
-						visualNetwork.whatNodeInPosition(point, g)) != null) {
+				if ((newLinkDestination = visualNetwork.whatNodeInPosition(
+						point, g)) != null) {
 					if (!newLinkSource.equals(newLinkDestination)) {
 						try {
 
 							AddLinkEdit linkEdit = new AddLinkEdit(probNet,
-									probNet.getVariable(newLinkSource.getProbNode().getName()),
-									probNet.getVariable(newLinkDestination.getProbNode().getName()),
-									true);
+									probNet.getVariable(newLinkSource
+											.getProbNode().getName()),
+									probNet.getVariable(newLinkDestination
+											.getProbNode().getName()), true);
 
 							probNet.getPNESupport().announceEdit(linkEdit);
 							probNet.getPNESupport().doEdit(linkEdit);
 
-
-
 						} catch (Exception ex) {
-							JOptionPane.showMessageDialog(
-									Utilities.getOwner(this), ex.getMessage(),
-									stringResource
-									.getString("ErrorWindow.Title.Label"),
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane
+									.showMessageDialog(
+											Utilities.getOwner(this),
+											ex.getMessage(),
+											stringResource
+													.getString("ErrorWindow.Title.Label"),
+											JOptionPane.ERROR_MESSAGE);
 
 						}
-						/*if (link != null) {
-							undoManager.addEditAddLink(visualNetwork
-								.getNetwork(), link);
-						}*/
+						/*
+						 * if (link != null) {
+						 * undoManager.addEditAddLink(visualNetwork
+						 * .getNetwork(), link); }
+						 */
 					}
 				}
 			}
@@ -990,7 +1009,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param e
 	 *            mouse event information.
 	 */
-	
+
 	public void mouseEntered(MouseEvent e) {
 
 	}
@@ -1001,7 +1020,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param e
 	 *            mouse event information.
 	 */
-	
+
 	public void mouseExited(MouseEvent e) {
 
 	}
@@ -1041,11 +1060,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 		Dimension newDimension = null;
 		Double dd = new Double(zoom.getZoom());
 		Double dd1 = new Double(value);
-		if (dd.compareTo(dd1) != 0) { //jlgozalo. 24/08 fix condition to !=
+		if (dd.compareTo(dd1) != 0) { // jlgozalo. 24/08 fix condition to !=
 			zoom.setZoom(value);
-			newDimension =
-					new Dimension((int) Math.round(getMaxWidth()), (int) Math
-							.round(getMaxHeight()));
+			newDimension = new Dimension((int) Math.round(getMaxWidth()),
+					(int) Math.round(getMaxHeight()));
 			setPreferredSize(newDimension);
 			setSize(newDimension);
 			adjustPanelDimension();
@@ -1075,7 +1093,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public UndoManagerSupport getUndoManager() {
 
 		return probNet.getPNESupport().getUndoManager();
-		//undoManager.getUndoManagerInfo();
+		// undoManager.getUndoManagerInfo();
 
 	}
 
@@ -1091,14 +1109,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *             if redo can't be performed.
 	 */
 	private void undoRedo(boolean undoOperation) throws CannotUndoException,
-	CannotRedoException {
+			CannotRedoException {
 
 		visualNetwork.setSelectedAllObjects(false);
 		if (undoOperation) {
 			probNet.getPNESupport().undo();
-			//undoManager.undo();
+			// undoManager.undo();
 		} else {
-			//undoManager.redo();
+			// undoManager.redo();
 			probNet.getPNESupport().redo();
 		}
 
@@ -1130,7 +1148,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		undoRedo(false);
 
 	}
-
 
 	/**
 	 * Sets a new selection listener.
@@ -1221,108 +1238,107 @@ public class EditorPanel extends JPanel implements MouseListener,
 		visualNetwork.setSelectedAllObjects(selected);
 	}
 
-    /**
-     * This method shows a dialog box with the additionalProperties of a node.
-     * If some property has changed, insert a new undo point into the network
-     * undo manager.
-     * @param selectedNode
-     */
-    public void changeNodeProperties (VisualNode selectedNode)
-    {
-        if (requestNodePropertiesToUser2 (Utilities.getOwner (this), selectedNode.getProbNode (),
-                                          false))
-        {
-            adjustPanelDimension ();
-            repaint ();
-            if (selectedNode.getInnerBox () instanceof FSVariableBox)
-            {
-                ((FSVariableBox) selectedNode.getInnerBox ()).recreateVisualStates (evidenceCases.size ());
-            }
-            networkChanged = true;
-        }
-        else probNet.getPNESupport ().undoAndDelete ();
-    }
-    
-    public void changeNodeProperties ()
-    {
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        if(selectedNodes.size () == 1)
-        {
-            changeNodeProperties(selectedNodes.get(0));
-        }
-    }    
-	
-    /**
+	/**
+	 * This method shows a dialog box with the additionalProperties of a node.
+	 * If some property has changed, insert a new undo point into the network
+	 * undo manager.
+	 * 
+	 * @param selectedNode
+	 */
+	public void changeNodeProperties(VisualNode selectedNode) {
+		if (requestNodePropertiesToUser2(Utilities.getOwner(this),
+				selectedNode.getProbNode(), false)) {
+			adjustPanelDimension();
+			repaint();
+			if (selectedNode.getInnerBox() instanceof FSVariableBox) {
+				((FSVariableBox) selectedNode.getInnerBox())
+						.recreateVisualStates(evidenceCases.size());
+			}
+			networkChanged = true;
+		} else
+			probNet.getPNESupport().undoAndDelete();
+	}
+
+	public void changeNodeProperties() {
+		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+		if (selectedNodes.size() == 1) {
+			changeNodeProperties(selectedNodes.get(0));
+		}
+	}
+
+	/**
      * 
      */
-    public void changePotential() {
-        
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        
-        ProbNode probNode = selectedNodes.get(0).getProbNode();
-        /*Potential oldPotential = probNode.getPotentials().get(0);
-        PotentialEditDialog dialog =  new PotentialEditDialog(owner, oldPotential, newElement);
-        Potential newPotential = dialog.getNewPotential();
-        if ( newPotential != null ) {
-            new edit = new ChangeNodePotentialEdit(newPotential);//sets the potential in the probNode
-            pNESupport.doedit //probnet PNESuport, inside panels PNESupports will be owned by the edit dialog
-            adjustPanelDimension();
-            repaint();
-            networkChanged = true;
-        }*/
+	public void changePotential() {
 
-        if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {
-        	//if the user has selected the ok button when closing the dialog
-            adjustPanelDimension();
-            repaint();
-            networkChanged = true;
-        } else {
-            probNet.getPNESupport().undoAndDelete();
-        }
-    }
-    
+		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+
+		ProbNode probNode = selectedNodes.get(0).getProbNode();
+		/*
+		 * Potential oldPotential = probNode.getPotentials().get(0);
+		 * PotentialEditDialog dialog = new PotentialEditDialog(owner,
+		 * oldPotential, newElement); Potential newPotential =
+		 * dialog.getNewPotential(); if ( newPotential != null ) { new edit =
+		 * new ChangeNodePotentialEdit(newPotential);//sets the potential in the
+		 * probNode pNESupport.doedit //probnet PNESuport, inside panels
+		 * PNESupports will be owned by the edit dialog adjustPanelDimension();
+		 * repaint(); networkChanged = true; }
+		 */
+
+		if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {
+			// if the user has selected the ok button when closing the dialog
+			adjustPanelDimension();
+			repaint();
+			networkChanged = true;
+		} else {
+			probNet.getPNESupport().undoAndDelete();
+		}
+	}
+
 	/**
 	 * This method requests to the user the adittionalProperties of a node.
 	 * 
 	 * @param owner
 	 *            owner window that shows the dialog box.
 	 * @param probNode
-	 *            object that contains the adittionalProperties of the node and where
-	 *            changes will be saved.
+	 *            object that contains the adittionalProperties of the node and
+	 *            where changes will be saved.
 	 * @param newNode
-	 *            specifies if the node whose adittionalProperties are going to be edited
-	 *            is new.
-	 * @return true, if the user save the changes on probNode; otherwise,
-	 *         false.
+	 *            specifies if the node whose adittionalProperties are going to
+	 *            be edited is new.
+	 * @return true, if the user save the changes on probNode; otherwise, false.
 	 */
 	private boolean requestNodePropertiesToUser2(Window owner,
 			ProbNode probNode, boolean newNode) {
 
-		NodePropertiesDialog nodePropertiesDialog =
-				new CommonNodePropertiesDialog(owner, probNode, newNode);
-		return (nodePropertiesDialog.requestProperties()
-				== NodePropertiesDialog.OK_BUTTON);
+		NodePropertiesDialog nodePropertiesDialog = new CommonNodePropertiesDialog(
+				owner, probNode, newNode);
+		return (nodePropertiesDialog.requestProperties() == NodePropertiesDialog.OK_BUTTON);
 	}
 
-	private boolean requestPotentialValues(Window owner, ProbNode probNode, boolean 
-			newNode) {
-		potentialsDialog =
-				new PotentialEditDialog(owner, probNode, newNode);
-		return (potentialsDialog.requestValues()//to know if the user has selected the ok button when closing the dialog
-				== NodePropertiesDialog.OK_BUTTON);
+	private boolean requestPotentialValues(Window owner, ProbNode probNode,
+			boolean newNode) {
+		potentialsDialog = new PotentialEditDialog(owner, probNode, newNode);
+		return (potentialsDialog.requestValues()// to know if the user has
+												// selected the ok button when
+												// closing the dialog
+		== NodePropertiesDialog.OK_BUTTON);
 	}
-	private boolean requestCostEffectiveness(Window owner, String suffixTypeAnalysis, boolean isProbabilistic) {
+
+	private boolean requestCostEffectiveness(Window owner,
+			String suffixTypeAnalysis, boolean isProbabilistic) {
 		costEffectivenessDialog = new CostEffectivenessDialog(owner);
 		costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
-		return (costEffectivenessDialog.requestData(probNet.getName(),suffixTypeAnalysis)
-				== CostEffectivenessDialog.OK_BUTTON);
+		return (costEffectivenessDialog.requestData(probNet.getName(),
+				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
 	}
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of a link. If some
-	 * property has changed, insert a new undo point into the network undo
-	 * manager.
-	 * @param link 
+	 * This method shows a dialog box with the adittionalProperties of a link.
+	 * If some property has changed, insert a new undo point into the network
+	 * undo manager.
+	 * 
+	 * @param link
 	 */
 	public void changeLinkProperties(VisualLink link) {
 
@@ -1334,12 +1350,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of the network. If
-	 * some property has changed, insert a new undo point into the network undo
-	 * manager.
+	 * This method shows a dialog box with the adittionalProperties of the
+	 * network. If some property has changed, insert a new undo point into the
+	 * network undo manager.
 	 */
 	public void changeNetworkProperties() {
-		//TODO be careful with local pNESupport and extern pNESupport
+		// TODO be careful with local pNESupport and extern pNESupport
 		if (!requestNetworkProperties(Utilities.getOwner(this), probNet, false)) {
 			probNet.getPNESupport().undoAndDelete();
 		}
@@ -1352,25 +1368,23 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param owner
 	 *            window that owns the dialog box.
 	 * @param adittionalProperties
-	 *            object that contains the adittionalProperties of the network and where
-	 *            changes will be saved, if the user accepts the changes.
+	 *            object that contains the adittionalProperties of the network
+	 *            and where changes will be saved, if the user accepts the
+	 *            changes.
 	 * @param newNetwork
-	 *            specifies if the network whose adittionalProperties are going to be
-	 *            edited is new.
-	 * @return true, if the user has made changes on the adittionalProperties; otherwise,
-	 *         false.
+	 *            specifies if the network whose adittionalProperties are going
+	 *            to be edited is new.
+	 * @return true, if the user has made changes on the adittionalProperties;
+	 *         otherwise, false.
 	 */
-	public static boolean requestNetworkProperties(Window owner, 
-			ProbNet probNet,
-			boolean newNetwork) {
+	public static boolean requestNetworkProperties(Window owner,
+			ProbNet probNet, boolean newNetwork) {
 
-		NetworkPropertiesDialog dialogProperties =
-				new NetworkPropertiesDialog(owner, probNet, newNetwork);
+		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(
+				owner, probNet, newNetwork);
 		return (dialogProperties.requestProperties() == NetworkPropertiesDialog.OK_BUTTON);
 
-
 	}
-
 
 	/**
 	 * This method requests to the user a new value of zoom for the actual
@@ -1395,91 +1409,80 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param cut
 	 *            if true, the nodes copied to the clipboard are also removed.
 	 */
-    public void exportToClipboard (boolean cut)
-    {
-        if (clipboardAssistant == null)
-        {
-            JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                           stringResource.getString ("ClipboardNotSet.Text.Label"),
-                                           stringResource.getString ("ErrorWindow.Title.Label"),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
-            ArrayList<ProbNode> selectedNodes = new ArrayList<ProbNode> ();
-            for(VisualNode visualNode : visualNetwork.getSelectedNodes ())
-            {
-                selectedNodes.add (visualNode.getProbNode ());
-            }
-                
-            ArrayList<Link> selectedLinks = new ArrayList<Link> ();
-            for(VisualLink visualLink : visualNetwork.getSelectedLinks ())
-            {
-                 selectedLinks.add (visualLink.getLink ());
-            }            
-            SelectedContent copiedContent = new SelectedContent (selectedNodes, selectedLinks);
-            
-            if (!copiedContent.isEmpty())
-            {
-                clipboardAssistant.copyToClipboard (copiedContent);
-                if (cut)
-                {
-                    removeSelectedObjects();
-                }
-            }
-        }
-    }
+	public void exportToClipboard(boolean cut) {
+		if (clipboardAssistant == null) {
+			JOptionPane.showMessageDialog(Utilities.getOwner(this),
+					stringResource.getString("ClipboardNotSet.Text.Label"),
+					stringResource.getString("ErrorWindow.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			ArrayList<ProbNode> selectedNodes = new ArrayList<ProbNode>();
+			for (VisualNode visualNode : visualNetwork.getSelectedNodes()) {
+				selectedNodes.add(visualNode.getProbNode());
+			}
 
-    /**
-     * This method imports the content from the clipboard and creates it in
-     * the network.
-     */
-    public void pasteFromClipboard ()
-    {
-        if (clipboardAssistant == null)
-        {
-            JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                           stringResource.getString ("ClipboardNotSet.Text.Label"),
-                                           stringResource.getString ("ErrorWindow.Title.Label"),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
-        else
-        {
-            if (clipboardAssistant.isThereDataStored ())
-            {
-                visualNetwork.setSelectedAllObjects (false);
-                SelectedContent clipboardContent = clipboardAssistant.paste ();
-                
-                PasteEdit pasteEdit = new PasteEdit(visualNetwork, clipboardContent);
+			ArrayList<Link> selectedLinks = new ArrayList<Link>();
+			for (VisualLink visualLink : visualNetwork.getSelectedLinks()) {
+				selectedLinks.add(visualLink.getLink());
+			}
+			SelectedContent copiedContent = new SelectedContent(selectedNodes,
+					selectedLinks);
 
-                try
-                {
-                    probNet.doEdit (pasteEdit);
-                    // Set the nodes and links we just pasted as selected
-                    SelectedContent pastedContent = pasteEdit.getPastedContent ();
-                    for (ProbNode node : pastedContent.getNodes ())
-                    {
-                        visualNetwork.setSelectedNode (node.getName (), true);
-                    }
-                    for (Link link : pastedContent.getLinks ())
-                    {
-                        visualNetwork.setSelectedLink (link, true);
-                    }                    
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace ();
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   stringResource.getString ("CannotPasteAllNodes.Text.Label"),
-                                                   stringResource.getString ("ErrorWindow.Title.Label"),
-                                                   JOptionPane.WARNING_MESSAGE);
-                }
+			if (!copiedContent.isEmpty()) {
+				clipboardAssistant.copyToClipboard(copiedContent);
+				if (cut) {
+					removeSelectedObjects();
+				}
+			}
+		}
+	}
 
-                adjustPanelDimension ();
-                repaint ();
-            }
-        }
-    }
+	/**
+	 * This method imports the content from the clipboard and creates it in the
+	 * network.
+	 */
+	public void pasteFromClipboard() {
+		if (clipboardAssistant == null) {
+			JOptionPane.showMessageDialog(Utilities.getOwner(this),
+					stringResource.getString("ClipboardNotSet.Text.Label"),
+					stringResource.getString("ErrorWindow.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			if (clipboardAssistant.isThereDataStored()) {
+				visualNetwork.setSelectedAllObjects(false);
+				SelectedContent clipboardContent = clipboardAssistant.paste();
+
+				PasteEdit pasteEdit = new PasteEdit(visualNetwork,
+						clipboardContent);
+
+				try {
+					probNet.doEdit(pasteEdit);
+					// Set the nodes and links we just pasted as selected
+					SelectedContent pastedContent = pasteEdit
+							.getPastedContent();
+					for (ProbNode node : pastedContent.getNodes()) {
+						visualNetwork.setSelectedNode(node.getName(), true);
+					}
+					for (Link link : pastedContent.getLinks()) {
+						visualNetwork.setSelectedLink(link, true);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									stringResource
+											.getString("CannotPasteAllNodes.Text.Label"),
+									stringResource
+											.getString("ErrorWindow.Title.Label"),
+									JOptionPane.WARNING_MESSAGE);
+				}
+
+				adjustPanelDimension();
+				repaint();
+			}
+		}
+	}
 
 	/**
 	 * This method says if there is data stored in the clipboard.
@@ -1487,18 +1490,18 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return true if there is data stored in the clipboard; otherwise, false.
 	 */
 	public boolean isThereDataStored() {
-        return (clipboardAssistant != null) ? clipboardAssistant.isThereDataStored() : false;
+		return (clipboardAssistant != null) ? clipboardAssistant
+				.isThereDataStored() : false;
 	}
-
 
 	/**
 	 * This method expands a node.
 	 */
-	public void expandNode() {	
+	public void expandNode() {
 		VisualNode visualNode = null;
 		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
 		if (selectedNodes.size() > 0) {
-			for (int i=0; i < selectedNodes.size(); i++) {
+			for (int i = 0; i < selectedNodes.size(); i++) {
 				visualNode = selectedNodes.get(i);
 				if (!(visualNode.isExpanded())) {
 					visualNode.setExpanded(true);
@@ -1506,7 +1509,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 				repaint();
 			}
-		}		
+		}
 	}
 
 	/**
@@ -1516,7 +1519,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		VisualNode visualNode = null;
 		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
 		if (selectedNodes.size() > 0) {
-			for (int i=0; i < selectedNodes.size(); i++) {
+			for (int i = 0; i < selectedNodes.size(); i++) {
 				visualNode = selectedNodes.get(i);
 				if (visualNode.isExpanded()) {
 					visualNode.setExpanded(false);
@@ -1524,7 +1527,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 				repaint();
 			}
-		}			
+		}
 	}
 
 	/**
@@ -1532,20 +1535,20 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void addFinding() {
 		propagationActive = isAutomaticPropagation();
-		Graphics2D g = (Graphics2D) getGraphics();		
-		VisualNode node = null;		
+		Graphics2D g = (Graphics2D) getGraphics();
+		VisualNode node = null;
 		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
-			NodeAddFindingDialog nodeAddFinding = 
-					new NodeAddFindingDialog(Utilities.getOwner(this), node, g, this);
+			NodeAddFindingDialog nodeAddFinding = new NodeAddFindingDialog(
+					Utilities.getOwner(this), node, g, this);
 		}
 		repaint();
 		setSelectedAllNodes(false);
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);	
-		networkPanel.getMainPanel().getMainPanelMenuAssistant(). 
-		updateOptionsFindingsDependent(networkPanel);
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.updateOptionsFindingsDependent(networkPanel);
 	}
 
 	/**
@@ -1553,7 +1556,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void removeFinding() {
 		propagationActive = isAutomaticPropagation();
-		VisualNode node = null;		
+		VisualNode node = null;
 		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
@@ -1563,31 +1566,36 @@ public class EditorPanel extends JPanel implements MouseListener,
 					evidenceCases.get(currentCase).removeFinding(variable);
 					node.setFindingInNode(false);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-							stringResource.getString("ExceptionNoFinding.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionNoFinding.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									"ERROR\n"
+											+ stringResource
+													.getString("ExceptionNoFinding.Text.Label")
+											+ "\n\n" + exc.getMessage(),
+									stringResource
+											.getString("ExceptionNoFinding.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
-		if ((propagationActive) &&
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		}
-		networkPanel.getMainPanel().getExistingInferenceToolBar(). 
-		setCurrentEvidenceCaseName(currentCase, propagationActive);	
-		networkPanel.getMainPanel().getMainPanelMenuAssistant().
-		updateOptionsFindingsDependent(networkPanel); 
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.updateOptionsFindingsDependent(networkPanel);
 		setSelectedAllNodes(false);
 		repaint();
-	}	
+	}
 
 	/**
 	 * This method returns the current Evidence Case.
 	 * 
 	 * @return the current Evidence Case.
-	 */	
+	 */
 	public EvidenceCase getCurrentEvidenceCase() {
 		return evidenceCases.get(currentCase);
 	}
@@ -1597,19 +1605,19 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * 
 	 * @param caseNumber
 	 *            the number of the case to be returned.
-	 *            
+	 * 
 	 * @return the selected Evidence Case.
-	 */	
+	 */
 	public EvidenceCase getEvidenceCase(int caseNumber) {
 		return evidenceCases.get(caseNumber);
 	}
 
 	/**
-	 * This method returns the number of the Evidence Case that is
-	 * currently selected
-	 *            
+	 * This method returns the number of the Evidence Case that is currently
+	 * selected
+	 * 
 	 * @return the number of the current Evidence Case.
-	 */	
+	 */
 	public int getCurrentCase() {
 		return currentCase;
 	}
@@ -1627,9 +1635,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * This method returns the number of Evidence Cases that the ArrayList is
 	 * currently holding .
-	 *            
+	 * 
 	 * @return the number of Evidence Cases in the ArrayList.
-	 */	
+	 */
 	public int getNumberOfCases() {
 		return evidenceCases.size();
 	}
@@ -1637,9 +1645,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * This method returns true if propagation type currently set is automatic;
 	 * false if manual.
-	 *            
+	 * 
 	 * @return true if the current propagation type is automatic.
-	 */	
+	 */
 	public boolean isAutomaticPropagation() {
 		return automaticPropagation;
 	}
@@ -1655,11 +1663,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method returns the propagation status: true if propagation 
-	 * should be done right now; false otherwise.
-	 *            
+	 * This method returns the propagation status: true if propagation should be
+	 * done right now; false otherwise.
+	 * 
 	 * @return true if propagation should be done right now.
-	 */	
+	 */
 	public boolean isPropagationActive() {
 		return propagationActive;
 	}
@@ -1672,16 +1680,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void setPropagationActive(boolean propagationActive) {
 		this.propagationActive = propagationActive;
-	} 
+	}
 
 	/**
 	 * This method returns the associated network panel.
-	 *            
+	 * 
 	 * @return the associated network panel.
-	 */	
+	 */
 	public NetworkPanel getNetworkPanel() {
 		return networkPanel;
-	}	
+	}
 
 	/**
 	 * This method changes the current expansion threshold.
@@ -1703,19 +1711,20 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method updates the expansion state (expanded/contracted) of the nodes.
-	 * It is used in transitions from edition to inference mode and vice versa, and also
-	 * when the user modifies the current expansion threshold in the Inference tool bar
+	 * This method updates the expansion state (expanded/contracted) of the
+	 * nodes. It is used in transitions from edition to inference mode and vice
+	 * versa, and also when the user modifies the current expansion threshold in
+	 * the Inference tool bar
 	 * 
 	 * @param newWorkingMode
 	 *            new value of the working mode.
 	 */
-	public void updateNodesExpansionState(int newWorkingMode) {		
+	public void updateNodesExpansionState(int newWorkingMode) {
 		if (newWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
 			VisualNode visualNode = null;
 			ArrayList<VisualNode> allNodes = visualNetwork.getAllNodes();
 			if (allNodes.size() > 0) {
-				for (int i=0; i < allNodes.size(); i++) {
+				for (int i = 0; i < allNodes.size(); i++) {
 					visualNode = allNodes.get(i);
 					if (visualNode.isExpanded()) {
 						visualNode.setExpanded(false);
@@ -1727,7 +1736,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			VisualNode visualNode = null;
 			ArrayList<VisualNode> allNodes = visualNetwork.getAllNodes();
 			if (allNodes.size() > 0) {
-				for (int i=0; i < allNodes.size(); i++) {
+				for (int i = 0; i < allNodes.size(); i++) {
 					visualNode = allNodes.get(i);
 					if (visualNode.getProbNode().getRelevance() >= getExpansionThreshold()) {
 						visualNode.setExpanded(true);
@@ -1738,43 +1747,46 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
-	}	
+	}
 
 	/**
-	 * This method updates the value of each state for each node in the network 
+	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
 	public void updateIndividualProbabilities() {
-		if ((propagationActive) &&
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			//if some visualNode has a number of values different from the
-			//number of evidence cases in memory, we need to recreate its 
-			//visual states and consider that the network has been changed.
-			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+			// if some visualNode has a number of values different from the
+			// number of evidence cases in memory, we need to recreate its
+			// visual states and consider that the network has been changed.
+			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
 			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
 			while (iterator4.hasNext()) {
-				VisualNode visualNode = iterator4.next();				
+				VisualNode visualNode = iterator4.next();
 				InnerBox innerBox = visualNode.getInnerBox();
 				VisualState visualState = null;
 				if (innerBox instanceof FSVariableBox) {
-					visualState = ((FSVariableBox)innerBox).getVisualState(0);
-				} else if (innerBox instanceof ExpectedValueBox)  {
-					visualState = ((ExpectedValueBox)innerBox).getVisualState();
+					visualState = ((FSVariableBox) innerBox).getVisualState(0);
+				} else if (innerBox instanceof ExpectedValueBox) {
+					visualState = ((ExpectedValueBox) innerBox)
+							.getVisualState();
 				}
 				if (visualState.getNumberOfValues() != evidenceCases.size()) {
 					if (innerBox instanceof FSVariableBox) {
-						((FSVariableBox)innerBox).recreateVisualStates(evidenceCases.size());
-					} else if (innerBox instanceof ExpectedValueBox)  {
-						((ExpectedValueBox)innerBox).recreateVisualState(evidenceCases.size());
+						((FSVariableBox) innerBox)
+								.recreateVisualStates(evidenceCases.size());
+					} else if (innerBox instanceof ExpectedValueBox) {
+						((ExpectedValueBox) innerBox)
+								.recreateVisualState(evidenceCases.size());
 					}
 					networkChanged = true;
 				}
-			}	
-			//if the network has been changed, propagation must be done in
-			//each evidence case in memory. Otherwise, only propagation in
-			//current case is needed.
-			if (networkChanged) { 
-				for (int i=0; i<evidenceCases.size(); i++) {
+			}
+			// if the network has been changed, propagation must be done in
+			// each evidence case in memory. Otherwise, only propagation in
+			// current case is needed.
+			if (networkChanged) {
+				for (int i = 0; i < evidenceCases.size(); i++) {
 					doPropagation(getEvidenceCase(i), i);
 				}
 				networkChanged = false;
@@ -1786,43 +1798,51 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method removes all the findings established in the
-	 * current evidence case.
+	 * This method removes all the findings established in the current evidence
+	 * case.
 	 */
 	public void removeAllFindings() {
 		propagationActive = isAutomaticPropagation();
 		ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
-		for (int i=0; i<visualNodes.size(); i++) {
-			visualNodes.get(i).setFindingInNode(false);			
-		}		
-		ArrayList<Finding> findings = evidenceCases.get(currentCase).getFindings();
-		for (int i=0; i<findings.size(); i++) {
+		for (int i = 0; i < visualNodes.size(); i++) {
+			visualNodes.get(i).setFindingInNode(false);
+		}
+		ArrayList<Finding> findings = evidenceCases.get(currentCase)
+				.getFindings();
+		for (int i = 0; i < findings.size(); i++) {
 			try {
-				evidenceCases.get(currentCase).removeFinding(findings.get(i).getVariable());
+				evidenceCases.get(currentCase).removeFinding(
+						findings.get(i).getVariable());
 				doPropagation(evidenceCases.get(currentCase), currentCase);
 			} catch (NoFindingException exc) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
-						stringResource.getString("ExceptionNoFinding.Text.Label") +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionNoFinding.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane
+						.showMessageDialog(
+								Utilities.getOwner(this),
+								"ERROR\n"
+										+ stringResource
+												.getString("ExceptionNoFinding.Text.Label")
+										+ "\n\n" + exc.getMessage(),
+								stringResource
+										.getString("ExceptionNoFinding.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);	
-		networkPanel.getMainPanel().getMainPanelMenuAssistant(). 
-		updateOptionsFindingsDependent(networkPanel);	
-	}	
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.updateOptionsFindingsDependent(networkPanel);
+	}
 
 	/**
-	 * This method returns true if there are any finding in the 
-	 * current evidence case.
+	 * This method returns true if there are any finding in the current evidence
+	 * case.
 	 * 
 	 * @return true if the current evidence case has at least one finding.
 	 */
 	public boolean areThereFindingsInCase() {
 		boolean areFindings = false;
-		ArrayList<Finding> findings = evidenceCases.get(currentCase).getFindings();
+		ArrayList<Finding> findings = evidenceCases.get(currentCase)
+				.getFindings();
 		if (findings != null) {
 			if (findings.size() > 0) {
 				areFindings = true;
@@ -1839,87 +1859,121 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void setNewFinding(VisualState visualState) {
 		propagationActive = isAutomaticPropagation();
-		Variable variable = visualState.getVisualNode().getProbNode().getVariable();
+		Variable variable = visualState.getVisualNode().getProbNode()
+				.getVariable();
 		if (evidenceCases.get(currentCase).getFinding(variable) != null) {
-			if (evidenceCases.get(currentCase).getState(variable) == visualState.getStateNumber()) {
+			if (evidenceCases.get(currentCase).getState(variable) == visualState
+					.getStateNumber()) {
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
 					visualState.getVisualNode().setFindingInNode(false);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-							stringResource.getString("ExceptionNoFinding.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionNoFinding.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									"ERROR\n"
+											+ stringResource
+													.getString("ExceptionNoFinding.Text.Label")
+											+ "\n\n" + exc.getMessage(),
+									stringResource
+											.getString("ExceptionNoFinding.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
-					Finding finding = new Finding(variable, visualState.getStateNumber());
+					Finding finding = new Finding(variable,
+							visualState.getStateNumber());
 					evidenceCases.get(currentCase).addFinding(finding);
 					visualState.getVisualNode().setFindingInNode(true);
 				} catch (NoFindingException exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
-							stringResource.getString("ExceptionNoFinding.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionNoFinding.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (InvalidStateException exc) {		
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-							stringResource.getString("ExceptionInvalidState.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionInvalidState.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (IncompatibleEvidenceException exc) {		
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-							stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									"ERROR\n"
+											+ stringResource
+													.getString("ExceptionNoFinding.Text.Label")
+											+ "\n\n" + exc.getMessage(),
+									stringResource
+											.getString("ExceptionNoFinding.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
+				} catch (InvalidStateException exc) {
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									"ERROR\n"
+											+ stringResource
+													.getString("ExceptionInvalidState.Text.Label")
+											+ "\n\n" + exc.getMessage(),
+									stringResource
+											.getString("ExceptionInvalidState.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
+				} catch (IncompatibleEvidenceException exc) {
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									"ERROR\n"
+											+ stringResource
+													.getString("ExceptionIncompatibleEvidence.Text.Label")
+											+ "\n\n" + exc.getMessage(),
+									stringResource
+											.getString("ExceptionIncompatibleEvidence.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
 				} catch (Exception exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionGeneric.Title.Label"),
+					JOptionPane.showMessageDialog(Utilities.getOwner(this),
+							"ERROR" + "\n\n" + exc.getMessage(), stringResource
+									.getString("ExceptionGeneric.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
-				}							
+				}
 			}
 		} else {
-			Finding finding = new Finding(variable, visualState.getStateNumber());
+			Finding finding = new Finding(variable,
+					visualState.getStateNumber());
 			try {
 				evidenceCases.get(currentCase).addFinding(finding);
 				visualState.getVisualNode().setFindingInNode(true);
-			} catch (InvalidStateException exc) {	
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
-						stringResource.getString("ExceptionInvalidState.Text.Label") +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionInvalidState.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
-			} catch (IncompatibleEvidenceException exc) {		
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
-						stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
+			} catch (InvalidStateException exc) {
+				JOptionPane
+						.showMessageDialog(
+								Utilities.getOwner(this),
+								"ERROR\n"
+										+ stringResource
+												.getString("ExceptionInvalidState.Text.Label")
+										+ "\n\n" + exc.getMessage(),
+								stringResource
+										.getString("ExceptionInvalidState.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
+			} catch (IncompatibleEvidenceException exc) {
+				JOptionPane
+						.showMessageDialog(
+								Utilities.getOwner(this),
+								"ERROR\n"
+										+ stringResource
+												.getString("ExceptionIncompatibleEvidence.Text.Label")
+										+ "\n\n" + exc.getMessage(),
+								stringResource
+										.getString("ExceptionIncompatibleEvidence.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
 			} catch (Exception exc) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionGeneric.Title.Label"),
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR"
+						+ "\n\n" + exc.getMessage(), stringResource
+						.getString("ExceptionGeneric.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
-			}	
+			}
 		}
 		setSelectedAllNodes(false);
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);
-		if ((propagationActive) &&
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) { 
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		}
-		networkPanel.getMainPanel().getMainPanelMenuAssistant().
-		updateOptionsFindingsDependent(networkPanel);
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.updateOptionsFindingsDependent(networkPanel);
 		repaint();
 
 	}
-	
+
 	/**
 	 * Returns the inference algorithm assigned to the panel.
 	 * 
@@ -1948,130 +2002,177 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            number of this evidence case.
 	 */
 	public void doPropagation(EvidenceCase evidenceCase, int caseNumber) {
-		//...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
-		//...IS COMPLETE		
-		//...We obtain the type of the network. If it is a Bayesian Network, we do the real propagation;
-		//...if it is an Influence Diagram, we do a 'fictitious propagation' for painting the nodes with
-		//...dummy information; otherwise, no propagation is done and a message is shown.		
+		// ...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE
+		// DIAGRAMS
+		// ...IS COMPLETE
+		// ...We obtain the type of the network. If it is a Bayesian Network, we
+		// do the real propagation;
+		// ...if it is an Influence Diagram, we do a 'fictitious propagation'
+		// for painting the nodes with
+		// ...dummy information; otherwise, no propagation is done and a message
+		// is shown.
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof BayesianNetworkType) {
 			try {
 				inferenceAlgorithm.setEvidence(evidenceCase);
-				HashMap<Variable, Potential> individualProbabilities = 
-						inferenceAlgorithm.getIndividualProbabilities();
-				
+				HashMap<Variable, Potential> individualProbabilities = inferenceAlgorithm
+						.getIndividualProbabilities();
+
 				if (individualProbabilities != null) {
-					Set<Map.Entry<Variable, Potential>> entries = 
-							individualProbabilities.entrySet();
-					Iterator<Map.Entry<Variable, Potential>> iterator1 = entries.iterator();		
-					Map.Entry<Variable, Potential> entry;		
-					ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();	
+					Set<Map.Entry<Variable, Potential>> entries = individualProbabilities
+							.entrySet();
+					Iterator<Map.Entry<Variable, Potential>> iterator1 = entries
+							.iterator();
+					Map.Entry<Variable, Potential> entry;
+					ArrayList<VisualNode> allVisualNodes = visualNetwork
+							.getAllNodes();
 					while (iterator1.hasNext()) {
 						entry = iterator1.next();
 						Variable variable = entry.getKey();
-						Potential potential = entry.getValue(); 
+						Potential potential = entry.getValue();
 						if (potential.getPotentialType() == PotentialType.TABLE) {
-							TablePotential tablePotential = (TablePotential)potential;
-							if  (tablePotential.getNumVariables() == 1) {
+							TablePotential tablePotential = (TablePotential) potential;
+							if (tablePotential.getNumVariables() == 1) {
 								double[] values = tablePotential.getValues();
-								Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
+								Iterator<VisualNode> iterator2 = allVisualNodes
+										.iterator();
 								while (iterator2.hasNext()) {
 									VisualNode visualNode = iterator2.next();
-									if (variable.getName().equals(visualNode.getProbNode().getName())) { 
+									if (variable.getName().equals(
+											visualNode.getProbNode().getName())) {
 										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-											FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-											for (int i=0; i<innerBox.getNumStates(); i++) {
-												VisualState visualState = innerBox.getVisualState(i);
-												visualState.setStateValue(caseNumber, values[i]);
-											}
-										}
-										visualNode.setFindingInNode(false);
-									}
-								}	
-								//PROVISIONAL2: Currently the propagation algorithm is returning a TablePotential
-								// with 0 variables when the node has a Uniform relation
-							} else if (tablePotential.getNumVariables() == 0){
-								Iterator<VisualNode> iterator2 = allVisualNodes.iterator();
-								while (iterator2.hasNext()) {
-									VisualNode visualNode = iterator2.next();
-									if (variable.getName().equals(visualNode.getProbNode().getName())) { 
-										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-											FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-											for (int i=0; i<innerBox.getNumStates(); i++) {
-												VisualState visualState = innerBox.getVisualState(i);
-												visualState.setStateValue(caseNumber, (1.0/innerBox.getNumStates()));
-												//...asaez...revisar...da excepción al añadir un hallazgo, siempre que el nodo
-												//...tenga una relación de ascendencia/descendencia con otro
+											FSVariableBox innerBox = (FSVariableBox) visualNode
+													.getInnerBox();
+											for (int i = 0; i < innerBox
+													.getNumStates(); i++) {
+												VisualState visualState = innerBox
+														.getVisualState(i);
+												visualState.setStateValue(
+														caseNumber, values[i]);
 											}
 										}
 										visualNode.setFindingInNode(false);
 									}
 								}
-								//END OF PROVISIONAL2............................
-							} else { 
-								JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-										"Table Potential of " + variable.getName() + " has " +
-										tablePotential.getNumVariables() + " variables.\n It cannot be treated by now", 
-										"Error",
-										JOptionPane.ERROR_MESSAGE);
-							} 
-						}				
+								// PROVISIONAL2: Currently the propagation
+								// algorithm is returning a TablePotential
+								// with 0 variables when the node has a Uniform
+								// relation
+							} else if (tablePotential.getNumVariables() == 0) {
+								Iterator<VisualNode> iterator2 = allVisualNodes
+										.iterator();
+								while (iterator2.hasNext()) {
+									VisualNode visualNode = iterator2.next();
+									if (variable.getName().equals(
+											visualNode.getProbNode().getName())) {
+										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+											FSVariableBox innerBox = (FSVariableBox) visualNode
+													.getInnerBox();
+											for (int i = 0; i < innerBox
+													.getNumStates(); i++) {
+												VisualState visualState = innerBox
+														.getVisualState(i);
+												visualState
+														.setStateValue(
+																caseNumber,
+																(1.0 / innerBox
+																		.getNumStates()));
+												// ...asaez...revisar...da
+												// excepción al añadir un
+												// hallazgo, siempre que el nodo
+												// ...tenga una relación de
+												// ascendencia/descendencia con
+												// otro
+											}
+										}
+										visualNode.setFindingInNode(false);
+									}
+								}
+								// END OF
+								// PROVISIONAL2............................
+							} else {
+								JOptionPane
+										.showMessageDialog(
+												Utilities.getOwner(this),
+												"ERROR\n"
+														+ "Table Potential of "
+														+ variable.getName()
+														+ " has "
+														+ tablePotential
+																.getNumVariables()
+														+ " variables.\n It cannot be treated by now",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+							}
+						}
 					}
 					updateNodesFindingState(evidenceCase);
 				}
-				repaint();		
+				repaint();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-	
-		} else if (networkType instanceof InfluenceDiagramType) {			
-			//Set the values of the visualStates of nodes without finding
-			ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();			
+
+		} else if (networkType instanceof InfluenceDiagramType) {
+			// Set the values of the visualStates of nodes without finding
+			ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();
 			Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
 			while (iterator1.hasNext()) {
 				VisualNode visualNode = iterator1.next();
 				InnerBox innerBox = visualNode.getInnerBox();
-				if (innerBox instanceof FSVariableBox) {// si es un nodo aleatorio o de decisión
+				if (innerBox instanceof FSVariableBox) {// si es un nodo
+														// aleatorio o de
+														// decisión
 					Double aux1 = 0.0;
 					Double aux2 = 0.3;
 					Double value = 0.0;
-					for (int i=0; i<innerBox.getNumStates()-1; i++) {
-						if ((aux1+aux2)<=1.0) {
+					for (int i = 0; i < innerBox.getNumStates() - 1; i++) {
+						if ((aux1 + aux2) <= 1.0) {
 							value = aux2;
 						} else {
 							value = (1.0 - aux1);
 						}
 						aux1 += value;
-						VisualState visualState = ((FSVariableBox)innerBox).getVisualState(i);
-						visualState.setStateValue(caseNumber, value); 
+						VisualState visualState = ((FSVariableBox) innerBox)
+								.getVisualState(i);
+						visualState.setStateValue(caseNumber, value);
 					}
-					VisualState visualState = ((FSVariableBox)innerBox).
-							getVisualState(innerBox.getNumStates()-1);
-					visualState.setStateValue(caseNumber, (1.0 - aux1));					
-				} else { //si es un nodo de utilidad
-					VisualState visualState = ((ExpectedValueBox)innerBox).getVisualState();
+					VisualState visualState = ((FSVariableBox) innerBox)
+							.getVisualState(innerBox.getNumStates() - 1);
+					visualState.setStateValue(caseNumber, (1.0 - aux1));
+				} else { // si es un nodo de utilidad
+					VisualState visualState = ((ExpectedValueBox) innerBox)
+							.getVisualState();
 					visualState.setStateValue(caseNumber, 111.55);
-					((ExpectedValueBox)innerBox).setMinUtilityRange(100.0);
-					((ExpectedValueBox)innerBox).setMaxUtilityRange(112.0);
-				}	
+					((ExpectedValueBox) innerBox).setMinUtilityRange(100.0);
+					((ExpectedValueBox) innerBox).setMaxUtilityRange(112.0);
+				}
 				visualNode.setFindingInNode(false);
-			}			
-			//Set the values of the visualStates of nodes with finding
-			ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
+			}
+			// Set the values of the visualStates of nodes with finding
+			ArrayList<Finding> findingsInEvidenceCase = evidenceCase
+					.getFindings();
 			Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
 			while (iterator3.hasNext()) {
 				Finding finding = iterator3.next();
 				Variable variable = finding.getVariable();
-				ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
+				ArrayList<VisualNode> allVisualNodes = visualNetwork
+						.getAllNodes();
 				Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
 				while (iterator4.hasNext()) {
 					VisualNode visualNode = iterator4.next();
-					if (variable.getName().equals(visualNode.getProbNode().getName())){ //si el nodo tiene hallazgo
+					if (variable.getName().equals(
+							visualNode.getProbNode().getName())) { // si el nodo
+																	// tiene
+																	// hallazgo
 						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-							FSVariableBox innerBox = (FSVariableBox)visualNode.getInnerBox();
-							for (int i=0; i<innerBox.getNumStates(); i++) {
-								VisualState visualState = innerBox.getVisualState(i);
-								if (visualState.getStateNumber() == finding.getStateIndex()) {
+							FSVariableBox innerBox = (FSVariableBox) visualNode
+									.getInnerBox();
+							for (int i = 0; i < innerBox.getNumStates(); i++) {
+								VisualState visualState = innerBox
+										.getVisualState(i);
+								if (visualState.getStateNumber() == finding
+										.getStateIndex()) {
 									visualState.setStateValue(caseNumber, 1.0);
 								} else {
 									visualState.setStateValue(caseNumber, 0.0);
@@ -2082,24 +2183,32 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 				}
 			}
-			updateNodesFindingState(evidenceCase);			
-			repaint();		
+			updateNodesFindingState(evidenceCase);
+			repaint();
 		} else {
 			try {
 				inferenceAlgorithm.setEvidence(evidenceCase);
-				HashMap<Variable, Potential> individualProbabilities = 
-						inferenceAlgorithm.getIndividualProbabilities();
+				HashMap<Variable, Potential> individualProbabilities = inferenceAlgorithm
+						.getIndividualProbabilities();
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "ERROR\n" +
-					stringResource.getString("NoPropagationCanBeDoneMessage1.Text.Label") +
-					"\n" + stringResource.getString("NoPropagationCanBeDoneMessage2.Text.Label") +
-					"\n\n" + networkType, 
-					stringResource.getString("NoPropagationCanBeDoneMessage.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"ERROR\n"
+										+ stringResource
+												.getString("NoPropagationCanBeDoneMessage1.Text.Label")
+										+ "\n"
+										+ stringResource
+												.getString("NoPropagationCanBeDoneMessage2.Text.Label")
+										+ "\n\n" + networkType,
+								stringResource
+										.getString("NoPropagationCanBeDoneMessage.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		//...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE DIAGRAMS
-		//...IS COMPLETE		
+		// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
+		// INFLUENCE DIAGRAMS
+		// ...IS COMPLETE
 	}
 
 	/**
@@ -2108,21 +2217,23 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param evidenceCase
 	 *            the evidence case with which the update must be done.
 	 */
-	public void updateNodesFindingState(EvidenceCase evidenceCase) {		
+	public void updateNodesFindingState(EvidenceCase evidenceCase) {
 		Iterator<VisualNode> iterator1 = visualNetwork.getAllNodes().iterator();
 		while (iterator1.hasNext()) {
 			VisualNode visualNode = iterator1.next();
 			visualNode.setFindingInNode(false);
-		}		
+		}
 		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
 		Iterator<Finding> iterator2 = findingsInEvidenceCase.iterator();
 		while (iterator2.hasNext()) {
 			Finding finding = iterator2.next();
 			Variable variable = finding.getVariable();
-			Iterator<VisualNode> iterator3 = visualNetwork.getAllNodes().iterator();
+			Iterator<VisualNode> iterator3 = visualNetwork.getAllNodes()
+					.iterator();
 			while (iterator3.hasNext()) {
 				VisualNode visualNode = iterator3.next();
-				if (variable.getName().equals(visualNode.getProbNode().getName())){
+				if (variable.getName().equals(
+						visualNode.getProbNode().getName())) {
 					visualNode.setFindingInNode(true);
 				}
 			}
@@ -2132,241 +2243,184 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 	public void showCostEffectivenessDeterministicDialog() {
 
-/**
-		if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false)) {
-			ArrayList<Intervention> interventions = new ArrayList<Intervention>();
-			final String RESOURCE_EXCEL_TEMPLATE =
-					"/openmarkov/gui/resources/" +
-							"template/cost-effectiveness-plot-empty.xls";
-
-			try {
-				int numSimulations = 0;
-
-				CostEffectivenessAnalysis costEffectivenessAnalysis = 
-						new CostEffectivenessAnalysis(probNet, 
-								costEffectivenessDialog.getInitialAge(),   
-								costEffectivenessDialog.getFinalAge(), 
-								costEffectivenessDialog.getDiscount(), numSimulations);
-
-				interventions	= 
-						costEffectivenessAnalysis.getAllInterventions(numSimulations)[0];
-				Intervention[] frontier = costEffectivenessAnalysis.
-						getFrontierIntervention(
-								interventions.toArray(
-										new Intervention[interventions.size()]));
-
-				try {
-
-					ExcelIO excelTarget = ExcelIO.getUniqueInstance();
-					excelTarget.setInitialData(
-							costEffectivenessDialog.getInitialAge(),
-							costEffectivenessDialog.getFinalAge(),
-							costEffectivenessDialog.getDiscount());
-					excelTarget.useTemplate(RESOURCE_EXCEL_TEMPLATE);
-					excelTarget.writeExcelReportOptimalInterventions(interventions,frontier,
-							costEffectivenessDialog.getOutputFileName());	
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), "Report has been created",
-							//stringResource
-							//.getString("ErrorWindow.Title.Label"),
-							"Cost effectiveness Analysis",
-							JOptionPane.INFORMATION_MESSAGE);
-
-					Runtime.getRuntime().exec( 
-							"rundll32 SHELL32.DLL, ShellExec_RunDLL "+ excelTarget.getPathFile());
-
-
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), e.getMessage(),
-							stringResource
-							.getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				}		
-
-
-			} catch (NotEnoughMemoryException e1) {
-				JOptionPane.showMessageDialog(
-						Utilities.getOwner(this), e1.getMessage(),
-						stringResource
-						.getString("ErrorWindow.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
-			} catch (NormalizeNullVectorException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (DoEditException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (ConstraintViolationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (CanNotDoEditException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NotEvaluableNetworkException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NonProjectablePotentialException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (WrongCriterionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IncompatibleEvidenceException exc) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-						stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"), 
-						JOptionPane.ERROR_MESSAGE);
-			} catch (InvalidStateException exc) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
-						stringResource.getString("ExceptionInvalidState.Text.Label") +
-						"\n\n" + exc.getMessage(), 
-						stringResource.getString("ExceptionInvalidState.Title.Label"), 
-						JOptionPane.ERROR_MESSAGE);
-			}
-
-		}*/
+		/**
+		 * if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
+		 * { ArrayList<Intervention> interventions = new
+		 * ArrayList<Intervention>(); final String RESOURCE_EXCEL_TEMPLATE =
+		 * "/openmarkov/gui/resources/" +
+		 * "template/cost-effectiveness-plot-empty.xls";
+		 * 
+		 * try { int numSimulations = 0;
+		 * 
+		 * CostEffectivenessAnalysis costEffectivenessAnalysis = new
+		 * CostEffectivenessAnalysis(probNet,
+		 * costEffectivenessDialog.getInitialAge(),
+		 * costEffectivenessDialog.getFinalAge(),
+		 * costEffectivenessDialog.getDiscount(), numSimulations);
+		 * 
+		 * interventions =
+		 * costEffectivenessAnalysis.getAllInterventions(numSimulations)[0];
+		 * Intervention[] frontier = costEffectivenessAnalysis.
+		 * getFrontierIntervention( interventions.toArray( new
+		 * Intervention[interventions.size()]));
+		 * 
+		 * try {
+		 * 
+		 * ExcelIO excelTarget = ExcelIO.getUniqueInstance();
+		 * excelTarget.setInitialData( costEffectivenessDialog.getInitialAge(),
+		 * costEffectivenessDialog.getFinalAge(),
+		 * costEffectivenessDialog.getDiscount());
+		 * excelTarget.useTemplate(RESOURCE_EXCEL_TEMPLATE);
+		 * excelTarget.writeExcelReportOptimalInterventions
+		 * (interventions,frontier,
+		 * costEffectivenessDialog.getOutputFileName());
+		 * JOptionPane.showMessageDialog( Utilities.getOwner(this),
+		 * "Report has been created", //stringResource
+		 * //.getString("ErrorWindow.Title.Label"),
+		 * "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE);
+		 * 
+		 * Runtime.getRuntime().exec( "rundll32 SHELL32.DLL, ShellExec_RunDLL "+
+		 * excelTarget.getPathFile());
+		 * 
+		 * 
+		 * } catch (IOException e) { JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this), e.getMessage(), stringResource
+		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		 * 
+		 * 
+		 * } catch (NotEnoughMemoryException e1) {
+		 * JOptionPane.showMessageDialog( Utilities.getOwner(this),
+		 * e1.getMessage(), stringResource
+		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		 * catch (NormalizeNullVectorException e1) { // TODO Auto-generated
+		 * catch block e1.printStackTrace(); } catch (DoEditException e1) { //
+		 * TODO Auto-generated catch block e1.printStackTrace(); } catch
+		 * (ConstraintViolationException e1) { // TODO Auto-generated catch
+		 * block e1.printStackTrace(); } catch (CanNotDoEditException e1) { //
+		 * TODO Auto-generated catch block e1.printStackTrace(); } catch
+		 * (NotEvaluableNetworkException e1) { // TODO Auto-generated catch
+		 * block e1.printStackTrace(); } catch (NonProjectablePotentialException
+		 * e1) { // TODO Auto-generated catch block e1.printStackTrace(); }
+		 * catch (WrongCriterionException e1) { // TODO Auto-generated catch
+		 * block e1.printStackTrace(); } catch (IncompatibleEvidenceException
+		 * exc) { JOptionPane.showMessageDialog(Utilities.getOwner(this),
+		 * "ERROR\n" +
+		 * stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
+		 * + "\n\n" + exc.getMessage(), stringResource.getString(
+		 * "ExceptionIncompatibleEvidence.Title.Label"),
+		 * JOptionPane.ERROR_MESSAGE); } catch (InvalidStateException exc) {
+		 * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+		 * stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
+		 * + exc.getMessage(),
+		 * stringResource.getString("ExceptionInvalidState.Title.Label"),
+		 * JOptionPane.ERROR_MESSAGE); }
+		 * 
+		 * }
+		 */
 	}
-
-
 
 	public void showSensitivityAnalysisCostEffectivenessDialog() {
-/*
-		ArrayList<Variable> decisionsWithoutPolicy = null;
-		try {
-			decisionsWithoutPolicy = VarEliminationSMM.getDecisionVariablesWithoutPolicies(this.probNet);
-		} catch (NotEvaluableNetworkException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		if (decisionsWithoutPolicy.size()!=1){
-			JOptionPane.showMessageDialog(
-					Utilities.getOwner(this), "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model.",
-					stringResource
-					.getString("ErrorWindow.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		}else{
-			if (requestCostEffectiveness(Utilities.getOwner(this),"sa", true)) {
-
-				//Perform a simulation with the reference values
-				ArrayList<Intervention> interventionsDeterministic = null;
-
-				CostEffectivenessAnalysis costEffectivenessAnalysisDeterministic;
-				try {
-					costEffectivenessAnalysisDeterministic = new CostEffectivenessAnalysis(probNet, 
-							costEffectivenessDialog.getInitialAge(),   
-							costEffectivenessDialog.getFinalAge(), 
-							costEffectivenessDialog.getDiscount(), 0);
-					interventionsDeterministic	= 
-							costEffectivenessAnalysisDeterministic.getAllInterventions(0)[0];
-				} catch (NotEnoughMemoryException e2) {
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), e2.getMessage(),
-							stringResource
-							.getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (NormalizeNullVectorException e2) {
-					e2.printStackTrace();
-				} catch (DoEditException e2) {
-					e2.printStackTrace();
-				} catch (ConstraintViolationException e2) {
-					e2.printStackTrace();
-				} catch (CanNotDoEditException e2) {
-					e2.printStackTrace();
-				} catch (NotEvaluableNetworkException e2) {
-					e2.printStackTrace();
-				} catch (NonProjectablePotentialException e2) {
-					e2.printStackTrace();
-				} catch (WrongCriterionException e2) {
-					e2.printStackTrace();
-				} catch (IncompatibleEvidenceException exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-							stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"), 
-							JOptionPane.ERROR_MESSAGE);
-				} catch (InvalidStateException exc) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
-							stringResource.getString("ExceptionInvalidState.Text.Label") + 
-							"\n\n" + exc.getMessage(), 
-							stringResource.getString("ExceptionInvalidState.Title.Label"), 
-							JOptionPane.ERROR_MESSAGE);
-				}
-
-				ArrayList<Intervention>[] interventionsProbabilistic = null;
-				final String RESOURCE_EXCEL_TEMPLATE_2_STATES =
-						"/openmarkov/gui/resources/" +
-								"template/sa-plot-2-states-empty.xls";
-				final String RESOURCE_EXCEL_TEMPLATE_3_STATES =
-						"/openmarkov/gui/resources/" +
-								"template/sa-plot-3-states-empty.xls";
-
-				CostEffectivenessAnalysis costEffectivenessAnalysis = null;
-				try {
-					costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, 
-							costEffectivenessDialog.getInitialAge(),   
-							costEffectivenessDialog.getFinalAge(), 
-							costEffectivenessDialog.getDiscount(), costEffectivenessDialog.getSimulationsNumber());
-					int numSimulationsInEachThread = 20;
-					interventionsProbabilistic	= costEffectivenessAnalysis.getAllInterventionsWithThreads(costEffectivenessDialog.getSimulationsNumber(),numSimulationsInEachThread);
-					//interventionsProbabilistic	= costEffectivenessAnalysis.getAllInterventions(costEffectivenessDialog.getSimulationsNumber());
-				} catch (NotEnoughMemoryException e1) {
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), e1.getMessage(),
-							stringResource
-							.getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (NormalizeNullVectorException e1) {
-					e1.printStackTrace();
-				} catch (DoEditException e1) {
-					e1.printStackTrace();
-				} catch (ConstraintViolationException e1) {
-					e1.printStackTrace();
-				} catch (CanNotDoEditException e1) {
-					e1.printStackTrace();
-				} catch (NotEvaluableNetworkException e1) {
-					e1.printStackTrace();
-				} catch (NonProjectablePotentialException e1) {
-					e1.printStackTrace();
-				} catch (WrongCriterionException e1) {
-					e1.printStackTrace();
-				}
-
-				Variable decision = decisionsWithoutPolicy.get(0);
-				int numStatesDecisionToAnalyze = decision.getNumStates();
-				ExcelSensitivityAnalysis excelTarget = ExcelSensitivityAnalysis.getUniqueInstance();
-				excelTarget.setInitialData(costEffectivenessDialog.getSimulationsNumber(),
-						decisionsWithoutPolicy.get(0));
-				try {
-					excelTarget.useTemplate(numStatesDecisionToAnalyze,RESOURCE_EXCEL_TEMPLATE_2_STATES,RESOURCE_EXCEL_TEMPLATE_3_STATES);
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), e.getMessage(),
-							stringResource
-							.getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				}
-				try {
-					excelTarget.writeExcelReportSensitivityAnalysis(interventionsDeterministic,interventionsProbabilistic,
-							costEffectivenessDialog.getOutputFileName());
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(
-							Utilities.getOwner(this), e.getMessage(),
-							stringResource
-							.getString("ErrorWindow.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-				}	
-				JOptionPane.showMessageDialog(
-						Utilities.getOwner(this), "Report has been created",
-						"Cost effectiveness Analysis",
-						JOptionPane.INFORMATION_MESSAGE);			
-			}
-
-		}*/
+		/*
+		 * ArrayList<Variable> decisionsWithoutPolicy = null; try {
+		 * decisionsWithoutPolicy =
+		 * VarEliminationSMM.getDecisionVariablesWithoutPolicies(this.probNet);
+		 * } catch (NotEvaluableNetworkException e1) { // TODO Auto-generated
+		 * catch block e1.printStackTrace(); } if
+		 * (decisionsWithoutPolicy.size()!=1){ JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this),
+		 * "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model."
+		 * , stringResource .getString("ErrorWindow.Title.Label"),
+		 * JOptionPane.ERROR_MESSAGE); }else{ if
+		 * (requestCostEffectiveness(Utilities.getOwner(this),"sa", true)) {
+		 * 
+		 * //Perform a simulation with the reference values
+		 * ArrayList<Intervention> interventionsDeterministic = null;
+		 * 
+		 * CostEffectivenessAnalysis costEffectivenessAnalysisDeterministic; try
+		 * { costEffectivenessAnalysisDeterministic = new
+		 * CostEffectivenessAnalysis(probNet,
+		 * costEffectivenessDialog.getInitialAge(),
+		 * costEffectivenessDialog.getFinalAge(),
+		 * costEffectivenessDialog.getDiscount(), 0); interventionsDeterministic
+		 * = costEffectivenessAnalysisDeterministic.getAllInterventions(0)[0]; }
+		 * catch (NotEnoughMemoryException e2) { JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this), e2.getMessage(), stringResource
+		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		 * catch (NormalizeNullVectorException e2) { e2.printStackTrace(); }
+		 * catch (DoEditException e2) { e2.printStackTrace(); } catch
+		 * (ConstraintViolationException e2) { e2.printStackTrace(); } catch
+		 * (CanNotDoEditException e2) { e2.printStackTrace(); } catch
+		 * (NotEvaluableNetworkException e2) { e2.printStackTrace(); } catch
+		 * (NonProjectablePotentialException e2) { e2.printStackTrace(); } catch
+		 * (WrongCriterionException e2) { e2.printStackTrace(); } catch
+		 * (IncompatibleEvidenceException exc) {
+		 * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+		 * stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
+		 * + "\n\n" + exc.getMessage(),
+		 * stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"
+		 * ), JOptionPane.ERROR_MESSAGE); } catch (InvalidStateException exc) {
+		 * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+		 * stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
+		 * + exc.getMessage(),
+		 * stringResource.getString("ExceptionInvalidState.Title.Label"),
+		 * JOptionPane.ERROR_MESSAGE); }
+		 * 
+		 * ArrayList<Intervention>[] interventionsProbabilistic = null; final
+		 * String RESOURCE_EXCEL_TEMPLATE_2_STATES =
+		 * "/openmarkov/gui/resources/" + "template/sa-plot-2-states-empty.xls";
+		 * final String RESOURCE_EXCEL_TEMPLATE_3_STATES =
+		 * "/openmarkov/gui/resources/" + "template/sa-plot-3-states-empty.xls";
+		 * 
+		 * CostEffectivenessAnalysis costEffectivenessAnalysis = null; try {
+		 * costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
+		 * costEffectivenessDialog.getInitialAge(),
+		 * costEffectivenessDialog.getFinalAge(),
+		 * costEffectivenessDialog.getDiscount(),
+		 * costEffectivenessDialog.getSimulationsNumber()); int
+		 * numSimulationsInEachThread = 20; interventionsProbabilistic =
+		 * costEffectivenessAnalysis
+		 * .getAllInterventionsWithThreads(costEffectivenessDialog
+		 * .getSimulationsNumber(),numSimulationsInEachThread);
+		 * //interventionsProbabilistic =
+		 * costEffectivenessAnalysis.getAllInterventions
+		 * (costEffectivenessDialog.getSimulationsNumber()); } catch
+		 * (NotEnoughMemoryException e1) { JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this), e1.getMessage(), stringResource
+		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		 * catch (NormalizeNullVectorException e1) { e1.printStackTrace(); }
+		 * catch (DoEditException e1) { e1.printStackTrace(); } catch
+		 * (ConstraintViolationException e1) { e1.printStackTrace(); } catch
+		 * (CanNotDoEditException e1) { e1.printStackTrace(); } catch
+		 * (NotEvaluableNetworkException e1) { e1.printStackTrace(); } catch
+		 * (NonProjectablePotentialException e1) { e1.printStackTrace(); } catch
+		 * (WrongCriterionException e1) { e1.printStackTrace(); }
+		 * 
+		 * Variable decision = decisionsWithoutPolicy.get(0); int
+		 * numStatesDecisionToAnalyze = decision.getNumStates();
+		 * ExcelSensitivityAnalysis excelTarget =
+		 * ExcelSensitivityAnalysis.getUniqueInstance();
+		 * excelTarget.setInitialData
+		 * (costEffectivenessDialog.getSimulationsNumber(),
+		 * decisionsWithoutPolicy.get(0)); try {
+		 * excelTarget.useTemplate(numStatesDecisionToAnalyze
+		 * ,RESOURCE_EXCEL_TEMPLATE_2_STATES,RESOURCE_EXCEL_TEMPLATE_3_STATES);
+		 * } catch (IOException e) { JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this), e.getMessage(), stringResource
+		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		 * try { excelTarget.writeExcelReportSensitivityAnalysis(
+		 * interventionsDeterministic,interventionsProbabilistic,
+		 * costEffectivenessDialog.getOutputFileName()); } catch (IOException e)
+		 * { JOptionPane.showMessageDialog( Utilities.getOwner(this),
+		 * e.getMessage(), stringResource .getString("ErrorWindow.Title.Label"),
+		 * JOptionPane.ERROR_MESSAGE); } JOptionPane.showMessageDialog(
+		 * Utilities.getOwner(this), "Report has been created",
+		 * "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE); }
+		 * 
+		 * }
+		 */
 	}
 
-	/** 
+	/**
 	 * This method creates a new evidence case
 	 */
 	public void createNewEvidenceCase() {
@@ -2374,39 +2428,50 @@ public class EditorPanel extends JPanel implements MouseListener,
 			propagationActive = isAutomaticPropagation();
 			EvidenceCase newEvidenceCase = new EvidenceCase();
 			EvidenceCase currentEvidenceCase = getCurrentEvidenceCase();
-			ArrayList<Finding> currentFindings = currentEvidenceCase.getFindings();
-			for (int i=0; i < currentFindings.size(); i++) {
+			ArrayList<Finding> currentFindings = currentEvidenceCase
+					.getFindings();
+			for (int i = 0; i < currentFindings.size(); i++) {
 				newEvidenceCase.addFinding(currentFindings.get(i));
-			}	
+			}
 			evidenceCases.add(newEvidenceCase);
 			currentCase = (evidenceCases.size() - 1);
 			updateAllVisualSates("new", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar().
-			setCurrentEvidenceCaseName(currentCase, propagationActive);
-			if ((propagationActive) &&
-					(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+			networkPanel.getMainPanel().getExistingInferenceToolBar()
+					.setCurrentEvidenceCaseName(currentCase, propagationActive);
+			if ((propagationActive)
+					&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 				doPropagation(evidenceCases.get(currentCase), currentCase);
 			} else {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} catch (InvalidStateException exc) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +  
-					stringResource.getString("ExceptionInvalidState.Text.Label") +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionInvalidState.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		} catch (IncompatibleEvidenceException exc) {		
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-					stringResource.getString("ExceptionIncompatibleEvidence.Text.Label") +
-					"\n\n" + exc.getMessage(), 
-					stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							Utilities.getOwner(this),
+							"ERROR\n"
+									+ stringResource
+											.getString("ExceptionInvalidState.Text.Label")
+									+ "\n\n" + exc.getMessage(),
+							stringResource
+									.getString("ExceptionInvalidState.Title.Label"),
+							JOptionPane.ERROR_MESSAGE);
+		} catch (IncompatibleEvidenceException exc) {
+			JOptionPane
+					.showMessageDialog(
+							Utilities.getOwner(this),
+							"ERROR\n"
+									+ stringResource
+											.getString("ExceptionIncompatibleEvidence.Text.Label")
+									+ "\n\n" + exc.getMessage(),
+							stringResource
+									.getString("ExceptionIncompatibleEvidence.Title.Label"),
+							JOptionPane.ERROR_MESSAGE);
 		} catch (Exception exc) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR" +
-					"\n\n" + exc.getMessage(), 
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR"
+					+ "\n\n" + exc.getMessage(),
 					stringResource.getString("ExceptionGeneric.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
-		}			
+		}
 	}
 
 	/**
@@ -2415,10 +2480,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToFirstEvidenceCase() {
 		currentCase = 0;
 		updateAllVisualSates("", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);
-		if ((propagationActive) && 
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		} else {
 			updateNodesFindingState(evidenceCases.get(currentCase));
@@ -2432,19 +2497,24 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (currentCase > 0) {
 			currentCase--;
 			updateAllVisualSates("", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar().
-			setCurrentEvidenceCaseName(currentCase, propagationActive);
-			if ((propagationActive) && 
-					(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+			networkPanel.getMainPanel().getExistingInferenceToolBar()
+					.setCurrentEvidenceCaseName(currentCase, propagationActive);
+			if ((propagationActive)
+					&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 				doPropagation(evidenceCases.get(currentCase), currentCase);
-			}  else {
+			} else {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} else {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-					stringResource.getString("NoPreviousEvidenceCaseMessage.Text.Label"), 
-					stringResource.getString("NoPreviousEvidenceCaseMessage.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							Utilities.getOwner(this),
+							"ERROR\n"
+									+ stringResource
+											.getString("NoPreviousEvidenceCaseMessage.Text.Label"),
+							stringResource
+									.getString("NoPreviousEvidenceCaseMessage.Title.Label"),
+							JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -2455,21 +2525,26 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (currentCase < (evidenceCases.size() - 1)) {
 			currentCase++;
 			updateAllVisualSates("", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar().
-			setCurrentEvidenceCaseName(currentCase, propagationActive);
-			if ((propagationActive) && 
-					(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+			networkPanel.getMainPanel().getExistingInferenceToolBar()
+					.setCurrentEvidenceCaseName(currentCase, propagationActive);
+			if ((propagationActive)
+					&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 				doPropagation(evidenceCases.get(currentCase), currentCase);
 			} else {
 				updateNodesFindingState(evidenceCases.get(currentCase));
 			}
 		} else {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" + 
-					stringResource.getString("NoNextEvidenceCaseMessage.Text.Label"), 
-					stringResource.getString("NoNextEvidenceCaseMessage.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							Utilities.getOwner(this),
+							"ERROR\n"
+									+ stringResource
+											.getString("NoNextEvidenceCaseMessage.Text.Label"),
+							stringResource
+									.getString("NoNextEvidenceCaseMessage.Title.Label"),
+							JOptionPane.ERROR_MESSAGE);
 		}
-	}	
+	}
 
 	/**
 	 * This method makes the last evidence case to be the current
@@ -2477,10 +2552,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToLastEvidenceCase() {
 		currentCase = (evidenceCases.size() - 1);
 		updateAllVisualSates("", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);
-		if ((propagationActive) &&
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		} else {
 			updateNodesFindingState(evidenceCases.get(currentCase));
@@ -2488,21 +2563,21 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method clears out all the evidence cases. It returns to an
-	 * 'initial state' in which there is only an initial evidence case
-	 * with no findings (corresponding to prior probabilities)
+	 * This method clears out all the evidence cases. It returns to an 'initial
+	 * state' in which there is only an initial evidence case with no findings
+	 * (corresponding to prior probabilities)
 	 */
 	public void clearOutAllEvidenceCases() {
-		propagationActive = isAutomaticPropagation(); 
+		propagationActive = isAutomaticPropagation();
 		evidenceCases.clear();
 		EvidenceCase newEvidenceCase = new EvidenceCase();
 		evidenceCases.add(newEvidenceCase);
 		currentCase = 0;
 		updateAllVisualSates("clear", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar().
-		setCurrentEvidenceCaseName(currentCase, propagationActive);
-		if ((propagationActive) && 
-				(networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) { 
+		networkPanel.getMainPanel().getExistingInferenceToolBar()
+				.setCurrentEvidenceCaseName(currentCase, propagationActive);
+		if ((propagationActive)
+				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		} else {
 			updateNodesFindingState(evidenceCases.get(currentCase));
@@ -2510,25 +2585,26 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method updates all visual states of all visual nodes when
-	 * it is needed for a navigation operation among the existing evidence
-	 * cases, a creation of a new case or when all cases are cleared out.
+	 * This method updates all visual states of all visual nodes when it is
+	 * needed for a navigation operation among the existing evidence cases, a
+	 * creation of a new case or when all cases are cleared out.
 	 * 
 	 * @param option
 	 *            the specific operation to be done over the visual states.
 	 */
 	public void updateAllVisualSates(String option, int caseNumber) {
-		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();			
+		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
 		Iterator<VisualNode> iterator = allVisualNodes.iterator();
 		while (iterator.hasNext()) {
 			VisualNode visualNode = iterator.next();
 			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
-			for (int i=0; i<innerBox.getNumStates(); i++) {
+			for (int i = 0; i < innerBox.getNumStates(); i++) {
 				if (innerBox instanceof FSVariableBox) {
-					visualState = ((FSVariableBox)innerBox).getVisualState(i);
-				} else if (innerBox instanceof ExpectedValueBox)  {
-					visualState = ((ExpectedValueBox)innerBox).getVisualState();
+					visualState = ((FSVariableBox) innerBox).getVisualState(i);
+				} else if (innerBox instanceof ExpectedValueBox) {
+					visualState = ((ExpectedValueBox) innerBox)
+							.getVisualState();
 				}
 				if (option.equals("new")) {
 					visualState.createNewStateValue();
@@ -2542,35 +2618,39 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method does the propagation of the evidence for all the
-	 * evidence cases in memory.
+	 * This method does the propagation of the evidence for all the evidence
+	 * cases in memory.
 	 * 
 	 * @param mainPanelMenuAssistant
-	 *            the menu assistant associated to the main panel. 
+	 *            the menu assistant associated to the main panel.
 	 */
 	public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) {
-		setPropagationActive(true); 
+		setPropagationActive(true);
 		if (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
-			for (int i=0; i<getNumberOfCases(); i++) {
+			for (int i = 0; i < getNumberOfCases(); i++) {
 				doPropagation(getEvidenceCase(i), i);
 			}
-			networkPanel.getMainPanel().getExistingInferenceToolBar().
-			setCurrentEvidenceCaseName(getNumberOfCases()-1,
-					isPropagationActive());
-			setCurrentCase(getNumberOfCases()-1);
+			networkPanel
+					.getMainPanel()
+					.getExistingInferenceToolBar()
+					.setCurrentEvidenceCaseName(getNumberOfCases() - 1,
+							isPropagationActive());
+			setCurrentCase(getNumberOfCases() - 1);
 		}
-		mainPanelMenuAssistant.updateOptionsEvidenceCasesNavigation(networkPanel);
-		mainPanelMenuAssistant.updateOptionsPropagationTypeDependent(networkPanel);
+		mainPanelMenuAssistant
+				.updateOptionsEvidenceCasesNavigation(networkPanel);
+		mainPanelMenuAssistant
+				.updateOptionsPropagationTypeDependent(networkPanel);
 		mainPanelMenuAssistant.updateOptionsFindingsDependent(networkPanel);
 	}
 
 	/**
 	 * This method sets the inference options for this panel.
 	 */
-	public void setInferenceOptions() {		
-		OptionsInferenceDialog optionsInferenceDialog = 
-				new OptionsInferenceDialog(Utilities.getOwner(this), this, 
-						networkPanel.getMainPanel().getExistingInferenceToolBar()); 
+	public void setInferenceOptions() {
+		OptionsInferenceDialog optionsInferenceDialog = new OptionsInferenceDialog(
+				Utilities.getOwner(this), this, networkPanel.getMainPanel()
+						.getExistingInferenceToolBar());
 	}
 
 	/**
@@ -2590,6 +2670,46 @@ public class EditorPanel extends JPanel implements MouseListener,
 					e.getMessage(),
 					stringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/***
+	 * Initializes the link restriction potential of a link
+	 */
+	public void enableLinkRestriction() {
+
+		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
+		if (!links.isEmpty()) {
+			Link link = links.get(0).getLink();
+			try {
+				link.initializesRestrictionsPotential();
+			} catch (NotEnoughMemoryException e) {
+				JOptionPane.showMessageDialog(Utilities.getOwner(this),
+						e.getMessage(),
+						stringResource.getString("ErrorWindow.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+			}
+			repaint();
+		}
+	}
+
+	/***
+	 * Resets the link restriction potential of a link
+	 */
+	public void disableLinkRestriction() {
+
+		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
+		if (!links.isEmpty()) {
+			Link link = links.get(0).getLink();
+			try {
+				link.resetRestrictionsPotential();
+			} catch (NotEnoughMemoryException e) {
+				JOptionPane.showMessageDialog(Utilities.getOwner(this),
+						e.getMessage(),
+						stringResource.getString("ErrorWindow.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+			}
+			repaint();
 		}
 	}
 

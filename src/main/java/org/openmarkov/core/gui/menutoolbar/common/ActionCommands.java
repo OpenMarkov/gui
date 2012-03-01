@@ -263,10 +263,17 @@ public class ActionCommands {
 	public static final String LINK_PROPERTIES = "LinkProperties";
 
 	/****
-	 * Action invoked when the user wants to show the linkRestrictions of a link.
+	 * Action invoked when the user wants to enable the linkRestrictions of a link.
 	 */
 	
-	public static final String LINK_RESTRICTION_PROPERTIES = "LinkRestrictionProperties";
+	public static final String LINK_RESTRICTION_ENABLE_PROPERTIES = "LinkRestrictionEnableProperties";
+	
+	
+	/****
+	 * Action invoked when the user wants to disable the linkRestrictions of a link.
+	 */
+	
+	public static final String LINK_RESTRICTION_DISABLE_PROPERTIES = "LinkRestrictionDisableProperties";
 	
 	
 	/****
