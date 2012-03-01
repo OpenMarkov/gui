@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -70,13 +68,13 @@ import org.openmarkov.core.gui.graphic.VisualState;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -725,10 +723,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
-					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
-							probNet, new Variable(nodeName), nodeType,
-							cursorPosition);
-
+                    AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (
+                                                                           probNet,
+                                                                           new Variable (
+                                                                                         nodeName,
+                                                                                         DefaultStates.getStatesNodeType (nodeType,
+                                                                                                                          probNet.getDefaultStates ())),
+                                                                           nodeType, cursorPosition);
 					try {
 						probNet.getPNESupport().announceEdit(addProbNodeEdit);
 
@@ -2015,21 +2016,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (networkType instanceof BayesianNetworkType) {
 			try {
 				inferenceAlgorithm.setEvidence(evidenceCase);
-				HashMap<Variable, Potential> individualProbabilities = inferenceAlgorithm
-						.getIndividualProbabilities();
-
-				if (individualProbabilities != null) {
-					Set<Map.Entry<Variable, Potential>> entries = individualProbabilities
-							.entrySet();
-					Iterator<Map.Entry<Variable, Potential>> iterator1 = entries
-							.iterator();
-					Map.Entry<Variable, Potential> entry;
-					ArrayList<VisualNode> allVisualNodes = visualNetwork
-							.getAllNodes();
-					while (iterator1.hasNext()) {
-						entry = iterator1.next();
-						Variable variable = entry.getKey();
-						Potential potential = entry.getValue();
+                long start = System.currentTimeMillis();
+                HashMap<Variable, Potential> individualProbabilities = 
+                        inferenceAlgorithm.getIndividualProbabilities();
+                long elapsedTimeMillis = System.currentTimeMillis() - start;
+                System.out.println("Inference took "+ elapsedTimeMillis + " milliseconds.");                
+                
+                if (individualProbabilities != null) {
+                    for(Variable variable: individualProbabilities.keySet ()){
+                        ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes(); 
+                        Potential potential = individualProbabilities.get(variable); 
 						if (potential.getPotentialType() == PotentialType.TABLE) {
 							TablePotential tablePotential = (TablePotential) potential;
 							if (tablePotential.getNumVariables() == 1) {
