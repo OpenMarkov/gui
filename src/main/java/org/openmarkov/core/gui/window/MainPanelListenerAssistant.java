@@ -768,7 +768,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @param fileName
 	 *            - for the network
 	 */
-	private void openNetwork(String fileName) {
+	public void openNetwork(String fileName) {
 		if (fileName.equals("")) {
 			fileName = requestNetworkFileToOpen();
 		}

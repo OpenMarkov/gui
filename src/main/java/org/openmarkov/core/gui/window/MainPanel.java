@@ -432,4 +432,13 @@ public class MainPanel extends JPanel {
 
 		return mainFrame;
 	}
+	
+	/**
+	 * Opens a prob net
+	 * @param fileName
+	 */
+	public void openNetwork(String fileName)
+	{
+	    getMainPanelListenerAssistant().openNetwork (fileName);
+	}
 }

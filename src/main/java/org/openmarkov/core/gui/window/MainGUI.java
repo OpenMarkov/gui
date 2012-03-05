@@ -71,6 +71,7 @@ public class MainGUI {
 
 		mainGUIinit();
 	}
+	
 
 	/**
 	 * Creates the main frame as a window with a splash Screen
@@ -242,6 +243,15 @@ public class MainGUI {
 	public JFrame getThisFrame() {
 
 		return this.thisFrame;
+	}
+	
+	/**
+	 * Opens net from file
+	 * @param fileName
+	 */
+	public void openNetwork(String fileName)
+	{
+	    mainPanel.openNetwork (fileName);
 	}
 
 	/**
