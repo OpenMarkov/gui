@@ -10,6 +10,7 @@ import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDial
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.ProbNode;
 
 @SuppressWarnings("serial")
 public class LinkRestrictionEditDialog extends
@@ -39,7 +40,7 @@ public class LinkRestrictionEditDialog extends
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
 		setResizable(true);
-
+		setVisible(true);
 	}
 
 	/**
@@ -52,12 +53,14 @@ public class LinkRestrictionEditDialog extends
 		messageStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMessages();
 		String title = dialogStringResource
-				.getString("NodePotentialDialog.Title.Label");
+				.getString("LinkRestrictionDialog.Title.Label");
+		ProbNode node1 = (ProbNode) link.getNode1().getObject();
+		ProbNode node2 = (ProbNode) link.getNode2().getObject();
 
-		setTitle(dialogStringResource
-				.getString("NodePotentialDialog.Title.Label")
+		setTitle(title
 				+ ": "
-				+ (link == null ? "" : "link between"));
+				+ (link == null ? "" : "Link between "
+						+ node1.getName() + " and " + node2.getName()));
 
 		configureComponentsPanel();
 		pack();

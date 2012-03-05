@@ -51,6 +51,7 @@ import org.openmarkov.core.gui.constraint.RevelationArcValidator;
 import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
+import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
@@ -250,6 +251,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * Object Dialog for potentials edition
 	 */
 	PotentialEditDialog potentialsDialog = null;
+
+	/****
+	 * Dialog for link restriction edition
+	 */
+	LinkRestrictionEditDialog linkRestrictionDialog = null;
 
 	private CostEffectivenessDialog costEffectivenessDialog;
 
@@ -659,8 +665,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								(linkRestrictionEnabled && !link.getLink()
-										.hasRestrictions()));
+								(linkRestrictionEnabled ));
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
@@ -723,13 +728,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
-                    AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (
-                                                                           probNet,
-                                                                           new Variable (
-                                                                                         nodeName,
-                                                                                         DefaultStates.getStatesNodeType (nodeType,
-                                                                                                                          probNet.getDefaultStates ())),
-                                                                           nodeType, cursorPosition);
+					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
+							probNet, new Variable(nodeName,
+									DefaultStates.getStatesNodeType(nodeType,
+											probNet.getDefaultStates())),
+							nodeType, cursorPosition);
 					try {
 						probNet.getPNESupport().announceEdit(addProbNodeEdit);
 
@@ -1324,6 +1327,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 												// selected the ok button when
 												// closing the dialog
 		== NodePropertiesDialog.OK_BUTTON);
+	}
+
+	private boolean requestLinkRestrictionValues(Window owner, Link link) {
+
+		linkRestrictionDialog = new LinkRestrictionEditDialog(owner, link);
+		return false;
+		// return (linkRestrictionDialog.requestValues() ==
+		// NodePropertiesDialog.OK_BUTTON);
 	}
 
 	private boolean requestCostEffectiveness(Window owner,
@@ -2016,16 +2027,19 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (networkType instanceof BayesianNetworkType) {
 			try {
 				inferenceAlgorithm.setEvidence(evidenceCase);
-                long start = System.currentTimeMillis();
-                HashMap<Variable, Potential> individualProbabilities = 
-                        inferenceAlgorithm.getIndividualProbabilities();
-                long elapsedTimeMillis = System.currentTimeMillis() - start;
-                System.out.println("Inference took "+ elapsedTimeMillis + " milliseconds.");                
-                
-                if (individualProbabilities != null) {
-                    for(Variable variable: individualProbabilities.keySet ()){
-                        ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes(); 
-                        Potential potential = individualProbabilities.get(variable); 
+				long start = System.currentTimeMillis();
+				HashMap<Variable, Potential> individualProbabilities = inferenceAlgorithm
+						.getIndividualProbabilities();
+				long elapsedTimeMillis = System.currentTimeMillis() - start;
+				System.out.println("Inference took " + elapsedTimeMillis
+						+ " milliseconds.");
+
+				if (individualProbabilities != null) {
+					for (Variable variable : individualProbabilities.keySet()) {
+						ArrayList<VisualNode> allVisualNodes = visualNetwork
+								.getAllNodes();
+						Potential potential = individualProbabilities
+								.get(variable);
 						if (potential.getPotentialType() == PotentialType.TABLE) {
 							TablePotential tablePotential = (TablePotential) potential;
 							if (tablePotential.getNumVariables() == 1) {
@@ -2678,7 +2692,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (!links.isEmpty()) {
 			Link link = links.get(0).getLink();
 			try {
-				link.initializesRestrictionsPotential();
+				if (!link.hasRestrictions()) {
+					link.initializesRestrictionsPotential();
+				}
+				requestLinkRestrictionValues(Utilities.getOwner(this),
+						link);
 			} catch (NotEnoughMemoryException e) {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
 						e.getMessage(),
