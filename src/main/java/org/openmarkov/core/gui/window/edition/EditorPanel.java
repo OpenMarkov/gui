@@ -665,7 +665,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								(linkRestrictionEnabled ));
+								(linkRestrictionEnabled));
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
@@ -1332,9 +1332,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private boolean requestLinkRestrictionValues(Window owner, Link link) {
 
 		linkRestrictionDialog = new LinkRestrictionEditDialog(owner, link);
-		return false;
-		// return (linkRestrictionDialog.requestValues() ==
-		// NodePropertiesDialog.OK_BUTTON);
+		return (linkRestrictionDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+
 	}
 
 	private boolean requestCostEffectiveness(Window owner,
@@ -2695,8 +2694,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 				if (!link.hasRestrictions()) {
 					link.initializesRestrictionsPotential();
 				}
-				requestLinkRestrictionValues(Utilities.getOwner(this),
-						link);
+				if (!requestLinkRestrictionValues(Utilities.getOwner(this),
+						link)) {
+					probNet.getPNESupport().undoAndDelete();
+				}
+
 			} catch (NotEnoughMemoryException e) {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
 						e.getMessage(),

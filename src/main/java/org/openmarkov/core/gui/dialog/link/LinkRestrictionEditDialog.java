@@ -6,10 +6,14 @@ import java.awt.Window;
 
 import javax.swing.JPanel;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 
 @SuppressWarnings("serial")
@@ -36,11 +40,11 @@ public class LinkRestrictionEditDialog extends
 	public LinkRestrictionEditDialog(Window owner, Link link) {
 		super(owner);
 		this.link = link;
+		 ((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
 		setResizable(true);
-		setVisible(true);
 	}
 
 	/**
@@ -77,10 +81,41 @@ public class LinkRestrictionEditDialog extends
 				.add(getLinkRestrictionPanel(), BorderLayout.CENTER);
 	}
 
-	private JPanel getLinkRestrictionPanel() {
+	private ProbabilityTablePanel getLinkRestrictionPanel() {
 
 		this.linkRestrictionPanel = new LinkRestrictionPanel(link);
 		return this.linkRestrictionPanel;
 	}
+	
+	
+	
+	/**
+     * @return An integer indicating the button clicked by the user when closing this dialog
+     */
+    public int requestValues() {
+        setVisible(true);
+        return selectedButton;
+    }
+    
+    
+    /**
+     * This method carries out the actions when the user presses the OK button
+     * before hiding the dialog.
+     * 
+     * @return true if all the fields are correct.
+     * @throws NotEnoughMemoryException 
+     */
+    @Override
+    protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+        getLinkRestrictionPanel().saveChanges();
+        ((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().closeParenthesis();
+           return true;
+    }
+    
+    @Override
+    protected void doCancelClickBeforeHide() {
+    	((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().closeParenthesis();
+        
+    }
 
 }
