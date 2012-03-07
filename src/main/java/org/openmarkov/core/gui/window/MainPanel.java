@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
@@ -186,7 +185,7 @@ public class MainPanel extends JPanel {
 		add(getMdi(), BorderLayout.CENTER);
 		//add(splitPane);//, BorderLayout.CENTER);
 		//ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
-		getMessageWindow();
+		//add(getMessageWindow(), BorderLayout.SOUTH);
 
 	}
 	
@@ -334,6 +333,7 @@ public class MainPanel extends JPanel {
 			mdi = new MDI(mainMenu.getMenuMDI());
 			mdi.addFrameStateListener(mainPanelListenerAssistant);
 			mdi.setPreferredSize(new Dimension(400,600));
+			mdi.createNewFrame(getMessageWindow(), false);
 		}
 
 		return mdi;

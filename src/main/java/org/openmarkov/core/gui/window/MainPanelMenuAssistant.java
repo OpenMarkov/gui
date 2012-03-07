@@ -756,4 +756,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		 */
 
 	}
+	
+	public NetworkPanel getCurrentNetworkPanel()
+	{
+	    return currentNetworkPanel;
+	}
 }

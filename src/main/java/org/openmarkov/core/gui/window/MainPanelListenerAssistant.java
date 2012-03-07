@@ -377,11 +377,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @return the current network panel.
 	 */
 	public NetworkPanel getCurrentNetworkPanel() {
-		if (mainPanel.getMdi().getOpenFramesNumber() > 0) {
-			return (NetworkPanel) mainPanel.getMdi().getCurrentPanel();
-		} else {
-			return null;
-		}
+	    return mainPanel.getMainPanelMenuAssistant ().getCurrentNetworkPanel ();
 	}
 
 	/**
@@ -396,30 +392,29 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @return true, if the network can be closed; otherwise, false.
 	 */
 	private boolean networkCanBeClosed(NetworkPanel networkPanel) {
+        int response = 0;
 
-		int response = 0;
+        if (networkPanel.getModified()) {
+            response = JOptionPane.showConfirmDialog(Utilities
+                    .getOwner(mainPanel), stringResource.getString(
+                    "NetworkNotSaved.Text.Label", networkPanel.getTitle()),
+                    stringResource.getString("NetworkNotSaved.Title.Label"),
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            switch (response) {
+            case JOptionPane.YES_OPTION: {
+                return saveNetwork(networkPanel);
+            }
+            case JOptionPane.NO_OPTION: {
+                return true;
+            }
+            default: {
+                return false;
+            }
+            }
+        }
 
-		if (networkPanel.getModified()) {
-			response = JOptionPane.showConfirmDialog(Utilities
-					.getOwner(mainPanel), stringResource.getString(
-					"NetworkNotSaved.Text.Label", networkPanel.getTitle()),
-					stringResource.getString("NetworkNotSaved.Title.Label"),
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.WARNING_MESSAGE);
-			switch (response) {
-			case JOptionPane.YES_OPTION: {
-				return saveNetwork(networkPanel);
-			}
-			case JOptionPane.NO_OPTION: {
-				return true;
-			}
-			default: {
-				return false;
-			}
-			}
-		}
-
-		return true;
+        return true;
 
 	}
 
@@ -431,11 +426,17 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @return true, if the frame that contents the panel can be closed;
 	 *         otherwise, false.
 	 */
-	public boolean frameClosing(FrameContentPanel contentPanel) {
-
-		return networkCanBeClosed((NetworkPanel) contentPanel);
-
-	}
+    public boolean frameClosing (FrameContentPanel contentPanel)
+    {
+        if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
+        {
+            return networkCanBeClosed ((NetworkPanel) contentPanel);
+        }
+        else
+        {
+            return true;
+        }
+    }
 
 	/**
 	 * This method executes when a frame has been closed.
@@ -462,11 +463,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	public void frameSelected(FrameContentPanel contentPanel) {
 
-		mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(
-				(NetworkPanel) contentPanel);
-		mainPanel.getExistingInferenceToolBar().setCurrentEvidenceCaseName(
-				getCurrentNetworkPanel().getCurrentCase(),
-				getCurrentNetworkPanel().isPropagationActive());
+        if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
+        {
+            mainPanel.getMainPanelMenuAssistant ().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
+            mainPanel.getExistingInferenceToolBar ().setCurrentEvidenceCaseName (getCurrentNetworkPanel ().getCurrentCase (),
+                                                                                 getCurrentNetworkPanel ().isPropagationActive ());
+        }
 
 	}
 
@@ -1097,7 +1099,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void showMessageWindow() {
 
-		mainPanel.getMessageWindow().setExtendedState(Frame.NORMAL);
 		mainPanel.getMessageWindow().setVisible(true);
 
 	}

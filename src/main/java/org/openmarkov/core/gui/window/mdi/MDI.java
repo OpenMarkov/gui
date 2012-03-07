@@ -121,7 +121,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @throws UnsupportedOperationException
 	 *             if selection is vetoed.
 	 */
-	public void createNewFrame(FrameContentPanel newContentPanel)
+	public void createNewFrame(FrameContentPanel newContentPanel, boolean maximized)
 					throws UnsupportedOperationException {
 
 		InternalFrame frame = null;
@@ -131,7 +131,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 		frame.addInternalFrameListener(this);
 		frame.addFrameTitleListener(this);
 		frame.setTitle(newContentPanel.getTitle());
-		frame.setSize(desktopPane.getSize());
+		frame.setBounds ((maximized)? desktopPane.getBounds (): newContentPanel.getBounds ());
 		frame.setVisible(true);
 		try {
 			frame.setSelected(true);
@@ -141,6 +141,12 @@ public class MDI extends JPanel implements FrameTitleListener,
 		}
 
 	}
+	
+    public void createNewFrame (FrameContentPanel newContentPanel)
+        throws UnsupportedOperationException
+    {
+        createNewFrame (newContentPanel, true);
+    }
 
 	/**
 	 * Closes the actual frame and selects the previous one (if exists).

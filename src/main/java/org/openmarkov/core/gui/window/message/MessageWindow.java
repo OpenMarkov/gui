@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,9 +26,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 
 
 
@@ -43,7 +42,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  * @version 1.1 jlgozalo - externalize constants and set position for window
  * @version 1.2 jlgozalo - adding get/set to normal and error streams (to avoid System.out and System.err in source code as much as possible)
  */
-public class MessageWindow extends JFrame implements ActionListener {
+public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * Static field for serializable class.
@@ -59,11 +58,6 @@ public class MessageWindow extends JFrame implements ActionListener {
 	 * Buttons string resource.
 	 */
 	private StringResource buttonStringResource;
-
-	/**
-	 * Content pane.
-	 */
-	private JPanel jContentPane = null;
 
 	/**
 	 * Scroll pane for the text area.
@@ -130,39 +124,20 @@ public class MessageWindow extends JFrame implements ActionListener {
 	private void initialize() {
 
 		int x = ownerFrame.getX();
-		int y = ownerFrame.getY() + ownerFrame.getHeight();
+		int y = ownerFrame.getY() + ownerFrame.getHeight() * 5/6;
 		int width = ownerFrame.getWidth();
 		
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		Insets screenInsets = getToolkit().getScreenInsets(getGraphicsConfiguration());  
-
-        int height = screen.height - ownerFrame.getHeight() - screenInsets.bottom;
+        int height = ownerFrame.getHeight()/6;
 			
 		this.setBounds(x, y, width, height);
-		setContentPane(getJContentPane());
+		this.setLayout(new BorderLayout());
+        this.add(getTopPanel(), BorderLayout.NORTH);
+        this.add(getScrollPane(), BorderLayout.CENTER);
+        
 		normalMessageStream = new StandardStreamOut(textArea);
 		errorMessageStream = new StandardStreamErr(textArea);
 		System.setOut(normalMessageStream);
 		System.setErr(errorMessageStream);
-		setTitle(messageStringResource.getString("MessageWindow.Title.Label"));
-		setIconImage(OpenMarkovLogoIcon.getUniqueInstance()
-			.getOpenMarkovLogoIconImage16());
-	}
-
-	/**
-	 * This method initialises jContentPane.
-	 * 
-	 * @return a new content pane.
-	 */
-	private JPanel getJContentPane() {
-
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getTopPanel(), BorderLayout.NORTH);
-			jContentPane.add(getScrollPane(), BorderLayout.CENTER);
-		}
-		return jContentPane;
 	}
 
 	/**
@@ -302,4 +277,10 @@ public class MessageWindow extends JFrame implements ActionListener {
 	
 		this.errorMessageStream = errorMessageStream;
 	}
+
+    @Override
+    public String getTitle ()
+    {
+        return messageStringResource.getString("MessageWindow.Title.Label");
+    }
 }
