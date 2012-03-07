@@ -73,8 +73,9 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+		int numStates2=node2.getVariable().getNumStates();
 		State state1 = node1.getVariable().getStates()[col - 1];
-		State state2 = node2.getVariable().getStates()[row - 1];
+		State state2 = node2.getVariable().getStates()[numStates2-row];
 		link.setCompatibilityValue(state1, state2,
 				this.newValue.intValue());
 		newTable = ((TablePotential) link.getRestrictionsPotential()).values

@@ -216,12 +216,14 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		TablePotential tablePotential = (TablePotential) link
 				.getRestrictionsPotential();
 
-		for (int i = 1; i <= this.probNode2.getVariable().getNumStates(); i++) {
-			for (int j = 1; j <= this.probNode1.getVariable().getNumStates(); j++) {
-				int[] statesIndices = new int[] { j - 1, i - 1 };
+		int numStates2= probNode2.getVariable().getNumStates();
+		int numStates1= probNode1.getVariable().getNumStates();
+		for (int i = 0; i < numStates2; i++) {
+			for (int j = 1; j <= numStates1; j++) {
+				int[] statesIndices = new int[] { j - 1, i };
 				int value = (int) tablePotential
 						.getValue(variables, statesIndices);
-				values[i][j] = value;
+				values[numStates2-i][j] = value;
 			}
 		}
 
@@ -238,8 +240,8 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		Object[][] values = oldValues;
 		Variable var = probNode2.getVariable();
 		State[] states = var.getStates();
-		for (int i = 1; i <= var.getNumStates(); i++) {
-			values[i][0] = states[i - 1].getName();
+		for (int i = var.getNumStates(); i > 0; i--) {
+			values[i][0] = states[var.getNumStates()-i].getName();
 		}
 		return values;
 
@@ -275,8 +277,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		Object[][] values = oldValues;
 
-		values[0][0] = probNode2.getVariable() + " / "
-				+ probNode1.getVariable();
+		values[0][0] =  probNode1.getVariable();
 		return values;
 	}
 

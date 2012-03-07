@@ -2,7 +2,10 @@ package org.openmarkov.core.gui.dialog.link;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
@@ -14,18 +17,21 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 public class LinkRestrictionPanelTest {
-	LinkRestrictionPanel panel = null;
+
+	private LinkRestrictionPanel panel = null;
+	private Variable varA, varB;
+	private State[] stateA, stateB;
 
 	@Before
 	public void setUp() throws Exception {
 
 		Graph graph = new Graph();
-		State[] stateA = new State[] { new State("A1"), new State("A2"),
+		stateA = new State[] { new State("A1"), new State("A2"),
 				new State("A3") };
-		State[] stateB = new State[] { new State("B1"), new State("B2") };
-		Variable varA = new Variable("A", stateA);
-		Variable varB = new Variable("B", stateB);
-		ArrayList<Variable> variables = new ArrayList();
+		stateB = new State[] { new State("B1"), new State("B2") };
+		varA = new Variable("A", stateA);
+		varB = new Variable("B", stateB);
+		ArrayList<Variable> variables = new ArrayList<Variable>();
 		variables.add(varA);
 		variables.add(varB);
 		ProbNet net = new ProbNet();
@@ -36,17 +42,22 @@ public class LinkRestrictionPanelTest {
 		try {
 			link.initializesRestrictionsPotential();
 			link.setCompatibilityValue(stateA[1], stateB[0], 0);
+			link.setCompatibilityValue(stateA[0], stateB[1], 0);
 		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		panel = new LinkRestrictionPanel(link);
-//		JFrame frame = new JFrame();
-//		frame.add(panel);
-//		frame.setSize(600, 400);
-//		frame.show();
 		
 	}
 
-	
+//	@Test
+//	public void testInit() {
+//		
+//		 JFrame frame = new JFrame();
+//				 frame.add(panel);
+//				 frame.setSize(600, 400);
+//				 frame.show();
+//				 frame.show(false);
+//	}
+
 }
