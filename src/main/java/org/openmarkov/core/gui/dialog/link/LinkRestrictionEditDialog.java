@@ -3,6 +3,7 @@ package org.openmarkov.core.gui.dialog.link;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.text.MessageFormat;
 
 import javax.swing.JPanel;
 
@@ -40,7 +41,8 @@ public class LinkRestrictionEditDialog extends
 	public LinkRestrictionEditDialog(Window owner, Link link) {
 		super(owner);
 		this.link = link;
-		 ((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().openParenthesis();
+		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
+				.openParenthesis();
 		initialize();
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
@@ -56,16 +58,19 @@ public class LinkRestrictionEditDialog extends
 				.getBundleDialogs();
 		messageStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMessages();
-		String title = dialogStringResource
-				.getString("LinkRestrictionDialog.Title.Label");
+
 		ProbNode node1 = (ProbNode) link.getNode1().getObject();
 		ProbNode node2 = (ProbNode) link.getNode2().getObject();
-
-		setTitle(title
-				+ ": "
-				+ (link == null ? "" : "Link between "
-						+ node1.getName() + " and " + node2.getName()));
-
+		String title = "";
+		if (link != null) {
+			MessageFormat messageForm = new MessageFormat(
+					dialogStringResource
+							.getString("LinkRestrictionDialog.Title.Label"));
+			Object[] labelArgs = new Object[] { node1.getName(),
+					node2.getName() };
+			title = messageForm.format(labelArgs);
+		}
+		setTitle(title);
 		configureComponentsPanel();
 		pack();
 	}
@@ -86,36 +91,36 @@ public class LinkRestrictionEditDialog extends
 		this.linkRestrictionPanel = new LinkRestrictionPanel(link);
 		return this.linkRestrictionPanel;
 	}
-	
-	
-	
+
 	/**
-     * @return An integer indicating the button clicked by the user when closing this dialog
-     */
-    public int requestValues() {
-        setVisible(true);
-        return selectedButton;
-    }
-    
-    
-    /**
-     * This method carries out the actions when the user presses the OK button
-     * before hiding the dialog.
-     * 
-     * @return true if all the fields are correct.
-     * @throws NotEnoughMemoryException 
-     */
-    @Override
-    protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-        getLinkRestrictionPanel().saveChanges();
-        ((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().closeParenthesis();
-           return true;
-    }
-    
-    @Override
-    protected void doCancelClickBeforeHide() {
-    	((ProbNode)link.getNode1().getObject()).getProbNet().getPNESupport().closeParenthesis();
-        
-    }
+	 * @return An integer indicating the button clicked by the user when closing
+	 *         this dialog
+	 */
+	public int requestValues() {
+		setVisible(true);
+		return selectedButton;
+	}
+
+	/**
+	 * This method carries out the actions when the user presses the OK button
+	 * before hiding the dialog.
+	 * 
+	 * @return true if all the fields are correct.
+	 * @throws NotEnoughMemoryException
+	 */
+	@Override
+	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+		getLinkRestrictionPanel().saveChanges();
+		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
+				.closeParenthesis();
+		return true;
+	}
+
+	@Override
+	protected void doCancelClickBeforeHide() {
+		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
+				.closeParenthesis();
+
+	}
 
 }
