@@ -149,12 +149,12 @@ public class MDI extends JPanel implements FrameTitleListener,
     }
 
 	/**
-	 * Closes the actual frame and selects the previous one (if exists).
+	 * Closes the current frame and selects the previous one (if exists).
 	 */
-	public void closeActualFrame() {
+	public void closeCurrentFrame() {
 
 		try {
-			desktopPane.closeActualInternalFrame();
+			desktopPane.closeCurrentInternalFrame();
 		} catch (UnsupportedOperationException e) {
 			System.err.println(e.getMessage());
 		}
@@ -259,7 +259,7 @@ public class MDI extends JPanel implements FrameTitleListener,
 		try {
 			desktopPane.selectFrame(frame);
 			if (notifyFrameClosing(frame)) {
-				desktopPane.closeActualInternalFrame();
+				desktopPane.closeCurrentInternalFrame();
 			}
 		} catch (UnsupportedOperationException exc) {
 			System.err.println(exc.getMessage());

@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.gui.window;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -18,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -88,6 +88,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * Messages string resource.
 	 */
 	private StringResource stringResource;
+	
+	private ArrayList<NetworkPanel> networkPanels;
 
 	/**
 	 * Counter incremented each time a network frame is created.
@@ -112,6 +114,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		this.mainPanel.setName(mainPanel.getName());
 		stringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMessages();
+		this.networkPanels = new ArrayList<NetworkPanel> ();
 
 	}
 
@@ -158,7 +161,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {
 			saveNetworkAs(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
-			closeActualNetwork();
+			closeCurrentNetwork();
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
@@ -393,7 +396,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private boolean networkCanBeClosed(NetworkPanel networkPanel) {
         int response = 0;
-
+        boolean canClose = true;
         if (networkPanel.getModified()) {
             response = JOptionPane.showConfirmDialog(Utilities
                     .getOwner(mainPanel), stringResource.getString(
@@ -403,10 +406,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                     JOptionPane.WARNING_MESSAGE);
             switch (response) {
             case JOptionPane.YES_OPTION: {
-                return saveNetwork(networkPanel);
+                canClose = saveNetwork(networkPanel);
+                break;
             }
             case JOptionPane.NO_OPTION: {
-                return true;
+                canClose =  true;
+                break;
             }
             default: {
                 return false;
@@ -414,7 +419,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
             }
         }
 
-        return true;
+        if(canClose)
+        {
+            networkPanels.remove(networkPanel);
+        }
+        return canClose;
 
 	}
 
@@ -591,7 +600,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				.println(stringResource.getString("NetworkBackup.Text.Label"));
 		saveNetwork(networkPanel);
 		fileName = networkPanel.getNetworkFile();
-		closeActualNetwork();
+		closeCurrentNetwork();
 		openNetwork(fileName);
 
 	}
@@ -675,7 +684,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		if (NetworkPanel.requestNetworkProperties(probNet,
 				Utilities.getOwner(mainPanel), true)) {
 			probNet.getPNESupport().setWithUndo(true);
-			createNewFrame2(probNet);
+			networkPanels.add (createNewFrame2(probNet));
 			frameIndex++;
 			// mainPanelMenuAssistant is added as listener to probNet
 			// for menus updated purposes.
@@ -701,6 +710,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
+			networkPanels.add (networkPanel);
 
 			mainPanel.getMdi().createNewFrame(networkPanel);
 			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
@@ -732,6 +742,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
+            networkPanels.add (networkPanel);
+			
 			mainPanel.getMdi().createNewFrame(networkPanel);
 			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
 			// networkPanel.addEditionListener( mainPanel
@@ -844,27 +856,28 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 	}
 
-	/**
-	 * Closes the actual network frame.
-	 * 
-	 * @return true if the network has been closed; otherwise, false.
-	 */
-	private boolean closeActualNetwork() {
-
-		if (networkCanBeClosed(getCurrentNetworkPanel())) {
-			mainPanel.getMdi().closeActualFrame();
-			if (mainPanel.getMdi().getOpenFramesNumber() == 0) {
-				mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
-				mainPanel.getMainPanelMenuAssistant()
-						.updateOptionsAllNetworkClosed();
-			}
-
-			return true;
-		}
-
-		return false;
-
-	}
+    /**
+     * Closes the current network frame.
+     * @return true if the network has been closed; otherwise, false.
+     */
+    private boolean closeCurrentNetwork ()
+    {
+        boolean canClose = true;
+        if (getCurrentNetworkPanel () != null)
+        {
+            canClose = networkCanBeClosed (getCurrentNetworkPanel ());
+            if (canClose)
+            {
+                mainPanel.getMdi ().closeCurrentFrame ();
+                if (mainPanel.getMdi ().getOpenFramesNumber () == 0)
+                {
+                    mainPanel.setToolBarPanel (NetworkPanel.EDITION_WORKING_MODE);
+                    mainPanel.getMainPanelMenuAssistant ().updateOptionsAllNetworkClosed ();
+                }
+            }
+        }
+        return canClose;
+    }
 
 	/**
 	 * Process that executes when the user is trying to close the application.
@@ -873,8 +886,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		boolean allClosed = true;
 
-		while (allClosed && (mainPanel.getMdi().getOpenFramesNumber() > 0)) {
-			allClosed = closeActualNetwork();
+		while (allClosed && networkPanels.size () > 0) {
+			allClosed = closeCurrentNetwork();
 		}
 		if (allClosed) {
 			System.exit(0);
