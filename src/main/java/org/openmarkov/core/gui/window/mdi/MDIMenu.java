@@ -435,8 +435,10 @@ public class MDIMenu extends Component{
 	 */
 	public void selectMenuItemByPanel(JPanel panel) {
 
-		panelToMenuItem.get(panel).setSelected(true);
-
+        if (panelToMenuItem.get (panel) != null)
+        {
+            panelToMenuItem.get (panel).setSelected (true);
+        }
 	}
 
 	/**

@@ -428,6 +428,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
     public boolean frameClosing (FrameContentPanel contentPanel)
     {
+        contentPanel.close ();
         if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
         {
             return networkCanBeClosed ((NetworkPanel) contentPanel);
@@ -1097,10 +1098,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	/**
 	 * This method restores (if minimized) and shows the message window.
 	 */
-	private void showMessageWindow() {
-
-		mainPanel.getMessageWindow().setVisible(true);
-
+	private void showMessageWindow(){ 
+	
+	    if(!mainPanel.getMessageWindow().isVisible ())
+	    {
+	        mainPanel.getMdi ().createNewFrame (mainPanel.getMessageWindow(), false);
+	        mainPanel.getMessageWindow().setVisible (true);
+	    }
 	}
 
 	/**

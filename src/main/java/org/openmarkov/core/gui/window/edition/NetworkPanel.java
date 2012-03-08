@@ -909,4 +909,11 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
 	}
 
+    @Override
+    public void close ()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

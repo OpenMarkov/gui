@@ -53,5 +53,10 @@ public abstract class FrameContentPanel extends JPanel {
 	 * @return the title of the content panel.
 	 */
 	public abstract String getTitle();
+	
+	/**
+	 * Prepares the frame for closing
+	 */
+	public abstract void close();
 
 }

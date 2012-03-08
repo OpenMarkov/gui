@@ -283,4 +283,10 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
     {
         return messageStringResource.getString("MessageWindow.Title.Label");
     }
+
+    @Override
+    public void close ()
+    {
+        setVisible (false);
+    }
 }
