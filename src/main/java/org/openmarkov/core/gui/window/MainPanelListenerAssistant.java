@@ -808,10 +808,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				networkPanel = createNewFrame2(fileContent);
 				networkPanel.setNetworkFile(fileName);
 				lastOpenFiles.setLastFileName(fileName);
-				OpenMarkovPreferences.set(
-						OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-						getDirectoryFileName(fileName),
-						OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+                if (getDirectoryFileName (fileName) != null)
+                {
+                    OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                                               getDirectoryFileName (fileName),
+                                               OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+                }
 				mainPanel
 						.getMessageWindow()
 						.getNormalMessageStream()
@@ -827,6 +829,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 								.getString("ErrorLoadingNetwork.Text.Label"),
 						stringResource.getString("ErrorWindow.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace ();
 			}
 		}
 
