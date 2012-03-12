@@ -1072,7 +1072,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 *            node whose visual representation is going to be returned.
 	 * @return the visual representation of the node.
 	 */
-	private VisualNode createVisualNode(ProbNode node) {
+	protected VisualNode createVisualNode(ProbNode node) {
 
 		switch (node.getNodeType()) {
 			case CHANCE: {
@@ -1123,6 +1123,15 @@ public class VisualNetwork implements PNUndoableEditListener {
 	
 			constructVisualInfo();
 		
+	}
+	
+	/**
+	 * 
+	 * @return instance of editor panel
+	 */
+	protected EditorPanel getEditorPanel()
+	{
+	    return this.editorPanel;
 	}
 	
 }

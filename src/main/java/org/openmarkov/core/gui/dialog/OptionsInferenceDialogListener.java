@@ -78,7 +78,7 @@ public class OptionsInferenceDialogListener implements ActionListener {
 				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
 					for (int i=0; i<editorPanel.getNumberOfCases(); i++) {
 						editorPanel.doPropagation(editorPanel.getEvidenceCase(i), i);
-						editorPanel.updateAllVisualSates("", i);
+						editorPanel.updateAllVisualStates("", i);
 					}
 					inferenceToolBar.setCurrentEvidenceCaseName((editorPanel.getNumberOfCases())-1, 
 							editorPanel.isPropagationActive());
@@ -89,7 +89,7 @@ public class OptionsInferenceDialogListener implements ActionListener {
 				editorPanel.setAutomaticPropagation(false);
 				editorPanel.setPropagationActive(false);
 				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
-					editorPanel.updateAllVisualSates("", editorPanel.getCurrentCase());
+					editorPanel.updateAllVisualStates("", editorPanel.getCurrentCase());
 					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase(), 
 							editorPanel.isPropagationActive());
 				}

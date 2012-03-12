@@ -200,7 +200,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 * 
 	 * @return a new editor panel.
 	 */
-	private EditorPanel getEditorPanel() {
+	public EditorPanel getEditorPanel() {
 
 		if (editorPanel == null) {
 			editorPanel = new EditorPanel(this);

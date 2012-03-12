@@ -2444,7 +2444,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			evidenceCases.add(newEvidenceCase);
 			currentCase = (evidenceCases.size() - 1);
-			updateAllVisualSates("new", currentCase);
+			updateAllVisualStates("new", currentCase);
 			networkPanel.getMainPanel().getExistingInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase, propagationActive);
 			if ((propagationActive)
@@ -2488,7 +2488,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void goToFirstEvidenceCase() {
 		currentCase = 0;
-		updateAllVisualSates("", currentCase);
+		updateAllVisualStates("", currentCase);
 		networkPanel.getMainPanel().getExistingInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase, propagationActive);
 		if ((propagationActive)
@@ -2505,7 +2505,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToPreviousEvidenceCase() {
 		if (currentCase > 0) {
 			currentCase--;
-			updateAllVisualSates("", currentCase);
+			updateAllVisualStates("", currentCase);
 			networkPanel.getMainPanel().getExistingInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase, propagationActive);
 			if ((propagationActive)
@@ -2533,7 +2533,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToNextEvidenceCase() {
 		if (currentCase < (evidenceCases.size() - 1)) {
 			currentCase++;
-			updateAllVisualSates("", currentCase);
+			updateAllVisualStates("", currentCase);
 			networkPanel.getMainPanel().getExistingInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase, propagationActive);
 			if ((propagationActive)
@@ -2560,7 +2560,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void goToLastEvidenceCase() {
 		currentCase = (evidenceCases.size() - 1);
-		updateAllVisualSates("", currentCase);
+		updateAllVisualStates("", currentCase);
 		networkPanel.getMainPanel().getExistingInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase, propagationActive);
 		if ((propagationActive)
@@ -2582,7 +2582,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		EvidenceCase newEvidenceCase = new EvidenceCase();
 		evidenceCases.add(newEvidenceCase);
 		currentCase = 0;
-		updateAllVisualSates("clear", currentCase);
+		updateAllVisualStates("clear", currentCase);
 		networkPanel.getMainPanel().getExistingInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase, propagationActive);
 		if ((propagationActive)
@@ -2601,7 +2601,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param option
 	 *            the specific operation to be done over the visual states.
 	 */
-	public void updateAllVisualSates(String option, int caseNumber) {
+	public void updateAllVisualStates(String option, int caseNumber) {
 		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
 		Iterator<VisualNode> iterator = allVisualNodes.iterator();
 		while (iterator.hasNext()) {
@@ -2727,6 +2727,15 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			repaint();
 		}
+	}
+	
+	/**
+	 * Sets a new visualNetwork.
+	 * @param visualNetwork
+	 */
+	public void setVisualNetwork(VisualNetwork visualNetwork)
+	{
+	    this.visualNetwork = visualNetwork;
 	}
 
 }
