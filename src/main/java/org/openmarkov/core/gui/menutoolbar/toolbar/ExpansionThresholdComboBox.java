@@ -85,7 +85,7 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 	 */
 	private void initialize() {
 		setEditable(false);
-		setPreferredSize(new Dimension(50, 25));
+		setPreferredSize(new Dimension(60, 25));
 		setMaximumSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
 		addItemListener(this);

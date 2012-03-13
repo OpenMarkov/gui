@@ -410,6 +410,35 @@ public class VisualNetwork implements PNUndoableEditListener {
 		return nodeFound;
 
 	}
+		
+	/**
+	 * Checks if is there a inner box in a position.
+	 * 
+	 * @param position
+	 *            position to be checked.
+	 * @param g
+	 *            graphics where the network is painted.
+	 * @return if there is a inner box in the position, returns it,
+	 *         else, returns null.
+	 */
+	public InnerBox whatInnerBoxInPosition(Point2D.Double position, Graphics2D g) {
+
+		InnerBox innerBox = null;
+		InnerBox innerBoxFound = null;
+		VisualNode node = null;
+		int index = 0;
+		int nodesLength = visualNodes.size();
+		while ((innerBoxFound == null) && (index < nodesLength)) {
+			node = visualNodes.get(index++);
+			if (node.pointInsideShape(position, g)) {
+				innerBox = node.getInnerBox();
+				if (innerBox.pointInsideShape(position, g)) {
+					innerBoxFound = innerBox;
+				}
+			}
+		}
+		return innerBoxFound;
+	}
 	
 	/**
 	 * Checks if is there a visual state in a position.

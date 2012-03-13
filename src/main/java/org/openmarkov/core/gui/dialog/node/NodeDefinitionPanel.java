@@ -628,7 +628,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNodeRelevance = new JComboBox();
 			jComboBoxNodeRelevance.setName( "jComboBoxNodeRelevance" );
 			jComboBoxNodeRelevance.setEditable( true );
-			fillJComboBoxNodeRelevance();
+			fillJComboBoxNodeRelevanceWithoutDecimals();
 			jComboBoxNodeRelevance.setEnabled(false);
 		}
 		return jComboBoxNodeRelevance;
@@ -653,6 +653,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							+ Integer.toString( decimalPart );
 					jComboBoxNodeRelevance.addItem( Double.valueOf( number ) );
 				}
+			}
+		}
+	}
+	
+	/**
+	 * fill the jComboBoxNodeRelevance with the appropriate values 
+	 * with an increment of 1.0. 
+	 */
+	private void fillJComboBoxNodeRelevanceWithoutDecimals() {
+		if (jComboBoxNodeRelevance != null) {
+			for (int value = 0; value <= 10; value++) {
+				jComboBoxNodeRelevance.addItem(Double.valueOf(value));
 			}
 		}
 	}

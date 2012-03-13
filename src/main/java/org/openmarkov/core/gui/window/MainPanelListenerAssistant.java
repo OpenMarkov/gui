@@ -244,6 +244,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
+		} else if (actionCommand.
+				equals(ActionCommands.DECISION_IMPOSE_POLICY )) {
+			getCurrentNetworkPanel().imposePolicyInNode();
+		} else if (actionCommand.
+				equals(ActionCommands.DECISION_EDIT_POLICY )) {
+			getCurrentNetworkPanel().editNodePolicy();
+		} else if (actionCommand.
+				equals(ActionCommands.DECISION_REMOVE_POLICY )) {
+			getCurrentNetworkPanel().removePolicyFromNode();
+		} else if (actionCommand.
+				equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY )) {
+			getCurrentNetworkPanel().showExpectedUtilityOfNode();
+		} else if (actionCommand.
+				equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY )) {
+			getCurrentNetworkPanel().showOptimalPolicyOfNode(); 
 		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
 			getCurrentNetworkPanel().expandNode();
 		} else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {
@@ -475,9 +490,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
         if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
         {
-            mainPanel.getMainPanelMenuAssistant ().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
-            mainPanel.getExistingInferenceToolBar ().setCurrentEvidenceCaseName (getCurrentNetworkPanel ().getCurrentCase (),
-                                                                                 getCurrentNetworkPanel ().isPropagationActive ());
+            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
+    		mainPanel.getExistingInferenceToolBar().
+					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
         }
 
 	}
@@ -722,9 +737,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsNetworkDependent(networkPanel);
-			mainPanel.getExistingInferenceToolBar().setCurrentEvidenceCaseName(
-					getCurrentNetworkPanel().getCurrentCase(),
-					getCurrentNetworkPanel().isPropagationActive());
+			mainPanel.getExistingInferenceToolBar().
+					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					e.getMessage(),
@@ -753,9 +767,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsNetworkDependent(networkPanel);
-			mainPanel.getExistingInferenceToolBar().setCurrentEvidenceCaseName(
-					getCurrentNetworkPanel().getCurrentCase(),
-					getCurrentNetworkPanel().isPropagationActive());
+			mainPanel.getExistingInferenceToolBar().
+					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					e.getMessage(),
@@ -998,12 +1011,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				newWorkingMode, getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 			// ...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
-			// INFLUENCE DIAGRAMS
-			// ...IS COMPLETE
+			// ...INFLUENCE DIAGRAMS IS COMPLETE
 			// ...We obtain the type of the network. If it is a Bayesian
-			// Network,
-			// ...we get the default inference algorithm; otherwise no algorithm
-			// is selected
+			// ...Network, we get the default inference algorithm; 
+			// ...otherwise no algorithm is selected
 			// ...(in EditorPanel we treat those cases)
 			NetworkType networkType = getCurrentNetworkPanel().getProbNet()
 					.getNetworkType();
@@ -1023,12 +1034,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				}
 			}
 			// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
-			// INFLUENCE DIAGRAMS
-			// ...IS COMPLETE
+			// ...INFLUENCE DIAGRAMS IS COMPLETE
 			getCurrentNetworkPanel().updateIndividualProbabilities();
-			mainPanel.getExistingInferenceToolBar().setCurrentEvidenceCaseName(
-					getCurrentNetworkPanel().getCurrentCase(),
-					getCurrentNetworkPanel().isPropagationActive());
+			mainPanel.getExistingInferenceToolBar().
+					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} else {
 			// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
 			// elimination of findings on returning to Edition Mode
@@ -1085,11 +1094,17 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void setInferenceOptions() {
 		getCurrentNetworkPanel().setInferenceOptions();
-		mainPanel.getMainPanelMenuAssistant()
-				.updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
-		mainPanel
-				.getMainPanelMenuAssistant()
-				.updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
+		if (getCurrentNetworkPanel().isAutomaticPropagation()){
+			mainPanel.getExistingInferenceToolBar().removePropagateNowButton();
+			mainPanel.getMainMenu().removePropagateNowItem();
+		} else {		
+			mainPanel.getExistingInferenceToolBar().addPropagateNowButton();
+			mainPanel.getMainMenu().addPropagateNowItem();
+		}
+		mainPanel.getMainPanelMenuAssistant().
+			updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
+		mainPanel.getMainPanelMenuAssistant().
+			updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
 	}
 
 	/**
