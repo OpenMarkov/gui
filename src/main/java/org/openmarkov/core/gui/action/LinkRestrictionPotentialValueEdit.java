@@ -1,17 +1,12 @@
 package org.openmarkov.core.gui.action;
 
-import java.util.ArrayList;
-
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
 public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
@@ -73,13 +68,15 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		int numStates2=node2.getVariable().getNumStates();
-		State state1 = node1.getVariable().getStates()[col - 1];
-		State state2 = node2.getVariable().getStates()[numStates2-row];
-		link.setCompatibilityValue(state1, state2,
-				this.newValue.intValue());
+		int numStates2 = node2.getVariable().getNumStates();
+		int stateIndex1 = col - 1;
+		int stateIndex2 = numStates2 - row;
+		State state1 = node1.getVariable().getStates()[stateIndex1];
+		State state2 = node2.getVariable().getStates()[stateIndex2];
+		link.setCompatibilityValue(state1, state2, this.newValue.intValue());
 		newTable = ((TablePotential) link.getRestrictionsPotential()).values
 				.clone();
+		
 	}
 
 	public void redo() {
@@ -89,9 +86,12 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 
 	}
 
+	
+	 
 	public void undo() {
 		super.undo();
 		tablePotential.setValues(lastTable);
+		
 	}
 
 }

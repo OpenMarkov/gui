@@ -1,9 +1,6 @@
 package org.openmarkov.core.gui.component;
 
-import java.awt.Color;
-
-import javax.swing.JTable;
-import javax.swing.ToolTipManager;
+import java.util.ArrayList;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -12,11 +9,14 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
 import org.openmarkov.core.gui.action.LinkRestrictionPotentialValueEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 
 /**
  * This table implementation is responsible for the graphical and data model
@@ -31,6 +31,16 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 	 * The link with the link restriction.
 	 * **/
 	private Link link;
+
+	/****
+	 * The parent node of the link
+	 * 
+	 */
+	private ProbNode node1;
+	/****
+	 * The child node of the link
+	 */
+	private ProbNode node2;
 	/***
 	 * The ProbNet containing the link.
 	 */
@@ -52,14 +62,12 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 			final boolean modifiable) {
 		super(tableModel, modifiable);
 		this.link = link;
-		ProbNode node = (ProbNode) link.getNode1().getObject();
-		net = node.getProbNet();
+		node1 = (ProbNode) link.getNode1().getObject();
+		node2 = (ProbNode) link.getNode2().getObject();
+		net = node1.getProbNet();
 		net.getPNESupport().addUndoableEditListener(this);
 	}
 
-	
-	
-	
 	/**
 	 * This method checks the value to modify in the table and sets the new
 	 * value.
@@ -85,6 +93,20 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 				net.getPNESupport().announceEdit(linkPotentialEdit);
 				net.getPNESupport().doEdit(linkPotentialEdit);
 				super.getModel().setValueAt(newValue, row, col);
+				int variable1Index = col - 1;
+				int variable2Index = node2.getVariable().getNumStates() - row;
+				if ((Integer) newValue == 0) {
+					if (node2.getPotentials().get(0).getPotentialType() == PotentialType.TABLE) {
+						Potential potential = LinkRestrictionPotentialOperations
+								.updatePotentialByAddLinkRestriction(node2,
+										(TablePotential) link
+												.getRestrictionsPotential(),
+										variable1Index, variable2Index);
+						ArrayList<Potential> potentials = new ArrayList<Potential>();
+						potentials.add(potential);
+						node2.setPotentials(potentials);
+					}
+				}
 			} catch (ConstraintViolationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
