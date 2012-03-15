@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Starting the application</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="280" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Starting the application
+    </h1>
+    <table border="1" cellpadding="7" cellspacing="0" bordercolor="#000000" width="491">
+      <col width="232">
+      <col width="229">
+      <tr>
+        <td colspan="2" valign="top" width="475">
+          <p>
+             <b><font size="3">Use case: Starting the application</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="475">
+          <p>
+             <b><font size="3">Comment:</font></b> <font size="3">This use case will be executed
+            when the user starts the application.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="475">
+          <p>
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">1.The user starts the program without parameters.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3">1.1.If the user enters the program startup parameters they are ignored
+            and it goes to point 2.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">2.The program reads the program configuration file.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">3.The following attributes are read from the configuration file: the
+            necessary attributes to set the positions of the main window and message window, the
+            colors of the types of nodes, the directories where the networks are located, the
+            languages and the resources needed for the program.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3">3.1.In case of error (if the configuration file cannot be read), the
+            elements take a default value.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">4.The language for the texts of the program are established using the
+            language saved as initial data in the file of configuration.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3">4.1.If the configuration file is not found, default configuration
+            options are established. The program default visualization language is the one that
+            user has established in his/her system/computer.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">5.If there are texts for the selected language, that language will be
+            established as the final language for the texts of the program.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3">5.1.If the established laguage cannot be used because there are not
+            texts for it, English (default language) will be used as the final lenguage for the
+            texts of the program.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">6.Main window, main menu, toolbars and multi-document environment are
+            created.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">7.All options of the main menu and the toolbars are disabled with the
+            exception of the following options: creating a new network, openning an existing
+            network and showing the message window.&nbsp;</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">8.The clipboard of the program is created.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p>
+             <font size="3">9.Message window is created and the standard flow System.out and
+            System.err are replaced to allow that their data will be shown in this window.</font>
+          </p>
+        </td>
+        <td width="229">
+          <p>
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

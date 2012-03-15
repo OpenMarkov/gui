@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+                     "http://java.sun.com/products/javahelp/map_2_0.dtd">
+
+<map version="1.0">
+	<mapID target="Algorithms" url="Common Pages/Concepts/Algorithms.html"/>
+	<mapID target="Appendix Index" url="End User Manual Topics/Appendix/Appendix Index.html"/>
+	<mapID target="arrowDown" url="images/carmenIcons/arrowDown.gif"/>
+	<mapID target="arrowUp" url="images/carmenIcons/arrowUp.gif"/>
+	<mapID target="Bayesian networks and Influence Diagrams" url="Common Pages/Concepts/Bayesian networks and Influence Diagrams.html"/>
+	<mapID target="c2_16" url="images/carmenHelpIcons/c2_16.gif"/>
+	<mapID target="c2_32" url="images/carmenHelpIcons/c2_32.gif"/>
+	<mapID target="c2_64" url="images/carmenHelpIcons/C2_64.gif"/>
+	<mapID target="c3_16" url="images/carmenHelpIcons/c3_16.gif"/>
+	<mapID target="c3_32" url="images/carmenHelpIcons/c3_32.gif"/>
+	<mapID target="c3_64" url="images/carmenHelpIcons/c3_64.gif"/>
+	<mapID target="caminos1" url="images/carmenHelpIcons/caminos.gif"/>
+	<mapID target="Canonical Models" url="Common Pages/Concepts/Canonical Models.html"/>
+	<mapID target="CARMEN advanced features" url="End User Manual Topics/Advanced users/CARMEN advanced features.html"/>
+	<mapID target="CARMEN main window screen" url="images/screens/CARMEN main window screen.jpg"/>
+	<mapID target="CARMEN message window screen" url="images/screens/CARMEN message window screen.jpg"/>
+	<mapID target="CARMEN message window with error" url="images/screens/CARMEN message window with error.jpg"/>
+	<mapID target="Carmen User Preferences - Exporting preferences" url="images/screens/Carmen User Preferences - Exporting preferences.JPG"/>
+	<mapID target="Carmen User Preferences - Importing preferences" url="images/screens/Carmen User Preferences - Importing preferences.JPG"/>
+	<mapID target="CARMEN User Preferences Main Screen" url="images/screens/CARMEN User Preferences Main Screen.jpg"/>
+	<mapID target="Carmen User Preferences - Setting a preference" url="images/screens/Carmen User Preferences - Setting a preference.JPG"/>
+	<mapID target="chance" url="images/carmenIcons/chance.gif"/>
+	<mapID target="close" url="images/carmenIcons/close.gif"/>
+	<mapID target="copy" url="images/carmenIcons/copy.gif"/>
+	<mapID target="Cover Page PDF" url="Cover Page PDF.html"/>
+	<mapID target="Creating a chance node" url="End User Manual Topics/First steps/Creating a chance node.html"/>
+	<mapID target="Creating a decision node" url="End User Manual Topics/First steps/Creating a decision node.html"/>
+	<mapID target="Creating a new network" url="End User Manual Topics/First steps/Creating a new network.html"/>
+	<mapID target="Creating an utility node" url="End User Manual Topics/First steps/Creating an utility node.html"/>
+	<mapID target="Creating links between nodes" url="End User Manual Topics/First steps/Creating links between nodes.html"/>
+	<mapID target="cut" url="images/carmenIcons/cut.gif"/>
+	<mapID target="decision" url="images/carmenIcons/decision.gif"/>
+	<mapID target="Deshacimiento de acciones y actualizacion de menus al modificar la red" url="images/Diagrama Casos de uso/Deshacimiento de acciones y actualizacion de menus al modificar la red.jpg"/>
+	<mapID target="End User Manual Topics" url="End User Manual Topics/End User Manual Topics.html"/>
+	<mapID target="Error Msg Network cannot be loaded" url="images/screens/Error Msg Network cannot be loaded.jpg"/>
+	<mapID target="Explanation in Expert Systems" url="Common Pages/Concepts/Explanation in Expert Systems.html"/>
+	<mapID target="FAQ" url="End User Manual Topics/FAQ/FAQ.html"/>
+	<mapID target="FAQ index" url="End User Manual Topics/FAQ/FAQ index.html"/>
+	<mapID target="Getting_Started" url="End User Manual Topics/First steps/Getting_Started.html"/>
+	<mapID target="How to add a new user preference" url="End User Manual Topics/Advanced users/How to add a new user preference.html"/>
+	<mapID target="How to change the value of a preference" url="End User Manual Topics/Advanced users/How to change the value of a preference.html"/>
+	<mapID target="How to export user preferences" url="End User Manual Topics/Advanced users/How to export user preferences.html"/>
+	<mapID target="How to import user preferences" url="End User Manual Topics/Advanced users/How to import user preferences.html"/>
+	<mapID target="How to retrieve the default preference configuration" url="End User Manual Topics/Advanced users/How to retrieve the default preference configuration.html"/>
+	<mapID target="Installation" url="End User Manual Topics/Appendix/Installation.html"/>
+	<mapID target="javaHelp_duke_logo1" url="images/carmenHelpIcons/javaHelp_duke_logo.gif"/>
+	<mapID target="Learning" url="End User Manual Topics/Learning/Learning.html"/>
+	<mapID target="link" url="images/carmenIcons/link.gif"/>
+	<mapID target="Logo Uned" url="images/carmenHelpIcons/Logo Uned.jpg"/>
+	<mapID target="Main_Concepts" url="Common Pages/Concepts/Main_Concepts.html"/>
+	<mapID target="minus" url="images/carmenIcons/minus.gif"/>
+	<mapID target="Network Properties Definition Screen" url="images/screens/Network Properties Definition Screen.jpg"/>
+	<mapID target="Network Properties Other Properties Screen" url="images/screens/Network Properties Other Properties Screen.jpg"/>
+	<mapID target="Network Properties Variables Screen" url="images/screens/Network Properties Variables Screen.jpg"/>
+	<mapID target="new" url="images/carmenIcons/new.gif"/>
+	<mapID target="NewCarmenSplashLogo" url="images/carmenHelpIcons/NewCarmenSplashLogo.jpg"/>
+	<mapID target="Node Properties - Definition" url="images/screens/Node Properties - Definition.JPG"/>
+	<mapID target="Node Properties - Other Properties" url="images/screens/Node Properties - Other Properties.JPG"/>
+	<mapID target="Node Properties - Parents" url="images/screens/Node Properties - Parents.JPG"/>
+	<mapID target="Node Properties - States - Discrete" url="images/screens/Node Properties - States - Discrete.JPG"/>
+	<mapID target="Node Properties - States - Discretize" url="images/screens/Node Properties - States - Discretize.JPG"/>
+	<mapID target="Node Properties - Table" url="images/screens/Node Properties - Table.JPG"/>
+	<mapID target="open" url="images/carmenIcons/open.gif"/>
+	<mapID target="paste" url="images/carmenIcons/paste.gif"/>
+	<mapID target="plus" url="images/carmenIcons/plus.gif"/>
+	<mapID target="redo" url="images/carmenIcons/redo.gif"/>
+	<mapID target="Rehacimiento de acciones y actualizacion de menus al modificar la red" url="images/Diagrama Casos de uso/Rehacimiento de acciones y actualizacion de menus al modificar la red.jpg"/>
+	<mapID target="remove" url="images/carmenIcons/remove.gif"/>
+	<mapID target="save" url="images/carmenIcons/save.gif"/>
+	<mapID target="Save network Screen" url="images/screens/Save network Screen.jpg"/>
+	<mapID target="Saving the network" url="End User Manual Topics/First steps/Saving the network.html"/>
+	<mapID target="Selecting algorithms" url="End User Manual Topics/First steps/Selecting algorithms.html"/>
+	<mapID target="selection" url="images/carmenIcons/selection.gif"/>
+	<mapID target="Setting node properties" url="End User Manual Topics/First steps/Setting node properties.html"/>
+	<mapID target="Setting probability tables" url="End User Manual Topics/First steps/Setting probability tables.html"/>
+	<mapID target="Setting User Preferences" url="End User Manual Topics/Advanced users/Setting User Preferences.html"/>
+	<mapID target="Spanish - Simple TPC" url="images/Formulas/Spanish - Simple TPC.jpg"/>
+	<mapID target="Spanish - Table Canonical Models" url="images/Formulas/Spanish - Table Canonical Models.jpg"/>
+	<mapID target="Style Examples" url="End User Manual Topics/Appendix/Style Examples.html"/>
+	<mapID target="undo" url="images/carmenIcons/undo.gif"/>
+	<mapID target="utility" url="images/carmenIcons/utility.gif"/>
+	<mapID target="Welcome" url="End User Manual Topics/Welcome.html"/>
+	<mapID target="zoomin" url="images/carmenIcons/zoomin.gif"/>
+	<mapID target="zoomout" url="images/carmenIcons/zoomout.gif"/>
+</map>

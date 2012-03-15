@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+<meta name="generator" content="Helen">
+<link href="../../javahelp.css" rel="stylesheet" type="text/css">
+<title>FAQ Index</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img height="32" hspace="0"
+	src="../../images/carmenHelpIcons/c2_32.gif" width="32" border="0">&nbsp;Preguntas
+Frecuentes - FAQ</h1>
+<hr color="blue" align="left" width="100%" size="2">
+<p>¿No sabes cómo hacer algo?</p>
+<p>Echa un vistazo a estas Preguntas Frecuentes (FAQ) para comprobar
+si tu duda ha sido resuelta ya.</p>
+<ul>
+	<li><a
+		href="FAQ.html#What if a red message appears in the Message Window">Qué
+	hacer si aparece un mensaje rojo en la ventana de mensajes</a></li>
+	<li><a
+		href="FAQ.html#What if a red message appears in the Message Window">Qué
+	hacer si, al abrir una red, aparece el mensaje "Esta red no se puede
+	cargar"</a></li>
+	<li><a href="FAQ.html#What if some functions do not work properly">Qué
+	hacer si alguna de las utilidades no funciona correctamente</a></li>
+</ul>
+</body>
+</html>

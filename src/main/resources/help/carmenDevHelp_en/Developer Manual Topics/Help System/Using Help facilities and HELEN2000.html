@@ -1,0 +1,410 @@
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta content="Helen" name="generator">
+    <link href="../../javahelp.css" type="text/css" rel="stylesheet">
+    <title>Using Help facilities and HELEN2000</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img hspace="0" border="0" height="32" width="32" src=
+      "../../images/carmenHelpIcons/c3_32.gif">&nbsp;Using Help facilities and HELEN2000
+    </h1>
+    <h5>
+       (document reference&nbsp;JavaHelp-2.0-04-guide.pdf)
+    </h5>
+    <hr align="left" width="100%" size="2" color="blue">
+    <h2>
+       Setting Up Carmen Java Help Project
+    </h2>
+    <p>
+      <br>
+       There are two primary things to consider when setting up Carmen Help projects:
+    </p>
+    <ol>
+      <li>
+        <a href="#Authoring">How best to organize help information files to organize them logically
+        and conveniently for authoring</a>
+      </li>
+      <li>
+        <a href="#Organisation">How to organize help information to best package it for delivery to
+        your users.</a>
+      </li>
+      <li>
+        <a href="#StandardPackaging">How to package the help (Standard Way with JavaHelp)</a>
+      </li>
+      <li>
+        <a href="#CarmenHelenPackaging">How to package the help (using Helen in CARMEN)</a>
+      </li>
+      <li>
+        <a href="#NewCarmenJavaHelpProjects">How to create new Carmen Java Help Projects</a>
+      </li>
+      <li>
+        <a href="#SettingOnlineHelp">Setting Online help with F1 key in Carmen windows</a>
+      </li>
+    </ol>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="Authoring" name="Authoring">1. Authoring</a>
+    </h3>
+    <p>
+       The JavaHelp system is based on independent files. Topics are contained in files that are
+      displayed in the help viewer one file at a time.
+    </p>
+    <p>
+       It is a good idea to group related topics together to keep them organized and to make it as
+      easy as possible to link the topics together.
+    </p>
+    <p>
+       The JavaHelp system uses URLs. A URL can resolve to the contents of a file in a file system,
+      a file on the web, or a portion of a JAR file, or it can even be generated dynamically by a
+      server. In CARMEN, those topics are organized to make it easy to package them into a
+      compressed JAR file for delivery to users. One per each supported language. For these
+      reasons, it is best to organize topics in a folder hierarchy that you can "tear off" and
+      place in the JAR file.
+    </p>
+    <h4>
+       1.1 Links
+    </h4>
+    <p>
+       The destination of a link to another topic in the helpset should be specified relative to
+      the file that contains the link. The following is an example of such a relative link:
+    </p>
+    <p align="center">
+      <br>
+       <i>&lt;A HREF="../subtopicB/topic.html"&gt;<b>new topic</b>&lt;/A&gt;</i>
+    </p>
+    <p>
+       Only relative links remain valid when the topic hierarchy is packaged into a JAR file and
+      then installed on the user's computer.
+    </p>
+    <p>
+       <b>Do not specify links to other topics by using an absolute link</b>. For example, the
+      following link uses a full path name to the destination of the link and it will fail when you
+      move to the project source folders:
+    </p>
+    <p align="center">
+      <br>
+       <i>&lt;A HREF="C:/product/help/subtopicB/topic.html"&gt;<b>new topic</b>&lt;/A&gt;</i>
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h4>
+       1.2 File Separators ("/" vs. "\")
+    </h4>
+    <p>
+       All files in a JavaHelp system are specified as URLs, which use the forward slash ("/") as
+      the separator between elements (files) in a hierarchy. Although in some cases a backslash
+      ("\") works on Windows platforms, if files that contain such references are installed on a
+      different platform, the references no longer work.
+    </p>
+    <h4>
+       1.3. Type of files
+    </h4>
+    <p>
+       Java Help works with HTML files. Unfortunately, <b>there is no support for XML files.</b>
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="Organisation" name="Organisation">2. Organisation</a>
+    </h3>
+    <p>
+       In addition to the topic files, the help information includes metadata files that contain
+      information about the help system. Where you locate these metadata files can affect how you
+      package, deliver, and update the help information for your users. In JavaHelp systems there
+      are two kinds of metadata:
+    </p>
+    <ul class="noindent">
+      <li>
+        Navigational data
+      </li>
+      <li>
+        Helpset data
+      </li>
+    </ul>
+    <h4>
+       2.1 Navigational Data
+    </h4>
+    <p>
+       Navigational data files contain information that is used by the JavaHelp system navigators.
+      The standard JavaHelp system navigators are:
+    </p>
+    <ul class="noindent">
+      <li>
+        Table of contents (toc.xml)
+      </li>
+      <li>
+        Index (index.xml)
+      </li>
+      <li>
+        Full&minus;text search (JavaHelp search directory)
+      </li>
+      <li>
+        Glossary (glossary.xml)
+      </li>
+    </ul>
+    <p>
+       Each of these navigators has a metadata file associated with it that contains navigational
+      data. These metadata files should be located in close proximity to the topic files to make it
+      easier to package them into JAR files with the topic files for delivery to customers.
+    </p>
+    <p>
+       In CARMEN&nbsp;Help System, those files are located in the root directory of each language
+      help project&nbsp;
+    </p>
+    <h4>
+       2.2 Helpset Data
+    </h4>
+    <p>
+       Helpset data is information that the JavaHelp system needs to run your help system. It is
+      contained in two files:
+    </p>
+    <ul class="noindent">
+      <li>
+        Helpset file (helpset.hs)
+      </li>
+      <li>
+        Map file (map.xml)
+      </li>
+    </ul>
+    <p>
+       When the JavaHelp system is activated by your application, the first thing it does is read
+      the helpset file. The helpset file contains all the information needed to run the help
+      system. As you can imagine, the application must be able to find the helpset file after the
+      product is installed on your user's system. The helpset file contains the location of the map
+      file and, in most cases, the map file is read when the helpset is initialized. The map file
+      is used to associate topic IDs with URLs (paths to HTML topic files).
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="StandardPackaging" name="StandardPackaging">3 Packaging a Helpset into a JAR File
+      (JavaHelp standard way to do it)</a>
+    </h3>
+    <p>
+       You can package your help information into JAR files for delivery to users. Usually, you
+      package the helpset file and map file in the JAR file along with the topic files and
+      navigational files. On the JavaTM 2 Platform, the jar: protocol makes various packaging
+      options available. Including the helpset and map files in or or excluding them from the JAR
+      file has an effect on how you deliver the help information and how you can later update it.
+      The following two sections describe some of the issues to consider when making that decision.
+    </p>
+    <h4>
+       3.1 Helpset File
+    </h4>
+    <p>
+       Under some installation conditions, the helpset file could be excluded from the JAR file,
+      while the map file is included.
+    </p>
+    <p>
+       The helpset file is the only help system file referenced explicitly by the application. The
+      JavaHelp system derives all information about the help system from that file. If the helpset
+      file is outside the JAR file, the installation program can update the helpset file so the JAR
+      files can be installed anywhere in the user's file system. This is not possible if the
+      helpset file is included in the JAR file.
+    </p>
+    <p>
+       Another advantage of locating the helpset file outside the JAR file is that it can be
+      updated independently of the rest of the helpset. For example, additional help information
+      can be added to the user's help system by adding more JAR files and updating the helpset
+      file.
+    </p>
+    <h4>
+       3.2 Map File
+    </h4>
+    <p>
+       If the map file is located outside of the JAR file, all URLs in the map must use the jar:
+      protocol.
+    </p>
+    <p>
+       For example: &nbsp;
+    </p>
+    <p align="center">
+       <b>jar:file://c:/product/help/Ajar.jar!/File1.html</b>
+    </p>
+    <p>
+      <br>
+       Excluding the map file from the JAR file is possible, but is usually not useful.&nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="CarmenHelenPackaging" name="CarmenHelenPackaging">4 Packaging a Helpset into a JAR
+      File (CARMEN&nbsp;way to do it with HELEN)</a>
+    </h3>
+    <p>
+       To package the Help system in CARMEN using HELEN, you must simply select the option
+      "PUBLISH" in the File menu.
+    </p>
+    <p>
+       <img hspace="15" src="../../images/screens/HELEN publishing a project.jpg" vspace="5">
+    </p>
+    <p>
+       You must only select the destination folder (the lib directory for CARMEN) and, be sure, you
+      have set JavaHelp 2.0 compatibility.
+    </p>
+    <p>
+       By default, the name of the jar will be the name of the project which, as reminder, will be:
+    </p>
+    <ul>
+      <li>
+        carmenHelp_en.jar - English Version
+      </li>
+      <li>
+        carmenHelp_es.jar - Spanish Version
+      </li>
+    </ul>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="NewCarmenJavaHelpProjects" name="NewCarmenJavaHelpProjects">5 Creating new CARMEN
+      language dependant Help Projects</a>
+    </h3>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       To create a new CARMEN&nbsp;Help Projects (really, when you want to add a new supported
+      language to CARMEN) you must do the following steps:
+    </p>
+    <ol>
+      <li>
+        In the Carmen Help directories, select "carmenHelp_en" directory
+      </li>
+      <li>
+        Make a copy with the name "carmenHelp_XX" where XX is the two letter for the locale you are
+        adding to CARMEN
+      </li>
+      <li>
+        Then, go to the new directory and rename the file "carmenHelp_en.jhp" with
+        "carmenHelp_XX.jhp"
+      </li>
+      <li>
+        Edit "carmenHelp_XX.jhp" file that contains the structure for the Helen Project <u>with
+        Wordpad or similar text editor</u> (not with Helen) 
+        <ol>
+          <li>
+            Find the line 
+<pre>
+&lt;directory title="...(your directory).../Carmen/help/carmenHelp_en"&gt;
+</pre>
+          </li>
+          <li>
+            Change the name of the file you will see from "carmenHelp_en" to "carmenHelp_XX"
+          </li>
+          <li>
+            Save the file.
+          </li>
+        </ol>
+      </li>
+      <li>
+        Double click on the "carmenHelp_XX.jhp" file or, alternatively, Open Helen software and
+        Select Open Project and select the directory you have created and open the Helen project
+        file.
+      </li>
+      <li>
+        You will now have opened&nbsp;the new project.
+      </li>
+      <li>
+        Do translation of the HTML pages but <b>do not change the name of the Html files.</b>
+      </li>
+      <li>
+        Do translation of the Index document (index.xml)
+      </li>
+      <li>
+        Do translation of the TOC document (toc.xml)
+      </li>
+      <li>
+        Do translation of the Glossary document (glossary.xml)
+      </li>
+      <li>
+        Finally, select "Tools - Create/Update search files" to re-generate the search engine.
+      </li>
+    </ol>
+    <h3>
+       <a id="SettingOnlineHelp" name="SettingOnlineHelp">6. Setting Online Help with key "F1" from
+      Carmen windows</a>
+    </h3>
+    <p>
+       JavaHelp offers several facilities to&nbsp;programmers to enhance the usability of the
+      programs by adding support for F1 key in the several windows in the application.
+    </p>
+    <p>
+       In order to obtain an Online Help from the window, Carmen programmers must follow the next
+      steps:
+    </p>
+    <ol>
+      <li>
+        Each dialog that F1 will be activated, you must insert the next method 
+<pre style=" margin-left: 20.0px;">
+/**
+    * online help convenience method
+    */
+    private void setOnlineHelp(String onlineSection) {
+        /**
+         * auxiliar help Viewer
+         */
+         HelpViewer helpViewer = null;
+         helpViewer = new HelpViewer();
+         try {
+             helpViewer.getHb().enableHelpKey(<b>this.getContentPane()</b>,
+                                              <b>onlineSection</b>,
+                                              helpViewer.getHs());
+         } catch (BadIDException ex) {
+             System.out.println("WARNING &gt;&gt; "+ ex.getMessage() );
+             System.out.println(ex.getStackTrace());
+         } catch (Exception ex) {
+             System.out.println("WARNING &gt;&gt; "+ ex.getMessage() );
+             System.out.println(ex.getStackTrace());
+         }
+    }
+</pre>
+      </li>
+      <li>
+        Then, you must insert the call to this method in the constructor for your window dialog 
+<pre>
+     /**
+      * a example dialog constructor in one of any dialog class
+      */
+      public NetworkPropertiesDialog(Window owner, boolean newElement) {
+	  super(owner);
+	  newNetwork = newElement;
+	  initialize();
+	  setName("NetworkPropertiesDialog");
+	  setLocationRelativeTo(owner);
+          <b>setOnlineHelp("Network Properties Dialog");</b>
+      }
+</pre>
+      </li>
+      <li>
+        Please, note than in the first step (in the method), <b>the component where you are related
+        the Help is the ContentPane</b> as JavaHelp has restrictions to work directly with JFrame,
+        JDialog and JPanel.
+      </li>
+      <li>
+        Please, note than, in the call to this method, <b>&nbsp;the string must be one valid HELP
+        ID</b>
+      </li>
+    </ol>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

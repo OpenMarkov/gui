@@ -1,0 +1,114 @@
+<
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+<meta name="generator" content="Helen">
+<link type="text/css" href="../../javahelp.css" rel="stylesheet">
+<title>How to add a new Property to ProbNode, NodeWrapper and
+NodeProperties</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img hspace="0" height="32" width="32"
+	src="../../images/carmenHelpIcons/c3_32.gif" border="0">&nbsp;How
+to...</h1>
+<hr size="2" align="left" width="100%" color="blue">
+<h2>1. How to add a new Property to be managed by the GUI</h2>
+<p>Assuming you have already one new field in one of the GUI screens
+and you require to add a new property to be managed by the GUI, you must
+add the property in several places. Here you will find the guideline to
+do it.</p>
+<h3>1.1 Adding new property to Carmen XML Parser</h3>
+<ol>
+	<li>
+	<p>XMLTokens</p>
+	<ol>
+		<li>
+		<p>Select the file "carmen.io.networks.xml.XMLTokens"</p>
+		</li>
+		<li>
+		<p>Add one descriptor for the new property (if required)</p>
+		</li>
+		<li>
+		<p>Save the file</p>
+		</li>
+	</ol>
+	</li>
+	<li>
+	<p>XMLReader</p>
+	<ol>
+		<li>
+		<p>Select the file "carmen.io.networks.xml.XMLReader"</p>
+		</li>
+		<li>Add the reader into one of the appropriated sub-elements of
+		the reader</li>
+		<li>
+		<p>Save the file</p>
+		</li>
+	</ol>
+	</li>
+	<li>
+	<p>XMLWriter</p>
+	<ol>
+		<li>
+		<p>Select the file "carmen.io.networks.xml.XMLWriter"</p>
+		</li>
+		<li>Add the writer into one of the appropriated sub-elements of
+		the writer</li>
+		<li>Save the file</li>
+	</ol>
+	</li>
+</ol>
+<h3>1.2 Adding new property to ProbNode</h3>
+<p>Properties in the ProbNode are stored in a HashMap, so adding a
+new attribute/property is done automatically by the NodeWrapper class
+and the Parser.</p>
+<h3>1.3 Adding new property to NodeWrapper</h3>
+<ol>
+	<li>Select the file "carmen.gui.networks.NodeWrapper.java"</li>
+	<li>Add the appropriated setPropertyXXX in the method
+	"setProperties(...)"</li>
+	<li>Add the appropriated getPropertyXXX call in the method
+	"getProperties()"</li>
+	<li>Add the method "getPropertyXXX" to retrieve the information
+	from ProbNode equivalent property</li>
+	<li>Add the method "setPropertyXXX" to store the information to
+	ProbNode equivalent property</li>
+</ol>
+<h3>1.4 Adding new property to NodeProperties</h3>
+<ol>
+	<li>&nbsp;Select the file
+	"carmen.gui.networks.NodeProperties.java"</li>
+	<li>Add an attribute (the new property) into the attribute's
+	section of the file.
+	<ol>
+		<li>Do not forget to add a proper comment to identify the meaning
+		of the new attribute</li>
+	</ol>
+	</li>
+	<li>Add the initial value in the Constructor Method</li>
+	<li>Add the appropriated getter and setter methods after the last
+	get/set method of the file
+	<ol>
+		<li>If you are using Eclipse, then you can use the "Generate
+		getter/setter" facility (remember, right click on the new attribute,
+		then Source, then Generate...).</li>
+		<li>Do not forget to add a proper comment to identify the meaning
+		of the new attribute</li>
+	</ol>
+	</li>
+	<li>Add to the "equals" method</li>
+	<li>Add to the "toString" method</li>
+	<li>If the attribute you are adding belongs to a specific network,
+	then add a "remove" action in the method "adaptToClipboard"</li>
+</ol>
+<h3>1.5 Modifying the appropriated Test Cases</h3>
+<p>When you have completed the previous steps, you must verify the
+following test cases in the &nbsp;test package:</p>
+<ul>
+	<li>carmen.gui.networks.NodePropertiesTest.java</li>
+	<li>carmen.gui.networks.NodeWrapperTest.java</li>
+	<li>carmen.io.networks.XMLReaderTest.java</li>
+</ul>
+<p>&nbsp;</p>
+</body>
+</html>

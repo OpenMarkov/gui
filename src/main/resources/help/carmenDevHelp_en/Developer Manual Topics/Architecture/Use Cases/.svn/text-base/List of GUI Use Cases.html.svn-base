@@ -1,0 +1,221 @@
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta content="Helen" name="generator">
+    <link href="../../../javahelp.css" type="text/css" rel="stylesheet">
+    <title>List of GUI Use Cases</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img hspace="0" border="0" height="32" width="32" src=
+      "../../../images/carmenHelpIcons/c3_32.gif">&nbsp;Index of GUI&nbsp;Use Cases
+    </h1>
+    <p>
+       Click on any of the following use cases will show you the details.
+    </p>
+    <ul>
+      <li style=" list-style-type: none; list-style-image: none;">
+        <ul>
+          <li>
+            <a href="UseCase inventory/Starting the application.html">Starting the application</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Ending the program.html"> Ending the application</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Network creation.html">Network creation</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Closing a network.html">Closing a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Loading a network.html">Loading a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Saving a network.html">Saving a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Saving a network as.html">Saving a network as...</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting a network.html">Selecting a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting the next or previous network.html">Selecting the
+            next/previous network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Modifying the window layout.html">Modifying the window
+            layout</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Modifying the visual node representation.html">Modifying the
+            visual node representation</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Modifying the zoom scale.html">Modifying the zoom scale</a>
+          </li>
+          <li>
+            <a href=
+            "UseCase inventory/Modifying the zoom scale from the dialog window.html">Modifying the
+            zoom scale from the dialog window</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting the type of editing.html">Selecting the type of
+            editing</a>
+          </li>
+          <li>
+            <a href=
+            "UseCase inventory/Updating the menus when changing the selected element.html">Updating
+            the menus when changing the selected element</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Deselecting all the visual elements.html">Deselecting all
+            the visual elements</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting all visual elements.html">Selecting all visual
+            elements</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting one single node.html">Selecting one single
+            node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting an additional node.html">Selecting an additional
+            node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Deselecting one single node.html">Deselecting one single
+            node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Selecting several nodes with a rectangle.html">Selecting
+            several nodes with a rectangle</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Updating menus when modifying a network.html">Updating menus
+            when modifying a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Creating a node.html">Creating a node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Undo a node creation.html">Undo a node creation</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Creating a link.html">Creating a link</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Undo a link creation.html">Undo a link creation</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Redo a link creation.html">Redo a link creation</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Moving several nodes.html">Moving several nodes</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Deleting several nodes.html">Deleting several nodes</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Modifying network properties.html">Modifying network
+            properties</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Modifying node properties.html">Modifying node
+            properties</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Copying nodes to the clipboard.html">Copying nodes to the
+            clipboard</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Cutting nodes to the clipboard.html">Cutting nodes to the
+            clipboard</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Copying nodes from the clipboard.html">Copying nodes from
+            the clipboard</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Closing window message.html">Closing window message</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Setting message window at front.html">Setting window message
+            at front</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Copying window message content.html">Copying window message
+            content</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Cleaning window message.html">Cleaning window message</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Opening user preferences configuration window.html">Opening
+            user preferences configuration window</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Closing user preferences configuration window.html">Closing
+            user preferences configuration window</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Canceling edition user preferences.html">Canceling edition
+            user preferences</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Saving user preferences configuration.html">Saving user
+            preferences configuration</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Importing user preferences.html">Importing user
+            preferences</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Exporting user preferences.html">Exporting user
+            preferences</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Opening application help window.html">Opening application
+            help window</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Opening specific window or element help window.html">Opening
+            specific window or element help window</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Seeking element help.html">Seeking element help</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Changing the application language.html">Changing the
+            application language</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Adding a parent node to a node in a network.html">Adding a
+            parent node to a node in a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Deleting a parent node to a node in a network.html">Deleting
+            a parent node to a node in a network</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Changing the name of a node.html">Changing the name of a
+            node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Adding states to a node.html">Adding states to a node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Deleting states from a node.html">Deleting states from a
+            node</a>
+          </li>
+          <li>
+            <a href="UseCase inventory/Changing the name of a state from a node.html">Changing the
+            name of a state from a node</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </body>
+</html>
