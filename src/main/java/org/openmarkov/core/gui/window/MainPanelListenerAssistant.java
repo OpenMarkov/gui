@@ -1018,21 +1018,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			// ...(in EditorPanel we treat those cases)
 			NetworkType networkType = getCurrentNetworkPanel().getProbNet()
 					.getNetworkType();
-			if (networkType instanceof BayesianNetworkType) {
-				try {
-					if (getCurrentNetworkPanel().getInferenceAlgorithm() == null) {
-						InferenceManager inferenceManager = new InferenceManager();
-						InferenceAlgorithm inferenceAlgorithm;
-						inferenceAlgorithm = inferenceManager
-								.getDefaultInferenceAlgorithm(getCurrentNetworkPanel()
-										.getProbNet());
-						getCurrentNetworkPanel().setInferenceAlgorithm(
-								inferenceAlgorithm);
-					}
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				}
-			}
+            if (networkType instanceof BayesianNetworkType)
+            {
+                if (getCurrentNetworkPanel ().getInferenceAlgorithm () == null)
+                {
+                    InferenceManager inferenceManager = new InferenceManager ();
+                    InferenceAlgorithm inferenceAlgorithm;
+                    inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (getCurrentNetworkPanel ().getProbNet ());
+                    getCurrentNetworkPanel ().setInferenceAlgorithm (inferenceAlgorithm);
+                }
+            }
 			// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
 			// ...INFLUENCE DIAGRAMS IS COMPLETE
 			getCurrentNetworkPanel().updateIndividualProbabilities();
