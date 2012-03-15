@@ -403,6 +403,51 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.changePotential();
 
 	}
+	
+	/**
+	 * This method imposes a policy in a decision node.
+	 */
+	public void imposePolicyInNode() {
+		
+		editorPanel.imposePolicyInNode();
+		
+	}
+	
+	/**
+	 * This method edits an imposed policy of a decision node.
+	 */
+	public void editNodePolicy() {
+		
+		editorPanel.editNodePolicy();
+		
+	}
+	
+	/**
+	 * This method removes an imposed policy from a decision node.
+	 */
+	public void removePolicyFromNode() {
+		
+		editorPanel.removePolicyFromNode();
+		
+	}
+	
+	/**
+	 * This method shows the expected utility of a decision node.
+	 */
+	public void showExpectedUtilityOfNode() {
+		
+		editorPanel.showExpectedUtilityOfNode();
+		
+	}
+	
+	/**
+	 * This method shows the optimal policy for a decision node.
+	 */
+	public void showOptimalPolicyOfNode() {
+		
+		editorPanel.showOptimalPolicyOfNode();
+		
+	}
 
 	/**
 	 * This method expands a node.
@@ -432,7 +477,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * This method removes a finding in a node.
+	 * This method removes findings from selected nodes.
 	 */
 	public void removeFinding() {
 

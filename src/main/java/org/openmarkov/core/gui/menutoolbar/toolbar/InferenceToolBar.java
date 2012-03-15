@@ -122,11 +122,8 @@ public class InferenceToolBar extends ToolBarBasic {
 
 		stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
 		iconLoader = new IconLoader();
-
-		add(getExpansionThresholdLabel());
-		add(getExpansionThresholdComboBox());
-		addSeparator();
 		add(getCreateNewEvidenceCaseButton());
+		add(getClearOutAllEvidenceCasesButton());	
 		addSeparator();
 		add(getGoToFirstEvidenceCaseButton());
 		add(getGoToPreviousEvidenceCaseButton());
@@ -134,10 +131,9 @@ public class InferenceToolBar extends ToolBarBasic {
 		add(getGoToNextEvidenceCaseButton());
 		add(getGoToLastEvidenceCaseButton());
 		addSeparator();
-		add(getClearOutAllEvidenceCasesButton());	
-		addSeparator();
-		add(getPropagateEvidenceButton());
-		add(Box.createHorizontalGlue());
+		add(getExpansionThresholdLabel());
+		add(getExpansionThresholdComboBox());
+		add(Box.createHorizontalGlue()); 	
 	}
 
 	/**
@@ -368,39 +364,72 @@ public class InferenceToolBar extends ToolBarBasic {
 	 * @param currentCase 
 	 * 				The number of the current case.
 	 */
-	public void setCurrentEvidenceCaseName (int currentCase, boolean automaticPropagation) {
-		if (automaticPropagation) {
-			if (currentCase < 10) {
-				currentEvidenceCaseName.setText("   " + stringResource.getString("CaseNumber.Label")
-						+ " " + currentCase + "   ");
-			} else {
-				currentEvidenceCaseName.setText(stringResource.getString("CaseNumber.Label")
-						+ " " + currentCase);
-			}
-			if (currentCase%5 == 0) {
-				currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
-				currentEvidenceCaseName.setForeground(Color.WHITE);
-			} else if (currentCase%5 == 1) {
-				currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_1_COLOR);
-				currentEvidenceCaseName.setForeground(Color.WHITE);
-			} else if (currentCase%5 == 2) {
-				currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_2_COLOR);
-				currentEvidenceCaseName.setForeground(Color.WHITE);
-			} else if (currentCase%5 == 3) {
-				currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_3_COLOR);
-				currentEvidenceCaseName.setForeground(Color.BLACK);
-			} else if (currentCase%5 == 4) {
-				currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_4_COLOR);
-				currentEvidenceCaseName.setForeground(Color.BLACK);
-			}
+	public void setCurrentEvidenceCaseName (int currentCase) {
+		if (currentCase < 10) {
+			currentEvidenceCaseName.setText("   " + stringResource.getString("CaseNumber.Label")
+					+ " " + currentCase + "   ");
 		} else {
-			currentEvidenceCaseName.setBackground(Color.WHITE);
+			currentEvidenceCaseName.setText(stringResource.getString("CaseNumber.Label")
+					+ " " + currentCase);
+		}
+		if (currentCase%5 == 0) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase%5 == 1) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_1_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase%5 == 2) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_2_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase%5 == 3) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_3_COLOR);
 			currentEvidenceCaseName.setForeground(Color.BLACK);
-			currentEvidenceCaseName.setText(" " + stringResource.getString("NotCompiledNet.Label")
-					+ " (" + currentCase + ") ");			
+		} else if (currentCase%5 == 4) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_4_COLOR);
+			currentEvidenceCaseName.setForeground(Color.BLACK);
 		}
 	}	
-
-
+	
+	/** 
+	 * This method adds the button 'Propagate Now' on this tool bar.
+	 * It is placed at the most left position.
+	 */
+	public void addPropagateNowButton() {
+		removeAll();
+		propagateEvidenceButton = null;
+		add(getPropagateEvidenceButton());
+		addSeparator();
+		add(getCreateNewEvidenceCaseButton());
+		add(getClearOutAllEvidenceCasesButton());	
+		addSeparator();
+		add(getGoToFirstEvidenceCaseButton());
+		add(getGoToPreviousEvidenceCaseButton());
+		add(getCurrentEvidenceCaseName());
+		add(getGoToNextEvidenceCaseButton());
+		add(getGoToLastEvidenceCaseButton());
+		addSeparator();
+		add(getExpansionThresholdLabel());
+		add(getExpansionThresholdComboBox());
+		add(Box.createHorizontalGlue());		
+	}
+	
+	/**  
+	 * This method removes the button 'Propagate Now' from this tool bar.
+	 */
+	public void removePropagateNowButton() {
+		removeAll();
+		add(getCreateNewEvidenceCaseButton());
+		add(getClearOutAllEvidenceCasesButton());	
+		addSeparator();
+		add(getGoToFirstEvidenceCaseButton());
+		add(getGoToPreviousEvidenceCaseButton());
+		add(getCurrentEvidenceCaseName());
+		add(getGoToNextEvidenceCaseButton());
+		add(getGoToLastEvidenceCaseButton());
+		addSeparator();
+		add(getExpansionThresholdLabel());
+		add(getExpansionThresholdComboBox());
+		add(Box.createHorizontalGlue());		
+	}
 	
 }

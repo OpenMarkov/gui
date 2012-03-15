@@ -280,6 +280,53 @@ public class VisualState extends VisualElement {
 			return 1;
 		}
 	}
+	
+	/**
+	 * Sets the color in which to paint depending on which is the
+	 * associated evidence case
+	 * 
+	 * @param caseNumber
+	 *            number of the evidence case 
+	 * @param g
+	 *            graphics object where paint the node.
+	 */
+	private void setColorCaseDependent (int caseNumber, Graphics2D g) {
+		if (caseNumber%5 == 0) {
+			g.setPaint(EVIDENCE_CASE_0_COLOR);
+		} else if (caseNumber%5 == 1) {
+			g.setPaint(EVIDENCE_CASE_1_COLOR);
+		} else if (caseNumber%5 == 2) {
+			g.setPaint(EVIDENCE_CASE_2_COLOR);
+		} else if (caseNumber%5 == 3) {
+			g.setPaint(EVIDENCE_CASE_3_COLOR);
+		} else if (caseNumber%5 == 4) {
+			g.setPaint(EVIDENCE_CASE_4_COLOR);
+		}
+	} 
+	
+	/** 
+	 * Paint the representation of the state when it is its not compiled form
+	 * 
+	 * @param x
+	 *            x coordinate reference for painting 
+	 * @param y
+	 *            y coordinate reference for painting
+	 * @param g
+	 *            graphics object where paint the node.
+	 */
+	private void paintNotCompiled (Double x, Double y, Graphics2D g) {
+		Double aux1 = x;
+		int aux2 = new Double(InnerBox.BAR_FULL_LENGTH/20).intValue();
+		while (aux1 < (x + InnerBox.BAR_FULL_LENGTH)) {
+			g.drawLine(aux1.intValue() + (aux2/2), 
+					new Double(y + InnerBox.BAR_HEIGHT/2).intValue(),
+					aux1.intValue() + aux2 + (aux2/2),
+					new Double(y + InnerBox.BAR_HEIGHT/2).intValue()
+					);
+			aux1 += (aux2 * 2);	
+		}
+		
+	}
 
 	/**
 	 * Returns a fictitious rectangular shape around the state. This shape
@@ -287,6 +334,9 @@ public class VisualState extends VisualElement {
 	 * the state (a narrow margin is added) and its width includes the text 
 	 * of the name and the numerical value (a margin is also added).
 	 * 
+	 * @param g
+	 *            graphics object where paint the node.
+	 *            
 	 * @return shape of the State.
 	 */
 	public Shape getShape(Graphics2D g) {
@@ -382,17 +432,7 @@ public class VisualState extends VisualElement {
 						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) + 
 								InnerBox.BAR_HEIGHT).intValue()
 						);
-				if (i%5 == 0) {
-					g.setPaint(EVIDENCE_CASE_0_COLOR);
-				} else if (i%5 == 1) {
-					g.setPaint(EVIDENCE_CASE_1_COLOR);
-				} else if (i%5 == 2) {
-					g.setPaint(EVIDENCE_CASE_2_COLOR);
-				} else if (i%5 == 3) {
-					g.setPaint(EVIDENCE_CASE_3_COLOR);
-				} else if (i%5 == 4) {
-					g.setPaint(EVIDENCE_CASE_4_COLOR);
-				}
+				setColorCaseDependent(i, g);
 				double barLength = 0.0;
 				if (visualNode instanceof VisualUtilityNode) {
 					InnerBox innerBox = visualNode.getInnerBox();
@@ -409,17 +449,7 @@ public class VisualState extends VisualElement {
 						barLength,
 						InnerBox.BAR_HEIGHT)
 						);
-				if (currentStateValue%5 == 0) {
-					g.setPaint(EVIDENCE_CASE_0_COLOR);
-				} else if (currentStateValue%5 == 1) {
-					g.setPaint(EVIDENCE_CASE_1_COLOR);
-				} else if (currentStateValue%5 == 2) {
-					g.setPaint(EVIDENCE_CASE_2_COLOR);
-				} else if (currentStateValue%5 == 3) {
-					g.setPaint(EVIDENCE_CASE_3_COLOR);
-				} else if (currentStateValue%5 == 4) {
-					g.setPaint(EVIDENCE_CASE_4_COLOR);
-				}
+				setColorCaseDependent(currentStateValue, g);
 				g.drawString(stateValues.get(currentStateValue).toString(), 
 						(xValue.intValue()),
 						yText.intValue());
@@ -438,15 +468,24 @@ public class VisualState extends VisualElement {
 							InnerBox.BAR_FULL_LENGTH).intValue(), 
 					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue()
 					);
-			Double aux1 = xBar;
-			int aux2 = new Double(InnerBox.BAR_FULL_LENGTH/20).intValue();
-			while (aux1 < (xBar + InnerBox.BAR_FULL_LENGTH)) {
-				g.drawLine(aux1.intValue() + (aux2/2), 
-						new Double(yFirstBar + InnerBox.BAR_HEIGHT/2).intValue(),
-						aux1.intValue() + aux2 + (aux2/2),
-						new Double(yFirstBar + InnerBox.BAR_HEIGHT/2).intValue()
-						);
-				aux1 += (aux2 * 2);				
+			if (getVisualNode().findingInNode) {
+				int currentCase = getVisualNode().getEditorPanel().getCurrentCase();
+				String stateWithFinding = getVisualNode().getEditorPanel().
+						getEvidenceCase(currentCase).
+						getFinding(visualNode.getProbNode().getVariable()).getState();
+				if (stateName.equals(stateWithFinding)) {
+					setColorCaseDependent(currentCase, g); 
+					g.fill(new Rectangle2D.Double(xBar, 
+							yFirstBar,
+							InnerBox.BAR_FULL_LENGTH,
+							InnerBox.BAR_HEIGHT)
+							);
+					g.setPaint(Color.BLACK);					
+				} else {
+					paintNotCompiled(xBar, yFirstBar, g);
+				}
+			} else {
+				paintNotCompiled(xBar, yFirstBar, g);
 			}
 		}
 		g.setPaint(TEXT_COLOR);		

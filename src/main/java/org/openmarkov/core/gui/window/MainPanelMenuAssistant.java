@@ -18,6 +18,7 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
+import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -192,6 +193,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
 		setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
 		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
+		setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, false);
+		setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, false);
+		setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, false);
+		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, false);
+		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
 	}
 
 	/**
@@ -436,8 +442,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.CLIPBOARD_COPY, false);
 			setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
 			setOptionEnabled(ActionCommands.OBJECT_REMOVAL, false);
-			setOptionEnabled(ActionCommands.NODE_PROPERTIES, false);
-			setOptionEnabled(ActionCommands.EDIT_POTENTIAL, false);
 			setOptionEnabled(ActionCommands.LINK_PROPERTIES, false);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
@@ -493,7 +497,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE, false);
 			setOptionEnabled(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE, false);
 			setOptionEnabled(ActionCommands.GO_TO_LAST_EVIDENCE_CASE, false);
-			setOptionEnabled(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, false);
+			setOptionEnabled(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, 
+					networkPanel.areThereFindingsInCase());
 		}
 		updateOptionsFindingsDependent(networkPanel);
 	}
@@ -525,6 +530,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	public void updateOptionsFindingsDependent(NetworkPanel networkPanel) {
 		setOptionEnabled(ActionCommands.NODE_REMOVE_ALL_FINDINGS,
 				networkPanel.areThereFindingsInCase());
+		if (networkPanel.getNumberOfCases() == 1) {
+			setOptionEnabled(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, 
+					networkPanel.areThereFindingsInCase()); 
+		}
+
 	}
 
 	/**
@@ -601,6 +611,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		boolean canAddFinding = false;
 		boolean canRemoveFinding = false;
 		boolean canLog = false;
+		boolean canImposePolicy = false;
+		boolean canEditPolicy = false;
+		boolean canRemovePolicy = false;
+		boolean canShowExpectedUtility = false;
+		boolean canShowOptimalPolicy = false;
 
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
@@ -613,57 +628,82 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				canCut = true;
 			}
 			if (links <= 0) {
-				// if we are in Inference Mode, options about expansion and
-				// contraction can be activated
+				//if we are in Inference Mode, options about expansion and
+				//contraction must be activated
 				if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 					if (arrayOfNodes.size() > 0) {
 						VisualNode visualNode = null;
-						for (int i = 0; i < arrayOfNodes.size(); i++) {
+						for (int i=0; i < arrayOfNodes.size(); i++) {
 							visualNode = arrayOfNodes.get(i);
-							// if at least one node is expanded, 'contract
-							// node(s)' option must be active
+							//if at least one selected node is expanded, 
+							//'contract node(s)' option must be active
 							if (visualNode.isExpanded()) {
 								canContract = true;
 							}
-							// if at least one node is contracted, 'expand
-							// node(s)' option must be active
+							//if at least one selected node is contracted, 
+							//'expand node(s)' option must be active
 							if (!(visualNode.isExpanded())) {
 								canExpand = true;
 							}
-						}
+						}			
 					}
 				}
-				if (nodes == 1) {
-					if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
-						canNodeProperties = true;
-						canNodeTable = true;
-						if (arrayOfNodes.get(0).getProbNode().getVariable()
-								.isTemporal()) {
-							canLog = true;
-						}
-						String label = null;
-						switch (arrayOfNodes.get(0).getProbNode().getNodeType()) {
-						case CHANCE:
-							label = stringResource
-									.getString("Edit.NodePotential.Label");
-							break;
-						case UTILITY:
-							label = stringResource
-									.getString("Edit.Utility.Label");
-							break;
-						case DECISION:
-							label = stringResource
-									.getString("Edit.Policy.Label");
-							break;
-						}
-						setText(ActionCommands.EDIT_POTENTIAL, label);
-					}
-					VisualNode visualNode = arrayOfNodes.get(0);
-					if (visualNode.getFindingInNode()) {
+				//if at least one selected node has a finding, 
+				//'remove finding' option must be active 
+				VisualNode vNode = null;
+				for (int i=0; i < arrayOfNodes.size(); i++) {
+					vNode = arrayOfNodes.get(i);
+					if (vNode.getFindingInNode()) {
 						canRemoveFinding = true;
-					} else {
-						canAddFinding = true;
 					}
+				}
+				if (arrayOfNodes.size() == 1) {
+					 canNodeProperties = true;
+					 VisualNode visualNode = arrayOfNodes.get(0);
+					 if (visualNode.getProbNode().getVariable().isTemporal()){
+						 canLog = true;
+					 }
+					 String label = null;
+					 switch (visualNode.getProbNode().getNodeType()){
+					 case CHANCE:
+						 canNodeTable = true;
+						 if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+							 label = stringResource.getString("Edit.NodePotential.Label");
+						 } else {
+							 label = stringResource.getString("Edit.ViewNodePotential.Label");
+						 }
+						 break;
+					 case UTILITY:
+						 canNodeTable = true;
+						 if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+							 label = stringResource.getString("Edit.Utility.Label");
+						 } else {
+							 label = stringResource.getString("Edit.ViewUtility.Label");
+						 }							 
+						 break;
+					 case DECISION:
+						 if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+							 label = stringResource.getString("Edit.NodePotential.Label");
+							 if (((VisualDecisionNode)visualNode).isHasPolicy()) { 
+								 canEditPolicy = true;
+								 canRemovePolicy = true;					 
+							 } else {
+								 canImposePolicy = true;	
+							 }
+						 } else {
+							 label = stringResource.getString("Edit.ViewNodePotential.Label");
+							 if (true) { //...asaez...if network compiled...currently not needed
+								 		 //...because if not compiled, those options are not shown.
+								 canShowExpectedUtility = true;
+								 canShowOptimalPolicy = true;
+							 }
+						 }						 
+						 break;
+					 }
+					 setText(ActionCommands.EDIT_POTENTIAL, label);
+					 if (!(visualNode.getFindingInNode())) {
+						 canAddFinding = true;
+					 }
 				}
 			}
 		} else {
@@ -689,6 +729,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.NODE_ADD_FINDING, canAddFinding);
 		setOptionEnabled(ActionCommands.NODE_REMOVE_FINDING, canRemoveFinding);
 		setOptionEnabled(ActionCommands.LOG, canLog);
+		setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, canImposePolicy);
+		setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, canEditPolicy);
+		setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
+		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
+		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
 	}
 
 	/**
