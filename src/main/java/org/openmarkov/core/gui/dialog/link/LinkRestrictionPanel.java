@@ -2,40 +2,22 @@ package org.openmarkov.core.gui.dialog.link;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.LinkRestrictionCellRenderer;
 import org.openmarkov.core.gui.component.LinkRestrictionValuesTable;
 import org.openmarkov.core.gui.component.LinkRestrictionValuesTableModel;
-import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
-import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /*****
  * This class implements a TablePotential table for a link restriction. This

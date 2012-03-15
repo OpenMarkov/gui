@@ -88,8 +88,10 @@ public class LinkRestrictionEditDialog extends
 
 	private ProbabilityTablePanel getLinkRestrictionPanel() {
 
-		this.linkRestrictionPanel = new LinkRestrictionPanel(link);
-		return this.linkRestrictionPanel;
+		if (this.linkRestrictionPanel == null) {
+			this.linkRestrictionPanel = new LinkRestrictionPanel(link);
+		} 
+		return linkRestrictionPanel;
 	}
 
 	/**

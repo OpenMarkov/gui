@@ -94,4 +94,28 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		
 	}
 
+	public TablePotential getPotential() {
+		return tablePotential;
+	}
+	/**
+	 * Gets the row position associated to value edited if priorityList no exists
+	 * @param position position of the value in the array of values
+	 * @return the position in the table
+	 */
+	public int getRowPosition() {
+		return  row;
+	}
+	/**
+	 * Gets the column where the value is edited
+	 * @return the column edited
+	 */
+	public int getColumnPosition() {
+		return col;
+	}
+
+	public Integer getNewValue() {
+		return newValue;
+	}
+
+
 }

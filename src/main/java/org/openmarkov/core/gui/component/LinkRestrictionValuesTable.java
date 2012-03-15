@@ -2,6 +2,9 @@ package org.openmarkov.core.gui.component;
 
 import java.util.ArrayList;
 
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.undo.UndoableEdit;
+
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -66,6 +69,7 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 		node2 = (ProbNode) link.getNode2().getObject();
 		net = node1.getProbNet();
 		net.getPNESupport().addUndoableEditListener(this);
+
 	}
 
 	/**
@@ -129,4 +133,31 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 
 		}
 	}
+
+	public void undoableEditHappened(UndoableEditEvent event) {
+		UndoableEdit unEdit = event.getEdit();
+		if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
+			if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
+
+				LinkRestrictionPotentialValueEdit edit = (LinkRestrictionPotentialValueEdit) event
+						.getEdit();
+
+				super.getModel().setValueAt(edit.getNewValue(),
+						edit.getRowPosition(), edit.getColumnPosition());
+			}
+		}
+	}
+
+	public void undoEditHappened(UndoableEditEvent event) {
+		if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
+
+			LinkRestrictionPotentialValueEdit edit = (LinkRestrictionPotentialValueEdit) event
+					.getEdit();
+
+			super.getModel().setValueAt(edit.getNewValue(),
+					edit.getRowPosition(), edit.getColumnPosition());
+		}
+
+	}
+
 }
