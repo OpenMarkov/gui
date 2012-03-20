@@ -50,7 +50,7 @@ public class FSVariableBox extends InnerBox {
 	 * This method creates a visual state for each state of the variable.
 	 * Each visual state will have only a value
 	 */
-	private void createVisualStates() {
+	protected void createVisualStates() {
 		ProbNode probNode = visualNode.getProbNode();
 		Variable variable = probNode.getVariable();
 		State[] states = variable.getStates();
