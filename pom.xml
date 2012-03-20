@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Graphical User Interface core</name>
 	<url>http://openmarkov.org/core/gui</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -25,8 +25,6 @@
 			<version>1.2.16</version>
 		</dependency>
 
-		
-
 		<dependency>
 			<groupId>com.sun.woodstock.dependlibs</groupId>
 			<artifactId>jh</artifactId>
@@ -38,30 +36,18 @@
 			<artifactId>poi</artifactId>
 			<version>3.0-FINAL</version>
 		</dependency>
-	
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>full</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>jdom</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-			
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.elvira</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		 <dependency>
+		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.probmodel</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.core.gui.helpen</artifactId>
@@ -72,34 +58,34 @@
 			<artifactId>org.openmarkov.core.gui.helpes</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-	
+
 	</dependencies>
 	<repositories>
-        <repository>
-            <id>release</id>
-            <name>OpenMarkov</name>
-            <url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <name>OpenMarkov Snapshots</name>
-            <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories> 
-    <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>true</uniqueVersion>
-            <id>snapshots</id>
-            <name>Snapshots</name>
-            <url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>  
+		<repository>
+			<id>release</id>
+			<name>OpenMarkov</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<name>OpenMarkov Snapshots</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>releases</id>
+			<name>Releases</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>snapshots</id>
+			<name>Snapshots</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 
 </project>
