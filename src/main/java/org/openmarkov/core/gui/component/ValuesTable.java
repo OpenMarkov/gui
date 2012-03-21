@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -30,6 +31,8 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.undo.UndoableEdit;
 
+import org.openmarkov.core.action.PNUndoableEditListener;
+import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DeterministicValueNotAllowedException;
@@ -42,11 +45,7 @@ import org.openmarkov.core.gui.action.TablePotentialValueEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-
 import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.action.PNUndoableEditEvent;
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -1006,9 +1005,12 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				if (getVariable().getTimeSlice() != Integer.MIN_VALUE){
 					name = getRegExp(name);
 				}
+				if (name.contains("(") ||  name.contains(")")) {
+					name = getRegExpParenthesis(name);
+				}
 				tableRowSorter.setRowFilter(
 				RowFilter.notFilter( 
-					RowFilter.regexFilter( name, 0 ) ));
+					RowFilter.regexFilter( ".*" +name + ".*", 0 ) ));
 			this.setRowSorter( tableRowSorter); 
 			} else {
 				this.setRowSorter( null );
@@ -1043,7 +1045,21 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		return  s1+"\\"+s2+"\\"+s3;
 					
 	}
-
+	/**
+	 * Gets the regular expression for node names with parenthesis
+	 * @param name the name of the node
+	 * @return the regular expression of the name of node
+	 */
+		private String getRegExpParenthesis(String name) {
+			if (name.contains("(")) {
+			name = name.replace("(", "\\(");
+			}
+			if (name.contains(")")) {
+			name = name.replace(")", "\\)");
+			}
+			return name;
+			
+		}
 	/**
 	 * @return the showingProbabilitiesValues
 	 */
@@ -1074,8 +1090,9 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				((ValuesTableModel) getModel()) );
 		if (isShowingProbabilitiesValues()) {
 			if ((getVariable() != null) && (getVariable().getName() != null)) {
+				String name = getVariable().getName();
 				tableRowSorter.setRowFilter( RowFilter.notFilter( RowFilter
-					.regexFilter( getVariable().getName(), 0 ) ) );
+					.regexFilter( name, 0 ) ) );
 				this.setRowSorter( tableRowSorter );
 			} else {
 				this.setRowSorter( null );
