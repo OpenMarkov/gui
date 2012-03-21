@@ -76,6 +76,7 @@ import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -160,6 +161,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	private int currentCase;
 
+    /**
+     * Inference manager
+     */
+    private InferenceManager inferenceManager = null;
+	
 	/**
 	 * Inference algorithm used to evaluate this network
 	 */
@@ -290,7 +296,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		this.probNet.getPNESupport().addUndoableEditListener(visualNetwork);
 		initialize();
-
+		
+        inferenceManager = new InferenceManager ();
+        // This will return null for InfluenceDiagrams until a suitable
+        // inference algorithm is implemented for them
+        inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
 	}
 
 	/**
@@ -2199,7 +2209,20 @@ public class EditorPanel extends JPanel implements MouseListener,
 			try {
 				inferenceAlgorithm.setEvidence(evidenceCase);
 				long start = System.currentTimeMillis();
-				individualProbabilities = inferenceAlgorithm.getIndividualProbabilities();
+				try
+				{
+				    individualProbabilities = inferenceAlgorithm.getIndividualProbabilities();
+				}catch(NotEnoughMemoryException e)
+				{
+                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                                   stringResource.getString("NotEnoughMemoryForExactInference.Text"),
+                                                   stringResource.getString("NotEnoughMemoryForExactInference.Title"),
+                                                   JOptionPane.WARNING_MESSAGE);
+				    
+				    inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm(probNet);
+				    inferenceAlgorithm.setEvidence(evidenceCase);
+				    individualProbabilities = inferenceAlgorithm.getIndividualProbabilities();
+				}
 				long elapsedTimeMillis = System.currentTimeMillis() - start;
 				System.out.println("Inference took " + elapsedTimeMillis
 						+ " milliseconds.");
@@ -2284,7 +2307,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					propagationSucceded = true;
 				}
 				repaint();
-			} catch (Exception e) {
+            } catch (Exception e) {
 				e.printStackTrace();
 			}
 

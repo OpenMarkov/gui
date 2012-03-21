@@ -1010,26 +1010,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(
 				newWorkingMode, getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-			// ...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
-			// ...INFLUENCE DIAGRAMS IS COMPLETE
-			// ...We obtain the type of the network. If it is a Bayesian
-			// ...Network, we get the default inference algorithm; 
-			// ...otherwise no algorithm is selected
-			// ...(in EditorPanel we treat those cases)
-			NetworkType networkType = getCurrentNetworkPanel().getProbNet()
-					.getNetworkType();
-            if (networkType instanceof BayesianNetworkType)
-            {
-                if (getCurrentNetworkPanel ().getInferenceAlgorithm () == null)
-                {
-                    InferenceManager inferenceManager = new InferenceManager ();
-                    InferenceAlgorithm inferenceAlgorithm;
-                    inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (getCurrentNetworkPanel ().getProbNet ());
-                    getCurrentNetworkPanel ().setInferenceAlgorithm (inferenceAlgorithm);
-                }
-            }
-			// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
-			// ...INFLUENCE DIAGRAMS IS COMPLETE
 			getCurrentNetworkPanel().updateIndividualProbabilities();
 			mainPanel.getExistingInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
