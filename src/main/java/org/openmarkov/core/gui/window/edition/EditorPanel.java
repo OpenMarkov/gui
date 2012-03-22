@@ -298,9 +298,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		initialize();
 		
         inferenceManager = new InferenceManager ();
-        // This will return null for InfluenceDiagrams until a suitable
-        // inference algorithm is implemented for them
-        inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
 	}
 
 	/**
@@ -2207,6 +2204,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 		boolean propagationSucceded = false;
 		if (networkType instanceof BayesianNetworkType) {
 			try {
+		        // This will return null for InfluenceDiagrams until a suitable
+		        // inference algorithm is implemented for them
+		        inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
+			    
 				inferenceAlgorithm.setEvidence(evidenceCase);
 				long start = System.currentTimeMillis();
 				try
@@ -2386,6 +2387,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 			repaint();
 		} else {
 			try {
+		        // This will return null for InfluenceDiagrams until a suitable
+		        // inference algorithm is implemented for them
+		        inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
 				inferenceAlgorithm.setEvidence(evidenceCase);
 				individualProbabilities = inferenceAlgorithm.getIndividualProbabilities();
 			} catch (Exception e) {
