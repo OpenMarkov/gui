@@ -76,7 +76,7 @@ public class FileFilterXLS extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("OpenMarkovFileExtension.Description")
+		return stringResource.getString("FileExtension.Excel.Description")
 			+ " (*." + xlsExtension + ")";
 
 	}

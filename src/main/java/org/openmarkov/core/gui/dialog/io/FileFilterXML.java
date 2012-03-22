@@ -77,7 +77,7 @@ public class FileFilterXML extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("OpenMarkovFileExtension.Description")
+		return stringResource.getString("FileExtension.OpenMarkov.Description")
 			+ " (*." + xmlExtension + ")";
 
 	}
