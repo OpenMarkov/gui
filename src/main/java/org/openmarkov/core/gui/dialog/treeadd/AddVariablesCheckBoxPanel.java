@@ -1,0 +1,66 @@
+package org.openmarkov.core.gui.dialog.treeadd;
+
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+/**
+ * 
+ * @author myebra
+ *
+ */
+@SuppressWarnings("serial")
+public class AddVariablesCheckBoxPanel extends JPanel{
+	
+	private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private TreeADDBranch branch;
+	private TreeADDPotential treeADD;
+		
+	public AddVariablesCheckBoxPanel (TreeADDBranch branch, TreeADDPotential treeADD) {
+		//super();
+		this.branch = branch;
+		this.treeADD = treeADD;
+		initialize();
+		repaint();
+	
+	}
+	 public void initialize() {
+		//setLayout(new BorderLayout());
+		setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		ArrayList<Variable> variables = branch.getParentVariables();
+		ArrayList<Variable> potentialVariables = branch.getPotential().getVariables();
+		Variable topVariable =  branch.getTopVariable();
+		ArrayList<Variable> posibleVariables = new ArrayList<Variable>();
+		for (Variable variable : variables) {
+			
+			if (variable != topVariable && variable!= variables.get(0) && !potentialVariables.contains(variable) ) {
+				posibleVariables.add(variable);
+				}
+		}
+		
+		for (Variable variable : posibleVariables) {
+			JCheckBox checkBox = new JCheckBox (variable.getName());
+			checkBoxes.add(checkBox);
+			add(checkBox, CENTER_ALIGNMENT);
+		}
+	 }
+	 
+	
+	 
+	public TreeADDBranch getBranch() {
+		 return this.branch;
+	}
+	public TreeADDPotential getTreeADDPotential() {
+		 return this.treeADD;
+	}
+	public ArrayList<JCheckBox> getCheckBoxes () {
+		return this.checkBoxes;
+	}
+}

@@ -61,7 +61,6 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). 
@@ -153,7 +152,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	/**
 	 * The builder object of Tree - ADDs
 	 */
-	private TreeADDController treeADDBuilder;
+	private TreeADDController treeADDController;
 	/**
 	 * Option deselected in the jComboboxRelationType
 	 */
@@ -277,14 +276,14 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		if (nodeADDPotentialPanel == null) {
 			nodeADDPotentialPanel = new JPanel ();
 			nodeADDPotentialPanel.setLayout(new BorderLayout());
-			try{
-			treeADDBuilder = new TreeADDController ( 
-					(TreeADDPotential2)probNode.getPotentials().get( 0 ));
-			}catch (Exception CloneNotSupportedException){
+			/*try{*/
+			treeADDController = new TreeADDController ( 
+					(TreeADDPotential)probNode.getPotentials().get( 0 ));
+			/*}catch (Exception CloneNotSupportedException){
 				//new mesage();
 				//TODO handle with a mesage
-			}
-			nodeADDPotentialPanel.add( treeADDBuilder, BorderLayout.CENTER );
+			}*/
+			nodeADDPotentialPanel.add( treeADDController, BorderLayout.CENTER );
 			nodeADDPotentialPanel.setName("nodeTreeADDPotentialPanel");
 			nodeADDPotentialPanel.setBackground(Color.blue);
 			//nodeADDPotentialPanel.setNewNode(newNode);
@@ -776,7 +775,7 @@ public class PotentialsDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
 		if (! ( getPotentialPanel() instanceof TablePotentialPanel ) ){
 			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(probNode, 
-					treeADDBuilder.getTreePotential() );
+					treeADDController.getTreePotential() );
 			try {
 				probNode.getProbNet().getPNESupport().announceEdit( 
 						setPotentialEdit );

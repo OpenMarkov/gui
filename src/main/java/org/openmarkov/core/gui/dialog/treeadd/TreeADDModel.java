@@ -23,7 +23,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /**
  * Model of a <code>TreeADDPotential</code>. It is used by a <code>JTree</code> and by <code>TreeADDController</code>.
@@ -37,7 +37,7 @@ public class TreeADDModel implements TreeModel {
 	/**
 	 * This is the root of the tree, within it could exists another subtrees or other type of potentials
 	 */
-	protected TreeADDPotential2 treeADDPotentialRoot;
+	protected TreeADDPotential treeADDPotentialRoot;
 	
 	/**
 	 * 
@@ -47,7 +47,7 @@ public class TreeADDModel implements TreeModel {
 	/**
 	 * @param treeADDPotential  The treeADDPotential represented by this model
 	 */
-	public TreeADDModel(TreeADDPotential2 treeADDPotential) {
+	public TreeADDModel(TreeADDPotential treeADDPotential) {
 		this.treeADDPotentialRoot = treeADDPotential;
 	}
 
@@ -98,9 +98,13 @@ public class TreeADDModel implements TreeModel {
 	public int getChildCount(Object node) {
 		if ( isLeaf(node) ) {
 			return 0;
-		} else {
-			return ((TreeADDPotential2)node).getBranches().size();
+		} else if (node instanceof TreeADDPotential) {
+			return ((TreeADDPotential)node).getBranches().size();
+		} else if (node instanceof TreeADDBranch) {
+			return 1;
+			
 		}
+		return 0;
 	}
 
 	
@@ -108,7 +112,7 @@ public class TreeADDModel implements TreeModel {
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object node) {
-		return !(node instanceof TreeADDPotential2);
+		return !(node instanceof TreeADDPotential) && !(node instanceof TreeADDBranch);
 	}
 
 	/* (non-Javadoc)
@@ -167,10 +171,21 @@ public class TreeADDModel implements TreeModel {
 	 */
 	
 	
-	//The child must be a potential a tablePotential or a treeADDPotential (subtree)	
+	//if parent is a TreeADD the child must be a potential a tablePotential or a treeADDPotential (subtree)	
+	//if parent is branch it returns a potential that could be a treeADDPotential or a TablePotential
 	public Object getChild(Object parent, int index) {
-		TreeADDBranch branch = ((TreeADDPotential2)parent).getBranches().get(index);
-		return ((TreeADDPotential2)parent).getAssignedPotential(branch);
+		if (isLeaf(parent)){
+			return null;
+		} 
+		if (parent instanceof TreeADDBranch) {
+			return ((TreeADDBranch)parent).getPotential();
+		} 
+		if (parent instanceof TreeADDPotential) {
+			TreeADDBranch branch = ((TreeADDPotential)parent).getBranches().get(index);
+			//return ((TreeADDPotential2)parent).getAssignedPotential(branch);
+			return branch;
+		}
+		return null;
 	}
 	
 	/* (non-Javadoc)

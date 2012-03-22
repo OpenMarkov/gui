@@ -14,9 +14,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -31,18 +31,11 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialsDialog;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.LabelledLink;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -51,13 +44,10 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.treeadd.BranchData;
-import org.openmarkov.core.model.network.potential.treeadd.BranchInterval;
-import org.openmarkov.core.model.network.potential.treeadd.BranchIntervalComparator;
-import org.openmarkov.core.model.network.potential.treeadd.EpsilonValueAproximation;
+import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
 
 /**
  * <code>JScrollPane<code> for creating and modifying <code>TreeADDModel<code>s
@@ -68,31 +58,32 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential2;
  */
 public class TreeADDController extends JScrollPane implements ActionListener {
 
-	protected TreeADDPotential2 treeADDPotentialRoot;	
+	protected TreeADDPotential treeADDPotentialRoot;	
 	protected JTree jTree;
 	protected TreeADDCellRenderer cellRenderer;
 	
 	protected boolean readOnlyMode;
 	// Variables of the treeADDPotential root of the tree
 	protected ArrayList<Variable> treeVariables;
-
-	private int referenceCount= 0;
 	
 	/** Shows the tree in read only mode
 	 * @param treeADDPotential
 	 * @throws CloneNotSupportedException 
 	 */
-	public TreeADDController (TreeADDPotential2 treeADDPotential) throws CloneNotSupportedException {
-		this.treeADDPotentialRoot = (TreeADDPotential2) treeADDPotential.clone();
+	public TreeADDController (TreeADDPotential treeADDPotential){
+		
+		this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential); //a copy of the treeADDPotential
 		readOnlyMode = false;
 		treeVariables = treeADDPotential.getVariables();
 		setupUserInterface();
 	}
 	
 	void setupUserInterface() {
+		
+		
 		TreeADDModel model= new TreeADDModel (treeADDPotentialRoot);
 		
-		jTree= new JTree (model);//model can be null if we are in a node that don´t have any treeAdd assigned
+		jTree= new JTree (model);
 		
 		jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		
@@ -107,10 +98,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		jTree.setCellRenderer(cellRenderer);
 		jTree.setUI(new TreeADDUserInterface());	    
 		
-		//In case we are opening an existing tree
-		for (int i=0; i<jTree.getRowCount(); i++) {
-		     jTree.expandRow (i);
-		} 
+		
+			for (int i=0; i<jTree.getRowCount(); i++) {
+			     jTree.expandRow (i);
+			} 
+		
 
 		setViewportView(jTree);
 		
@@ -124,17 +116,22 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			
 			//menu to add a subtree to a branch
 			submenuAddSubtreeADD.setText("Add subtree");
-			submenuSetTopVariable.setText("Set Top Variable");
+			submenuChangeTopVariable.setText("Change Variable");
+			addVariables2Potential.setText("Add Variables to Potential");
+			addVariables2Potential.addActionListener(this);	
 			
-			//menuItem to set a potential to a given branch
-			menuItemAddPotential.setText("Add Potential");
-			menuItemAddPotential.setActionCommand("AddNewPotential");
-			menuItemAddPotential.addActionListener(this);	
+			editPotential.addActionListener (this);
+			joinBranches.addActionListener (this);
+			dissociateStates.addActionListener (this);
+			removeVariables.addActionListener (this);
+			removeTreeADD.addActionListener (this);
+			splitInterval.addActionListener(this);
+			changeInterval.addActionListener(this);
 			
 		}
 	}
 	
-	public TreeADDPotential2 getTreePotential() {
+	public TreeADDPotential getTreePotential() {
 		return treeADDPotentialRoot;
 	}
 	
@@ -144,36 +141,14 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		TreeADDModel model= (TreeADDModel) jTree.getModel();
 	
-		if(!model.isLeaf(tn1)) {//the object is a treeADDPotential
+		if(!model.isLeaf(tn1)) {//the object is a treeADDPotential 
 			for (int i = 0; i < model.getChildCount(tn1); i++ ) {//Expand path adding branches to the treeADD path
 				Object hijo = model.getChild(tn1,i);//this must be a branch
 				TreePath tp2= treepath.pathByAddingChild(hijo);
 				jTree.expandPath(tp2);
 			}
 		} 
-		/*
-		 * TreePath treepath= event.getPath();
-		Object tn1= treepath.getLastPathComponent();
-		 * if( tn1 instanceof SummaryBox ) {
-			Node n= ((SummaryBox) tn1).getSource();
-			
-			if( !(n.getObject() instanceof Potential) ) {
-				TreeADDModel model= (TreeADDModel) jTree.getModel();
-			
-				for (int i = 0; i < model.getChildCount(tn1); i++ ) {
-					Object hijo = model.getChild(tn1,i);
-					TreePath tp2= treepath.pathByAddingChild(hijo);
-					jTree.expandPath(tp2);
-				}
-			}
-			else {
-				TreeADDModel model= (TreeADDModel) jTree.getModel();
-				
-				Object hijo = model.getChild(tn1,0);
-				TreePath tp2= treepath.pathByAddingChild(hijo);				
-				model.fireNodesChanged (tp2);					
-			}
-		}*/
+		
 	}
 	
 	/**
@@ -183,23 +158,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	public void tree_treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
 		Object triedToExpand= event.getPath().getLastPathComponent();
 		
-		if (!(triedToExpand instanceof TreeADDPotential2)) {
+		if (!(triedToExpand instanceof TreeADDPotential) && ! (triedToExpand instanceof TreeADDBranch)) {
 			throw new ExpandVetoException(event);//Exception used to stop and expand/collapse from happening.
 		}
 		
-		/*Object o= event.getPath().getLastPathComponent();
-		
-		if (!(o instanceof SummaryBox)) {
-			if (!(o instanceof Node)) {
-				throw new RuntimeException("Class Node expected: found " + o.getClass().getName());				
-			}
-			
-			Node n= (Node) o;
-			
-			if (!(n.getObject() instanceof Potential)) {
-				throw new ExpandVetoException(event);//Exception used to stop and expand/collapse from happening.
-			}
-		}*/
 	}
 
 	/**
@@ -213,82 +175,196 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	protected JMenu submenuAddStartTree= new JMenu();
 	//when clicking a branch you can set a potential or add a subtree to that branch
 	protected JMenu submenuAddSubtreeADD= new JMenu();
-	protected JMenuItem menuItemAddPotential= new JMenuItem();
-	//when adding a subtree
-	protected JMenu submenuSetTopVariable= new JMenu();
-	
-	//submenuAddSubtreeADD.add(submenuSetTopVariable);
-	
-	
+	protected JMenu submenuChangeTopVariable= new JMenu();
+	protected JMenuItem editPotential = new JMenuItem("Edit Potential");
+	protected JMenuItem joinBranches = new JMenuItem("Add States to Branch");
+	protected JMenuItem dissociateStates = new JMenuItem("Remove States");
+	protected JMenuItem removeVariables = new JMenuItem("Remove Variables");
+	protected JMenuItem removeTreeADD = new JMenuItem("Remove Subtree");
+	protected JMenuItem addVariables2Potential= new JMenuItem();
+	protected JMenuItem splitInterval= new JMenuItem("Split Interval");
+	protected JMenuItem changeInterval= new JMenuItem("Change Interval");
 		
-	protected void setPopupItemsBranches (MouseEvent e, TreeADDBranch branch) {
+	// when clicking on a tree only can change top variable if the tree does not have subtrees
+	//trees are only permitted to change buttom up order
+	protected void setPopupItemsTreeADD(MouseEvent e, TreeADDPotential treeADD) {
 		popupMenu.removeAll();
-		submenuSetTopVariable.removeAll();
-		
-		TreeADDPotential2 branchTreeParent = branch.getTreeADDParent();
-		ArrayList<Variable> variables = branchTreeParent.getVariables();
-		Variable topVariable =  branchTreeParent.getTopVariable();
-		
-		int count = 0;
-		
-		for (Variable var : variables) {
-			
-			if (var != topVariable) {
-				count ++;
-				}
+		submenuChangeTopVariable.removeAll();
+		//change topVariable
+		ArrayList<TreeADDBranch> branches = treeADD.getBranches();
+		boolean hasSubTrees = false ;
+		for (TreeADDBranch branch: branches){
+			if (branch.getPotential() instanceof TreeADDPotential) {
+				hasSubTrees = true;
+			}
+		}
+		Variable currentTopVariable = treeADD.getTopVariable();
+		Variable conditionedVariable = treeADD.getConditionedVariable();
+		ArrayList<Variable> newPosibleTopVariables = new ArrayList<Variable>();
+		for (Variable variable : treeADD.getVariables()) {
+			if (variable != currentTopVariable && variable !=  conditionedVariable) {
+				newPosibleTopVariables.add(variable);
+			}
 		}
 		
-		if (count == 0) {//It means that {variables}-{topVariable} is empty so you can only add to that branch a potential
-			popupMenu.add(menuItemAddPotential);
-			menuItemAddPotential.addActionListener (this);
-			menuItemAddPotential.setActionCommand ("AddPotential");
+		if (!hasSubTrees && newPosibleTopVariables.size() != 0){
 			
-		}else if (count != 0) {//It means that {variables}-{topVariable} is not empty so you can add also a subtree to the branch
 			
-			for (Variable var : variables) {
-				
-				if (var != topVariable) {
-					JMenuItem posibleTopVariable = new JMenuItem(var.getName());
+			for (Variable variable : treeADD.getVariables()) {
+				if (variable != currentTopVariable && variable !=  conditionedVariable) {
+					JMenuItem posibleTopVariable = new JMenuItem(variable.getName());
 					posibleTopVariable.addActionListener (this);
 					
-					posibleTopVariable.setActionCommand ("AddTopVariable");
-					submenuSetTopVariable.add (posibleTopVariable);
+					posibleTopVariable.setActionCommand ("ChangeTopVariable");
+					submenuChangeTopVariable.add (posibleTopVariable);
 				}
+			}
+			popupMenu.add(submenuChangeTopVariable);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param e
+	 * @param branch
+	 */
+	protected void setPopupItemBranch(MouseEvent e, TreeADDBranch branch, TreePath branchPath) {
+		popupMenu.removeAll();
+		submenuAddSubtreeADD.removeAll();
+		addVariables2Potential.removeAll();
+		editPotential.removeAll();
+		joinBranches.removeAll();
+		dissociateStates.removeAll();
+		removeVariables.removeAll();
+		removeTreeADD.removeAll();
+		splitInterval.removeAll();
+		changeInterval.removeAll();
+		
+		
+		//Adding treeADD
+		ArrayList<Variable> variables = branch.getParentVariables();
+		Variable topVariable =  branch.getTopVariable();
+		
+		ArrayList<Variable> possibleVariables = new ArrayList<Variable>();
+		for (Variable variable : variables) {
+			
+			if (variable != topVariable && variable!= variables.get(0)) {
+				possibleVariables.add(variable);
+				}
+		}
+		//Also it could be selected a top variable that has been appeared previously in the tree but only if
+		//in current path that variable groups different states
+		
+		TreePath parentPath = branchPath.getParentPath() ; //treeADD
+		 while (parentPath.getLastPathComponent() != treeADDPotentialRoot ) {
+			 TreePath grandParentPath = parentPath.getParentPath();//branch
+			 if (grandParentPath.getLastPathComponent() instanceof TreeADDBranch) {
+				 //if a branch has more then one state is possible to offer, as top variable, the top variable of this branch
+				 TreeADDBranch treeBranch = (TreeADDBranch) grandParentPath.getLastPathComponent();
+				 if (treeBranch.getTopVariable().getVariableType() == VariableType.FINITE_STATES) {
+					 if (treeBranch.getBranchStates().size() > 1) {
+						 possibleVariables.add(treeBranch.getTopVariable());
+					 }
+				 }
+			 }
+			 parentPath = grandParentPath;
+		 }
+		 
+		 //Also it could be selected as a top variable a numeric variable that has already appeared in the tree 
+		TreePath path = branchPath;
+		 while (path.getLastPathComponent() != treeADDPotentialRoot ) {
+			 if (path.getLastPathComponent() instanceof TreeADDBranch) {
+				 TreeADDBranch treeBranch = (TreeADDBranch) path.getLastPathComponent(); 
+				 if (treeBranch.getTopVariable().getVariableType() == VariableType.NUMERIC) {
+					 if (treeBranch.getMinThreshold().getLimit() != treeBranch.getMaxThreshold().getLimit()) {
+						 possibleVariables.add(treeBranch.getTopVariable());
+					 }
+				 }
+				 
+			 }
+			path = path.getParentPath();
+					 
+		 }
+		
+		//Potential Edition, any case it is possible to edit branch´s potential
+		JSeparator separator = new JSeparator();
+		
+		editPotential.setActionCommand ("EditPotential");
+		popupMenu.add(editPotential);
+		popupMenu.add(separator);
+		
+		if (possibleVariables.size()!=0 && !(branch.getPotential() instanceof TreeADDPotential)) { //if {variables}-{topVariable}-{conditionedVariable}  
+			//is not empty so you can add also a subtree to the branch
+			for (Variable variable : possibleVariables) {
+				//To add possible topVariables popups
+				JMenuItem posibleTopVariable = new JMenuItem(variable.getName());
+				posibleTopVariable.addActionListener (this);
 				
+				posibleTopVariable.setActionCommand ("AddTreeADD");
+				submenuAddSubtreeADD.add (posibleTopVariable);
 			}
 			popupMenu.add(submenuAddSubtreeADD);
-			submenuAddSubtreeADD.add(submenuSetTopVariable);
-			popupMenu.add(menuItemAddPotential);
-			menuItemAddPotential.addActionListener (this);
-			menuItemAddPotential.setActionCommand ("AddPotential");
 		}
 		
-			
+		//remove subtree
+		JSeparator addRemoveTree = new JSeparator();
+		if (branch.getPotential() instanceof TreeADDPotential) {
+			removeTreeADD.setActionCommand ("RemoveTreeADD");
+			popupMenu.add(removeTreeADD);
+			popupMenu.add(addRemoveTree);
+		} else {
+			popupMenu.add(addRemoveTree);
+		}
 		
-	}
-	
-	protected void setPopupItemsBlankTree() {
-		popupMenu.removeAll();
-
-		submenuAddStartTree.removeAll();
-		
-		for (Variable v : treeVariables) {
-			if (treeADDPotentialRoot.getConditionedVariable()==v) {
-				continue;
+		//Adding Variables to potential
+		JSeparator addRemoveVariables = new JSeparator();
+		addVariables2Potential.setActionCommand ("AddVariables2Potential");
+		popupMenu.add(addVariables2Potential);
+		//remove potential variables
+				if (branch.getPotential().getVariables().size() > 1) {
+					removeVariables.setActionCommand ("RemoveVariables");
+					popupMenu.add(removeVariables);
+					popupMenu.add(addRemoveVariables);
+				} else {
+					popupMenu.add(addRemoveVariables);
+				}
+				
+		//dissociate branches
+		if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES){
+			//joining branches
+			joinBranches.setActionCommand ("JoinBranches");
+			popupMenu.add(joinBranches);
+			if (branch.getBranchStates().size() > 1) {
+				dissociateStates.setActionCommand ("DissociateStates");
+				popupMenu.add(dissociateStates);
 			}
 			
-			JMenuItem menu= new JMenuItem(v.getName());
-			menu.setActionCommand("SetStartNode");
-			menu.addActionListener(this);
+		} else if (branch.getTopVariable().getVariableType() == VariableType.NUMERIC) {
+			//Split intervals
+			splitInterval.setActionCommand ("SplitInterval");
+			popupMenu.add(splitInterval);
 			
-			submenuAddStartTree.add (menu);
+			//Change interval
+			Float minDomainLimit = (float) branch.getTopVariable().getPartitionedInterval().getMin();
+			Float maxDomainLimit = (float) branch.getTopVariable().getPartitionedInterval().getMax();
+			
+			Float min = branch.getMinThreshold().getLimit();
+			Float max = branch.getMaxThreshold().getLimit();
+			if (minDomainLimit.equals(min) && maxDomainLimit.equals(max)) {
+				//do not offer the possibility to change domain
+			} else {
+				changeInterval.setActionCommand("ChangeInterval");
+				popupMenu.add(changeInterval);
+			}
 		}
 		
-		popupMenu.add (submenuAddStartTree);			
+		
+		
 	}
 
+		
 	
-
+	
 
 	// Mouse event detection
 	int xx, yy;
@@ -297,102 +373,806 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	 * 
 	 */
 	public void actionPerformed(ActionEvent ae) {
-		// TODO Auto-generated method stub
-		
 		String actionComand= ae.getActionCommand();		
-		if (actionComand.equals ("SetStartNode")) {
-			JMenuItem menu= (JMenuItem) ae.getSource();
-
-			for (Variable v : treeVariables) {
-				if (v.getName().equals (menu.getText())) {
-					
-					//TreeADDPotential2 treeADD = new TreeADDPotential2();
-					//En esta acción conservas el treeADD con el que creas el controller
-					
-					TreeADDModel model= new TreeADDModel (treeADDPotentialRoot);
-					jTree.setModel (model); 
-
-					treeADDPotentialRoot.setTopVariable(v);
-					return;
-				}
-			}
-			
-			throw new RuntimeException("variable not found: " + menu.getText());							
-		}
-		
-		//we can just click on a branch
 		
 		TreePath path = jTree.getPathForLocation(xx,yy); 
-		Object branch= path.getLastPathComponent();
-		
-		if (actionComand.equals("Addpotential")) {
-			actionAddNewPotentialToBranch (ae, branch, path);	
-		}else if (actionComand.equals ("AddTopVariable")) {
-			actionAddNewTreeTopVariable (ae, branch, path);			
+		Object node= path.getLastPathComponent();
+				
+		if (actionComand.equals ("AddTreeADD")) {
+			actionAddTreeADD (ae, node, path);			
+		} else if (actionComand.equals ("EditPotential")) {
+			try {
+				actionEditPotential (ae, node, path);
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		} else if (actionComand.equals ("ChangeTopVariable")){
+			actionChangeTopVariable(ae, node, path);
+		} else if (actionComand.equals ("JoinBranches")) {
+			actionJoinBranches(ae, node, path);
+		} else if (actionComand.equals ("RemoveTreeADD")) {
+			actionRemoveSubTree(ae, node, path);
+		} else if (actionComand.equals ("AddVariables2Potential")) {
+			actionAddVariables2Potential(ae, node, path);
+		} else if (actionComand.equals ("DissociateStates")) {
+			actionDissociateStates(ae, node, path);
+		} else if (actionComand.equals ("RemoveVariables")) {
+			actionRemoveVariables(ae, node, path);
+		} else if (actionComand.equals ("SplitInterval")) {
+			actionSplitInterval(ae, node, path);
+		} else if (actionComand.equals ("ChangeInterval")) {
+			actionChangeInterval(ae, node, path);
 		}
 		
 		else {
 			throw new RuntimeException("Unexpected menu action found: " + actionComand);			
 		}
 	}
-	
-	void actionAddNewPotentialToBranch (ActionEvent ae, Object branch, TreePath path) {
-		if (!(branch instanceof TreeADDBranch)) {
-			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().getName());											
+	void actionChangeInterval(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
 		}
-		TablePotential newPotential= null;
-		try {
+		TreePath parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		ChangeIntervalDialog dialog = new ChangeIntervalDialog(Utilities.getOwner(this), treeADDBranch);
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		boolean minBelongsToLeft = false;
+		boolean maxBelongsToLeft = false;
+		
+		Float minDomainLimit = (float) parentTreeADD.getTopVariable().getPartitionedInterval().getMin();
+		Float maxDomainLimit = (float) parentTreeADD.getTopVariable().getPartitionedInterval().getMax();
+		boolean isLeftClosed = treeADDBranch.getTopVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
+		boolean isRightClosed = treeADDBranch.getTopVariable().getPartitionedInterval().isRightClosed();
+		boolean minBelongsToLeftDomain = !isLeftClosed;
+		boolean maxBelongsToLeftDomain = isRightClosed;
+		
+		if (dialog.requestValues()==ChangeIntervalDialog.OK_BUTTON) {
+			ChangeIntervalPanel panel = (ChangeIntervalPanel)dialog.getChangeIntervalPanel();
+			Float minText = Float.parseFloat(panel.getMin().getText());
+			Float maxText = Float.parseFloat(panel.getMax().getText());	
 			
-			TreeADDPotential2 parentTree = ((TreeADDBranch)branch).getTreeADDParent();
-			ArrayList<Variable> parentVariables = parentTree.getVariables();
-			Variable parentTopVariable = parentTree.getTopVariable();
-			PotentialRole role= parentTree.getPotentialRole();
-			
-			if (parentTree.isUtility()) {
-				if (role!=PotentialRole.UTILITY) {
-					throw new RuntimeException("Expected UTILITY PotentialRole, found: " + role);					
-				}
-				
-				newPotential= new TablePotential (null, role);
-				newPotential.setUtilityVariable(parentTree.getUtilityVariable());
+			JComboBox minLimit = panel.minBelongsToLeft();// ( or [
+			if (minLimit.getSelectedItem() == "(") {
+				minBelongsToLeft = true;
+			} else if (minLimit.getSelectedItem() == "[") {
+				minBelongsToLeft = false;
 			}
-			else if (role==PotentialRole.CONDITIONAL_PROBABILITY) {
-				//ArrayList<Variable> varList= new ArrayList<Variable>();
-				ArrayList<Variable> variables = new ArrayList<Variable>();
-				for (Variable var : parentVariables ) {
-					if (var == parentTopVariable) {
-						continue;
-					}else {
-						variables.add(var);
+			
+			JComboBox maxLimit = panel.maxBelongsToLeft();// ) or ]
+			if (maxLimit.getSelectedItem() == ")") {
+				maxBelongsToLeft = false;
+			} else if (maxLimit.getSelectedItem() == "]") {
+				maxBelongsToLeft = true;
+			}
+		
+			
+			ArrayList<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+			int branchToChangeIndex = 0;
+			for (int i = 0; i < parentBranches.size(); i++) {
+				if (parentBranches.get(i) == treeADDBranch) {
+					branchToChangeIndex = i;
+				}
+			}
+			
+			//limit situations
+			if (maxText.floatValue() > maxDomainLimit.floatValue() || minText.floatValue() < minDomainLimit) {
+				JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
+			} else
+			if (maxText.floatValue() == maxDomainLimit.floatValue() && !maxBelongsToLeftDomain && maxBelongsToLeft ) {
+				JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
+			} else
+			if (minText.floatValue() == minDomainLimit.floatValue() && minBelongsToLeftDomain && !minBelongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
+			} else {
+			//max limit
+			if (!(maxText.floatValue() == treeADDBranch.getMaxThreshold().getLimit() &&
+					maxBelongsToLeft == treeADDBranch.getMaxThreshold().belongsToLeft())) {	
+				ArrayList<TreeADDBranch> followingBranches = new ArrayList<TreeADDBranch>();
+				parentBranches.get(branchToChangeIndex).setThresholdMax(new Threshold(maxText, maxBelongsToLeft));
+				if (branchToChangeIndex != parentBranches.size() ) {//branch selected to change interval is not the last one
+					for (int i = branchToChangeIndex +1; i < parentBranches.size(); i++) {
+						followingBranches.add(parentBranches.get(i));
+					}
+					
+					for(int i = 0; i < followingBranches.size(); i++) {
+						if (maxText.equals(followingBranches.get(i).getMaxThreshold().getLimit()) && 
+								maxBelongsToLeft == followingBranches.get(i).getMaxThreshold().belongsToLeft()) {
+							for (int j = branchToChangeIndex+1; j <= i + branchToChangeIndex+1 ; j++) {
+								parentBranches.remove(branchToChangeIndex+1);
+							}
+							break;
+						} else if (maxText.equals(followingBranches.get(i).getMaxThreshold().getLimit()) &&
+								!followingBranches.get(i).getMaxThreshold().belongsToLeft() && maxBelongsToLeft) {
+							for (int j = branchToChangeIndex+1; j <= i + branchToChangeIndex+1 ; j++) {
+								parentBranches.remove(branchToChangeIndex+1);
+							}
+							//Change the next
+							if (i + branchToChangeIndex+1 <= parentBranches.size()) {
+								parentBranches.get(branchToChangeIndex+1).getMinThreshold().setBelongsToLeft(true);
+							}
+							break;
+						} else if (maxText.equals(followingBranches.get(i).getMaxThreshold().getLimit()) &&
+								followingBranches.get(i).getMaxThreshold().belongsToLeft() && !maxBelongsToLeft) {
+							for (int j = branchToChangeIndex+1; j <= i + branchToChangeIndex ; j++) {
+								parentBranches.remove(branchToChangeIndex+1);
+							}
+							//Change the next
+							if (i + branchToChangeIndex+1 <= parentBranches.size()) {
+								parentBranches.get(branchToChangeIndex+1).setThresholdMin(new Threshold(maxText, false));
+							}
+							break;
+						}else if (maxText.floatValue() < ((Float)followingBranches.get(i).getMaxThreshold().getLimit()).floatValue()) {
+							for (int j = branchToChangeIndex+1; j <= i + branchToChangeIndex ; j++) {
+								parentBranches.remove(branchToChangeIndex+1);
+							}
+							parentBranches.get(branchToChangeIndex+1).setThresholdMin(new Threshold(maxText, maxBelongsToLeft));
+							break;
+					}
+				}
+				} 
+			}
+				
+			//min limit
+			if (!(minText.floatValue() == treeADDBranch.getMinThreshold().getLimit() && 
+					minBelongsToLeft == treeADDBranch.getMinThreshold().belongsToLeft())) {	
+				ArrayList<TreeADDBranch> previousBranches = new ArrayList<TreeADDBranch>();
+				parentBranches.get(branchToChangeIndex).setThresholdMin(new Threshold(minText, minBelongsToLeft));
+				if (branchToChangeIndex != 0) {//branch selected to change interval is not the first one
+					for (int i = branchToChangeIndex -1; i >= 0; i--) {
+						previousBranches.add(parentBranches.get(i));
+					}
+				}
+				ArrayList<TreeADDBranch> aux = new ArrayList<TreeADDBranch>();
+				int initialParentSize = parentBranches.size();
+				for (int i = parentBranches.size()-1; i >= 0; i--) {
+					aux.add(parentBranches.get(i));
+				}
+				int auxIndex = parentBranches.size()-1 - branchToChangeIndex;
+				for(int i = 0; i < previousBranches.size(); i++) {
+					if (minText.equals(previousBranches.get(i).getMinThreshold().getLimit()) && 
+							minBelongsToLeft == previousBranches.get(i).getMinThreshold().belongsToLeft()) {
+						for (int j = auxIndex+1; j <= i + (auxIndex+1) ; j++) {
+							aux.remove(auxIndex+1);
+						}
+						break;
+					}else if (minText.equals(previousBranches.get(i).getMinThreshold().getLimit()) && 
+							!previousBranches.get(i).getMinThreshold().belongsToLeft() && minBelongsToLeft) {
+						for (int j = auxIndex+1; j <= i + (auxIndex+1) ; j++) {
+							aux.remove(auxIndex+1);
+						}
+						//Change the next
+						if (i + auxIndex+1 <= parentBranches.size()) {
+							aux.get(auxIndex+1).getMaxThreshold().setBelongsToLeft(true);
+						}
+						break;
+					} else if (minText.equals(previousBranches.get(i).getMinThreshold().getLimit()) && 
+							previousBranches.get(i).getMinThreshold().belongsToLeft() && !minBelongsToLeft) {
+						for (int j = auxIndex+1; j <= i + (auxIndex+1) ; j++) {
+							aux.remove(auxIndex+1);
+						}
+						//Change the next
+						if (i + auxIndex+1 <= parentBranches.size()) {
+							aux.get(auxIndex+1).getMaxThreshold().setBelongsToLeft(false);
+						}
+						break;
+					} else if (minText.floatValue() > ((Float)previousBranches.get(i).getMinThreshold().getLimit()).floatValue()) {
+						for (int j = auxIndex+1; j <= i + auxIndex ; j++) {
+							aux.remove(auxIndex+1);
+						}
+						aux.get(auxIndex+1).setThresholdMax(new Threshold(minText, minBelongsToLeft));
+						break;
 					}
 				}
 				
-				//varList.add (parentTree.getConditionedVariable());
-				//newPotential= new TablePotential (varList, role);
-				newPotential= new TablePotential (variables, role);
+				for (int i = aux.size()-1; i >= 0 ; i--) {
+					parentBranches.set(i, aux.get(aux.size()-1-i));
+				}
+				for (int i = aux.size(); i < initialParentSize; i++){
+					parentBranches.remove(aux.size());
+				}
 			}
-			else {
-				throw new RuntimeException("Unexpected PotentialRole, found: " + role);					
+				
+				 model.fireTreeStructureChanged((TreePath)parentPath);
 			}
-
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();											
+			
+			
+			}
+	}
+	
+	void actionSplitInterval(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		TreePath parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		SplitIntervalDialog dialog = new SplitIntervalDialog(Utilities.getOwner(this));
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		if (dialog.requestValues()==SplitIntervalDialog.OK_BUTTON) {
+			boolean belongsToLeft = false;
+			SplitIntervalPanel panel = (SplitIntervalPanel) dialog.getJPanelSplitInterval();
+			if (panel.belongsToLeft().isSelected()) {
+				belongsToLeft = true;
+			}
+			
+			Float introducedLimit = Float.parseFloat(panel.getLimit().getText());
+			
+			Threshold minFirstInterval = treeADDBranch.getMinThreshold();
+			Threshold maxSecondInterval = treeADDBranch.getMaxThreshold();
+			
+			ArrayList<Variable> potentialVariables = new ArrayList<Variable>();
+			potentialVariables.add(parentTreeADD.getVariables().get(0));
+			UniformPotential potential = new UniformPotential(potentialVariables, treeADDBranch.getPotential().getPotentialRole());
+			ArrayList<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+			ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
+			
+			//Top variable domain
+			Float minDomainLimit = (float) parentTreeADD.getTopVariable().getPartitionedInterval().getMin();
+			Float maxDomainLimit = (float) parentTreeADD.getTopVariable().getPartitionedInterval().getMax();
+			boolean isLeftClosed = treeADDBranch.getTopVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
+			boolean isRightClosed = treeADDBranch.getTopVariable().getPartitionedInterval().isRightClosed();
+			boolean minBelongsToLeftDomain = !isLeftClosed;
+			boolean maxBelongsToLeftDomain = isRightClosed;
+			
+			if (minDomainLimit.floatValue() == minFirstInterval.getLimit() && introducedLimit.floatValue() == minFirstInterval.getLimit()
+					&& minBelongsToLeftDomain && belongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
+			} else if (maxDomainLimit.floatValue() == maxSecondInterval.getLimit() && introducedLimit.floatValue() == maxSecondInterval.getLimit() 
+					&& !maxBelongsToLeftDomain && !belongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "Be careful, you are trying to change variable domain");
+			} else if (minFirstInterval.getLimit() == introducedLimit.floatValue() && minFirstInterval.belongsToLeft() && belongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
+			} else if (minFirstInterval.getLimit() == introducedLimit.floatValue() && !minFirstInterval.belongsToLeft() && !belongsToLeft){
+				JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
+			}else if (maxSecondInterval.getLimit() == introducedLimit.floatValue() && !maxSecondInterval.belongsToLeft() && !belongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
+			} else if (maxSecondInterval.getLimit() == introducedLimit.floatValue() && maxSecondInterval.belongsToLeft() && belongsToLeft) {
+				JOptionPane.showMessageDialog(this.getParent(), "This is not a valid action");
+			}else if (minFirstInterval.getLimit() == introducedLimit.floatValue() && !minFirstInterval.belongsToLeft() && belongsToLeft) {
+				TreeADDBranch newBranch = new TreeADDBranch(minFirstInterval, new Threshold(minFirstInterval.getLimit(), true), potential,
+						treeADDBranch.getTopVariable(), treeADDBranch.getParentVariables() );
+				minFirstInterval.setBelongsToLeft(true);
+				for (TreeADDBranch parentBranch : parentBranches) {
+					if (treeADDBranch == parentBranch) {
+						newBranches.add(newBranch);
+						newBranches.add(treeADDBranch);
+					} else {
+						newBranches.add(parentBranch);
+					}
+				}
+			parentTreeADD.setBranches(newBranches);
+				model.fireTreeStructureChanged(parentPath);
+				
+			}else if (maxSecondInterval.getLimit() == introducedLimit.floatValue() && maxSecondInterval.belongsToLeft() && !belongsToLeft) {
+				maxSecondInterval.setBelongsToLeft(false);
+				TreeADDBranch newBranch = new TreeADDBranch( new Threshold(maxSecondInterval.getLimit(), false), new Threshold(maxSecondInterval.getLimit(), true), potential,
+						treeADDBranch.getTopVariable(), treeADDBranch.getParentVariables() );
+				for (TreeADDBranch parentBranch : parentBranches) {
+					if (treeADDBranch == parentBranch) {
+						newBranches.add(treeADDBranch);
+						newBranches.add(newBranch);
+					} else {
+						newBranches.add(parentBranch);
+					}
+				}
+				parentTreeADD.setBranches(newBranches);
+				model.fireTreeStructureChanged(parentPath);
+			} else if (minFirstInterval.isBelow(introducedLimit) && maxSecondInterval.isAbove(introducedLimit)) {
+			
+			Threshold maxFirstInterval = new Threshold(introducedLimit, belongsToLeft);
+			
+			TreeADDBranch firstBranch = new TreeADDBranch(minFirstInterval, maxFirstInterval, potential, 
+					treeADDBranch.getTopVariable(), treeADDBranch.getParentVariables() );
+			TreeADDBranch secondBranch = new TreeADDBranch(maxFirstInterval, maxSecondInterval, potential, 
+					treeADDBranch.getTopVariable(), treeADDBranch.getParentVariables() );
+			
+			for (TreeADDBranch parentBranch : parentBranches) {
+				if (treeADDBranch == parentBranch) {
+					newBranches.add(firstBranch);
+					newBranches.add(secondBranch);
+				} else {
+					newBranches.add(parentBranch);
+				}
+			}
+			
+			parentTreeADD.setBranches(newBranches);
+			model.fireTreeStructureChanged(parentPath);
+			} else {//a message to indicate that is not a permitted value
+				JOptionPane.showMessageDialog(this.getParent(), "Introduced value does not belong to the interval selected");
+			}
 		}
 		
+		
+	}
+	
+	void actionRemoveSubTree(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		
+		Potential subPotential = treeADDBranch.getPotential();
+		if (!(subPotential instanceof TreeADDPotential)) {
+			throw new RuntimeException("Expected TreeADDPotential class, found: " + subPotential.getClass().
+					getName());			
+		}
+		Variable conditionedVariable = treeADDBranch.getParentVariables().get(0);
+		ArrayList<Variable> potentialVariables = new ArrayList<Variable>();
+		
+		potentialVariables.add(conditionedVariable);
+		UniformPotential newPotential = new UniformPotential(potentialVariables, parentTreeADD.getPotentialRole());
+		treeADDBranch.setPotential(newPotential);
+		
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		model.fireTreeStructureChanged(path);
+	}
+	
+	void actionAddVariables2Potential(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		AddVariablesDialog dialog = new AddVariablesDialog(Utilities.getOwner(this), treeADDBranch, parentTreeADD);
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		if (dialog.requestValues()==AddVariablesDialog.OK_BUTTON) {
+			AddVariablesCheckBoxPanel panel = dialog.getJPanelVariables();
+			ArrayList<JCheckBox> checkBoxes = panel.getCheckBoxes();
+			
+			Potential branchPotential = ((TreeADDBranch)branch).getPotential();
+			ArrayList<Variable> branchPotentialVariables = branchPotential.getVariables();
+			
+			ArrayList<Variable> newVariables = new ArrayList<Variable>();
+			for (JCheckBox checkBox : checkBoxes) {
+				if (checkBox.isSelected()){
+					String variableName = checkBox.getText();
+					for (Variable variable : parentTreeADD.getVariables()) {
+						if (variable.getName()==variableName) {
+							newVariables.add(variable);
+						}
+					}
+				}
+			}
+			
+			for (Variable var : newVariables ) {
+				branchPotentialVariables.add(var);
+			}
+			
+			UniformPotential potential = new UniformPotential(branchPotentialVariables,parentTreeADD.getPotentialRole());
+			((TreeADDBranch) branch).setPotential(potential);
+						
+			model.fireTreeInsert(path, potential);
+			model.fireTreeStructureChanged(path);	
+		
+			//jTree.expandPath(path);		
+		}
+	}
+	
+	void actionRemoveVariables(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		
+		RemoveVariablesDialog dialog = new RemoveVariablesDialog(Utilities.getOwner(this), treeADDBranch, parentTreeADD);
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		
+		if (dialog.requestValues()==RemoveVariablesDialog.OK_BUTTON) {
+			ArrayList<JCheckBox> checkBoxes = ((RemoveVariablesCheckBoxPanel)dialog.getJPanelVariables()).getCheckBoxes();
+			
+			ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>();
+			ArrayList<Variable> branchVariables = treeADDBranch.getPotential().getVariables();
+			for (JCheckBox checkBox : checkBoxes) {
+				if (checkBox.isSelected()){
+					String variableName = checkBox.getText();
+					for (Variable variable : branchVariables) {
+						if (variable.getName()==variableName) {
+							variablesToEliminate.add(variable);
+						}
+					}
+				}
+			}
+			for (Variable variable : variablesToEliminate) {
+				branchVariables.remove(variable);
+			}
+			
+			UniformPotential newPotential = new UniformPotential(branchVariables, parentTreeADD.getPotentialRole());
+			treeADDBranch.setPotential(newPotential);
+			
+			model.fireTreeInsert(path, newPotential);
+			model.fireTreeStructureChanged(path);
+		}
+	}
+	/**
+	 * 
+	 * @param ae
+	 * @param branch
+	 * @param path
+	 */
+	void actionDissociateStates(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		
+		RemoveStatesDialog dialog = new RemoveStatesDialog(Utilities.getOwner(this), treeADDBranch, parentTreeADD);
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		
+		if (dialog.requestValues()==RemoveStatesDialog.OK_BUTTON) {
+			ArrayList<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel)dialog.getJPanelDisociateStates()).getCheckBoxes();
+			
+			ArrayList<State> statesToEliminate = new ArrayList<State>();
+			
+			for (JCheckBox checkBox : checkBoxes) {
+				if (checkBox.isSelected()){
+					String stateName = checkBox.getText();
+					for (State state : parentTreeADD.getTopVariable().getStates()) {
+						if (state.getName()==stateName) {
+							statesToEliminate.add(state);
+						}
+					}
+				}
+			}
+			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
+			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
+				
+				ArrayList<State> states = treeBranch.getBranchStates();
+			
+				if (treeADDBranch.getBranchStates().containsAll(states)) {
+					continue;
+				} else {
+					newTreeADDBranches.add(treeBranch);
+				}
+			}
+			//Updating branches
+			ArrayList<State> branchStates = treeADDBranch.getBranchStates();
+			for (State state :statesToEliminate ){
+				branchStates.remove(state);
+			}
+			treeADDBranch.setStates(branchStates);
+			Variable conditionedVariable = treeADDBranch.getParentVariables().get(0);
+			ArrayList<Variable> variables = new ArrayList<Variable>();
+			variables.add(conditionedVariable);
+			TreeADDBranch newBranch = new TreeADDBranch(statesToEliminate, new UniformPotential(variables, parentTreeADD.getPotentialRole()),
+					treeADDBranch.getTopVariable(), treeADDBranch.getParentVariables());
+			
+			newTreeADDBranches.add(treeADDBranch);
+			newTreeADDBranches.add(newBranch);
+			//Updating tree
+			parentTreeADD.setBranches(newTreeADDBranches);
+			model.fireTreeStructureChanged((TreePath)parentPath);	
+			//jTree.expandPath(path);
+		}
+	}
+	/**
+	 * 
+	 * @param ae
+	 * @param treeADD
+	 * @param path
+	 */
+	void actionJoinBranches(ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		
+		//BranchStatesCheckBoxPanel checkBoxPanel =  new BranchStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
+		AddStatesToBranchDialog dialog = new AddStatesToBranchDialog(Utilities.getOwner(this), treeADDBranch, parentTreeADD);
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		
+		//This must be a treeADD
+		if (dialog.requestValues()==AddStatesToBranchDialog.OK_BUTTON) {
+			ArrayList<JCheckBox> checkBoxes = ((AddStatesCheckBoxPanel)dialog.getJPanelBranchStates()).getCheckBoxes();
+			ArrayList<State> newBranchStates = new ArrayList<State>();
+			for (State state : treeADDBranch.getBranchStates()) {
+				newBranchStates.add(state);
+			}
+			for (JCheckBox checkBox : checkBoxes) {
+				if (checkBox.isSelected()){
+					String stateName = checkBox.getText();
+					for (State state : parentTreeADD.getTopVariable().getStates()) {
+						if (state.getName()==stateName) {
+							newBranchStates.add(state);
+						}
+					}
+				}
+			}
+			//Reorder new states
+			ArrayList<State> newOrderedStates = new ArrayList<State>();
+			State[] correctOrderStates = parentTreeADD.getTopVariable().getStates();
+			for (State state : correctOrderStates) {
+				for (State newState :newBranchStates) {
+					if (state == newState) {
+						newOrderedStates.add(state);
+					}
+				}
+				
+			}
+			//Updating branches
+			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
+			
+			treeADDBranch.setStates(newOrderedStates);
+			newTreeADDBranches.add(treeADDBranch);
+			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
+				
+				ArrayList<State> states = treeBranch.getBranchStates();
+			
+				if (newBranchStates.containsAll(states)) {
+					continue;
+				} else {
+					for (State state: newBranchStates) {
+						if (states.contains(state)) {
+							states.remove(state);
+						}
+					}
+					treeBranch.setStates(states);
+					newTreeADDBranches.add(treeBranch);
+				}
+			}
+			//Updating tree
+			parentTreeADD.setBranches(newTreeADDBranches);
+			model.fireTreeStructureChanged((TreePath)parentPath);	
+			//jTree.expandPath(path);
+		}
+	}
+	/**
+	 * 
+	 * @param ae
+	 * @param treeADD
+	 * @param path
+	 */
+	
+	void actionChangeTopVariable(ActionEvent ae, Object treeADD, TreePath path) {
+		if (!(treeADD instanceof TreeADDPotential)) {
+			throw new RuntimeException("Expected TreeADDPotential or Potential class, found: " + treeADD.getClass().
+					getName());	
+		}
+		
+		TreeADDPotential treeADDPotential = (TreeADDPotential) treeADD;
+		ArrayList<Variable> variables = treeADDPotential.getVariables();
+		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();
+		//to get the variable
+		Variable newTopVariable = null;
+		for (Variable variable : variables ) {
+			if (variable.getName() == menuTopVariable.getText()) {
+				newTopVariable = variable;
+			} 
+		}
+		
+		ArrayList<Variable> potentialVariables = new ArrayList<Variable>();
+		
+		potentialVariables.add(treeADDPotential.getVariables().get(0));
+		UniformPotential potential = new UniformPotential(potentialVariables, treeADDPotential.getPotentialRole());
+		treeADDPotential.setTopVariable(newTopVariable);
+		ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
+		for (State state : newTopVariable.getStates()) {
+			ArrayList<State> branchStates = new ArrayList<State>();
+			branchStates.add(state);
+			newBranches.add(new TreeADDBranch(branchStates, potential, newTopVariable, variables));
+		}
+		treeADDPotential.setBranches(newBranches);
+		//treeADDPotential = newTree;
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+		//model.fireNodesChanged(path);
+		
+		model.fireTreeStructureChanged(path);
+	}
+	
+	
+	//when clicking on a brach
+	void actionAddTreeADD (ActionEvent ae, Object branch, TreePath path) {
+		if (!(branch instanceof TreeADDBranch)) {
+			throw new RuntimeException("Expected TreeADDBranch or Potential class, found: " + branch.getClass().
+					getName());	
+		}
+		TreeADDBranch treeBranch = ((TreeADDBranch)branch);
+		ArrayList<Variable> parentVariables = treeBranch.getParentVariables();
+		Variable parentTopVariable = treeBranch.getTopVariable();
+		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();
+		//to get the variable
+		Variable newTopVariable = null;
+		for (Variable variable : parentVariables ) {
+			if (variable.getName() == menuTopVariable.getText()) {
+				newTopVariable = variable;
+			} 
+		}
+		ArrayList<Variable> newTreeVariables = new ArrayList<Variable>();
+		//initialize variables of the new tree
+		for (Variable variable : parentVariables) {
+			if (variable != parentTopVariable ) {
+				newTreeVariables.add(variable);
+				}
+		}
+		if (newTopVariable == null) {
+			//that means that is a previous variable somewhere in the path to 
+			//treeADDPotetentialRoot that grouped two or more states in a previous branch
+			for (Variable variable : treeADDPotentialRoot.getVariables() ) {
+				if (variable.getName() == menuTopVariable.getText()) {
+					newTopVariable = variable;
+				} 
+			}
+			ArrayList<State> groupedStates = null ;
+			TreePath parentPath = path.getParentPath() ; //treeADD
+			 while (parentPath.getLastPathComponent() != treeADDPotentialRoot ) {
+				 TreePath grandParentPath = parentPath.getParentPath();//branch
+				 if (grandParentPath.getLastPathComponent() instanceof TreeADDBranch) {
+					 //if a branch has more then one state is possible to offer, as top variable, the top variable of this branch
+					 TreeADDBranch treeADDBranch = (TreeADDBranch) grandParentPath.getLastPathComponent();
+					 TreePath greatGrandFatherPath = grandParentPath.getParentPath();
+					 if (treeADDBranch.getBranchStates().size() > 1 
+							 && ((TreeADDPotential)greatGrandFatherPath.getLastPathComponent()).getTopVariable()== newTopVariable) {
+						 groupedStates = treeADDBranch.getBranchStates();
+						 break;
+					 }
+				 }
+				 parentPath = grandParentPath;
+			 }
+			 
+			 State[] states = new State[groupedStates.size()];
+			 
+			 for (int i = 0; i < groupedStates.size(); i++) {
+				 states[i] = groupedStates.get(i);
+			 }
+			 newTopVariable.setStates(states);
+			 newTreeVariables.add(newTopVariable);
+		
+		}
+		TreeADDPotential newTreeADD = new TreeADDPotential(newTreeVariables, newTopVariable, treeADDPotentialRoot.getPotentialRole());
+		//set the new tree to its owner  branch
+		treeBranch.setPotential(newTreeADD);
+
+		//update the tree recursively bottom-up
+		Object parentPath = path.getParentPath();
+		Object previousParentPath = path.getLastPathComponent();
+		TreeADDModel model= (TreeADDModel) jTree.getModel();
+				
+		while (parentPath != null) {
+			previousParentPath = parentPath;
+			parentPath = ((TreePath)parentPath).getParentPath();
+		}
+		
+		model.fireTreeStructureChanged((TreePath)previousParentPath);	
+		
+		model.fireTreeInsert(path, newTreeADD);
+		jTree.expandPath(path.pathByAddingChild(newTreeADD));
+	}
+	
+	/**
+	 * Action to edit a potential	
+	 * @param ae
+	 * @param branch
+	 * @param path
+	 * @throws NotEnoughMemoryException 
+	 */
+	void actionEditPotential(ActionEvent ae, Object branch, TreePath path) throws NotEnoughMemoryException {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		Object parentPath = path.getParentPath();
+		TreeADDPotential parentTreeADD = (TreeADDPotential)((TreePath)parentPath).getLastPathComponent();
+		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
+		
+		Potential potential = treeADDBranch.getPotential();
+		//TODO the  probNet constructor receives a networkTypeconstraint as parameter
+		ProbNet dummyProbNet= new ProbNet ();
+
+		dummyProbNet.addPotential (potential);
+		ProbNode dummy= null;
+		
+		Variable conditionedVariable= parentTreeADD.getConditionedVariable();
+		dummy= dummyProbNet.getProbNode (conditionedVariable);
+
+		for (Variable variable : potential.getVariables()) {
+			if (variable==conditionedVariable) {
+				continue;
+			}
+			
+			try {
+				dummyProbNet.addLink (variable, conditionedVariable, true);
+			} catch (NodeNotFoundException e) {
+				throw new RuntimeException("Node not found: " + e.getMessage());
+			}
+		}
+		
+		PotentialsDialog dialog= new PotentialsDialog(Utilities.getOwner(this), dummy, false);
+		
+		if (dialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
+			Potential retPotential= dummy.getPotentials().get(0);
+
+			if (!(retPotential instanceof TablePotential)) {
+				throw new RuntimeException("Expected TablePotential found: " + retPotential.getClass().getSimpleName());
+			}
+			
+			if (parentTreeADD.getPotentialRole()!=retPotential.getPotentialRole()) {
+				throw new RuntimeException("Expected role " + parentTreeADD.getPotentialRole() +", found: " + retPotential.getPotentialRole());
+			}
+			
+			treeADDBranch.setPotential(retPotential);
+			
+			TreeADDModel model= (TreeADDModel) jTree.getModel();
+			
+			//This must be a treeADD
+			Object previousParentPath = path.getLastPathComponent();
+			
+			while (parentPath != null) {
+				previousParentPath = parentPath;
+				parentPath = ((TreePath)parentPath).getParentPath();
+			}
+			
+			model.fireTreeStructureChanged((TreePath)previousParentPath);	
+			jTree.expandPath(path);
+			
+		}
+	}
+	
+	
+	
+	void actionAddNewPotentialVariableToBranch (ActionEvent ae, Object branch, TreePath path ) {
+		if (!(branch instanceof TreeADDBranch) ) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName());											
+		}
+		
+		Potential branchPotential = ((TreeADDBranch)branch).getPotential();
+		PotentialRole role= branchPotential.getPotentialRole();
+		
+			JMenuItem menuPotentialVariable= (JMenuItem) ae.getSource();
+			ArrayList<Variable> parentVariables = ((TreeADDBranch)branch).getParentVariables();
+			
+			ArrayList<Variable> branchPotentialVariables = branchPotential.getVariables();
+			
+			Variable newPotentialVariable = null;
+			for (Variable var : parentVariables ) {
+				if (var.getName() == menuPotentialVariable.getText()) {
+					newPotentialVariable = var;
+				} 
+			
+			}
+			
+			branchPotentialVariables.add(newPotentialVariable);
+			UniformPotential potential = new UniformPotential(branchPotentialVariables,role);
+			((TreeADDBranch) branch).setPotential(potential);
+			
 		TreeADDModel model= (TreeADDModel) jTree.getModel();			
-		model.fireTreeInsert(path, newPotential);
+		model.fireTreeInsert(path, potential);
+		model.fireTreeStructureChanged(path);	
 		
 		jTree.expandPath(path);		
 	}
 	
-	void actionAddNewTreeTopVariable (ActionEvent ae, Object branch, TreePath path) {
-		if (!(branch instanceof TreeADDBranch)) {
-			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().getName());											
-		}	
-		//find the top variable to create a new tree with that topVariable and expand tree whith new tree
+	void actionAddNewTreeTopVariable (ActionEvent ae, Object branch, TreePath path, Object parentTreeBranch) {
+		if (!(branch instanceof TreeADDBranch) || !(parentTreeBranch instanceof TreeADDPotential)) {
+			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().
+					getName()+ "Expected TreeADDPotential class, found: "+ parentTreeBranch.getClass().getName());											
+		}
+		//find the top variable to create a new tree with that topVariable and expand tree with new tree
 		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();//topVariable
-		ArrayList<Variable> parentVariables = ((TreeADDBranch)branch).getTreeADDParent().getVariables();
-		Variable parentTopVariable = ((TreeADDBranch)branch).getTreeADDParent().getTopVariable();
+		ArrayList<Variable> parentVariables = ((TreeADDPotential)parentTreeBranch).getVariables();
+		Variable parentTopVariable = ((TreeADDPotential)parentTreeBranch).getTopVariable();
 		ArrayList<Variable> variables = new ArrayList<Variable>();
 		for (Variable var : parentVariables ) {
 			if (var == parentTopVariable) {
@@ -408,33 +1188,21 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			} 
 		
 		}
-		TreeADDPotential2 newTree = new TreeADDPotential2(variables, newTreeTopVariable, treeADDPotentialRoot.getPotentialRole());
+		TreeADDPotential newTree = new TreeADDPotential(variables, newTreeTopVariable, treeADDPotentialRoot.getPotentialRole());
 		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		model.fireTreeInsert(path, newTree);
 		
 		jTree.expandPath(path.pathByAddingChild(newTree));
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 /**
  * TODO: Convert to Inner Class of the Viewer?
  */
 class ADDTreeViewer_tree_treeExpansionAdapter implements TreeExpansionListener {
 	private TreeADDController treeADDController;
-	ADDTreeViewer_tree_treeExpansionAdapter (TreeADDController adaptee) {
-		this.treeADDController = adaptee;
+	ADDTreeViewer_tree_treeExpansionAdapter (TreeADDController treeADDControler) {
+		this.treeADDController = treeADDControler;
 	}
 	
 	public void treeExpanded(TreeExpansionEvent event) {
@@ -450,8 +1218,8 @@ class ADDTreeViewer_tree_treeExpansionAdapter implements TreeExpansionListener {
  */
 class ADDTreeViewer_tree_treeWillExpandAdapter implements TreeWillExpandListener {
 	private TreeADDController treeADDController;
-	ADDTreeViewer_tree_treeWillExpandAdapter (TreeADDController adaptee) {
-		this.treeADDController = adaptee;
+	ADDTreeViewer_tree_treeWillExpandAdapter (TreeADDController treeADDControler) {
+		this.treeADDController = treeADDControler;
 	}
 	
 	public void treeWillExpand(TreeExpansionEvent event) {
@@ -473,35 +1241,39 @@ class ADDTreeViewer_tree_mouseAdapter extends MouseAdapter {
 		this.treeADDController = adaptee;
 	}
 	
-	public void mousePressed(MouseEvent e) {
-		maybeShowPopup(e);
-	}
-	
 	public void mouseReleased(MouseEvent e) {
 		maybeShowPopup(e);
 	}
 	
+	public void mousePressed(MouseEvent e) {
+		maybeShowPopup(e);
+	}
+
 	private void maybeShowPopup(MouseEvent e) {
 		if (e.isPopupTrigger()) {
 			treeADDController.xx= e.getX();
 			treeADDController.yy= e.getY();
 			
 			TreePath path = treeADDController.jTree.getPathForLocation (treeADDController.xx, treeADDController.yy);
+			
+			
 			if( path != null ) {
-				Object node = path.getLastPathComponent();
 				
-				if ( node instanceof TreeADDBranch) {
-					treeADDController.setPopupItemsBranches(e, (TreeADDBranch) node);
-				}
+				Object node = path.getLastPathComponent();
+				 if ( node instanceof TreeADDBranch) {
+					 TreeADDBranch branch = (TreeADDBranch) node;
+					treeADDController.setPopupItemBranch(e, (TreeADDBranch) branch, path);
+				} else if (node instanceof Potential) {
+					if (node instanceof TreeADDPotential) {
+						treeADDController.setPopupItemsTreeADD(e, (TreeADDPotential) node);
+					} else {
+						treeADDController.popupMenu.removeAll();
+					}
+				}			
 				
 				treeADDController.popupMenu.show (e.getComponent(), treeADDController.xx, treeADDController.yy);
 			}
-			else {
-				if (treeADDController.jTree.getModel()==null) {
-					treeADDController.setPopupItemsBlankTree();				
-					treeADDController.popupMenu.show(e.getComponent(), treeADDController.xx, treeADDController.yy);
-				}
-			}
+			
 		}
 	}
 }

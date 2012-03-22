@@ -217,7 +217,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
 
 		return false;
-	};
+	}
 
 	/**
 	 * This method carries out the actions when the user press the Cancel button

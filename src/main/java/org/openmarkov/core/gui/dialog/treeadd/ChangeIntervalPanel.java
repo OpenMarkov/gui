@@ -1,0 +1,98 @@
+package org.openmarkov.core.gui.dialog.treeadd;
+
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.openmarkov.core.model.network.potential.treeadd.Threshold;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+/**
+ * 
+ * @author myebra
+ *
+ */
+@SuppressWarnings("serial")
+public class ChangeIntervalPanel extends JPanel{
+	final String[] intervalLowerSymbols = new String[] { "[", "(" };
+	final String[] intervalUpperSymbols = new String[] { "]", ")" };
+	private JTextField minText;
+	private JTextField maxText;
+	private TreeADDBranch treeBranch;
+	private Threshold min;
+	private Threshold max;
+	private JComboBox jComboBoxUpperSymbol;
+	private JComboBox jComboBoxLowerSymbol;
+	
+	public ChangeIntervalPanel(TreeADDBranch treeBranch) {
+		this.treeBranch = treeBranch;
+		min = treeBranch.getMinThreshold();
+		max = treeBranch.getMaxThreshold();
+		
+		Float minDomainLimit = (float) treeBranch.getTopVariable().getPartitionedInterval().getMin();
+		Float maxDomainLimit = (float) treeBranch.getTopVariable().getPartitionedInterval().getMax();
+		
+		boolean isLeftClosed = treeBranch.getTopVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
+		boolean isRightClosed = treeBranch.getTopVariable().getPartitionedInterval().isRightClosed();
+		boolean minBelongsToLeftDomain = !isLeftClosed;
+		boolean maxBelongsToLeftDomain = isRightClosed;
+	
+		
+		minText = new JTextField( Float.toString(min.getLimit()));
+		minText.setBounds(68, 64, 86, 20);
+		minText.setColumns(10);
+		
+		maxText = new JTextField( Float.toString(max.getLimit()));
+		maxText.setBounds(189, 64, 86, 20);
+		maxText.setColumns(10);
+	
+		jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
+		if (min.belongsToLeft()) {// "(" intervalLowerSymbols [1]
+			jComboBoxLowerSymbol.setSelectedItem(intervalLowerSymbols [1]);
+		} else if (!min.belongsToLeft()) {// "[" intervalLowerSymbols [0]
+			jComboBoxLowerSymbol.setSelectedItem(intervalLowerSymbols [0]);
+		}
+		jComboBoxLowerSymbol.setBounds(10, 64, 48, 20);
+		
+		jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
+		if (max.belongsToLeft()) {// "]" intervalLowerSymbols [0]
+			jComboBoxUpperSymbol.setSelectedItem(intervalUpperSymbols [0]);
+		} else if (!max.belongsToLeft()) {// ")" intervalLowerSymbols [1]
+			jComboBoxUpperSymbol.setSelectedItem(intervalUpperSymbols [1]);
+		}
+		jComboBoxUpperSymbol.setBounds(285, 64, 48, 20);
+		setLayout(null);
+		
+		if (min.getLimit() == minDomainLimit && min.belongsToLeft() == minBelongsToLeftDomain) {
+			minText.setEditable(false);
+			jComboBoxLowerSymbol.setEnabled(false);
+		}
+		if (max.getLimit() == maxDomainLimit && max.belongsToLeft() == maxBelongsToLeftDomain) {
+			maxText.setEditable(false);
+			jComboBoxUpperSymbol.setEnabled(false);
+		}
+		
+		JLabel lblNewLabel = new JLabel("   ,   ");
+		lblNewLabel.setBounds(160, 64, 22, 20);
+		//add(lblNewLabel);
+		add(jComboBoxLowerSymbol);
+		add(minText);
+		add(lblNewLabel);
+		add(maxText);
+		add(jComboBoxUpperSymbol);
+	}
+	
+	public JTextField getMin() {
+		return minText;
+	}
+	public JTextField getMax() {
+		return maxText;
+	}
+	public JComboBox minBelongsToLeft() {
+		return jComboBoxLowerSymbol;
+	}
+	public JComboBox maxBelongsToLeft() {
+		return jComboBoxUpperSymbol;
+	}
+}
