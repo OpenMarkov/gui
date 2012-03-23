@@ -46,14 +46,14 @@ public class NetsIOTest {
 		if (fileNameOpen == null) {
 			fail("The test file " + fileNameOpen + " can't be found");
 		} else {
-			net = NetsIO.openNetworkFile(fileNameOpen);
+			net = NetsIO.openNetworkFile(fileNameOpen).getProbNet ();
 			assertNotNull(net);
 		}
 		path = file.getParent();
 		fileNameSave = path + File.separator + fileToSave;
 		NetsIO.saveNetworkFile(net, fileNameSave);
 		net = null;
-		net = NetsIO.openNetworkFile(fileNameSave);
+		net = NetsIO.openNetworkFile(fileNameSave).getProbNet ();
 		assertNotNull(net);
 		new File(fileNameSave).delete();
 	}

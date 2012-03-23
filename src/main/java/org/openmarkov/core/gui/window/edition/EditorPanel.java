@@ -273,6 +273,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 	private CostEffectivenessDialog costEffectivenessDialog;
 
+    private boolean approximateInferenceWarningGiven = false;
+
 	/**
 	 * Constructor that creates the instance.
 	 * 
@@ -1721,6 +1723,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public EvidenceCase getEvidenceCase(int caseNumber) {
 		return evidenceCases.get(caseNumber);
 	}
+	
+    /**
+     * This method returns list of evidence cases
+     * 
+     * @return the list of Evidence Cases.
+     */
+    public ArrayList<EvidenceCase> getEvidence ()
+    {
+        return evidenceCases;
+    }	
 
 	/**
 	 * This method returns the number of the Evidence Case that is currently
@@ -1776,6 +1788,43 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void setEvidenceCasesCompilationState(int caseNumber, boolean value) {
 		this.evidenceCasesCompilationState.set(caseNumber, value);
 	}
+	
+    /**
+     * This method sets the list of evidence cases
+     * 
+     */
+    public void setEvidence (ArrayList<EvidenceCase> evidence)
+    {
+        this.evidenceCases = evidence;
+        
+        //Update visual info on evidence
+        for(VisualNode node : visualNetwork.getAllNodes ()) 
+        {
+            node.setFindingInNode (false);
+        }
+        for(EvidenceCase evidenceCase: evidence)
+        {
+            for(Finding finding: evidenceCase.getFindings ()) 
+            {
+                for(VisualNode node : visualNetwork.getAllNodes ()) 
+                {
+                    if(node.getProbNode ().getVariable ().equals (finding.getVariable ()))
+                    {
+                        node.setFindingInNode (true);
+                    }
+                }
+            }
+        }
+        
+        //Update evidenceCasesCompilationState
+        evidenceCasesCompilationState.clear ();
+        for(int i=0; i < evidence.size (); ++i)
+        {
+            evidenceCasesCompilationState.add (false);
+        }
+        
+    }   	
+	
 
 	/**
 	 * This method returns true if propagation type currently set is automatic;
@@ -2215,10 +2264,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 				    individualProbabilities = inferenceAlgorithm.getIndividualProbabilities();
 				}catch(NotEnoughMemoryException e)
 				{
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   stringResource.getString("NotEnoughMemoryForExactInference.Text"),
-                                                   stringResource.getString("NotEnoughMemoryForExactInference.Title"),
-                                                   JOptionPane.WARNING_MESSAGE);
+				    if(!approximateInferenceWarningGiven)
+				    {
+                        JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                                       stringResource.getString ("NotEnoughMemoryForExactInference.Text"),
+                                                       stringResource.getString ("NotEnoughMemoryForExactInference.Title"),
+                                                       JOptionPane.WARNING_MESSAGE);
+                        approximateInferenceWarningGiven = true;
+				    }
 				    
 				    inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm(probNet);
 				    inferenceAlgorithm.setEvidence(evidenceCase);

@@ -10,12 +10,16 @@
 package org.openmarkov.core.gui.dialog.io;
 
 
+import java.util.ArrayList;
+
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.WriterException;
+import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
 
@@ -43,23 +47,23 @@ public class NetsIO {
 	 * 
 	 * @param fileName
 	 *            file where the network is saved.
-	 * @return an ProbNet object with the information of the network.
+	 * @return an ProbNetInfo object with the information of the network.
 	 * @throws Exception
 	 *             if the file doesn't exist or the file format isn't correct.
 	 */
-	public static ProbNet openNetworkFile(String fileName) throws Exception {
+	public static ProbNetInfo openNetworkFile(String fileName) throws Exception {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
 		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
 		
-		ProbNet probNet = probNetReader.loadProbNet(fileName);
+		ProbNetInfo probNetInfo = probNetReader.loadProbNet(fileName);
 		
 		
-		if (probNet == null) {
+		if (probNetInfo == null) {
 			System.out.println("NetsIO.openNetworkFile from "
 					+ fileName + ": probNet null");
 		}
-		return probNet;
+		return probNetInfo;
 		
 
 	/*	if (fileExtension.contentEquals("elv")) {
@@ -86,46 +90,64 @@ public class NetsIO {
 
 	}
 
-	/**
-	 * Saves a network in a file.
-	 * 
-	 * @param network - network to save in the file
-	 * @param fileName - file where the network is going to be saved
-	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
-	 * @throws CanNotWriteNetworkToFileException - if an I/O error has happened
-	 */
-	public static void saveNetworkFile(ProbNet network, String fileName)
-					throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
+    /**
+     * Saves a network in a file.
+     * @param network - network to save in the file
+     * @param evidence - list of evidence cases
+     * @param fileName - file where the network is going to be saved
+     * @throws NotRecognisedNetworkFileExtensionException - if file extension is
+     *             not recognised
+     * @throws CanNotWriteNetworkToFileException - if an I/O error has happened
+     */
+    public static void saveNetworkFile (ProbNet network,
+                                        ArrayList<EvidenceCase> evidence,
+                                        String fileName)
+        throws NotRecognisedNetworkFileExtensionException,
+        CanNotWriteNetworkToFileException
+    {
+        String fileExtension = getFileExtension (fileName);
+        FormatManager formatManager = FormatManager.getInstance ();
+        ProbNetWriter probNetWriter = formatManager.getProbNetWriter (fileExtension);
+        try
+        {
+            probNetWriter.writeProbNet (fileName, network, evidence);
+            /*
+             * if (fileExtension.contentEquals("elv")) {
+             * //ElviraWriter.getUniqueInstance().writeProbNet(fileName,
+             * network); } else if (fileExtension.contentEquals("xml")) {
+             * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
+             * } else if (fileExtension.contentEquals("pgmx")) {
+             * PGMXWriter.getUniqueInstance().writeProbNet(fileName, network); }
+             * else if (fileExtension.contentEquals("bif")) {
+             * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
+             * network); } else { throw new
+             * NotRecognisedNetworkFileExtensionException(fileName); } } catch
+             * (IOException ex) { throw new
+             * CanNotWriteNetworkToFileException(fileName); } catch
+             * (NotEnoughMemoryException ex) { throw new
+             * CanNotWriteNetworkToFileException(fileName);
+             */
+        }
+        catch (WriterException ex)
+        {
+            throw new CanNotWriteNetworkToFileException (fileName);
+        }
+    }
 
-		String fileExtension = getFileExtension(fileName);
-		
-		FormatManager formatManager = FormatManager.getInstance();
-		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension);
-		try {
-			probNetWriter.writeProbNet(fileName, network);
-		
-			/*if (fileExtension.contentEquals("elv")) {
-				//ElviraWriter.getUniqueInstance().writeProbNet(fileName, network);
-			} else if (fileExtension.contentEquals("xml")) {
-				//XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
-			} else if (fileExtension.contentEquals("pgmx")) {
-				PGMXWriter.getUniqueInstance().writeProbNet(fileName, network);
-			} else if (fileExtension.contentEquals("bif")) {
-				//HuginWriter.getUniqueInstance().writeProbNet(fileName, network);
-			} else {
-				throw new NotRecognisedNetworkFileExtensionException(fileName);
-			}
-		} catch (IOException ex) {
-			throw new CanNotWriteNetworkToFileException(fileName);
-		} catch (NotEnoughMemoryException ex)  {
-			throw new CanNotWriteNetworkToFileException(fileName); */
-		} catch (WriterException ex) {
-			throw new CanNotWriteNetworkToFileException(fileName);
-		}
-
-	
-
-	}
+    /**
+     * Saves a network in a file.
+     * @param network - network to save in the file
+     * @param fileName - file where the network is going to be saved
+     * @throws NotRecognisedNetworkFileExtensionException - if file extension is
+     *             not recognised
+     * @throws CanNotWriteNetworkToFileException - if an I/O error has happened
+     */
+    public static void saveNetworkFile (ProbNet network, String fileName)
+        throws NotRecognisedNetworkFileExtensionException,
+        CanNotWriteNetworkToFileException
+    {
+        saveNetworkFile (network, new ArrayList<EvidenceCase> (), fileName);
+    }
 
 	private static String getFileExtension(String fileName) {
 
