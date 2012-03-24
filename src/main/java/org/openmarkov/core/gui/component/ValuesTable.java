@@ -442,7 +442,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 					}
 					
 					TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
-						probNode, (Double)newValue, row, col, priorityList);
+						probNode, (Double)newValue, row, col, priorityList,getTableModel().getNotEditablePositions());
 					try {
 						probNode.getProbNet().getPNESupport().announceEdit(
 								nodePotentialEdit);
@@ -473,7 +473,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				}
 			} else if (nodeType == NodeType.UTILITY ) {
 				TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
-						probNode, (Double)newValue, row, col, priorityList);
+						probNode, (Double)newValue, row, col, priorityList,this.getTableModel().getNotEditablePositions());
 					try {
 						probNode.getProbNet().getPNESupport().announceEdit(
 								nodePotentialEdit);
