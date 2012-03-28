@@ -1802,7 +1802,7 @@ public class EditorPanel extends JPanel implements MouseListener,
         	this.evidenceCases.add(new EvidenceCase());
         }
         
-        currentCase = 0;
+        currentCase = this.evidenceCases.size () -1;
         
         //Update visual info on evidence
         for(VisualNode node : visualNetwork.getAllNodes ()) 
