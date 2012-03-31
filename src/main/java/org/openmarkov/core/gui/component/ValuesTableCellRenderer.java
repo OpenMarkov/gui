@@ -45,7 +45,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * first color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_1 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_1 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_1,
 			OpenMarkovPreferences.OPENMARKOV_COLORS,
@@ -53,7 +53,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * second color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_2 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_2 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_2,
 			OpenMarkovPreferences.OPENMARKOV_COLORS ,
@@ -61,18 +61,18 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * third color to use in header rows
 	 */
-	private static final Color TABLE_HEADER_TEXT_COLOR_3 =
+	protected static final Color TABLE_HEADER_TEXT_COLOR_3 =
 		OpenMarkovPreferences.getColor(
 			OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_3,
 			OpenMarkovPreferences.OPENMARKOV_COLORS,
 			Color.BLACK);
 	
-	private boolean [] marked;
+	private boolean [] editableColumns;
 
 	/**
 	 * to define the first editable row of the table
 	 */
-	private int firstEditableRow;
+	protected int firstEditableRow;
 	
 	private JLabel jLabelIcon;
 	
@@ -83,17 +83,17 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 * @param firstEditableRow
 	 *            value of the first editable row
-	 * @param marked boolean array with the columns with (1)/without (0) mark. 
+	 * @param editableColumns boolean array with the columns with (1)/without (0) mark. 
 	 * The array only has to contain indexes for the editables columns
 	 */
-	public ValuesTableCellRenderer(int firstEditableRow, boolean [] marked) {
-		this.marked = marked;
+	public ValuesTableCellRenderer(int firstEditableRow, boolean [] editableColumns) {
+		this.editableColumns = editableColumns;
 
 		this.firstEditableRow = firstEditableRow;
 	}
 
 	/**
-	 * headers rows are displayed in a gray background color with red an blue
+	 * headers rows are displayed in a gray background color with red and blue
 	 * foreground alternatively non headers rows are displayed in an alternative
 	 * cyan and light gray background color with black foreground color the
 	 * first two column are in gray
@@ -102,8 +102,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 													boolean isSelected,
 													boolean hasFocus, int row,
 													int column) {
-		if ( marked == null ){
-			marked = new boolean[table.getColumnCount()-2];
+		if ( editableColumns == null ){
+			editableColumns = new boolean[table.getColumnCount()-2];
 		}
 		
 		setHorizontalAlignment( SwingConstants.CENTER );
@@ -113,7 +113,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 		
 		
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN)
-				&& (row >= firstEditableRow) && !hasFocus && marked[column-1])
+				&& (row >= firstEditableRow) && !hasFocus && editableColumns[column-1])
 			return jLabelIcon;
 		else
 			return super.getTableCellRendererComponent(
@@ -175,7 +175,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column -
 	 *            column of the cell
 	 */
-	private void setCellColors(JTable table, Object value, boolean isSelected,
+	protected void setCellColors(JTable table, Object value, boolean isSelected,
 								boolean hasFocus, int row, int column) {
 
 		if ((column < ValuesTable.FIRST_EDITABLE_COLUMN)
@@ -325,8 +325,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column index of the column to mark
 	 */
 	public void setMark(int column) {
-		if ( column < marked.length){
-			marked [column] = true;
+		if ( column < editableColumns.length){
+			editableColumns [column] = true;
 		}
 		
 	}
@@ -335,8 +335,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * @param column index of the column to unmark
 	 */
 	public void unMark(int column) {
-		if ( column < marked.length){
-			marked [column] = false;
+		if ( column < editableColumns.length){
+			editableColumns [column] = false;
 		}
 		
 	}
@@ -345,7 +345,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 * @return a new Apply button.
 	 */
-	private JLabel getJLabelIcon() {
+	protected JLabel getJLabelIcon() {
 
 		if (jLabelIcon == null) {
 			iconLoader = new IconLoader();

@@ -224,7 +224,32 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to show the table of a node.
 	 */
-	public static final String CHANGE_POTENTIAL = "NodePotential";
+	public static final String EDIT_POTENTIAL = "NodePotential";
+		
+	/** 
+	 * Action invoked when the user wants to impose a policy in a decision node.
+	 */
+	public static final String DECISION_IMPOSE_POLICY = "ImposePolicy";
+	
+	/** 
+	 * Action invoked when the user wants to modify the policy of a decision node.
+	 */
+	public static final String DECISION_EDIT_POLICY = "EditPolicy";
+	
+	/** 
+	 * Action invoked when the user wants to remove a policy from a decision node.
+	 */
+	public static final String DECISION_REMOVE_POLICY = "RemovePolicy";
+	
+	/**
+	 * Action invoked when the user wants to show the expected utility of a decision node.
+	 */
+	public static final String DECISION_SHOW_EXPECTED_UTILITY = "ShowExpectedUtility";
+	
+	/**
+	 * Action invoked when the user wants to show the optimal policy of a decision node.
+	 */
+	public static final String DECISION_SHOW_OPTIMAL_POLICY = "ShowOptimalPolicy"; 	
 	
 	/**
 	 * Action invoked for testing
@@ -262,6 +287,26 @@ public class ActionCommands {
 	 */
 	public static final String LINK_PROPERTIES = "LinkProperties";
 
+	/****
+	 * Action invoked when the user wants to enable the linkRestrictions of a link.
+	 */
+	
+	public static final String LINK_RESTRICTION_ENABLE_PROPERTIES = "LinkRestrictionEnableProperties";
+	
+	
+	/****
+	 * Action invoked when the user wants to disable the linkRestrictions of a link.
+	 */
+	
+	public static final String LINK_RESTRICTION_DISABLE_PROPERTIES = "LinkRestrictionDisableProperties";
+	
+	
+	/****
+	 * Action invoked when the user wants to show the revlationArc conditions of a link,
+	 */
+	
+	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
+	
 	/**
 	 * Action invoked when the user wants to change the zoom of the panel to
 	 * another value.

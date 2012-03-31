@@ -55,7 +55,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 		initialize();
 		setName("NetworkPropertiesDialog");
 		setLocationRelativeTo(owner);
-		setOnlineHelp("Network Properties Dialog");
+		//setOnlineHelp("Network Properties Dialog");
 	}
 	/**
 	 * This method initializes this instance.
@@ -78,7 +78,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 		initialize();
 		setName("NetworkPropertiesDialog");
 		setLocationRelativeTo(owner);
-		setOnlineHelp("Network Properties Dialog");
+		//SsetOnlineHelp("Network Properties Dialog");
 	}
 	
 	

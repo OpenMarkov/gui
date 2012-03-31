@@ -42,7 +42,7 @@ public class RelationTypes {
 	public static String RELATION_TYPE_UNIFORM = "Uniform";
 	
 	/**
-	 * Uniform item
+	 * Table potential item
 	 */
 	public static String RELATION_TYPE_TABLE = "Table";
 	
@@ -72,6 +72,23 @@ public class RelationTypes {
 	public static String RELATION_TYPE_SUM = "Sum";
 	
 	/**
+	 * For canonical models	
+	 */
+	public static String RELATION_TYPE_ICI_OR= "ICI-OR";
+	
+	public static String RELATION_TYPE_ICI_MAX_CAUSAL= "ICI-MAXCausal";
+	
+	public static String RELATION_TYPE_ICI_MAX_GENERAL= "ICI-MAXGeneral";
+	
+	public static String RELATION_TYPE_ICI_AND= "ICI-AND";
+	
+	public static String RELATION_TYPE_ICI_MIN_CAUSAL= "ICI-MINCausal";
+	
+	public static String RELATION_TYPE_ICI_MIN_GENERAL= "ICI-MINGeneral";
+	
+	public static String RELATION_TYPE_ICI_TUNING_GENERAL = "ICI-Tuning";
+	
+	/**
 	 * String resource.
 	 */
 	private static StringResource stringResource = null;
@@ -91,12 +108,13 @@ public class RelationTypes {
 			list.add(RELATION_TYPE_SUM);
 			list.add(RELATION_TYPE_PRODUCT);
 			
-			/*list.add("OR");
-			list.add("MAXCausal");
-			list.add("MAXGeneral");
-			list.add("AND");
-			list.add("MINCausal");
-			list.add("MINGeneral");*/
+			list.add(RELATION_TYPE_ICI_OR);
+			list.add(RELATION_TYPE_ICI_MAX_CAUSAL);
+			list.add(RELATION_TYPE_ICI_MAX_GENERAL);
+			list.add(RELATION_TYPE_ICI_AND);
+			list.add(RELATION_TYPE_ICI_MIN_CAUSAL);
+			list.add(RELATION_TYPE_ICI_MIN_GENERAL);
+			list.add(RELATION_TYPE_ICI_TUNING_GENERAL);
 		}
 	}
 

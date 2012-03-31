@@ -74,8 +74,11 @@ public class SplitIntervalPanel extends JPanel {
 		
 	}
 	
-	public JRadioButton belongsToLeft() {
+	public JRadioButton belongsToLeft () {
 		return belongsToLeft;
+	}
+	public JRadioButton belongsToRight () {
+		return belongsToRight;
 	}
 	
 	public JTextField getLimit() {

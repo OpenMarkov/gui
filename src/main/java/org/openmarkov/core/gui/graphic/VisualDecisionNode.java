@@ -49,7 +49,7 @@ public class VisualDecisionNode extends VisualNode {
 	private static final Color BACKGROUND_FINDING_COLOR = Color.LIGHT_GRAY;
 	
 	/**
-	 * Internal color of the visual node when there is a finding established.
+	 * Internal color of the visual node when there is an imposed policy established.
 	 */
 	private static final Color BACKGROUND_POLICY_SET_COLOR = new Color (112,142,184 );
 	
@@ -70,6 +70,9 @@ public class VisualDecisionNode extends VisualNode {
 	                             OpenMarkovPreferences.OPENMARKOV_COLORS,
 	                             Color.BLACK);
 
+	/**
+	 * This attribute indicates if the node has an imposed policy
+	 */
 	private boolean hasPolicy = false;
 
 	/**
@@ -91,6 +94,25 @@ public class VisualDecisionNode extends VisualNode {
 		setTemporalPosition(new Point2D.Double(probNode.getNode().
 				getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
+	}
+		
+	/**
+	 * Returns a boolean indicating if the node has an imposed policy.
+	 * 
+	 * @return true if the node has imposed policy; false otherwise.
+	 */	
+	public boolean isHasPolicy() {
+		return hasPolicy;
+	}
+
+	/**
+	 * Sets if the node has an imposed policy or not.
+	 * 
+	 * @param hasPolicy
+	 *            new value for the hasPolicy attribute.
+	 */
+	public void setHasPolicy(boolean hasPolicy) {
+		this.hasPolicy = hasPolicy;
 	}
 
 	/**
@@ -241,7 +263,7 @@ public class VisualDecisionNode extends VisualNode {
 		if (findingInNode) {
 			g.setPaint(BACKGROUND_FINDING_COLOR);
 		} else {
-			if (probNode.getPolicyType() != PolicyType.OPTIMAL ){
+			if (hasPolicy) {
 				g.setPaint(BACKGROUND_POLICY_SET_COLOR);
 			}else {
 				g.setPaint(BACKGROUND_COLOR);

@@ -25,14 +25,16 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 /**
- * This class implements a popup menu that is displayes when the user clicks on
+ * This class implements a popup menu that is displayed when the user clicks on
  * a node.
  * 
  * @author jmendoza
  * @author jlgozalo 
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
+ * @version	1.2 asaez - Add options for expanding and contracting nodes,
+ * 						setting and deleting findings and policies.
  */
-class NodePopup extends PopupMenuBasic {
+public class NodePopup extends PopupMenuBasic {
 
 	/**
 	 * Static field for serializable class.
@@ -65,6 +67,31 @@ class NodePopup extends PopupMenuBasic {
 	private StringResource stringResource = null;
 
 	private JMenuItem relationMenuItem;
+		
+	/**
+	 * Object that represents the item 'ImposePolicy'.
+	 */
+	private JMenuItem imposePolicyMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'EditPolicy'.
+	 */
+	private JMenuItem editPolicyMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'RemovePolicy'.
+	 */
+	private JMenuItem removePolicyMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'ShowExpectedUtility'.
+	 */
+	private JMenuItem showExpectedUtilityMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'ShowOptimalPolicy'.
+	 */
+	private JMenuItem showOptimalPolicyMenuItem = null;
 
 	/**
 	 * Object that represents the item 'Expand'.
@@ -126,7 +153,105 @@ class NodePopup extends PopupMenuBasic {
 		add(getLogMenuItem());
 		
 	}
-
+	
+	/**
+	 * This method sets the default popup for nodes
+	 */
+	public void setDefaultPopupNode() {
+		removeAll();
+		add(getCutMenuItem());
+		add(getCopyMenuItem());
+		addSeparator();
+		add(getRemoveMenuItem());
+		addSeparator();
+		add(getPropertiesMenuItem());
+		add(getRelationMenuItem());
+		addSeparator();
+		add(getExpandMenuItem());
+		add(getContractMenuItem());
+		addSeparator();
+		add(getAddFindingMenuItem());
+		add(getRemoveFindingMenuItem());
+		addSeparator();
+		add(getLogMenuItem());
+		pack();
+	}
+	
+	/**
+	 * This method sets the popup for Decision nodes in Edition mode
+	 */
+	public void setPopupDecisionNodeInEditionMode() {
+		removeAll();
+		add(getCutMenuItem());
+		add(getCopyMenuItem());
+		addSeparator();
+		add(getRemoveMenuItem());
+		addSeparator();
+		add(getPropertiesMenuItem());
+		addSeparator();
+		add(getExpandMenuItem());
+		add(getContractMenuItem());
+		addSeparator();
+		add(getImposePolicyMenuItem());
+		add(getEditPolicyMenuItem());
+		add(getRemovePolicyMenuItem());
+		addSeparator();
+		add(getAddFindingMenuItem());
+		add(getRemoveFindingMenuItem());
+		addSeparator();
+		add(getLogMenuItem());
+		pack();
+	}
+	
+	/**   
+	 * This method sets the popup for Decision nodes in Inference mode
+	 * when the network is compiled
+	 */
+	public void setPopupDecisionNodeInCompiledInferenceMode() {
+		removeAll();
+		add(getCutMenuItem());
+		add(getCopyMenuItem());
+		addSeparator();
+		add(getRemoveMenuItem());
+		addSeparator();
+		add(getPropertiesMenuItem());
+		addSeparator();
+		add(getExpandMenuItem());
+		add(getContractMenuItem());
+		addSeparator();
+		add(getShowExpectedUtilityMenuItem());
+		add(getShowOptimalPolicyMenuItem());
+		addSeparator();
+		add(getAddFindingMenuItem());
+		add(getRemoveFindingMenuItem());
+		addSeparator();
+		add(getLogMenuItem());
+		pack();
+	}
+	
+	/**   
+	 * This method sets the popup for Decision nodes in Inference mode
+	 * when the network is compiled
+	 */
+	public void setPopupDecisionNodeInNotCompiledInferenceMode() {
+		removeAll();
+		add(getCutMenuItem());
+		add(getCopyMenuItem());
+		addSeparator();
+		add(getRemoveMenuItem());
+		addSeparator();
+		add(getPropertiesMenuItem());
+		addSeparator();
+		add(getExpandMenuItem());
+		add(getContractMenuItem());
+		addSeparator();
+		add(getAddFindingMenuItem());
+		add(getRemoveFindingMenuItem());
+		addSeparator();
+		add(getLogMenuItem());
+		pack();
+	}
+	
 	private JMenuItem getLogMenuItem() {
 		if (logMenuItem == null) {
             logMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_LOG_MENUITEM,
@@ -215,11 +340,101 @@ class NodePopup extends PopupMenuBasic {
 	private JMenuItem getRelationMenuItem() {
 
 		if (relationMenuItem == null) {
-			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.CHANGE_POTENTIAL);
+			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.EDIT_POTENTIAL);
 			relationMenuItem.addActionListener(listener);
 		}
 
 		return relationMenuItem;
+
+	}
+		
+	/**
+	 * This method initialises imposePolicyMenuItem.
+	 * 
+	 * @return a new 'ImposePolicy' menu item.
+	 */
+	private JMenuItem getImposePolicyMenuItem() {
+
+		if (imposePolicyMenuItem == null) {
+			imposePolicyMenuItem = new LocalizedMenuItem (
+                                                 MenuItemNames.DECISION_IMPOSE_POLICY_MENUITEM,
+                                                 ActionCommands.DECISION_IMPOSE_POLICY);
+			imposePolicyMenuItem.addActionListener(listener);
+		}
+
+		return imposePolicyMenuItem;
+
+	}
+	
+	/**
+	 * This method initialises editPolicyMenuItem.
+	 * 
+	 * @return a new 'EditPolicy' menu item.
+	 */
+	private JMenuItem getEditPolicyMenuItem() {
+
+		if (editPolicyMenuItem == null) {
+			editPolicyMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.DECISION_EDIT_POLICY_MENUITEM,
+                                                    ActionCommands.DECISION_EDIT_POLICY);
+			editPolicyMenuItem.addActionListener(listener);
+		}
+
+		return editPolicyMenuItem;
+
+	}
+	
+	/**
+	 * This method initialises removePolicyMenuItem.
+	 * 
+	 * @return a new 'RemovePolicy' menu item.
+	 */
+	private JMenuItem getRemovePolicyMenuItem() {
+
+		if (removePolicyMenuItem == null) {
+			removePolicyMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.DECISION_REMOVE_POLICY_MENUITEM,
+                                                    ActionCommands.DECISION_REMOVE_POLICY);
+			removePolicyMenuItem.addActionListener(listener);
+		}
+
+		return removePolicyMenuItem;
+
+	}
+	
+	/**
+	 * This method initialises showExpectedUtilityMenuItem.
+	 * 
+	 * @return a new 'ShowExpectedUtility' menu item.
+	 */
+	private JMenuItem getShowExpectedUtilityMenuItem() {
+
+		if (showExpectedUtilityMenuItem == null) {
+			showExpectedUtilityMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.SHOW_EXPECTED_UTILITY_MENUITEM,
+                                                    ActionCommands.DECISION_SHOW_EXPECTED_UTILITY);
+			showExpectedUtilityMenuItem.addActionListener(listener);
+		}
+
+		return showExpectedUtilityMenuItem;
+
+	}
+	
+	/**
+	 * This method initialises showOptimalPolicyMenuItem.
+	 * 
+	 * @return a new 'ShowOptimalPolicy' menu item.
+	 */
+	private JMenuItem getShowOptimalPolicyMenuItem() {
+
+		if (showOptimalPolicyMenuItem == null) {
+			showOptimalPolicyMenuItem = new LocalizedMenuItem (
+                                                    MenuItemNames.SHOW_OPTIMAL_POLICY_MENUITEM,
+                                                    ActionCommands.DECISION_SHOW_OPTIMAL_POLICY);
+			showOptimalPolicyMenuItem.addActionListener(listener);
+		}
+
+		return showOptimalPolicyMenuItem;
 
 	}
 
@@ -315,8 +530,18 @@ class NodePopup extends PopupMenuBasic {
 			component = removeMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			component = propertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_POTENTIAL)) {
+		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
 			component = relationMenuItem;
+		} else if (actionCommand.equals(ActionCommands.DECISION_IMPOSE_POLICY)) {
+			component = imposePolicyMenuItem;
+		} else if (actionCommand.equals(ActionCommands.DECISION_EDIT_POLICY)) {
+			component = editPolicyMenuItem;
+		} else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
+			component = removePolicyMenuItem;
+		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
+			component = showExpectedUtilityMenuItem;
+		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
+			component = showOptimalPolicyMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
 			component = expandMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {

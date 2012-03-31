@@ -1,14 +1,13 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.graphic;
-
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -21,7 +20,6 @@ import java.awt.geom.Point2D;
 import org.openmarkov.core.model.graph.Link;
 import org.apache.log4j.Logger;
 
-
 /**
  * This class is the visual representation of a link.
  * 
@@ -29,7 +27,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class VisualLink extends VisualElement {
-	
+
 	/**
 	 * Width of the top of arrow.
 	 */
@@ -46,6 +44,16 @@ public class VisualLink extends VisualElement {
 	 */
 	private static final double WIDTH_LINE_TO_SELECT = 2;
 
+	/***
+	 * Heigth of the stripe
+	 */
+	private static final double HEIGTH_STRIPE = 8;
+
+	/***
+	 * Distance between stripes
+	 */
+	private static final double STRIPE_DISTANCE = 4;
+
 	/**
 	 * Color of lines.
 	 */
@@ -60,7 +68,7 @@ public class VisualLink extends VisualElement {
 	 * End point.
 	 */
 	private Point2D.Double endPoint = null;
-	
+
 	/**
 	 * Object that has the information (included visual information) of the
 	 * destination node.
@@ -77,7 +85,7 @@ public class VisualLink extends VisualElement {
 	 * Object that has the link information.
 	 */
 	private Link link = null;
-	
+
 	private Logger logger;
 
 	/**
@@ -90,7 +98,8 @@ public class VisualLink extends VisualElement {
 	 * @param newDestination
 	 *            destination node.
 	 */
-	public VisualLink(Link newLink, VisualNode newSource, VisualNode newDestination) {
+	public VisualLink(Link newLink, VisualNode newSource,
+			VisualNode newDestination) {
 
 		link = newLink;
 		source = newSource;
@@ -102,7 +111,8 @@ public class VisualLink extends VisualElement {
 	}
 
 	/**
-	 * Creates a new visual link from the two points that define the start and the end of the arrow.
+	 * Creates a new visual link from the two points that define the start and
+	 * the end of the arrow.
 	 * 
 	 * @param newStartPoint
 	 *            the starting point of the arrow.
@@ -116,8 +126,7 @@ public class VisualLink extends VisualElement {
 		this.logger = Logger.getLogger(VisualLink.class);
 
 	}
-	
-	
+
 	/**
 	 * Returns the source node of the link.
 	 * 
@@ -149,7 +158,7 @@ public class VisualLink extends VisualElement {
 	public void setDestinationNode(VisualNode node) {
 		destination = node;
 	}
-	
+
 	/**
 	 * Returns the link associated with the visual link.
 	 * 
@@ -197,20 +206,23 @@ public class VisualLink extends VisualElement {
 		int index = 0;
 		int length = 0;
 		Point2D.Double[] allPoints = null;
-		Point2D.Double[] points = null;		
+		Point2D.Double[] points = null;
 
 		Point2D.Double pStart = null;
 		Point2D.Double pEnd = null;
 
-		if ((source != null) && (destination != null)) {	
-			/*pStart = new Point2D.Double(source.getProbNode().getNode().getCoordinateX(),
-										source.getProbNode().getNode().getCoordinateY());
-			pEnd = new Point2D.Double(destination.getProbNode().getNode().getCoordinateX(), 
-										destination.getProbNode().getNode().getCoordinateY());
-										*/
+		if ((source != null) && (destination != null)) {
+			/*
+			 * pStart = new
+			 * Point2D.Double(source.getProbNode().getNode().getCoordinateX(),
+			 * source.getProbNode().getNode().getCoordinateY()); pEnd = new
+			 * Point2D
+			 * .Double(destination.getProbNode().getNode().getCoordinateX(),
+			 * destination.getProbNode().getNode().getCoordinateY());
+			 */
 			pStart = new Point2D.Double(source.getTemporalPosition().getX(),
 					source.getTemporalPosition().getY());
-			pEnd = new Point2D.Double(destination.getTemporalPosition().getX(), 
+			pEnd = new Point2D.Double(destination.getTemporalPosition().getX(),
 					destination.getTemporalPosition().getY());
 		}
 
@@ -229,8 +241,8 @@ public class VisualLink extends VisualElement {
 			polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
 			length = points.length;
 			for (index = 1; index < length; index++) {
-				polygon.lineTo(
-					(float) points[index].getX(), (float) points[index].getY());
+				polygon.lineTo((float) points[index].getX(),
+						(float) points[index].getY());
 			}
 			polygon.closePath();
 		} else {
@@ -240,7 +252,7 @@ public class VisualLink extends VisualElement {
 		return polygon;
 
 	}
-	
+
 	/**
 	 * Returns the shape of the arrow as it must be painted.
 	 * 
@@ -251,8 +263,7 @@ public class VisualLink extends VisualElement {
 		GeneralPath polygon = null;
 		int index = 0;
 		int length = 0;
-		Point2D.Double[] allPoints =
-			calculatePointsOfArrow(start, end);
+		Point2D.Double[] allPoints = calculatePointsOfArrow(start, end);
 		Point2D.Double[] points = new Point2D.Double[7];
 
 		points[0] = allPoints[0];
@@ -266,8 +277,8 @@ public class VisualLink extends VisualElement {
 		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
 		length = points.length;
 		for (index = 1; index < length; index++) {
-			polygon.lineTo((float) points[index].getX(), (float) points[index]
-				.getY());
+			polygon.lineTo((float) points[index].getX(),
+					(float) points[index].getY());
 		}
 		polygon.closePath();
 
@@ -275,61 +286,106 @@ public class VisualLink extends VisualElement {
 
 	}
 
-	
+	/**
+	 * Returns the line to be painted for undirected links.
+	 * 
+	 * @return shape of the line.
+	 */
+	private Shape getLineToPaint(Point2D.Double start, Point2D.Double end) {
+
+		GeneralPath polygon = null;
+		int index = 0;
+		int length = 0;
+
+		Point2D.Double[] points = new Point2D.Double[2];
+
+		points[0] = start;
+		points[1] = end;
+
+		polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, points.length);
+		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
+		length = points.length;
+		for (index = 1; index < length; index++) {
+			polygon.lineTo((float) points[index].getX(),
+					(float) points[index].getY());
+		}
+		polygon.closePath();
+
+		return polygon;
+	}
+
 	/**
 	 * Calculates the nine points of the line with top of arrow. /** Calculates
 	 * the nine points of the line with top of arrow.
 	 * 
 	 * <pre>
-	 * 0</pre>
+	 * 0
+	 * </pre>
+	 * 
 	 * <pre>
 	 *         * *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *        *   *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *      *       *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *     *         *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *    *           *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *   *             *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *  1****2**3**4****5
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       *     *
 	 * </pre>
+	 * 
 	 * <pre>
 	 *       6**7**8
 	 * </pre>
@@ -340,7 +396,8 @@ public class VisualLink extends VisualElement {
 	 *            end of the line.
 	 * @return return an array that contains the coordinates of the nine points.
 	 */
-	private static Point2D.Double[] calculatePointsOfArrow(Point2D.Double start, Point2D.Double end) {
+	private static Point2D.Double[] calculatePointsOfArrow(
+			Point2D.Double start, Point2D.Double end) {
 
 		double tx = start.getX();
 		double ty = start.getY();
@@ -356,31 +413,26 @@ public class VisualLink extends VisualElement {
 		transformation2D.translate(-tx, -ty);
 		points[0] = new Point2D.Double();
 		transformation2D.transform(end, points[0]);
-		incrHeight =
-			(points[0].getX() >= 0) ? HEIGHT_TOP_ARROW : -HEIGHT_TOP_ARROW;
-		points[1] =
-			new Point2D.Double(points[0].getX() - incrHeight, points[0].getY()
-				- halfWidth);
+		incrHeight = (points[0].getX() >= 0) ? HEIGHT_TOP_ARROW
+				: -HEIGHT_TOP_ARROW;
+		points[1] = new Point2D.Double(points[0].getX() - incrHeight,
+				points[0].getY() - halfWidth);
 		points[3] = new Point2D.Double(points[1].getX(), points[0].getY());
-		points[2] =
-			new Point2D.Double(points[3].getX(), points[3].getY()
+		points[2] = new Point2D.Double(points[3].getX(), points[3].getY()
 				- WIDTH_LINE_TO_SELECT);
-		points[4] =
-			new Point2D.Double(points[3].getX(), points[3].getY()
+		points[4] = new Point2D.Double(points[3].getX(), points[3].getY()
 				+ WIDTH_LINE_TO_SELECT);
-		points[5] =
-			new Point2D.Double(points[1].getX(), points[0].getY() + halfWidth);
+		points[5] = new Point2D.Double(points[1].getX(), points[0].getY()
+				+ halfWidth);
 		points[7] = new Point2D.Double(0, 0);
-		points[6] =
-			new Point2D.Double(points[7].getX(), points[7].getY()
+		points[6] = new Point2D.Double(points[7].getX(), points[7].getY()
 				- WIDTH_LINE_TO_SELECT);
-		points[8] =
-			new Point2D.Double(points[7].getX(), points[7].getY()
+		points[8] = new Point2D.Double(points[7].getX(), points[7].getY()
 				+ WIDTH_LINE_TO_SELECT);
 		try {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
-			//ExceptionsHandler.handleException(e, null, true);
+			// ExceptionsHandler.handleException(e, null, true);
 			Logger.getLogger(VisualLink.class).info(e);
 		}
 		length = points.length;
@@ -392,7 +444,6 @@ public class VisualLink extends VisualElement {
 
 	}
 
-	
 	/**
 	 * Paints the arrow into the graphics object.
 	 * 
@@ -400,10 +451,12 @@ public class VisualLink extends VisualElement {
 	 *            graphics object where paint the link.
 	 */
 
-	public void paintArrow(Graphics2D g, Point2D.Double start, Point2D.Double end) {
+	public void paintArrow(Graphics2D g, Point2D.Double start,
+			Point2D.Double end) {
 		Shape shape = null;
 		if ((start != null) && (end != null)) {
-			if ((Math.abs(start.getX() - end.getX()) > 0.01) || (Math.abs(start.getY() - end.getY()) > 0.01)) {
+			if ((Math.abs(start.getX() - end.getX()) > 0.01)
+					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
 				if (isSelected()) {
 					g.setStroke(WIDE_STROKE);
 				} else {
@@ -416,8 +469,108 @@ public class VisualLink extends VisualElement {
 			}
 		}
 	}
-	
-	
+
+	/****
+	 * Paints the double stripe of the link
+	 * 
+	 * @param g
+	 *            graphic object where to paint the link.
+	 * @param start
+	 *            starting point
+	 * @param end
+	 *            end point
+	 */
+	public void paintDoubleStripe(Graphics2D g, Point2D.Double start,
+			Point2D.Double end) {
+
+		Shape shape = null;
+		if ((start != null) && (end != null)) {
+			if ((Math.abs(start.getX() - end.getX()) > 0.01)
+					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
+				if (isSelected()) {
+					g.setStroke(WIDE_STROKE);
+				} else {
+					g.setStroke(NORMAL_STROKE);
+				}
+				g.setPaint(FOREGROUND_COLOR);
+				shape = getStripeShape(start, end, STRIPE_DISTANCE);
+				g.fill(shape);
+				g.draw(shape);
+				shape = getStripeShape(start, end, -STRIPE_DISTANCE);
+				g.fill(shape);
+				g.draw(shape);
+			}
+		}
+
+	}
+
+	/*****
+	 * Returns the line to be painted for the stripe
+	 * 
+	 * @param start
+	 *            starting point
+	 * @param end
+	 *            end point
+	 * @param distance
+	 *            separation from the middle point
+	 * @return Shape to paint
+	 */
+	public Shape getStripeShape(Point2D.Double start, Point2D.Double end,
+			double distance) {
+		GeneralPath polygon = null;
+		Point2D.Double[] points = new Point2D.Double[2];
+		double mx = (end.getX() - start.getX()) / 2;
+		double my = (end.getY() - start.getY()) / 2;
+		points[0] = new Point2D.Double(0, -HEIGTH_STRIPE);
+		points[1] = new Point2D.Double(0, HEIGTH_STRIPE);
+		double tx = start.getX();
+		double ty = start.getY();
+		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
+		AffineTransform transformation2D = new AffineTransform();
+		transformation2D.translate(-distance, 0);
+		transformation2D.rotate(-angle);
+		transformation2D.translate(-tx - mx, -ty - my);
+
+		try {
+			transformation2D = transformation2D.createInverse();
+		} catch (NoninvertibleTransformException e) {
+			Logger.getLogger(VisualLink.class).info(e);
+		}
+		transformation2D.transform(points[0], points[0]);
+		transformation2D.transform(points[1], points[1]);
+		polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, points.length);
+
+		polygon.moveTo((float) points[0].getX(), (float) points[0].getY());
+		polygon.lineTo((float) points[1].getX(), (float) points[1].getY());
+		polygon.closePath();
+		return polygon;
+
+	}
+
+	/**
+	 * Paints the line into the graphics object.
+	 * 
+	 * @param g
+	 *            graphics object where paint the link.
+	 */
+
+	public void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end) {
+		Shape shape = null;
+		if ((start != null) && (end != null)) {
+			if ((Math.abs(start.getX() - end.getX()) > 0.01)
+					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
+				if (isSelected()) {
+					g.setStroke(WIDE_STROKE);
+				} else {
+					g.setStroke(NORMAL_STROKE);
+				}
+				g.setPaint(FOREGROUND_COLOR);
+				shape = getLineToPaint(start, end);
+				g.draw(shape);
+			}
+		}
+	}
+
 	/**
 	 * Paints the visual link into the graphics object.
 	 * 
@@ -428,37 +581,50 @@ public class VisualLink extends VisualElement {
 	public void paint(Graphics2D g) {
 
 		if ((source != null) && (destination != null)) {
-			//Paint the final arrow when the user releases the button of the mouse 
+			// Paint the final arrow when the user releases the button of the
+			// mouse
 			Segment line;
 			Point2D.Double sPoint;
 			Point2D.Double ePoint;
-	
+
 			try {
-				/*line =
-					new Segment(new Point2D.Double(
-							source.getProbNode().getNode().getCoordinateX(),
-							source.getProbNode().getNode().getCoordinateY()), new Point2D.Double(
-							destination.getProbNode().getNode().getCoordinateX(), 
-							destination.getProbNode().getNode().getCoordinateY()));
-							*/
-				line =
-					new Segment(new Point2D.Double(
-							source.getTemporalPosition().getX(),
-							source.getTemporalPosition().getY()), new Point2D.Double(
-							destination.getTemporalPosition().getX(), 
-							destination.getTemporalPosition().getY()));
+				/*
+				 * line = new Segment(new Point2D.Double(
+				 * source.getProbNode().getNode().getCoordinateX(),
+				 * source.getProbNode().getNode().getCoordinateY()), new
+				 * Point2D.Double(
+				 * destination.getProbNode().getNode().getCoordinateX(),
+				 * destination.getProbNode().getNode().getCoordinateY()));
+				 */
+				line = new Segment(new Point2D.Double(source
+						.getTemporalPosition().getX(), source
+						.getTemporalPosition().getY()), new Point2D.Double(
+						destination.getTemporalPosition().getX(), destination
+								.getTemporalPosition().getY()));
 			} catch (IllegalArgumentException e) {
-	
+
 				return;
 			}
 			sPoint = source.cutPoint(line, g);
 			ePoint = destination.cutPoint(line, g);
-			if ((sPoint != null) && (ePoint != null)) {
+			if ((sPoint != null) && (ePoint != null) && (link.isDirected())) {
 				paintArrow(g, sPoint, ePoint);
+				if (link.hasRestrictions()) {
+					paintDoubleStripe(g, sPoint, ePoint);
+				}
+			} else if ((sPoint != null) && (ePoint != null)
+					&& (!link.isDirected())) {
+				paintLine(g, sPoint, ePoint);
+			}
+		} else if ((link != null) && (link.isDirected())) {
+			// Paint the arrow while the user has not released the button of the
+			// mouse
+			paintArrow(g, startPoint, endPoint);
+			if (link.hasRestrictions()) {
+				paintDoubleStripe(g, startPoint, endPoint);
 			}
 		} else {
-			//Paint the arrow while the user has not released the button of the mouse
-			paintArrow(g, startPoint, endPoint);			
+			paintLine(g, startPoint, endPoint);
 		}
 	}
 

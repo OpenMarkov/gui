@@ -1,25 +1,24 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.window.edition;
-
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-
 
 import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
@@ -29,14 +28,13 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
+import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
-
-
-
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
 /**
@@ -48,9 +46,13 @@ import org.openmarkov.core.model.network.PropertyNames;
  * @version 1.1 jlgozalo Semantic corrections, adding javadoc tags and suppress
  *          super() in constructor.
  * @version 1.2 mpalacios
+ * @version 1.3 - asaez - Functionality added: - Explanation capabilities, -
+ *          Management of working modes (edition/inference), - Expansion and
+ *          contraction of nodes, - Introduction and elimination of evidence -
+ *          Management of multiple evidence cases.
  */
-public class NetworkPanel extends FrameContentPanel implements 
-	PNUndoableEditListener, PropertyNames{
+public class NetworkPanel extends FrameContentPanel implements
+		PNUndoableEditListener, PropertyNames {
 
 	/**
 	 * Static field for serializable class.
@@ -66,7 +68,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 * Constant that represents the Inference Working Mode.
 	 */
 	public static final int INFERENCE_WORKING_MODE = 1;
-	
+
 	/**
 	 * Scroll panel to scroll the editor panel.
 	 */
@@ -87,7 +89,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 * Application main
 	 */
 	private MainPanel mainPanel = null;
-	
+
 	/**
 	 * Name of the file where the network is saved (updated or not).
 	 */
@@ -99,17 +101,17 @@ public class NetworkPanel extends FrameContentPanel implements
 	private boolean modified = false;
 
 	private JScrollPane propertiesScrollPanel;
-	
+
 	/**
-	 * This variable indicates in which mode is the network currently working
-	 * It is initially set to Edition Mode
+	 * This variable indicates in which mode is the network currently working It
+	 * is initially set to Edition Mode
 	 */
 	private int workingMode = EDITION_WORKING_MODE;
 
 	/**
 	 * Constructor that creates the instance.
 	 * 
-	 * @param probNet 
+	 * @param probNet
 	 *            network that will be edited.
 	 * @param mainPanel
 	 *            application main panel.
@@ -121,28 +123,28 @@ public class NetworkPanel extends FrameContentPanel implements
 		initialize();
 
 	}
-	
+
 	/**
 	 * Constructor that creates the instance.
 	 * 
 	 * @param newNetwork
 	 *            network that will be edited.
 	 */
-	/*public NetworkPanel(PNESupport pNESupport) {
-		this.pNESupport=pNESupport;
-	
-		network = pNESupport.getProbNet();
-		initialize();
-
-	}*/
+	/*
+	 * public NetworkPanel(PNESupport pNESupport) { this.pNESupport=pNESupport;
+	 * 
+	 * network = pNESupport.getProbNet(); initialize();
+	 * 
+	 * }
+	 */
 	/**
 	 * Constructor that creates the instance.
 	 * 
-	 * @param mainPanel 
-	 *            application main panel. 
+	 * @param mainPanel
+	 *            application main panel.
 	 */
-	public NetworkPanel(MainPanel mainPanel) { 
-		this.mainPanel = mainPanel; 
+	public NetworkPanel(MainPanel mainPanel) {
+		this.mainPanel = mainPanel;
 		initialize();
 
 	}
@@ -153,15 +155,15 @@ public class NetworkPanel extends FrameContentPanel implements
 	private void initialize() {
 
 		setLayout(new BorderLayout());
-			
-		//JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		//getNetworkScrollPanel().setSize(new Dimension (300,300));
-		
-		//splitPane.setTopComponent(getNetworkScrollPanel());
-		//splitPane.setBottomComponent(getPropertiesScrollPanel());
+
+		// JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		// getNetworkScrollPanel().setSize(new Dimension (300,300));
+
+		// splitPane.setTopComponent(getNetworkScrollPanel());
+		// splitPane.setBottomComponent(getPropertiesScrollPanel());
 		add(getNetworkScrollPanel());
 	}
-	
+
 	/**
 	 * This method initializes networkScrollPanel.
 	 * 
@@ -171,39 +173,39 @@ public class NetworkPanel extends FrameContentPanel implements
 
 		if (networkScrollPanel == null) {
 			networkScrollPanel = new ScrollEditorPanel(getEditorPanel());
-			networkScrollPanel.setPreferredSize(new Dimension (300,500));
+			networkScrollPanel.setPreferredSize(new Dimension(300, 500));
 		}
 
 		return networkScrollPanel;
 
 	}
-	
+
 	/**
-	 * This method initialises editorPanel.
+	 * This method initializes editorPanel.
 	 * 
 	 * @return a new editor panel.
 	 */
-	/*private EditorPanel getEditorPanel() {
-
-		if (editorPanel == null) {
-			editorPanel = new EditorPanel(network);
-			editorPanel.addEditionListener(this);
-		}
-
-		return editorPanel;
-
-	}*/
+	/*
+	 * private EditorPanel getEditorPanel() {
+	 * 
+	 * if (editorPanel == null) { editorPanel = new EditorPanel(network);
+	 * editorPanel.addEditionListener(this); }
+	 * 
+	 * return editorPanel;
+	 * 
+	 * }
+	 */
 	/**
-	 * This method initialises editorPanel.
+	 * This method initializes editorPanel.
 	 * 
 	 * @return a new editor panel.
 	 */
-	private EditorPanel getEditorPanel() {
+	public EditorPanel getEditorPanel() {
 
 		if (editorPanel == null) {
 			editorPanel = new EditorPanel(this);
-			//editorPanel.addEditionListener(this);
-			//It is necessary for edition actions like movement node.
+			// editorPanel.addEditionListener(this);
+			// It is necessary for edition actions like movement node.
 		}
 
 		return editorPanel;
@@ -220,16 +222,15 @@ public class NetworkPanel extends FrameContentPanel implements
 		return probNet;
 
 	}
-	
-	/** 
+
+	/**
 	 * Returns the application main panel.
 	 * 
 	 * @return the application main panel.
 	 */
 	protected MainPanel getMainPanel() {
 		return mainPanel;
-	} 
-	
+	}
 
 	/**
 	 * Returns the modification state of the network.
@@ -268,7 +269,8 @@ public class NetworkPanel extends FrameContentPanel implements
 		if (modified) {
 			newTitle = "*";
 		}
-		newTitle += (getProbNet().getName()== null)? "" : getProbNet().getName();
+		newTitle += (getProbNet().getName() == null) ? "" : getProbNet()
+				.getName();
 		container.setTitle(newTitle);
 
 	}
@@ -284,7 +286,6 @@ public class NetworkPanel extends FrameContentPanel implements
 		return (String) getProbNet().getName();
 	}
 
-	
 	/**
 	 * Returns the name of the file where the network is saved.
 	 * 
@@ -331,7 +332,7 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.setEditionState(newState);
 
 	}
-	
+
 	/**
 	 * Changes the current working mode.
 	 * 
@@ -342,7 +343,7 @@ public class NetworkPanel extends FrameContentPanel implements
 		this.workingMode = workingMode;
 		editorPanel.setPropagationActive(editorPanel.isAutomaticPropagation());
 	}
-	
+
 	/**
 	 * Returns the current working mode.
 	 * 
@@ -351,7 +352,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	public int getWorkingMode() {
 		return workingMode;
 	}
-	
+
 	/**
 	 * Changes the current expansion threshold.
 	 * 
@@ -361,7 +362,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	public void setExpansionThreshold(double expansionThreshold) {
 		editorPanel.setExpansionThreshold(expansionThreshold);
 	}
-	
+
 	/**
 	 * Returns the current expansion threshold.
 	 * 
@@ -372,9 +373,9 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of the network. If
-	 * some property has changed, insert a new undo point into the network undo
-	 * manager.
+	 * This method shows a dialog box with the adittionalProperties of the
+	 * network. If some property has changed, insert a new undo point into the
+	 * network undo manager.
 	 */
 	public void changeNetworkProperties() {
 
@@ -383,97 +384,143 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of a node. If some
-	 * property has changed, insert a new undo point into the network undo
-	 * manager.
+	 * This method shows a dialog box with the adittionalProperties of a node.
+	 * If some property has changed, insert a new undo point into the network
+	 * undo manager.
 	 */
 	public void changeNodeProperties() {
 
 		editorPanel.changeNodeProperties();
 
 	}
-	
+
 	/**
 	 * This method has been created for testing.
 	 * 
 	 */
-	public void changePotentialValues() {
+	public void changePotential() {
+
+		editorPanel.changePotential();
+
+	}
+	
+	/**
+	 * This method imposes a policy in a decision node.
+	 */
+	public void imposePolicyInNode() {
 		
-		editorPanel.changePotentialValues();
+		editorPanel.imposePolicyInNode();
 		
 	}
 	
+	/**
+	 * This method edits an imposed policy of a decision node.
+	 */
+	public void editNodePolicy() {
+		
+		editorPanel.editNodePolicy();
+		
+	}
+	
+	/**
+	 * This method removes an imposed policy from a decision node.
+	 */
+	public void removePolicyFromNode() {
+		
+		editorPanel.removePolicyFromNode();
+		
+	}
+	
+	/**
+	 * This method shows the expected utility of a decision node.
+	 */
+	public void showExpectedUtilityOfNode() {
+		
+		editorPanel.showExpectedUtilityOfNode();
+		
+	}
+	
+	/**
+	 * This method shows the optimal policy for a decision node.
+	 */
+	public void showOptimalPolicyOfNode() {
+		
+		editorPanel.showOptimalPolicyOfNode();
+		
+	}
+
 	/**
 	 * This method expands a node.
 	 */
 	public void expandNode() {
-		
+
 		editorPanel.expandNode();
-		
+
 	}
-	
+
 	/**
 	 * This method contracts a node.
 	 */
 	public void contractNode() {
-		
+
 		editorPanel.contractNode();
-		
+
 	}
-	
+
 	/**
 	 * This method adds a finding in a node.
 	 */
 	public void addFinding() {
-		
+
 		editorPanel.addFinding();
-		
+
 	}
-	
+
 	/**
-	 * This method removes a finding in a node.
+	 * This method removes findings from selected nodes.
 	 */
 	public void removeFinding() {
-		
+
 		editorPanel.removeFinding();
-		
+
 	}
-	
+
 	/**
-	 * This method updates the expansion state (expanded/contracted) of the nodes.
-	 * It is used in transitions from edition to inference mode and vice versa, and also
-	 * when the user modifies the current expansion threshold in the Inference tool bar
+	 * This method updates the expansion state (expanded/contracted) of the
+	 * nodes. It is used in transitions from edition to inference mode and vice
+	 * versa, and also when the user modifies the current expansion threshold in
+	 * the Inference tool bar
 	 */
-	public void updateNodesExpansionState(int newWorkingMode) {		
-		editorPanel.updateNodesExpansionState(newWorkingMode);		
+	public void updateNodesExpansionState(int newWorkingMode) {
+		editorPanel.updateNodesExpansionState(newWorkingMode);
 	}
-	
+
 	/**
-	 * This method updates the value of each state for each node in the network 
+	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
 	public void updateIndividualProbabilities() {
 		editorPanel.updateIndividualProbabilities();
-	}		
-	
+	}
+
 	/**
-	 * This method removes all the findings established in the 
-	 * current evidence case. 
+	 * This method removes all the findings established in the current evidence
+	 * case.
 	 */
 	public void removeAllFindings() {
 		editorPanel.removeAllFindings();
 	}
-	
+
 	/**
-	 * This method returns true if there are any finding in the 
-	 * current evidence case.
+	 * This method returns true if there are any finding in the current evidence
+	 * case.
 	 * 
 	 * @return true if the current evidence case has at least one finding.
 	 */
 	public boolean areThereFindingsInCase() {
 		return editorPanel.areThereFindingsInCase();
-	} 
-			
+	}
+
 	/**
 	 * This method copies the selected nodes to the clipboard.
 	 * 
@@ -492,8 +539,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void pasteFromClipboard() {
 
-		//editorPanel.pasteFromClipboard();
-
+		editorPanel.pasteFromClipboard();
 	}
 
 	/**
@@ -504,7 +550,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	public boolean isThereDataStored() {
 
 		return editorPanel.isThereDataStored();
-
 	}
 
 	/**
@@ -518,30 +563,43 @@ public class NetworkPanel extends FrameContentPanel implements
 
 	}
 
+	/****
+	 * This methods enables the link restriction of the selected link.
+	 */
+	public void enableLinkRestriction() {
+		editorPanel.enableLinkRestriction();
+
+	}
+
+	/***
+	 * This method resets the link restriction of the selected link.
+	 */
+	public void disableLinkRestriction() {
+		editorPanel.disableLinkRestriction();
+
+	}
+
 	/**
 	 * This method requests to the user the adittionalProperties of a network.
 	 * 
 	 * @param owner
 	 *            window that owns the dialog box.
 	 * @param adittionalProperties
-	 *            object that contains the adittionalProperties of the network and where
-	 *            changes will be saved, if the user accepts the changes.
+	 *            object that contains the adittionalProperties of the network
+	 *            and where changes will be saved, if the user accepts the
+	 *            changes.
 	 * @param newNetwork
-	 *            specifies if the network whose adittionalProperties are going to be
-	 *            edited is new.
-	 * @return true, if the user has made changes on the adittionalProperties; otherwise,
-	 *         false.
+	 *            specifies if the network whose adittionalProperties are going
+	 *            to be edited is new.
+	 * @return true, if the user has made changes on the adittionalProperties;
+	 *         otherwise, false.
 	 */
 	public static boolean requestNetworkProperties(ProbNet probNet,
-													Window owner,
-													boolean newNetwork) {
+			Window owner, boolean newNetwork) {
 
-		return EditorPanel.requestNetworkProperties(owner, 
-				probNet, newNetwork);
-			
+		return EditorPanel.requestNetworkProperties(owner, probNet, newNetwork);
 
-		}
-	
+	}
 
 	/**
 	 * Sets a new popup menu factory.
@@ -631,8 +689,8 @@ public class NetworkPanel extends FrameContentPanel implements
 	 *            new zoom.
 	 */
 	public void setZoom(double value) {
-  		editorPanel.setZoom(value);
-  
+		editorPanel.setZoom(value);
+
 	}
 
 	/**
@@ -680,7 +738,7 @@ public class NetworkPanel extends FrameContentPanel implements
 		return editorPanel.getSelectedLinksNumber();
 
 	}
-	
+
 	/**
 	 * Returns a list containing the currently selected nodes.
 	 * 
@@ -689,7 +747,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	public ArrayList<VisualNode> getSelectedNodes() {
 		return editorPanel.getSelectedNodes();
 	}
-	
+
 	/**
 	 * Selects or deselects all nodes of the network.
 	 * 
@@ -699,7 +757,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	public void setSelectedAllNodes(boolean selected) {
 		editorPanel.setSelectedAllNodes(selected);
 	}
-	
+
 	/**
 	 * Selects or deselects all objects of the network.
 	 * 
@@ -723,132 +781,130 @@ public class NetworkPanel extends FrameContentPanel implements
 
 	}
 
-	
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		setModified(true);
-		
+
 	}
 
-
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		repaint();
 	}
 
-	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		setModified(true);
 		repaint();
 	}
 
 	/**
-	 * @param isProbabilistic if it is false then it indicates if the cost-effectiveness analysis is deterministic (optimal interventions)
-	 * otherwise the analysis is probabilistic 
+	 * @param isProbabilistic
+	 *            if it is false then it indicates if the cost-effectiveness
+	 *            analysis is deterministic (optimal interventions) otherwise
+	 *            the analysis is probabilistic
 	 */
 	public void showCostEffectivenessDialog(boolean isProbabilistic) {
-		if (!isProbabilistic){
+		if (!isProbabilistic) {
 			editorPanel.showCostEffectivenessDeterministicDialog();
+		} else {
+
+			editorPanel.showSensitivityAnalysisCostEffectivenessDialog();
 		}
-		else{
-			
-				editorPanel.showSensitivityAnalysisCostEffectivenessDialog();
-		}
-		
+
 	}
 
 	/**
 	 * This method returns the number of the current Evidence Case.
-	 *            
+	 * 
 	 * @return the number of the current Evidence Case.
-	 */	
+	 */
 	public int getCurrentCase() {
 		return editorPanel.getCurrentCase();
 	}
-	
+
 	/**
 	 * This method returns the number of Evidence Cases that the ArrayList is
 	 * currently holding .
-	 *            
+	 * 
 	 * @return the number of Evidence Cases in the ArrayList.
-	 */	
+	 */
 	public int getNumberOfCases() {
 		return editorPanel.getNumberOfCases();
 	}
-	
-	/** 
+
+	/**
 	 * This method creates a new evidence case
 	 */
 	public void createNewEvidenceCase() {
 		editorPanel.createNewEvidenceCase();
 	}
-	
+
 	/**
 	 * This method makes the first evidence case to be the current
 	 */
 	public void goToFirstEvidenceCase() {
 		editorPanel.goToFirstEvidenceCase();
 	}
-	
+
 	/**
 	 * This method makes the previous evidence case to be the current
 	 */
 	public void goToPreviousEvidenceCase() {
 		editorPanel.goToPreviousEvidenceCase();
 	}
-	
+
 	/**
 	 * This method makes the next evidence case to be the current
 	 */
 	public void goToNextEvidenceCase() {
 		editorPanel.goToNextEvidenceCase();
-	}	
-	
+	}
+
 	/**
 	 * This method makes the last evidence case to be the current
 	 */
 	public void goToLastEvidenceCase() {
 		editorPanel.goToLastEvidenceCase();
 	}
-		
+
 	/**
-	 * This method clears out all the evidence cases. It returns to an
-	 * 'initial state' in which there is only an initial evidence case
-	 * with no findings (corresponding to prior probabilities)
+	 * This method clears out all the evidence cases. It returns to an 'initial
+	 * state' in which there is only an initial evidence case with no findings
+	 * (corresponding to prior probabilities)
 	 */
 	public void clearOutAllEvidenceCases() {
 		editorPanel.clearOutAllEvidenceCases();
 	}
 
 	/**
-	 * This method does the propagation of the evidence for all the
-	 * evidence cases in memory.
+	 * This method does the propagation of the evidence for all the evidence
+	 * cases in memory.
 	 * 
 	 * @param mainPanelMenuAssistant
-	 *            the menu assistant associated to the main panel. 
+	 *            the menu assistant associated to the main panel.
 	 */
-	public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) { 
+	public void propagateEvidence(MainPanelMenuAssistant mainPanelMenuAssistant) {
 		editorPanel.propagateEvidence(mainPanelMenuAssistant);
-	} 
-	
+	}
+
 	/**
 	 * This method sets the inference options for this network.
 	 * 
 	 */
-	public void setInferenceOptions() {		
-		editorPanel.setInferenceOptions();		
+	public void setInferenceOptions() {
+		editorPanel.setInferenceOptions();
 	}
-	
+
 	/**
 	 * This method returns true if propagation type currently set in the panel
 	 * is automatic; false if manual.
-	 *            
+	 * 
 	 * @return true if the current propagation type is automatic.
-	 */	
+	 */
 	public boolean isAutomaticPropagation() {
 		return editorPanel.isAutomaticPropagation();
 	}
-	
+
 	/**
 	 * This method sets the current propagation type in the panel.
 	 * 
@@ -858,13 +914,13 @@ public class NetworkPanel extends FrameContentPanel implements
 	public void setAutomaticPropagation(boolean automaticPropagation) {
 		editorPanel.setAutomaticPropagation(automaticPropagation);
 	}
-	
-	/** 
-	 * This method returns the propagation status: true if propagation 
-	 * should be done right now; false otherwise.
-	 *            
+
+	/**
+	 * This method returns the propagation status: true if propagation should be
+	 * done right now; false otherwise.
+	 * 
 	 * @return true if propagation should be done right now.
-	 */	
+	 */
 	public boolean isPropagationActive() {
 		return editorPanel.isPropagationActive();
 	}
@@ -877,6 +933,32 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setPropagationActive(boolean propagationActive) {
 		editorPanel.setPropagationActive(propagationActive);
-	} 
+	}
+
+	/**
+	 * Returns the inference algorithm assigned to the panel.
+	 * 
+	 * @return the inference algorithm assigned to the panel.
+	 */
+	public InferenceAlgorithm getInferenceAlgorithm() {
+		return editorPanel.getInferenceAlgorithm();
+	}
+
+	/**
+	 * Sets the inference algorithm assigned to the panel.
+	 * 
+	 * @param inferenceAlgorithm
+	 *            the inference Algorithm to be assigned to the panel.
+	 */
+	public void setInferenceAlgorithm(InferenceAlgorithm inferenceAlgorithm) {
+		editorPanel.setInferenceAlgorithm(inferenceAlgorithm);
+	}
+
+    @Override
+    public void close ()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

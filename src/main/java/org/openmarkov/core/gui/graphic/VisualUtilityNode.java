@@ -132,7 +132,7 @@ public class VisualUtilityNode extends VisualNode {
 			hexagonHeight = innerBox.getInnerBoxHeight(g) + 
 					textHeight + 2*VERTICAL_SPACE_TO_TEXT +
 					NODE_EXPANDED_HEIGHT_MARGIN*2;
-			hexagonWidth = NODE_EXPANDED_WIDTH + 6.0;
+			hexagonWidth = NODE_EXPANDED_WIDTH + 8.0;
 		} else {
 			hexagonHeight = textHeight + 2*VERTICAL_SPACE_TO_TEXT;
 			if (textWidth < textHeight) {

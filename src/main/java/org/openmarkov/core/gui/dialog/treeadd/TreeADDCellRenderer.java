@@ -151,7 +151,9 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		// TreeADDBranch always have only one child: a potential that it would be a TreeADD or a Potential
 		Object child = tree.getModel().getChild(branch,0);
 		boolean isLeaf = tree.getModel().isLeaf(child);
-		
+		if (!leaf && child instanceof TreeADDPotential && !expanded) {
+			rightLabel.setText (" " + ((Potential)child).treeADDString());
+		}
 		if( isLeaf && !expanded ) {
 			getTreeCellRendererComponent (tree, child, selected, expanded, leaf, row, hasFocus);			
 		}
@@ -185,19 +187,22 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 			int row, boolean hasFocus) throws NotEnoughMemoryException {
 
 		if (obj instanceof TreeADDPotential) {
-		TreeADDPotential treeADD= (TreeADDPotential)obj;
-		Variable topVariable = treeADD.getTopVariable();
-		if (iconsPool.containsKey (topVariable)) {
-			leftLabel.setIcon (iconsPool.get (topVariable));
-		}
-		else {
-			String description= topVariable.getName();
-			
-			Icon icon= createNodeIcon (treeADD, description);
-			iconsPool.put (topVariable, icon);
-			leftLabel.setIcon (icon);
-		}
-				
+			TreeADDPotential treeADD= (TreeADDPotential)obj;
+			/*if (expanded) {*/
+				Variable topVariable = treeADD.getTopVariable();
+				if (iconsPool.containsKey (topVariable)) {
+					leftLabel.setIcon (iconsPool.get (topVariable));
+				}
+				else {
+					String description= topVariable.getName();
+
+					Icon icon= createNodeIcon (treeADD, description);
+					iconsPool.put (topVariable, icon);
+					leftLabel.setIcon (icon);
+				}
+			/*} else if (!expanded) {
+				rightLabel.setText (" " + ((Potential)treeADD).treeADDString());
+			}	*/
 		
 		} else if (obj instanceof TablePotential) {	
 			TablePotential tablePotential = (TablePotential)obj;
@@ -321,7 +326,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		
 
 	/**
-	 * Creates what is displayed in a branch for numeric variables
+	 * Creates information displayed in a branch for numeric variables
 	 */
 	public String getHTMLNumeric(TreeADDBranch treeBranch) {
 

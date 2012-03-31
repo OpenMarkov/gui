@@ -17,7 +17,7 @@ import junit.textui.TestRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openmarkov.core.gui.dialog.node.NodeDomainValuesTablePanelTest;
-import org.openmarkov.core.gui.dialog.node.TablePotentialPanelTest;
+import org.openmarkov.core.gui.dialog.node.ICIOptionsPanelTest;
 
 
 
@@ -31,7 +31,7 @@ import org.openmarkov.core.gui.dialog.node.TablePotentialPanelTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { NodeDomainValuesTablePanelTest.class,
-						TablePotentialPanelTest.class})
+						ICIOptionsPanelTest.class})
 
 public class PackageDialogsTest {
 

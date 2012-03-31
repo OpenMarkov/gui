@@ -35,7 +35,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	private static final long serialVersionUID = 5777866419377968128L;
 
 	/**
-	 * This method initialises this instance.
+	 * This method initializes this instance.
 	 * 
 	 * @param owner
 	 *            window that owns this dialog.

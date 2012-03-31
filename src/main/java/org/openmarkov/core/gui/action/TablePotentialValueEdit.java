@@ -30,10 +30,10 @@ import org.openmarkov.core.action.SimplePNEdit;
  * It is implemented for TablePotential Only
  *    
  * @version 1.0 21/12/10
- * @author Miguel Palacios
+ * @author mpalacios
  */
 @SuppressWarnings("serial")
-public class NodePotentialEdit extends SimplePNEdit {
+public class TablePotentialValueEdit extends SimplePNEdit {
 	/**
 	 * The column of the table where is the potential
 	 */
@@ -97,7 +97,7 @@ public class NodePotentialEdit extends SimplePNEdit {
 	 * @param row the row in the edited table
 	 * @param priorityList the priority lists for potentials update. 
 	 * */
-	public NodePotentialEdit(ProbNode probNode,Double 
+	public TablePotentialValueEdit(ProbNode probNode,Double 
 			newValue, int row, int col, LinkedList<Integer> priorityList) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
@@ -177,35 +177,43 @@ public class NodePotentialEdit extends SimplePNEdit {
 				priorityList.add(potentialSelected);
 			}
 			Iterator<Integer> listIterator = priorityList.listIterator();
-			newTable[potentialSelected] = newValue;
 			Double sum = 0.0;
 			Double rest = 0.0;
-			int pos=0;
+			int position=0;
+			int maxDecimals=10;
+		    double epsilon;
+		     
+		    epsilon=Math.pow(10,-(maxDecimals+2));
+			
+			newTable[potentialSelected] = Utilities.roundAndReduce(newValue, epsilon, maxDecimals);
+			
 		
 			while (listIterator.hasNext()== true){
-				pos = (Integer) listIterator.next();
-				sum = roundingDouble(sum + newTable[pos]);
+				position = (Integer) listIterator.next();
+				sum = Utilities.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
 				//sum += newTable[pos];
 			}
-			rest = Math.abs(roundingDouble(1-sum));
+			rest = Math.abs(Utilities.roundAndReduce(1-sum, epsilon, maxDecimals));
 			//rest = Math.abs( 1 - sum );
 		
 			if (sum > 1.0){
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true && rest != 0){
-					pos = (Integer) listIterator.next();
-					rest = roundingDouble(rest - newTable[pos]);
+					position = (Integer) listIterator.next();
+					
+					rest = Utilities.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
 					//rest = rest - newTable[pos];
-					if (rest < 0){
-						newTable[pos] = Math.abs(rest);
+					if (rest < 0){//it is because the value of the table is bigger than the rest
+						//and now there's nothing left to reach one
+						newTable[position] = Math.abs(Utilities.roundAndReduce(rest, epsilon, maxDecimals));
 						break;
-					}else
-						newTable[pos] = 0;
+					}else 
+						newTable[position] = 0.0;
 				
 					}
-			}else{
-				pos = (Integer) priorityList.getFirst();
-				newTable[pos] = roundingDouble(newTable[pos] + rest);
+			}else{//=< 1
+				position = (Integer) priorityList.getFirst();
+				newTable[position] = Utilities.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
 				//newTable[pos] = newTable[pos] + rest;
 			}
 				
@@ -295,11 +303,13 @@ public class NodePotentialEdit extends SimplePNEdit {
 		
 	}
 	
-	private double roundingDouble(double number) {
+	
+
+	/*private double roundingDouble(double number) {
 
 		double positions = Math.pow( 10, (double) decimalPositions );
 		return Math.round( number * positions ) / positions;
-	}
+	}*/
 
 	/**
 	 * Gets the row position associated to value edited if priorityList exists

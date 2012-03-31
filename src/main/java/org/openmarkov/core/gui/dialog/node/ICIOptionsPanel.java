@@ -10,14 +10,23 @@
 package org.openmarkov.core.gui.dialog.node;
 
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -28,14 +37,22 @@ import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialsTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 
 
 
@@ -44,43 +61,52 @@ import org.openmarkov.core.model.network.potential.PotentialType;
  * (if utility node) or policy values (if decision node)
  * 
  * @author jlgozalo
+ * @author maryebra
  * @version 1.0 jlgozalo
  */
-public class TablePotentialPanel extends JPanel implements 
+public class ICIOptionsPanel extends JPanel implements 
 	PNUndoableEditListener{
 
+	
 	/**
 	 * serial uid
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
+	/**
+	 * to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
+	 */
+	private Container parentPanel;
 
 	/**
 	 * remember the last model selected (probabilistic, deterministic or optimal
 	 */
+	/**
+	 * 
+	 */
+	private CPTablePanel cpTablePanel;
+	
 	private int prevModelPolicySelected = -1;
 	private static int PROBABILISTIC_SELECTED = 0;
 	private static int DETERMINISTIC_SELECTED = 1;
 	private static int OPTIMAL_SELECTED = 2;
-
+	/**
+	 * remember the last model selected canonical or TPC
+	 */
+	private int previousModel = -1;
+	private static int CANONICAL = 0;
+	private static int TPC = 1;
+	
 	/**
 	 * Dialog string resource.
 	 */
 	private StringResource dialogStringResource;
 	
-
-	/**
-	 * Object where all information will be saved.
-	 */
-	private ProbNode nodeProperties = null;
-
 	/**
 	 * Specifies if the node whose adittionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 
 	
-	private JComboBox jComboBoxRelationType;
-
 	/** buttongroups of the options * */
 	private ButtonGroup buttonGroupNetOrCompound = null;
 	private ButtonGroup buttonGroupAllOrIndependent = null;
@@ -89,16 +115,14 @@ public class TablePotentialPanel extends JPanel implements
 	private ButtonGroup buttonGroupProbabilityOrValue = null;
 
 	/** radio buttons for the different options of the panel * */
-	//private JRadioButton jRadioButtonOptimal;
-	//private JRadioButton jRadioButtonProbabilisticType;
-	//private JRadioButton jRadioButtonDeterministicType;
+	
 	private JRadioButton jRadioButtonNeto;
 	private JRadioButton jRadioButtonCompound;
 	private JRadioButton jRadioButtonTPC;
 	private JRadioButton jRadioButtonCanonical;
 	private JRadioButton jRadioButtonProbabilities;
 	private JRadioButton jRadioButtonValues;
-	private JRadioButton jRadioButtonIndependant;
+	private JRadioButton jRadioButtonIndependent;
 	private JRadioButton jRadioButtonAll;
 
 	/** the different options panel * */
@@ -123,6 +147,8 @@ public class TablePotentialPanel extends JPanel implements
 	 * object to manage the ItemChange events of the panel
 	 */
 	//private TablePotentialPanelListenerAssistant listener = null;
+	private ICIOptionListenerAssistant listener=null;
+	
 
 	private ProbNode probNode;
 
@@ -131,7 +157,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public TablePotentialPanel() {
+	public ICIOptionsPanel() {
 
 		this( true); //new ElementObservable() );
 
@@ -140,33 +166,32 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * constructor without construction parameters
 	 */
-	public TablePotentialPanel( ProbNode probNode) {
-
+	public ICIOptionsPanel( ProbNode probNode) {
+		
 		this( true);//, notifier );
 		this.probNode = probNode;
 		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
-		
+		this.listener = new ICIOptionListenerAssistant(this);
 		try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-
+		
+		
 	}
 
 	/**
-	 * This method initialises this instance.
+	 * This method initializes this instance.
 	 * 
 	 * @param newNode
 	 *            true if the node is a new node; otherwise false
 	 */
-	public TablePotentialPanel(final boolean newNode){
+	public ICIOptionsPanel(final boolean newNode){
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		
 		this.newNode = newNode;
-		//this.listener =
-		//	new TablePotentialPanelListenerAssistant( this );
 	
 
 	}
@@ -203,9 +228,9 @@ public class TablePotentialPanel extends JPanel implements
 											getCommentHTMLScrollPaneNodeDefinitionComment(),
 											GroupLayout.DEFAULT_SIZE, 623,
 											Short.MAX_VALUE ) )
-								.addComponent(
+								/*.addComponent(
 									getNodePotentialsTablePanel(),GroupLayout.DEFAULT_SIZE, 184,
-									Short.MAX_VALUE )
+									Short.MAX_VALUE )*/
 								.addGroup(
 									groupLayout
 										.createSequentialGroup()
@@ -249,10 +274,10 @@ public class TablePotentialPanel extends JPanel implements
 						.addComponent(
 							getJPanelTpcOrCanonical(),
 							GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE ) ))
-				.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
+				/*.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
 				.addComponent(
 					getNodePotentialsTablePanel(), GroupLayout.DEFAULT_SIZE,
-					184, Short.MAX_VALUE ).addPreferredGap(
+					184, Short.MAX_VALUE )*/.addPreferredGap(
 					LayoutStyle.ComponentPlacement.RELATED ).addGroup(
 					groupLayout.createParallelGroup(
 						GroupLayout.Alignment.LEADING ).addComponent(
@@ -280,7 +305,7 @@ public class TablePotentialPanel extends JPanel implements
 			initButtonGroupTpcOrCanonical();
 			jPanelTpcOrCanonical.add( getJRadioButtonCanonical() );
 			jPanelTpcOrCanonical.add( getJRadioButtonTPC() );
-			jPanelTpcOrCanonical.setEnabled( false );
+			jPanelTpcOrCanonical.setEnabled( true);
 		}
 		return jPanelTpcOrCanonical;
 	}
@@ -298,7 +323,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * @return the button for the TPC option to be displayed
 	 */
-	protected JRadioButton getJRadioButtonTPC() {
+	public JRadioButton getJRadioButtonTPC() {
 
 		if (jRadioButtonTPC == null) {
 			jRadioButtonTPC = new JRadioButton();
@@ -307,8 +332,9 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonTPC.setText( "New JRadioButton" );
 			jRadioButtonTPC.setText( dialogStringResource
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonTPC.Text" ) );
-		//	jRadioButtonTPC.addItemListener( this.listener );
-			jRadioButtonTPC.setEnabled( false );
+			jRadioButtonTPC.addItemListener( this.listener );
+			jRadioButtonTPC.setEnabled( true );
+			
 		}
 		return jRadioButtonTPC;
 	}
@@ -316,7 +342,7 @@ public class TablePotentialPanel extends JPanel implements
 	/**
 	 * @return the button for the Canonical option to be displayed
 	 */
-	protected JRadioButton getJRadioButtonCanonical() {
+	public JRadioButton getJRadioButtonCanonical() {
 
 		if (jRadioButtonCanonical == null) {
 			jRadioButtonCanonical = new JRadioButton();
@@ -326,8 +352,9 @@ public class TablePotentialPanel extends JPanel implements
 			jRadioButtonCanonical
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonCanonical.Text" ) );
-	//		jRadioButtonCanonical.addItemListener( this.listener );
-			jRadioButtonCanonical.setEnabled( false );
+			jRadioButtonCanonical.setEnabled( true );
+			jRadioButtonCanonical.setSelected( true );
+			jRadioButtonCanonical.addItemListener( this.listener );
 		}
 		return jRadioButtonCanonical;
 	}
@@ -484,7 +511,7 @@ public class TablePotentialPanel extends JPanel implements
 			jPanelAllOrIndependant.setName( "jPanelAllOrIndependant" );
 			initButtonGroupAllOrIndependent();
 			jPanelAllOrIndependant.add( getJRadioButtonAll() );
-			jPanelAllOrIndependant.add( getJRadioButtonIndependant() );
+			jPanelAllOrIndependant.add( getJRadioButtonIndependent() );
 			jPanelAllOrIndependant.setEnabled( false );
 		}
 		return jPanelAllOrIndependant;
@@ -497,7 +524,7 @@ public class TablePotentialPanel extends JPanel implements
 
 		buttonGroupAllOrIndependent = new ButtonGroup();
 		buttonGroupAllOrIndependent.add( getJRadioButtonAll() );
-		buttonGroupAllOrIndependent.add( getJRadioButtonIndependant() );
+		buttonGroupAllOrIndependent.add( getJRadioButtonIndependent() );
 	}
 
 	/**
@@ -514,28 +541,28 @@ public class TablePotentialPanel extends JPanel implements
 				.getString( "NodeProbsValuesTablePanel.jRadioButtonAll.Text" ) );
 		//	jRadioButtonAll.addItemListener( this.listener );
 			jRadioButtonAll.setEnabled( false );
-			jRadioButtonAll.setSelected( true );
+			jRadioButtonAll.setSelected( false );
 		}
 		return jRadioButtonAll;
 	}
 
 	/**
-	 * @return the button for the Independant parameters to be selected
+	 * @return the button for the Independent parameters to be selected
 	 */
-	protected JRadioButton getJRadioButtonIndependant() {
+	protected JRadioButton getJRadioButtonIndependent() {
 
-		if (jRadioButtonIndependant == null) {
-			jRadioButtonIndependant = new JRadioButton();
-			jRadioButtonIndependant.setName( "jRadioButtonIndependant" );
-			jRadioButtonIndependant.setText( "New JRadioButton" );
-			jRadioButtonIndependant.setBounds( 1, 25, 170, 24 );
-			jRadioButtonIndependant
+		if (jRadioButtonIndependent == null) {
+			jRadioButtonIndependent = new JRadioButton();
+			jRadioButtonIndependent.setName( "jRadioButtonIndependent" );
+			jRadioButtonIndependent.setText( "New JRadioButton" );
+			jRadioButtonIndependent.setBounds( 1, 25, 170, 24 );
+			jRadioButtonIndependent
 				.setText( dialogStringResource.getString( 
 						"NodeProbsValuesTablePanel.jRadioButtonIndependant.Text" ) );
-			//jRadioButtonIndependant.addItemListener( this.listener );
-			jRadioButtonIndependant.setEnabled( true );
+			//jRadioButtonIndependent.addItemListener( this.listener );
+			jRadioButtonIndependent.setEnabled( false );
 		}
-		return jRadioButtonIndependant;
+		return jRadioButtonIndependent;
 	}
 
 	/**
@@ -632,7 +659,6 @@ public class TablePotentialPanel extends JPanel implements
 	protected void hideElementsWhenIsUtilityNode() {
 
 		//this.jLabelRelationType.setEnabled( false );
-		// MIGUEL: this.jComboBoxRelationType.setEnabled( false );
 		//this.jRadioButtonOptimal.setEnabled( false );
 		//this.jRadioButtonProbabilisticType.setEnabled( false );
 		//this.jRadioButtonDeterministicType.setEnabled( false );
@@ -646,7 +672,6 @@ public class TablePotentialPanel extends JPanel implements
 	protected void hideElementsWhenOptimalSelected() {
 
 		//this.jLabelRelationType.setEnabled( false );
-		this.jComboBoxRelationType.setEnabled( false );
 		//this.jRadioButtonProbabilisticType.setEnabled( false );
 		//this.jRadioButtonDeterministicType.setEnabled( false );
 		this.nodePotentialsTablePanel.showValuesTable( false );
@@ -674,8 +699,8 @@ public class TablePotentialPanel extends JPanel implements
 		this.jPanelAllOrIndependant.setEnabled( false );
 		this.jRadioButtonAll.setEnabled( false );
 		this.jRadioButtonAll.setSelected( false );
-		this.jRadioButtonIndependant.setEnabled( false );
-		this.jRadioButtonIndependant.setSelected( false );
+		this.jRadioButtonIndependent.setEnabled( false );
+		this.jRadioButtonIndependent.setSelected( false );
 
 	}
 
@@ -686,30 +711,8 @@ public class TablePotentialPanel extends JPanel implements
 	protected void showElementsWhenOptimalDeselected() {
 
 		//this.jLabelRelationType.setEnabled( true );
-		//this.jComboBoxRelationType.setEnabled( true );
 		this.nodePotentialsTablePanel.showValuesTable( true );
 		this.nodePotentialsTablePanel.setEnabled( true );
-	}
-
-	/**
-	 * Get the node Properties in this panel
-	 * 
-	 * @return the nodeProperties
-	 */
-	public ProbNode getNodeProperties() {
-
-		return nodeProperties;
-	}
-
-	/**
-	 * Set the node adittionalProperties in this panel with the provided ones
-	 * 
-	 * @param nodeProperties
-	 *            the nodeProperties to set
-	 */
-	public void setNodeProperties(final ProbNode nodeProperties) {
-
-		this.nodeProperties = nodeProperties;
 	}
 
 	/**
@@ -730,15 +733,14 @@ public class TablePotentialPanel extends JPanel implements
 	}
 
 	/**
-	 * This method fills the content of the fields from a NodeProperties object.
+	 * This method fills the content of the fields from a ProbNode object.
 	 * 
-	 * @param adittionalProperties
-	 *            object from where load the information.
+	 * @param node object from where load the information.
 	 */
-	public void setFieldsFromProperties( ProbNode properties ) {
+	public void setFieldsFromNode( ProbNode node ) {
 
-		if ( (properties.getNodeType() == NodeType.DECISION) && 
-			(properties.getPolicyType() == PolicyType.OPTIMAL)){
+		if ( (node.getNodeType() == NodeType.DECISION) && 
+			(node.getPolicyType() == PolicyType.OPTIMAL)){
 			hideElementsWhenIsDecisionNodeOrUniformPotential();
 			//this.getJRadioButtonOptimal().setEnabled( true );
 			//this.getJRadioButtonOptimal().setSelected( true );
@@ -747,18 +749,18 @@ public class TablePotentialPanel extends JPanel implements
 			
 			if ( probNode.getPotentials().get(0).getPotentialType() == 
 				PotentialType.TABLE ) {
-				getNodePotentialsTablePanel().setData(properties );
+				getNodePotentialsTablePanel().setData(node );
 			}else {
 					hideElementsWhenIsDecisionNodeOrUniformPotential();
 			}
 				
-			if (properties.getNodeType() == NodeType.UTILITY) {
+			if (node.getNodeType() == NodeType.UTILITY) {
 				hideElementsWhenIsUtilityNode();
 				if ( probNode.getPotentials().get(0).getPotentialType() == 
 					PotentialType.PRODUCT ){
 					hideElementsWhenIsDecisionNodeOrUniformPotential();
 				}
-			} else if (properties.getNodeType() == NodeType.CHANCE) {
+			} else if (node.getNodeType() == NodeType.CHANCE) {
 				//TODO activar la opción correspondiente
 				//this.jRadioButtonProbabilisticType.setSelected( true );
 				this.prevModelPolicySelected = PROBABILISTIC_SELECTED;
@@ -767,8 +769,8 @@ public class TablePotentialPanel extends JPanel implements
 		}
 
 	}
-
 	
+
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		//TODO Actualiza la tabla cuando se agrega/elimna un padre/ estado
 		//Pero si la tabla vas estar en otro cuadro de dialogo, ésto ya no 
@@ -777,17 +779,19 @@ public class TablePotentialPanel extends JPanel implements
 	}
 
 	
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		
 		
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 
 }

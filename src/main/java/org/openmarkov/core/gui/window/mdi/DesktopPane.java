@@ -102,13 +102,13 @@ public class DesktopPane extends JDesktopPane {
 
 	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
 	/**
-	 * Closes the actual internal frame and selects the previous one (if
+	 * Closes the current internal frame and selects the previous one (if
 	 * exists).
 	 * 
 	 * @throws UnsupportedOperationException
 	 *             if selection is vetoed.
 	 */
-	public void closeActualInternalFrame() throws UnsupportedOperationException {
+	public void closeCurrentInternalFrame() throws UnsupportedOperationException {
 
 		JInternalFrame frame = getSelectedFrame();
 		JInternalFrame previousFrame = getPrevious();

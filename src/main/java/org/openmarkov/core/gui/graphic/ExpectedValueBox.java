@@ -10,7 +10,6 @@
 package org.openmarkov.core.gui.graphic;
 
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -26,77 +25,15 @@ import java.awt.geom.Rectangle2D;
 public class ExpectedValueBox extends InnerBox {
 
 	/**
-	 * Color of the Box.
-	 */
-	private static final Color BACKGROUND_COLOR = Color.WHITE;
-	
-	/**
-	 * Color of lines and letters.
-	 */	
-	private static final Color FOREGROUND_COLOR = Color.BLACK;
-	
-	/**
-	 * Color of bars proportional to the value of the state.
-	 */	
-	private static final Color BAR_COLOR = Color.RED;
-	
-	/**
 	 * Font type Helvetica, plain, size 9.
 	 */
 	protected static final Font SCALE_FONT = new Font("Helvetica", Font.PLAIN, 9);
 	
 	/**
-	 * Internal margin around the Box.
-	 */
-	private static final double INTERNAL_MARGIN = 7;
-	
-	/**
-	 * Horizontal Offset of the Box .
-	 */
-	private static final double BOX_HORIZONTAL_OFFSET = 2;
-	
-	/**
-	 * Width of the Box.
-	 */
-	private static final double BOX_WIDTH = 
-		VisualNode.NODE_EXPANDED_WIDTH - (2 * INTERNAL_MARGIN);	
-
-	/**
-	 * Indentation.
-	 */
-	private static final double INDENT = 5;
-	
-	/**
-	 * Relative vertical position of the bar.
-	 */
-	private static final double BAR_VERTICAL_POSITION = 12;
-	
-	/**
-	 * Horizontal starting position of the bar.
-	 */
-	private static final double BAR_HORIZONTAL_POSITION = 42;
-	
-	/**
-	 * Maximum length of the bar.
-	 */
-	private static final double BAR_FULL_LENGTH = 100;
-	
-	/**
-	 * Height of the bar.
-	 */
-	private static final double BAR_HEIGHT = 5;
-	
-	/**
-	 * Horizontal position for the value to be shown on the right of the bar.
-	 */
-	private static final double VALUE_HORIZONTAL_POSITION = 
-			BAR_HORIZONTAL_POSITION + BAR_FULL_LENGTH + INDENT*2;
-	
-	/**
 	 * Vertical separation between the line for expected value and
 	 * the line for the scale.
 	 */
-	private static final double VERTICAL_SEPARATION = 7;
+	private static final double SCALE_VERTICAL_SEPARATION = 12;	
 	
 	/**
 	 * Horizontal Offset for the position of the range values
@@ -110,19 +47,107 @@ public class ExpectedValueBox extends InnerBox {
 	 */
 	private static final int SCALE_RANGE_VERTICAL_OFFSET = 4;
 	
-
-	//Variable que almacena los parámetros necesarios para representar el valor esperado ....... Eliminar..............
-	double[] expectedValue;
+	/**
+	 * Minimum value that the expected value can take.
+	 */
+	private double minUtilityRange = 0.0;
 	
 	/**
-	 * Creates a new Finite States Variable innerBox.
+	 * Maximum value that the expected value can take.
+	 */
+	private double maxUtilityRange = 100.0;	
+	
+	/**
+	 * This variable contains the visual state that is part
+	 * of this inner box.
+	 */
+	VisualState visualState = null;
+
+	/**
+	 * Creates a new Expected Value Variable innerBox.
 	 * 
 	 * @param vNode
-	 *            visualNode to which this Finite States Variable innerBox is associated.
+	 *            visualNode to which this Expected Value Variable innerBox is associated.
 	 */
 	public ExpectedValueBox(VisualNode vNode) {
 		visualNode = vNode;
-		expectedValue = createExpectedValue();
+		visualState = new VisualState(visualNode, 0, "  EU");
+	}
+	
+	/**
+	 * Returns the minimum value that the expected value can take.
+	 * 
+	 * @return minimum value that the expected value can take.
+	 */
+	public double getMinUtilityRange() {
+		return minUtilityRange;
+	}
+	
+	/**
+	 * Sets the minimum value that the expected value can take.
+	 * 
+	 * @param minUtilityRange
+	 *            minimum value that the expected value can take.
+	 */
+	public void setMinUtilityRange(double minUtilityRange) {
+		this.minUtilityRange = minUtilityRange;
+	}
+	
+	/**
+	 * Returns the maximum value that the expected value can take.
+	 * 
+	 * @return maximum value that the expected value can take.
+	 */
+	public double getMaxUtilityRange() {
+		return maxUtilityRange;
+	}
+	
+	/**
+	 * Sets the maximum value that the expected value can take.
+	 * 
+	 * @param maxUtilityRange
+	 *            maximum value that the expected value can take.
+	 */
+	public void setMaxUtilityRange(double maxUtilityRange) {
+		this.maxUtilityRange = maxUtilityRange;
+	}
+	
+	/**
+	 * This method recreates the visual state of the inner box.
+	 *  
+	 * @param numCases
+	 *            Number of evidence cases in memory.
+	 */
+	public void recreateVisualState(int numCases) {
+		visualState = new VisualState(visualNode, 0, "  EU", numCases);
+	}
+
+	/**
+	 * Returns the visual state contained by this inner box.
+	 * 
+	 * @return visual state contained by this inner box.
+	 */
+	public VisualState getVisualState() {
+		return visualState;
+	}
+
+	/**
+	 * Sets the visual state contained by this inner box.
+	 * 
+	 * @param visualState
+	 *            visual state contained by this inner box.
+	 */
+	public void setVisualState(VisualState visualState) {
+		this.visualState = visualState;
+	}
+	
+	/**
+	 * Returns the number of visual states of this inner box.
+	 * 
+	 * @return the number of visual states of this inner box.
+	 */
+	public int getNumStates() {
+		return 1;
 	}
 	
 	/**
@@ -133,12 +158,12 @@ public class ExpectedValueBox extends InnerBox {
 	public Shape getShape(Graphics2D g) {
 		double innerNodeHeight = getInnerBoxHeight(g);
 		return new Rectangle2D.Double(
-				visualNode.getUpperLeftCornerX(g) + BOX_HORIZONTAL_OFFSET,
+				visualNode.getUpperLeftCornerX(g),
 				visualNode.getUpperLeftCornerY(g) + 
 						visualNode.getTextHeight(g) + INTERNAL_MARGIN, 
 				BOX_WIDTH, 
 				innerNodeHeight
-				);
+				);		
 	}
 		
 	/**
@@ -155,36 +180,16 @@ public class ExpectedValueBox extends InnerBox {
 		g.setPaint(FOREGROUND_COLOR);
 		g.draw(shape);	
 		g.setFont(INNERBOX_FONT);
-		Double stateXposition = visualNode.getUpperLeftCornerX(g) + 
-				INDENT;
-		Double stateYposition = visualNode.getUpperLeftCornerY(g) + 
-				visualNode.getTextHeight(g) + INTERNAL_MARGIN + 
-				BAR_VERTICAL_POSITION;
 		
-		//draw the line of the expected value
-		g.drawString("  EU", stateXposition.intValue(), stateYposition.intValue());
-		if (visualNode.getEditorPanel().isPropagationActive()) {
-			g.setPaint(BAR_COLOR);
-			g.fill(new Rectangle2D.Double(
-					stateXposition + BAR_HORIZONTAL_POSITION, 
-					stateYposition - BAR_HEIGHT - 1,
-					(expectedValue[2]*100)/(expectedValue[1]-expectedValue[0]),
-					BAR_HEIGHT)
-					);
-			g.drawString("" + (Math.floor((expectedValue[2]+expectedValue[0]) * 10))/10, 
-					(stateXposition.intValue() + 
-							new Double(VALUE_HORIZONTAL_POSITION).intValue()),
-					stateYposition.intValue());
-			g.setPaint(FOREGROUND_COLOR);
-		}
+		visualState.paint(g);
 		
 		//draw the scale in the bottom part
 		Double scaleXPostion = visualNode.getUpperLeftCornerX(g) + 
-				INDENT + BAR_HORIZONTAL_POSITION;
+				INTERNAL_MARGIN + STATES_INDENT + BAR_HORIZONTAL_POSITION_UTILITY - 1;
 		Double scaleYPostion = visualNode.getUpperLeftCornerY(g) +
 				visualNode.getTextHeight(g) + INTERNAL_MARGIN + 
-				BAR_VERTICAL_POSITION + VERTICAL_SEPARATION;
-		
+				STATES_VERTICAL_SEPARATION + SCALE_VERTICAL_SEPARATION +
+				(BAR_HEIGHT*(visualState.getNumberOfValues()-1));		
 		
 		g.draw(new Line2D.Double(scaleXPostion,
 				scaleYPostion, 
@@ -218,12 +223,12 @@ public class ExpectedValueBox extends InnerBox {
 				);
 
 		g.setFont(SCALE_FONT);
-		g.drawString(""+expectedValue[0], 
+		g.drawString("" + minUtilityRange,
 				scaleXPostion.intValue() - SCALE_RANGE_HORIZONTAL_OFFSET,
 				scaleYPostion.intValue() + g.getFont().getSize() + 
 						SCALE_RANGE_VERTICAL_OFFSET
 				);
-		g.drawString(""+expectedValue[1],
+		g.drawString("" + maxUtilityRange,			
 				(int) (scaleXPostion.intValue()+ BAR_FULL_LENGTH) - 
 						SCALE_RANGE_HORIZONTAL_OFFSET, 
 				scaleYPostion.intValue() + g.getFont().getSize() + 
@@ -231,41 +236,33 @@ public class ExpectedValueBox extends InnerBox {
 				);
 		g.setFont(INNERBOX_FONT);
 	}
+	
 
 	/**
 	 * Returns the height of the innerBox.
 	 * 
+	 * @param g
+	 *            graphics object.
+	 * 
 	 * @return the height of the innerBox.
 	 */
 	public double getInnerBoxHeight(Graphics2D g) {
-		double innerBoxHeight;
-		innerBoxHeight = (INTERNAL_MARGIN*2) + 
-				BAR_VERTICAL_POSITION + 
-				VERTICAL_SEPARATION +
-				BAR_HEIGHT/2;
+		double innerBoxHeight = 0.0;
+		if (visualNode.getEditorPanel().isPropagationActive()) {	
+			innerBoxHeight = INTERNAL_MARGIN*2 + 
+				STATES_VERTICAL_SEPARATION + 
+				SCALE_VERTICAL_SEPARATION +
+				(visualState.getNumberOfValues()-1)*BAR_HEIGHT+
+				BAR_HEIGHT/2 +
+				SCALE_FONT.getSize();
+		} else {			
+			innerBoxHeight = INTERNAL_MARGIN*2 + 
+				STATES_VERTICAL_SEPARATION + 
+				SCALE_VERTICAL_SEPARATION +
+				BAR_HEIGHT/2 +
+				SCALE_FONT.getSize();
+		}
 		return innerBoxHeight;
 	}
-	
-	
-	
-	//Método auxiliar para generar el valor esperado....... Eliminar..............
-	private double[] createExpectedValue () {
-		double[] expVal = new double[3];
-		double aux1 = (Math.floor(Math.random()* 1000))/10;
-		double aux2 = (Math.floor(Math.random()* 1000))/10;
-		if (aux1 > aux2) {
-			double aux3 = aux1;
-			aux1 = aux2;
-			aux2 = aux3;
-		}
-		expVal[0] = aux1; //límite inferior del valor esperado
-		expVal[1] = aux2; //límite superior del valor esperado
-		double value = ((Math.floor(Math.random()* 1000))/10);
-		while (value > (aux2-aux1)) {
-			value = value/1.4;
-		}
-		expVal[2] = (Math.floor((value) * 10))/10; //valor esperado
-		return expVal;		
-	}
-	
+
 }

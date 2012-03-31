@@ -76,22 +76,21 @@ public class OptionsInferenceDialogListener implements ActionListener {
 				editorPanel.setAutomaticPropagation(true);
 				editorPanel.setPropagationActive(true);
 				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
-					for (int i=0; i<editorPanel.getNumberOfCases(); i++) {
-						editorPanel.doPropagation(editorPanel.getEvidenceCase(i), i);
-						editorPanel.updateAllVisualSates("", i);
+					for (int i=0; i<editorPanel.getNumberOfCases(); i++) { 
+						if (editorPanel.getEvidenceCasesCompilationState(i) == false) {
+							editorPanel.doPropagation(editorPanel.getEvidenceCase(i), i);
+							editorPanel.updateAllVisualStates("", i);							
+						}
 					}
-					inferenceToolBar.setCurrentEvidenceCaseName((editorPanel.getNumberOfCases())-1, 
-							editorPanel.isPropagationActive());
-					editorPanel.setCurrentCase((editorPanel.getNumberOfCases())-1);
+					editorPanel.setSelectedAllNodes(false);
+					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase());
+					editorPanel.updateNodesFindingState(editorPanel.getCurrentEvidenceCase());
 				}
 			} else if (inferenceType.equals(stringResource.
 					getString("OptionsInferenceDialog.optionManual.Label"))) {
 				editorPanel.setAutomaticPropagation(false);
-				editorPanel.setPropagationActive(false);
 				if (editorPanel.getNetworkPanel().getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
-					editorPanel.updateAllVisualSates("", editorPanel.getCurrentCase());
-					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase(), 
-							editorPanel.isPropagationActive());
+					inferenceToolBar.setCurrentEvidenceCaseName(editorPanel.getCurrentCase()); 
 				}
 			}
 		} else if (command.equals(stringResource.getString("OptionsInferenceDialog.jButtonCancel.Label"))) {

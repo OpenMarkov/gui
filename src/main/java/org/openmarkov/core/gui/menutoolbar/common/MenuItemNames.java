@@ -152,6 +152,25 @@ public class MenuItemNames
      */
     public static final String EDIT_LINKPROPERTIES_MENUITEM =
         EDIT_MENU + ".LinkProperties";
+    
+    /**
+     * Constant that defines the item 'Edit - Link enable linkRestrictions'.
+     */
+    public static final String EDIT_LINKRESTRICTION_ENABLE_MENUITEM =
+        EDIT_MENU + ".LinkRestrictionEnable";
+    
+    /**
+     * Constant that defines the item 'Edit - Link disable linkRestrictions'.
+     */
+    public static final String EDIT_LINKRESTRICTION_DISABLE_MENUITEM =
+        EDIT_MENU + ".LinkRestrictionDisable";
+    
+    
+    /**
+     * Constant that defines the item 'Edit - Link revelationArc'.
+     */
+    public static final String EDIT_LINKREVELATIONARC_MENUITEM =
+        EDIT_MENU + ".RevelationArc";
 
     /**
      * Constant that defines the item 'Edit - Switch to Inference mode'.
@@ -397,9 +416,7 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'Help - About'.
      */
-    public static final String HELP_ABOUT_MENUITEM = HELP_MENU + ".About";
-    
-    
+    public static final String HELP_ABOUT_MENUITEM = HELP_MENU + ".About"; 
     
     /**
      * Constant that defines the item 'Assign'. Only (momently) in popupmenu
@@ -421,5 +438,28 @@ public class MenuItemNames
 
     public static final String EDIT_LOG_MENUITEM = EDIT_MENU + ".Log";
 
+    /**
+     * Constant that defines the item 'Impose Policy' in decision node's popupmenu
+     */
+    public static final String DECISION_IMPOSE_POLICY_MENUITEM = "Decision.ImposePolicy";
     
+	/** 
+	 * Constant that defines the item 'Edit Policy' in decision node's popupmenu
+	 */
+	public static final String DECISION_EDIT_POLICY_MENUITEM = "Decision.EditPolicy";
+	
+	/** 
+	 * Constant that defines the item 'Remove Policy' in decision node's popupmenu
+	 */
+	public static final String DECISION_REMOVE_POLICY_MENUITEM = "Decision.RemovePolicy";
+	
+	/**
+	 * Constant that defines the item 'Show Expected Utility' in decision node's popupmenu
+	 */
+	public static final String SHOW_EXPECTED_UTILITY_MENUITEM = "Decision.ShowExpectedUtility";
+	
+	/**
+	 * Constant that defines the item 'Show Optimal Policy' in decision node's popupmenu
+	 */
+	public static final String SHOW_OPTIMAL_POLICY_MENUITEM = "Decision.ShowOptimalPolicy";
 }

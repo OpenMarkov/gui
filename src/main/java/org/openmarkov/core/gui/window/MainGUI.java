@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.window;
 
 
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
 
@@ -58,11 +59,6 @@ public class MainGUI {
 	private boolean isShowed = false;
 
 	/**
-	 * used to set visible after initialization
-	 */
-	private boolean finished = false;
-
-	/**
 	 * Launch the MainGUIInit runnable process
 	 * @wbp.parser.entryPoint
 	 */
@@ -70,6 +66,7 @@ public class MainGUI {
 
 		mainGUIinit();
 	}
+	
 
 	/**
 	 * Creates the main frame as a window with a splash Screen
@@ -84,61 +81,26 @@ public class MainGUI {
 
 		configureUI();
 		splash.splashScreenInit();
-		new SwingWorker<Void, Integer>() {
 
-			/**
-			 * @throws Exception
-			 * @return Void
-			 */
-			protected Void doInBackground() throws Exception {
-
-				splash.getSplash().setProgress( "Loading OpenMarkov preferences", 0 );
-				doReadPreferences();
-				splash.doingWork();
-				thisFrame = new JFrame();
-				thisFrame
-					.setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );
-				thisFrame.setTitle( "OpenMarkov" );
-				thisFrame.setName( "MainGUI" );
-				thisFrame.setSize( screenPortionSize() );
-				Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-				int x = (screen.width - thisFrame.getWidth()) / 2;
-				thisFrame.setLocation( x, 0 );
-				splash.getSplash().setProgress( "Loading Resources", 25 );
-				// TODO here will be the plug-in loaders in future
-				splash.doingWork();
-				thisFrame.setIconImage( OpenMarkovLogoIcon.getUniqueInstance()
-					.getOpenMarkovLogoIconImage16() );
-				splash.getSplash().setProgress( "Loading Main Panel", 50 );
-				splash.doingWork();
-				thisFrame.setContentPane( getMainPanel() );
-				splash.getSplash().setProgress( "Completed", 100 );
-				splash.doingWork();
-
-				setFinished( true );
-				return null;
-
-			}
-
-			protected void process(List<Integer> chunks) {
-
-				try {
-					while (!isFinished()) {
-						// wait
-					}
-					wait( 50000 );
-				} catch (InterruptedException ex) {
-					// do nothing
-				}
-			}
-
-			protected void done() {
-
-				// loading the application
-				splash.splashScreenDestroy();
-				thisFrame.setVisible( true );
-			}
-		}.execute();
+        splash.getSplash ().setProgress ("Loading OpenMarkov preferences", 0);
+        doReadPreferences ();
+        splash.doingWork ();
+        thisFrame = new JFrame ();
+        thisFrame.setDefaultCloseOperation (WindowConstants.DO_NOTHING_ON_CLOSE);
+        thisFrame.setTitle ("OpenMarkov");
+        thisFrame.setName ("MainGUI");
+        Insets screenInsets = Toolkit.getDefaultToolkit ().getScreenInsets (thisFrame.getGraphicsConfiguration ());
+        thisFrame.setSize (screenPortionSize (screenInsets));
+        thisFrame.setLocation (screenInsets.left, screenInsets.top);
+        splash.getSplash ().setProgress ("Loading Resources", 25);
+        // TODO here will be the plug-in loaders in future
+        thisFrame.setIconImage (OpenMarkovLogoIcon.getUniqueInstance ().getOpenMarkovLogoIconImage16 ());
+        splash.getSplash ().setProgress ("Loading Main Panel", 50);
+        thisFrame.setContentPane (getMainPanel ());
+        splash.getSplash ().setProgress ("Completed", 100);
+        // loading the application
+        splash.splashScreenDestroy ();
+        thisFrame.setVisible (true);
 		this.isShowed = true;
 
 	}
@@ -185,13 +147,13 @@ public class MainGUI {
 	 * @return new dimensions of the window.
 	 * @wbp.parser.entryPoint
 	 */
-	private static Dimension screenPortionSize() {
-
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
-		return new Dimension( screen.width, (screen.height * 6) / 7 );
-
-	}
+    private Dimension screenPortionSize (Insets screenInsets)
+    {
+        Dimension screen = Toolkit.getDefaultToolkit ().getScreenSize ();
+        int width = screen.width - screenInsets.right - screenInsets.left;
+        int height = screen.height - screenInsets.top - screenInsets.bottom;
+        return new Dimension (width, height);
+    }
 
 	/**
 	 * This method initialises mainPanel.
@@ -219,29 +181,21 @@ public class MainGUI {
 	}
 
 	/**
-	 * @return the finished
-	 */
-	public boolean isFinished() {
-
-		return finished;
-	}
-
-	/**
-	 * @param finished
-	 *            the finished to set
-	 */
-	public void setFinished(boolean finished) {
-
-		this.finished = finished;
-	}
-
-	/**
 	 * @return the thisFrame
 	 * @wbp.parser.entryPoint
 	 */
 	public JFrame getThisFrame() {
 
 		return this.thisFrame;
+	}
+	
+	/**
+	 * Opens net from file
+	 * @param fileName
+	 */
+	public void openNetwork(String fileName)
+	{
+	    mainPanel.openNetwork (fileName);
 	}
 
 	/**

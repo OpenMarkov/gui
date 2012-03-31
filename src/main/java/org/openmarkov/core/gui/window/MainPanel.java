@@ -14,12 +14,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.BoxLayout;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
@@ -44,6 +42,8 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
  * @author jmendoza
  * @version 1.0 jmendoza
  * @version 1.1 jlgozalo Add getMainFrame()
+ * @version 1.2 asaez	Layout changed for having the main and the secondary toolbar
+ * 						in the same line
  */
 public class MainPanel extends JPanel {
 
@@ -185,7 +185,7 @@ public class MainPanel extends JPanel {
 		add(getMdi(), BorderLayout.CENTER);
 		//add(splitPane);//, BorderLayout.CENTER);
 		//ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
-		getMessageWindow();
+		//add(getMessageWindow(), BorderLayout.SOUTH);
 
 	}
 	
@@ -270,13 +270,19 @@ public class MainPanel extends JPanel {
 
 		if (toolBarPanel == null) {
 			toolBarPanel = new JPanel();
-			toolBarPanel.setLayout(new BoxLayout(getToolBarPanel(),
-				BoxLayout.Y_AXIS));
-			toolBarPanel.add(getStandardToolBar());
-			toolBarPanel.add(getEditionToolBar());
+				/* This way, the main toolbar and the secondary are in different lines 
+				toolBarPanel.setLayout(new BoxLayout(getToolBarPanel(),
+					BoxLayout.Y_AXIS));
+				toolBarPanel.add(getStandardToolBar());
+				toolBarPanel.add(getEditionToolBar());
+				*/
+			// This way, the main toolbar and the secondary are in the same line
+			toolBarPanel.setLayout(new BorderLayout(2,0));
+			toolBarPanel.add(getStandardToolBar(),BorderLayout.WEST);
+			toolBarPanel.add(getEditionToolBar(),BorderLayout.CENTER);
 		}
 
-		return toolBarPanel;
+		return toolBarPanel;	
 
 	}
 	
@@ -327,6 +333,7 @@ public class MainPanel extends JPanel {
 			mdi = new MDI(mainMenu.getMenuMDI());
 			mdi.addFrameStateListener(mainPanelListenerAssistant);
 			mdi.setPreferredSize(new Dimension(400,600));
+			mdi.createNewFrame(getMessageWindow(), false);
 		}
 
 		return mdi;
@@ -424,5 +431,14 @@ public class MainPanel extends JPanel {
 	public JFrame getMainFrame() {
 
 		return mainFrame;
+	}
+	
+	/**
+	 * Opens a prob net
+	 * @param fileName
+	 */
+	public void openNetwork(String fileName)
+	{
+	    getMainPanelListenerAssistant().openNetwork (fileName);
 	}
 }

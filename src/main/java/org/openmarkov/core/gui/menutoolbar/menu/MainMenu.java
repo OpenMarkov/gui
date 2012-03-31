@@ -1036,7 +1036,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		if (editRelationMenuItem == null) {
             editRelationMenuItem = new LocalizedMenuItem (
                                                           MenuItemNames.EDIT_NODERELATION_MENUITEM,
-                                                          ActionCommands.CHANGE_POTENTIAL);
+                                                          ActionCommands.EDIT_POTENTIAL);
 			editRelationMenuItem.addActionListener(listener);
 		}
 
@@ -1112,11 +1112,38 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			inferenceMenu.add(getInferenceOptionsMenuItem());
 			inferenceMenu.addSeparator();
 			inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
+			inferenceMenu.addSeparator();
 			inferenceMenu.add(getInferenceGoToFirstEvidenceCaseMenuItem());
 			inferenceMenu.add(getInferenceGoToPreviousEvidenceCaseMenuItem());
 			inferenceMenu.add(getInferenceGoToNextEvidenceCaseMenuItem());
 			inferenceMenu.add(getInferenceGoToLastEvidenceCaseMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceExpandNodeMenuItem());
+			inferenceMenu.add(getInferenceContractNodeMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceRemoveAllFindingsMenuItem());
+		}
+		return inferenceMenu;
+	}
+	
+	/**
+	 * This method adds the item 'Propagate Now' on the inference menu.
+	 */
+	public void addPropagateNowItem() {
+		if (inferenceMenu != null) {
+			inferenceMenu.removeAll();
+			inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceOptionsMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
 			inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceGoToFirstEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToPreviousEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToNextEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToLastEvidenceCaseMenuItem());
 			inferenceMenu.addSeparator();
 			inferenceMenu.add(getInferencePropagateEvidenceMenuItem());
 			inferenceMenu.addSeparator();
@@ -1125,7 +1152,31 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			inferenceMenu.addSeparator();
 			inferenceMenu.add(getInferenceRemoveAllFindingsMenuItem());
 		}
-		return inferenceMenu;
+	}
+	
+	/**  
+	 * This method removes the item 'Propagate Now' from the inference menu.
+	 */
+	public void removePropagateNowItem() {
+		if (inferenceMenu != null) {
+			inferenceMenu.removeAll();
+			inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceOptionsMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceGoToFirstEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToPreviousEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToNextEvidenceCaseMenuItem());
+			inferenceMenu.add(getInferenceGoToLastEvidenceCaseMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceExpandNodeMenuItem());
+			inferenceMenu.add(getInferenceContractNodeMenuItem());
+			inferenceMenu.addSeparator();
+			inferenceMenu.add(getInferenceRemoveAllFindingsMenuItem());
+		}
 	}
 	
 	/**
@@ -1773,7 +1824,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			helpMenu.setName(MenuItemNames.HELP_MENU);
             helpMenu.setText (MenuLocalizer.getLabel (MenuItemNames.HELP_MENU));
             helpMenu.setMnemonic (MenuLocalizer.getMnemonic (MenuItemNames.HELP_MENU).charAt (0));
-			helpMenu.add(getHelpOpenHelpItem());
+			//helpMenu.add(getHelpOpenHelpItem());
 			helpMenu.addSeparator();
 			helpMenu.add(getHelpOpenChangeLanguageItem());
 			helpMenu.addSeparator();
@@ -1949,7 +2000,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			component = editLinkCreationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			component = editNodePropertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_POTENTIAL)) {
+		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
 			component = editRelationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_PROPERTIES)) {
 			component = editLinkPropertiesMenuItem;

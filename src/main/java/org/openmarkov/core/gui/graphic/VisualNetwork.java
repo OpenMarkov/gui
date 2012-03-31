@@ -19,11 +19,9 @@ import java.util.HashSet;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.PNESupport;
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
@@ -412,6 +410,35 @@ public class VisualNetwork implements PNUndoableEditListener {
 		return nodeFound;
 
 	}
+		
+	/**
+	 * Checks if is there a inner box in a position.
+	 * 
+	 * @param position
+	 *            position to be checked.
+	 * @param g
+	 *            graphics where the network is painted.
+	 * @return if there is a inner box in the position, returns it,
+	 *         else, returns null.
+	 */
+	public InnerBox whatInnerBoxInPosition(Point2D.Double position, Graphics2D g) {
+
+		InnerBox innerBox = null;
+		InnerBox innerBoxFound = null;
+		VisualNode node = null;
+		int index = 0;
+		int nodesLength = visualNodes.size();
+		while ((innerBoxFound == null) && (index < nodesLength)) {
+			node = visualNodes.get(index++);
+			if (node.pointInsideShape(position, g)) {
+				innerBox = node.getInnerBox();
+				if (innerBox.pointInsideShape(position, g)) {
+					innerBoxFound = innerBox;
+				}
+			}
+		}
+		return innerBoxFound;
+	}
 	
 	/**
 	 * Checks if is there a visual state in a position.
@@ -543,6 +570,31 @@ public class VisualNetwork implements PNUndoableEditListener {
 		setSelectedElement(node, selected);
 
 	}
+	
+
+    /**
+     * Sets the selection state of a node identified by its name.
+     * 
+     * @param name
+     *            name of the node to be selected/deselected.
+     * @param selected
+     *            new selection state.
+     */
+    public void setSelectedNode(String name, boolean selected) {
+
+        boolean found = false;
+        int i = 0, l = visualNodes.size();
+
+        while (!found && (i < l)) {
+            if (visualNodes.get(i).getProbNode().getName().equals(name)) {
+                setSelectedElement(visualNodes.get(i), selected);
+                found = true;
+            } else {
+                i++;
+            }
+        }
+
+    }	
 
 	/**
 	 * Sets the selection state of a link.
@@ -557,30 +609,32 @@ public class VisualNetwork implements PNUndoableEditListener {
 		setSelectedElement(link, selected);
 
 	}
+	
+    /**
+     * Sets the selection state of a link.
+     * 
+     * @param link
+     *            link to be selected/deselected.
+     * @param selected
+     *            new selection state.
+     */
+    public void setSelectedLink(Link link, boolean selected) {
+        int i=0;
+        VisualLink visualLink = null;
+        while(visualLink == null && i<visualLinks.size ())
+        {
+            if( visualLinks.get (i).getLink ().equals (link))
+            {
+                visualLink = visualLinks.get (i);
+            }
+            ++i;
+        }
+        if(visualLink!=null)
+        {
+            setSelectedElement(visualLink, selected);
+        }
+    }	
 
-	/**
-	 * Sets the selection state of a node identified by its name.
-	 * 
-	 * @param name
-	 *            name of the node to be selected/deselected.
-	 * @param selected
-	 *            new selection state.
-	 */
-	public void setSelectedNode(String name, boolean selected) {
-
-		boolean found = false;
-		int i = 0, l = visualNodes.size();
-
-		while (!found && (i < l)) {
-			if (visualNodes.get(i).getProbNode().getName().equals(name)) {
-				setSelectedElement(visualNodes.get(i), selected);
-				found = true;
-			} else {
-				i++;
-			}
-		}
-
-	}
 
 	/**
 	 * Selects all nodes.
@@ -668,8 +722,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 				node.setTemporalPosition(new Point2D.Double(node.
 						getTemporalPosition().getX() + diffX,
 						node.getTemporalPosition().getY() + diffY ));
-				
-				node.paint((Graphics2D) g2);
+				if(g2!=null)
+				{
+				    node.paint((Graphics2D) g2);
+				}
 				
 				//constructVisualInfo();
 			}
@@ -706,16 +762,28 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	/**
-	 * Selects the nodes that are inside the selection rectangle and deslects
+	 * Selects the nodes and links that are inside the selection rectangle and deselects
 	 * the ones that are outside.
 	 * 
 	 * @param selection
 	 *            object that manages the selection.
 	 */
-	public void selectNodesInsideSelection(SelectionRectangle selection) {
+	public void selectElementsInsideSelection(SelectionRectangle selection) {
 
+	    setSelectedAllNodes (false);
+	    setSelectedAllLinks (false);
+	    // Select nodes
+	    ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode> (); 
 		for (VisualNode node : visualNodes) {
-			setSelectedElement(node, selection.containsNode(node));
+		    if(selection.containsNode(node)){
+		        setSelectedElement(node, true);
+		        selectedVisualNodes.add (node);
+		    }
+		}
+		// Select links
+		for(VisualLink selectedLink: getLinksOfNodes (selectedVisualNodes, true))
+		{
+		    setSelectedElement(selectedLink, true);
 		}
 
 	}
@@ -795,37 +863,54 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
-	/**
-	 * This method returns a list that contains all the links that leave of or
-	 * arrive in one node of the list of nodes passed as parameter.
-	 * 
-	 * @param nodes
-	 *            list of nodes whose links are returned.
-	 * @return a list of links related to the nodes.
-	 */
-	public ArrayList<VisualLink> getLinksOfNodes(ArrayList<VisualNode> nodes) {
-
-		ArrayList<VisualLink> links = new ArrayList<VisualLink>();
-		int i, l = nodes.size();
-		boolean found = false;
-
-		for (VisualLink visualLink : visualLinks) {
-			found = false;
-			i = 0;
-			while (!found && (i < l)) {
-				if (visualLink.getSourceNode().equals(nodes.get(i))
-					|| visualLink.getDestinationNode().equals(nodes.get(i))) {
-					links.add(visualLink);
-					found = true;
-				} else {
-					i++;
-				}
-			}
-		}
-
-		return links;
-
-	}
+    /**
+     * This method returns a list that contains all the links that leave of or
+     * arrive in one node of the list of nodes passed as parameter.
+     * @param nodes list of nodes whose links are returned.
+     * @param onlyBothEnds returns only those links whose two ends are selected
+     * @return a list of links related to the nodes.
+     */
+    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes, boolean onlyBothEnds)
+    {
+        ArrayList<VisualLink> links = new ArrayList<VisualLink> ();
+        int i, l = nodes.size ();
+        boolean found = false;
+        boolean foundSource = false;
+        boolean foundDestination = false;
+        for (VisualLink visualLink : visualLinks)
+        {
+            found = false;
+            foundSource = false;
+            foundDestination = false;
+            i = 0;
+            while (!found && (i < l))
+            {
+                foundSource |= visualLink.getSourceNode ().equals (nodes.get (i));
+                foundDestination |= visualLink.getDestinationNode ().equals (nodes.get (i));
+                found = (onlyBothEnds)? foundSource && foundDestination : foundSource || foundDestination;  
+                if (found)
+                {
+                    links.add (visualLink);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+        return links;
+    }
+	
+    /**
+     * This method returns a list that contains all the links that leave of or
+     * arrive in one node of the list of nodes passed as parameter.
+     * @param nodes list of nodes whose links are returned.
+     * @return a list of links related to the nodes.
+     */
+    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes)
+    {
+        return getLinksOfNodes (nodes, false);
+    }
 
 	/**
 	 * Sets a new selection listener.
@@ -944,7 +1029,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 		
-	public void undoableEditWillHappen(PNUndoableEditEvent event)
+	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
 		// TODO Auto-generated method stub
 		
@@ -1016,7 +1101,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 *            node whose visual representation is going to be returned.
 	 * @return the visual representation of the node.
 	 */
-	private VisualNode createVisualNode(ProbNode node) {
+	protected VisualNode createVisualNode(ProbNode node) {
 
 		switch (node.getNodeType()) {
 			case CHANCE: {
@@ -1039,7 +1124,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	
-	public void undoEditHappened(PNUndoableEditEvent event) {
+	public void undoEditHappened(UndoableEditEvent event) {
 		//Object p=event.getSource();
 		//ProbNet p2=(ProbNet)p;
 		//if (edit instanceof AddVariableEdit){
@@ -1067,6 +1152,15 @@ public class VisualNetwork implements PNUndoableEditListener {
 	
 			constructVisualInfo();
 		
+	}
+	
+	/**
+	 * 
+	 * @return instance of editor panel
+	 */
+	protected EditorPanel getEditorPanel()
+	{
+	    return this.editorPanel;
 	}
 	
 }

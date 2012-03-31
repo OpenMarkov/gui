@@ -37,6 +37,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
@@ -56,8 +57,13 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
+import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
+import org.openmarkov.core.model.network.potential.canonical.TuningModelPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 
@@ -248,7 +254,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * This method initialises valuesTableScrollPane.
+	 * This method initializes valuesTableScrollPane.
 	 * 
 	 * @return a new values table scroll pane.
 	 */
@@ -673,6 +679,26 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		}
 		return numRows;
 	}
+	
+	/**
+	 * calculate the number of rows of the table based on the type of the node,
+	 * the number of parents and the number of states of the variable for
+	 * canonical models
+	 * 
+	 * @param adittionalProperties -
+	 *            node adittionalProperties
+	 * @return the number of rows of this Potentials Table
+	 */
+	protected int howManyCanonicalRows(ProbNode properties) {
+
+		int numRows =2;//The first two rows are first for parent´s name and second one for parent´s states 
+	
+			if (properties.getVariable().getStates() != null) {
+				numRows = numRows + properties.getVariable().getStates().length;
+			}
+		
+		return numRows;
+	}
 
 	
 	/**
@@ -704,12 +730,50 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 
 		return blankTable;
 	}
+	
+	/**
+	 * Set a blank data table for canonical models
+	 * 
+	 * @param adittionalProperties -
+	 *            to obtain the required number of rows and columns
+	 * @return the blank data table
+	 */
+	private Object[][] setBlankCanonicalTable(ProbNode properties) {
+
+		Object[][] blankTable = null;
+		int numRows = howManyCanonicalRows( properties );
+		int numColumns = ICIValuesTable.howManyCanonicalColumns( properties );
+		blankTable = new Object[ numRows ][ numColumns ];
+	    // TODO seria mas practico hacer un potential y luego ejecutar
+		// el resto del metodo pero esto funciona
+		for (int i = 0; i < properties.getVariable().getStates().length; i++) {
+
+		}
+
+		return blankTable;
+	}
+
 
 	private Potential getThisPotential(ArrayList<Potential> listPotentials) {
 
 		Potential aPotential = null;
 		try {
 			aPotential = ((TablePotential) listPotentials.get( 0 ));
+		} catch (Exception ex) {
+			//ExceptionsHandler.handleException(
+				//ex, "no Potential.get(0) !!!", false );
+			logger.error("no Potential.get(0) !!!");
+			
+		}
+
+		return aPotential;
+	}
+	
+	private Potential getThisICIPotential(ArrayList<Potential> listPotentials) {
+
+		Potential aPotential = null;
+		try {
+			aPotential = ((ICIPotential) listPotentials.get( 0 ));
 		} catch (Exception ex) {
 			//ExceptionsHandler.handleException(
 				//ex, "no Potential.get(0) !!!", false );
@@ -757,7 +821,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		}
 		return values;
 	}
-		
+	
+
+	
 	/**
 	 * Set the Base index for the coordinates in the table related to the 
 	 * Potential of the variable of this node
@@ -805,7 +871,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 			else
 				numColumns += tablePotential.getTableSize();
 		} else {
-			int numDimensions = tablePotential.getDimensions()[0];
+			int numDimensions = tablePotential.getDimensions()[0];//number of states of the conditioned variable
 			numRows = getVariables().size() - 1 + numDimensions ; // parents + variableStates 
 			setLastEditableRow(numRows-1);
 			numRows = numRows + 1 ; // + 1 for variableValues (when used in show as Values
@@ -821,6 +887,11 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		values = new Object[ numRows ][ numColumns ];
 		return values;
 	}
+	
+	
+
+	
+
 
 	/**
 	 * This methods fills the Upper Left corner of the table with the name of
@@ -850,6 +921,22 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		}
 		return values;
 	}	
+	
+	private Object[][] setFirstCanonicalColumn(	Object[][] oldValues, ProbNode properties) {
+		
+		Object[][] values = oldValues;
+		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
+		Variable conditioned = iciPotential.getVariables().get(0);
+		values [0][0] = ""; //First cell is empty
+		values [1][0] = conditioned.getBaseName();// name of the conditioned variable
+		State[] states = conditioned.getStates();
+		for (int i = 0; i < states.length; i++) {
+			values[i+2][0] = states[i].getName();
+			}
+		return values;
+	}
+	
+	
 
 	/**
 	 * @param values -
@@ -1039,6 +1126,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		}
 		return values;
 	}
+	
+	
+
 	/**
 	 * In the lower left corner area, the last row is reserved in the model for
 	 * displaying the name of the variable

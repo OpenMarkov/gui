@@ -628,7 +628,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNodeRelevance = new JComboBox();
 			jComboBoxNodeRelevance.setName( "jComboBoxNodeRelevance" );
 			jComboBoxNodeRelevance.setEditable( true );
-			fillJComboBoxNodeRelevance();
+			fillJComboBoxNodeRelevanceWithoutDecimals();
 			jComboBoxNodeRelevance.setEnabled(false);
 		}
 		return jComboBoxNodeRelevance;
@@ -653,6 +653,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							+ Integer.toString( decimalPart );
 					jComboBoxNodeRelevance.addItem( Double.valueOf( number ) );
 				}
+			}
+		}
+	}
+	
+	/**
+	 * fill the jComboBoxNodeRelevance with the appropriate values 
+	 * with an increment of 1.0. 
+	 */
+	private void fillJComboBoxNodeRelevanceWithoutDecimals() {
+		if (jComboBoxNodeRelevance != null) {
+			for (int value = 0; value <= 10; value++) {
+				jComboBoxNodeRelevance.addItem(Double.valueOf(value));
 			}
 		}
 	}
@@ -872,54 +884,63 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	
 
 	
-	/**
-	 * Invoked when a focus lost action occurs.
-	 * 
-	 * @param e - event information
-	 */
-	
-	public void focusLost(FocusEvent e) {
-		if (e.getSource().equals( this.jTextFieldNodeName )) {
-			//actionPerformedNodeNameChangeValue();
-			NodeNameEdit nodeNameEdit = new NodeNameEdit(probNode, 
-					this.jTextFieldNodeName.getText());
-			try {
-				probNode.getProbNet().getPNESupport().announceEdit(nodeNameEdit);
-				probNode.getProbNet().getPNESupport().doEdit(nodeNameEdit);
-			} catch (ConstraintViolationException e1) {
-				// TODO Auto-generated catch block
-				//e1.printStackTrace();
-				
-				JOptionPane
-				.showMessageDialog(
-					this, messageStringResource
-						.getString( e1.getMessage() ),
-					messageStringResource
-						.getString( "ConstraintViolationException" ),
-					JOptionPane.ERROR_MESSAGE );
-				
-				jTextFieldNodeName.setText( probNode.getName() );
-				jTextFieldNodeName.requestFocus();
-				
-			} catch (CanNotDoEditException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (DoEditException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NotEnoughMemoryException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NonProjectablePotentialException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (WrongCriterionException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-		}
-		
-	}
+    /**
+     * Invoked when a focus lost action occurs.
+     * @param e - event information
+     */
+    public void focusLost (FocusEvent e)
+    {
+        if (e.getSource ().equals (this.jTextFieldNodeName))
+        {
+            // actionPerformedNodeNameChangeValue();
+            if (!probNode.getName ().equals (this.jTextFieldNodeName.getText ()))
+            {
+                NodeNameEdit nodeNameEdit = new NodeNameEdit (probNode,
+                                                              this.jTextFieldNodeName.getText ());
+                try
+                {
+                    probNode.getProbNet ().getPNESupport ().announceEdit (nodeNameEdit);
+                    probNode.getProbNet ().getPNESupport ().doEdit (nodeNameEdit);
+                }
+                catch (ConstraintViolationException e1)
+                {
+                    // TODO Auto-generated catch block
+                    // e1.printStackTrace();
+                    JOptionPane.showMessageDialog (this,
+                                                   e1.getMessage (),
+                                                   messageStringResource.getString ("ConstraintViolationException"),
+                                                   JOptionPane.ERROR_MESSAGE);
+                    jTextFieldNodeName.setText (probNode.getName ());
+                    jTextFieldNodeName.requestFocus ();
+                }
+                catch (CanNotDoEditException e1)
+                {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace ();
+                }
+                catch (DoEditException e1)
+                {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace ();
+                }
+                catch (NotEnoughMemoryException e1)
+                {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace ();
+                }
+                catch (NonProjectablePotentialException e2)
+                {
+                    // TODO Auto-generated catch block
+                    e2.printStackTrace ();
+                }
+                catch (WrongCriterionException e3)
+                {
+                    // TODO Auto-generated catch block
+                    e3.printStackTrace ();
+                }
+            }
+        }
+    }
 
 	/**
 	 * Invoked when a focus gained action occurs.
@@ -1032,21 +1053,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		boolean result = true;
 
 		if ((name == null) || name.equals( "" )) {
-			JOptionPane.showMessageDialog(
-				this, messageStringResource
-					.getString( "NodeNameEmpty.Text.Label" ),
-				messageStringResource.getString( "NodeNameEmpty.Title.Label" ),
-				JOptionPane.ERROR_MESSAGE );
 			result = false;
 		} else if (!probNode.getName().equals( name )
 			&& Utilities.existNode(probNode.getProbNet(), name )) {
-			JOptionPane
-				.showMessageDialog(
-					this, messageStringResource
-						.getString( "DuplicatedNode.Text.Label" ),
-					messageStringResource
-						.getString( "DuplicatedNode.Title.Label" ),
-					JOptionPane.ERROR_MESSAGE );
 			result = false;
 		}
 		if (!result) {
