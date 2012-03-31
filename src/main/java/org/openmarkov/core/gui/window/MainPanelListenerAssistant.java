@@ -46,11 +46,9 @@ import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
-import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.annotation.InferenceManager;
+import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -519,7 +517,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						stringResource.getString("SavingNetwork.Text.Label")
 								+ " " + fileName);
 		try {
-			NetsIO.saveNetworkFile(networkPanel.getProbNet(), fileName);
+			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel ().getEvidence (), fileName);
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
 			networkPanel.setModified(false);
 			networkPanel.setNetworkFile(fileName);
@@ -800,7 +798,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		if (fileName.equals("")) {
 			fileName = requestNetworkFileToOpen();
 		}
-		ProbNet fileContent = null;
+		ProbNet netReadFromFile = null;
 		NetworkPanel networkPanel = null;
 
 		if (fileName != null) {
@@ -812,14 +810,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 								stringResource
 										.getString("LoadingNetwork.Text.Label")
 										+ " " + fileName);
-
-				fileContent = NetsIO.openNetworkFile(fileName);
-				fileContent.getPNESupport().addUndoableEditListener(
+				ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
+				netReadFromFile = probNetInfo.getProbNet ();
+				netReadFromFile.getPNESupport().addUndoableEditListener(
 						mainPanel.getMainPanelMenuAssistant());
-				fileContent.getPNESupport().setWithUndo(true);
-				fileContent.setName(getShortNetworkName(fileName));
-				networkPanel = createNewFrame2(fileContent);
+				netReadFromFile.getPNESupport().setWithUndo(true);
+				netReadFromFile.setName(getShortNetworkName(fileName));
+				networkPanel = createNewFrame2(netReadFromFile);
 				networkPanel.setNetworkFile(fileName);
+				networkPanel.getEditorPanel ().setEvidence (probNetInfo.getEvidence ());
 				lastOpenFiles.setLastFileName(fileName);
                 if (getDirectoryFileName (fileName) != null)
                 {

@@ -75,7 +75,7 @@ public class FileFilterPGMX extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("OpenMarkovFileExtension.Description")
+		return stringResource.getString("FileExtension.ProbModelXML.Description")
 			+ " (*." + pgmxExtension + ")";
 
 	}

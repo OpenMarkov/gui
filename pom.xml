@@ -32,12 +32,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>3.0-FINAL</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.elvira</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

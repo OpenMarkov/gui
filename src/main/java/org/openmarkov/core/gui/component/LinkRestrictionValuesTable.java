@@ -100,7 +100,7 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 				int variable1Index = col - 1;
 				int variable2Index = node2.getVariable().getNumStates() - row;
 				if ((Integer) newValue == 0) {
-					if (node2.getPotentials().get(0).getPotentialType() == PotentialType.TABLE) {
+					if (!node2.getPotentials().isEmpty()&& node2.getPotentials().get(0).getPotentialType() == PotentialType.TABLE) {
 						Potential potential = LinkRestrictionPotentialOperations
 								.updatePotentialByAddLinkRestriction(node2,
 										(TablePotential) link
