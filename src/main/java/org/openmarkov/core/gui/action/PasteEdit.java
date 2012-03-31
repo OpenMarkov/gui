@@ -161,7 +161,7 @@ public class PasteEdit extends CompoundEdit
         }
     }
 
-    @Override
+    //@Override
     public void setSignificant (boolean significant)
     {
         // TODO Auto-generated method stub
@@ -176,7 +176,7 @@ public class PasteEdit extends CompoundEdit
         return pastedContent;
     }
     
-    @Override
+   // @Override
     public ProbNet getProbNet() {
         return visualNetwork.getNetwork ();
     }       

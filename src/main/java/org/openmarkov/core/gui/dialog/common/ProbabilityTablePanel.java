@@ -438,7 +438,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 			return result;
 		}
 
-		@Override
+		//@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			
