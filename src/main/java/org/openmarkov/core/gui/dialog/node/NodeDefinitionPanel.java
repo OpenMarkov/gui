@@ -1265,7 +1265,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
 			alwaysObservedPropertyHasChanged();
