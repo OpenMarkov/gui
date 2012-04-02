@@ -1,27 +1,24 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.graphic;
 
-
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 
-
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.ProbNode;
-
-
 
 /**
  * This class is the visual representation of a chance node.
@@ -30,54 +27,64 @@ import org.openmarkov.core.model.network.ProbNode;
  * @version 1.0
  * @version 1.1 jlgozalo - fix public and static methods, fix Double comparison
  * @version 1.2 asaez - add expanded representation
-  */
+ */
 public class VisualChanceNode extends VisualNode {
+
+	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(
+			6.0f);
+	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(
+			3.0f);
 
 	/**
 	 * Internal color of the visual node when there is no finding established.
 	 */
-	private static final Color BACKGROUND_COLOR = 
-	OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODECHANCE_BACKGROUND_COLOR, 
-	                           OpenMarkovPreferences.OPENMARKOV_COLORS,
-	                           new Color(251,249,153));
-	
+	private static final Color BACKGROUND_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.NODECHANCE_BACKGROUND_COLOR,
+					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(251,
+							249, 153));
+
 	/**
 	 * Internal color of the visual node when there is a finding established.
 	 */
 	private static final Color BACKGROUND_FINDING_COLOR = Color.LIGHT_GRAY;
-	
+
 	/**
 	 * Color of lines and letters.
 	 */
-	private static final Color FOREGROUND_COLOR = 
-		OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODECHANCE_FOREGROUND_COLOR, 
-		                             OpenMarkovPreferences.OPENMARKOV_COLORS, 
-		                             Color.BLACK);
-	
+	private static final Color FOREGROUND_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.NODECHANCE_FOREGROUND_COLOR,
+					OpenMarkovPreferences.OPENMARKOV_COLORS, Color.BLACK);
+
+	/**
+	 * Color of the border when the node is alwaysObserved.
+	 */
+	private static final Color ALWAYS_OBSERVED_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.ALWAYS_OBSERVED_VARIABLE,
+					OpenMarkovPreferences.OPENMARKOV_COLORS, Color.GRAY);
+
 	/**
 	 * Color of the letters
 	 */
-	private static final Color TEXT_FOREGROUND_COLOR = 
-	OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODECHANCE_TEXT_COLOR, 
-	                             OpenMarkovPreferences.OPENMARKOV_COLORS,
-	                             Color.BLACK);
+	private static final Color TEXT_FOREGROUND_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.NODECHANCE_TEXT_COLOR,
+					OpenMarkovPreferences.OPENMARKOV_COLORS, Color.BLACK);
 
 	/**
 	 * Width of a the arc of the rounded rectangle.
 	 */
 	private static final double ARC_WIDTH = 20;
-	
+
 	/**
 	 * Height of a the arc of the rounded rectangle.
 	 */
 	private static final double ARC_HEIGHT = 20;
-	
+
 	/**
 	 * Creates a new visual node from a node.
 	 * 
 	 * @param node
 	 *            object that has the information of the node.
-	 * @param panel  
+	 * @param panel
 	 *            editor panel to which this visual node is associated.
 	 */
 	public VisualChanceNode(ProbNode node, EditorPanel panel) {
@@ -85,8 +92,8 @@ public class VisualChanceNode extends VisualNode {
 		editorPanel = panel;
 		expanded = false;
 		findingInNode = false;
-		setTemporalPosition(new Point2D.Double(probNode.getNode().
-				getCoordinateX(), probNode.getNode().getCoordinateY()));
+		setTemporalPosition(new Point2D.Double(probNode.getNode()
+				.getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
 	}
 
@@ -109,23 +116,22 @@ public class VisualChanceNode extends VisualNode {
 		double width;
 		double height;
 		if (isExpanded()) {
-			height = innerBox.getInnerBoxHeight(g) + 
-					textHeight + 2*VERTICAL_SPACE_TO_TEXT +
-					NODE_EXPANDED_HEIGHT_MARGIN*2; 
-			width = NODE_EXPANDED_WIDTH; 
+			height = innerBox.getInnerBoxHeight(g) + textHeight + 2
+					* VERTICAL_SPACE_TO_TEXT + NODE_EXPANDED_HEIGHT_MARGIN * 2;
+			width = NODE_EXPANDED_WIDTH;
 		} else {
-			height = textHeight + 2*VERTICAL_SPACE_TO_TEXT;
+			height = textHeight + 2 * VERTICAL_SPACE_TO_TEXT;
 			if (textWidth < textHeight) {
 				width = DEFAULT_NODE_CONTRACTED_WIDTH;
 			} else {
-				width = textWidth + 2*HORIZONTAL_SPACE_TO_TEXT;
+				width = textWidth + 2 * HORIZONTAL_SPACE_TO_TEXT;
 			}
 		}
-		
-		//for visualization purposes the position is temporal
+
+		// for visualization purposes the position is temporal
 		dimensions[0] = getTemporalPosition().getX() - width / 2;
 		dimensions[1] = getTemporalPosition().getY() - height / 2;
-		
+
 		dimensions[2] = width;
 		dimensions[3] = height;
 		dimensions[4] = ARC_WIDTH;
@@ -134,25 +140,25 @@ public class VisualChanceNode extends VisualNode {
 		return dimensions;
 
 	}
-	
+
 	/**
 	 * Returns the X-coordinate of the upper-left corner of the visual node.
 	 * 
 	 * @return the X-coordinate of the upper-left corner of the visual node.
-	 */	
-	public double getUpperLeftCornerX(Graphics2D g){
+	 */
+	public double getUpperLeftCornerX(Graphics2D g) {
 		double[] dims = getNodeDimensions(g);
-		return dims[0];		
+		return dims[0];
 	}
-	
+
 	/**
 	 * Returns the Y-coordinate of the upper-left corner of the visual node.
 	 * 
 	 * @return the Y-coordinate of the upper-left corner of the visual node.
-	 */	
-	public double getUpperLeftCornerY(Graphics2D g){
+	 */
+	public double getUpperLeftCornerY(Graphics2D g) {
 		double[] dims = getNodeDimensions(g);
-		return dims[1];		
+		return dims[1];
 	}
 
 	/**
@@ -165,7 +171,7 @@ public class VisualChanceNode extends VisualNode {
 		double textHeight = getHeight(text, g);
 		return textHeight;
 	}
-		
+
 	/**
 	 * Returns the shape of the node.
 	 * 
@@ -177,7 +183,7 @@ public class VisualChanceNode extends VisualNode {
 		double dimensions[] = getNodeDimensions(g);
 
 		return new RoundRectangle2D.Double(dimensions[0], dimensions[1],
-			dimensions[2], dimensions[3], dimensions[4], dimensions[5]);
+				dimensions[2], dimensions[3], dimensions[4], dimensions[5]);
 
 	}
 
@@ -196,73 +202,94 @@ public class VisualChanceNode extends VisualNode {
 		double radius = dimensions[4] / 2;
 		double rectangleWidth = dimensions[2] - dimensions[4];
 		double rectangleHeight = dimensions[3] - dimensions[5];
-		Point2D.Double point1 = new Point2D.Double(dimensions[0] + radius, dimensions[1]);
-		Point2D.Double point2 = new Point2D.Double(point1.getX() + rectangleWidth, point1.getY());
-		Point2D.Double point3 = new Point2D.Double(point2.getX() + radius, point2.getY() + radius);
-		Point2D.Double point4 = new Point2D.Double(point3.getX(), point3.getY() + rectangleHeight);
-		Point2D.Double point5 = new Point2D.Double(point2.getX(), point4.getY() + radius);
+		Point2D.Double point1 = new Point2D.Double(dimensions[0] + radius,
+				dimensions[1]);
+		Point2D.Double point2 = new Point2D.Double(point1.getX()
+				+ rectangleWidth, point1.getY());
+		Point2D.Double point3 = new Point2D.Double(point2.getX() + radius,
+				point2.getY() + radius);
+		Point2D.Double point4 = new Point2D.Double(point3.getX(), point3.getY()
+				+ rectangleHeight);
+		Point2D.Double point5 = new Point2D.Double(point2.getX(), point4.getY()
+				+ radius);
 		Point2D.Double point6 = new Point2D.Double(point1.getX(), point5.getY());
 		Point2D.Double point7 = new Point2D.Double(dimensions[0], point4.getY());
 		Point2D.Double point8 = new Point2D.Double(dimensions[0], point3.getY());
-		Point2D.Double circleULCenter = new Point2D.Double(point1.getX(), point8.getY());
-		Point2D.Double circleURCenter = new Point2D.Double(point2.getX(), point3.getY());
-		Point2D.Double circleDLCenter = new Point2D.Double(point6.getX(), point7.getY());
-		Point2D.Double circleDRCenter = new Point2D.Double(point5.getX(), point4.getY());
+		Point2D.Double circleULCenter = new Point2D.Double(point1.getX(),
+				point8.getY());
+		Point2D.Double circleURCenter = new Point2D.Double(point2.getX(),
+				point3.getY());
+		Point2D.Double circleDLCenter = new Point2D.Double(point6.getX(),
+				point7.getY());
+		Point2D.Double circleDRCenter = new Point2D.Double(point5.getX(),
+				point4.getY());
 		Point2D.Double point;
 		Point2D.Double[] points;
-		
-		//try to find the cut point in the upper horizontal segment of the round rectangle
+
+		// try to find the cut point in the upper horizontal segment of the
+		// round rectangle
 		point = segment.cutPoint(new Segment(point1, point2));
 		if (point != null) {
 			return point;
-		}		
-		//try to find the cut point in the right vertical segment of the round rectangle
+		}
+		// try to find the cut point in the right vertical segment of the round
+		// rectangle
 		point = segment.cutPoint(new Segment(point3, point4));
 		if (point != null) {
 			return point;
-		}		
-		//try to find the cut point in the lower horizontal segment of the round rectangle
+		}
+		// try to find the cut point in the lower horizontal segment of the
+		// round rectangle
 		point = segment.cutPoint(new Segment(point5, point6));
 		if (point != null) {
 			return point;
 		}
-		//try to find the cut point in the left vertical segment of the round rectangle
+		// try to find the cut point in the left vertical segment of the round
+		// rectangle
 		point = segment.cutPoint(new Segment(point7, point8));
 		if (point != null) {
 			return point;
 		}
-		//try to find the cut point in the upper left corner of the round rectangle
+		// try to find the cut point in the upper left corner of the round
+		// rectangle
 		points = segment.cutPoint(circleULCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
-				if ((points[i].getX() < circleULCenter.getX()) && (points[i].getY() < circleULCenter.getY())) {
+				if ((points[i].getX() < circleULCenter.getX())
+						&& (points[i].getY() < circleULCenter.getY())) {
 					return points[i];
 				}
 			}
 		}
-		//try to find the cut point in the upper right corner of the round rectangle
+		// try to find the cut point in the upper right corner of the round
+		// rectangle
 		points = segment.cutPoint(circleURCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
-				if ((points[i].getX() > circleURCenter.getX()) && (points[i].getY() < circleURCenter.getY())) {
+				if ((points[i].getX() > circleURCenter.getX())
+						&& (points[i].getY() < circleURCenter.getY())) {
 					return points[i];
 				}
 			}
 		}
-		//try to find the cut point in the lower right corner of the round rectangle
+		// try to find the cut point in the lower right corner of the round
+		// rectangle
 		points = segment.cutPoint(circleDRCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
-				if ((points[i].getX() > circleDRCenter.getX()) && (points[i].getY() > circleDRCenter.getY())) {
+				if ((points[i].getX() > circleDRCenter.getX())
+						&& (points[i].getY() > circleDRCenter.getY())) {
 					return points[i];
 				}
 			}
 		}
-		//try to find the cut point in the lower left corner of the round rectangle
+		// try to find the cut point in the lower left corner of the round
+		// rectangle
 		points = segment.cutPoint(circleDLCenter, radius);
 		if (points != null) {
 			for (int i = 0; i < points.length; i++) {
-				if ((points[i].getX() < circleDLCenter.getX()) && (points[i].getY() > circleDLCenter.getY())) {
+				if ((points[i].getX() < circleDLCenter.getX())
+						&& (points[i].getY() > circleDLCenter.getY())) {
 					return points[i];
 				}
 			}
@@ -285,7 +312,7 @@ public class VisualChanceNode extends VisualNode {
 		double textWidth = getWidth(text, g);
 		Shape shape = getShape(g);
 		double[] dimensions = getNodeDimensions(g);
-		
+
 		if (findingInNode) {
 			g.setPaint(BACKGROUND_FINDING_COLOR);
 		} else {
@@ -293,24 +320,37 @@ public class VisualChanceNode extends VisualNode {
 		}
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
-		if (isSelected()) {
-			g.setStroke(WIDE_STROKE);
+
+		if (probNode.getVariable().isAlwaysObserved()) {
+			g.setPaint(ALWAYS_OBSERVED_COLOR);
+			if (isSelected()) {
+				g.setStroke(OBSERVED_WIDE_STROKE);
+			} else {
+				g.setStroke(OBSERVED_NORMAL_STROKE);
+			}
 		} else {
-			g.setStroke(NORMAL_STROKE);
+			if (isSelected()) {
+				g.setStroke(WIDE_STROKE);
+			} else {
+				g.setStroke(NORMAL_STROKE);
+			}
+
 		}
+
 		g.draw(shape);
 		g.setFont(FONT_HELVETICA);
 		g.setPaint(TEXT_FOREGROUND_COLOR);
 
 		if (isExpanded()) {
 			text = adjustText(text, dimensions[2], 3, FONT_HELVETICA, g);
-			textWidth  = getWidth(text, g);
-		}	
-		double textPosX = getTemporalPosition().getX() - (textWidth/2);
-		double textPosY = getTemporalPosition().getY() - (dimensions[3]/2) + (textHeight);
-		
+			textWidth = getWidth(text, g);
+		}
+		double textPosX = getTemporalPosition().getX() - (textWidth / 2);
+		double textPosY = getTemporalPosition().getY() - (dimensions[3] / 2)
+				+ (textHeight);
+
 		g.drawString(text, (float) textPosX, (float) textPosY);
-		
+
 		if (isExpanded()) {
 			innerBox.paint(g);
 		}
