@@ -47,7 +47,8 @@ public class TreeADDPanel extends PotentialPanel
     public TreeADDPanel(ProbNode probNode)
     {
         super();
-        setLayout(new BorderLayout());
+        setData(probNode);
+       /* setLayout(new BorderLayout());
         treeADDController = new TreeADDController ( 
                 (TreeADDPotential)probNode.getPotentials().get( 0 ));
         add( treeADDController, BorderLayout.CENTER );
@@ -58,7 +59,7 @@ public class TreeADDPanel extends PotentialPanel
         messageStringResource =
                 StringResourceLoader.getUniqueInstance().getBundleMessages();        
         
-        this.probNode = probNode;
+        this.probNode = probNode;*/
         
     }
     
@@ -90,6 +91,19 @@ public class TreeADDPanel extends PotentialPanel
     @Override
     public void setData (ProbNode probNode)
     {
+    	setLayout(new BorderLayout());
+        treeADDController = new TreeADDController ( 
+                (TreeADDPotential)probNode.getPotentials().get( 0 ));
+        add( treeADDController, BorderLayout.CENTER );
+        setName("nodeTreeADDPotentialPanel");
+        setBackground(Color.blue);
+        //nodeADDPotentialPanel.setNewNode(newNode);
+        //nodeADDPotentialPanel.setNodeProperties(probNode);
+        messageStringResource =
+                StringResourceLoader.getUniqueInstance().getBundleMessages();        
+        
+        this.probNode = probNode;
+        
         // TODO Auto-generated method stub
     }
 }

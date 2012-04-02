@@ -54,39 +54,7 @@ public class TreeADDModel implements TreeModel {
 	/**
 	 * 
 	 */
-	// private HashMap<Pair<Node,Node>,SummaryBox> boxesHash= new HashMap< Pair<Node, Node>,SummaryBox>();
-	//protected HashMap<Link, SummaryBox> boxesHash = new HashMap<Link, SummaryBox>();
 	
-/*
-	public ArrayList<SummaryBox> getBoxes (Object obj) {
-		ArrayList<SummaryBox> result = new ArrayList<SummaryBox>();
-		
-		for (SummaryBox box : boxesHash.values()) {
-			if (box.getSource()==obj) {
-				result.add(box);
-			}
-		}
-		
-		return result;
-	}
-*/
-	
-/*
-	public void removeBox (SummaryBox obj) {
-		ArrayList<Link> linksToErase= new ArrayList<Link>();
-		
-		for (Entry<Link, SummaryBox> entry : boxesHash.entrySet()) {
-			if (entry.getValue()==obj) {
-				linksToErase.add (entry.getKey());
-			}
-		}
-		
-		for (Link link : linksToErase) {
-			boxesHash.remove (link);
-		}		
-	}
-*/
-
 	public Object getRoot() {
 		return treeADDPotentialRoot;
 	}

@@ -69,18 +69,19 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	
 	/** Shows the tree in read only mode
 	 * @param treeADDPotential
-	 * @throws CloneNotSupportedException 
+	 * 
 	 */
 	public TreeADDController (TreeADDPotential treeADDPotential){
 		if (treeADDPotential.getTopVariable() == null) { // first time we create the panel
 			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential.getVariables(), 
 					treeADDPotential.getVariable(1), treeADDPotential.getPotentialRole());
 		} else {
-			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
+						this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
+			
 		}
 		
 		readOnlyMode = false;
-		treeVariables = treeADDPotential.getVariables();
+		//treeVariables = treeADDPotential.getVariables();
 		setupUserInterface();
 	}
 	
@@ -102,12 +103,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		cellRenderer= new TreeADDCellRenderer(); 
 		jTree.setCellRenderer(cellRenderer);
-		jTree.setUI(new TreeADDUserInterface());	    
+		jTree.setUI(new TreeADDUserInterface());
 		
-		
-			for (int i=0; i<jTree.getRowCount(); i++) {
-			     jTree.expandRow (i);
-			} 
+		for (int i=0; i<jTree.getRowCount(); i++) {
+			jTree.expandRow (i);
+		}
 		
 
 		setViewportView(jTree);
