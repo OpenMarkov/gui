@@ -389,10 +389,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			new Color( 255, 255, 255 ), //white color 
 			OpenMarkovPreferences.OPENMARKOV_COLORS );
 		setColor( OpenMarkovPreferences.REVELATION_ARC_VARIABLE, //def
-				Color.GRAY, //dark gray 
+				new Color(139,119,101), //dark brown 
 				OpenMarkovPreferences.OPENMARKOV_COLORS );
 		setColor( OpenMarkovPreferences.ALWAYS_OBSERVED_VARIABLE, //def
-				Color.GRAY, //dark gray 
+				new Color(139,119,101), //dark brown
 				OpenMarkovPreferences.OPENMARKOV_COLORS );
 	}
 

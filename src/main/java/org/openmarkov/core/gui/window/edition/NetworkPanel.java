@@ -570,6 +570,15 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.enableLinkRestriction();
 
 	}
+	
+	/****
+	 * This method enables the revelation arc properties of the selected link.
+	 */
+	
+	public void enableRevelationArc() {
+		editorPanel.enableRevelationArc();
+
+	}
 
 	/***
 	 * This method resets the link restriction of the selected link.

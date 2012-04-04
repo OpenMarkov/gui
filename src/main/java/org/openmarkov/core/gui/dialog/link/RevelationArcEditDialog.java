@@ -7,38 +7,26 @@ import java.text.MessageFormat;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 
-/**
- * This class implements the link restriction dialog box for the edition of link
- * restrictions.
- * 
- */
-
 @SuppressWarnings("serial")
-public class LinkRestrictionEditDialog extends
+public class RevelationArcEditDialog extends
 		OkCancelApplyUndoRedoHorizontalDialog {
 
-	/****
-	 * The link containing the link restrictions
-	 */
 	private Link link;
-
 	/**
 	 * Dialog string resource.
 	 */
 	private StringResource dialogStringResource;
+	/***
+ * Jpanel showing the values table of the first node
+ */
+	private RevelationArcPanel revelationArcPanel;
 
-	/**
-	 * Panel of the graphic editor
-	 */
-	private LinkRestrictionPanel linkRestrictionPanel;
-
-	public LinkRestrictionEditDialog(Window owner, Link link) {
+	public RevelationArcEditDialog(Window owner, Link link) {
 		super(owner);
 		this.link = link;
 		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
@@ -57,14 +45,12 @@ public class LinkRestrictionEditDialog extends
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
 		ProbNode node1 = (ProbNode) link.getNode1().getObject();
-		ProbNode node2 = (ProbNode) link.getNode2().getObject();
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
 					dialogStringResource
-							.getString("LinkRestrictionDialog.Title.Label"));
-			Object[] labelArgs = new Object[] { node1.getName(),
-					node2.getName() };
+							.getString("RevelationArcDialog.Title.Label"));
+			Object[] labelArgs = new Object[] { node1.getName() };
 			title = messageForm.format(labelArgs);
 		}
 		setTitle(title);
@@ -79,16 +65,15 @@ public class LinkRestrictionEditDialog extends
 	private void configureComponentsPanel() {
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
 
-		getComponentsPanel()
-				.add(getLinkRestrictionPanel(), BorderLayout.CENTER);
+		getComponentsPanel().add(getRevelationArcPanel(), BorderLayout.CENTER);
 	}
 
-	private ProbabilityTablePanel getLinkRestrictionPanel() {
+	private RevelationArcPanel getRevelationArcPanel() {
 
-		if (this.linkRestrictionPanel == null) {
-			this.linkRestrictionPanel = new LinkRestrictionPanel(link);
+		if (this.revelationArcPanel == null) {
+			this.revelationArcPanel = new RevelationArcPanel(link);
 		}
-		return linkRestrictionPanel;
+		return revelationArcPanel;
 	}
 
 	/**
@@ -96,6 +81,7 @@ public class LinkRestrictionEditDialog extends
 	 *         this dialog
 	 */
 	public int requestValues() {
+		revelationArcPanel.setFieldsFromProperties(link);
 		setVisible(true);
 		return selectedButton;
 	}
@@ -109,7 +95,7 @@ public class LinkRestrictionEditDialog extends
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-		getLinkRestrictionPanel().saveChanges();
+		getRevelationArcPanel().saveChanges();
 		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
 				.closeParenthesis();
 		return true;

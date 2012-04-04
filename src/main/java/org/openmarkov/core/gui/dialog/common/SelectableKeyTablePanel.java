@@ -1,0 +1,117 @@
+package org.openmarkov.core.gui.dialog.common;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import org.openmarkov.core.action.RevelationArcValueEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
+
+/**
+ * This class implements a key table with a table model which renders the cells
+ * according to the class type.
+ ***/
+public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
+		TableModelListener {
+
+	private Link link;
+
+	private ProbNode node;
+
+	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData,
+			String newKeyPrefix, boolean firstColumnHidden, Link link) {
+		super(newColumns, new Object[0][0], newKeyPrefix, true);
+		this.link = link;
+		this.node = (ProbNode) link.getNode1().getObject();
+		super.getAddValueButton().setVisible(false);
+		super.getRemoveValueButton().setVisible(false);
+		super.getDownValueButton().setVisible(false);
+		super.getUpValueButton().setVisible(false);
+	}
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * This method initializes tableModel.
+	 * 
+	 * @return a new tableModel.
+	 */
+	protected DefaultTableModel getTableModel() {
+
+		if (tableModel == null) {
+
+			tableModel = new SelectableTableModel(data, columns);
+		}
+		return tableModel;
+	}
+
+	class SelectableTableModel extends DefaultTableModel {
+
+		private static final long serialVersionUID = 4478294244055128574L;
+
+		public SelectableTableModel(Object[][] data, String[] columns) {
+			super(data, columns);
+		}
+
+		public boolean isCellEditable(int row, int col) {
+			if (col == 1) {
+				return true;
+			} else
+				return false;
+		}
+
+		public Class getColumnClass(int c) {
+			if (getRowCount() > 0) {
+				return getValueAt(0, c).getClass();
+			} else
+				return Object.class;
+		}
+
+	}
+
+	/**
+	 * Invoked when the row selection changes.
+	 * 
+	 * @param e
+	 *            selection event information.
+	 */
+	public void tableChanged(TableModelEvent e) {
+		int row = e.getFirstRow();
+		int column = e.getColumn();
+		TableModel model = (TableModel) e.getSource();
+		Object data = model.getValueAt(row, column);
+		State[] states = node.getVariable().getStates();
+		if (states.length > 0) {
+			State selectedState = states[states.length - row - 1];
+			RevelationArcValueEdit arcEdit = new RevelationArcValueEdit(link,
+					selectedState, Boolean.valueOf((Boolean) data));
+			try {
+				node.getProbNet().getPNESupport().announceEdit(arcEdit);
+				node.getProbNet().getPNESupport().doEdit(arcEdit);
+			} catch (ConstraintViolationException e1) {
+			} catch (NotEnoughMemoryException e2) {
+				e2.printStackTrace();
+			} catch (CanNotDoEditException e3) {
+				e3.printStackTrace();
+			} catch (NonProjectablePotentialException e4) {
+				e4.printStackTrace();
+			} catch (WrongCriterionException e5) {
+				e5.printStackTrace();
+			} catch (DoEditException e6) {
+				e6.printStackTrace();
+			}
+		}
+	}
+}

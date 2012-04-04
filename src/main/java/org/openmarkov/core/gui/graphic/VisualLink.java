@@ -17,6 +17,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.model.graph.Link;
 import org.apache.log4j.Logger;
 
@@ -58,6 +59,13 @@ public class VisualLink extends VisualElement {
 	 * Color of lines.
 	 */
 	private static final Color FOREGROUND_COLOR = Color.DARK_GRAY;
+
+	/**
+	 * Color of the border when the node is alwaysObserved.
+	 */
+	private static final Color REVELATION_ARC_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.REVELATION_ARC_VARIABLE,
+					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(139,119,101));
 
 	/**
 	 * Start point.
@@ -462,7 +470,6 @@ public class VisualLink extends VisualElement {
 				} else {
 					g.setStroke(NORMAL_STROKE);
 				}
-				g.setPaint(FOREGROUND_COLOR);
 				shape = getShapeToPaint(start, end);
 				g.fill(shape);
 				g.draw(shape);
@@ -492,7 +499,6 @@ public class VisualLink extends VisualElement {
 				} else {
 					g.setStroke(NORMAL_STROKE);
 				}
-				g.setPaint(FOREGROUND_COLOR);
 				shape = getStripeShape(start, end, STRIPE_DISTANCE);
 				g.fill(shape);
 				g.draw(shape);
@@ -564,7 +570,6 @@ public class VisualLink extends VisualElement {
 				} else {
 					g.setStroke(NORMAL_STROKE);
 				}
-				g.setPaint(FOREGROUND_COLOR);
 				shape = getLineToPaint(start, end);
 				g.draw(shape);
 			}
@@ -605,6 +610,13 @@ public class VisualLink extends VisualElement {
 
 				return;
 			}
+			if (link.hasRevealingConditions()) {
+				g.setPaint(REVELATION_ARC_COLOR);
+			}else
+			{
+				g.setPaint(FOREGROUND_COLOR);
+			}
+
 			sPoint = source.cutPoint(line, g);
 			ePoint = destination.cutPoint(line, g);
 			if ((sPoint != null) && (ePoint != null) && (link.isDirected())) {
