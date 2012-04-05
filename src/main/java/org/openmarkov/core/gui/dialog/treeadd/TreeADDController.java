@@ -74,10 +74,9 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	public TreeADDController (TreeADDPotential treeADDPotential){
 		if (treeADDPotential.getTopVariable() == null) { // first time we create the panel
 			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential.getVariables(), 
-					treeADDPotential.getVariable(1), treeADDPotential.getPotentialRole());
+			treeADDPotential.getVariable(1), treeADDPotential.getPotentialRole());
 		} else {
-						this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
-			
+			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
 		}
 		
 		readOnlyMode = false;
@@ -294,10 +293,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		//Potential Edition, any case it is possible to edit branch´s potential
 		JSeparator separator = new JSeparator();
-		
-		editPotential.setActionCommand ("EditPotential");
-		popupMenu.add(editPotential);
-		popupMenu.add(separator);
+		if (branch.getPotential() instanceof TablePotential || branch.getPotential() instanceof UniformPotential) {
+			editPotential.setActionCommand ("EditPotential");
+			popupMenu.add(editPotential);
+			popupMenu.add(separator);
+		}
 		
 		if (possibleVariables.size()!=0 && !(branch.getPotential() instanceof TreeADDPotential)) { //if {variables}-{topVariable}-{conditionedVariable}  
 			//is not empty so you can add also a subtree to the branch
@@ -385,8 +385,18 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		Object node= path.getLastPathComponent();
 				
 		if (actionComand.equals ("AddTreeADD")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionAddTreeADD (ae, node, path);			
 		} else if (actionComand.equals ("EditPotential")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			try {
 				actionEditPotential (ae, node, path);
 			} catch (NotEnoughMemoryException e) {
@@ -394,20 +404,56 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				e.printStackTrace();
 			}			
 		} else if (actionComand.equals ("ChangeTopVariable")){
+			//node must be a treeADD
 			actionChangeTopVariable(ae, node, path);
 		} else if (actionComand.equals ("JoinBranches")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionJoinBranches(ae, node, path);
 		} else if (actionComand.equals ("RemoveTreeADD")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionRemoveSubTree(ae, node, path);
 		} else if (actionComand.equals ("AddVariables2Potential")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionAddVariables2Potential(ae, node, path);
 		} else if (actionComand.equals ("DissociateStates")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionDissociateStates(ae, node, path);
 		} else if (actionComand.equals ("RemoveVariables")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionRemoveVariables(ae, node, path);
 		} else if (actionComand.equals ("SplitInterval")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionSplitInterval(ae, node, path);
 		} else if (actionComand.equals ("ChangeInterval")) {
+			if (node instanceof TablePotential || node instanceof UniformPotential) {
+				path = path.getParentPath();
+				node = path.getLastPathComponent();
+			}
+			//node must be a branch
 			actionChangeInterval(ae, node, path);
 		}
 		
@@ -1156,16 +1202,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			
 			TreeADDModel model= (TreeADDModel) jTree.getModel();
 			
-			//This must be a treeADD
-			Object previousParentPath = path.getLastPathComponent();
-			
-			while (parentPath != null) {
-				previousParentPath = parentPath;
-				parentPath = ((TreePath)parentPath).getParentPath();
-			}
-			
-			model.fireTreeStructureChanged((TreePath)previousParentPath);	
+			model.fireTreeStructureChanged(path);
 			jTree.expandPath(path);
+			int i = jTree.getRowForPath(path);
+			jTree.expandRow (i);
 			
 		}
 	}
@@ -1307,7 +1347,15 @@ class ADDTreeViewer_tree_mouseAdapter extends MouseAdapter {
 				} else if (node instanceof Potential) {
 					if (node instanceof TreeADDPotential) {
 						treeADDController.setPopupItemsTreeADD(e, (TreeADDPotential) node);
-					} else {
+					} else if (node instanceof TablePotential || node instanceof UniformPotential) {
+						TreePath parentPath = path.getParentPath();
+						Object parent = parentPath.getLastPathComponent();
+						if (parent instanceof TreeADDBranch) {
+							treeADDController.setPopupItemBranch(e, (TreeADDBranch)parent, parentPath);
+						}
+					}
+					
+					else {
 						treeADDController.popupMenu.removeAll();
 					}
 				}			
