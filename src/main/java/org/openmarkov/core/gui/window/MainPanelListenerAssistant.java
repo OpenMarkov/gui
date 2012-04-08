@@ -473,7 +473,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 	public void frameClosed(FrameContentPanel contentPanel) {
 
-		if (mainPanel.getMdi().getOpenFramesNumber() == 0) {
+		if (networkPanels.size() == 0) {
 			mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsAllNetworkClosed();
@@ -726,7 +726,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
-			networkPanels.add (networkPanel);
 
 			mainPanel.getMdi().createNewFrame(networkPanel);
 			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
@@ -757,7 +756,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
-            networkPanels.add (networkPanel);
 			
 			mainPanel.getMdi().createNewFrame(networkPanel);
 			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
@@ -887,7 +885,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
             if (canClose)
             {
                 mainPanel.getMdi ().closeCurrentFrame ();
-                if (mainPanel.getMdi ().getOpenFramesNumber () == 0)
+                if (networkPanels.size() == 0)
                 {
                     mainPanel.setToolBarPanel (NetworkPanel.EDITION_WORKING_MODE);
                     mainPanel.getMainPanelMenuAssistant ().updateOptionsAllNetworkClosed ();
@@ -1199,6 +1197,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			directoryFileName = fileName.substring(0, i).toLowerCase();
 		}
 		return directoryFileName;
+	}
+
+	/**
+	 * Returns current list of opened network panels
+	 * @return current list of opened network panels
+	 */
+	public ArrayList<NetworkPanel> getNetworkPanels() {
+		return networkPanels;
 	}
 
 }
