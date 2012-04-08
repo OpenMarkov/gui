@@ -1491,6 +1491,12 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
     public void setData (ProbNode probNode)
     {
+      if(this.probNode.getProbNet().getPNESupport() != 
+    		  probNode.getProbNet().getPNESupport())
+      {
+    	  this.probNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
+    	  probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
+      }
       this.probNode = probNode;
     }
 
