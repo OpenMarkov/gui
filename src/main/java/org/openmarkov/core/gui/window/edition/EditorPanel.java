@@ -2150,9 +2150,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 		propagationActive = isAutomaticPropagation();
 		Variable variable = visualState.getVisualNode().getProbNode()
 				.getVariable();
-		if (evidenceCases.get(currentCase).getFinding(variable) != null) {
-			if (evidenceCases.get(currentCase).getState(variable) == visualState
-					.getStateNumber()) {
+		boolean nodeAlreadyHasFinding = evidenceCases.get(currentCase).getFinding(variable) != null;
+		int oldState = -1;
+		if (nodeAlreadyHasFinding) {
+			// There is already a finding in the node
+			oldState = evidenceCases.get(currentCase).getState(variable);
+			if (oldState == visualState.getStateNumber()) {
+				// The finding is in the same state, therefore, remove evidence
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
 					visualState.getVisualNode().setFindingInNode(false);
@@ -2170,6 +2174,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 									JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
+				// There is a finding in another state. Remove old, add new
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
 					Finding finding = new Finding(variable,
@@ -2259,7 +2264,27 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if ((propagationActive)
 				&& (evidenceCasesCompilationState.get(currentCase) == false)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			if(!doPropagation(evidenceCases.get(currentCase), currentCase))
+			 // if propagation does not succeed, restore previous state
+			 {
+				if(nodeAlreadyHasFinding)
+				{
+					try {
+						evidenceCases.get(currentCase).removeFinding(variable);
+					} catch (NoFindingException e) {/* Not possible */ }
+					Finding finding = new Finding(variable, oldState);
+					try {
+						evidenceCases.get(currentCase).addFinding(finding);
+					} catch (InvalidStateException e) {/* Not possible */ 
+					} catch (IncompatibleEvidenceException e) {/* Not possible */ }					
+				}else
+				{
+					try {
+						evidenceCases.get(currentCase).removeFinding(variable);
+					} catch (NoFindingException e) { /* Not possible */ }
+					visualState.getVisualNode().setFindingInNode(false);
+				}
+			 }
 		}
 		networkPanel.getMainPanel().getMainPanelMenuAssistant()
 				.updateOptionsFindingsDependent(networkPanel);
@@ -2294,7 +2319,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param caseNumber
 	 *            number of this evidence case.
 	 */
-	public void doPropagation(EvidenceCase evidenceCase, int caseNumber) {
+	public boolean doPropagation(EvidenceCase evidenceCase, int caseNumber) {
 		// ...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE
 		// ...DIAGRAMS IS COMPLETE
 		// ...We obtain the type of the network. If it is a Bayesian Network, we
@@ -2420,7 +2445,21 @@ public class EditorPanel extends JPanel implements MouseListener,
 					propagationSucceded = true;
 				}
 				repaint();
+			} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"Incompatible evidence",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);				
+				e.printStackTrace();
 			} catch (Exception e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"ERROR during inference",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);				
 				e.printStackTrace();
 			}
 
@@ -2525,6 +2564,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
 		// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
 		// ...INFLUENCE DIAGRAMS IS COMPLETE
+		return propagationSucceded;
 	}
 
 	/**
