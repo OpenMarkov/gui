@@ -9,8 +9,8 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class LinkRestrictionCellRenderer extends ValuesTableCellRenderer {
 
-	private static Color INCOMPATIBILITY_COLOR = new Color(255, 122, 122);
-	private static Color COMPATIBILITY_COLOR = new Color(122, 122, 255);
+	private static Color INCOMPATIBILITY_COLOR = new Color(255, 88, 88);
+	private static Color COMPATIBILITY_COLOR =new Color(174, 255, 174);
 	private final String INCOMPATIBILITY_VALUE = "0";
 	private final String COMPATIBILITY_VALUE = "1";
 
