@@ -54,7 +54,7 @@
 		</dependency> -->
 
 	</dependencies>
-		<!-- <repositories>
+	<repositories>
 		<repository>
 			<id>release</id>
 			<name>OpenMarkov</name>
@@ -79,7 +79,7 @@
 			<name>Snapshots</name>
 			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
-	</distributionManagement> -->
+	</distributionManagement>
 
 
 </project>
