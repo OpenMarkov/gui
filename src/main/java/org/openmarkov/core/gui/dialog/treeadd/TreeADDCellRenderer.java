@@ -27,6 +27,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -257,14 +258,26 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		
 		else if (potential instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential)potential;
-			if (tablePotential.getVariable(0) instanceof Variable) {
-				icon= IconFactory.createChanceIcon (description, textIconFont);	
+			if (tablePotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY){
+				if (tablePotential.getVariable(0) instanceof Variable) {
+					icon= IconFactory.createChanceIcon (description, textIconFont);	
+				}
+			} else if (tablePotential.getPotentialRole() == PotentialRole.UTILITY) {
+				if (tablePotential.getUtilityVariable() instanceof Variable) {
+					icon= IconFactory.createChanceIcon (description, textIconFont);	
+				}
 			}
 		}
 		else if (potential instanceof UniformPotential) {
 			UniformPotential uniformPotential = (UniformPotential)potential;
-			if (uniformPotential.getVariable(0) instanceof Variable) {
-				icon= IconFactory.createChanceIcon (description, textIconFont);	
+			if (uniformPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY){
+				if (uniformPotential.getVariable(0) instanceof Variable) {
+					icon= IconFactory.createChanceIcon (description, textIconFont);	
+				}
+			} else if (uniformPotential.getPotentialRole() == PotentialRole.UTILITY) {
+				if (uniformPotential.getUtilityVariable() instanceof Variable) {
+					icon= IconFactory.createChanceIcon (description, textIconFont);	
+				}
 			}
 		}
 		/*else if( tree.getObject() instanceof Potential ) {

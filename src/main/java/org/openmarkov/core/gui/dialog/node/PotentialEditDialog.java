@@ -272,6 +272,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
                 "NodePotentialDialog.Title.Label")+ ": " + probNode.getName());
 
         getPotentialPanel().setData( probNode );
+        //updatePotentialPanel();
         if ( probNode.getNodeType() == NodeType.DECISION ){
             setEnabledDecisionOptions(true);
         }

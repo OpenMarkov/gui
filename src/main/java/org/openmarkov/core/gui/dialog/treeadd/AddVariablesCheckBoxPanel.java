@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.tree.TreePath;
 
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 /**
@@ -44,14 +46,22 @@ public class AddVariablesCheckBoxPanel extends JPanel{
 		setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		ArrayList<Variable> variables = branch.getParentVariables();
+	
 		ArrayList<Variable> potentialVariables = branch.getPotential().getVariables();
 		Variable topVariable =  branch.getTopVariable();
 		ArrayList<Variable> posibleVariables = new ArrayList<Variable>();
-		for (Variable variable : variables) {
-			
-			if (variable != topVariable && variable!= variables.get(0) && !potentialVariables.contains(variable) ) {
-				posibleVariables.add(variable);
-				}
+		if (branch.getPotential().getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+			for (Variable variable : variables) {
+				if (variable != topVariable && variable!= variables.get(0) && !potentialVariables.contains(variable) ) {
+					posibleVariables.add(variable);
+					}
+			}
+		} else if (branch.getPotential().getPotentialRole() == PotentialRole.UTILITY) {
+			for (Variable variable : variables) {
+				if (variable != topVariable && variable!= branch.getPotential().getUtilityVariable() && !potentialVariables.contains(variable) ) {
+					posibleVariables.add(variable);
+					}
+			}
 		}
 		
 		for (Variable variable : posibleVariables) {

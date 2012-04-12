@@ -48,19 +48,7 @@ public class TreeADDPanel extends PotentialPanel
     {
         super();
         setData(probNode);
-       /* setLayout(new BorderLayout());
-        treeADDController = new TreeADDController ( 
-                (TreeADDPotential)probNode.getPotentials().get( 0 ));
-        add( treeADDController, BorderLayout.CENTER );
-        setName("nodeTreeADDPotentialPanel");
-        setBackground(Color.blue);
-        //nodeADDPotentialPanel.setNewNode(newNode);
-        //nodeADDPotentialPanel.setNodeProperties(probNode);
-        messageStringResource =
-                StringResourceLoader.getUniqueInstance().getBundleMessages();        
-        
-        this.probNode = probNode;*/
-        
+       
     }
     
     public void saveChanges() throws NotEnoughMemoryException
@@ -92,8 +80,10 @@ public class TreeADDPanel extends PotentialPanel
     public void setData (ProbNode probNode)
     {
     	setLayout(new BorderLayout());
+    	 this.probNode = probNode;
         treeADDController = new TreeADDController ( 
                 (TreeADDPotential)probNode.getPotentials().get( 0 ));
+        removeAll();
         add( treeADDController, BorderLayout.CENTER );
         setName("nodeTreeADDPotentialPanel");
         setBackground(Color.blue);
@@ -101,9 +91,6 @@ public class TreeADDPanel extends PotentialPanel
         //nodeADDPotentialPanel.setNodeProperties(probNode);
         messageStringResource =
                 StringResourceLoader.getUniqueInstance().getBundleMessages();        
-        
-        this.probNode = probNode;
-        
-        // TODO Auto-generated method stub
+      
     }
 }

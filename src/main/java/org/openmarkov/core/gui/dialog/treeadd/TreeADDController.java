@@ -248,14 +248,22 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		//Adding treeADD
 		ArrayList<Variable> variables = branch.getParentVariables();
+		if (branch.getPotential().getPotentialRole() == PotentialRole.UTILITY) {
+			variables.add(branch.getPotential().getUtilityVariable());
+		}
 		Variable topVariable =  branch.getTopVariable();
 		
 		ArrayList<Variable> possibleVariables = new ArrayList<Variable>();
 		for (Variable variable : variables) {
-			
-			if (variable != topVariable && variable!= variables.get(0)) {
-				possibleVariables.add(variable);
-				}
+			if (branch.getPotential().getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+				if (variable != topVariable && variable!= variables.get(0)) {
+					possibleVariables.add(variable);
+					}
+			} else if (branch.getPotential().getPotentialRole() == PotentialRole.UTILITY) {
+				if (variable != topVariable && variable!= branch.getPotential().getUtilityVariable()) {
+					possibleVariables.add(variable);
+					}
+			}
 		}
 		//Also it could be selected a top variable that has been appeared previously in the tree but only if
 		//in current path that variable groups different states
@@ -298,7 +306,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			popupMenu.add(editPotential);
 			popupMenu.add(separator);
 		}
-		
+		JSeparator separatorAddSubtree = new JSeparator();
 		if (possibleVariables.size()!=0 && !(branch.getPotential() instanceof TreeADDPotential)) { //if {variables}-{topVariable}-{conditionedVariable}  
 			//is not empty so you can add also a subtree to the branch
 			for (Variable variable : possibleVariables) {
@@ -310,6 +318,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				addSubtreeADD.add (posibleTopVariable);
 			}
 			popupMenu.add(addSubtreeADD);
+			popupMenu.add(separatorAddSubtree);
 		}
 		
 		//remove subtree
@@ -319,21 +328,25 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			popupMenu.add(removeTreeADD);
 			popupMenu.add(addRemoveTree);
 		} else {
-			popupMenu.add(addRemoveTree);
+			//popupMenu.add(addRemoveTree);
 		}
 		
 		//Adding Variables to potential
 		JSeparator addRemoveVariables = new JSeparator();
-		addVariables2Potential.setActionCommand ("AddVariables2Potential");
-		popupMenu.add(addVariables2Potential);
+		if (possibleVariables.size() != 0 && ! (branch.getPotential() instanceof TreeADDPotential)) {
+			addVariables2Potential.setActionCommand ("AddVariables2Potential");
+			popupMenu.add(addVariables2Potential);
+		}
 		//remove potential variables
+		if (! (branch.getPotential() instanceof TreeADDPotential)) {
 				if (branch.getPotential().getVariables().size() > 1) {
 					removeVariables.setActionCommand ("RemoveVariables");
 					popupMenu.add(removeVariables);
 					popupMenu.add(addRemoveVariables);
 				} else {
-					popupMenu.add(addRemoveVariables);
+					//popupMenu.add(addRemoveVariables);
 				}
+		}
 				
 		//dissociate branches
 		if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES){
@@ -1169,21 +1182,38 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 
 		dummyProbNet.addPotential (potential);
 		ProbNode dummy= null;
-		
-		Variable conditionedVariable= parentTreeADD.getConditionedVariable();
-		dummy= dummyProbNet.getProbNode (conditionedVariable);
+		if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+			Variable conditionedVariable= parentTreeADD.getConditionedVariable();
+			dummy= dummyProbNet.getProbNode (conditionedVariable);
+			for (Variable variable : potential.getVariables()) {
+				if (variable==conditionedVariable) {
+					continue;
+				}
+				
+				try {
+					dummyProbNet.addLink (variable, conditionedVariable, true);
+				} catch (NodeNotFoundException e) {
+					throw new RuntimeException("Node not found: " + e.getMessage());
+				}
+			}
+		} else if (potential.getPotentialRole() == PotentialRole.UTILITY) {
+			Variable utilityVariable= parentTreeADD.getUtilityVariable();
+			dummy= dummyProbNet.getProbNode (utilityVariable);
+			for (Variable variable : potential.getVariables()) {
+				if (variable==utilityVariable) {
+					continue;
+				}
+				
+				try {
+					dummyProbNet.addLink (variable, utilityVariable, true);
+				} catch (NodeNotFoundException e) {
+					throw new RuntimeException("Node not found: " + e.getMessage());
+				}
+			}
 
-		for (Variable variable : potential.getVariables()) {
-			if (variable==conditionedVariable) {
-				continue;
-			}
-			
-			try {
-				dummyProbNet.addLink (variable, conditionedVariable, true);
-			} catch (NodeNotFoundException e) {
-				throw new RuntimeException("Node not found: " + e.getMessage());
-			}
 		}
+
+		
 		
 		PotentialEditDialog dialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false);
 		
