@@ -195,12 +195,25 @@ public class StringResourceLoader implements LocaleChangeListener {
 			 bundle = ResourceBundle.getBundle(file, tempLocale);
     	   		
 		} catch (MissingResourceException e) {
+			System.out.println("WARNING: Resource bundle " + resourceFile
+					+ " could not be found for locale '" + tempLocale
+					+ "'. English will be used instead");
+		}
+		setLanguage("en");
+		tempLanguage = getLanguage();
+		tempLocale = new Locale(tempLanguage);
+		setLocale(tempLocale);		
+		try {
+			 bundle = ResourceBundle.getBundle(file, tempLocale);
+   	   		
+		} catch (MissingResourceException e) {
 			throw new MissingResourceException("Any of the "
 				+ resourceFile.toLowerCase()
 				+ " resource string files is missing",
 				StringResourceLoader.class.getName(), getLocale().getLanguage());
 		
 		}
+		
 		stringResource = new StringResource(bundle);
 		//bundleLanguage = bundle.getLocale().getLanguage();
 		return stringResource;
