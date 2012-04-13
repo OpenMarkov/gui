@@ -6,6 +6,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -30,6 +31,9 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	 * Dialog string resource.
 	 */
 	private StringResource dialogStringResource;
+	
+
+	 private StringResource messageStringResource;
 	/***
 	 * Object where all the information will be saved
 	 */
@@ -54,10 +58,18 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 		this.link = link;
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
+
+
 		}
 	}
 

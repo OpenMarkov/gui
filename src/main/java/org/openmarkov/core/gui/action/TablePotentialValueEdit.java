@@ -12,17 +12,21 @@ package org.openmarkov.core.gui.action;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import javax.swing.JOptionPane;
+
+import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
-
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.action.SimplePNEdit;
 
 /**
  * <code>NodePotentialEdit</code> is a simple edit that allows to modify the
@@ -86,7 +90,8 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	private ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
 
 	private Object[][] notEditablePostitions = new Object[0][0];
-
+	
+	private StringResource messageStringResource;
 	// Constructor
 	/**
 	 * Creates a new <code>NodePotentialEdit</code> specifying the node to be
@@ -124,6 +129,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				.getValues().clone();
 
 		orderVariables = probNode.getPotentials().get(0).getVariables();
+		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 		// reorder the variables like appear in PotentialsDialog
 		int end = -1;
 		if (orderVariables.size() > 0) {
@@ -146,6 +152,10 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		// values table reordered
 		this.newTable = tablePotential.getValues().clone();
@@ -256,6 +266,10 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 		ArrayList<Potential> potentials = new ArrayList<Potential>();
@@ -278,6 +292,10 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		tablePotential.setValues(newTable);
 		// back to the original order of the tablePotential
@@ -287,6 +305,10 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 		ArrayList<Potential> potentials = new ArrayList<Potential>();

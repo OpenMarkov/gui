@@ -35,6 +35,8 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
@@ -67,6 +69,8 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 	// Variables of the treeADDPotential root of the tree
 	protected ArrayList<Variable> treeVariables;
 	
+	private StringResource messageStringResource;
+	
 	/** Shows the tree in read only mode
 	 * @param treeADDPotential
 	 * 
@@ -84,7 +88,8 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		} else {
 			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
 		}
-		
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		readOnlyMode = false;
 		//treeVariables = treeADDPotential.getVariables();
 		setupUserInterface();
@@ -421,6 +426,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}			
 		} else if (actionComand.equals ("ChangeTopVariable")){
 			//node must be a treeADD

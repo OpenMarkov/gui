@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -79,7 +78,8 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * Buttons string resource.
 	 */
 	protected StringResource stringResource;
-
+	
+	private StringResource messageStringResource;
 	/**
 	 * Constructor. initialises the instance.
 	 * 
@@ -89,6 +89,8 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	public OkCancelHorizontalDialog(Window owner) {
 
 		super(owner);
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		initialize();
 		pack();
 	}
@@ -145,6 +147,10 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 					} catch (NotEnoughMemoryException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e1.getMessage() ),
+							messageStringResource.getString( e1.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 				}
 			});

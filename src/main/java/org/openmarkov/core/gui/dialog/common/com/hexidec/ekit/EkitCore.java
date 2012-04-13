@@ -52,6 +52,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -109,6 +110,8 @@ import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.UnicodeD
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.thirdparty.print.DocumentRenderer;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.util.Base64Codec;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.util.Translatrix;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
@@ -210,6 +213,9 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 	private JCheckBoxMenuItem jcbmiViewToolbarFormat;
 	private JCheckBoxMenuItem jcbmiViewToolbarStyles;
 	private JCheckBoxMenuItem jcbmiViewSource;
+	
+
+	private StringResource messageStringResource;
 
 	/* Constants */
 	// Menu Keys
@@ -382,6 +388,8 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 					boolean multiBar, String toolbarSeq) {
 
 		super();
+		
+		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		exclusiveEdit = editModeExclusive;
 
@@ -4007,6 +4015,10 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 				undoMngr.undo();
 			} catch (CannotUndoException ex) {
 				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( ex.getMessage() ),
+					messageStringResource.getString( ex.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			updateUndoState();
 			redoAction.updateRedoState();
@@ -4035,6 +4047,10 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 				undoMngr.redo();
 			} catch (CannotUndoException ex) {
 				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( ex.getMessage() ),
+					messageStringResource.getString( ex.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			updateRedoState();
 			undoAction.updateUndoState();

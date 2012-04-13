@@ -24,6 +24,8 @@ import java.beans.PropertyChangeListener;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 
+import javax.swing.JOptionPane;
+
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -31,6 +33,8 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 /**
@@ -47,6 +51,8 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	 * the panel to handle the events
 	 */
 	private NodeDomainValuesTablePanel panel;
+	
+	private StringResource messageStringResource;
 
 	/**
 	 * Constructor
@@ -58,6 +64,10 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 								NodeDomainValuesTablePanel panel) {
 
 		this.panel = panel;
+		
+
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 	}
 
 	/**
@@ -154,21 +164,45 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			} catch (ConstraintViolationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (CanNotDoEditException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e2.getMessage() ),
+					messageStringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NotEnoughMemoryException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e2.getMessage() ),
+					messageStringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			System.out.println( "precision set to "
 				+ ((Double) getPanel().getJFormattedTextFieldPrecision()
@@ -190,21 +224,45 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			} catch (ConstraintViolationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (CanNotDoEditException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e2.getMessage() ),
+					messageStringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			
 			NumberFormat nf = NumberFormat.getNumberInstance() ;

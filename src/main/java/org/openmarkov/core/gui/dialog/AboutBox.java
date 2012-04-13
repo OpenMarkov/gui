@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -57,6 +58,8 @@ public class AboutBox extends JDialog implements ActionListener {
 	private ImageLoader imageLoader = null;
 	
 	private Logger logger;
+	
+	private StringResource messageStringResource;
 	
     /**
      * AboutBox visual components
@@ -140,6 +143,8 @@ public class AboutBox extends JDialog implements ActionListener {
 		super(parent,"" , true);
 		try {
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			this.messageStringResource =	
+					StringResourceLoader.getUniqueInstance().getBundleMessages();
 			dialogStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleDialogs();
 			this.setTitle(dialogStringResource.getString("AboutBox.Title.Text"));
@@ -239,6 +244,10 @@ public class AboutBox extends JDialog implements ActionListener {
 				jPanelAboutButton, java.awt.BorderLayout.SOUTH);
 		} catch (Exception exception) {
 			exception.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( exception.getMessage() ),
+				messageStringResource.getString( exception.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 

@@ -139,6 +139,10 @@ public class DiscreteValuesTablePanel extends JPanel implements
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 	}

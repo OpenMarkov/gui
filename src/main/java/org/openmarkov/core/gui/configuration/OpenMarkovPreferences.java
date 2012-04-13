@@ -17,6 +17,11 @@ import java.awt.Color;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
+
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
+
 
 
 /**
@@ -70,12 +75,15 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	 * a default color value
 	 */
 	private static final Color defaultColor = Color.BLACK;
+	 
+	private  static StringResource messageStringResource;
 
 	/**
 	 * constructor. 
 	 */
 	private OpenMarkovPreferences() {
-
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 	}
 
 	/**
@@ -95,9 +103,17 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		} catch (NullPointerException ex) {
 			System.out.println( "wrong access to " + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage() + "wrong access to " + key ),
+				messageStringResource.getString( ex.getMessage()+ "wrong access to " + key  ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (Exception ex) {
 			System.out.println( "unexpected exception accesing key" + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage()+"unexpected exception accesing key" + key),
+				messageStringResource.getString( ex.getMessage()+"unexpected exception accesing key" + key ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		return result;
 	}
@@ -121,9 +137,17 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		} catch (NullPointerException ex) {
 			System.out.println( "wrong access to " + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage()+"wrong access to " + key  ),
+				messageStringResource.getString( ex.getMessage()+"wrong access to " + key  ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (Exception ex) {
 			System.out.println( "unexpected exception accesing key" + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage()+"unexpected exception accesing key" + key  ),
+				messageStringResource.getString( ex.getMessage()+"unexpected exception accesing key" + key  ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		return result;
 	}
@@ -147,9 +171,17 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		} catch (NullPointerException ex) {
 			System.out.println( "wrong access to " + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage()+"wrong access to " + key ),
+				messageStringResource.getString( ex.getMessage()+"wrong access to " + key  ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (Exception ex) {
 			System.out.println( "unexpected exception accesing key" + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage()+"unexpected exception accesing key" + key ),
+				messageStringResource.getString( ex.getMessage()+"unexpected exception accesing key" + key ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		return result;
 	}
@@ -180,9 +212,17 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		} catch (NullPointerException ex) {
 			System.out.println( "wrong access to " + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( ex.getMessage() +"wrong access to " + key ),
+				messageStringResource.getString( ex.getMessage()+"wrong access to " + key ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (Exception ex) {
 			System.out.println( "unexpected exception accesing key" + key );
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( "unexpected exception accesing key" + key + ex.getMessage() ),
+				messageStringResource.getString( "unexpected exception accesing key" + key + ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		return result;
 	}
@@ -204,6 +244,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			preferences.sync();
 		} catch (BackingStoreException ex) {
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  ex.getMessage() ),
+				messageStringResource.getString( ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 
 		}
 	}
@@ -226,6 +270,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			preferences.sync();
 		} catch (BackingStoreException ex) {
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  ex.getMessage() ),
+				messageStringResource.getString( ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 
 		}
 	}
@@ -247,6 +295,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			preferences.sync();
 		} catch (BackingStoreException ex) {
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  ex.getMessage() ),
+				messageStringResource.getString( ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 
 		}
 	}
@@ -272,6 +324,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			preferences.sync();
 		} catch (BackingStoreException ex) {
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  ex.getMessage() ),
+				messageStringResource.getString( ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 
 		}
 	}

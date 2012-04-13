@@ -11,12 +11,16 @@ package org.openmarkov.core.gui.constraint;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -33,6 +37,7 @@ public class ValidName extends PNConstraint {
 
 	// Attributes.
 	private String message;
+	private StringResource messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NonProjectablePotentialException, WrongCriterionException {
@@ -49,6 +54,10 @@ public class ValidName extends PNConstraint {
 			}
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		return true;
 	}

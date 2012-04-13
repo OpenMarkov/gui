@@ -2,6 +2,7 @@ package org.openmarkov.core.gui.component;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
@@ -13,6 +14,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.LinkRestrictionPotentialValueEdit;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -61,6 +64,8 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 	 */
 	private final String INCOMPATIBILITY_VALUE = "0";
 
+	private StringResource messageStringResource;
+
 	public LinkRestrictionValuesTable(Link link, ValuesTableModel tableModel,
 			final boolean modifiable) {
 		super(tableModel, modifiable);
@@ -68,6 +73,8 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 		node1 = (ProbNode) link.getNode1().getObject();
 		node2 = (ProbNode) link.getNode2().getObject();
 		net = node1.getProbNet();
+		
+		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 	}
 
 	/**
@@ -87,6 +94,10 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			LinkRestrictionPotentialValueEdit linkPotentialEdit = new LinkRestrictionPotentialValueEdit(
 					link, (Integer) newValue, row, col);
@@ -113,21 +124,45 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 			} catch (ConstraintViolationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (CanNotDoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 
 		}

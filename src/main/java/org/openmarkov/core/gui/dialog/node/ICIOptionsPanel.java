@@ -23,6 +23,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
@@ -153,6 +154,8 @@ public class ICIOptionsPanel extends JPanel implements
 	private ProbNode probNode;
 
 	private JPopupMenu uncertaintyPopup;
+	
+	private StringResource messageStringResource;
 
 	/**
 	 * constructor without construction parameters
@@ -172,10 +175,17 @@ public class ICIOptionsPanel extends JPanel implements
 		this.probNode = probNode;
 		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
 		this.listener = new ICIOptionListenerAssistant(this);
+
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 		

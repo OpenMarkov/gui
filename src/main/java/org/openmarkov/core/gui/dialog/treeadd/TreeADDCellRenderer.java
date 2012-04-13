@@ -18,11 +18,14 @@ import java.util.HashMap;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -57,6 +60,8 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 	 * Font used in icon text
 	 */
 	private Font textIconFont;
+	
+	private StringResource messageStringResource;
 
 	/**
 	 * Precision Proxy: every node of the tree could have its own precision (number of decimals)
@@ -69,6 +74,10 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 	public TreeADDCellRenderer() {
 		super (new BorderLayout ());
 
+		
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
+		
 	    this.add (leftLabel, BorderLayout.WEST);
 	    this.add (rightLabel, BorderLayout.CENTER);
 
@@ -105,6 +114,11 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
+				
 			}
 		} else if ( value instanceof UniformPotential ) {
 			try {
@@ -112,6 +126,10 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			
 		}
@@ -121,6 +139,10 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		}
 		else {

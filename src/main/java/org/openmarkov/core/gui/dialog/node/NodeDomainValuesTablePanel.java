@@ -192,6 +192,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 	
@@ -1020,6 +1024,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 				} catch (ConstraintViolationException e1) {
 					JOptionPane.showMessageDialog( this, 
@@ -1034,18 +1042,38 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				} catch (CanNotDoEditException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 			}
 		
@@ -1079,27 +1107,55 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 				} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 			}
 		}

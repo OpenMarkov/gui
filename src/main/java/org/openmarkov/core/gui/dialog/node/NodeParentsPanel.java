@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
-
 
 import org.openmarkov.core.gui.dialog.common.PrefixedDataTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -38,6 +38,9 @@ import org.openmarkov.core.model.network.ProbNode;
  */
 public class NodeParentsPanel extends JPanel implements ItemListener {
 
+	
+
+	private StringResource messageStringResource;
 	/**
 	 * constructor without construction parameters
 	 */
@@ -57,6 +60,10 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 	}	
@@ -71,6 +78,8 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		this.newNode = newNode;
 		//this.notifier = notifier;
 		setName("NodeParentsPanel");

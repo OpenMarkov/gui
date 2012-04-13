@@ -15,8 +15,12 @@ package org.openmarkov.core.gui.dialog.configuration;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 /**
@@ -31,11 +35,17 @@ import javax.swing.tree.TreeNode;
 		Preferences pref;
 		String nodeName;
 		String[] childrenNames;
+		
+
+		private StringResource messageStringResource;
 
 		public PreferenceTreeNode(Preferences pref) throws BackingStoreException {
 
 			this.pref = pref;
 			childrenNames = pref.childrenNames();
+
+			messageStringResource =	
+					StringResourceLoader.getUniqueInstance().getBundleMessages();
 		}
 
 		public Preferences getPrefObject() {
@@ -62,6 +72,10 @@ import javax.swing.tree.TreeNode;
 					return child;
 				} catch (BackingStoreException e) {
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 					return new DefaultMutableTreeNode("Problem Child!");
 				}
 			}

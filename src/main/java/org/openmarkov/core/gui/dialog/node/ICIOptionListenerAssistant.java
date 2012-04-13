@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -14,6 +15,8 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -43,10 +46,15 @@ public class ICIOptionListenerAssistant implements ItemListener{
 		
 		private CPTablePanel cpTablePanel;
 		private JScrollPane iciValuesTablePanel =null;
+
+		private StringResource messageStringResource;
 		
 			
 		public ICIOptionListenerAssistant(ICIOptionsPanel iciOptionPanel){
 			this.iciOptionPanel = iciOptionPanel;
+
+			messageStringResource =	
+					StringResourceLoader.getUniqueInstance().getBundleMessages();
 			
 		}
 	
@@ -113,15 +121,27 @@ public class ICIOptionListenerAssistant implements ItemListener{
 					} catch (NotEnoughMemoryException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e1.getMessage() ),
+							messageStringResource.getString( e1.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 					
 					
 				} catch (NonProjectablePotentialException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (WrongCriterionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 				this.cpTablePanel = new CPTablePanel(iciProbnode);
 				JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();

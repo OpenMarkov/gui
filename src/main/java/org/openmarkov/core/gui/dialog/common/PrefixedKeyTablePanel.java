@@ -233,18 +233,38 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			} catch (CanNotDoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NotEnoughMemoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			
 			
@@ -305,18 +325,38 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 		} catch (CanNotDoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 		
@@ -369,18 +409,38 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 		} catch (CanNotDoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 		
@@ -428,18 +488,38 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 		} catch (CanNotDoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 		
@@ -517,18 +597,38 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			} catch (CanNotDoEditException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NotEnoughMemoryException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e2.getMessage() ),
+						stringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e3) {
 				// TODO Auto-generated catch block
 				e3.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e3.getMessage() ),
+						stringResource.getString( e3.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			
 		}

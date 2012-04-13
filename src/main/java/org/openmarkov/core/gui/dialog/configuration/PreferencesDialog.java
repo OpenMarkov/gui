@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -44,6 +45,8 @@ import javax.swing.tree.MutableTreeNode;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
@@ -87,6 +90,9 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private static final int PREFERENCE_WIDTH = 640;
     private static final int PREFERENCE_HEIGHT = 480;
     private Logger logger;
+    
+
+    private StringResource messageStringResource;
 	/**
 	 * Creates PreferencesEditor dialog that show all System and User
 	 * preferences.
@@ -145,6 +151,11 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 
 		setTitle(title);
 		setChooser();
+		
+
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
+	
 		int width = PREFERENCE_WIDTH;
 		int height = PREFERENCE_HEIGHT;
 		int x = owner.getX() + (owner.getWidth() - width) / 2;
@@ -205,6 +216,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 			return systemRoot;
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( "No System Root Preferences!"+e.getMessage() ),
+					messageStringResource.getString("No System Root Preferences!"+ e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 			return new DefaultMutableTreeNode("No System Root Preferences!");
 		}
 	}
@@ -223,6 +238,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 			return userRoot;
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( "No User Root Preferences!"+e.getMessage() ),
+					messageStringResource.getString("No User Root Preferences!"+ e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 			return new DefaultMutableTreeNode("No User Root Preferences!");
 		}
 	}
@@ -241,6 +260,12 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 			return systemRoot;
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( "No preferences for System Node for Package"
+							+ ((Class<?>) obj).getName() + "!"+e.getMessage() ),
+					messageStringResource.getString( "No preferences for System Node for Package"
+							+ ((Class<?>) obj).getName() + "!"+e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 			return new DefaultMutableTreeNode(
 				"No preferences for System Node for Package"
 					+ ((Class<?>) obj).getName() + "!");
@@ -261,6 +286,12 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 			return userRoot;
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( "No preferences for User Node for Package"
+							+ ((Class<?>) obj).getName() + "!"+e.getMessage() ),
+					messageStringResource.getString( "No preferences for User Node for Package"
+							+ ((Class<?>) obj).getName() + "!"+e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 			return new DefaultMutableTreeNode(
 				"No preferences for User Node for Package"
 					+ ((Class<?>) obj).getName() + "!");
@@ -433,6 +464,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 				out.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		}
 	}
@@ -456,6 +491,10 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 
 		}

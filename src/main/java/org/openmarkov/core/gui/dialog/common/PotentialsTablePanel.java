@@ -17,13 +17,13 @@ import java.util.ListIterator;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
-
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -57,13 +57,9 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-import org.openmarkov.core.model.network.potential.canonical.MaxPotential;
-import org.openmarkov.core.model.network.potential.canonical.TuningModelPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 
@@ -153,6 +149,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * String resource.
 	 */
 	protected StringResource stringResource = null;
+	
+	private StringResource messageStringResource;
 
 	/**
 	 * Icon loader.
@@ -215,6 +213,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleButtons();
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		iconLoader = new IconLoader();
 		columns = newColumns.clone();
 		data = newData.clone();
@@ -454,9 +454,17 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				} catch (InvalidStateException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (IncompatibleEvidenceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 				aux[i-1]= hasUncertainty;
 			}
@@ -1375,6 +1383,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		//gets the configuration selected
 		int [] configuration = reorderedTablePotential.getConfiguration(
@@ -1459,15 +1471,31 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				 }catch (ConstraintViolationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (CanNotDoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (DoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (NonProjectablePotentialException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 			 
 			 
@@ -1478,6 +1506,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} 
 		
 	}
@@ -1506,15 +1538,31 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 			 }catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 				
 			
@@ -1544,6 +1592,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				showUncertaintyDialog();
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		}
 		else if (actionCommand.equals( ActionCommands.UNCERTAINTY_EDIT )) {
@@ -1551,6 +1603,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				showUncertaintyDialog();
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		}
 		else if (actionCommand.equals( ActionCommands.UNCERTAINTY_REMOVE )) {
@@ -1558,8 +1614,16 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				removeUncertainty();
 			} catch (NotEnoughMemoryException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, messageStringResource
+						.getString( e1.getMessage() ),
+					messageStringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			
 		}

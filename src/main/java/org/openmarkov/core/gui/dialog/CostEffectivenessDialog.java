@@ -21,16 +21,18 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
-
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 
@@ -63,12 +65,17 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	 * 
 	 */
 	public static void main(String[] args) {
+	StringResource messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 		try {
 			CostEffectivenessDialog dialog = new CostEffectivenessDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 

@@ -14,10 +14,13 @@ package org.openmarkov.core.gui.action;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
@@ -50,6 +53,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 	private ArrayList<String> namesNode = 
 		new ArrayList<String>();
 
+	private StringResource messageStringResource;
 
 	/**
 	 * Creates a new <code>MoveNodeEdit</code> with the nodes, and new 
@@ -68,6 +72,9 @@ public class MoveNodeEdit extends SimplePNEdit {
 					 clone() );
 			 namesNode.add(visualNode.getProbNode().getName());
 		}
+		
+		messageStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 	       
 	}
 
@@ -83,6 +90,10 @@ public class MoveNodeEdit extends SimplePNEdit {
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			i++;
 				
@@ -102,6 +113,10 @@ public class MoveNodeEdit extends SimplePNEdit {
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 			i++;
 		}

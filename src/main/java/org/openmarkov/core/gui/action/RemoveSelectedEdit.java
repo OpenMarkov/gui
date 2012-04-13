@@ -11,6 +11,8 @@ package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
@@ -21,6 +23,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 @SuppressWarnings("serial")
 /**
@@ -33,6 +37,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     private ArrayList<VisualNode> nodesToRemove;
     private ArrayList<VisualLink> linksToRemove;
 
+    private StringResource messageStringResource;
 
     /**
      * 
@@ -45,6 +50,9 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
                                     visualNetwork.getLinksOfNodes (this.nodesToRemove));
+        
+        messageStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
     }    
 
     @Override
@@ -62,6 +70,10 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e.getMessage() ),
+					messageStringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 
         }

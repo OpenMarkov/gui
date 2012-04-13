@@ -98,6 +98,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * Value for the Zoom increment/decrement
 	 */
 	private static final double zoomChangeValue = 0.2;
+	
+	private StringResource messageStringResource;
 
 	/**
 	 * Constructor that save the references to the objects that this class
@@ -112,6 +114,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		this.mainPanel.setName(mainPanel.getName());
 		stringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMessages();
+		messageStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		this.networkPanels = new ArrayList<NetworkPanel> ();
 
 	}
@@ -241,6 +245,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			} catch (NotEnoughMemoryException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(null, messageStringResource
+						.getString( e2.getMessage() ),
+					messageStringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		} else if (actionCommand.
 				equals(ActionCommands.DECISION_IMPOSE_POLICY )) {

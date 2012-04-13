@@ -1,5 +1,6 @@
 package org.openmarkov.core.gui.dialog.common;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -103,14 +104,34 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 			} catch (ConstraintViolationException e1) {
 			} catch (NotEnoughMemoryException e2) {
 				e2.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e2.getMessage() ),
+						stringResource.getString( e2.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (CanNotDoEditException e3) {
 				e3.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e3.getMessage() ),
+						stringResource.getString( e3.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (NonProjectablePotentialException e4) {
 				e4.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e4.getMessage() ),
+						stringResource.getString( e4.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e5) {
 				e5.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e5.getMessage() ),
+						stringResource.getString( e5.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (DoEditException e6) {
 				e6.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e6.getMessage() ),
+						stringResource.getString( e6.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		}
 	}

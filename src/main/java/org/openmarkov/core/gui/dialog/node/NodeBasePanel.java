@@ -15,6 +15,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.openmarkov.core.gui.localize.StringResource;
@@ -31,6 +32,8 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  * @version 1.0 jlgozalo
  */
 public class NodeBasePanel extends JPanel implements ItemListener {
+
+	private StringResource messageStringResource;
 
 	/**
 	 * constructor without construction parameters
@@ -53,6 +56,9 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		this.newNode = newNode;
 		setName("NodeBasePanel");
 		init();
@@ -68,6 +74,11 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
+			
 		}
 	}
 

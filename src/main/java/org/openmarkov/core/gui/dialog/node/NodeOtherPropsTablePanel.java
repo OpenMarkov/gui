@@ -17,6 +17,7 @@ import java.awt.event.ItemListener;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
@@ -41,6 +42,8 @@ import org.openmarkov.core.model.network.ProbNode;
  */
 public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 
+	
+	private StringResource messageStringResource;
 	/**
 	 * constructor without construction parameters
 	 */
@@ -60,12 +63,19 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 		dialogStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
+
 		this.newNode = newNode;
 		setName( "NodeOtherPropsTablePanel" );
 		try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 	}

@@ -16,7 +16,11 @@ package org.openmarkov.core.gui.dialog.configuration;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 /**
@@ -31,6 +35,8 @@ class PreferencesTableModel extends AbstractTableModel {
 	 * 
 	 */
 	private static final long serialVersionUID = 3278473793314149896L;
+	
+	private StringResource messageStringResource;
 	/**
 	 * Preferences to work with
 	 */
@@ -54,12 +60,18 @@ class PreferencesTableModel extends AbstractTableModel {
 
 		this.pref = pref;
 		this.prefSaved = pref;
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		try {
 			keys = pref.keys();
 		} catch (BackingStoreException e) {
 			System.out.println("Could not get keys for Preference node: "
 				+ pref.name());
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 			keys = new String[0];
 		}
 	}
@@ -134,6 +146,10 @@ class PreferencesTableModel extends AbstractTableModel {
 			System.out
 				.println("Error synchronizing backStore with updated values");
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 
@@ -148,6 +164,10 @@ class PreferencesTableModel extends AbstractTableModel {
 			System.out
 				.println("Error synchronizing backStore with reset value");
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 }

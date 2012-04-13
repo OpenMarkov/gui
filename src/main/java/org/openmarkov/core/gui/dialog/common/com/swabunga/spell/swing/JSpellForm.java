@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,6 +38,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.openmarkov.core.gui.dialog.common.com.swabunga.spell.event.SpellCheckEvent;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
@@ -72,6 +75,8 @@ public class JSpellForm extends JPanel implements ActionListener,
 	/** The resource for the Suggestions label */
 	private static final String SUGGESTIONS_RES = "SUGGESTIONS";
 	private static final String INVALIDWORD_RES = "INVALIDWORD";
+	
+	private StringResource messageStringResource;
 
 	/* Accessible GUI Components */
 	protected JList suggestList;
@@ -88,6 +93,8 @@ public class JSpellForm extends JPanel implements ActionListener,
 		messages =
 			ResourceBundle.getBundle(
 				"com.swabunga.spell.swing.messages", Locale.getDefault());
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		initialiseGUI();
 	}
 
@@ -260,7 +267,9 @@ public class JSpellForm extends JPanel implements ActionListener,
 	}
 
 	public static void main(String[] args) {
+		StringResource messageStringResource;
 
+		 messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 		try {
 			JSpellForm pane = new JSpellForm();
 			JFrame frm = new JFrame("Spelling");
@@ -270,6 +279,10 @@ public class JSpellForm extends JPanel implements ActionListener,
 			frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString(  ex.getMessage() ),
+				messageStringResource.getString( ex.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 	}
 }

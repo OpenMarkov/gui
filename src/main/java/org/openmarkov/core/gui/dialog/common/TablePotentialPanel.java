@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -842,6 +843,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		// gets the configuration selected
 		int[] configuration = reorderedTablePotential
@@ -923,15 +928,31 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 
 			}
@@ -939,6 +960,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		} catch (NotEnoughMemoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 	}
@@ -1104,20 +1129,36 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				showUncertaintyDialog();
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_EDIT)) {
 			try {
 				showUncertaintyDialog();
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
 			try {
 				removeUncertainty();
 			} catch (NotEnoughMemoryException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e1.getMessage() ),
+						stringResource.getString( e1.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
 			}
 
 		}
@@ -1150,15 +1191,31 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		} catch (ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (CanNotDoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringResource
+					.getString( e.getMessage() ),
+					stringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 
 	}
@@ -1236,9 +1293,17 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				} catch (InvalidStateException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (IncompatibleEvidenceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 				aux[i - 1] = hasUncertainty;
 			}

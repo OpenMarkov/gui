@@ -20,6 +20,7 @@ import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,7 +30,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
 
 import org.openmarkov.core.exception.ExceptionUncertainValuesDialogEdition;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -110,7 +110,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	
+	private StringResource messageStringResource;
 	/**
 	 * Remove button.
 	 */
@@ -199,6 +199,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
+
+			messageStringResource =	
+					StringResourceLoader.getUniqueInstance().getBundleMessages();
+
 						
 		
 		isChanceVariable = !(potential.isUtility());
@@ -274,6 +278,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		
 	}

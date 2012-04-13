@@ -27,6 +27,7 @@ package org.openmarkov.core.gui.dialog.common.com.hexidec.ekit;
 
 import java.net.URL;
 
+import javax.swing.JOptionPane;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 
@@ -37,6 +38,8 @@ import org.openmarkov.core.gui.dialog.common.com.swabunga.spell.event.SpellCheck
 import org.openmarkov.core.gui.dialog.common.com.swabunga.spell.event.SpellCheckListener;
 import org.openmarkov.core.gui.dialog.common.com.swabunga.spell.event.SpellChecker;
 import org.openmarkov.core.gui.dialog.common.com.swabunga.spell.swing.JSpellDialog;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
@@ -56,6 +59,7 @@ public class EkitCoreSpell extends EkitCore implements SpellCheckListener {
 	private SpellChecker spellCheck = null;
 	private JSpellDialog spellDialog;
 
+	 private StringResource messageStringResource;
 	/**
 	 * Master Constructor
 	 * 
@@ -115,6 +119,7 @@ public class EkitCoreSpell extends EkitCore implements SpellCheckListener {
 			includeToolBar, showViewSource, showMenuIcons, editModeExclusive,
 			sLanguage, sCountry, base64, debugMode, true, multiBar, toolbarSeq);
 
+		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 		/* Create spell checker */
 		try {
 			dictFile = Translatrix.getTranslationString("DictionaryFile");
@@ -128,6 +133,10 @@ public class EkitCoreSpell extends EkitCore implements SpellCheckListener {
 			spellCheck.addSpellCheckListener(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
 		}
 		spellDialog =
 			new JSpellDialog(this.getFrame(), Translatrix

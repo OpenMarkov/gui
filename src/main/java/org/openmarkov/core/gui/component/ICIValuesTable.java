@@ -4,6 +4,7 @@ package org.openmarkov.core.gui.component;
 
 import java.util.ListIterator;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.UndoableEdit;
 
@@ -15,6 +16,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
@@ -31,12 +34,16 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 	
 	private ProbNode probNode;
 	
-	
+
+	private StringResource messageStringResource;
+	  
 	public ICIValuesTable (ProbNode probNode, ValuesTableModel tableModel,
 			final boolean modifiable) { 
 		super (tableModel, modifiable) ;
 		this.probNode = probNode;
 		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
+
+		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 	
 	}
 
@@ -67,21 +74,45 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 					} catch (ConstraintViolationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (CanNotDoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (DoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (NotEnoughMemoryException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (NonProjectablePotentialException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					} catch (WrongCriterionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 				
 				

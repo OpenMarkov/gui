@@ -17,9 +17,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.loader.element.IconLoader;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.util.Utilities;
 
 
 
@@ -77,7 +79,9 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 	 * Redo button.
 	 */
 	private JButton jButtonRedo = null;
+	
 
+	private StringResource messageStringResource;
 
 	/**
 	 * Constructor. initialises the instance.
@@ -88,8 +92,11 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 	public OkCancelApplyUndoRedoHorizontalDialog(Window owner) {
 
 		super(owner);
+		messageStringResource =	
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		initialize();
 		pack();
+		
 	}
 
 	/**
@@ -139,6 +146,10 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 					} catch (NotEnoughMemoryException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e1.getMessage() ),
+							messageStringResource.getString( e1.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 					}
 				}
 			});
