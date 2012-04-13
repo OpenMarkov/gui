@@ -11,11 +11,8 @@ package org.openmarkov.core.gui.window.message;
 
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -208,6 +205,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 		if (buttonClear == null) {
 			buttonClear = new JButton();
+			buttonClear.setName("Clear");
 			buttonClear.setText(buttonStringResource
 				.getString("Clear.Text.Label"));
 			buttonClear.setMnemonic(buttonStringResource.getString(
@@ -227,6 +225,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 		if (buttonCopy == null) {
 			buttonCopy = new JButton();
+			buttonCopy.setName("Copy");
 			buttonCopy.setText(buttonStringResource
 				.getString("Copy.Text.Label"));
 			buttonCopy.setMnemonic(buttonStringResource.getString(

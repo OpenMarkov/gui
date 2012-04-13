@@ -298,7 +298,7 @@ public class LanguageDialog extends JDialog implements
 						.getParent().setVisible( false );
 				}
 			} );
-			jButtonAccept.setName( "LanguageDialog.jButtonAccept" );
+			jButtonAccept.setName( "Ok" );
 			jButtonAccept.setText( "OK Button" );
 			jButtonAccept.setText( dialogStringResource
 				.getString( "LanguageDialog.jButtonAccept.Text" ) );
@@ -328,7 +328,7 @@ public class LanguageDialog extends JDialog implements
 						.getParent().setVisible( false );
 				}
 			} );
-			jButtonCancel.setName( "LanguageDialog.jButtonCancel" );
+			jButtonCancel.setName( "Cancel" );
 			jButtonCancel.setText( "Cancel Button" );
 			jButtonCancel.setText( dialogStringResource
 				.getString( "LanguageDialog.jButtonCancel.Text" ) );
@@ -361,7 +361,7 @@ public class LanguageDialog extends JDialog implements
 					}
 				}
 			} );
-			jButtonApply.setName( "LanguageDialog.jButtonApply" );
+			jButtonApply.setName( "Apply" );
 			jButtonApply.setText( "Apply Button" );
 			jButtonApply.setText( dialogStringResource
 				.getString( "LanguageDialog.jButtonApply.Text" ) );
@@ -379,8 +379,7 @@ public class LanguageDialog extends JDialog implements
 			jTextAreaInstructions.setLineWrap( true );
 			jTextAreaInstructions.setWrapStyleWord( true );
 			jTextAreaInstructions.setEditable( false );
-			jTextAreaInstructions
-				.setName( "LanguageDialog.jTextAreaInstructions" );
+			jTextAreaInstructions.setName( "LanguageDialog.jTextAreaInstructions" );
 			jTextAreaInstructions.setText( "jTextAreaInstructions" );
 			jTextAreaInstructions
 				.setText( dialogStringResource

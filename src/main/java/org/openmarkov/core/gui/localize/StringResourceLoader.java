@@ -198,20 +198,20 @@ public class StringResourceLoader implements LocaleChangeListener {
 			System.out.println("WARNING: Resource bundle " + resourceFile
 					+ " could not be found for locale '" + tempLocale
 					+ "'. English will be used instead");
-		}
-		setLanguage("en");
-		tempLanguage = getLanguage();
-		tempLocale = new Locale(tempLanguage);
-		setLocale(tempLocale);		
-		try {
-			 bundle = ResourceBundle.getBundle(file, tempLocale);
-   	   		
-		} catch (MissingResourceException e) {
-			throw new MissingResourceException("Any of the "
-				+ resourceFile.toLowerCase()
-				+ " resource string files is missing",
-				StringResourceLoader.class.getName(), getLocale().getLanguage());
-		
+			setLanguage("en");
+			tempLanguage = getLanguage();
+			tempLocale = new Locale(tempLanguage);
+			setLocale(tempLocale);		
+			try {
+				 bundle = ResourceBundle.getBundle(file, tempLocale);
+	   	   		
+			} catch (MissingResourceException e1) {
+				throw new MissingResourceException("Any of the "
+					+ resourceFile.toLowerCase()
+					+ " resource string files is missing",
+					StringResourceLoader.class.getName(), getLocale().getLanguage());
+			
+			}			
 		}
 		
 		stringResource = new StringResource(bundle);
@@ -427,8 +427,8 @@ public class StringResourceLoader implements LocaleChangeListener {
 		for (Component item : listComponents) {
 			if (item instanceof JButton) {
 				if (!((JButton) item).getText().equals("")) {
-					temp = ((JButton) item).getName() + ".Text";
-					((JButton) item).setText(stringResource.getString(temp));
+					temp = ((JButton) item).getName() + ".Text.Label";
+					((JButton) item).setText(buttonsStringResource.getString(temp));
 				}
 			} else if (item instanceof JDialog) {
 				temp = ((JDialog) item).getName() + ".Title.Text";
