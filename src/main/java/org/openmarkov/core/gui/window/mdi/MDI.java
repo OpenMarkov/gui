@@ -401,4 +401,18 @@ public class MDI extends JPanel implements FrameTitleListener,
 		mdiMenu.modifyPanelMenuItem(panel, panel.getTitle());
 
 	}
+	
+	/**
+	 * This method makes a panel to be shown at first plane.
+	 * 
+	 * @param panel
+	 *            panel to be shown at first plane.
+	 */
+	public void selectFrame(JPanel panel) {
+		try {
+			desktopPane.selectFrame(panel);
+		} catch (UnsupportedOperationException exc) {
+			System.err.println(exc.getMessage());
+		}
+	}
 }

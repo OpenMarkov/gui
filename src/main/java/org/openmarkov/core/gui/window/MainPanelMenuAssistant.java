@@ -806,4 +806,18 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	{
 	    return currentNetworkPanel;
 	}
+	
+	/**
+	 * Enables or disables options on 'File' menu depending on the type
+	 * of window selected.
+	 * 
+	 * @param value
+	 *            indicates if options should be enabled or disabled.
+	 */
+	public void updateOptionsWindowSelected(boolean value) {
+		setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, value);
+		setOptionEnabled(ActionCommands.SAVEAS_NETWORK, value);
+		setOptionEnabled(ActionCommands.NETWORK_PROPERTIES, value);
+		setOptionEnabled(ActionCommands.CLOSE_NETWORK, value);	
+	}
 }

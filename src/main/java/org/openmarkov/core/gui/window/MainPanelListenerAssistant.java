@@ -46,6 +46,7 @@ import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
+import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -496,12 +497,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            content panel of the frame that has been selected.
 	 */
 	public void frameSelected(FrameContentPanel contentPanel) {
-
         if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
         {
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
     		mainPanel.getExistingInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
+        }
+        if (contentPanel instanceof MessageWindow) {
+        	mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
+        } else if (contentPanel instanceof NetworkPanel) {
+        	mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);        	
         }
 
 	}
@@ -1118,7 +1123,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	    {
 	        mainPanel.getMdi ().createNewFrame (mainPanel.getMessageWindow(), false);
 	        mainPanel.getMessageWindow().setVisible (true);
-	    }
+	    } else {
+	    	mainPanel.getMdi().selectFrame(mainPanel.getMessageWindow());
+	    } 
 	}
 
 	/**
