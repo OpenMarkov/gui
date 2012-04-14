@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -925,7 +926,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		
 		if (dialog.requestValues()==RemoveStatesDialog.OK_BUTTON) {
-			ArrayList<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel)dialog.getJPanelDisociateStates()).getCheckBoxes();
+			ArrayList<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel)dialog.getJPanelRemoveStates()).getCheckBoxes();
 			
 			ArrayList<State> statesToEliminate = new ArrayList<State>();
 			
@@ -939,6 +940,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 					}
 				}
 			}
+			//Check if all checkboxes has been selected, it is an inconsistency 
+			if (checkBoxes.size() == statesToEliminate.size()) {
+				JOptionPane.showMessageDialog(this.getParent(), 
+						"You have selected all states to remove, you must leave at least one in each branch");
+			} else {
 			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
 			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
 				
@@ -975,6 +981,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			parentTreeADD.setBranches(newTreeADDBranches);
 			model.fireTreeStructureChanged((TreePath)parentPath);	
 			//jTree.expandPath(path);
+		}
 		}
 	}
 	/**

@@ -60,11 +60,11 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		setTitle(dialogStringResource
 				.getString("NodePotentialDialog.Title.Label"));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		getComponentsPanel().add( getJPanelDisociateStates(), BorderLayout.CENTER );
+		getComponentsPanel().add( getJPanelRemoveStates(), BorderLayout.CENTER );
 		
 	}
 	
-	protected JPanel getJPanelDisociateStates() {
+	protected JPanel getJPanelRemoveStates() {
 	
 		if (dissociateStatesCheckBoxPanel == null) {
 			dissociateStatesCheckBoxPanel = new RemoveStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
