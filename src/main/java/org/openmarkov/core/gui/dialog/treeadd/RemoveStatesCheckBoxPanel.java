@@ -12,6 +12,7 @@ package org.openmarkov.core.gui.dialog.treeadd;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -40,14 +41,15 @@ public class RemoveStatesCheckBoxPanel extends JPanel {
 	}
 	
 	 public void initialize() {
-		setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		ArrayList<State> states = branch.getBranchStates();
 		
 		for (State state : states) {
 			
 			JCheckBox checkBox = new JCheckBox (state.getName());
 			checkBoxes.add(checkBox);
-			add(checkBox);
+			checkBox.setAlignmentX((float) 0.5);
+			add(checkBox, BorderLayout.CENTER);
 			
 		}
 	 }

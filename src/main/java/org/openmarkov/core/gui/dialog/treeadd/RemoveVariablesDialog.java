@@ -65,7 +65,7 @@ public class RemoveVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	
 		if (removeVariablesCheckBoxPanel == null) {
 			removeVariablesCheckBoxPanel = new RemoveVariablesCheckBoxPanel(treeADDBranch, parentTreeADD);
-			removeVariablesCheckBoxPanel.setLayout( new FlowLayout() );
+			//removeVariablesCheckBoxPanel.setLayout( new FlowLayout() );
 			removeVariablesCheckBoxPanel.setName( "jPanelRemoveVariables" );
 			
 		}

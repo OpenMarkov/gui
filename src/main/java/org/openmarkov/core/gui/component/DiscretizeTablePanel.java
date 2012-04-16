@@ -784,14 +784,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				newData = auxData;
 			}
 			break;
-		case 3: //severe-moderate-slight-absent
+		case 3: //severe-moderate-mild-absent
 			if (upMonotony) {
 				Object[][] auxData = {
 								{ GUIDefaultStates.getString("severe"), "[", 0.0,
 									",", 2.0, "]" },
 								{ GUIDefaultStates.getString("moderate"), "(", 2.0,
 									",", 4.0, "]" },
-								{ GUIDefaultStates.getString("slight"), "(", 4.0,
+								{ GUIDefaultStates.getString("mild"), "(", 4.0,
 												",", 6.0, "]" },
 								{ GUIDefaultStates.getString("absent"), "(", 6.0,
 												",", 8.0, "]" } };
@@ -802,7 +802,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 									",", 8.0, ")" },
 								{ GUIDefaultStates.getString("moderate"), "[", 4.0,
 										",", 6.0, ")" },
-								{ GUIDefaultStates.getString("slight"), "[", 2.0,
+								{ GUIDefaultStates.getString("mild"), "[", 2.0,
 												",", 4.0, ")" },
 								{ GUIDefaultStates.getString("absent"), "[", 0.0,
 												",", 2.0, ")" } };

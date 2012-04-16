@@ -12,6 +12,8 @@ package org.openmarkov.core.gui.dialog.node;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -26,13 +28,10 @@ import javax.swing.border.LineBorder;
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
-import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.core.gui.dialog.treeadd.TreeADDPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
@@ -127,10 +126,28 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         //TODO create PNESupport
         probNode.getProbNet().getPNESupport().openParenthesis();
         initialize();
+        
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+       
+        Rectangle bounds = owner.getBounds();
+        int width = screenSize.width/2;
+		int height = screenSize.height/2;
+        
+        //center point of the owner window
+       int x = bounds.x/2 - width/2;
+		int y = bounds.y/2 - height/2;
+		
+		 /*int x = bounds.x/2 - 750/2;
+		int y = bounds.y/2 - 450/2;*/
+		
+		this.setBounds(x, y, width, height);
+		//this.setBounds(x, y, 750, 450);
         setLocationRelativeTo(owner);
-        setMinimumSize(new Dimension( 750, 450 ));
+        //setMinimumSize(new Dimension( 750, 450 ));
         setResizable(true);
-
+    
+      
     }
     
     /**

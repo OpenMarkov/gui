@@ -12,6 +12,7 @@ package org.openmarkov.core.gui.dialog.treeadd;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -39,14 +40,17 @@ public class RemoveVariablesCheckBoxPanel extends JPanel{
 		repaint();
 	}
 	 public void initialize() {
-		setLayout(new BorderLayout());
+		//setLayout(new BorderLayout());
+		setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		ArrayList<Variable> posibleVariables = branch.getPotential().getVariables();
 		
 		/*for (Variable variable : posibleVariables) {*/
 		for (int i = 1 ; i < posibleVariables.size(); i++) {
 			JCheckBox checkBox = new JCheckBox (posibleVariables.get(i).getName());
+			checkBox.setAlignmentX((float) 0.5);
+			//checkBox.setAlignmentY((float) 0.5);
 			checkBoxes.add(checkBox);
-			add(checkBox);
+			add(checkBox, CENTER_ALIGNMENT);
 		}
 	 }
 	 

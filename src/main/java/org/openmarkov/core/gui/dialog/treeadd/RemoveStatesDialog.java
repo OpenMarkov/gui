@@ -38,7 +38,7 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		this.parentTreeADD = parentTreeADD;
 		initialize();
 		setLocationRelativeTo(owner);
-		setMinimumSize(new Dimension( 100, 100 ));
+		//setMinimumSize(new Dimension( 100, 100 ));
 		setResizable(true);
 		pack();
 		
@@ -68,7 +68,7 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	
 		if (dissociateStatesCheckBoxPanel == null) {
 			dissociateStatesCheckBoxPanel = new RemoveStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
-			dissociateStatesCheckBoxPanel.setLayout( new FlowLayout() );
+			//dissociateStatesCheckBoxPanel.setLayout( new FlowLayout() );
 			dissociateStatesCheckBoxPanel.setName( "jPanelDissociateBranchStates" );
 			
 		}

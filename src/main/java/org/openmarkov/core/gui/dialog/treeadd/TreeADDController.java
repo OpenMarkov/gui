@@ -662,10 +662,18 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				
 				 model.fireTreeStructureChanged((TreePath)parentPath);
 			}
-			
+			for (int i=0; i<jTree.getRowCount(); i++) {
+				jTree.expandRow (i);
+			}
 			
 			}
 	}
+	/**
+	 * Splits interval in a branch which top variable is continuous
+	 * @param ae
+	 * @param branch
+	 * @param path
+	 */
 	
 	void actionSplitInterval(ActionEvent ae, Object branch, TreePath path) {
 		if (!(branch instanceof TreeADDBranch) ) {
@@ -780,10 +788,19 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			} else {//a message to indicate that is not a permitted value
 				JOptionPane.showMessageDialog(this.getParent(), "Introduced value does not belong to the interval selected");
 			}
+			for (int i=0; i<jTree.getRowCount(); i++) {
+				jTree.expandRow (i);
+			}
 		}
 		
 		
 	}
+	/**
+	 * Removes a subtree from a branch
+	 * @param ae
+	 * @param branch
+	 * @param path
+	 */
 	
 	void actionRemoveSubTree(ActionEvent ae, Object branch, TreePath path) {
 		if (!(branch instanceof TreeADDBranch) ) {
@@ -815,6 +832,9 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		model.fireTreeStructureChanged(path);
+		for (int i=0; i<jTree.getRowCount(); i++) {
+			jTree.expandRow (i);
+		}
 	}
 	
 	void actionAddVariables2Potential(ActionEvent ae, Object branch, TreePath path) {
@@ -860,7 +880,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			model.fireTreeInsert(path, potential);
 			model.fireTreeStructureChanged(path);	
 		
-			//jTree.expandPath(path);		
+			jTree.expandPath(path);		
 		}
 	}
 	
@@ -904,6 +924,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			
 			model.fireTreeInsert(path, newPotential);
 			model.fireTreeStructureChanged(path);
+			jTree.expandPath(path);	
 		}
 	}
 	/**
@@ -945,15 +966,16 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				JOptionPane.showMessageDialog(this.getParent(), 
 						"You have selected all states to remove, you must leave at least one in each branch");
 			} else {
-			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
-			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
 				
-				ArrayList<State> states = treeBranch.getBranchStates();
+			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
+			for (TreeADDBranch treeParentBranch : parentTreeADD.getBranches()) {
+				
+				ArrayList<State> states = treeParentBranch.getBranchStates();
 			
 				if (treeADDBranch.getBranchStates().containsAll(states)) {
 					continue;
 				} else {
-					newTreeADDBranches.add(treeBranch);
+					newTreeADDBranches.add(treeParentBranch);
 				}
 			}
 			//Updating branches
@@ -980,7 +1002,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			//Updating tree
 			parentTreeADD.setBranches(newTreeADDBranches);
 			model.fireTreeStructureChanged((TreePath)parentPath);	
-			//jTree.expandPath(path);
+			jTree.expandPath((TreePath)parentPath);
+			for (int i=0; i<jTree.getRowCount(); i++) {
+				jTree.expandRow (i);
+			}
 		}
 		}
 	}
@@ -1023,8 +1048,8 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			//Reorder new states
 			ArrayList<State> newOrderedStates = new ArrayList<State>();
 			State[] correctOrderStates = parentTreeADD.getTopVariable().getStates();
-			for (State state : correctOrderStates) {
-				for (State newState :newBranchStates) {
+			for (State state : correctOrderStates){
+				for (State newState :newBranchStates){
 					if (state == newState) {
 						newOrderedStates.add(state);
 					}
@@ -1055,7 +1080,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			//Updating tree
 			parentTreeADD.setBranches(newTreeADDBranches);
 			model.fireTreeStructureChanged((TreePath)parentPath);	
-			//jTree.expandPath(path);
+			jTree.expandPath(path);
+			for (int i=0; i<jTree.getRowCount(); i++) {
+				jTree.expandRow (i);
+			}
 		}
 	}
 	/**
@@ -1116,8 +1144,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		//treeADDPotential = newTree;
 		TreeADDModel model= (TreeADDModel) jTree.getModel();
 		//model.fireNodesChanged(path);
-		
 		model.fireTreeStructureChanged(path);
+		jTree.expandPath(path);
+		for (int i=0; i<jTree.getRowCount(); i++) {
+			jTree.expandRow (i);
+		}
 	}
 	
 	

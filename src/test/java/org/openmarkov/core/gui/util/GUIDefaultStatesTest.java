@@ -167,7 +167,7 @@ public class GUIDefaultStatesTest {
 		assertEquals(states.length, 4);
 		assertEquals(states[3], "severe");
 		assertEquals(states[2], "moderate");
-		assertEquals(states[1], "slight");
+		assertEquals(states[1], "mild");
 		assertEquals(states[0], "absent");
 		states = DefaultStates.getByIndex(4);
 		assertEquals(states.length, 3);
