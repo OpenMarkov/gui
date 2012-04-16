@@ -252,10 +252,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 				} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
+					/*JOptionPane.showMessageDialog(this, stringResource
 							.getString( e.getMessage() ),
 							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
+						JOptionPane.ERROR_MESSAGE );*/
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -333,10 +333,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
+			/*JOptionPane.showMessageDialog(
 			Utilities.getOwner(this), e.getMessage(),
 			stringResource.getString("ErrorWindow.Title.Label"),
-			JOptionPane.ERROR_MESSAGE);
+			JOptionPane.ERROR_MESSAGE);*/
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
 			e.printStackTrace();
