@@ -50,7 +50,7 @@ public abstract class InnerBox extends VisualElement {
 	 * Width of the Box.
 	 */
 	protected static final double BOX_WIDTH = 
-		VisualNode.NODE_EXPANDED_WIDTH - (2 * INTERNAL_MARGIN);
+		VisualNode.NODE_EXPANDED_WIDTH - (2 * INTERNAL_MARGIN) + 1;
 
 	/**
 	 * Indentation of states.
@@ -88,7 +88,7 @@ public abstract class InnerBox extends VisualElement {
 	 */
 	protected static final double VALUE_HORIZONTAL_POSITION = 
 			BAR_HORIZONTAL_POSITION + 
-			BAR_FULL_LENGTH + STATES_INDENT*2;
+			BAR_FULL_LENGTH + STATES_INDENT;
 	
 	/**
 	 * Horizontal position for the value to be shown on the right 
@@ -96,7 +96,7 @@ public abstract class InnerBox extends VisualElement {
 	 */
 	protected static final double VALUE_HORIZONTAL_POSITION_UTILITY = 
 			BAR_HORIZONTAL_POSITION_UTILITY + 
-			BAR_FULL_LENGTH + STATES_INDENT*2;
+			BAR_FULL_LENGTH + STATES_INDENT;
 
 	/**
 	 * Object used to measure text in a specific font.

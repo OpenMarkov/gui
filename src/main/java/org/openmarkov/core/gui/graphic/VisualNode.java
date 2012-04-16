@@ -53,7 +53,7 @@ public abstract class VisualNode extends VisualElement {
 	/**
 	 * Width of a node when it is expanded.
 	 */
-	protected static final double NODE_EXPANDED_WIDTH = 200;
+	protected static final double NODE_EXPANDED_WIDTH = 205;
 	
 	/**
 	 * Vertical margin of a node when it is expanded.
@@ -63,12 +63,12 @@ public abstract class VisualNode extends VisualElement {
 	/**
 	 * Space from the left border of the node to the text.
 	 */
-	protected static final double HORIZONTAL_SPACE_TO_TEXT = 15; //12
+	protected static final double HORIZONTAL_SPACE_TO_TEXT = 15;
 
 	/**
 	 * Space from the top border of the node to the text.
 	 */
-	protected static final double VERTICAL_SPACE_TO_TEXT = 4; //12
+	protected static final double VERTICAL_SPACE_TO_TEXT = 4;
 
 	/**
 	 * Object used to measure text in a specific font.

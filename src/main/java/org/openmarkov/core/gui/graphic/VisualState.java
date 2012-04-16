@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -245,7 +246,8 @@ public class VisualState extends VisualElement {
 	 */
 	public void setStateValue(int caseNumber, double value) {
 		try {
-			double truncatedValue = (Math.rint(value*100))/100;
+			//Value is currently formatted fixely with 4 decimals
+			double truncatedValue = (Math.rint(value*10000))/10000;
 			stateValues.set(caseNumber, truncatedValue);
 		} catch (Exception exc) {
 			JOptionPane.showMessageDialog(null, "ERROR" +
@@ -442,7 +444,7 @@ public class VisualState extends VisualElement {
 					Double value = stateValues.get(i) - minRange;
 					barLength = (value*100)/range;
 				} else {
-					barLength = (stateValues.get(i)*10000)/InnerBox.BAR_FULL_LENGTH; 
+					barLength = (stateValues.get(i)*10000)/InnerBox.BAR_FULL_LENGTH;
 				}
 				g.fill(new Rectangle2D.Double(xBar, 
 						yFirstBar + (i * InnerBox.BAR_HEIGHT),
@@ -450,7 +452,11 @@ public class VisualState extends VisualElement {
 						InnerBox.BAR_HEIGHT)
 						);
 				setColorCaseDependent(currentStateValue, g);
-				g.drawString(stateValues.get(currentStateValue).toString(), 
+				//Value is currently formatted fixely with 4 decimals
+				DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+				String formattedValue = String.valueOf(decimalFormat.
+						format(stateValues.get(currentStateValue)));
+				g.drawString(formattedValue, 
 						(xValue.intValue()),
 						yText.intValue());
 			}

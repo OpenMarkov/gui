@@ -40,7 +40,7 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 	/**
 	 * Elements of the comboBox.
 	 */
-	private static double[] EXPANSION_THRESHOLD_VALUES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	private static double[] EXPANSION_THRESHOLD_VALUES = {10, 9, 8 , 7, 6, 5, 4, 3, 2, 1, 0};
 	
 	/**
 	 * Data model for the comboBox.
@@ -88,6 +88,7 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 		setPreferredSize(new Dimension(60, 25));
 		setMaximumSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
+		setExpansionThreshold(5.0);
 		addItemListener(this);
 	}
 

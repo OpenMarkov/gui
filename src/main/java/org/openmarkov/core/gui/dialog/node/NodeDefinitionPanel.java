@@ -725,11 +725,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 
 	/**
 	 * fill the jComboBoxNodeRelevance with the appropriate values with an
-	 * increment of 1.0.
+	 * increment of 1.0. The values appear in reverse order.
 	 */
 	private void fillJComboBoxNodeRelevanceWithoutDecimals() {
 		if (jComboBoxNodeRelevance != null) {
-			for (int value = 0; value <= 10; value++) {
+			for (int value = 10; value >= 0; value--) {
 				jComboBoxNodeRelevance.addItem(Double.valueOf(value));
 			}
 		}
