@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
-import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -52,6 +51,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 /**
  * <code>JScrollPane<code> for creating and modifying <code>TreeADDModel<code>s
@@ -1304,10 +1304,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		} else if (potential.getPotentialRole() == PotentialRole.UTILITY) {
 			Variable utilityVariable= parentTreeADD.getUtilityVariable();
 			dummy= dummyProbNet.getProbNode (utilityVariable);
+			
 			for (Variable variable : potential.getVariables()) {
-				if (variable==utilityVariable) {
+				/*if (variable==utilityVariable) {
 					continue;
-				}
+				}*/
 				
 				try {
 					dummyProbNet.addLink (variable, utilityVariable, true);
@@ -1318,8 +1319,6 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 
 		}
 
-		
-		
 		PotentialEditDialog dialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false);
 		
 		if (dialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
