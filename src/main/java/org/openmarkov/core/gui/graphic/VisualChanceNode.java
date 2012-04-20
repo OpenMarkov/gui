@@ -60,7 +60,7 @@ public class VisualChanceNode extends VisualNode {
 	 */
 	private static final Color ALWAYS_OBSERVED_COLOR = OpenMarkovPreferences
 			.getColor(OpenMarkovPreferences.ALWAYS_OBSERVED_VARIABLE,
-					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(139,119,101));
+					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(128,0,0));
 
 	/**
 	 * Color of the letters

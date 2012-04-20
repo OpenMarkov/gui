@@ -65,7 +65,7 @@ public class VisualLink extends VisualElement {
 	 */
 	private static final Color REVELATION_ARC_COLOR = OpenMarkovPreferences
 			.getColor(OpenMarkovPreferences.REVELATION_ARC_VARIABLE,
-					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(139,119,101));
+					OpenMarkovPreferences.OPENMARKOV_COLORS, new Color(128,0,0));
 
 	/**
 	 * Start point.
