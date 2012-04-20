@@ -833,6 +833,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				networkPanel = createNewFrame2(netReadFromFile);
 				networkPanel.setNetworkFile(fileName);
 				networkPanel.getEditorPanel ().setEvidence (probNetInfo.getEvidence ());
+				networkPanels.add (networkPanel);
 				lastOpenFiles.setLastFileName(fileName);
                 if (getDirectoryFileName (fileName) != null)
                 {
