@@ -243,6 +243,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 								.addGap(24, 24,	24)));
 		setLayout(groupLayout);
 
+		
 	}
 
 	/**
@@ -658,9 +659,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			jButtonInfinitePositiveDouble.setIcon(iconLoader
 							.load(IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
 			jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
-			jButtonInfinitePositiveDouble.setEnabled(false);
+			jButtonInfinitePositiveDouble.setEnabled(true);
 			jButtonInfinitePositiveDouble.addActionListener(this);
-			jButtonInfinitePositiveDouble.setVisible(false);
+			jButtonInfinitePositiveDouble.setVisible(true);
 			
 		}
 		return jButtonInfinitePositiveDouble;
@@ -682,9 +683,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			jButtonInfiniteNegativeDouble.setIcon(iconLoader
 							.load(IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
 			jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
-			jButtonInfiniteNegativeDouble.setEnabled(false);
+			jButtonInfiniteNegativeDouble.setEnabled(true);
 			jButtonInfiniteNegativeDouble.addActionListener(this);
-			jButtonInfiniteNegativeDouble.setVisible(false);
+			jButtonInfiniteNegativeDouble.setVisible(true);
 		}
 		return jButtonInfiniteNegativeDouble;
 	}
@@ -846,6 +847,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * selected in the combo box
 	 */
 	public void setPartitionedInterval() {
+		
 		PartitionedInterval partitionInterval = probNode.getVariable().
 			getPartitionedInterval();
 		Object [][] intervalTable = partitionInterval.convertToTableFormat();
@@ -1508,13 +1510,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			downValueButton.setEnabled(b);
 			removeValueButton.setEnabled(b);
 		}
-			
-			
-		
-		
-		
 	}
 
+	public void setVisibleButtonPanel(boolean b){
+		getButtonPanel().setVisible(b);
+	}
 
 	
 }

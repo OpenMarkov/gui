@@ -213,7 +213,7 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	protected KeyTable getValuesTable() {
 
 		if (valuesTable == null) {
-			valuesTable = new KeyTable( getTableModel(), modifiable, true );
+			valuesTable = new KeyTable( getTableModel(), modifiable, true, false );
 			valuesTable.setName( "KeyTablePanel.valuesTable" );
 			valuesTable.setListSelectionListener( this );
 		}

@@ -184,8 +184,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	/**
 	 * constructor without construction parameters
 	 */
-	public NodeDomainValuesTablePanel(
-			 ProbNode probNode) {
+	public NodeDomainValuesTablePanel(ProbNode probNode) {
 		this(true);//, notifier);
 		this.probNode = probNode;
 		try {
@@ -228,10 +227,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * <p>
 	 * initialize the layout for this panel
 	 */
+	@SuppressWarnings("deprecation")
 	private void initialize() throws Exception {
 
 		setPreferredSize(new Dimension(600, 375));
 		
+			
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -330,7 +331,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					.addGap(87))
 		);
 		setLayout(groupLayout);
-
+		
+		
 	}
 
 	/**
@@ -371,26 +373,30 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 							.getIndex(states));
 				// intervals of the node
 				if (properties.getVariable().getVariableType() == 
-					VariableType.NUMERIC){ 
+					VariableType.DISCRETIZED){ 
 		    			jRadioButtonMonotonyUp.setEnabled(true);
 		    			jRadioButtonMonotonyDown.setEnabled(true);
 		    			jRadioButtonMonotonyUp.setSelected(true);
 		    			jRadioButtonMonotonyDown.setSelected(false);
 		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
-		    				setEnablePanelButton(false);
+		    				setEnablePanelButton(true);
+		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
+	    				setVisibleButtonPanel(true);
 		    			
-				}else{
+				}else{//numeric variable
 						jRadioButtonMonotonyUp.setEnabled(false);
 						jRadioButtonMonotonyDown.setEnabled(false);
 						jRadioButtonMonotonyUp.setSelected(false);
 						jRadioButtonMonotonyDown.setSelected(false);
 						((DiscretizeTablePanel)getNodeStatesTablePanel()).
-	    				setEnablePanelButton(true);
+	    				setEnablePanelButton(false);
+						/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
+	    				setVisibleButtonPanel(false);*/
 				}
 			    //TODO Review this if structure
 				//we assume that in this point elvira data was 
 				// translated to openMarkov/xml format. So, states 
-				// with limit brackets no exists.
+				// with limit brackets do not exist
 				if (jComboBoxStatesValues.getSelectedIndex() == 
 					(jComboBoxStatesValues.getItemCount() - 1) 
 					&& Utilities.hasLimitBracketSymbols(states)) { 
@@ -473,18 +479,41 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		
 			switch (properties.getVariable().getVariableType()) {
 			case FINITE_STATES: {
-				getJComboBoxNodeVariableType().setSelectedItem("Discreta");
-				//this.setNodeVariable( VariableType.DISCRETE );
+				getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource
+						.getString("NodeDomainValuesTablePanel." +
+								"jComboBoxNodeVariableType.Items.Discrete"));
+				getJLabelPrecision().setEnabled(false);
+				getJFormattedTextFieldPrecision().setEnabled(false);
+				getJLabelValuesPanel().setVisible(true);
+				getJLabelStatesValues().setVisible(true);
+				getJComboBoxStatesValues().setVisible(true);
+				
 				break;
 			}
 			case NUMERIC: {
-				getJComboBoxNodeVariableType().setSelectedItem("Continua");
-				//this.setNodeVariable( VariableType.CONTINUOUS );
+				getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource
+						.getString("NodeDomainValuesTablePanel." +
+								"jComboBoxNodeVariableType.Items.Continuous"));
+				getJLabelPrecision().setEnabled(true);
+				getJFormattedTextFieldPrecision().setEnabled(true);
+				//getJLabelValuesPanel().setEnabled(false);
+				getJLabelValuesPanel().setVisible(false);
+				getJLabelStatesValues().setVisible(false);
+				getJComboBoxStatesValues().setVisible(false);
+				//getJLabelStatesValues().setEnabled(false);
+				
 				break;
 			}
 			case DISCRETIZED: {
-				getJComboBoxNodeVariableType().setSelectedItem("Discretizada");
-				//this.setNodeVariable( VariableType.DISCRETIZED );
+				getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource
+						.getString("NodeDomainValuesTablePanel." +
+								"jComboBoxNodeVariableType.Items.Discretized"));
+				getJLabelPrecision().setEnabled(true);
+				getJFormattedTextFieldPrecision().setEnabled(true);
+				getJLabelValuesPanel().setVisible(true);
+				getJLabelStatesValues().setVisible(true);
+				getJComboBoxStatesValues().setVisible(true);
+				
 				break;
 			}
 			}
@@ -620,6 +649,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			jPanelMonotonyUpDown.setSize(329, 24);
 			jPanelMonotonyUpDown.setName("jPanelMonotonyUpDown");
 			jPanelMonotonyUpDown.setLayout(new GridLayout(0, 2, 0, 0));
+			
+			
 			getJRadioButtonMonotonyUp().setEnabled(false);
 			getJRadioButtonMonotonyDown().setEnabled(false);
 			jPanelMonotonyUpDown.add(getJRadioButtonMonotonyUp());
@@ -628,6 +659,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			initButtonGroupMonotonyUpDown();
 			
 		}
+		
 		return jPanelMonotonyUpDown;
 	}
 
@@ -977,6 +1009,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	}
 
 	
+	@SuppressWarnings("deprecation")
 	public void itemStateChanged(ItemEvent arg0) {
 		int optionDeselected = 0;
 		ItemSelectable itemSelectable = arg0.getItemSelectable();
@@ -997,18 +1030,19 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					"jComboBoxNodeVariableType.Items.Discrete"))) {
 				
 					variableTypeEdit = new VariableTypeEdit(probNode,
-						VariableType.FINITE_STATES);		
-			
-						
+						VariableType.FINITE_STATES);	
+					
 				}else if (itemSelected.equals(dialogStringResource
 						.getString("NodeDomainValuesTablePanel." +
 						"jComboBoxNodeVariableType.Items.Discretized"))) {
 					
 						variableTypeEdit = new VariableTypeEdit(probNode,
 							VariableType.DISCRETIZED);	
+					
 				}else {
 					variableTypeEdit = new VariableTypeEdit(probNode,
 						VariableType.NUMERIC);	
+					
 				}
 			
 				try {
