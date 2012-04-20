@@ -1893,9 +1893,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * 
 	 */
 	public void setEvidence(ArrayList<EvidenceCase> evidence) {
-		this.evidenceCases = evidence;
-
-		if (this.evidenceCases.isEmpty()) {
+		this.evidenceCases = (evidence == null)? new ArrayList<EvidenceCase>(): evidence;
+		
+		if(evidenceCases.isEmpty()) {
 			this.evidenceCases.add(new EvidenceCase());
 		}
 
@@ -1905,7 +1905,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		for (VisualNode node : visualNetwork.getAllNodes()) {
 			node.setFindingInNode(false);
 		}
-		for (EvidenceCase evidenceCase : evidence) {
+		for (EvidenceCase evidenceCase : evidenceCases) {
 			for (Finding finding : evidenceCase.getFindings()) {
 				for (VisualNode node : visualNetwork.getAllNodes()) {
 					if (node.getProbNode().getVariable()
@@ -1918,7 +1918,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		// Update evidenceCasesCompilationState
 		evidenceCasesCompilationState.clear();
-		for (int i = 0; i < evidence.size(); ++i) {
+		for (int i = 0; i < evidenceCases.size(); ++i) {
 			evidenceCasesCompilationState.add(false);
 		}
 
