@@ -23,6 +23,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.swing.JOptionPane;
 
@@ -33,8 +36,13 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.component.DiscretizeTablePanel;
+import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.util.GUIDefaultStates;
+import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.State;
 
 
 /**
@@ -97,13 +105,110 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 		String actionCommand = event.getActionCommand();
         // do something
 	}
+	
+	
+	
+	private int previousMonotony = -1;
+	private static int DOWN = 0;
+	private static int UP = 1;	
+	
+	//button initially selected down
+	public void itemStateChanged(ItemEvent e) {
+		//to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
+		
+		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyUp() )) {
+			itemStateChangedUp(e);
+		}
+		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyDown() )) {
+			itemStateChangedDown(e);
+		}
+	}
+	
+	private void itemStateChangedUp(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED){
+			//has been deselected canonical
+			previousMonotony = UP;
+		}else if (e.getStateChange() == ItemEvent.SELECTED ){
+			if ( previousMonotony == UP) { //UP --> UP
+				//do nothing
+			} else if (previousMonotony == DOWN) { // DOWN --> UP
+				
+				if (getPanel().getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//Discretized
+					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
+					Object [][]data = panel.getData();
+					
+					Object [][]intermediateRows = new Object[data.length][data[0].length-2];
+					for (int i= 0; i < data.length; i++) {//for each row
+						for (int j = 2; j < data[0].length; j++) {
+							intermediateRows[i] [j-2]  = data [i][j];
+						}
+						
+					}
+					for (int i=0; i < intermediateRows.length; i++) {
+						for (int j = 0; j <intermediateRows[0].length ; j++) {
+							data [i][j+2] =intermediateRows [intermediateRows.length-1-i][j];
+						}
+					}
+					
+					Object [][] newData = new Object[data.length][data[0].length-1];
+					for (int i=0; i < data.length; i++) {
+						for (int j = 1; j <data[0].length ; j++) {
+							newData [i][j-1] =data [i][j];
+						}
+					}
+					
+					panel.setData(newData); //set data fill the first key column
+					
+				}
+			} 
+		}
+	}
+	
+	private void itemStateChangedDown(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED){
+			//has been deselected canonical
+			previousMonotony = DOWN;
+		}else if (e.getStateChange() == ItemEvent.SELECTED ){
+			if ( previousMonotony == UP) { // UP --> DOWN
+				if (getPanel().getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//Discretized
+					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
+					Object [][]data = panel.getData();
+					
+					Object [][]intermediateRows = new Object[data.length][data[0].length-2];
+					for (int i= 0; i < data.length; i++) {//for each row
+						for (int j = 2; j < data[0].length; j++) {
+							intermediateRows[i] [j-2]  = data [i][j];
+						}
+						
+					}
+					for (int i=0; i < intermediateRows.length; i++) {
+						for (int j = 0; j <intermediateRows[0].length ; j++) {
+							data [i][j+2] =intermediateRows [intermediateRows.length-1-i][j];
+						}
+					}
+					
+					Object [][] newData = new Object[data.length][data[0].length-1];
+					for (int i=0; i < data.length; i++) {
+						for (int j = 1; j <data[0].length ; j++) {
+							newData [i][j-1] =data [i][j];
+						}
+					}
+					
+					panel.setData(newData); //set data fill the first key column
+				}
+			} else if (previousMonotony == DOWN) { // DOWN --> DOWN 
+				//do nothing	
+			} 
+		}
+	}
+		
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	/*public void itemStateChanged(ItemEvent e) {
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyUp() )) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				// set table behaviour to be UP
@@ -117,7 +222,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			}
 		}
 		subItemStateChanged( e );
-	}
+	}*/
 
 	/**
 	 * Invoked when an item of the type of states of the node has been selected.

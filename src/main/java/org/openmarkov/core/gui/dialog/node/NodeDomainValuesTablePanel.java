@@ -71,6 +71,7 @@ import org.openmarkov.core.model.network.VariableType;
  * @author mkpalacio
  * @version 1.0 jlgozalo
  * @version 1.1 mkpalacio
+ * @author myebra
  */
 public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	
@@ -363,7 +364,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			//jComboBoxNodeVariableType.removeItemListener(this);
 			
 			
-			if (getNodeStatesTablePanel() instanceof DiscretizeTablePanel){
+			if (getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//For numeric and discretized
 				// TODO CONSIDER next line if it is required values type
 				// jComboBoxStatesValues.setSelectedIndex(adittionalProperties.getStatesSelected());
 				
@@ -374,16 +375,22 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				// intervals of the node
 				if (properties.getVariable().getVariableType() == 
 					VariableType.DISCRETIZED){ 
+					getJLabelPrecision().setVisible(true);
+					getJFormattedTextFieldPrecision().setVisible(true);
+					getJPanelMonotonyUpDown().setVisible(true);
 		    			jRadioButtonMonotonyUp.setEnabled(true);
 		    			jRadioButtonMonotonyDown.setEnabled(true);
-		    			jRadioButtonMonotonyUp.setSelected(true);
-		    			jRadioButtonMonotonyDown.setSelected(false);
+		    			jRadioButtonMonotonyUp.setSelected(false);
+		    			jRadioButtonMonotonyDown.setSelected(true);
 		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
 		    				setEnablePanelButton(true);
 		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
 	    				setVisibleButtonPanel(true);
 		    			
 				}else{//numeric variable
+					getJLabelPrecision().setVisible(true);
+					getJFormattedTextFieldPrecision().setVisible(true);
+					getJPanelMonotonyUpDown().setVisible(false);
 						jRadioButtonMonotonyUp.setEnabled(false);
 						jRadioButtonMonotonyDown.setEnabled(false);
 						jRadioButtonMonotonyUp.setSelected(false);
@@ -435,7 +442,16 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				//jFormattedTextFieldPrecision.setValue( properties.getVariable().
 					//	getPrecision() );
 				
-			} else {
+			} else {//Finite states
+				//jRadioButtonMonotonyUp.setEnabled(true);
+    			//jRadioButtonMonotonyDown.setEnabled(true);
+				getJLabelPrecision().setVisible(false);
+				getJFormattedTextFieldPrecision().setVisible(false);
+				getJPanelMonotonyUpDown().setVisible(false);
+    			jRadioButtonMonotonyUp.setEnabled(false);
+    			jRadioButtonMonotonyDown.setEnabled(false);
+    			jRadioButtonMonotonyUp.setSelected(false);
+    			jRadioButtonMonotonyDown.setSelected(true);
 				// node comment title
 				MessageFormat messageForm =
 					new MessageFormat(dialogStringResource.getString(
@@ -839,6 +855,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		int position=0;
 		try {
 		for (i = 0; i < numIntervals; i++) {
+			//for (i = numIntervals-1; i >= 0; i--) {
 			position=0;
 			aString = states[i].getName();
 			// find name & lowSymbol

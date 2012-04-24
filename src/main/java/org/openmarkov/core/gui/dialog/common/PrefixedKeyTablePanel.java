@@ -46,6 +46,7 @@ import org.openmarkov.core.model.network.ProbNode;
  * 
  * @author jmendoza
  * @version 1.0 jmendoza
+ * @author myebra
  */
 public class PrefixedKeyTablePanel extends KeyTablePanel implements 
 	TableModelListener{

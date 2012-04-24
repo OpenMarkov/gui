@@ -15,6 +15,8 @@ package org.openmarkov.core.gui.component;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
@@ -78,6 +80,7 @@ import org.openmarkov.core.model.network.VariableType;
  * </ul>
  * 
  * @author jlgozalo
+ * @author myebra
  * @version 1.0 29 Jun 2009
  */
 public class DiscretizeTablePanel extends KeyTablePanel implements 
@@ -855,10 +858,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int rows = intervalTable.length;
 		//TODO six is the number of columns of this particular table
 		//int col = 6;
-		
+		//invert states to display in the correct order
+		State reorderedStates [] = states.clone();
+		Collections.reverse(Arrays.asList(reorderedStates));
 		//Object [][] newData = new Object[rows][col];
 		for (int i = 0; i < rows; i++ ){
-			intervalTable[i][0] = GUIDefaultStates.getString(states[i].getName());
+			//for (int i = rows-1; i <=0; i-- ){
+			intervalTable[i][0] = GUIDefaultStates.getString(reorderedStates[i].getName());
 		}
 		
 		setData(intervalTable);
