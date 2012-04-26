@@ -10,6 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.openmarkov.core.gui.component.DiscretizeTablePanel;
+import org.openmarkov.core.gui.component.RevelationArcDiscretizeTablePanel;
+import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.dialog.common.SelectableKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -17,6 +20,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.VariableType;
 
 /*****
  * Panel to set the revealing states for a link
@@ -31,14 +35,17 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	 * Dialog string resource.
 	 */
 	private StringResource dialogStringResource;
-	
 
-	 private StringResource messageStringResource;
+	private StringResource messageStringResource;
 	/***
 	 * Object where all the information will be saved
 	 */
 	private Link link;
 
+	/****
+	 * Variable Type of the revelation conditions
+	 */
+	private VariableType variableType;
 	/**
 	 * label for the table to show the values of the node
 	 */
@@ -48,7 +55,12 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	 * table to show the states of the node
 	 */
 
-	private SelectableKeyTablePanel nodeDiscreteStatesTablePanel;
+	private SelectableKeyTablePanel discreteNodeStatesTablePanel;
+
+	/**
+	 * table to show the states of the node
+	 */
+	private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel = null;
 
 	/**
 	 * constructor without construction parameters
@@ -56,19 +68,20 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	public RevelationArcPanel(Link link) {
 
 		this.link = link;
+		this.variableType = ((ProbNode) link.getNode1().getObject())
+				.getVariable().getVariableType();
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
-		messageStringResource =	
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
+		messageStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleMessages();
 		try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-
+			JOptionPane.showMessageDialog(this,
+					messageStringResource.getString(e.getMessage()),
+					messageStringResource.getString(e.getMessage()),
+					JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
@@ -76,7 +89,7 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	public void initialize() {
 		setPreferredSize(new Dimension(600, 375));
 		this.add(this.getJLabelValuesPanel());
-		this.add(this.getNodeDiscreteStatesTablePanel());
+		this.add(this.getNodeStatesTablePanel());
 	}
 
 	/**
@@ -99,9 +112,24 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	 * 
 	 * @return the PrefixedKeyTablePanel for the Node Values
 	 */
+	protected KeyTablePanel getNodeStatesTablePanel() {
+		if (this.variableType != VariableType.NUMERIC) {
+			return getNodeDiscreteStatesTablePanel();
+
+		} else {
+			return getNodeDiscretizedStatesTablePanel();
+		}
+
+	}
+
+	/**
+	 * This method initializes NodeValuesTable.
+	 * 
+	 * @return the PrefixedKeyTablePanel for the Node Values
+	 */
 	protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() {
 
-		if (nodeDiscreteStatesTablePanel == null) {
+		if (discreteNodeStatesTablePanel == null) {
 			String[] columnNames = {
 					dialogStringResource
 							.getString("DiscreteValuesTablePanel.ValuesTable."
@@ -111,22 +139,66 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 							.getString("DiscreteValuesTablePanel.ValuesTable."
 									+ "Columns.Value.Text") };
 
-			nodeDiscreteStatesTablePanel = new SelectableKeyTablePanel(
+			discreteNodeStatesTablePanel = new SelectableKeyTablePanel(
 					columnNames, new Object[][] {},
 					dialogStringResource
 							.getString("DiscreteValuesTablePanel.ValuesTable."
 									+ "Columns.Id.Prefix"), true, link);
 		}
-		nodeDiscreteStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-		return nodeDiscreteStatesTablePanel;
+		discreteNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		return discreteNodeStatesTablePanel;
+	}
+
+	/**
+	 * This method initializes NodeValuesTable.
+	 * 
+	 * @return the DiscretizeTablePanel for the Node Values
+	 */
+	protected DiscretizeTablePanel getNodeDiscretizedStatesTablePanel() {
+
+		if (discretizedNodeStatesTablePanel == null) {
+			String[] columnNames = {
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "IntervalId.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "IntervalName.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "LowLimitSymbol.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "LowLimitValue.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "ValuesSeparator.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "UpperLimitValue.Text"),
+					dialogStringResource
+							.getString("DiscretizeTableModel.Columns."
+									+ "UpperLimitSymbol.Text") };
+
+			discretizedNodeStatesTablePanel = new RevelationArcDiscretizeTablePanel(
+					columnNames, link);
+			discretizedNodeStatesTablePanel.setBorder(new EmptyBorder(0, 0, 0,
+					0));
+
+		}
+		return discretizedNodeStatesTablePanel;
 	}
 
 	public void setFieldsFromProperties(Link link) {
 
 		if (link != null) {
-
-			nodeDiscreteStatesTablePanel
-					.setData(convertStringsToTableDiscreteFormat(link));
+			if (this.variableType != VariableType.NUMERIC) {
+				discreteNodeStatesTablePanel
+						.setData(convertStringsToTableDiscreteFormat(link));
+			} else {
+				discretizedNodeStatesTablePanel.setPartitionedInterval();
+			
+			}
 		}
 
 	}

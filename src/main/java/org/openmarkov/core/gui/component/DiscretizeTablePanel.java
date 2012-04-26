@@ -139,9 +139,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 */
 	private DiscretizeTableModel discretizeTableModel = null;
 
-	private ProbNode probNode;
+	protected ProbNode probNode;
 
-	private StringResource messageStringResource;
+	protected StringResource messageStringResource;
 	
 	
 
@@ -1377,7 +1377,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 *            index of the key which will be returned
 	 * @return the string that content the key.
 	 */
-	private String getKeyString(int index) {
+	protected String getKeyString(int index) {
 
 		return keyPrefix + index;
 
