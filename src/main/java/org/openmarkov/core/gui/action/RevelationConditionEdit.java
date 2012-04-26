@@ -30,8 +30,7 @@ public class RevelationConditionEdit extends SimplePNEdit {
 	private int rowSelected;
 	private boolean isLower;
 
-	// Default increment between discretized intervals
-	private final int increment = 2;
+
 
 	public RevelationConditionEdit(Link link, StateAction stateAction, int row,
 			double newValue, boolean isLower) {
@@ -45,7 +44,7 @@ public class RevelationConditionEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-
+		System.out.println(rowSelected);
 		switch (stateAction) {
 		case ADD:
 
@@ -57,11 +56,23 @@ public class RevelationConditionEdit extends SimplePNEdit {
 			link.getRevealingIntervals().remove(rowSelected);
 		}
 			break;
-		case MODIFYVALUEINTERVAL:
-		
-		
-
+		case MODIFYVALUEINTERVAL: {
+			PartitionedInterval currentPartitionedInterval = link
+					.getRevealingIntervals().get(rowSelected);
+			int intervalIndex = isLower ? 0 : 1;
+			currentPartitionedInterval.getLimits()[intervalIndex] = newValue;
+		}
 			break;
+
+		case MODIFYDELIMITERINTERVAL: {
+			PartitionedInterval currentPartitionedInterval = link
+					.getRevealingIntervals().get(rowSelected);
+			int intervalIndex = isLower ? 0 : 1;
+			currentPartitionedInterval.getBelongsToLeftSide()[intervalIndex] = !currentPartitionedInterval
+					.getBelongsToLeftSide(intervalIndex);
+		}
+			break;
+
 		}
 
 	}
@@ -74,21 +85,15 @@ public class RevelationConditionEdit extends SimplePNEdit {
 	 */
 
 	private PartitionedInterval getNewPartitionedInterval() {
-		return new PartitionedInterval(false,
-				Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-//		Variable var = new Variable("NUM");
-//		PartitionedInterval interval = var.getPartitionedInterval();
-//		double limits[] = interval.getLimits();
-//		double newLimits[] = new double[limits.length + 1];
-//		boolean belongsToLeftSide[] = interval.getBelongsToLeftSide();
-//		boolean newBelongsToLeftSide[] = new boolean[limits.length + 1];
-//		for (int i = 0; i < limits.length; i++) {
-//			newLimits[i] = limits[i];
-//			newBelongsToLeftSide[i] = belongsToLeftSide[i];
-//		}
-//		newLimits[limits.length] = interval.getMax() + increment;
-//		newBelongsToLeftSide[limits.length] = false;
-//		return new PartitionedInterval(newLimits, newBelongsToLeftSide);
+		if (link.getRevealingIntervals().isEmpty()) {
+			return new PartitionedInterval(false, Double.NEGATIVE_INFINITY,
+					Double.POSITIVE_INFINITY, false);
+		} else {
+			PartitionedInterval interval = link.getRevealingIntervals().get(
+					link.getRevealingIntervals().size() - 1);
+			return new PartitionedInterval(false, interval.getLimit(1),
+					Double.POSITIVE_INFINITY, false);
+		}
 	}
 
 }

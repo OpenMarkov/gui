@@ -15,6 +15,8 @@ package org.openmarkov.core.gui.component;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
@@ -84,7 +86,7 @@ import org.openmarkov.core.model.network.VariableType;
  * @version 1.0 29 Jun 2009
  */
 public class DiscretizeTablePanel extends KeyTablePanel implements 
-	TableModelListener {
+	TableModelListener,MouseListener {
 
 	/**
 	 * default serial id
@@ -333,18 +335,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 */
 	protected void defineTableSpecificListeners() {
 
-		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
-
-			public void mouseClicked(java.awt.event.MouseEvent e) {
-
-				int fila = valuesTable.rowAtPoint(e.getPoint());
-				int columna = valuesTable.columnAtPoint(e.getPoint());
-				if ((fila > -1) && (columna > -1)) {
-						changeIntervalDiscretize(fila, columna);
-				}
-			}
-		});
-
+		valuesTable.addMouseListener(this); 
 	}
 
 	/**
@@ -1520,6 +1511,44 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 
 	public void setVisibleButtonPanel(boolean b){
 		getButtonPanel().setVisible(b);
+	}
+
+
+
+	public void mouseClicked(MouseEvent e) {
+		int fila = valuesTable.rowAtPoint(e.getPoint());
+		int columna = valuesTable.columnAtPoint(e.getPoint());
+		if ((fila > -1) && (columna > -1)) {
+				changeIntervalDiscretize(fila, columna);
+		}
+		
+	}
+
+
+
+	public void mouseEntered(MouseEvent e) {
+		
+		
+	}
+
+
+
+	public void mouseExited(MouseEvent e) {
+	
+		
+	}
+
+
+
+	public void mousePressed(MouseEvent e) {
+	
+	}
+
+
+
+	public void mouseReleased(MouseEvent e) {
+		
+		
 	}
 
 	
