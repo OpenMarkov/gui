@@ -207,34 +207,55 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	public void tableChanged(TableModelEvent arg0) {
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();
-		int numRows = arg0.getLastRow();
+		int numRows =((DiscretizeTableModel) arg0.getSource()).getRowCount();
 		boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true : false);
 		if (arg0.getType() == TableModelEvent.UPDATE
 				&& ((DiscretizeTableModel) arg0.getSource()).getValueAt(row,
 						column) instanceof Double) {
 			double newValue = (Double) ((DiscretizeTableModel) arg0.getSource())
 					.getValueAt(row, column);
+			if (lower) {
+				double upperLimit = (Double) ((DiscretizeTableModel) arg0
+						.getSource()).getValueAt(row, upperLimitValueColumnNum);
+				if (upperLimit < newValue) {
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString("IntervalInconsistent.Text.Label"),
+							messageStringResource.getString("IntervalEditError.Text.Label"),
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+			} else {
+				double lowerLimit = (Double) ((DiscretizeTableModel) arg0
+						.getSource()).getValueAt(row, lowLimitValueColumnNum);
+				if (lowerLimit > newValue) {
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString("IntervalInconsistent.Text.Label"),
+							messageStringResource.getString("IntervalEditError.Text.Label"),
+							JOptionPane.ERROR_MESSAGE);
+
+				}
+			}
+
 			if (lower && row > 0) {
 				double previousLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row - 1,
 						upperLimitValueColumnNum);
 				if (previousLimit > newValue)
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString("Error"),
-							messageStringResource.getString("Intervals overlap"),
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString("IntervalOverlap.Text.Label"),
+							messageStringResource.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
-					return;
+
 			}
 			if (!lower && row < numRows) {
 				double nextLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row + 1,
 						lowLimitValueColumnNum);
 				if (nextLimit < newValue)
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString("xx"),
-							messageStringResource.getString("sss"),
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString("IntervalOverlap.Text.Label"),
+							messageStringResource.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
-					return;
 
 			}
 
@@ -245,7 +266,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						.announceEdit(nodePartitionedIntervalEdit);
 				probNode.getProbNet().getPNESupport()
 						.doEdit(nodePartitionedIntervalEdit);
-				
+				setPartitionedInterval();
 			} catch (ConstraintViolationException e) {
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
@@ -306,6 +327,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				|| columna == upperLimitSymbolColumnNum) {
 			boolean lower = false;
 			String aux = (String) valuesTable.getValueAt(fila, columna);
+			RevelationConditionEdit relatedIntervalEdit = null;
 			if (columna == lowerLimitSymbolColumnNum) {
 				lower = true;
 				if (aux.equals("(")) {
@@ -319,6 +341,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt(")", fila - 1,
 									upperLimitSymbolColumnNum);
+						relatedIntervalEdit = new RevelationConditionEdit(link,
+								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
+								0, false);
 					}
 					// checkIntervalDiscretize("[", fila, columna,upMonotony);
 				} else {
@@ -331,6 +356,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("]", fila - 1,
 									upperLimitSymbolColumnNum);
+						relatedIntervalEdit = new RevelationConditionEdit(link,
+								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
+								0, false);
 					}
 					// checkIntervalDiscretize("(", fila, columna,upMonotony);
 				}
@@ -346,6 +374,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("(", fila + 1,
 									lowerLimitSymbolColumnNum);
+						relatedIntervalEdit = new RevelationConditionEdit(link,
+								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
+								0, true);
 					}
 					// checkIntervalDiscretize("]", fila, columna,upMonotony);
 				} else {
@@ -358,6 +389,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("[", fila + 1,
 									lowerLimitSymbolColumnNum);
+						relatedIntervalEdit = new RevelationConditionEdit(link,
+								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
+								0, true);
 					}
 					// checkIntervalDiscretize(")", fila, columna,upMonotony);
 				}
@@ -369,7 +403,12 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				probNode.getProbNet().getPNESupport()
 						.announceEdit(intervalEdit);
 				probNode.getProbNet().getPNESupport().doEdit(intervalEdit);
-			
+				if (relatedIntervalEdit != null) {
+					probNode.getProbNet().getPNESupport()
+							.announceEdit(relatedIntervalEdit);
+					probNode.getProbNet().getPNESupport()
+							.doEdit(relatedIntervalEdit);
+				}
 
 			} catch (ConstraintViolationException e) {
 				JOptionPane.showMessageDialog(this,
