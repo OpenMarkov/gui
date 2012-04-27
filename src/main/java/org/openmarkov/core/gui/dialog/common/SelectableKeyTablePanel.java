@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.openmarkov.core.action.RevelationArcValueEdit;
@@ -23,10 +24,19 @@ import org.openmarkov.core.model.network.State;
  ***/
 public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 		TableModelListener {
-
+	/***
+	 * Link containing the revelation conditions
+	 */
 	private Link link;
-
+	/****
+	 * Node whose values are revealing
+	 */
 	private ProbNode node;
+	/***
+	 * Preferred column width
+	 */
+	private static final int CHECKBOX_COLUMN_WIDTH = 60;
+	private static final int STATENAME_COLUMN_WIDTH = 440;
 
 	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData,
 			String newKeyPrefix, boolean firstColumnHidden, Link link) {
@@ -37,6 +47,21 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 		super.getRemoveValueButton().setVisible(false);
 		super.getDownValueButton().setVisible(false);
 		super.getUpValueButton().setVisible(false);
+
+	}
+
+	/****
+	 * Adjusts the column width. The checkbox column is thinner than the node's state column
+	 */
+	public void adjustColumnSize() {
+
+		getValuesTable().getColumnModel().getColumn(0)
+				.setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
+		getValuesTable().getColumnModel().getColumn(1)
+				.setMaxWidth(CHECKBOX_COLUMN_WIDTH);
+		getValuesTable().getColumnModel().getColumn(1)
+				.setPreferredWidth(STATENAME_COLUMN_WIDTH);
+
 	}
 
 	/**
@@ -64,6 +89,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 
 		public SelectableTableModel(Object[][] data, String[] columns) {
 			super(data, columns);
+
 		}
 
 		public boolean isCellEditable(int row, int col) {
@@ -104,34 +130,34 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 			} catch (ConstraintViolationException e1) {
 			} catch (NotEnoughMemoryException e2) {
 				e2.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e2.getMessage() ),
-						stringResource.getString( e2.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(this,
+						stringResource.getString(e2.getMessage()),
+						stringResource.getString(e2.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
 			} catch (CanNotDoEditException e3) {
 				e3.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e3.getMessage() ),
-						stringResource.getString( e3.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(this,
+						stringResource.getString(e3.getMessage()),
+						stringResource.getString(e3.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e4) {
 				e4.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e4.getMessage() ),
-						stringResource.getString( e4.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(this,
+						stringResource.getString(e4.getMessage()),
+						stringResource.getString(e4.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
 			} catch (WrongCriterionException e5) {
 				e5.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e5.getMessage() ),
-						stringResource.getString( e5.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(this,
+						stringResource.getString(e5.getMessage()),
+						stringResource.getString(e5.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
 			} catch (DoEditException e6) {
 				e6.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e6.getMessage() ),
-						stringResource.getString( e6.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog(this,
+						stringResource.getString(e6.getMessage()),
+						stringResource.getString(e6.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

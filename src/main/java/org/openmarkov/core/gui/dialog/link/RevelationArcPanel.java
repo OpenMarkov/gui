@@ -1,10 +1,16 @@
 package org.openmarkov.core.gui.dialog.link;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -89,8 +95,17 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 
 	public void initialize() {
 		setPreferredSize(new Dimension(600, 375));
-		this.add(this.getJLabelValuesPanel());
-		this.add(this.getNodeStatesTablePanel());
+		this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+		this.add(Box.createRigidArea(new Dimension(5,10)));
+		JLabel label= this.getJLabelValuesPanel();
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(label);
+		this.add(Box.createRigidArea(new Dimension(5,10)));
+		JPanel centerPanel= new JPanel();
+		JPanel panel = this.getNodeStatesTablePanel();
+		centerPanel.add(panel);
+		centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.add(centerPanel);
 	}
 
 	/**
@@ -102,8 +117,14 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 			jLabelValuesPanel = new JLabel();
 			jLabelValuesPanel.setName("jLabelValuesPanel");
 			jLabelValuesPanel.setText("a Label");
-			jLabelValuesPanel.setText(dialogStringResource
-					.getString("RevelationArcPanel.jLabelValuesPanel.Text"));
+			ProbNode node1= (ProbNode)link.getNode1().getObject();
+			ProbNode node2= (ProbNode)link.getNode2().getObject();
+			MessageFormat messageForm = new MessageFormat(
+					dialogStringResource
+							.getString("RevelationArcPanel.jLabelValuesPanel.Text"));
+			Object[] labelArgs = new Object[] { node1.getName(), node2.getName() };
+			String msgText = messageForm.format(labelArgs);
+			jLabelValuesPanel.setText(msgText);
 		}
 		return jLabelValuesPanel;
 	}
@@ -196,6 +217,7 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 			if (this.variableType != VariableType.NUMERIC) {
 				discreteNodeStatesTablePanel
 						.setData(convertStringsToTableDiscreteFormat(link));
+				discreteNodeStatesTablePanel.adjustColumnSize();
 			} else {
 				discretizedNodeStatesTablePanel.setPartitionedInterval();
 			

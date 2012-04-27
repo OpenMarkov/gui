@@ -49,13 +49,13 @@ public class RevelationArcEditDialog extends
 
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
-		ProbNode node1 = (ProbNode) link.getNode1().getObject();
+		ProbNode node2 = (ProbNode) link.getNode2().getObject();
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
 					dialogStringResource
 							.getString("RevelationArcDialog.Title.Label"));
-			Object[] labelArgs = new Object[] { node1.getName() };
+			Object[] labelArgs = new Object[] { node2.getName() };
 			title = messageForm.format(labelArgs);
 		}
 		setTitle(title);
