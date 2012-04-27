@@ -73,7 +73,6 @@ public class LinkRestrictionValuesTable extends ValuesTable implements
 		node1 = (ProbNode) link.getNode1().getObject();
 		node2 = (ProbNode) link.getNode2().getObject();
 		net = node1.getProbNet();
-		
 		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 	}
 

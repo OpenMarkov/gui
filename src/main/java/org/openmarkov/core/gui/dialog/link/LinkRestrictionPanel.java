@@ -75,8 +75,8 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	/**
-	 * This method initializes valuesTable and defines that first column and first row 
-	 * are not selectable.
+	 * This method initializes valuesTable and defines that first column and
+	 * first row are not selectable.
 	 * 
 	 * @return a new values table.
 	 */
@@ -99,11 +99,14 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		LinkRestrictionValuesTableModel tableModel = null;
 		if (valuesTable == null) {
-			tableModel = new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
+			tableModel = new LinkRestrictionValuesTableModel(data, columns,
+					firstEditableRow);
 		} else if (valuesTable.getTableModel() == null) {
-			tableModel = new LinkRestrictionValuesTableModel(data, columns, firstEditableRow);
+			tableModel = new LinkRestrictionValuesTableModel(data, columns,
+					firstEditableRow);
 		} else {
-			tableModel = (LinkRestrictionValuesTableModel) valuesTable.getModel();
+			tableModel = (LinkRestrictionValuesTableModel) valuesTable
+					.getModel();
 		}
 		return tableModel;
 	}
@@ -126,11 +129,14 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	/*****
-	 * This method gets the information of the link potential from 
-	 * the two nodes of the link and transforms the tablePotential of the 
-	 * link restriction to a format, which can be displayed in a table. 
-	 * @param probNode1 Parent node of the link.
-	 * @param probNode2 Child node of the link.
+	 * This method gets the information of the link potential from the two nodes
+	 * of the link and transforms the tablePotential of the link restriction to
+	 * a format, which can be displayed in a table.
+	 * 
+	 * @param probNode1
+	 *            Parent node of the link.
+	 * @param probNode2
+	 *            Child node of the link.
 	 */
 	public void setData(ProbNode probNode1, ProbNode probNode2) {
 
@@ -147,13 +153,29 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		setData(tableData, newColumns, firstEditableRow, lastEditableRow,
 				probNode2.getNodeType());
 		setCellRenderers();
+		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+
+				int row = valuesTable.rowAtPoint(e.getPoint());
+				int column = valuesTable.columnAtPoint(e.getPoint());
+				if ((row > 0) && (column > 0)) {
+					Integer value = (Integer) valuesTable.getValueAt(row,
+							column);
+					Integer newValue = (value.equals(1) ? 0 : 1);
+					valuesTable.setValueAt(newValue, row,column);
+				}
+
+			}
+
+		});
 
 	}
 
 	/**
 	 * Prepare the table data from the <code>Potential</code>s and States.
 	 * <p>
-	
+	 * 
 	 * 
 	 * @param listPotentials
 	 *            - potentials of the table
@@ -163,12 +185,14 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	 *            - <code>NodeWrapper</code> list of the parents
 	 * @return the table data to be set
 	 */
-	
-	
+
 	/*****
 	 * Prepare the table data from the two nodes of the link.
-	 * @param node1 Parent node of the link
-	 * @param node2 Child node of the link
+	 * 
+	 * @param node1
+	 *            Parent node of the link
+	 * @param node2
+	 *            Child node of the link
 	 * @return he table data to be set
 	 */
 	protected Object[][] convertListPotentialsToTableFormat(ProbNode node1,
@@ -183,14 +207,15 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	/**
-	 * Assigns the value of the tablePotential of the link restriction 
-	 * to the central positions of the table data.
-	 * @param oldValues  - the table data.
-	 * @return the table data having assigned the values of the link restriction potential 
-	 * to the corresponding positions of the table. 
+	 * Assigns the value of the tablePotential of the link restriction to the
+	 * central positions of the table data.
+	 * 
+	 * @param oldValues
+	 *            - the table data.
+	 * @return the table data having assigned the values of the link restriction
+	 *         potential to the corresponding positions of the table.
 	 */
-	
-	
+
 	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
 
 		Object[][] values = oldValues;
@@ -198,14 +223,14 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		TablePotential tablePotential = (TablePotential) link
 				.getRestrictionsPotential();
 
-		int numStates2= probNode2.getVariable().getNumStates();
-		int numStates1= probNode1.getVariable().getNumStates();
+		int numStates2 = probNode2.getVariable().getNumStates();
+		int numStates1 = probNode1.getVariable().getNumStates();
 		for (int i = 0; i < numStates2; i++) {
 			for (int j = 1; j <= numStates1; j++) {
 				int[] statesIndices = new int[] { j - 1, i };
-				int value = (int) tablePotential
-						.getValue(variables, statesIndices);
-				values[numStates2-i][j] = value;
+				int value = (int) tablePotential.getValue(variables,
+						statesIndices);
+				values[numStates2 - i][j] = value;
 			}
 		}
 
@@ -213,9 +238,12 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	/**
-	 * This method sets the first column with the values of the states of the childe node (node2).
-	 * @param oldValues	 - the table that is being modified
-	 * @return the table data having assigned the values of the states of node2. 
+	 * This method sets the first column with the values of the states of the
+	 * childe node (node2).
+	 * 
+	 * @param oldValues
+	 *            - the table that is being modified
+	 * @return the table data having assigned the values of the states of node2.
 	 */
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 
@@ -223,16 +251,19 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		Variable var = probNode2.getVariable();
 		State[] states = var.getStates();
 		for (int i = var.getNumStates(); i > 0; i--) {
-			values[i][0] = states[var.getNumStates()-i].getName();
+			values[i][0] = states[var.getNumStates() - i].getName();
 		}
 		return values;
 
 	}
 
 	/**
-	 * This method assigns the states of the parent node to the first row of the table data.
-	 * @param oldValues - the table that is being modified
-	 * @return the table data having assigned the values of the states of node1. 
+	 * This method assigns the states of the parent node to the first row of the
+	 * table data.
+	 * 
+	 * @param oldValues
+	 *            - the table that is being modified
+	 * @return the table data having assigned the values of the states of node1.
 	 */
 	private Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
 
@@ -248,25 +279,29 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 	/**
 	 * This methods fills the Upper Left corner of the table with the name of
-	 * the nodes of the potential. 
+	 * the nodes of the potential.
 	 * 
-	 * @param oldValues - the table that is being modified
-	 *@return the table data having assigned the names of the two nodes to the 
-	 * upper left position. 
+	 * @param oldValues
+	 *            - the table that is being modified
+	 * @return the table data having assigned the names of the two nodes to the
+	 *         upper left position.
 	 */
-	
+
 	private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues) {
 
 		Object[][] values = oldValues;
 
-		values[0][0] =  probNode1.getVariable();
+		values[0][0] = probNode1.getVariable();
 		return values;
 	}
 
 	/**
 	 * Set values table size for the link restriction potential.
-	 * @param oldValues - the table that is being modified
-	 * @return the table data having the correct size to displau the link restriction potential.
+	 * 
+	 * @param oldValues
+	 *            - the table that is being modified
+	 * @return the table data having the correct size to displau the link
+	 *         restriction potential.
 	 */
 
 	private Object[][] setValuesTableSize(Object[][] oldValues) {
@@ -314,6 +349,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		((ValuesTableModel) valuesTable.getModel())
 				.setFirstEditableRow(firstEditableRow);
 		valuesTable.setLastEditableRow(lastEditableRow);
+	
 	}
 
 	/**
@@ -352,7 +388,5 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		this.variables = variables;
 
 	}
-
-	
 
 }

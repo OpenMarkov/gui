@@ -48,12 +48,12 @@ public class VisualLink extends VisualElement {
 	/***
 	 * Heigth of the stripe
 	 */
-	private static final double HEIGTH_STRIPE = 8;
+	private static final double HEIGTH_STRIPE = 6;
 
 	/***
 	 * Distance between stripes
 	 */
-	private static final double STRIPE_DISTANCE = 4;
+	private static final double STRIPE_DISTANCE = 3;
 
 	/**
 	 * Color of lines.

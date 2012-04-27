@@ -27,4 +27,9 @@ public class LinkRestrictionValuesTableModel extends ValuesTableModel {
 			return integerExample.getClass();
 		}
 	}
+	
+	
+	public boolean isCellEditable(int row, int col)
+    { return false; }
+
 }
