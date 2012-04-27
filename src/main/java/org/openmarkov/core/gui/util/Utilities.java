@@ -205,6 +205,42 @@ public class Utilities {
 		return unixString;
 	}
 	
+	 public static String roundedString(double value, String precisionString) {
+         // place of decimal point in precisionString
+         int decimalPoint = precisionString.indexOf('.');
+         int one = precisionString.indexOf('1');
+         double precision = Double.valueOf(precisionString);
+         double roundedValue = Math.round(value / precision) * precision;
+         // number of decimals in precisionString
+         int numDecimals;
+         if (decimalPoint != -1 && one != -1) {
+                 numDecimals = one - decimalPoint ;
+         } else {
+                 numDecimals = -1;
+         }
+
+         String roundedString = Double.toString(roundedValue);
+         /*if (roundedString.indexOf('.') == -1) {
+                 roundedString += ",0";
+         } else {
+                 roundedString = roundedString.replace('.', ',');
+         }
+         // place of decimal point in roundedString
+         int roundedStringDecimalPlace = roundedString.indexOf(',');*/
+
+         int roundedStringDecimalPlace = roundedString.indexOf('.');
+         int finalLength = roundedStringDecimalPlace + numDecimals + 1;
+         if (finalLength <= roundedString.length()) {
+                 roundedString = roundedString.substring(0, finalLength);
+         } else {
+                 while (finalLength > roundedString.length()) {
+                         roundedString += "0";
+                 }
+         }
+         return roundedString;
+ }
+
+	
 	/**
 	* It rounds 'x' with 'numDecimals' exact decimals.
 	 * If the rounded number has got some zeros at the end,

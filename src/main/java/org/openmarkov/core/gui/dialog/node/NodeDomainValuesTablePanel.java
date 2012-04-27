@@ -17,6 +17,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import javax.swing.ButtonGroup;
@@ -119,7 +121,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	
 	private JLabel jLabelNodeVariableType;
 	
-	private PrefixedKeyTablePanel nodeDiscreteStatesTablePanel;
+	//private PrefixedKeyTablePanel nodeDiscreteStatesTablePanel;
 	
 	private ButtonGroup buttonGroup = new ButtonGroup();
 	
@@ -151,6 +153,15 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 */
 	private PartitionedInterval partitionedInterval = null;
 	/**
+	 * unit field
+	 */
+	private JFormattedTextField jFormattedTextFieldUnit;
+	
+	/**
+	 * precision combobox
+	 */
+	private JComboBox jComboBoxPrecision;
+	/**
 	 * precision field
 	 */
 	private JFormattedTextField jFormattedTextFieldPrecision;
@@ -158,6 +169,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * label for the precision field
 	 */
 	private JLabel jLabelPrecision;
+	/**
+	 * label for the unit field
+	 */
+	private JLabel jLabelUnit;
 	/**
 	 * Observable notifier
 	 */
@@ -228,12 +243,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * <p>
 	 * initialize the layout for this panel
 	 */
-	@SuppressWarnings("deprecation")
+	
 	private void initialize() throws Exception {
 
 		setPreferredSize(new Dimension(600, 375));
 		
-			
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -241,17 +255,16 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(getJLabelNodeVariableType(), 
-									GroupLayout.DEFAULT_SIZE, 49, 
-									Short.MAX_VALUE ))
-							.addGroup(groupLayout.createSequentialGroup().
-									addContainerGap().addComponent(
-											getJLabelPrecision(),
-											GroupLayout.DEFAULT_SIZE, 49, 
-											Short.MAX_VALUE ))	
-					)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addComponent(getJLabelNodeVariableType(),GroupLayout.DEFAULT_SIZE, 49,	Short.MAX_VALUE ))
+						.addGroup(groupLayout.createSequentialGroup().addContainerGap()
+								/*******/
+								//.addComponent(getJLabelUnit(), GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE )
+								//.addPreferredGap(ComponentPlacement.RELATED)
+								/******/
+								//.addComponent(getJFormattedTextFieldUnit(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )
+								.addComponent(getJLabelPrecision(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(getJFormattedTextFieldPrecision(), 
 									GroupLayout.PREFERRED_SIZE, 87, 
@@ -265,7 +278,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									GroupLayout.PREFERRED_SIZE, 181, 
 									GroupLayout.PREFERRED_SIZE)
 							.addGap(112)
-							.addComponent(getJLabelStatesValues())
+							.addComponent(getJLabelDomainValues())
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(getJComboBoxStatesValues(), 
 									GroupLayout.PREFERRED_SIZE, 
@@ -299,7 +312,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									GroupLayout.PREFERRED_SIZE, 
 									GroupLayout.DEFAULT_SIZE, 
 									GroupLayout.PREFERRED_SIZE)
-							.addComponent(getJLabelStatesValues())))
+							.addComponent(getJLabelDomainValues())))
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(18)
@@ -309,6 +322,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 										GroupLayout.PREFERRED_SIZE, 
 										GroupLayout.DEFAULT_SIZE, 
 										GroupLayout.PREFERRED_SIZE)
+										/*****/
+								//.addComponent(getJLabelUnit(),
+									//GroupLayout.PREFERRED_SIZE, 
+										//GroupLayout.DEFAULT_SIZE, 
+										//GroupLayout.PREFERRED_SIZE)
+										/***/
 								.addComponent(getJLabelPrecision(), 
 										GroupLayout.DEFAULT_SIZE, 
 										GroupLayout.DEFAULT_SIZE, 
@@ -331,6 +350,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									GroupLayout.PREFERRED_SIZE)))
 					.addGap(87))
 		);
+		
 		setLayout(groupLayout);
 		
 		
@@ -360,136 +380,49 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		
 		setUploadingData(true);
 		jComboBoxStatesValues.removeItemListener(this);
+		
+		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
+		listener);*/
+
+		jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.
+		getVariable().getPrecision() ) );
+		
 		if (properties != null) {
-			//jComboBoxNodeVariableType.removeItemListener(this);
-			
-			
-			if (getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//For numeric and discretized
-				// TODO CONSIDER next line if it is required values type
-				// jComboBoxStatesValues.setSelectedIndex(adittionalProperties.getStatesSelected());
+			if (properties.getVariable().getVariableType() == 
+					VariableType.DISCRETIZED || properties.getVariable().getVariableType() == 
+					VariableType.NUMERIC){
 				
 				State [] states = properties.getVariable().getStates();
 				Object[][] tableData = null;
 				jComboBoxStatesValues.setSelectedIndex(DefaultStates
 							.getIndex(states));
-				// intervals of the node
-				if (properties.getVariable().getVariableType() == 
-					VariableType.DISCRETIZED){ 
-					getJLabelPrecision().setVisible(true);
-					getJFormattedTextFieldPrecision().setVisible(true);
-					getJPanelMonotonyUpDown().setVisible(true);
-		    			jRadioButtonMonotonyUp.setEnabled(true);
-		    			jRadioButtonMonotonyDown.setEnabled(true);
-		    			jRadioButtonMonotonyUp.setSelected(false);
-		    			jRadioButtonMonotonyDown.setSelected(true);
-		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
-		    				setEnablePanelButton(true);
-		    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
-	    				setVisibleButtonPanel(true);
-		    			
-				}else{//numeric variable
-					getJLabelPrecision().setVisible(true);
-					getJFormattedTextFieldPrecision().setVisible(true);
-					getJPanelMonotonyUpDown().setVisible(false);
-						jRadioButtonMonotonyUp.setEnabled(false);
-						jRadioButtonMonotonyDown.setEnabled(false);
-						jRadioButtonMonotonyUp.setSelected(false);
-						jRadioButtonMonotonyDown.setSelected(false);
-						((DiscretizeTablePanel)getNodeStatesTablePanel()).
-	    				setEnablePanelButton(false);
-						/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
-	    				setVisibleButtonPanel(false);*/
-				}
-			    //TODO Review this if structure
-				//we assume that in this point elvira data was 
-				// translated to openMarkov/xml format. So, states 
-				// with limit brackets do not exist
 				if (jComboBoxStatesValues.getSelectedIndex() == 
-					(jComboBoxStatesValues.getItemCount() - 1) 
-					&& Utilities.hasLimitBracketSymbols(states)) { 
-						// if the values are others and there are partitioned intervals 
-						// described
-						tableData = convertStringsToTableFormat(states);
-						discretizedNodeStatesTablePanel.setData(tableData);
-				} else {
-						discretizedNodeStatesTablePanel.
-							setPartitionedInterval();
-						tableData = discretizedNodeStatesTablePanel.getData();
-				}
+						(jComboBoxStatesValues.getItemCount() - 1) 
+						&& Utilities.hasLimitBracketSymbols(states)) { 
+							// if the values are others and there are partitioned intervals 
+							// described
+							tableData = convertStringsToTableFormat(states);
+							discretizedNodeStatesTablePanel.setData(tableData);
+					} else {
+							discretizedNodeStatesTablePanel.
+								setPartitionedInterval();
+							tableData = discretizedNodeStatesTablePanel.getData();
 
-				/*partitionedInterval = adittionalProperties.getVariable().
-				getPartitionedInterval();
-				if (partitionedInterval != null) {
-					Object[][] auxTableData = partitionedInterval.
-					convertToTableFormat();
-					for (int i = 0; i < states.length; i++) {
-						//if (i < tableData.length) { // set the name of intervals
-						//auxTableData[i][0] = tableData[i][0];
-						//we assume that in this point elvira data was 
-						// translated to probNet/xml format. So, states with
-						// limit brackets no exists.
-						auxTableData[i][0] = states[i];
-						//}
+							for (int i = 0; i < tableData.length; i++) {
+								for (int j = 3; j < tableData[0].length; j++) {
+									if (j==3 || j==5) {
+										double value = (Double) tableData [i][j];
+										if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
+											String roundedValue = Utilities.roundedString(value,
+											Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
+											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
+										}
+									}
+								}
+							}
 					}
-					discretizedNodeStatesTablePanel.setData(auxTableData);
-				} else {
-					System.out.println("NodeDomainValuesTablePanel."
-							+ "setFieldsfromProperties >> "
-							+  "No partitionedInterval defined Yet");
-				}*/
-				//TODO Activar la siguiente línea, la precisión sólo es válida 
-				//para variables discretizadas y continuas
-				//jFormattedTextFieldPrecision.setValue( properties.getVariable().
-					//	getPrecision() );
-				
-			} else {//Finite states
-				//jRadioButtonMonotonyUp.setEnabled(true);
-    			//jRadioButtonMonotonyDown.setEnabled(true);
-				getJLabelPrecision().setVisible(false);
-				getJFormattedTextFieldPrecision().setVisible(false);
-				getJPanelMonotonyUpDown().setVisible(false);
-    			jRadioButtonMonotonyUp.setEnabled(false);
-    			jRadioButtonMonotonyDown.setEnabled(false);
-    			jRadioButtonMonotonyUp.setSelected(false);
-    			jRadioButtonMonotonyDown.setSelected(true);
-				// node comment title
-				MessageFormat messageForm =
-					new MessageFormat(dialogStringResource.getString(
-							"DiscreteValuesTablePanel." +
-							"commentHTMLScrollPaneNodeValuesComment.Text"));
-				String shortNodeName = properties.getName();
-				Object[] labelArgs = new Object[] { shortNodeName };
-				// states of the node
-				State[] states = properties.getVariable().getStates();
-				jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex(
-						states));
-				if (jComboBoxStatesValues.getSelectedIndex() == 
-					(jComboBoxStatesValues.getItemCount() - 1)) { 
-					// if the values are others
-					nodeDiscreteStatesTablePanel.setData(
-							convertStringsToTableDiscreteFormat( states ) );
-				} else {
-					nodeDiscreteStatesTablePanel.setData( 
-							convertStringsToTableDiscreteFormat( states ) );
-									//DefaultStates.getStrings(states)));
-				}
 			}
-			//jFormattedTextFieldPrecision.removeActionListener( listener );
-			//jFormattedTextFieldPrecision.removeFocusListener( listener );
-			jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
-					listener);
 			
-			jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.
-					getVariable().getPrecision() ) );
-			/*try {
-				jFormattedTextFieldPrecision.commitEdit();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-			
-			//jFormattedTextFieldPrecision.addActionListener( listener );
-			//jFormattedTextFieldPrecision.addFocusListener( listener );
 			jFormattedTextFieldPrecision.addPropertyChangeListener("value", 
 					listener);
 		
@@ -501,8 +434,44 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				getJLabelPrecision().setEnabled(false);
 				getJFormattedTextFieldPrecision().setEnabled(false);
 				getJLabelValuesPanel().setVisible(true);
-				getJLabelStatesValues().setVisible(true);
+				getJLabelDomainValues().setVisible(true);
 				getJComboBoxStatesValues().setVisible(true);
+				
+				getJLabelPrecision().setVisible(false);
+				getJFormattedTextFieldPrecision().setVisible(false);
+				getJPanelMonotonyUpDown().setVisible(false);
+    			jRadioButtonMonotonyUp.setEnabled(false);
+    			jRadioButtonMonotonyDown.setEnabled(false);
+    			jRadioButtonMonotonyUp.setSelected(false);
+    			jRadioButtonMonotonyDown.setSelected(true);
+    			discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
+    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);
+				// node comment title
+				MessageFormat messageForm =
+					new MessageFormat(dialogStringResource.getString(
+							"DiscreteValuesTablePanel." +
+							"commentHTMLScrollPaneNodeValuesComment.Text"));
+				String shortNodeName = properties.getName();
+				Object[] labelArgs = new Object[] { shortNodeName };
+				// states of the node
+				State[] states = properties.getVariable().getStates();
+				State[] reorderedStates = states.clone();
+				Collections.reverse(Arrays.asList(reorderedStates));
+				jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex(
+						states));
+				if (jComboBoxStatesValues.getSelectedIndex() == 
+					(jComboBoxStatesValues.getItemCount() - 1)) { 
+					
+					Object[][] tableData = getDataFromStates(reorderedStates);
+					discretizedNodeStatesTablePanel.setData(tableData);
+					
+				} else {
+					
+					Object[][] tableData = getDataFromStates(reorderedStates);
+					discretizedNodeStatesTablePanel.setData(tableData);
+					
+									
+				}
 				
 				break;
 			}
@@ -514,9 +483,20 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				getJFormattedTextFieldPrecision().setEnabled(true);
 				//getJLabelValuesPanel().setEnabled(false);
 				getJLabelValuesPanel().setVisible(false);
-				getJLabelStatesValues().setVisible(false);
+				getJLabelDomainValues().setVisible(false);
 				getJComboBoxStatesValues().setVisible(false);
 				//getJLabelStatesValues().setEnabled(false);
+				getJLabelPrecision().setVisible(true);
+				getJFormattedTextFieldPrecision().setVisible(true);
+				getJPanelMonotonyUpDown().setVisible(false);
+					jRadioButtonMonotonyUp.setEnabled(false);
+					jRadioButtonMonotonyDown.setEnabled(false);
+					jRadioButtonMonotonyUp.setSelected(false);
+					jRadioButtonMonotonyDown.setSelected(false);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).
+    				setEnablePanelButton(false);
+					discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
+	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);
 				
 				break;
 			}
@@ -527,9 +507,22 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				getJLabelPrecision().setEnabled(true);
 				getJFormattedTextFieldPrecision().setEnabled(true);
 				getJLabelValuesPanel().setVisible(true);
-				getJLabelStatesValues().setVisible(true);
+				getJLabelDomainValues().setVisible(true);
 				getJComboBoxStatesValues().setVisible(true);
 				
+				getJLabelPrecision().setVisible(true);
+				getJFormattedTextFieldPrecision().setVisible(true);
+				getJPanelMonotonyUpDown().setVisible(true);
+	    			jRadioButtonMonotonyUp.setEnabled(true);
+	    			jRadioButtonMonotonyDown.setEnabled(true);
+	    			jRadioButtonMonotonyUp.setSelected(false);
+	    			jRadioButtonMonotonyDown.setSelected(true);
+	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
+	    				setEnablePanelButton(true);
+	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
+    				setVisibleButtonPanel(true);
+	    			discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
+	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);
 				break;
 			}
 			}
@@ -547,11 +540,16 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					probNode.getNodeType()== NodeType.DECISION) && 
 				probNode.getVariable().getVariableType()==
 					VariableType.FINITE_STATES){
-				return getNodeDiscreteStatesTablePanel();
+				//finite states
+				//return getNodeDiscreteStatesTablePanel();
+				return getNodeDiscretizedStatesTablePanel();
 			}else
+				//numeric and discretized
 				return getNodeDiscretizedStatesTablePanel();
 		}else
-			return getNodeDiscreteStatesTablePanel();
+			//if it is null is like if it were finnite states
+			//return getNodeDiscreteStatesTablePanel();
+			return getNodeDiscretizedStatesTablePanel();
 			
 	}
 	
@@ -601,7 +599,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * 
 	 * @return the PrefixedKeyTablePanel for the Node Values
 	 */
-	protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() {
+	/*protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() {
 
 		if (nodeDiscreteStatesTablePanel == null) {
 			String[] columnNames =
@@ -622,12 +620,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		}
 		nodeDiscreteStatesTablePanel.setBorder(new EmptyBorder(0,0,0,0));
 		return nodeDiscreteStatesTablePanel;
-	}
+	}*/
 
 	/**
 	 * @return
 	 */
-	protected JLabel getJLabelStatesValues() {
+	protected JLabel getJLabelDomainValues() {
 
 		if (jLabelStatesValues == null) {
 			jLabelStatesValues = new JLabel();
@@ -638,7 +636,21 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		}
 		return jLabelStatesValues;
 	}
+	/**
+	 * @return
+	 */
+	protected JComboBox getJComboBoxPrecision() {
 
+		if (jComboBoxPrecision == null) {
+			
+			String [] precisions = {"0.1", "0.01", "0.001", "0.0001"};
+			jComboBoxPrecision = new JComboBox(precisions);
+			jComboBoxPrecision.setName("jComboBoxPrecision");
+			jComboBoxPrecision.addItemListener(listener);
+		}
+		return jComboBoxStatesValues;
+	}
+	
 	/**
 	 * @return
 	 */
@@ -722,6 +734,47 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	    
 
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	protected JLabel getJLabelUnit() {
+		if (jLabelUnit == null) {
+			jLabelUnit = new JLabel();
+			jLabelUnit.setHorizontalAlignment(SwingConstants.LEADING);
+			jLabelUnit.setHorizontalTextPosition(SwingConstants.RIGHT);
+			jLabelUnit.setName("jLabelUnit");
+			jLabelUnit.setText("New JLabel");
+			jLabelUnit.setText(dialogStringResource.getString(
+					"NodeDomainValuesTablePanel.jLabelUnit.Text"));
+		}
+		return jLabelUnit;
+	}
+	/**
+	 * 
+	 */
+	protected JFormattedTextField getJFormattedTextFieldUnit() {
+		if (jFormattedTextFieldUnit == null) {
+			
+			NumberFormatter dnFormat = new NumberFormatter ( NumberFormat.
+					getNumberInstance(Locale.ENGLISH) );
+			
+			DefaultFormatterFactory currFactory = new DefaultFormatterFactory(
+					dnFormat, dnFormat, dnFormat );
+			jFormattedTextFieldUnit = new JFormattedTextField(currFactory);
+			//NumberFormatter nf =  (NumberFormatter)jFormattedTextFieldPrecision.getFormatter();
+			
+			//nf.setCommitsOnValidEdit(true);
+		
+			jFormattedTextFieldUnit.setName("jFormattedTextFieldPrecision");
+			//jFormattedTextFieldPrecision.addActionListener( listener );
+			//jFormattedTextFieldPrecision.addFocusListener( listener );
+			jFormattedTextFieldUnit.addPropertyChangeListener("value", listener);
+			//jFormattedTextFieldPrecision.setDocument( new ValidDoubleDocument() );
+		}
+		return jFormattedTextFieldUnit;
+	}
+	
 
 	/**
 	 * get the label for the precision field
@@ -796,7 +849,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 							.setName("jTextAreaLabelNetworkValuesComment");
 			jTextAreaLabelNodeValuesComment.setFocusable(false);
 			jTextAreaLabelNodeValuesComment.setEditable(false);
-			jTextAreaLabelNodeValuesComment.setFont(getJLabelStatesValues()
+			jTextAreaLabelNodeValuesComment.setFont(getJLabelDomainValues()
 							.getFont());
 			jTextAreaLabelNodeValuesComment.setText("an Extended Label");
 			jTextAreaLabelNodeValuesComment.setText(
@@ -822,8 +875,23 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		}
 		return commentHTMLScrollPaneNodeValuesComment;
 	}
+	
+	/**
+	 * Initialize the data structure for finite states variables 
+	 * @param states
+	 * @return
+	 */
 
-
+	protected Object[][] getDataFromStates(State[] states) {
+		int numColumns =6; //key column is assigned in setData
+		int rows = states.length;
+		Object[][] data = new Object [rows][numColumns];
+		for (int i=0; i < rows ; i++) {
+			data [i][0] = states[i].getName();
+		}
+		
+		return data;
+	}
 	/**
 	 * Convert an array of strings in an array of arrays of objects with the
 	 * same elements. As the Elvira parser is still unable to process the
@@ -1026,7 +1094,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	}
 
 	
-	@SuppressWarnings("deprecation")
 	public void itemStateChanged(ItemEvent arg0) {
 		int optionDeselected = 0;
 		ItemSelectable itemSelectable = arg0.getItemSelectable();

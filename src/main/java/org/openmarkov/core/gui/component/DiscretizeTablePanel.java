@@ -54,6 +54,7 @@ import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
+import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -141,6 +142,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 */
 	private DiscretizeTableModel discretizeTableModel = null;
 
+	
 	protected ProbNode probNode;
 
 	protected StringResource messageStringResource;
@@ -273,8 +275,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		// center the data in all columns
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
-
+		
+		DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
+		statesRender.setHorizontalAlignment(SwingConstants.LEFT);
+		
 		int maxColumn = valuesTable.getColumnModel().getColumnCount();
+		
+		
+		
 		for (int i = 1; i < maxColumn; i++) {
 			TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
 			aColumn.setCellRenderer(tcr);
@@ -295,37 +303,55 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			valuesTable.getTableHeader().getColumnModel().getColumn(1).setMinWidth(0);
 			valuesTable.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(0);
 		}
+		if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES 
+				|| probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+			TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+			aColumn.setCellRenderer(statesRender);
+			if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+				for (int i = 2; i < maxColumn; i++) {
+					TableColumn columni = valuesTable.getColumnModel().getColumn(i);
+					columni.setCellRenderer(tcr);
+					columni.setPreferredWidth(0);
+					columni.setMaxWidth(0);
+					columni.setMinWidth(0);
+					valuesTable.getTableHeader().getColumnModel().getColumn(i)
+									.setCellRenderer(tcr);
+				}
+			}
+		}
 
 		// set Columns = Up and Low limits
-		jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
-		jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
-
-		TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel()
-						.getColumn(lowerLimitSymbolColumnNum);
-		lowLimitSymbolColumn.setCellEditor(new DefaultCellEditor(
-						jComboBoxLowerSymbol));
-		lowLimitSymbolColumn.setCellRenderer(new MyComboBoxRenderer(
-						intervalLowerSymbols));
-		lowLimitSymbolColumn.setMinWidth(32);
-		lowLimitSymbolColumn.setPreferredWidth(32);
-		lowLimitSymbolColumn.setMaxWidth(32);
-		
-		TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel()
-						.getColumn(upperLimitSymbolColumnNum);
-		upperLimitSymbolColumn.setCellEditor(new DefaultCellEditor(
-						jComboBoxUpperSymbol));
-		upperLimitSymbolColumn.setCellRenderer(new MyComboBoxRenderer(
-						intervalUpperSymbols));
-		upperLimitSymbolColumn.setMinWidth(32);
-		upperLimitSymbolColumn.setPreferredWidth(32);
-		upperLimitSymbolColumn.setMaxWidth(32);
-
-		// set Column = valuesSeparator = ","
-		TableColumn valuesSeparatorColumn = valuesTable.getColumnModel()
-						.getColumn(valuesSeparatorColumnNum);
-		valuesSeparatorColumn.setMinWidth(10);
-		valuesSeparatorColumn.setPreferredWidth(10);
-		valuesSeparatorColumn.setMaxWidth(10);
+		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED ) {
+			jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
+			jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
+	
+			TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel()
+							.getColumn(lowerLimitSymbolColumnNum);
+			lowLimitSymbolColumn.setCellEditor(new DefaultCellEditor(
+							jComboBoxLowerSymbol));
+			lowLimitSymbolColumn.setCellRenderer(new MyComboBoxRenderer(
+							intervalLowerSymbols));
+			lowLimitSymbolColumn.setMinWidth(32);
+			lowLimitSymbolColumn.setPreferredWidth(32);
+			lowLimitSymbolColumn.setMaxWidth(32);
+			
+			TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel()
+							.getColumn(upperLimitSymbolColumnNum);
+			upperLimitSymbolColumn.setCellEditor(new DefaultCellEditor(
+							jComboBoxUpperSymbol));
+			upperLimitSymbolColumn.setCellRenderer(new MyComboBoxRenderer(
+							intervalUpperSymbols));
+			upperLimitSymbolColumn.setMinWidth(32);
+			upperLimitSymbolColumn.setPreferredWidth(32);
+			upperLimitSymbolColumn.setMaxWidth(32);
+	
+			// set Column = valuesSeparator = ","
+			TableColumn valuesSeparatorColumn = valuesTable.getColumnModel()
+							.getColumn(valuesSeparatorColumnNum);
+			valuesSeparatorColumn.setMinWidth(10);
+			valuesSeparatorColumn.setPreferredWidth(10);
+			valuesSeparatorColumn.setMaxWidth(10);
+		}
 
 	}
 
@@ -633,6 +659,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 						.addComponent(getInfiniteNegativeDoubleButton())
 						.addGap(48, 48, 48)));
 			buttonPanel.setLayout(groupLayout);
+			
 		}
 		return buttonPanel;
 	}
@@ -642,7 +669,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * 
 	 * @return a new positive infinite value button.
 	 */
-	protected JButton getInfinitePositiveDoubleButton() {
+	public JButton getInfinitePositiveDoubleButton() {
 
 		if (jButtonInfinitePositiveDouble == null) {
 			jButtonInfinitePositiveDouble = new JButton();
@@ -666,7 +693,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * 
 	 * @return a new negative infinite value button.
 	 */
-	protected JButton getInfiniteNegativeDoubleButton() {
+	public JButton getInfiniteNegativeDoubleButton() {
 
 		if (jButtonInfiniteNegativeDouble == null) {
 			jButtonInfiniteNegativeDouble = new JButton();
@@ -682,6 +709,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			jButtonInfiniteNegativeDouble.setVisible(true);
 		}
 		return jButtonInfiniteNegativeDouble;
+	}
+	/**
+	 * 
+	 */
+	public int getLowerLimitSymbolColumnNum() {
+		return lowerLimitSymbolColumnNum;
 	}
 
 	/**
@@ -1368,7 +1401,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 *            index of the key which will be returned
 	 * @return the string that content the key.
 	 */
-	protected String getKeyString(int index) {
+	private String getKeyString(int index) {
 
 		return keyPrefix + index;
 
@@ -1425,7 +1458,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				((DiscretizeTableModel)arg0.getSource()).getValueAt(row, column)
 						instanceof Double){
 			double newValue = (Double)((DiscretizeTableModel)arg0.getSource()).
-				getValueAt(row, column);		
+				getValueAt(row, column);	
+			//setting precision to the new value according with the precision value introduced by the user
+			double precision = probNode.getVariable().getPrecision();
+			String roundedValue = Utilities.roundedString(newValue, Double.toString(precision));
+			
+			//double roundedNewValue = round(newValue, precision);
 			NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
 				new NodePartitionedIntervalEdit(probNode, StateAction.
 						MODIFYVALUEINTERVAL, row, newValue, lower);
@@ -1436,12 +1474,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 						nodePartitionedIntervalEdit);
 				
 				if (row > 0 && nodePartitionedIntervalEdit.getLower()){
-					valuesTable.setValueAt(probNode.getVariable().
+					/*valuesTable.setValueAt(probNode.getVariable().
 							getPartitionedInterval().getLimit(row), row-1, 
+							upperLimitValueColumnNum);*/
+					valuesTable.setValueAt(roundedValue, row-1, 
 							upperLimitValueColumnNum);
 				}else if (row < probNode.getVariable().getStates().length-1)				
-					valuesTable.setValueAt(probNode.getVariable().
+					/*valuesTable.setValueAt(probNode.getVariable().
 							getPartitionedInterval().getLimit(row + 1 ), row + 1, 
+							lowLimitValueColumnNum);*/
+					valuesTable.setValueAt(roundedValue, row + 1, 
 							lowLimitValueColumnNum);
 						
 			} catch (ConstraintViolationException e) {
@@ -1497,6 +1539,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		}
 		
 	}
+
 	public void setEnablePanelButton(boolean b){
 		
 		if (b){
@@ -1524,6 +1567,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		
 	}
 
+	
 
 
 	public void mouseEntered(MouseEvent e) {
