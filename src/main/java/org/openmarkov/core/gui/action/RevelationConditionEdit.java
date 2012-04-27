@@ -9,6 +9,12 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 
+/*****
+ * A simple edit which allows to add and modify intervals and modify them.
+ * 
+ * @author caroline
+ * 
+ */
 @SuppressWarnings("serial")
 public class RevelationConditionEdit extends SimplePNEdit {
 
@@ -22,15 +28,38 @@ public class RevelationConditionEdit extends SimplePNEdit {
 	 */
 	private StateAction stateAction;
 
+	/****
+	 * The new value of the limit
+	 */
 	private double newValue;
 
+	/***
+	 * The old value of the limit
+	 */
+	private double oldValue;
 	/**
 	 * index of the row selected
 	 */
 	private int rowSelected;
+	/***
+	 * Indicates whether the lower limit or upper limit is modified
+	 */
 	private boolean isLower;
+	/*****
+	 * The interval prior to the modification
+	 */
+	private PartitionedInterval lastInterval;
 
-
+	/*****
+	 * Creates a RevelationConditionEdit which carries out the modifications of
+	 * a revealing condition interval.
+	 * 
+	 * @param link
+	 * @param stateAction
+	 * @param row
+	 * @param newValue
+	 * @param isLower
+	 */
 
 	public RevelationConditionEdit(Link link, StateAction stateAction, int row,
 			double newValue, boolean isLower) {
@@ -44,15 +73,17 @@ public class RevelationConditionEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		System.out.println(rowSelected);
+
 		switch (stateAction) {
 		case ADD:
-
 			PartitionedInterval newPartitionedInterval = getNewPartitionedInterval();
+			lastInterval = newPartitionedInterval;
 			link.addRevealingInterval(newPartitionedInterval);
 
 			break;
+
 		case REMOVE: {
+			lastInterval = link.getRevealingIntervals().get(rowSelected);
 			link.getRevealingIntervals().remove(rowSelected);
 		}
 			break;
@@ -60,7 +91,9 @@ public class RevelationConditionEdit extends SimplePNEdit {
 			PartitionedInterval currentPartitionedInterval = link
 					.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
+			oldValue = currentPartitionedInterval.getLimits()[intervalIndex];
 			currentPartitionedInterval.getLimits()[intervalIndex] = newValue;
+
 		}
 			break;
 
@@ -73,6 +106,34 @@ public class RevelationConditionEdit extends SimplePNEdit {
 		}
 			break;
 
+		}
+
+	}
+
+	public void undo() {
+		super.undo();
+		switch (stateAction) {
+		case ADD:
+			link.getRevealingIntervals().remove(lastInterval);
+			break;
+		case REMOVE:
+			link.getRevealingIntervals().add(rowSelected, lastInterval);
+			break;
+		case MODIFYVALUEINTERVAL: {
+			PartitionedInterval interval = link.getRevealingIntervals().get(
+					rowSelected);
+			int intervalIndex = isLower ? 0 : 1;
+			interval.getLimits()[intervalIndex] = oldValue;
+		}
+			break;
+		case MODIFYDELIMITERINTERVAL: {
+			PartitionedInterval interval = link.getRevealingIntervals().get(
+					rowSelected);
+			int intervalIndex = isLower ? 0 : 1;
+			interval.getBelongsToLeftSide()[intervalIndex] = !interval
+					.getBelongsToLeftSide(intervalIndex);
+		}
+			break;
 		}
 
 	}

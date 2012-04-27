@@ -12,6 +12,11 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 
+/**
+ * This class implements the revelation arc dialog box for the edition of the revelation arc properties.
+ * 
+ */
+
 @SuppressWarnings("serial")
 public class RevelationArcEditDialog extends
 		OkCancelApplyUndoRedoHorizontalDialog {

@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 
 /*****
- * Panel to set the revealing states for a link
+ * Graphic panel to display and set the revealing conditions for a link. The conditions can be either states or intervals.
  * 
  * @author ckonig
  * 
@@ -52,18 +52,19 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	private JLabel jLabelValuesPanel = null;
 
 	/**
-	 * table to show the states of the node
+	 * table to show the states of the variable`s domain.
 	 */
 
 	private SelectableKeyTablePanel discreteNodeStatesTablePanel;
 
 	/**
-	 * table to show the states of the node
+	 * table to show intervals of the variable's domain.
 	 */
-	private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel = null;
+	private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel;
 
-	/**
-	 * constructor without construction parameters
+	/****
+	 * Constructor - constructs a JPanel for displaying the revelation conditions of a link
+	 * @param link
 	 */
 	public RevelationArcPanel(Link link) {
 

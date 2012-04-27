@@ -17,7 +17,11 @@ import org.openmarkov.core.gui.action.RevelationConditionEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
-
+/******
+ * This class implements a Discretize table for the edition of intervals. The intervals can be continuous or discontinuous.
+ * @author caroline
+ *
+ */
 @SuppressWarnings("serial")
 public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	/****
@@ -167,35 +171,35 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					JOptionPane.ERROR_MESSAGE);
 
 		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
 					messageStringResource.getString(e.getMessage()),
 					messageStringResource.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
 					messageStringResource.getString(e.getMessage()),
 					messageStringResource.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
 					messageStringResource.getString(e.getMessage()),
 					messageStringResource.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
 					messageStringResource.getString(e.getMessage()),
 					messageStringResource.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
 					messageStringResource.getString(e.getMessage()),
@@ -204,10 +208,13 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		}
 	}
 
+	/****
+	 * Invoked when the table cells are edited
+	 */
 	public void tableChanged(TableModelEvent arg0) {
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();
-		int numRows =((DiscretizeTableModel) arg0.getSource()).getRowCount();
+		int numRows = ((DiscretizeTableModel) arg0.getSource()).getRowCount();
 		boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true : false);
 		if (arg0.getType() == TableModelEvent.UPDATE
 				&& ((DiscretizeTableModel) arg0.getSource()).getValueAt(row,
@@ -220,7 +227,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				if (upperLimit < newValue) {
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString("IntervalInconsistent.Text.Label"),
-							messageStringResource.getString("IntervalEditError.Text.Label"),
+							messageStringResource
+									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 				}
 
@@ -230,7 +238,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				if (lowerLimit > newValue) {
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString("IntervalInconsistent.Text.Label"),
-							messageStringResource.getString("IntervalEditError.Text.Label"),
+							messageStringResource
+									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
 				}
@@ -243,7 +252,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				if (previousLimit > newValue)
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString("IntervalOverlap.Text.Label"),
-							messageStringResource.getString("IntervalEditError.Text.Label"),
+							messageStringResource
+									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
 			}
@@ -254,7 +264,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				if (nextLimit < newValue)
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString("IntervalOverlap.Text.Label"),
-							messageStringResource.getString("IntervalEditError.Text.Label"),
+							messageStringResource
+									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
 			}
@@ -274,35 +285,35 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						JOptionPane.ERROR_MESSAGE);
 
 			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
@@ -322,6 +333,12 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 
 	}
 
+	/****
+	 * Invoked when the interval delimiters are edited
+	 * 
+	 * @param fila
+	 * @param columna
+	 */
 	private void changeIntervalDiscretize(int fila, int columna) {
 		if (columna == lowerLimitSymbolColumnNum
 				|| columna == upperLimitSymbolColumnNum) {
@@ -417,35 +434,35 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						JOptionPane.ERROR_MESSAGE);
 
 			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
+			
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
 						messageStringResource.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
+			
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
 						messageStringResource.getString(e.getMessage()),
