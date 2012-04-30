@@ -679,10 +679,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 							.getString("InfinitePositive.Text.Label"));
 			jButtonInfinitePositiveDouble.setIcon(iconLoader
 							.load(IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
-			jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
-			jButtonInfinitePositiveDouble.setEnabled(true);
+			//jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
+			jButtonInfinitePositiveDouble.setEnabled(false);
 			jButtonInfinitePositiveDouble.addActionListener(this);
-			jButtonInfinitePositiveDouble.setVisible(true);
+			jButtonInfinitePositiveDouble.setVisible(false);
 			
 		}
 		return jButtonInfinitePositiveDouble;
@@ -703,10 +703,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 							.getString("InfiniteNegative.Text.Label"));
 			jButtonInfiniteNegativeDouble.setIcon(iconLoader
 							.load(IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
-			jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
-			jButtonInfiniteNegativeDouble.setEnabled(true);
+			//jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
+			jButtonInfiniteNegativeDouble.setEnabled(false);
 			jButtonInfiniteNegativeDouble.addActionListener(this);
-			jButtonInfiniteNegativeDouble.setVisible(true);
+			jButtonInfiniteNegativeDouble.setVisible(false);
 		}
 		return jButtonInfiniteNegativeDouble;
 	}
@@ -1559,12 +1559,54 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 
 
 	public void mouseClicked(MouseEvent e) {
-		int fila = valuesTable.rowAtPoint(e.getPoint());
-		int columna = valuesTable.columnAtPoint(e.getPoint());
-		if ((fila > -1) && (columna > -1)) {
-				changeIntervalDiscretize(fila, columna);
+		int row = valuesTable.rowAtPoint(e.getPoint());
+		int column = valuesTable.columnAtPoint(e.getPoint());
+		/*if ((row > -1) && (column > -1)) {
+				changeIntervalDiscretize(row, column);
+		}*/
+		//infinity buttons management
+		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC ||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED){
+		PartitionedInterval interval = probNode.getVariable().getPartitionedInterval();
+		int numIntervals = interval.getNumSubintervals();
+		if (!isUpMonotony()) {
+			if (row == 0 && column == 3) {
+				getInfiniteNegativeDoubleButton().setVisible(true);
+				getInfiniteNegativeDoubleButton().setEnabled(true);
+				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setEnabled(false);
+			} else if (row == numIntervals-1 && column == 5) {
+				getInfinitePositiveDoubleButton().setVisible(true);
+				getInfinitePositiveDoubleButton().setEnabled(true);
+				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setEnabled(false);
+			
+			}else  {
+				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setEnabled(false);
+				getInfinitePositiveDoubleButton().setEnabled(false);
+			}
+			
+		} else if (isUpMonotony()) {
+			if (row == 0 && column == 5) {
+				getInfinitePositiveDoubleButton().setVisible(true);
+				getInfinitePositiveDoubleButton().setEnabled(true);
+				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setEnabled(false);
+			} else if (row == numIntervals-1 && column == 3) {
+				getInfiniteNegativeDoubleButton().setVisible(true);
+				getInfiniteNegativeDoubleButton().setEnabled(true);
+				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setEnabled(false);
+			}
+			else  {
+				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setEnabled(false);
+				getInfinitePositiveDoubleButton().setEnabled(false);
+			}
 		}
-		
+		}
 	}
 
 	

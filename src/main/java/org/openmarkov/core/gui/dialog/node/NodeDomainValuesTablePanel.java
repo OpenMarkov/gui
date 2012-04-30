@@ -15,6 +15,7 @@ import java.awt.GridLayout;
 import java.awt.ItemSelectable;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
-
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
@@ -53,7 +53,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
@@ -380,7 +379,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		
 		setUploadingData(true);
 		jComboBoxStatesValues.removeItemListener(this);
-		
+	
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
@@ -413,8 +412,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									if (j==3 || j==5) {
 										double value = (Double) tableData [i][j];
 										if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
-											String roundedValue = Utilities.roundedString(value,
-											Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
+											String roundedValue = Utilities.roundedString(value, 
+													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
 										}
 									}
@@ -423,8 +422,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					}
 			}
 			
-			jFormattedTextFieldPrecision.addPropertyChangeListener("value", 
-					listener);
+			/*jFormattedTextFieldPrecision.addPropertyChangeListener("value", 
+					listener);*/
 		
 			switch (properties.getVariable().getVariableType()) {
 			case FINITE_STATES: {
@@ -437,6 +436,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				getJLabelDomainValues().setVisible(true);
 				getJComboBoxStatesValues().setVisible(true);
 				
+				//getJComboBoxPrecision().setVisible(false);
+				//getJComboBoxPrecision().setEnabled(false);
 				getJLabelPrecision().setVisible(false);
 				getJFormattedTextFieldPrecision().setVisible(false);
 				getJPanelMonotonyUpDown().setVisible(false);
@@ -444,8 +445,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
     			jRadioButtonMonotonyDown.setEnabled(false);
     			jRadioButtonMonotonyUp.setSelected(false);
     			jRadioButtonMonotonyDown.setSelected(true);
-    			discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
-    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);
+    			/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
+    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);*/
 				// node comment title
 				MessageFormat messageForm =
 					new MessageFormat(dialogStringResource.getString(
@@ -480,6 +481,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 						.getString("NodeDomainValuesTablePanel." +
 								"jComboBoxNodeVariableType.Items.Continuous"));
 				getJLabelPrecision().setEnabled(true);
+				//getJComboBoxPrecision().setVisible(true);
+				//getJComboBoxPrecision().setEnabled(true);
 				getJFormattedTextFieldPrecision().setEnabled(true);
 				//getJLabelValuesPanel().setEnabled(false);
 				getJLabelValuesPanel().setVisible(false);
@@ -493,10 +496,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					jRadioButtonMonotonyDown.setEnabled(false);
 					jRadioButtonMonotonyUp.setSelected(false);
 					jRadioButtonMonotonyDown.setSelected(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).
-    				setEnablePanelButton(false);
-					discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
-	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);
+					/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
+    				setEnablePanelButton(false);*/
+					/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
+	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);*/
 				
 				break;
 			}
@@ -505,6 +508,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 						.getString("NodeDomainValuesTablePanel." +
 								"jComboBoxNodeVariableType.Items.Discretized"));
 				getJLabelPrecision().setEnabled(true);
+				//getJComboBoxPrecision().setVisible(true);
+				//getJComboBoxPrecision().setEnabled(true);
 				getJFormattedTextFieldPrecision().setEnabled(true);
 				getJLabelValuesPanel().setVisible(true);
 				getJLabelDomainValues().setVisible(true);
@@ -517,12 +522,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	    			jRadioButtonMonotonyDown.setEnabled(true);
 	    			jRadioButtonMonotonyUp.setSelected(false);
 	    			jRadioButtonMonotonyDown.setSelected(true);
-	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
+	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setUpMonotony(false);
+	    			/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
 	    				setEnablePanelButton(true);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
-    				setVisibleButtonPanel(true);
-	    			discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
-	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);
+    				setVisibleButtonPanel(true);*/
+	    			/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
+	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);*/
 				break;
 			}
 			}
@@ -535,7 +541,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 
 	protected KeyTablePanel getNodeStatesTablePanel() {
 
-		if (probNode != null){
+		/*if (probNode != null){
 			if (( probNode.getNodeType()== NodeType.CHANCE || 
 					probNode.getNodeType()== NodeType.DECISION) && 
 				probNode.getVariable().getVariableType()==
@@ -548,7 +554,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 				return getNodeDiscretizedStatesTablePanel();
 		}else
 			//if it is null is like if it were finnite states
-			//return getNodeDiscreteStatesTablePanel();
+			//return getNodeDiscreteStatesTablePanel();*/
 			return getNodeDiscretizedStatesTablePanel();
 			
 	}
@@ -646,9 +652,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			String [] precisions = {"0.1", "0.01", "0.001", "0.0001"};
 			jComboBoxPrecision = new JComboBox(precisions);
 			jComboBoxPrecision.setName("jComboBoxPrecision");
+			//jComboBoxPrecision.setMinimumSize(minimumSize);
+			jComboBoxPrecision.setPreferredSize(getMinimumSize());
 			jComboBoxPrecision.addItemListener(listener);
 		}
-		return jComboBoxStatesValues;
+		return jComboBoxPrecision;
 	}
 	
 	/**
@@ -797,22 +805,34 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	 * get the TextField Precision field
 	 * @return the precision field
 	 */
+	//protected JFormattedTextField getJFormattedTextFieldPrecision() {
 	protected JFormattedTextField getJFormattedTextFieldPrecision() {
 		if (jFormattedTextFieldPrecision == null) {
 			
-			NumberFormatter dnFormat = new NumberFormatter ( NumberFormat.
+			NumberFormatter dnFormat = new NumberFormatter ( NumberFormat. 	
 					getNumberInstance(Locale.ENGLISH) );
+			
+			
+			/*DecimalFormat decimalFormat = new DecimalFormat();
+			 NumberFormatter textFormatter = new NumberFormatter(decimalFormat);
+			 
+			 textFormatter.setOverwriteMode(true);
+			 textFormatter.setAllowsInvalid(true);*/
+			 
 			
 			DefaultFormatterFactory currFactory = new DefaultFormatterFactory(
 					dnFormat, dnFormat, dnFormat );
 			jFormattedTextFieldPrecision = new JFormattedTextField(currFactory);
 			//NumberFormatter nf =  (NumberFormatter)jFormattedTextFieldPrecision.getFormatter();
 			
+		//	jFormattedTextFieldPrecision = new JTextField();
+			
 			//nf.setCommitsOnValidEdit(true);
 		
 			jFormattedTextFieldPrecision.setName("jFormattedTextFieldPrecision");
 			//jFormattedTextFieldPrecision.addActionListener( listener );
 			//jFormattedTextFieldPrecision.addFocusListener( listener );
+			
 			jFormattedTextFieldPrecision.addPropertyChangeListener("value", listener);
 			//jFormattedTextFieldPrecision.setDocument( new ValidDoubleDocument() );
 		}

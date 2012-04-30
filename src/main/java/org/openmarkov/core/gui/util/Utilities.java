@@ -205,30 +205,110 @@ public class Utilities {
 		return unixString;
 	}
 	
+	
+	
+	/*********************************************************************************************************/
+	 /**
+     * Returns a <code>String</code> of the value rounded to the precision and
+     * with the exact number of decimals; for example, 3.4 with precision 0.001
+     * is "3.400".
+     *
+     * @param value
+     *            the value to be rounded
+     * @param precisionString
+     *            a <code>String</code>, such as "10", "1", "0.25", or "0.001".
+     * @return rounded value string
+     */
+    public static String sroundedString(double value, String precisionString) {
+            // place of decimal point in precisionString
+            int precisionStringDecimalPlace = precisionString.indexOf('.');
+            double precision = Double.valueOf(precisionString);
+            double roundedValue = Math.round(value / precision) * precision;
+            // number of decimals in precisionString
+            int numDecimals;
+            if (precisionStringDecimalPlace != -1) {
+                    numDecimals = precisionString.length()
+                                    - precisionStringDecimalPlace - 1;
+            } else {
+                    numDecimals = -1;
+            }
+
+            String roundedString = Double.toString(roundedValue);
+            if (roundedString.indexOf('.') == -1) {
+                    roundedString += ",0";
+            } else {
+                    roundedString = roundedString.replace('.', ',');
+            }
+            // place of decimal point in roundedString
+            int roundedStringDecimalPlace = roundedString.indexOf(',');
+
+            int finalLength = roundedStringDecimalPlace + numDecimals + 1;
+            if (finalLength <= roundedString.length()) {
+                    roundedString = roundedString.substring(0, finalLength);
+            } else {
+                    while (finalLength > roundedString.length()) {
+                            roundedString += "0";
+                    }
+            }
+            return roundedString;
+    }
+
+	
+	/*********************************************************************************************************/
+	 /**
+     * Returns a <code>String</code> of the value rounded to the precision and
+     * with the exact number of decimals; for example, 3.4 with precision 0.001
+     * is "3.400".
+     *
+     * @param value
+     *            the value to be rounded
+     * @param precisionString
+     *            a <code>String</code>, such as "10", "1", "0.25", or "0.001".
+     * @return rounded value string
+     */
+	
 	 public static String roundedString(double value, String precisionString) {
-         // place of decimal point in precisionString
-         int decimalPoint = precisionString.indexOf('.');
+		 int numDecimals;
+		 String pointPrecisionString = "";
+		 int indexE = precisionString.indexOf('E');
+		 if (indexE != -1) {
+        	 numDecimals = Integer.parseInt(precisionString.substring(indexE +2, indexE +3));
+        			
+        	 pointPrecisionString = "0.";
+        	 for (int i=0; i<numDecimals-1; i++) {
+        		 pointPrecisionString += "0";
+        	 }
+        	 pointPrecisionString += "1";
+        			 
+         } else {
+		 
+		 if (precisionString.indexOf(',') == -1 && precisionString.indexOf('.') != -1) {
+			 precisionString = precisionString.replace('.', ',');
+		 }
+		// place of decimal point in precisionString
+         int decimalPoint = precisionString.indexOf(',');
          int one = precisionString.indexOf('1');
-         double precision = Double.valueOf(precisionString);
+         if (decimalPoint != -1 && one != -1) {
+        	 numDecimals = one - decimalPoint ;
+         } else {
+        	 numDecimals = -1;
+         }
+         pointPrecisionString = precisionString.replace(',', '.');
+         }
+         double precision = Double.valueOf(pointPrecisionString);
          double roundedValue = Math.round(value / precision) * precision;
          // number of decimals in precisionString
-         int numDecimals;
-         if (decimalPoint != -1 && one != -1) {
-                 numDecimals = one - decimalPoint ;
-         } else {
-                 numDecimals = -1;
-         }
-
+        
+         
          String roundedString = Double.toString(roundedValue);
-         /*if (roundedString.indexOf('.') == -1) {
+        if (roundedString.indexOf('.') == -1) {
                  roundedString += ",0";
          } else {
                  roundedString = roundedString.replace('.', ',');
          }
          // place of decimal point in roundedString
-         int roundedStringDecimalPlace = roundedString.indexOf(',');*/
-
-         int roundedStringDecimalPlace = roundedString.indexOf('.');
+         
+         int roundedStringDecimalPlace = roundedString.indexOf(',');
          int finalLength = roundedStringDecimalPlace + numDecimals + 1;
          if (finalLength <= roundedString.length()) {
                  roundedString = roundedString.substring(0, finalLength);
@@ -237,6 +317,9 @@ public class Utilities {
                          roundedString += "0";
                  }
          }
+         if (roundedString.indexOf('.') == -1 && roundedString.indexOf(',') != -1) {
+        	 roundedString = roundedString.replace(',', '.');
+		 }
          return roundedString;
  }
 

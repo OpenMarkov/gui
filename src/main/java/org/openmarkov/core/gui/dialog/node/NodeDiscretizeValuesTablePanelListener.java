@@ -59,7 +59,10 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	private NodeDomainValuesTablePanel panel;
 	
 	private StringResource messageStringResource;
-
+	
+	private int previousMonotony = -1;
+	private static int DOWN = 0;
+	private static int UP = 1;	
 	/**
 	 * Constructor
 	 * 
@@ -105,17 +108,18 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	}
 	
 	
-	
-	private int previousMonotony = -1;
-	private static int DOWN = 0;
-	private static int UP = 1;	
+
 	
 	//button initially selected down
 	public void itemStateChanged(ItemEvent e) {
 		//to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
-		
+		getPanel().getNodeDiscretizedStatesTablePanel().getInfiniteNegativeDoubleButton().setVisible(false);
+		getPanel().getNodeDiscretizedStatesTablePanel().getInfinitePositiveDoubleButton().setVisible(false);
+		getPanel().getNodeDiscretizedStatesTablePanel().getInfiniteNegativeDoubleButton().setEnabled(false);
+		getPanel().getNodeDiscretizedStatesTablePanel().getInfinitePositiveDoubleButton().setEnabled(false);
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyUp() )) {
 			itemStateChangedUp(e);
+			
 		}
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyDown() )) {
 			itemStateChangedDown(e);
@@ -124,14 +128,14 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	
 	private void itemStateChangedUp(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
-			//has been deselected canonical
 			previousMonotony = UP;
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { //UP --> UP
 				//do nothing
 			} else if (previousMonotony == DOWN) { // DOWN --> UP
+					
+				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
 				
-				//if (getPanel().getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//Discretized
 					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
 					Object [][]data = panel.getData();
 					
@@ -156,19 +160,18 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 					}
 					
 					panel.setData(newData); //set data fill the first key column
-					
-				//}
+				
 			} 
 		}
 	}
 	
 	private void itemStateChangedDown(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
-			//has been deselected canonical
 			previousMonotony = DOWN;
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { // UP --> DOWN
-				//if (getPanel().getNodeStatesTablePanel() instanceof DiscretizeTablePanel){//Discretized
+				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
+				
 					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
 					Object [][]data = panel.getData();
 					
@@ -193,7 +196,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 					}
 					
 					panel.setData(newData); //set data fill the first key column
-				//}
+			
 			} else if (previousMonotony == DOWN) { // DOWN --> DOWN 
 				//do nothing	
 			} 
@@ -242,7 +245,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	public void focusGained (FocusEvent e) {
 		if (e.getSource().equals( getPanel().getJFormattedTextFieldPrecision())) {
 			System.out.println( "precision focus gained");
-			//getPanel().getJFormattedTextFieldPrecision().selectAll();
+			getPanel().getJFormattedTextFieldPrecision().selectAll();
 		}
 	}
 	
@@ -311,11 +314,14 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 				+ ((Double) getPanel().getJFormattedTextFieldPrecision()
 					.getValue()).toString() );
 		}
+		getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().
+				getVariable().getPrecision() ) );
 	}
 
 	
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource().equals( getPanel().getJFormattedTextFieldPrecision() )) {
+
 			PrecisionEdit precisionEdit = new PrecisionEdit (panel.getProbNode(), 
 					(Double) getPanel().getJFormattedTextFieldPrecision().
 					getValue());
@@ -370,9 +376,9 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			
 			NumberFormat nf = NumberFormat.getNumberInstance() ;
 		      nf.setGroupingUsed(false) ;     // don't group by threes
-		      nf.setMaximumFractionDigits(2) ;
+		      /*nf.setMaximumFractionDigits(2) ;
 		      nf.setMinimumFractionDigits(2) ;
-		      nf.setRoundingMode(RoundingMode.FLOOR);
+		      nf.setRoundingMode(RoundingMode.FLOOR);*/
 		      
 			System.out.println( "precision set to "
 				+ nf.format((Double) getPanel().getJFormattedTextFieldPrecision()
@@ -383,89 +389,26 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			 
 			 if (getPanel().getProbNode().getVariable().getVariableType() == VariableType.DISCRETIZED ||
 					 getPanel().getProbNode().getVariable().getVariableType() == VariableType.NUMERIC ) {
-				 
-				// PartitionedInterval partitionedInterval = getPanel().getProbNode().getVariable().getPartitionedInterval();
-				 
+			 
 				 Object [][] data =  panel.getData();
 				 for (int i = 0; i < data.length; i++) {
 					 for (int j = 3; j < data[0].length; j++) {
 						 if (j==3 || j==5) {
-						//boolean lower = (j - 1 == panel.getLowerLimitSymbolColumnNum()? true: false);
-						double value = (Double) data [i][j];
-						//double value = Double.parseDouble(data [i][j]) ;
+						
+							 double value = 0;
+							 if (data [i][j] instanceof String) {
+								 value = Double.parseDouble( (String)data [i][j]);
+							 } else if (data [i][j] instanceof Double) {
+								value = (Double) data [i][j];
+							 }
+						
 						if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
-							//double valor = (Double) getPanel().getJFormattedTextFieldPrecision().getValue();
-							//String s = Double.toString(valor);
+							
 							String roundedValue = Utilities.roundedString(value,
-									Double.toString((Double) getPanel().getJFormattedTextFieldPrecision().getValue()));
+								Double.toString((Double) getPanel().getJFormattedTextFieldPrecision().getValue()));
+							
 							panel.getValuesTable().setValueAt(roundedValue, i, j);
-						//double roundedValue = round(value,(Double) getPanel().getJFormattedTextFieldPrecision().getValue());
-						/*NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
-								new NodePartitionedIntervalEdit(getPanel().getProbNode(), StateAction.
-										MODIFYVALUEINTERVAL, i, Double.parseDouble(roundedValue), lower);
-						
-						try {
-							getPanel().getProbNode().getProbNet().getPNESupport().announceEdit(
-									nodePartitionedIntervalEdit);
-							getPanel().getProbNode().getProbNet().getPNESupport().doEdit(
-									nodePartitionedIntervalEdit);
-						} catch (ConstraintViolationException e) {
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						
-							if (nodePartitionedIntervalEdit.getLower()){
-								panel.getValuesTable().setValueAt(getPanel().getProbNode().getVariable().
-										getPartitionedInterval().getLimit(i), i, 
-										panel.getLowerLimitSymbolColumnNum());
-							}else				
-								panel.getValuesTable().setValueAt(getPanel().getProbNode().getVariable().
-										getPartitionedInterval().getLimit(i + 1 ), i, 
-										panel.getLowerLimitSymbolColumnNum());
-						} catch (CanNotDoEditException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						} catch (DoEditException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						} catch (NotEnoughMemoryException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						} catch (NonProjectablePotentialException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						} catch (WrongCriterionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(null, messageStringResource
-									.getString( e.getMessage() ),
-								messageStringResource.getString( e.getMessage() ),
-								JOptionPane.ERROR_MESSAGE );
-						}
-						
-						//set new rounded value in the table panel
-						/*panel.getValuesTable().setValueAt(getPanel().getProbNode().getVariable().
-							getPartitionedInterval().getLimit(i), i, 
-								panel.getLowerLimitSymbolColumnNum());*/
-						
-						
+									
 						 }
 						 }
 					 }
@@ -473,7 +416,8 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 				 }
 				 
 			 }
-			
+				/*getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().
+						getVariable().getPrecision() ) );*/
 			
 		}
 	}
