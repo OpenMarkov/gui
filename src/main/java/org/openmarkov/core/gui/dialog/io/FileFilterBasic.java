@@ -78,7 +78,7 @@ public class FileFilterBasic extends FileFilter {
 	 * 
 	 * @return accepted extension by the filter.
 	 */
-	protected String getFilterExtension() {
+	public String getFilterExtension() {
 
 		return null;
 	};

@@ -88,7 +88,7 @@ public class FileFilterXML extends FileFilterBasic {
 	 * @return accepted extension by the filter.
 	 */
 	@Override
-	protected String getFilterExtension() {
+	public String getFilterExtension() {
 
 		return xmlExtension;
 
