@@ -1360,4 +1360,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		// TODO Implement!
 
 	}
+	
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		getValuesTable().setModifiable(!readOnly);
+	}	
 }

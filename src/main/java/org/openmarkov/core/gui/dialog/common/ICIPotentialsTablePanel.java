@@ -634,5 +634,14 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		getICIValuesTable().setVisible( visible );
 	}
 
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		getICIValuesTable().setModifiable(!readOnly);
+	}
+	
+	
+
 }
 

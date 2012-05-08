@@ -14,21 +14,20 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.action.PNUndoableEditEvent;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
+import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
@@ -400,7 +399,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void changePotential() {
 
-		editorPanel.changePotential();
+		editorPanel.showPotentialDialog(getWorkingMode() != NetworkPanel.EDITION_WORKING_MODE);
 
 	}
 	
@@ -756,6 +755,24 @@ public class NetworkPanel extends FrameContentPanel implements
 	public ArrayList<VisualNode> getSelectedNodes() {
 		return editorPanel.getSelectedNodes();
 	}
+	
+	/**
+	 * Returns a list containing the currently selected links.
+	 * 
+	 * @return a list containing the currently selected links.
+	 */
+	public ArrayList<VisualLink> getSelectedLinks() {
+		return editorPanel.getSelectedLinks();
+	}
+	
+	/**
+	 * Returns a list containing the currently selected instances.
+	 * 
+	 * @return a list containing the currently selected instances.
+	 */
+	public ArrayList<VisualInstance> getSelectedInstances() {
+		return editorPanel.getSelectedInstances();
+	}	
 
 	/**
 	 * Selects or deselects all nodes of the network.
@@ -969,5 +986,10 @@ public class NetworkPanel extends FrameContentPanel implements
         // TODO Auto-generated method stub
         
     }
+
+	public void markSelectedInstancesAsInput() {
+		editorPanel.markSelectedInstancesAsInput();
+		
+	}
 
 }

@@ -482,4 +482,30 @@ public class DesktopPane extends JDesktopPane {
 		}
 
 	}
+	
+	/**
+	 * Selects the internal frame whose title is passed as parameter.
+	 * 
+	 * @param title
+	 *            title of the frame to be selected.
+	 * @throws UnsupportedOperationException
+	 *             if the selection is vetoed.
+	 */
+	public JInternalFrame getFrameByTitle(String title) {
+
+		JInternalFrame[] frames = getAllFrames();
+		int i = 0, l = frames.length;
+		boolean found = false;
+		JInternalFrame frame = null; 
+
+		while (!found && (i < l)) {
+			if (frames[i].getTitle().equals(title)) {
+				found = true;
+				frame = frames[i];
+			} else {
+				i++;
+			}
+		}
+		return frame;
+	}	
 }

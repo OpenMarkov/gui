@@ -110,6 +110,11 @@ public abstract class NodePropertiesDialog extends
 	 * Messages string resource.
 	 */
 	protected StringResource messageStringResource = null;
+
+	/**
+	 * v
+	 */
+	private boolean readOnly;
 	
 	
 	/**
@@ -120,12 +125,15 @@ public abstract class NodePropertiesDialog extends
 	 * @param newElement
 	 *            if true, it indicates that a new node is being created; if
 	 *            false, an existing node is being modified.
+	 * @param readOnly
+	 * 			  if true, values inside the dialog will not be editable
 	 */
-	public NodePropertiesDialog(Window owner, ProbNode probNode, boolean newElement) {
+	public NodePropertiesDialog(Window owner, ProbNode probNode, boolean newElement, boolean readOnly) {
 
 		super(owner);
 		this.probNode = probNode;
-		newNode = newElement;
+		this.readOnly = readOnly;
+		this.newNode = newElement;
 		initialize();
 		
 	}
@@ -486,6 +494,13 @@ public abstract class NodePropertiesDialog extends
 	 * @return true if all the fields are correct.
 	 */
 	protected abstract boolean specificChecks();
+
+	/**
+	 * @return the readOnly
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
+	}
 
 
 }

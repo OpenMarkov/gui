@@ -30,7 +30,7 @@ import javax.swing.JPanel;
  * @version 1.2 asaez - add method for adjusting the text that should be
  * 						shown in a limited space
  */
-abstract class VisualElement {
+public abstract class VisualElement {
 
 	/**
 	 * Used to paint normal lines.

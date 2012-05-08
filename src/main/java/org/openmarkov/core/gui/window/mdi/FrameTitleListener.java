@@ -30,5 +30,5 @@ interface FrameTitleListener {
 	 * @param frame
 	 *            frame whose title has been changed.
 	 */
-	void titleChanged(JInternalFrame frame);
+	void titleChanged(JInternalFrame frame, String oldTitle, String newTitle);
 }

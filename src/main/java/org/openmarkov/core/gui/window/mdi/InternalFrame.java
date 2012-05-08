@@ -122,10 +122,10 @@ public class InternalFrame extends JInternalFrame implements
 	/**
 	 * Notifies to the registered listener that the title has changed.
 	 */
-	private void notifyTitleChanged() {
+	private void notifyTitleChanged(String oldTitle, String newTitle) {
 
 		for (FrameTitleListener listener : frameTitleListeners) {
-			listener.titleChanged(this);
+			listener.titleChanged(this, oldTitle, newTitle);
 		}
 	}
 
@@ -137,9 +137,9 @@ public class InternalFrame extends JInternalFrame implements
 	 */
 	@Override
 	public void setTitle(String newTitle) {
-
+		String oldTitle =  getTitle();
 		super.setTitle(newTitle);
-		notifyTitleChanged();
+		notifyTitleChanged(oldTitle, newTitle);
 
 	}
 }

@@ -327,7 +327,7 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @return a new MDI panel.
 	 */
-	MDI getMdi() {
+	public MDI getMdi() {
 
 		if (mdi == null) {
 			mdi = new MDI(mainMenu.getMenuMDI());
@@ -360,7 +360,7 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @return a new edition toolbar.
 	 */
-	private EditionToolBar getEditionToolBar() {
+	public EditionToolBar getEditionToolBar() {
 
 		if (editionToolBar == null) {
 			editionToolBar = new EditionToolBar(mainPanelListenerAssistant);
@@ -371,25 +371,17 @@ public class MainPanel extends JPanel {
 	}
 	
 	/**
-	 * This method initialises inferenceToolBar.
+	 * This method initialises and returns the inferenceToolBar.
 	 * 
 	 * @return a new inference toolbar.
 	 */
-	private InferenceToolBar getInferenceToolBar() {
+	public InferenceToolBar getInferenceToolBar() {
 		if (inferenceToolBar == null) {
 			inferenceToolBar = new InferenceToolBar(mainPanelListenerAssistant);
 		}
 		return inferenceToolBar;
 	}
-	
-	/**
-	 * This method returns the inferenceToolBar.
-	 * 
-	 * @return the inference toolbar.
-	 */
-	public InferenceToolBar getExistingInferenceToolBar() {
-		return inferenceToolBar;
-	}
+
 
 	/**
 	 * This method initialises menuAssistant.

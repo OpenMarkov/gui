@@ -197,6 +197,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			activateEditionState(EditionState.UTILITY);
 		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
 			activateEditionState(EditionState.LINK);
+		} else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
+			activateEditionState(EditionState.INSTANCE);
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			setNewWorkingMode();
 		} else if (actionCommand
@@ -319,9 +321,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}else if (actionCommand
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableRevelationArc();
-		}
-
-		else {
+		} else if (actionCommand
+				.equals(ActionCommands.INSTANCE_INPUT)) {
+			this.getCurrentNetworkPanel().markSelectedInstancesAsInput();
+		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
 		}
@@ -500,7 +503,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
         if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
         {
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
-    		mainPanel.getExistingInferenceToolBar().
+    		mainPanel.getInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
         }
         if (contentPanel instanceof MessageWindow) {
@@ -750,7 +753,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsNetworkDependent(networkPanel);
-			mainPanel.getExistingInferenceToolBar().
+			mainPanel.getInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
@@ -779,7 +782,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsNetworkDependent(networkPanel);
-			mainPanel.getExistingInferenceToolBar().
+			mainPanel.getInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
@@ -1025,7 +1028,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				newWorkingMode, getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 			getCurrentNetworkPanel().updateIndividualProbabilities();
-			mainPanel.getExistingInferenceToolBar().
+			mainPanel.getInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} else {
 			// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
@@ -1084,10 +1087,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private void setInferenceOptions() {
 		getCurrentNetworkPanel().setInferenceOptions();
 		if (getCurrentNetworkPanel().isAutomaticPropagation()){
-			mainPanel.getExistingInferenceToolBar().removePropagateNowButton();
+			mainPanel.getInferenceToolBar().removePropagateNowButton();
 			mainPanel.getMainMenu().removePropagateNowItem();
 		} else {		
-			mainPanel.getExistingInferenceToolBar().addPropagateNowButton();
+			mainPanel.getInferenceToolBar().addPropagateNowButton();
 			mainPanel.getMainMenu().addPropagateNowItem();
 		}
 		mainPanel.getMainPanelMenuAssistant().
@@ -1221,6 +1224,17 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	public ArrayList<NetworkPanel> getNetworkPanels() {
 		return networkPanels;
+	}
+
+	public void frameTitleChanged(FrameContentPanel contentPanel,
+			String oldName, String newName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void frameOpened(FrameContentPanel contentPanel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

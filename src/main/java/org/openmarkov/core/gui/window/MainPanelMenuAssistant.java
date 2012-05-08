@@ -19,7 +19,9 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
+import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -67,7 +69,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	public static final String[] EDITING_ACTION_COMMANDS = {
 			ActionCommands.OBJECT_SELECTION, ActionCommands.CHANCE_CREATION,
 			ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-			ActionCommands.LINK_CREATION };
+			ActionCommands.LINK_CREATION, ActionCommands.INSTANCE_CREATION};
 
 	/**
 	 * Composed action command that contains inference actions.
@@ -303,6 +305,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.DECISION_CREATION, false);
 		setOptionEnabled(ActionCommands.UTILITY_CREATION, false);
 		setOptionEnabled(ActionCommands.LINK_CREATION, false);
+		setOptionEnabled(ActionCommands.INSTANCE_CREATION, false);
 		setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
 		setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
@@ -312,6 +315,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
 			setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
+			setOptionEnabled(ActionCommands.INSTANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 			if (networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
@@ -351,9 +355,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		 */
 		setOptionEnabled(ActionCommands.SAVE_NETWORK,
 				networkPanel.getModified());
-		objectsSelected(networkPanel.getSelectedNodesNumber(),
-				networkPanel.getSelectedLinksNumber(),
-				networkPanel.getSelectedNodes());
+		objectsSelected(networkPanel.getSelectedNodes(),
+				networkPanel.getSelectedLinks(),
+				networkPanel.getSelectedInstances());
 		setZoom(networkPanel.getZoom());
 
 		/*
@@ -459,9 +463,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
 			setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 		}
-		objectsSelected(networkPanel.getSelectedNodesNumber(),
-				networkPanel.getSelectedLinksNumber(),
-				networkPanel.getSelectedNodes());
+		objectsSelected(networkPanel.getSelectedNodes(),
+				networkPanel.getSelectedLinks(),
+				networkPanel.getSelectedInstances());
 	}
 
 	/**
@@ -575,6 +579,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionSelected(ActionCommands.LINK_CREATION, true);
 			break;
 		}
+		case INSTANCE: {
+			setOptionSelected(ActionCommands.INSTANCE_CREATION, true);
+			break;
+		}		
 		default:
 			setOptionSelected(ActionCommands.OBJECT_SELECTION, true);
 			optionSelectAll = true;
@@ -598,8 +606,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 * @param arrayOfNodes
 	 *            an array with the selected nodes.
 	 */
-	public void objectsSelected(int nodes, int links,
-			ArrayList<VisualNode> arrayOfNodes) {
+	public void objectsSelected(ArrayList<VisualNode> selectedNodes,
+			ArrayList<VisualLink> selectedLinks,
+			ArrayList<VisualInstance> selectedInstances)
+	{
 		boolean canCut = false;
 		boolean canCopy = false;
 		boolean canRemove = false;
@@ -621,20 +631,33 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
 		}
-		if (nodes > 0) {
+		if (selectedInstances.size() > 0) {
 			canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 				canRemove = true;
 				canCut = true;
 			}
-			if (links <= 0) {
+			boolean isInstanceInput = true;
+			for(VisualInstance instance : selectedInstances)
+			{
+				isInstanceInput &= instance.isInput();
+			}
+			setOptionSelected(ActionCommands.INSTANCE_INPUT, isInstanceInput);
+		}
+		if (selectedNodes.size() > 0) {
+			canCopy = true;
+			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+				canRemove = true;
+				canCut = true;
+			}
+			if (selectedLinks.size() <= 0) {
 				//if we are in Inference Mode, options about expansion and
 				//contraction must be activated
 				if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-					if (arrayOfNodes.size() > 0) {
+					if (selectedNodes.size() > 0) {
 						VisualNode visualNode = null;
-						for (int i=0; i < arrayOfNodes.size(); i++) {
-							visualNode = arrayOfNodes.get(i);
+						for (int i=0; i < selectedNodes.size(); i++) {
+							visualNode = selectedNodes.get(i);
 							//if at least one selected node is expanded, 
 							//'contract node(s)' option must be active
 							if (visualNode.isExpanded()) {
@@ -651,15 +674,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				//if at least one selected node has a finding, 
 				//'remove finding' option must be active 
 				VisualNode vNode = null;
-				for (int i=0; i < arrayOfNodes.size(); i++) {
-					vNode = arrayOfNodes.get(i);
+				for (int i=0; i < selectedNodes.size(); i++) {
+					vNode = selectedNodes.get(i);
 					if (vNode.getFindingInNode()) {
 						canRemoveFinding = true;
 					}
 				}
-				if (arrayOfNodes.size() == 1) {
+				if (selectedNodes.size() == 1) {
 					 canNodeProperties = true;
-					 VisualNode visualNode = arrayOfNodes.get(0);
+					 VisualNode visualNode = selectedNodes.get(0);
 					 if (visualNode.getProbNode().getVariable().isTemporal()){
 						 canLog = true;
 					 }
@@ -707,11 +730,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				}
 			}
 		} else {
-			if (links > 0) {
+			if (selectedLinks.size() > 0) {
 				if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 					canRemove = true;
 				}
-				if (links == 1) {
+				if (selectedLinks.size() == 1) {
 					if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 						canLinkProperties = true;
 					}

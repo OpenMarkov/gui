@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.window.mdi;
 
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -244,6 +245,32 @@ public class MDI extends JPanel implements FrameTitleListener,
 		}
 
 	}
+	
+	/**
+	 * Notifies to the registered listener that the title of a frame has changed.
+	 * 
+	 * @param frame
+	 *            frame that has been closed.
+	 */
+	private void notifyFrameTitleChanged(JInternalFrame frame, String oldName, String newName) {
+
+		for (MDIListener listener : mdiListeners) {
+			listener.frameTitleChanged((FrameContentPanel) frame.getContentPane(), oldName, newName);
+		}
+
+	}	
+	
+	/**
+	 * Notifies to the registered listener that a frame has been opened
+	 * 
+	 * @param frame
+	 *            frame that has been opened.
+	 */	
+	private void notifyFrameOpened(JInternalFrame frame) {
+		for (MDIListener listener : mdiListeners) {
+			listener.frameOpened((FrameContentPanel) frame.getContentPane());
+		}		
+	}	
 
 	/**
 	 * This method carries out the actions when an frame is going to be closed.
@@ -284,6 +311,8 @@ public class MDI extends JPanel implements FrameTitleListener,
 		}
 		mdiMenu.addPanelMenuItem((JPanel) frame.getContentPane(), frame
 			.getTitle());
+		
+		notifyFrameOpened(frame);
 
 	}
 
@@ -394,11 +423,13 @@ public class MDI extends JPanel implements FrameTitleListener,
 	 * @param frame
 	 *            frame whose title has been changed.
 	 */
-	public void titleChanged(JInternalFrame frame) {
+	public void titleChanged(JInternalFrame frame, String oldTitle, String newTitle) {
 
 		FrameContentPanel panel = (FrameContentPanel) frame.getContentPane();
 
 		mdiMenu.modifyPanelMenuItem(panel, panel.getTitle());
+		
+		notifyFrameTitleChanged(frame, oldTitle, newTitle);
 
 	}
 	
@@ -414,5 +445,9 @@ public class MDI extends JPanel implements FrameTitleListener,
 		} catch (UnsupportedOperationException exc) {
 			System.err.println(exc.getMessage());
 		}
+	}
+	
+	public Container getFrameByTitle(String title) {
+		return ((InternalFrame)desktopPane.getFrameByTitle(title)).getContentPane();
 	}
 }

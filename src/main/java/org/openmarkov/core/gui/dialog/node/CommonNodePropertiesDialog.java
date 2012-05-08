@@ -42,16 +42,32 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	 * @param newNode
 	 *            if true, it indicates that a new network is being created; if
 	 *            false, an existing network is being modified.
+	 * @param readOnly
+	 * 			  if true, values inside the dialog will not be editable
 	 */
-	public CommonNodePropertiesDialog(Window owner, ProbNode probNode, boolean newNode) {
+	public CommonNodePropertiesDialog(Window owner, ProbNode probNode, boolean newNode, boolean readOnly) {
 
-		super(owner, probNode, newNode);
+		super(owner, probNode, newNode, readOnly);
 		probNode.getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		getTabbedPane().addChangeListener(this);
 		setLocationRelativeTo(owner);
 
 	}
+	
+	/**
+	 * This method initializes this instance.
+	 * 
+	 * @param owner
+	 *            window that owns this dialog.
+	 * @param newNode
+	 *            if true, it indicates that a new network is being created; if
+	 *            false, an existing network is being modified.
+	 */
+	public CommonNodePropertiesDialog(Window owner, ProbNode probNode, boolean newNode) {
+
+		this(owner, probNode, newNode, false);
+	}	
 
 	/**
 	 * This method carries out the checks of the specific fields. This specific

@@ -16,6 +16,10 @@ import org.openmarkov.core.model.network.ProbNode;
 @SuppressWarnings("serial")
 public abstract class PotentialPanel extends JPanel
 {
+	/**
+	 * If true, values inside the panel will not be editable
+	 */
+	private boolean readOnly;
 
     /**
      * Fill the panel with the data from the node
@@ -28,4 +32,19 @@ public abstract class PotentialPanel extends JPanel
      * @throws NotEnoughMemoryException
      */
     public abstract void saveChanges() throws NotEnoughMemoryException;
+
+	/**
+	 * @return the readOnly
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	/**
+	 * @param readOnly the readOnly to set
+	 */
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+    
 }

@@ -146,6 +146,16 @@ public class ActionCommands {
 	 * Action invoked when the user wants to activate the link creation option.
 	 */
 	public static final String LINK_CREATION = "LinkCreation";
+	
+	/**
+	 * Action invoked when the user wants to instantiate an object.
+	 */
+	public static final String INSTANCE_CREATION = "InstanceCreation";
+	
+	/**
+	 * Action invoked when the user wants to mark an object as input parameter.
+	 */
+	public static final String INSTANCE_INPUT = "InstanceInput";		
 
 	/**
 	 * Action invoked when the user wants to change the working mode by
@@ -403,7 +413,10 @@ public class ActionCommands {
 	 */
 	public static final String LOG = "Log";
 
-
+	/**
+	 * Action invoked when the user selects another class to instantiate
+	 */
+	public static final String CHANGE_ACTIVE_CLASS = "PRM.ChangeActiveClass";	
 
 
 	/**

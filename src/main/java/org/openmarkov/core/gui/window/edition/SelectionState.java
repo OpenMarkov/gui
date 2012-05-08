@@ -35,12 +35,12 @@ enum SelectionState {
 	/**
 	 * Various nodes are been moved.
 	 */
-	MOVING_NODES(1),
+	MOVING(1),
 
 	/**
 	 * Various nodes can be selected using the selection rectangle.
 	 */
-	SELECTING_NODES(2);
+	SELECTING(2);
 
 	/**
 	 * Cursor associated to the state.

@@ -128,6 +128,18 @@ public class MenuItemNames
      */
     public static final String EDIT_LINKCREATION_MENUITEM =
         EDIT_MENU + ".LinkCreation";
+    
+    /**
+     * Constant that defines the item 'Edit - Instance creation'.
+     */
+    public static final String EDIT_INSTANCECREATION_MENUITEM =
+        EDIT_MENU + ".InstanceCreation";    
+    
+    /**
+     * Constant that defines the item 'Edit - Instance Input'.
+     */
+    public static final String EDIT_INSTANCEINPUT_MENUITEM =
+        EDIT_MENU + ".InstanceInput";    
 
     /**
      * Constant that defines the item 'Edit - Node adittionalProperties'.

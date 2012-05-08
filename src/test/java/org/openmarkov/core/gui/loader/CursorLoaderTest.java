@@ -62,5 +62,6 @@ public class CursorLoaderTest {
 		assertNotNull(CursorLoader.CURSOR_DECISION_CREATION);
 		assertNotNull(CursorLoader.CURSOR_UTILITY_CREATION);
 		assertNotNull(CursorLoader.CURSOR_LINK_CREATION);
+		assertNotNull(CursorLoader.CURSOR_INSTANCE_CREATION);
 	}
 }

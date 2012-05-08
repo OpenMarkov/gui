@@ -34,6 +34,7 @@ import javax.swing.undo.CannotUndoException;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
+import org.openmarkov.core.action.prm.AddInstanceEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -68,6 +69,7 @@ import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.graphic.VisualState;
+import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -75,6 +77,7 @@ import org.openmarkov.core.gui.menutoolbar.menu.NodePopup;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
@@ -558,6 +561,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 			mousePressedLinkCreation(e);
 			break;
 		}
+		case INSTANCE: {
+			mousePressedInstanceCreation(e);
+			break;
+		}
 		default: {
 			break;
 		}
@@ -614,7 +621,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						visualNetwork.setSelectedAllObjects(false);
 						visualNetwork.setSelectedNode(node, true);
 					}
-					changePotential();
+					showPotentialDialog(networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE);
 				}
 			}
 		} else if (SwingUtilities.isRightMouseButton(e)) {
@@ -635,26 +642,33 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		VisualNode node = null;
 		VisualLink link = null;
+		VisualInstance instance = null;
 		Graphics2D g = (Graphics2D) getGraphics();
 
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (e.isControlDown() || e.isShiftDown()) {
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+				if((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null){
+					visualNetwork.setSelectedInstance(instance, !instance.isSelected());
+				} else if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					visualNetwork.setSelectedNode(node, !node.isSelected());
 				} else if ((link = visualNetwork.whatLinkInPosition(
 						cursorPosition, g)) != null) {
 					visualNetwork.setSelectedLink(link, !link.isSelected());
 				}
 			} else {
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+				if((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
+					visualNetwork.setSelectedAllObjects(false);
+					visualNetwork.setSelectedInstance(instance, true);
+					setSelectionState(SelectionState.MOVING);
+				} else if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 					if (!node.isSelected()) {
 						visualNetwork.setSelectedAllObjects(false);
 						visualNetwork.setSelectedNode(node, true);
 					}
 
-					setSelectionState(SelectionState.MOVING_NODES);
+					setSelectionState(SelectionState.MOVING);
 					// TODO revisar si es necesario agregar parentesis
 					// probNet.getPNESupport().openParenthesis();
 
@@ -667,7 +681,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				} else {
 					visualNetwork.setSelectedAllObjects(false);
 					selection.initSelection(cursorPosition, 0, 0);
-					setSelectionState(SelectionState.SELECTING_NODES);
+					setSelectionState(SelectionState.SELECTING);
 				}
 			}
 		}
@@ -684,8 +698,39 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
 		VisualNode node = null;
 		VisualLink link = null;
+		VisualInstance instance = null;
 
-		if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+		if ((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
+			if (!instance.isSelected()) {
+				visualNetwork.setSelectedAllObjects(false);
+				visualNetwork.setSelectedInstance(instance, true);
+			}			
+			if (false) {
+//			if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
+				getPopupMenu(PopupMenuFactory.NODE).show(this, e.getX(), e.getY());
+				if (node.getProbNode().getNodeType().equals(NodeType.DECISION)) {
+					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+						((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
+								.setPopupDecisionNodeInEditionMode();
+					} else {
+						if (evidenceCasesCompilationState.get(currentCase)) {
+							((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
+									.setPopupDecisionNodeInCompiledInferenceMode();
+						} else {
+							((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
+									.setPopupDecisionNodeInNotCompiledInferenceMode();
+						}
+					}
+				} else {
+					((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
+							.setDefaultPopupNode();
+				}				
+			}else
+			{
+				getPopupMenu(PopupMenuFactory.INSTANCE).show(this, e.getX(), e.getY());
+			}
+			
+		}else if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
 			if (!node.isSelected()) {
 				visualNetwork.setSelectedAllObjects(false);
 				visualNetwork.setSelectedNode(node, true);
@@ -708,8 +753,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
 						.setDefaultPopupNode();
 			}
-			networkPanel.getMainPanel().getMainPanelMenuAssistant()
-					.objectsSelected(1, 0, visualNetwork.getSelectedNodes());
 		} else if ((link = visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
 			if (!link.isSelected()) {
 				visualNetwork.setSelectedAllObjects(false);
@@ -879,6 +922,52 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 
 	}
+	
+	/**
+	 * Invoked when a mouse button is pressed on the component in the INSTANCE
+	 * state.
+	 * 
+	 * @param e
+	 *            mouse event information.
+	 */
+	private void mousePressedInstanceCreation(MouseEvent e) {
+		
+		Graphics2D g = (Graphics2D) getGraphics();
+		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
+				zoom.screenToPanel(e.getY()));
+		if (SwingUtilities.isLeftMouseButton(e)
+				&& Utilities.noMouseModifiers(e)) {
+			if (visualNetwork.whatElementInPosition(cursorPosition, g) == null) {
+				probNet.getPNESupport().setWithUndo(true);
+				String activeClassName = MainPanel.getUniqueInstance()
+						.getEditionToolBar().getClassComboBox()
+						.getSelectedItem().toString();
+				ProbNet classNet = ((NetworkPanel) MainPanel
+						.getUniqueInstance().getMdi()
+						.getFrameByTitle(activeClassName)).getProbNet();
+				String instanceName = JOptionPane.showInputDialog(null, "Instance Name:");
+
+				if(instanceName!=null)
+				{	
+					AddInstanceEdit addInstanceEdit = new AddInstanceEdit(probNet, classNet, instanceName, cursorPosition);
+					try {
+						probNet.doEdit(addInstanceEdit);
+					} catch (Exception e1) {
+						// TODO Localize
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"Error while generating instance node.\n" +
+										"Look in the message window for more details",
+										"Error", JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+					}
+					adjustPanelDimension();
+					repaint();	
+				}
+			}
+		}
+	}	
 
 	/**
 	 * Invoked when a mouse button is pressed on a component and then dragged.
@@ -920,11 +1009,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		cursorPosition.setLocation(point);
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (selectionState == SelectionState.MOVING_NODES) {
+			if (selectionState == SelectionState.MOVING) {
 				visualNetwork.moveSelectedNodes(diffX, diffY);
-
+				visualNetwork.moveSelectedInstances(diffX, diffY);
 				nodeMoved = true;
-			} else if (selectionState == SelectionState.SELECTING_NODES) {
+			} else if (selectionState == SelectionState.SELECTING) {
 				selection.setSize(selection.getWidth() + diffX,
 						selection.getHeight() + diffY);
 				visualNetwork.selectElementsInsideSelection(selection);
@@ -989,10 +1078,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void mouseReleasedSelection(MouseEvent e) {
 
 		selection.clearSelectionSquare();
-		if (selectionState == SelectionState.MOVING_NODES) {
+		if (selectionState == SelectionState.MOVING) {
 			if (nodeMoved) {
 				movedNodes = visualNetwork.fillVisualNodesSelected();
-
+				movedNodes.addAll(visualNetwork.getVisualNodesOfSelectedInstances());
 				// visualNetwork.fillDifferencesNodesMovedInfo(movedNodes);
 
 				cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
@@ -1328,6 +1417,24 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public ArrayList<VisualNode> getSelectedNodes() {
 		return visualNetwork.getSelectedNodes();
 	}
+	
+	/**
+	 * Returns a list containing the selected links.
+	 * 
+	 * @return a list containing the selected links.
+	 */
+	public ArrayList<VisualLink> getSelectedLinks() {
+		return visualNetwork.getSelectedLinks();
+	}
+	
+	/**
+	 * Returns a list containing the selected instances.
+	 * 
+	 * @return a list containing the selected instances.
+	 */
+	public ArrayList<VisualInstance> getSelectedInstances() {
+		return visualNetwork.getSelectedInstances();
+	}	
 
 	/**
 	 * Selects or deselects all nodes of the network.
@@ -1381,7 +1488,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
      * 
      */
-	public void changePotential() {
+	public void showPotentialDialog(boolean readOnly) {
 
 		ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
 
@@ -1397,7 +1504,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		 * repaint(); networkChanged = true; }
 		 */
 
-		if (requestPotentialValues(Utilities.getOwner(this), probNode, false)) {
+		if (requestPotentialValues(Utilities.getOwner(this), probNode, false, readOnly)) {
 			// if the user has selected the ok button when closing the dialog
 			adjustPanelDimension();
 			repaint();
@@ -1430,8 +1537,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	private boolean requestPotentialValues(Window owner, ProbNode probNode,
-			boolean newNode) {
-		potentialsDialog = new PotentialEditDialog(owner, probNode, newNode);
+			boolean newNode, boolean readOnly) {
+		potentialsDialog = new PotentialEditDialog(owner, probNode, newNode, readOnly);
 		return (potentialsDialog.requestValues()// to know if the user has
 												// selected the ok button when
 												// closing the dialog
@@ -1757,7 +1864,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 		repaint();
 		setSelectedAllNodes(false);
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		networkPanel.getMainPanel().getMainPanelMenuAssistant()
 				.updateOptionsFindingsDependent(networkPanel);
@@ -1795,7 +1902,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			doPropagation(evidenceCases.get(currentCase), currentCase);
 		}
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		networkPanel.getMainPanel().getMainPanelMenuAssistant()
 				.updateOptionsFindingsDependent(networkPanel);
@@ -2118,7 +2225,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
 		networkPanel.getMainPanel().getMainPanelMenuAssistant()
@@ -2313,7 +2420,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 		}
 		setSelectedAllNodes(false);
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		if ((propagationActive)
 				&& (evidenceCasesCompilationState.get(currentCase) == false)
@@ -2847,7 +2954,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			currentCase = (evidenceCases.size() - 1);
 			evidenceCasesCompilationState.add(currentCase, false);
 			updateAllVisualStates("new", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar()
+			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
 			setSelectedAllNodes(false);
 			doPropagation(evidenceCases.get(currentCase), currentCase);
@@ -2887,7 +2994,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToFirstEvidenceCase() {
 		currentCase = 0;
 		updateAllVisualStates("", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
 		if ((propagationActive)
@@ -2906,7 +3013,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (currentCase > 0) {
 			currentCase--;
 			updateAllVisualStates("", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar()
+			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
 			setSelectedAllNodes(false);
 			if ((propagationActive)
@@ -2936,7 +3043,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (currentCase < (evidenceCases.size() - 1)) {
 			currentCase++;
 			updateAllVisualStates("", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar()
+			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
 			setSelectedAllNodes(false);
 			if ((propagationActive)
@@ -2965,7 +3072,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void goToLastEvidenceCase() {
 		currentCase = (evidenceCases.size() - 1);
 		updateAllVisualStates("", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
 		if ((propagationActive)
@@ -2991,7 +3098,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		currentCase = 0;
 		evidenceCasesCompilationState.add(currentCase, false);
 		updateAllVisualStates("clear", currentCase);
-		networkPanel.getMainPanel().getExistingInferenceToolBar()
+		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
 		doPropagation(evidenceCases.get(currentCase), currentCase);
@@ -3047,7 +3154,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			setSelectedAllNodes(false);
 			updateAllVisualStates("", currentCase);
-			networkPanel.getMainPanel().getExistingInferenceToolBar()
+			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
 			updateNodesFindingState(evidenceCases.get(currentCase));
 		}
@@ -3064,7 +3171,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void setInferenceOptions() {
 		OptionsInferenceDialog optionsInferenceDialog = new OptionsInferenceDialog(
 				Utilities.getOwner(this), this, networkPanel.getMainPanel()
-						.getExistingInferenceToolBar());
+						.getInferenceToolBar());
 	}
 
 	/**
@@ -3167,6 +3274,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void setVisualNetwork(VisualNetwork visualNetwork) {
 		this.visualNetwork = visualNetwork;
+	}
+
+	public void markSelectedInstancesAsInput() {
+		for(VisualInstance instance: visualNetwork.getSelectedInstances())
+		{
+			instance.setInput(!instance.isInput()); 
+		}
+		repaint();
 	}
 
 }

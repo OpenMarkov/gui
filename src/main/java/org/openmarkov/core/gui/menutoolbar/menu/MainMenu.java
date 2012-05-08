@@ -171,6 +171,11 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	 * Object that represents the item 'Edit - Links creation'.
 	 */
 	private JCheckBoxMenuItem editLinkCreationMenuItem = null;
+	
+	/**
+	 * Object that represents the item 'Edit - Instance creation'.
+	 */
+	private JCheckBoxMenuItem editInstanceCreationMenuItem = null;	
 
 	/**
 	 * Object used to make autoexclusive the different select options.
@@ -741,6 +746,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			editMenu.add(getEditDecisionCreationMenuItem());
 			editMenu.add(getEditUtilityCreationMenuItem());
 			editMenu.add(getEditLinkCreationMenuItem());
+			editMenu.add(getEditInstanceCreationMenuItem());
 			editMenu.addSeparator();
 			editMenu.add(getEditNodePropertiesMenuItem());
 			editMenu.add(getEditRelationMenuItem());
@@ -1007,6 +1013,26 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		return editLinkCreationMenuItem;
 
 	}
+	
+	/**
+	 * This method initializes editInstanceCreationMenuItem.
+	 * 
+	 * @return a new item 'Edit - Instance creation'.
+	 */
+	private JCheckBoxMenuItem getEditInstanceCreationMenuItem() {
+
+		if (editInstanceCreationMenuItem == null) {
+			editInstanceCreationMenuItem = new LocalizedCheckBoxMenuItem (
+                                                                      MenuItemNames.EDIT_INSTANCECREATION_MENUITEM,
+                                                                      ActionCommands.INSTANCE_CREATION,
+                                                                      IconLoader.ICON_LINK_ENABLED);
+			editInstanceCreationMenuItem.addActionListener(listener);
+			groupEditOptions.add(editLinkCreationMenuItem);
+		}
+
+		return editInstanceCreationMenuItem;
+
+	}	
 
 	/**
 	 * This method initializes editNodePropertiesMenuItem.
@@ -1998,6 +2024,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			component = editUtilityCreationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
 			component = editLinkCreationMenuItem;
+		}else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
+			component = editInstanceCreationMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			component = editNodePropertiesMenuItem;
 		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {

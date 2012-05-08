@@ -12,6 +12,7 @@ package org.openmarkov.core.gui.menutoolbar.menu;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 
@@ -95,6 +96,11 @@ public abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBa
 
 		MenuToolBarBasicImpl.setOptionSelected(
 			getJComponentActionCommand(actionCommand), b);
+		
+		if(getJComponentActionCommand(actionCommand) instanceof JCheckBoxMenuItem)
+		{
+			((JCheckBoxMenuItem)getJComponentActionCommand(actionCommand)).setState(b);
+		}
 	}
 
 	/**

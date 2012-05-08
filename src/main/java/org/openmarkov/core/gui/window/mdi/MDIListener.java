@@ -21,6 +21,14 @@ package org.openmarkov.core.gui.window.mdi;
 public interface MDIListener {
 
 	/**
+	 * This method executes when a frame has been opened.
+	 * 
+	 * @param contentPanel
+	 *            content panel of the frame that has been opened.
+	 */
+	void frameOpened(FrameContentPanel contentPanel);
+	
+	/**
 	 * This method executes when a frame has been closed.
 	 * 
 	 * @param contentPanel
@@ -35,6 +43,14 @@ public interface MDIListener {
 	 *            content panel of the frame that has been selected.
 	 */
 	void frameSelected(FrameContentPanel contentPanel);
+	
+	/**
+	 * This method executes when a frame's title has changed.
+	 * 
+	 * @param contentPanel
+	 *            content panel of the frame whose title has been changed.
+	 */
+	void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName);	
 
 	/**
 	 * This method executes when a frame is going to be closed.

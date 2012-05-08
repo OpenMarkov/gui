@@ -101,6 +101,11 @@ public class IconLoader {
 	 * Name of the 'link creation' enabled icon.
 	 */
 	public static final String ICON_LINK_ENABLED = "link.gif";
+	
+	/**
+	 * Name of the 'instance creation' enabled icon.
+	 */
+	public static final String ICON_INSTANCE_ENABLED = "instance.gif";	
 
 	/**
 	 * Name of the 'zoom in' enabled icon.

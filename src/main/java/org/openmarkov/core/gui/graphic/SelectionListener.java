@@ -12,6 +12,8 @@ package org.openmarkov.core.gui.graphic;
 
 import java.util.ArrayList;
 
+import org.openmarkov.core.gui.graphic.prm.VisualInstance;
+
 /**
  * This interface is used in order to a network panel advise to the listener
  * that some objects are selected, to copy, cut or remove them.
@@ -24,15 +26,17 @@ import java.util.ArrayList;
 public interface SelectionListener {
 
 	/**
-	 * This method indicates how many nodes and links are selected.
+	 * This method indicates the selected elements
 	 * 
-	 * @param nodes
-	 *            number of selected nodes.
-	 * @param links
-	 *            number of selected links.
-	 * @param arrayOfNodes
+	 * @param selectedNodes
 	 * 			  array of nodes that are currently selected
+	 * @param selectedLinks
+	 * 			  array of links that are currently selected
+	 * @param selectedInstances
+	 * 			  array of instances that are currently selected
 	 */
-	void objectsSelected(int nodes, int links, ArrayList<VisualNode> arrayOfNodes);
+	void objectsSelected(ArrayList<VisualNode> selectedNodes,
+			ArrayList<VisualLink> selectedLinks,
+			ArrayList<VisualInstance> selectedInstances);
 	
 }

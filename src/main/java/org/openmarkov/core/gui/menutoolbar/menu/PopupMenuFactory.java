@@ -43,6 +43,11 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	public static final int LINK = 2;
 	
 	/**
+	 * Constant that indentifies the instance popup.
+	 */
+	public static final int INSTANCE = 3;
+	
+	/**
 	 * Popup menu that has the options of a whole network.
 	 */
 	private PopupMenuBasic networkPopup = null;
@@ -56,6 +61,11 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 * Popup menu that has the options of a link.
 	 */
 	private PopupMenuBasic linkPopup = null;
+	
+	/**
+	 * Popup menu that has the options of an instance.
+	 */
+	private PopupMenuBasic instancePopup = null;	
 
 	/**
 	 * Assistant that manages all the popup menus.
@@ -87,9 +97,10 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 		getNetworkPopup();
 		getNodePopup();
 		getLinkPopup();
+		getInstancePopup();
 		menuAssistant =
 			new MenuAssistant(new PopupMenuBasic[] { networkPopup, nodePopup,
-				linkPopup});
+				linkPopup, instancePopup});
 	}
 
 	/**
@@ -133,6 +144,20 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 		}
 		return linkPopup;
 	}
+	
+	/**
+	 * This method initialises linkPopup.
+	 * 
+	 * @return the link popup menu.
+	 */
+	private JPopupMenu getInstancePopup() {
+
+		if (instancePopup == null) {
+			instancePopup = new InstancePopup(listener);
+			instancePopup.setName("instancePopup");
+		}
+		return instancePopup;
+	}	
 
 	/**
 	 * Retrieves the popup menu that corresponds to the parameter.
@@ -152,7 +177,9 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 		}
 		case LINK: {
 			return getLinkPopup();
-		}
+		}case INSTANCE: {
+			return getInstancePopup();
+		}		
 		default: {
 			return null;
 		}

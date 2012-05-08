@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
+import org.openmarkov.core.action.prm.RemoveInstanceEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -23,6 +24,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 
@@ -36,6 +38,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 {
     private ArrayList<VisualNode> nodesToRemove;
     private ArrayList<VisualLink> linksToRemove;
+    private ArrayList<VisualInstance> instancesToRemove;
 
     private StringResource messageStringResource;
 
@@ -48,8 +51,11 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     {
         super (visualNetwork.getNetwork ());
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
+        this.instancesToRemove = visualNetwork.getSelectedInstances();
+        
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
-                                    visualNetwork.getLinksOfNodes (this.nodesToRemove));
+                visualNetwork.getLinksOfNodes (this.nodesToRemove));
+
         
         messageStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
@@ -66,7 +72,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 				edits.add (new RemoveLinkEdit (probNet,
 				                                  probNet.getVariable(link.getSourceNode ().getProbNode ().getName ()),
 				                                  probNet.getVariable(link.getDestinationNode ().getProbNode ().getName ()),
-				                                  true));
+				                                  link.getLink().isDirected()));
 			} catch (ProbNodeNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -80,6 +86,12 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         for (VisualNode node : nodesToRemove) {
             edits.add ( new CRemoveProbNodeEdit( probNet, node.getProbNode ()));
         }
+        
+        for(VisualInstance instance: instancesToRemove)
+        {
+        	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
+        }
+
     }
     
     /**

@@ -117,12 +117,18 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     private String previouslySelectedPotentialType = "";
 
     /**
+     * If true, values inside the dialog will not be editable
+     */
+	private boolean readOnly;
+
+    /**
      * Creates the dialog.
      */
     
-    public PotentialEditDialog(Window owner, ProbNode probNode, boolean newElement) {
+    public PotentialEditDialog(Window owner, ProbNode probNode, boolean newElement, boolean readOnly) {
         super(owner);
         this.probNode = probNode;
+        this.readOnly = readOnly;
         //TODO create PNESupport
         probNode.getProbNet().getPNESupport().openParenthesis();
         initialize();
@@ -149,6 +155,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     
       
     }
+    
+    /**
+     * Constructor
+     */
+    public PotentialEditDialog(Window owner, ProbNode probNode, boolean newElement) {
+        this(owner, probNode, newElement, false);
+    }    
     
     /**
      * This method configures the dialog box.
@@ -213,6 +226,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
                     potentialTypeComboBoxActionPerformed(evt);
                 }
             });
+            potentialTypeComboBox.setEnabled(!readOnly);
         }
         return potentialTypeComboBox;
     }
@@ -237,6 +251,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
             String potentialFamily = relationTypeManager.getPotentialsFamily (potentialName);
             potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel(potentialName, potentialFamily, probNode);
+            potentialPanel.setReadOnly(readOnly);
         }
         return potentialPanel;
     }
@@ -425,6 +440,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     {
         getPotentialTypeJCombobox().setSelectedIndex(optionPreviouslySelected);
     }
+
+	/**
+	 * @return the readOnly
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
+	}
 
     
   /*  public Potential getNewPotential(){
