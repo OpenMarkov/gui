@@ -37,8 +37,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 	private static final long serialVersionUID = 4325259909756103849L;
 	
-	//Default increment between discretized intervals
-	private final int increment = 2;
+	
 	/**
 	 * The new state
 	 */
@@ -107,12 +106,12 @@ public class NodeStateEdit extends SimplePNEdit {
 			//assume that the new state is added in last position
 			newObjectState = new State [probNode.getVariable().
 			                                     getNumStates()+1];
-			int i=0;
-			for (State states: probNode.getVariable().getStates()){
-				newObjectState[i] = states;
-				i++;
+			newObjectState[0] = newState;
+			for (int i = 1; i < newObjectState.length; i++ ) {
+				newObjectState[i] = probNode.getVariable().getStates()[i-1];
 			}
-			newObjectState[i] = newState;
+			
+			
 			probNode.getVariable().setStates(newObjectState);
 			
 			//set uniform potential for the edited node and children
@@ -183,15 +182,11 @@ public class NodeStateEdit extends SimplePNEdit {
 				//change current partitioned interval
 				if (probNode.getVariable().getVariableType() == VariableType.NUMERIC 
 						||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED  ) {
-					//MonotonyDown
+					
 					double []oldLimits = currentPartitionedInterval.getLimits();
 					boolean []oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
 					
 					int positionToRemove = (oldLimits.length -1) -stateSelected ;
-					
-					
-					/*double []newLimits = new double[oldLimits.length-1];
-					boolean []newBelongs = new boolean[oldBelongs.length-1];*/
 					
 					ArrayList<Double> newLimits = new ArrayList<Double>(oldLimits.length-1);
 					ArrayList<Boolean> newBelongs = new ArrayList<Boolean>(oldLimits.length-1);
@@ -314,7 +309,13 @@ public class NodeStateEdit extends SimplePNEdit {
 			newLimits[ i ] = limits[ i ];
 			newBelongsToLeftSide [ i ] = belongsToLeftSide [ i ];
 		}
-		newLimits[ limits.length ] = currentPartitionedInterval.getMax() + increment; 
+		
+		if (currentPartitionedInterval.getMax() == Double.POSITIVE_INFINITY) {
+			newLimits[ limits.length -1] = newLimits[ limits.length -2] + probNode.getVariable().getPrecision();
+			newLimits[ limits.length ] =  Double.POSITIVE_INFINITY;
+		} else {
+			newLimits[ limits.length ] = currentPartitionedInterval.getMax() + probNode.getVariable().getPrecision(); 
+		}
 		newBelongsToLeftSide [ limits.length ] = false;
 		return 	new PartitionedInterval(newLimits, newBelongsToLeftSide);
 	}

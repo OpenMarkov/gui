@@ -1120,9 +1120,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
 				probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
 				
-				Object newRow [] = nodeStateEdit.getNewRowOfData();
+				PartitionedInterval newPartitionedInterval = probNode.getVariable().getPartitionedInterval();
+				setDataFromPartitionedInterval(newPartitionedInterval);
+				/*Object newRow [] = nodeStateEdit.getNewRowOfData();
 				newRow [0] = getKeyString(newIndex);
-				getTableModel().insertRow(newIndex, newRow); 
+				getTableModel().insertRow(newIndex, newRow); */
 				valuesTable.getSelectionModel().setSelectionInterval(newIndex,
 						newIndex);
 				
