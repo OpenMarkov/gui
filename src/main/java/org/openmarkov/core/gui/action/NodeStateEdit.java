@@ -11,7 +11,6 @@ package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
 
-
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
@@ -180,6 +179,41 @@ public class NodeStateEdit extends SimplePNEdit {
 					potentials.add(uniformPotential);
 					child.setPotentials(potentials);
 				}
+				
+				//change current partitioned interval
+				if (probNode.getVariable().getVariableType() == VariableType.NUMERIC 
+						||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED  ) {
+					//MonotonyDown
+					double []oldLimits = currentPartitionedInterval.getLimits();
+					boolean []oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
+					
+					int positionToRemove = (oldLimits.length -1) -stateSelected ;
+					
+					
+					/*double []newLimits = new double[oldLimits.length-1];
+					boolean []newBelongs = new boolean[oldBelongs.length-1];*/
+					
+					ArrayList<Double> newLimits = new ArrayList<Double>(oldLimits.length-1);
+					ArrayList<Boolean> newBelongs = new ArrayList<Boolean>(oldLimits.length-1);
+					
+					int length = oldLimits.length;
+					for (int j = 0; j < oldLimits.length; j++) {
+						if (j != positionToRemove) {
+							newLimits.add(oldLimits[j]);
+							newBelongs.add(oldBelongs[j]);
+						}
+					}
+					double[]limits = new double[oldBelongs.length-1];
+					boolean []belongs = new boolean[oldBelongs.length-1];
+					for (int j = 0; j < newLimits.size();j++) {
+						limits[j] = newLimits.get(j);
+						belongs[j] = newBelongs.get(j);
+					}
+					
+					probNode.getVariable().setPartitionedInterval(new PartitionedInterval(limits, belongs));
+					
+				}
+				
 				break;
 		case DOWN:
 			if (stateSelected > 0){

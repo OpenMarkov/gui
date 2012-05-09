@@ -1062,8 +1062,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				}
 				tableRowSorter.setRowFilter(
 				RowFilter.notFilter( 
-					RowFilter.regexFilter( ".*" +name + ".*", 0 ) ));
-			this.setRowSorter( tableRowSorter); 
+						RowFilter.regexFilter( "^" + name + "$" , 0 ) ));
+				this.setRowSorter( tableRowSorter); 
 			} else {
 				this.setRowSorter( null );
 			}

@@ -144,9 +144,10 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 			case MODIFYVALUEINTERVAL:
 				if (lower)
 					currentPartitionedInterval.changeLimit(indexState, newValue, 
-						currentPartitionedInterval.getBelongsToLeftSide(
+					currentPartitionedInterval.getBelongsToLeftSide(
 								indexState));
 				else
+					
 					currentPartitionedInterval.changeLimit( indexState + 1, 
 							newValue, currentPartitionedInterval.
 							getBelongsToLeftSide( indexState + 1 ));

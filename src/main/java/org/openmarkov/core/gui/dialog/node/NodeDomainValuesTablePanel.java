@@ -383,8 +383,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
+		//jFormattedTextFieldPrecision.setValue( 10.0 );
+		
 		jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.
-		getVariable().getPrecision() ) );
+				getVariable().getPrecision() ) );
 		
 		if (properties != null) {
 			if (properties.getVariable().getVariableType() == 
@@ -412,7 +414,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									if (j==3 || j==5) {
 										double value = (Double) tableData [i][j];
 										if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
-											String roundedValue = Utilities.roundedString(value, 
+											/*String roundedValue = Utilities.roundedString(value, 
+													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
+											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);*/
+											
+											//value = 10.3659873;
+											double roundedValue = Utilities.roundWithPrecision(value, 
 													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
 										}
@@ -907,7 +914,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		int rows = states.length;
 		Object[][] data = new Object [rows][numColumns];
 		for (int i=0; i < rows ; i++) {
-			data [i][0] = states[i].getName();
+			data [i][0] = GUIDefaultStates.getString(states[i].getName());
 		}
 		
 		return data;
@@ -945,7 +952,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		for (i = 0; i < numIntervals; i++) {
 			//for (i = numIntervals-1; i >= 0; i--) {
 			position=0;
-			aString = states[i].getName();
+			aString = GUIDefaultStates.getString(states[i].getName());
 			// find name & lowSymbol
 			index = aString.indexOf("[");
 			if (index < 0)
@@ -1001,7 +1008,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		data = new Object[l][1];
 		i=l-1;
 		for (State value:values) {
-			data[i--][0] = value.getName();
+			data[i--][0] =GUIDefaultStates.getString( value.getName());
 		}
 		return data;
 	}

@@ -393,10 +393,6 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 	}
 
-		
-	
-	
-
 	// Mouse event detection
 	int xx, yy;
 	

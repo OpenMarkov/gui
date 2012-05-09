@@ -35,11 +35,13 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
+import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
 
 
@@ -112,11 +114,12 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	
 	//button initially selected down
 	public void itemStateChanged(ItemEvent e) {
-		//to identify what is the panel container it could be CPTTablePanel or ICIPotentialsTablePanel
+		
 		getPanel().getNodeDiscretizedStatesTablePanel().getInfiniteNegativeDoubleButton().setVisible(false);
 		getPanel().getNodeDiscretizedStatesTablePanel().getInfinitePositiveDoubleButton().setVisible(false);
 		getPanel().getNodeDiscretizedStatesTablePanel().getInfiniteNegativeDoubleButton().setEnabled(false);
 		getPanel().getNodeDiscretizedStatesTablePanel().getInfinitePositiveDoubleButton().setEnabled(false);
+		
 		if (e.getItem().equals( getPanel().getJRadioButtonMonotonyUp() )) {
 			itemStateChangedUp(e);
 			
@@ -128,10 +131,12 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	
 	private void itemStateChangedUp(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
-			previousMonotony = UP;
+			previousMonotony = UP; //deselected up 
+			((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { //UP --> UP
 				//do nothing
+				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
 			} else if (previousMonotony == DOWN) { // DOWN --> UP
 					
 				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
@@ -167,7 +172,8 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	
 	private void itemStateChangedDown(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
-			previousMonotony = DOWN;
+			previousMonotony = DOWN;//deselected down
+			((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { // UP --> DOWN
 				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
@@ -199,6 +205,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			
 			} else if (previousMonotony == DOWN) { // DOWN --> DOWN 
 				//do nothing	
+				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
 			} 
 		}
 	}
@@ -390,17 +397,98 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			 if (getPanel().getProbNode().getVariable().getVariableType() == VariableType.DISCRETIZED ||
 					 getPanel().getProbNode().getVariable().getVariableType() == VariableType.NUMERIC ) {
 			 
-				 Object [][] data =  panel.getData();
+				double precision = (Double) getPanel().getJFormattedTextFieldPrecision().getValue();
+				double [] limits = getPanel().getProbNode().getVariable().getPartitionedInterval().getLimits();
+				boolean [] belongs =  getPanel().getProbNode().getVariable().getPartitionedInterval().getBelongsToLeftSide();
+				
+				for (int i = 0 ; i < limits.length; i++) {
+					if (limits[i] != Double.POSITIVE_INFINITY && limits[i] != Double.NEGATIVE_INFINITY) {
+						double newLimit = Utilities.roundWithPrecision(limits[i], Double.toString(precision));
+						if (limits[i] != newLimit) {
+							limits[i] = newLimit;
+							int j = i;
+							while (j+1 <= limits.length-1 && limits[j] >= limits[j+1]) {
+								
+								if (belongs[j] == false && belongs[j+1] == true) {
+									limits[j+1] = limits[j];
+								} else {
+									if (j+1 == limits.length-1){
+										limits[j+1] = Double.POSITIVE_INFINITY;
+										break;
+									} else 
+										limits[j+1] = limits[j] + precision;
+								}
+									
+									j++;
+								}
+						
+							
+						//previous limits
+							int k = i;
+							while (k-1 >=0 && limits[k] <= limits[k-1]) {
+								if (belongs[k] == true && belongs[k-1] == false) {
+									limits[k-1] = limits[k];
+								}  else {
+									if (k-1 == 0){
+										limits[k-1] = Double.NEGATIVE_INFINITY;
+										break;
+									} else 
+										limits[k-1] = limits[k] - precision;
+								}
+								k--;
+							}
+						} else {
+							limits[i] = newLimit;
+						}
+					}
+				}
+				
+				for (int m = 0 ; m < limits.length; m++) {
+					if (limits[m] != Double.POSITIVE_INFINITY && limits[m] != Double.NEGATIVE_INFINITY) {
+						limits[m] = Utilities.roundWithPrecision(limits[m], Double.toString(precision));
+					}
+				}
+				PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+				
+				PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(getPanel().getProbNode(), newPartitionedInterval);
+				try {
+					getPanel().getProbNode().getProbNet().getPNESupport().announceEdit(
+							partitionedIntervalEdit);
+				
+					getPanel().getProbNode().getProbNet().getPNESupport().doEdit(
+								partitionedIntervalEdit);
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				PartitionedInterval newPartitionInterval = getPanel().getProbNode().getVariable().
+						getPartitionedInterval();
+				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
+						
+				/* Object [][] data =  panel.getData();
 				 for (int i = 0; i < data.length; i++) {
 					 for (int j = 3; j < data[0].length; j++) {
 						 if (j==3 || j==5) {
 						
-							 double value = 0;
-							 if (data [i][j] instanceof String) {
-								 value = Double.parseDouble( (String)data [i][j]);
-							 } else if (data [i][j] instanceof Double) {
-								value = (Double) data [i][j];
-							 }
+							 double value = (Double) data [i][j];
+							
 						
 						if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
 							
@@ -413,7 +501,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 						 }
 					 }
 					 
-				 }
+				 }*/
 				 
 			 }
 				/*getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().

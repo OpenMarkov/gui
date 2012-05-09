@@ -32,13 +32,11 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
 
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -49,6 +47,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.core.gui.action.NodeStateEdit;
+import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -322,8 +321,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 
 		// set Columns = Up and Low limits
 		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED ) {
-			jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
-			jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
+			jComboBoxLowerSymbol = getLowerSymbolComboBox ();
+			jComboBoxUpperSymbol = getUpperSymbolComboBox ();
 	
 			TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel()
 							.getColumn(lowerLimitSymbolColumnNum);
@@ -354,7 +353,20 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		}
 
 	}
+	
+	private JComboBox getLowerSymbolComboBox () {
+		if (jComboBoxLowerSymbol == null) {
+			jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
+		}
+		return jComboBoxLowerSymbol;
+	}
 
+	private JComboBox getUpperSymbolComboBox () {
+		if (jComboBoxUpperSymbol == null) {
+			jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
+		}
+		return jComboBoxUpperSymbol;
+	}
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
 	 * common KeyTable hierarchy
@@ -369,42 +381,65 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * To closed from opened 
 	 * To opened from closed
 	 */
-	private void changeIntervalDiscretize(int fila, int columna) {
+	private void changeLimitIntervalDiscretize(int row, int column) {
 		
-		if (columna == lowerLimitSymbolColumnNum
-						|| columna == upperLimitSymbolColumnNum) {
+		if (column == lowerLimitSymbolColumnNum
+						|| column == upperLimitSymbolColumnNum) {
 			boolean lower = false;
-			String aux = (String) valuesTable.getValueAt(fila, columna);
-			if (columna == lowerLimitSymbolColumnNum) {
+			String aux = (String) valuesTable.getValueAt(row, column);
+			if (column == lowerLimitSymbolColumnNum) {
 				lower = true;
 				if (aux.equals("(")) {
-					valuesTable.setValueAt("[", fila, columna);
-					if (fila > 0){
-						valuesTable.setValueAt(")", fila-1, 
+					double lowerLimit = (Double)valuesTable.getValueAt(row, column +1);
+					if ( lowerLimit == Double.NEGATIVE_INFINITY || lowerLimit == Double.POSITIVE_INFINITY) {
+						JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
+					} if (row-1>=0 && valuesTable.getValueAt(row-1, lowerLimitSymbolColumnNum) == "[" 
+							&&  valuesTable.getValueAt(row-1, lowLimitValueColumnNum) == valuesTable.getValueAt(row-1, upperLimitSymbolColumnNum)) {
+						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
+					}
+					valuesTable.setValueAt("[", row, column);
+					if (row > 0){
+						valuesTable.setValueAt(")", row-1, 
 								upperLimitSymbolColumnNum);
 					} 
 					//checkIntervalDiscretize("[", fila, columna,upMonotony);
-				} else {
-					valuesTable.setValueAt("(", fila, columna);
-					if (fila > 0){
-						valuesTable.setValueAt("]", fila-1, 
+				} else if (aux.equals("[")) {
+					if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row, upperLimitValueColumnNum) 
+							&& valuesTable.getValueAt(row, upperLimitSymbolColumnNum) == "]") {
+						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
+					}
+					valuesTable.setValueAt("(", row, column);
+					if (row > 0){
+						valuesTable.setValueAt("]", row-1, 
 								upperLimitSymbolColumnNum);
 					}
 					//checkIntervalDiscretize("(", fila, columna,upMonotony);
 				}
 			}
-			if (columna == upperLimitSymbolColumnNum) {
+			if (column == upperLimitSymbolColumnNum) {
 				if (aux.equals(")")) {
-					valuesTable.setValueAt("]", fila, columna);
-					if (fila < valuesTable.getRowCount()-1){
-						valuesTable.setValueAt("(", fila + 1, 
+					double upperLimit = (Double)valuesTable.getValueAt(row, column -1);
+					if ( upperLimit == Double.NEGATIVE_INFINITY || upperLimit == Double.POSITIVE_INFINITY) {
+						JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
+					}
+					if (row+1 <= probNode.getVariable().getStates().length-1 && valuesTable.getValueAt(row+1, upperLimitSymbolColumnNum) == "]" 
+							&&  valuesTable.getValueAt(row+1, lowLimitValueColumnNum) == valuesTable.getValueAt(row+1, upperLimitSymbolColumnNum)) {
+						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
+					}
+					valuesTable.setValueAt("]", row, column);
+					if (row < valuesTable.getRowCount()-1){
+						valuesTable.setValueAt("(", row + 1, 
 								lowerLimitSymbolColumnNum);
 					}
 					//checkIntervalDiscretize("]", fila, columna,upMonotony);
-				} else {
-					valuesTable.setValueAt(")", fila, columna);
-					if (fila < valuesTable.getRowCount()-1){
-						valuesTable.setValueAt("[", fila + 1, 
+				} else if(aux.equals("]")) {
+					if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row, upperLimitValueColumnNum) 
+							&& valuesTable.getValueAt(row, lowerLimitSymbolColumnNum) == "[") {
+						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
+					}
+					valuesTable.setValueAt(")", row, column);
+					if (row < valuesTable.getRowCount()-1){
+						valuesTable.setValueAt("[", row + 1, 
 								lowerLimitSymbolColumnNum);
 					}
 					//checkIntervalDiscretize(")", fila, columna,upMonotony);
@@ -414,7 +449,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 					
 			NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
 				new NodePartitionedIntervalEdit(probNode, StateAction.
-						MODIFYDELIMITERINTERVAL, fila, lower);
+						MODIFYDELIMITERINTERVAL, row, lower);
 			try {
 				probNode.getProbNet().getPNESupport().announceEdit(
 						nodePartitionedIntervalEdit);
@@ -472,12 +507,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 					messageStringResource.getString( e.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
-		} else if ( columna == lowLimitValueColumnNum
-						|| columna == upperLimitValueColumnNum) {
-			 double j = (Double) valuesTable.getValueAt(fila,columna);
-			 System.out.println(j);
-			System.out.println("DiscretizeTablePanel.changeIntervalDiscretize");
-			System.out.println(">> check here the values of the interval with the other intervals");
+		} else if ( column == lowLimitValueColumnNum
+						|| column == upperLimitValueColumnNum) {
+//			 double j = (Double) valuesTable.getValueAt(fila,columna);
+//			 System.out.println(j);
+	//		System.out.println("DiscretizeTablePanel.changeIntervalDiscretize");
+		//	System.out.println(">> check here the values of the interval with the other intervals");
 		}
 	}
 
@@ -731,9 +766,20 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			discretizeTableModel = new DiscretizeTableModel(data, columns);
 			valuesTable.setModel(discretizeTableModel);
 			valuesTable.getModel().addTableModelListener(this);
+		
 			this.defineTableLookAndFeel();
 		}
 	}
+	
+	/*public void setNewData(Object[][] newData) {
+		if (newData != null) {
+			
+			discretizeTableModel = new DiscretizeTableModel(data, columns);
+			valuesTable.setModel(discretizeTableModel);
+			valuesTable.getModel().addTableModelListener(this);
+			this.defineTableLookAndFeel();
+		}
+	}*/
 
 	/**
 	 * @return the upMonotony
@@ -885,15 +931,47 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		//invert states to display in the correct order
 		State reorderedStates [] = states.clone();
 		Collections.reverse(Arrays.asList(reorderedStates));
-		//Object [][] newData = new Object[rows][col];
 		for (int i = 0; i < rows; i++ ){
-			//for (int i = rows-1; i <=0; i-- ){
 			intervalTable[i][0] = GUIDefaultStates.getString(reorderedStates[i].getName());
 		}
 		
 		setData(intervalTable);
 	}
+	
+	public void setDataFromPartitionedInterval( PartitionedInterval partitionInterval) {
+			
+		Object[][] data;
+		int i = 0;
+		int numIntervals = 0;
+		int numColumns = 6; // name-symbol-value-separator-value-symbol
+		double[] limits;
+		boolean[] belongsToLeftSide;
 
+		numIntervals = partitionInterval.getNumSubintervals();
+		limits = partitionInterval.getLimits();
+		belongsToLeftSide = partitionInterval.getBelongsToLeftSide();
+		data = new Object[numIntervals][numColumns];
+		State states [] = probNode.getVariable().getStates();
+		State reorderedStates [] = states.clone();
+		Collections.reverse(Arrays.asList(reorderedStates));
+		
+		for (i = 0; i < numIntervals; i++) {
+			//for (i = numIntervals-1; i <=0; i--) {
+			data[i][0] = GUIDefaultStates.getString(reorderedStates[i].getName()); // name
+			data[i][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
+																// symbol
+			data[i][2] = limits[i]; // low interval value
+			data[i][3] = ","; // separator ","
+			data[i][4] = limits[i + 1]; // high interval value
+			data[i][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high
+																	// interval
+																	// symbol
+		}
+	
+			setData(data);
+		}
+
+	
 	/**
 	 * Returns the content of the table.
 	 * 
@@ -1085,9 +1163,24 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	protected void actionPerformedRemoveValue() {
 
 		int selectedRow = valuesTable.getSelectedRow();
+		removeState(selectedRow);
+		
+		
+		
+	}
+	/**
+	 * 
+	 * @param selectedRow
+	 */
+	protected void removeState(int selectedRow) {
 		int rowCount = 0;
-		
-		
+		String lowerSymbol = "(";
+		//if (selectedRow < probNode.getVariable().getStates().length -2) {
+			if (selectedRow > 0) {
+				lowerSymbol = (valuesTable.getValueAt(selectedRow -1, upperLimitSymbolColumnNum ) == ")") ? "[":"(";
+			}
+			//} 
+			
 		NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, 
 				StateAction.REMOVE, selectedRow, "");
 		try {
@@ -1100,20 +1193,39 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				if (selectedRow < rowCount) {
 					valuesTable.getSelectionModel().setSelectionInterval(
 						selectedRow, selectedRow);
-					Object newRow [] = nodeStateEdit.getNewRowOfData();
+					//Object newRow [] = nodeStateEdit.getNewRowOfData();
+					/*Object newRow [] = {"",  valuesTable.getValueAt(selectedRow +1, 1) , lowerSymbol,
+							valuesTable.getValueAt(selectedRow +1, 3), "," , valuesTable.getValueAt(selectedRow +1, 5), 
+							valuesTable.getValueAt(selectedRow +1, 6)};*/
+					//update key column
 					int auxSelectedRow = selectedRow;
 					while (auxSelectedRow < rowCount) {
 						getTableModel().setValueAt(
 							getKeyString(auxSelectedRow), auxSelectedRow, 0);
 						auxSelectedRow++;
 					}
-					for (int i=1; i<getTableModel().getColumnCount(); i++){
+					//update values of the table 
+					/*for (int i=1; i<getTableModel().getColumnCount(); i++){
 						getTableModel().setValueAt(newRow[i], selectedRow, i);
-					}
+					}*/
 				} else {
 					valuesTable.getSelectionModel().setSelectionInterval(
 						selectedRow - 1, selectedRow - 1);
 				}
+				//after eliminate row check the lower limit
+				if (selectedRow > 0) {
+					if (valuesTable.getValueAt(selectedRow-1, upperLimitSymbolColumnNum) == "]" ) {
+						valuesTable.setValueAt("(", selectedRow, lowerLimitSymbolColumnNum);
+					} else {
+						valuesTable.setValueAt("[", selectedRow, lowerLimitSymbolColumnNum);
+					}
+					valuesTable.setValueAt(valuesTable.getValueAt(selectedRow-1, upperLimitValueColumnNum), selectedRow, lowLimitValueColumnNum);
+				}
+				
+					
+				
+				
+				probNode.getVariable();
 			}
 		} catch (ConstraintViolationException e) {
 			JOptionPane.showMessageDialog(this, messageStringResource.getString(
@@ -1159,6 +1271,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				messageStringResource.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 		}
+	//if variable is numeric or discretized it is necessary also to  change partitioned interval values
+		//TODO
+		
+	
 	}
 
 	/**
@@ -1376,7 +1492,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * @param e
 	 *            selection event information.
 	 */
-	@Override
+	/*@Override
 	@SuppressWarnings("unused")
 	public void valueChanged(ListSelectionEvent e) {
 
@@ -1392,7 +1508,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			jButtonInfiniteNegativeDouble.setEnabled(true);
 			jButtonInfinitePositiveDouble.setEnabled(true);
 		}
-	}
+	}*/
 
 	/**
 	 * Returns a key represented by an index.
@@ -1447,98 +1563,114 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	}
 
 	
-	public void tableChanged(TableModelEvent arg0) {
-		int column = arg0.getColumn();
-		int row = arg0.getLastRow();
-		Object aux = arg0.getSource();
+	public void tableChanged(TableModelEvent tableEvent) {
+		int column = tableEvent.getColumn();
+		int row = tableEvent.getLastRow();
+		//Object aux = tableEvent.getSource();
 		
 		
 		boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true: false);
-		if (arg0.getType()== TableModelEvent.UPDATE && 
-				((DiscretizeTableModel)arg0.getSource()).getValueAt(row, column)
+		if (tableEvent.getType()== TableModelEvent.UPDATE && 
+				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
 						instanceof Double){
-			double newValue = (Double)((DiscretizeTableModel)arg0.getSource()).
+			double newValue = (Double)((DiscretizeTableModel)tableEvent.getSource()).
 				getValueAt(row, column);	
 			//setting precision to the new value according with the precision value introduced by the user
 			double precision = probNode.getVariable().getPrecision();
-			String roundedValue = Utilities.roundedString(newValue, Double.toString(precision));
+			double roundedValue = Utilities.roundWithPrecision(newValue, Double.toString(precision));
 			
-			//double roundedNewValue = round(newValue, precision);
-			NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
-				new NodePartitionedIntervalEdit(probNode, StateAction.
-						MODIFYVALUEINTERVAL, row, newValue, lower);
-			try {
-				probNode.getProbNet().getPNESupport().announceEdit(
-						nodePartitionedIntervalEdit);
-				probNode.getProbNet().getPNESupport().doEdit(
-						nodePartitionedIntervalEdit);
-				
-				if (row > 0 && nodePartitionedIntervalEdit.getLower()){
-					/*valuesTable.setValueAt(probNode.getVariable().
-							getPartitionedInterval().getLimit(row), row-1, 
-							upperLimitValueColumnNum);*/
-					valuesTable.setValueAt(roundedValue, row-1, 
-							upperLimitValueColumnNum);
-				}else if (row < probNode.getVariable().getStates().length-1)				
-					/*valuesTable.setValueAt(probNode.getVariable().
-							getPartitionedInterval().getLimit(row + 1 ), row + 1, 
-							lowLimitValueColumnNum);*/
-					valuesTable.setValueAt(roundedValue, row + 1, 
-							lowLimitValueColumnNum);
-						
-			} catch (ConstraintViolationException e) {
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+			double [] currentLimits = probNode.getVariable().getPartitionedInterval().getLimits();
+			boolean []currentBelongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
 			
-				if (nodePartitionedIntervalEdit.getLower()){
-					valuesTable.setValueAt(probNode.getVariable().
-							getPartitionedInterval().getLimit(row), row, 
-							lowLimitValueColumnNum);
-				}else				
-					valuesTable.setValueAt(probNode.getVariable().
-							getPartitionedInterval().getLimit(row + 1 ), row, 
-							upperLimitValueColumnNum);
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
+			
+			int limitsIndex;
+			if ( lower ){
+				limitsIndex=row;
+			}else{
+				limitsIndex = row + 1;
 			}
-		}
+			
+			 // posterious limits
+			int i = limitsIndex;
+			currentLimits[i] = roundedValue;
+				
+			while (i+1 <= currentLimits.length-1 && currentLimits[i] >= currentLimits[i+1]) {
+					
+				if (currentBelongs[i] == false && currentBelongs[i+1] == true) {
+					currentLimits[i+1] = currentLimits[i];
+				} else {
+					if (i+1 == currentLimits.length-1){
+						currentLimits[i+1] = Double.POSITIVE_INFINITY;
+						break;
+					} else 
+						currentLimits[i+1] = currentLimits[i] + precision;
+				}
+					
+					i++;
+				}
 		
+			
+		//previous limits
+			int k = limitsIndex;
+			while (k-1 >=0 && currentLimits[k] <= currentLimits[k-1]) {
+				if (currentBelongs[k] == true && currentBelongs[k-1] == false) {
+					currentLimits[k-1] = currentLimits[k];
+				}  else {
+					if (k-1 == 0){
+						currentLimits[k-1] = Double.NEGATIVE_INFINITY;
+						break;
+					} else 
+						currentLimits[k-1] = currentLimits[k] - precision;
+				}
+				k--;
+			}
+			
+			for (int m = 0 ; m < currentLimits.length; m++) {
+				if (currentLimits[m] != Double.POSITIVE_INFINITY && currentLimits[m] != Double.NEGATIVE_INFINITY) {
+					currentLimits[m] = Utilities.roundWithPrecision(currentLimits[m], Double.toString(precision));
+				}
+			}
+			
+		
+		PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits, currentBelongs);
+		
+		PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
+		try {
+			probNode.getProbNet().getPNESupport().announceEdit(
+					partitionedIntervalEdit);
+		
+			probNode.getProbNet().getPNESupport().doEdit(
+						partitionedIntervalEdit);
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		PartitionedInterval newPartitionInterval = probNode.getVariable().
+				getPartitionedInterval();
+		setDataFromPartitionedInterval(newPartitionInterval);	
+		}
 	}
+	
+		
+		
+
 
 	public void setEnablePanelButton(boolean b){
 		
@@ -1561,20 +1693,24 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	public void mouseClicked(MouseEvent e) {
 		int row = valuesTable.rowAtPoint(e.getPoint());
 		int column = valuesTable.columnAtPoint(e.getPoint());
-		/*if ((row > -1) && (column > -1)) {
-				changeIntervalDiscretize(row, column);
-		}*/
+		//if ((row > -1) && (column > -1)) {
+		if (column == lowerLimitSymbolColumnNum
+				|| column == upperLimitSymbolColumnNum) {
+				changeLimitIntervalDiscretize(row, column);
+		} else if (column == lowLimitValueColumnNum	|| column == upperLimitValueColumnNum) {
 		//infinity buttons management
 		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC ||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED){
 		PartitionedInterval interval = probNode.getVariable().getPartitionedInterval();
 		int numIntervals = interval.getNumSubintervals();
 		if (!isUpMonotony()) {
-			if (row == 0 && column == 3) {
+			if (row == 0 && column == 3 
+					&& (Double)valuesTable.getValueAt(0, 3) !=  Double.NEGATIVE_INFINITY) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
 				getInfinitePositiveDoubleButton().setVisible(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
-			} else if (row == numIntervals-1 && column == 5) {
+			} else if (row == numIntervals-1 && column == 5
+					&& (Double)valuesTable.getValueAt(numIntervals-1, 5) !=  Double.POSITIVE_INFINITY) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
 				getInfiniteNegativeDoubleButton().setVisible(false);
@@ -1588,12 +1724,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			}
 			
 		} else if (isUpMonotony()) {
-			if (row == 0 && column == 5) {
+			if (row == 0 && column == 5
+					 && (Double)valuesTable.getValueAt(0, 5) !=  Double.POSITIVE_INFINITY) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
 				getInfiniteNegativeDoubleButton().setVisible(false);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
-			} else if (row == numIntervals-1 && column == 3) {
+			} else if (row == numIntervals-1 && column == 3
+					&& (Double)valuesTable.getValueAt(numIntervals-1, 3) !=  Double.NEGATIVE_INFINITY) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
 				getInfinitePositiveDoubleButton().setVisible(false);
@@ -1605,6 +1743,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			}
+		}
 		}
 		}
 	}

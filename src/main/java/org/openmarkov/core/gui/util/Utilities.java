@@ -13,6 +13,7 @@ package org.openmarkov.core.gui.util;
 import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 
 import javax.swing.JComponent;
@@ -205,56 +206,7 @@ public class Utilities {
 		return unixString;
 	}
 	
-	
-	
-	/*********************************************************************************************************/
-	 /**
-     * Returns a <code>String</code> of the value rounded to the precision and
-     * with the exact number of decimals; for example, 3.4 with precision 0.001
-     * is "3.400".
-     *
-     * @param value
-     *            the value to be rounded
-     * @param precisionString
-     *            a <code>String</code>, such as "10", "1", "0.25", or "0.001".
-     * @return rounded value string
-     */
-    public static String sroundedString(double value, String precisionString) {
-            // place of decimal point in precisionString
-            int precisionStringDecimalPlace = precisionString.indexOf('.');
-            double precision = Double.valueOf(precisionString);
-            double roundedValue = Math.round(value / precision) * precision;
-            // number of decimals in precisionString
-            int numDecimals;
-            if (precisionStringDecimalPlace != -1) {
-                    numDecimals = precisionString.length()
-                                    - precisionStringDecimalPlace - 1;
-            } else {
-                    numDecimals = -1;
-            }
 
-            String roundedString = Double.toString(roundedValue);
-            if (roundedString.indexOf('.') == -1) {
-                    roundedString += ",0";
-            } else {
-                    roundedString = roundedString.replace('.', ',');
-            }
-            // place of decimal point in roundedString
-            int roundedStringDecimalPlace = roundedString.indexOf(',');
-
-            int finalLength = roundedStringDecimalPlace + numDecimals + 1;
-            if (finalLength <= roundedString.length()) {
-                    roundedString = roundedString.substring(0, finalLength);
-            } else {
-                    while (finalLength > roundedString.length()) {
-                            roundedString += "0";
-                    }
-            }
-            return roundedString;
-    }
-
-	
-	/*********************************************************************************************************/
 	 /**
      * Returns a <code>String</code> of the value rounded to the precision and
      * with the exact number of decimals; for example, 3.4 with precision 0.001
@@ -322,6 +274,64 @@ public class Utilities {
 		 }
          return roundedString;
  }
+	 
+	/**
+	 * @author maryebra
+	 * 
+	 * @param value
+	 * @param precision
+	 * @return rounded value with the given precision
+	 */
+		public static double roundWithPrecision(double value, String precision){
+		
+		double valueRounded;
+		String rounded;
+		//double scale;
+		int numDecimals;
+		
+		int indexE = precision.indexOf('E');
+		 if (indexE != -1) {
+       	 numDecimals = Integer.parseInt(precision.substring(indexE +2, indexE +3));
+		 } else {
+			 int decimalPoint = precision.indexOf('.');
+	         int one = precision.indexOf('1');
+		         if (decimalPoint != -1 && one != -1) {
+		        	 numDecimals = one - decimalPoint ;
+		         } else {
+		        	 numDecimals = 0;
+		         }
+		 }
+		 
+		String pattern = "#.";
+		 for (int i = 0; i<numDecimals; i++) {
+			 pattern += "#";
+		 }
+		 DecimalFormat df = new DecimalFormat(pattern);
+		 rounded = df.format(value);
+		 
+		 int roundedStringDecimalPlace = rounded.indexOf(',');
+		 if (roundedStringDecimalPlace == -1) {
+			 rounded += ",0";
+		 }
+		 roundedStringDecimalPlace = rounded.indexOf(',');
+         int finalLength = roundedStringDecimalPlace + numDecimals + 1;
+         if (finalLength <= rounded.length()) {
+        	 rounded = rounded.substring(0, finalLength);
+         } else {
+                 while (finalLength > rounded.length()) {
+                	 rounded += "0";
+                 }
+         }
+		 rounded = rounded.replace(',', '.');
+		 valueRounded = Double.valueOf(rounded).doubleValue();
+				// Double.parseDouble(rounded);
+		 
+		/*scale=Math.pow(10, numDecimals);
+		valueRounded=Math.round(value*scale);
+		valueRounded=valueRounded/scale;*/
+		
+		return valueRounded;
+		}
 
 	
 	/**
