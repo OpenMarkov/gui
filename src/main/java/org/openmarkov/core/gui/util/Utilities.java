@@ -332,6 +332,50 @@ public class Utilities {
 		
 		return valueRounded;
 		}
+		public static String roundWithPrecisionToString(double value, String precision){
+			
+			double valueRounded;
+			String rounded;
+			//double scale;
+			int numDecimals;
+			
+			int indexE = precision.indexOf('E');
+			 if (indexE != -1) {
+	       	 numDecimals = Integer.parseInt(precision.substring(indexE +2, indexE +3));
+			 } else {
+				 int decimalPoint = precision.indexOf('.');
+		         int one = precision.indexOf('1');
+			         if (decimalPoint != -1 && one != -1) {
+			        	 numDecimals = one - decimalPoint ;
+			         } else {
+			        	 numDecimals = 0;
+			         }
+			 }
+			 
+			String pattern = "#.";
+			 for (int i = 0; i<numDecimals; i++) {
+				 pattern += "#";
+			 }
+			 DecimalFormat df = new DecimalFormat(pattern);
+			 rounded = df.format(value);
+			 
+			 int roundedStringDecimalPlace = rounded.indexOf(',');
+			 if (roundedStringDecimalPlace == -1) {
+				 rounded += ",0";
+			 }
+			 roundedStringDecimalPlace = rounded.indexOf(',');
+	         int finalLength = roundedStringDecimalPlace + numDecimals + 1;
+	         if (finalLength <= rounded.length()) {
+	        	 rounded = rounded.substring(0, finalLength);
+	         } else {
+	                 while (finalLength > rounded.length()) {
+	                	 rounded += "0";
+	                 }
+	         }
+			 rounded = rounded.replace(',', '.');
+			
+			 return rounded;
+			}
 
 	
 	/**

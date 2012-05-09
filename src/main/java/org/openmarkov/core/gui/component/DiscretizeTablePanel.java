@@ -944,11 +944,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int i = 0;
 		int numIntervals = 0;
 		int numColumns = 6; // name-symbol-value-separator-value-symbol
-		double[] limits;
+		String[] limits;
 		boolean[] belongsToLeftSide;
 
 		numIntervals = partitionInterval.getNumSubintervals();
-		limits = partitionInterval.getLimits();
+		double values[] =  partitionInterval.getLimits();
+		limits = convertToStringLimitValues(values, Double.toString(probNode.getVariable().getPrecision()));
 		belongsToLeftSide = partitionInterval.getBelongsToLeftSide();
 		data = new Object[numIntervals][numColumns];
 		State states [] = probNode.getVariable().getStates();
@@ -971,7 +972,55 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			setData(data);
 		}
 
+	public String[] convertToStringLimitValues(double []limits, String precision) {
+		String []tableLimits = new String[limits.length];
+		String rounded = "";
 	
+		int numDecimals;
+		
+		int indexE = precision.indexOf('E');
+		 if (indexE != -1) {
+       	 numDecimals = Integer.parseInt(precision.substring(indexE +2, indexE +3));
+		 } else {
+			 int decimalPoint = precision.indexOf('.');
+	         int one = precision.indexOf('1');
+		         if (decimalPoint != -1 && one != -1) {
+		        	 numDecimals = one - decimalPoint ;
+		         } else {
+		        	 numDecimals = 0;
+		         }
+		 }
+		 
+		
+		for (int i = 0; i < limits.length; i++) {
+			if (limits[i] == Double.POSITIVE_INFINITY) {
+				tableLimits[i] = "\u221E";
+			} else if (limits[i] == Double.NEGATIVE_INFINITY) {
+				tableLimits[i] =  "-"+"\u221E";
+			} else {
+				rounded = Double.toString(limits[i]);
+				//adding final zeros
+				int roundedStringDecimalPlace = rounded.indexOf('.');
+				 if (roundedStringDecimalPlace == -1) {
+					 rounded += ".0";
+				 }
+				 roundedStringDecimalPlace = rounded.indexOf('.');
+		         int finalLength = roundedStringDecimalPlace + numDecimals + 1;
+		         if (finalLength <= rounded.length()) {
+		        	 rounded = rounded.substring(0, finalLength);
+		         } else {
+		                 while (finalLength > rounded.length()) {
+		                	 rounded += "0";
+		                 }
+		         }
+				// rounded = rounded.replace(',', '.');
+		         tableLimits[i] = rounded;
+			}
+			
+		}
+		
+		return tableLimits;
+	}
 	/**
 	 * Returns the content of the table.
 	 * 

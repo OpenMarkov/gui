@@ -405,23 +405,26 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 							tableData = convertStringsToTableFormat(states);
 							discretizedNodeStatesTablePanel.setData(tableData);
 					} else {
-							discretizedNodeStatesTablePanel.
-								setPartitionedInterval();
+							//discretizedNodeStatesTablePanel.setPartitionedInterval();
+							discretizedNodeStatesTablePanel.setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval());
 							tableData = discretizedNodeStatesTablePanel.getData();
 
 							for (int i = 0; i < tableData.length; i++) {
 								for (int j = 3; j < tableData[0].length; j++) {
 									if (j==3 || j==5) {
-										double value = (Double) tableData [i][j];
-										if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
+										String value = (String) tableData [i][j];
+										if (value != "\u221E" && value != "-"+"\u221E" ) {
 											/*String roundedValue = Utilities.roundedString(value, 
 													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);*/
 											
 											//value = 10.3659873;
-											double roundedValue = Utilities.roundWithPrecision(value, 
-													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
-											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
+											//double roundedValue = Utilities.roundWithPrecision(value, 
+													//Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
+												/*String roundedValue = Utilities.roundWithPrecisionToString(Double.parseDouble(value), 
+															Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));*/
+											//getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
+											getNodeStatesTablePanel().getValuesTable().setValueAt(value, i, j);
 										}
 									}
 								}
