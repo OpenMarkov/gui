@@ -48,7 +48,7 @@ public class RemoveStatesCheckBoxPanel extends JPanel {
 			
 			JCheckBox checkBox = new JCheckBox (state.getName());
 			checkBoxes.add(checkBox);
-			checkBox.setAlignmentX((float) 0.5);
+			//checkBox.setAlignmentX((float) 0.5);
 			add(checkBox, BorderLayout.CENTER);
 			
 		}

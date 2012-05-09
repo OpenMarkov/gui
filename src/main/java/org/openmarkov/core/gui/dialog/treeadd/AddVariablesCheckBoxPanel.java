@@ -67,7 +67,7 @@ public class AddVariablesCheckBoxPanel extends JPanel{
 		for (Variable variable : posibleVariables) {
 			JCheckBox checkBox = new JCheckBox (variable.getName());
 			checkBoxes.add(checkBox);
-			checkBox.setAlignmentX((float) 0.5);
+			//checkBox.setAlignmentX((float) 0.5);
 			//checkBox.setAlignmentY((float) 0.5);
 			add(checkBox, CENTER_ALIGNMENT);
 		}

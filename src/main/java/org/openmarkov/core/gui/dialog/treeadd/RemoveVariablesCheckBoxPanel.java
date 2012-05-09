@@ -47,7 +47,7 @@ public class RemoveVariablesCheckBoxPanel extends JPanel{
 		/*for (Variable variable : posibleVariables) {*/
 		for (int i = 1 ; i < posibleVariables.size(); i++) {
 			JCheckBox checkBox = new JCheckBox (posibleVariables.get(i).getName());
-			checkBox.setAlignmentX((float) 0.5);
+			//checkBox.setAlignmentX((float) 0.5);
 			//checkBox.setAlignmentY((float) 0.5);
 			checkBoxes.add(checkBox);
 			add(checkBox, CENTER_ALIGNMENT);

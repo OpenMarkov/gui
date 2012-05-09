@@ -52,7 +52,8 @@ public class AddStatesCheckBoxPanel extends JPanel {
 			JCheckBox checkBox = new JCheckBox (state.getName());
 			//checkBox.setLayout(new BorderLayout());
 			checkBoxes.add(checkBox);
-			checkBox.setAlignmentX((float) 0.5);
+			//checkBox.setAlignmentY((float) 0.0);
+			//checkBox.setAlignmentX((float) 0.5);
 			add(checkBox, BorderLayout.CENTER);
 			
 		}

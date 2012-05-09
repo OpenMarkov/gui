@@ -40,6 +40,7 @@ public class RemoveVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension( 100, 100 ));
 		setResizable(true);
+		pack();
 	}
 	private void initialize() {
 		configureComponentsPanel();
