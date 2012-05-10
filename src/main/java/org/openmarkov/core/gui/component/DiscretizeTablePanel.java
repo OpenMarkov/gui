@@ -112,6 +112,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	int upperLimitValueColumnNum;
 	int upperLimitSymbolColumnNum;
 
+	private final String infinity = "\u221E";
+	private final String minusInfinity = "-"+"\u221E";
 	/**
 	 * monotony of the items in the table - true = up; false=down;
 	 */
@@ -994,9 +996,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		
 		for (int i = 0; i < limits.length; i++) {
 			if (limits[i] == Double.POSITIVE_INFINITY) {
-				tableLimits[i] = "\u221E";
+				tableLimits[i] = infinity;
 			} else if (limits[i] == Double.NEGATIVE_INFINITY) {
-				tableLimits[i] =  "-"+"\u221E";
+				tableLimits[i] =  minusInfinity;
 			} else {
 				rounded = Double.toString(limits[i]);
 				//adding final zeros
@@ -1503,7 +1505,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int selectedColumn = valuesTable.getSelectedColumn();
 
 		cancelCellEditing();
-		if (selectedColumn == Integer.valueOf(dialogStringResource.getString(
+		/*if (selectedColumn == Integer.valueOf(dialogStringResource.getString(
 				"DiscretizeTableModel.Columns.LowLimitValue.Order"))) {
 			valuesTable.setValueAt(Double.POSITIVE_INFINITY, selectedRow,
 									selectedColumn);
@@ -1512,8 +1514,46 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				"DiscretizeTableModel.Columns.UpperLimitValue.Order" ))) {
 			valuesTable.setValueAt(Double.POSITIVE_INFINITY, selectedRow,
 									selectedColumn);
+		}*/
+		double []limits = probNode.getVariable().getPartitionedInterval().getLimits();
+		boolean []belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+		
+		limits [limits.length -1] = Double.POSITIVE_INFINITY;
+		belongs [limits.length -1] = false;
+		
+		PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+		
+		PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
+		try {
+			probNode.getProbNet().getPNESupport().announceEdit(
+					partitionedIntervalEdit);
+		
+			probNode.getProbNet().getPNESupport().doEdit(
+						partitionedIntervalEdit);
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
+
+		valuesTable.setValueAt(infinity, selectedRow,
+				selectedColumn);
 	}
 
 	/**
@@ -1525,7 +1565,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int selectedColumn = valuesTable.getSelectedColumn();
 
 		cancelCellEditing();
-		if (selectedColumn == Integer.valueOf(dialogStringResource.getString( 
+		/*if (selectedColumn == Integer.valueOf(dialogStringResource.getString( 
 				"DiscretizeTableModel.Columns.LowLimitValue.Order"))) {
 			valuesTable.setValueAt( Double.NEGATIVE_INFINITY, selectedRow,
 									selectedColumn);
@@ -1534,7 +1574,45 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				"DiscretizeTableModel.Columns.UpperLimitValue.Order"))) {
 			valuesTable.setValueAt(Double.NEGATIVE_INFINITY, selectedRow,
 									selectedColumn);
+		}*/
+		double []limits = probNode.getVariable().getPartitionedInterval().getLimits();
+		boolean []belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+		
+		limits [0] = Double.NEGATIVE_INFINITY;
+		belongs [0] = true;
+		
+		PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+		
+		PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
+		try {
+			probNode.getProbNet().getPNESupport().announceEdit(
+					partitionedIntervalEdit);
+		
+			probNode.getProbNet().getPNESupport().doEdit(
+						partitionedIntervalEdit);
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		valuesTable.setValueAt(minusInfinity, selectedRow,
+				selectedColumn);
 	}
 
 	/**
@@ -1755,13 +1833,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int numIntervals = interval.getNumSubintervals();
 		if (!isUpMonotony()) {
 			if (row == 0 && column == 3 
-					&& (Double)valuesTable.getValueAt(0, 3) !=  Double.NEGATIVE_INFINITY) {
+					&& valuesTable.getValueAt(0, 3) !=  minusInfinity) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
 				getInfinitePositiveDoubleButton().setVisible(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 5
-					&& (Double)valuesTable.getValueAt(numIntervals-1, 5) !=  Double.POSITIVE_INFINITY) {
+					&& valuesTable.getValueAt(numIntervals-1, 5) !=  infinity) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
 				getInfiniteNegativeDoubleButton().setVisible(false);
@@ -1776,13 +1854,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			
 		} else if (isUpMonotony()) {
 			if (row == 0 && column == 5
-					 && (Double)valuesTable.getValueAt(0, 5) !=  Double.POSITIVE_INFINITY) {
+					 && valuesTable.getValueAt(0, 5) !=  infinity) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
 				getInfiniteNegativeDoubleButton().setVisible(false);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 3
-					&& (Double)valuesTable.getValueAt(numIntervals-1, 3) !=  Double.NEGATIVE_INFINITY) {
+					&& valuesTable.getValueAt(numIntervals-1, 3) != minusInfinity) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
 				getInfinitePositiveDoubleButton().setVisible(false);

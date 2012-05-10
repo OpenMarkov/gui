@@ -334,7 +334,6 @@ public class Utilities {
 		}
 		public static String roundWithPrecisionToString(double value, String precision){
 			
-			double valueRounded;
 			String rounded;
 			//double scale;
 			int numDecimals;

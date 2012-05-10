@@ -413,7 +413,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 								for (int j = 3; j < tableData[0].length; j++) {
 									if (j==3 || j==5) {
 										String value = (String) tableData [i][j];
-										if (value != "\u221E" && value != "-"+"\u221E" ) {
+										if (value != "\u221E" && value != "-"+"\u221E" ) { // Infinity values
 											/*String roundedValue = Utilities.roundedString(value, 
 													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);*/
