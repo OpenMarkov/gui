@@ -14,13 +14,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.prm.Instance;
-import org.openmarkov.core.model.network.prm.InstanceNode;
 
 /**
  * This class is the visual representation of a chance node.
@@ -82,8 +82,10 @@ public class VisualInstance extends VisualElement {
 	 * Dimensions of the instance
 	 */
 	private double[] dimensions = new double[6];
+	
+	private HashMap<String, VisualInstance> visualSubInstances = new HashMap<String, VisualInstance>();
 
-	public VisualInstance(Instance instance, ArrayList<ProbNode> probNodes)
+	public VisualInstance(Instance instance)
 	{
 		this.instance = instance;
 		
@@ -92,27 +94,25 @@ public class VisualInstance extends VisualElement {
 		double bottomCorner = 0.0;
 		double leftCorner = Double.POSITIVE_INFINITY;
 		double rightCorner = 0;
-		for(ProbNode probNode: probNodes)
+		for(ProbNode probNode: instance.getNodes())
 		{
-			if((probNode instanceof InstanceNode) && (((InstanceNode)probNode).getInstanceName().equals(instance.getName())))
+
+			if(probNode.getNode().getCoordinateX() < leftCorner)
 			{
-				if(probNode.getNode().getCoordinateX() < leftCorner)
-				{
-					leftCorner = probNode.getNode().getCoordinateX();
-				}
-				if(probNode.getNode().getCoordinateX() > rightCorner)
-				{
-					rightCorner = probNode.getNode().getCoordinateX();
-				}
-				if(probNode.getNode().getCoordinateY() < topCorner)
-				{
-					topCorner = probNode.getNode().getCoordinateY();
-				}
-				if(probNode.getNode().getCoordinateY() > bottomCorner)
-				{
-					bottomCorner = probNode.getNode().getCoordinateY();
-				}					
+				leftCorner = probNode.getNode().getCoordinateX();
 			}
+			if(probNode.getNode().getCoordinateX() > rightCorner)
+			{
+				rightCorner = probNode.getNode().getCoordinateX();
+			}
+			if(probNode.getNode().getCoordinateY() < topCorner)
+			{
+				topCorner = probNode.getNode().getCoordinateY();
+			}
+			if(probNode.getNode().getCoordinateY() > bottomCorner)
+			{
+				bottomCorner = probNode.getNode().getCoordinateY();
+			}					
 		}
 		
 		leftCorner -= HORIZONTAL_MARGIN;
@@ -127,6 +127,11 @@ public class VisualInstance extends VisualElement {
 		dimensions[3] = bottomCorner - topCorner;
 		dimensions[4] = ARC_WIDTH;
 		dimensions[5] = ARC_HEIGHT;		
+		
+		for(Instance subInstance : instance.getSubInstances().values())
+		{
+			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance));
+		}
 	}
 
 	@Override
@@ -147,6 +152,11 @@ public class VisualInstance extends VisualElement {
 		g.drawString(text, (float) dimensions[0] + 10.0f, (float) dimensions[1] + 15.0f);
 		g.setStroke((isSelected())? WIDE_STROKE : NORMAL_STROKE);
 		g.draw(shape);
+		
+		for(VisualInstance subInstance : visualSubInstances.values())
+		{
+			subInstance.paint(g);
+		}
 	}
 
 	/**
@@ -156,10 +166,24 @@ public class VisualInstance extends VisualElement {
 	public String getName() {
 		return instance.getName();
 	}
+	
+	/**
+	 * Returns the real position of the instance.
+	 * 
+	 * @return position of the node in the screen.
+	 */
+	public Point2D.Double getPosition() {
+
+		return new Point2D.Double(dimensions[0], dimensions[1]);
+	}	
 
 	public void move(double diffX, double diffY) {
 		dimensions[0] += diffX;
 		dimensions[1] += diffY;
+		for(VisualInstance subInstance : visualSubInstances.values())
+		{
+			subInstance.move(diffX, diffY);
+		}
 	}
 	
 	public double getCoordinateX()
@@ -188,5 +212,17 @@ public class VisualInstance extends VisualElement {
 	
 	public void setInput(boolean b) {
 		instance.setInput(b);
-	}	
+	}
+
+	public Instance getInstance() {
+		return instance;
+	}
+
+	public boolean acceptsAsInput(VisualInstance inputInstance) {
+		return instance.acceptsAsInput(inputInstance.getInstance());
+	}
+
+	public VisualInstance getSubInstance(String name) {
+		return visualSubInstances.get(name);
+	}
 }

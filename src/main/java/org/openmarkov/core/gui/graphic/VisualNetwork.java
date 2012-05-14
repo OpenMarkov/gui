@@ -14,8 +14,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.swing.event.UndoableEditEvent;
 
@@ -24,11 +25,13 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.prm.VisualInstance;
+import org.openmarkov.core.gui.graphic.prm.VisualInstanceLink;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.prm.InstanceLink;
 import org.openmarkov.core.model.network.prm.InstanceNode;
 
 
@@ -74,10 +77,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	private ArrayList<VisualLink> visualLinks = new ArrayList<VisualLink>();
 	
 	/**
-	 * List of visual instances.
+	 * HashMap of visual instances.
 	 */
-	private ArrayList<VisualInstance> visualInstances = new ArrayList<VisualInstance>();
-	
+	private HashMap<String, VisualInstance> visualInstances = new HashMap<String, VisualInstance>();
+
+	/**
+	 * List of visual instance links.
+	 */
+	private ArrayList<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
 
 	/**
 	 * List of selected nodes.
@@ -90,9 +97,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	private ArrayList<VisualLink> selectedLinks = new ArrayList<VisualLink>();
 	
 	/**
-	 * List of selected links.
+	 * Set of selected links.
 	 */
-	private ArrayList<VisualInstance> selectedInstances = new ArrayList<VisualInstance>();	
+	private HashSet<VisualInstance> selectedInstances = new HashSet<VisualInstance>();	
 
 	/**
 	 * This variable indicates if any node has change its selection state.
@@ -252,11 +259,24 @@ public class VisualNetwork implements PNUndoableEditListener {
 		visualInstances.clear();
 		for(String instanceName : probNet.getInstances().keySet())
 		{
-			visualInstances.add(new VisualInstance(probNet.getInstances().get(
-					instanceName), probNet.getProbNodes()));
-		}		
+			visualInstances.put(instanceName, new VisualInstance(probNet.getInstances().get(instanceName)));
+		}	
+		// construct visual instance links
+		visualInstanceLinks.clear();
+		for(InstanceLink link : probNet.getInstanceLinks())
+		{
+			VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
+			VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
+			visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
+		}			
 	}
 
+	/**
+	 * Returns whether the link contains nodes to delete
+	 * @param linkToCheck
+	 * @param vNodesToDelete
+	 * @return
+	 */
 	private boolean containsNodeToDelete(Link linkToCheck, ArrayList<VisualNode> vNodesToDelete) {
 		
 		for (VisualNode vNode: vNodesToDelete)
@@ -401,11 +421,25 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	private void paintInstances(Graphics2D g) {
 
-		for (VisualInstance visualInstance : visualInstances) {
+		for (VisualInstance visualInstance : visualInstances.values()) {
 			visualInstance.paint(g);
 		}
 
-	}	
+	}
+	
+	/**
+	 * Paints the instance links.
+	 * 
+	 * @param g
+	 *            the graphics context in which to paint.
+	 */
+	private void paintInstanceLinks(Graphics2D g) {
+
+		for (VisualInstanceLink visualInstanceLink : visualInstanceLinks) {
+			visualInstanceLink.paint(g);
+		}
+
+	}		
 	
 
 	/**
@@ -417,6 +451,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void paint(Graphics2D g) {
         this.g2 = g ;
         paintInstances(g);
+        paintInstanceLinks(g);
 		paintLinks(g);
 		paintNodes(g);
 
@@ -455,10 +490,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 		VisualInstance instance = null;
 		VisualInstance instanceFound = null;
-		int index = 0, length = visualInstances.size();
 
-		while ((instanceFound == null) && (index < length)) {
-			instance = visualInstances.get(index++);
+		Iterator<VisualInstance> iterator = visualInstances.values().iterator();
+		while ((instanceFound == null) && iterator.hasNext()) {
+			instance = iterator.next();
 			if (instance.pointInsideShape(position, g)) {
 				instanceFound = instance;
 			}
@@ -772,7 +807,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	public void setSelectedAllInstances(boolean selected) {
 
-		for (VisualInstance instance : visualInstances) {
+		for (VisualInstance instance : visualInstances.values()) {
 			setSelectedElement(instance, selected);
 		}
 
@@ -886,7 +921,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	public void moveSelectedInstances(double diffX, double diffY) {
 
-		for (VisualInstance instance : visualInstances) {
+		for (VisualInstance instance : visualInstances.values()) {
 			if (instance.isSelected()) {
 				instance.move(diffX, diffY);
 				for (VisualNode node : visualNodes) {
@@ -935,7 +970,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		    setSelectedElement(selectedLink, true);
 		}
 		
-		for (VisualInstance instance : visualInstances) {
+		for (VisualInstance instance : visualInstances.values()) {
 		    if(selection.containsInstance(instance)){
 		        setSelectedElement(instance, true);
 		    }
@@ -1015,7 +1050,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public ArrayList<VisualNode> getVisualNodesOfSelectedInstances() {
 		ArrayList<VisualNode> nodes = new ArrayList<VisualNode>();
 
-		for (VisualInstance instance : visualInstances) {
+		for (VisualInstance instance : visualInstances.values()) {
 			if (instance.isSelected()) {
 
 				for (VisualNode node : visualNodes) {

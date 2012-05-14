@@ -33,8 +33,10 @@ import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.action.prm.AddInstanceEdit;
+import org.openmarkov.core.action.prm.AddInstanceLinkEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -43,6 +45,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.MoveNodeEdit;
 import org.openmarkov.core.gui.action.PasteEdit;
@@ -64,6 +67,7 @@ import org.openmarkov.core.gui.graphic.FSVariableBox;
 import org.openmarkov.core.gui.graphic.InnerBox;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
+import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
@@ -243,12 +247,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This object represents the arrow that is painted when a new link is being
 	 * created.
 	 */
-	private VisualLink newLink = null;
+	private VisualArrow newLink = null;
 
 	/**
 	 * This object represents the source node of a new link.
 	 */
 	private VisualNode newLinkSource = null;
+	
+	/**
+	 * This object represents the source instance of a new link.
+	 */
+	private VisualInstance newInstanceLinkSource = null;	
 
 	/**
 	 * Object that creates the popup menus.
@@ -909,13 +918,18 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		Graphics2D g = (Graphics2D) getGraphics();
 		VisualNode node = null;
+		VisualInstance instance = null;
 
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (Utilities.noMouseModifiers(e)) {
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-					newLink = new VisualLink(node.getPosition(), cursorPosition);
+				if ((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
+					newLink = new VisualArrow(new Point2D.Double(e.getX(), e.getY()), cursorPosition);
+					newInstanceLinkSource = instance;
+				} 
+				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) { 
+					newLink = new VisualArrow(node.getPosition(), cursorPosition);
 					newLinkSource = node;
 				}
 			}
@@ -1160,43 +1174,56 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		Graphics2D g = (Graphics2D) getGraphics();
 		VisualNode newLinkDestination = null;
+		VisualInstance newInstanceLinkDestination = null;
 		Point2D.Double point = new Point2D.Double(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
 
 		if (newLink != null) {
 			newLink = null;
 			if (SwingUtilities.isLeftMouseButton(e)) {
-				if ((newLinkDestination = visualNetwork.whatNodeInPosition(
-						point, g)) != null) {
+				PNEdit linkEdit = null;
+				if ((newInstanceLinkDestination = visualNetwork.whatInstanceInPosition(point, g)) != null
+						&& newInstanceLinkSource != null) {
+					if (newInstanceLinkDestination.acceptsAsInput(newInstanceLinkSource)) {
+						linkEdit = new AddInstanceLinkEdit(probNet,
+								newInstanceLinkSource.getInstance(),
+								newInstanceLinkDestination.getInstance());
+					}else
+					{
+						JOptionPane.showMessageDialog(null,
+								"Incompatible input parameter", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				} else if ((newLinkDestination = visualNetwork.whatNodeInPosition(point, g)) != null
+						&& newLinkSource != null) {
 					if (!newLinkSource.equals(newLinkDestination)) {
+
 						try {
-
-							AddLinkEdit linkEdit = new AddLinkEdit(probNet,
-									probNet.getVariable(newLinkSource
-											.getProbNode().getName()),
-									probNet.getVariable(newLinkDestination
-											.getProbNode().getName()), true);
-
-							probNet.getPNESupport().announceEdit(linkEdit);
-							probNet.getPNESupport().doEdit(linkEdit);
-
-						} catch (Exception ex) {
-							JOptionPane
-									.showMessageDialog(
-											Utilities.getOwner(this),
-											ex.getMessage(),
-											stringResource
-													.getString("ErrorWindow.Title.Label"),
-											JOptionPane.ERROR_MESSAGE);
-
+							linkEdit = new AddLinkEdit(probNet,
+									probNet.getVariable(newLinkSource.getProbNode().getName()),
+									probNet.getVariable(newLinkDestination.getProbNode().getName()), true);
+						} catch (ProbNodeNotFoundException e1) {/* Cannot happen */
 						}
-						/*
-						 * if (link != null) {
-						 * undoManager.addEditAddLink(visualNetwork
-						 * .getNetwork(), link); }
-						 */
 					}
 				}
+				if(linkEdit != null)
+				{
+					try {
+						probNet.doEdit(linkEdit);
+	
+					} catch (Exception ex) {
+						JOptionPane
+								.showMessageDialog(Utilities.getOwner(this), ex
+										.getMessage(), stringResource
+										.getString("ErrorWindow.Title.Label"),
+										JOptionPane.ERROR_MESSAGE);
+					}
+
+				}
+				/*
+				 * if (link != null) { undoManager.addEditAddLink(visualNetwork
+				 * .getNetwork(), link); }
+				 */
 			}
 		}
 		repaint();
