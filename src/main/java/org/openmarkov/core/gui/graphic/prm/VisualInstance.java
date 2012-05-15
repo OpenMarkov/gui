@@ -16,9 +16,11 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.openmarkov.core.gui.graphic.VisualElement;
+import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.prm.Instance;
 
@@ -82,10 +84,12 @@ public class VisualInstance extends VisualElement {
 	 * Dimensions of the instance
 	 */
 	private double[] dimensions = new double[6];
-	
+
+	private ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
+
 	private HashMap<String, VisualInstance> visualSubInstances = new HashMap<String, VisualInstance>();
 
-	public VisualInstance(Instance instance)
+	public VisualInstance(Instance instance, ArrayList<VisualNode> allVisualNodes)
 	{
 		this.instance = instance;
 		
@@ -115,6 +119,17 @@ public class VisualInstance extends VisualElement {
 			}					
 		}
 		
+		for(ProbNode probNode: instance.getNodes())
+		{
+			for(VisualNode visualNode: allVisualNodes)
+			{
+				if(probNode.equals(visualNode.getProbNode()))
+				{
+					visualNodes.add(visualNode);
+				}
+			}
+		}		
+		
 		leftCorner -= HORIZONTAL_MARGIN;
 		rightCorner += HORIZONTAL_MARGIN;
 		topCorner -= VERTICAL_MARGIN;
@@ -130,7 +145,7 @@ public class VisualInstance extends VisualElement {
 		
 		for(Instance subInstance : instance.getSubInstances().values())
 		{
-			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance));
+			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance, allVisualNodes));
 		}
 	}
 
@@ -176,13 +191,26 @@ public class VisualInstance extends VisualElement {
 
 		return new Point2D.Double(dimensions[0], dimensions[1]);
 	}	
-
+	
 	public void move(double diffX, double diffY) {
+		move(diffX, diffY, true);
+	}
+
+	private void move(double diffX, double diffY, boolean moveNodes) {
 		dimensions[0] += diffX;
 		dimensions[1] += diffY;
 		for(VisualInstance subInstance : visualSubInstances.values())
 		{
-			subInstance.move(diffX, diffY);
+			subInstance.move(diffX, diffY, false);
+		}
+		if(moveNodes)
+		{
+			for(VisualNode visualNode : visualNodes)
+			{
+				visualNode.setTemporalPosition(new Point2D.Double(visualNode
+						.getTemporalPosition().getX() + diffX, visualNode
+						.getTemporalPosition().getY() + diffY));
+			}		
 		}
 	}
 	

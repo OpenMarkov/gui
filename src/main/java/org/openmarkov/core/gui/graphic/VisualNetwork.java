@@ -259,7 +259,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		visualInstances.clear();
 		for(String instanceName : probNet.getInstances().keySet())
 		{
-			visualInstances.put(instanceName, new VisualInstance(probNet.getInstances().get(instanceName)));
+			visualInstances.put(instanceName, new VisualInstance(probNet.getInstances().get(instanceName), visualNodes));
 		}	
 		// construct visual instance links
 		visualInstanceLinks.clear();
@@ -924,19 +924,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 		for (VisualInstance instance : visualInstances.values()) {
 			if (instance.isSelected()) {
 				instance.move(diffX, diffY);
-				for (VisualNode node : visualNodes) {
-					if ((node.getProbNode() instanceof InstanceNode)
-							&& (((InstanceNode) node.getProbNode())
-									.getInstanceName().equals(instance
-									.getName()))){
-						node.setTemporalPosition(new Point2D.Double(node
-								.getTemporalPosition().getX() + diffX, node
-								.getTemporalPosition().getY() + diffY));
-						if (g2 != null) {
-							node.paint((Graphics2D) g2);
-						}						
-					}
-				}
 				if(g2!=null)
 				{
 				    instance.paint((Graphics2D) g2);
@@ -1386,6 +1373,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 	protected EditorPanel getEditorPanel()
 	{
 	    return this.editorPanel;
+	}
+
+	public void setProbNet(ProbNet probNet) {
+		this.probNet = probNet;
+		constructVisualInfo();
 	}
 	
 }

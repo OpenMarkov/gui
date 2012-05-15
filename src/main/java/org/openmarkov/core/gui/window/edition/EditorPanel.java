@@ -3311,4 +3311,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
+	public void setProbNode(ProbNet probNet) {
+		this.probNet = probNet;
+		visualNetwork.setProbNet(probNet);
+	}
+
 }
