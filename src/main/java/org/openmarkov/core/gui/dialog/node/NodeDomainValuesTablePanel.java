@@ -455,6 +455,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
     			jRadioButtonMonotonyDown.setEnabled(false);
     			jRadioButtonMonotonyUp.setSelected(false);
     			jRadioButtonMonotonyDown.setSelected(true);
+    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
+				((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
     			/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
     			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);*/
 				// node comment title
@@ -506,8 +508,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					jRadioButtonMonotonyDown.setEnabled(false);
 					jRadioButtonMonotonyUp.setSelected(false);
 					jRadioButtonMonotonyDown.setSelected(false);
-					/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
-    				setEnablePanelButton(false);*/
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(false);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(false);
 					/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
 	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);*/
 				
@@ -533,6 +535,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	    			jRadioButtonMonotonyUp.setSelected(false);
 	    			jRadioButtonMonotonyDown.setSelected(true);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setUpMonotony(false);
+	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
 	    			/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
 	    				setEnablePanelButton(true);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).

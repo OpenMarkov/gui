@@ -1121,14 +1121,18 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			try {
 				probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
 				probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+				if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+					PartitionedInterval newPartitionedInterval = probNode.getVariable().getPartitionedInterval();
+					setDataFromPartitionedInterval(newPartitionedInterval);
+					valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+				} else {
+				//Object newRow [] = nodeStateEdit.getNewRowOfData();
+				//newRow [0] = getKeyString(newIndex);
+				//getTableModel().insertRow(newIndex, newRow); 
+				getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
+				valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+				}
 				
-				PartitionedInterval newPartitionedInterval = probNode.getVariable().getPartitionedInterval();
-				setDataFromPartitionedInterval(newPartitionedInterval);
-				/*Object newRow [] = nodeStateEdit.getNewRowOfData();
-				newRow [0] = getKeyString(newIndex);
-				getTableModel().insertRow(newIndex, newRow); */
-				valuesTable.getSelectionModel().setSelectionInterval(newIndex,
-						newIndex);
 				
 			} catch (ConstraintViolationException e) {
 				JOptionPane.showMessageDialog(this, messageStringResource

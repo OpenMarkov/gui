@@ -10,6 +10,8 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
@@ -106,11 +108,15 @@ public class NodeStateEdit extends SimplePNEdit {
 			//assume that the new state is added in last position
 			newObjectState = new State [probNode.getVariable().
 			                                     getNumStates()+1];
-			newObjectState[0] = newState;
-			for (int i = 1; i < newObjectState.length; i++ ) {
-				newObjectState[i] = probNode.getVariable().getStates()[i-1];
+			//if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED ) {
+				newObjectState[0] = newState;
+				for (int i = 1; i < newObjectState.length; i++ ) {
+					newObjectState[i] = probNode.getVariable().getStates()[i-1];
+				}
+			//}
+			if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+				Collections.reverse(Arrays.asList(newObjectState));
 			}
-			
 			
 			probNode.getVariable().setStates(newObjectState);
 			
