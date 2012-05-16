@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta content="Helen" name="generator">
+    <link rel="stylesheet" href="../../javahelp.css" type="text/css">
+    <title>Setting probability tables</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img width="32" height="32" src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace=
+      "0">&nbsp;Setting probability tables
+    </h1>
+    <hr width="100%" align="left" color="blue" size="2">
+    <p>
+       One of the most important thing is that you must define the probability of the node when
+      depending on its parents.
+    </p>
+    <p>
+       To do it, you must enter in the node properties dialog and then edit the table.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       Depending of the node type what it is being edited, the table is different as we will show
+      now:
+    </p>
+    <h4>
+       Chance node
+    </h4>
+    <p>
+       In a chance node, the table will have the probabilities of each state would take depending
+      on the states of the parents or the deterministic value.
+    </p>
+    <p>
+       When the node is created, the table will assign the same value to each state of the node.
+    </p>
+    <p>
+       When the node was already created, and therefore a potential table already exists, if the
+      user is adding a new parent, the table is update with 0.0 value.
+    </p>
+    <p>
+       When the node was already created, and therefore a potential table already exists, if the
+      user is deleting a node state, the system will distribute the probability value to the other
+      states of the node (or if it is a deterministic node and the state that is eliminated is the
+      one that have got the value "1", then this value is assigned to the previous state).
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       Decision node
+    </h3>
+    <p>
+       If the node is a "decision node", then the panel is taken by default "Optimal decision" and
+      not having any table.
+    </p>
+    <p>
+       If the user will choice one of the other two types of relation (probabilistic or
+      deterministic), then a table will be shown with the same behaviour that in a Chance
+      node.&nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       Nodo de utilidad
+    </h3>
+    <p>
+       If a utility node is selected for setting properties, the dialog panel will &nbsp;show nor
+      the Type of Relation combobox neither the elements of the chance node. However, a new type of
+      relation "Utility" appear and the table will show the the parent states and one single row
+      with the values for the utility of the node.
+    </p>
+    <p>
+       This value is not restricted to be between 0 and 1.
+    </p>
+    <p>
+       When the node is created, all these values are set to 0.0.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta content="Helen" name="generator">
+    <link type="text/css" href="../../javahelp.css" rel="stylesheet">
+    <title>Setting probability tables</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img hspace="0" width="32" src="../../images/carmenHelpIcons/c2_32.gif" border="0" height=
+      "32">&nbsp;Definir tabla de relaciones del nodo
+    </h1>
+    <hr size="2" width="100%" color="blue" align="left">
+    <p>
+       Una de las cosas más importantes que debe hacer el usuario es definir la tabla de relaciones
+      del nodo.
+    </p>
+    <p>
+       Dependiendo del tipo de nodo que se esté editando, la tabla de probabilidades es diferente.
+    </p>
+    <p>
+       Esta tabla está dentro de las probabilidades del nodo en la pestaña de "Tabla de relación"
+      (o Tabla de Utilidad o Tabla de Decisión)&nbsp;
+    </p>
+    <h3>
+       Nodo de elección
+    </h3>
+    <p>
+       En el caso de un nodo de eleccion (chance), como su nombre indica tendrá una tabla donde se
+      recogen los valores de probabilidad&nbsp;que sus estados pueden tomar en relación a sus
+      padres (si los tiene) o su valor determinista
+    </p>
+    <p>
+       Cuando el nodo se está creando esta tabla asigna valores iguales a cada uno de los estados
+      del nodo
+    </p>
+    <p>
+       Cuando el nodo existe anteriormente, y por tanto, tiene una tabla de potencial, cuando se
+      añade un nuevo estado al nodo, el sistema asigna un valor 0.0 a esa nueva probabilidad
+    </p>
+    <p>
+       Cuando el nodo existe anteriormente, y por tanto, tiene una tabla de potencial, cuando se
+      elimina un estado al nodo, el sistema distribuye el valor de probabilidad entre los otros
+      estados del nodo (o si es un nodo determinista y el estado eliminado es el que le hacia con
+      valor igual a 1, le asigna dicho estado a uno de los otros estados)
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       Nodo de decision
+    </h3>
+    <p>
+       El panel de entrada de datos tiene una primera decisión. Por defecto, se le asigna "Decisión
+      Optima", marcando el check box correspondiente, junto con los check box de Probabilista y
+      Determinista. En este caso de decisión optima, no hay tabla mostrada, ni tipos de relación ni
+      nada más que los 3 check box mencionados.
+    </p>
+    <p>
+       Si el usuario decide marcar Probabilista, aparece el resto del panel como si fuera un nodo
+      de elección
+    </p>
+    <p>
+       Si el usuario decide marcar Determinista, aparece el resto del panel como si fuera un nodo
+      de elección
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       Nodo de utilidad
+    </h3>
+    <p>
+       En el panel, no existen tipos de relación (general, familia AND, familia OR) ni otros
+      elementos en la ventana. En cambio, aparece un tipo nuevo de relación denominado "UTILIDAD" y
+      una tabla de datos que contiene los estados de los padres y, en la ultima fila, el nombre del
+      nodo y en las celdas de coordenadas, valores de la utilidad.
+    </p>
+    <p>
+       Si el nodo es nuevo, estos valores están en 0.0.
+    </p>
+    <p>
+       Si el nodo es viejo, presentan el valor correspondiente.
+    </p>
+    <p>
+       No hay restricciones de valor.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

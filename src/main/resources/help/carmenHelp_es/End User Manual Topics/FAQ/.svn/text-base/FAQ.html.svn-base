@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../javahelp.css">
+    <title>FAQ</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace="0" height="32" width=
+      "32">&nbsp;Preguntas Frecuentes - FAQ
+    </h1>
+    <hr size="2" align="left" width="100%" color="blue">
+    <h3>
+       <a id="What if a red message appears in the Message Window" name=
+      "What if a red message appears in the Message Window"></a> Qué hacer si aparece un mensaje
+      rojo en la ventana de mensajes
+    </h3>
+    <p>
+       Si aparece un mensaje rojo en la ventana de mensajes, presiona el botón "Copiar" que está
+      situado en la parte superior de la ventana de mensajes.<br>
+       <img src="../../images/screens/CARMEN message window with error.jpg" vspace="5" hspace="2">
+    </p>
+    <p>
+       Esta acción copiará el contenido de la ventana de Mensaje al portapapeles, de tal modo que
+      puedes enviárnoslo en un correo electrónico.
+    </p>
+    <p>
+       Aunque CARMEN haya sido diseñado siguiendo estrictamente los principios de Ingeniería de
+      Software, que hacen que resulte muy extraños estos mensajes rojos, la ventana de mensajes es
+      el mecanismo que se implementado para capturar cualquier situación inesperada, con el fin de
+      que pueda ser analizada posteriormente por los desarrolladores, para mejorar la calidad del
+      código fuente, y evitar que tu trabajo sea interrumpido.
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="What if This network can not be loaded" name=
+      "What if This network can not be loaded"></a>
+    </h3>
+    <h3>
+       Qué hacer si, al abrir una red, aparece el mensaje "Esta red no se puede cargar"
+    </h3>
+    <p>
+       Cuando abres una red, el siguiente mensaje podría aparecer en medio de la ventana de CARMEN
+      diciendo:<br>
+       <img src="../../images/screens/Error Msg Network cannot be loaded.jpg" vspace="5" hspace=
+      "40">
+    </p>
+    <p>
+       Por lo general, este mensaje te informa acerca de un problema en la lectura del archivo de
+      red porque CARMEN no es capaz de determinar la estructura del archivo.
+    </p>
+    <p>
+       Por favor, envíanos el archivo de red junto con el contenido de la ventana de mensaje (ver
+      la anterior FAQ para saber cómo copiarlo).
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <h3>
+       <a id="What if some functions do not work properly" name=
+      "What if some functions do not work properly"></a>
+    </h3>
+    <h3>
+       Qué hacer si alguna de las utilidades no funciona correctamente
+    </h3>
+    <p>
+       Por favor, comprueba que tu sistema cumpla con los requisitos previos para ejecutar CARMEN.
+    </p>
+    <p>
+       Estos pre-requisitos son:
+    </p>
+    <ul>
+      <li>
+        Java versión 5 o superior. Puedes encontrarla en: <a href="http://www.java.com/es/">Web
+        oficial de Java</a>
+      </li>
+      <li>
+        Al menos, 256 Mb de memoria RAM en tu ordenador
+      </li>
+      <li>
+        Archivos de red de uno de los siguientes formatos: Carmen XML, Elvira o Huggin
+      </li>
+    </ul>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>
