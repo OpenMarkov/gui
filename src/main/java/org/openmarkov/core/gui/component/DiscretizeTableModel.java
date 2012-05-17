@@ -58,8 +58,8 @@ public class DiscretizeTableModel extends DefaultTableModel {
 		Class<?> value = String.class;
 		switch (columnId) {
 		case COLUMN_LOWER_LIMIT_VALUE:
-			//value = Double.class;
-			value = String.class;
+			value = Double.class;
+			//value = String.class;
 			break;
 		case COLUMN_UPPER_LIMIT_VALUE:
 			value = Double.class;

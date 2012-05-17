@@ -142,7 +142,7 @@ public class NodePopup extends PopupMenuBasic {
 		add(getRemoveMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
-		add(getRelationMenuItem());
+		add(getEditPotentialMenuItem());
 		addSeparator();
 		add(getExpandMenuItem());
 		add(getContractMenuItem());
@@ -165,7 +165,7 @@ public class NodePopup extends PopupMenuBasic {
 		add(getRemoveMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
-		add(getRelationMenuItem());
+		add(getEditPotentialMenuItem());
 		addSeparator();
 		add(getExpandMenuItem());
 		add(getContractMenuItem());
@@ -337,7 +337,7 @@ public class NodePopup extends PopupMenuBasic {
 	 * 
 	 * @return a new 'Table' menu item.
 	 */
-	private JMenuItem getRelationMenuItem() {
+	private JMenuItem getEditPotentialMenuItem() {
 
 		if (relationMenuItem == null) {
 			relationMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_NODERELATION_MENUITEM, ActionCommands.EDIT_POTENTIAL);

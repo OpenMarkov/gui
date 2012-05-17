@@ -1701,11 +1701,46 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int row = tableEvent.getLastRow();
 		//Object aux = tableEvent.getSource();
 		
-		
+		//if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
 		boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true: false);
 		if (tableEvent.getType()== TableModelEvent.UPDATE && 
 				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
+				instanceof String && column == 1) {
+			String newName = (String) ((DiscretizeTableModel)tableEvent.getSource()).
+					getValueAt(row, column);
+			NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.RENAME, row, newName);
+			
+			try {
+				probNode.getProbNet().getPNESupport().doEdit(
+						nodeStateEdit);
+				probNode.getProbNet().getPNESupport().announceEdit(
+						nodeStateEdit);
+			
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		if (tableEvent.getType()== TableModelEvent.UPDATE && 
+				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
 						instanceof Double){
+			
 			double newValue = (Double)((DiscretizeTableModel)tableEvent.getSource()).
 				getValueAt(row, column);	
 			//setting precision to the new value according with the precision value introduced by the user
@@ -1799,6 +1834,93 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				getPartitionedInterval();
 		setDataFromPartitionedInterval(newPartitionInterval);	
 		}
+		
+		/*} else if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+			if (tableEvent.getType()== TableModelEvent.UPDATE && 
+					((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
+					instanceof String && column == 1) {
+				String newName = (String) ((DiscretizeTableModel)tableEvent.getSource()).
+						getValueAt(row, column);
+				NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.RENAME, row, newName);
+				
+				try {
+					probNode.getProbNet().getPNESupport().doEdit(
+							nodeStateEdit);
+					probNode.getProbNet().getPNESupport().announceEdit(
+							nodeStateEdit);
+				
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		} /*else if (probNode.getVariable().getVariableType() == VariableType.NUMERIC) {
+			if (tableEvent.getType()== TableModelEvent.UPDATE && 
+					((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
+							instanceof Double){
+				double newValue = (Double)((DiscretizeTableModel)tableEvent.getSource()).
+					getValueAt(row, column);
+				//setting precision to the new value according with the precision value introduced by the user
+				double precision = probNode.getVariable().getPrecision();
+				double roundedValue = Utilities.roundWithPrecision(newValue, Double.toString(precision));
+				
+				PartitionedInterval currentPartitionedInterval = probNode.getVariable().getPartitionedInterval();
+				double [] currentLimits = probNode.getVariable().getPartitionedInterval().getLimits();
+				boolean []currentBelongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+				if (column == upperLimitValueColumnNum) {
+					currentLimits [1] = roundedValue;
+				} else if (column == lowLimitValueColumnNum) {
+					currentLimits [0] = roundedValue;
+				}
+				PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits, currentBelongs);
+				PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(
+							partitionedIntervalEdit);
+				
+					probNode.getProbNet().getPNESupport().doEdit(
+								partitionedIntervalEdit);
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+					valuesTable.setValueAt(roundedValue, row, column);
+				
+				}
+		}*/
 	}
 	
 		

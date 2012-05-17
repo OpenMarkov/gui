@@ -22,10 +22,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 
-import javax.help.UnsupportedOperationException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -706,6 +704,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param g
 	 *            Graphics2D
 	 */
+	@SuppressWarnings("unused")
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
 		VisualNode node = null;
 		VisualLink link = null;
@@ -735,6 +734,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				} else {
 					((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
 							.setDefaultPopupNode();
+					
 				}				
 			}else
 			{
@@ -2175,7 +2175,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 		// if some visualNode has a number of values different from the
 		// number of evidence cases in memory, we need to recreate its
 		// visual states and consider that the network has been changed.
-		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
+		Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
+		while (iterator4.hasNext()) {
+			VisualNode visualNode = iterator4.next();
 			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
 			if (innerBox instanceof FSVariableBox) {
@@ -2197,9 +2200,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
-		// TODO This is a temporary workaround to make sure visualNodes are updated
-		// every time we get back to inference mode
-		networkChanged = true;
 		if ((propagationActive)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			// if the network has been changed, propagation must be done in
@@ -2517,158 +2517,244 @@ public class EditorPanel extends JPanel implements MouseListener,
 		// ...'fictitious propagation' for painting the nodes with dummy
 		// ...information; otherwise, no propagation is done and a message
 		// ...is shown.
+		NetworkType networkType = probNet.getNetworkType();
 		HashMap<Variable, Potential> individualProbabilities = null;
-		Hashtable<Variable, Double> utilities = null;
 		boolean propagationSucceded = false;
-		try {
-			// This will return null for InfluenceDiagrams until a suitable
-			// inference algorithm is implemented for them
-			inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
-			
-			if(inferenceAlgorithm == null)
-			{
-				throw new UnsupportedOperationException();
-			}
-			
-			inferenceAlgorithm.setEvidence(evidenceCase);
-			long start = System.currentTimeMillis();
+		if (networkType instanceof BayesianNetworkType) {
 			try {
-				individualProbabilities = inferenceAlgorithm
-						.getIndividualProbabilities();
-				utilities = inferenceAlgorithm.getExpectedUtilities();
-			} catch (NotEnoughMemoryException e) {
-				if (!approximateInferenceWarningGiven) {
-					JOptionPane
-							.showMessageDialog(
-									Utilities.getOwner(this),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Text"),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Title"),
-									JOptionPane.WARNING_MESSAGE);
-					approximateInferenceWarningGiven = true;
-				}
-
+				// This will return null for InfluenceDiagrams until a suitable
+				// inference algorithm is implemented for them
 				inferenceAlgorithm = inferenceManager
-						.getDefaultApproximateAlgorithm(probNet);
+						.getDefaultInferenceAlgorithm(probNet);
+
+				inferenceAlgorithm.setEvidence(evidenceCase);
+				long start = System.currentTimeMillis();
+				try {
+					individualProbabilities = inferenceAlgorithm
+							.getIndividualProbabilities();
+				} catch (NotEnoughMemoryException e) {
+					if (!approximateInferenceWarningGiven) {
+						JOptionPane
+								.showMessageDialog(
+										Utilities.getOwner(this),
+										stringResource
+												.getString("NotEnoughMemoryForExactInference.Text"),
+										stringResource
+												.getString("NotEnoughMemoryForExactInference.Title"),
+										JOptionPane.WARNING_MESSAGE);
+						approximateInferenceWarningGiven = true;
+					}
+
+					inferenceAlgorithm = inferenceManager
+							.getDefaultApproximateAlgorithm(probNet);
+					inferenceAlgorithm.setEvidence(evidenceCase);
+					individualProbabilities = inferenceAlgorithm
+							.getIndividualProbabilities();
+				}
+				long elapsedTimeMillis = System.currentTimeMillis() - start;
+				System.out.println("Inference took " + elapsedTimeMillis
+						+ " milliseconds.");
+
+				if (individualProbabilities != null) {
+					for (Variable variable : individualProbabilities.keySet()) {
+						ArrayList<VisualNode> allVisualNodes = visualNetwork
+								.getAllNodes();
+						Potential potential = individualProbabilities
+								.get(variable);
+						if (potential.getPotentialType() == PotentialType.TABLE) {
+							TablePotential tablePotential = (TablePotential) potential;
+							if (tablePotential.getNumVariables() == 1) {
+								double[] values = tablePotential.getValues();
+								Iterator<VisualNode> iterator2 = allVisualNodes
+										.iterator();
+								while (iterator2.hasNext()) {
+									VisualNode visualNode = iterator2.next();
+									if (variable.getName().equals(
+											visualNode.getProbNode().getName())) {
+										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+											FSVariableBox innerBox = (FSVariableBox) visualNode
+													.getInnerBox();
+											for (int i = 0; i < innerBox
+													.getNumStates(); i++) {
+												VisualState visualState = innerBox
+														.getVisualState(i);
+												visualState.setStateValue(
+														caseNumber, values[i]);
+											}
+										}
+										visualNode.setFindingInNode(false);
+									}
+								}
+								// PROVISIONAL2: Currently the propagation
+								// algorithm is returning a TablePotential
+								// with 0 variables when the node has a Uniform
+								// relation
+							} else if (tablePotential.getNumVariables() == 0) {
+								Iterator<VisualNode> iterator2 = allVisualNodes
+										.iterator();
+								while (iterator2.hasNext()) {
+									VisualNode visualNode = iterator2.next();
+									if (variable.getName().equals(
+											visualNode.getProbNode().getName())) {
+										if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+											FSVariableBox innerBox = (FSVariableBox) visualNode
+													.getInnerBox();
+											for (int i = 0; i < innerBox
+													.getNumStates(); i++) {
+												VisualState visualState = innerBox
+														.getVisualState(i);
+												visualState
+														.setStateValue(
+																caseNumber,
+																(1.0 / innerBox
+																		.getNumStates()));
+											}
+										}
+										visualNode.setFindingInNode(false);
+									}
+								}
+								// END OF
+								// PROVISIONAL2............................
+							} else {
+								JOptionPane
+										.showMessageDialog(
+												Utilities.getOwner(this),
+												"ERROR\n"
+														+ "Table Potential of "
+														+ variable.getName()
+														+ " has "
+														+ tablePotential
+																.getNumVariables()
+														+ " variables.\n It cannot be treated by now",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}
+					updateNodesFindingState(evidenceCase);
+					propagationSucceded = true;
+				}
+				repaint();
+			} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"Incompatible evidence",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);				
+				e.printStackTrace();
+			} catch (Exception e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"ERROR during inference",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);				
+				e.printStackTrace();
+			}
+
+		} else if (networkType instanceof InfluenceDiagramType) {
+			// Set the values of the visualStates of nodes without finding
+			ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();
+			Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
+			while (iterator1.hasNext()) {
+				VisualNode visualNode = iterator1.next();
+				InnerBox innerBox = visualNode.getInnerBox();
+				if (innerBox instanceof FSVariableBox) {// si es un nodo
+														// aleatorio o de
+														// decisión
+					Double aux1 = 0.0;
+					Double aux2 = 0.3;
+					Double value = 0.0;
+					for (int i = 0; i < innerBox.getNumStates() - 1; i++) {
+						if ((aux1 + aux2) <= 1.0) {
+							value = aux2;
+						} else {
+							value = (1.0 - aux1);
+						}
+						aux1 += value;
+						VisualState visualState = ((FSVariableBox) innerBox)
+								.getVisualState(i);
+						visualState.setStateValue(caseNumber, value);
+					}
+					VisualState visualState = ((FSVariableBox) innerBox)
+							.getVisualState(innerBox.getNumStates() - 1);
+					visualState.setStateValue(caseNumber, (1.0 - aux1));
+				} else { // si es un nodo de utilidad
+					VisualState visualState = ((ExpectedValueBox) innerBox)
+							.getVisualState();
+					visualState.setStateValue(caseNumber, 111.55);
+					((ExpectedValueBox) innerBox).setMinUtilityRange(100.0);
+					((ExpectedValueBox) innerBox).setMaxUtilityRange(112.0);
+				}
+				visualNode.setFindingInNode(false);
+			}
+			// Set the values of the visualStates of nodes with finding
+			ArrayList<Finding> findingsInEvidenceCase = evidenceCase
+					.getFindings();
+			Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
+			while (iterator3.hasNext()) {
+				Finding finding = iterator3.next();
+				Variable variable = finding.getVariable();
+				ArrayList<VisualNode> allVisualNodes = visualNetwork
+						.getAllNodes();
+				Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
+				while (iterator4.hasNext()) {
+					VisualNode visualNode = iterator4.next();
+					if (variable.getName().equals(
+							visualNode.getProbNode().getName())) { // si el nodo
+																	// tiene
+																	// hallazgo
+						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+							FSVariableBox innerBox = (FSVariableBox) visualNode
+									.getInnerBox();
+							for (int i = 0; i < innerBox.getNumStates(); i++) {
+								VisualState visualState = innerBox
+										.getVisualState(i);
+								if (visualState.getStateNumber() == finding
+										.getStateIndex()) {
+									visualState.setStateValue(caseNumber, 1.0);
+								} else {
+									visualState.setStateValue(caseNumber, 0.0);
+								}
+							}
+						}
+						visualNode.setFindingInNode(true);
+					}
+				}
+			}
+			updateNodesFindingState(evidenceCase);
+			propagationSucceded = true;
+			repaint();
+		} else {
+			try {
+				// This will return null for InfluenceDiagrams until a suitable
+				// inference algorithm is implemented for them
+				inferenceAlgorithm = inferenceManager
+						.getDefaultInferenceAlgorithm(probNet);
 				inferenceAlgorithm.setEvidence(evidenceCase);
 				individualProbabilities = inferenceAlgorithm
 						.getIndividualProbabilities();
-				utilities = inferenceAlgorithm.getExpectedUtilities();
+			} catch (Exception e) {
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"ERROR\n"
+										+ stringResource
+												.getString("NoPropagationCanBeDoneMessage1.Text.Label")
+										+ "\n"
+										+ stringResource
+												.getString("NoPropagationCanBeDoneMessage2.Text.Label")
+										+ "\n\n" + networkType,
+								stringResource
+										.getString("NoPropagationCanBeDoneMessage.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
 			}
-			long elapsedTimeMillis = System.currentTimeMillis() - start;
-			System.out.println("Inference took " + elapsedTimeMillis
-					+ " milliseconds.");
-
-			updateNodesFindingState(evidenceCase);
-			
-			paintInferenceResults(caseNumber, individualProbabilities, utilities);
-			
-			propagationSucceded = true;
-		} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
-			JOptionPane
-					.showMessageDialog(Utilities.getOwner(this),
-							"Incompatible evidence", "Error",
-							JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e)
-		{
-			JOptionPane
-			.showMessageDialog(
-					null,
-					"ERROR\n"
-							+ stringResource
-									.getString("NoPropagationCanBeDoneMessage1.Text.Label")
-							+ "\n"
-							+ stringResource
-									.getString("NoPropagationCanBeDoneMessage2.Text.Label")
-							+ "\n\n" + probNet.getNetworkType(),
-					stringResource
-							.getString("NoPropagationCanBeDoneMessage.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);			
-			
-		}catch (Exception e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this),
-					"ERROR during inference", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
 		}
-			
 		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
 		// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
 		// ...INFLUENCE DIAGRAMS IS COMPLETE
 		return propagationSucceded;
-	}
-	
-	private void paintInferenceResults(int caseNumber,
-			HashMap<Variable, Potential> individualProbabilities,
-			Hashtable<Variable, Double> utilities)	{
-		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
-			Variable variable = visualNode.getProbNode().getVariable();
-			if (visualNode.getProbNode().getNodeType() == NodeType.CHANCE) {
-				Potential potential = individualProbabilities.get(variable);
-				if (potential.getPotentialType() == PotentialType.TABLE) {
-					TablePotential tablePotential = (TablePotential) potential;
-					if (tablePotential.getNumVariables() == 1) {
-						double[] values = tablePotential.getValues();
-
-						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-							FSVariableBox innerBox = (FSVariableBox) visualNode
-									.getInnerBox();
-							for (int i = 0; i < innerBox.getNumStates(); i++) {
-								VisualState visualState = innerBox
-										.getVisualState(i);
-								visualState
-										.setStateValue(caseNumber, values[i]);
-							}
-						}  
-						// PROVISIONAL2: Currently the propagation
-						// algorithm is returning a TablePotential
-						// with 0 variables when the node has a Uniform
-						// relation
-					} else if (tablePotential.getNumVariables() == 0) {
-						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-							FSVariableBox innerBox = (FSVariableBox) visualNode
-									.getInnerBox();
-							for (int i = 0; i < innerBox.getNumStates(); i++) {
-								VisualState visualState = innerBox
-										.getVisualState(i);
-								visualState.setStateValue(caseNumber,
-										(1.0 / innerBox.getNumStates()));
-							}
-						}
-						visualNode.setFindingInNode(false);
-						// END OF
-						// PROVISIONAL2............................
-					} else {
-						JOptionPane
-								.showMessageDialog(
-										Utilities.getOwner(this),
-										"ERROR\n"
-												+ "Table Potential of "
-												+ variable.getName()
-												+ " has "
-												+ tablePotential
-														.getNumVariables()
-												+ " variables.\n It cannot be treated by now",
-										"Error", JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			}else if (visualNode.getProbNode().getNodeType() == NodeType.UTILITY)
-			{
-				if ((visualNode.getInnerBox()) instanceof ExpectedValueBox) {
-					// It is a utility node
-					ExpectedValueBox innerBox = (ExpectedValueBox) visualNode
-							.getInnerBox();
-					VisualState visualState = innerBox.getVisualState();
-					visualState.setStateValue(caseNumber, utilities.get(variable));
-					innerBox.setMinUtilityRange(-10.0);
-					innerBox.setMaxUtilityRange(10.0);
-				}					
-			}
-
-		}
-		repaint();		
 	}
 
 	/**

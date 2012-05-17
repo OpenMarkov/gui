@@ -676,7 +676,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				VisualNode vNode = null;
 				for (int i=0; i < selectedNodes.size(); i++) {
 					vNode = selectedNodes.get(i);
-					if (vNode.getFindingInNode()) {
+					if (vNode.getFindingInNode()) {	
 						canRemoveFinding = true;
 					}
 				}
