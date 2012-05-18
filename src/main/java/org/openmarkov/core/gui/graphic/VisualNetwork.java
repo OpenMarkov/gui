@@ -87,14 +87,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	private ArrayList<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
 
 	/**
-	 * List of selected nodes.
+	 * Set of selected nodes.
 	 */
-	private ArrayList<VisualNode> selectedNodes = new ArrayList<VisualNode>();
+	private HashSet<VisualNode> selectedNodes = new HashSet<VisualNode>();
 
 	/**
-	 * List of selected links.
+	 * Set of selected links.
 	 */
-	private ArrayList<VisualLink> selectedLinks = new ArrayList<VisualLink>();
+	private HashSet<VisualLink> selectedLinks = new HashSet<VisualLink>();
 	
 	/**
 	 * Set of selected links.
@@ -1376,8 +1376,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	public void setProbNet(ProbNet probNet) {
-		this.probNet = probNet;
-		constructVisualInfo();
+		if(!this.probNet.equals(probNet))
+		{
+			this.probNet = probNet;
+			setSelectedAllObjects(false);
+			constructVisualInfo();
+		}
 	}
 	
 }
