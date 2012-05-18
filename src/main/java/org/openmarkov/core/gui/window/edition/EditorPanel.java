@@ -2520,8 +2520,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		// ...information; otherwise, no propagation is done and a message
 		// ...is shown.
 		NetworkType networkType = probNet.getNetworkType();
-		HashMap<Variable, Potential> individualProbabilities = null;
-		Hashtable<Variable, Double> utilities = null;
+		HashMap<Variable, TablePotential> individualProbabilities = null;
 		boolean propagationSucceded = false;
 		try {
 			// This will return null for InfluenceDiagrams until a suitable
@@ -2537,8 +2536,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			long start = System.currentTimeMillis();
 			try {
 				individualProbabilities = inferenceAlgorithm
-						.getIndividualProbabilities();
-				utilities = inferenceAlgorithm.getExpectedUtilities();
+						.getProbsAndUtilities();
 			} catch (NotEnoughMemoryException e) {
 				if (!approximateInferenceWarningGiven) {
 					JOptionPane
@@ -2556,8 +2554,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						.getDefaultApproximateAlgorithm(probNet);
 				inferenceAlgorithm.setEvidence(evidenceCase);
 				individualProbabilities = inferenceAlgorithm
-						.getIndividualProbabilities();
-				utilities = inferenceAlgorithm.getExpectedUtilities();
+						.getProbsAndUtilities();
 			}
 			long elapsedTimeMillis = System.currentTimeMillis() - start;
 			System.out.println("Inference took " + elapsedTimeMillis
@@ -2565,7 +2562,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 			updateNodesFindingState(evidenceCase);
 			
-			paintInferenceResults(caseNumber, individualProbabilities, utilities);
+			paintInferenceResults(caseNumber, individualProbabilities);
 			
 			propagationSucceded = true;
 		} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
@@ -2604,8 +2601,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 	
 	private void paintInferenceResults(int caseNumber,
-			HashMap<Variable, Potential> individualProbabilities,
-			Hashtable<Variable, Double> utilities)	{
+			HashMap<Variable, TablePotential> individualProbabilities)	{
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
 			Variable variable = visualNode.getProbNode().getVariable();
 			if (visualNode.getProbNode().getNodeType() == NodeType.CHANCE) {
@@ -2664,7 +2660,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					ExpectedValueBox innerBox = (ExpectedValueBox) visualNode
 							.getInnerBox();
 					VisualState visualState = innerBox.getVisualState();
-					visualState.setStateValue(caseNumber, utilities.get(variable));
+					visualState.setStateValue(caseNumber, individualProbabilities.get(variable).values[0]);
 					innerBox.setMinUtilityRange(-10.0);
 					innerBox.setMaxUtilityRange(10.0);
 				}					
