@@ -36,6 +36,11 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	private static final int COLUMN_SEPARATOR = 4;
 	private static final int COLUMN_UPPER_LIMIT_VALUE = 5;
 	private static final int COLUMN_UPPER_LIMIT_SYMBOL = 6;
+	
+	private Object [][]data;
+	private String[] columns;
+	private final String infinity = "\u221E";
+	private final String minusInfinity = "-"+"\u221E";
 
 	/**
 	 * constructor for the model
@@ -44,6 +49,8 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	 */
 	public DiscretizeTableModel(Object[][] data, String[] columns) {
 		super (data, columns);
+		this.data = data;
+		this.columns = columns;
 	}
 	/**
 	 * retrieve the type of the object in a particular column of the table
@@ -54,18 +61,16 @@ public class DiscretizeTableModel extends DefaultTableModel {
 	 */
 	@Override
 	public Class<?> getColumnClass(int columnId) {
-
 		Class<?> value = String.class;
 		switch (columnId) {
 		case COLUMN_LOWER_LIMIT_VALUE:
 			value = Double.class;
-			//value = String.class;
 			break;
 		case COLUMN_UPPER_LIMIT_VALUE:
 			value = Double.class;
 			break;
 		default:
-			value = String.class;
+			//value = String.class;
 		    break;
 		}
 		return value;

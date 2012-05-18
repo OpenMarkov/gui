@@ -392,129 +392,266 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			if (column == lowerLimitSymbolColumnNum) {
 				lower = true;
 				if (aux.equals("(")) {
-					double lowerLimit = (Double)valuesTable.getValueAt(row, column +1);
-					if ( lowerLimit == Double.NEGATIVE_INFINITY || lowerLimit == Double.POSITIVE_INFINITY) {
+					//double lowerLimit = (Double)valuesTable.getValueAt(row, column +1);
+					//if ( lowerLimit == Double.NEGATIVE_INFINITY || lowerLimit == Double.POSITIVE_INFINITY) {
+					if ( valuesTable.getValueAt(row, lowLimitValueColumnNum) == infinity || valuesTable.getValueAt(row, lowLimitValueColumnNum) == minusInfinity) {
 						JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
-					} if (row-1>=0 && valuesTable.getValueAt(row-1, lowerLimitSymbolColumnNum) == "[" 
-							&&  valuesTable.getValueAt(row-1, lowLimitValueColumnNum) == valuesTable.getValueAt(row-1, upperLimitSymbolColumnNum)) {
+					} else if (row-1>=0 && valuesTable.getValueAt(row-1, lowerLimitSymbolColumnNum) == "[" 
+							&&  valuesTable.getValueAt(row-1, lowLimitValueColumnNum) == valuesTable.getValueAt(row-1, upperLimitValueColumnNum)) {
 						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
+					} else {
+						valuesTable.setValueAt("[", row, column);
+						if (row > 0){
+							valuesTable.setValueAt(")", row-1, 
+									upperLimitSymbolColumnNum);
+						} 
+						NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
+								new NodePartitionedIntervalEdit(probNode, StateAction.
+										MODIFYDELIMITERINTERVAL, row, lower);
+							try {
+								probNode.getProbNet().getPNESupport().announceEdit(
+										nodePartitionedIntervalEdit);
+								probNode.getProbNet().getPNESupport().doEdit(
+										nodePartitionedIntervalEdit);
+							} catch (ConstraintViolationException e) {
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (CanNotDoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (DoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NotEnoughMemoryException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NonProjectablePotentialException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (WrongCriterionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							}
 					}
-					valuesTable.setValueAt("[", row, column);
-					if (row > 0){
-						valuesTable.setValueAt(")", row-1, 
-								upperLimitSymbolColumnNum);
-					} 
 					//checkIntervalDiscretize("[", fila, columna,upMonotony);
 				} else if (aux.equals("[")) {
 					if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row, upperLimitValueColumnNum) 
 							&& valuesTable.getValueAt(row, upperLimitSymbolColumnNum) == "]") {
 						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-					}
-					valuesTable.setValueAt("(", row, column);
-					if (row > 0){
-						valuesTable.setValueAt("]", row-1, 
-								upperLimitSymbolColumnNum);
+					} else {
+						valuesTable.setValueAt("(", row, column);
+						if (row > 0){
+							valuesTable.setValueAt("]", row-1, 
+									upperLimitSymbolColumnNum);
+						}
+						NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
+								new NodePartitionedIntervalEdit(probNode, StateAction.
+										MODIFYDELIMITERINTERVAL, row, lower);
+							try {
+								probNode.getProbNet().getPNESupport().announceEdit(
+										nodePartitionedIntervalEdit);
+								probNode.getProbNet().getPNESupport().doEdit(
+										nodePartitionedIntervalEdit);
+							} catch (ConstraintViolationException e) {
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (CanNotDoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (DoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NotEnoughMemoryException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NonProjectablePotentialException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (WrongCriterionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							}
 					}
 					//checkIntervalDiscretize("(", fila, columna,upMonotony);
 				}
 			}
 			if (column == upperLimitSymbolColumnNum) {
 				if (aux.equals(")")) {
-					double upperLimit = (Double)valuesTable.getValueAt(row, column -1);
-					if ( upperLimit == Double.NEGATIVE_INFINITY || upperLimit == Double.POSITIVE_INFINITY) {
+					//double upperLimit = (Double)valuesTable.getValueAt(row, column -1);
+					//if ( upperLimit == Double.NEGATIVE_INFINITY || upperLimit == Double.POSITIVE_INFINITY) {
+					if ( valuesTable.getValueAt(row, upperLimitValueColumnNum) == infinity || valuesTable.getValueAt(row, upperLimitValueColumnNum) == minusInfinity) {
 						JOptionPane.showMessageDialog(this, "Infinity can not belong to the interval");
-					}
-					if (row+1 <= probNode.getVariable().getStates().length-1 && valuesTable.getValueAt(row+1, upperLimitSymbolColumnNum) == "]" 
-							&&  valuesTable.getValueAt(row+1, lowLimitValueColumnNum) == valuesTable.getValueAt(row+1, upperLimitSymbolColumnNum)) {
+					} else if (row+1 <= probNode.getVariable().getStates().length-1 && valuesTable.getValueAt(row+1, upperLimitSymbolColumnNum) == "]" 
+							&&  valuesTable.getValueAt(row+1, lowLimitValueColumnNum) == valuesTable.getValueAt(row+1, upperLimitValueColumnNum)) {
 						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-					}
-					valuesTable.setValueAt("]", row, column);
-					if (row < valuesTable.getRowCount()-1){
-						valuesTable.setValueAt("(", row + 1, 
-								lowerLimitSymbolColumnNum);
+					} else {
+						valuesTable.setValueAt("]", row, column);
+						if (row < valuesTable.getRowCount()-1){
+							valuesTable.setValueAt("(", row + 1, 
+									lowerLimitSymbolColumnNum);
+						}
+						NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
+								new NodePartitionedIntervalEdit(probNode, StateAction.
+										MODIFYDELIMITERINTERVAL, row, lower);
+							try {
+								probNode.getProbNet().getPNESupport().announceEdit(
+										nodePartitionedIntervalEdit);
+								probNode.getProbNet().getPNESupport().doEdit(
+										nodePartitionedIntervalEdit);
+							} catch (ConstraintViolationException e) {
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (CanNotDoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (DoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NotEnoughMemoryException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NonProjectablePotentialException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (WrongCriterionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							}
+						
 					}
 					//checkIntervalDiscretize("]", fila, columna,upMonotony);
 				} else if(aux.equals("]")) {
 					if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row, upperLimitValueColumnNum) 
 							&& valuesTable.getValueAt(row, lowerLimitSymbolColumnNum) == "[") {
 						JOptionPane.showMessageDialog(this, "Not permitted action. You must change limit values first");
-					}
-					valuesTable.setValueAt(")", row, column);
-					if (row < valuesTable.getRowCount()-1){
-						valuesTable.setValueAt("[", row + 1, 
-								lowerLimitSymbolColumnNum);
+					} else {
+						valuesTable.setValueAt(")", row, column);
+						if (row < valuesTable.getRowCount()-1){
+							valuesTable.setValueAt("[", row + 1, 
+									lowerLimitSymbolColumnNum);
+						}
+						NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
+								new NodePartitionedIntervalEdit(probNode, StateAction.
+										MODIFYDELIMITERINTERVAL, row, lower);
+							try {
+								probNode.getProbNet().getPNESupport().announceEdit(
+										nodePartitionedIntervalEdit);
+								probNode.getProbNet().getPNESupport().doEdit(
+										nodePartitionedIntervalEdit);
+								
+							} catch (ConstraintViolationException e) {
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+								
+							} catch (CanNotDoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (DoEditException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NotEnoughMemoryException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (NonProjectablePotentialException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							} catch (WrongCriterionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(this, messageStringResource
+										.getString( e.getMessage() ),
+									messageStringResource.getString( e.getMessage() ),
+									JOptionPane.ERROR_MESSAGE );
+							}
 					}
 					//checkIntervalDiscretize(")", fila, columna,upMonotony);
 				}
 			}
-			//mpalacios
-					
-			NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
-				new NodePartitionedIntervalEdit(probNode, StateAction.
-						MODIFYDELIMITERINTERVAL, row, lower);
-			try {
-				probNode.getProbNet().getPNESupport().announceEdit(
-						nodePartitionedIntervalEdit);
-				probNode.getProbNet().getPNESupport().doEdit(
-						nodePartitionedIntervalEdit);
-				
-				/*Object newRow [] = nodePartitionedIntervalEdit.getNewRowOfData();
-				newRow [0] = getKeyString(newIndex);
-				getTableModel().insertRow(newIndex, newRow); 
-				valuesTable.getSelectionModel().setSelectionInterval(newIndex,
-						newIndex);*/
-				
-			} catch (ConstraintViolationException e) {
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-				
-				//jTextFieldNodeName.setText( this.nodeProperties.getName() );
-				//jTextFieldNodeName.requestFocus();
-				
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			}
-		} else if ( column == lowLimitValueColumnNum
-						|| column == upperLimitValueColumnNum) {
-//			 double j = (Double) valuesTable.getValueAt(fila,columna);
-//			 System.out.println(j);
-	//		System.out.println("DiscretizeTablePanel.changeIntervalDiscretize");
-		//	System.out.println(">> check here the values of the interval with the other intervals");
+			
 		}
 	}
 
@@ -1738,6 +1875,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			
 		}
 		if (tableEvent.getType()== TableModelEvent.UPDATE && 
+				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column) == infinity && column == upperLimitValueColumnNum) {
+			//valuesTable.setValueAt(Double.POSITIVE_INFINITY, row, column);
+			valuesTable.setValueAt(infinity, row, column);
+		} else if (tableEvent.getType()== TableModelEvent.UPDATE && 
+				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column) == minusInfinity && column == lowLimitValueColumnNum) {
+			valuesTable.setValueAt(minusInfinity, row, column);
+		} else if (tableEvent.getType()== TableModelEvent.UPDATE && 
 				((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
 						instanceof Double){
 			
@@ -1835,93 +1979,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		setDataFromPartitionedInterval(newPartitionInterval);	
 		}
 		
-		/*} else if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
-			if (tableEvent.getType()== TableModelEvent.UPDATE && 
-					((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
-					instanceof String && column == 1) {
-				String newName = (String) ((DiscretizeTableModel)tableEvent.getSource()).
-						getValueAt(row, column);
-				NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.RENAME, row, newName);
-				
-				try {
-					probNode.getProbNet().getPNESupport().doEdit(
-							nodeStateEdit);
-					probNode.getProbNet().getPNESupport().announceEdit(
-							nodeStateEdit);
-				
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 			}
-		} /*else if (probNode.getVariable().getVariableType() == VariableType.NUMERIC) {
-			if (tableEvent.getType()== TableModelEvent.UPDATE && 
-					((DiscretizeTableModel)tableEvent.getSource()).getValueAt(row, column)
-							instanceof Double){
-				double newValue = (Double)((DiscretizeTableModel)tableEvent.getSource()).
-					getValueAt(row, column);
-				//setting precision to the new value according with the precision value introduced by the user
-				double precision = probNode.getVariable().getPrecision();
-				double roundedValue = Utilities.roundWithPrecision(newValue, Double.toString(precision));
-				
-				PartitionedInterval currentPartitionedInterval = probNode.getVariable().getPartitionedInterval();
-				double [] currentLimits = probNode.getVariable().getPartitionedInterval().getLimits();
-				boolean []currentBelongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
-				if (column == upperLimitValueColumnNum) {
-					currentLimits [1] = roundedValue;
-				} else if (column == lowLimitValueColumnNum) {
-					currentLimits [0] = roundedValue;
-				}
-				PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits, currentBelongs);
-				PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
-				try {
-					probNode.getProbNet().getPNESupport().announceEdit(
-							partitionedIntervalEdit);
-				
-					probNode.getProbNet().getPNESupport().doEdit(
-								partitionedIntervalEdit);
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-					valuesTable.setValueAt(roundedValue, row, column);
-				
-				}
-		}*/
-	}
 	
 		
 		
@@ -1959,37 +2017,37 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int numIntervals = interval.getNumSubintervals();
 		if (!isUpMonotony()) {
 			if (row == 0 && column == 3 
-					&& valuesTable.getValueAt(0, 3) !=  minusInfinity) {
+					/*&& valuesTable.getValueAt(0, 3) !=  minusInfinity*/) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
-				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 5
-					&& valuesTable.getValueAt(numIntervals-1, 5) !=  infinity) {
+					/*&& valuesTable.getValueAt(numIntervals-1, 5) !=  infinity*/) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
-				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 			
 			}else  {
 				getInfiniteNegativeDoubleButton().setVisible(false);
-				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			}
 			
 		} else if (isUpMonotony()) {
 			if (row == 0 && column == 5
-					 && valuesTable.getValueAt(0, 5) !=  infinity) {
+					/* && valuesTable.getValueAt(0, 5) !=  infinity*/) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
-				getInfiniteNegativeDoubleButton().setVisible(false);
+				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 3
-					&& valuesTable.getValueAt(numIntervals-1, 3) != minusInfinity) {
+					/*&& valuesTable.getValueAt(numIntervals-1, 3) != minusInfinity*/) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
-				getInfinitePositiveDoubleButton().setVisible(false);
+				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			}
 			else  {

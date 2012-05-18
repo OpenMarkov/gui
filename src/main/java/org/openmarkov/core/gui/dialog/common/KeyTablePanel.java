@@ -351,6 +351,20 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 
 		addValueButton.setEnabled( enabled );
 	}
+	
+	public void setEnabledRemoveValue(boolean enabled) {
+
+		removeValueButton.setEnabled( enabled );
+	}
+	public void setEnabledDownValue(boolean enabled) {
+
+		downValueButton.setEnabled( enabled );
+	}
+	public void setEnabledUpValue(boolean enabled) {
+
+		upValueButton.setEnabled( enabled );
+	}
+	
 
 	/**
 	 * This method initializes removeValueButton.

@@ -182,11 +182,12 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		}
 		
 		// Paint branch information
-		if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES ||branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED ) {
+		if (branch.getTopVariable().getVariableType() == VariableType.FINITE_STATES 
+				|| branch.getTopVariable().getVariableType() == VariableType.DISCRETIZED) {
 			leftLabel.setText (getHTML (branch));
 		} else if (branch.getTopVariable().getVariableType() == VariableType.NUMERIC ) {
 			leftLabel.setText (getHTMLNumeric (branch));
-		}
+		} 
 		return this;
 		
 	}
@@ -321,7 +322,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		String txtIzq="<html><table border=1>";
 		Variable topVariable = treeBranch.getTopVariable();
 
-		if (topVariable == null || topVariable.getVariableType() != VariableType.FINITE_STATES ) {
+		if (topVariable == null || topVariable.getVariableType() == VariableType.NUMERIC) {
 			throw new RuntimeException();
 		}
 		else {
@@ -379,13 +380,27 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 			Threshold max = treeBranch. getMaxThreshold ();
 			
 			String intervalString= "";
+			String minimun = "";
+			String maximun = "";
 			intervalString += !min.belongsToLeft() ? "[" : "(";
-					
-			intervalString += min.getLimit();
+			
+			if (min.getLimit() == Double.NEGATIVE_INFINITY) {
+				minimun = "-" + "\u221E";
+			} else {
+				minimun = String.valueOf(min.getLimit());
+			}
+			
+			intervalString += minimun;
 				
 			intervalString += ", ";
+			
+			if (max.getLimit() == Double.POSITIVE_INFINITY) {
+				maximun = "\u221E";
+			} else {
+				maximun =  String.valueOf(max.getLimit());
+			}
 						
-			intervalString += max.getLimit();
+			intervalString += maximun;
 						
 			intervalString += max.belongsToLeft() ? "]" : ")";
 			
@@ -396,5 +411,6 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		return txtIzq;
 	}
 
+	
 }
 
