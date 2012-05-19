@@ -2480,6 +2480,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 		networkPanel.getMainPanel().getMainPanelMenuAssistant()
 				.updateOptionsFindingsDependent(networkPanel);
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.updateOptionsPropagationTypeDependent(networkPanel);//..
 		repaint();
 
 	}

@@ -289,7 +289,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 *            information of the network panel.
 	 */
 	public void updateOptionsNetworkDependent(NetworkPanel networkPanel) {
-
+		
 		currentNetworkPanel = networkPanel;
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
@@ -328,21 +328,22 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				setOptionEnabled(
 						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
 				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
-				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 			}
 		} else {
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
 			setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
 			updateOptionsEvidenceCasesNavigation(networkPanel);
-			if (networkPanel.isAutomaticPropagation()) {
+			if (networkPanel.isPropagationActive()) {
 				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 			} else {
 				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, true);
 			}
 		}
-		updateOptionsFindingsDependent(networkPanel);
-		mainPanel.changeWorkingModeButton(workingMode);
 
+		updateOptionsFindingsDependent(networkPanel);
+		updatePropagateEvidenceButton();
+		mainPanel.changeWorkingModeButton(workingMode);
+		
 		/*
 		 * for (NodeType type : networkPanel.getNetwork().getNetworkType()
 		 * .getNodeTypes()) { switch (type) { case CHANCE: {
@@ -359,7 +360,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				networkPanel.getSelectedLinks(),
 				networkPanel.getSelectedInstances());
 		setZoom(networkPanel.getZoom());
-
 		/*
 		 * updateUndoRedo(networkPanel.getUndoManager().canUndo(),
 		 * networkPanel.getUndoManager().canUndo());
@@ -451,7 +451,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
 			setOptionEnabled(ActionCommands.CREATE_NEW_EVIDENCE_CASE, true);
 			updateOptionsEvidenceCasesNavigation(networkPanel);
-			if (networkPanel.isAutomaticPropagation()) {
+			if (networkPanel.isPropagationActive()) {
 				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 			} else {
 				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, true);
@@ -461,7 +461,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
-			setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 		}
 		objectsSelected(networkPanel.getSelectedNodes(),
 				networkPanel.getSelectedLinks(),
@@ -515,7 +514,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 *            information of the network panel.
 	 */
 	public void updateOptionsPropagationTypeDependent(NetworkPanel networkPanel) {
-		if (networkPanel.isAutomaticPropagation()) {
+		if (networkPanel.isPropagationActive()) { 
 			setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, false);
 		} else {
 			if (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
@@ -842,5 +841,23 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.SAVEAS_NETWORK, value);
 		setOptionEnabled(ActionCommands.NETWORK_PROPERTIES, value);
 		setOptionEnabled(ActionCommands.CLOSE_NETWORK, value);	
+	}
+	
+	/**
+	 * Shows or hides 'Propagate evidence' option from menu and toolbar.
+	 * 
+	 * @param value
+	 *            indicates if options should be enabled or disabled.
+	 */
+	public void updatePropagateEvidenceButton() {
+		if (getCurrentNetworkPanel().isAutomaticPropagation()){
+			mainPanel.getInferenceToolBar().removePropagateNowButton();
+			mainPanel.getMainMenu().removePropagateNowItem();
+		} else {		
+			mainPanel.getInferenceToolBar().addPropagateNowButton();
+			mainPanel.getMainMenu().addPropagateNowItem();
+		}
+		updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
+		updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
 	}
 }

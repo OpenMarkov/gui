@@ -1079,6 +1079,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 		mainPanel.getMainPanelMenuAssistant()
 				.updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
+		mainPanel.getMainPanelMenuAssistant()
+				.updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
 	}
 
 	/**
@@ -1086,17 +1088,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void setInferenceOptions() {
 		getCurrentNetworkPanel().setInferenceOptions();
-		if (getCurrentNetworkPanel().isAutomaticPropagation()){
-			mainPanel.getInferenceToolBar().removePropagateNowButton();
-			mainPanel.getMainMenu().removePropagateNowItem();
-		} else {		
-			mainPanel.getInferenceToolBar().addPropagateNowButton();
-			mainPanel.getMainMenu().addPropagateNowItem();
-		}
 		mainPanel.getMainPanelMenuAssistant().
-			updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
-		mainPanel.getMainPanelMenuAssistant().
-			updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
+			updatePropagateEvidenceButton(); 
 	}
 
 	/**
