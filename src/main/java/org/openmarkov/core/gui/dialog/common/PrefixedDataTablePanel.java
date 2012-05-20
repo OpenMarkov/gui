@@ -251,7 +251,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					nodes.add(pProbNode.getNode());
 				} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 					/*JOptionPane.showMessageDialog(this, stringResource
 							.getString( e.getMessage() ),
 							stringResource.getString( e.getMessage() ),
