@@ -162,6 +162,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 *            parents of the variable
 	 */
 	public void setData(ProbNode properties) {
+		this.probNode = properties;
+		iciValuesTable.setData(probNode);
 		Object[][] tableData = null;
 		String[] newColumns = null;
 		if (properties.getPotentials() != null) {

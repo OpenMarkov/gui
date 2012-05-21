@@ -163,7 +163,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	
 	private StringResource messageStringResource;
 
-	private ProbNode probNode;
+	protected ProbNode probNode;
 	/**
 	 * Define the last column of the table that was modified
 	 */
