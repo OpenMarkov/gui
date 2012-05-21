@@ -190,6 +190,16 @@ public class VisualInstance extends VisualElement {
 	public Point2D.Double getPosition() {
 
 		return new Point2D.Double(dimensions[0], dimensions[1]);
+	}
+	
+	/**
+	 * Returns the center of the instance.
+	 * 
+	 * @return center of the node in the screen.
+	 */
+	public Point2D.Double getCenter() {
+
+		return new Point2D.Double(dimensions[0]+ dimensions[2]/2, dimensions[1]+dimensions[3]/2);
 	}	
 	
 	public void move(double diffX, double diffY) {

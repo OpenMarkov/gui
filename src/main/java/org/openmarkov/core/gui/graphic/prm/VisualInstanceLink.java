@@ -46,9 +46,9 @@ public class VisualInstanceLink extends VisualArrow {
 	 */
 	@Override
 	public void paint(Graphics2D g) {
-
-		setStartPoint(sourceInstance.getPosition());
-		setEndPoint(destinationInstance.getPosition());
+		
+		setStartPoint(sourceInstance.getCenter());
+		setEndPoint(destinationInstance.getCenter());
 		
 		super.paint(g);
 	}	

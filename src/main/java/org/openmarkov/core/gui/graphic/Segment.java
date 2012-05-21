@@ -19,7 +19,7 @@ import java.awt.geom.Point2D;
  * @author jmendoza
  * @version 1.0
  */
-class Segment {
+public class Segment {
 
 	/**
 	 * Constant that defines normal segments (no vertical).
