@@ -216,8 +216,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         if (potentialTypeComboBox == null) {
             List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode); 
             potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
-//            potentialTypeComboBox = new JComboBox( relationTypeManager.getAllPotentialsNames ().toArray () );
-            
+            potentialTypeComboBox.setSelectedItem(probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationType.class).name ());            
             potentialTypeComboBox.setBorder( new LineBorder( UIManager.getColor(
                     "List.dropLineColor" ), 1, false ) );
             potentialTypeComboBox.setName( "jComboBoxRelationType" );
