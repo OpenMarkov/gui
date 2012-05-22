@@ -27,7 +27,6 @@ public class PotentialPanelManager
     
     private PluginLoaderIF                                   pluginsLoader;
     private HashMap<String, Class<? extends PotentialPanel>> potentialPanelClasses;
-    private HashMap<String, PotentialPanel>                  potentialPanelPool;
 
     /**
      * Constructor for PotentialPanelManager.
@@ -52,7 +51,6 @@ public class PotentialPanelManager
                                                  "PotentialPanelPlugin annotation must be in a class that extends PotentialPanel");
             }
         }
-        potentialPanelPool = new HashMap<String, PotentialPanel> ();
     }
     
     public static PotentialPanelManager getInstance()
@@ -72,28 +70,21 @@ public class PotentialPanelManager
     public final PotentialPanel getPotentialPanel (String potentialType, ProbNode probNode)
     {
         PotentialPanel instance = null;
-        if(potentialPanelPool.get (potentialType) !=null)
+        if (potentialPanelClasses.get (potentialType) != null)
         {
-            instance = potentialPanelPool.get (potentialType);
-            instance.setData (probNode);
-        }else
+            try
+            {
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
+                instance = constructor.newInstance (probNode);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace ();
+            }
+        }
+        if (instance == null)
         {
-            if (potentialPanelClasses.get (potentialType) != null)
-            {
-                try
-                {
-                    Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
-                    instance = constructor.newInstance (probNode);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace ();
-                }
-            }
-            if (instance == null)
-            {
-                instance = new EmptyPotentialPanel (probNode);
-            }
+            instance = new EmptyPotentialPanel (probNode);
         }
         return instance;
     }
@@ -111,44 +102,26 @@ public class PotentialPanelManager
         PotentialPanel instance = null;
         if (potentialPanelClasses.get (potentialFamily) != null)
         {
-            if (potentialPanelPool.get (potentialFamily) != null)
+            try
             {
-                instance = potentialPanelPool.get (potentialFamily);
-                instance.setData (probNode);
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (ProbNode.class);
+                instance = constructor.newInstance (probNode);
             }
-            else
+            catch (Exception e)
             {
-                try
-                {
-                    Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (ProbNode.class);
-                    instance = constructor.newInstance (probNode);
-                    potentialPanelPool.put (potentialFamily, instance);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace ();
-                }
+                e.printStackTrace ();
             }
         }
         if (potentialPanelClasses.get (potentialType) != null)
         {
-            if (potentialPanelPool.get (potentialType) != null)
+            try
             {
-                instance = potentialPanelPool.get (potentialType);
-                instance.setData (probNode);
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
+                instance = constructor.newInstance (probNode);
             }
-            else
+            catch (Exception e)
             {
-                try
-                {
-                    Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
-                    instance = constructor.newInstance (probNode);
-                    potentialPanelPool.put (potentialType, instance);
-                }
-                catch (Exception e)
-                {
-                	e.printStackTrace ();
-                }
+            	e.printStackTrace ();
             }
         }
         if (instance == null)
