@@ -37,6 +37,8 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	
 	private ProbNet probNet;
 
+	private NetworkAdvancedPanel networkAdvancedPanel;
+
 	/**
 	 * This method initializes this instance.
 	 * 
@@ -124,6 +126,10 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 				dialogStringResource
 					.getString("NetworkPropertiesDialog.VariablesTab.Label"),
 				null, getNetworkVariablesPanel(), null);
+			tabbedPane.addTab(
+					dialogStringResource
+						.getString("NetworkPropertiesDialog.Advanced.Label"),
+					null, getNetworkAdvancedPanel(), null);
 
 			tabbedPane
 				.addTab(
@@ -137,6 +143,20 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 
 	}
 
+	/**
+	 * This method initialises networkAdvancedPanel.
+	 * 
+	 * @return a new definition panel.
+	 */
+	private NetworkAdvancedPanel getNetworkAdvancedPanel() {
+
+		if (networkAdvancedPanel == null) {
+			networkAdvancedPanel = new NetworkAdvancedPanel(newNetwork, 
+					probNet);
+			networkAdvancedPanel.setName("networkAdvancedPanel");
+		}	
+		return networkAdvancedPanel;
+		}
 	/**
 	 * This method initialises networkDefinitionPanel.
 	 * 

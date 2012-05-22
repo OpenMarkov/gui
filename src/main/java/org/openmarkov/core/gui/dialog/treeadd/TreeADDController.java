@@ -1278,7 +1278,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		TreeADDBranch treeADDBranch = (TreeADDBranch)branch;
 		
 		Potential potential = treeADDBranch.getPotential();
-		//TODO the  probNet constructor receives a networkTypeconstraint as parameter
+	
 		ProbNet dummyProbNet= new ProbNet ();
 
 		dummyProbNet.addPotential (potential);
