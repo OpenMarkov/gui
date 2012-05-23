@@ -39,6 +39,7 @@ public class AddStatesCheckBoxPanel extends JPanel {
 		initialize();
 		repaint();
 	}
+	
 	 public void initialize() {
 		 setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		 //setLayout(new BorderLayout());

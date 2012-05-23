@@ -11,6 +11,7 @@ import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.model.network.AdditionalProperties;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -89,17 +90,22 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	 public void setFieldFromProperties (ProbNet probNet) {
 		 Object [][] data = null;
 		 StringsWithProperties agents = probNet.getAgents();
-		 Set<String> agentsNames = agents.getStrings();
-		 Iterator<String> iterator = agentsNames.iterator();
-		 if (!agents.isEmpty()) {
+		 //if (!agents.isEmpty()) {
+		 if (agents != null) {
+			 Set<String> agentsNames = agents.getNames();
+			 Iterator<String> iterator = agentsNames.iterator();
+		
 			 int i = 0;
 			 while (iterator.hasNext()) {
 				 String name = (String) iterator.next();
+				// AdditionalProperties additionalPorperties =  agents.getProperties(name);
 				 if (name != null) {
 					 data [i][0] = name;
 					 i++;
 				 }
 			 }
+			 
+			 //agents.getProperties(string)
 			 getNetworkAgentsPanel().setData(data);
 		 }
 	}

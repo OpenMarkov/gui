@@ -17,10 +17,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -28,6 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
@@ -38,6 +41,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -49,11 +53,15 @@ import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
+import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
+import org.openmarkov.core.gui.dialog.node.StandarDomainPanel;
+import org.openmarkov.core.gui.dialog.node.StandarDomainsDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -132,6 +140,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 	 * Infinite Positive Button
 	 */
 	private JButton jButtonInfiniteNegativeDouble = null;
+	/**
+	 * Button to select variable states.
+	 */
+	protected JButton standarDomainButton = null;
 
 	/**
 	 * resource bundle
@@ -786,6 +798,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 						groupLayout.createSequentialGroup()
 							.addGroup(
 								groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+									.addComponent( getStandarDomainButton(),
+												GroupLayout.DEFAULT_SIZE,
+												55,
+												Short.MAX_VALUE)
 									.addComponent(getAddValueButton(),
 												GroupLayout.DEFAULT_SIZE,
 												55,
@@ -820,6 +836,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			    groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 					.addGroup(
 					    groupLayout.createSequentialGroup()
+					    .addComponent(getStandarDomainButton())
+						.addGap(5, 5, 5)
 						.addComponent(getAddValueButton())
 						.addGap(5, 5, 5)
 						.addComponent(getRemoveValueButton())
@@ -836,6 +854,28 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			
 		}
 		return buttonPanel;
+	}
+
+	/**
+	 * This method initializes upValueButton.
+	 * 
+	 * @return a new up value button.
+	 */
+	public JButton getStandarDomainButton() {
+
+		if (standarDomainButton == null) {
+			standarDomainButton = new JButton();
+			standarDomainButton.setName( "KeyTablePanel.standarDomainButton" );
+			standarDomainButton.setText( stringResource.getString( "StandarDomain.Text.Label") );
+			/*standarDomainButton.setMnemonic( stringResource.getString(
+				"StandarDomain.Text.Mnemonic" ).charAt( 0 ) );
+			.setIcon( iconLoader
+				.load( IconLoader.ICON_ARROW_UP_ENABLED ) );*/
+			standarDomainButton.setVisible( true );
+			standarDomainButton.setEnabled( true );
+			//standarDomainButton.addActionListener( this );
+		}
+		return standarDomainButton;
 	}
 
 	/**
@@ -1232,9 +1272,98 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			actionPerformedInfinitePositiveValue();
 		} else if (e.getSource().equals(this.jButtonInfiniteNegativeDouble)) {
 			actionPerformedInfiniteNegativeValue();
-		}
+		}/* else if (e.getSource().equals(this.standarDomainButton)) {
+			actionPerformedStandarDomain();
+		}*/
 	}
 
+	/*protected void actionPerformedStandarDomain() {
+		StandarDomainsDialog standarDomainDialog = new StandarDomainsDialog(Utilities.getOwner(this));
+		if (standarDomainDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+		
+			 
+			 ArrayList<JRadioButton> radioButtons = ((StandarDomainPanel)(standarDomainDialog.getJPanelStandarDomains())).getRadioButtons();
+			 int index = 0;
+			 String states;
+			 
+			 for (int j = 0; j < radioButtons.size(); j++) {
+				 if (radioButtons.get(j).isSelected()) {
+					 index = j;
+					 states = radioButtons.get(j).getName();
+				 }
+			 }
+			int i= 0;
+			State [] newStates = new State[DefaultStates.getByIndex(index).length];
+			for (String str : DefaultStates.getByIndex(index)){
+				newStates[i] = new State(str);
+				i++;
+			}
+			NodeReplaceStatesEdit nodeReplaceStatesEdit = 
+					new NodeReplaceStatesEdit(probNode,newStates);
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(
+							nodeReplaceStatesEdit);
+					probNode.getProbNet().getPNESupport().doEdit(
+							nodeReplaceStatesEdit);
+					this.removeAll();
+					try {
+						initialize();
+						setFieldsFromProperties(probNode);
+					
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
+					}
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				}
+		}
+	}*/
 	/**
 	 * Invoked when the button 'add' is pressed.
 	 */

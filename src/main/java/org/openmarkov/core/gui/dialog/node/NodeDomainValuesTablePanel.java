@@ -13,11 +13,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.ItemSelectable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -74,7 +77,7 @@ import org.openmarkov.core.model.network.VariableType;
  * @version 1.1 mkpalacio
  * @author myebra
  */
-public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
+public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, ActionListener{
 	
 	/**
 	 * serial uid
@@ -256,10 +259,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 							.addContainerGap()
 							.addComponent(getJLabelNodeVariableType(),GroupLayout.DEFAULT_SIZE, 49,	Short.MAX_VALUE ))
 						.addGroup(groupLayout.createSequentialGroup().addContainerGap()
-								/*******/
+							
 								//.addComponent(getJLabelUnit(), GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE )
 								//.addPreferredGap(ComponentPlacement.RELATED)
-								/******/
+							
 								//.addComponent(getJFormattedTextFieldUnit(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )
 								.addComponent(getJLabelPrecision(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )))
 						.addPreferredGap(ComponentPlacement.RELATED)
@@ -282,7 +285,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 							.addComponent(getJComboBoxStatesValues(), 
 									GroupLayout.PREFERRED_SIZE, 
 									GroupLayout.DEFAULT_SIZE, 
-									GroupLayout.PREFERRED_SIZE)))
+									GroupLayout.PREFERRED_SIZE)
+									))
 					.addContainerGap(266, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
@@ -311,7 +315,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 									GroupLayout.PREFERRED_SIZE, 
 									GroupLayout.DEFAULT_SIZE, 
 									GroupLayout.PREFERRED_SIZE)
-							.addComponent(getJLabelDomainValues())))
+							.addComponent(getJLabelDomainValues())
+							))
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(18)
@@ -351,7 +356,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 		);
 		
 		setLayout(groupLayout);
-		
+		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
 		
 	}
 
@@ -457,6 +462,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
     			jRadioButtonMonotonyDown.setSelected(true);
     			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
 				((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
+				getJLabelDomainValues().setVisible(false);
+				getJComboBoxStatesValues().setVisible(false);
+				((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(true);
+				((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(true);
     			/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
     			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);*/
 				// node comment title
@@ -514,6 +523,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledRemoveValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledUpValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledDownValue(false);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(false);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(false);
 					
 					/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
 	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);*/
@@ -542,6 +553,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setUpMonotony(false);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
+					getJLabelDomainValues().setVisible(false);
+					getJComboBoxStatesValues().setVisible(false);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(true);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(true);
 	    			/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
 	    				setEnablePanelButton(true);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
@@ -658,6 +673,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			jLabelStatesValues.setText("a Label");
 			jLabelStatesValues.setText(dialogStringResource.getString(
 					"NodeDomainValuesTablePanel.jLabelStatesValues.Text"));
+			jLabelStatesValues.setVisible(false);
+			jLabelStatesValues.setEnabled(false);
 		}
 		return jLabelStatesValues;
 	}
@@ -687,7 +704,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 			jComboBoxStatesValues = new JComboBox(GUIDefaultStates
 					.getListStrings());
 			jComboBoxStatesValues.setName("jComboBoxStatesValues");
-			jComboBoxStatesValues.addItemListener(listener);
+			//jComboBoxStatesValues.addItemListener(listener);
+			jComboBoxStatesValues.setEnabled(false);
+			jComboBoxStatesValues.setVisible(false);
+			
 		}
 		return jComboBoxStatesValues;
 	}
@@ -1114,7 +1134,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 	
 	private JComboBox getJComboBoxNodeVariableType() {
 
-		if (jComboBoxStatesValues == null) {
+		if (jComboBoxNodeVariableType == null) {
 			jComboBoxNodeVariableType = new JComboBox();
 			jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
 			jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
@@ -1324,6 +1344,101 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener{
 
 	public boolean isUploadingData() {
 		return uploadingData;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource().equals(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton())) {
+			actionPerformedStandarDomain();
+		}
+		
+	}
+
+	protected void actionPerformedStandarDomain() {
+		StandarDomainsDialog standarDomainDialog = new StandarDomainsDialog(Utilities.getOwner(this));
+		if (standarDomainDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+			
+			ArrayList<JRadioButton> radioButtons = ((StandarDomainPanel)(standarDomainDialog.getJPanelStandarDomains())).getRadioButtons();
+			 int index = 0;
+			 String states;
+			 
+			 for (int j = 0; j < radioButtons.size(); j++) {
+				 if (radioButtons.get(j).isSelected()) {
+					 index = j;
+					 states = radioButtons.get(j).getName();
+				 }
+			 }
+			int i= 0;
+			State [] newStates = new State[DefaultStates.getByIndex(index).length];
+			for (String str : DefaultStates.getByIndex(index)){
+				newStates[i] = new State(str);
+				i++;
+			}
+			NodeReplaceStatesEdit nodeReplaceStatesEdit = 
+					new NodeReplaceStatesEdit(probNode,newStates);
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(
+							nodeReplaceStatesEdit);
+					probNode.getProbNet().getPNESupport().doEdit(
+							nodeReplaceStatesEdit);
+					this.removeAll();
+					try {
+						initialize();
+						setFieldsFromProperties(probNode);
+					
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, messageStringResource
+								.getString( e.getMessage() ),
+							messageStringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
+					}
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				}
+		}
 	}
 	
 }

@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.StringsWithProperties;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
@@ -38,7 +39,12 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		switch (stateAction){
 		case ADD:
-			//probNet.
+			StringsWithProperties agents = probNet.getAgents();
+			if (agents == null) {
+				agents = new StringsWithProperties();
+			}
+			agents.put(newAgent);
+			probNet.setAgents(agents);
 			break;
 		case REMOVE:
 			break;

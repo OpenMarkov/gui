@@ -109,6 +109,7 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	 * Button to delete an existing value.
 	 */
 	protected JButton removeValueButton = null;
+	
 
 	/**
 	 * String resource.
@@ -296,7 +297,7 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		}
 		return upValueButton;
 	}
-
+	
 	/**
 	 * This method initializes downValueButton.
 	 * 
