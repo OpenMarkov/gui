@@ -19,6 +19,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
+import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -38,7 +39,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	private NetworkAgentTableModel netWorkAgentstableModel;
 
 	public NetworkAgentsTablePanel(String[] newColumns, ProbNet probNet){
-		this(newColumns, new Object[0][0], "s");
+		this(newColumns, new Object[0][0], "a");
 		this.probNet = probNet;
 	}
 	
@@ -80,7 +81,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 
 		// center the data in all columns
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
-		tcr.setHorizontalAlignment(SwingConstants.CENTER);
+		tcr.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
 		statesRender.setHorizontalAlignment(SwingConstants.LEFT);
@@ -188,15 +189,17 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
+			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			
 			 StringsWithProperties agents = probNet.getAgents();
 			 setDataFromNetworkAgents(agents);
+			 getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			 
-			//getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
+			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			//valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
-			valuesTable.setValueAt(option, newIndex, 1);
+			valuesTable.setValueAt(option, newIndex, 1);*/
 		}
 	}
 	
@@ -222,14 +225,113 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	
 	@Override
 	protected void actionPerformedRemoveValue() {
-		
+		int selectedRow = valuesTable.getSelectedRow();
+		String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
+		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+				StateAction.REMOVE, selectedRow, agentName);
+		try {
+			probNet.getPNESupport().announceEdit(networkAgentEdit);
+			probNet.getPNESupport().doEdit(networkAgentEdit);
+			
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*StringsWithProperties agents = probNet.getAgents();
+		 setDataFromNetworkAgents(agents);*/
+		getTableModel().removeRow(selectedRow);
+		valuesTable.getSelectionModel().setSelectionInterval(
+				selectedRow, selectedRow);
 	}
 	@Override
 	protected void actionPerformedUpValue() {
-		
+		int selectedRow = valuesTable.getSelectedRow();
+		Object swap = null;
+		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+				StateAction.UP, selectedRow, "");
+		try {
+			probNet.getPNESupport().announceEdit(networkAgentEdit);
+			probNet.getPNESupport().doEdit(networkAgentEdit);
+			
+			swap = valuesTable.getValueAt(selectedRow, 1);
+			valuesTable.setValueAt(
+				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
+			valuesTable.setValueAt(swap, selectedRow - 1, 1);
+			valuesTable.getSelectionModel().setSelectionInterval(
+				selectedRow - 1, selectedRow - 1);
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	protected void actionPerformedDownValue() {
+		int selectedRow = valuesTable.getSelectedRow();
+		Object swap = null;
 		
+		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+				StateAction.DOWN, selectedRow, "");
+		try {
+			probNet.getPNESupport().announceEdit(networkAgentEdit);
+			probNet.getPNESupport().doEdit(networkAgentEdit);
+			
+			swap = valuesTable.getValueAt(selectedRow, 1);
+			valuesTable.setValueAt(
+				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
+			valuesTable.setValueAt(swap, selectedRow + 1, 1);
+			valuesTable.getSelectionModel().setSelectionInterval(
+				selectedRow + 1, selectedRow + 1);
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

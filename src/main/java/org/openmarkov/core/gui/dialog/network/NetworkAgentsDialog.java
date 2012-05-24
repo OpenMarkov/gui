@@ -76,7 +76,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 
 	private NetworkAgentsTablePanel getNetworkAgentsPanel() {
 		if (newtworkAgentsPanel == null) {
-			String[] columnNames = {"Agents"};
+			String[] columnNames = {"Key", "Agents"};
 			newtworkAgentsPanel = new NetworkAgentsTablePanel(columnNames, probNet);
 			newtworkAgentsPanel.setName("networkAgentsPanel");
 			newtworkAgentsPanel.setBorder(new EmptyBorder(0, 0, 0, 0));

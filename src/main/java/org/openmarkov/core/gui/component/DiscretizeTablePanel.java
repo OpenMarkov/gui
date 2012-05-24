@@ -1539,10 +1539,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 					valuesTable.setValueAt(valuesTable.getValueAt(selectedRow-1, upperLimitValueColumnNum), selectedRow, lowLimitValueColumnNum);
 				}
 				
-					
 				
-				
-				probNode.getVariable();
 			}
 		} catch (ConstraintViolationException e) {
 			JOptionPane.showMessageDialog(this, messageStringResource.getString(
