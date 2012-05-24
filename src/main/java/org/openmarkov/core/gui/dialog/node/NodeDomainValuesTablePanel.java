@@ -356,7 +356,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		);
 		
 		setLayout(groupLayout);
-		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
+		//(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
 		
 	}
 
@@ -384,7 +384,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		
 		setUploadingData(true);
 		jComboBoxStatesValues.removeItemListener(this);
-	
+		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).removeActionListener( this );
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
@@ -570,6 +570,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 		}
 		jComboBoxStatesValues.addItemListener(this);
+		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
 		setUploadingData(false);
 	}
 
@@ -1348,15 +1349,19 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource().equals(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton())) {
-			actionPerformedStandarDomain();
-		}
+		String actionComand= arg0.getActionCommand();	
+		/*if (arg0.getSource().equals(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton())) {
+			actionPerformedStandarDomain(arg0);
+		}*/
+		if (actionComand.equals ("StandarDomain")) {
+			actionPerformedStandarDomain(arg0);
+		}	
 		
 	}
 
-	protected void actionPerformedStandarDomain() {
+	 void actionPerformedStandarDomain(ActionEvent arg0) {
 		StandarDomainsDialog standarDomainDialog = new StandarDomainsDialog(Utilities.getOwner(this));
-		if (standarDomainDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+		if (standarDomainDialog.requestValues() == StandarDomainsDialog.OK_BUTTON) {
 			
 			ArrayList<JRadioButton> radioButtons = ((StandarDomainPanel)(standarDomainDialog.getJPanelStandarDomains())).getRadioButtons();
 			 int index = 0;

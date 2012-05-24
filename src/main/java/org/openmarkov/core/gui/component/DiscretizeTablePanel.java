@@ -15,14 +15,13 @@ package org.openmarkov.core.gui.component;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -30,7 +29,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
@@ -41,7 +39,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -53,15 +50,11 @@ import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
-import org.openmarkov.core.gui.dialog.node.StandarDomainPanel;
-import org.openmarkov.core.gui.dialog.node.StandarDomainsDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -873,6 +866,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 				.load( IconLoader.ICON_ARROW_UP_ENABLED ) );*/
 			standarDomainButton.setVisible( true );
 			standarDomainButton.setEnabled( true );
+			standarDomainButton.setActionCommand("StandarDomain");
 			//standarDomainButton.addActionListener( this );
 		}
 		return standarDomainButton;

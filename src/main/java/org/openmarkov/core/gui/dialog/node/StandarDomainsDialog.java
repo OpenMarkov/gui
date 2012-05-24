@@ -15,6 +15,7 @@ import org.openmarkov.core.gui.dialog.treeadd.AddStatesCheckBoxPanel;
  * @author maryebra
  *
  */
+@SuppressWarnings("serial")
 public class StandarDomainsDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	private JPanel standarDomainsPanel;
