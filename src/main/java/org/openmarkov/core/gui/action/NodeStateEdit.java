@@ -12,17 +12,22 @@ package org.openmarkov.core.gui.action;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 
 
@@ -72,6 +77,16 @@ public class NodeStateEdit extends SimplePNEdit {
 	 * 	The last states before the edition
 	 */
 	private State[] lastStates;
+	/***
+	 * Map with the link restriction potential for each link.
+	 */
+	private Map<Link, double[]> linkRestrictionMap;
+	/***
+	 * Map with the revelation condition list for each link.
+	 */
+	private Map<Link, ArrayList> revelationConditionMap;
+	
+	
 	/**
 	 * Creates a new <code>NodeStateEdit</code> to carry out the specified 
 	 * action on the specified state.
@@ -94,6 +109,8 @@ public class NodeStateEdit extends SimplePNEdit {
 		this.currentPartitionedInterval = probNode.getVariable().
 			getPartitionedInterval();
 		this.lastStates = probNode.getVariable().getStates().clone();
+		this.linkRestrictionMap = new HashMap<Link, double[]>();
+		this.revelationConditionMap = new HashMap<Link, ArrayList>();
 	}
 	
 	
@@ -149,6 +166,7 @@ public class NodeStateEdit extends SimplePNEdit {
 						newPartitionedInterval);
 			}
 			stateSelected ++;
+			resetLink(probNode.getNode());
 			break;
 		case REMOVE:
 				newObjectState = new State [probNode.getVariable().
@@ -214,7 +232,7 @@ public class NodeStateEdit extends SimplePNEdit {
 					probNode.getVariable().setPartitionedInterval(new PartitionedInterval(limits, belongs));
 					
 				}
-				
+				resetLink(probNode.getNode());
 				break;
 		case DOWN:
 			if (stateSelected > 0){
@@ -222,7 +240,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				probNode.getVariable().getStates()[stateSelected-1] = 
 					probNode.getVariable().getStates()[stateSelected];
 				probNode.getVariable().getStates()[stateSelected] = state;
-				
+				resetLink(probNode.getNode());
 			}
 			break;
 		case UP:
@@ -231,7 +249,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				probNode.getVariable().getStates()[stateSelected+1] = 
 					probNode.getVariable().getStates()[stateSelected];
 				probNode.getVariable().getStates()[stateSelected] = state;
-				
+				resetLink(probNode.getNode());
 			}
 				
 			break;
@@ -274,6 +292,29 @@ public class NodeStateEdit extends SimplePNEdit {
 				DISCRETIZED){
 				probNode.getVariable().setPartitionedInterval(
 						currentPartitionedInterval);
+		}
+		
+		for (Link link : linkRestrictionMap.keySet()) {
+			try {
+				link.initializesRestrictionsPotential();
+				TablePotential restrictionPotential = (TablePotential) link
+						.getRestrictionsPotential();
+				restrictionPotential.setValues(linkRestrictionMap.get(link));
+
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for (Link link : revelationConditionMap.keySet()) {
+			VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
+					.getVariableType();
+			if ((varType == VariableType.NUMERIC)) {
+				link.setRevealingIntervals(revelationConditionMap.get(link));
+			} else {
+				link.setRevealingStates(revelationConditionMap.get(link));
+			}
+
 		}
 			
 	}
@@ -358,6 +399,43 @@ public class NodeStateEdit extends SimplePNEdit {
  				limits[ stateSelected], "," , limits[ stateSelected + 1], 
  				secondSymbol };
 		
+	}
+	
+	
+	/****
+	 * This method resets the link restriction and revelation conditions of the
+	 * links of the node
+	 * 
+	 * @param node
+	 */
+	private void resetLink(Node node) {
+		
+		for (Link link : node.getLinks()) {
+			if (link.hasRestrictions()) {
+				try {
+					double[] lastPotential = ((TablePotential) link
+							.getRestrictionsPotential()).values.clone();
+					linkRestrictionMap.put(link, lastPotential);
+					link.resetRestrictionsPotential();
+				} catch (NotEnoughMemoryException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			if (link.hasRevealingConditions()) {
+				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
+						.getVariableType();
+				if (varType == VariableType.NUMERIC) {
+					this.revelationConditionMap.put(link,
+							link.getRevealingIntervals());
+					link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
+				} else {
+					this.revelationConditionMap.put(link,
+							link.getRevealingStates());
+					link.setRevealingStates(new ArrayList<State>());
+				}
+			}
+		}
 	}
 		
 }

@@ -157,6 +157,9 @@ public class VisualLink extends VisualArrow {
 		}
 		if (link.hasRevealingConditions()) {
 			setLinkColor(REVELATION_ARC_COLOR);
+		}else
+		{
+			setLinkColor(Color.black);
 		}
 		
 		setDoubleStriped(link.hasRestrictions());
