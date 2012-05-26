@@ -310,6 +310,12 @@ public class ActionCommands {
 	
 	public static final String LINK_RESTRICTION_DISABLE_PROPERTIES = "LinkRestrictionDisableProperties";
 	
+	/****
+	 * Action invoked when the user wants to disable the linkRestrictions of a link.
+	 */
+	
+	public static final String LINK_RESTRICTION_EDIT_PROPERTIES = "LinkRestrictionEditProperties";
+	
 	
 	/****
 	 * Action invoked when the user wants to show the revlationArc conditions of a link,

@@ -780,7 +780,15 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								(linkRestrictionEnabled));
+								(linkRestrictionEnabled && !link.getLink()
+										.hasRestrictions()));
+				
+				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
+				.setOptionEnabled(
+						ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
+						(linkRestrictionEnabled && link.getLink()
+								.hasRestrictions()));
+				
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
@@ -3176,7 +3184,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
 		if (!links.isEmpty()) {
 			Link link = links.get(0).getLink();
-			link.resetRestrictionsPotential();
+			link.setRestrictionsPotential(null);
 			repaint();
 		}
 	}

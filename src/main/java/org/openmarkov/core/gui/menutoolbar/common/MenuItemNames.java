@@ -177,6 +177,12 @@ public class MenuItemNames
     public static final String EDIT_LINKRESTRICTION_DISABLE_MENUITEM =
         EDIT_MENU + ".LinkRestrictionDisable";
     
+    /**
+     * Constant that defines the item 'Edit - Link edit linkRestrictions'.
+     */
+    public static final String EDIT_LINKRESTRICTION_EDIT_MENUITEM =
+        EDIT_MENU + ".LinkRestrictionEdit";
+    
     
     /**
      * Constant that defines the item 'Edit - Link revelationArc'.

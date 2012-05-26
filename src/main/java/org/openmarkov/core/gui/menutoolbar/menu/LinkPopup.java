@@ -44,6 +44,12 @@ class LinkPopup extends PopupMenuBasic {
 	private JMenuItem linkRestrictionEnableMenuItem = null;
 
 	/**
+	 * Object that represents the item 'Edit restriction'.
+	 */
+	private JMenuItem linkRestrictionEditMenuItem = null;
+
+	
+	/**
 	 * Object that represents the item 'Remove restriction'.
 	 */
 	private JMenuItem linkRestrictionDisableMenuItem = null;
@@ -82,11 +88,14 @@ class LinkPopup extends PopupMenuBasic {
 		 * This item must be added to the menu when is active the possibility of
 		 * editing the adittionalProperties of a link in future versions.
 		 */
-		// addSeparator();
-		// add(getPropertiesMenuItem());
+	
+		addSeparator();
 		add(getLinkRestrictionEnableMenuItem());
+		add(getLinkRestrictionEditMenuItem());
 		add(getLinkRestrictionDisableMenuItem());
+		addSeparator();
 		add(getRevelationArcMenuItem());
+		addSeparator();
 		getPropertiesMenuItem();
 
 	}
@@ -142,6 +151,24 @@ class LinkPopup extends PopupMenuBasic {
 		}
 
 		return linkRestrictionDisableMenuItem;
+
+	}
+	
+	/**
+	 * This method initialises the editLinkRestriction menu item.
+	 * 
+	 * @return a new 'LinkRestrictionEdit' menu item.
+	 */
+	private JMenuItem getLinkRestrictionEditMenuItem() {
+
+		if (linkRestrictionEditMenuItem == null) {
+			linkRestrictionEditMenuItem = new LocalizedMenuItem(
+					MenuItemNames.EDIT_LINKRESTRICTION_EDIT_MENUITEM,
+					ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES);
+			linkRestrictionEditMenuItem.addActionListener(listener);
+		}
+
+		return linkRestrictionEditMenuItem;
 
 	}
 
@@ -202,7 +229,13 @@ class LinkPopup extends PopupMenuBasic {
 		} else if (actionCommand
 				.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
 			component = linkRestrictionDisableMenuItem;
-		} else if (actionCommand
+		}
+		else if (actionCommand
+				.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
+			component = linkRestrictionEditMenuItem;
+		}
+		
+		else if (actionCommand
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			component = revelationArcMenuItem;
 		}

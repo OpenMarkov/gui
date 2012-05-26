@@ -315,7 +315,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else if (actionCommand
 				.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableLinkRestriction();
-		} else if (actionCommand
+		}else if (actionCommand
+				.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
+			this.getCurrentNetworkPanel().enableLinkRestriction();
+		} 
+		else if (actionCommand
 				.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
 			this.getCurrentNetworkPanel().disableLinkRestriction();
 		}else if (actionCommand
