@@ -20,6 +20,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.gui.action.NodeStateEdit;
+import org.openmarkov.core.gui.component.DiscretizeTableModel;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -37,6 +38,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	private StringResource dialogStringResource;
 	private ProbNet probNet;
 	private NetworkAgentTableModel netWorkAgentstableModel;
+	private Object dataTable [][];
 
 	public NetworkAgentsTablePanel(String[] newColumns, ProbNet probNet){
 		this(newColumns, new Object[0][0], "a");
@@ -67,6 +69,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	public void setData(Object[][] newData) {
 
 		if (newData != null) {
+			//dataTable = newData;
 			data = fillDataKeys(newData);
 			//tableModel = new DefaultTableModel(data, columns);
 			netWorkAgentstableModel = new NetworkAgentTableModel (data, columns); 
@@ -76,7 +79,12 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			this.defineTableLookAndFeel();
 		}
 	}
-	
+	/*private Object [][] getDataTable() {
+		return dataTable;
+	}*/
+	public void setDataTable (Object [][] dataTable){
+		this.dataTable = dataTable;
+	}
 	protected void defineTableLookAndFeel() {
 
 		// center the data in all columns
@@ -88,14 +96,9 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		
 		int maxColumn = valuesTable.getColumnModel().getColumnCount();
 		
-		
-		
 		for (int i = 1; i < maxColumn; i++) {
 			TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
 			aColumn.setCellRenderer(tcr);
-			aColumn.setPreferredWidth(110);
-			aColumn.setMaxWidth(110);
-			aColumn.setMinWidth(110);
 			valuesTable.getTableHeader().getColumnModel().getColumn(i)
 							.setCellRenderer(tcr);
 		}
@@ -144,9 +147,51 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 
 	}
 	@Override
-	public void tableChanged(TableModelEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void tableChanged(TableModelEvent tableEvent) {
+		int column = tableEvent.getColumn();
+		int row = tableEvent.getLastRow();
+		if (tableEvent.getType()== TableModelEvent.UPDATE) {
+			//String agentName = "";
+			//= probNet.getAgents().get ;
+			String agentName = (String) dataTable[row][0];
+			String newName = (String) ((NetworkAgentTableModel)tableEvent.getSource()).
+					getValueAt(row, column);
+			 dataTable[row][0] = newName;
+			if (agentName != newName) {
+			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+					StateAction.RENAME, newName, agentName, dataTable);
+			try {
+				probNet.getPNESupport().announceEdit(networkAgentEdit);
+				probNet.getPNESupport().doEdit(networkAgentEdit);
+				
+			} catch (DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			 setData(dataTable);
+			//StringsWithProperties agents = probNet.getAgents();
+			//setDataFromNetworkAgents(agents);
+			//tableModel.setValueAt(newName, row, column);
+			 valuesTable.getSelectionModel().setSelectionInterval(row, row);
+		}
+		}
 	}
 	@Override
 	protected void actionPerformedAddValue() {
@@ -163,7 +208,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			newIndex = valuesTable.getRowCount();
 
 			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-					StateAction.ADD, newIndex, option);
+					StateAction.ADD, "", option, null);
 			//doEdit
 			try {
 				probNet.getPNESupport().announceEdit(networkAgentEdit);
@@ -189,14 +234,19 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
-			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
+			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);*/	
 			
 			 StringsWithProperties agents = probNet.getAgents();
 			 setDataFromNetworkAgents(agents);
+			 //setDataFromNetworkAgentsCorrectOrder(agents);
 			 getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			 
+			 dataTable = new Object [valuesTable.getRowCount()][1];
+			 for (int i = 0; i < valuesTable.getRowCount(); i++) {
+					dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+				}
 			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			//valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			valuesTable.setValueAt(option, newIndex, 1);*/
@@ -223,12 +273,54 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		 }
 	 } 
 	
+	/*private void setDataFromNetworkAgentsCorrectOrder (StringsWithProperties agents) {
+		Object [][] tableData =new Object [agents.getNames().size()][1];
+		 if (agents != null) {
+			 Set<String> agentsNames = agents.getNames();
+			 Iterator<String> iterator = agentsNames.iterator();
+		
+			 int i = 0;
+			 while (iterator.hasNext()) {
+				 String name = (String) iterator.next();
+				 if (name != null) {
+					 tableData [i][0] = name;
+					 i++;
+				 }
+			 }
+			 if (dataTable == null) {
+				 dataTable= tableData;
+				 setData(dataTable);
+			 } else {
+			  String newAgent = ""; 
+			 for (int j = 0; j < tableData.length; j++) {
+				 boolean exists = false;
+				 for (int k = 0; k < dataTable.length; k++ ) {
+					 if (tableData[j][0] == dataTable[k][0]) {
+						 exists = true;
+					 } 
+				 }
+				 if (!exists) {
+					 newAgent = (String) tableData[j][0];
+					 break;
+				 }
+				
+			 }
+			 Object [][] newData = new Object [agents.getNames().size()][1];
+			 for (int m = 0 ; m < dataTable.length; m++) {
+				 newData [m][0] = dataTable [m][0];
+			 }
+			 newData[agents.getNames().size()-1][0] = newAgent;
+			 setData (newData);
+			 }
+		 }
+	}*/
+	
 	@Override
 	protected void actionPerformedRemoveValue() {
 		int selectedRow = valuesTable.getSelectedRow();
 		String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-				StateAction.REMOVE, selectedRow, agentName);
+				StateAction.REMOVE, "", agentName, null);
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
@@ -253,26 +345,35 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		/*StringsWithProperties agents = probNet.getAgents();
-		 setDataFromNetworkAgents(agents);*/
+		StringsWithProperties agents = probNet.getAgents();
+		setDataFromNetworkAgents(agents);
 		getTableModel().removeRow(selectedRow);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);
+		dataTable = new Object [agents.getNames().size()][1];
+		for (int i = 0; i < valuesTable.getRowCount(); i++) {
+			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		}
 	}
 	@Override
 	protected void actionPerformedUpValue() {
 		int selectedRow = valuesTable.getSelectedRow();
 		Object swap = null;
+		swap = dataTable[selectedRow][0];
+		dataTable[selectedRow][0] = dataTable[selectedRow-1][0];
+		dataTable[selectedRow-1][0] = swap; 
+		
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-				StateAction.UP, selectedRow, "");
+				StateAction.UP, "", "", dataTable);
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
 			
-			swap = valuesTable.getValueAt(selectedRow, 1);
+			setData(dataTable);
+			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
-			valuesTable.setValueAt(swap, selectedRow - 1, 1);
+			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow - 1, selectedRow - 1);
 		} catch (DoEditException e) {
@@ -295,22 +396,32 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for (int i = 0; i < valuesTable.getRowCount(); i++) {
+			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		}
+		
 	}
 	@Override
 	protected void actionPerformedDownValue() {
 		int selectedRow = valuesTable.getSelectedRow();
 		Object swap = null;
+		swap = dataTable[selectedRow][0];
+		dataTable[selectedRow][0] = dataTable[selectedRow+1][0]; 
+		dataTable[selectedRow+1][0] = swap;
+		
 		
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-				StateAction.DOWN, selectedRow, "");
+				StateAction.DOWN, "", "", dataTable);
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
 			
-			swap = valuesTable.getValueAt(selectedRow, 1);
+			setData(dataTable);
+			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
-			valuesTable.setValueAt(swap, selectedRow + 1, 1);
+			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow + 1, selectedRow + 1);
 		} catch (DoEditException e) {
@@ -333,5 +444,11 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for (int i = 0; i < valuesTable.getRowCount(); i++) {
+			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		}
 	}
+
+	
 }

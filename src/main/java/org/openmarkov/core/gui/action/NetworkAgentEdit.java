@@ -26,16 +26,24 @@ import org.openmarkov.core.model.network.potential.operation.PotentialOperations
  * @author myebra
  *
  */
+@SuppressWarnings("serial")
 public class NetworkAgentEdit extends SimplePNEdit {
 	
 	private String agentName;
+	private String newName;
 	private int agentIndex;
 	private StateAction stateAction;
+	private StringsWithProperties lastAgents;
+	private Object [][]dataTable;
 
-	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, int agentIndex, String agentName) {
+	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 		super(probnet);
+		probNet.getPNESupport().setWithUndo(true);
 		this.agentName = agentName;
 		this.stateAction = stateAction;
+		this.newName = newName;
+		this.lastAgents = probnet.getAgents();
+		this.dataTable = dataTable;
 	}
 
 	@Override
@@ -50,29 +58,40 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			probNet.setAgents(agents);
 			break;
 		case REMOVE:
-			Set<String> names = agents.getNames();
-			Iterator<String> iterator = names.iterator();
-			
-			 int i = 0;
-			 while (iterator.hasNext()) {
-				 String name = (String) iterator.next();
-				 if (name == agentName) {
-					 agents.remove(agentName, null);
-					 i++;
-				 }
-			 }
+			 agents.remove(agentName);
+			 probNet.setAgents(agents);
 			break;
 		case DOWN:
-			
+			StringsWithProperties newAgentsDown = new StringsWithProperties();
+			for (int i = 0; i < dataTable.length; i++) {
+				newAgentsDown.put((String)dataTable[i][0]);
+			}
+			probNet.setAgents(newAgentsDown);
 			break;
 		case UP:
+			StringsWithProperties newAgentsUp = new StringsWithProperties();
+			for (int i = 0; i < dataTable.length; i++) {
+				newAgentsUp.put((String)dataTable[i][0]);
+			}
+			probNet.setAgents(newAgentsUp);
 			break;
 		case RENAME:
+			//agents.rename(agentName, newName);
+			StringsWithProperties newAgentsRename = new StringsWithProperties();
+			for (int i = 0; i < dataTable.length; i++) {
+				newAgentsRename.put((String)dataTable[i][0]);
+			}
+			probNet.setAgents(newAgentsRename);
 			break;
 			
 		}
 		
 		
+	}
+	@Override
+	public void undo() {
+		super.undo();
+		probNet.setAgents(lastAgents);
 	}
 
 }

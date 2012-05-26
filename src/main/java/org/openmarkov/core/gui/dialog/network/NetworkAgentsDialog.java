@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -90,23 +91,24 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	 public void setFieldFromProperties (ProbNet probNet) {
 		 Object [][] data = null;
 		 StringsWithProperties agents = probNet.getAgents();
-		 //if (!agents.isEmpty()) {
+		 
 		 if (agents != null) {
+			 data =new Object [agents.getNames().size()][1];
 			 Set<String> agentsNames = agents.getNames();
 			 Iterator<String> iterator = agentsNames.iterator();
 		
 			 int i = 0;
 			 while (iterator.hasNext()) {
 				 String name = (String) iterator.next();
-				// AdditionalProperties additionalPorperties =  agents.getProperties(name);
 				 if (name != null) {
 					 data [i][0] = name;
 					 i++;
 				 }
 			 }
-			 
-			 //agents.getProperties(string)
-			 getNetworkAgentsPanel().setData(data);
+			 //initializing data structure for the table model
+			getNetworkAgentsPanel().setData(data);
+			// initializing data structure for supervising data order in GUI 
+			getNetworkAgentsPanel().setDataTable(data);
 		 }
 	}
 	 
@@ -114,4 +116,25 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	       setVisible(true);
 	       return selectedButton;
 	    }
+		/**
+		 * This method carries out the actions when the user press the Ok button
+		 * before hide the dialog.
+		 * 
+		 * @return true if the dialog box can be closed.
+		 * @throws NotEnoughMemoryException 
+		 */
+		protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+			probNet.getPNESupport().closeParenthesis();
+			return true;
+		}
+
+		/**
+		 * This method carries out the actions when the user press the Cancel button
+		 * before hide the dialog.
+		 */
+		protected void doCancelClickBeforeHide() {
+			probNet.getPNESupport().closeParenthesis();
+			
+		}
+
 }

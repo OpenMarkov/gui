@@ -101,6 +101,7 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 		if (networkAgentsDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			//TODO edits agents values
 		}
+	
 	}
 	
 	protected void actionPerformedDecisionCriteria() {
