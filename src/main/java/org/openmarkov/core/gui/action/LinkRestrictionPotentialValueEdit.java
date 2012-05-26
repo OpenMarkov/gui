@@ -60,7 +60,8 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		this.node2 = (ProbNode) link.getNode2().getObject();
 		this.col = col;
 		this.row = row;
-		this.tablePotential = (TablePotential) link.getRestrictionsPotential();
+		this.tablePotential = (TablePotential) link
+		.getRestrictionsPotential();
 		this.newValue = newValue;
 		this.lastTable = ((TablePotential) link.getRestrictionsPotential())
 				.getValues().clone();
@@ -76,37 +77,63 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		link.setCompatibilityValue(state1, state2, this.newValue.intValue());
 		newTable = ((TablePotential) link.getRestrictionsPotential()).values
 				.clone();
-		
+
 	}
 
 	public void redo() {
 		this.setTypicalRedo(false);
 		super.redo();
+		if (!link.hasRestrictions()) {
+			try {
+				link.initializesRestrictionsPotential();
+				this.tablePotential = (TablePotential) link
+				.getRestrictionsPotential();
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		tablePotential.setValues(newTable);
-
+		checkRestrictionPotential(newTable);
 	}
 
-	
-	 
 	public void undo() {
 		super.undo();
+		if (!link.hasRestrictions()) {
+			try {
+				link.initializesRestrictionsPotential();
+				this.tablePotential = (TablePotential) link
+				.getRestrictionsPotential();
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		tablePotential.setValues(lastTable);
-		
+		checkRestrictionPotential(lastTable);
 	}
 
 	public TablePotential getPotential() {
 		return tablePotential;
 	}
+
 	/**
-	 * Gets the row position associated to value edited if priorityList no exists
-	 * @param position position of the value in the array of values
+	 * Gets the row position associated to value edited if priorityList no
+	 * exists
+	 * 
+	 * @param position
+	 *            position of the value in the array of values
 	 * @return the position in the table
 	 */
 	public int getRowPosition() {
-		return  row;
+		return row;
 	}
+
 	/**
 	 * Gets the column where the value is edited
+	 * 
 	 * @return the column edited
 	 */
 	public int getColumnPosition() {
@@ -117,5 +144,19 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		return newValue;
 	}
 
+	public void checkRestrictionPotential(double[] table) {
+		boolean hasRestriction = false;
+
+		for (int i = 0; i < table.length && !hasRestriction; i++) {
+			if (table[i] == 0) {
+				hasRestriction = true;
+			}
+		}
+		if (!hasRestriction) {
+			tablePotential = null;
+			this.link.setRestrictionsPotential(tablePotential);
+		}
+
+	}
 
 }

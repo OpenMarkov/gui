@@ -109,6 +109,7 @@ public class LinkRestrictionEditDialog extends
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+	
 		getLinkRestrictionPanel().saveChanges();
 		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
 				.closeParenthesis();
@@ -117,6 +118,7 @@ public class LinkRestrictionEditDialog extends
 
 	@Override
 	protected void doCancelClickBeforeHide() {
+	
 		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
 				.closeParenthesis();
 

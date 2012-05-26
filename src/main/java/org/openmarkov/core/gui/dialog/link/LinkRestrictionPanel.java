@@ -2,10 +2,8 @@ package org.openmarkov.core.gui.dialog.link;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-
 import javax.swing.JScrollPane;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.component.LinkRestrictionCellRenderer;
 import org.openmarkov.core.gui.component.LinkRestrictionValuesTable;
 import org.openmarkov.core.gui.component.LinkRestrictionValuesTableModel;
@@ -163,7 +161,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 					Integer value = (Integer) valuesTable.getValueAt(row,
 							column);
 					Integer newValue = (value.equals(1) ? 0 : 1);
-					valuesTable.setValueAt(newValue, row,column);
+					valuesTable.setValueAt(newValue, row, column);
 				}
 
 			}
@@ -349,7 +347,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		((ValuesTableModel) valuesTable.getModel())
 				.setFirstEditableRow(firstEditableRow);
 		valuesTable.setLastEditableRow(lastEditableRow);
-	
+
 	}
 
 	/**
@@ -378,8 +376,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void saveChanges() throws NotEnoughMemoryException {
-		// TODO Auto-generated method stub
+	public void saveChanges() {
 
 	}
 
