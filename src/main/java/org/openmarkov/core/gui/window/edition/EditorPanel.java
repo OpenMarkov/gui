@@ -824,6 +824,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 			getPopupMenu(PopupMenuFactory.NETWORK).show(this, e.getX(),
 					e.getY());
 		}
+		networkPanel.getMainPanel().getMainPanelMenuAssistant()
+				.objectsSelected(networkPanel.getSelectedNodes(), 
+						networkPanel.getSelectedLinks(), 
+						networkPanel.getSelectedInstances());
 	}
 
 	/**
@@ -2607,6 +2611,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
 		// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
 		// ...INFLUENCE DIAGRAMS IS COMPLETE
+		if (!(propagationSucceded)) {
+			setPropagationActive(false);
+			repaint();
+		}
 		return propagationSucceded;
 	}
 	
