@@ -25,6 +25,7 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 	private boolean newNetwork;
 	private JButton agentsButton;
 	private JButton decisionCriteriaButton;
+	private boolean newElement;
 
 	/**
 	 * This method initialises this instance.
@@ -97,9 +98,12 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 	}
 	
 	protected void actionPerformedAgents() {
-		NetworkAgentsDialog networkAgentsDialog = new NetworkAgentsDialog(Utilities.getOwner(this), probNet);
-		if (networkAgentsDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+		NetworkAgentsDialog networkAgentsDialog = new NetworkAgentsDialog(Utilities.getOwner(this), probNet, newNetwork);
+		/*if (networkAgentsDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			//TODO edits agents values
+		}*/
+		if (networkAgentsDialog.requestValues() == NodePropertiesDialog.CANCEL_BUTTON) {
+			//probNet.getPNESupport().undo();
 		}
 	
 	}

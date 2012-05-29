@@ -33,9 +33,14 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	
 	private ProbNet probNet;
 	
-	public NetworkAgentsDialog(Window owner, ProbNet probNet) {
+	public NetworkAgentsDialog(Window owner, ProbNet probNet, boolean newElement) {
 		super(owner);
 		this.probNet = probNet;
+		/*if (!newElement) {
+			probNet.getPNESupport().setWithUndo(true);
+		}*/
+		probNet.getPNESupport().setWithUndo(true);
+		probNet.getPNESupport().openParenthesis();
 		initialize();
 		setName("NetworkAgentsDialog");
 		setLocationRelativeTo(owner);
@@ -58,7 +63,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	private void configureComponentsPanel() {
 
 		getComponentsPanel().add(getNetworkAgentsPanel());
-		setFieldFromProperties(probNet);
+		//setFieldFromProperties(probNet);
 	}
 	/**
 	 * This method initialises componentsPanel.
@@ -113,6 +118,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	}
 	 
 	 public int requestValues() {
+		 setFieldFromProperties(probNet);
 	       setVisible(true);
 	       return selectedButton;
 	    }

@@ -52,11 +52,11 @@ public class NodeStateEdit extends SimplePNEdit {
 	/**
 	 * The last state before the edition
 	 */
-	private State lastState = new State("");
+	private State oldState = new State("");
 	/**
 	 * index of the state selected in the view
 	 */
-	private int stateSelected;
+	private int selectedStateIndex;
 	/**
 	 * The node that the stats belongs to 
 	 */
@@ -64,7 +64,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	/**
 	 * 	The last potential before the edition
 	 */
-	private ArrayList<Potential> lastPotential;
+	private ArrayList<Potential> oldPotential;
 	/**
 	 * The action to carry out
 	 */
@@ -76,7 +76,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	/**
 	 * 	The last states before the edition
 	 */
-	private State[] lastStates;
+	private State[] oldStates;
 	/***
 	 * Map with the link restriction potential for each link.
 	 */
@@ -86,6 +86,8 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 	private Map<Link, ArrayList> revelationConditionMap;
 	
+	private String oldName;
+	
 	
 	/**
 	 * Creates a new <code>NodeStateEdit</code> to carry out the specified 
@@ -93,22 +95,23 @@ public class NodeStateEdit extends SimplePNEdit {
 	 * 
 	 * @param probNode the node that will be edited.
 	 * @param stateAction the action to carry out
-	 * @param indexState the index (in the table) associated to the state
+	 * @param stateIndex the index (in the table) associated to the state
 	 * 	 to edit 
-	 * @param newState a new string for the state edited if the action is ADD. 
+	 * @param newName a new string for the state edited if the action is ADD. 
 	 */
 	public NodeStateEdit ( ProbNode probNode,
-			StateAction stateAction, int indexState, String newState){
+			StateAction stateAction, int stateIndex, String newName){
 		super(probNode.getProbNet());
 		this.probNode = probNode;
-		this.newState = new State (newState);
-		this.stateSelected = probNode.getVariable().getNumStates() - (
-				indexState + 1 ) ;
-		this.lastPotential = probNode.getPotentials();
+		this.newState = new State (newName);
+		this.oldName = probNode.getVariable().getStateName(stateIndex);
+		this.selectedStateIndex = probNode.getVariable().getNumStates() - (
+				stateIndex + 1 ) ;
+		this.oldPotential = probNode.getPotentials();
 		this.stateAction = stateAction;
 		this.currentPartitionedInterval = probNode.getVariable().
 			getPartitionedInterval();
-		this.lastStates = probNode.getVariable().getStates().clone();
+		this.oldStates = probNode.getVariable().getStates().clone();
 		this.linkRestrictionMap = new HashMap<Link, double[]>();
 		this.revelationConditionMap = new HashMap<Link, ArrayList>();
 	}
@@ -165,7 +168,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				probNode.getVariable().setPartitionedInterval(
 						newPartitionedInterval);
 			}
-			stateSelected ++;
+			selectedStateIndex ++;
 			resetLink(probNode.getNode());
 			break;
 		case REMOVE:
@@ -174,7 +177,7 @@ public class NodeStateEdit extends SimplePNEdit {
 				int i1=0;
 				boolean found = false;
 				for (State states: probNode.getVariable().getStates()){
-					if (i1 != stateSelected || found == true){
+					if (i1 != selectedStateIndex || found == true){
 						newObjectState[i1] = states;
 						i1++;
 					}else
@@ -210,7 +213,7 @@ public class NodeStateEdit extends SimplePNEdit {
 					double []oldLimits = currentPartitionedInterval.getLimits();
 					boolean []oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
 					
-					int positionToRemove = (oldLimits.length -1) -stateSelected ;
+					int positionToRemove = (oldLimits.length -1) -selectedStateIndex ;
 					
 					ArrayList<Double> newLimits = new ArrayList<Double>(oldLimits.length-1);
 					ArrayList<Boolean> newBelongs = new ArrayList<Boolean>(oldLimits.length-1);
@@ -235,28 +238,28 @@ public class NodeStateEdit extends SimplePNEdit {
 				resetLink(probNode.getNode());
 				break;
 		case DOWN:
-			if (stateSelected > 0){
-				State state = probNode.getVariable().getStates()[stateSelected-1];
-				probNode.getVariable().getStates()[stateSelected-1] = 
-					probNode.getVariable().getStates()[stateSelected];
-				probNode.getVariable().getStates()[stateSelected] = state;
+			if (selectedStateIndex > 0){
+				State state = probNode.getVariable().getStates()[selectedStateIndex-1];
+				probNode.getVariable().getStates()[selectedStateIndex-1] = 
+					probNode.getVariable().getStates()[selectedStateIndex];
+				probNode.getVariable().getStates()[selectedStateIndex] = state;
 				resetLink(probNode.getNode());
 			}
 			break;
 		case UP:
-			if (stateSelected < probNode.getVariable().getNumStates()){
-				State state = probNode.getVariable().getStates()[stateSelected+1];
-				probNode.getVariable().getStates()[stateSelected+1] = 
-					probNode.getVariable().getStates()[stateSelected];
-				probNode.getVariable().getStates()[stateSelected] = state;
+			if (selectedStateIndex < probNode.getVariable().getNumStates()){
+				State state = probNode.getVariable().getStates()[selectedStateIndex+1];
+				probNode.getVariable().getStates()[selectedStateIndex+1] = 
+					probNode.getVariable().getStates()[selectedStateIndex];
+				probNode.getVariable().getStates()[selectedStateIndex] = state;
 				resetLink(probNode.getNode());
 			}
 				
 			break;
 		case RENAME:
-			if (stateSelected >= 0 && stateSelected < probNode.getVariable().
+			if (selectedStateIndex >= 0 && selectedStateIndex < probNode.getVariable().
 					getNumStates()){
-				State state= probNode.getVariable().getStates()[stateSelected];
+				State state= probNode.getVariable().getStates()[selectedStateIndex];
 				state.setName(newState.getName());
 			}
 			break;
@@ -271,45 +274,54 @@ public class NodeStateEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		ArrayList<Node> nodes;
-		probNode.getVariable().setStates(lastStates);
-		probNode.setUniformPotential();
-		//Update children information
-		nodes = probNode.getNode().getChildren();
-		for (Node node:nodes){
-			ProbNode child = (ProbNode)node.getObject();
-			child.setUniformPotential();
-		}
-		
-		if (probNode.getVariable().getVariableType() == VariableType.
-				DISCRETIZED){
-				probNode.getVariable().setPartitionedInterval(
-						currentPartitionedInterval);
-		}
-		
-		for (Link link : linkRestrictionMap.keySet()) {
-			try {
-				link.initializesRestrictionsPotential();
-				TablePotential restrictionPotential = (TablePotential) link
-						.getRestrictionsPotential();
-				restrictionPotential.setValues(linkRestrictionMap.get(link));
-
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		switch (stateAction){
+		case RENAME:
+			oldState.setName(oldName);
+			break;
+		default:
+			probNode.getVariable().setStates(oldStates);
+			probNode.setUniformPotential();
+			//Update children information
+			nodes = probNode.getNode().getChildren();
+			for (Node node:nodes){
+				ProbNode child = (ProbNode)node.getObject();
+				child.setUniformPotential();
 			}
-		}
-		for (Link link : revelationConditionMap.keySet()) {
-			VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
-					.getVariableType();
-			if ((varType == VariableType.NUMERIC)) {
-				link.setRevealingIntervals(revelationConditionMap.get(link));
-			} else {
-				link.setRevealingStates(revelationConditionMap.get(link));
-			}
-
-		}
 			
+			if (probNode.getVariable().getVariableType() == VariableType.
+					DISCRETIZED){
+					probNode.getVariable().setPartitionedInterval(
+							currentPartitionedInterval);
+			}
+			
+			for (Link link : linkRestrictionMap.keySet()) {
+				try {
+					link.initializesRestrictionsPotential();
+					TablePotential restrictionPotential = (TablePotential) link
+							.getRestrictionsPotential();
+					restrictionPotential.setValues(linkRestrictionMap.get(link));
+
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (Link link : revelationConditionMap.keySet()) {
+				VariableType varType = ((ProbNode) link.getNode1().getObject()).getVariable()
+						.getVariableType();
+				if ((varType == VariableType.NUMERIC)) {
+					link.setRevealingIntervals(revelationConditionMap.get(link));
+				} else {
+					link.setRevealingStates(revelationConditionMap.get(link));
+				}
+
+			}
+				
+		}
+		
 	}
+	
+	//TODO redo() implementation
 		
 	/**
 	 * Gets the new state created if the action was ADD
@@ -323,7 +335,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	 * @return the new state
 	 */
 	public State getLastState(){
-		return lastState;
+		return oldState;
 	}
 	public ProbNode getProbNode(){
 		return probNode;
@@ -382,13 +394,13 @@ public class NodeStateEdit extends SimplePNEdit {
 			belongsToLeftSide = probNode.getVariable().
 				getPartitionedInterval().getBelongsToLeftSide();
 	
-			firstSymbol = (belongsToLeftSide[stateSelected]? "(" : "[");
-			secondSymbol = (belongsToLeftSide[stateSelected + 1]? "]" : ")");
+			firstSymbol = (belongsToLeftSide[selectedStateIndex]? "(" : "[");
+			secondSymbol = (belongsToLeftSide[selectedStateIndex + 1]? "]" : ")");
 					
 		}
 		return new Object[] {"", GUIDefaultStates.getString(probNode.getVariable().
- 				getStates()[stateSelected].getName()) , firstSymbol, 
- 				limits[ stateSelected], "," , limits[ stateSelected + 1], 
+ 				getStates()[selectedStateIndex].getName()) , firstSymbol, 
+ 				limits[ selectedStateIndex], "," , limits[ selectedStateIndex + 1], 
  				secondSymbol };
 		
 	}

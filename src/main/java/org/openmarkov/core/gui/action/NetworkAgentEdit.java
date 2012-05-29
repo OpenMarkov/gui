@@ -38,7 +38,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 		super(probnet);
-		probNet.getPNESupport().setWithUndo(true);
+		//probNet.getPNESupport().setWithUndo(true);
 		this.agentName = agentName;
 		this.stateAction = stateAction;
 		this.newName = newName;

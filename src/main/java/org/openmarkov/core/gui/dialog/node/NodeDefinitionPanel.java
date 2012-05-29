@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.gui.dialog.node;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
+import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -31,6 +33,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.openmarkov.core.action.NodeAlwaysObservedEdit;
 import org.openmarkov.core.action.NodeCommentEdit;
@@ -51,6 +55,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Purpose;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.StringsWithProperties;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
@@ -62,6 +67,8 @@ import org.openmarkov.core.model.network.VariableType;
  */
 public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		ItemListener, CommentListener, ActionListener {
+
+	private JComboBox jComboBoxNetworkAgents;
 
 	/**
 	 * constructor without construction parameters
@@ -78,9 +85,29 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 *            - the element that will sent events to this class
 	 */
 	public NodeDefinitionPanel(ProbNode probNode) {
-
+		
 		this(true);// , notifier );
 		this.probNode = probNode;
+		
+		try {
+			initialize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, messageStringResource
+					.getString( e.getMessage() ),
+				messageStringResource.getString( e.getMessage() ),
+				JOptionPane.ERROR_MESSAGE );
+
+		}
+		if (probNode.getProbNet().getAgents()!= null) {
+			getJComboBoxNetworkAgents().setEnabled(true);
+			getJComboBoxNetworkAgents().setVisible(true);
+			jLabelNetworkAgents.setVisible(true);
+		} else {
+			getJComboBoxNetworkAgents().setEnabled(false);
+			getJComboBoxNetworkAgents().setVisible(false);
+			jLabelNetworkAgents.setVisible(false);
+		}
 		getJComboBoxNodePurpose().setEnabled(true);
 		getJComboBoxNodeRelevance().setEnabled(true);
 		if (!AlwaysObservedPropertyValidator.isValid(probNode)) {
@@ -108,7 +135,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		this.newNode = newNode;
 
 		// this.notifier = notifier;
-		try {
+		/*try {
 			initialize();
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -117,7 +144,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				messageStringResource.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 
-		}
+		}*/
 
 	}
 
@@ -176,7 +203,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		setPreferredSize(new Dimension(500, 245));
 		setFocusCycleRoot(true);
 
-		final GroupLayout groupLayout = new GroupLayout(this);
+		
+	/*	final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout
 				.setHorizontalGroup(groupLayout
 						.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -188,6 +216,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 												groupLayout
 														.createParallelGroup(
 																GroupLayout.Alignment.LEADING)
+																
+														.addGroup(
+																groupLayout
+																.createSequentialGroup()
+																		.addComponent(
+																				getJLabelNetworkAgents())
+																		
+																		.addGap(55)
+																		.addComponent(
+																				getJComboBoxNetworkAgents()) 
+																				)
+															
 														.addGroup(
 																groupLayout
 																		.createSequentialGroup()
@@ -202,7 +242,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																				getJTextFieldNodeName(),
 																				GroupLayout.PREFERRED_SIZE,
 																				203,
-																				GroupLayout.PREFERRED_SIZE))
+																				GroupLayout.PREFERRED_SIZE)
+																				)
+														
 														.addGroup(
 																groupLayout
 																		.createSequentialGroup()
@@ -277,7 +319,22 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																																70,
 																																GroupLayout.PREFERRED_SIZE)
 
-																										)))))
+																										)
+																										/****/
+																										/*.addGap(12,
+																												12,
+																												12)
+
+																										.addComponent(
+																												getJLabelNetworkAgents())
+																												.addGap(12,
+																												12,
+																												12)
+
+																										.addComponent(
+																												getJComboBoxNetworkAgents())*/
+																										
+																							/*	))))
 										.addContainerGap()));
 		groupLayout
 				.setVerticalGroup(groupLayout
@@ -286,6 +343,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 								groupLayout
 										.createSequentialGroup()
 										.addGap(12, 12, 12)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																GroupLayout.Alignment.LEADING)
+														.addComponent(
+																getJLabelNetworkAgents())
+														.addComponent(
+																getJComboBoxNetworkAgents()))
+										.addGap(15, 15, 15)
 										.addGroup(
 												groupLayout
 														.createParallelGroup(
@@ -300,6 +366,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																GroupLayout.PREFERRED_SIZE,
 																20,
 																GroupLayout.PREFERRED_SIZE)
+													
 														.addComponent(
 																getJLabelAlwaysObserved(),
 																GroupLayout.DEFAULT_SIZE,
@@ -312,6 +379,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																GroupLayout.DEFAULT_SIZE))
 
 										.addGap(9, 9, 9)
+										
 										.addGroup(
 												groupLayout
 														.createParallelGroup(
@@ -343,8 +411,22 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																				getJComboBoxNodeRelevance(),
 																				GroupLayout.PREFERRED_SIZE,
 																				GroupLayout.DEFAULT_SIZE,
-																				GroupLayout.PREFERRED_SIZE)))
-										.addGap(9, 9, 9)
+																				GroupLayout.PREFERRED_SIZE)))*/
+														/*.addGroup(
+																groupLayout
+																		.createParallelGroup(
+																				GroupLayout.Alignment.BASELINE)
+																		.addComponent(
+																				getJLabelNetworkAgents(),
+																				GroupLayout.PREFERRED_SIZE,
+																				25,
+																				Short.MAX_VALUE)
+																		.addComponent(
+																				getJComboBoxNetworkAgents(),
+																				GroupLayout.PREFERRED_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.PREFERRED_SIZE)))*/
+									/*	.addGap(9, 9, 9)
 										.addGroup(
 												groupLayout
 														.createParallelGroup(
@@ -369,6 +451,84 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 																				62,
 																				150)
 																		.addContainerGap()))));
+		Component[] components = new Component [3];
+		components[0] = getJComboBoxNetworkAgents();
+		components[1] = getJComboBoxNodePurpose();
+		components[2] = getJComboBoxNodePurpose();
+		groupLayout.linkSize(components);
+		setLayout(groupLayout);*/
+		
+		GroupLayout groupLayout = new GroupLayout(this);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelNodeName())
+									.addGap(50)
+									.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelNodePurpose())
+									.addGap(42)
+									.addComponent(getJComboBoxNodePurpose(), 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGap(18)
+									.addComponent(getJLabelNetworkAgents()) 
+									.addGap(18)
+									.addComponent(getJComboBoxNetworkAgents(), GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+									)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelNodeRelevance())
+									.addGap(35)
+									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(getJLabelAlwaysObserved())
+									.addGap(35)
+									.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, 70 , GroupLayout.PREFERRED_SIZE)
+									
+									)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(getJTextAreaLabelNodeDefinitionComment())
+							.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), GroupLayout.PREFERRED_SIZE, 590,	Short.MAX_VALUE)))
+						.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJLabelNodeName())
+						.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 20/*GroupLayout.DEFAULT_SIZE*/, GroupLayout.PREFERRED_SIZE)
+						)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJLabelNodePurpose())
+						.addComponent(getJLabelNetworkAgents())
+						.addComponent(getJComboBoxNetworkAgents(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJLabelNodeRelevance(),GroupLayout.PREFERRED_SIZE, 25, Short.MAX_VALUE)
+						.addComponent(getJComboBoxNodeRelevance())
+						.addComponent(getJLabelAlwaysObserved())
+						.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						)
+					.addGap(21)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(getJTextAreaLabelNodeDefinitionComment())
+						.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(),GroupLayout.DEFAULT_SIZE,	62,	150))
+					.addContainerGap(77, Short.MAX_VALUE))
+		);
+		Component[] components = new Component [2];
+		components[0] = getJComboBoxNodePurpose();
+		components[1] = getJTextFieldNodeName();
+		groupLayout.linkSize(components);
+		
 		setLayout(groupLayout);
 	}
 
@@ -685,6 +845,30 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		}
 		return jLabelNodeRelevance;
 	}
+	
+	/**
+	 * This method initialises jLabelNodeName
+	 * 
+	 * @return a new name label.
+	 */
+	private JLabel getJLabelNetworkAgents() {
+
+		if (jLabelNetworkAgents == null) {
+			jLabelNetworkAgents = new JLabel();
+			jLabelNetworkAgents.setHorizontalTextPosition(SwingConstants.LEFT);
+			jLabelNetworkAgents.setHorizontalAlignment(SwingConstants.RIGHT);
+			jLabelNetworkAgents.setName("jLabelNetworkAgent");
+			//jLabelNetworkAgents.setText("a Label");
+			jLabelNetworkAgents.setText(dialogStringResource
+					.getString("NodeDefinitionPanel.jLabelNetworkAgents.Text"));
+			/*jLabelNetworkAgents.setDisplayedMnemonic(dialogStringResource
+					.getString(
+							"NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic")
+					.charAt(0));*/
+			jLabelNetworkAgents.setLabelFor(getJComboBoxNetworkAgents());
+		}
+		return jLabelNetworkAgents;
+	}
 
 	/**
 	 * initialize the content of the Combo box for the Node Relevance
@@ -776,6 +960,40 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 
 		}
 		return jComboBoxNodePurpose;
+	}
+	/**
+	 * initialize the content of the Combo box for the Node Purpose
+	 * 
+	 * @return the JComboBoxNodePurpose
+	 */
+	private JComboBox getJComboBoxNetworkAgents() {
+
+		if (jComboBoxNetworkAgents == null) {
+			StringsWithProperties agents = probNode.getProbNet().getAgents();
+			String [] agentNames = null;
+			if (agents != null) {
+				Set<String> names = agents.getNames();
+				agentNames = names.toArray(new String[names.size()]);
+				 String []auxAgentNames = names.toArray(new String[names.size()]);
+				 agentNames  = new String [names.size()+1];
+				 agentNames [0]= "";
+				 for (int i = 1; i < names.size()+1; i++) {
+					 agentNames[i] = auxAgentNames[i-1];
+				 }
+				
+			} else {
+				agentNames = new String[1]; 
+				agentNames[0] = "";
+			}
+			jComboBoxNetworkAgents = new JComboBox(agentNames);
+			jComboBoxNetworkAgents.setName("jComboBoxNodePurpose");
+			jComboBoxNetworkAgents.setSelectedIndex(0);
+			//jComboBoxNetworkAgents.setMaximumRowCount(9);
+			// jComboBoxNodePurpose.addItemListener( this );
+			jComboBoxNetworkAgents.setEditable(true);
+
+		}
+		return jComboBoxNetworkAgents;
 	}
 
 	/**
@@ -1219,6 +1437,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * The Node Variable Type Label
 	 */
 	private JLabel jLabelNodeVariableType = null;
+	/**
+	 * Network agents label
+	 */
+	private JLabel jLabelNetworkAgents = null;
 	/**
 	 * Panel that contains the variables type options group.
 	 */

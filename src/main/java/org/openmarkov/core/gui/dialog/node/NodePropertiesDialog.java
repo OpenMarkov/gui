@@ -134,7 +134,9 @@ public abstract class NodePropertiesDialog extends
 		this.probNode = probNode;
 		this.readOnly = readOnly;
 		this.newNode = newElement;
+		//setResizable(true);
 		initialize();
+		pack();
 		
 	}
 

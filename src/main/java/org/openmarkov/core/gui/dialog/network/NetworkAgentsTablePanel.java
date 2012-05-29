@@ -151,8 +151,6 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		int column = tableEvent.getColumn();
 		int row = tableEvent.getLastRow();
 		if (tableEvent.getType()== TableModelEvent.UPDATE) {
-			//String agentName = "";
-			//= probNet.getAgents().get ;
 			String agentName = (String) dataTable[row][0];
 			String newName = (String) ((NetworkAgentTableModel)tableEvent.getSource()).
 					getValueAt(row, column);
@@ -186,9 +184,6 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			}
 			
 			 setData(dataTable);
-			//StringsWithProperties agents = probNet.getAgents();
-			//setDataFromNetworkAgents(agents);
-			//tableModel.setValueAt(newName, row, column);
 			 valuesTable.getSelectionModel().setSelectionInterval(row, row);
 		}
 		}
@@ -239,7 +234,6 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			
 			 StringsWithProperties agents = probNet.getAgents();
 			 setDataFromNetworkAgents(agents);
-			 //setDataFromNetworkAgentsCorrectOrder(agents);
 			 getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			 
