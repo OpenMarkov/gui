@@ -58,7 +58,7 @@ public enum NetworkType {
 	
 	
 	/****
-	 * DAN
+	 * Decision Analysis Network
 	 */
 	
 	DAN(7),

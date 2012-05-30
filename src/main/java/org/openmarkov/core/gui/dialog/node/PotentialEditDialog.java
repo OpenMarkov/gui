@@ -40,8 +40,8 @@ import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.plugin.RelationType;
-import org.openmarkov.core.model.network.potential.plugin.RelationTypeManager;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). 
@@ -97,7 +97,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     /**
      * Relation Type Manager
      */
-    RelationTypeManager relationTypeManager;
+    RelationPotentialTypeManager relationTypeManager;
     
     /**
      * Panel of the graphic editor
@@ -168,7 +168,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
     private void initialize() {
 
-        relationTypeManager = new RelationTypeManager ();
+        relationTypeManager = new RelationPotentialTypeManager ();
         dialogStringResource =
             StringResourceLoader.getUniqueInstance().getBundleDialogs();
         messageStringResource =
@@ -216,7 +216,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         if (potentialTypeComboBox == null) {
             List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode); 
             potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
-            potentialTypeComboBox.setSelectedItem(probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationType.class).name ());            
+            potentialTypeComboBox.setSelectedItem(probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ());            
             potentialTypeComboBox.setBorder( new LineBorder( UIManager.getColor(
                     "List.dropLineColor" ), 1, false ) );
             potentialTypeComboBox.setName( "jComboBoxRelationType" );
@@ -283,7 +283,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
         //The element order in PotentialType object are same that 
         //JComboBoxRelationType
-        previouslySelectedPotentialType =  probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationType.class).name ();        
+        previouslySelectedPotentialType =  probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ();        
         getPotentialTypeJCombobox ().setSelectedItem (previouslySelectedPotentialType);     
         updatePotentialPanel (); 
         
