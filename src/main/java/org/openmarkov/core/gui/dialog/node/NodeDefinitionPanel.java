@@ -41,6 +41,7 @@ import org.openmarkov.core.action.NodeCommentEdit;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PurposeEdit;
 import org.openmarkov.core.action.RelevanceEdit;
+import org.openmarkov.core.action.TimeSliceEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -69,6 +70,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		ItemListener, CommentListener, ActionListener {
 
 	private JComboBox jComboBoxNetworkAgents;
+	private JLabel jLabelTimeSlice;
+	private JComboBox jComboBoxTimeSlice;
 
 	/**
 	 * constructor without construction parameters
@@ -107,6 +110,16 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			getJComboBoxNetworkAgents().setEnabled(false);
 			getJComboBoxNetworkAgents().setVisible(false);
 			jLabelNetworkAgents.setVisible(false);
+		}
+		
+		if (probNode.getProbNet().isTemporal()) {
+			getJComboBoxTimeSlice().setEnabled(true);
+			getJComboBoxTimeSlice().setVisible(true);
+			jLabelTimeSlice.setVisible(true);
+		} else {
+			getJComboBoxTimeSlice().setEnabled(false);
+			getJComboBoxTimeSlice().setVisible(false);
+			jLabelTimeSlice.setVisible(false);
 		}
 		getJComboBoxNodePurpose().setEnabled(true);
 		getJComboBoxNodeRelevance().setEnabled(true);
@@ -470,12 +483,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 									.addComponent(getJLabelNodeName())
 									.addGap(50)
 									.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(getJLabelTimeSlice())
+									.addGap(18)
+									.addComponent(getJComboBoxTimeSlice(),GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 									)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelNodePurpose())
 									.addGap(42)
-									.addComponent(getJComboBoxNodePurpose(), 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE,  203, GroupLayout.PREFERRED_SIZE/* 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE*/)
 									.addGap(18)
 									.addComponent(getJLabelNetworkAgents()) 
 									.addGap(18)
@@ -484,18 +500,20 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelNodeRelevance())
 									.addGap(35)
-									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
 									.addComponent(getJLabelAlwaysObserved())
-									.addGap(35)
+									.addGap(22)
 									.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, 70 , GroupLayout.PREFERRED_SIZE)
-									
+								
 									)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJTextAreaLabelNodeDefinitionComment())
-							.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), GroupLayout.PREFERRED_SIZE, 590,	Short.MAX_VALUE)))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJTextAreaLabelNodeDefinitionComment())
+									.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(), 30, 560,	Short.MAX_VALUE))
+									)
+						
 						.addContainerGap())
-		);
+		)));
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
@@ -503,6 +521,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJLabelNodeName())
 						.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 20/*GroupLayout.DEFAULT_SIZE*/, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJLabelTimeSlice())
+						.addComponent(getJComboBoxTimeSlice())
 						)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -519,19 +539,62 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 						.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						)
 					.addGap(21)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					//.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJTextAreaLabelNodeDefinitionComment())
 						.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(),GroupLayout.DEFAULT_SIZE,	62,	150))
 					.addContainerGap(77, Short.MAX_VALUE))
 		);
-		Component[] components = new Component [2];
+	/*	Component[] components = new Component [2];
 		components[0] = getJComboBoxNodePurpose();
 		components[1] = getJTextFieldNodeName();
-		groupLayout.linkSize(components);
+		groupLayout.linkSize(components);*/
 		
 		setLayout(groupLayout);
 	}
 
+	/**
+	 * This method initialises jLabelTimeSlice
+	 * 
+	 * @return a new name label.
+	 */
+	private JLabel getJLabelTimeSlice() {
+
+		if (jLabelTimeSlice == null) {
+			jLabelTimeSlice = new JLabel();
+			jLabelTimeSlice.setHorizontalAlignment(SwingConstants.LEFT);
+			jLabelTimeSlice.setHorizontalTextPosition(SwingConstants.LEFT);
+			jLabelTimeSlice.setName("jLabelTimeSlice");
+			jLabelTimeSlice.setText("a Label");
+			jLabelTimeSlice.setText(dialogStringResource
+					.getString("NodeDefinitionPanel.jLabelTimeSlice.Text"));
+			
+			jLabelTimeSlice.setLabelFor(getJComboBoxTimeSlice());
+		}
+		return jLabelTimeSlice;
+	}
+
+	/**
+	 * initialize the content of the Combo box for the tme slice for temporal variables
+	 * 
+	 * @return the JComboBoxNodeRelevance
+	 */
+	private JComboBox getJComboBoxTimeSlice() {
+
+		if (jComboBoxTimeSlice == null) {
+			jComboBoxTimeSlice = new JComboBox();
+			jComboBoxTimeSlice.setName("jComboBoxTimeSlice");
+			jComboBoxTimeSlice.setEditable(true);
+			jComboBoxTimeSlice.setSize(40, 40);
+			jComboBoxTimeSlice.addItem("");
+			jComboBoxTimeSlice.addItem("0");
+			jComboBoxTimeSlice.addItem("1");
+			
+			//jComboBoxTimeSlice.setEnabled(false);
+		}
+		return jComboBoxTimeSlice;
+	}
+	
 	/**
 	 * This method initialises jLabelNodeName
 	 * 
@@ -881,6 +944,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNodeRelevance = new JComboBox();
 			jComboBoxNodeRelevance.setName("jComboBoxNodeRelevance");
 			jComboBoxNodeRelevance.setEditable(true);
+			jComboBoxNodeRelevance.setSize(40, 40);
 			fillJComboBoxNodeRelevanceWithoutDecimals();
 			jComboBoxNodeRelevance.setEnabled(false);
 		}
@@ -1196,6 +1260,38 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 						messageStringResource.getString( e3.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
 				}
+			}
+		} else if (comboBox.getName().equals("jComboBoxTimeSlice")) {
+			if (!(itemSelected == null)
+					&& e.getStateChange() == ItemEvent.SELECTED) {
+				TimeSliceEdit timeSliceEdit = null;
+
+				timeSliceEdit = new TimeSliceEdit(probNode,
+						Integer.valueOf(itemSelected));
+				
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(timeSliceEdit);
+					probNode.getProbNet().getPNESupport().doEdit(timeSliceEdit);
+				} catch (DoEditException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+				} catch (NotEnoughMemoryException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ConstraintViolationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NonProjectablePotentialException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (WrongCriterionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		}
 
