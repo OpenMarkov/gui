@@ -278,7 +278,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	@Override
 	protected boolean doOkClickBeforeHide() {
 		//if networkType is null it is set type Bayessian network
-		if (probNet.getNetworkType() == null) {
+		/*if (probNet.getNetworkType() == null) {
 			ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet,
 					BayesianNetworkType.getUniqueInstance());
 			try {
@@ -306,7 +306,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 				e.printStackTrace();
 			}
 			
-		}
+		}*/
 		
 		probNet.getPNESupport().closeParenthesis();
 		

@@ -102,7 +102,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				JOptionPane.ERROR_MESSAGE );
 
 		}
-		if (probNode.getProbNet().getAgents()!= null) {
+		/*if (probNode.getProbNet().getAgents()!= null) {
 			getJComboBoxNetworkAgents().setEnabled(true);
 			getJComboBoxNetworkAgents().setVisible(true);
 			jLabelNetworkAgents.setVisible(true);
@@ -127,7 +127,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (!AlwaysObservedPropertyValidator.isValid(probNode)) {
 			jLabelAlwaysObserved.setVisible(false);
 			jCheckboxAlwaysObserved.setVisible(false);
-		}
+		}*/
 		
 	}
 

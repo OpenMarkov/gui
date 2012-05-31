@@ -711,9 +711,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private void createNewNetwork() {
 
 		ProbNet probNet = null;
-		//probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		//completely empty network
-		probNet = new ProbNet(null);
+		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		//empty network
+		//probNet = new ProbNet(null);
 		probNet.setName(new String(stringResource
 				.getString("InternalFrame.Title.Label") + " " + frameIndex));
 
