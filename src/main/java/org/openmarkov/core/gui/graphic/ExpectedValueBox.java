@@ -50,12 +50,12 @@ public class ExpectedValueBox extends InnerBox {
 	/**
 	 * Minimum value that the expected value can take.
 	 */
-	private double minUtilityRange = 0.0;
+	private double minUtilityRange = Double.NEGATIVE_INFINITY;
 	
 	/**
 	 * Maximum value that the expected value can take.
 	 */
-	private double maxUtilityRange = 100.0;	
+	private double maxUtilityRange = Double.NEGATIVE_INFINITY;	
 	
 	/**
 	 * This variable contains the visual state that is part
@@ -90,7 +90,8 @@ public class ExpectedValueBox extends InnerBox {
 	 *            minimum value that the expected value can take.
 	 */
 	public void setMinUtilityRange(double minUtilityRange) {
-		this.minUtilityRange = minUtilityRange;
+		//minUtilityRange is currently formatted with 2 decimals
+		this.minUtilityRange = (Math.rint(minUtilityRange*100))/100;
 	}
 	
 	/**
@@ -109,7 +110,8 @@ public class ExpectedValueBox extends InnerBox {
 	 *            maximum value that the expected value can take.
 	 */
 	public void setMaxUtilityRange(double maxUtilityRange) {
-		this.maxUtilityRange = maxUtilityRange;
+		//maxUtilityRange is currently formatted with 2 decimals
+		this.maxUtilityRange = (Math.rint(maxUtilityRange*100))/100;
 	}
 	
 	/**

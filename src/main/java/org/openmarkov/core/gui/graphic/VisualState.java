@@ -237,7 +237,7 @@ public class VisualState extends VisualElement {
 	/**
 	 * Sets the value of this state for the given position
 	 * of the array (this position matches the evidence case number).
-	 * The value is truncated so it only has two decimals
+	 * The value is truncated so it only has four decimals
 	 * 
 	 * @param caseNumber
 	 *            the position in the array to be established

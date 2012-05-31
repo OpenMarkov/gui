@@ -780,15 +780,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								(linkRestrictionEnabled && !link.getLink()
-										.hasRestrictions()));
-				
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-				.setOptionEnabled(
-						ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
-						(linkRestrictionEnabled && link.getLink()
-								.hasRestrictions()));
-				
+								(linkRestrictionEnabled));
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
 						.setOptionEnabled(
 								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
@@ -824,10 +816,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 			getPopupMenu(PopupMenuFactory.NETWORK).show(this, e.getX(),
 					e.getY());
 		}
-		networkPanel.getMainPanel().getMainPanelMenuAssistant()
-				.objectsSelected(networkPanel.getSelectedNodes(), 
-						networkPanel.getSelectedLinks(), 
-						networkPanel.getSelectedInstances());
 	}
 
 	/**
@@ -2213,7 +2201,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 		// TODO This is a temporary workaround to make sure visualNodes are updated
 		// every time we get back to inference mode
-		networkChanged = true;
+		//networkChanged = true; //...asaez...ACLARAR: sentencia comentada para evitar propagaciones innecesarias...
 		if ((propagationActive)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			// if the network has been changed, propagation must be done in
@@ -2537,46 +2525,52 @@ public class EditorPanel extends JPanel implements MouseListener,
 		HashMap<Variable, TablePotential> individualProbabilities = null;
 		boolean propagationSucceded = false;
 		try {
-			// This will return null for InfluenceDiagrams until a suitable
-			// inference algorithm is implemented for them
-			inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
-			
-			if(inferenceAlgorithm == null)
-			{
-				throw new UnsupportedOperationException();
-			}
-			
-			inferenceAlgorithm.setEvidence(evidenceCase);
-			long start = System.currentTimeMillis();
-			try {
-				individualProbabilities = inferenceAlgorithm
-						.getProbsAndUtilities();
-			} catch (NotEnoughMemoryException e) {
-				if (!approximateInferenceWarningGiven) {
-					JOptionPane
-							.showMessageDialog(
-									Utilities.getOwner(this),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Text"),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Title"),
-									JOptionPane.WARNING_MESSAGE);
-					approximateInferenceWarningGiven = true;
+			if (networkType instanceof InfluenceDiagramType) {		//...asaez...TEMPORAL...Eliminar esta línea
+				 paintDummyResultsForID(evidenceCase, caseNumber);	//...asaez...TEMPORAL...Eliminar esta línea
+			 } else {												//...asaez...TEMPORAL...Eliminar esta línea
+				 
+				// This will return null for InfluenceDiagrams until a suitable
+				// inference algorithm is implemented for them
+				inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
+				
+				if(inferenceAlgorithm == null)
+				{
+					throw new UnsupportedOperationException();
 				}
-
-				inferenceAlgorithm = inferenceManager
-						.getDefaultApproximateAlgorithm(probNet);
+				
 				inferenceAlgorithm.setEvidence(evidenceCase);
-				individualProbabilities = inferenceAlgorithm
-						.getProbsAndUtilities();
-			}
-			long elapsedTimeMillis = System.currentTimeMillis() - start;
-			System.out.println("Inference took " + elapsedTimeMillis
-					+ " milliseconds.");
+				long start = System.currentTimeMillis();
+				try {
+					individualProbabilities = inferenceAlgorithm
+							.getProbsAndUtilities();
+				} catch (NotEnoughMemoryException e) {
+					if (!approximateInferenceWarningGiven) {
+						JOptionPane
+								.showMessageDialog(
+										Utilities.getOwner(this),
+										stringResource
+												.getString("NotEnoughMemoryForExactInference.Text"),
+										stringResource
+												.getString("NotEnoughMemoryForExactInference.Title"),
+										JOptionPane.WARNING_MESSAGE);
+						approximateInferenceWarningGiven = true;
+					}
+	
+					inferenceAlgorithm = inferenceManager
+							.getDefaultApproximateAlgorithm(probNet);
+					inferenceAlgorithm.setEvidence(evidenceCase);
+					individualProbabilities = inferenceAlgorithm
+							.getProbsAndUtilities();
+				}
+				long elapsedTimeMillis = System.currentTimeMillis() - start;
+				System.out.println("Inference took " + elapsedTimeMillis
+						+ " milliseconds.");
+	
+				updateNodesFindingState(evidenceCase);
+				
+				paintInferenceResults(caseNumber, individualProbabilities);
 
-			updateNodesFindingState(evidenceCase);
-			
-			paintInferenceResults(caseNumber, individualProbabilities);
+			} //...asaez...TEMPORAL...Eliminar esta línea
 			
 			propagationSucceded = true;
 		} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
@@ -2618,8 +2612,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 		return propagationSucceded;
 	}
 	
+	/**
+	 * This method fills the visualStates with the proper values to be 
+	 * represented after the evaluation of the evidence case
+	 * 
+	 * @param caseNumber
+	 *            number of this evidence case.
+	 * @param individualProbabilities
+	 *            the results of the evaluation for each variable.
+	 */
 	private void paintInferenceResults(int caseNumber,
-			HashMap<Variable, TablePotential> individualProbabilities)	{
+			HashMap<Variable, TablePotential> individualProbabilities)	{	
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
 			Variable variable = visualNode.getProbNode().getVariable();
 			if (visualNode.getProbNode().getNodeType() == NodeType.CHANCE) {
@@ -2687,6 +2690,115 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 		repaint();		
 	}
+	
+	/**
+	 * This method should be deleted after algorithm for ID evaluation is ready
+	 * Generates dummy information for all the states
+	 * 
+	 * @param evidenceCase
+	 *            the evidence case with which the propagation must be done.
+	 * @param caseNumber
+	 *            number of this evidence case.
+	 */
+	//...asaez...TEMPORAL...Eliminar este método
+	//...asaez... Método para simular los resultados de la evaluación en diagramas de
+	//...asaez... influencia y pintar una información parecida a la que resultaría de la evaluación
+	void paintDummyResultsForID(EvidenceCase evidenceCase, int caseNumber){
+		// Set the values of the visualStates of nodes without finding
+		ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();
+		Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
+		while (iterator1.hasNext()) {
+			VisualNode visualNode = iterator1.next();
+			InnerBox innerBox = visualNode.getInnerBox();
+			if (innerBox instanceof FSVariableBox) {
+				// si es un nodo aleatorio o de decisión
+				Double aux1 = 0.0;
+				Double aux2 = 0.0;
+				Double value = 0.0;
+				for (int i = 0; i < innerBox.getNumStates() - 1; i++) {
+					aux2 = Math.random();
+					if ((aux1 > 0.0) && (aux1 < 1.0)) {
+						aux2 = aux2 / (1-aux1);
+					}
+					if ((aux1 + aux2) <= 1.0) {
+						value = aux2;
+					} else {
+						value = (1.0 - aux1);
+					}
+					aux1 += value;
+					VisualState visualState = ((FSVariableBox) innerBox)
+							.getVisualState(i);
+					visualState.setStateValue(caseNumber, value);
+				}
+				VisualState visualState = ((FSVariableBox) innerBox)
+						.getVisualState(innerBox.getNumStates() - 1);
+				visualState.setStateValue(caseNumber, (1.0 - aux1));
+			} else { // si es un nodo de utilidad
+				Double aux1 = Math.random();
+				Double aux2 = Math.random();
+				Double aux3 = Math.random();
+				if (aux1 > aux2) {
+					Double aux4 = aux1;
+					aux1 = aux2;
+					aux2 = aux4;
+				}
+				aux1 = (aux1*100)/2;
+				aux2 = aux2*100;
+				if (((ExpectedValueBox) innerBox).getMinUtilityRange() == Double.NEGATIVE_INFINITY) {
+					((ExpectedValueBox) innerBox).setMinUtilityRange(aux1);
+				}
+				if (((ExpectedValueBox) innerBox).getMaxUtilityRange() == Double.NEGATIVE_INFINITY) {
+					((ExpectedValueBox) innerBox).setMaxUtilityRange(aux2);
+				}
+				Double minimo = ((ExpectedValueBox) innerBox).getMinUtilityRange();
+				Double maximo = ((ExpectedValueBox) innerBox).getMaxUtilityRange();
+				aux3 = aux3*100;
+				while (aux3 < minimo) {
+					aux3 = aux3 + (maximo - minimo);
+				}
+				while (aux3 > maximo) {
+					aux3 = aux3 - (maximo - minimo);
+				}
+				VisualState visualState = ((ExpectedValueBox) innerBox)
+						.getVisualState();
+				visualState.setStateValue(caseNumber, aux3);
+			}
+		}
+		// Set the values of the visualStates of nodes with finding
+		ArrayList<Finding> findingsInEvidenceCase = evidenceCase
+				.getFindings();
+		Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
+		while (iterator3.hasNext()) {
+			Finding finding = iterator3.next();
+			Variable variable = finding.getVariable();
+			ArrayList<VisualNode> allVisualNodes = visualNetwork
+					.getAllNodes();
+			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
+			while (iterator4.hasNext()) {
+				VisualNode visualNode = iterator4.next();
+				if (variable.getName().equals(
+						visualNode.getProbNode().getName())) {
+							// si el nodo tiene hallazgo
+					if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+						FSVariableBox innerBox = (FSVariableBox) visualNode
+								.getInnerBox();
+						for (int i = 0; i < innerBox.getNumStates(); i++) {
+							VisualState visualState = innerBox
+									.getVisualState(i);
+							if (visualState.getStateNumber() == finding
+									.getStateIndex()) {
+								visualState.setStateValue(caseNumber, 1.0);
+							} else {
+								visualState.setStateValue(caseNumber, 0.0);
+							}
+						}
+					}
+				}
+			}
+		}
+		updateNodesFindingState(evidenceCase);
+		repaint();
+	} //...asaez...TEMPORAL...Eliminar este método	
 
 	/**
 	 * This method updates the "finding state" of each node
@@ -3170,7 +3282,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 						link)) {
 					probNet.getPNESupport().undoAndDelete();
 				}
-				link.resetRestrictionsPotential();
 
 			} catch (NotEnoughMemoryException e) {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
@@ -3181,8 +3292,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 			repaint();
 		}
 	}
-	
-	
 
 	/***
 	 * Resets the link restriction potential of a link
@@ -3192,7 +3301,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
 		if (!links.isEmpty()) {
 			Link link = links.get(0).getLink();
-			link.setRestrictionsPotential(null);
+			try {
+				link.resetRestrictionsPotential();
+			} catch (NotEnoughMemoryException e) {
+				JOptionPane.showMessageDialog(Utilities.getOwner(this),
+						e.getMessage(),
+						stringResource.getString("ErrorWindow.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+			}
 			repaint();
 		}
 	}
