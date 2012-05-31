@@ -112,6 +112,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jLabelNetworkAgents.setVisible(false);
 		}
 		
+		//Check if the network has associated Only AtemporalVariablesConstranint
 		if (probNode.getProbNet().isTemporal()) {
 			getJComboBoxTimeSlice().setEnabled(true);
 			getJComboBoxTimeSlice().setVisible(true);
@@ -1264,32 +1265,48 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		} else if (comboBox.getName().equals("jComboBoxTimeSlice")) {
 			if (!(itemSelected == null)
 					&& e.getStateChange() == ItemEvent.SELECTED) {
-				TimeSliceEdit timeSliceEdit = null;
-
-				timeSliceEdit = new TimeSliceEdit(probNode,
+				TimeSliceEdit timeSliceEdit  = new TimeSliceEdit(probNode,
 						Integer.valueOf(itemSelected));
 				
 				try {
 					probNode.getProbNet().getPNESupport().announceEdit(timeSliceEdit);
 					probNode.getProbNet().getPNESupport().doEdit(timeSliceEdit);
 				} catch (DoEditException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
+						JOptionPane.showMessageDialog(this, messageStringResource
+								.getString( e1.getMessage() ),
+							messageStringResource.getString( e1.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
 				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (ConstraintViolationException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (NonProjectablePotentialException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				} catch (WrongCriterionException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 				}
 				
 			}

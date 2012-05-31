@@ -16,12 +16,20 @@ import javax.help.BadIDException;
 import javax.swing.JTabbedPane;
 
 
+import org.openmarkov.core.action.ChangeNetworkTypeEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
 
@@ -269,6 +277,37 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() {
+		//if networkType is null it is set type Bayessian network
+		if (probNet.getNetworkType() == null) {
+			ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+					BayesianNetworkType.getUniqueInstance());
+			try {
+				probNet.getPNESupport().announceEdit(changeNetworkType);
+				probNet.getPNESupport().doEdit(changeNetworkType);
+				
+					
+			} catch (DoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		probNet.getPNESupport().closeParenthesis();
 		
         if (!getNetworkDefinitionPanel().checkName()) {
