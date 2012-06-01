@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JScrollPane;
 
+import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.model.network.ProbNode;
@@ -64,5 +65,10 @@ public class CPTablePanel extends TablePotentialPanel{
 		}
 		return valuesTableScrollPane;
 	}
+	
+	@Override
+	public void saveChanges() throws NotEnoughMemoryException {
+		getValuesTable().close();
+	}	
 	
 }

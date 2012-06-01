@@ -143,6 +143,14 @@ public class PasteEdit extends CompoundEdit
                             potential.replaceVariable (i, variable);
                         }
                     }
+                    if(potential.isUtility())
+                    {
+                    	Variable utilityVariable = potential.getUtilityVariable();
+                    	if(newVariables.containsKey (utilityVariable.getName()))
+                    	{
+                    		potential.replaceVariable (utilityVariable, probNet.getVariable (newVariables.get (utilityVariable.getName())));
+                    	}
+                    }
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);

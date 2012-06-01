@@ -3301,14 +3301,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
 		if (!links.isEmpty()) {
 			Link link = links.get(0).getLink();
-			try {
-				link.resetRestrictionsPotential();
-			} catch (NotEnoughMemoryException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this),
-						e.getMessage(),
-						stringResource.getString("ErrorWindow.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
-			}
+			link.resetRestrictionsPotential();
 			repaint();
 		}
 	}

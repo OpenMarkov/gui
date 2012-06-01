@@ -268,7 +268,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 			VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
 			VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
 			visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
-		}			
+		}
+		
+		selectedNodes.clear();
+		selectedLinks.clear();
+		selectedInstances.clear();
 	}
 
 	/**
