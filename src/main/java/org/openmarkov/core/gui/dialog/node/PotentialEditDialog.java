@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -150,7 +151,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		this.setBounds(x, y, width, height);
 		//this.setBounds(x, y, 750, 450);
         setLocationRelativeTo(owner);
-        //setMinimumSize(new Dimension( 750, 450 ));
+        setMinimumSize(new Dimension( width, height/2 ));
         setResizable(true);
     
       
@@ -190,6 +191,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
     private void configureComponentsPanel() {
         getComponentsPanel().setLayout(new BorderLayout(5, 5));
+       // getComponentsPanel().setSize(294, 29);
         getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH );
         getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
     }
@@ -215,6 +217,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
         if (potentialTypeComboBox == null) {
             List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode); 
+            Collections.sort(filteredPotentialNames);
             potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
             potentialTypeComboBox.setSelectedItem(probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ());            
             potentialTypeComboBox.setBorder( new LineBorder( UIManager.getColor(
@@ -230,6 +233,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         return potentialTypeComboBox;
     }
     
+   
     /**
      * Enables or disables the potential type combo box
      * @param enable
@@ -324,6 +328,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             potentialTypePanel.add(getPotentialTypeJLabel());
             potentialTypePanel.add(getPotentialTypeJCombobox());
             potentialTypePanel.add( getPoliticyTypePanel() );
+            getPoliticyTypePanel().setVisible(false);
+            getPotentialPanel().setEnabled(false);
         }
         return potentialTypePanel;
     }

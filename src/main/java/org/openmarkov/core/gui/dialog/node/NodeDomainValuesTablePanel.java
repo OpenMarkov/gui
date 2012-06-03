@@ -1117,7 +1117,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			jLabelNodeVariableType = new JLabel();
 			jLabelNodeVariableType.setName( "jLabelNodeVariableType" );
 			jLabelNodeVariableType
-				.setHorizontalAlignment( SwingConstants.RIGHT );
+				.setHorizontalAlignment( SwingConstants.LEFT );
 			jLabelNodeVariableType
 				.setHorizontalTextPosition( SwingConstants.LEFT );
 			jLabelNodeVariableType.setText( "a Label" );

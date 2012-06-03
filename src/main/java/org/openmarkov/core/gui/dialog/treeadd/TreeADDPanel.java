@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
-@PotentialPanelPlugin(potentialType="TreeADD")
+@PotentialPanelPlugin(potentialType="Tree/ADD")
 public class TreeADDPanel extends PotentialPanel
 {
     

@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -55,6 +57,7 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Purpose;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringsWithProperties;
 import org.openmarkov.core.model.network.VariableType;
@@ -72,6 +75,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	private JComboBox jComboBoxNetworkAgents;
 	private JLabel jLabelTimeSlice;
 	private JComboBox jComboBoxTimeSlice;
+	private JLabel jLabelDecisionCriteria;
+	private JComboBox jComboBoxDecisionCriteria;
 
 	/**
 	 * constructor without construction parameters
@@ -102,32 +107,42 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				JOptionPane.ERROR_MESSAGE );
 
 		}
-		/*if (probNode.getProbNet().getAgents()!= null) {
+		if (probNode.getProbNet().getAgents()!= null) {
 			getJComboBoxNetworkAgents().setEnabled(true);
 			getJComboBoxNetworkAgents().setVisible(true);
-			jLabelNetworkAgents.setVisible(true);
+			getJLabelNetworkAgents().setVisible(true);
 		} else {
 			getJComboBoxNetworkAgents().setEnabled(false);
 			getJComboBoxNetworkAgents().setVisible(false);
-			jLabelNetworkAgents.setVisible(false);
+			getJLabelNetworkAgents().setVisible(false);
 		}
 		
 		//Check if the network has associated Only AtemporalVariablesConstranint
 		if (probNode.getProbNet().isTemporal()) {
 			getJComboBoxTimeSlice().setEnabled(true);
 			getJComboBoxTimeSlice().setVisible(true);
-			jLabelTimeSlice.setVisible(true);
+			getJLabelTimeSlice().setVisible(true);
 		} else {
 			getJComboBoxTimeSlice().setEnabled(false);
 			getJComboBoxTimeSlice().setVisible(false);
-			jLabelTimeSlice.setVisible(false);
+			getJLabelTimeSlice().setVisible(false);
 		}
+		if (probNode.getNodeType() == NodeType.UTILITY) {
+			getJComboBoxDecisionCriteria().setEnabled(true);
+			getJComboBoxDecisionCriteria().setVisible(true);
+			getJLabelDecisionCriteria().setVisible(true);
+		} else {
+			getJComboBoxDecisionCriteria().setEnabled(false);
+			getJComboBoxDecisionCriteria().setVisible(false);
+			getJLabelDecisionCriteria().setVisible(false);
+		}
+		
 		getJComboBoxNodePurpose().setEnabled(true);
 		getJComboBoxNodeRelevance().setEnabled(true);
 		if (!AlwaysObservedPropertyValidator.isValid(probNode)) {
-			jLabelAlwaysObserved.setVisible(false);
-			jCheckboxAlwaysObserved.setVisible(false);
-		}*/
+			getJLabelAlwaysObserved().setVisible(false);
+			getJCheckBoxAlwaysObserved().setVisible(false);
+		}
 		
 	}
 
@@ -471,6 +486,23 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		components[2] = getJComboBoxNodePurpose();
 		groupLayout.linkSize(components);
 		setLayout(groupLayout);*/
+		LayoutStyle layoutStyle = new LayoutStyle() {
+			
+			@Override
+			public int getPreferredGap(JComponent component1, JComponent component2,
+					ComponentPlacement type, int position, Container parent) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public int getContainerGap(JComponent component, int position,
+					Container parent) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+		int preferredGap = layoutStyle.getPreferredGap(getJComboBoxNodePurpose(), getJTextFieldNodeName(), LayoutStyle.ComponentPlacement.RELATED, SwingConstants.NORTH, this.getParent());
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
@@ -482,30 +514,33 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelNodeName())
-									.addGap(50)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJLabelTimeSlice())
-									.addGap(18)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJComboBoxTimeSlice(),GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 									)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelNodePurpose())
-									.addGap(42)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE,  203, GroupLayout.PREFERRED_SIZE/* 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE*/)
-									.addGap(18)
-									.addComponent(getJLabelNetworkAgents()) 
-									.addGap(18)
-									.addComponent(getJComboBoxNetworkAgents(), GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+									.addGap(18) /***/
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJLabelNodeRelevance())
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 									)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(getJLabelNodeRelevance())
-									.addGap(35)
-									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
+									.addComponent(getAgentsOrDecisionCriteriaOrObservedLabel()) 
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getAgentsOrDecisionCriteriaOrObserved(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									/*.addGap(18)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJLabelAlwaysObserved())
-									.addGap(22)
-									.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, 70 , GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)*/
 								
 									)
 								.addGroup(groupLayout.createSequentialGroup()
@@ -521,7 +556,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJLabelNodeName())
-						.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, 20/*GroupLayout.DEFAULT_SIZE*/, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJTextFieldNodeName(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(getJLabelTimeSlice())
 						.addComponent(getJComboBoxTimeSlice())
 						)
@@ -529,15 +564,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJComboBoxNodePurpose(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(getJLabelNodePurpose())
-						.addComponent(getJLabelNetworkAgents())
-						.addComponent(getJComboBoxNetworkAgents(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJLabelNodeRelevance(),GroupLayout.PREFERRED_SIZE, /*25*/GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(getJComboBoxNodeRelevance())
 						)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(getJLabelNodeRelevance(),GroupLayout.PREFERRED_SIZE, 25, Short.MAX_VALUE)
-						.addComponent(getJComboBoxNodeRelevance())
-						.addComponent(getJLabelAlwaysObserved())
-						.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getAgentsOrDecisionCriteriaOrObservedLabel())
+						.addComponent(getAgentsOrDecisionCriteriaOrObserved(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						/*.addComponent(getJLabelAlwaysObserved())
+						.addComponent(getJCheckBoxAlwaysObserved(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)*/
 						)
 					.addGap(21)
 					//.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -546,12 +581,27 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 						.addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(),GroupLayout.DEFAULT_SIZE,	62,	150))
 					.addContainerGap(77, Short.MAX_VALUE))
 		);
-	/*	Component[] components = new Component [2];
+		Component[] components = new Component [3];
 		components[0] = getJComboBoxNodePurpose();
 		components[1] = getJTextFieldNodeName();
-		groupLayout.linkSize(components);*/
+		components[2] = getAgentsOrDecisionCriteriaOrObserved();
+		groupLayout.linkSize(components);
+		
+		Component[] components2 = new Component [5];
+		components2[0] = getAgentsOrDecisionCriteriaOrObservedLabel();
+		components2[1] = getJLabelNodeName();
+		components2[2] = getJLabelNodePurpose();
+		components2[3] = getJLabelNodeRelevance();
+		components2[4] = getJLabelTimeSlice();
+		groupLayout.linkSize(components2);
+		
+		Component[] components3 = new Component [2];
+		components3[0] = getJComboBoxNodeRelevance();
+		components3[1] = getJComboBoxTimeSlice();
+		groupLayout.linkSize(components3);
 		
 		setLayout(groupLayout);
+		
 	}
 
 	/**
@@ -590,6 +640,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxTimeSlice.addItem("");
 			jComboBoxTimeSlice.addItem("0");
 			jComboBoxTimeSlice.addItem("1");
+			
+			jComboBoxTimeSlice.addItemListener(this);
 			
 			//jComboBoxTimeSlice.setEnabled(false);
 		}
@@ -647,6 +699,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jLabelAlwaysObserved = new JLabel();
 			jLabelAlwaysObserved.setHorizontalAlignment(SwingConstants.LEFT);
 			jLabelAlwaysObserved.setHorizontalTextPosition(SwingConstants.LEFT);
+			jLabelAlwaysObserved.setVerticalAlignment(SwingConstants.CENTER);
+			jLabelAlwaysObserved.setVerticalTextPosition(SwingConstants.CENTER);
 			jLabelAlwaysObserved.setName("jLabelAlwaysObserved");
 			jLabelAlwaysObserved.setText("a Label");
 			jLabelAlwaysObserved
@@ -674,7 +728,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (jCheckboxAlwaysObserved == null) {
 			jCheckboxAlwaysObserved = new JCheckBox();
 			jCheckboxAlwaysObserved.setName("jCheckboxAlwaysObserved");
-
+			jCheckboxAlwaysObserved.setVerticalAlignment(SwingConstants.CENTER);
+			
 			jCheckboxAlwaysObserved.addActionListener(this);
 			jCheckboxAlwaysObserved.addFocusListener(this);
 		}
@@ -896,7 +951,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (jLabelNodeRelevance == null) {
 			jLabelNodeRelevance = new JLabel();
 			jLabelNodeRelevance.setHorizontalTextPosition(SwingConstants.LEFT);
-			jLabelNodeRelevance.setHorizontalAlignment(SwingConstants.RIGHT);
+			jLabelNodeRelevance.setHorizontalAlignment(SwingConstants.LEFT);
 			jLabelNodeRelevance.setName("jLabelNodeRelevance");
 			jLabelNodeRelevance.setText("a Label");
 			jLabelNodeRelevance.setText(dialogStringResource
@@ -920,9 +975,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (jLabelNetworkAgents == null) {
 			jLabelNetworkAgents = new JLabel();
 			jLabelNetworkAgents.setHorizontalTextPosition(SwingConstants.LEFT);
-			jLabelNetworkAgents.setHorizontalAlignment(SwingConstants.RIGHT);
+			jLabelNetworkAgents.setHorizontalAlignment(SwingConstants.LEFT);
 			jLabelNetworkAgents.setName("jLabelNetworkAgent");
-			//jLabelNetworkAgents.setText("a Label");
+			jLabelNetworkAgents.setText("a Label");
 			jLabelNetworkAgents.setText(dialogStringResource
 					.getString("NodeDefinitionPanel.jLabelNetworkAgents.Text"));
 			/*jLabelNetworkAgents.setDisplayedMnemonic(dialogStringResource
@@ -1051,16 +1106,88 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				agentNames[0] = "";
 			}
 			jComboBoxNetworkAgents = new JComboBox(agentNames);
-			jComboBoxNetworkAgents.setName("jComboBoxNodePurpose");
+			jComboBoxNetworkAgents.setName("jComboBoxAgents");
+			jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
 			jComboBoxNetworkAgents.setSelectedIndex(0);
-			//jComboBoxNetworkAgents.setMaximumRowCount(9);
-			// jComboBoxNodePurpose.addItemListener( this );
 			jComboBoxNetworkAgents.setEditable(true);
 
 		}
 		return jComboBoxNetworkAgents;
 	}
+	//TODO decision criteria comboBox getter
+	private JComponent getAgentsOrDecisionCriteriaOrObserved() {
+		if (probNode.getNodeType() == NodeType.DECISION) {
+			return getJComboBoxNetworkAgents();
+		} else if (probNode.getNodeType() == NodeType.UTILITY) {
+			return getJComboBoxDecisionCriteria();
+		} else if (probNode.getNodeType() == NodeType.CHANCE) {
+			return getJCheckBoxAlwaysObserved();
+		}
+		//default
+		return getJComboBoxNetworkAgents();
+	}
+	
+	//TODO decision criteria jlabel
+	private JLabel getAgentsOrDecisionCriteriaOrObservedLabel() {
+		if (probNode.getNodeType() == NodeType.DECISION) {
+			return getJLabelNetworkAgents();
+		} else if (probNode.getNodeType() == NodeType.UTILITY) {
+			return getJLabelDecisionCriteria();
+		} else if (probNode.getNodeType() == NodeType.CHANCE) {
+			return getJLabelAlwaysObserved();
+		}
+		//default
+		return getJLabelNetworkAgents();
+	}
 
+	private JLabel getJLabelDecisionCriteria () {
+		if (jLabelDecisionCriteria == null) {
+			jLabelDecisionCriteria = new JLabel();
+			jLabelDecisionCriteria.setName("jLabelDecisionDriteria");
+			jLabelDecisionCriteria.setHorizontalTextPosition(SwingConstants.LEFT);
+			jLabelDecisionCriteria.setHorizontalAlignment(SwingConstants.LEFT);
+			jLabelDecisionCriteria.setText("a Label");
+			jLabelDecisionCriteria.setText(dialogStringResource
+					.getString("NodeDefinitionPanel.jLabelDecisionDriteria.Text"));
+			/*jLabelDecisionCriteria
+					.setDisplayedMnemonic(dialogStringResource.getString(
+							"NodeDefinitionPanel.jLabelNodePurpose.Mnemonic")
+							.charAt(0));*/
+			jLabelDecisionCriteria.setLabelFor(getJComboBoxDecisionCriteria());
+		}
+		return jLabelDecisionCriteria;
+	}
+	
+	
+	private JComboBox getJComboBoxDecisionCriteria() {
+		if (jComboBoxDecisionCriteria == null) {
+			StringsWithProperties decisionCriteria = probNode.getProbNet().getDecisionCriteria();
+			String [] criteriaNames = null;
+			if (decisionCriteria != null) {
+				Set<String> names = decisionCriteria.getNames();
+				criteriaNames = names.toArray(new String[names.size()]);
+				 String []auxAgentNames = names.toArray(new String[names.size()]);
+				 criteriaNames  = new String [names.size()+1];
+				 criteriaNames [0]= "";
+				 for (int i = 1; i < names.size()+1; i++) {
+					 criteriaNames[i] = auxAgentNames[i-1];
+				 }
+				
+			} else {
+				criteriaNames = new String[1]; 
+				criteriaNames[0] = "";
+			}
+			jComboBoxDecisionCriteria = new JComboBox(criteriaNames);
+			jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
+			jComboBoxDecisionCriteria.setSelectedIndex(0);
+			//jComboBoxNetworkAgents.setMaximumRowCount(9);
+			// jComboBoxNodePurpose.addItemListener( this );
+			jComboBoxDecisionCriteria.setEditable(true);
+			
+		}
+		return jComboBoxDecisionCriteria;
+
+	}
 	/**
 	 * This method initialises jLabelNodeDefinitionComment
 	 * 

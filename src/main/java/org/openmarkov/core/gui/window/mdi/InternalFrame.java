@@ -130,7 +130,7 @@ public class InternalFrame extends JInternalFrame implements
 	}
 
 	/**
-	 * Sets the JInternalFrame title and notifies the chage.
+	 * Sets the JInternalFrame title and notifies the change.
 	 * 
 	 * @param newTitle
 	 *            the string to display in the title bar.
