@@ -82,9 +82,16 @@ public enum NetworkType {
 	 * Dynamic LIMID
 	 * 
 	 */
-	DYN_LIMID(10);
+	DYN_LIMID(10),
 	
+	/****
+	 * 
+	 * Dec-pomdp
+	 * 
+	 */
+	DEC_POMDP(11);
 	
+
 	
 	
 
@@ -126,7 +133,9 @@ public enum NetworkType {
 		case 10:{
 			break;
 		}
-		
+		case 11:{
+			break;
+		}
 		default: {
 			throw new IllegalArgumentException();
 		}

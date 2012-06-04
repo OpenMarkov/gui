@@ -247,8 +247,11 @@ public class NetworkDefinitionPanel extends JPanel implements
 
 		if (jComboBoxNetworkTypes == null) {
 			
-			String []networkTypes = {dialogStringResource.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-					+ NetworkType.BAYESIAN_NET.toString()),
+			String []networkTypes = {
+					
+					dialogStringResource.
+						getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.BAYESIAN_NET.toString()),
 					dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()),
@@ -263,7 +266,10 @@ public class NetworkDefinitionPanel extends JPanel implements
 													+ NetworkType.POMDP.toString()),
 					dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.DAN.toString())
+															+ NetworkType.DAN.toString()),
+					dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+															+ NetworkType.DEC_POMDP.toString())
 			
 			};
 			jComboBoxNetworkTypes = new JComboBox(networkTypes);
