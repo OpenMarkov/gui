@@ -10,11 +10,8 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.awt.Dimension;
-import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.MessageFormat;
 
 import javax.swing.GroupLayout;
@@ -42,6 +39,7 @@ import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.DECPOMDPType;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
@@ -278,6 +276,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 			//
 			if (newNetwork) {
 				//jComboBoxNetworkTypes.setSelectedItem(networkTypes[0]);
+				jComboBoxNetworkTypes.addActionListener((ActionListener) this);	
 			} else if (!newNetwork) {
 				jComboBoxNetworkTypes.setSelectedItem(dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
@@ -647,6 +646,11 @@ public class NetworkDefinitionPanel extends JPanel implements
 							+ NetworkType.POMDP.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
 						POMDPType.getUniqueInstance());
+			} else if (itemSelected.equals(dialogStringResource
+					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+							+ NetworkType.DEC_POMDP.toString()))) {
+				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
+						DECPOMDPType.getUniqueInstance());
 			}
 			if (changeNetworkType != null /*&& !itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."

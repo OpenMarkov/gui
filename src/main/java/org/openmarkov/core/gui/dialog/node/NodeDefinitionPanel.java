@@ -10,7 +10,6 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
@@ -24,6 +23,7 @@ import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -34,9 +34,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 
 import org.openmarkov.core.action.NodeAlwaysObservedEdit;
 import org.openmarkov.core.action.NodeCommentEdit;
@@ -50,6 +49,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.action.NodeAgentEdit;
 import org.openmarkov.core.gui.constraint.AlwaysObservedPropertyValidator;
 import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
@@ -59,9 +59,9 @@ import org.openmarkov.core.gui.util.Purpose;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.StringsWithProperties;
 import org.openmarkov.core.model.network.VariableType;
-
 /**
  * Panel to set the definition of a node.
  * 
@@ -118,7 +118,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		}
 		
 		//Check if the network has associated Only AtemporalVariablesConstranint
-		if (probNode.getProbNet().isTemporal()) {
+		//if (probNode.getProbNet().isTemporal()) {
+		String type = probNode.getProbNet().getNetworkType().toString();
+		if ((probNode.getProbNet().getNetworkType().toString()).equals("DEC_POMDP")) {
 			getJComboBoxTimeSlice().setEnabled(true);
 			getJComboBoxTimeSlice().setVisible(true);
 			getJLabelTimeSlice().setVisible(true);
@@ -368,6 +370,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxTimeSlice.addItem("");
 			jComboBoxTimeSlice.addItem("0");
 			jComboBoxTimeSlice.addItem("1");
+			
+			String timeSlice = String.valueOf(probNode.getVariable().getTimeSlice());
+				if (timeSlice.equals("0")) {
+					jComboBoxTimeSlice.setSelectedIndex(1);
+				} else if (timeSlice.equals("1")) {
+					jComboBoxTimeSlice.setSelectedIndex(2);
+				}else {
+					jComboBoxTimeSlice.setSelectedIndex(0);
+				}
 			
 			jComboBoxTimeSlice.addItemListener(this);
 			
@@ -836,8 +847,20 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNetworkAgents = new JComboBox(agentNames);
 			jComboBoxNetworkAgents.setName("jComboBoxAgents");
 			jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
-			jComboBoxNetworkAgents.setSelectedIndex(0);
+			if (probNode.getAgent() != null) {
+				String name = probNode.getAgent().getString();
+				int i ;
+				for (i = 0; i < agentNames.length; i++) {
+					if (name == agentNames[i]) {
+						break;
+					}
+				}
+				jComboBoxNetworkAgents.setSelectedIndex(i);
+			} else {
+				jComboBoxNetworkAgents.setSelectedIndex(0);
+			}
 			jComboBoxNetworkAgents.setEditable(true);
+			jComboBoxNetworkAgents.addItemListener(this);
 
 		}
 		return jComboBoxNetworkAgents;
@@ -855,7 +878,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		return getJComboBoxNetworkAgents();
 	}
 	
-	//TODO decision criteria jlabel
 	private JLabel getAgentsOrDecisionCriteriaOrObservedLabel() {
 		if (probNode.getNodeType() == NodeType.DECISION) {
 			return getJLabelNetworkAgents();
@@ -985,8 +1007,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 *            event information.
 	 */
 	public void itemStateChanged(ItemEvent e) {
-
+	
 		int optionDeselected = 0;
+		int optionSelected = 0;
 		ItemSelectable itemSelectable = e.getItemSelectable();
 		Object selected[] = itemSelectable.getSelectedObjects();
 		String itemSelected = selected.length == 0 ? "null" : selected[0]
@@ -995,7 +1018,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (e.getStateChange() == ItemEvent.DESELECTED) {
 			optionDeselected = comboBox.getSelectedIndex();
 		}
-
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+			optionSelected = comboBox.getSelectedIndex();
+		}
+		//optionSelected = comboBox.getSelectedIndex();
+		
 		if (comboBox.getName().equals("jComboBoxNodePurpose")) {
 
 			if (!(itemSelected == null)
@@ -1126,6 +1153,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				try {
 					probNode.getProbNet().getPNESupport().announceEdit(timeSliceEdit);
 					probNode.getProbNet().getPNESupport().doEdit(timeSliceEdit);
+					//comboBox.setSelectedIndex(optionSelected);
 				} catch (DoEditException e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(this, messageStringResource
@@ -1162,6 +1190,38 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							.getString( e1.getMessage() ),
 						messageStringResource.getString( e1.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
+				}
+				
+			}
+		} else if (comboBox.getName().equals("jComboBoxAgents")) {
+			if (!(itemSelected == null)
+					/*&& e.getStateChange() == ItemEvent.SELECTED*/) {
+				StringWithProperties agent = new StringWithProperties(itemSelected);
+				NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(probNode, agent);
+				
+				try {
+					
+					probNode.getProbNet().getPNESupport().announceEdit(nodeAgentEdit);
+					probNode.getProbNet().getPNESupport().doEdit(nodeAgentEdit);
+				//	comboBox.setSelectedIndex(optionSelected);
+				} catch (DoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotEnoughMemoryException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ConstraintViolationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NonProjectablePotentialException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (WrongCriterionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 			}
