@@ -18,6 +18,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.WindowConstants;
 
 import org.openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
@@ -54,6 +56,10 @@ public class InternalFrame extends JInternalFrame implements
 	private HashSet<FrameTitleListener> frameTitleListeners =
 		new HashSet<FrameTitleListener>();
 
+	private StringResource messageStringResource;
+
+	private StringResource dialogStringResource;
+
 	/**
 	 * This is the default constructor.
 	 * 
@@ -63,6 +69,10 @@ public class InternalFrame extends JInternalFrame implements
 	public InternalFrame(FrameContentPanel newContentPanel) {
 
 		contentPanel = newContentPanel;
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleDialogs();
+		messageStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleMessages();
 		initialize();
 		creationInstant = new Date();
 	}
@@ -138,6 +148,8 @@ public class InternalFrame extends JInternalFrame implements
 	@Override
 	public void setTitle(String newTitle) {
 		String oldTitle =  getTitle();
+		newTitle = (newTitle == null) ? messageStringResource.getString("InternalFrame.Title.Label") 
+				: newTitle;
 		super.setTitle(newTitle);
 		notifyTitleChanged(oldTitle, newTitle);
 

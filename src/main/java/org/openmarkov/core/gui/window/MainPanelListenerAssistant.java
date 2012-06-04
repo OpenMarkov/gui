@@ -86,7 +86,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	/**
 	 * Messages string resource.
 	 */
-	private StringResource stringResource;
+	//private StringResource stringResource;
 	
 	private ArrayList<NetworkPanel> networkPanels;
 
@@ -100,7 +100,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private static final double zoomChangeValue = 0.2;
 	
-	private StringResource messageStringResource;
+	private StringResource messagesStringResource;
 
 	/**
 	 * Constructor that save the references to the objects that this class
@@ -113,9 +113,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		this.mainPanel = mainPanel;
 		this.mainPanel.setName(mainPanel.getName());
-		stringResource = StringResourceLoader.getUniqueInstance()
-				.getBundleMessages();
-		messageStringResource =
+		//stringResource = StringResourceLoader.getUniqueInstance()
+			//	.getBundleMessages();
+		messagesStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		this.networkPanels = new ArrayList<NetworkPanel> ();
 
@@ -248,9 +248,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			} catch (NotEnoughMemoryException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
-				JOptionPane.showMessageDialog(null, messageStringResource
+				JOptionPane.showMessageDialog(null, messagesStringResource
 						.getString( e2.getMessage() ),
-					messageStringResource.getString( e2.getMessage() ),
+					messagesStringResource.getString( e2.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
 		} else if (actionCommand.
@@ -431,9 +431,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
         boolean canClose = true;
         if (networkPanel.getModified()) {
             response = JOptionPane.showConfirmDialog(Utilities
-                    .getOwner(mainPanel), stringResource.getString(
+                    .getOwner(mainPanel), messagesStringResource.getString(
                     "NetworkNotSaved.Text.Label", networkPanel.getTitle()),
-                    stringResource.getString("NetworkNotSaved.Title.Label"),
+                    messagesStringResource.getString("NetworkNotSaved.Title.Label"),
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.WARNING_MESSAGE);
             switch (response) {
@@ -537,7 +537,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				.getMessageWindow()
 				.getNormalMessageStream()
 				.println(
-						stringResource.getString("SavingNetwork.Text.Label")
+						messagesStringResource.getString("SavingNetwork.Text.Label")
 								+ " " + fileName);
 		try {
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel ().getEvidence (), fileName);
@@ -554,7 +554,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 					.getMessageWindow()
 					.getNormalMessageStream()
 					.println(
-							stringResource.getString("NetworkSaved.Text.Label"));
+							messagesStringResource.getString("NetworkSaved.Text.Label"));
 			mainPanel.getMainMenu().rechargeLastOpenFiles();
 
 			result = true;
@@ -562,21 +562,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			JOptionPane
 					.showMessageDialog(
 							Utilities.getOwner(mainPanel),
-							stringResource
+							messagesStringResource
 									.getString("CanNotRecognisedFileExtension.Text.Label"),
-							stringResource.getString("ErrorWindow.Title.Label"),
+							messagesStringResource.getString("ErrorWindow.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
 		} catch (CanNotWriteNetworkToFileException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringResource.getString("ErrorSavingNetwork.Text.Label"),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("ErrorSavingNetwork.Text.Label"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringResource.getString("Generic I/O error"),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("Generic I/O error"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -628,12 +628,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						.getMessageWindow()
 						.getNormalMessageStream()
 						.println(
-								stringResource
+								messagesStringResource
 										.getString("NetworkBackupError.Text.Label"));
 			}
 		}
 		mainPanel.getMessageWindow().getNormalMessageStream()
-				.println(stringResource.getString("NetworkBackup.Text.Label"));
+				.println(messagesStringResource.getString("NetworkBackup.Text.Label"));
 		saveNetwork(networkPanel);
 		fileName = networkPanel.getNetworkFile();
 		closeCurrentNetwork();
@@ -687,7 +687,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		FileChooser fileChooser = new FileChooser();
 
-		fileChooser.setDialogTitle(stringResource
+		fileChooser.setDialogTitle(messagesStringResource
 				.getString("SaveNetwork.Title.Label"));
 		File currentDirectory = new File(OpenMarkovPreferences.get(
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
@@ -712,10 +712,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		ProbNet probNet = null;
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		//empty network
-		//probNet = new ProbNet(null);
-		probNet.setName(new String(stringResource
-				.getString("InternalFrame.Title.Label") + " " + frameIndex));
+		messagesStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
+		String networkName = new String(messagesStringResource
+				.getString("InternalFrame.Title.Label") + " " + frameIndex);
+		
+		probNet.setName(networkName);
 
 		probNet.getPNESupport().setWithUndo(false);
 
@@ -745,6 +747,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	public NetworkPanel createNewFrame(ProbNet probNet) {
 
 		NetworkPanel networkPanel = null;
+		messagesStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
@@ -764,7 +768,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					e.getMessage(),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -775,6 +779,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	public NetworkPanel createNewFrame2(ProbNet probNet) {
 
 		NetworkPanel networkPanel = null;
+		messagesStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
@@ -793,7 +799,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} catch (UnsupportedOperationException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					e.getMessage(),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -830,7 +836,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						.getMessageWindow()
 						.getNormalMessageStream()
 						.println(
-								stringResource
+								messagesStringResource
 										.getString("LoadingNetwork.Text.Label")
 										+ " " + fileName);
 				ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
@@ -854,16 +860,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						.getMessageWindow()
 						.getNormalMessageStream()
 						.println(
-								stringResource
+								messagesStringResource
 										.getString("NetworkLoaded.Text.Label"));
 				mainPanel.getMainMenu().rechargeLastOpenFiles();
 			} catch (Exception e) {
 				mainPanel.getMessageWindow().getErrorMessageStream()
 						.println(e.getMessage());
 				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						stringResource
+						messagesStringResource
 								.getString("ErrorLoadingNetwork.Text.Label"),
-						stringResource.getString("ErrorWindow.Title.Label"),
+								messagesStringResource.getString("ErrorWindow.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace ();
 			}
@@ -880,7 +886,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		FileChooser fileChooser = new FileChooser();
 
-		fileChooser.setDialogTitle(stringResource
+		fileChooser.setDialogTitle(messagesStringResource
 				.getString("OpenNetwork.Title.Label"));
 		File currentDirectory = new File(OpenMarkovPreferences.get(
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
@@ -944,8 +950,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		} catch (CannotUndoException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringResource.getString("CannotUndo.Text.Label"),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("CannotUndo.Text.Label"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -960,8 +966,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			undoRedo(false);
 		} catch (CannotRedoException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringResource.getString("CannotRedo.Text.Label"),
-					stringResource.getString("ErrorWindow.Title.Label"),
+					messagesStringResource.getString("CannotRedo.Text.Label"),
+					messagesStringResource.getString("ErrorWindow.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		}
 

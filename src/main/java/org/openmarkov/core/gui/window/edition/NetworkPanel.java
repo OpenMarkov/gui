@@ -27,6 +27,8 @@ import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.graphic.prm.VisualInstance;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
@@ -108,6 +110,13 @@ public class NetworkPanel extends FrameContentPanel implements
 	private int workingMode = EDITION_WORKING_MODE;
 
 	/**
+	 * Dialog string resource.
+	 */
+	private StringResource dialogStringResource;
+
+	private StringResource messageStringResource;
+	
+	/**
 	 * Constructor that creates the instance.
 	 * 
 	 * @param probNet
@@ -118,6 +127,11 @@ public class NetworkPanel extends FrameContentPanel implements
 	public NetworkPanel(ProbNet probNet, MainPanel mainPanel) {
 		this.probNet = probNet;
 		this.mainPanel = mainPanel;
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleDialogs();
+		messageStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleMessages();
+		
 		probNet.getPNESupport().addUndoableEditListener(this);
 		initialize();
 
@@ -268,7 +282,9 @@ public class NetworkPanel extends FrameContentPanel implements
 		if (modified) {
 			newTitle = "*";
 		}
-		newTitle += (getProbNet().getName() == null) ? "" : getProbNet()
+		newTitle += (getProbNet().getName() == null) ? messageStringResource
+				.getString("InternalFrame.Title.Label") 
+				: getProbNet()
 				.getName();
 		container.setTitle(newTitle);
 
@@ -282,7 +298,10 @@ public class NetworkPanel extends FrameContentPanel implements
 	@Override
 	public String getTitle() {
 
-		return (String) getProbNet().getName();
+		return ((getProbNet().getName() == null) ? messageStringResource
+				.getString("InternalFrame.Title.Label")
+				: getProbNet().getName());
+		//return (String) getProbNet().getName();
 	}
 
 	/**
