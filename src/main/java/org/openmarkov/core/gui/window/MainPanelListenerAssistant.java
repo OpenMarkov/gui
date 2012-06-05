@@ -695,6 +695,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		fileChooser.setCurrentDirectory(currentDirectory);
 		// fileChooser.setPGMXFilter();
 		fileChooser.setSelectedFile(new File(suggestedFileName));
+		fileChooser.setAcceptAllFileFilterUsed(false);
 
 		return (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) ? fileChooser
 				.getSelectedFile().getAbsolutePath() : null;

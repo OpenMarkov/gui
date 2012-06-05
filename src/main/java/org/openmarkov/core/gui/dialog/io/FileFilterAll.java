@@ -36,10 +36,16 @@ public class FileFilterAll extends FileFilterBasic {
 	private String formatExtension = "" ;
 
 	/**
+	 * Description of the files that match this filter.
+	 */
+	private String fileDescription = "OpenMarkov" ;
+	
+	/**
 	 * Create a new instance and create a new string resource.
 	 */
-	public FileFilterAll(String extension) {
+	public FileFilterAll(String extension, String description) {
 		formatExtension = extension;
+		fileDescription = description;
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 
@@ -74,7 +80,7 @@ public class FileFilterAll extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("FileExtension.OpenMarkov.Description")
+		return stringResource.getString("FileExtension." + fileDescription + ".Description")
 			+ " (*." + formatExtension + ")";
 
 	}

@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.dialog.io;
 
 
 import java.io.File;
+import java.util.HashMap;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -83,10 +84,10 @@ public class FileChooser extends JFileChooser {
 		openMarkovXLSFilter = new FileFilterXLS();
 		
 		FormatManager formatManager = FormatManager.getInstance();
-		for (String item:formatManager.getItemsByRole("Writer")){
-			addChoosableFileFilter(new FileFilterAll(item));
+		HashMap<String, String> items = formatManager.getItemsByRole("Writer");
+		for (String item:items.keySet()){
+			addChoosableFileFilter(new FileFilterAll(items.get(item), item));
 		}
-		
 		
 		/*addChoosableFileFilter(elviraFilter);
 		addChoosableFileFilter(openMarkovXmlFilter);
