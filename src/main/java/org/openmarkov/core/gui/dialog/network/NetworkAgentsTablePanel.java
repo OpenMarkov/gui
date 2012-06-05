@@ -1,5 +1,6 @@
 package org.openmarkov.core.gui.dialog.network;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -7,10 +8,12 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -19,8 +22,6 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
-import org.openmarkov.core.gui.action.NodeStateEdit;
-import org.openmarkov.core.gui.component.DiscretizeTableModel;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -31,7 +32,7 @@ import org.openmarkov.core.model.network.StringsWithProperties;
  * @author myebra
  *
  */
-public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModelListener{
+public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModelListener,PNUndoableEditListener{
 
 	private StringResource messageStringResource;
 	private String keyPrefix;
@@ -39,6 +40,10 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	private ProbNet probNet;
 	private NetworkAgentTableModel netWorkAgentstableModel;
 	private Object dataTable [][];
+	/**
+	 * Each time an agent has been edited the corresponding edit would be stored 
+	 */
+	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 
 	public NetworkAgentsTablePanel(String[] newColumns, ProbNet probNet){
 		this(newColumns, new Object[0][0], "a");
@@ -161,7 +166,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			try {
 				probNet.getPNESupport().announceEdit(networkAgentEdit);
 				probNet.getPNESupport().doEdit(networkAgentEdit);
-				
+				edits.add(networkAgentEdit);
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -208,7 +213,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			try {
 				probNet.getPNESupport().announceEdit(networkAgentEdit);
 				probNet.getPNESupport().doEdit(networkAgentEdit);
-				
+				edits.add(networkAgentEdit);
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -318,7 +323,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
-			
+			edits.add(networkAgentEdit);
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -361,7 +366,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
-			
+			edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
@@ -409,7 +414,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		try {
 			probNet.getPNESupport().announceEdit(networkAgentEdit);
 			probNet.getPNESupport().doEdit(networkAgentEdit);
-			
+			edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
@@ -443,5 +448,32 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		}
 	}
 
+	@Override
+	public void undoableEditHappened(UndoableEditEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void undoableEditWillHappen(UndoableEditEvent event)
+			throws ConstraintViolationException, CanNotDoEditException,
+			NotEnoughMemoryException, NonProjectablePotentialException,
+			WrongCriterionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void undoEditHappened(UndoableEditEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<PNEdit> getEdits () {
+		return edits;
+	}
 	
 }

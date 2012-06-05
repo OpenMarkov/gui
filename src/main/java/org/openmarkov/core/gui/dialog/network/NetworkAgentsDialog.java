@@ -7,14 +7,11 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.model.network.AdditionalProperties;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringsWithProperties;
 /**
@@ -140,6 +137,12 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 		 */
 		protected void doCancelClickBeforeHide() {
 			probNet.getPNESupport().closeParenthesis();
+			//TODO PNESupport must support more depth levels parenthesis 
+			//As current performace edits from NetworkAgentsPanel only be undone when cancel
+			//NodesPropertiesDialog
+			for (int i = getNetworkAgentsPanel().getEdits().size()-1; i >=0; i--) {
+				getNetworkAgentsPanel().getEdits().get(i).undo();
+			}
 			
 		}
 
