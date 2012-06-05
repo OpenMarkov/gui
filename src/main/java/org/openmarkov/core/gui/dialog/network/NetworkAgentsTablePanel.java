@@ -341,7 +341,6 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		}
 		StringsWithProperties agents = probNet.getAgents();
 		setDataFromNetworkAgents(agents);
-		getTableModel().removeRow(selectedRow);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);
 		dataTable = new Object [agents.getNames().size()][1];
