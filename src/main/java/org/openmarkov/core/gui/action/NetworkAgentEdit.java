@@ -42,7 +42,12 @@ public class NetworkAgentEdit extends SimplePNEdit {
 		this.agentName = agentName;
 		this.stateAction = stateAction;
 		this.newName = newName;
-		this.lastAgents = probnet.getAgents();
+		if(probnet.getAgents() != null){
+			StringsWithProperties agents =  probnet.getAgents();
+			this.lastAgents = probnet.getAgents().copy();
+		}else {
+			this.lastAgents = probnet.getAgents();
+		}
 		this.dataTable = dataTable;
 	}
 

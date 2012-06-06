@@ -138,7 +138,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 		protected void doCancelClickBeforeHide() {
 			probNet.getPNESupport().closeParenthesis();
 			//TODO PNESupport must support more depth levels parenthesis 
-			//As current performace edits from NetworkAgentsPanel only be undone when cancel
+			//As current performance edits from NetworkAgentsPanel only be undone when cancel
 			//NodesPropertiesDialog
 			for (int i = getNetworkAgentsPanel().getEdits().size()-1; i >=0; i--) {
 				getNetworkAgentsPanel().getEdits().get(i).undo();
