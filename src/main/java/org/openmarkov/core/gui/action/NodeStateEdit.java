@@ -104,7 +104,9 @@ public class NodeStateEdit extends SimplePNEdit {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.newState = new State (newName);
-		this.oldName = probNode.getVariable().getStateName(stateIndex);
+		if (stateAction != StateAction.ADD) {
+			this.oldName = probNode.getVariable().getStateName(stateIndex);
+		}
 		this.selectedStateIndex = probNode.getVariable().getNumStates() - (
 				stateIndex + 1 ) ;
 		this.oldPotential = probNode.getPotentials();
