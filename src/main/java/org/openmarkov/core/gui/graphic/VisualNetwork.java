@@ -269,10 +269,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 			VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
 			visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
 		}
-		
-		selectedNodes.clear();
-		selectedLinks.clear();
-		selectedInstances.clear();
 	}
 
 	/**
@@ -786,6 +782,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 		for (VisualNode node : visualNodes) {
 			setSelectedElement(node, selected);
 		}
+		
+		if(!selected)
+		{
+			selectedNodes.clear();
+		}
 
 	}
 
@@ -800,6 +801,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 		for (VisualLink link : visualLinks) {
 			setSelectedElement(link, selected);
 		}
+		
+		if(!selected)
+		{
+			selectedLinks.clear();
+		}		
 
 	}
 	
@@ -815,6 +821,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 			setSelectedElement(instance, selected);
 		}
 
+		if(!selected)
+		{
+			selectedInstances.clear();
+		}
+		
 	}	
 
 	/**
