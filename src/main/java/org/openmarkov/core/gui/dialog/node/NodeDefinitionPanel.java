@@ -250,7 +250,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJLabelTimeSlice())
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(getJComboBoxTimeSlice(),GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+									.addComponent(getJComboBoxTimeSlice(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 									)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelNodePurpose())
@@ -260,7 +260,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJLabelNodeRelevance())
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+									.addComponent(getJComboBoxNodeRelevance(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 									)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getAgentsOrDecisionCriteriaOrObservedLabel()) 
@@ -366,16 +366,28 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxTimeSlice = new JComboBox();
 			jComboBoxTimeSlice.setName("jComboBoxTimeSlice");
 			jComboBoxTimeSlice.setEditable(true);
-			jComboBoxTimeSlice.setSize(40, 40);
-			jComboBoxTimeSlice.addItem("");
+			jComboBoxTimeSlice.setSize(60, 40);
+			if (!probNode.getProbNet().onlyTemporal()) {
+				//It corresponds with no time slice, atemporal selection timeSlice = Integer.MIN 
+				jComboBoxTimeSlice.addItem(dialogStringResource
+					.getString("NodeDefinitionPanel.Atemporal.Text"));
+			}
 			jComboBoxTimeSlice.addItem("0");
 			jComboBoxTimeSlice.addItem("1");
 			
 			String timeSlice = String.valueOf(probNode.getVariable().getTimeSlice());
 				if (timeSlice.equals("0")) {
-					jComboBoxTimeSlice.setSelectedIndex(1);
+					if (probNode.getProbNet().onlyTemporal()) {
+						jComboBoxTimeSlice.setSelectedIndex(0);
+					} else {
+						jComboBoxTimeSlice.setSelectedIndex(1);
+					}
 				} else if (timeSlice.equals("1")) {
-					jComboBoxTimeSlice.setSelectedIndex(2);
+					if (probNode.getProbNet().onlyTemporal()) {
+						jComboBoxTimeSlice.setSelectedIndex(1);
+					} else {
+						jComboBoxTimeSlice.setSelectedIndex(2);
+					}
 				}else {
 					jComboBoxTimeSlice.setSelectedIndex(0);
 				}
@@ -739,7 +751,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNodeRelevance = new JComboBox();
 			jComboBoxNodeRelevance.setName("jComboBoxNodeRelevance");
 			jComboBoxNodeRelevance.setEditable(true);
-			jComboBoxNodeRelevance.setSize(40, 40);
+			jComboBoxNodeRelevance.setSize(60, 40);
 			fillJComboBoxNodeRelevanceWithoutDecimals();
 			jComboBoxNodeRelevance.setEnabled(false);
 		}
@@ -1147,8 +1159,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		} else if (comboBox.getName().equals("jComboBoxTimeSlice")) {
 			if (!(itemSelected == null)
 					&& e.getStateChange() == ItemEvent.SELECTED) {
-				TimeSliceEdit timeSliceEdit  = new TimeSliceEdit(probNode,
+				TimeSliceEdit timeSliceEdit = null;
+				if (itemSelected.equals(dialogStringResource
+						.getString("NodeDefinitionPanel.Atemporal.Text"))) {
+					timeSliceEdit  = new TimeSliceEdit(probNode,
+							Integer.MIN_VALUE);
+				} else {
+					timeSliceEdit  = new TimeSliceEdit(probNode,
 						Integer.valueOf(itemSelected));
+				}
 				
 				try {
 					probNode.getProbNet().getPNESupport().announceEdit(timeSliceEdit);
