@@ -632,7 +632,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						visualNetwork.setSelectedAllObjects(false);
 						visualNetwork.setSelectedNode(node, true);
 					}
-					showPotentialDialog(networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE);
+					showPotentialDialog(networkPanel.getWorkingMode() != NetworkPanel.EDITION_WORKING_MODE);
 				}
 			}
 		} else if (SwingUtilities.isRightMouseButton(e)) {
@@ -926,7 +926,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
 			if (Utilities.noMouseModifiers(e)) {
 				if ((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
 					newLink = new VisualArrow(new Point2D.Double(e.getX(), e.getY()), cursorPosition);
