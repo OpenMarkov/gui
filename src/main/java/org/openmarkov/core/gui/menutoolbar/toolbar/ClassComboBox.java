@@ -111,7 +111,7 @@ public class ClassComboBox extends JComboBox implements MDIListener {
 
 	public boolean frameClosing(FrameContentPanel contentPanel) {
 		// Do nothing
-		return false;
+		return true;
 	}
 
 	public void frameOpened(FrameContentPanel contentPanel) {
