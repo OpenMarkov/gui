@@ -843,10 +843,18 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
+					
+					Variable variable = new Variable(nodeName,
+							DefaultStates.getStatesNodeType(nodeType,
+									probNet.getDefaultStates()));
+					if (probNet.onlyTemporal()) {
+						//default value
+						variable.setBaseName(nodeName);
+						variable.setName(nodeName + "["+0+"]");
+						variable.setTimeSlice(0);
+					}
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
-							probNet, new Variable(nodeName,
-									DefaultStates.getStatesNodeType(nodeType,
-											probNet.getDefaultStates())),
+							probNet, variable,
 							nodeType, cursorPosition);
 					try {
 						probNet.getPNESupport().announceEdit(addProbNodeEdit);

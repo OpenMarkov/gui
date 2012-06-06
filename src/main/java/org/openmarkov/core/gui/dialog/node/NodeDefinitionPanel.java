@@ -118,7 +118,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		}
 		
 		//Check if the network has associated Only AtemporalVariablesConstranint
-		if (probNode.getProbNet().isTemporal()) {
+		if (probNode.getProbNet().variablesCouldBeTemporal()) {
 		//String type = probNode.getProbNet().getNetworkType().toString();
 		//if ((probNode.getProbNet().getNetworkType().toString()).equals("DEC_POMDP")) {
 			getJComboBoxTimeSlice().setEnabled(true);
