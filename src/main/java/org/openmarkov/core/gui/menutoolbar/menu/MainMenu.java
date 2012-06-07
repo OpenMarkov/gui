@@ -1025,9 +1025,9 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			editInstanceCreationMenuItem = new LocalizedCheckBoxMenuItem (
                                                                       MenuItemNames.EDIT_INSTANCECREATION_MENUITEM,
                                                                       ActionCommands.INSTANCE_CREATION,
-                                                                      IconLoader.ICON_LINK_ENABLED);
+                                                                      IconLoader.ICON_INSTANCE_ENABLED);
 			editInstanceCreationMenuItem.addActionListener(listener);
-			groupEditOptions.add(editLinkCreationMenuItem);
+			groupEditOptions.add(editInstanceCreationMenuItem);
 		}
 
 		return editInstanceCreationMenuItem;
