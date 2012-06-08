@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
+import org.openmarkov.core.model.network.type.OOBNType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
@@ -315,7 +316,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
 			setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
-			setOptionEnabled(ActionCommands.INSTANCE_CREATION, true);
+			if(networkPanel.getProbNet().getNetworkType() instanceof OOBNType)
+			{
+				setOptionEnabled(ActionCommands.INSTANCE_CREATION, true);
+				MainPanel.getUniqueInstance().getEditionToolBar().getClassComboBox().setEnabled(true);			
+			}
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 			if (networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType

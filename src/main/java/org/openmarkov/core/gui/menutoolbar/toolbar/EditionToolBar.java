@@ -423,6 +423,7 @@ public class EditionToolBar extends ToolBarBasic {
 
 		if (classComboBox == null) {
 			classComboBox = new ClassComboBox(listener);
+			classComboBox.setEnabled(false);
 		}
 		return classComboBox;
 	}	
