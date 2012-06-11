@@ -859,8 +859,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			jComboBoxNetworkAgents = new JComboBox(agentNames);
 			jComboBoxNetworkAgents.setName("jComboBoxAgents");
 			jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
-			if (probNode.getAgent() != null) {
-				String name = probNode.getAgent().getString();
+			if (probNode.getVariable().getAgent() != null) {
+				String name = probNode.getVariable().getAgent().getString();
 				int i ;
 				for (i = 0; i < agentNames.length; i++) {
 					if (name == agentNames[i]) {

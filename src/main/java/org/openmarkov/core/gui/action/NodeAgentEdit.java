@@ -16,19 +16,19 @@ public class NodeAgentEdit extends SimplePNEdit{
 	public NodeAgentEdit (ProbNode probNode, StringWithProperties agent) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
-		this.currentAgent = probNode.getAgent();
+		this.currentAgent = probNode.getVariable().getAgent();
 		this.newAgent = agent;
 	}
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		// TODO Auto-generated method stub
-		probNode.setAgent(newAgent);
+		probNode.getVariable().setAgent(newAgent);
 	}
 	
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.setAgent(currentAgent);
+		probNode.getVariable().setAgent(currentAgent);
 	}
 
 }
