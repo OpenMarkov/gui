@@ -104,8 +104,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	public PreferencesDialog(JFrame owner) {
 
 		this(owner, "OPENMARKOV User Preferences", 
-		     OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true, 
-		     OpenMarkovPreferences.OPENMARKOV_KERNEL_PREFERENCES, false);
+		     OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*, 
+		     OpenMarkovPreferences.OPENMARKOV_KERNEL_PREFERENCES, false*/);
 	}
 
 	/**
@@ -120,8 +120,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	public PreferencesDialog(JFrame owner, String title) {
 
 		this(owner, title, 
-		     OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true, 
-		     OpenMarkovPreferences.OPENMARKOV_KERNEL_PREFERENCES, false);
+		     OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*, 
+		     OpenMarkovPreferences.OPENMARKOV_KERNEL_PREFERENCES, false*/);
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 *            if true, then show system preferences
 	 */
 	public PreferencesDialog(JFrame owner, String title, Object userObj,
-									boolean showUserPrefs, Object systemObj,
-									boolean showSystemPrefs) {
+									boolean showUserPrefs/*, Object systemObj,
+									boolean showSystemPrefs*/) {
 
 		super(owner);
 
@@ -162,7 +162,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 		int y = owner.getY() + (owner.getHeight() - height) / 2;
 		this.setBounds(x, y, width, height);
 		getContentPane().setLayout(new BorderLayout(5, 5));
-		createTree(userObj, showUserPrefs, systemObj, showSystemPrefs);
+		createTree(userObj, showUserPrefs/*, systemObj, showSystemPrefs*/);
 		jTableEdition = new JTable();
 		createSplitPane();
 		createButtonPanel();
@@ -183,15 +183,15 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 * @param showSystemPrefs
 	 *            true if System Preferences will be shown
 	 */
-	private void createTree(Object userObj, boolean showUserPrefs,
-							Object systemObj, boolean showSystemPrefs) {
+	private void createTree(Object userObj, boolean showUserPrefs/*,
+							Object systemObj, boolean showSystemPrefs*/) {
 
 		DefaultMutableTreeNode rootNode =
 			new DefaultMutableTreeNode("Preferences");
-		if (showSystemPrefs) {
+		/*if (showSystemPrefs) {
 			rootNode.add(createSystemRootNode(systemObj));
 			//rootNode.add(createSystemNodeForPackage(systemObj));
-		}
+		}*/
 		if (showUserPrefs) {
 			rootNode.add(createUserRootNode(userObj));
 			//rootNode.add(createUserNodeForPackage(userObj));

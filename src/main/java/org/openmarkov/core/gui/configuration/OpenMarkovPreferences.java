@@ -46,8 +46,8 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	/**
 	 * the preferences
 	 */
-	public static Preferences OPENMARKOV_KERNEL_PREFERENCES =
-		Preferences.systemRoot().node( OPENMARKOV_SYSTEM_PREFERENCES );
+	/*public static Preferences OPENMARKOV_KERNEL_PREFERENCES =
+		Preferences.systemRoot().node( OPENMARKOV_SYSTEM_PREFERENCES );*/
 	public static Preferences OPENMARKOV_PREFERENCES =
 		Preferences.userRoot().node( OPENMARKOV_NODE_PREFERENCES );
 	public static Preferences OPENMARKOV_DIRECTORIES =
