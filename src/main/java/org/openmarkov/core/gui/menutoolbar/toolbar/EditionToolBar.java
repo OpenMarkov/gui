@@ -11,6 +11,8 @@ package org.openmarkov.core.gui.menutoolbar.toolbar;
 
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -31,7 +33,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
  * 
  * @author jmendoza
  */
-public class EditionToolBar extends ToolBarBasic {
+public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 
 	/**
 	 * Static field for serializable class.
@@ -112,7 +114,7 @@ public class EditionToolBar extends ToolBarBasic {
 	/**
 	 * String resource.
 	 */
-	private StringResource stringResource = null;
+	private StringResource toolBarsStringResource = null;
 
 	/**
 	 * Icon loader.
@@ -136,7 +138,7 @@ public class EditionToolBar extends ToolBarBasic {
 	 */
 	private void initialize() {
 
-		stringResource =
+		toolBarsStringResource =
 			StringResourceLoader.getUniqueInstance().getBundleToolBars();
 		iconLoader = new IconLoader();
 		add(getCutButton());
@@ -170,10 +172,11 @@ public class EditionToolBar extends ToolBarBasic {
 			cutButton.setFocusable(false);
 			cutButton.setActionCommand(ActionCommands.CLIPBOARD_CUT);
 			cutButton
-				.setToolTipText(stringResource
+				.setToolTipText(toolBarsStringResource
 					.getString(ActionCommands.CLIPBOARD_CUT
 						+ STRING_TOOLTIP_SUFFIX));
 			cutButton.addActionListener(listener);
+			cutButton.addMouseMotionListener(this);
 		}
 		return cutButton;
 	}
@@ -190,10 +193,11 @@ public class EditionToolBar extends ToolBarBasic {
 			copyButton.setIcon(iconLoader.load(IconLoader.ICON_COPY_ENABLED));
 			copyButton.setFocusable(false);
 			copyButton.setActionCommand(ActionCommands.CLIPBOARD_COPY);
-			copyButton.setToolTipText(stringResource
+			copyButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.CLIPBOARD_COPY
 					+ STRING_TOOLTIP_SUFFIX));
 			copyButton.addActionListener(listener);
+			copyButton.addMouseMotionListener(this);
 		}
 		return copyButton;
 	}
@@ -210,10 +214,11 @@ public class EditionToolBar extends ToolBarBasic {
 			pasteButton.setIcon(iconLoader.load(IconLoader.ICON_PASTE_ENABLED));
 			pasteButton.setFocusable(false);
 			pasteButton.setActionCommand(ActionCommands.CLIPBOARD_PASTE);
-			pasteButton.setToolTipText(stringResource
+			pasteButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.CLIPBOARD_PASTE
 					+ STRING_TOOLTIP_SUFFIX));
 			pasteButton.addActionListener(listener);
+			pasteButton.addMouseMotionListener(this);
 		}
 		return pasteButton;
 	}
@@ -231,10 +236,11 @@ public class EditionToolBar extends ToolBarBasic {
 				.load(IconLoader.ICON_REMOVE_ENABLED));
 			removeButton.setFocusable(false);
 			removeButton.setActionCommand(ActionCommands.OBJECT_REMOVAL);
-			removeButton.setToolTipText(stringResource
+			removeButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.OBJECT_REMOVAL
 					+ STRING_TOOLTIP_SUFFIX));
 			removeButton.addActionListener(listener);
+			removeButton.addMouseMotionListener(this);
 		}
 		return removeButton;
 	}
@@ -251,9 +257,10 @@ public class EditionToolBar extends ToolBarBasic {
 			undoButton.setIcon(iconLoader.load(IconLoader.ICON_UNDO_ENABLED));
 			undoButton.setFocusable(false);
 			undoButton.setActionCommand(ActionCommands.UNDO);
-			undoButton.setToolTipText(stringResource
+			undoButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.UNDO + STRING_TOOLTIP_SUFFIX));
 			undoButton.addActionListener(listener);
+			undoButton.addMouseMotionListener(this);
 		}
 		return undoButton;
 	}
@@ -270,9 +277,10 @@ public class EditionToolBar extends ToolBarBasic {
 			redoButton.setIcon(iconLoader.load(IconLoader.ICON_REDO_ENABLED));
 			redoButton.setFocusable(false);
 			redoButton.setActionCommand(ActionCommands.REDO);
-			redoButton.setToolTipText(stringResource
+			redoButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.REDO + STRING_TOOLTIP_SUFFIX));
 			redoButton.addActionListener(listener);
+			redoButton.addMouseMotionListener(this);
 		}
 		return redoButton;
 	}
@@ -291,10 +299,11 @@ public class EditionToolBar extends ToolBarBasic {
 			objectSelectionButton
 				.setActionCommand(ActionCommands.OBJECT_SELECTION);
 			objectSelectionButton.setFocusable(false);
-			objectSelectionButton.setToolTipText(stringResource
+			objectSelectionButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.OBJECT_SELECTION
 					+ STRING_TOOLTIP_SUFFIX));
 			objectSelectionButton.addActionListener(listener);
+			objectSelectionButton.addMouseMotionListener(this);
 			groupEditionOptions.add(objectSelectionButton);
 		}
 		return objectSelectionButton;
@@ -314,10 +323,11 @@ public class EditionToolBar extends ToolBarBasic {
 			chanceCreationButton
 				.setActionCommand(ActionCommands.CHANCE_CREATION);
 			chanceCreationButton.setFocusable(false);
-			chanceCreationButton.setToolTipText(stringResource
+			chanceCreationButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.CHANCE_CREATION
 					+ STRING_TOOLTIP_SUFFIX));
 			chanceCreationButton.addActionListener(listener);
+			chanceCreationButton.addMouseMotionListener(this);
 			groupEditionOptions.add(chanceCreationButton);
 		}
 		return chanceCreationButton;
@@ -337,10 +347,11 @@ public class EditionToolBar extends ToolBarBasic {
 			decisionCreationButton
 				.setActionCommand(ActionCommands.DECISION_CREATION);
 			decisionCreationButton.setFocusable(false);
-			decisionCreationButton.setToolTipText(stringResource
+			decisionCreationButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.DECISION_CREATION
 					+ STRING_TOOLTIP_SUFFIX));
 			decisionCreationButton.addActionListener(listener);
+			decisionCreationButton.addMouseMotionListener(this);
 			groupEditionOptions.add(decisionCreationButton);
 		}
 		return decisionCreationButton;
@@ -360,10 +371,11 @@ public class EditionToolBar extends ToolBarBasic {
 			utilityCreationButton
 				.setActionCommand(ActionCommands.UTILITY_CREATION);
 			utilityCreationButton.setFocusable(false);
-			utilityCreationButton.setToolTipText(stringResource
+			utilityCreationButton.setToolTipText(toolBarsStringResource
 				.getString(ActionCommands.UTILITY_CREATION
 					+ STRING_TOOLTIP_SUFFIX));
 			utilityCreationButton.addActionListener(listener);
+			utilityCreationButton.addMouseMotionListener(this);
 			groupEditionOptions.add(utilityCreationButton);
 		}
 		return utilityCreationButton;
@@ -383,10 +395,11 @@ public class EditionToolBar extends ToolBarBasic {
 			linkCreationButton.setActionCommand(ActionCommands.LINK_CREATION);
 			linkCreationButton.setFocusable(false);
 			linkCreationButton
-				.setToolTipText(stringResource
+				.setToolTipText(toolBarsStringResource
 					.getString(ActionCommands.LINK_CREATION
 						+ STRING_TOOLTIP_SUFFIX));
 			linkCreationButton.addActionListener(listener);
+			linkCreationButton.addMouseMotionListener(this);
 			groupEditionOptions.add(linkCreationButton);
 		}
 		return linkCreationButton;
@@ -406,10 +419,11 @@ public class EditionToolBar extends ToolBarBasic {
 			instanceCreationButton.setActionCommand(ActionCommands.INSTANCE_CREATION);
 			instanceCreationButton.setFocusable(false);
 			instanceCreationButton
-				.setToolTipText(stringResource
+				.setToolTipText(toolBarsStringResource
 					.getString(ActionCommands.INSTANCE_CREATION
 						+ STRING_TOOLTIP_SUFFIX));
 			instanceCreationButton.addActionListener(listener);
+			instanceCreationButton.addMouseMotionListener(this);
 			groupEditionOptions.add(instanceCreationButton);
 		}
 		return instanceCreationButton;
@@ -466,5 +480,78 @@ public class EditionToolBar extends ToolBarBasic {
 			component = instanceCreationButton;
 		}
 		return component;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		
+		if (e.getSource().equals(getCutButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getCutButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.CLIPBOARD_CUT
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getCopyButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getCopyButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.CLIPBOARD_COPY
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getPasteButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getPasteButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.CLIPBOARD_PASTE
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getRemoveButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getRemoveButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.OBJECT_REMOVAL
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getUndoButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getUndoButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.UNDO + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getRedoButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getRedoButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.REDO + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getObjectSelectionButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getObjectSelectionButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.OBJECT_SELECTION
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getChanceCreationButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getChanceCreationButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.CHANCE_CREATION
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getDecisionCreationButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getDecisionCreationButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.DECISION_CREATION
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getUtilityCreationButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getUtilityCreationButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.UTILITY_CREATION
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getLinkCreationButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getLinkCreationButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.LINK_CREATION
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getInstanceCreationButton())) {
+			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getInstanceCreationButton().setToolTipText(toolBarsStringResource
+					.getString(ActionCommands.INSTANCE_CREATION
+							+ STRING_TOOLTIP_SUFFIX));
+		}
+	
 	}
 }

@@ -13,6 +13,8 @@ package org.openmarkov.core.gui.menutoolbar.toolbar;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -36,7 +38,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
  * @author asaez
  * @version 1.0
  */
-public class InferenceToolBar extends ToolBarBasic {
+public class InferenceToolBar extends ToolBarBasic implements MouseMotionListener {
 
 	/**
 	 * Static field for serializable class.
@@ -178,6 +180,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			createNewEvidenceCaseButton.setToolTipText(stringResource
 					.getString(ActionCommands.CREATE_NEW_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
 			createNewEvidenceCaseButton.addActionListener(listener);
+			createNewEvidenceCaseButton.addMouseMotionListener(this);
 		}
 		return createNewEvidenceCaseButton;		
 	}
@@ -197,6 +200,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			goToFirstEvidenceCaseButton.setToolTipText(stringResource
 					.getString(ActionCommands.GO_TO_FIRST_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
 			goToFirstEvidenceCaseButton.addActionListener(listener);
+			goToFirstEvidenceCaseButton.addMouseMotionListener(this);
 		}
 		return goToFirstEvidenceCaseButton;		
 	}
@@ -216,6 +220,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			goToPreviousEvidenceCaseButton.setToolTipText(stringResource
 					.getString(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
 			goToPreviousEvidenceCaseButton.addActionListener(listener);
+			goToPreviousEvidenceCaseButton.addMouseMotionListener(this);
 		}
 		return goToPreviousEvidenceCaseButton;		
 	}
@@ -257,6 +262,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			goToNextEvidenceCaseButton.setToolTipText(stringResource
 					.getString(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
 			goToNextEvidenceCaseButton.addActionListener(listener);
+			goToNextEvidenceCaseButton.addMouseMotionListener(this);
 		}
 		return goToNextEvidenceCaseButton;		
 	}
@@ -276,6 +282,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			goToLastEvidenceCaseButton.setToolTipText(stringResource
 					.getString(ActionCommands.GO_TO_LAST_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
 			goToLastEvidenceCaseButton.addActionListener(listener);
+			goToLastEvidenceCaseButton.addMouseMotionListener(this);
 		}
 		return goToLastEvidenceCaseButton;		
 	}
@@ -295,6 +302,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			clearOutAllEvidenceCasesButton.setToolTipText(stringResource
 					.getString(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES + STRING_TOOLTIP_SUFFIX));
 			clearOutAllEvidenceCasesButton.addActionListener(listener);
+			clearOutAllEvidenceCasesButton.addMouseMotionListener(this);
 		}
 		return clearOutAllEvidenceCasesButton;		
 	}
@@ -314,6 +322,7 @@ public class InferenceToolBar extends ToolBarBasic {
 			propagateEvidenceButton.setToolTipText(stringResource
 					.getString(ActionCommands.PROPAGATE_EVIDENCE + STRING_TOOLTIP_SUFFIX));
 			propagateEvidenceButton.addActionListener(listener);
+			propagateEvidenceButton.addMouseMotionListener(this);
 		}
 		return propagateEvidenceButton;		
 	}
@@ -430,6 +439,46 @@ public class InferenceToolBar extends ToolBarBasic {
 		add(getExpansionThresholdLabel());
 		add(getExpansionThresholdComboBox());
 		add(Box.createHorizontalGlue());		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (e.getSource().equals(getCreateNewEvidenceCaseButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getCreateNewEvidenceCaseButton().setToolTipText(stringResource
+					.getString(ActionCommands.CREATE_NEW_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getGoToFirstEvidenceCaseButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getGoToFirstEvidenceCaseButton().setToolTipText(stringResource
+					.getString(ActionCommands.GO_TO_FIRST_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getGoToPreviousEvidenceCaseButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getGoToPreviousEvidenceCaseButton().setToolTipText(stringResource
+					.getString(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getGoToNextEvidenceCaseButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getGoToNextEvidenceCaseButton().setToolTipText(stringResource
+					.getString(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getGoToLastEvidenceCaseButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getGoToLastEvidenceCaseButton().setToolTipText(stringResource
+					.getString(ActionCommands.GO_TO_LAST_EVIDENCE_CASE + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getClearOutAllEvidenceCasesButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getClearOutAllEvidenceCasesButton().setToolTipText(stringResource
+					.getString(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getPropagateEvidenceButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getPropagateEvidenceButton().setToolTipText(stringResource
+					.getString(ActionCommands.PROPAGATE_EVIDENCE + STRING_TOOLTIP_SUFFIX));
+		}
+		
 	}
 	
 }

@@ -11,6 +11,8 @@ package org.openmarkov.core.gui.menutoolbar.toolbar;
 
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -35,7 +37,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
  * @version 1.1 jlgozalo Added CloseNetworkButton to the toolbar
  * @version 1.2 20100408 jlgozalo Change the order of ZoomIn and ZoomOut buttons
  */
-public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
+public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, MouseMotionListener {
 
 	/**
 	 * Static field for serializable class.
@@ -141,6 +143,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 			newNetworkButton.setToolTipText(stringResource
 				.getString(ActionCommands.NEW_NETWORK + STRING_TOOLTIP_SUFFIX));
 			newNetworkButton.addActionListener(listener);
+			newNetworkButton.addMouseMotionListener(this);
 		}
 		return newNetworkButton;
 	}
@@ -163,6 +166,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 					.getString(ActionCommands.OPEN_NETWORK
 						+ STRING_TOOLTIP_SUFFIX));
 			openNetworkButton.addActionListener(listener);
+			openNetworkButton.addMouseMotionListener(this);
 		}
 		return openNetworkButton;
 	}
@@ -185,6 +189,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 					.getString(ActionCommands.SAVE_NETWORK
 						+ STRING_TOOLTIP_SUFFIX));
 			saveNetworkButton.addActionListener(listener);
+			saveNetworkButton.addMouseMotionListener(this);
 		}
 		return saveNetworkButton;
 	}
@@ -207,6 +212,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 					.getString(ActionCommands.CLOSE_NETWORK
 						+ STRING_TOOLTIP_SUFFIX));
 			closeNetworkButton.addActionListener(listener);
+			closeNetworkButton.addMouseMotionListener(this);
 		}
 		return closeNetworkButton;
 	}
@@ -227,6 +233,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 			zoomInButton.setToolTipText(stringResource
 				.getString(ActionCommands.ZOOM_IN + STRING_TOOLTIP_SUFFIX));
 			zoomInButton.addActionListener(listener);
+			zoomInButton.addMouseMotionListener(this);
 		}
 		return zoomInButton;
 	}
@@ -247,6 +254,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 			zoomOutButton.setToolTipText(stringResource
 				.getString(ActionCommands.ZOOM_OUT + STRING_TOOLTIP_SUFFIX));
 			zoomOutButton.addActionListener(listener);
+			zoomOutButton.addMouseMotionListener(this);
 		}
 		return zoomOutButton;
 	}
@@ -292,6 +300,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 					.getString(ActionCommands.CHANGE_WORKING_MODE
 						+ STRING_TOOLTIP_SUFFIX));
 			workingModeButton.addActionListener(listener);
+			workingModeButton.addMouseMotionListener(this);
 		}
 		return workingModeButton;		
 	}	
@@ -340,5 +349,49 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar {
 			component = workingModeButton;
 		}
 		return component;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (e.getSource().equals(getNewNetworkButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getNewNetworkButton().setToolTipText(stringResource
+					.getString(ActionCommands.NEW_NETWORK + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getOpenNetworkButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getOpenNetworkButton().setToolTipText(stringResource
+					.getString(ActionCommands.OPEN_NETWORK
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getSaveNetworkButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getSaveNetworkButton().setToolTipText(stringResource
+					.getString(ActionCommands.SAVE_NETWORK
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getCloseNetworkButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getCloseNetworkButton().setToolTipText(stringResource
+					.getString(ActionCommands.CLOSE_NETWORK
+							+ STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getZoomInButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getZoomInButton().setToolTipText(stringResource
+					.getString(ActionCommands.ZOOM_IN + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getZoomOutButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getZoomOutButton().setToolTipText(stringResource
+					.getString(ActionCommands.ZOOM_OUT + STRING_TOOLTIP_SUFFIX));
+		} else if (e.getSource().equals(getWorkingModeButton())) {
+			stringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
+			getWorkingModeButton().setToolTipText(stringResource
+					.getString(ActionCommands.CHANGE_WORKING_MODE
+							+ STRING_TOOLTIP_SUFFIX));
+		}
+		
 	}
 }
