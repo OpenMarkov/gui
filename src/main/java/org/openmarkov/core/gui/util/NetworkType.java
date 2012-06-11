@@ -89,7 +89,14 @@ public enum NetworkType {
 	 * Dec-pomdp
 	 * 
 	 */
-	DEC_POMDP(11);
+	DEC_POMDP(11),
+	
+	/****
+	 * 
+	 * OOBN
+	 * 
+	 */
+	OOBN(12);
 	
 
 	
@@ -130,10 +137,9 @@ public enum NetworkType {
 		case 3:
 		case 8:
 		case 9:
-		case 10:{
-			break;
-		}
-		case 11:{
+		case 10:
+		case 11:
+		case 12:{
 			break;
 		}
 		default: {
