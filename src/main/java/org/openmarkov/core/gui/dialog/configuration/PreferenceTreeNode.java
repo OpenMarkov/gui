@@ -12,11 +12,13 @@
  */
 package org.openmarkov.core.gui.dialog.configuration;
 
+import java.util.ArrayList;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.openmarkov.core.gui.localize.StringResource;
@@ -30,6 +32,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  * 28 Aug 2009
  *
  */
+	@SuppressWarnings("serial")
 	public class PreferenceTreeNode extends DefaultMutableTreeNode {
 
 		Preferences pref;
@@ -43,7 +46,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 			this.pref = pref;
 			childrenNames = pref.childrenNames();
-
+			
 			messageStringResource =	
 					StringResourceLoader.getUniqueInstance().getBundleMessages();
 		}
@@ -62,7 +65,28 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 			return childrenNames.length;
 		}
-
+		/**
+		 * Removes child at index @param childIndex
+		 * Used to hide a child in displayed tree
+		 * 
+		 * @author myebra
+		 * @param childIndex
+		 */
+		public void removeChildAt(int childIndex){
+			if (childIndex < childrenNames.length) {
+				ArrayList<String> newChildrenNames = new ArrayList<String>();
+				for (int i = 0; i < childrenNames.length ;i++) {
+					if (i != childIndex) {
+						newChildrenNames.add(childrenNames[i]);
+					}
+				}
+				String[] newChildrenNames2 = new String[childrenNames.length-1];
+				for (int i = 0; i < newChildrenNames.size() ;i++) {
+					newChildrenNames2 [i] = newChildrenNames.get(i);
+				}
+				this.childrenNames = newChildrenNames2;
+			}
+		}
 		public TreeNode getChildAt(int childIndex) {
 
 			if (childIndex < childrenNames.length) {

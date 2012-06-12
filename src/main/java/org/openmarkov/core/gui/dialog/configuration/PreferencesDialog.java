@@ -42,6 +42,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
@@ -197,7 +198,12 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 			//rootNode.add(createUserNodeForPackage(userObj));
 		}
 		DefaultTreeModel model = new DefaultTreeModel(rootNode);
+		
+		
 		jTreePreferences = new JTree(model);
+		TreeNode openmarkov = rootNode.getChildAt(0);
+		//not shown color preferences in tree
+		((PreferenceTreeNode) openmarkov).removeChildAt(0);
 		jTreePreferences
 			.addTreeSelectionListener(new PrefTreeSelectionListener());
 	}

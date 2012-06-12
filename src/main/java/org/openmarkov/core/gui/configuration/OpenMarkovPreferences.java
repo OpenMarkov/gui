@@ -41,7 +41,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	/**
 	 * the package system in the Preferences
 	 */
-	public static final String OPENMARKOV_SYSTEM_PREFERENCES = "Openmarkovkernel";
+//	public static final String OPENMARKOV_SYSTEM_PREFERENCES = "Openmarkovkernel";
 
 	/**
 	 * the preferences
