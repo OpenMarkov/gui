@@ -88,7 +88,6 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 */
 	public ValuesTableCellRenderer(int firstEditableRow, boolean [] editableColumns) {
 		this.editableColumns = editableColumns;
-
 		this.firstEditableRow = firstEditableRow;
 	}
 
@@ -110,14 +109,18 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 		setCellFonts( table, value, isSelected, hasFocus, row, column );
 		setCellColors( table, value, isSelected, hasFocus, row, column );
 		setCellBorders( table, value, isSelected, hasFocus, row, column );
-		
-		
+		setMinimunSize(table, value, isSelected, hasFocus, row, column );
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN)
 				&& (row >= firstEditableRow) && !hasFocus && editableColumns[column-1])
 			return jLabelIcon;
 		else
 			return super.getTableCellRendererComponent(
 				table, value, isSelected, hasFocus, row, column );
+	}
+	
+	private void setMinimunSize(JTable table, Object value, boolean isSelected,
+			boolean hasFocus, int row, int column) {
+		
 	}
 
 	/**

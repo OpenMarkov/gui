@@ -557,7 +557,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	    for (int i = columns.getColumnCount() - 1; i >= 0; --i)
 	    {
 	        TableColumn column = columns.getColumn(i);
-	            
+	        column.setMinWidth(60);   
 	        int columnIndex = column.getModelIndex();
 	            
 	        int width = -1; 
