@@ -2543,7 +2543,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				throw new UnsupportedOperationException();
 			}
 			
-			inferenceAlgorithm.setEvidence(evidenceCase);
+			inferenceAlgorithm.setPostResolutionEvidence(evidenceCase.getFindings());
 			long start = System.currentTimeMillis();
 			try {
 				individualProbabilities = inferenceAlgorithm
@@ -2563,7 +2563,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 				inferenceAlgorithm = inferenceManager
 						.getDefaultApproximateAlgorithm(probNet);
-				inferenceAlgorithm.setEvidence(evidenceCase);
+				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase.getFindings());
 				individualProbabilities = inferenceAlgorithm
 						.getProbsAndUtilities();
 			}
