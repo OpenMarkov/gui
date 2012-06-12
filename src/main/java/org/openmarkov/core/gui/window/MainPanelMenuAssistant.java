@@ -316,11 +316,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
 			setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
-			if(networkPanel.getProbNet().getNetworkType() instanceof OOBNType)
-			{
-				setOptionEnabled(ActionCommands.INSTANCE_CREATION, true);
-				MainPanel.getUniqueInstance().getEditionToolBar().getClassComboBox().setEnabled(true);			
-			}
+			setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet().getNetworkType() instanceof OOBNType);
+			MainPanel.getUniqueInstance().getEditionToolBar().getClassComboBox().setEnabled(networkPanel.getProbNet().getNetworkType() instanceof OOBNType);			
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 			if (networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
