@@ -2533,52 +2533,47 @@ public class EditorPanel extends JPanel implements MouseListener,
 		HashMap<Variable, TablePotential> individualProbabilities = null;
 		boolean propagationSucceded = false;
 		try {
-			if (networkType instanceof InfluenceDiagramType) {		//...asaez...TEMPORAL...Eliminar esta línea
-				 paintDummyResultsForID(evidenceCase, caseNumber);	//...asaez...TEMPORAL...Eliminar esta línea
-			 } else {												//...asaez...TEMPORAL...Eliminar esta línea
 				 
-				// This will return null for InfluenceDiagrams until a suitable
-				// inference algorithm is implemented for them
-				inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
-				
-				if(inferenceAlgorithm == null)
-				{
-					throw new UnsupportedOperationException();
+			// This will return null for InfluenceDiagrams until a suitable
+			// inference algorithm is implemented for them
+			inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm(probNet);
+			
+			if(inferenceAlgorithm == null)
+			{
+				throw new UnsupportedOperationException();
+			}
+			
+			inferenceAlgorithm.setEvidence(evidenceCase);
+			long start = System.currentTimeMillis();
+			try {
+				individualProbabilities = inferenceAlgorithm
+						.getProbsAndUtilities();
+			} catch (NotEnoughMemoryException e) {
+				if (!approximateInferenceWarningGiven) {
+					JOptionPane
+							.showMessageDialog(
+									Utilities.getOwner(this),
+									stringResource
+											.getString("NotEnoughMemoryForExactInference.Text"),
+									stringResource
+											.getString("NotEnoughMemoryForExactInference.Title"),
+									JOptionPane.WARNING_MESSAGE);
+					approximateInferenceWarningGiven = true;
 				}
-				
-				inferenceAlgorithm.setEvidence(evidenceCase);
-				long start = System.currentTimeMillis();
-				try {
-					individualProbabilities = inferenceAlgorithm
-							.getProbsAndUtilities();
-				} catch (NotEnoughMemoryException e) {
-					if (!approximateInferenceWarningGiven) {
-						JOptionPane
-								.showMessageDialog(
-										Utilities.getOwner(this),
-										stringResource
-												.getString("NotEnoughMemoryForExactInference.Text"),
-										stringResource
-												.getString("NotEnoughMemoryForExactInference.Title"),
-										JOptionPane.WARNING_MESSAGE);
-						approximateInferenceWarningGiven = true;
-					}
-	
-					inferenceAlgorithm = inferenceManager
-							.getDefaultApproximateAlgorithm(probNet);
-					inferenceAlgorithm.setEvidence(evidenceCase);
-					individualProbabilities = inferenceAlgorithm
-							.getProbsAndUtilities();
-				}
-				long elapsedTimeMillis = System.currentTimeMillis() - start;
-				System.out.println("Inference took " + elapsedTimeMillis
-						+ " milliseconds.");
-	
-				updateNodesFindingState(evidenceCase);
-				
-				paintInferenceResults(caseNumber, individualProbabilities);
 
-			} //...asaez...TEMPORAL...Eliminar esta línea
+				inferenceAlgorithm = inferenceManager
+						.getDefaultApproximateAlgorithm(probNet);
+				inferenceAlgorithm.setEvidence(evidenceCase);
+				individualProbabilities = inferenceAlgorithm
+						.getProbsAndUtilities();
+			}
+			long elapsedTimeMillis = System.currentTimeMillis() - start;
+			System.out.println("Inference took " + elapsedTimeMillis
+					+ " milliseconds.");
+
+			updateNodesFindingState(evidenceCase);
+			
+			paintInferenceResults(caseNumber, individualProbabilities);
 			
 			propagationSucceded = true;
 		} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
