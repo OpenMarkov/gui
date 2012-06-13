@@ -1034,7 +1034,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 		mainPanel.setToolBarPanel(newWorkingMode);
 		mainPanel.changeWorkingModeButton(newWorkingMode);
-		getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
+		if (getNetworkPanels().size() > 0) {
+			getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
+		}
 		activateEditionState(EditionState.SELECTION);
 		getCurrentNetworkPanel().setSelectedAllObjects(false);
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(

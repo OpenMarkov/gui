@@ -304,9 +304,6 @@ public class MainPanel extends JPanel {
 			mainPanel.getToolBarPanel().add(mainPanel.getInferenceToolBar());
 		}
 		mainPanel.initialize();
-		if (getMainPanelListenerAssistant().getNetworkPanels().size() > 0) {
-			getMainPanelListenerAssistant().getCurrentNetworkPanel().setWorkingMode(barType);
-		}
 		
 	}
 	
