@@ -14,10 +14,15 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import javax.swing.GroupLayout;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -106,10 +111,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		setTableSpecificListeners();
 		setData(probNode);
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
-
+		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
 	}
 
+	
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
 	 * common KeyTable hierarchy. This method creates the evidenceCase object
@@ -995,6 +1001,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			valuesTableScrollPane
 					.setName("TablePotentialPanel.valuesTableScrollPane");
 			valuesTableScrollPane.setViewportView(getValuesTable());
+			
 		}
 		return valuesTableScrollPane;
 	}

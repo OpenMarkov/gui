@@ -59,6 +59,7 @@ import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
+import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
@@ -277,7 +278,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 									GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(getJComboBoxNodeVariableType(), 
-									GroupLayout.PREFERRED_SIZE, 181, 
+									GroupLayout.PREFERRED_SIZE,	181, 	
 									GroupLayout.PREFERRED_SIZE)
 							.addGap(112)
 							.addComponent(getJLabelDomainValues())
@@ -1137,6 +1138,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	private JComboBox getJComboBoxNodeVariableType() {
 
 		if (jComboBoxNodeVariableType == null) {
+			
 			jComboBoxNodeVariableType = new JComboBox();
 			jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
 			jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
@@ -1148,6 +1150,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
 					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
 							"Items.Continuous"));
+			//jComboBoxNodeVariableType.setSize(181, 80);
 			//jComboBoxNodeVariableType.addItemListener(listener);
 			jComboBoxNodeVariableType.addItemListener(this);
 		}

@@ -173,7 +173,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 			this.logger = Logger.getLogger(PotentialsTablePanel.class);
 			//this.probNode = probNode;
 			 // table is modifiable
-			initialize();
+			setLayout(new BorderLayout());
+			add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
+			//initialize();
 			//showValuesTable( true );
 			
 		}
@@ -181,7 +183,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		/**
 		 * This method initialises this instance.
 		 */
-		protected void initialize() {
+	/*	private void initialize() {
 			/*setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),1, false ) );
 			
 				final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
@@ -204,10 +206,10 @@ import org.openmarkov.core.model.network.potential.Potential;
 				setAutoscrolls( true );
 				//setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
 				//setCellRenderers();
-		*/
+		
 			setLayout(new BorderLayout());
 			
-		}
+		}*/
 		
 		/**
 		 * @return label for the node relation comment

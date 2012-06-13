@@ -151,7 +151,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		this.setBounds(x, y, width, height);
 		//this.setBounds(x, y, 750, 450);
         setLocationRelativeTo(owner);
-        setMinimumSize(new Dimension( width, height/2 ));
+       // setMinimumSize(new Dimension( width, height/2 ));
+        setMinimumSize(new Dimension( width, height/4 ));
         setResizable(true);
     
       

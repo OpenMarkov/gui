@@ -85,8 +85,10 @@ public class TreeADDPanel extends PotentialPanel
                 (TreeADDPotential)probNode.getPotentials().get( 0 ));
         removeAll();
         add( treeADDController, BorderLayout.CENTER );
+        add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
         setName("nodeTreeADDPotentialPanel");
         setBackground(Color.blue);
+        
         //nodeADDPotentialPanel.setNewNode(newNode);
         //nodeADDPotentialPanel.setNodeProperties(probNode);
         messageStringResource =

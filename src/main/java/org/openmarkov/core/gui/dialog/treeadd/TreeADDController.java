@@ -9,6 +9,9 @@
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -89,6 +92,8 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		} else {
 			this.treeADDPotentialRoot = new TreeADDPotential(treeADDPotential);// a copy of the potential
 		}
+		
+		
 		messageStringResource =	
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		readOnlyMode = false;

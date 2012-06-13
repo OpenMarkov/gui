@@ -210,20 +210,7 @@ public class ICIOptionsPanel extends JPanel implements
 							groupLayout
 								.createParallelGroup(
 									GroupLayout.Alignment.LEADING )
-								.addGroup(
-									groupLayout
-										.createSequentialGroup()
-										.addComponent(
-											getJLabelNodeRelationComment() )
-										.addPreferredGap(
-											LayoutStyle.ComponentPlacement.RELATED )
-										.addComponent(
-											getCommentHTMLScrollPaneNodeDefinitionComment(),
-											GroupLayout.DEFAULT_SIZE, 623,
-											Short.MAX_VALUE ) )
-								/*.addComponent(
-									getNodePotentialsTablePanel(),GroupLayout.DEFAULT_SIZE, 184,
-									Short.MAX_VALUE )*/
+								
 								.addGroup(
 									groupLayout
 										.createSequentialGroup()
@@ -267,18 +254,8 @@ public class ICIOptionsPanel extends JPanel implements
 						.addComponent(
 							getJPanelTpcOrCanonical(),
 							GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE ) ))
-				/*.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED )
-				.addComponent(
-					getNodePotentialsTablePanel(), GroupLayout.DEFAULT_SIZE,
-					184, Short.MAX_VALUE )*/.addPreferredGap(
-					LayoutStyle.ComponentPlacement.RELATED ).addGroup(
-					groupLayout.createParallelGroup(
-						GroupLayout.Alignment.LEADING ).addComponent(
-						getJLabelNodeRelationComment() ).addComponent(
-						getCommentHTMLScrollPaneNodeDefinitionComment(),
-						GroupLayout.PREFERRED_SIZE, 60,
-						GroupLayout.PREFERRED_SIZE ) 
-						).addContainerGap() ));
+				
+						.addContainerGap() ));
 		setLayout( groupLayout );
 	}
 

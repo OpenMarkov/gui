@@ -5,6 +5,10 @@
  */
 package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -14,7 +18,9 @@ public class EmptyPotentialPanel extends PotentialPanel
 {
     public EmptyPotentialPanel(ProbNode probNode)
     {
-        
+    	setLayout(new BorderLayout());
+    	//add( new JPanel(), BorderLayout.CENTER );
+    	add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
     }
 
     @Override
