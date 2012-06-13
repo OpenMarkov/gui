@@ -241,19 +241,39 @@ public class NodeStateEdit extends SimplePNEdit {
 				break;
 		case DOWN:
 			if (selectedStateIndex > 0){
+				State newStates[] = new State[probNode.getVariable().getStates().length];
 				State state = probNode.getVariable().getStates()[selectedStateIndex-1];
-				probNode.getVariable().getStates()[selectedStateIndex-1] = 
-					probNode.getVariable().getStates()[selectedStateIndex];
-				probNode.getVariable().getStates()[selectedStateIndex] = state;
+				State swapState = probNode.getVariable().getStates()[selectedStateIndex];
+				for (int i = 0; i < oldStates.length; i++) {
+					if (i == selectedStateIndex-1) {
+						newStates[i] = swapState;
+					} else if (i == selectedStateIndex) {
+						newStates[i] = state;
+					} else {
+						newStates[i] = oldStates[i];
+					}
+				}
+				
+				probNode.getVariable().setStates(newStates);
 				resetLink(probNode.getNode());
 			}
 			break;
 		case UP:
 			if (selectedStateIndex < probNode.getVariable().getNumStates()){
+				State newStates[] = new State[probNode.getVariable().getStates().length];
 				State state = probNode.getVariable().getStates()[selectedStateIndex+1];
-				probNode.getVariable().getStates()[selectedStateIndex+1] = 
-					probNode.getVariable().getStates()[selectedStateIndex];
-				probNode.getVariable().getStates()[selectedStateIndex] = state;
+				State swapState = probNode.getVariable().getStates()[selectedStateIndex];
+				for (int i = 0; i < oldStates.length; i++) {
+					if (i == selectedStateIndex) {
+						newStates[i] = state;
+					} else if (i == selectedStateIndex+1) {
+						newStates[i] = swapState;
+					} else {
+						newStates[i] = oldStates[i];
+					}
+				}
+				
+				probNode.getVariable().setStates(newStates);
 				resetLink(probNode.getNode());
 			}
 				
@@ -261,8 +281,8 @@ public class NodeStateEdit extends SimplePNEdit {
 		case RENAME:
 			if (selectedStateIndex >= 0 && selectedStateIndex < probNode.getVariable().
 					getNumStates()){
-				State state= probNode.getVariable().getStates()[selectedStateIndex];
-				state.setName(newState.getName());
+				
+				probNode.getVariable().getStates()[selectedStateIndex] = newState;
 			}
 			break;
 			

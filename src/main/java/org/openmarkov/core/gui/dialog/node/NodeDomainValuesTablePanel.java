@@ -481,6 +481,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				Collections.reverse(Arrays.asList(reorderedStates));
 				jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex(
 						states));
+				
 				if (jComboBoxStatesValues.getSelectedIndex() == 
 					(jComboBoxStatesValues.getItemCount() - 1)) { 
 					
