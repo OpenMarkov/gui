@@ -1608,6 +1608,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
 			
 			stopCellEditing();
+			cancelCellEditing();
 			swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
@@ -1690,6 +1691,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
 			
 			stopCellEditing();
+			cancelCellEditing();
 			swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
@@ -2127,12 +2129,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int row = valuesTable.rowAtPoint(e.getPoint());
 		int column = valuesTable.columnAtPoint(e.getPoint());
 		//if ((row > -1) && (column > -1)) {
+		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC ||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED){
 		if (column == lowerLimitSymbolColumnNum
 				|| column == upperLimitSymbolColumnNum) {
 				changeLimitIntervalDiscretize(row, column);
 		} else if (column == lowLimitValueColumnNum	|| column == upperLimitValueColumnNum) {
 		//infinity buttons management
-		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC ||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED){
+		
 		PartitionedInterval interval = probNode.getVariable().getPartitionedInterval();
 		int numIntervals = interval.getNumSubintervals();
 		if (!isUpMonotony()) {

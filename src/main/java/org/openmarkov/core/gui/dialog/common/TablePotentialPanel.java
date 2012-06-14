@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -111,6 +112,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		setTableSpecificListeners();
 		setData(probNode);
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		repaint();
 		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
 	}
@@ -1001,7 +1003,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			valuesTableScrollPane
 					.setName("TablePotentialPanel.valuesTableScrollPane");
 			valuesTableScrollPane.setViewportView(getValuesTable());
-			
+		
+			valuesTableScrollPane.setMaximumSize(new Dimension(181, 10));
 		}
 		return valuesTableScrollPane;
 	}

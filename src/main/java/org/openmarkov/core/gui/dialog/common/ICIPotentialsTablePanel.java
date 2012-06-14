@@ -74,12 +74,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		this.probNode = probNode;
 		modifiable = true;
 		add(getICIOptionPanel(),BorderLayout.NORTH);
-		
-		
-		// TODO Auto-generated constructor stub
-		
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
-		//jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
 		showValuesTable( true );
 		setData(probNode);
 	}

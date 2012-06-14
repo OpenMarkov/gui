@@ -7,6 +7,7 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 			add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 			//initialize();
 			//showValuesTable( true );
-			
+			repaint();
 		}
 
 		/**

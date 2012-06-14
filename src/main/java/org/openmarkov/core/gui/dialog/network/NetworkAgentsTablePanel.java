@@ -32,6 +32,7 @@ import org.openmarkov.core.model.network.StringsWithProperties;
  * @author myebra
  *
  */
+@SuppressWarnings("serial")
 public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModelListener,PNUndoableEditListener{
 
 	private StringResource messageStringResource;

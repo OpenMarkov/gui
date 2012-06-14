@@ -16,31 +16,47 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import org.openmarkov.core.action.SetPotentialEdit;
+import org.openmarkov.core.action.SetPotentialVariablesEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
+import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
+import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
 
@@ -55,7 +71,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeM
  * @version 1.0
  * @version 1.2 jlgozalo - set class to use independent panels;
  */
-public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog implements ActionListener{
 
 
     /**
@@ -122,6 +138,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
 	private boolean readOnly;
 
+	private JButton reorderVariablesButton;
+
     /**
      * Creates the dialog.
      */
@@ -151,11 +169,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		this.setBounds(x, y, width, height);
 		//this.setBounds(x, y, 750, 450);
         setLocationRelativeTo(owner);
-       // setMinimumSize(new Dimension( width, height/2 ));
-        setMinimumSize(new Dimension( width, height/4 ));
+        setMinimumSize(new Dimension( width, height/2 ));
+       // setMaximumSize(new Dimension( 180,40));
         setResizable(true);
     
-      
+      pack();
     }
     
     /**
@@ -193,8 +211,17 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     private void configureComponentsPanel() {
         getComponentsPanel().setLayout(new BorderLayout(5, 5));
        // getComponentsPanel().setSize(294, 29);
+        getComponentsPanel().setMaximumSize(new Dimension( 180,40));
         getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH );
         getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
+        
+        if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        } else {
+        	getReorderVariablesButton().setVisible(false);
+        	getReorderVariablesButton().setEnabled(false);
+        }
     }
     
     /**
@@ -328,11 +355,28 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             potentialTypePanel.setName( "potentialTypePanel" );
             potentialTypePanel.add(getPotentialTypeJLabel());
             potentialTypePanel.add(getPotentialTypeJCombobox());
-            potentialTypePanel.add( getPoliticyTypePanel() );
-            getPoliticyTypePanel().setVisible(false);
-            getPotentialPanel().setEnabled(false);
+            potentialTypePanel.add(getReorderVariablesButton());
+          //  potentialTypePanel.add( getPoliticyTypePanel() );
+            ///getPoliticyTypePanel().setVisible(false);
+            //getPotentialPanel().setEnabled(false);
         }
         return potentialTypePanel;
+    }
+    
+    /**
+     * @return The panel that indicates the type of the table 
+     * (and perhaps the type of policy (optimal or imposed))
+     */
+    protected JButton getReorderVariablesButton() {
+
+        if (reorderVariablesButton == null) {
+        	reorderVariablesButton = new JButton(dialogStringResource
+					.getString("PotentialEditDialog.ReorderVariables.Text"));
+        	reorderVariablesButton.setName("reorderVariablesButton");
+        	//reorderVariablesButton.setVisible(false);
+			reorderVariablesButton.addActionListener(this);
+        }
+        return reorderVariablesButton;
     }
     /**
      * @return PolicyTypePanel with three radio buttons with the types of policy:
@@ -402,6 +446,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel = null;
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
+        if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        } else {
+        	getReorderVariablesButton().setVisible(false);
+        	getReorderVariablesButton().setEnabled(false);
+        }
         getComponentsPanel ().updateUI ();
         getComponentsPanel ().repaint ();
         this.repaint ();
@@ -454,15 +505,119 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		return readOnly;
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals( reorderVariablesButton )) {
+			actionPerformedReorderVariables();
+		} 
+	}
+	
+	protected void actionPerformedReorderVariables() {
+		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, probNode);
+		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+			ArrayList<JRadioButton> buttons = ((VariablesCombinationPanel)reorderVariablesDialog.getVariablesCombinationPanel()).getRadioButtons();
+			ArrayList<Variable> currentVariables = probNode.getPotentials().get(0).getVariables();
+			ArrayList<Variable> reorderedVariables = new ArrayList<Variable>();
+			reorderedVariables.add(probNode.getPotentials().get(0).getVariables().get(0));
+					
+			for (JRadioButton button : buttons) {
+				if (button.isSelected()){
+					String buttonName = button.getText();
+					String subString = buttonName.substring(1, buttonName.length()-1);
+					String []coma = subString.split(",");
+					
+					for (int i = 0; i < coma.length; i++) {
+						if (coma[i].startsWith(" ")) {
+							coma[i] = coma[i].substring(1);
+						} 
+						for (Variable variable : currentVariables) {
+							if (variable.getName().equals(coma[i])) {
+								reorderedVariables.add(variable);
+							}
+						}
+					}
+					
+				}
+			}
+			if (getPotentialPanel() instanceof TablePotentialPanel ) {
+			//if (probNode.getPotentials().get(0) instanceof TablePotential) {
+				try {
+					SetPotentialEdit potentialEdit = new SetPotentialEdit(probNode, 
+							DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), reorderedVariables));
+					
+					try {
+						
+						probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
+						probNode.getProbNet().getPNESupport().doEdit(potentialEdit);
+						
+					} catch (DoEditException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+					} catch (ConstraintViolationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (CanNotDoEditException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NonProjectablePotentialException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (WrongCriterionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				
+					
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				updatePotentialPanel();
+				
+			} else if (getPotentialPanel() instanceof ICIPotentialsTablePanel ) {
+				
+				ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
+				ArrayList<Variable> iciVariables = iciPotential.getVariables();
+				
+				for (int i = 1; i < currentVariables.size(); i++) {
+					iciVariables.remove(i);
+					iciVariables.add (i, reorderedVariables.get(i));
+				}
+				
+				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(probNode, iciVariables);
+				try {
+					
+					probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
+					probNode.getProbNet().getPNESupport().doEdit(setPotentialVariables);
+					
+				} catch (DoEditException e) {
+						// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CanNotDoEditException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				updatePotentialPanel();
+			}
+			
+		}
+		
+	}
     
-  /*  public Potential getNewPotential(){
-    	PotentialPanel potentialPanel = getPotentialPanel();
-    	
-    	if (potentialPanel instanceof ICIPotentialsTablePanel) {
-    		return ((ICIPotentialsTablePanel)potentialPanel).getThisICIPotential();
-    	}else if (potentialPanel instanceof TablePotentialPanel) {
-    		
-    	}else if (potentialPanel instanceof TreeADDPanel) {}
-    		
-    }*/
+ 
 }

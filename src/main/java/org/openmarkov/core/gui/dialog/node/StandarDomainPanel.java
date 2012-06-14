@@ -50,7 +50,6 @@ public class StandarDomainPanel extends JPanel implements ItemListener{
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		String states =  ((JRadioButton)e.getItem()).getName();
 		
 		
