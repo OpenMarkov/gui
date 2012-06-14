@@ -95,11 +95,10 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
@@ -164,6 +163,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * is currently compiled (if true) or not (if false)
 	 */
 	private ArrayList<Boolean> evidenceCasesCompilationState;
+	
+	
+	/**
+	 * Minimum value of the range of each utility node.
+	 */
+	private HashMap<Variable,Double> minUtilityRange;
+	
+	/**
+	 * Maximum value of the range of each utility node.
+	 */
+	private HashMap<Variable,Double> maxUtilityRange;
 
 	/**
 	 * This variable indicates which is the evidence case that is currently
@@ -317,6 +327,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 		evidenceCases.add(currentCase, evidenceCase);
 		evidenceCasesCompilationState = new ArrayList<Boolean>(1);
 		evidenceCasesCompilationState.add(currentCase, false);
+		minUtilityRange = new HashMap<Variable,Double>();
+		maxUtilityRange = new HashMap<Variable,Double>();
 		
 
 		messageStringResource =	
@@ -2541,6 +2553,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			
 			inferenceAlgorithm.setPostResolutionEvidence(evidenceCase.getFindings());
+			calculateMinAndMaxUtilityRanges();
 			long start = System.currentTimeMillis();
 			try {
 				individualProbabilities = inferenceAlgorithm
@@ -2613,6 +2626,22 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 	
 	/**
+	 * Calculates minUtilityRange and maxUtilityRange fields.
+	 */
+	private void calculateMinAndMaxUtilityRanges() {
+		TablePotential auxF;
+		ArrayList<Variable> utilityVariables = probNet.getVariables(
+				NodeType.UTILITY);
+		for (Variable utility:utilityVariables){
+			auxF = probNet.getUtilityFunction(utility);
+			minUtilityRange.put(utility,Tools.min(auxF.values));
+			maxUtilityRange.put(utility,Tools.max(auxF.values));
+		}
+	}
+	    
+	
+
+	/**
 	 * This method fills the visualStates with the proper values to be 
 	 * represented after the evaluation of the evidence case
 	 * 
@@ -2624,71 +2653,103 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private void paintInferenceResults(int caseNumber,
 			HashMap<Variable, TablePotential> individualProbabilities)	{	
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
-			Variable variable = visualNode.getProbNode().getVariable();
-			if (visualNode.getProbNode().getNodeType() == NodeType.CHANCE) {
-				Potential potential = individualProbabilities.get(variable);
-				if (potential.getPotentialType() == PotentialType.TABLE) {
-					TablePotential tablePotential = (TablePotential) potential;
-					if (tablePotential.getNumVariables() == 1) {
-						double[] values = tablePotential.getValues();
-
-						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-							FSVariableBox innerBox = (FSVariableBox) visualNode
-									.getInnerBox();
-							for (int i = 0; i < innerBox.getNumStates(); i++) {
-								VisualState visualState = innerBox
-										.getVisualState(i);
-								visualState
-										.setStateValue(caseNumber, values[i]);
-							}
-						}  
-						// PROVISIONAL2: Currently the propagation
-						// algorithm is returning a TablePotential
-						// with 0 variables when the node has a Uniform
-						// relation
-					} else if (tablePotential.getNumVariables() == 0) {
-						if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-							FSVariableBox innerBox = (FSVariableBox) visualNode
-									.getInnerBox();
-							for (int i = 0; i < innerBox.getNumStates(); i++) {
-								VisualState visualState = innerBox
-										.getVisualState(i);
-								visualState.setStateValue(caseNumber,
-										(1.0 / innerBox.getNumStates()));
-							}
-						}
-						visualNode.setFindingInNode(false);
-						// END OF
-						// PROVISIONAL2............................
-					} else {
-						JOptionPane
-								.showMessageDialog(
-										Utilities.getOwner(this),
-										"ERROR\n"
-												+ "Table Potential of "
-												+ variable.getName()
-												+ " has "
-												+ tablePotential
-														.getNumVariables()
-												+ " variables.\n It cannot be treated by now",
-										"Error", JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			}else if (visualNode.getProbNode().getNodeType() == NodeType.UTILITY)
-			{
-				if ((visualNode.getInnerBox()) instanceof ExpectedValueBox) {
-					// It is a utility node
-					ExpectedValueBox innerBox = (ExpectedValueBox) visualNode
-							.getInnerBox();
-					VisualState visualState = innerBox.getVisualState();
-					visualState.setStateValue(caseNumber, individualProbabilities.get(variable).values[0]);
-					innerBox.setMinUtilityRange(-10.0);
-					innerBox.setMaxUtilityRange(10.0);
-				}					
+			ProbNode probNode = visualNode.getProbNode();
+			Variable variable = probNode.getVariable();
+			switch (probNode.getNodeType()){
+			case CHANCE: case DECISION:
+				paintInferenceResultsChanceOrDecisionNode(caseNumber,individualProbabilities,variable,visualNode);
+				break;
+			case UTILITY:
+				paintInferenceResultsUtilityNode(caseNumber,individualProbabilities,variable,visualNode);
+				break;
 			}
-
 		}
 		repaint();		
+	}
+	
+	/**
+	 * This method fills the visualStates of a utility node with the proper values to be 
+	 * represented after the evaluation of the evidence case
+	 * @param caseNumber
+	 *            number of this evidence case.
+	 * @param individualProbabilities
+	 *            the results of the evaluation for each variable.
+	 * @param variable 
+	 * @param visualNode 
+	 */
+	private void paintInferenceResultsUtilityNode(int caseNumber, HashMap<Variable, TablePotential> individualProbabilities, Variable variable, VisualNode visualNode) {
+		if ((visualNode.getInnerBox()) instanceof ExpectedValueBox) {
+			// It is a utility node
+			ExpectedValueBox innerBox = (ExpectedValueBox) visualNode
+					.getInnerBox();
+			VisualState visualState = innerBox.getVisualState();
+			visualState.setStateValue(caseNumber, individualProbabilities.get(variable).values[0]);
+			innerBox.setMinUtilityRange(minUtilityRange.get(variable));
+			innerBox.setMaxUtilityRange(maxUtilityRange.get(variable));
+		}
+		
+	}
+
+	/**
+	 * This method fills the visualStates of a chance or decision node with the proper values to be 
+	 * represented after the evaluation of the evidence case
+	 * @param caseNumber
+	 *            number of this evidence case.
+	 * @param individualProbabilities
+	 *            the results of the evaluation for each variable.
+	 * @param variable 
+	 * @param visualNode 
+	 */
+	private void paintInferenceResultsChanceOrDecisionNode(int caseNumber, HashMap<Variable, TablePotential> individualProbabilities, Variable variable, VisualNode visualNode){
+		Potential potential = individualProbabilities.get(variable);
+		if (potential.getPotentialType() == PotentialType.TABLE) {
+			TablePotential tablePotential = (TablePotential) potential;
+			if (tablePotential.getNumVariables() == 1) {
+				double[] values = tablePotential.getValues();
+
+				if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+					FSVariableBox innerBox = (FSVariableBox) visualNode
+							.getInnerBox();
+					for (int i = 0; i < innerBox.getNumStates(); i++) {
+						VisualState visualState = innerBox
+								.getVisualState(i);
+						visualState
+								.setStateValue(caseNumber, values[i]);
+					}
+				}  
+				// PROVISIONAL2: Currently the propagation
+				// algorithm is returning a TablePotential
+				// with 0 variables when the node has a Uniform
+				// relation
+			} else if (tablePotential.getNumVariables() == 0) {
+				if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
+					FSVariableBox innerBox = (FSVariableBox) visualNode
+							.getInnerBox();
+					for (int i = 0; i < innerBox.getNumStates(); i++) {
+						VisualState visualState = innerBox
+								.getVisualState(i);
+						visualState.setStateValue(caseNumber,
+								(1.0 / innerBox.getNumStates()));
+					}
+				}
+				visualNode.setFindingInNode(false);
+				// END OF
+				// PROVISIONAL2............................
+			} else {
+				JOptionPane
+						.showMessageDialog(
+								Utilities.getOwner(this),
+								"ERROR\n"
+										+ "Table Potential of "
+										+ variable.getName()
+										+ " has "
+										+ tablePotential
+												.getNumVariables()
+										+ " variables.\n It cannot be treated by now",
+								"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+
 	}
 	
 	/**
@@ -3356,3 +3417,4 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 }
+
