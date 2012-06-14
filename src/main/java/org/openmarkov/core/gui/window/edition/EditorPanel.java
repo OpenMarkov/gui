@@ -2573,7 +2573,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			paintInferenceResults(caseNumber, individualProbabilities);
 			
 			propagationSucceded = true;
-		} catch (org.openmarkov.core.inference.IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			JOptionPane
 					.showMessageDialog(Utilities.getOwner(this),
 							"Incompatible evidence", "Error",
