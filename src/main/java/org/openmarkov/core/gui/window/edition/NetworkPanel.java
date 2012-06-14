@@ -359,7 +359,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setWorkingMode(int workingMode) {
 		this.workingMode = workingMode;
-		editorPanel.setProbNode((workingMode == INFERENCE_WORKING_MODE)? probNet.getPlainProbNet() : probNet);
+		editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? probNet.getPlainProbNet() : probNet);
 	}
 
 	/**

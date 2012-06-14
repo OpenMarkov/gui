@@ -2207,9 +2207,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
-		// TODO This is a temporary workaround to make sure visualNodes are updated
-		// every time we get back to inference mode
-		//networkChanged = true; //...asaez...ACLARAR: sentencia comentada para evitar propagaciones innecesarias...
 		if ((propagationActive)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			// if the network has been changed, propagation must be done in
@@ -3352,7 +3349,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	public void setProbNode(ProbNet probNet) {
+	public void setProbNet(ProbNet probNet) {
+		networkChanged = true;
 		this.probNet = probNet;
 		visualNetwork.setProbNet(probNet);
 	}
