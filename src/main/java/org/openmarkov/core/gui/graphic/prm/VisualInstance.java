@@ -19,6 +19,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.model.network.ProbNode;
@@ -263,4 +264,124 @@ public class VisualInstance extends VisualElement {
 	public VisualInstance getSubInstance(String name) {
 		return visualSubInstances.get(name);
 	}
+
+//	public Point2D.Double getCutPoint(Point2D.Double position) {
+//		Point2D.Double cutPoint = null;
+//		if(position.x < dimensions[1] ) // top corner
+//		{
+//			Line2D.
+//		}else if (position.x > dimensions[1] + dimensions[3] ) // bottom corner
+//		{
+//			
+//		}else
+//		{
+//			if(position.y < dimensions[0]) // left corner
+//			{
+//				
+//			}else if(position.y > dimensions[0] + dimensions[2]) // right corner
+//			{
+//				
+//			}
+//			
+//		}
+//		
+//		return cutPoint;
+//	}
+	
+	public Point2D.Double getCutPoint(Point2D.Double position) {
+		
+		Segment segment = new Segment(getCenter(), position);
+		double radius = dimensions[4] / 2;
+		double left = dimensions[0];
+		double top = dimensions[1];
+		double rectangleWidth = dimensions[2];
+		double rectangleHeight = dimensions[3];
+		double right = left + rectangleWidth;
+		double bottom = top + rectangleHeight;
+		Point2D.Double topLeftH = new Point2D.Double(left + radius, top);
+		Point2D.Double topRightH = new Point2D.Double(right - radius, top);
+		Point2D.Double topRightV = new Point2D.Double(right, top + radius);
+		Point2D.Double bottomRightV = new Point2D.Double(right, bottom - radius);
+		Point2D.Double bottomRightH = new Point2D.Double(right - radius, bottom);
+		Point2D.Double bottomLeftH = new Point2D.Double(left + radius, bottom);
+		Point2D.Double bottomLeftV = new Point2D.Double(left, bottom - radius);
+		Point2D.Double topLeftV = new Point2D.Double(left, top + radius);
+		Point2D.Double circleTLCenter = new Point2D.Double(left + radius, top + radius);
+		Point2D.Double circleTRCenter = new Point2D.Double(right - radius, top + radius);
+		Point2D.Double circleBLCenter = new Point2D.Double(left + radius, bottom - radius);
+		Point2D.Double circleBRCenter = new Point2D.Double(right - radius, bottom - radius);
+		Point2D.Double point;
+		Point2D.Double[] points;
+
+		// try to find the cut point in the upper horizontal segment of the
+		// round rectangle
+		point = segment.cutPoint(new Segment(topLeftH, topRightH));
+		if (point != null) {
+			return point;
+		}
+		// try to find the cut point in the right vertical segment of the round
+		// rectangle
+		point = segment.cutPoint(new Segment(topRightV, bottomRightV));
+		if (point != null) {
+			return point;
+		}
+		// try to find the cut point in the lower horizontal segment of the
+		// round rectangle
+		point = segment.cutPoint(new Segment(bottomRightH, bottomLeftH));
+		if (point != null) {
+			return point;
+		}
+		// try to find the cut point in the left vertical segment of the round
+		// rectangle
+		point = segment.cutPoint(new Segment(bottomLeftV, topLeftV));
+		if (point != null) {
+			return point;
+		}
+		// try to find the cut point in the upper left corner of the round
+		// rectangle
+		points = segment.cutPoint(circleTLCenter, radius);
+		if (points != null) {
+			for (int i = 0; i < points.length; i++) {
+				if ((points[i].getX() < circleTLCenter.getX())
+						&& (points[i].getY() < circleTLCenter.getY())) {
+					return points[i];
+				}
+			}
+		}
+		// try to find the cut point in the upper right corner of the round
+		// rectangle
+		points = segment.cutPoint(circleTRCenter, radius);
+		if (points != null) {
+			for (int i = 0; i < points.length; i++) {
+				if ((points[i].getX() > circleTRCenter.getX())
+						&& (points[i].getY() < circleTRCenter.getY())) {
+					return points[i];
+				}
+			}
+		}
+		// try to find the cut point in the lower right corner of the round
+		// rectangle
+		points = segment.cutPoint(circleBRCenter, radius);
+		if (points != null) {
+			for (int i = 0; i < points.length; i++) {
+				if ((points[i].getX() > circleBRCenter.getX())
+						&& (points[i].getY() > circleBRCenter.getY())) {
+					return points[i];
+				}
+			}
+		}
+		// try to find the cut point in the lower left corner of the round
+		// rectangle
+		points = segment.cutPoint(circleBLCenter, radius);
+		if (points != null) {
+			for (int i = 0; i < points.length; i++) {
+				if ((points[i].getX() < circleBLCenter.getX())
+						&& (points[i].getY() > circleBLCenter.getY())) {
+					return points[i];
+				}
+			}
+		}
+
+		return point;
+	}		
 }

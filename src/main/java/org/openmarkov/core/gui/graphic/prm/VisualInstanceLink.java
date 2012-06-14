@@ -33,8 +33,8 @@ public class VisualInstanceLink extends VisualArrow {
 	@Override
 	public Shape getShape(Graphics2D g) {
 
-		setStartPoint(sourceInstance.getPosition());
-		setEndPoint(destinationInstance.getPosition());
+		setStartPoint(sourceInstance.getCutPoint(destinationInstance.getCenter()));
+		setEndPoint(destinationInstance.getCutPoint(sourceInstance.getCenter()));
 		return super.getShape(g);
 	}
 
@@ -47,8 +47,8 @@ public class VisualInstanceLink extends VisualArrow {
 	@Override
 	public void paint(Graphics2D g) {
 		
-		setStartPoint(sourceInstance.getCenter());
-		setEndPoint(destinationInstance.getCenter());
+		setStartPoint(sourceInstance.getCutPoint(destinationInstance.getCenter()));
+		setEndPoint(destinationInstance.getCutPoint(sourceInstance.getCenter()));
 		
 		super.paint(g);
 	}	

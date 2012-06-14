@@ -373,4 +373,11 @@ public class Segment {
 		return ((length1 <= length) && (length2 <= length));
 
 	}
+
+	@Override
+	public String toString() {
+		return startPoint + " -- " + endPoint;
+	}
+	
+	
 }
