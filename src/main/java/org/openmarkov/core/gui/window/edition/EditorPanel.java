@@ -22,7 +22,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.help.UnsupportedOperationException;
@@ -99,6 +98,7 @@ import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
@@ -949,10 +949,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
 			if (Utilities.noMouseModifiers(e)) {
 				if ((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
-					newLink = new VisualArrow(new Point2D.Double(e.getX(), e.getY()), cursorPosition);
+					newLink = new VisualArrow(new Point2D.Double(instance.getCenter().getX(), instance.getCenter().getY()), cursorPosition);
 					newInstanceLinkSource = instance;
-				} 
-				if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) { 
+				} else if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) { 
 					newLink = new VisualArrow(node.getPosition(), cursorPosition);
 					newLinkSource = node;
 				}
@@ -1208,15 +1207,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 				PNEdit linkEdit = null;
 				if ((newInstanceLinkDestination = visualNetwork.whatInstanceInPosition(point, g)) != null
 						&& newInstanceLinkSource != null) {
-					if (newInstanceLinkDestination.acceptsAsInput(newInstanceLinkSource)) {
+					VisualInstance inputParameter = newInstanceLinkDestination.whatParameterInPosition(point, g);
+					if (inputParameter != null && inputParameter.getInstance().getClassNet().getName().equals(newInstanceLinkSource.getInstance().getClassNet().getName())) {
 						linkEdit = new AddInstanceLinkEdit(probNet,
 								newInstanceLinkSource.getInstance(),
-								newInstanceLinkDestination.getInstance());
-					}else
-					{
-						JOptionPane.showMessageDialog(null,
-								"Incompatible input parameter", "Error",
-								JOptionPane.ERROR_MESSAGE);
+								newInstanceLinkDestination.getInstance(),
+								inputParameter.getInstance());
 					}
 				} else if ((newLinkDestination = visualNetwork.whatNodeInPosition(point, g)) != null
 						&& newLinkSource != null) {

@@ -18,6 +18,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
@@ -257,37 +258,10 @@ public class VisualInstance extends VisualElement {
 		return instance;
 	}
 
-	public boolean acceptsAsInput(VisualInstance inputInstance) {
-		return instance.acceptsAsInput(inputInstance.getInstance());
-	}
-
 	public VisualInstance getSubInstance(String name) {
 		return visualSubInstances.get(name);
 	}
 
-//	public Point2D.Double getCutPoint(Point2D.Double position) {
-//		Point2D.Double cutPoint = null;
-//		if(position.x < dimensions[1] ) // top corner
-//		{
-//			Line2D.
-//		}else if (position.x > dimensions[1] + dimensions[3] ) // bottom corner
-//		{
-//			
-//		}else
-//		{
-//			if(position.y < dimensions[0]) // left corner
-//			{
-//				
-//			}else if(position.y > dimensions[0] + dimensions[2]) // right corner
-//			{
-//				
-//			}
-//			
-//		}
-//		
-//		return cutPoint;
-//	}
-	
 	public Point2D.Double getCutPoint(Point2D.Double position) {
 		
 		Segment segment = new Segment(getCenter(), position);
@@ -392,5 +366,25 @@ public class VisualInstance extends VisualElement {
 	public ArrayList<VisualNode> getVisualNodes()
 	{
 		return visualNodes;
+	}
+
+	/**
+	 * Returns the parameter in the position given (if any)
+	 * @param position
+	 * @param g
+	 * @return
+	 */
+	public VisualInstance whatParameterInPosition(Point2D.Double position, Graphics2D g) {
+		VisualInstance instance = null;
+		VisualInstance instanceFound = null;
+
+		Iterator<VisualInstance> iterator = visualSubInstances.values().iterator();
+		while ((instanceFound == null) && iterator.hasNext()) {
+			instance = iterator.next();
+			if (instance.isInput() && instance.pointInsideShape(position, g)) {
+				instanceFound = instance;
+			}
+		}
+		return instanceFound;
 	}
 }
