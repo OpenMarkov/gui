@@ -1050,22 +1050,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @return
 	 */
 	public ArrayList<VisualNode> getVisualNodesOfSelectedInstances() {
-		ArrayList<VisualNode> nodes = new ArrayList<VisualNode>();
+		ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
 
 		for (VisualInstance instance : visualInstances.values()) {
 			if (instance.isSelected()) {
-
-				for (VisualNode node : visualNodes) {
-					if ((node.getProbNode() instanceof InstanceNode)
-							&& (((InstanceNode) node.getProbNode())
-									.getInstanceName().equals(instance
-									.getName()))) {
-						nodes.add(node);
-					}
-				}
+				visualNodes.addAll(instance.getVisualNodes());
 			}
 		}
-		return nodes;
+		return visualNodes;
 	}
 	
 	/**

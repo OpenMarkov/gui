@@ -383,5 +383,14 @@ public class VisualInstance extends VisualElement {
 		}
 
 		return point;
-	}		
+	}
+	
+	/**
+	 * Returns list of visual nodes
+	 * @return
+	 */
+	public ArrayList<VisualNode> getVisualNodes()
+	{
+		return visualNodes;
+	}
 }
