@@ -19,6 +19,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.ButtonGroup;
@@ -840,16 +841,19 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	private JComboBox getJComboBoxNetworkAgents() {
 
 		if (jComboBoxNetworkAgents == null) {
-			StringsWithProperties agents = probNode.getProbNet().getAgents();
+			//StringsWithProperties agents = probNode.getProbNet().getAgents();
+			ArrayList<StringWithProperties> agents = probNode.getProbNet().getAgents();
 			String [] agentNames = null;
 			if (agents != null) {
-				Set<String> names = agents.getNames();
-				agentNames = names.toArray(new String[names.size()]);
-				 String []auxAgentNames = names.toArray(new String[names.size()]);
-				 agentNames  = new String [names.size()+1];
+				//Set<String> names = agents.getNames();
+				//agentNames = names.toArray(new String[names.size()]);
+				// String []auxAgentNames = names.toArray(new String[names.size()]);
+				// agentNames  = new String [names.size()+1];
+				 agentNames  = new String [agents.size()+1];
 				 agentNames [0]= "";
-				 for (int i = 1; i < names.size()+1; i++) {
-					 agentNames[i] = auxAgentNames[i-1];
+				 for (int i = 1; i < agents.size()+1; i++) {
+					// agentNames[i] = auxAgentNames[i-1];
+					 agentNames[i] = agents.get(i-1).getString();
 				 }
 				
 			} else {

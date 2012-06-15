@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.StringsWithProperties;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -33,7 +34,8 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	private String newName;
 	private int agentIndex;
 	private StateAction stateAction;
-	private StringsWithProperties lastAgents;
+	//private StringsWithProperties lastAgents;
+	private ArrayList<StringWithProperties> lastAgents;
 	private Object [][]dataTable;
 
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
@@ -43,8 +45,10 @@ public class NetworkAgentEdit extends SimplePNEdit {
 		this.stateAction = stateAction;
 		this.newName = newName;
 		if(probnet.getAgents() != null){
-			StringsWithProperties agents =  probnet.getAgents();
-			this.lastAgents = probnet.getAgents().copy();
+			//StringsWithProperties agents =  probnet.getAgents();
+			ArrayList<StringWithProperties> agents =  probnet.getAgents();
+			//this.lastAgents = probnet.getAgents().copy();
+			this.lastAgents = (ArrayList<StringWithProperties>) probnet.getAgents().clone();
 		}else {
 			this.lastAgents = probnet.getAgents();
 		}
@@ -53,38 +57,50 @@ public class NetworkAgentEdit extends SimplePNEdit {
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		StringsWithProperties agents = probNet.getAgents();
+		//StringsWithProperties agents = probNet.getAgents();
+		ArrayList<StringWithProperties> agents = probNet.getAgents();
+		StringWithProperties agent = new StringWithProperties(agentName);
+		
 		switch (stateAction){
 		case ADD:
 			if (agents == null) {
-				agents = new StringsWithProperties();
+				//agents = new StringsWithProperties();
+				agents = new ArrayList<StringWithProperties>();
 			}
-			agents.put(agentName);
+			//agents.put(agentName);
+			agents.add(agent);
 			probNet.setAgents(agents);
 			break;
 		case REMOVE:
-			 agents.remove(agentName);
-			 probNet.setAgents(agents);
+			 //agents.remove(agentName);
+			agents.remove(agent);
+			probNet.setAgents(agents);
 			break;
 		case DOWN:
-			StringsWithProperties newAgentsDown = new StringsWithProperties();
+			//StringsWithProperties newAgentsDown = new StringsWithProperties();
+			ArrayList<StringWithProperties> newAgentsDown = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
-				newAgentsDown.put((String)dataTable[i][0]);
+				//newAgentsDown.put((String)dataTable[i][0]);
+				newAgentsDown.add(new StringWithProperties((String)dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsDown);
 			break;
 		case UP:
-			StringsWithProperties newAgentsUp = new StringsWithProperties();
+			//StringsWithProperties newAgentsUp = new StringsWithProperties();
+			ArrayList<StringWithProperties> newAgentsUp = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
-				newAgentsUp.put((String)dataTable[i][0]);
+				//newAgentsUp.put((String)dataTable[i][0]);
+				newAgentsUp.add(new StringWithProperties((String)dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsUp);
 			break;
 		case RENAME:
 			//agents.rename(agentName, newName);
-			StringsWithProperties newAgentsRename = new StringsWithProperties();
+			//StringsWithProperties newAgentsRename = new StringsWithProperties();
+			ArrayList<StringWithProperties> newAgentsRename = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
-				newAgentsRename.put((String)dataTable[i][0]);
+				//newAgentsRename.put((String)dataTable[i][0]);
+				newAgentsRename.add(new StringWithProperties((String)dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsRename);
 			break;

@@ -1,6 +1,7 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.StringsWithProperties;
 /**
  * 
@@ -90,7 +92,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 
 	}
 	
-	 public void setFieldFromProperties (ProbNet probNet) {
+	 /*public void setFieldFromProperties (ProbNet probNet) {
 		 Object [][] data = null;
 		 StringsWithProperties agents = probNet.getAgents();
 		 
@@ -107,6 +109,21 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 					 i++;
 				 }
 			 }
+			 //initializing data structure for the table model
+			getNetworkAgentsPanel().setData(data);
+			// initializing data structure for supervising data order in GUI 
+			getNetworkAgentsPanel().setDataTable(data);
+		 }
+	}*/
+	public void setFieldFromProperties (ProbNet probNet) {
+		 
+		// StringsWithProperties agents = probNet.getAgents();
+		 ArrayList<StringWithProperties> agents = probNet.getAgents();
+		if (agents != null) {
+			Object [][] data = new Object [agents.size()][1];
+			for (int i = 0; i < agents.size(); i++) {
+				data[i][0] = agents.get(i).getString();
+			}
 			 //initializing data structure for the table model
 			getNetworkAgentsPanel().setData(data);
 			// initializing data structure for supervising data order in GUI 

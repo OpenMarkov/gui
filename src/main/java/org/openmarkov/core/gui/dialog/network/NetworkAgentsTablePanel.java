@@ -26,6 +26,7 @@ import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.StringsWithProperties;
 /**
  * 
@@ -238,7 +239,9 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);*/	
 			
-			 StringsWithProperties agents = probNet.getAgents();
+			 //StringsWithProperties agents = probNet.getAgents();
+			 //setDataFromNetworkAgents(agents);
+			 ArrayList<StringWithProperties> agents = probNet.getAgents();
 			 setDataFromNetworkAgents(agents);
 			 getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
@@ -253,8 +256,17 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		}
 	}
 	
+	private void setDataFromNetworkAgents( ArrayList<StringWithProperties> agents) {
+		 Object [][] tableData =new Object [agents.size()][1];
+		 if (agents != null) {
+			  for (int i = 0; i < agents.size(); i++) {
+				  tableData[i][0] = agents.get(i).getString();
+			  }
+				setData(tableData);
+		 }
+	 }
 	
-	private void setDataFromNetworkAgents(StringsWithProperties agents) {
+	/*private void setDataFromNetworkAgents(StringsWithProperties agents) {
 		 Object [][] tableData =new Object [agents.getNames().size()][1];
 		 if (agents != null) {
 			 Set<String> agentsNames = agents.getNames();
@@ -271,7 +283,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			 
 			setData(tableData);
 		 }
-	 } 
+	 } */
 	
 	/*private void setDataFromNetworkAgentsCorrectOrder (StringsWithProperties agents) {
 		Object [][] tableData =new Object [agents.getNames().size()][1];
@@ -345,11 +357,13 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		StringsWithProperties agents = probNet.getAgents();
+		//StringsWithProperties agents = probNet.getAgents();
+		ArrayList<StringWithProperties> agents = probNet.getAgents();
 		setDataFromNetworkAgents(agents);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);
-		dataTable = new Object [agents.getNames().size()][1];
+		//dataTable = new Object [agents.getNames().size()][1];
+		dataTable = new Object [agents.size()][1];
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
 		}
