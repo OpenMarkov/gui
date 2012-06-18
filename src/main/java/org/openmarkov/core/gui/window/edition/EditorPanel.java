@@ -2669,9 +2669,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 		return propagationSucceded;
 	}
 
+	//This commented method computes the exact ranges of the utility functions.
+	//However, we are using an approximation in the method currently offered by this class.
 	/**
 	 * Calculates minUtilityRange and maxUtilityRange fields.
-	 */
+	 *//*
 	private void calculateMinAndMaxUtilityRanges() {
 		TablePotential auxF;
 		ArrayList<Variable> utilityVariables = probNet
@@ -2680,6 +2682,23 @@ public class EditorPanel extends JPanel implements MouseListener,
 			auxF = probNet.getUtilityFunction(utility);
 			minUtilityRange.put(utility, Tools.min(auxF.values));
 			maxUtilityRange.put(utility, Tools.max(auxF.values));
+		}
+	}
+	*/
+	
+	/**
+	 * Calculates minUtilityRange and maxUtilityRange fields. It is an approximate implementation.
+	 * The correct computation is given by a method with the same name, but commented above.
+	 * @throws NonProjectablePotentialException 
+	 * @throws NotEnoughMemoryException 
+	 */
+	private void calculateMinAndMaxUtilityRanges() throws NotEnoughMemoryException, NonProjectablePotentialException {
+		ArrayList<Variable> utilityVariables = probNet
+				.getVariables(NodeType.UTILITY);
+		for (Variable utility : utilityVariables) {
+			ProbNode probNode = probNet.getProbNode(utility);
+			minUtilityRange.put(utility, probNode.getApproximateMinimumUtilityFunction());
+			maxUtilityRange.put(utility, probNode.getApproximateMaximumUtilityFunction());
 		}
 	}
 
