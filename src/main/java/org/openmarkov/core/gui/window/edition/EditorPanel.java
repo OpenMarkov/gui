@@ -497,24 +497,28 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (networkBounds[2] < 0) {
 			incrTop = -networkBounds[2];
 		}
-		if ((incrLeft > 0) || (incrTop > 0)) {
-			visualNetwork.moveAllNodes(incrLeft, incrTop);
-			networkBounds[0] = 0;
-			networkBounds[1] += incrLeft;
-			networkBounds[2] = 0;
-			networkBounds[3] += incrTop;
-		}
+		//TODO: Review utility of this. Right now all it is seemingly doing is causing a bug
+		//      where expanded nodes aren't kept expanded and nodes are moved all at once in a direction  
+//		if ((incrLeft > 0) || (incrTop > 0)) {
+//			visualNetwork.moveAllNodes(incrLeft, incrTop);
+//			networkBounds[0] = 0;
+//			networkBounds[1] += incrLeft;
+//			networkBounds[2] = 0;
+//			networkBounds[3] += incrTop;
+//		}
 		maxWidth = Math.max(maxWidth, networkBounds[1]);
 		maxHeight = Math.max(maxHeight, networkBounds[3]);
 		newDimension = new Dimension((int) Math.round(getMaxWidth()),
 				(int) Math.round(getMaxHeight()));
 		setPreferredSize(newDimension);
 		setSize(newDimension);
-		if ((incrLeft > 0) || (incrTop > 0)) {
-			notifySizeChanged(zoom.panelToScreen(incrLeft),
-					zoom.panelToScreen(incrTop), zoom.panelToScreen(incrRight),
-					zoom.panelToScreen(incrBottom));
-		}
+	//TODO: Review utility of this. Right now all it is seemingly doing is causing a bug
+	//      where expanded nodes aren't kept expanded and nodes are moved all at once in a direction		
+//		if ((incrLeft > 0) || (incrTop > 0)) {
+//			notifySizeChanged(zoom.panelToScreen(incrLeft),
+//					zoom.panelToScreen(incrTop), zoom.panelToScreen(incrRight),
+//					zoom.panelToScreen(incrBottom));
+//		}
 
 	}
 
@@ -2586,20 +2590,18 @@ public class EditorPanel extends JPanel implements MouseListener,
 		boolean propagationSucceded = false;
 		try {
 
-			// This will return null for InfluenceDiagrams until a suitable
-			// inference algorithm is implemented for them
-			inferenceAlgorithm = inferenceManager
-					.getDefaultInferenceAlgorithm(probNet);
-
-			if (inferenceAlgorithm == null) {
-				throw new UnsupportedOperationException();
-			}
-
-			inferenceAlgorithm.setPostResolutionEvidence(evidenceCase
-					.getFindings());
-			calculateMinAndMaxUtilityRanges();
 			long start = System.currentTimeMillis();
 			try {
+				inferenceAlgorithm = inferenceManager
+						.getDefaultInferenceAlgorithm(probNet);
+
+				if (inferenceAlgorithm == null) {
+					throw new UnsupportedOperationException();
+				}
+
+				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase
+						.getFindings());
+				calculateMinAndMaxUtilityRanges();
 				individualProbabilities = inferenceAlgorithm
 						.getProbsAndUtilities();
 			} catch (NotEnoughMemoryException e) {
