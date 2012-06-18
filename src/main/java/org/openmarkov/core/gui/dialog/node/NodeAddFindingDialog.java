@@ -78,7 +78,6 @@ public class NodeAddFindingDialog extends JDialog {
 		this.visualNode = visualNode;
 		
 		stringResource = StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		
 		JPanel principalPanel = new JPanel();
 		JPanel textPanel = new JPanel();
 		JPanel radioButtonsPanel = new JPanel();
@@ -92,9 +91,6 @@ public class NodeAddFindingDialog extends JDialog {
 			setTitle(stringResource.
 					getString("NodeAddFindingDialog.Title.Label"));
 			this.getContentPane().setLayout(new BorderLayout());
-			int posX = new Integer(new Double(visualNode.getUpperLeftCornerX(g)).intValue());
-			int posY = new Integer(new Double(visualNode.getUpperLeftCornerY(g)).intValue());
-			this.setLocation(posX, posY);
 			this.getContentPane().add(principalPanel, BorderLayout.CENTER);
 			principalPanel.setLayout(new BorderLayout());
 			
@@ -131,6 +127,9 @@ public class NodeAddFindingDialog extends JDialog {
 
 			pack();
 			setMinimumSize(new Dimension(260, getHeight()));
+			int posX = owner.getX() + (owner.getWidth() - this.getWidth())/  2 ;
+			int posY = owner.getY() + (owner.getHeight() - this.getHeight()) / 2;
+			this.setLocation(posX, posY);
 			setModal(true);
 			setVisible(true);
 		}
