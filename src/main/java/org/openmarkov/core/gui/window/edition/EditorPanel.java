@@ -1167,57 +1167,21 @@ public class EditorPanel extends JPanel implements MouseListener,
 				cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 						zoom.screenToPanel(e.getY()));
 
-				MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
+				if(movedNodes.size() > 0)
+				{
+					MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
 
-				try {
-					probNet.getPNESupport().announceEdit(moveNodeEdit);
-					probNet.getPNESupport().doEdit(moveNodeEdit);
-				} catch (ConstraintViolationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e1.getMessage()),
-							messageStringResource.getString(e1.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e1.getMessage()),
-							messageStringResource.getString(e1.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e1.getMessage()),
-							messageStringResource.getString(e1.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
+					try {
+						probNet.getPNESupport().doEdit(moveNodeEdit);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(this,
+								messageStringResource.getString(e1.getMessage()),
+								messageStringResource.getString(e1.getMessage()),
+								JOptionPane.ERROR_MESSAGE);
+					} 
 				}
-				// probNet.getPNESupport().closeParenthesis();
-				catch (NotEnoughMemoryException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e2.getMessage()),
-							messageStringResource.getString(e2.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (NonProjectablePotentialException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e1.getMessage()),
-							messageStringResource.getString(e1.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
-				} catch (WrongCriterionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this,
-							messageStringResource.getString(e1.getMessage()),
-							messageStringResource.getString(e1.getMessage()),
-							JOptionPane.ERROR_MESSAGE);
-				}
-
 				nodeMoved = false;
 				adjustPanelDimension();
 			}
