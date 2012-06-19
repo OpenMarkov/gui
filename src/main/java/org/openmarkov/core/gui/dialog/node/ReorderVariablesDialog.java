@@ -2,12 +2,19 @@ package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.gui.dialog.network.NetworkAgentsTablePanel;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.StringWithProperties;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 
 @SuppressWarnings("serial")
 public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
@@ -15,6 +22,8 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 	private JPanel variablesCombinationPanel;
 	
 	private ProbNode probNode;
+
+	private ReorderVariablesPanel reorderVariablesPanel;
 	
 	public ReorderVariablesDialog(Window owner, ProbNode probNode) {
 		super(owner);
@@ -49,6 +58,43 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 		return variablesCombinationPanel;
 
 		
+	}
+	
+	private ReorderVariablesPanel getReorderVariablesPanel() {
+		if (reorderVariablesPanel == null) {
+			String[] columnNames = {"Key", "Names"};
+			reorderVariablesPanel = new ReorderVariablesPanel(columnNames, probNode);
+			reorderVariablesPanel.setName("networkAgentsPanel");
+			reorderVariablesPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		
+		}
+
+		return reorderVariablesPanel;
+
+	}
+	
+	public void setFieldFromProperties (ProbNode probNode) {
+		ArrayList<Variable> variables = new ArrayList<Variable>();
+		if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+		variables = (ArrayList<Variable>) probNode.getPotentials().get(0).getVariables().clone();
+			variables.remove(0);
+			
+		} else if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) {
+			variables = (ArrayList<Variable>) probNode.getPotentials().get(0).getVariables().clone();
+		}
+		
+		
+		
+		if (variables != null) {
+			Object [][] data = new Object [variables.size()][1];
+			for (int i = 0; i < variables.size(); i++) {
+				data[i][0] = variables.get(i).getName();
+			}
+			 //initializing data structure for the table model
+			getReorderVariablesPanel().setData(data);
+			// initializing data structure for supervising data order in GUI 
+			getReorderVariablesPanel().setDataTable(data);
+		 }
 	}
 	public int requestValues() {
 		

@@ -54,6 +54,7 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -215,10 +216,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH );
         getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
         
-        if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
+        		(probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY))
+        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
         	getReorderVariablesButton().setVisible(true);
         	getReorderVariablesButton().setEnabled(true);
-        } else {
+        }
+      /*  if (probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
+        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        }
+        /*if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        } */else {
         	getReorderVariablesButton().setVisible(false);
         	getReorderVariablesButton().setEnabled(false);
         }
@@ -446,10 +458,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel = null;
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
-        if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
+        		(probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY))
+        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
         	getReorderVariablesButton().setVisible(true);
         	getReorderVariablesButton().setEnabled(true);
-        } else {
+        }
+      /*  if (probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
+        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        }
+        /*if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
+        	getReorderVariablesButton().setVisible(true);
+        	getReorderVariablesButton().setEnabled(true);
+        } */else {
         	getReorderVariablesButton().setVisible(false);
         	getReorderVariablesButton().setEnabled(false);
         }

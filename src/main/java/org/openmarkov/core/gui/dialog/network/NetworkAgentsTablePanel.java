@@ -58,7 +58,7 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		messageStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 			keyPrefix = newKeyPrefix;
-			dialogStringResource = StringResourceLoader.getUniqueInstance()
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
 							.getBundleDialogs();
 			initialize();
 			setData(noKeyData);

@@ -116,6 +116,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 
+@SuppressWarnings("serial")
 public class EkitCore extends JPanel implements ActionListener, KeyListener,
 				FocusListener, DocumentListener {
 
