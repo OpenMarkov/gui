@@ -1115,7 +1115,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		if (treeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			potentialVariables.add(treeADDPotential.getVariables().get(0));
 		} else if (treeADDPotential.getPotentialRole() == PotentialRole.UTILITY) {
-			potentialVariables.add(treeADDPotential.getUtilityVariable());
+			//potentialVariables.add(treeADDPotential.getUtilityVariable());
 		}
 		UniformPotential potential = new UniformPotential(potentialVariables, treeADDPotential.getPotentialRole());
 		if (treeADDPotential.getPotentialRole() == PotentialRole.UTILITY) {
@@ -1123,7 +1123,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		}
 		treeADDPotential.setTopVariable(newTopVariable);
 		ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
-		if (newTopVariable.getVariableType() == VariableType.FINITE_STATES) {
+		if (newTopVariable.getVariableType() == VariableType.FINITE_STATES || newTopVariable.getVariableType() == VariableType.DISCRETIZED) {
 			for (State state : newTopVariable.getStates()) {
 				ArrayList<State> branchStates = new ArrayList<State>();
 				branchStates.add(state);
