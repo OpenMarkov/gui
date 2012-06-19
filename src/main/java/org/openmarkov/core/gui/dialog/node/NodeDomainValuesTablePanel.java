@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.ItemSelectable;
@@ -17,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -29,13 +29,14 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -59,7 +60,6 @@ import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
-import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
@@ -158,7 +158,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	/**
 	 * unit field
 	 */
-	private JFormattedTextField jFormattedTextFieldUnit;
+	private JTextField jFieldUnit;
 	
 	/**
 	 * precision combobox
@@ -249,116 +249,94 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	
 	private void initialize() throws Exception {
 
+
+		if (probNode.getNodeType() == NodeType.UTILITY) {
+			getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource.getString(
+					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
+							"Items.Continuous"));
+			getNodeStatesTablePanel().setEnabled(false);
+			getNodeStatesTablePanel().setVisible(false);
+			getJPanelMonotonyUpDown().setEnabled(false);
+			getJPanelMonotonyUpDown().setVisible(false);
+			getJLabelValuesPanel().setEnabled(false);
+			getJLabelValuesPanel().setVisible(false);
+			getJFormattedTextFieldPrecision().setValue( Double.valueOf( probNode.
+					getVariable().getPrecision() ) );
+			//getJFormattedTextFieldUnit().setValue(value);
+		
+		}
+		
+		
 		setPreferredSize(new Dimension(600, 375));
 		
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(getJLabelNodeVariableType(),GroupLayout.DEFAULT_SIZE, 49,	Short.MAX_VALUE ))
-						.addGroup(groupLayout.createSequentialGroup().addContainerGap()
-							
-								//.addComponent(getJLabelUnit(), GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE )
-								//.addPreferredGap(ComponentPlacement.RELATED)
-							
-								//.addComponent(getJFormattedTextFieldUnit(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )
-								.addComponent(getJLabelPrecision(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE )))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJFormattedTextFieldPrecision(), 
-									GroupLayout.PREFERRED_SIZE, 87, 
-									GroupLayout.PREFERRED_SIZE)
-							.addGap(44)
-							.addComponent(getJPanelMonotonyUpDown(), 
-									GroupLayout.PREFERRED_SIZE, 212, 
-									GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJComboBoxNodeVariableType(), 
-									GroupLayout.PREFERRED_SIZE,	181, 	
-									GroupLayout.PREFERRED_SIZE)
-							.addGap(112)
-							.addComponent(getJLabelDomainValues())
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(getJComboBoxStatesValues(), 
-									GroupLayout.PREFERRED_SIZE, 
-									GroupLayout.DEFAULT_SIZE, 
-									GroupLayout.PREFERRED_SIZE)
-									))
-					.addContainerGap(266, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(getJLabelValuesPanel(), 
-							GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(getNodeStatesTablePanel(), 
-							GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
-					.addContainerGap())
-		);
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelNodeVariableType())
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJComboBoxNodeVariableType(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJPanelMonotonyUpDown(),GroupLayout.PREFERRED_SIZE, 212, GroupLayout.PREFERRED_SIZE)
+									)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelPrecision())
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJFormattedTextFieldPrecision(), GroupLayout.PREFERRED_SIZE,  49, GroupLayout.PREFERRED_SIZE)
+									.addGap(18) 
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJLabelUnit())
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+									.addComponent(getJTextFieldUnit(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+									)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(getJLabelValuesPanel(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+									.addComponent(getNodeStatesTablePanel(), GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE))
+									)
+						
+						.addContainerGap())
+		)));
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING,
-							false)
-						.addComponent(getJLabelNodeVariableType(), 
-								GroupLayout.DEFAULT_SIZE, 
-								GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(groupLayout.createParallelGroup(
-								Alignment.BASELINE)
-							.addComponent(getJComboBoxNodeVariableType(), 
-									GroupLayout.PREFERRED_SIZE, 17, 
-									Short.MAX_VALUE)
-							.addComponent(getJComboBoxStatesValues(), 
-									GroupLayout.PREFERRED_SIZE, 
-									GroupLayout.DEFAULT_SIZE, 
-									GroupLayout.PREFERRED_SIZE)
-							.addComponent(getJLabelDomainValues())
-							))
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(
-									Alignment.BASELINE)
-								.addComponent(getJFormattedTextFieldPrecision(),
-										GroupLayout.PREFERRED_SIZE, 
-										GroupLayout.DEFAULT_SIZE, 
-										GroupLayout.PREFERRED_SIZE)
-										/*****/
-								//.addComponent(getJLabelUnit(),
-									//GroupLayout.PREFERRED_SIZE, 
-										//GroupLayout.DEFAULT_SIZE, 
-										//GroupLayout.PREFERRED_SIZE)
-										/***/
-								.addComponent(getJLabelPrecision(), 
-										GroupLayout.DEFAULT_SIZE, 
-										GroupLayout.DEFAULT_SIZE, 
-										Short.MAX_VALUE)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(18)
-							.addComponent(getJPanelMonotonyUpDown(), 
-									GroupLayout.PREFERRED_SIZE, 22, 
-									GroupLayout.PREFERRED_SIZE)
-							.addGap(13)))
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJLabelNodeVariableType())
+						.addComponent(getJComboBoxNodeVariableType(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJPanelMonotonyUpDown(), GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+						)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(getNodeStatesTablePanel(), 
-								GroupLayout.PREFERRED_SIZE, 207, 
-								GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(9)
-							.addComponent(getJLabelValuesPanel(), 
-									GroupLayout.PREFERRED_SIZE, 24, 
-									GroupLayout.PREFERRED_SIZE)))
-					.addGap(87))
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJLabelPrecision(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getJFormattedTextFieldPrecision())
+						.addComponent(getJLabelUnit(),GroupLayout.PREFERRED_SIZE, /*25*/GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(getJTextFieldUnit())
+						)
+					.addGap(21)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(getJLabelValuesPanel(), 
+								GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getNodeStatesTablePanel(),GroupLayout.PREFERRED_SIZE,/* 24*/GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE))
+					.addContainerGap(77, Short.MAX_VALUE))
 		);
 		
-		setLayout(groupLayout);
-		//(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
+		Component[] components = new Component [2];
+		components[0] = getJTextFieldUnit();
+		components[1] = getJFormattedTextFieldPrecision();
+		groupLayout.linkSize(components);
 		
+		Component[] labelComponents = new Component [2];
+		labelComponents[0] = getJLabelNodeVariableType();
+		labelComponents[1] = getJLabelPrecision();
+		groupLayout.linkSize(labelComponents);
+		setLayout(groupLayout);
+			
 	}
 
 	/**
@@ -384,15 +362,26 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	public void setFieldsFromProperties(ProbNode properties) {
 		
 		setUploadingData(true);
-		jComboBoxStatesValues.removeItemListener(this);
+		//jComboBoxStatesValues.removeItemListener(this);
 		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).removeActionListener( this );
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
 		//jFormattedTextFieldPrecision.setValue( 10.0 );
 		
-		jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.
-				getVariable().getPrecision() ) );
+		jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.getVariable().getPrecision() ) );
+		String unit = properties.getVariable().getUnit().getString();
+		jFieldUnit.setText	(properties.getVariable().getUnit().getString());
+		/*if (probNode.getNodeType() == NodeType.UTILITY) {
+			getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource.getString(
+					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
+							"Items.Continuous"));
+			getNodeStatesTablePanel().setEnabled(false);
+			getNodeStatesTablePanel().setVisible(false);
+			getJPanelMonotonyUpDown().setEnabled(false);
+			getJPanelMonotonyUpDown().setVisible(false);
+		}*/
+			
 		
 		if (properties != null) {
 			if (properties.getVariable().getVariableType() == 
@@ -401,7 +390,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				
 				State [] states = properties.getVariable().getStates();
 				Object[][] tableData = null;
-				jComboBoxStatesValues.setSelectedIndex(DefaultStates
+				/*	jComboBoxStatesValues.setSelectedIndex(DefaultStates
 							.getIndex(states));
 				if (jComboBoxStatesValues.getSelectedIndex() == 
 						(jComboBoxStatesValues.getItemCount() - 1) 
@@ -410,7 +399,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							// described
 							tableData = convertStringsToTableFormat(states);
 							discretizedNodeStatesTablePanel.setData(tableData);
-					} else {
+					} else {*/
 							//discretizedNodeStatesTablePanel.setPartitionedInterval();
 							discretizedNodeStatesTablePanel.setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval());
 							tableData = discretizedNodeStatesTablePanel.getData();
@@ -434,7 +423,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 										}
 									}
 								}
-							}
+							//}
 					}
 			}
 			
@@ -451,6 +440,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				getJLabelValuesPanel().setVisible(true);
 				getJLabelDomainValues().setVisible(true);
 				getJComboBoxStatesValues().setVisible(true);
+				
+				getJTextFieldUnit().setEnabled(false);
+				getJTextFieldUnit().setVisible(false);
+				getJLabelUnit().setEnabled(false);
+				getJLabelUnit().setVisible(false);
 				
 				//getJComboBoxPrecision().setVisible(false);
 				//getJComboBoxPrecision().setEnabled(false);
@@ -480,7 +474,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				State[] states = properties.getVariable().getStates();
 				State[] reorderedStates = states.clone();
 				Collections.reverse(Arrays.asList(reorderedStates));
-				jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex(
+			/*	jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex(
 						states));
 				
 				if (jComboBoxStatesValues.getSelectedIndex() == 
@@ -489,13 +483,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					Object[][] tableData = getDataFromStates(reorderedStates);
 					discretizedNodeStatesTablePanel.setData(tableData);
 					
-				} else {
+				} else {*/
 					
 					Object[][] tableData = getDataFromStates(reorderedStates);
 					discretizedNodeStatesTablePanel.setData(tableData);
 					
 									
-				}
+			//	}
 				
 				break;
 			}
@@ -520,14 +514,17 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					jRadioButtonMonotonyUp.setSelected(false);
 					jRadioButtonMonotonyDown.setSelected(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
+					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledAddValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledRemoveValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledUpValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledDownValue(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(false);
-					
+					getJTextFieldUnit().setEnabled(true);
+					getJTextFieldUnit().setVisible(true);
+					getJLabelUnit().setEnabled(true);
+					getJLabelUnit().setVisible(true);
 					/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(true);
 	    			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(true);*/
 				
@@ -559,6 +556,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					getJComboBoxStatesValues().setVisible(false);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(true);
 					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(true);
+					getJTextFieldUnit().setEnabled(true);
+					getJTextFieldUnit().setVisible(true);
+					getJLabelUnit().setEnabled(true);
+					getJLabelUnit().setVisible(true);
 	    			/*((DiscretizeTablePanel)getNodeStatesTablePanel()).
 	    				setEnablePanelButton(true);
 	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).
@@ -571,7 +572,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 			
 		}
-		jComboBoxStatesValues.addItemListener(this);
+	//	jComboBoxStatesValues.addItemListener(this);
 		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
 		setUploadingData(false);
 	}
@@ -803,26 +804,14 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	/**
 	 * 
 	 */
-	protected JFormattedTextField getJFormattedTextFieldUnit() {
-		if (jFormattedTextFieldUnit == null) {
-			
-			NumberFormatter dnFormat = new NumberFormatter ( NumberFormat.
-					getNumberInstance(Locale.ENGLISH) );
-			
-			DefaultFormatterFactory currFactory = new DefaultFormatterFactory(
-					dnFormat, dnFormat, dnFormat );
-			jFormattedTextFieldUnit = new JFormattedTextField(currFactory);
-			//NumberFormatter nf =  (NumberFormatter)jFormattedTextFieldPrecision.getFormatter();
-			
-			//nf.setCommitsOnValidEdit(true);
-		
-			jFormattedTextFieldUnit.setName("jFormattedTextFieldPrecision");
-			//jFormattedTextFieldPrecision.addActionListener( listener );
-			//jFormattedTextFieldPrecision.addFocusListener( listener );
-			jFormattedTextFieldUnit.addPropertyChangeListener("value", listener);
-			//jFormattedTextFieldPrecision.setDocument( new ValidDoubleDocument() );
+	protected JTextField getJTextFieldUnit() {
+		if (jFieldUnit == null) {
+			jFieldUnit = new JTextField();
+			jFieldUnit.setText(probNode.getVariable().getUnit().getString());
+			jFieldUnit.setName("jFormattedTextFieldPrecision");
+			jFieldUnit.addFocusListener(listener);
 		}
-		return jFormattedTextFieldUnit;
+		return jFieldUnit;
 	}
 	
 
@@ -1141,6 +1130,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 			jComboBoxNodeVariableType = new JComboBox();
 			jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
+			
+			if (probNode.getNodeType() == NodeType.UTILITY) {
+				jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
+						"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
+								"Items.Continuous"));
+			} else {
 			jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
 					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
 					"Items.Discrete"));
@@ -1150,6 +1145,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			jComboBoxNodeVariableType.addItem(dialogStringResource.getString(
 					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
 							"Items.Continuous"));
+			}
 			//jComboBoxNodeVariableType.setSize(181, 80);
 			//jComboBoxNodeVariableType.addItemListener(listener);
 			jComboBoxNodeVariableType.addItemListener(this);

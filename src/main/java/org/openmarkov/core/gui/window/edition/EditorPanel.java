@@ -867,7 +867,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 					HashSet<String> existingNames = new HashSet<String>();
 					for (ProbNode node : probNet.getProbNodes()) {
-						existingNames.add(node.getName());
+						String name = node.getName();
+						if (name.contains("[")) {
+							String []nameParts = name.split(" \\[");
+							existingNames.add(nameParts[0]);
+						} else {
+							existingNames.add(node.getName());
+						}
 					}
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
@@ -2675,8 +2681,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	//However, we are using an approximation in the method currently offered by this class.
 	/**
 	 * Calculates minUtilityRange and maxUtilityRange fields.
-	 *//*
-	private void calculateMinAndMaxUtilityRanges() {
+	 */
+	/*	private void 	() {
 		TablePotential auxF;
 		ArrayList<Variable> utilityVariables = probNet
 				.getVariables(NodeType.UTILITY);
@@ -2686,7 +2692,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			maxUtilityRange.put(utility, Tools.max(auxF.values));
 		}
 	}
-	*/
+*/
 	
 	/**
 	 * Calculates minUtilityRange and maxUtilityRange fields. It is an approximate implementation.

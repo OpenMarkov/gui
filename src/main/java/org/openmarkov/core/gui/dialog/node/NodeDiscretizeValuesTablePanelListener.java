@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.StateAction;
+import org.openmarkov.core.action.UnitEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -253,12 +254,15 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 		if (e.getSource().equals( getPanel().getJFormattedTextFieldPrecision())) {
 			System.out.println( "precision focus gained");
 			getPanel().getJFormattedTextFieldPrecision().selectAll();
+		} else if (e.getSource().equals( getPanel().getJTextFieldUnit())) {
+			getPanel().getJTextFieldUnit().selectAll();
 		}
+		
 	}
 	
-	public void focusLost(FocusEvent e) {
+	public void focusLost(FocusEvent evt) {
 
-		if (e.getSource().equals( getPanel().getJFormattedTextFieldPrecision() )) {
+		if (evt.getSource().equals( getPanel().getJFormattedTextFieldPrecision() )) {
 			/*try {
 				getPanel().getJFormattedTextFieldPrecision().commitEdit();
 			} catch (ParseException e3) {
@@ -270,10 +274,8 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 					getValue()).doubleValue());
 			
 			try {
-				panel.getProbNode().getProbNet().
-					getPNESupport().announceEdit(precisionEdit);
-				panel.getProbNode().getProbNet().
-					getPNESupport().doEdit(precisionEdit);
+				panel.getProbNode().getProbNet().getPNESupport().announceEdit(precisionEdit);
+				panel.getProbNode().getProbNet().getPNESupport().doEdit(precisionEdit);
 			} catch (ConstraintViolationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -320,9 +322,39 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			System.out.println( "precision set to "
 				+ ((Double) getPanel().getJFormattedTextFieldPrecision()
 					.getValue()).toString() );
+		} else if (evt.getSource().equals( getPanel().getJTextFieldUnit())) {
+			
+			UnitEdit unitEdit = new UnitEdit(panel.getProbNode(), (String)getPanel().getJTextFieldUnit().
+					getText() );
+			
+			try {
+					getPanel().getProbNode().getProbNet().getPNESupport().announceEdit(unitEdit);
+					getPanel().getProbNode().getProbNet().getPNESupport().doEdit(unitEdit);
+					
+				getPanel().getJTextFieldUnit().setText((String)getPanel().getJTextFieldUnit().getText() );
+				
+			} catch (DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().
-				getVariable().getPrecision() ) );
+		/*getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().
+				getVariable().getPrecision() ) );*/
 	}
 
 	
@@ -506,6 +538,38 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			 }
 				/*getPanel().getJFormattedTextFieldPrecision().setValue( Double.valueOf( getPanel().getProbNode().
 						getVariable().getPrecision() ) );*/
+			
+		} else if (evt.getSource().equals(getPanel().getJTextFieldUnit())) {
+
+			UnitEdit unitEdit = new UnitEdit(panel.getProbNode(), (String)getPanel().getJTextFieldUnit().
+					getText() );
+			
+			try {
+				
+					getPanel().getProbNode().getProbNet().getPNESupport().doEdit(unitEdit);
+					getPanel().getProbNode().getProbNet().getPNESupport().announceEdit(unitEdit);
+				
+			} catch (DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			
 			
 		}
 	}

@@ -199,12 +199,12 @@ public abstract class NodePropertiesDialog extends
 			 * nodeContinuousValuesTablePanel.setFieldsFromProperties(adittionalProperties); }
 			 */
 		} else {
-			tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
+		/*	tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
 			                      						.getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
 			                      						false); // set disable the DiscreteValuesPanel
 			tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
 			                      						.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label")),
-			                      						false); // set disable the DiscreteValuesPanel
+			                      						false); */ // set disable the DiscreteValuesPanel
 			                      	
 		}
 			
