@@ -1199,11 +1199,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private static String getShortNetworkName(String fileName) {
 
-		String shortFileName = null;
-		int i = fileName.lastIndexOf("\\");
-		if ((i > 0) && (i < (fileName.length() - 1))) {
-			shortFileName = fileName.substring(i + 1)/*.toLowerCase()*/	;
-		}
+		String shortFileName = new File(fileName).getName();
 
 		return shortFileName;
 
