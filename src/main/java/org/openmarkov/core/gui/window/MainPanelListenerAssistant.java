@@ -668,7 +668,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				: networkPanel.getProbNet().getName());
 		if (fileName != null) {
 			networkPanel.setNetworkFile(fileName);
-			networkPanel.getProbNet().setName(getShortNetworkName(fileName));
+			networkPanel.getProbNet().setName(new File(fileName).getName());
 		}
 
 		return (fileName != null) ? saveNetworkActions(networkPanel, fileName)
@@ -845,7 +845,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				netReadFromFile.getPNESupport().addUndoableEditListener(
 						mainPanel.getMainPanelMenuAssistant());
 				netReadFromFile.getPNESupport().setWithUndo(true);
-				netReadFromFile.setName(getShortNetworkName(fileName));
+				netReadFromFile.setName(new File(fileName).getName());
 				networkPanel = createNewFrame2(netReadFromFile);
 				networkPanel.setNetworkFile(fileName);
 				networkPanel.getEditorPanel ().setEvidence (probNetInfo.getEvidence ());
@@ -1190,21 +1190,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 	}
 
-	/**
-	 * commodity method to provide a short name for the network file name
-	 * 
-	 * @param fileName
-	 *            - name of the file to obtain the short name
-	 * @return the short name of the file
-	 */
-	private static String getShortNetworkName(String fileName) {
-
-		String shortFileName = new File(fileName).getName();
-
-		return shortFileName;
-
-	}
-
+	
 	/**
 	 * commodity method to provide the path directory for the network file name
 	 * 
