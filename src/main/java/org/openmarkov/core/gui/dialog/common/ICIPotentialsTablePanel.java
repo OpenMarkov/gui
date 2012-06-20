@@ -77,6 +77,12 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
 		showValuesTable( true );
 		setData(probNode);
+		
+		int maxColumn = iciValuesTable.getColumnModel().getColumnCount();
+		for (int i = 1; i < maxColumn; i++) {
+			iciValuesTable.getColumnModel().getColumn(i).setResizable(true);
+							
+		}
 	}
 	
 	private ICIOptionsPanel getICIOptionPanel() {

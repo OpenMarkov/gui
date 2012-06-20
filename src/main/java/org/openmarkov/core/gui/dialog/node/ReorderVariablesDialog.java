@@ -10,6 +10,8 @@ import javax.swing.border.EmptyBorder;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkAgentsTablePanel;
+import org.openmarkov.core.gui.localize.StringResource;
+import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -24,27 +26,36 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 	private ProbNode probNode;
 
 	private ReorderVariablesPanel reorderVariablesPanel;
+
+	private StringResource dialogStringResource;
 	
 	public ReorderVariablesDialog(Window owner, ProbNode probNode) {
 		super(owner);
 		this.probNode = probNode;
+		probNode.getProbNet().getPNESupport().setWithUndo(true);
+		probNode.getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		setLocationRelativeTo(owner);
+		setName("ReorderVariablesDialog");
+		
 		//setMinimumSize(new Dimension( 100, 100 ));
 		setResizable(true);
 		pack();
 	}
 
 	private void initialize() {
-
+		dialogStringResource =
+				StringResourceLoader.getUniqueInstance().getBundleDialogs();
+			setTitle(dialogStringResource
+				.getString("NodePotentialReorderVariables.Title.Label"));
 		configureComponentsPanel();
 		pack();
 	}
 	private void configureComponentsPanel() {
 		
-		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		getComponentsPanel().add( getVariablesCombinationPanel(), BorderLayout.CENTER );
-		
+		//getComponentsPanel().setLayout(new BorderLayout(5, 5));
+		//getComponentsPanel().add( getVariablesCombinationPanel(), BorderLayout.CENTER );
+		getComponentsPanel().add( getReorderVariablesPanel());
 	}
 	
 	protected JPanel getVariablesCombinationPanel() {
@@ -97,7 +108,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 		 }
 	}
 	public int requestValues() {
-		
+		setFieldFromProperties(probNode);
 		setVisible(true);
 		
 		return selectedButton;
@@ -110,8 +121,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 	 * @throws NotEnoughMemoryException 
 	 */
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-		
-		
+		probNode.getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}
 
@@ -120,7 +130,13 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 	 * before hide the dialog.
 	 */
 	protected void doCancelClickBeforeHide() {
-		
+		probNode.getProbNet().getPNESupport().closeParenthesis();
+		//TODO PNESupport must support more depth levels parenthesis 
+		//As current performance edits from ReorderVariablesPanel only be undone when cancel
+		//NodesPropertiesDialog
+		for (int i = getReorderVariablesPanel().getEdits().size()-1; i >=0; i--) {
+			getReorderVariablesPanel().getEdits().get(i).undo();
+		}
 	}
 
 }

@@ -221,16 +221,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
         	getReorderVariablesButton().setVisible(true);
         	getReorderVariablesButton().setEnabled(true);
-        }
-      /*  if (probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
-        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
-        	getReorderVariablesButton().setVisible(true);
-        	getReorderVariablesButton().setEnabled(true);
-        }
-        /*if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
-        	getReorderVariablesButton().setVisible(true);
-        	getReorderVariablesButton().setEnabled(true);
-        } */else {
+        } else {
         	getReorderVariablesButton().setVisible(false);
         	getReorderVariablesButton().setEnabled(false);
         }
@@ -457,25 +448,17 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     public void updatePotentialPanel() {
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel = null;
-        getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
+       
         if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
         		(probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY))
         		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
         	getReorderVariablesButton().setVisible(true);
         	getReorderVariablesButton().setEnabled(true);
-        }
-      /*  if (probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
-        		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
-        	getReorderVariablesButton().setVisible(true);
-        	getReorderVariablesButton().setEnabled(true);
-        }
-        /*if (getPotentialPanel() instanceof ProbabilityTablePanel ) {
-        	getReorderVariablesButton().setVisible(true);
-        	getReorderVariablesButton().setEnabled(true);
-        } */else {
+        } else {
         	getReorderVariablesButton().setVisible(false);
         	getReorderVariablesButton().setEnabled(false);
         }
+        getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
         getComponentsPanel ().updateUI ();
         getComponentsPanel ().repaint ();
         this.repaint ();
@@ -538,7 +521,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 	protected void actionPerformedReorderVariables() {
 		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, probNode);
 		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-			ArrayList<JRadioButton> buttons = ((VariablesCombinationPanel)reorderVariablesDialog.getVariablesCombinationPanel()).getRadioButtons();
+		/*	ArrayList<JRadioButton> buttons = ((VariablesCombinationPanel)reorderVariablesDialog.getVariablesCombinationPanel()).getRadioButtons();
 			ArrayList<Variable> currentVariables = probNode.getPotentials().get(0).getVariables();
 			ArrayList<Variable> reorderedVariables = new ArrayList<Variable>();
 			reorderedVariables.add(probNode.getPotentials().get(0).getVariables().get(0));
@@ -561,27 +544,28 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 					}
 					
 				}
-			}
+			}*/
 			if (getPotentialPanel() instanceof TablePotentialPanel ) {
 			//if (probNode.getPotentials().get(0) instanceof TablePotential) {
 				try {
 					SetPotentialEdit potentialEdit = new SetPotentialEdit(probNode, 
-							DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), reorderedVariables));
+							DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), 
+									probNode.getPotentials().get(0).getVariables()));
 					
 					try {
 						
-						probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
+					//	probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
 						probNode.getProbNet().getPNESupport().doEdit(potentialEdit);
 						
 					} catch (DoEditException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-					} catch (ConstraintViolationException e) {
+				/*	} catch (ConstraintViolationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (CanNotDoEditException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						e.printStackTrace();*/
 					} catch (NonProjectablePotentialException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -603,7 +587,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				
 				ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
 				ArrayList<Variable> iciVariables = iciPotential.getVariables();
-				
+				ArrayList<Variable> reorderedVariables = probNode.getPotentials().get(0).getVariables();
+				ArrayList<Variable> currentVariables = probNode.getPotentials().get(0).getVariables();
 				for (int i = 1; i < currentVariables.size(); i++) {
 					iciVariables.remove(i);
 					iciVariables.add (i, reorderedVariables.get(i));
@@ -612,7 +597,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(probNode, iciVariables);
 				try {
 					
-					probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
+				//	probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
 					probNode.getProbNet().getPNESupport().doEdit(setPotentialVariables);
 					
 				} catch (DoEditException e) {
@@ -621,12 +606,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (ConstraintViolationException e) {
+			/*	} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e.printStackTrace();*/
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

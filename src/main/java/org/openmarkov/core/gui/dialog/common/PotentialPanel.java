@@ -8,6 +8,7 @@
 */
 package org.openmarkov.core.gui.dialog.common;
 
+import java.awt.Dimension;
 import java.text.MessageFormat;
 
 import javax.swing.GroupLayout;
@@ -66,6 +67,7 @@ public abstract class PotentialPanel extends JPanel
 			commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
 			commentHTMLScrollPaneNodeProbsComment.setName( 
 					"commentHTMLScrollPaneNodeProbsComment" );
+			commentHTMLScrollPaneNodeProbsComment.setMaximumSize(new Dimension(100, 10));
 		}
 		return commentHTMLScrollPaneNodeProbsComment;
 	}

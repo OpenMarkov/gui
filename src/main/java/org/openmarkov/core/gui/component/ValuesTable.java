@@ -208,6 +208,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				new boolean[ numRowsModel ][ numColumsModel ];
 			initializeDataModified( false );
 		}
+		
+	
 
 	}
 	/**

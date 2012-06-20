@@ -239,6 +239,13 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<PNEdit> getEdits () {
+		return edits;
+	}
 	@Override
 	public void undoableEditHappened(UndoableEditEvent arg0) {
 		// TODO Auto-generated method stub
