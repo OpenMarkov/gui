@@ -47,6 +47,7 @@ import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
+import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -54,6 +55,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
@@ -74,9 +76,10 @@ import org.openmarkov.core.model.network.VariableType;
  * 
  * @author jlgozalo
  * @author mkpalacio
+ * @author myebra
  * @version 1.0 jlgozalo
  * @version 1.1 mkpalacio
- * @author myebra
+ * @version 1.2 myebra
  */
 public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, ActionListener{
 	
@@ -288,7 +291,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelPrecision())
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(getJFormattedTextFieldPrecision(), GroupLayout.PREFERRED_SIZE,  49, GroupLayout.PREFERRED_SIZE)
+									.addComponent(/*getJFormattedTextFieldPrecision()*/getJComboBoxPrecision(), GroupLayout.PREFERRED_SIZE,  49, GroupLayout.PREFERRED_SIZE)
 									.addGap(18) 
 									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 									.addComponent(getJLabelUnit())
@@ -314,7 +317,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJLabelPrecision(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(getJFormattedTextFieldPrecision())
+						.addComponent(/*getJFormattedTextFieldPrecision()*/getJComboBoxPrecision())
 						.addComponent(getJLabelUnit(),GroupLayout.PREFERRED_SIZE, /*25*/GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(getJTextFieldUnit())
 						)
@@ -328,7 +331,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		
 		Component[] components = new Component [2];
 		components[0] = getJTextFieldUnit();
-		components[1] = getJFormattedTextFieldPrecision();
+		components[1] = getJComboBoxPrecision() /*getJFormattedTextFieldPrecision()*/;
 		groupLayout.linkSize(components);
 		
 		Component[] labelComponents = new Component [2];
@@ -367,21 +370,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
-		//jFormattedTextFieldPrecision.setValue( 10.0 );
-		
-		jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.getVariable().getPrecision() ) );
-		String unit = properties.getVariable().getUnit().getString();
+	//	jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.getVariable().getPrecision() ) );
+		getJComboBoxPrecision().setSelectedItem(String.valueOf(properties.getVariable().getPrecision()));
+		//getJComboBoxPrecision().setSelectedIndex(4);// initialized precision to 0.01
 		jFieldUnit.setText	(properties.getVariable().getUnit().getString());
-		/*if (probNode.getNodeType() == NodeType.UTILITY) {
-			getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource.getString(
-					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
-							"Items.Continuous"));
-			getNodeStatesTablePanel().setEnabled(false);
-			getNodeStatesTablePanel().setVisible(false);
-			getJPanelMonotonyUpDown().setEnabled(false);
-			getJPanelMonotonyUpDown().setVisible(false);
-		}*/
-			
 		
 		if (properties != null) {
 			if (properties.getVariable().getVariableType() == 
@@ -413,9 +405,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);*/
 											
-											//value = 10.3659873;
-											//double roundedValue = Utilities.roundWithPrecision(value, 
-													//Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
+											
 												/*String roundedValue = Utilities.roundWithPrecisionToString(Double.parseDouble(value), 
 															Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));*/
 											//getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
@@ -446,10 +436,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				getJLabelUnit().setEnabled(false);
 				getJLabelUnit().setVisible(false);
 				
-				//getJComboBoxPrecision().setVisible(false);
-				//getJComboBoxPrecision().setEnabled(false);
+				getJComboBoxPrecision().setVisible(false);
+				getJComboBoxPrecision().setEnabled(false);
 				getJLabelPrecision().setVisible(false);
-				getJFormattedTextFieldPrecision().setVisible(false);
+				//getJFormattedTextFieldPrecision().setVisible(false);
 				getJPanelMonotonyUpDown().setVisible(false);
     			jRadioButtonMonotonyUp.setEnabled(false);
     			jRadioButtonMonotonyDown.setEnabled(false);
@@ -498,14 +488,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						.getString("NodeDomainValuesTablePanel." +
 								"jComboBoxNodeVariableType.Items.Continuous"));
 				getJLabelPrecision().setEnabled(true);
-				//getJComboBoxPrecision().setVisible(true);
-				//getJComboBoxPrecision().setEnabled(true);
-				getJFormattedTextFieldPrecision().setEnabled(true);
-				//getJLabelValuesPanel().setEnabled(false);
+				getJComboBoxPrecision().setVisible(true);
+				getJComboBoxPrecision().setEnabled(true);
+				//getJFormattedTextFieldPrecision().setEnabled(true);
 				getJLabelValuesPanel().setVisible(false);
 				getJLabelDomainValues().setVisible(false);
 				getJComboBoxStatesValues().setVisible(false);
-				//getJLabelStatesValues().setEnabled(false);
 				getJLabelPrecision().setVisible(true);
 				getJFormattedTextFieldPrecision().setVisible(true);
 				getJPanelMonotonyUpDown().setVisible(false);
@@ -535,15 +523,15 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						.getString("NodeDomainValuesTablePanel." +
 								"jComboBoxNodeVariableType.Items.Discretized"));
 				getJLabelPrecision().setEnabled(true);
-				//getJComboBoxPrecision().setVisible(true);
-				//getJComboBoxPrecision().setEnabled(true);
-				getJFormattedTextFieldPrecision().setEnabled(true);
+				getJComboBoxPrecision().setVisible(true);
+				getJComboBoxPrecision().setEnabled(true);
+				//getJFormattedTextFieldPrecision().setEnabled(true);
 				getJLabelValuesPanel().setVisible(true);
 				getJLabelDomainValues().setVisible(true);
 				getJComboBoxStatesValues().setVisible(true);
 				
 				getJLabelPrecision().setVisible(true);
-				getJFormattedTextFieldPrecision().setVisible(true);
+			//	getJFormattedTextFieldPrecision().setVisible(true);
 				getJPanelMonotonyUpDown().setVisible(true);
 	    			jRadioButtonMonotonyUp.setEnabled(true);
 	    			jRadioButtonMonotonyDown.setEnabled(true);
@@ -689,12 +677,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
 		if (jComboBoxPrecision == null) {
 			
-			String [] precisions = {"0.1", "0.01", "0.001", "0.0001"};
+			String [] precisions = {"1",/*"0.25","0.5",*/"0.1", "0.01", "0.001", "0.0001"};
 			jComboBoxPrecision = new JComboBox(precisions);
 			jComboBoxPrecision.setName("jComboBoxPrecision");
 			//jComboBoxPrecision.setMinimumSize(minimumSize);
-			jComboBoxPrecision.setPreferredSize(getMinimumSize());
-			jComboBoxPrecision.addItemListener(listener);
+			//jComboBoxPrecision.setPreferredSize(getMinimumSize());
+			jComboBoxPrecision.addItemListener(this);
 		}
 		return jComboBoxPrecision;
 	}
@@ -813,6 +801,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		}
 		return jFieldUnit;
 	}
+	
 	
 
 	/**
@@ -1336,6 +1325,144 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						JOptionPane.ERROR_MESSAGE );
 				}
 			}
+			
+		//PRECISION
+		} else if (comboBox.getName().equals("jComboBoxPrecision")){
+			if (!(itemSelected == null) && arg0.getStateChange() == ItemEvent.
+					SELECTED ) {
+				PrecisionEdit precisionEdit = new PrecisionEdit (probNode, Double.parseDouble(itemSelected));
+				try {
+					probNode.getProbNet().getPNESupport().announceEdit(precisionEdit);
+					probNode.getProbNet().getPNESupport().doEdit(precisionEdit);
+				} catch (ConstraintViolationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (DoEditException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e2.getMessage() ),
+						messageStringResource.getString( e2.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NotEnoughMemoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, messageStringResource
+							.getString( e.getMessage() ),
+						messageStringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				}
+			}
+		
+		if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED ||
+				probNode.getVariable().getVariableType() == VariableType.NUMERIC ) {
+			//double precision = (Double) getPanel().getJFormattedTextFieldPrecision().getValue();
+			double precision = Double.parseDouble(itemSelected);
+			double [] limits = probNode.getVariable().getPartitionedInterval().getLimits();
+			boolean [] belongs =  probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+			
+			for (int i = 0 ; i < limits.length; i++) {
+				if (limits[i] != Double.POSITIVE_INFINITY && limits[i] != Double.NEGATIVE_INFINITY) {
+					double newLimit = Utilities.roundWithPrecision(limits[i], itemSelected);
+					if (limits[i] != newLimit) {
+						limits[i] = newLimit;
+						int j = i;
+						while (j+1 <= limits.length-1 && limits[j] >= limits[j+1]) {
+							
+							if (belongs[j] == false && belongs[j+1] == true) {
+								limits[j+1] = limits[j];
+							} else {
+								if (j+1 == limits.length-1){
+									limits[j+1] = Double.POSITIVE_INFINITY;
+									break;
+								} else 
+									limits[j+1] = limits[j] + precision;
+							}
+								
+								j++;
+							}
+					
+						
+					//previous limits
+						int k = i;
+						while (k-1 >=0 && limits[k] <= limits[k-1]) {
+							if (belongs[k] == true && belongs[k-1] == false) {
+								limits[k-1] = limits[k];
+							}  else {
+								if (k-1 == 0){
+									limits[k-1] = Double.NEGATIVE_INFINITY;
+									break;
+								} else 
+									limits[k-1] = limits[k] - precision;
+							}
+							k--;
+						}
+					} else {
+						limits[i] = newLimit;
+					}
+				}
+			}
+			
+			for (int m = 0 ; m < limits.length; m++) {
+				if (limits[m] != Double.POSITIVE_INFINITY && limits[m] != Double.NEGATIVE_INFINITY) {
+					limits[m] = Utilities.roundWithPrecision(limits[m], itemSelected);
+				}
+			}
+			PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+			
+			PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode, newPartitionedInterval);
+			try {
+				probNode.getProbNet().getPNESupport().announceEdit(partitionedIntervalEdit);
+				probNode.getProbNet().getPNESupport().doEdit(partitionedIntervalEdit);
+			} catch (DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			} catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CanNotDoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NonProjectablePotentialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			PartitionedInterval newPartitionInterval = probNode.getVariable().getPartitionedInterval();
+			((DiscretizeTablePanel)getNodeStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
+		}
 		}
 	}
 

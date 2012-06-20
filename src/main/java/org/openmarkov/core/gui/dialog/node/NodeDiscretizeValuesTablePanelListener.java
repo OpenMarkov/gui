@@ -419,9 +419,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 		      nf.setMinimumFractionDigits(2) ;
 		      nf.setRoundingMode(RoundingMode.FLOOR);*/
 		      
-			System.out.println( "precision set to "
-				+ nf.format((Double) getPanel().getJFormattedTextFieldPrecision()
-					.getValue()) ) ;
+			
 			//after setting this new value to precision to variable, table values must be updated with 
 			//the corresponding decimal numbers
 			 DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();

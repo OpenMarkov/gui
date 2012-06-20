@@ -181,11 +181,11 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		groupLayout.setVerticalGroup( groupLayout.createParallelGroup(
 			GroupLayout.Alignment.TRAILING ).addGroup(
 			groupLayout.createSequentialGroup().addComponent(
-				getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 274,
+				getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, /*274*/280,
 				Short.MAX_VALUE ).addGap( 24, 24, 24 ) ).addGroup(
 			GroupLayout.Alignment.LEADING,
 			groupLayout.createSequentialGroup().addComponent(
-				getButtonPanel(), GroupLayout.DEFAULT_SIZE, 262,
+				getButtonPanel(), GroupLayout.DEFAULT_SIZE, /*262*/270,
 				Short.MAX_VALUE ).addContainerGap() ) );
 		setLayout( groupLayout );
 	}

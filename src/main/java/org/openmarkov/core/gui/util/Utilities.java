@@ -288,6 +288,18 @@ public class Utilities {
 		String rounded;
 		//double scale;
 		int numDecimals;
+		if (precision.equals("0.25") || precision.equals("0.5")) {
+			 double doublePrecision = Double.valueOf(precision);
+             double roundedValue = Math.round(value / doublePrecision) * doublePrecision;
+             rounded = Double.toString(roundedValue);
+             int precisionStringDecimalPlace = precision.indexOf('.');
+             if (precisionStringDecimalPlace != -1) {
+                 numDecimals = precision.length()
+                                 - precisionStringDecimalPlace - 1;
+         } else {
+                 numDecimals = -1;
+         }
+		} else {
 		
 		int indexE = precision.indexOf('E');
 		 if (indexE != -1) {
@@ -308,10 +320,13 @@ public class Utilities {
 		 }
 		 DecimalFormat df = new DecimalFormat(pattern);
 		 rounded = df.format(value);
-		 
+		}
+		
 		 int roundedStringDecimalPlace = rounded.indexOf(',');
-		 if (roundedStringDecimalPlace == -1) {
+		 if (roundedStringDecimalPlace == -1 && rounded.indexOf('.') == -1) {
 			 rounded += ",0";
+		 } else if (rounded.indexOf('.') != -1) {
+			 rounded = rounded.replace(".", ",");
 		 }
 		 roundedStringDecimalPlace = rounded.indexOf(',');
          int finalLength = roundedStringDecimalPlace + numDecimals + 1;
@@ -324,14 +339,13 @@ public class Utilities {
          }
 		 rounded = rounded.replace(',', '.');
 		 valueRounded = Double.valueOf(rounded).doubleValue();
-				// Double.parseDouble(rounded);
-		 
-		/*scale=Math.pow(10, numDecimals);
-		valueRounded=Math.round(value*scale);
-		valueRounded=valueRounded/scale;*/
+		
 		
 		return valueRounded;
 		}
+		
+		
+		
 		public static String roundWithPrecisionToString(double value, String precision){
 			
 			String rounded;

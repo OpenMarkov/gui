@@ -246,12 +246,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 										getValuesTableScrollPane(),
 										GroupLayout.Alignment.LEADING,
 										GroupLayout.DEFAULT_SIZE,
-										131,
+										/*131*/200,
 										Short.MAX_VALUE)
 								.addComponent(
 										getButtonPanel(),
 										GroupLayout.PREFERRED_SIZE,
-										131,
+										/*131*/200,
 										Short.MAX_VALUE))
 								.addGap(24, 24,	24)));
 		setLayout(groupLayout);
@@ -843,6 +843,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 						.addGap(5, 5, 5)
 						.addComponent(getInfiniteNegativeDoubleButton())
 						.addGap(48, 48, 48)));
+			
 			buttonPanel.setLayout(groupLayout);
 			
 		}
@@ -2143,18 +2144,18 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 					/*&& valuesTable.getValueAt(0, 3) !=  minusInfinity*/) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
-				getInfinitePositiveDoubleButton().setVisible(true);
+				getInfinitePositiveDoubleButton().setVisible(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 5
 					/*&& valuesTable.getValueAt(numIntervals-1, 5) !=  infinity*/) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
-				getInfiniteNegativeDoubleButton().setVisible(true);
+				getInfiniteNegativeDoubleButton().setVisible(false);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 			
 			}else  {
 				getInfiniteNegativeDoubleButton().setVisible(false);
-				getInfinitePositiveDoubleButton().setVisible(true);
+				getInfinitePositiveDoubleButton().setVisible(false);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			}
@@ -2164,13 +2165,13 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 					/* && valuesTable.getValueAt(0, 5) !=  infinity*/) {
 				getInfinitePositiveDoubleButton().setVisible(true);
 				getInfinitePositiveDoubleButton().setEnabled(true);
-				getInfiniteNegativeDoubleButton().setVisible(true);
+				getInfiniteNegativeDoubleButton().setVisible(false);
 				getInfiniteNegativeDoubleButton().setEnabled(false);
 			} else if (row == numIntervals-1 && column == 3
 					/*&& valuesTable.getValueAt(numIntervals-1, 3) != minusInfinity*/) {
 				getInfiniteNegativeDoubleButton().setVisible(true);
 				getInfiniteNegativeDoubleButton().setEnabled(true);
-				getInfinitePositiveDoubleButton().setVisible(true);
+				getInfinitePositiveDoubleButton().setVisible(false);
 				getInfinitePositiveDoubleButton().setEnabled(false);
 			}
 			else  {
