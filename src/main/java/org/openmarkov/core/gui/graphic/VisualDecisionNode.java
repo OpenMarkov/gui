@@ -44,9 +44,18 @@ public class VisualDecisionNode extends VisualNode {
 								 new Color(255, 10, 255));
 
 	/**
-	 * Internal color of the visual node when there is a finding established.
+	 * Internal color of the visual node when there is a preResolution 
+	 * finding established.
 	 */
-	private static final Color BACKGROUND_FINDING_COLOR = Color.LIGHT_GRAY;
+	private static final Color BACKGROUND_PRE_RESOLUTION_FINDING_COLOR = 
+			Color.DARK_GRAY;
+
+	/**
+	 * Internal color of the visual node when there is a postResolution 
+	 * finding established.
+	 */
+	private static final Color BACKGROUND_POST_RESOLUTION_FINDING_COLOR = 
+			Color.LIGHT_GRAY;
 	
 	/**
 	 * Internal color of the visual node when there is an imposed policy established.
@@ -90,7 +99,8 @@ public class VisualDecisionNode extends VisualNode {
 		if (probNode.getPolicyType() != PolicyType.OPTIMAL){
 			hasPolicy = true;
 		}
-		findingInNode = false;
+		preResolutionFindingInNode = false;
+		postResolutionFindingInNode = false;
 		setTemporalPosition(new Point2D.Double(probNode.getNode().
 				getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
@@ -260,8 +270,10 @@ public class VisualDecisionNode extends VisualNode {
 		Shape shape = getShape(g);
 		Point2D.Double[] points = getPoints(g);
 
-		if (findingInNode) {
-			g.setPaint(BACKGROUND_FINDING_COLOR);
+		if (preResolutionFindingInNode) {
+			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
+		} else if (postResolutionFindingInNode) {
+			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
 		} else {
 			if (hasPolicy) {
 				g.setPaint(BACKGROUND_POLICY_SET_COLOR);

@@ -55,7 +55,7 @@ public class ExpectedValueBox extends InnerBox {
 	/**
 	 * Maximum value that the expected value can take.
 	 */
-	private double maxUtilityRange = Double.NEGATIVE_INFINITY;	
+	private double maxUtilityRange = Double.POSITIVE_INFINITY;	
 	
 	/**
 	 * This variable contains the visual state that is part

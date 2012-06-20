@@ -474,7 +474,7 @@ public class VisualState extends VisualElement {
 							InnerBox.BAR_FULL_LENGTH).intValue(), 
 					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue()
 					);
-			if (getVisualNode().findingInNode) {
+			if (getVisualNode().isAnyFindingInNode()) {
 				int currentCase = getVisualNode().getEditorPanel().getCurrentCase();
 				String stateWithFinding = getVisualNode().getEditorPanel().
 						getEvidenceCase(currentCase).

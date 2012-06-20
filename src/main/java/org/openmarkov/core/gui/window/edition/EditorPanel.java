@@ -618,18 +618,26 @@ public class EditorPanel extends JPanel implements MouseListener,
 						}
 					} else {
 						// If we are in Inference Mode a double click inside a
-						// visual state must introduce evidence in the
-						// corresponding node.
+						// visual state of a node without pre-resolution finding 
+						// must introduce evidence in that node.
 						// If the double click is inside a node but outside its
-						// inner box
-						// (in its 'expanded external shape'), its properties
-						// dialog
-						// should be open
+						// inner box (in its 'expanded external shape'), its 
+						// properties dialog should be open
 						if (visualNetwork
 								.whatStateInPosition(cursorPosition, g) != null) {
-							VisualState visualState = visualNetwork
-									.whatStateInPosition(cursorPosition, g);
-							setNewFinding(visualState);
+							VisualNode visualNode = visualNetwork.
+									whatNodeInPosition(cursorPosition, g);
+							if (visualNode.isPreResolutionFindingInNode()) {
+								JOptionPane.showMessageDialog(Utilities.getOwner(this),
+									"This node has a Pre-Resolution Finding that cannot be removed.",
+									stringResource.getString("ErrorWindow.Title.Label"),
+									JOptionPane.ERROR_MESSAGE);
+								//TODO //...asaez...Internacionalizar la sentencia
+							} else {
+								VisualState visualState = visualNetwork
+										.whatStateInPosition(cursorPosition, g);
+								setNewFinding(visualState);
+							}
 						} else {
 							if ((visualNetwork.whatNodeInPosition(
 									cursorPosition, g) != null)
@@ -1948,7 +1956,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if (evidenceCases.get(currentCase).getFinding(variable) != null) {
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
-					node.setFindingInNode(false);
+					node.setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 				} catch (NoFindingException exc) {
 					JOptionPane
 							.showMessageDialog(
@@ -2076,14 +2084,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		// Update visual info on evidence
 		for (VisualNode node : visualNetwork.getAllNodes()) {
-			node.setFindingInNode(false);
+			node.setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 		}
 		for (EvidenceCase evidenceCase : evidenceCases) {
 			for (Finding finding : evidenceCase.getFindings()) {
 				for (VisualNode node : visualNetwork.getAllNodes()) {
 					if (node.getProbNode().getVariable()
 							.equals(finding.getVariable())) {
-						node.setFindingInNode(true);
+						node.setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 					}
 				}
 			}
@@ -2266,7 +2274,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		propagationActive = isAutomaticPropagation();
 		ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
 		for (int i = 0; i < visualNodes.size(); i++) {
-			visualNodes.get(i).setFindingInNode(false);
+			visualNodes.get(i).setPostResolutionFindingInNode(false);//...asaez....PENDIENTE........
 		}
 		ArrayList<Finding> findings = evidenceCases.get(currentCase)
 				.getFindings();
@@ -2274,7 +2282,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			try {
 				evidenceCases.get(currentCase).removeFinding(
 						findings.get(i).getVariable());
-				doPropagation(evidenceCases.get(currentCase), currentCase);
+				doPropagation(evidenceCases.get(currentCase), currentCase); //...asaez...Pendiente...no debe propagarse con cada hallazgo eliminado sino al haber eliminado todos
 			} catch (NoFindingException exc) {
 				JOptionPane
 						.showMessageDialog(
@@ -2320,7 +2328,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 									.getAllNodes();
 							for (int k = 0; k < visualNodes.size(); k++) {
 								if (visualNodes.get(k).getProbNode() == node) {
-									visualNodes.get(k).setFindingInNode(false);
+									visualNodes.get(k).setPostResolutionFindingInNode(false);//...asaez....PENDIENTE........
 								}
 							}
 						}
@@ -2384,7 +2392,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				// The finding is in the same state, therefore, remove evidence
 				try {
 					evidenceCases.get(currentCase).removeFinding(variable);
-					visualState.getVisualNode().setFindingInNode(false);
+					visualState.getVisualNode().setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 					evidenceCasesCompilationState.set(currentCase, false);
 				} catch (NoFindingException exc) {
 					JOptionPane
@@ -2405,7 +2413,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					Finding finding = new Finding(variable,
 							visualState.getStateNumber());
 					evidenceCases.get(currentCase).addFinding(finding);
-					visualState.getVisualNode().setFindingInNode(true);
+					visualState.getVisualNode().setPostResolutionFindingInNode(true);//...asaez....PENDIENTE........
 					evidenceCasesCompilationState.set(currentCase, false);
 				} catch (NoFindingException exc) {
 					JOptionPane
@@ -2452,7 +2460,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 					visualState.getStateNumber());
 			try {
 				evidenceCases.get(currentCase).addFinding(finding);
-				visualState.getVisualNode().setFindingInNode(true);
+				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+					visualState.getVisualNode().setPreResolutionFindingInNode(true);
+				} else {
+					visualState.getVisualNode().setPostResolutionFindingInNode(true);//...asaez....PENDIENTE........
+				}
 				evidenceCasesCompilationState.set(currentCase, false);
 			} catch (InvalidStateException exc) {
 				JOptionPane
@@ -2508,7 +2520,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						evidenceCases.get(currentCase).removeFinding(variable);
 					} catch (NoFindingException e) { /* Not possible */
 					}
-					visualState.getVisualNode().setFindingInNode(false);
+					visualState.getVisualNode().setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 				}
 			}
 		}
@@ -2772,9 +2784,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 								(1.0 / innerBox.getNumStates()));
 					}
 				}
-				visualNode.setFindingInNode(false);
+				visualNode.setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 				// END OF
-				// PROVISIONAL2............................
+				// PROVISIONAL2.............asaez...Comprobar si es innecesario este Provisional2............
 			} else {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
 						"ERROR\n" + "Table Potential of " + variable.getName()
@@ -2907,7 +2919,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		Iterator<VisualNode> iterator1 = visualNetwork.getAllNodes().iterator();
 		while (iterator1.hasNext()) {
 			VisualNode visualNode = iterator1.next();
-			visualNode.setFindingInNode(false);
+			visualNode.setPostResolutionFindingInNode(false); //...asaez....PENDIENTE........
 		}
 		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
 		Iterator<Finding> iterator2 = findingsInEvidenceCase.iterator();
@@ -2920,7 +2932,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				VisualNode visualNode = iterator3.next();
 				if (variable.getName().equals(
 						visualNode.getProbNode().getName())) {
-					visualNode.setFindingInNode(true);
+					visualNode.setPostResolutionFindingInNode(true); //...asaez....PENDIENTE........
 				}
 			}
 		}

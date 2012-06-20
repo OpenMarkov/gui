@@ -99,10 +99,16 @@ public abstract class VisualNode extends VisualElement {
 	protected boolean expanded;
 
 	/**
-	 * This variable indicates if the node has a finding established
-	 * (true) or not (false). 
+	 * This variable indicates if the node has a pre-Resolution finding 
+	 * established (true) or not (false). 
 	 */	
-	protected boolean findingInNode;
+	protected boolean preResolutionFindingInNode;
+	
+	/**
+	 * This variable indicates if the node has a post-Resolution finding 
+	 * established (true) or not (false). 
+	 */	
+	protected boolean postResolutionFindingInNode;
 	
 	/**
 	 * This variable influences the width of the node.
@@ -290,22 +296,54 @@ public abstract class VisualNode extends VisualElement {
 	}
 	
 	/**
-	 * Returns true if the node has a finding established.
+	 * Returns true if the node has a pre-Resolution finding established.
 	 * 
-	 * @return true if the node  has a finding established.
+	 * @return true if the node has a pre-Resolution finding established.
 	 */	
-	public boolean getFindingInNode() {
-		return findingInNode;
+	public boolean isPreResolutionFindingInNode() {
+		return this.preResolutionFindingInNode;
 	}
 
 	/**
-	 * Sets if the node has a finding established or not.
+	 * Sets if the node has a pre-Resolution finding established or not.
 	 * 
 	 * @param findingInNode
-	 *            true if the node has a finding established.
+	 *            true if the node has a pre-Resolution finding established.
 	 */
-	public void setFindingInNode(boolean findingInNode) {
-		this.findingInNode = findingInNode;
+	public void setPreResolutionFindingInNode(boolean findingInNode) {
+		this.preResolutionFindingInNode = findingInNode;
+	}
+	
+	/**
+	 * Returns true if the node has a post-Resolution finding established.
+	 * 
+	 * @return true if the node has a post-Resolution finding established.
+	 */	
+	public boolean isPostResolutionFindingInNode() {
+		return this.postResolutionFindingInNode;
+	}
+
+	/**
+	 * Sets if the node has a post-Resolution finding established or not.
+	 * 
+	 * @param findingInNode
+	 *            true if the node has a post-Resolution finding established.
+	 */
+	public void setPostResolutionFindingInNode(boolean findingInNode) {
+		this.postResolutionFindingInNode = findingInNode;
+	} 
+	
+	/**
+	 * Returns true if the node has a finding established (pre or post-Resolution).
+	 * 
+	 * @return true if the node has a finding established (pre or post-Resolution).
+	 */	
+	public boolean isAnyFindingInNode() {
+		boolean hasFinding = false;
+		if (this.preResolutionFindingInNode || this.postResolutionFindingInNode) {
+			hasFinding = true;
+		}
+		return hasFinding;
 	}
 	
 	// ESCA-JAVA0173: allows unused arguments

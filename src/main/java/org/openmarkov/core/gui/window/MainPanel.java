@@ -42,8 +42,8 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
  * @author jmendoza
  * @version 1.0 jmendoza
  * @version 1.1 jlgozalo Add getMainFrame()
- * @version 1.2 asaez	Layout changed for having the main and the secondary toolbar
- * 						in the same line
+ * @version 1.2 asaez	Added InferenceToolBar. Layout changed for having the
+ * 						main and the secondary toolbar in the same line
  */
 public class MainPanel extends JPanel {
 

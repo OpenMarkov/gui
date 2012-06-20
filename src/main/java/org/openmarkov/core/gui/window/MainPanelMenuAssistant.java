@@ -672,12 +672,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 						}			
 					}
 				}
-				//if at least one selected node has a finding, 
+				//if at least one selected node has a post-Resolution finding, 
 				//'remove finding' option must be active 
 				VisualNode vNode = null;
 				for (int i=0; i < selectedNodes.size(); i++) {
 					vNode = selectedNodes.get(i);
-					if (vNode.getFindingInNode()) {	
+					if (vNode.isPostResolutionFindingInNode()) { 
 						canRemoveFinding = true;
 					}
 				}
@@ -725,7 +725,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 						 break;
 					 }
 					 setText(ActionCommands.EDIT_POTENTIAL, label);
-					 if (!(visualNode.getFindingInNode())) {
+					 if (!(visualNode.isAnyFindingInNode())) {
 						 canAddFinding = true;
 					 }
 				}

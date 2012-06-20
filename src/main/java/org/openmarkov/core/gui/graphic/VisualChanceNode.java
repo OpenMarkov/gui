@@ -18,6 +18,7 @@ import java.awt.geom.RoundRectangle2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
@@ -44,9 +45,18 @@ public class VisualChanceNode extends VisualNode {
 							249, 153));
 
 	/**
-	 * Internal color of the visual node when there is a finding established.
+	 * Internal color of the visual node when there is a preResolution 
+	 * finding established.
 	 */
-	private static final Color BACKGROUND_FINDING_COLOR = Color.LIGHT_GRAY;
+	private static final Color BACKGROUND_PRE_RESOLUTION_FINDING_COLOR = 
+			Color.DARK_GRAY;
+
+	/**
+	 * Internal color of the visual node when there is a postResolution 
+	 * finding established.
+	 */
+	private static final Color BACKGROUND_POST_RESOLUTION_FINDING_COLOR = 
+			Color.LIGHT_GRAY;
 
 	/**
 	 * Color of lines and letters.
@@ -91,7 +101,8 @@ public class VisualChanceNode extends VisualNode {
 		probNode = node;
 		editorPanel = panel;
 		expanded = false;
-		findingInNode = false;
+		preResolutionFindingInNode = false;
+		postResolutionFindingInNode = false;
 		setTemporalPosition(new Point2D.Double(probNode.getNode()
 				.getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
@@ -313,8 +324,12 @@ public class VisualChanceNode extends VisualNode {
 		Shape shape = getShape(g);
 		double[] dimensions = getNodeDimensions(g);
 
-		if (findingInNode) {
-			g.setPaint(BACKGROUND_FINDING_COLOR);
+		if (preResolutionFindingInNode) {
+			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
+		} else if (postResolutionFindingInNode && 
+				(editorPanel.getNetworkPanel().getWorkingMode() == 
+					NetworkPanel.INFERENCE_WORKING_MODE)) {
+			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
 		} else {
 			g.setPaint(BACKGROUND_COLOR);
 		}
