@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.event.UndoableEditEvent;
 
+import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -28,6 +29,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
+import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
@@ -226,7 +228,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, true);
 		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
 	}
-
+	
+	
+	
 	/**
 	 * Activates the corresponding options when a network has been modified.
 	 * 
@@ -253,6 +257,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		// changed by mpalacios
 		updateUndoRedo(canUndo, canRedo);
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, true);
+		updateOptionsNetworkDependent(currentNetworkPanel);
 
 	}
 
@@ -798,6 +803,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	public void undoableEditHappened(UndoableEditEvent e) {
 
 		ProbNet probNet = currentNetworkPanel.getProbNet();
+		Object source = e.getSource();
+		if (e.getSource() instanceof ChangeNetworkTypeEdit) {
+			
+		}
 		updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(),
 				probNet.getPNESupport().getCanRedo());
 		/*
