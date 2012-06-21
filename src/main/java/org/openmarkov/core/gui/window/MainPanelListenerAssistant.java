@@ -795,6 +795,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
 			mainPanel.getMainPanelMenuAssistant()
 					.updateOptionsNetworkDependent(networkPanel);
+			mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
 			mainPanel.getInferenceToolBar().
 					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
 		} catch (UnsupportedOperationException e) {

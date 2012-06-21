@@ -29,11 +29,12 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
@@ -111,6 +112,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	private NetworkPanel currentNetworkPanel = null;
 
 	private StringResource stringResource;
+	
+	private StringResource dialogStringResource;
 
 	/**
 	 * Constructor that registers the arrays of menus.
@@ -128,7 +131,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		super(newBasicMenus);
 		stringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMenus();
-
+		dialogStringResource = StringResourceLoader.getUniqueInstance()
+				.getBundleDialogs();
 		ZoomMenuToolBar[] menus = newZoomMenus;
 
 		if (menus == null) {
@@ -257,8 +261,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		// changed by mpalacios
 		updateUndoRedo(canUndo, canRedo);
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, true);
-		updateOptionsNetworkDependent(currentNetworkPanel);
-
+		//these are interesting only when networkType has changed not every time the network is modified
+		/*updateOptionsNetworkDependent(currentNetworkPanel);
+		updateNetworkAgents(currentNetworkPanel);*/
 	}
 
 	/**
@@ -286,7 +291,28 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		}
 
 	}
-
+	/**
+	 * It is called when a network has been modified if new network do not have OnlyOneAgentConstraints
+	 * that means it is multiagent, so network is initialized with two arbitrary agents
+	 * 
+	 * @param networkPanel
+	 */
+	 public void updateNetworkAgents(NetworkPanel networkPanel) {
+		if (currentNetworkPanel.getProbNet().isMultiagent()) {
+			ArrayList<StringWithProperties> agents = new ArrayList<StringWithProperties>();
+			agents.add(new StringWithProperties(dialogStringResource.getString("Network.Agent1")));
+			agents.add(new StringWithProperties(dialogStringResource.getString("Network.Agent2")));
+			currentNetworkPanel.getProbNet().setAgents(agents);
+		} else if (!currentNetworkPanel.getProbNet().isMultiagent()) {
+			if (currentNetworkPanel.getProbNet().getAgents() != null) {
+				currentNetworkPanel.getProbNet().setAgents(null);
+			}
+			for (ProbNode probNode : currentNetworkPanel.getProbNet().getProbNodes()) {
+				probNode.getVariable().setAgent(null);
+			}
+		}
+	 }
+	
 	/**
 	 * Activates the options on the menus and toolbars that depend on the
 	 * network.
@@ -802,12 +828,13 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 
 	public void undoableEditHappened(UndoableEditEvent e) {
 
-		ProbNet probNet = currentNetworkPanel.getProbNet();
-		Object source = e.getSource();
-		if (e.getSource() instanceof ChangeNetworkTypeEdit) {
-			
+	ProbNet probNet = currentNetworkPanel.getProbNet();
+	// update menu options and network agents when network type has been modified
+		if (e.getEdit() instanceof ChangeNetworkTypeEdit) {
+			updateOptionsNetworkDependent(currentNetworkPanel);
+			updateNetworkAgents(currentNetworkPanel);
 		}
-		updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(),
+	updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(),
 				probNet.getPNESupport().getCanRedo());
 		/*
 		 * updateOptionsNetworkModified(((ProbNet)e.getSource()).getPNESupport().

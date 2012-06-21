@@ -112,11 +112,16 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			getJComboBoxNetworkAgents().setEnabled(true);
 			getJComboBoxNetworkAgents().setVisible(true);
 			getJLabelNetworkAgents().setVisible(true);
-		} else {
+		} else if(probNode.getProbNet().getAgents() == null /*&& probNode.getVariable().getAgent() == null*/) {
 			getJComboBoxNetworkAgents().setEnabled(false);
 			getJComboBoxNetworkAgents().setVisible(false);
 			getJLabelNetworkAgents().setVisible(false);
-		}
+		}  /*else if (probNode.getProbNet().getAgents() == null && probNode.getVariable().getAgent() != null) {
+			// Dec-POMDP --> POMDP an agent has been already assigned to current variable
+			getJComboBoxNetworkAgents().setEnabled(true);
+			getJComboBoxNetworkAgents().setVisible(true);
+			getJLabelNetworkAgents().setVisible(true);
+		}*/
 		
 		//Check if the network has associated Only AtemporalVariablesConstranint
 		if (probNode.getProbNet().variablesCouldBeTemporal()) {
@@ -856,14 +861,19 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					 agentNames[i] = agents.get(i-1).getString();
 				 }
 				
-			} else {
+			} else if (agents == null /*&& probNode.getVariable().getAgent() == null*/) {
 				agentNames = new String[1]; 
 				agentNames[0] = "";
-			}
+			}/* else if (agents == null && probNode.getVariable().getAgent() != null) { 
+				// Dec-POMDP --> POMDP an agent has been already assigned to current variable
+				agentNames = new String[2]; 
+				agentNames[0] = "";
+				agentNames[1] = probNode.getVariable().getAgent().getString();
+			}*/
 			jComboBoxNetworkAgents = new JComboBox(agentNames);
 			jComboBoxNetworkAgents.setName("jComboBoxAgents");
 			jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
-			if (probNode.getVariable().getAgent() != null) {
+			if (probNode.getVariable().getAgent() != null && agents != null) {
 				String name = probNode.getVariable().getAgent().getString();
 				int i ;
 				for (i = 0; i < agentNames.length; i++) {
