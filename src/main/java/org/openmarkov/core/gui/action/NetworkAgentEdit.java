@@ -37,6 +37,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	//private StringsWithProperties lastAgents;
 	private ArrayList<StringWithProperties> lastAgents;
 	private Object [][]dataTable;
+	private ArrayList<ProbNode> oldNodes;
 
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 		super(probnet);
@@ -53,27 +54,44 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			this.lastAgents = probnet.getAgents();
 		}
 		this.dataTable = dataTable;
+		this.oldNodes = (ArrayList<ProbNode>) probNet.getProbNodes().clone();
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		//StringsWithProperties agents = probNet.getAgents();
 		ArrayList<StringWithProperties> agents = probNet.getAgents();
-		StringWithProperties agent = new StringWithProperties(agentName);
-		
+		StringWithProperties agent = null;
 		switch (stateAction){
 		case ADD:
 			if (agents == null) {
 				//agents = new StringsWithProperties();
 				agents = new ArrayList<StringWithProperties>();
 			}
+			agent = new StringWithProperties(agentName);
 			//agents.put(agentName);
 			agents.add(agent);
 			probNet.setAgents(agents);
 			break;
 		case REMOVE:
-			 //agents.remove(agentName);
+			for (StringWithProperties agente : agents) {
+				if (agente.getString().equals(agentName)) {
+					agent = agente;
+				}
+			}
 			agents.remove(agent);
+			//it is also necessary to delete this agent from the node it was assigned to
+			if (agent != null) {
+				for (ProbNode node : probNet.getProbNodes()) {
+					if (node.getVariable().getAgent().getString().equals(agentName)) {
+						node.getVariable().setAgent(null);
+					} 
+				}
+			}
+			
+			if (agents.size() == 0) {
+				agents = null;
+			}
 			probNet.setAgents(agents);
 			break;
 		case DOWN:
@@ -113,6 +131,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		probNet.setAgents(lastAgents);
+		//TODO restaurate agents in nodes
 	}
 
 }

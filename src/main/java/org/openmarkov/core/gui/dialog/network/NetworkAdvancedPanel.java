@@ -43,6 +43,13 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 		this.newNetwork = newNetwork;
 		setName("NetworkAdvancedPanel");
 		initialize();
+		
+		if (probNet.getAgents() == null) {
+			getAgentsButton().setEnabled(false);
+		} else if (probNet.getAgents() != null) {
+			getAgentsButton().setEnabled(true);
+		}
+		
 
 	}
 	private void initialize() {
@@ -69,7 +76,7 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 			setLayout(groupLayout);
 	}
 	
-	private JButton getAgentsButton () {
+	JButton getAgentsButton () {
 		if (agentsButton == null) {
 			agentsButton = new JButton(dialogStringResource
 					.getString("NetworkAdvancedPanel.Agents.Text"));

@@ -13,23 +13,15 @@ package org.openmarkov.core.gui.dialog.network;
 import java.awt.Window;
 
 import javax.help.BadIDException;
+import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
-
-import org.openmarkov.core.action.ChangeNetworkTypeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 
 
@@ -156,7 +148,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * 
 	 * @return a new definition panel.
 	 */
-	private NetworkAdvancedPanel getNetworkAdvancedPanel() {
+	NetworkAdvancedPanel getNetworkAdvancedPanel() {
 
 		if (networkAdvancedPanel == null) {
 			networkAdvancedPanel = new NetworkAdvancedPanel(newNetwork, 
@@ -174,7 +166,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 
 		if (networkDefinitionPanel == null) {
 			networkDefinitionPanel = new NetworkDefinitionPanel(newNetwork, 
-					probNet);
+					probNet, this);
 			networkDefinitionPanel.setName("networkDefinitionPanel");
 			
 		

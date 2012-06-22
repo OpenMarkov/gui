@@ -257,12 +257,16 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 	}
 	
 	private void setDataFromNetworkAgents( ArrayList<StringWithProperties> agents) {
-		 Object [][] tableData =new Object [agents.size()][1];
 		 if (agents != null) {
+			 Object [][] tableData =new Object [agents.size()][1];
+				
 			  for (int i = 0; i < agents.size(); i++) {
 				  tableData[i][0] = agents.get(i).getString();
 			  }
 				setData(tableData);
+		 } else if (agents == null) {
+			 Object [][] tableData =new Object [0][0];
+			 setData(tableData);
 		 }
 	 }
 	
@@ -363,9 +367,11 @@ public class NetworkAgentsTablePanel extends KeyTablePanel implements TableModel
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);
 		//dataTable = new Object [agents.getNames().size()][1];
+		if (agents != null) {
 		dataTable = new Object [agents.size()][1];
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		}
 		}
 	}
 	@Override

@@ -303,14 +303,14 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			agents.add(new StringWithProperties(dialogStringResource.getString("Network.Agent1")));
 			agents.add(new StringWithProperties(dialogStringResource.getString("Network.Agent2")));
 			currentNetworkPanel.getProbNet().setAgents(agents);
-		} else if (!currentNetworkPanel.getProbNet().isMultiagent()) {
+		} /*else if (!currentNetworkPanel.getProbNet().isMultiagent()) {
 			if (currentNetworkPanel.getProbNet().getAgents() != null) {
 				currentNetworkPanel.getProbNet().setAgents(null);
 			}
 			for (ProbNode probNode : currentNetworkPanel.getProbNet().getProbNodes()) {
 				probNode.getVariable().setAgent(null);
 			}
-		}
+		}*/
 	 }
 	
 	/**
@@ -832,7 +832,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	// update menu options and network agents when network type has been modified
 		if (e.getEdit() instanceof ChangeNetworkTypeEdit) {
 			updateOptionsNetworkDependent(currentNetworkPanel);
-			updateNetworkAgents(currentNetworkPanel);
+			//updateNetworkAgents(currentNetworkPanel);
 		}
 	updateOptionsNetworkModified(probNet.getPNESupport().getCanUndo(),
 				probNet.getPNESupport().getCanRedo());
@@ -845,12 +845,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void undoEditHappened(UndoableEditEvent event) {
-		ProbNet probNet = currentNetworkPanel.getProbNet();
+
 		updateOptionsNetworkModified(
 				((PNESupport) event.getSource()).getCanUndo(),
 				((PNESupport) event.getSource()).getCanRedo());

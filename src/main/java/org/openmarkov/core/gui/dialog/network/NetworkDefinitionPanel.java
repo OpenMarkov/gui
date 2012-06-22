@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -75,6 +76,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 
 	
 	private StringResource messageStringResource;
+	private JDialog parent;
 	/**
 	 * This method initialises this instance.
 	 * 
@@ -82,7 +84,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 *            to indicate if the panel is for new networks
 	 * @wbp.parser.constructor
 	 */
-	public NetworkDefinitionPanel(final boolean newNetwork) {
+	public NetworkDefinitionPanel(final boolean newNetwork, JDialog parent) {
 
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
@@ -91,6 +93,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		this.newNetwork = newNetwork;
+		this.parent = parent;
 		setName("NetworkDefinitionPanel");
 		initialize();
 
@@ -104,12 +107,13 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 * @param probNet2
 	 *            manage the network access
 	 */
-	public NetworkDefinitionPanel(final boolean newNetwork, ProbNet probNet) {
+	public NetworkDefinitionPanel(final boolean newNetwork, ProbNet probNet, JDialog parent) {
 
 		this.probNet = probNet;
 		dialogStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleDialogs();
 		this.newNetwork = newNetwork;
+		this.parent = parent;
 		setName("NetworkDefinitionPanel");
 		initialize();
 
@@ -669,6 +673,12 @@ public class NetworkDefinitionPanel extends JPanel implements
 				try {
 					probNet.getPNESupport().announceEdit(changeNetworkType);
 					probNet.getPNESupport().doEdit(changeNetworkType);
+					
+					if (probNet.getAgents() == null) {
+						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled(false);
+					} else if (probNet.getAgents() != null) {
+						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled(true);
+					}
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -696,7 +706,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 					
 					e.printStackTrace();
 					String message = e.getMessage();
-					if (!newNetwork){
+					//if (!newNetwork){
 						JOptionPane.showMessageDialog(this,  e.getMessage() ,
 							e.getMessage() ,
 							JOptionPane.ERROR_MESSAGE );
@@ -704,7 +714,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 						jComboBoxNetworkTypes.setSelectedItem(dialogStringResource
 								.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 										+ probNet.getNetworkType().toString().toString()));
-					}
+					//}
 					
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
