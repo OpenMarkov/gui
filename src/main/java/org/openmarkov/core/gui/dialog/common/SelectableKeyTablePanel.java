@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import org.openmarkov.core.action.RevelationArcValueEdit;
+import org.openmarkov.core.action.RevelationStateEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
@@ -122,7 +122,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 		State[] states = node.getVariable().getStates();
 		if (states.length > 0) {
 			State selectedState = states[states.length - row - 1];
-			RevelationArcValueEdit arcEdit = new RevelationArcValueEdit(link,
+			RevelationStateEdit arcEdit = new RevelationStateEdit(link,
 					selectedState, Boolean.valueOf((Boolean) data));
 			try {
 				node.getProbNet().getPNESupport().announceEdit(arcEdit);

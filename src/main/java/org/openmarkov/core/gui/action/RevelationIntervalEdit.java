@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.Variable;
  * 
  */
 @SuppressWarnings("serial")
-public class RevelationConditionEdit extends SimplePNEdit {
+public class RevelationIntervalEdit extends SimplePNEdit {
 
 	/***
 	 * Object which stores the revelation conditions
@@ -61,7 +61,7 @@ public class RevelationConditionEdit extends SimplePNEdit {
 	 * @param isLower
 	 */
 
-	public RevelationConditionEdit(Link link, StateAction stateAction, int row,
+	public RevelationIntervalEdit(Link link, StateAction stateAction, int row,
 			double newValue, boolean isLower) {
 		super(((ProbNode) link.getNode1().getObject()).getProbNet());
 		this.link = link;

@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.action.RevelationConditionEdit;
+import org.openmarkov.core.gui.action.RevelationIntervalEdit;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
@@ -90,7 +90,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		rowCount = valuesTable.getRowCount();
 		int newIndex = 0;
 		newIndex = valuesTable.getRowCount();
-		RevelationConditionEdit revelationArcStateEdit = new RevelationConditionEdit(
+		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(
 				link, StateAction.ADD, newIndex, 0, false);
 		try {
 			probNode.getProbNet().getPNESupport()
@@ -154,7 +154,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	protected void actionPerformedRemoveValue() {
 		int selectedRow = valuesTable.getSelectedRow();
 
-		RevelationConditionEdit revelationArcStateEdit = new RevelationConditionEdit(
+		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(
 				link, StateAction.REMOVE, selectedRow, 0, false);
 		try {
 			probNode.getProbNet().getPNESupport()
@@ -269,7 +269,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 
 			}
 
-			RevelationConditionEdit nodePartitionedIntervalEdit = new RevelationConditionEdit(
+			RevelationIntervalEdit nodePartitionedIntervalEdit = new RevelationIntervalEdit(
 					link, StateAction.MODIFYVALUEINTERVAL, row, newValue, lower);
 			try {
 				probNode.getProbNet().getPNESupport()
@@ -343,7 +343,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				|| columna == upperLimitSymbolColumnNum) {
 			boolean lower = false;
 			String aux = (String) valuesTable.getValueAt(fila, columna);
-			RevelationConditionEdit relatedIntervalEdit = null;
+			RevelationIntervalEdit relatedIntervalEdit = null;
 			if (columna == lowerLimitSymbolColumnNum) {
 				lower = true;
 				if (aux.equals("(")) {
@@ -357,7 +357,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt(")", fila - 1,
 									upperLimitSymbolColumnNum);
-						relatedIntervalEdit = new RevelationConditionEdit(link,
+						relatedIntervalEdit = new RevelationIntervalEdit(link,
 								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
 								0, false);
 					}
@@ -372,7 +372,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("]", fila - 1,
 									upperLimitSymbolColumnNum);
-						relatedIntervalEdit = new RevelationConditionEdit(link,
+						relatedIntervalEdit = new RevelationIntervalEdit(link,
 								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
 								0, false);
 					}
@@ -390,7 +390,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("(", fila + 1,
 									lowerLimitSymbolColumnNum);
-						relatedIntervalEdit = new RevelationConditionEdit(link,
+						relatedIntervalEdit = new RevelationIntervalEdit(link,
 								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
 								0, true);
 					}
@@ -405,7 +405,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("[", fila + 1,
 									lowerLimitSymbolColumnNum);
-						relatedIntervalEdit = new RevelationConditionEdit(link,
+						relatedIntervalEdit = new RevelationIntervalEdit(link,
 								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
 								0, true);
 					}
@@ -413,7 +413,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				}
 			}
 
-			RevelationConditionEdit intervalEdit = new RevelationConditionEdit(
+			RevelationIntervalEdit intervalEdit = new RevelationIntervalEdit(
 					link, StateAction.MODIFYDELIMITERINTERVAL, fila, 0, lower);
 			try {
 				probNode.getProbNet().getPNESupport()
