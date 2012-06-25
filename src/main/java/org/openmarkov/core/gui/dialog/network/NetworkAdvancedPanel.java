@@ -107,16 +107,12 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 	protected void actionPerformedAgents() {
 		NetworkAgentsDialog networkAgentsDialog = new NetworkAgentsDialog(Utilities.getOwner(this), probNet, newNetwork);
 		if (networkAgentsDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-			//TODO edits agents values
 		}
-		/*if (networkAgentsDialog.requestValues() == NodePropertiesDialog.CANCEL_BUTTON) {
-			//networkAgentsDialog.g
-			//probNet.getPNESupport().undo();
-		}*/
-	
 	}
 	
 	protected void actionPerformedDecisionCriteria() {
-		//TODO 	
+		DecisionCriteriaDialog decisionCriteriaDialog = new DecisionCriteriaDialog(Utilities.getOwner(this), probNet, newNetwork);
+		if (decisionCriteriaDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+		}
 	}
 }

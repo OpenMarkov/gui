@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.gui.dialog.network.NetworkAgentTableModel;
+import org.openmarkov.core.gui.dialog.network.AdvancedPropertiesTableModel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
@@ -34,7 +34,7 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 	private StringResource messageStringResource;
 	private String keyPrefix;
 	private StringResource dialogStringResource;
-	private NetworkAgentTableModel netWorkAgentstableModel;
+	private AdvancedPropertiesTableModel netWorkAgentstableModel;
 	private Object dataTable [][];
 	
 	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
@@ -73,7 +73,7 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 			//dataTable = newData;
 			data = fillDataKeys(newData);
 			//tableModel = new DefaultTableModel(data, columns);
-			netWorkAgentstableModel = new NetworkAgentTableModel (data, columns); 
+			netWorkAgentstableModel = new AdvancedPropertiesTableModel (data, columns); 
 			//valuesTable.setModel(tableModel);
 			valuesTable.setModifiable(false);
 			valuesTable.setModel(netWorkAgentstableModel);

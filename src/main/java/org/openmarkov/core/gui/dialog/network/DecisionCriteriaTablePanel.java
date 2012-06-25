@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 
-
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -14,16 +13,13 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
-/**
- * 
- * @author myebra
- *
- */
+
 @SuppressWarnings("serial")
-public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
+public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 
 	private ProbNet probNet;
 	/**
@@ -31,7 +27,7 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 	 */
 	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 
-	public NetworkAgentsTablePanel(String[] newColumns, ProbNet probNet){
+	public DecisionCriteriaTablePanel(String[] newColumns, ProbNet probNet){
 		super(newColumns, new Object[0][0], "a");
 		this.probNet = probNet;
 		
@@ -42,17 +38,17 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		int column = tableEvent.getColumn();
 		int row = tableEvent.getLastRow();
 		if (tableEvent.getType()== TableModelEvent.UPDATE) {
-			String agentName = (String) dataTable[row][0];
+			String criteriaName = (String) dataTable[row][0];
 			String newName = (String) ((AdvancedPropertiesTableModel)tableEvent.getSource()).
 					getValueAt(row, column);
 			 dataTable[row][0] = newName;
-			if (agentName != newName) {
-			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-					StateAction.RENAME, newName, agentName, dataTable);
+			if (criteriaName != newName) {
+			DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
+					StateAction.RENAME, newName, criteriaName, dataTable);
 			try {
-				probNet.getPNESupport().announceEdit(networkAgentEdit);
-				probNet.getPNESupport().doEdit(networkAgentEdit);
-				edits.add(networkAgentEdit);
+				probNet.getPNESupport().announceEdit(criteriaEdit);
+				probNet.getPNESupport().doEdit(criteriaEdit);
+				edits.add(criteriaEdit);
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -86,20 +82,22 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		
 		
 		String option= JOptionPane.showInputDialog(this, 
-				"Proporcione el nuevo agente", "Agregar agente", 
+				"Proporcione el nuevo criterio de decision", "Agregar criterio de decision", 
 				JOptionPane.QUESTION_MESSAGE);
 				
 		if (option != null){
 			int newIndex = 0;
 			newIndex = valuesTable.getRowCount();
 
-			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+			
+			DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
 					StateAction.ADD, "", option, null);
+		
 			//doEdit
 			try {
-				probNet.getPNESupport().announceEdit(networkAgentEdit);
-				probNet.getPNESupport().doEdit(networkAgentEdit);
-				edits.add(networkAgentEdit);
+				probNet.getPNESupport().announceEdit(criteriaEdit);
+				probNet.getPNESupport().doEdit(criteriaEdit);
+				edits.add(criteriaEdit);
 			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -125,9 +123,9 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			
 			 //StringsWithProperties agents = probNet.getAgents();
 			 //setDataFromNetworkAgents(agents);
-			 ArrayList<StringWithProperties> agents = probNet.getAgents();
-			 setDataFromAdvancedProperties(agents);
-			// getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
+			 ArrayList<StringWithProperties> criterias = probNet.getDecisionCriteria();
+			 setDataFromAdvancedProperties(criterias);
+			 //getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 			 
 			 dataTable = new Object [valuesTable.getRowCount()][1];
@@ -144,13 +142,15 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 	@Override
 	protected void actionPerformedRemoveValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		String agentName = (String) valuesTable.getValueAt(selectedRow, 1);
-		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
-				StateAction.REMOVE, "", agentName, null);
+		String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1);
+		
+		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
+				StateAction.REMOVE, "", criteriaName, null);
+		
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
+			probNet.getPNESupport().announceEdit(criteriaEdit);
+			probNet.getPNESupport().doEdit(criteriaEdit);
+			edits.add(criteriaEdit);
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,13 +172,13 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			e.printStackTrace();
 		}
 		//StringsWithProperties agents = probNet.getAgents();
-		ArrayList<StringWithProperties> agents = probNet.getAgents();
-		setDataFromAdvancedProperties(agents);
+		ArrayList<StringWithProperties> criterias = probNet.getDecisionCriteria();
+		setDataFromAdvancedProperties(criterias);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);
 		//dataTable = new Object [agents.getNames().size()][1];
-		if (agents != null) {
-		dataTable = new Object [agents.size()][1];
+		if (criterias != null) {
+		dataTable = new Object [criterias.size()][1];
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
 		}
@@ -192,12 +192,13 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		dataTable[selectedRow][0] = dataTable[selectedRow-1][0];
 		dataTable[selectedRow-1][0] = swap; 
 		
-		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
 				StateAction.UP, "", "", dataTable);
+		
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
+			probNet.getPNESupport().announceEdit(criteriaEdit);
+			probNet.getPNESupport().doEdit(criteriaEdit);
+			edits.add(criteriaEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
@@ -240,12 +241,12 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		dataTable[selectedRow+1][0] = swap;
 		
 		
-		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
+		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
 				StateAction.DOWN, "", "", dataTable);
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
-			edits.add(networkAgentEdit);
+			probNet.getPNESupport().announceEdit(criteriaEdit);
+			probNet.getPNESupport().doEdit(criteriaEdit);
+			edits.add(criteriaEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
 			valuesTable.setValueAt(
@@ -280,4 +281,5 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 	}
 
 	
+
 }

@@ -937,29 +937,43 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	
 	private JComboBox getJComboBoxDecisionCriteria() {
 		if (jComboBoxDecisionCriteria == null) {
-			StringsWithProperties decisionCriteria = probNode.getProbNet().getDecisionCriteria();
+			//StringsWithProperties agents = probNode.getProbNet().getAgents();
+			ArrayList<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
 			String [] criteriaNames = null;
 			if (decisionCriteria != null) {
-				Set<String> names = decisionCriteria.getNames();
-				criteriaNames = names.toArray(new String[names.size()]);
-				 String []auxAgentNames = names.toArray(new String[names.size()]);
-				 criteriaNames  = new String [names.size()+1];
-				 criteriaNames [0]= "";
-				 for (int i = 1; i < names.size()+1; i++) {
-					 criteriaNames[i] = auxAgentNames[i-1];
+				//Set<String> names = agents.getNames();
+				//agentNames = names.toArray(new String[names.size()]);
+				// String []auxAgentNames = names.toArray(new String[names.size()]);
+				// agentNames  = new String [names.size()+1];
+				criteriaNames  = new String [decisionCriteria.size()+1];
+				criteriaNames [0]= "";
+				 for (int i = 1; i < decisionCriteria.size()+1; i++) {
+					// agentNames[i] = auxAgentNames[i-1];
+					 criteriaNames[i] = decisionCriteria.get(i-1).getString();
 				 }
 				
-			} else {
+			} else if (decisionCriteria == null) {
 				criteriaNames = new String[1]; 
 				criteriaNames[0] = "";
 			}
 			jComboBoxDecisionCriteria = new JComboBox(criteriaNames);
 			jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
-			jComboBoxDecisionCriteria.setSelectedIndex(0);
-			//jComboBoxNetworkAgents.setMaximumRowCount(9);
-			// jComboBoxNodePurpose.addItemListener( this );
+			jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
+			if (probNode.getVariable().getDecisionCriteria() != null && decisionCriteria != null) {
+				String name = probNode.getVariable().getDecisionCriteria().getString();
+				int i ;
+				for (i = 0; i < criteriaNames.length; i++) {
+					if (name == criteriaNames[i]) {
+						break;
+					}
+				}
+				jComboBoxDecisionCriteria.setSelectedIndex(i);
+			} else {
+				jComboBoxDecisionCriteria.setSelectedIndex(0);
+			}
 			jComboBoxDecisionCriteria.setEditable(true);
-			
+			jComboBoxDecisionCriteria.addItemListener(this);
+
 		}
 		return jComboBoxDecisionCriteria;
 

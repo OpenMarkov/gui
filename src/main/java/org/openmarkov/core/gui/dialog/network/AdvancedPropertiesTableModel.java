@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
  *
  */
 @SuppressWarnings("serial")
-public class NetworkAgentTableModel extends DefaultTableModel {
+public class AdvancedPropertiesTableModel extends DefaultTableModel {
 	
 	private static final int COLUMN_AGENT_NAME = 1;
 	//private static final int COLUMN_AGENT_ADITIONAL_PROPERTIES = 2;
@@ -17,7 +17,7 @@ public class NetworkAgentTableModel extends DefaultTableModel {
 	 * @param data - values to set in the table
 	 * @param columns - name of the colums of the table
 	 */
-	public NetworkAgentTableModel(Object[][] data, String[] columns) {
+	public AdvancedPropertiesTableModel(Object[][] data, String[] columns) {
 		super (data, columns);
 		
 	}
