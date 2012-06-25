@@ -116,17 +116,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			getJComboBoxNetworkAgents().setEnabled(false);
 			getJComboBoxNetworkAgents().setVisible(false);
 			getJLabelNetworkAgents().setVisible(false);
-		}  /*else if (probNode.getProbNet().getAgents() == null && probNode.getVariable().getAgent() != null) {
-			// Dec-POMDP --> POMDP an agent has been already assigned to current variable
-			getJComboBoxNetworkAgents().setEnabled(true);
-			getJComboBoxNetworkAgents().setVisible(true);
-			getJLabelNetworkAgents().setVisible(true);
-		}*/
+		}  
 		
 		//Check if the network has associated Only AtemporalVariablesConstranint
 		if (probNode.getProbNet().variablesCouldBeTemporal()) {
-		//String type = probNode.getProbNet().getNetworkType().toString();
-		//if ((probNode.getProbNet().getNetworkType().toString()).equals("DEC_POMDP")) {
 			getJComboBoxTimeSlice().setEnabled(true);
 			getJComboBoxTimeSlice().setVisible(true);
 			getJLabelTimeSlice().setVisible(true);

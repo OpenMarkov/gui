@@ -314,6 +314,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 			TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
 			aColumn.setCellRenderer(statesRender);
 			if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+				valuesTable.getColumnModel().getColumn(1).setPreferredWidth(406);
+				valuesTable.getColumnModel().getColumn(1).setMaxWidth(406);
+				valuesTable.getColumnModel().getColumn(1).setMinWidth(406);
 				for (int i = 2; i < maxColumn; i++) {
 					TableColumn columni = valuesTable.getColumnModel().getColumn(i);
 					columni.setCellRenderer(tcr);

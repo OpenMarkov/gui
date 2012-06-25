@@ -257,8 +257,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			getJComboBoxNodeVariableType().setSelectedItem(dialogStringResource.getString(
 					"NodeDomainValuesTablePanel.jComboBoxNodeVariableType." +
 							"Items.Continuous"));
-			getNodeStatesTablePanel().setEnabled(false);
-			getNodeStatesTablePanel().setVisible(false);
+			getNodeDiscretizedStatesTablePanel().setEnabled(false);
+			getNodeDiscretizedStatesTablePanel().setVisible(false);
 			getJPanelMonotonyUpDown().setEnabled(false);
 			getJPanelMonotonyUpDown().setVisible(false);
 			getJLabelValuesPanel().setEnabled(false);
@@ -300,7 +300,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 									)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getJLabelValuesPanel(), GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-									.addComponent(getNodeStatesTablePanel(), GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE))
+									.addComponent(getNodeDiscretizedStatesTablePanel(), GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE))
 									)
 						
 						.addContainerGap())
@@ -325,7 +325,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getJLabelValuesPanel(), 
 								GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-						.addComponent(getNodeStatesTablePanel(),GroupLayout.PREFERRED_SIZE,/* 24*/GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE))
+						.addComponent(getNodeDiscretizedStatesTablePanel(),GroupLayout.PREFERRED_SIZE,/* 24*/GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE))
 					.addContainerGap(77, Short.MAX_VALUE))
 		);
 		
@@ -366,7 +366,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		
 		setUploadingData(true);
 		//jComboBoxStatesValues.removeItemListener(this);
-		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).removeActionListener( this );
+		(((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton()).removeActionListener( this );
 		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
 		listener);*/
 
@@ -393,8 +393,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							discretizedNodeStatesTablePanel.setData(tableData);
 					} else {*/
 							//discretizedNodeStatesTablePanel.setPartitionedInterval();
-							discretizedNodeStatesTablePanel.setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval());
-							tableData = discretizedNodeStatesTablePanel.getData();
+				getNodeDiscretizedStatesTablePanel().setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval());
+							tableData = getNodeDiscretizedStatesTablePanel().getData();
 
 							for (int i = 0; i < tableData.length; i++) {
 								for (int j = 3; j < tableData[0].length; j++) {
@@ -409,7 +409,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 												/*String roundedValue = Utilities.roundWithPrecisionToString(Double.parseDouble(value), 
 															Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));*/
 											//getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
-											getNodeStatesTablePanel().getValuesTable().setValueAt(value, i, j);
+											getNodeDiscretizedStatesTablePanel().getValuesTable().setValueAt(value, i, j);
 										}
 									}
 								}
@@ -445,12 +445,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     			jRadioButtonMonotonyDown.setEnabled(false);
     			jRadioButtonMonotonyUp.setSelected(false);
     			jRadioButtonMonotonyDown.setSelected(true);
-    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
-				((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
+    			((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnablePanelButton(true);
+				((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setVisibleButtonPanel(true);
 				getJLabelDomainValues().setVisible(false);
 				getJComboBoxStatesValues().setVisible(false);
-				((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(true);
-				((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(true);
+				((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setVisible(true);
+				((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setEnabled(true);
     			/*discretizedNodeStatesTablePanel.getInfiniteNegativeDoubleButton().setVisible(false);
     			discretizedNodeStatesTablePanel.getInfinitePositiveDoubleButton().setVisible(false);*/
 				// node comment title
@@ -476,7 +476,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				} else {*/
 					
 					Object[][] tableData = getDataFromStates(reorderedStates);
-					discretizedNodeStatesTablePanel.setData(tableData);
+					getNodeDiscretizedStatesTablePanel().setData(tableData);
 					
 									
 			//	}
@@ -501,14 +501,14 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					jRadioButtonMonotonyDown.setEnabled(false);
 					jRadioButtonMonotonyUp.setSelected(false);
 					jRadioButtonMonotonyDown.setSelected(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledAddValue(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledRemoveValue(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledUpValue(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnabledDownValue(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnablePanelButton(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setVisibleButtonPanel(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnabledAddValue(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnabledRemoveValue(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnabledUpValue(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnabledDownValue(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setVisible(false);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setEnabled(false);
 					getJTextFieldUnit().setEnabled(true);
 					getJTextFieldUnit().setVisible(true);
 					getJLabelUnit().setEnabled(true);
@@ -537,13 +537,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	    			jRadioButtonMonotonyDown.setEnabled(true);
 	    			jRadioButtonMonotonyUp.setSelected(false);
 	    			jRadioButtonMonotonyDown.setSelected(true);
-	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setUpMonotony(false);
-	    			((DiscretizeTablePanel)getNodeStatesTablePanel()).setEnablePanelButton(true);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).setVisibleButtonPanel(true);
+	    			((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setUpMonotony(false);
+	    			((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setEnablePanelButton(true);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setVisibleButtonPanel(true);
 					getJLabelDomainValues().setVisible(false);
 					getJComboBoxStatesValues().setVisible(false);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setVisible(true);
-					((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton().setEnabled(true);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setVisible(true);
+					((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton().setEnabled(true);
 					getJTextFieldUnit().setEnabled(true);
 					getJTextFieldUnit().setVisible(true);
 					getJLabelUnit().setEnabled(true);
@@ -561,29 +561,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 		}
 	//	jComboBoxStatesValues.addItemListener(this);
-		(((DiscretizeTablePanel)getNodeStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
+		(((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton()).addActionListener( this );
 		setUploadingData(false);
 	}
 
-	protected KeyTablePanel getNodeStatesTablePanel() {
 
-		/*if (probNode != null){
-			if (( probNode.getNodeType()== NodeType.CHANCE || 
-					probNode.getNodeType()== NodeType.DECISION) && 
-				probNode.getVariable().getVariableType()==
-					VariableType.FINITE_STATES){
-				//finite states
-				//return getNodeDiscreteStatesTablePanel();
-				return getNodeDiscretizedStatesTablePanel();
-			}else
-				//numeric and discretized
-				return getNodeDiscretizedStatesTablePanel();
-		}else
-			//if it is null is like if it were finnite states
-			//return getNodeDiscreteStatesTablePanel();*/
-			return getNodeDiscretizedStatesTablePanel();
-			
-	}
 	
 		/**
 	 * This method initializes NodeValuesTable.
@@ -615,11 +597,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							dialogStringResource.getString(
 									"DiscretizeTableModel.Columns." +
 									"UpperLimitSymbol.Text") };
+		
 
 			discretizedNodeStatesTablePanel = new DiscretizeTablePanel(
 							columnNames, probNode);
 			discretizedNodeStatesTablePanel.setBorder(new EmptyBorder(0,
 							0, 0, 0));
+			
 
 		}
 		return discretizedNodeStatesTablePanel;
@@ -1461,7 +1445,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			}
 
 			PartitionedInterval newPartitionInterval = probNode.getVariable().getPartitionedInterval();
-			((DiscretizeTablePanel)getNodeStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
+			((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
 		}
 		}
 	}

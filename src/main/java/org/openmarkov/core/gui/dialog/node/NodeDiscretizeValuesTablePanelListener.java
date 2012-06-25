@@ -133,16 +133,16 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	private void itemStateChangedUp(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			previousMonotony = UP; //deselected up 
-			((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
+			((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(false);
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { //UP --> UP
 				//do nothing
-				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
+				((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(true);
 			} else if (previousMonotony == DOWN) { // DOWN --> UP
 					
-				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
+				((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(true);
 				
-					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
+					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeDiscretizedStatesTablePanel();
 					Object [][]data = panel.getData();
 					
 					Object [][]intermediateRows = new Object[data.length][data[0].length-2];
@@ -174,12 +174,12 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 	private void itemStateChangedDown(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED){
 			previousMonotony = DOWN;//deselected down
-			((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(true);
+			((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(true);
 		}else if (e.getStateChange() == ItemEvent.SELECTED ){
 			if ( previousMonotony == UP) { // UP --> DOWN
-				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
+				((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(false);
 				
-					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
+					DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeDiscretizedStatesTablePanel();
 					Object [][]data = panel.getData();
 					
 					Object [][]intermediateRows = new Object[data.length][data[0].length-2];
@@ -206,7 +206,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			
 			} else if (previousMonotony == DOWN) { // DOWN --> DOWN 
 				//do nothing	
-				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setUpMonotony(false);
+				((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setUpMonotony(false);
 			} 
 		}
 	}
@@ -422,7 +422,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 			
 			//after setting this new value to precision to variable, table values must be updated with 
 			//the corresponding decimal numbers
-			 DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeStatesTablePanel();
+			 DiscretizeTablePanel panel = (DiscretizeTablePanel) getPanel().getNodeDiscretizedStatesTablePanel();
 			 
 			 if (getPanel().getProbNode().getVariable().getVariableType() == VariableType.DISCRETIZED ||
 					 getPanel().getProbNode().getVariable().getVariableType() == VariableType.NUMERIC ) {
@@ -510,7 +510,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 
 				PartitionedInterval newPartitionInterval = getPanel().getProbNode().getVariable().
 						getPartitionedInterval();
-				((DiscretizeTablePanel)getPanel().getNodeStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
+				((DiscretizeTablePanel)getPanel().getNodeDiscretizedStatesTablePanel()).setDataFromPartitionedInterval(newPartitionInterval);	
 						
 				/* Object [][] data =  panel.getData();
 				 for (int i = 0; i < data.length; i++) {
