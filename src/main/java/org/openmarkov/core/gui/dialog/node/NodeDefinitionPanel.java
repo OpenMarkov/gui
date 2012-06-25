@@ -147,7 +147,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		
 		getJComboBoxNodePurpose().setEnabled(true);
 		getJComboBoxNodeRelevance().setEnabled(true);
-		if (!AlwaysObservedPropertyValidator.isValid(probNode)) {
+		if (!AlwaysObservedPropertyValidator.validate(probNode)) {
 			getJLabelAlwaysObserved().setVisible(false);
 			getJCheckBoxAlwaysObserved().setVisible(false);
 		}

@@ -22,7 +22,7 @@ public class RevelationArcValidator {
 	 * @return <code>true</code> if a link restriction can be applied to the
 	 *         link.
 	 */
-	public static boolean isValid(Link link) {
+	public static boolean validate(Link link) {
 
 		ProbNode node1 = ((ProbNode) link.getNode1().getObject());
 		ProbNode node2 = ((ProbNode) link.getNode2().getObject());

@@ -802,7 +802,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 			if (visualNetwork.getSelectedLinksNumber() == 1) {
 				boolean linkRestrictionEnabled = false;
-				if (LinkRestrictionValidator.isValid(link.getLink())) {
+				if (LinkRestrictionValidator.validate(link.getLink())) {
 					linkRestrictionEnabled = true;
 				}
 
@@ -824,7 +824,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								.hasRestrictions()));
 
 				boolean revelationArcEnabled = false;
-				if (RevelationArcValidator.isValid(link.getLink())) {
+				if (RevelationArcValidator.validate(link.getLink())) {
 					revelationArcEnabled = true;
 				}
 				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
