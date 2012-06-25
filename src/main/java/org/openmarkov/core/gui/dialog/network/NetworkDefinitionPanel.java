@@ -679,6 +679,13 @@ public class NetworkDefinitionPanel extends JPanel implements
 					} else if (probNet.getAgents() != null) {
 						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled(true);
 					}
+					
+					if (!probNet.onlyChanceNodes()) {
+						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled(true);
+					} else if (probNet.onlyChanceNodes()) {
+						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled(false);
+					}
+					
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -261,9 +261,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		// changed by mpalacios
 		updateUndoRedo(canUndo, canRedo);
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, true);
-		//these are interesting only when networkType has changed not every time the network is modified
-		/*updateOptionsNetworkDependent(currentNetworkPanel);
-		updateNetworkAgents(currentNetworkPanel);*/
+		
 	}
 
 	/**
@@ -845,7 +843,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
-		
+		// TODO Auto-generated method stub
+
 	}
 
 	public void undoEditHappened(UndoableEditEvent event) {

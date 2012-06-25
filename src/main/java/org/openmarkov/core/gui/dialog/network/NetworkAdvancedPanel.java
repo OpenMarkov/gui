@@ -50,6 +50,12 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 			getAgentsButton().setEnabled(true);
 		}
 		
+		if (!probNet.onlyChanceNodes()) {
+			getDecisionCriteriaButton().setEnabled(true);
+		} else if (probNet.onlyChanceNodes()) {
+			getDecisionCriteriaButton().setEnabled(false);
+		}
+		
 
 	}
 	private void initialize() {
@@ -86,7 +92,7 @@ public class NetworkAdvancedPanel extends JPanel implements ActionListener{
 		return agentsButton;
 	}
 	
-	private JButton getDecisionCriteriaButton () {
+	JButton getDecisionCriteriaButton () {
 		if (decisionCriteriaButton == null) {
 			decisionCriteriaButton = new JButton(dialogStringResource
 					.getString("NetworkAdvancedPanel.DecisionCriteria.Text"));
