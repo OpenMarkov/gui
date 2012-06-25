@@ -2581,8 +2581,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					throw new UnsupportedOperationException();
 				}
 
-				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase
-						.getFindings());
+				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				calculateMinAndMaxUtilityRanges();
 				individualProbabilities = inferenceAlgorithm
 						.getProbsAndUtilities();
@@ -2601,8 +2600,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 				inferenceAlgorithm = inferenceManager
 						.getDefaultApproximateAlgorithm(probNet);
-				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase
-						.getFindings());
+				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				individualProbabilities = inferenceAlgorithm
 						.getProbsAndUtilities();
 			}
