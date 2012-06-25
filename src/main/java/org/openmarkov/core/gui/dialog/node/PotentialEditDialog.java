@@ -216,7 +216,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         getComponentsPanel().add(getPotentialTypePanel(), BorderLayout.NORTH );
         getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
         
-        if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
+        if (((probNode.getPotentials().get(0).getVariables().size() > 1 
+        		&& probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
         		(probNode.getPotentials().get(0).getVariables().size() -1 > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY))
         		&& getPotentialPanel() instanceof ProbabilityTablePanel) {
         	getReorderVariablesButton().setVisible(true);
@@ -417,7 +418,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
             {
                 e1.printStackTrace ();
             }
-            updatePotentialPanel ();        
+            updatePotentialPanel ();     
+            previouslySelectedPotentialType = potentialType;
             optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex ();
         }
 
