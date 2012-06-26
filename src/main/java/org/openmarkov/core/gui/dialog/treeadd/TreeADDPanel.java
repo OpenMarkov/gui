@@ -51,7 +51,7 @@ public class TreeADDPanel extends PotentialPanel
        
     }
     
-    public void close() throws NotEnoughMemoryException
+    public void saveChanges() throws NotEnoughMemoryException
     {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit (
                                                                   probNode,
@@ -95,4 +95,10 @@ public class TreeADDPanel extends PotentialPanel
                 StringResourceLoader.getUniqueInstance().getBundleMessages();        
       
     }
+
+	@Override
+	public void close() throws NotEnoughMemoryException {
+		// TODO Auto-generated method stub
+		
+	}
 }

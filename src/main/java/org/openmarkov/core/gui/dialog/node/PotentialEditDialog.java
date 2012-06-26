@@ -434,13 +434,14 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
      */
     @Override
     protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-        getPotentialPanel ().close ();
+        getPotentialPanel ().saveChanges ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
     
     @Override
-    protected void doCancelClickBeforeHide() {
+    protected void doCancelClickBeforeHide() throws NotEnoughMemoryException {
+    	getPotentialPanel ().close ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
     }
     
