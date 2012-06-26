@@ -60,6 +60,7 @@ import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
+import org.openmarkov.core.gui.dialog.node.ImposePolicyDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
@@ -94,11 +95,9 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.prm.Instance;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
@@ -305,7 +304,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private CostEffectivenessDialog costEffectivenessDialog;
 
 	private boolean approximateInferenceWarningGiven = false;
-
+	/**
+	 * Imposed policies
+	 */
+	private ArrayList<TablePotential> imposedPolicies = new ArrayList<TablePotential>();
 	/**
 	 * Constructor that creates the instance.
 	 * 
@@ -1831,8 +1833,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
-				// TODO...Here must be the code for imposing the policy to the
-				// node...
+				//if there is any parent without imposed policies 
+				
+				ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(Utilities.getOwner(this), node.getProbNode());
+				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
+					this.imposedPolicies.add((TablePotential)imposePolicyDialog.getDummyProbNode().getPotentials().get(0));
+					//change it colour
+					
+				}
 				((VisualDecisionNode) node).setHasPolicy(true);
 			}
 		}
