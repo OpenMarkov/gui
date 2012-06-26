@@ -1366,7 +1366,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void saveChanges() throws NotEnoughMemoryException {
+	public void close() throws NotEnoughMemoryException {
 		getValuesTable().close();
 	}
 	

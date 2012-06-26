@@ -376,7 +376,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void saveChanges() {
+	public void close() {
 
 	}
 

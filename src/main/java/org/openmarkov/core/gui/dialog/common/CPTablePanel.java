@@ -67,7 +67,7 @@ public class CPTablePanel extends TablePotentialPanel{
 	}
 	
 	@Override
-	public void saveChanges() throws NotEnoughMemoryException {
+	public void close() throws NotEnoughMemoryException {
 		getValuesTable().close();
 	}	
 	

@@ -481,9 +481,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 }
 
 	@Override
-	public void saveChanges() throws NotEnoughMemoryException {
-		
-		
+	public void close() throws NotEnoughMemoryException {
+		getICIValuesTable().close();
 	}
 	
 	private void setVariables(ArrayList<Variable> variables) {

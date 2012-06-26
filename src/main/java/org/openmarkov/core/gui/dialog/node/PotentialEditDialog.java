@@ -434,7 +434,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
      */
     @Override
     protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-        getPotentialPanel ().saveChanges ();
+        getPotentialPanel ().close ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
@@ -449,6 +449,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
      */
     public void updatePotentialPanel() {
         getComponentsPanel ().remove (getPotentialPanel ());
+        try {
+			potentialPanel.close();
+		} catch (NotEnoughMemoryException e) {
+			e.printStackTrace();
+		}
         potentialPanel = null;
        
         if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||

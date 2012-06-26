@@ -31,7 +31,7 @@ public class EmptyPotentialPanel extends PotentialPanel
     }
 
     @Override
-    public void saveChanges ()
+    public void close ()
         throws NotEnoughMemoryException
     {
         // TODO Auto-generated method stub

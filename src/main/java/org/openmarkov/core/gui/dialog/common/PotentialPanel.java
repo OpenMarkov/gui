@@ -39,7 +39,7 @@ public abstract class PotentialPanel extends JPanel
      * Modify the node according to the changes entered by the user in the panel
      * @throws NotEnoughMemoryException
      */
-    public abstract void saveChanges() throws NotEnoughMemoryException;
+    public abstract void close() throws NotEnoughMemoryException;
 
 	/**
 	 * @return the readOnly

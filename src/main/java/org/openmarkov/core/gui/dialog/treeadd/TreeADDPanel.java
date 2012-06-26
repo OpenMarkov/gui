@@ -51,7 +51,7 @@ public class TreeADDPanel extends PotentialPanel
        
     }
     
-    public void saveChanges() throws NotEnoughMemoryException
+    public void close() throws NotEnoughMemoryException
     {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit (
                                                                   probNode,

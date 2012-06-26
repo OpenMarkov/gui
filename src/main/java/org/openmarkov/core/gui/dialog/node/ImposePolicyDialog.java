@@ -183,7 +183,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
     @Override
     protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-        getPotentialPanel ().saveChanges ();
+        getPotentialPanel ().close ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
