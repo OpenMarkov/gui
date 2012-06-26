@@ -1062,6 +1062,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				if (name.contains("(") ||  name.contains(")")) {
 					name = getRegExpParenthesis(name);
 				}
+				if (name.contains("+")) {
+					name = name.replace("+", "\\+");
+				}
+				
 				tableRowSorter.setRowFilter(
 				RowFilter.notFilter( 
 						RowFilter.regexFilter( "^" + name + "$" , 0 ) ));
