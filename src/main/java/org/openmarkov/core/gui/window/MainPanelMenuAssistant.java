@@ -764,9 +764,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 						 break;
 					 }
 					 setText(ActionCommands.EDIT_POTENTIAL, label);
-					 if (!(visualNode.isAnyFinding())) {
-						 canAddFinding = true;
-					 }
+					 canAddFinding = true;
+					 setText(ActionCommands.NODE_ADD_FINDING, stringResource.getString((visualNode.isAnyFinding())? "Inference.ChangeFinding.Label" : "Inference.AddFinding.Label"));
 				}
 			}
 		} else {

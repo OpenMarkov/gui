@@ -60,7 +60,6 @@ import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
-import org.openmarkov.core.gui.dialog.node.ImposePolicyDialog;
 import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
@@ -155,9 +154,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private NetworkPanel networkPanel = null;
 
 	/**
+	 * Pre resolution evidence
+	 */
+	private EvidenceCase preResolutionEvidence;
+	
+	/**
 	 * Array of Evidence cases treated for this editor panel
 	 */
-	private ArrayList<EvidenceCase> evidenceCases;
+	private ArrayList<EvidenceCase> postResolutionEvidence;
 
 	/**
 	 * Each position of this array indicates if the corresponding evidence case
@@ -324,10 +328,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 		visualNetwork = new VisualNetwork(probNet, this);
 		automaticPropagation = true;
 		propagationActive = true;
-		evidenceCases = new ArrayList<EvidenceCase>(1);
+		preResolutionEvidence = new EvidenceCase();
+		postResolutionEvidence = new ArrayList<EvidenceCase>(1);
 		currentCase = 0;
 		EvidenceCase evidenceCase = new EvidenceCase();
-		evidenceCases.add(currentCase, evidenceCase);
+		postResolutionEvidence.add(currentCase, evidenceCase);
 		evidenceCasesCompilationState = new ArrayList<Boolean>(1);
 		evidenceCasesCompilationState.add(currentCase, false);
 		minUtilityRange = new HashMap<Variable, Double>();
@@ -1545,7 +1550,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			repaint();
 			if (selectedNode.getInnerBox() instanceof FSVariableBox) {
 				((FSVariableBox) selectedNode.getInnerBox())
-						.recreateVisualStates(evidenceCases.size());
+						.recreateVisualStates(postResolutionEvidence.size());
 			}
 			networkChanged = true;
 			removeNodeEvidenceInAllCases(selectedNode.getProbNode());
@@ -2036,42 +2041,40 @@ public class EditorPanel extends JPanel implements MouseListener,
 		for (int i = 0; i < selectedNodes.size(); i++) {
 			node = selectedNodes.get(i);
 			Variable variable = node.getProbNode().getVariable();
-			if (evidenceCases.get(currentCase).getFinding(variable) != null) {
-				try {
-					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-						if(node.isPreResolutionFinding()) {
-							evidenceCases.get(currentCase).removeFinding(variable);
-							node.setPreResolutionFinding(false);
-						}
-					} else {
-						if (node.isPreResolutionFinding()) {
-								JOptionPane.showMessageDialog(Utilities.getOwner(this),
-									"This node has a Pre-Resolution Finding that cannot be modified in Inference Mode.",
-									stringResource.getString("ErrorWindow.Title.Label"),
-									JOptionPane.ERROR_MESSAGE);
-								//TODO //...asaez...Internacionalizar la sentencia							
-						} else if (node.isPostResolutionFinding()) {
-							evidenceCases.get(currentCase).removeFinding(variable);
-							node.setPostResolutionFinding(false);
-						}
+			try {
+				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+					if(node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable)!=null) {
+						preResolutionEvidence.removeFinding(variable);
+						node.setPreResolutionFinding(false);
 					}
-				} catch (NoFindingException exc) {
-					JOptionPane
-							.showMessageDialog(
-									Utilities.getOwner(this),
-									"ERROR\n"
-											+ stringResource
-													.getString("ExceptionNoFinding.Text.Label")
-											+ "\n\n" + exc.getMessage(),
-									stringResource
-											.getString("ExceptionNoFinding.Title.Label"),
-									JOptionPane.ERROR_MESSAGE);
+				} else {
+					if (node.isPreResolutionFinding()) {
+							JOptionPane.showMessageDialog(Utilities.getOwner(this),
+								"This node has a Pre-Resolution Finding that cannot be modified in Inference Mode.",
+								stringResource.getString("ErrorWindow.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
+							//TODO //...asaez...Internacionalizar la sentencia							
+					} else if (node.isPostResolutionFinding() && postResolutionEvidence.get(currentCase).getFinding(variable) != null) {
+						postResolutionEvidence.get(currentCase).removeFinding(variable);
+						node.setPostResolutionFinding(false);
+					}
 				}
+			} catch (NoFindingException exc) {
+				JOptionPane
+						.showMessageDialog(
+								Utilities.getOwner(this),
+								"ERROR\n"
+										+ stringResource
+												.getString("ExceptionNoFinding.Text.Label")
+										+ "\n\n" + exc.getMessage(),
+								stringResource
+										.getString("ExceptionNoFinding.Title.Label"),
+								JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		if ((propagationActive)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		}
 		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
@@ -2087,7 +2090,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return the current Evidence Case.
 	 */
 	public EvidenceCase getCurrentEvidenceCase() {
-		return evidenceCases.get(currentCase);
+		return postResolutionEvidence.get(currentCase);
 	}
 
 	/**
@@ -2099,7 +2102,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return the selected Evidence Case.
 	 */
 	public EvidenceCase getEvidenceCase(int caseNumber) {
-		return evidenceCases.get(caseNumber);
+		return postResolutionEvidence.get(caseNumber);
 	}
 
 	/**
@@ -2108,7 +2111,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return the list of Evidence Cases.
 	 */
 	public ArrayList<EvidenceCase> getEvidence() {
-		return evidenceCases;
+		ArrayList<EvidenceCase> evidence = new ArrayList<EvidenceCase>(postResolutionEvidence);
+		evidence.add(0, preResolutionEvidence);
+		return evidence;
 	}
 
 	/**
@@ -2120,6 +2125,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public int getCurrentCase() {
 		return currentCase;
 	}
+	
+	public EvidenceCase getPreResolutionEvidence() {
+		return preResolutionEvidence;
+	}	
 
 	/**
 	 * This method sets which is the current evidence case.
@@ -2138,7 +2147,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return the number of Evidence Cases in the ArrayList.
 	 */
 	public int getNumberOfCases() {
-		return evidenceCases.size();
+		return postResolutionEvidence.size();
 	}
 
 	/**
@@ -2170,34 +2179,47 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method sets the list of evidence cases
 	 * 
 	 */
-	public void setEvidence(ArrayList<EvidenceCase> evidence) {
-		this.evidenceCases = (evidence == null) ? new ArrayList<EvidenceCase>()
-				: evidence;
+	public void setEvidence(EvidenceCase preResolutionEvidence, ArrayList<EvidenceCase> postResolutionInference) {
+		this.postResolutionEvidence = (postResolutionInference == null) ? new ArrayList<EvidenceCase>()
+				: postResolutionInference;
 
-		if (evidenceCases.isEmpty()) {
-			this.evidenceCases.add(new EvidenceCase());
+		if (postResolutionEvidence.isEmpty()) {
+			this.postResolutionEvidence.add(new EvidenceCase());
 		}
 
-		currentCase = this.evidenceCases.size() - 1;
+		currentCase = this.postResolutionEvidence.size() - 1;
 
 		// Update visual info on evidence
 		for (VisualNode node : visualNetwork.getAllNodes()) {
-			node.setPreResolutionFinding(false);
+			node.setPostResolutionFinding(false);
 		}
-		for (EvidenceCase evidenceCase : evidenceCases) {
+		for (EvidenceCase evidenceCase : postResolutionEvidence) {
 			for (Finding finding : evidenceCase.getFindings()) {
 				for (VisualNode node : visualNetwork.getAllNodes()) {
 					if (node.getProbNode().getVariable()
 							.equals(finding.getVariable())) {
-						node.setPreResolutionFinding(true);
+						node.setPostResolutionFinding(true);
 					}
 				}
 			}
 		}
+		
+		for (VisualNode node : visualNetwork.getAllNodes()) {
+			node.setPreResolutionFinding(false);
+		}
+		for (Finding finding : preResolutionEvidence.getFindings()) {
+			for (VisualNode node : visualNetwork.getAllNodes()) {
+				if (node.getProbNode().getVariable()
+						.equals(finding.getVariable())) {
+					node.setPreResolutionFinding(true);
+				}
+			}
+		}
+		
 
 		// Update evidenceCasesCompilationState
 		evidenceCasesCompilationState.clear();
-		for (int i = 0; i < evidenceCases.size(); ++i) {
+		for (int i = 0; i < postResolutionEvidence.size(); ++i) {
 			evidenceCasesCompilationState.add(false);
 		}
 
@@ -2326,16 +2348,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 			} else if (innerBox instanceof ExpectedValueBox) {
 				visualState = ((ExpectedValueBox) innerBox).getVisualState();
 			}
-			if (visualState.getNumberOfValues() != evidenceCases.size()) {
+			if (visualState.getNumberOfValues() != postResolutionEvidence.size()) {
 				if (innerBox instanceof FSVariableBox) {
 					((FSVariableBox) innerBox)
-							.recreateVisualStates(evidenceCases.size());
+							.recreateVisualStates(postResolutionEvidence.size());
 				} else if (innerBox instanceof ExpectedValueBox) {
 					((ExpectedValueBox) innerBox)
-							.recreateVisualState(evidenceCases.size());
+							.recreateVisualState(postResolutionEvidence.size());
 				}
 				networkChanged = true;
-				for (int i = 0; i < evidenceCases.size(); i++) {
+				for (int i = 0; i < postResolutionEvidence.size(); i++) {
 					evidenceCasesCompilationState.set(i, false);
 				}
 			}
@@ -2346,20 +2368,20 @@ public class EditorPanel extends JPanel implements MouseListener,
 			// each evidence case in memory. Otherwise, only propagation in
 			// current case is needed.
 			if (networkChanged) {
-				for (int i = 0; i < evidenceCases.size(); i++) {
+				for (int i = 0; i < postResolutionEvidence.size(); i++) {
 					doPropagation(getEvidenceCase(i), i);
 				}
-				updateNodesFindingState(evidenceCases.get(currentCase));
+				updateNodesFindingState(postResolutionEvidence.get(currentCase));
 				networkChanged = false;
 			} else {
 				if (evidenceCasesCompilationState.get(currentCase) == false) {
-					doPropagation(evidenceCases.get(currentCase), currentCase);
+					doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 				}
 			}
 		} else if (evidenceCasesCompilationState.get(currentCase) == false) {
 			// Even if propagation mode is manual, a propagation should be
 			// done the first time that inference mode is selected
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		}
 		repaint();
 	}
@@ -2374,13 +2396,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 		for (int i = 0; i < visualNodes.size(); i++) {
 			visualNodes.get(i).setPostResolutionFinding(false);//...asaez....PENDIENTE........
 		}
-		ArrayList<Finding> findings = evidenceCases.get(currentCase)
+		ArrayList<Finding> findings = postResolutionEvidence.get(currentCase)
 				.getFindings();
 		for (int i = 0; i < findings.size(); i++) {
 			try {
-				evidenceCases.get(currentCase).removeFinding(
+				postResolutionEvidence.get(currentCase).removeFinding(
 						findings.get(i).getVariable());
-				doPropagation(evidenceCases.get(currentCase), currentCase); //...asaez...Pendiente...no debe propagarse con cada hallazgo eliminado sino al haber eliminado todos
+				doPropagation(postResolutionEvidence.get(currentCase), currentCase); //...asaez...Pendiente...no debe propagarse con cada hallazgo eliminado sino al haber eliminado todos
 			} catch (NoFindingException exc) {
 				JOptionPane
 						.showMessageDialog(
@@ -2410,16 +2432,16 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            the node in which to remove the findings.
 	 */
 	public void removeNodeEvidenceInAllCases(ProbNode node) {
-		for (int i = 0; i < evidenceCases.size(); i++) {
-			ArrayList<Finding> findings = evidenceCases.get(i).getFindings();
+		for (int i = 0; i < postResolutionEvidence.size(); i++) {
+			ArrayList<Finding> findings = postResolutionEvidence.get(i).getFindings();
 			for (int j = 0; j < findings.size(); j++) {
 				try {
 					if (node.getVariable() == (findings.get(j).getVariable())) {
-						evidenceCases.get(i).removeFinding(
+						postResolutionEvidence.get(i).removeFinding(
 								findings.get(j).getVariable());
 						if (isAutomaticPropagation()
 								&& (inferenceAlgorithm != null)) {
-							doPropagation(evidenceCases.get(i), i);
+							doPropagation(postResolutionEvidence.get(i), i);
 						}
 						if (i == currentCase) {
 							ArrayList<VisualNode> visualNodes = visualNetwork
@@ -2460,7 +2482,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public boolean areThereFindingsInCase() {
 		boolean areFindings = false;
-		ArrayList<Finding> findings = evidenceCases.get(currentCase)
+		ArrayList<Finding> findings = postResolutionEvidence.get(currentCase)
 				.getFindings();
 		if (findings != null) {
 			if (findings.size() > 0) {
@@ -2477,21 +2499,26 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            the visual state in which the finding is going to be set.
 	 */
 	public void setNewFinding(VisualState visualState) {
+		boolean isInferenceMode = networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE;
+		EvidenceCase evidenceCase =(isInferenceMode)? postResolutionEvidence.get(currentCase) : preResolutionEvidence;
+
 		propagationActive = isAutomaticPropagation();
 		Variable variable = visualState.getVisualNode().getProbNode()
 				.getVariable();
-		boolean nodeAlreadyHasFinding = evidenceCases.get(currentCase)
+		boolean nodeAlreadyHasFinding = evidenceCase
 				.getFinding(variable) != null;
 		int oldState = -1;
 		if (nodeAlreadyHasFinding) {
 			// There is already a finding in the node
-			oldState = evidenceCases.get(currentCase).getState(variable);
+			oldState = evidenceCase.getState(variable);
 			if (oldState == visualState.getStateNumber()) {
 				// The finding is in the same state, therefore, remove evidence
 				try {
-					evidenceCases.get(currentCase).removeFinding(variable);
-					visualState.getVisualNode().setPostResolutionFinding(false); //...asaez....PENDIENTE........
-					evidenceCasesCompilationState.set(currentCase, false);
+					evidenceCase.removeFinding(variable);
+					if(isInferenceMode)
+					{
+						visualState.getVisualNode().setPostResolutionFinding(false);
+					}
 				} catch (NoFindingException exc) {
 					JOptionPane
 							.showMessageDialog(
@@ -2507,12 +2534,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 			} else {
 				// There is a finding in another state. Remove old, add new
 				try {
-					evidenceCases.get(currentCase).removeFinding(variable);
+					evidenceCase.removeFinding(variable);
 					Finding finding = new Finding(variable,
 							visualState.getStateNumber());
-					evidenceCases.get(currentCase).addFinding(finding);
-					visualState.getVisualNode().setPostResolutionFinding(true);//...asaez....PENDIENTE........
-					evidenceCasesCompilationState.set(currentCase, false);
+					evidenceCase.addFinding(finding);
+					if(isInferenceMode)
+					{
+						visualState.getVisualNode().setPostResolutionFinding(true);
+					}else
+					{
+						visualState.getVisualNode().setPreResolutionFinding(true);
+					}
 				} catch (NoFindingException exc) {
 					JOptionPane
 							.showMessageDialog(
@@ -2557,15 +2589,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 			Finding finding = new Finding(variable,
 					visualState.getStateNumber());
 			try {
-				evidenceCases.get(currentCase).addFinding(finding);
-				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-					visualState.getVisualNode().setPreResolutionFinding(true);
-					visualState.getVisualNode().setPostResolutionFinding(false);
-				} else {
+				evidenceCase.addFinding(finding);
+				if (isInferenceMode) {
 					visualState.getVisualNode().setPostResolutionFinding(true);
-					visualState.getVisualNode().setPreResolutionFinding(false);
+				} else {
+					visualState.getVisualNode().setPreResolutionFinding(true);
 				}
-				evidenceCasesCompilationState.set(currentCase, false);
 			} catch (InvalidStateException exc) {
 				JOptionPane
 						.showMessageDialog(
@@ -2595,32 +2624,48 @@ public class EditorPanel extends JPanel implements MouseListener,
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		if(isInferenceMode)
+		{
+			evidenceCasesCompilationState.set(currentCase, false);
+		}else
+		{
+			for(int i = 0; i < evidenceCasesCompilationState.size(); ++i)
+			{
+				evidenceCasesCompilationState.set(i, false);
+			}
+		}
 		setSelectedAllNodes(false);
 		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		if ((propagationActive)
 				&& (evidenceCasesCompilationState.get(currentCase) == false)
-				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			if (!doPropagation(evidenceCases.get(currentCase), currentCase))
+				&& (isInferenceMode)) {
+			if (!doPropagation(evidenceCase, currentCase))
 			// if propagation does not succeed, restore previous state
 			{
 				if (nodeAlreadyHasFinding) {
 					try {
-						evidenceCases.get(currentCase).removeFinding(variable);
+						evidenceCase.removeFinding(variable);
 					} catch (NoFindingException e) {/* Not possible */
 					}
 					Finding finding = new Finding(variable, oldState);
 					try {
-						evidenceCases.get(currentCase).addFinding(finding);
+						evidenceCase.addFinding(finding);
 					} catch (InvalidStateException e) {/* Not possible */
 					} catch (IncompatibleEvidenceException e) {/* Not possible */
 					}
 				} else {
 					try {
-						evidenceCases.get(currentCase).removeFinding(variable);
+						evidenceCase.removeFinding(variable);
 					} catch (NoFindingException e) { /* Not possible */
 					}
-					visualState.getVisualNode().setPostResolutionFinding(false); //...asaez....PENDIENTE........
+					if(isInferenceMode)
+					{
+						visualState.getVisualNode().setPostResolutionFinding(false);
+					}else
+					{
+						visualState.getVisualNode().setPreResolutionFinding(false);
+					}
 				}
 			}
 		}
@@ -2681,6 +2726,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					throw new UnsupportedOperationException();
 				}
 
+				inferenceAlgorithm.setPreResolutionEvidence(preResolutionEvidence);
 				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				calculateMinAndMaxUtilityRanges();
 				individualProbabilities = inferenceAlgorithm
@@ -3229,14 +3275,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 			for (int i = 0; i < currentFindings.size(); i++) {
 				newEvidenceCase.addFinding(currentFindings.get(i));
 			}
-			evidenceCases.add(newEvidenceCase);
-			currentCase = (evidenceCases.size() - 1);
+			postResolutionEvidence.add(newEvidenceCase);
+			currentCase = (postResolutionEvidence.size() - 1);
 			evidenceCasesCompilationState.add(currentCase, false);
 			updateAllVisualStates("new", currentCase);
 			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
 			setSelectedAllNodes(false);
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		} catch (InvalidStateException exc) {
 			JOptionPane
 					.showMessageDialog(
@@ -3279,9 +3325,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if ((propagationActive)
 				&& (evidenceCasesCompilationState.get(currentCase) == false)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		} else {
-			updateNodesFindingState(evidenceCases.get(currentCase));
+			updateNodesFindingState(postResolutionEvidence.get(currentCase));
 		}
 	}
 
@@ -3298,9 +3344,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if ((propagationActive)
 					&& (evidenceCasesCompilationState.get(currentCase) == false)
 					&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-				doPropagation(evidenceCases.get(currentCase), currentCase);
+				doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 			} else {
-				updateNodesFindingState(evidenceCases.get(currentCase));
+				updateNodesFindingState(postResolutionEvidence.get(currentCase));
 			}
 		} else {
 			JOptionPane
@@ -3319,7 +3365,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method makes the next evidence case to be the current
 	 */
 	public void goToNextEvidenceCase() {
-		if (currentCase < (evidenceCases.size() - 1)) {
+		if (currentCase < (postResolutionEvidence.size() - 1)) {
 			currentCase++;
 			updateAllVisualStates("", currentCase);
 			networkPanel.getMainPanel().getInferenceToolBar()
@@ -3328,9 +3374,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if ((propagationActive)
 					&& (evidenceCasesCompilationState.get(currentCase) == false)
 					&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-				doPropagation(evidenceCases.get(currentCase), currentCase);
+				doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 			} else {
-				updateNodesFindingState(evidenceCases.get(currentCase));
+				updateNodesFindingState(postResolutionEvidence.get(currentCase));
 			}
 		} else {
 			JOptionPane
@@ -3349,7 +3395,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method makes the last evidence case to be the current
 	 */
 	public void goToLastEvidenceCase() {
-		currentCase = (evidenceCases.size() - 1);
+		currentCase = (postResolutionEvidence.size() - 1);
 		updateAllVisualStates("", currentCase);
 		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
@@ -3357,9 +3403,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if ((propagationActive)
 				&& (evidenceCasesCompilationState.get(currentCase) == false)
 				&& (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
-			doPropagation(evidenceCases.get(currentCase), currentCase);
+			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		} else {
-			updateNodesFindingState(evidenceCases.get(currentCase));
+			updateNodesFindingState(postResolutionEvidence.get(currentCase));
 		}
 	}
 
@@ -3370,17 +3416,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void clearOutAllEvidenceCases() {
 		propagationActive = isAutomaticPropagation();
-		evidenceCases.clear();
+		postResolutionEvidence.clear();
 		evidenceCasesCompilationState.clear();
 		EvidenceCase newEvidenceCase = new EvidenceCase();
-		evidenceCases.add(newEvidenceCase);
+		postResolutionEvidence.add(newEvidenceCase);
 		currentCase = 0;
 		evidenceCasesCompilationState.add(currentCase, false);
 		updateAllVisualStates("clear", currentCase);
 		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
-		doPropagation(evidenceCases.get(currentCase), currentCase);
+		doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 	}
 
 	/**
@@ -3435,7 +3481,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			updateAllVisualStates("", currentCase);
 			networkPanel.getMainPanel().getInferenceToolBar()
 					.setCurrentEvidenceCaseName(currentCase);
-			updateNodesFindingState(evidenceCases.get(currentCase));
+			updateNodesFindingState(postResolutionEvidence.get(currentCase));
 		}
 		mainPanelMenuAssistant
 				.updateOptionsEvidenceCasesNavigation(networkPanel);
@@ -3560,5 +3606,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		this.probNet = probNet;
 		visualNetwork.setProbNet(probNet);
 	}
+
 
 }

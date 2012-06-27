@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.model.network.EvidenceCase;
 
 
 /**
@@ -417,7 +418,8 @@ public class VisualState extends VisualElement {
 				2, STATES_FONT, g);
 		g.drawString(stateName, xName.intValue(), yText.intValue());
 		
-		if (getVisualNode().getEditorPanel().isPropagationActive()) {				
+		if (getVisualNode().getEditorPanel().isPropagationActive()) {
+			
 			for (int i=0; i<stateValues.size(); i++) {
 				g.setPaint(Color.BLACK);
 				g.drawLine(new Double(xBar - 1).intValue(), 
@@ -476,9 +478,9 @@ public class VisualState extends VisualElement {
 					);
 			if (getVisualNode().isAnyFinding()) {
 				int currentCase = getVisualNode().getEditorPanel().getCurrentCase();
-				String stateWithFinding = getVisualNode().getEditorPanel().
-						getEvidenceCase(currentCase).
-						getFinding(visualNode.getProbNode().getVariable()).getState();
+				EvidenceCase evidenceCase = (getVisualNode().isPostResolutionFinding())? getVisualNode().getEditorPanel().
+						getCurrentEvidenceCase() : getVisualNode().getEditorPanel().getPreResolutionEvidence();
+				String stateWithFinding = evidenceCase.getFinding(visualNode.getProbNode().getVariable()).getState();
 				if (stateName.equals(stateWithFinding)) {
 					setColorCaseDependent(currentCase, g); 
 					g.fill(new Rectangle2D.Double(xBar, 

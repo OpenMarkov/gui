@@ -341,11 +341,7 @@ public abstract class VisualNode extends VisualElement {
 	 * @return true if the node has a finding established (pre or post-Resolution).
 	 */	
 	public boolean isAnyFinding() {
-		boolean hasFinding = false;
-		if (this.preResolutionFinding || this.postResolutionFinding) {
-			hasFinding = true;
-		}
-		return hasFinding;
+		return this.preResolutionFinding || this.postResolutionFinding;
 	}
 	
 	// ESCA-JAVA0173: allows unused arguments

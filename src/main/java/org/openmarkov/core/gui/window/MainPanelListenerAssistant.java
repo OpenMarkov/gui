@@ -48,6 +48,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.io.ProbNetInfo;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
@@ -849,7 +850,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				netReadFromFile.setName(new File(fileName).getName());
 				networkPanel = createNewFrame2(netReadFromFile);
 				networkPanel.setNetworkFile(fileName);
-				networkPanel.getEditorPanel ().setEvidence (probNetInfo.getEvidence ());
+				ArrayList<EvidenceCase> evidence = probNetInfo.getEvidence ();
+				if(evidence!=null && !evidence.isEmpty())
+				{
+					EvidenceCase preResolutionEvidence = evidence.get(0);
+					evidence.remove(0);
+					networkPanel.getEditorPanel ().setEvidence (preResolutionEvidence, evidence);
+				}
 				networkPanels.add (networkPanel);
 				lastOpenFiles.setLastFileName(fileName);
                 if (getDirectoryFileName (fileName) != null)
