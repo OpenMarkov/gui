@@ -69,8 +69,8 @@ public class VisualUtilityNode extends VisualNode {
 		probNode = node;
 		editorPanel = panel;
 		expanded = false;
-		preResolutionFindingInNode = false;
-		postResolutionFindingInNode = false;
+		preResolutionFinding = false;
+		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(probNode.getNode().
 				getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new ExpectedValueBox(this);

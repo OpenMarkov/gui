@@ -102,13 +102,15 @@ public abstract class VisualNode extends VisualElement {
 	 * This variable indicates if the node has a pre-Resolution finding 
 	 * established (true) or not (false). 
 	 */	
-	protected boolean preResolutionFindingInNode;
+	protected boolean preResolutionFinding;
 	
 	/**
 	 * This variable indicates if the node has a post-Resolution finding 
 	 * established (true) or not (false). 
 	 */	
-	protected boolean postResolutionFindingInNode;
+	protected boolean postResolutionFinding;
+	//TODO Debería ser un array de booleanos, con un valor por cada caso de evidencia
+	//     (esto no pasa en el caso del preResol.)
 	
 	/**
 	 * This variable influences the width of the node.
@@ -300,8 +302,8 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return true if the node has a pre-Resolution finding established.
 	 */	
-	public boolean isPreResolutionFindingInNode() {
-		return this.preResolutionFindingInNode;
+	public boolean isPreResolutionFinding() {
+		return this.preResolutionFinding;
 	}
 
 	/**
@@ -310,8 +312,8 @@ public abstract class VisualNode extends VisualElement {
 	 * @param findingInNode
 	 *            true if the node has a pre-Resolution finding established.
 	 */
-	public void setPreResolutionFindingInNode(boolean findingInNode) {
-		this.preResolutionFindingInNode = findingInNode;
+	public void setPreResolutionFinding(boolean findingInNode) {
+		this.preResolutionFinding = findingInNode;
 	}
 	
 	/**
@@ -319,8 +321,8 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return true if the node has a post-Resolution finding established.
 	 */	
-	public boolean isPostResolutionFindingInNode() {
-		return this.postResolutionFindingInNode;
+	public boolean isPostResolutionFinding() {
+		return this.postResolutionFinding;
 	}
 
 	/**
@@ -329,8 +331,8 @@ public abstract class VisualNode extends VisualElement {
 	 * @param findingInNode
 	 *            true if the node has a post-Resolution finding established.
 	 */
-	public void setPostResolutionFindingInNode(boolean findingInNode) {
-		this.postResolutionFindingInNode = findingInNode;
+	public void setPostResolutionFinding(boolean findingInNode) {
+		this.postResolutionFinding = findingInNode;
 	} 
 	
 	/**
@@ -338,9 +340,9 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return true if the node has a finding established (pre or post-Resolution).
 	 */	
-	public boolean isAnyFindingInNode() {
+	public boolean isAnyFinding() {
 		boolean hasFinding = false;
-		if (this.preResolutionFindingInNode || this.postResolutionFindingInNode) {
+		if (this.preResolutionFinding || this.postResolutionFinding) {
 			hasFinding = true;
 		}
 		return hasFinding;

@@ -706,8 +706,18 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				VisualNode vNode = null;
 				for (int i=0; i < selectedNodes.size(); i++) {
 					vNode = selectedNodes.get(i);
-					if (vNode.isPostResolutionFindingInNode()) { 
-						canRemoveFinding = true;
+					if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+						if (vNode.isPreResolutionFinding()) { 
+							canRemoveFinding = true;
+						} else {
+							canRemoveFinding = false;
+						}
+					} else {
+						if (vNode.isPostResolutionFinding()) { 
+							canRemoveFinding = true;
+						} else {
+							canRemoveFinding = false;
+						}						
 					}
 				}
 				if (selectedNodes.size() == 1) {
@@ -754,7 +764,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 						 break;
 					 }
 					 setText(ActionCommands.EDIT_POTENTIAL, label);
-					 if (!(visualNode.isAnyFindingInNode())) {
+					 if (!(visualNode.isAnyFinding())) {
 						 canAddFinding = true;
 					 }
 				}

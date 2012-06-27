@@ -49,7 +49,7 @@ public class VisualChanceNode extends VisualNode {
 	 * finding established.
 	 */
 	private static final Color BACKGROUND_PRE_RESOLUTION_FINDING_COLOR = 
-			Color.DARK_GRAY;
+			Color.GRAY; //...asaez...........
 
 	/**
 	 * Internal color of the visual node when there is a postResolution 
@@ -101,8 +101,8 @@ public class VisualChanceNode extends VisualNode {
 		probNode = node;
 		editorPanel = panel;
 		expanded = false;
-		preResolutionFindingInNode = false;
-		postResolutionFindingInNode = false;
+		preResolutionFinding = false;
+		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(probNode.getNode()
 				.getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
@@ -324,9 +324,9 @@ public class VisualChanceNode extends VisualNode {
 		Shape shape = getShape(g);
 		double[] dimensions = getNodeDimensions(g);
 
-		if (preResolutionFindingInNode) {
+		if (preResolutionFinding) {
 			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
-		} else if (postResolutionFindingInNode && 
+		} else if (postResolutionFinding && 
 				(editorPanel.getNetworkPanel().getWorkingMode() == 
 					NetworkPanel.INFERENCE_WORKING_MODE)) {
 			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
