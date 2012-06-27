@@ -178,12 +178,12 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * default constructor
 	 */
-	public ValuesTable() {
+/*	public ValuesTable() {
 		//TODO verify the use of this class in NodeUtilityTable
 		//call to constructor is null for probNode parameter
 		this( null, new ValuesTableModel(), false );
 		
-	}
+	}*/
 
 	
 	/**

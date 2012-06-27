@@ -194,13 +194,23 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
             StringResourceLoader.getUniqueInstance().getBundleDialogs();
         messageStringResource =
             StringResourceLoader.getUniqueInstance().getBundleMessages();
+        
+        if (probNode.getNodeType() == NodeType.DECISION) {
+        	String title = dialogStringResource
+                    .getString("ImposePolicydialog.Title.Label ");
+            
+            setTitle(dialogStringResource
+                .getString("ImposePolicydialog.Title.Label")
+                + ": " + (probNode == null? "":probNode.getName()));
+        } else {
+        	
         String title = dialogStringResource
                 .getString("NodePotentialDialog.Title.Label");
         
         setTitle(dialogStringResource
             .getString("NodePotentialDialog.Title.Label")
             + ": " + (probNode == null? "":probNode.getName()));
-       
+        }
         configureComponentsPanel();
         pack();
     }
@@ -300,7 +310,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
                 probNode.getPolicyType() == PolicyType.OPTIMAL)){
             showFields(probNode);
         }else{
-            setEnabledDecisionOptions(true);
+            /**setEnabledDecisionOptions(true);**/
         }
         setVisible(true);
         return selectedButton;
