@@ -911,7 +911,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		int rows = states.length;
 		Object[][] data = new Object [rows][numColumns];
 		for (int i=0; i < rows ; i++) {
-			data [i][0] = GUIDefaultStates.getString(states[i].getName());
+			//data [i][0] = GUIDefaultStates.getString(states[i].getName());
+			data [i][0] = states[i].getName();
 		}
 		
 		return data;
@@ -949,7 +950,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		for (i = 0; i < numIntervals; i++) {
 			//for (i = numIntervals-1; i >= 0; i--) {
 			position=0;
-			aString = GUIDefaultStates.getString(states[i].getName());
+			//aString = GUIDefaultStates.getString(states[i].getName());
+			aString = states[i].getName();
 			// find name & lowSymbol
 			index = aString.indexOf("[");
 			if (index < 0)
@@ -1487,7 +1489,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			int i= 0;
 			State [] newStates = new State[DefaultStates.getByIndex(index).length];
 			for (String str : DefaultStates.getByIndex(index)){
-				newStates[i] = new State(str);
+				newStates[i] = new State( GUIDefaultStates.getString(str));
 				i++;
 			}
 			NodeReplaceStatesEdit nodeReplaceStatesEdit = 

@@ -81,6 +81,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.menu.NodePopup;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
@@ -93,6 +94,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -894,10 +896,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 					String nodeName = Utilities.getNextNodeName(nodeType,
 							existingNames);
-
+					State states [] = DefaultStates.getStatesNodeType(nodeType,
+							probNet.getDefaultStates());
+					for (int i = 0; i < states.length; i++) {
+						states[i] =  new State( GUIDefaultStates.getString(states[i].getName()));
+					}
 					Variable variable = new Variable(nodeName,
-							DefaultStates.getStatesNodeType(nodeType,
-									probNet.getDefaultStates()));
+							states);
 					if (probNet.onlyTemporal()) {
 						// default value
 						variable.setBaseName(nodeName);
@@ -3486,6 +3491,5 @@ public class EditorPanel extends JPanel implements MouseListener,
 		this.probNet = probNet;
 		visualNetwork.setProbNet(probNet);
 	}
-
 
 }
