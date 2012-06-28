@@ -1065,6 +1065,9 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				if (name.contains("+")) {
 					name = name.replace("+", "\\+");
 				}
+				if (name.contains("?")) {
+					name = name.replace("?", "\\?");
+				}
 				
 				tableRowSorter.setRowFilter(
 				RowFilter.notFilter( 
