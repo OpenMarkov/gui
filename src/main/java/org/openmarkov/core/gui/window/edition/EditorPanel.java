@@ -101,7 +101,6 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.type.NetworkType;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -2187,6 +2186,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void setEvidence(EvidenceCase preResolutionEvidence, ArrayList<EvidenceCase> postResolutionInference) {
 		this.postResolutionEvidence = (postResolutionInference == null) ? new ArrayList<EvidenceCase>()
 				: postResolutionInference;
+		this.preResolutionEvidence = (preResolutionEvidence == null) ? new EvidenceCase()
+				: preResolutionEvidence;
 
 		if (postResolutionEvidence.isEmpty()) {
 			this.postResolutionEvidence.add(new EvidenceCase());
