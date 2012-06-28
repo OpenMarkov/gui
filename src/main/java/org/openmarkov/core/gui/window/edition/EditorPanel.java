@@ -2705,6 +2705,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method does the propagation of the evidence in the network
 	 * 
 	 * @param evidenceCase
+	 * 
 	 *            the evidence case with which the propagation must be done.
 	 * @param caseNumber
 	 *            number of this evidence case.
@@ -2775,21 +2776,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 							stringResource
 									.getString("NoPropagationCanBeDoneMessage.Title.Label"),
 							JOptionPane.ERROR_MESSAGE);
-
+			setPropagationActive(false);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this),
-					"ERROR during inference", "Error",
+					"Error during inference", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
+			setPropagationActive(false);
 		}
 
 		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
-		// ...END OF PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF
-		// ...INFLUENCE DIAGRAMS IS COMPLETE
-		if (!(propagationSucceded)) {
-			setPropagationActive(false);
-			repaint();
-		}
+		repaint();
 		return propagationSucceded;
 	}
 
@@ -2924,7 +2921,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								(1.0 / innerBox.getNumStates()));
 					}
 				}
-				visualNode.setPostResolutionFinding(false); //...asaez....PENDIENTE........
+				visualNode.setPostResolutionFinding(false);
 				// END OF
 				// PROVISIONAL2.............asaez...Comprobar si es innecesario este Provisional2............
 			} else {
