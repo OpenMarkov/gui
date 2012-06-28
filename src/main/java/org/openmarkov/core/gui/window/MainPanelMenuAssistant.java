@@ -764,8 +764,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 						 break;
 					 }
 					 setText(ActionCommands.EDIT_POTENTIAL, label);
-					 canAddFinding = true;
-					 setText(ActionCommands.NODE_ADD_FINDING, stringResource.getString((visualNode.isAnyFinding())? "Inference.ChangeFinding.Label" : "Inference.AddFinding.Label"));
+					 canAddFinding = !visualNode.isAnyFinding() 
+							 || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
+							 || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding());
+					 boolean addOrChange = (workingMode == NetworkPanel.EDITION_WORKING_MODE && !visualNode.isPreResolutionFinding()) 
+							 || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode.isPostResolutionFinding());
+					 setText(ActionCommands.NODE_ADD_FINDING, stringResource.getString((addOrChange)? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
 				}
 			}
 		} else {

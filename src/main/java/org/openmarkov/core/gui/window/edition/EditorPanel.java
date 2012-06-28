@@ -2394,7 +2394,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		propagationActive = isAutomaticPropagation();
 		ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
 		for (int i = 0; i < visualNodes.size(); i++) {
-			visualNodes.get(i).setPostResolutionFinding(false);//...asaez....PENDIENTE........
+			visualNodes.get(i).setPostResolutionFinding(false);
 		}
 		ArrayList<Finding> findings = postResolutionEvidence.get(currentCase)
 				.getFindings();
@@ -2402,7 +2402,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 			try {
 				postResolutionEvidence.get(currentCase).removeFinding(
 						findings.get(i).getVariable());
-				doPropagation(postResolutionEvidence.get(currentCase), currentCase); //...asaez...Pendiente...no debe propagarse con cada hallazgo eliminado sino al haber eliminado todos
 			} catch (NoFindingException exc) {
 				JOptionPane
 						.showMessageDialog(
@@ -2416,6 +2415,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		doPropagation(postResolutionEvidence.get(currentCase), currentCase); 
 		networkPanel.getMainPanel().getInferenceToolBar()
 				.setCurrentEvidenceCaseName(currentCase);
 		setSelectedAllNodes(false);
@@ -2444,8 +2444,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 							doPropagation(postResolutionEvidence.get(i), i);
 						}
 						if (i == currentCase) {
-							ArrayList<VisualNode> visualNodes = visualNetwork
-									.getAllNodes();
+							ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
 							for (int k = 0; k < visualNodes.size(); k++) {
 								if (visualNodes.get(k).getProbNode() == node) {
 									visualNodes.get(k).setPostResolutionFinding(false);//...asaez....PENDIENTE........
@@ -2705,14 +2704,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            number of this evidence case.
 	 */
 	public boolean doPropagation(EvidenceCase evidenceCase, int caseNumber) {
-		// ...PROVISIONAL...THIS SHOULD BE CHANGED WHEN EVALUATION OF INFLUENCE
-		// ...DIAGRAMS IS COMPLETE
-		// ...We obtain the type of the network. If it is a Bayesian Network, we
-		// ...do the real propagation; if it is an Influence Diagram, we do a
-		// ...'fictitious propagation' for painting the nodes with dummy
-		// ...information; otherwise, no propagation is done and a message
-		// ...is shown.
-		NetworkType networkType = probNet.getNetworkType();
 		HashMap<Variable, TablePotential> individualProbabilities = null;
 		boolean propagationSucceded = false;
 		try {
@@ -2729,8 +2720,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				inferenceAlgorithm.setPreResolutionEvidence(preResolutionEvidence);
 				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				calculateMinAndMaxUtilityRanges();
-				individualProbabilities = inferenceAlgorithm
-						.getProbsAndUtilities();
+				individualProbabilities = inferenceAlgorithm.getProbsAndUtilities();
 			} catch (NotEnoughMemoryException e) {
 				if (!approximateInferenceWarningGiven) {
 					JOptionPane
@@ -2943,143 +2933,33 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method should be deleted after algorithm for ID evaluation is ready
-	 * Generates dummy information for all the states
-	 * 
-	 * @param evidenceCase
-	 *            the evidence case with which the propagation must be done.
-	 * @param caseNumber
-	 *            number of this evidence case.
-	 */
-	// ...asaez...TEMPORAL...Eliminar este método
-	// ...asaez... Método para simular los resultados de la evaluación en
-	// diagramas de
-	// ...asaez... influencia y pintar una información parecida a la que
-	// resultaría de la evaluación
-	void paintDummyResultsForID(EvidenceCase evidenceCase, int caseNumber) {
-		// Set the values of the visualStates of nodes without finding
-		ArrayList<VisualNode> allVisualNodes2 = visualNetwork.getAllNodes();
-		Iterator<VisualNode> iterator1 = allVisualNodes2.iterator();
-		while (iterator1.hasNext()) {
-			VisualNode visualNode = iterator1.next();
-			InnerBox innerBox = visualNode.getInnerBox();
-			if (innerBox instanceof FSVariableBox) {
-				// si es un nodo aleatorio o de decisión
-				Double aux1 = 0.0;
-				Double aux2 = 0.0;
-				Double value = 0.0;
-				for (int i = 0; i < innerBox.getNumStates() - 1; i++) {
-					aux2 = Math.random();
-					if ((aux1 > 0.0) && (aux1 < 1.0)) {
-						aux2 = aux2 / (1 - aux1);
-					}
-					if ((aux1 + aux2) <= 1.0) {
-						value = aux2;
-					} else {
-						value = (1.0 - aux1);
-					}
-					aux1 += value;
-					VisualState visualState = ((FSVariableBox) innerBox)
-							.getVisualState(i);
-					visualState.setStateValue(caseNumber, value);
-				}
-				VisualState visualState = ((FSVariableBox) innerBox)
-						.getVisualState(innerBox.getNumStates() - 1);
-				visualState.setStateValue(caseNumber, (1.0 - aux1));
-			} else { // si es un nodo de utilidad
-				Double aux1 = Math.random();
-				Double aux2 = Math.random();
-				Double aux3 = Math.random();
-				if (aux1 > aux2) {
-					Double aux4 = aux1;
-					aux1 = aux2;
-					aux2 = aux4;
-				}
-				aux1 = (aux1 * 100) / 2;
-				aux2 = aux2 * 100;
-				if (((ExpectedValueBox) innerBox).getMinUtilityRange() == Double.NEGATIVE_INFINITY) {
-					((ExpectedValueBox) innerBox).setMinUtilityRange(aux1);
-				}
-				if (((ExpectedValueBox) innerBox).getMaxUtilityRange() == Double.NEGATIVE_INFINITY) {
-					((ExpectedValueBox) innerBox).setMaxUtilityRange(aux2);
-				}
-				Double minimo = ((ExpectedValueBox) innerBox)
-						.getMinUtilityRange();
-				Double maximo = ((ExpectedValueBox) innerBox)
-						.getMaxUtilityRange();
-				aux3 = aux3 * 100;
-				while (aux3 < minimo) {
-					aux3 = aux3 + (maximo - minimo);
-				}
-				while (aux3 > maximo) {
-					aux3 = aux3 - (maximo - minimo);
-				}
-				VisualState visualState = ((ExpectedValueBox) innerBox)
-						.getVisualState();
-				visualState.setStateValue(caseNumber, aux3);
-			}
-		}
-		// Set the values of the visualStates of nodes with finding
-		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
-		Iterator<Finding> iterator3 = findingsInEvidenceCase.iterator();
-		while (iterator3.hasNext()) {
-			Finding finding = iterator3.next();
-			Variable variable = finding.getVariable();
-			ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
-			Iterator<VisualNode> iterator4 = allVisualNodes.iterator();
-			while (iterator4.hasNext()) {
-				VisualNode visualNode = iterator4.next();
-				if (variable.getName().equals(
-						visualNode.getProbNode().getName())) {
-					// si el nodo tiene hallazgo
-					if ((visualNode.getInnerBox()) instanceof FSVariableBox) {
-						FSVariableBox innerBox = (FSVariableBox) visualNode
-								.getInnerBox();
-						for (int i = 0; i < innerBox.getNumStates(); i++) {
-							VisualState visualState = innerBox
-									.getVisualState(i);
-							if (visualState.getStateNumber() == finding
-									.getStateIndex()) {
-								visualState.setStateValue(caseNumber, 1.0);
-							} else {
-								visualState.setStateValue(caseNumber, 0.0);
-							}
-						}
-					}
-				}
-			}
-		}
-		updateNodesFindingState(evidenceCase);
-		repaint();
-	} // ...asaez...TEMPORAL...Eliminar este método
-
-	/**
 	 * This method updates the "finding state" of each node
 	 * 
 	 * @param evidenceCase
 	 *            the evidence case with which the update must be done.
 	 */
 	public void updateNodesFindingState(EvidenceCase evidenceCase) {
-		Iterator<VisualNode> iterator1 = visualNetwork.getAllNodes().iterator();
-		while (iterator1.hasNext()) {
-			VisualNode visualNode = iterator1.next();
-			visualNode.setPostResolutionFinding(false); //...asaez....PENDIENTE........
+		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+			visualNode.setPreResolutionFinding(false); 
+			visualNode.setPostResolutionFinding(false);
 		}
-		ArrayList<Finding> findingsInEvidenceCase = evidenceCase.getFindings();
-		Iterator<Finding> iterator2 = findingsInEvidenceCase.iterator();
-		while (iterator2.hasNext()) {
-			Finding finding = iterator2.next();
+		for (Finding finding : evidenceCase.getFindings()) {
 			Variable variable = finding.getVariable();
-			Iterator<VisualNode> iterator3 = visualNetwork.getAllNodes()
-					.iterator();
-			while (iterator3.hasNext()) {
-				VisualNode visualNode = iterator3.next();
-				if (variable.getName().equals(
-						visualNode.getProbNode().getName())) {
-					visualNode.setPostResolutionFinding(true); //...asaez....PENDIENTE........
+			for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+				if (variable.getName().equals(visualNode.getProbNode().getName())) {
+					visualNode.setPostResolutionFinding(true); 
 				}
 			}
 		}
+		for (Finding finding : preResolutionEvidence.getFindings()) {
+			Variable variable = finding.getVariable();
+			for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+				if (variable.getName().equals(visualNode.getProbNode().getName())) {
+					visualNode.setPreResolutionFinding(true); 
+				}
+			}
+		}
+
 		repaint();
 	}
 
