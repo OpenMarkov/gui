@@ -1208,12 +1208,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private static String getDirectoryFileName(String fileName) {
 
-		String directoryFileName = null;
-		int i = fileName.lastIndexOf("\\");
-		if ((i > 0) && (i < (fileName.length() - 1))) {
-			directoryFileName = fileName.substring(0, i).toLowerCase();
-		}
-		return directoryFileName;
+		return (new File(fileName)).getAbsolutePath();
 	}
 
 	/**
