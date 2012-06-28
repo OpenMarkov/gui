@@ -78,7 +78,8 @@ public abstract class PotentialPanel extends JPanel
 			commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
 			commentHTMLScrollPaneNodeProbsComment.setName( 
 					"commentHTMLScrollPaneNodeProbsComment" );
-			commentHTMLScrollPaneNodeProbsComment.setMaximumSize(new Dimension(100, 10));
+			commentHTMLScrollPaneNodeProbsComment.setPreferredSize(new Dimension(10, 30));
+			
 		}
 		return commentHTMLScrollPaneNodeProbsComment;
 	}

@@ -1,6 +1,7 @@
 package org.openmarkov.core.gui.dialog.link;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;
 
@@ -61,7 +62,9 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		probNode2 = (ProbNode) link.getNode2().getObject();
 		modifiable = true;
 		setData(probNode1, probNode2);
+		setLayout(new BorderLayout());
 		add(this.getValuesTableScrollPane(), BorderLayout.CENTER);
+		add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 	}
 
 	/**
@@ -122,6 +125,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 					.setName("LinkRestrictionPanel.valuesTableScrollPane");
 			valuesTableScrollPane
 					.setViewportView(getLinkRestrictionValuesTable());
+			
 		}
 		return valuesTableScrollPane;
 	}

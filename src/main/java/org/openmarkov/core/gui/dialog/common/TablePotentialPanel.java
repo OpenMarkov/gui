@@ -111,7 +111,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		showValuesTable(true);
 		setTableSpecificListeners();
 		setData(probNode);
+		setLayout(new BorderLayout());
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
 		repaint();
 		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
@@ -1003,8 +1005,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			valuesTableScrollPane
 					.setName("TablePotentialPanel.valuesTableScrollPane");
 			valuesTableScrollPane.setViewportView(getValuesTable());
-		
-			valuesTableScrollPane.setMaximumSize(new Dimension(181, 10));
+			
 		}
 		return valuesTableScrollPane;
 	}

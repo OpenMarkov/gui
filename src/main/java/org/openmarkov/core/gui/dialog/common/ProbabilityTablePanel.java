@@ -174,8 +174,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 			this.logger = Logger.getLogger(PotentialsTablePanel.class);
 			//this.probNode = probNode;
 			 // table is modifiable
-			setLayout(new BorderLayout());
-			add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
+			//setLayout(new BorderLayout());
+			//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 			//initialize();
 			//showValuesTable( true );
 			repaint();
@@ -232,7 +232,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 * 
 		 * @return a new comment HTML scroll pane.
 		 */
-		protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+	/*	protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
 
 			if (commentHTMLScrollPaneNodeProbsComment == null) {
 				commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
@@ -240,7 +240,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 						"commentHTMLScrollPaneNodeProbsComment" );
 			}
 			return commentHTMLScrollPaneNodeProbsComment;
-		}
+		}*/
 
 		/**
 		 * @return the showAllParameters

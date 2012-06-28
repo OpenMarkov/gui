@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -71,18 +72,21 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	
 	public ICIPotentialsTablePanel(ProbNode probNode) {
 		super();
+		removeAll();
 		this.probNode = probNode;
 		modifiable = true;
+		setLayout(new BorderLayout());
 		add(getICIOptionPanel(),BorderLayout.NORTH);
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		showValuesTable( true );
 		setData(probNode);
-		
-		int maxColumn = iciValuesTable.getColumnModel().getColumnCount();
+		repaint();
+		/*int maxColumn = iciValuesTable.getColumnModel().getColumnCount();
 		for (int i = 1; i < maxColumn; i++) {
 			iciValuesTable.getColumnModel().getColumn(i).setResizable(true);
 							
-		}
+		}*/
 	}
 	
 	private ICIOptionsPanel getICIOptionPanel() {
@@ -510,6 +514,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 			valuesTableScrollPane
 				.setName( "ICIPotentialsTablePanel.valuesTableScrollPane" );
 			valuesTableScrollPane.setViewportView( getICIValuesTable() );
+			
 		}
 		return valuesTableScrollPane;
 	}

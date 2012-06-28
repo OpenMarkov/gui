@@ -10,6 +10,7 @@ package org.openmarkov.core.gui.dialog.treeadd;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JOptionPane;
 
@@ -84,6 +85,8 @@ public class TreeADDPanel extends PotentialPanel
         treeADDController = new TreeADDController ( 
                 (TreeADDPotential)probNode.getPotentials().get( 0 ));
         removeAll();
+       // treeADDController.setMaximumSize(new Dimension(10, 10));
+       // treeADDController.setPreferredSize(new Dimension(10, 10));
         add( treeADDController, BorderLayout.CENTER );
         add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
         setName("nodeTreeADDPotentialPanel");
