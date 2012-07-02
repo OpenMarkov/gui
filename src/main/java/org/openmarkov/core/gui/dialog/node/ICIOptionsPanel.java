@@ -48,8 +48,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
  * @author maryebra
  * @version 1.0 jlgozalo
  */
-public class ICIOptionsPanel extends JPanel implements 
-	PNUndoableEditListener{
+public class ICIOptionsPanel extends JPanel {
 
 	
 	/**
@@ -156,7 +155,6 @@ public class ICIOptionsPanel extends JPanel implements
 		
 		this( true);//, notifier );
 		this.probNode = probNode;
-		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
 		this.listener = new ICIOptionListenerAssistant(this);
 
 		messageStringResource =	
@@ -740,29 +738,5 @@ public class ICIOptionsPanel extends JPanel implements
 
 	}
 	
-
-	public void undoableEditHappened(UndoableEditEvent arg0) {
-		//TODO Actualiza la tabla cuando se agrega/elimna un padre/ estado
-		//Pero si la tabla vas estar en otro cuadro de dialogo, ésto ya no 
-		//es necesario
-		//setFieldsFromProperties(probNode);
-	}
-
-	
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
-		
-		
-	}
-
-	
-	public void undoEditHappened(UndoableEditEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-
-
 }
 
