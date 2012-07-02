@@ -307,9 +307,9 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	public void undo() {
 		super.undo();
 		if (!leakyFlag){	
-			iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
-		}else if (leakyFlag) {
-			iciPotential.setLeakyParameters(newLeakyParameters);
+			iciPotential.setNoisyParameters(noisyVariable,lastNoisyParameters);
+		}else {
+			iciPotential.setLeakyParameters(lastLeakyParameters);
 		}                                         
 		
 		

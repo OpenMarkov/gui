@@ -37,8 +37,6 @@ public class ICIValuesTable extends ValuesTable implements PNUndoableEditListene
 	public ICIValuesTable (ProbNode probNode, ValuesTableModel tableModel,
 			final boolean modifiable) { 
 		super (probNode, tableModel, modifiable) ;
-		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
-
 		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 	
 	}
