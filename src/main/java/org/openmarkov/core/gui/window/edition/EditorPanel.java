@@ -2024,8 +2024,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
+			EvidenceCase currentEvidence = (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)? getCurrentEvidenceCase () : preResolutionEvidence;
+			Finding finding = currentEvidence.getFinding (node.getProbNode ().getVariable ());
 			NodeAddFindingDialog nodeAddFinding = new NodeAddFindingDialog(
-					Utilities.getOwner(this), node, g, this);
+					Utilities.getOwner(this), node, finding, g, this);
 		}
 		repaint();
 		setSelectedAllNodes(false);

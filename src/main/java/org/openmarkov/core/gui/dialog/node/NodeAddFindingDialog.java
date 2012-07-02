@@ -28,6 +28,7 @@ import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.model.network.Finding;
 
 
 /**
@@ -69,12 +70,13 @@ public class NodeAddFindingDialog extends JDialog {
 	 *            window that owns this dialog.
 	 * @param visualNode
 	 * 			  the node to which this dialog is associated.
+	 * @param finding 
 	 * @param g
 	 *            the graphics context in which to paint.
 	 * @param editorPanel
 	 *            the editor panel that called this dialog.
 	 */
-	public NodeAddFindingDialog(Window owner, VisualNode visualNode, Graphics2D g, EditorPanel editorPanel) {
+	public NodeAddFindingDialog(Window owner, VisualNode visualNode, Finding finding, Graphics2D g, EditorPanel editorPanel) {
 		this.visualNode = visualNode;
 		
 		stringResource = StringResourceLoader.getUniqueInstance().getBundleDialogs();
@@ -107,6 +109,10 @@ public class NodeAddFindingDialog extends JDialog {
 			for (int i=(numStates-1); i>=0; i--) {
 				String stateName = innerBox.getVisualState(i).getStateName();
 				JRadioButton jRadioButton = new JRadioButton(stateName);
+	            if(finding!=null)
+	            {
+                    jRadioButton.setSelected (finding.getState ().equals (stateName));
+	            }
 				radioButtonsPanel.add(jRadioButton);
 				jRadioButton.setActionCommand(stateName);
 				if (i==0) {
@@ -114,6 +120,7 @@ public class NodeAddFindingDialog extends JDialog {
 				}
 				buttonGroup.add(jRadioButton);
 			}
+			
 			principalPanel.add(radioButtonsPanel, BorderLayout.CENTER);		
 			
 			buttonsPanel.add(okButton);
