@@ -273,10 +273,12 @@ public class NetworkDefinitionPanel extends JPanel implements
 					dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 															+ NetworkType.DEC_POMDP.toString()),
-															
 					dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.OOBN.toString())
+															+ NetworkType.OOBN.toString()),
+                    dialogStringResource
+                    .getString("NetworkDefinitionPanel.NetworkTypes.Items."
+                                                            + NetworkType.TUNING.toString())															
 															
 			
 			};

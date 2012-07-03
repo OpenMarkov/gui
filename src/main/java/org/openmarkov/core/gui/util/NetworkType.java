@@ -75,8 +75,6 @@ public enum NetworkType {
 	
 	DYN_BAYESIAN_NET(9),
 	
-	
-	
 	/****
 	 * 
 	 * Dynamic LIMID
@@ -96,8 +94,14 @@ public enum NetworkType {
 	 * OOBN
 	 * 
 	 */
-	OOBN(12);
+	OOBN(12),
 	
+    /****
+     * 
+     * OOBN
+     * 
+     */
+    TUNING(13);
 
 	
 	
@@ -138,8 +142,9 @@ public enum NetworkType {
 		case 8:
 		case 9:
 		case 10:
-		case 11:
-		case 12:{
+        case 11:
+        case 12:
+		case 13:{
 			break;
 		}
 		default: {
