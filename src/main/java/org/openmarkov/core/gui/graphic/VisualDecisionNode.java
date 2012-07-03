@@ -19,6 +19,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -272,7 +273,9 @@ public class VisualDecisionNode extends VisualNode {
 
 		if (preResolutionFinding) {
 			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
-		} else if (postResolutionFinding) {
+		} else if(postResolutionFinding && 
+                (editorPanel.getNetworkPanel().getWorkingMode() == 
+                NetworkPanel.INFERENCE_WORKING_MODE)) {
 			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
 		} else {
 			if (hasPolicy) {
