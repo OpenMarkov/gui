@@ -22,6 +22,7 @@ import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.graphic.VisualUtilityNode;
 import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -767,6 +768,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 					 canAddFinding = !visualNode.isAnyFinding() 
 							 || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
 							 || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding());
+					 canAddFinding &= !(visualNode instanceof VisualUtilityNode);
 					 boolean addOrChange = (workingMode == NetworkPanel.EDITION_WORKING_MODE && !visualNode.isPreResolutionFinding()) 
 							 || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode.isPostResolutionFinding());
 					 setText(ActionCommands.NODE_ADD_FINDING, stringResource.getString((addOrChange)? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
