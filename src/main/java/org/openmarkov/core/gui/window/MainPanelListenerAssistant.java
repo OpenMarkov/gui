@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -164,8 +165,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			saveOpenNetwork(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {
 			saveNetworkAs(getCurrentNetworkPanel());
-		} else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
-			closeCurrentNetwork();
+        } else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
+            closeCurrentNetwork();
+        } else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
+            loadEvidence(getCurrentNetworkPanel());
+        } else if (actionCommand.equals(ActionCommands.SAVE_EVIDENCE)) {
+            saveEvidence(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
@@ -335,7 +340,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 	}
 
-	private void createExpandeNetwork(ProbNet probNet)
+    private void createExpandeNetwork(ProbNet probNet)
 			throws NotEvaluableNetworkException, NotEnoughMemoryException {
 		/*
 		 * VarEliminationSMM simpleMarkovEvaluation = new
@@ -948,6 +953,56 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 
 	}
+	
+	/**
+	 * This method saves the evidence of the current network to a file
+	 * @param currentNetworkPanel
+	 */
+    private void saveEvidence (NetworkPanel currentNetworkPanel)
+    {
+        // TODO Implement
+        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel ().getEvidence ();
+        evidence.add (0, currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence ());
+        JFileChooser fileChooser = new JFileChooser ();
+        File currentDirectory = new File(OpenMarkovPreferences.get(
+                                                                   OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                                                                   OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        fileChooser.setCurrentDirectory(currentDirectory);
+        String suggestedFileName = currentNetworkPanel.getTitle ().replaceFirst ("^*", "");
+        fileChooser.setSelectedFile(new File(suggestedFileName));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
+        {
+            // save the selected file
+            System.out.println("Save evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+        }
+        
+    }
+
+    /**
+     * This method tries to load evidence into the current network
+     * @param currentNetworkPanel
+     */
+    private void loadEvidence (NetworkPanel currentNetworkPanel)
+    {
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setDialogTitle(messagesStringResource
+                .getString("OpenNetwork.Title.Label"));
+        File currentDirectory = new File(OpenMarkovPreferences.get(
+                OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        fileChooser.setCurrentDirectory(currentDirectory);
+        if((fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION))
+         {
+            // load the selected file
+            System.out.println("Load evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+         }
+        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel ().getEvidence ();
+        evidence.add (0, currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence ());
+                
+    }	
 
 	/**
 	 * This method undoes the last operation on the actual network.

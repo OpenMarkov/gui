@@ -72,7 +72,17 @@ public class ActionCommands {
 	 */
 	public static final String CLOSE_NETWORK = "CloseNetwork";
 
-	/**
+    /**
+     * Action invoked when the user wants to load evidence.
+     */
+    public static final String LOAD_EVIDENCE = "LoadEvidence";
+
+    /**
+     * Action invoked when the user wants to save evidence.
+     */
+    public static final String SAVE_EVIDENCE = "SaveEvidence";
+
+    /**
 	 * Action invoked when the user wants to edit the adittionalProperties of a network.
 	 */
 	public static final String NETWORK_PROPERTIES = "NetworkProperties";

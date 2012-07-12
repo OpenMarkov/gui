@@ -48,6 +48,16 @@ public class MenuItemNames
     public static final String FILE_CLOSE_MENUITEM = FILE_MENU + ".Close";
 
     /**
+     * Constant that defines the item 'File - Load Evidence'.
+     */
+    public static final String FILE_LOAD_EVIDENCE_MENUITEM = FILE_MENU + ".LoadEvidence";
+
+    /**
+     * Constant that defines the item 'File - Save Evidence'.
+     */
+    public static final String FILE_SAVE_EVIDENCE_MENUITEM = FILE_MENU + ".SaveEvidence";
+
+    /**
      * Constant that defines the item 'File - Network adittionalProperties'.
      */
     public static final String FILE_NETWORKPROPERTIES_MENUITEM =

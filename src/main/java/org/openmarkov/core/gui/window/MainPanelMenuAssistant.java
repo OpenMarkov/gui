@@ -65,7 +65,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 */
 	public static final String[] FILING_ACTION_COMMANDS = {
 			ActionCommands.SAVE_OPEN_NETWORK, ActionCommands.SAVEAS_NETWORK,
-			ActionCommands.CLOSE_NETWORK, ActionCommands.NETWORK_PROPERTIES };
+			ActionCommands.CLOSE_NETWORK, ActionCommands.LOAD_EVIDENCE, 
+			ActionCommands.SAVE_EVIDENCE, ActionCommands.NETWORK_PROPERTIES };
 
 	/**
 	 * Composed action command that contains all the edition actions (except
@@ -892,6 +893,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.SAVEAS_NETWORK, value);
 		setOptionEnabled(ActionCommands.NETWORK_PROPERTIES, value);
 		setOptionEnabled(ActionCommands.CLOSE_NETWORK, value);	
+        setOptionEnabled(ActionCommands.LOAD_EVIDENCE, value);  
+        setOptionEnabled(ActionCommands.SAVE_EVIDENCE, value);  
 	}
 	
 	/**

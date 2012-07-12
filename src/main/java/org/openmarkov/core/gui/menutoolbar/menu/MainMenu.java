@@ -97,7 +97,17 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	 */
 	private JMenuItem fileCloseMenuItem = null;
 
-	/**
+    /**
+     * Object that represents the item 'File - Load Evidence'.
+     */
+    private JMenuItem fileLoadEvidenceMenuItem = null;
+	
+    /**
+     * Object that represents the item 'File - Save Evidence'.
+     */
+    private JMenuItem fileSaveEvidenceMenuItem = null;
+
+    /**
 	 * Object that represents the item 'File - Network adittionalProperties'.
 	 */
 	private JMenuItem fileNetworkPropertiesMenuItem = null;
@@ -501,6 +511,9 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		fileMenu.addSeparator();
 		fileMenu.add(getFileCloseMenuItem());
 		fileMenu.addSeparator();
+        fileMenu.add(getFileLoadEvidenceMenuItem ());
+        fileMenu.add(getFileSaveEvidenceMenuItem ());
+        fileMenu.addSeparator();
 		fileMenu.add(getFileNetworkPropertiesMenuItem());
 		fileMenu.addSeparator();
 		fileMenu.add(getFileExitMenuItem());
@@ -623,6 +636,42 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		return fileCloseMenuItem;
 
 	}
+	
+    /**
+     * This method initializes fileLoadEvidenceMenuItem.
+     * 
+     * @return a new item 'File - Load Evidence'.
+     */
+    private JMenuItem getFileLoadEvidenceMenuItem() {
+
+        if (fileLoadEvidenceMenuItem == null) {
+            fileLoadEvidenceMenuItem = new LocalizedMenuItem (
+                                                       MenuItemNames.FILE_LOAD_EVIDENCE_MENUITEM,
+                                                       ActionCommands.LOAD_EVIDENCE);
+            fileLoadEvidenceMenuItem.addActionListener(listener);
+        }
+
+        return fileLoadEvidenceMenuItem;
+
+    }	
+    
+    /**
+     * This method initializes fileSaveEvidenceMenuItem.
+     * 
+     * @return a new item 'File - Save Evidence'.
+     */
+    private JMenuItem getFileSaveEvidenceMenuItem() {
+
+        if (fileSaveEvidenceMenuItem == null) {
+            fileSaveEvidenceMenuItem = new LocalizedMenuItem (
+                                                       MenuItemNames.FILE_SAVE_EVIDENCE_MENUITEM,
+                                                       ActionCommands.SAVE_EVIDENCE);
+            fileSaveEvidenceMenuItem.addActionListener(listener);
+        }
+
+        return fileSaveEvidenceMenuItem;
+
+    }       
 
 	/**
 	 * This method initializes fileNetworkPropertiesMenuItem.
@@ -1994,8 +2043,12 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			component = fileSaveAsMenuItem;
 		} else if (actionCommand.equals(ActionCommands.SAVE_OPEN_NETWORK)) {
 			component = fileSaveOpenMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
-			component = fileCloseMenuItem;
+        } else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
+            component = fileCloseMenuItem;
+        } else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
+            component = fileLoadEvidenceMenuItem;
+        } else if (actionCommand.equals(ActionCommands.SAVE_EVIDENCE)) {
+            component = fileSaveEvidenceMenuItem;
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			component = fileNetworkPropertiesMenuItem;
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
