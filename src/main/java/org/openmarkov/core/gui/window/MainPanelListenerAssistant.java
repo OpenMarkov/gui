@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -25,10 +26,14 @@ import javax.swing.JOptionPane;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.AboutBox;
@@ -36,6 +41,7 @@ import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
+import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -49,8 +55,13 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.io.ProbNetInfo;
+import org.openmarkov.core.io.database.CaseDatabase;
+import org.openmarkov.core.io.database.CaseDatabaseReader;
+import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 /**
@@ -986,21 +997,111 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
      */
     private void loadEvidence (NetworkPanel currentNetworkPanel)
     {
+
         JFileChooser fileChooser = new JFileChooser();
 
         fileChooser.setDialogTitle(messagesStringResource
-                .getString("OpenNetwork.Title.Label"));
+                .getString("LoadEvidence.Title.Label"));
         File currentDirectory = new File(OpenMarkovPreferences.get(
                 OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                 OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
         fileChooser.setCurrentDirectory(currentDirectory);
+        fileChooser.setAcceptAllFileFilterUsed (false);
+        CaseDatabaseManager caseDbManager = new CaseDatabaseManager (); 
+        HashMap<String, String> readersInfo = caseDbManager.getAllReaders ();
+        for(String extension : readersInfo.keySet ())
+        {
+            fileChooser.addChoosableFileFilter(new FileFilterAll(extension, readersInfo.get (extension)));
+        }        
         if((fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION))
          {
             // load the selected file
             System.out.println("Load evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+            CaseDatabaseReader caseDbReader = caseDbManager.getReader (FilenameUtils.getExtension (fileChooser.getSelectedFile ().getName ()));        
+            ProbNet currentNet = currentNetworkPanel.getProbNet ();
+            try
+            {
+                CaseDatabase caseDatabase = caseDbReader.load (fileChooser.getSelectedFile().getAbsolutePath());
+                List<EvidenceCase> loadedEvidence = new ArrayList<> ();
+                List<Variable> variables = caseDatabase.getVariables ();
+                int[][] cases = caseDatabase.getCases (); 
+                for(int i= 0; i < cases.length; ++i)
+                {
+                    EvidenceCase newEvidenceCase = new EvidenceCase ();
+                    for(int j= 0; j < cases[i].length; ++j)
+                    {
+                        Variable variable = null;
+                        try
+                        {
+                            // Ignore missing values
+                            if(!variables.get (j).getStateName (cases[i][j]).equals ("?"))
+                            {
+                                variable = currentNet.getVariable (variables.get (j).getName ());
+                                try
+                                {
+                                    newEvidenceCase.addFinding (new Finding (variable, variable.getStateIndex (variables.get (j).getStateName (cases[i][j]))));
+                                }
+                                catch (InvalidStateException e)
+                                {
+                                    
+                                    JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                                                  messagesStringResource.getString("LoadEvidence.Error.InvalidState.Text") + e.getMessage (),
+                                                                  messagesStringResource.getString("ErrorWindow.Title.Label"),
+                                                                  JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                            
+                        }catch(ProbNodeNotFoundException e)
+                        {
+                            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                                          messagesStringResource.getString("LoadEvidence.Error.UnknownVariable.Text") + ": " + variables.get (j).getName (),
+                                                          messagesStringResource.getString("ErrorWindow.Title.Label"),
+                                                          JOptionPane.ERROR_MESSAGE);
+                        }
+                        catch (IncompatibleEvidenceException e)
+                        {
+                            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                                          messagesStringResource.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
+                                                          messagesStringResource.getString("ErrorWindow.Title.Label"),
+                                                          JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    loadedEvidence.add (newEvidenceCase);
+                }
+                List<EvidenceCase> currentEvidence = currentNetworkPanel.getEditorPanel ().getEvidence ();
+                if (!currentEvidence.isEmpty ()
+                    && currentEvidence.get (0).equals (currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence ()))
+                {
+                    currentEvidence.remove (0);
+                }
+                List<EvidenceCase> resultingEvidence = new ArrayList<> ();
+                for(EvidenceCase evidenceCase : currentEvidence)
+                {
+                    for(EvidenceCase loadedEvidenceCase : loadedEvidence)
+                    {
+                        EvidenceCase newEvidenceCase = new EvidenceCase (evidenceCase);
+                        try
+                        {
+                            newEvidenceCase.fuse (loadedEvidenceCase, true);
+                        }
+                        catch (IncompatibleEvidenceException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        resultingEvidence.add (newEvidenceCase);
+                    }
+                }
+                currentNetworkPanel.getEditorPanel ().setEvidence (currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence (), resultingEvidence);
+            }
+            catch (IOException e)
+            {
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                              messagesStringResource.getString("LoadEvidence.Error.Text"),
+                                              messagesStringResource.getString("ErrorWindow.Title.Label"),
+                                              JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace ();
+            }
          }
-        List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel ().getEvidence ();
-        evidence.add (0, currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence ());
                 
     }	
 

@@ -512,7 +512,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		fileMenu.add(getFileCloseMenuItem());
 		fileMenu.addSeparator();
         fileMenu.add(getFileLoadEvidenceMenuItem ());
-        fileMenu.add(getFileSaveEvidenceMenuItem ());
+        //fileMenu.add(getFileSaveEvidenceMenuItem ());
         fileMenu.addSeparator();
 		fileMenu.add(getFileNetworkPropertiesMenuItem());
 		fileMenu.addSeparator();

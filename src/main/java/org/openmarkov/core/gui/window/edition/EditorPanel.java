@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.help.UnsupportedOperationException;
 import javax.swing.JOptionPane;
@@ -162,13 +163,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Array of Evidence cases treated for this editor panel
 	 */
-	private ArrayList<EvidenceCase> postResolutionEvidence;
+	private List<EvidenceCase> postResolutionEvidence;
 
 	/**
 	 * Each position of this array indicates if the corresponding evidence case
 	 * is currently compiled (if true) or not (if false)
 	 */
-	private ArrayList<Boolean> evidenceCasesCompilationState;
+	private List<Boolean> evidenceCasesCompilationState;
 
 	/**
 	 * Minimum value of the range of each utility node.
@@ -2186,7 +2187,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method sets the list of evidence cases
 	 * 
 	 */
-	public void setEvidence(EvidenceCase preResolutionEvidence, ArrayList<EvidenceCase> postResolutionInference) {
+	public void setEvidence(EvidenceCase preResolutionEvidence, List<EvidenceCase> postResolutionInference) {
 		this.postResolutionEvidence = (postResolutionInference == null) ? new ArrayList<EvidenceCase>()
 				: postResolutionInference;
 		this.preResolutionEvidence = (preResolutionEvidence == null) ? new EvidenceCase()
