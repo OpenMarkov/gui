@@ -337,42 +337,42 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'View - Zoom - 500%'.
      */
-    public static final String VIEW_ZOOM_500_MENUITEM = VIEW_ZOOM_MENU + ".500";
+    public static final String VIEW_ZOOM_500_MENUITEM = VIEW_ZOOM_MENU + ".x500";
 
     /**
      * Constant that defines the item 'View - Zoom - 200%'.
      */
-    public static final String VIEW_ZOOM_200_MENUITEM = VIEW_ZOOM_MENU + ".200";
+    public static final String VIEW_ZOOM_200_MENUITEM = VIEW_ZOOM_MENU + ".x200";
 
     /**
      * Constant that defines the item 'View - Zoom - 150%'.
      */
-    public static final String VIEW_ZOOM_150_MENUITEM = VIEW_ZOOM_MENU + ".150";
+    public static final String VIEW_ZOOM_150_MENUITEM = VIEW_ZOOM_MENU + ".x150";
 
     /**
      * Constant that defines the item 'View - Zoom - 100%'.
      */
-    public static final String VIEW_ZOOM_100_MENUITEM = VIEW_ZOOM_MENU + ".100";
+    public static final String VIEW_ZOOM_100_MENUITEM = VIEW_ZOOM_MENU + ".x100";
 
     /**
      * Constant that defines the item 'View - Zoom - 75%'.
      */
-    public static final String VIEW_ZOOM_75_MENUITEM = VIEW_ZOOM_MENU + ".75";
+    public static final String VIEW_ZOOM_75_MENUITEM = VIEW_ZOOM_MENU + ".x75";
 
     /**
      * Constant that defines the item 'View - Zoom - 50%'.
      */
-    public static final String VIEW_ZOOM_50_MENUITEM = VIEW_ZOOM_MENU + ".50";
+    public static final String VIEW_ZOOM_50_MENUITEM = VIEW_ZOOM_MENU + ".x50";
 
     /**
      * Constant that defines the item 'View - Zoom - 25%'.
      */
-    public static final String VIEW_ZOOM_25_MENUITEM = VIEW_ZOOM_MENU + ".25";
+    public static final String VIEW_ZOOM_25_MENUITEM = VIEW_ZOOM_MENU + ".x25";
 
     /**
      * Constant that defines the item 'View - Zoom - 10%'.
      */
-    public static final String VIEW_ZOOM_10_MENUITEM = VIEW_ZOOM_MENU + ".10";
+    public static final String VIEW_ZOOM_10_MENUITEM = VIEW_ZOOM_MENU + ".x10";
 
     /**
      * Constant that defines the item 'View - Zoom - Other'.

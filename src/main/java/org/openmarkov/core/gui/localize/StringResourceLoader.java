@@ -12,6 +12,13 @@ package org.openmarkov.core.gui.localize;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.List;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -178,7 +185,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 	 */
 	public StringResource getBundle(String resourceFile) {
 		StringResource stringResource = null;
-		ResourceBundle bundle = null;
+		XMLResourceBundle bundle = null;
 		String file =  "localize/" + resourceFile;
 		//String bundleLanguage = "";
 		Locale tempLocale = null;
@@ -192,7 +199,8 @@ public class StringResourceLoader implements LocaleChangeListener {
 		tempLocale = new Locale(tempLanguage);
 		setLocale(tempLocale);
 		try {
-			 bundle = ResourceBundle.getBundle(file, tempLocale);
+			 //bundle = ResourceBundle.getBundle(file, tempLocale);
+			 bundle = (XMLResourceBundle) createXMLResourceBundle(file, tempLocale);
     	   		
 		} catch (MissingResourceException e) {
 			System.out.println("WARNING: Resource bundle " + resourceFile
@@ -203,9 +211,11 @@ public class StringResourceLoader implements LocaleChangeListener {
 			tempLocale = new Locale(tempLanguage);
 			setLocale(tempLocale);		
 			try {
-				 bundle = ResourceBundle.getBundle(file, tempLocale);
+				 //bundle = ResourceBundle.getBundle(file, tempLocale);
+				 bundle = (XMLResourceBundle) createXMLResourceBundle(file, tempLocale);
 	   	   		
 			} catch (MissingResourceException e1) {
+				
 				throw new MissingResourceException("Any of the "
 					+ resourceFile.toLowerCase()
 					+ " resource string files is missing",
@@ -220,6 +230,64 @@ public class StringResourceLoader implements LocaleChangeListener {
 
 	}
 
+	
+	/**
+	 * @param file
+	 * @param locale
+	 * @return An instance of ResourceBundle considering that 
+	 * properties files are in XML format.
+	 */
+	private ResourceBundle createXMLResourceBundle(String file, Locale locale){
+		ResourceBundle bundle;
+		 bundle = ResourceBundle.getBundle(file,locale,
+			     new ResourceBundle.Control() {
+			         public java.util.List<String> getFormats(String baseName) {
+			             if (baseName == null)
+			                 throw new NullPointerException();
+			             return Arrays.asList("xml");
+			         }
+			         public ResourceBundle newBundle(String baseName,
+			                                         Locale locale,
+			                                         String format,
+			                                         ClassLoader loader,
+			                                         boolean reload)
+			                          throws IllegalAccessException,
+			                                 InstantiationException,
+			                                 IOException {
+			             if (baseName == null || locale == null
+			                   || format == null || loader == null)
+			                 throw new NullPointerException();
+			             ResourceBundle bundle = null;
+			             if (format.equals("xml")) {
+			                 String bundleName = toBundleName(baseName,locale);
+			                 String resourceName = toResourceName(bundleName, format);
+			                 InputStream stream = null;
+			                 if (reload) {
+			                     URL url = loader.getResource(resourceName);
+			                     if (url != null) {
+			                         URLConnection connection = url.openConnection();
+			                         if (connection != null) {
+			                             // Disable caches to get fresh data for
+			                             // reloading.
+			                             connection.setUseCaches(false);
+			                             stream = connection.getInputStream();
+			                         }
+			                     }
+			                 } else {
+			                	 stream = loader.getResourceAsStream(resourceName);
+			                     //stream = getClass().getClassLoader().getResourceAsStream(resourceName);
+			                 }
+			                 if (stream != null) {
+			                     BufferedInputStream bis = new BufferedInputStream(stream);
+			                     bundle = new XMLResourceBundle(bis);
+			                     bis.close();
+			                 }
+			             }
+			             return bundle;
+			         }
+			     });
+		 return bundle;
+	}
 	/**
 	 * Returns a menus string resource.
 	 * 

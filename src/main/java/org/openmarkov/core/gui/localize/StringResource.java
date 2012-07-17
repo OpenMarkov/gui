@@ -30,7 +30,7 @@ public class StringResource {
 	/**
 	 * Underlying resource.
 	 */
-	ResourceBundle resourceBundle = null;
+	XMLResourceBundle resourceBundle = null;
 
 	/**
 	 * Default constructor. It saves the reference to a resource bundle.
@@ -38,7 +38,7 @@ public class StringResource {
 	 * @param newResourceBundle
 	 *            underlying resource bundle.
 	 */
-	public StringResource(ResourceBundle newResourceBundle) {
+	public StringResource(XMLResourceBundle newResourceBundle) {
 
 		resourceBundle = newResourceBundle;
 
@@ -59,7 +59,7 @@ public class StringResource {
 		String aString = "";
 		try {
 			aString = resourceBundle.getString( key );
-		} catch (MissingResourceException e1) {
+		} catch (MissingResourceException | NullPointerException e1) {
 			aString = ">>> " + key + " <<<";
 		}
 		return aString;
