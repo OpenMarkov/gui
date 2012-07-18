@@ -3155,7 +3155,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void createNewEvidenceCase() {
 		try {
-			propagationActive = isAutomaticPropagation();
 			EvidenceCase newEvidenceCase = new EvidenceCase();
 			EvidenceCase currentEvidenceCase = getCurrentEvidenceCase();
 			ArrayList<Finding> currentFindings = currentEvidenceCase
@@ -3163,15 +3162,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			for (int i = 0; i < currentFindings.size(); i++) {
 				newEvidenceCase.addFinding(currentFindings.get(i));
 			}
-			postResolutionEvidence.add(newEvidenceCase);
-			currentCase = (postResolutionEvidence.size() - 1);
-			evidenceCasesCompilationState.add(currentCase, false);
-			updateAllVisualStates("new", currentCase);
-			networkPanel.getMainPanel().getInferenceToolBar()
-					.setCurrentEvidenceCaseName(currentCase);
-			setSelectedAllNodes(false);
-			if(!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
-				setPropagationActive(false);
+			addNewEvidenceCase (newEvidenceCase);
 		} catch (InvalidStateException exc) {
 			JOptionPane
 					.showMessageDialog(
@@ -3202,6 +3193,22 @@ public class EditorPanel extends JPanel implements MouseListener,
 		}
 	}
 
+    /**
+     * This method adds a new evidence case
+     */
+    public void addNewEvidenceCase(EvidenceCase newEvidenceCase) {
+        propagationActive = isAutomaticPropagation();
+        postResolutionEvidence.add(newEvidenceCase);
+        currentCase = (postResolutionEvidence.size() - 1);
+        evidenceCasesCompilationState.add(currentCase, false);
+        updateAllVisualStates("new", currentCase);
+        networkPanel.getMainPanel().getInferenceToolBar()
+                .setCurrentEvidenceCaseName(currentCase);
+        setSelectedAllNodes(false);
+        if(!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
+            setPropagationActive(false);
+    }
+	
 	/**
 	 * This method makes the first evidence case to be the current
 	 */

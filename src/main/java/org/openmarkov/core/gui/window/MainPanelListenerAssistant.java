@@ -1022,7 +1022,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
             try
             {
                 CaseDatabase caseDatabase = caseDbReader.load (fileChooser.getSelectedFile().getAbsolutePath());
-                List<EvidenceCase> loadedEvidence = new ArrayList<> ();
                 List<Variable> variables = caseDatabase.getVariables ();
                 int[][] cases = caseDatabase.getCases (); 
                 for(int i= 0; i < cases.length; ++i)
@@ -1034,7 +1033,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                         try
                         {
                             // Ignore missing values
-                            if(!variables.get (j).getStateName (cases[i][j]).equals ("?"))
+                            if(!variables.get (j).getStateName (cases[i][j]).isEmpty () && !variables.get (j).getStateName (cases[i][j]).equals ("?"))
                             {
                                 variable = currentNet.getVariable (variables.get (j).getName ());
                                 try
@@ -1066,32 +1065,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                                                           JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                    loadedEvidence.add (newEvidenceCase);
+                    currentNetworkPanel.getEditorPanel ().addNewEvidenceCase (newEvidenceCase);
                 }
-                List<EvidenceCase> currentEvidence = currentNetworkPanel.getEditorPanel ().getEvidence ();
-                if (!currentEvidence.isEmpty ()
-                    && currentEvidence.get (0).equals (currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence ()))
-                {
-                    currentEvidence.remove (0);
-                }
-                List<EvidenceCase> resultingEvidence = new ArrayList<> ();
-                for(EvidenceCase evidenceCase : currentEvidence)
-                {
-                    for(EvidenceCase loadedEvidenceCase : loadedEvidence)
-                    {
-                        EvidenceCase newEvidenceCase = new EvidenceCase (evidenceCase);
-                        try
-                        {
-                            newEvidenceCase.fuse (loadedEvidenceCase, true);
-                        }
-                        catch (IncompatibleEvidenceException e)
-                        {
-                            e.printStackTrace();
-                        }
-                        resultingEvidence.add (newEvidenceCase);
-                    }
-                }
-                currentNetworkPanel.getEditorPanel ().setEvidence (currentNetworkPanel.getEditorPanel ().getPreResolutionEvidence (), resultingEvidence);
             }
             catch (IOException e)
             {
