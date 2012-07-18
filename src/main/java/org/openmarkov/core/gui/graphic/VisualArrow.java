@@ -78,6 +78,11 @@ public class VisualArrow extends VisualElement {
 	 */
 	private boolean isDoubleStriped;
 	
+	/**
+	 * Is the link single striped 
+	 */
+	private boolean isSingleStriped;
+	
 	private Color linkColor = FOREGROUND_COLOR;
 
 	private Logger logger;
@@ -422,6 +427,37 @@ public class VisualArrow extends VisualElement {
 		}
 
 	}
+	
+	
+	/****
+	 * Paints a single stripe of the link
+	 * 
+	 * @param g
+	 *            graphic object where to paint the link.
+	 * @param start
+	 *            starting point
+	 * @param end
+	 *            end point
+	 */
+	public void paintSingleStripe(Graphics2D g, Point2D.Double start,
+			Point2D.Double end) {
+
+		Shape shape = null;
+		if ((start != null) && (end != null)) {
+			if ((Math.abs(start.getX() - end.getX()) > 0.01)
+					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
+				if (isSelected()) {
+					g.setStroke(WIDE_STROKE);
+				} else {
+					g.setStroke(NORMAL_STROKE);
+				}
+				shape = getStripeShape(start, end, 0);
+				g.fill(shape);
+				g.draw(shape);
+			}
+		}
+
+	}
 
 	/*****
 	 * Returns the line to be painted for the stripe
@@ -504,6 +540,10 @@ public class VisualArrow extends VisualElement {
 		{
 			paintDoubleStripe(g, startPoint, endPoint);
 		}
+		if(isSingleStriped)
+		{
+			paintSingleStripe(g, startPoint, endPoint);
+		}
 		if (isDirected) {
 			// Paint the arrow while the user has not released the button of the
 			// mouse
@@ -546,6 +586,18 @@ public class VisualArrow extends VisualElement {
 	 */
 	public void setLinkColor(Color linkColor) {
 		this.linkColor = linkColor;
+	}
+	/**
+	 * @return the isSingleStriped
+	 */
+	public boolean isSingleStriped() {
+		return isSingleStriped;
+	}
+	/**
+	 * @param isSingleStriped the isSingletriped to set
+	 */
+	public void setSingleStriped(boolean isSingleStriped) {
+		this.isSingleStriped = isSingleStriped;
 	}
 
 }
