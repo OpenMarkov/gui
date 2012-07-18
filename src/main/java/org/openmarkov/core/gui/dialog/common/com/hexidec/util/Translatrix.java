@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.openmarkov.core.gui.localize.StringResourceLoader;
+
 
 public class Translatrix {
 
@@ -38,18 +40,43 @@ public class Translatrix {
 
 		bundleName = new String(bundle);
 		try {
-			langResources = ResourceBundle.getBundle(bundleName);
+			langResources = getBundle(bundleName);
 		} catch (MissingResourceException mre) {
 			logException(
 				"MissingResourceException while loading language file", mre);
 		}
+	}
+	
+	
+	/**
+	 * @param bundleName
+	 * @param locale
+	 * @return The Bundle by calling the method 'createXMLResourceBundle' from the unique
+	 * instance of StringResourceLoader
+	 */
+	private static ResourceBundle getBundle(String bundleName,Locale ...locale){
+		
+		Locale tempLocale;
+		
+		StringResourceLoader stringResourceLoader = StringResourceLoader.getUniqueInstance ();
+		
+		if ((locale!=null)&&(locale.length>0)){
+			tempLocale = locale[0];
+		}
+		else{
+			String tempLanguage = stringResourceLoader.getLanguage();
+			tempLocale = new Locale(tempLanguage);
+		}
+		
+		
+		return stringResourceLoader.createXMLResourceBundle(bundleName,tempLocale);
 	}
 
 	public static void setBundleName(String bundle) {
 
 		bundleName = new String(bundle);
 		try {
-			langResources = ResourceBundle.getBundle(bundleName);
+			langResources = getBundle(bundleName);
 		} catch (MissingResourceException mre) {
 			logException(
 				"MissingResourceException while loading language file", mre);
@@ -63,10 +90,10 @@ public class Translatrix {
 		}
 		if (locale != null) {
 			try {
-				langResources = ResourceBundle.getBundle(bundleName, locale);
+				langResources = getBundle(bundleName, locale);
 			} catch (MissingResourceException mre1) {
 				try {
-					langResources = ResourceBundle.getBundle(bundleName);
+					langResources = getBundle(bundleName);
 				} catch (MissingResourceException mre2) {
 					logException(
 						"MissingResourceException while loading language file",
@@ -75,7 +102,7 @@ public class Translatrix {
 			}
 		} else {
 			try {
-				langResources = ResourceBundle.getBundle(bundleName);
+				langResources = getBundle(bundleName);
 			} catch (MissingResourceException mre) {
 				logException(
 					"MissingResourceException while loading language file", mre);

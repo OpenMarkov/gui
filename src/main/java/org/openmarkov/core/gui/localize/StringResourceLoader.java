@@ -187,19 +187,13 @@ public class StringResourceLoader implements LocaleChangeListener {
 		StringResource stringResource = null;
 		XMLResourceBundle bundle = null;
 		String file =  "localize/" + resourceFile;
-		//String bundleLanguage = "";
 		Locale tempLocale = null;
 		String tempLanguage = "";
 
-		/*if ((language == null) || (language.equals(""))) {
-			setLanguage(System.getProperty("user.language"));
-		}
-		*/
 		tempLanguage = getLanguage();
 		tempLocale = new Locale(tempLanguage);
 		setLocale(tempLocale);
 		try {
-			 //bundle = ResourceBundle.getBundle(file, tempLocale);
 			 bundle = (XMLResourceBundle) createXMLResourceBundle(file, tempLocale);
     	   		
 		} catch (MissingResourceException e) {
@@ -211,7 +205,6 @@ public class StringResourceLoader implements LocaleChangeListener {
 			tempLocale = new Locale(tempLanguage);
 			setLocale(tempLocale);		
 			try {
-				 //bundle = ResourceBundle.getBundle(file, tempLocale);
 				 bundle = (XMLResourceBundle) createXMLResourceBundle(file, tempLocale);
 	   	   		
 			} catch (MissingResourceException e1) {
@@ -225,7 +218,6 @@ public class StringResourceLoader implements LocaleChangeListener {
 		}
 		
 		stringResource = new StringResource(bundle);
-		//bundleLanguage = bundle.getLocale().getLanguage();
 		return stringResource;
 
 	}
@@ -237,8 +229,9 @@ public class StringResourceLoader implements LocaleChangeListener {
 	 * @return An instance of ResourceBundle considering that 
 	 * properties files are in XML format.
 	 */
-	private ResourceBundle createXMLResourceBundle(String file, Locale locale){
+	public ResourceBundle createXMLResourceBundle(String file, Locale locale){
 		ResourceBundle bundle;
+		
 		 bundle = ResourceBundle.getBundle(file,locale,
 			     new ResourceBundle.Control() {
 			         public java.util.List<String> getFormats(String baseName) {
@@ -274,8 +267,7 @@ public class StringResourceLoader implements LocaleChangeListener {
 			                         }
 			                     }
 			                 } else {
-			                	 stream = loader.getResourceAsStream(resourceName);
-			                     //stream = getClass().getClassLoader().getResourceAsStream(resourceName);
+			                	 stream = loader.getResourceAsStream(resourceName);			                     
 			                 }
 			                 if (stream != null) {
 			                     BufferedInputStream bis = new BufferedInputStream(stream);
