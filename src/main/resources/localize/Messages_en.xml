@@ -73,6 +73,9 @@
       </IncompatibleEvidence>
       <Text value="Evidence can not be loaded. Check the message window for details." />
     </Error>
+    <Title>
+        <Label value="Load evidence"/>
+    </Title>
   </LoadEvidence>
   <LinkedNodesNotExist>
     <Text>

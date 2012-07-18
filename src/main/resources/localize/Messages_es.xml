@@ -68,6 +68,9 @@
       </IncompatibleEvidence>
       <Text value="Esta evidencia no se puede cargar. Compruebe la ventana de mensajes." />
     </Error>
+     <Title>
+        <Label value="Load evidence"/>
+    </Title>
   </LoadEvidence>
   <LinkedNodesNotExist>
     <Text>
