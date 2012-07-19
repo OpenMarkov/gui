@@ -65,7 +65,7 @@ class XMLProperties extends Properties {
     public void load(InputStream inputStream) 
         throws IOException {
          
-        load(new InputStreamReader(inputStream));    
+        load(new InputStreamReader(inputStream, "UTF-8"));    
     }
     
     /**
