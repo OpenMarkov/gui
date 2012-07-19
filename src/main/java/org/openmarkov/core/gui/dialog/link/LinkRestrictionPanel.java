@@ -64,7 +64,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		setData(probNode1, probNode2);
 		setLayout(new BorderLayout());
 		add(this.getValuesTableScrollPane(), BorderLayout.CENTER);
-		add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
+		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 					.setName("LinkRestrictionPanel.valuesTableScrollPane");
 			valuesTableScrollPane
 					.setViewportView(getLinkRestrictionValuesTable());
-			
+
 		}
 		return valuesTableScrollPane;
 	}
@@ -250,10 +250,15 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 
 		Object[][] values = oldValues;
+		NodeType type = probNode2.getNodeType();
 		Variable var = probNode2.getVariable();
 		State[] states = var.getStates();
 		for (int i = var.getNumStates(); i > 0; i--) {
-			values[i][0] = states[var.getNumStates() - i].getName();
+			if (type != NodeType.UTILITY) {
+				values[i][0] = states[var.getNumStates() - i].getName();
+			} else {
+				values[i][0] = "";
+			}
 		}
 		return values;
 

@@ -9,7 +9,9 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 
 /******
- * This class validates if a link satisfies the conditions to have a link restriction
+ * This class validates if a link satisfies the conditions to have a link
+ * restriction
+ * 
  * @author ckonig
  * 
  */
@@ -31,15 +33,22 @@ public class LinkRestrictionValidator {
 		if (!net.hasConstraint(NoLinkRestriction.class)) {
 			if ((node1.getNodeType() == NodeType.CHANCE || node1.getNodeType() == NodeType.DECISION)
 					&& (node2.getNodeType() == NodeType.CHANCE || node2
-							.getNodeType() == NodeType.DECISION)) {
+							.getNodeType() == NodeType.DECISION)
+					|| node2.getNodeType() == NodeType.UTILITY) {
 
 				Variable var1 = node1.getVariable();
 				Variable var2 = node2.getVariable();
-				if (var1.getVariableType() == VariableType.FINITE_STATES
-						&& var2.getVariableType() == VariableType.FINITE_STATES) {
-					return true;
-				}
+
+				if (var1.getVariableType() == VariableType.FINITE_STATES)
+					if (node2.getNodeType() != NodeType.UTILITY) {
+						if (var2.getVariableType() == VariableType.FINITE_STATES) {
+							return true;
+						}
+					} else {
+						return true;
+					}
 			}
+
 		}
 		return false;
 	}

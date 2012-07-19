@@ -162,7 +162,7 @@ public class VisualLink extends VisualArrow {
 			setLinkColor(Color.black);
 		}
 		
-		boolean hasAbsoluteLinkRestriction= link.hasAbsoluteRestriction();
+		boolean hasAbsoluteLinkRestriction= link.hasTotalRestriction();
 		setDoubleStriped(hasAbsoluteLinkRestriction);
 		setSingleStriped(link.hasRestrictions()&&!hasAbsoluteLinkRestriction);
 		setStartPoint(source.cutPoint(line, g));

@@ -212,6 +212,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 					probNode.getNodeType());
 			setCellRenderers();
 			if (hasLinkRestriction) {
+				if(probNode.getNodeType()==NodeType.CHANCE)
 				this.getTableModel().setNotEditablePositions(
 						getNotEditablePositions());
 			}
