@@ -220,9 +220,10 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener{
 		// TODO Auto-generated method stub
 		if (e.getClickCount() == 2) {
 			try {
+				String comment = jTextPaneCommentHTML.getText() != null ? jTextPaneCommentHTML.getText() : "";
 				
 				hTMLTextEditor =
-					new HTMLTextEditor(null, /*jTextPaneCommentHTML.getText()*/ "");
+					new HTMLTextEditor(null, comment);
 				hTMLTextEditor.setTitle(title);
 				hTMLTextEditor.setVisible(true);
 				if (hTMLTextEditor.getOkButtonStatus()){
