@@ -5,33 +5,29 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
-/**
- * 
- * @author myebra
- *
- */
-@SuppressWarnings("serial")
-public class NodeAgentEdit extends SimplePNEdit{
+
+public class NodeDecisionCriteriaEdit extends SimplePNEdit{
 	
-	private StringWithProperties  currentAgent;
-	private StringWithProperties newAgent;
+	private StringWithProperties  currentDecisionCriteria;
+	private StringWithProperties newDecisionCriteria;
 	private ProbNode probNode;
 
-	public NodeAgentEdit (ProbNode probNode, StringWithProperties agent) {
+	public NodeDecisionCriteriaEdit (ProbNode probNode, StringWithProperties decisionCriteria) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
-		this.currentAgent = probNode.getVariable().getAgent();
-		this.newAgent = agent;
+		this.currentDecisionCriteria = probNode.getVariable().getDecisionCriteria();
+		this.newDecisionCriteria = decisionCriteria;
 	}
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
-		probNode.getVariable().setAgent(newAgent);
+		probNode.getVariable().setDecisionCriteria(newDecisionCriteria);
 	}
 	
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setAgent(currentAgent);
+		probNode.getVariable().setDecisionCriteria(currentDecisionCriteria);
 	}
 
 }
+

@@ -51,6 +51,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodeAgentEdit;
+import org.openmarkov.core.gui.action.NodeDecisionCriteriaEdit;
 import org.openmarkov.core.gui.constraint.AlwaysObservedPropertyValidator;
 import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
@@ -930,19 +931,13 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	
 	private JComboBox getJComboBoxDecisionCriteria() {
 		if (jComboBoxDecisionCriteria == null) {
-			//StringsWithProperties agents = probNode.getProbNet().getAgents();
 			ArrayList<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
 			String [] criteriaNames = null;
 			if (decisionCriteria != null) {
-				//Set<String> names = agents.getNames();
-				//agentNames = names.toArray(new String[names.size()]);
-				// String []auxAgentNames = names.toArray(new String[names.size()]);
-				// agentNames  = new String [names.size()+1];
 				criteriaNames  = new String [decisionCriteria.size()+1];
 				criteriaNames [0]= "";
 				 for (int i = 1; i < decisionCriteria.size()+1; i++) {
-					// agentNames[i] = auxAgentNames[i-1];
-					 criteriaNames[i] = decisionCriteria.get(i-1).getString();
+					criteriaNames[i] = decisionCriteria.get(i-1).getString();
 				 }
 				
 			} else if (decisionCriteria == null) {
@@ -1244,6 +1239,36 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					probNode.getProbNet().getPNESupport().announceEdit(nodeAgentEdit);
 					probNode.getProbNet().getPNESupport().doEdit(nodeAgentEdit);
 				//	comboBox.setSelectedIndex(optionSelected);
+				} catch (DoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotEnoughMemoryException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ConstraintViolationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NonProjectablePotentialException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (WrongCriterionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		}else if (comboBox.getName().equals("jComboBoxDecisionCriteria")) {
+			if (!(itemSelected == null)) {
+				StringWithProperties decisionCriteria = new StringWithProperties(itemSelected);
+				NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(probNode, decisionCriteria);
+				
+				try {
+					
+					probNode.getProbNet().getPNESupport().announceEdit(nodeDecisionCriteriaEdit);
+					probNode.getProbNet().getPNESupport().doEdit(nodeDecisionCriteriaEdit);
 				} catch (DoEditException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

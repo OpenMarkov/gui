@@ -909,6 +909,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 						variable.setName(nodeName + "[" + 0 + "]");
 						variable.setTimeSlice(0);
 					}
+					if (nodeType == NodeType.UTILITY && probNet.getDecisionCriteria() != null) {
+						variable.setDecisionCriteria(probNet.getDecisionCriteria().get(0));
+					}
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
 							probNet, variable, nodeType, cursorPosition);
 					try {
