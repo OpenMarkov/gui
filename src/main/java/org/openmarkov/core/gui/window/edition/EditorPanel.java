@@ -33,27 +33,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
-import org.openmarkov.core.action.prm.AddInstanceEdit;
-import org.openmarkov.core.action.prm.AddInstanceLinkEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.MoveNodeEdit;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
-import org.openmarkov.core.gui.constraint.LinkRestrictionValidator;
-import org.openmarkov.core.gui.constraint.RevelationArcValidator;
 import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
@@ -69,22 +59,17 @@ import org.openmarkov.core.gui.graphic.FSVariableBox;
 import org.openmarkov.core.gui.graphic.InnerBox;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
-import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
+import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.graphic.VisualState;
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.menutoolbar.menu.NodePopup;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
@@ -121,7 +106,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 public class EditorPanel extends JPanel implements MouseListener,
 		MouseMotionListener {
 
-	private ProbNet probNet;
+	protected ProbNet probNet;
 
 	/**
 	 * Static field for serializable class.
@@ -217,7 +202,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Visual representation of the network
 	 */
-	private VisualNetwork visualNetwork = null;
+	protected VisualNetwork visualNetwork = null;
 
 	/**
 	 * Indicates if a node has been moved.
@@ -227,17 +212,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Rectangle used to select various nodes.
 	 */
-	private SelectionRectangle selection = null;
+	protected SelectionRectangle selection = null;
 
 	/**
 	 * Position of the mouse cursor when it is pressed.
 	 */
-	private Point2D.Double cursorPosition = new Point2D.Double();
+	protected Point2D.Double cursorPosition = new Point2D.Double();
 
 	/**
 	 * Object to convert coordinates of the screen to the panel and vice versa.
 	 */
-	private Zoom zoom = new Zoom();
+	protected Zoom zoom = new Zoom();
 
 	/**
 	 * Maximum width of the panel.
@@ -259,23 +244,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * Information of the movement of the nodes.
 	 */
-	private ArrayList<VisualNode> movedNodes = null;
-
-	/**
-	 * This object represents the arrow that is painted when a new link is being
-	 * created.
-	 */
-	private VisualArrow newLink = null;
-
-	/**
-	 * This object represents the source node of a new link.
-	 */
-	private VisualNode newLinkSource = null;
-
-	/**
-	 * This object represents the source instance of a new link.
-	 */
-	private VisualInstance newInstanceLinkSource = null;
+	private List<VisualNode> movedNodes = null;
 
 	/**
 	 * Object that creates the popup menus.
@@ -428,11 +397,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 		super.paint(g);
 		g2D.scale(zoom.getZoom(), zoom.getZoom());
 		visualNetwork.paint(g2D);
-		if (newLink != null) {
-			newLink.paint(g2D);
-		}
-		selection.paint(g2D);
 
+		selection.paint(g2D);
 	}
 
 	/**
@@ -682,56 +648,22 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param e
 	 *            mouse event information.
 	 */
-	private void mousePressedSelection(MouseEvent e) {
+	protected void mousePressedSelection(MouseEvent e) {
 
-		VisualNode node = null;
-		VisualLink link = null;
-		VisualInstance instance = null;
 		Graphics2D g = (Graphics2D) getGraphics();
 
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (e.isControlDown() || e.isShiftDown()) {
-				if ((instance = visualNetwork.whatInstanceInPosition(
-						cursorPosition, g)) != null) {
-					visualNetwork.setSelectedInstance(instance,
-							!instance.isSelected());
-				} else if ((node = visualNetwork.whatNodeInPosition(
-						cursorPosition, g)) != null) {
-					visualNetwork.setSelectedNode(node, !node.isSelected());
-				} else if ((link = visualNetwork.whatLinkInPosition(
-						cursorPosition, g)) != null) {
-					visualNetwork.setSelectedLink(link, !link.isSelected());
-				}
+			    visualNetwork.addToSelection(cursorPosition, g);
 			} else {
-				if ((instance = visualNetwork.whatInstanceInPosition(
-						cursorPosition, g)) != null) {
-					visualNetwork.setSelectedAllObjects(false);
-					visualNetwork.setSelectedInstance(instance, true);
-					setSelectionState(SelectionState.MOVING);
-				} else if ((node = visualNetwork.whatNodeInPosition(
-						cursorPosition, g)) != null) {
-					if (!node.isSelected()) {
-						visualNetwork.setSelectedAllObjects(false);
-						visualNetwork.setSelectedNode(node, true);
-					}
-
-					setSelectionState(SelectionState.MOVING);
-					// TODO revisar si es necesario agregar parentesis
-					// probNet.getPNESupport().openParenthesis();
-
-				} else if ((link = visualNetwork.whatLinkInPosition(
-						cursorPosition, g)) != null) {
-					if (!link.isSelected()) {
-						visualNetwork.setSelectedAllObjects(false);
-						visualNetwork.setSelectedLink(link, true);
-					}
-				} else {
-					visualNetwork.setSelectedAllObjects(false);
-					selection.initSelection(cursorPosition, 0, 0);
-					setSelectionState(SelectionState.SELECTING);
-				}
+			    VisualElement selectedElement =  visualNetwork.select(cursorPosition, g);
+                setSelectionState((selectedElement != null)? SelectionState.MOVING : SelectionState.SELECTING);
+                if(selectedElement == null)
+                {
+                    selection.initSelection(cursorPosition, 0, 0);
+                }
 			}
 		}
 	}
@@ -744,125 +676,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param g
 	 *            Graphics2D
 	 */
-	@SuppressWarnings("unused")
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
-		VisualNode node = null;
-		VisualLink link = null;
-		VisualInstance instance = null;
-
-		if ((instance = visualNetwork.whatInstanceInPosition(cursorPosition, g)) != null) {
-			if (!instance.isSelected()) {
-				visualNetwork.setSelectedAllObjects(false);
-				visualNetwork.setSelectedInstance(instance, true);
-			}
-			if (false) {
-				// if ((node = visualNetwork.whatNodeInPosition(cursorPosition,
-				// g)) != null) {
-				getPopupMenu(PopupMenuFactory.NODE).show(this, e.getX(),
-						e.getY());
-				if (node.getProbNode().getNodeType().equals(NodeType.DECISION)) {
-					if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-						((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-								.setPopupDecisionNodeInEditionMode();
-					} else {
-						if (evidenceCasesCompilationState.get(currentCase)) {
-							((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-									.setPopupDecisionNodeInCompiledInferenceMode();
-						} else {
-							((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-									.setPopupDecisionNodeInNotCompiledInferenceMode();
-						}
-					}
-				} else {
-					((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-							.setDefaultPopupNode();
-
-				}
-			} else {
-				getPopupMenu(PopupMenuFactory.INSTANCE).show(this, e.getX(),
-						e.getY());
-			}
-
-		} else if ((node = visualNetwork.whatNodeInPosition(cursorPosition, g)) != null) {
-			if (!node.isSelected()) {
-				visualNetwork.setSelectedAllObjects(false);
-				visualNetwork.setSelectedNode(node, true);
-			}
-			getPopupMenu(PopupMenuFactory.NODE).show(this, e.getX(), e.getY());
-			if (node.getProbNode().getNodeType().equals(NodeType.DECISION)) {
-				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
-					((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-							.setPopupDecisionNodeInEditionMode();
-				} else {
-					if (evidenceCasesCompilationState.get(currentCase)) {
-						((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-								.setPopupDecisionNodeInCompiledInferenceMode();
-					} else {
-						((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-								.setPopupDecisionNodeInNotCompiledInferenceMode();
-					}
-				}
-			} else {
-				((NodePopup) getPopupMenu(PopupMenuFactory.NODE))
-						.setDefaultPopupNode();
-			}
-		} else if ((link = visualNetwork.whatLinkInPosition(cursorPosition, g)) != null) {
-			if (!link.isSelected()) {
-				visualNetwork.setSelectedAllObjects(false);
-				visualNetwork.setSelectedLink(link, true);
-			}
-			if (visualNetwork.getSelectedLinksNumber() == 1) {
-				boolean linkRestrictionEnabled = false;
-				if (LinkRestrictionValidator.validate(link.getLink())) {
-					linkRestrictionEnabled = true;
-				}
-
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								(linkRestrictionEnabled && !link.getLink()
-										.hasRestrictions()));
-
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
-								(linkRestrictionEnabled && link.getLink()
-										.hasRestrictions()));
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-				.setOptionEnabled(
-						ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
-						(linkRestrictionEnabled && link.getLink()
-								.hasRestrictions()));
-
-				boolean revelationArcEnabled = false;
-				if (RevelationArcValidator.validate(link.getLink())) {
-					revelationArcEnabled = true;
-				}
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_REVELATIONARC_PROPERTIES,
-								revelationArcEnabled);
-			} else {
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-								false);
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
-								false);
-
-				((PopupMenuBasic) getPopupMenu(PopupMenuFactory.LINK))
-						.setOptionEnabled(
-								ActionCommands.LINK_REVELATIONARC_PROPERTIES,
-								false);
-			}
-			getPopupMenu(PopupMenuFactory.LINK).show(this, e.getX(), e.getY());
-		} else {
-			visualNetwork.setSelectedAllObjects(false);
-			getPopupMenu(PopupMenuFactory.NETWORK).show(this, e.getX(),
-					e.getY());
-		}
+		VisualElement selectedElement = visualNetwork.select(cursorPosition, g); 
+		JPopupMenu contextualMenu = (selectedElement != null)? getPopupMenu(selectedElement, this) : popupMenuFactory.getNetworkPopup ();
+		contextualMenu.show (this, e.getX(), e.getY());
 	}
 
 	/**
@@ -915,14 +732,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 					AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit(
 							probNet, variable, nodeType, cursorPosition);
 					try {
-						probNet.getPNESupport().announceEdit(addProbNodeEdit);
+						probNet.doEdit(addProbNodeEdit);
 
-						// visualNetwork.setCursorPosition(cursorPosition);
-						probNet.getPNESupport().doEdit(addProbNodeEdit);
-
-					} catch (ConstraintViolationException e1) {
+					} catch (Exception e1) {
 						System.err.println(e1.toString() + " 1");
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(
 								this,
@@ -931,55 +744,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 								messageStringResource.getString(e1.toString()
 										+ " 1" + e1.getMessage()),
 								JOptionPane.ERROR_MESSAGE);
-					} catch (CanNotDoEditException e1) {
-						// TODO Auto-generated catch block
-						System.err.println(e1.toString() + " 2");
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(
-								this,
-								messageStringResource.getString(e1.toString()
-										+ " 2" + e1.getMessage()),
-								messageStringResource.getString(e1.toString()
-										+ " 2" + e1.getMessage()),
-								JOptionPane.ERROR_MESSAGE);
-					} catch (DoEditException e1) {
-						System.err.println(e1.toString() + " 3");
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(
-								this,
-								messageStringResource.getString(e1.toString()
-										+ " 3" + e1.getMessage()),
-								messageStringResource.getString(e1.toString()
-										+ " 3" + e1.getMessage()),
-								JOptionPane.ERROR_MESSAGE);
-					} catch (NotEnoughMemoryException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-						JOptionPane
-								.showMessageDialog(this, messageStringResource
-										.getString(e2.getMessage()),
-										messageStringResource.getString(e2
-												.getMessage()),
-										JOptionPane.ERROR_MESSAGE);
-					} catch (NonProjectablePotentialException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane
-								.showMessageDialog(this, messageStringResource
-										.getString(e1.getMessage()),
-										messageStringResource.getString(e1
-												.getMessage()),
-										JOptionPane.ERROR_MESSAGE);
-					} catch (WrongCriterionException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane
-								.showMessageDialog(this, messageStringResource
-										.getString(e1.getMessage()),
-										messageStringResource.getString(e1
-												.getMessage()),
-										JOptionPane.ERROR_MESSAGE);
 					}
 
 					// undoManager.addEditAddNode(
@@ -1002,25 +766,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private void mousePressedLinkCreation(MouseEvent e) {
 
 		Graphics2D g = (Graphics2D) getGraphics();
-		VisualNode node = null;
-		VisualInstance instance = null;
-
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
+		
 		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
 			if (Utilities.noMouseModifiers(e)) {
-				if ((instance = visualNetwork.whatInstanceInPosition(
-						cursorPosition, g)) != null) {
-					newLink = new VisualArrow(new Point2D.Double(instance
-							.getCenter().getX(), instance.getCenter().getY()),
-							cursorPosition);
-					newInstanceLinkSource = instance;
-				} else if ((node = visualNetwork.whatNodeInPosition(
-						cursorPosition, g)) != null) {
-					newLink = new VisualArrow(node.getPosition(),
-							cursorPosition);
-					newLinkSource = node;
-				}
+			    visualNetwork.startLinkCreation(cursorPosition, g);
 			}
 		}
 
@@ -1033,7 +784,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param e
 	 *            mouse event information.
 	 */
+	//TODO OOBN
 	private void mousePressedInstanceCreation(MouseEvent e) {
+	    /*
 
 		Graphics2D g = (Graphics2D) getGraphics();
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
@@ -1071,6 +824,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
+		*/
 	}
 
 	/**
@@ -1114,8 +868,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		cursorPosition.setLocation(point);
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (selectionState == SelectionState.MOVING) {
-				visualNetwork.moveSelectedNodes(diffX, diffY);
-				visualNetwork.moveSelectedInstances(diffX, diffY);
+				visualNetwork.moveSelectedElements(diffX, diffY);
 				nodeMoved = true;
 			} else if (selectionState == SelectionState.SELECTING) {
 				selection.setSize(selection.getWidth() + diffX,
@@ -1136,14 +889,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void mouseDraggedLinkCreation(MouseEvent e) {
 
-		if (newLink != null) {
-			if (SwingUtilities.isLeftMouseButton(e)) {
-				newLink.setEndPoint(new Point2D.Double(zoom.screenToPanel(e
-						.getX()), zoom.screenToPanel(e.getY())));
-				repaint();
-			}
-		}
-
+        if (SwingUtilities.isLeftMouseButton (e))
+        {
+            visualNetwork.updateLinkCreation (new Point2D.Double (zoom.screenToPanel (e.getX ()),
+                                                                  zoom.screenToPanel (e.getY ())));
+            repaint ();
+        }
 	}
 
 	/**
@@ -1185,9 +936,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (selectionState == SelectionState.MOVING) {
 			if (nodeMoved) {
 				movedNodes = visualNetwork.fillVisualNodesSelected();
-				movedNodes.addAll(visualNetwork
-						.getVisualNodesOfSelectedInstances());
-				// visualNetwork.fillDifferencesNodesMovedInfo(movedNodes);
 
 				cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 						zoom.screenToPanel(e.getY()));
@@ -1218,78 +966,36 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 	}
 
-	/**
-	 * Invoked when a mouse button has been released on the component in the
-	 * LINK state.
-	 * 
-	 * @param e
-	 *            mouse event information.
-	 */
-	public void mouseReleasedLinkCreation(MouseEvent e) {
-
-		Graphics2D g = (Graphics2D) getGraphics();
-		VisualNode newLinkDestination = null;
-		VisualInstance newInstanceLinkDestination = null;
-		Point2D.Double point = new Point2D.Double(zoom.screenToPanel(e.getX()),
-				zoom.screenToPanel(e.getY()));
-
-		if (newLink != null) {
-			newLink = null;
-			if (SwingUtilities.isLeftMouseButton(e)) {
-				PNEdit linkEdit = null;
-				if ((newInstanceLinkDestination = visualNetwork
-						.whatInstanceInPosition(point, g)) != null
-						&& newInstanceLinkSource != null) {
-					VisualInstance inputParameter = newInstanceLinkDestination
-							.whatParameterInPosition(point, g);
-					if (inputParameter != null
-							&& inputParameter
-									.getInstance()
-									.getClassNet()
-									.getName()
-									.equals(newInstanceLinkSource.getInstance()
-											.getClassNet().getName())) {
-						linkEdit = new AddInstanceLinkEdit(probNet,
-								newInstanceLinkSource.getInstance(),
-								newInstanceLinkDestination.getInstance(),
-								inputParameter.getInstance());
-					}
-				} else if ((newLinkDestination = visualNetwork
-						.whatNodeInPosition(point, g)) != null
-						&& newLinkSource != null) {
-					if (!newLinkSource.equals(newLinkDestination)) {
-
-						try {
-							linkEdit = new AddLinkEdit(probNet,
-									probNet.getVariable(newLinkSource
-											.getProbNode().getName()),
-									probNet.getVariable(newLinkDestination
-											.getProbNode().getName()), true);
-						} catch (ProbNodeNotFoundException e1) {/* Cannot happen */
-						}
-					}
-				}
-				if (linkEdit != null) {
-					try {
-						probNet.doEdit(linkEdit);
-
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(Utilities.getOwner(this),
-								ex.getMessage(), stringResource
-										.getString("ErrorWindow.Title.Label"),
-								JOptionPane.ERROR_MESSAGE);
-					}
-
-				}
-				/*
-				 * if (link != null) { undoManager.addEditAddLink(visualNetwork
-				 * .getNetwork(), link); }
-				 */
-			}
-		}
-		repaint();
-
-	}
+    /**
+     * Invoked when a mouse button has been released on the component in the
+     * LINK state.
+     * @param e mouse event information.
+     */
+    public void mouseReleasedLinkCreation (MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton (e))
+        {
+            Graphics2D g = (Graphics2D) getGraphics ();
+            Point2D.Double point = new Point2D.Double (zoom.screenToPanel (e.getX ()),
+                                                       zoom.screenToPanel (e.getY ()));
+            PNEdit linkEdit = visualNetwork.finishLinkCreation (point, g);
+            if (linkEdit != null)
+            {
+                try
+                {
+                    probNet.doEdit (linkEdit);
+                }
+                catch (Exception ex)
+                {
+                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                                   ex.getMessage (),
+                                                   stringResource.getString ("ErrorWindow.Title.Label"),
+                                                   JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            repaint ();
+        }
+    }
 
 	/**
 	 * Invoked when the mouse button enters the component.
@@ -1468,10 +1174,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            popup menu to be returned.
 	 * @return the popup menu corresponding the the parameter.
 	 */
-	private JPopupMenu getPopupMenu(int popup) {
+	private JPopupMenu getPopupMenu(VisualElement selectedElement, EditorPanel panel) {
 
 		return (popupMenuFactory != null) ? popupMenuFactory
-				.getPopupMenu(popup) : null;
+				.getPopupMenu(selectedElement, panel) : null;
 
 	}
 
@@ -1513,15 +1219,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public ArrayList<VisualLink> getSelectedLinks() {
 		return visualNetwork.getSelectedLinks();
-	}
-
-	/**
-	 * Returns a list containing the selected instances.
-	 * 
-	 * @return a list containing the selected instances.
-	 */
-	public ArrayList<VisualInstance> getSelectedInstances() {
-		return visualNetwork.getSelectedInstances();
 	}
 
 	/**
@@ -3497,13 +3194,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void setVisualNetwork(VisualNetwork visualNetwork) {
 		this.visualNetwork = visualNetwork;
-	}
-
-	public void markSelectedInstancesAsInput() {
-		for (VisualInstance instance : visualNetwork.getSelectedInstances()) {
-			instance.setInput(!instance.isInput());
-		}
-		repaint();
 	}
 
 	public void setProbNet(ProbNet probNet) {

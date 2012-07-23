@@ -14,8 +14,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPopupMenu;
 
+import org.openmarkov.core.gui.graphic.VisualElement;
+import org.openmarkov.core.gui.graphic.VisualLink;
+import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
 
 
 
@@ -94,13 +98,7 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 */
 	private void initialize() {
 
-		getNetworkPopup();
-		getNodePopup();
-		getLinkPopup();
-		getInstancePopup();
-		menuAssistant =
-			new MenuAssistant(new PopupMenuBasic[] { networkPopup, nodePopup,
-				linkPopup, instancePopup});
+		menuAssistant = new MenuAssistant();
 	}
 
 	/**
@@ -108,83 +106,68 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 * 
 	 * @return the network panel popup menu.
 	 */
-	private JPopupMenu getNetworkPopup() {
+	public JPopupMenu getNetworkPopup() {
 
 		if (networkPopup == null) {
 			networkPopup = new NetworkPopup(listener);
 			networkPopup.setName("networkPopup");
+			menuAssistant.addMenu (networkPopup);
 		}
 		return networkPopup;
 	}
 
 	/**
 	 * This method initialises nodePopup.
+	 * @param panel 
+	 * @param selectedElement 
 	 * 
 	 * @return the node popup menu.
 	 */
-	private JPopupMenu getNodePopup() {
+	private JPopupMenu getNodePopup(VisualNode selectedNode, EditorPanel panel) {
 
 		if (nodePopup == null) {
-			nodePopup = new NodePopup(listener);
+			nodePopup = new NodePopup(listener, selectedNode, panel);
 			nodePopup.setName("nodePopup");
+            menuAssistant.addMenu (nodePopup);
 		}
 		return nodePopup;
 	}
 
 	/**
 	 * This method initialises linkPopup.
+	 * @param panel 
+	 * @param selectedLink 
 	 * 
 	 * @return the link popup menu.
 	 */
-	private JPopupMenu getLinkPopup() {
+	private JPopupMenu getLinkPopup(VisualLink selectedLink, EditorPanel panel) {
 
 		if (linkPopup == null) {
-			linkPopup = new LinkPopup(listener);
+			linkPopup = new LinkPopup(listener, selectedLink, panel);
 			linkPopup.setName("linkPopup");
+            menuAssistant.addMenu (linkPopup);
 		}
 		return linkPopup;
 	}
 	
 	/**
 	 * This method initialises linkPopup.
+	 * @param panel 
+	 * @param selectedInstance 
 	 * 
 	 * @return the link popup menu.
 	 */
-	private JPopupMenu getInstancePopup() {
+	//TODO OOBN
+	/*
+	private JPopupMenu getInstancePopup(VisualInstance selectedInstance, EditorPanel panel) {
 
 		if (instancePopup == null) {
 			instancePopup = new InstancePopup(listener);
 			instancePopup.setName("instancePopup");
+            menuAssistant.addMenu (instancePopup);
 		}
 		return instancePopup;
-	}	
-
-	/**
-	 * Retrieves the popup menu that corresponds to the parameter.
-	 * 
-	 * @param popup
-	 *            popup menu to be returned.
-	 * @return the popup menu corresponding the the parameter.
-	 */
-	public JPopupMenu getPopupMenu(int popup) {
-
-		switch (popup) {
-		case NETWORK: {
-			return getNetworkPopup();
-		}
-		case NODE: {
-			return getNodePopup();
-		}
-		case LINK: {
-			return getLinkPopup();
-		}case INSTANCE: {
-			return getInstancePopup();
-		}		
-		default: {
-			return null;
-		}
-		}
-	}
+	}	*/
 
 	/**
 	 * Enables or disabled an option identified by an action command.
@@ -240,4 +223,25 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 
 		menuAssistant.setText(actionCommand, text);
 	}
+
+	/**
+	 * Returns an instance of a pop up menu given the class and some additional info
+	 * @param popupClass
+	 * @param panel
+	 * @return
+	 */
+    public JPopupMenu getPopupMenu (VisualElement selectedElement, EditorPanel panel)
+    {
+        JPopupMenu popUpMenu = null;
+        if (VisualNode.class.isAssignableFrom (selectedElement.getClass ())) {
+            popUpMenu = getNodePopup((VisualNode)selectedElement, panel);
+        }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
+        {
+            popUpMenu = getLinkPopup((VisualLink)selectedElement, panel);
+        }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
+        {
+          //TODO OOBN popUpMenu =  getInstancePopup((VisualInstance)selectedElement, panel);
+        }
+        return popUpMenu;
+    }
 }

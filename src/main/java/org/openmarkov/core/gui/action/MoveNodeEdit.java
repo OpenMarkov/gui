@@ -13,6 +13,7 @@ package org.openmarkov.core.gui.action;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -40,17 +41,17 @@ public class MoveNodeEdit extends SimplePNEdit {
 	/**
 	 * The nodes last positions before the action
 	 */
-	private ArrayList<Point2D.Double> lastPositions = 
+	private List<Point2D.Double> lastPositions = 
 		new ArrayList<Point2D.Double>();
 	/**
 	 * The new positions of the nodes to move
 	 */
-	private ArrayList<Point2D.Double> newPositions = 
+	private List<Point2D.Double> newPositions = 
 		new ArrayList<Point2D.Double>();
 	/**
 	 * The node's name to move
 	 */
-	private ArrayList<String> namesNode = 
+	private List<String> namesNode = 
 		new ArrayList<String>();
 
 	private StringResource messageStringResource;
@@ -62,7 +63,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 	 *            the nodes that will be edited, with their new positions.
 	 * 
 	 */
-	public MoveNodeEdit(ArrayList<VisualNode> movedNodes){
+	public MoveNodeEdit(List<VisualNode> movedNodes){
 		
 		super(movedNodes.get(0).getProbNode().getProbNet());
 		   

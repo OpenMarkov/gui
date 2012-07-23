@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.window;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.UndoableEditEvent;
 
@@ -23,7 +24,6 @@ import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.graphic.VisualUtilityNode;
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -34,12 +34,10 @@ import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
-import org.openmarkov.core.model.network.type.OOBNType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
@@ -347,8 +345,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
 			setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
-			setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet().getNetworkType() instanceof OOBNType);
-			MainPanel.getUniqueInstance().getEditionToolBar().getClassComboBox().setEnabled(networkPanel.getProbNet().getNetworkType() instanceof OOBNType);			
+			//TODO OOBN		setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet().getNetworkType() instanceof OOBNType);
+			//TODO OOBN MainPanel.getUniqueInstance().getEditionToolBar().getClassComboBox().setEnabled(networkPanel.getProbNet().getNetworkType() instanceof OOBNType);			
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 			if (networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
@@ -390,8 +388,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.SAVE_NETWORK,
 				networkPanel.getModified());
 		objectsSelected(networkPanel.getSelectedNodes(),
-				networkPanel.getSelectedLinks(),
-				networkPanel.getSelectedInstances());
+				networkPanel.getSelectedLinks());
 		setZoom(networkPanel.getZoom());
 		/*
 		 * updateUndoRedo(networkPanel.getUndoManager().canUndo(),
@@ -496,8 +493,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
 		}
 		objectsSelected(networkPanel.getSelectedNodes(),
-				networkPanel.getSelectedLinks(),
-				networkPanel.getSelectedInstances());
+				networkPanel.getSelectedLinks());
 	}
 
 	/**
@@ -638,9 +634,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 * @param arrayOfNodes
 	 *            an array with the selected nodes.
 	 */
-	public void objectsSelected(ArrayList<VisualNode> selectedNodes,
-			ArrayList<VisualLink> selectedLinks,
-			ArrayList<VisualInstance> selectedInstances)
+	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks)
 	{
 		boolean canCut = false;
 		boolean canCopy = false;
@@ -663,6 +657,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
 		}
+		//TODO OOBN
+		/*List<VisualInstance> selectedInstances = new ArrayList<>();
 		if (selectedInstances.size() > 0) {
 			canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
@@ -675,7 +671,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				isInstanceInput &= instance.isInput();
 			}
 			setOptionSelected(ActionCommands.INSTANCE_INPUT, isInstanceInput);
-		}
+		}*/
 		if (selectedNodes.size() > 0) {
 			canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {

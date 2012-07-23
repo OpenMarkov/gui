@@ -15,11 +15,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNode;
 
 
 
@@ -120,12 +125,37 @@ public class NodePopup extends PopupMenuBasic {
 	 * 
 	 * @param newListener
 	 *            object that listens to the menu events.
+	 * @param panel 
+	 * @param selectedNode 
 	 */
-	public NodePopup(ActionListener newListener) {
+	public NodePopup(ActionListener newListener, VisualNode selectedNode, EditorPanel panel) {
 
 		super(newListener);
 
 		initialize();
+		
+        if (selectedNode.getProbNode ().getNodeType ().equals (NodeType.DECISION))
+        {
+            if (panel.getNetworkPanel ().getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
+            {
+                setPopupDecisionNodeInEditionMode ();
+            }
+            else
+            {
+                if (panel.getEvidenceCasesCompilationState (panel.getCurrentCase ()))
+                {
+                    setPopupDecisionNodeInCompiledInferenceMode ();
+                }
+                else
+                {
+                    setPopupDecisionNodeInNotCompiledInferenceMode ();
+                }
+            }
+        }
+        else
+        {
+            setDefaultPopupNode ();
+        }
 
 	}
 

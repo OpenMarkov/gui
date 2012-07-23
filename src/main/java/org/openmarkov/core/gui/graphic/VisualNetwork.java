@@ -14,25 +14,23 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.event.UndoableEditEvent;
 
+import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNESupport;
+import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
-import org.openmarkov.core.gui.graphic.prm.VisualInstanceLink;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.prm.InstanceLink;
-import org.openmarkov.core.model.network.prm.InstanceNode;
 
 
 
@@ -52,7 +50,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * Network whose visual representation is managed by this object.
 	 */
-	private ProbNet probNet = null;
+	protected ProbNet probNet = null;
 	
 	/**
 	 * Editor panel associated to this network.
@@ -69,50 +67,41 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * List of visual nodes.
 	 */
-	private ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
+	protected ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
 
 	/**
 	 * List of visual links.
 	 */
-	private ArrayList<VisualLink> visualLinks = new ArrayList<VisualLink>();
-	
-	/**
-	 * HashMap of visual instances.
-	 */
-	private HashMap<String, VisualInstance> visualInstances = new HashMap<String, VisualInstance>();
-
-	/**
-	 * List of visual instance links.
-	 */
-	private ArrayList<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
+	protected ArrayList<VisualLink> visualLinks = new ArrayList<VisualLink>();
 
 	/**
 	 * Set of selected nodes.
 	 */
-	private HashSet<VisualNode> selectedNodes = new HashSet<VisualNode>();
+	protected HashSet<VisualNode> selectedNodes = new HashSet<VisualNode>();
 
 	/**
 	 * Set of selected links.
 	 */
-	private HashSet<VisualLink> selectedLinks = new HashSet<VisualLink>();
+	protected HashSet<VisualLink> selectedLinks = new HashSet<VisualLink>();
 	
-	/**
-	 * Set of selected links.
-	 */
-	private HashSet<VisualInstance> selectedInstances = new HashSet<VisualInstance>();	
+    /**
+     * This object represents the arrow that is painted when a new link is being
+     * created.
+     */
+    protected VisualArrow newLink = null;
 
-	/**
-	 * This variable indicates if any node has change its selection state.
-	 */
-	private boolean changedSelectionStateNode = false;
-
+    /**
+     * This object represents the source node of a new link.
+     */
+    protected VisualNode newLinkSource = null;
+    
 	/**
 	 * Listener to the selection.
 	 */
 	private HashSet<SelectionListener> selectionListeners =
 		new HashSet<SelectionListener>();
 
-	private Graphics2D g2;
+	protected Graphics2D g2;
 
 	//private LinkWrapper linkWrapper;
 	/**
@@ -177,7 +166,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * only creates visual information for the new nodes and links and delete
 	 * the visual representation of the nodes and links that don't exist.
 	 */
-	private void constructVisualInfo() {
+	protected void constructVisualInfo() {
 
 		ArrayList<ProbNode> nodes = null;
 		ArrayList<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
@@ -255,20 +244,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 			}
 		}
 		
-		// construct visual instances
-		visualInstances.clear();
-		for(String instanceName : probNet.getInstances().keySet())
-		{
-			visualInstances.put(instanceName, new VisualInstance(probNet.getInstances().get(instanceName), visualNodes));
-		}	
-		// construct visual instance links
-		visualInstanceLinks.clear();
-		for(InstanceLink link : probNet.getInstanceLinks())
-		{
-			VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
-			VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
-			visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
-		}
 	}
 
 	/**
@@ -390,12 +365,13 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param g
 	 *            the graphics context in which to paint.
 	 */
-	private void paintNodes(Graphics2D g) {
-		VisualNode visualNode = null;
+	protected void paintNodes(Graphics2D g) {
 		visualNodes = reorderVisualNodes();
 		for (int i = (visualNodes.size() - 1); i >= 0; i--) {
-			visualNode = visualNodes.get(i);
-			visualNode.paint(g);
+			if(visualNodes.get(i).isVisible ())
+			{
+			    visualNodes.get(i).paint(g);
+			}
 		}
 	}
 
@@ -405,41 +381,13 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param g
 	 *            the graphics context in which to paint.
 	 */
-	private void paintLinks(Graphics2D g) {
+	protected void paintLinks(Graphics2D g) {
 
 		for (VisualLink visualLink : visualLinks) {
 			visualLink.paint(g);
 		}
 
-	}
-	
-	/**
-	 * Paints the instances.
-	 * 
-	 * @param g
-	 *            the graphics context in which to paint.
-	 */
-	private void paintInstances(Graphics2D g) {
-
-		for (VisualInstance visualInstance : visualInstances.values()) {
-			visualInstance.paint(g);
-		}
-
-	}
-	
-	/**
-	 * Paints the instance links.
-	 * 
-	 * @param g
-	 *            the graphics context in which to paint.
-	 */
-	private void paintInstanceLinks(Graphics2D g) {
-
-		for (VisualInstanceLink visualInstanceLink : visualInstanceLinks) {
-			visualInstanceLink.paint(g);
-		}
-
-	}		
+	}	
 	
 
 	/**
@@ -450,11 +398,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	public void paint(Graphics2D g) {
         this.g2 = g ;
-        paintInstances(g);
-        paintInstanceLinks(g);
 		paintLinks(g);
 		paintNodes(g);
-
+        if (newLink != null)
+        {
+            newLink.paint (g);
+        }
 	}
 
 	/**
@@ -485,23 +434,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 	
-	public VisualInstance whatInstanceInPosition(
-			java.awt.geom.Point2D.Double position, Graphics2D g) {
-		
-		VisualInstance instance = null;
-		VisualInstance instanceFound = null;
-
-		Iterator<VisualInstance> iterator = visualInstances.values().iterator();
-		while ((instanceFound == null) && iterator.hasNext()) {
-			instance = iterator.next();
-			if (instance.pointInsideShape(position, g)) {
-				instanceFound = instance;
-			}
-		}
-
-		return instanceFound;
-	}	
-		
 	/**
 	 * Checks if is there a inner box in a position.
 	 * 
@@ -604,20 +536,15 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @return if a selected element is there in the position, returns the
 	 *         element, else returns null.
 	 */
-	public VisualElement whatElementInPosition(Point2D.Double position,
-												Graphics2D g) {
-
-		VisualElement elementSelected = null;
-
-		if ((elementSelected = whatInstanceInPosition(position, g)) == null) {
-			if ((elementSelected = whatNodeInPosition(position, g)) == null) {
-				elementSelected = whatLinkInPosition(position, g);
-			}
-		}
-
-		return elementSelected;
-
-	}
+    public VisualElement whatElementInPosition (Point2D.Double position, Graphics2D g)
+    {
+        VisualElement elementSelected = null;
+        if ((elementSelected = whatNodeInPosition (position, g)) == null)
+        {
+            elementSelected = whatLinkInPosition (position, g);
+        }
+        return elementSelected;
+    }
 
 	/**
 	 * Sets the selection state of an element.
@@ -627,7 +554,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param selected
 	 *            new selection state.
 	 */
-	private void setSelectedElement(VisualElement element, boolean selected) {
+	protected void setSelectedElement(VisualElement element, boolean selected) {
 
 		if (selected != element.isSelected()) {
 			if (element instanceof VisualNode) {
@@ -636,20 +563,13 @@ public class VisualNetwork implements PNUndoableEditListener {
 				} else {
 					selectedNodes.remove(element);
 				}
-				changedSelectionStateNode = true;
 			} else if (element instanceof VisualLink){
 				if (selected) {
 					selectedLinks.add((VisualLink) element);
 				} else {
 					selectedLinks.remove(element);
 				}
-			} else {
-				if (selected) {
-					selectedInstances.add((VisualInstance) element);
-				} else {
-					selectedInstances.remove(element);
-				}
-			}
+			} 
 			notifyObjectsSelected();
 			element.setSelected(selected);
 		}
@@ -735,43 +655,6 @@ public class VisualNetwork implements PNUndoableEditListener {
     }	
     
 	/**
-	 * Sets the selection state of an instance.
-	 * 
-	 * @param node
-	 *            node to be selected/deselected.
-	 * @param selected
-	 *            new selection state.
-	 */
-	public void setSelectedInstance(VisualInstance instance, boolean selected) {
-
-		setSelectedElement(instance, selected);
-	}
-	
-	/**
-	 * Sets the selection state of a node identified by its name.
-	 * 
-	 * @param name
-	 *            name of the node to be selected/deselected.
-	 * @param selected
-	 *            new selection state.
-	 */
-	public void setSelectedInstance(String name, boolean selected) {
-
-		boolean found = false;
-		int i = 0;
-
-		while (!found && i < visualInstances.size()) {
-			if (visualInstances.get(i).getName().equals(name)) {
-				setSelectedElement(visualInstances.get(i), selected);
-				found = true;
-			} else {
-				i++;
-			}
-		}
-	}
-
-
-	/**
 	 * Selects all nodes.
 	 * 
 	 * @param selected
@@ -810,25 +693,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 	
 	/**
-	 * Selects all instances.
-	 * 
-	 * @param selected
-	 *            new selection state.
-	 */
-	public void setSelectedAllInstances(boolean selected) {
-
-		for (VisualInstance instance : visualInstances.values()) {
-			setSelectedElement(instance, selected);
-		}
-
-		if(!selected)
-		{
-			selectedInstances.clear();
-		}
-		
-	}	
-
-	/**
 	 * Selects all nodes and links.
 	 * 
 	 * @param selected
@@ -838,8 +702,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		setSelectedAllNodes(selected);
 		setSelectedAllLinks(selected);
-		setSelectedAllInstances(selected);
-
 	}
 
 	/**
@@ -898,6 +760,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
+    /**
+     * Move the selected elements an amount in both axis.
+     * @param diffX X-axis movement.
+     * @param diffY Y-axis movement.
+     */
+    public void moveSelectedElements (double diffX, double diffY)
+    {
+        moveSelectedNodes(diffX, diffY);
+    }	
+	
 	/**
 	 * Move the selected nodes an amount in both axis.
 	 * 
@@ -906,7 +778,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param diffY
 	 *            Y-axis movement.
 	 */
-	public void moveSelectedNodes(double diffX, double diffY) {
+	protected void moveSelectedNodes(double diffX, double diffY) {
 
 		moveNodes(diffX, diffY, true);
 
@@ -920,33 +792,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param diffY
 	 *            Y-axis movement.
 	 */
-	public void moveAllNodes(double diffX, double diffY) {
+	protected void moveAllNodes(double diffX, double diffY) {
 
 		moveNodes(diffX, diffY, false);
 
 	}
 	
-	/**
-	 * Move the selected nodes an amount in both axis.
-	 * 
-	 * @param diffX
-	 *            X-axis movement.
-	 * @param diffY
-	 *            Y-axis movement.
-	 */
-	public void moveSelectedInstances(double diffX, double diffY) {
-
-		for (VisualInstance instance : visualInstances.values()) {
-			if (instance.isSelected()) {
-				instance.move(diffX, diffY);
-				if(g2!=null)
-				{
-				    instance.paint((Graphics2D) g2);
-				}
-			}
-		}
-	}	
-
 	/**
 	 * Selects the nodes and links that are inside the selection rectangle and deselects
 	 * the ones that are outside.
@@ -961,7 +812,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	    // Select nodes
 	    ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode> (); 
 		for (VisualNode node : visualNodes) {
-		    if(selection.containsNode(node) && !(node.getProbNode() instanceof InstanceNode)){
+		    if(selection.containsNode(node)){
 		        setSelectedElement(node, true);
 		        selectedVisualNodes.add (node);
 		    }
@@ -971,13 +822,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 		{
 		    setSelectedElement(selectedLink, true);
 		}
-		
-		for (VisualInstance instance : visualInstances.values()) {
-		    if(selection.containsInstance(instance)){
-		        setSelectedElement(instance, true);
-		    }
-		}		
-
 	}
 
 	/**
@@ -1030,9 +874,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @return list where are the moved nodes information.
 	 */
-	public ArrayList<VisualNode> fillVisualNodesSelected() {
+	public List<VisualNode> fillVisualNodesSelected() {
 
-		ArrayList<VisualNode> movedNodes = new ArrayList<VisualNode>();
+		List<VisualNode> movedNodes = new ArrayList<>();
 
 		for (VisualNode node : visualNodes) {
 			if (node.isSelected()) {
@@ -1042,22 +886,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		return movedNodes;
 
-	}
-	
-	/**
-	 * Returns the list of nodes belonging to the selected instances
-	 * 
-	 * @return
-	 */
-	public ArrayList<VisualNode> getVisualNodesOfSelectedInstances() {
-		ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
-
-		for (VisualInstance instance : visualInstances.values()) {
-			if (instance.isSelected()) {
-				visualNodes.addAll(instance.getVisualNodes());
-			}
-		}
-		return visualNodes;
 	}
 	
 	/**
@@ -1078,7 +906,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @param onlyBothEnds returns only those links whose two ends are selected
      * @return a list of links related to the nodes.
      */
-    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes, boolean onlyBothEnds)
+    public List<VisualLink> getLinksOfNodes (List<VisualNode> nodes, boolean onlyBothEnds)
     {
         ArrayList<VisualLink> links = new ArrayList<VisualLink> ();
         int i, l = nodes.size ();
@@ -1115,7 +943,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @param nodes list of nodes whose links are returned.
      * @return a list of links related to the nodes.
      */
-    public ArrayList<VisualLink> getLinksOfNodes (ArrayList<VisualNode> nodes)
+    public List<VisualLink> getLinksOfNodes (List<VisualNode> nodes)
     {
         return getLinksOfNodes (nodes, false);
     }
@@ -1155,17 +983,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 	
 	/**
-	 * This method returns a list containing the selected instances.
-	 * 
-	 * @return a list containing the selected instances.
-	 */
-	public ArrayList<VisualInstance> getSelectedInstances() {
-
-		return new ArrayList<VisualInstance>(selectedInstances);
-
-	}	
-
-	/**
 	 * Returns the number of selected nodes.
 	 * 
 	 * @return number of selected nodes.
@@ -1196,7 +1013,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		for (SelectionListener listener : selectionListeners) {
 			listener.objectsSelected(
-				getSelectedNodes(), getSelectedLinks(), getSelectedInstances());
+				getSelectedNodes(), getSelectedLinks());
 		}
 	}
 
@@ -1390,5 +1207,116 @@ public class VisualNetwork implements PNUndoableEditListener {
 			constructVisualInfo();
 		}
 	}
-	
+
+	/**
+	 * Adds whatever is in that position to the selection
+	 * @param cursorPosition
+	 * @param g
+	 */
+    public void addToSelection (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
+    {
+        VisualNode node = null;
+        VisualLink link = null;
+        
+        if ((node = whatNodeInPosition (cursorPosition, g)) != null)
+        {
+            setSelectedNode (node, !node.isSelected ());
+        }
+        else if ((link = whatLinkInPosition (cursorPosition, g)) != null)
+        {
+            setSelectedLink (link, !link.isSelected ());
+        }
+    }
+
+    /**
+     * Cleans selection and sets it to whatever is in the cursorPosition
+     * @param cursorPosition
+     * @param g
+     * @return true if there is an element in the position
+     */
+    public VisualElement select (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
+    {
+        VisualNode node = null;
+        VisualLink link = null;
+        VisualElement selectedElement = null;
+        if ((node = whatNodeInPosition (cursorPosition, g)) != null)
+        {
+            if (!node.isSelected ())
+            {
+                setSelectedAllObjects (false);
+                setSelectedNode (node, true);
+            }
+            selectedElement = node;
+        }
+        else if ((link = whatLinkInPosition (cursorPosition, g)) != null)
+        {
+            if (!link.isSelected ())
+            {
+                setSelectedAllObjects (false);
+                setSelectedLink (link, true);
+            }
+            selectedElement = link;
+        }
+        else
+        {
+            setSelectedAllObjects (false);
+        } 
+        return selectedElement;
+    }
+
+    /**
+     * Starts link creation
+     * @param cursorPosition
+     * @param g
+     */
+    public void startLinkCreation (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
+    {
+        VisualNode node = null;
+        
+        if ((node = whatNodeInPosition (cursorPosition, g)) != null)
+        {
+            newLink = new VisualArrow (node.getPosition (), cursorPosition);
+            newLinkSource = node;
+        }  
+    }
+
+    public void updateLinkCreation (java.awt.geom.Point2D.Double position)
+    {
+        if(newLink!=null)
+        {
+            newLink.setEndPoint(position);
+        }
+    }
+
+    /**
+     * Finishes link creation and returns edit for the new link
+     * @param point
+     * @param g
+     * @return
+     */
+    public PNEdit finishLinkCreation (java.awt.geom.Point2D.Double point, Graphics2D g)
+    {
+        PNEdit linkEdit = null;
+        if (newLink != null)
+        {
+            newLink = null;
+            VisualNode newLinkDestination = null;
+            if ((newLinkDestination = whatNodeInPosition (point, g)) != null
+                && newLinkSource != null)
+            {
+                if (!newLinkSource.equals (newLinkDestination))
+                {
+                    try {
+                        linkEdit = new AddLinkEdit(probNet,
+                                probNet.getVariable(newLinkSource
+                                        .getProbNode().getName()),
+                                probNet.getVariable(newLinkDestination
+                                        .getProbNode().getName()), true);
+                    } catch (ProbNodeNotFoundException e1) {/* Cannot happen */
+                    }
+                }
+            }
+        }
+        return linkEdit;
+    }
 }

@@ -16,7 +16,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.model.network.ProbNode;
 
 
@@ -207,16 +206,12 @@ public class SelectionRectangle {
 	}
 
 	/**
-	 * Tests if the selection rectangle contains a certain instance.
+	 * Tests if the selection rectangle contains a certain rectangle.
 	 * 
-	 * @param instance
-	 *            instance to be tested.
-	 * @return true if the center of the node is contained into the rectangle;
+	 * @return true if the whole ractangle is contained into the rectangle;
 	 *         otherwise, false.
 	 */	
-	public boolean containsInstance(VisualInstance instance) {
-		return rectangleSelection.contains(instance.getCoordinateX(),instance.getCoordinateY()) && 
-				rectangleSelection.contains(instance.getCoordinateX() + instance.getWidth(),
-											instance.getCoordinateY() + instance.getHeight());
+	public boolean containsRectangle(double x, double y, double width, double height) {
+		return rectangleSelection.contains(x,y) && rectangleSelection.contains(x + width, y + height);
 	}
 }

@@ -10,13 +10,13 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
-import org.openmarkov.core.action.prm.RemoveInstanceEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -24,7 +24,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 
@@ -36,9 +35,9 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  */
 public class RemoveSelectedEdit extends CompoundPNEdit
 {
-    private ArrayList<VisualNode> nodesToRemove;
-    private ArrayList<VisualLink> linksToRemove;
-    private ArrayList<VisualInstance> instancesToRemove;
+    private List<VisualNode> nodesToRemove;
+    private List<VisualLink> linksToRemove;
+   //TODO OOBN private List<VisualInstance> instancesToRemove;
 
     private StringResource messageStringResource;
 
@@ -51,7 +50,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     {
         super (visualNetwork.getNetwork ());
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
-        this.instancesToRemove = visualNetwork.getSelectedInstances();
+      //TODO OOBN this.instancesToRemove = null;//TODO OOBN visualNetwork.getSelectedInstances();
         
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
                 visualNetwork.getLinksOfNodes (this.nodesToRemove));
@@ -86,11 +85,12 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         for (VisualNode node : nodesToRemove) {
             edits.add ( new CRemoveProbNodeEdit( probNet, node.getProbNode ()));
         }
-        
+     
+        /* //TODO OOBN
         for(VisualInstance instance: instancesToRemove)
         {
         	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
-        }
+        } */
 
     }
     
@@ -104,10 +104,10 @@ public class RemoveSelectedEdit extends CompoundPNEdit
      * @return a list that is the result of an union operation of two lists of
      *         links.
      */
-    private ArrayList<VisualLink> union(ArrayList<VisualLink> list1,
-            ArrayList<VisualLink> list2) {
+    private List<VisualLink> union(List<VisualLink> list1,
+            List<VisualLink> list2) {
 
-        ArrayList<VisualLink> result = new ArrayList<VisualLink>();
+        List<VisualLink> result = new ArrayList<VisualLink>();
 
         result.addAll(list1);
         for (VisualLink o : list2) {

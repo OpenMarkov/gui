@@ -5,7 +5,7 @@
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core.gui</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Graphical User Interface core</name>
+	<name>org.openmarkov.core.gui</name>
 	<url>http://openmarkov.org/core/gui</url>
 
 	<properties>
@@ -97,6 +97,11 @@
          <artifactId>commons-io</artifactId>
          <version>1.3.2</version>
        </dependency>
+	 <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>org.openmarkov.core</artifactId>
+	  <version>${project.version}</version>
+	 </dependency>
 	</dependencies>
 	<repositories>
 		<repository>

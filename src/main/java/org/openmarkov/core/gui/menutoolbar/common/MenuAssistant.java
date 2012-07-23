@@ -9,6 +9,9 @@
 
 package org.openmarkov.core.gui.menutoolbar.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * This class implements the basic features of a class that assists to another
@@ -25,7 +28,7 @@ public class MenuAssistant {
 	 * Basic menus and toolbars. Only have the options to enabled, select a set
 	 * text.
 	 */
-	protected MenuToolBarBasic[] basicMenus = null;
+	protected List<MenuToolBarBasic> basicMenus = null;
 
 	/**
 	 * Constructor that registers the array of menus.
@@ -33,16 +36,29 @@ public class MenuAssistant {
 	 * @param newBasicMenus
 	 *            array of basic menus and toolbars.
 	 */
-	public MenuAssistant(MenuToolBarBasic[] newBasicMenus) {
+	public MenuAssistant(List<MenuToolBarBasic> newBasicMenus) {
 
-		MenuToolBarBasic[] menus = newBasicMenus;
-
-		if (menus == null) {
-			menus = new MenuToolBarBasic[0];
+		if (newBasicMenus == null) {
+		    basicMenus = new ArrayList<MenuToolBarBasic>();
+		}else
+		{
+		    basicMenus = newBasicMenus;
 		}
-		basicMenus = menus;
-
 	}
+	
+    public MenuAssistant(MenuToolBarBasic... newBasicMenus) {
+
+        basicMenus = new ArrayList<>();
+        for(MenuToolBarBasic newMenu : newBasicMenus)
+        {
+            basicMenus.add (newMenu);
+        }
+    }	
+    
+    public void addMenu(MenuToolBarBasic newBasicMenu)
+    {
+        basicMenus.add (newBasicMenu);
+    }
 
 	/**
 	 * Selects or unselects an option identified by an action command on the
@@ -73,7 +89,7 @@ public class MenuAssistant {
 	public void setOptionEnabled(String actionCommand, boolean b) {
 
 		for (MenuToolBarBasic menu : basicMenus) {
-			menu.setOptionEnabled(actionCommand, b);
+	        menu.setOptionEnabled(actionCommand, b);
 		}
 
 	}

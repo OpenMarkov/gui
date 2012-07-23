@@ -344,7 +344,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			this.getCurrentNetworkPanel().enableRevelationArc();
 		} else if (actionCommand
 				.equals(ActionCommands.INSTANCE_INPUT)) {
-			this.getCurrentNetworkPanel().markSelectedInstancesAsInput();
+			//TODO OOBN this.getCurrentNetworkPanel().markSelectedInstancesAsInput();
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());

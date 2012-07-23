@@ -26,7 +26,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
-import org.openmarkov.core.gui.graphic.prm.VisualInstance;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
@@ -359,7 +358,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setWorkingMode(int workingMode) {
 		this.workingMode = workingMode;
-		editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? probNet.getPlainProbNet() : probNet);
+		//TODO OOBN editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? probNet.getPlainProbNet() : probNet);
 	}
 
 	/**
@@ -785,15 +784,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 	
 	/**
-	 * Returns a list containing the currently selected instances.
-	 * 
-	 * @return a list containing the currently selected instances.
-	 */
-	public ArrayList<VisualInstance> getSelectedInstances() {
-		return editorPanel.getSelectedInstances();
-	}	
-
-	/**
 	 * Selects or deselects all nodes of the network.
 	 * 
 	 * @param selected
@@ -1005,10 +995,5 @@ public class NetworkPanel extends FrameContentPanel implements
         // TODO Auto-generated method stub
         
     }
-
-	public void markSelectedInstancesAsInput() {
-		editorPanel.markSelectedInstancesAsInput();
-		
-	}
 
 }

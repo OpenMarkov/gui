@@ -1414,14 +1414,6 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 	
 		return evidence;
 	}
-
-	private JPopupMenu getPopupMenu(){
-		if ( popupMenuFactory != null ){
-			return popupMenuFactory.getPopupMenu(3);
-		}
-		return null;
-	}
-
 	
 	public EvidenceCase getEvidenceCaseFromSelectedColumn(){
 		

@@ -14,9 +14,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import org.openmarkov.core.gui.constraint.LinkRestrictionValidator;
+import org.openmarkov.core.gui.constraint.RevelationArcValidator;
+import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.model.graph.Link;
 
 /**
  * This class implements a popup menu that is displayes when the user clicks on
@@ -69,13 +74,32 @@ class LinkPopup extends PopupMenuBasic {
 	 * 
 	 * @param newListener
 	 *            object that listens to the menu events.
+	 * @param panel 
+	 * @param selectedLink 
 	 */
-	public LinkPopup(ActionListener newListener) {
+	public LinkPopup(ActionListener newListener, VisualLink selectedLink, EditorPanel panel) {
 
 		super(newListener);
 
 		initialize();
+		Link link = selectedLink.getLink ();
+        boolean linkRestrictionEnabled = false;
+        if (LinkRestrictionValidator.validate(link)) {
+            linkRestrictionEnabled = true;
+        }
 
+        setOptionEnabled (ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
+                          (linkRestrictionEnabled && !link.hasRestrictions ()));
+        setOptionEnabled (ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
+                          (linkRestrictionEnabled && link.hasRestrictions ()));
+        setOptionEnabled (ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
+                          (linkRestrictionEnabled && link.hasRestrictions ()));
+        boolean revelationArcEnabled = false;
+        if (RevelationArcValidator.validate (link))
+        {
+            revelationArcEnabled = true;
+        }
+        setOptionEnabled (ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
 	}
 
 	/**

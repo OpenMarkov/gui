@@ -44,7 +44,6 @@ import org.openmarkov.core.model.network.type.DECPOMDPType;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
-import org.openmarkov.core.model.network.type.OOBNType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 
@@ -273,9 +272,9 @@ public class NetworkDefinitionPanel extends JPanel implements
 					dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 															+ NetworkType.DEC_POMDP.toString()),
-					dialogStringResource
+					/* TODO OOBN dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.OOBN.toString()),
+															+ NetworkType.OOBN.toString()),*/
                     dialogStringResource
                     .getString("NetworkDefinitionPanel.NetworkTypes.Items."
                                                             + NetworkType.TUNING.toString())															
@@ -663,12 +662,12 @@ public class NetworkDefinitionPanel extends JPanel implements
 							+ NetworkType.DEC_POMDP.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
 						DECPOMDPType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
+			}/* TODO OOBN else if (itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ NetworkType.OOBN.toString()))) {
 				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
 						OOBNType.getUniqueInstance());
-			}
+			}*/
 			if (changeNetworkType != null /*&& !itemSelected.equals(dialogStringResource
 					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 							+ probNet.getNetworkType().toString()))*/) {

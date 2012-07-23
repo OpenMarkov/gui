@@ -46,6 +46,12 @@ public abstract class VisualElement {
 	 * This variable determines if the element is selected.
 	 */
 	private boolean selected = false;
+	
+    /**
+     * This variable determines if the element is visible.
+     */
+    private boolean visible = true;
+	
 
 	/**
 	 * Returns if the element is selected of the screen.
@@ -63,12 +69,30 @@ public abstract class VisualElement {
 	 * @param value
 	 *            new selection state of the element.
 	 */
-	void setSelected(boolean value) {
+	public void setSelected(boolean value) {
 
 		selected = value;
 	}
 
 	/**
+     * Returns if the element is visible.
+     * @return the visible.
+     */
+    public boolean isVisible ()
+    {
+        return visible;
+    }
+
+    /**
+     * Sets the visibility of the element.
+     * @param visible the visible to set.
+     */
+    public void setVisible (boolean visible)
+    {
+        this.visible = visible;
+    }
+
+    /**
 	 * Determines if the point is inside the shape.
 	 * 
 	 * @param point
@@ -107,7 +131,7 @@ public abstract class VisualElement {
 		if ((fontMeter.getStringBounds(text, g).getWidth()) >= maxWidth) {
 			endText = "..." + text.substring(textLenght-endingLength, textLenght);
 			text = text + endText;
-			while ((fontMeter.getStringBounds(text, g).getWidth()) >= maxWidth) {
+			while ((fontMeter.getStringBounds(text, g).getWidth()) >= maxWidth && textLenght > 0) {
 				textLenght--;
 				text = text.substring(0,textLenght) + endText;
 			}

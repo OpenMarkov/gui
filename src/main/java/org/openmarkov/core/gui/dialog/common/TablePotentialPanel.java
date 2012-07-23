@@ -1263,13 +1263,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		}
 	}
 
-	private JPopupMenu getPopupMenu() {
-		if (popupMenuFactory != null) {
-			return popupMenuFactory.getPopupMenu(3);
-		}
-		return null;
-	}
-
 	/**
 	 * This method initializes uncertaintyPopup.
 	 * 
