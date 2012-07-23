@@ -112,14 +112,15 @@ class XMLProperties extends Properties {
             baseName.append(name);
             
             // See if we have an element value
-            if ((text == null) || (text.equals(""))) {
-                // If no text, recurse on children
-                loadFromElements(current.getChildren(),
-                                 baseName);
-            } else {                
-                // If text, this is a property
+            if ((text!=null)&&(!text.equals(""))){
+            	// If text, this is a property
                 setProperty(baseName.toString(), 
                             text);
+            }
+            // Look for in the children
+            List children = current.getChildren();
+            if (children!=null){
+            	loadFromElements(children,baseName);
             }            
             
             // On unwind from recursion, remove last name
