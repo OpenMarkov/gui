@@ -71,7 +71,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 		
 	}
 	
-	private ReorderVariablesPanel getReorderVariablesPanel() {
+	ReorderVariablesPanel getReorderVariablesPanel() {
 		if (reorderVariablesPanel == null) {
 			String[] columnNames = {"Key", "Names"};
 			reorderVariablesPanel = new ReorderVariablesPanel(columnNames, probNode);
@@ -83,6 +83,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog{
 		return reorderVariablesPanel;
 
 	}
+
 	
 	public void setFieldFromProperties (ProbNode probNode) {
 		ArrayList<Variable> variables = new ArrayList<Variable>();

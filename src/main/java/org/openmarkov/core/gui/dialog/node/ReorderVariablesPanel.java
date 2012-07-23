@@ -11,7 +11,6 @@ import javax.swing.table.TableColumn;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.ReorderVariableEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -19,13 +18,13 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.dialog.network.AdvancedPropertiesTableModel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 
 @SuppressWarnings("serial")
 public class ReorderVariablesPanel extends KeyTablePanel implements TableModelListener,PNUndoableEditListener{
@@ -36,6 +35,7 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 	private StringResource dialogStringResource;
 	private AdvancedPropertiesTableModel netWorkAgentstableModel;
 	private Object dataTable [][];
+	private ArrayList<Variable> newVariables = new ArrayList<>();
 	
 	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 	
@@ -153,42 +153,26 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 		dataTable[selectedRow][0] = dataTable[selectedRow-1][0];
 		dataTable[selectedRow-1][0] = swap; 
 		
-		ReorderVariableEdit reorderVariableEdit = new ReorderVariableEdit(probNode, dataTable, StateAction.UP);
-		
-		try {
-			probNode.getProbNet().getPNESupport().announceEdit(reorderVariableEdit);
-			probNode.getProbNet().doEdit(reorderVariableEdit);
-			edits.add(reorderVariableEdit);
-			setData(dataTable);
-			/*swap = valuesTable.getValueAt(selectedRow, 1);
-			valuesTable.setValueAt(
-				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
-			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
-			valuesTable.getSelectionModel().setSelectionInterval(
+		setData(dataTable);
+		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		}
+		
+		ArrayList<Variable> newVariablesDown = new ArrayList<Variable>();
+		for (int i = 0; i < dataTable.length; i++) {
+			for (int j = 0; j < probNode.getPotentials().get(0).getVariables().size(); j++) {
+				if ((String)dataTable[i][0] == probNode.getPotentials().get(0).getVariables().get(j).getName()) {
+					newVariablesDown.add(probNode.getPotentials().get(0).getVariables().get(j));
+				}
+			}
+		}
+		if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+			newVariables.add(probNode.getPotentials().get(0).getVariables().get(0));
+			newVariables.addAll(newVariablesDown);
+		} else if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) {
+			newVariables.addAll(newVariablesDown);
 		}
 		
 	}
@@ -199,44 +183,32 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 		swap = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow+1][0]; 
 		dataTable[selectedRow+1][0] = swap;
-		
-		ReorderVariableEdit reorderVariableEdit = new ReorderVariableEdit(probNode, dataTable, StateAction.DOWN);
-		
-		try {
-			probNode.getProbNet().getPNESupport().announceEdit(reorderVariableEdit);
-			probNode.getProbNet().doEdit(reorderVariableEdit);
-			edits.add(reorderVariableEdit);
-			setData(dataTable);
-			/*swap = valuesTable.getValueAt(selectedRow, 1);
-			valuesTable.setValueAt(
-				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
-			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
-			valuesTable.getSelectionModel().setSelectionInterval(
+		setData(dataTable);
+		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i,	1); 
+		
 		}
+		ArrayList<Variable> newVariablesDown = new ArrayList<Variable>();
+		for (int i = 0; i < dataTable.length; i++) {
+			for (int j = 0; j < probNode.getPotentials().get(0).getVariables().size(); j++) {
+				if ((String)dataTable[i][0] == probNode.getPotentials().get(0).getVariables().get(j).getName()) {
+					newVariablesDown.add(probNode.getPotentials().get(0).getVariables().get(j));
+				}
+			}
+		}
+		if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+			newVariables.add(probNode.getPotentials().get(0).getVariables().get(0));
+			newVariables.addAll(newVariablesDown);
+		} else if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) {
+			newVariables.addAll(newVariablesDown);
+		}
+	}
+	
+	public ArrayList<Variable> getVariables() {
+		return this.newVariables;
 	}
 
 	/**

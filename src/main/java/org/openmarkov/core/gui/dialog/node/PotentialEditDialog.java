@@ -539,6 +539,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 	protected void actionPerformedReorderVariables() {
 		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, probNode);
 		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+			ArrayList<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
+			
+			
 		/*	ArrayList<JRadioButton> buttons = ((VariablesCombinationPanel)reorderVariablesDialog.getVariablesCombinationPanel()).getRadioButtons();
 			ArrayList<Variable> currentVariables = probNode.getPotentials().get(0).getVariables();
 			ArrayList<Variable> reorderedVariables = new ArrayList<Variable>();
@@ -566,24 +569,25 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 			if (getPotentialPanel() instanceof TablePotentialPanel ) {
 			//if (probNode.getPotentials().get(0) instanceof TablePotential) {
 				try {
+					Potential potential =  DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), 
+							newVariables);
 					SetPotentialEdit potentialEdit = new SetPotentialEdit(probNode, 
-							DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), 
-									probNode.getPotentials().get(0).getVariables()));
+							potential);
 					
 					try {
 						
-					//	probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
+						probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
 						probNode.getProbNet().getPNESupport().doEdit(potentialEdit);
 						
 					} catch (DoEditException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-				/*	} catch (ConstraintViolationException e) {
+					} catch (ConstraintViolationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (CanNotDoEditException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();*/
+						e.printStackTrace();
 					} catch (NonProjectablePotentialException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -603,19 +607,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				
 			} else if (getPotentialPanel() instanceof ICIPotentialsTablePanel ) {
 				
-				ICIPotential iciPotential = (ICIPotential)probNode.getPotentials().get(0);
-				ArrayList<Variable> iciVariables = iciPotential.getVariables();
-				ArrayList<Variable> reorderedVariables = probNode.getPotentials().get(0).getVariables();
-				ArrayList<Variable> currentVariables = probNode.getPotentials().get(0).getVariables();
-				for (int i = 1; i < currentVariables.size(); i++) {
-					iciVariables.remove(i);
-					iciVariables.add (i, reorderedVariables.get(i));
-				}
 				
-				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(probNode, iciVariables);
+				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(probNode, newVariables);
 				try {
 					
-				//	probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
+					probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
 					probNode.getProbNet().getPNESupport().doEdit(setPotentialVariables);
 					
 				} catch (DoEditException e) {
@@ -624,12 +620,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				} catch (NotEnoughMemoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-			/*	} catch (ConstraintViolationException e) {
+				} catch (ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (CanNotDoEditException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();*/
+					e.printStackTrace();
 				} catch (NonProjectablePotentialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
