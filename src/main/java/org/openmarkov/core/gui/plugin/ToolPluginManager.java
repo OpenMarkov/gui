@@ -9,7 +9,6 @@
 
 package org.openmarkov.core.gui.plugin;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,32 +95,7 @@ public class ToolPluginManager
                     dialog = (JDialog) plugin.getConstructor (JFrame.class).newInstance (parent);
                     dialog.setEnabled (true);
                 }
-                catch (IllegalArgumentException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
-                catch (InvocationTargetException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
-                catch (NoSuchMethodException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
-                catch (SecurityException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
-                catch (InstantiationException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
-                catch (IllegalAccessException e)
+                catch (Exception e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace ();

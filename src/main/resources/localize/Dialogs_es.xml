@@ -200,17 +200,19 @@
   <NetworkDefinitionPanel>
     <NetworkTypes>
       <Items>
-        <INFLUENCE_DIAGRAM value="Diagrama de influencia" />
-        <SIMPLE_MARKOV_MODEL value="Modelo de Markov simple" />
+        <InfluenceDiagram value="Diagrama de influencia" />
+        <SMM value="Modelo de Markov simple" />
         <POMDP value="POMDP" />
-        <TUNING value="Red de ajustes" />
-        <MARKOV_NET value="Red de Markov" />
+        <TuningNetwork value="Red de ajustes" />
+        <MarkovNetwork value="Red de Markov" />
         <DAN value="Red de análisis de decisiones" />
-        <CHAIN_GRAPH value="Grafo encadenado" />
+        <DBN value="Red bayesiana dinámica" />
+        <DynamicLIMID value="LIMID dinámico" />
+        <LIMID value="LIMID" />
         <OOBN value="OOBN" />
-        <BAYESIAN_NET value="Red bayesiana" />
+        <BayesianNetwork value="Red bayesiana" />
         <DEC_POMDP value="Dec-POMDP" />
-        <MARKOV_DECISION_PROCESS value="Proceso de decisión de Markov" />
+        <MDP value="Proceso de decisión de Markov" />
       </Items>
       <Mnemonic value="t" />
       <Text value="Tipo de red:" />

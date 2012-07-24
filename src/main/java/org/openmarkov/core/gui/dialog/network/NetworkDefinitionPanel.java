@@ -13,6 +13,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -36,68 +40,25 @@ import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.NetworkType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.DECPOMDPType;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.MDPType;
-import org.openmarkov.core.model.network.type.POMDPType;
-import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 
 /**
  * Panel to set the definition of a network. It will have no title field, a
  * TypeNetwork group (with two radio buttons) and a HTML comment text field
  * 
  * @author jlgozalo
- * @version 1.0 jlgozalo
+ * @version 1.1 ibermejo
  */
 public class NetworkDefinitionPanel extends JPanel implements 
 		PropertyNames, CommentListener, ActionListener {
 
-	/*
-	 * /** default constructor without construction parameters to allow GUI
-	 * builders to do visual representation
-	 * 
-	 * public NetworkDefinitionPanel() {
-	 * 
-	 * dialogStringResource =
-	 * StringResourceLoader.getUniqueInstance().getBundleDialogs();
-	 * networkProperties = new NetworkProperties();
-	 * setName("NetworkDefinitionPanel"); initialize(); }
-	 */
-
 	private ProbNet probNet;
-
-	private String comment = null;
-
-	
 	private StringResource messageStringResource;
 	private JDialog parent;
-	/**
-	 * This method initialises this instance.
-	 * 
-	 * @param newNetwork
-	 *            to indicate if the panel is for new networks
-	 * @wbp.parser.constructor
-	 */
-	public NetworkDefinitionPanel(final boolean newNetwork, JDialog parent) {
-
-		dialogStringResource = StringResourceLoader.getUniqueInstance()
-				.getBundleDialogs();
-
-		messageStringResource =	
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-
-		this.newNetwork = newNetwork;
-		this.parent = parent;
-		setName("NetworkDefinitionPanel");
-		initialize();
-
-	}
-
+	private NetworkTypeManager networkTypeManager;
+	
 	/**
 	 * This method initialises this instance.
 	 * 
@@ -114,8 +75,8 @@ public class NetworkDefinitionPanel extends JPanel implements
 		this.newNetwork = newNetwork;
 		this.parent = parent;
 		setName("NetworkDefinitionPanel");
+        networkTypeManager = new NetworkTypeManager (); 
 		initialize();
-
 	}
 
 	/**
@@ -245,53 +206,32 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 * 
 	 * @return jComboBoxNetworkTypes the comboBox of the Network Types field
 	 */
-	private JComboBox getJComboBoxNetworkTypes() {
+	private JComboBox<String> getJComboBoxNetworkTypes() {
 
 		if (jComboBoxNetworkTypes == null) {
+		    Set<String> networkTypeNames = networkTypeManager.getNetworkTypeNames ();
+			List<String> networkTypes = new ArrayList<>(networkTypeNames.size ());
 			
-			String []networkTypes = {
-					
-					dialogStringResource.
-						getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.BAYESIAN_NET.toString()),
-					dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()),
-					dialogStringResource
-							.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-									+ NetworkType.INFLUENCE_DIAGRAM.toString()),
-					dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.MARKOV_DECISION_PROCESS.toString()),
-					dialogStringResource
-								.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-													+ NetworkType.POMDP.toString()),
-					dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.DAN.toString()),
-					dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.DEC_POMDP.toString()),
-					/* TODO OOBN dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-															+ NetworkType.OOBN.toString()),*/
-                    dialogStringResource
-                    .getString("NetworkDefinitionPanel.NetworkTypes.Items."
-                                                            + NetworkType.TUNING.toString())															
-															
-			
-			};
-			jComboBoxNetworkTypes = new JComboBox(networkTypes);
+			for(String networkType : networkTypeNames)
+			{
+			    networkTypes.add (dialogStringResource.getString("NetworkDefinitionPanel.NetworkTypes.Items." + networkType));
+			}
+			Collections.sort (networkTypes);
+			String[] networkTypeArray = new String[networkTypes.size ()];
+			networkTypes.toArray(networkTypeArray);
+			jComboBoxNetworkTypes = new JComboBox<String>(networkTypeArray);
 			jComboBoxNetworkTypes.setName("jComboBoxNetworkTypes");
 			jComboBoxNetworkTypes.setEditable(false);
 			//
 			if (newNetwork) {
 				//jComboBoxNetworkTypes.setSelectedItem(networkTypes[0]);
-				jComboBoxNetworkTypes.addActionListener((ActionListener) this);	
+				jComboBoxNetworkTypes.addActionListener((ActionListener) this);
+				// Set Bayesian Network as default
+				jComboBoxNetworkTypes.setSelectedItem (dialogStringResource.getString("NetworkDefinitionPanel.NetworkTypes.Items.BayesianNetwork"));
 			} else if (!newNetwork) {
 				jComboBoxNetworkTypes.setSelectedItem(dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-								+ probNet.getNetworkType().toString().toString()));
+								+ networkTypeManager.getName (probNet.getNetworkType())));
 				jComboBoxNetworkTypes.addActionListener((ActionListener) this);		
 			}
 		}
@@ -353,61 +293,13 @@ public class NetworkDefinitionPanel extends JPanel implements
 	public void setFieldsFromProperties(ProbNet network) {
 
 		getJComboBoxNetworkTypes().removeActionListener(this);
-
-		if (network.hasConstraint(BayesianNetworkType.class)) {
-
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.BAYESIAN_NET
-													.toString()));
-
-		} else if (network.hasConstraint(InfluenceDiagramType.class)) {
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.INFLUENCE_DIAGRAM
-													.toString()));
-
-		} else if (network.hasConstraint(InfluenceDiagramType.class)) {
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.DAN.toString()));
-
-		} else if (network.hasConstraint(SimpleMarkovModelType.class)) {
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.SIMPLE_MARKOV_MODEL
-													.toString()));
-		} else if (network.hasConstraint(MDPType.class)) {
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.MARKOV_DECISION_PROCESS
-													.toString()));
-		} else if (network.hasConstraint(POMDPType.class)) {
-			getJComboBoxNetworkTypes()
-					.setSelectedItem(
-							dialogStringResource
-									.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-											+ NetworkType.POMDP.toString()));
-		}
+		getJComboBoxNetworkTypes()
+				.setSelectedItem(
+						dialogStringResource
+								.getString("NetworkDefinitionPanel.NetworkTypes.Items."
+										+ networkTypeManager.getName (probNet.getNetworkType())));
 
 		getJComboBoxNetworkTypes().addActionListener(this);
-
-		/*
-		 * case CHAIN_GRAPH: { getJComboBoxNetworkTypes().setSelectedItem(
-		 * dialogStringResource
-		 * .getString("NetworkDefinitionPanel.NetworkTypes.Items." +
-		 * NetworkType.CHAIN_GRAPH.toString())); break; } }
-		 */
 
 		// set the title for comment
 		MessageFormat messageForm = new MessageFormat(
@@ -454,7 +346,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 	/**
 	 * The Network Types Combo Box Drop Down List
 	 */
-	private JComboBox jComboBoxNetworkTypes = null;
+	private JComboBox<String> jComboBoxNetworkTypes = null;
 	/**
 	 * The Network Definition Comment Label
 	 */
@@ -474,143 +366,17 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 */
 	private boolean newNetwork = false;
 
-/*	public void itemStateChanged(ItemEvent iE) {
-		ItemSelectable itemSelectable = iE.getItemSelectable();
-
-		Object selected[] = itemSelectable.getSelectedObjects();
-		String itemSelected = selected.length == 0 ? "null"
-				: (String) selected[0];
-		if (!(itemSelected == null)) {
-			ChangeNetworkTypeEdit changeNetworkType = null;
-			if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.BAYESIAN_NET.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						BayesianNetworkType.getUniqueInstance());
-
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.INFLUENCE_DIAGRAM.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						InfluenceDiagramType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.DAN.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						DecisionAnalysisNetworkType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						SimpleMarkovModelType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.MARKOV_DECISION_PROCESS.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						MDPType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.POMDP.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						POMDPType.getUniqueInstance());
-			}
-			if (changeNetworkType != null)
-				try {
-					probNet.getPNESupport().announceEdit(changeNetworkType);
-					probNet.getPNESupport().doEdit(changeNetworkType);
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
-			;
-		}
-
-	}*/
-
 	public void commentHasChanged() {
 
 		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet,
 				getCommentHTMLScrollPaneNetworkDefinition().getCommentText());
 		try {
-			probNet.getPNESupport().announceEdit(networkCommentEdit);
-			probNet.getPNESupport().doEdit(networkCommentEdit);
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
+			probNet.doEdit(networkCommentEdit);
+        }
+        catch (ConstraintViolationException | CanNotDoEditException | DoEditException
+                | NotEnoughMemoryException | NonProjectablePotentialException
+                | WrongCriterionException e)
+        {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, messageStringResource
 					.getString( e.getMessage() ),
@@ -622,98 +388,43 @@ public class NetworkDefinitionPanel extends JPanel implements
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String itemSelected  = (String) jComboBoxNetworkTypes.getSelectedItem(); 
-		if (!(itemSelected == null) /*&& !itemSelected.equals(dialogStringResource
-				.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-						+ probNet.getNetworkType().toString()))*/ ) {
-			ChangeNetworkTypeEdit changeNetworkType = null;
-			if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.BAYESIAN_NET.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						BayesianNetworkType.getUniqueInstance());
+		if (!(itemSelected == null)) {
+			org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
+			for(String networkTypeName : networkTypeManager.getNetworkTypeNames ())
+			{
+			    if(itemSelected.equals(dialogStringResource
+			                           .getString("NetworkDefinitionPanel.NetworkTypes.Items."
+			                                   + networkTypeName)))
+			    {
+			        selectedNetworkType = networkTypeManager.getNetworkType (networkTypeName);
+			    }
+			}
+			
 
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.INFLUENCE_DIAGRAM.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						InfluenceDiagramType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.DAN.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						DecisionAnalysisNetworkType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.SIMPLE_MARKOV_MODEL.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						SimpleMarkovModelType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.MARKOV_DECISION_PROCESS.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						MDPType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.POMDP.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						POMDPType.getUniqueInstance());
-			} else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.DEC_POMDP.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						DECPOMDPType.getUniqueInstance());
-			}/* TODO OOBN else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ NetworkType.OOBN.toString()))) {
-				changeNetworkType = new ChangeNetworkTypeEdit(probNet,
-						OOBNType.getUniqueInstance());
-			}*/
-			if (changeNetworkType != null /*&& !itemSelected.equals(dialogStringResource
-					.getString("NetworkDefinitionPanel.NetworkTypes.Items."
-							+ probNet.getNetworkType().toString()))*/) {
+			if (selectedNetworkType != null) {
+			    ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
 				try {
-					probNet.getPNESupport().announceEdit(changeNetworkType);
-					probNet.getPNESupport().doEdit(changeNetworkType);
+					probNet.doEdit(changeNetworkType);
+
+					((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled((probNet.getAgents() != null));
 					
-					if (probNet.getAgents() == null) {
-						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled(false);
-					} else if (probNet.getAgents() != null) {
-						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled(true);
-					}
+					((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled((probNet.onlyChanceNodes()));
 					
-					if (!probNet.onlyChanceNodes()) {
-						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled(true);
-					} else if (probNet.onlyChanceNodes()) {
-						((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled(false);
-					}
-					
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
+                }
+                catch (NotEnoughMemoryException | ConstraintViolationException
+                        | CanNotDoEditException | NonProjectablePotentialException
+                        | WrongCriterionException e)
+                {
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString( e.getMessage() ),
 						messageStringResource.getString( e.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
 
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
 				} catch (DoEditException e) {
 					// TODO maintain comboBox with the current probNet
 					
 					e.printStackTrace();
-					String message = e.getMessage();
 					//if (!newNetwork){
 						JOptionPane.showMessageDialog(this,  e.getMessage() ,
 							e.getMessage() ,
@@ -724,22 +435,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 										+ probNet.getNetworkType().toString().toString()));
 					//}
 					
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
-			
+				} 
 			}
 			
 		}
