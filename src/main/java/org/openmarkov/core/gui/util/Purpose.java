@@ -146,6 +146,9 @@ public class Purpose {
 	 */
 	public static int getIndex(String element) {
 
+       if (list == null) {
+            fillList();
+        }
 		int index = list.indexOf(element);
 
 		if (index == -1) {

@@ -2085,7 +2085,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				networkChanged = false;
 			} else {
 				if (evidenceCasesCompilationState.get(currentCase) == false) {
-					if(doPropagation(postResolutionEvidence.get(currentCase), currentCase))
+					if(!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
 						setPropagationActive(false);
 				}
 			}

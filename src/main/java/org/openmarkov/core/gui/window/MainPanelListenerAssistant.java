@@ -702,7 +702,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private String requestNetworkFileToSave(String suggestedFileName) {
 
-		FileChooser fileChooser = new FileChooser();
+		FileChooser fileChooser = new FileChooser(false);
 
 		fileChooser.setDialogTitle(messagesStringResource
 				.getString("SaveNetwork.Title.Label"));

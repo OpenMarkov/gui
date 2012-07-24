@@ -70,7 +70,7 @@ public class FileChooser extends JFileChooser {
 	 * Creates a new file chooser that starts in the current directory,
 	 * filtering the files with the file filters.
 	 */
-	public FileChooser() {
+	public FileChooser(boolean acceptAllfile) {
 
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleMessages();
@@ -84,11 +84,12 @@ public class FileChooser extends JFileChooser {
 		openMarkovXLSFilter = new FileFilterXLS();
 		
 		FormatManager formatManager = FormatManager.getInstance();
-		HashMap<String, String> items = formatManager.getItemsByRole("Writer");
+		HashMap<String, String> items = formatManager.getWriters();
+
+		setAcceptAllFileFilterUsed (acceptAllfile);
 		for (String item:items.keySet()){
 			addChoosableFileFilter(new FileFilterAll(items.get(item), item));
 		}
-		
 		/*addChoosableFileFilter(elviraFilter);
 		addChoosableFileFilter(openMarkovXmlFilter);
 		addChoosableFileFilter(openMarkovPgmxFilter);*/
@@ -96,6 +97,10 @@ public class FileChooser extends JFileChooser {
 		rescanCurrentDirectory();
 
 	}
+	
+   public FileChooser() {
+       this(true);
+   }
 
 	/**
 	 * Sets the filter to search only Elvira files.
