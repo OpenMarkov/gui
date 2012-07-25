@@ -536,7 +536,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @return if a selected element is there in the position, returns the
 	 *         element, else returns null.
 	 */
-    public VisualElement whatElementInPosition (Point2D.Double position, Graphics2D g)
+    public VisualElement getElementInPosition (Point2D.Double position, Graphics2D g)
     {
         VisualElement elementSelected = null;
         if ((elementSelected = whatNodeInPosition (position, g)) == null)
@@ -1234,7 +1234,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @param g
      * @return true if there is an element in the position
      */
-    public VisualElement select (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
+    public VisualElement selectElementInPosition (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
     {
         VisualNode node = null;
         VisualLink link = null;

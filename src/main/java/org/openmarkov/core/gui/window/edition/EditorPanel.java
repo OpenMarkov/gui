@@ -655,7 +655,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if (e.isControlDown() || e.isShiftDown()) {
 			    visualNetwork.addToSelection(cursorPosition, g);
 			} else {
-			    VisualElement selectedElement =  visualNetwork.select(cursorPosition, g);
+			    VisualElement selectedElement =  visualNetwork.selectElementInPosition(cursorPosition, g);
                 setSelectionState((selectedElement != null)? SelectionState.MOVING : SelectionState.SELECTING);
                 if(selectedElement == null)
                 {
@@ -674,8 +674,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            Graphics2D
 	 */
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
-		VisualElement selectedElement = visualNetwork.select(cursorPosition, g); 
+		VisualElement selectedElement = visualNetwork.getElementInPosition (cursorPosition, g); 
 		JPopupMenu contextualMenu = (selectedElement != null)? getPopupMenu(selectedElement, this) : popupMenuFactory.getNetworkPopup ();
+		visualNetwork.selectElementInPosition (cursorPosition, g);
 		contextualMenu.show (this, e.getX(), e.getY());
 	}
 
@@ -694,7 +695,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (Utilities.noMouseModifiers(e)) {
-				if (visualNetwork.whatElementInPosition(cursorPosition, g) == null) {
+				if (visualNetwork.getElementInPosition(cursorPosition, g) == null) {
 
 					probNet.getPNESupport().setWithUndo(true);
 

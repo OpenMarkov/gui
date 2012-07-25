@@ -125,11 +125,10 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 */
 	private JPopupMenu getNodePopup(VisualNode selectedNode, EditorPanel panel) {
 
-		if (nodePopup == null) {
-			nodePopup = new NodePopup(listener, selectedNode, panel);
-			nodePopup.setName("nodePopup");
-            menuAssistant.addMenu (nodePopup);
-		}
+	    menuAssistant.removeMenu (nodePopup);
+		nodePopup = new NodePopup(listener, selectedNode, panel);
+		nodePopup.setName("nodePopup");
+        menuAssistant.addMenu (nodePopup);
 		return nodePopup;
 	}
 
@@ -142,11 +141,10 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 */
 	private JPopupMenu getLinkPopup(VisualLink selectedLink, EditorPanel panel) {
 
-		if (linkPopup == null) {
-			linkPopup = new LinkPopup(listener, selectedLink, panel);
-			linkPopup.setName("linkPopup");
-            menuAssistant.addMenu (linkPopup);
-		}
+        menuAssistant.removeMenu (linkPopup);
+		linkPopup = new LinkPopup(listener, selectedLink, panel);
+		linkPopup.setName("linkPopup");
+        menuAssistant.addMenu (linkPopup);
 		return linkPopup;
 	}
 	

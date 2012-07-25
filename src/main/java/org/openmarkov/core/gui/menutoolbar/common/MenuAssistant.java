@@ -59,6 +59,11 @@ public class MenuAssistant {
     {
         basicMenus.add (newBasicMenu);
     }
+    
+    public void removeMenu(MenuToolBarBasic newBasicMenu)
+    {
+        basicMenus.remove (newBasicMenu);
+    }
 
 	/**
 	 * Selects or unselects an option identified by an action command on the
