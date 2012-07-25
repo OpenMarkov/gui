@@ -29,7 +29,7 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
  * 
  * @author jmendoza
  */
-abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic {
+public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic {
 
     /**
 	 * 
@@ -40,7 +40,7 @@ abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic {
 	/**
      * Suffix to retrieve tooltip strings from a string resource.
      */
-    String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
+    protected String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
     
     
 	/**

@@ -214,8 +214,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			activateEditionState(EditionState.UTILITY);
 		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
 			activateEditionState(EditionState.LINK);
-		} else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
-			activateEditionState(EditionState.INSTANCE);
+//TODO OOBN	} else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
+//			activateEditionState(EditionState.INSTANCE);
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			setNewWorkingMode();
 		} else if (actionCommand
@@ -1141,7 +1141,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 
 	/**
-	 * This method activates an edition option for the actual network.
+	 * This method activates an edition option for the current network.
 	 * 
 	 * @param newState
 	 *            new edition state to set.

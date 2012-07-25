@@ -39,8 +39,6 @@ public class EditionStateTest {
 				CursorLoader.CURSOR_UTILITY_CREATION);
 		assertEquals(EditionState.LINK.getCursor(),
 				CursorLoader.CURSOR_LINK_CREATION);
-		assertEquals(EditionState.INSTANCE.getCursor(),
-				CursorLoader.CURSOR_INSTANCE_CREATION);
 		
 	}
 }

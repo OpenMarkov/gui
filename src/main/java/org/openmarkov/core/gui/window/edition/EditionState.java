@@ -47,12 +47,7 @@ public enum EditionState {
 	/**
 	 * State used to insert new links.
 	 */
-	LINK(4),
-	
-	/**
-	 * State used to insert new instances.
-	 */
-	INSTANCE(5);
+	LINK(4);
 
 	/**
 	 * Cursor associated to the state.
@@ -91,10 +86,6 @@ public enum EditionState {
 			currentCursor = CursorLoader.CURSOR_LINK_CREATION;
 			break;
 		}
-		case 5: {
-			currentCursor = CursorLoader.CURSOR_INSTANCE_CREATION;
-			break;
-		}		
 		default: {
 			throw new IllegalArgumentException();
 		}

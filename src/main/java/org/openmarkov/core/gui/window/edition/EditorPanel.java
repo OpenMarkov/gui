@@ -564,10 +564,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 			mousePressedLinkCreation(e);
 			break;
 		}
-		case INSTANCE: {
-			mousePressedInstanceCreation(e);
-			break;
-		}
 		default: {
 			break;
 		}

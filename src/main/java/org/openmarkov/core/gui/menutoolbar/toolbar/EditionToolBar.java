@@ -95,16 +95,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 	 */
 	private JToggleButton linkCreationButton = null;
 	
-	/**
-	 * Button to activate instance creation.
-	 */
-	private JToggleButton instanceCreationButton = null;	
-	
-	/**
-	 * Combobox to select class to instantiate.
-	 */
-	private ClassComboBox classComboBox = null;
-	
 
 	/**
 	 * Button group to make autoexclusive the edition options.
@@ -154,8 +144,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 		add(getDecisionCreationButton());
 		add(getUtilityCreationButton());
 		add(getLinkCreationButton());	
-		add(getInstanceCreationButton());
-		add(getClassComboBox());
 		add(Box.createHorizontalGlue());
 	}
 
@@ -406,43 +394,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 	}
 	
 	/**
-	 * This method initialises instanceCreationButton.
-	 * 
-	 * @return a link creation button.
-	 */
-	private JToggleButton getInstanceCreationButton() {
-
-		if (instanceCreationButton == null) {
-			instanceCreationButton = new JToggleButton();
-			instanceCreationButton.setIcon(iconLoader
-				.load(IconLoader.ICON_INSTANCE_ENABLED));
-			instanceCreationButton.setActionCommand(ActionCommands.INSTANCE_CREATION);
-			instanceCreationButton.setFocusable(false);
-			instanceCreationButton
-				.setToolTipText(toolBarsStringResource
-					.getString(ActionCommands.INSTANCE_CREATION
-						+ STRING_TOOLTIP_SUFFIX));
-			instanceCreationButton.addActionListener(listener);
-			instanceCreationButton.addMouseMotionListener(this);
-			groupEditionOptions.add(instanceCreationButton);
-		}
-		return instanceCreationButton;
-	}	
-	
-	/**  This method initialises classComboBox.
-	 * 
-	 * @return a class combo box.
-	 */
-	public ClassComboBox getClassComboBox() {
-
-		if (classComboBox == null) {
-			classComboBox = new ClassComboBox(listener);
-			classComboBox.setEnabled(false);
-		}
-		return classComboBox;
-	}	
-
-	/**
 	 * Returns the component that correspond to an action command.
 	 * 
 	 * @param actionCommand
@@ -476,8 +427,6 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 			component = utilityCreationButton;
 		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
 			component = linkCreationButton;
-		}else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
-			component = instanceCreationButton;
 		}
 		return component;
 	}
@@ -546,12 +495,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 			getLinkCreationButton().setToolTipText(toolBarsStringResource
 					.getString(ActionCommands.LINK_CREATION
 							+ STRING_TOOLTIP_SUFFIX));
-		} else if (e.getSource().equals(getInstanceCreationButton())) {
-			toolBarsStringResource = StringResourceLoader.getUniqueInstance().getBundleToolBars();
-			getInstanceCreationButton().setToolTipText(toolBarsStringResource
-					.getString(ActionCommands.INSTANCE_CREATION
-							+ STRING_TOOLTIP_SUFFIX));
-		}
+		} 
 	
 	}
 }

@@ -158,11 +158,6 @@ public class ActionCommands {
 	public static final String LINK_CREATION = "LinkCreation";
 	
 	/**
-	 * Action invoked when the user wants to instantiate an object.
-	 */
-	public static final String INSTANCE_CREATION = "InstanceCreation";
-	
-	/**
 	 * Action invoked when the user wants to mark an object as input parameter.
 	 */
 	public static final String INSTANCE_INPUT = "InstanceInput";		

@@ -74,11 +74,6 @@ public class CursorLoader {
 	public static final Cursor CURSOR_LINK_CREATION = load("link.gif");
 	
 	/**
-	 * Name of the cursor that represents the creation of instances.
-	 */
-	public static final Cursor CURSOR_INSTANCE_CREATION = load("instance.gif");
-	
-	/**
 	 * Name of a inexistent cursor just for automated testing of the class
 	 * juanluisgf - Nov 2008
 	 */

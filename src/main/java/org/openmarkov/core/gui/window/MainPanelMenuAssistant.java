@@ -73,7 +73,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	public static final String[] EDITING_ACTION_COMMANDS = {
 			ActionCommands.OBJECT_SELECTION, ActionCommands.CHANCE_CREATION,
 			ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-			ActionCommands.LINK_CREATION, ActionCommands.INSTANCE_CREATION};
+			ActionCommands.LINK_CREATION/*, TODO OOBN ActionCommands.INSTANCE_CREATION*/};
 
 	/**
 	 * Composed action command that contains inference actions.
@@ -335,7 +335,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.DECISION_CREATION, false);
 		setOptionEnabled(ActionCommands.UTILITY_CREATION, false);
 		setOptionEnabled(ActionCommands.LINK_CREATION, false);
-		setOptionEnabled(ActionCommands.INSTANCE_CREATION, false);
+		//TODO OOBNsetOptionEnabled(ActionCommands.INSTANCE_CREATION, false);
 		setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
 		setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
@@ -607,10 +607,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			setOptionSelected(ActionCommands.LINK_CREATION, true);
 			break;
 		}
-		case INSTANCE: {
-			setOptionSelected(ActionCommands.INSTANCE_CREATION, true);
-			break;
-		}		
+//		TODO OOBNcase INSTANCE: {
+//			setOptionSelected(ActionCommands.INSTANCE_CREATION, true);
+//			break;
+//		}		
 		default:
 			setOptionSelected(ActionCommands.OBJECT_SELECTION, true);
 			optionSelectAll = true;
