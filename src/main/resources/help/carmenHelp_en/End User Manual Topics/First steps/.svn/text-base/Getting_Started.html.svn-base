@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+<meta name="generator" content="Helen">
+<link type="text/css" rel="stylesheet" href="../../javahelp.css">
+<title>Getting started</title>
+</head>
+<body bgcolor="#ffffff">
+<h1><img border="0" hspace="0" width="32" height="32"
+	src="../../images/carmenHelpIcons/c2_32.gif">&nbsp;Getting
+started</h1>
+<hr size="2" align="left" color="blue" width="100%">
+<h3>Navigating in the Carmen network editor and message windows</h3>
+<p>After launching Carmen, two different windows will appear in your
+screen: the CARMEN main window with a blank area for the network editor
+area; and the Carmen message window where all the internal messages will
+be display to confirm opening and closing networks and, mainly, it is
+designed to capture all the internal messages and errors of the system.
+</p>
+<p><img width="425" height="324" hspace="10"
+	src="../../images/screens/CARMEN main window screen.jpg"></p>
+<p><img width="428" height="109" hspace="10"
+	src="../../images/screens/CARMEN message window screen.jpg"></p>
+<h3>Now try...</h3>
+<p>To see how easy it is to add/edit/modify probabilistic nodes in
+Carmen try the following steps:</p>
+<ul>
+	<li><a href="Creating a new network.html">Creating a new
+	network</a></li>
+	<li><a href="Creating a chance node.html">Creating a chance
+	node (in either Bayesian network or an Influence Diagram)</a></li>
+	<li><a href="Creating a decision node.html">Creating a
+	Decision node (in an Influence Diagram)</a></li>
+	<li><a href="Creating an utility node.html">Creating a Utility
+	node (in an Influence Diagram)</a></li>
+	<li><a href="Creating links between nodes.html">Creating a
+	link between two nodes</a></li>
+	<li><a href="Setting node properties.html">Setting node
+	properties</a></li>
+	<li><a href="Selecting algorithms.html">Selecting algorithms</a></li>
+	<li><a href="Setting probability tables.html">Setting
+	probability tables</a></li>
+	<li><a href="Saving the network.html">Saving the network</a></li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

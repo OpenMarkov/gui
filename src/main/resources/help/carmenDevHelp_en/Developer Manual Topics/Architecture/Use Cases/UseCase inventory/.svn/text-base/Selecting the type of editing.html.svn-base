@@ -1,0 +1,159 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Selecting the type of edition</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" s7starttagpos="285" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp;&nbsp; Selecting the type of editing
+    </h1>
+    <table border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" width="490">
+      <col width="234">
+      <col width="238">
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Use case: Selecting the type of editing</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="justify">
+             <b><font size="3">Comment:</font></b> <font size="3">In this use case, the user can
+            choose an option that will indicate what will happen in the network panel when he/she
+            presses on it. Each option will be identified by the shape of the mouse cursor. The
+            options are:<br>
+             - Selection of objects. The user can select nodes and / or links (normal mouse).<br>
+             - Creation of probabilistic nodes. The user can create a new probabilistic node by
+            pressing just one time (cursor with a circle).<br>
+             - Creation of decision nodes. Same as above for the decision nodes (square-shaped
+            cursor).<br>
+             - Creation of utility nodes. Same as above for the utility node (diamond-shaped
+            cursor).<br>
+             - Creation of links. The user can create a new link between two nodes (cursor with the
+            shape of a link).<br>
+            </font>
+          </p>
+          <p align="justify">
+             <font size="3">The description of this use case can be seen in the table.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="480">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="238">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">1.The user chooses from the main menu or the toolbar of editing the
+            type of editing for the current window.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">2.The mouse cursor shape is changed to show the type of editing
+            selected.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">3.All objects (nodes and links) of the network of the current window
+            are deselected.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">4.The main menu and pop-up menus are updated, disabling the options
+            that are enabled when there is an object selected.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">5.The new type of editing is set for the current network.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="234">
+          <p align="justify">
+             <font size="3">6.The type of editing is marked or selected in the main menu and in the
+            editing toolbar.</font>
+          </p>
+        </td>
+        <td width="238">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <p>
+       &nbsp;
+    </p>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../javahelp.css">
+    <title>Formatos de bases de datos admitidos</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img src="../../images/carmenHelpIcons/c2_32.gif" border="0" hspace="0" height="32" width=
+      "32">&nbsp;Formatos de bases de datos admitidos
+    </h1>
+    <hr size="2" align="left" width="100%" color="blue">
+    <h4>
+       Formatos de bases de datos admitidos
+    </h4>
+    <p>
+       &nbsp;
+    </p>
+    <ol>
+      <li>
+        <p>
+           <b>Formato '.xls'</b>: El formato de un fichero de casos '.xls' aceptado por Carmen es
+          el siguiente:
+        </p>
+        <p>
+           La primera línea ha de contener los nombres de las variables implicadas, una en cada
+          celda sin dejar celdas en blanco entre ellas. En cada una de las líneas siguientes se ha
+          de especificar un caso, incluyendo en cada celda el valor de una variable en el mismo
+          orden en el que aparecen los nombres de las variables. Es decir, en cada columna ha de
+          aparecer el nombre de la variable y todos los valores que toma dicha variable en los
+          distintos casos registrados en el fichero. Cada uno de los valores de las variables puede
+          especificarse como una cadena de caracteres o un entero. Para representar un valor
+          ausente basta con dejar la celda correspondiente vacía.
+        </p>
+      </li>
+      <li>
+        <p>
+           <b>Formato '.arff'</b>: Éste es el formato de bases de datos utilizado por Weka. Una
+          descripción del formato '.arff' puede verse en <a href=
+          "http://www.cs.waikato.ac.nz/~ml/weka/arff.html">http://www.cs.waikato.ac.nz/~ml/weka/arff.html</a>.
+        </p>
+        <p>
+           Las únicas restricciones que impone Carmen a dicho formato son:
+        </p>
+        <ol>
+          <li>
+            <p>
+               No se admiten atributos de tipo 'numeric', 'string' ni 'date'.
+            </p>
+          </li>
+          <li>
+            No se admiten ficheros de casos dispersos ('Sparse ARFF files')<br>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <p>
+           <b>Formato '.dbc'</b>: Formato de bases de datos utilizado por Elvira. Las propiedades
+          generales son semejantes a las definidas para las redes y diagramas <a href=
+          "Formatos de red modelo aceptados.html">(formato .elv explicado a continuación</a>). Al
+          comienzo del fichero se definirá el conjunto de nodos o variables de las que consta el
+          problema, tipología, comentarios e información adicional que pueda resultar de interés.
+          También deberá incluirse el número de instancias o casos que existen en el fichero,
+          número que tendrá que coincidir con el número de líneas que más tarde se incluyan como
+          información.
+        </p>
+        <p>
+           Una vez definidas todas las variables se incluyen los casos que conforman el cuerpo de
+          conocimiento de la base de datos. Cada instancia corresponderá con una línea, y, por cada
+          línea, se incluirá el valor de esa instancia para cada una de las variables definidas en
+          el preámbulo del fichero. Los valores que tome cada variable pueden ser separados bien
+          por comas, o bien dejando un espacio en blanco.
+        </p>
+        <p>
+           La única restricción que impone Carmen es que no se pueden leer variables continuas.
+          Para introducir una variable continua se ha de definir como variable discreta y
+          especificar uno a uno todos sus posibles estados.
+        </p>
+      </li>
+    </ol>
+  </body>
+</html>

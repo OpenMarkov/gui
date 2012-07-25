@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Closing a network</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp; Closing a network
+    </h1>
+    <p>
+       &nbsp;
+    </p>
+    <table border="1" cellpadding="4" style=
+    " page-break-inside: auto; page-break-before: auto; page-break-after: auto;" cellspacing="0"
+    bordercolor="#000000" width="488">
+      <col width="232">
+      <col width="239"><THEAD>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b><font size="3">Use case: Closing a network</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b><font size="3">Comment:</font></b> <font size="3">This use case is executed when
+            the user wants to close a window of the multi-document environment.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="479">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      </THEAD><TBODY>
+      <tr valign="top">
+        <td width="232">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="239">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p align="justify">
+             <font size="3">1.The user indicates to the program that he/she wants to close the
+            actual window of the multi-document environment.</font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p align="justify">
+             <font size="3">2.If the network has been modified but not saved, the program asks the
+            user whether to save the network, don't save or cancel.</font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">2.1.If the network has not been changed or if it is been saved and it
+            has not been modified after it, it goes to point 4.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td rowspan="2" width="232">
+          <p align="justify">
+             <font size="3">3.If the user does not want to save the network, it goes to point
+            4.</font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">3.1.If the user wants to save the network, it goes to use case
+            <i>Saving a network.</i></font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">3.2.If the user decides not to close the window, the use case
+            ends.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p align="justify">
+             <font face="Arial, sans-serif" size="3">4.The window is closed.</font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p align="justify">
+             <font size="3">5.The item associated to the window closed is removed from the window
+            list of the menu under the multi-document environment.</font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="232">
+          <p align="justify">
+             <font size="3">6.The previous window of the window list is selected and it goes to the
+            use case <i>Selecting a network.</i></font>
+          </p>
+        </td>
+        <td width="239">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">6.1.If there are no other nets in the multi-document environment, all
+            menu options under the multi-document environment are disabled and also all the main
+            menu options and toolbars except the options for creating a new network, openning a
+            network and displaying the window messages.</font>
+          </p>
+        </td>
+      </tr>
+      </TBODY>
+    </table>
+  </body>
+</html>

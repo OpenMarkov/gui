@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+  <ClearOutAllEvidenceCases>
+    <ToolTip>
+      <Label value="Clear out the list of evidence cases" />
+    </ToolTip>
+  </ClearOutAllEvidenceCases>
+  <GoToFirstEvidenceCase>
+    <ToolTip>
+      <Label value="Go to the first evidence case" />
+    </ToolTip>
+  </GoToFirstEvidenceCase>
+  <ClipboardPaste>
+    <ToolTip>
+      <Label value="Pastes the content of the clipboard" />
+    </ToolTip>
+  </ClipboardPaste>
+  <ChangeWorkingMode>
+    <ToolTip>
+      <Label value="Inference/Edition mode" />
+    </ToolTip>
+  </ChangeWorkingMode>
+  <LinkCreation>
+    <ToolTip>
+      <Label value="Insert new link" />
+    </ToolTip>
+  </LinkCreation>
+  <DecisionCreation>
+    <ToolTip>
+      <Label value="Insert new Decision node" />
+    </ToolTip>
+  </DecisionCreation>
+  <Undo>
+    <ToolTip>
+      <Label value="Undo the last operation" />
+    </ToolTip>
+  </Undo>
+  <CreateNewEvidenceCase>
+    <ToolTip>
+      <Label value="Create a new evidence case" />
+    </ToolTip>
+  </CreateNewEvidenceCase>
+  <PropagateEvidence>
+    <ToolTip>
+      <Label value="Propagate evidence" />
+    </ToolTip>
+  </PropagateEvidence>
+  <OpenNetwork>
+    <ToolTip>
+      <Label value="Opens an existing network" />
+    </ToolTip>
+  </OpenNetwork>
+  <UtilityCreation>
+    <ToolTip>
+      <Label value="Insert new Utility node" />
+    </ToolTip>
+  </UtilityCreation>
+  <GoToNextEvidenceCase>
+    <ToolTip>
+      <Label value="Go to the next evidence case" />
+    </ToolTip>
+  </GoToNextEvidenceCase>
+  <ClipboardCopy>
+    <ToolTip>
+      <Label value="Copies the selected nodes into the clipboard" />
+    </ToolTip>
+  </ClipboardCopy>
+  <GoToPreviousEvidenceCase>
+    <ToolTip>
+      <Label value="Go to the previous evidence case" />
+    </ToolTip>
+  </GoToPreviousEvidenceCase>
+  <ClipboardCut>
+    <ToolTip>
+      <Label value="Cuts the selected nodes and save them into the clipboard" />
+    </ToolTip>
+  </ClipboardCut>
+  <GoToLastEvidenceCase>
+    <ToolTip>
+      <Label value="Go to the last evidence case" />
+    </ToolTip>
+  </GoToLastEvidenceCase>
+  <NotCompiledNet>
+    <Label value="Not Compiled!" />
+  </NotCompiledNet>
+  <ObjectRemoval>
+    <ToolTip>
+      <Label value="Deletes the selected nodes" />
+    </ToolTip>
+  </ObjectRemoval>
+  <ChanceCreation>
+    <ToolTip>
+      <Label value="Insert new Chance node" />
+    </ToolTip>
+  </ChanceCreation>
+  <NewNetwork>
+    <ToolTip>
+      <Label value="Creates a new network" />
+    </ToolTip>
+  </NewNetwork>
+  <CloseNetwork>
+    <ToolTip>
+      <Label value="Close the actual network" />
+    </ToolTip>
+  </CloseNetwork>
+  <SaveNetwork>
+    <ToolTip>
+      <Label value="Saves the actual network" />
+    </ToolTip>
+  </SaveNetwork>
+  <InstanceCreation>
+    <ToolTip>
+      <Label value="Insert new instance" />
+    </ToolTip>
+  </InstanceCreation>
+  <CaseNumber>
+    <Label value="Case Number" />
+  </CaseNumber>
+  <Redo>
+    <ToolTip>
+      <Label value="Redo the last undone operation" />
+    </ToolTip>
+  </Redo>
+  <ExpansionThreshold>
+    <Label value="Expansion Threshold" />
+  </ExpansionThreshold>
+  <ZoomIn>
+    <ToolTip>
+      <Label value="Zoom in the current network on 20%" />
+    </ToolTip>
+  </ZoomIn>
+  <ZoomOut>
+    <ToolTip>
+      <Label value="Zoom out the current network on 20%" />
+    </ToolTip>
+  </ZoomOut>
+  <ObjectSelection>
+    <ToolTip>
+      <Label value="Object selection" />
+    </ToolTip>
+  </ObjectSelection>
+	<BUNDLEFILE>
+    <Text value="Default (english)" />
+  </BUNDLEFILE>
+</properties>
+

@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Setting window message at front</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp; Setting message window at front
+    </h1>
+    <p>
+       &nbsp;
+    </p>
+    <table border="1" cellpadding="4" style=" page-break-after: auto;" cellspacing="0" bordercolor=
+    "#000000" width="488">
+      <col width="233">
+      <col width="237"><THEAD>
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Use case: Setting message window at front</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Comment:</font></b> <font size="3">This use case will be iniciated
+            by the user when he/she wants to display the window where application messages
+            appear.</font>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="478">
+          <p align="left">
+             <b><font size="3">Actor: User</font></b>
+          </p>
+        </td>
+      </tr>
+      </THEAD><TBODY>
+      <tr valign="top">
+        <td width="233">
+          <p align="left">
+             <b><font size="3">Normal course</font></b>
+          </p>
+        </td>
+        <td width="237">
+          <p align="left">
+             <b><font size="3">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="233">
+          <p align="justify">
+             <font size="3">1.The user indicates to the application that he/she wants to see the
+            message window.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p style=" margin-left: 1.25cm; margin-right: -0.02cm; text-indent: -0.79cm;" align=
+          "left">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="233">
+          <p align="justify">
+             <font size="3">2.The program makes visible the message window and places it at
+            front.</font>
+          </p>
+        </td>
+        <td width="237">
+          <p align="left">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      </TBODY>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <meta content="text/html; charset=Cp1252" http-equiv="Content-Type">
+    <meta content="Helen" name="generator">
+    <link type="text/css" href="../../javahelp.css" rel="stylesheet">
+    <title>Selecting algorithms</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img hspace="0" width="32" src="../../images/carmenHelpIcons/c2_32.gif" border="0" height=
+      "32">&nbsp;Seleccionar algoritmos
+    </h1>
+    <hr size="2" width="100%" color="blue" align="left">
+    <h4>
+       Cómo seleccionar algoritmos
+    </h4>
+    <p>
+       &nbsp;En el momento actual, solo la relación General está implementada.
+    </p>
+    <p>
+       En el futuro, se podrá elegir alguna de las relaciones de las familias AND&nbsp;y OR.
+    </p>
+  </body>
+</html>

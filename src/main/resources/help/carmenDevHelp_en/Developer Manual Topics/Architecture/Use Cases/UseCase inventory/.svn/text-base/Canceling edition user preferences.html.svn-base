@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+    <meta name="generator" content="Helen">
+    <link rel="stylesheet" type="text/css" href="../../../../javahelp.css">
+    <title>Canceling edition user preferences</title>
+  </head>
+  <body bgcolor="#ffffff">
+    <h1>
+       <img border="0" hspace="0" height="32" width="32" src=
+      "../../../../images/carmenHelpIcons/c3_32.gif">&nbsp; Canceling edition user preferences
+    </h1>
+    <table border="1" cellpadding="7" style=
+    " page-break-inside: auto; page-break-before: auto; page-break-after: auto;" cellspacing="0"
+    bordercolor="#000000" width="492">
+      <col width="230">
+      <col width="232"><THEAD>
+      <tr>
+        <td colspan="2" valign="top" width="476">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <b><font color="#000000" face="Arial, sans-serif">Use case: Canceling edition user
+            preferences</font></b>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" valign="top" width="476">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <b>Actor: User</b>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="230">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <b>Normal course</b>
+          </p>
+        </td>
+        <td width="232">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <b><font color="#000000" face="Arial, sans-serif">Alternative courses</font></b>
+          </p>
+        </td>
+      </tr>
+      </THEAD><TBODY>
+      <tr valign="top">
+        <td width="230">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">1.The user cancels the editing of the&nbsp;properties.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="230">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">2.If there are unsaved changes they are lost.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">2.1.If there are not unsaved changes the window is closed.</font>
+          </p>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td width="230">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3">3.The user's properties configuration window is closed.</font>
+          </p>
+        </td>
+        <td width="232">
+          <p style=" widows: 2; orphans: 2;" align="justify">
+             <font size="3"><br>
+            </font>
+          </p>
+        </td>
+      </tr>
+      </TBODY>
+    </table>
+  </body>
+</html>
