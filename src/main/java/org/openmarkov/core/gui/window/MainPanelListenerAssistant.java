@@ -49,8 +49,8 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
+import org.openmarkov.core.gui.window.edition.mode.EditionState;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
@@ -204,18 +204,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			getCurrentNetworkPanel().selectAllObjects();
 		} else if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			getCurrentNetworkPanel().removeSelectedObjects();
-		} else if (actionCommand.equals(ActionCommands.OBJECT_SELECTION)) {
-			activateEditionState(EditionState.SELECTION);
-		} else if (actionCommand.equals(ActionCommands.CHANCE_CREATION)) {
-			activateEditionState(EditionState.CHANCE);
-		} else if (actionCommand.equals(ActionCommands.DECISION_CREATION)) {
-			activateEditionState(EditionState.DECISION);
-		} else if (actionCommand.equals(ActionCommands.UTILITY_CREATION)) {
-			activateEditionState(EditionState.UTILITY);
-		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
-			activateEditionState(EditionState.LINK);
-//TODO OOBN	} else if (actionCommand.equals(ActionCommands.INSTANCE_CREATION)) {
-//			activateEditionState(EditionState.INSTANCE);
+		} else if (actionCommand.startsWith(ActionCommands.EDITION_MODE_PREFIX)) {
+		   activateEditionMode (actionCommand);
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			setNewWorkingMode();
 		} else if (actionCommand
@@ -1146,13 +1136,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * @param newState
 	 *            new edition state to set.
 	 */
-	private void activateEditionState(EditionState newState) {
+	private void activateEditionMode(String newEditionMode) {
 
 		NetworkPanel networkPanel = null;
 
 		networkPanel = getCurrentNetworkPanel();
-		networkPanel.setEditionState(newState);
-		mainPanel.getMainPanelMenuAssistant().setEditionOption(newState,
+		networkPanel.setEditionMode(newEditionMode);
+		mainPanel.getMainPanelMenuAssistant().setEditionOption(newEditionMode,
 				networkPanel.isThereDataStored());
 
 	}
@@ -1176,7 +1166,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		if (getNetworkPanels().size() > 0) {
 			getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
 		}
-		activateEditionState(EditionState.SELECTION);
 		getCurrentNetworkPanel().setSelectedAllObjects(false);
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(
 				newWorkingMode, getCurrentNetworkPanel());
@@ -1202,7 +1191,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void setNewExpansionThreshold(Double newValue) {
 		getCurrentNetworkPanel().setExpansionThreshold(newValue);
-		activateEditionState(EditionState.SELECTION);
 		getCurrentNetworkPanel().setSelectedAllNodes(false);
 		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(
 				NetworkPanel.INFERENCE_WORKING_MODE, getCurrentNetworkPanel());

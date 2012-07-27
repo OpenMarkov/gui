@@ -30,7 +30,6 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.core.gui.window.edition.EditionState;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
@@ -399,8 +398,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 				networkPanel.getProbNet().getPNESupport().getCanRedo());
 
 		// updateUndoRedo(networkPanel.getUndoManager());
-		setEditionOption(networkPanel.getEditionState(),
-				networkPanel.isThereDataStored());
 
 		mainPanel.setToolBarPanel(networkPanel.getWorkingMode());
 
@@ -579,47 +576,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 *            if the state is SELECTION, this parameter says if there is
 	 *            data in the clipboard.
 	 */
-	public void setEditionOption(EditionState value, boolean canPaste) {
+	public void setEditionOption(String newEditionMode, boolean canPaste) {
 
-		boolean optionPaste = false;
-		boolean optionSelectAll = false;
-
-		switch (value) {
-		case SELECTION: {
-			setOptionSelected(ActionCommands.OBJECT_SELECTION, true);
-			optionSelectAll = true;
-			optionPaste = canPaste;
-			break;
-		}
-		case CHANCE: {
-			setOptionSelected(ActionCommands.CHANCE_CREATION, true);
-			break;
-		}
-		case DECISION: {
-			setOptionSelected(ActionCommands.DECISION_CREATION, true);
-			break;
-		}
-		case UTILITY: {
-			setOptionSelected(ActionCommands.UTILITY_CREATION, true);
-			break;
-		}
-		case LINK: {
-			setOptionSelected(ActionCommands.LINK_CREATION, true);
-			break;
-		}
-//		TODO OOBNcase INSTANCE: {
-//			setOptionSelected(ActionCommands.INSTANCE_CREATION, true);
-//			break;
-//		}		
-		default:
-			setOptionSelected(ActionCommands.OBJECT_SELECTION, true);
-			optionSelectAll = true;
-			optionPaste = canPaste;
-			break;
-		}
-		setOptionEnabled(ActionCommands.SELECT_ALL, optionSelectAll);
-		setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, optionPaste);
-
+		setOptionSelected(newEditionMode, true);
+		setOptionEnabled(ActionCommands.SELECT_ALL, true);
+		setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, canPaste);
 	}
 
 	/**

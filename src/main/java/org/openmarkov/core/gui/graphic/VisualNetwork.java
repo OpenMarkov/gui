@@ -95,6 +95,11 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     protected VisualNode newLinkSource = null;
     
+    /**
+     * Rectangle used to select various nodes.
+     */
+    protected SelectionRectangle selection = null;    
+    
 	/**
 	 * Listener to the selection.
 	 */
@@ -404,7 +409,11 @@ public class VisualNetwork implements PNUndoableEditListener {
         {
             newLink.paint (g);
         }
-	}
+        if(selection != null)
+        {
+            selection.paint (g);
+        }
+     }
 
 	/**
 	 * Checks if is there a node in a position. You must specify if the node
@@ -1318,5 +1327,23 @@ public class VisualNetwork implements PNUndoableEditListener {
             }
         }
         return linkEdit;
+    }
+
+    public void startSelectionRectangle (Point2D.Double position)
+    {
+        selection = new SelectionRectangle ();
+        selection.initSelection(position, 0, 0);        
+    }
+
+    public void finishSelectionRectangle (Point2D.Double position)
+    {
+        selection.clearSelectionSquare();
+    }
+
+    public void updateSelectionRectangle (double diffX, double diffY)
+    {
+        selection.setSize(selection.getWidth() + diffX,
+                          selection.getHeight() + diffY);
+        selectElementsInsideSelection(selection);
     }
 }

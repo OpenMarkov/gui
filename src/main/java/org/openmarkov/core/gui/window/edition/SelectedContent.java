@@ -10,14 +10,12 @@ package org.openmarkov.core.gui.window.edition;
 
 import java.util.ArrayList;
 
-import org.openmarkov.core.gui.graphic.VisualLink;
-import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
  * 
- * @author Iñigo
+ * @author ibermejo
  *
  */
 public class SelectedContent

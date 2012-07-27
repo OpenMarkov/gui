@@ -54,26 +54,6 @@ public class CursorLoader {
 		load(Cursor.CROSSHAIR_CURSOR);
 
 	/**
-	 * Name of the cursor that represents the creation of chance nodes.
-	 */
-	public static final Cursor CURSOR_CHANCE_CREATION = load("chance.gif");
-
-	/**
-	 * Name of the cursor that represents the creation of decision nodes.
-	 */
-	public static final Cursor CURSOR_DECISION_CREATION = load("decision.gif");
-
-	/**
-	 * Name of the cursor that represents the creation of utility nodes.
-	 */
-	public static final Cursor CURSOR_UTILITY_CREATION = load("utility.gif");
-
-	/**
-	 * Name of the cursor that represents the creation of links.
-	 */
-	public static final Cursor CURSOR_LINK_CREATION = load("link.gif");
-	
-	/**
 	 * Name of a inexistent cursor just for automated testing of the class
 	 * juanluisgf - Nov 2008
 	 */
@@ -93,7 +73,7 @@ public class CursorLoader {
 	 *            number of the standard cursor.
 	 * @return a cursor corresponding to the number.
 	 */
-	private static Cursor load(int cursorNumber) {
+	public static Cursor load(int cursorNumber) {
 
 		try {
 
@@ -116,7 +96,7 @@ public class CursorLoader {
 	 *            name of the cursor to load.
 	 * @return a reference to the cursor resource.
 	 */
-	private static Cursor load(String cursorName) {
+	public static Cursor load(String cursorName) {
 
 		try {
 			Toolkit tk = java.awt.Toolkit.getDefaultToolkit();

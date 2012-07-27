@@ -327,26 +327,15 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * Returns the state of edition.
-	 * 
-	 * @return state of edition.
-	 */
-	public EditionState getEditionState() {
-
-		return editorPanel.getEditionState();
-
-	}
-
-	/**
 	 * Changes the state of the edition and carries out the necessary actions in
 	 * each case.
 	 * 
 	 * @param newState
 	 *            new edition state.
 	 */
-	public void setEditionState(EditionState newState) {
+	public void setEditionMode(String newEditionMode) {
 
-		editorPanel.setEditionState(newState);
+		editorPanel.setEditionMode(newEditionMode);
 
 	}
 

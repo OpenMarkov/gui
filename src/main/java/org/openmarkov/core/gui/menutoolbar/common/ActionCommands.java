@@ -129,33 +129,38 @@ public class ActionCommands {
 	 */
 	public static final String SELECT_ALL = "SelectAll";
 
+    /**
+     * Prefix used for edition mode changes
+     */
+    public static final String EDITION_MODE_PREFIX = "EditionMode";
+	
 	/**
 	 * Action invoked when the user wants to activate the selection option.
 	 */
-	public static final String OBJECT_SELECTION = "ObjectSelection";
+	public static final String OBJECT_SELECTION = "EditionMode.Selection";
 
 	/**
 	 * Action invoked when the user wants to activate the chance node creation
 	 * option.
 	 */
-	public static final String CHANCE_CREATION = "ChanceCreation";
+	public static final String CHANCE_CREATION = "EditionMode.Chance";
 
 	/**
 	 * Action invoked when the user wants to activate the decision node creation
 	 * option.
 	 */
-	public static final String DECISION_CREATION = "DecisionCreation";
+	public static final String DECISION_CREATION = "EditionMode.Decision";
 
 	/**
 	 * Action invoked when the user wants to activate the utility node creation
 	 * option.
 	 */
-	public static final String UTILITY_CREATION = "UtilityCreation";
+	public static final String UTILITY_CREATION = "EditionMode.Utility";
 
 	/**
 	 * Action invoked when the user wants to activate the link creation option.
 	 */
-	public static final String LINK_CREATION = "LinkCreation";
+	public static final String LINK_CREATION = "EditionMode.Link";
 	
 	/**
 	 * Action invoked when the user wants to mark an object as input parameter.

@@ -58,9 +58,5 @@ public class CursorLoaderTest {
 		assertNotNull(CursorLoader.CURSOR_DEFAULT);
 		assertNotNull(CursorLoader.CURSOR_NODES_MOVEMENT);
 		assertNotNull(CursorLoader.CURSOR_MULTIPLE_SELECTION);
-		//assertNotNull(CursorLoader.CURSOR_CHANCE_CREATION);
-		assertNotNull(CursorLoader.CURSOR_DECISION_CREATION);
-		assertNotNull(CursorLoader.CURSOR_UTILITY_CREATION);
-		assertNotNull(CursorLoader.CURSOR_LINK_CREATION);
 	}
 }
