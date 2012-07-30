@@ -7,7 +7,7 @@
  * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.menutoolbar.menu;
+package org.openmarkov.core.gui.oon;
 
 import java.awt.event.ActionListener;
 
@@ -19,6 +19,7 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.MenuLocalizer;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
+import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
 
 /**
  * This class implements a popup menu that is displays when the user right-clicks on
@@ -28,7 +29,7 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
  * @version 1.0 
  */
 @SuppressWarnings("serial")
-class InstancePopup extends PopupMenuBasic {
+public class InstancePopup extends PopupMenuBasic {
 
 	/**
 	 * Object that represents the item 'Remove'.
@@ -117,7 +118,7 @@ class InstancePopup extends PopupMenuBasic {
 
 		if (inputMenuItem == null) {
 			inputMenuItem  = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_INSTANCEINPUT_MENUITEM));
-			inputMenuItem.setActionCommand(ActionCommands.INSTANCE_INPUT);
+			inputMenuItem.setActionCommand(ActionCommands.MARK_AS_INPUT);
 			inputMenuItem .addActionListener(listener);
 		}
 
@@ -139,7 +140,7 @@ class InstancePopup extends PopupMenuBasic {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		}else if (actionCommand.equals(ActionCommands.INSTANCE_INPUT)) {
+		}else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
 			component = inputMenuItem;
 		}
 

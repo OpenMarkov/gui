@@ -42,6 +42,18 @@ public abstract class VisualElement {
 	 */
 	protected static final BasicStroke WIDE_STROKE = new BasicStroke(2.0f);
 
+    /**
+     * Used to paint normal lines.
+     */
+    protected static final BasicStroke NORMAL_DASHED_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                                                                              10.0f, new float[] { 3.0f }, 0.0f);
+
+    /**
+     * Used to paint wide lines.
+     */
+    protected static final BasicStroke WIDE_DASHED_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                                                                     10.0f, new float[] { 3.0f }, 0.0f);
+	
 	/**
 	 * This variable determines if the element is selected.
 	 */

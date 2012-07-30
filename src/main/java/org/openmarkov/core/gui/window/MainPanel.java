@@ -293,12 +293,12 @@ public class MainPanel extends JPanel {
 	protected void setToolBarPanel (int barType) {
 		if (barType == NetworkPanel.EDITION_WORKING_MODE) {
 			mainPanel.getToolBarPanel().remove(mainPanel.getInferenceToolBar());
-			mainPanel.getToolBarPanel().add(mainPanel.getEditionToolBar());
+			mainPanel.getToolBarPanel().add(mainPanel.getEditionToolBar(), 1);
 		} else {
 			mainPanel.getToolBarPanel().remove(mainPanel.getEditionToolBar());
 			mainPanel.getInferenceToolBar().setExpansionThreshold(getMainPanelListenerAssistant().
 					getCurrentNetworkPanel().getExpansionThreshold());
-			mainPanel.getToolBarPanel().add(mainPanel.getInferenceToolBar());
+			mainPanel.getToolBarPanel().add(mainPanel.getInferenceToolBar(), 1);
 		}
 		mainPanel.initialize();
 		

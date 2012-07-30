@@ -35,6 +35,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
+import org.openmarkov.core.oon.OOBNet;
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
 /**
@@ -347,7 +348,11 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setWorkingMode(int workingMode) {
 		this.workingMode = workingMode;
-		//TODO OOBN editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? probNet.getPlainProbNet() : probNet);
+		//TODO OOBN 
+		if(probNet instanceof OOBNet)
+		{
+		    editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? ((OOBNet)probNet).getPlainProbNet() : probNet);
+		}
 	}
 
 	/**

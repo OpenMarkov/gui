@@ -19,6 +19,8 @@ import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
+import org.openmarkov.core.gui.oon.InstancePopup;
+import org.openmarkov.core.gui.oon.VisualInstance;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 
 
@@ -155,8 +157,7 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 * 
 	 * @return the link popup menu.
 	 */
-	//TODO OOBN
-	/*
+	//TODO OOBN start
 	private JPopupMenu getInstancePopup(VisualInstance selectedInstance, EditorPanel panel) {
 
 		if (instancePopup == null) {
@@ -165,8 +166,9 @@ public class PopupMenuFactory implements MenuToolBarBasic {
             menuAssistant.addMenu (instancePopup);
 		}
 		return instancePopup;
-	}	*/
-
+	}
+    //TODO OOBN end
+	
 	/**
 	 * Enables or disabled an option identified by an action command.
 	 * 
@@ -238,7 +240,8 @@ public class PopupMenuFactory implements MenuToolBarBasic {
             popUpMenu = getLinkPopup((VisualLink)selectedElement, panel);
         }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
         {
-          //TODO OOBN popUpMenu =  getInstancePopup((VisualInstance)selectedElement, panel);
+          //TODO OOBN 
+          popUpMenu =  getInstancePopup((VisualInstance)selectedElement, panel);
         }
         return popUpMenu;
     }

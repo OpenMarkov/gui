@@ -26,6 +26,9 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.oon.VisualInstance;
+import org.openmarkov.core.gui.oon.VisualOONetwork;
+import org.openmarkov.core.oon.action.RemoveInstanceEdit;
 
 @SuppressWarnings("serial")
 /**
@@ -37,7 +40,8 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 {
     private List<VisualNode> nodesToRemove;
     private List<VisualLink> linksToRemove;
-   //TODO OOBN private List<VisualInstance> instancesToRemove;
+   //TODO OOBN 
+    private List<VisualInstance> instancesToRemove;
 
     private StringResource messageStringResource;
 
@@ -50,7 +54,11 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     {
         super (visualNetwork.getNetwork ());
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
-      //TODO OOBN this.instancesToRemove = null;//TODO OOBN visualNetwork.getSelectedInstances();
+      //TODO OOBN 
+        if(visualNetwork instanceof VisualOONetwork)
+        {
+            this.instancesToRemove = ((VisualOONetwork)visualNetwork).getSelectedInstances();
+        }
         
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
                 visualNetwork.getLinksOfNodes (this.nodesToRemove));
@@ -86,11 +94,11 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             edits.add ( new CRemoveProbNodeEdit( probNet, node.getProbNode ()));
         }
      
-        /* //TODO OOBN
+        //TODO OOBN
         for(VisualInstance instance: instancesToRemove)
         {
         	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
-        } */
+        }
 
     }
     
