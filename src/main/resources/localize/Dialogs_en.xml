@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+<CostEffectivenessResultDialog>
+	<Title>
+		<Label value = "Cost-Effectiveness Analisys Results"/>
+	</Title>
+</CostEffectivenessResultDialog>
   <DiscreteTablePanel>
     <Table>
       <Columns>

@@ -39,11 +39,15 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
-import org.openmarkov.core.gui.dialog.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.FactoryExpandedSMM;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
@@ -82,6 +86,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -261,6 +266,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * Imposed policies
 	 */
 	private ArrayList<Potential> imposedPolicies = new ArrayList<Potential>();
+
+	private boolean isThereNodeAge;
 	/**
 	 * Constructor that creates the instance.
 	 * 
@@ -303,7 +310,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
+	
 		this.setBackground(SystemColor.WHITE);
 		adjustPanelDimension();
 		stringResource = StringResourceLoader.getUniqueInstance()
@@ -405,7 +412,7 @@ public class EditorPanel extends JPanel implements MouseListener,
             repaint();
         }
 
-    }	
+	}
 
 	/**
 	 * Selects all nodes and links.
@@ -993,14 +1000,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 		revelationArcDialog = new RevelationArcEditDialog(owner, link);
 		return (revelationArcDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
-
-	private boolean requestCostEffectiveness(Window owner,
-			String suffixTypeAnalysis, boolean isProbabilistic) {
-		costEffectivenessDialog = new CostEffectivenessDialog(owner);
-		costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
-		return (costEffectivenessDialog.requestData(probNet.getName(),
-				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
-	}
+//	private boolean requestCostEffectiveness(Window owner,
+	//		String suffixTypeAnalysis, boolean isProbabilistic) {
+		//costEffectivenessDialog = new CostEffectivenessDialog(owner);
+	//	costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
+		//return (costEffectivenessDialog.requestData(probNet.getName(),
+			//	suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
+	//}
 
 	/**
 	 * This method shows a dialog box with the adittionalProperties of a link.
@@ -1474,8 +1480,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void setCurrentCase(int currentCase) {
 		this.currentCase = currentCase;
-	}
 
+	}
 	/**
 	 * This method returns the number of Evidence Cases that the ArrayList is
 	 * currently holding .
@@ -1514,6 +1520,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	/**
 	 * This method sets the list of evidence cases
 	 * 
+	 * @param owner
+	 *            window that owns the dialog box.
 	 */
 	public void setEvidence(EvidenceCase preResolutionEvidence, List<EvidenceCase> postResolutionInference) {
 		this.postResolutionEvidence = (postResolutionInference == null) ? new ArrayList<EvidenceCase>()
@@ -1553,7 +1561,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
-		
+
 
 		// Update evidenceCasesCompilationState
 		evidenceCasesCompilationState.clear();
@@ -1652,6 +1660,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					}
 					repaint();
 				}
+				repaint();
 			}
 		} else if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 			VisualNode visualNode = null;
@@ -1833,7 +1842,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * This method adds a new finding in the current evidence case
+	 * This method returns the number of the Evidence Case that is currently
+	 * selected
 	 * 
 	 * @param visualState
 	 *            the visual state in which the finding is going to be set.
@@ -2154,6 +2164,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			minUtilityRange.put(utility, probNode.getApproximateMinimumUtilityFunction());
 			maxUtilityRange.put(utility, probNode.getApproximateMaximumUtilityFunction());
 		}
+		
 	}
 
 	/**
@@ -2181,7 +2192,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 						individualProbabilities, variable, visualNode);
 				break;
 			}
+
 		}
+
 		repaint();
 	}
 
@@ -2239,7 +2252,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 						VisualState visualState = innerBox.getVisualState(i);
 						visualState.setStateValue(caseNumber, values[i]);
 					}
-				}
+				} 
 				// PROVISIONAL2: Currently the propagation
 				// algorithm is returning a TablePotential
 				// with 0 variables when the node has a Uniform
@@ -2295,86 +2308,250 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 			}
 		}
-
+			
 		repaint();
+
+	}
+
+	private boolean requestCostEffectiveness(Window owner,
+			String suffixTypeAnalysis, boolean isProbabilistic) {
+		checkIfThereIsAgeNode();
+		costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
+		//costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
+		return (costEffectivenessDialog.requestData(probNet.getName(),
+				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
+	}
+	
+
+	public boolean checkIfThereIsAgeNode() {
+		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+		for (int i = 0; i < probNodes.size() ; i++) {
+			if (probNodes.get(i).getVariable().isTemporal() 
+					&& probNodes.get(i).getVariable().getBaseName().equals("Age")) {
+				isThereNodeAge = true;
+				break;
+			}
+		}
+		return isThereNodeAge;
 	}
 
 	public void showCostEffectivenessDeterministicDialog() {
 
-		/**
-		 * if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
-		 * { ArrayList<Intervention> interventions = new
-		 * ArrayList<Intervention>(); final String RESOURCE_EXCEL_TEMPLATE =
-		 * "/openmarkov/gui/resources/" +
-		 * "template/cost-effectiveness-plot-empty.xls";
-		 * 
-		 * try { int numSimulations = 0;
-		 * 
-		 * CostEffectivenessAnalysis costEffectivenessAnalysis = new
-		 * CostEffectivenessAnalysis(probNet,
-		 * costEffectivenessDialog.getInitialAge(),
-		 * costEffectivenessDialog.getFinalAge(),
-		 * costEffectivenessDialog.getDiscount(), numSimulations);
-		 * 
-		 * interventions =
-		 * costEffectivenessAnalysis.getAllInterventions(numSimulations)[0];
-		 * Intervention[] frontier = costEffectivenessAnalysis.
-		 * getFrontierIntervention( interventions.toArray( new
-		 * Intervention[interventions.size()]));
-		 * 
-		 * try {
-		 * 
-		 * ExcelIO excelTarget = ExcelIO.getUniqueInstance();
-		 * excelTarget.setInitialData( costEffectivenessDialog.getInitialAge(),
-		 * costEffectivenessDialog.getFinalAge(),
-		 * costEffectivenessDialog.getDiscount());
-		 * excelTarget.useTemplate(RESOURCE_EXCEL_TEMPLATE);
-		 * excelTarget.writeExcelReportOptimalInterventions
-		 * (interventions,frontier,
-		 * costEffectivenessDialog.getOutputFileName());
-		 * JOptionPane.showMessageDialog( Utilities.getOwner(this),
-		 * "Report has been created", //stringResource
-		 * //.getString("ErrorWindow.Title.Label"),
-		 * "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE);
-		 * 
-		 * Runtime.getRuntime().exec( "rundll32 SHELL32.DLL, ShellExec_RunDLL "+
-		 * excelTarget.getPathFile());
-		 * 
-		 * 
-		 * } catch (IOException e) { JOptionPane.showMessageDialog(
-		 * Utilities.getOwner(this), e.getMessage(), stringResource
-		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
-		 * 
-		 * 
-		 * } catch (NotEnoughMemoryException e1) {
-		 * JOptionPane.showMessageDialog( Utilities.getOwner(this),
-		 * e1.getMessage(), stringResource
-		 * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
-		 * catch (NormalizeNullVectorException e1) { // TODO Auto-generated
-		 * catch block e1.printStackTrace(); } catch (DoEditException e1) { //
-		 * TODO Auto-generated catch block e1.printStackTrace(); } catch
-		 * (ConstraintViolationException e1) { // TODO Auto-generated catch
-		 * block e1.printStackTrace(); } catch (CanNotDoEditException e1) { //
-		 * TODO Auto-generated catch block e1.printStackTrace(); } catch
-		 * (NotEvaluableNetworkException e1) { // TODO Auto-generated catch
-		 * block e1.printStackTrace(); } catch (NonProjectablePotentialException
-		 * e1) { // TODO Auto-generated catch block e1.printStackTrace(); }
-		 * catch (WrongCriterionException e1) { // TODO Auto-generated catch
-		 * block e1.printStackTrace(); } catch (IncompatibleEvidenceException
-		 * exc) { JOptionPane.showMessageDialog(Utilities.getOwner(this),
-		 * "ERROR\n" +
-		 * stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
-		 * + "\n\n" + exc.getMessage(), stringResource.getString(
-		 * "ExceptionIncompatibleEvidence.Title.Label"),
-		 * JOptionPane.ERROR_MESSAGE); } catch (InvalidStateException exc) {
-		 * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-		 * stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
-		 * + exc.getMessage(),
-		 * stringResource.getString("ExceptionInvalidState.Title.Label"),
-		 * JOptionPane.ERROR_MESSAGE); }
-		 * 
-		 * }
-		 */
+		
+		  if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
+		  { 
+			 
+			  //Expand the network
+			  int numSlices;
+			  if (isThereNodeAge) {
+				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+			  } else {
+				  numSlices = costEffectivenessDialog.getNumSlices();
+			  }
+			  try {
+				  //probNet must be the original network and expandedNetwork the probNet espanded numSlices times
+				  probNet.setDecisionCriteria(
+							new String[]{"cost", "effectiveness"});
+				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet.copy(), numSlices, null, 200.0);
+				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+				  
+				  try {
+					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+					ArrayList<Variable> conditioningVariables = new ArrayList<>();
+					conditioningVariables.add(probNet.getDecisionCriteriaVariable());
+					ArrayList<ProbNode> decisionNodes = 
+							probNet.getProbNodes(NodeType.DECISION);
+					for (ProbNode decisionNode : decisionNodes) {
+						if (!decisionNode.hasPolicy()) {
+							conditioningVariables.add(decisionNode.getVariable());
+						}
+					}
+					variableElimination.setConditioningVariables(conditioningVariables);
+					try {
+						TablePotential globalUtility = variableElimination.getGlobalUtility();
+						//open cost effectiveness result dialog to show results
+						//CostEffectivenessResultsDialog resultDialog = 
+								new CostEffectivenessResultsDialog(Utilities.getOwner(this), globalUtility, costEffectivenessDialog) ;
+						
+						
+					} catch (IncompatibleEvidenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (UnexpectedInferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (NotEvaluableNetworkException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				  
+			  } catch (NotEnoughMemoryException e2) {
+				  // TODO Auto-generated catch block
+				  e2.printStackTrace();
+			  }
+
+			  
+			  
+			  
+			  
+			  
+	/*		  
+			  ArrayList<Intervention> interventions = new ArrayList<Intervention>();
+		  final String RESOURCE_EXCEL_TEMPLATE ="/openmarkov/gui/resources/" +
+		  "template/cost-effectiveness-plot-empty.xls";
+		  
+		   int numSimulations = 0;
+		  
+		  CostEffectivenessAnalysis costEffectivenessAnalysis = null;
+		try {
+			costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
+			  costEffectivenessDialog.getInitialAge(),
+			 costEffectivenessDialog.getFinalAge(),
+			  costEffectivenessDialog.getDiscount(), numSimulations);
+		} catch (NotEnoughMemoryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NormalizeNullVectorException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (DoEditException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ConstraintViolationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (CanNotDoEditException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NotEvaluableNetworkException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NonProjectablePotentialException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (WrongCriterionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		  
+		  try {
+			interventions =
+			  costEffectivenessAnalysis.getAllInterventions(numSimulations)[0];
+		} catch (NotEnoughMemoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotEvaluableNetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NormalizeNullVectorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CanNotDoEditException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NonProjectablePotentialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IncompatibleEvidenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  Intervention[] frontier = costEffectivenessAnalysis.
+		  getFrontierIntervention( interventions.toArray( new
+		  Intervention[interventions.size()]));
+		 
+		  ExcelIO excelTarget = ExcelIO.getUniqueInstance();
+		  excelTarget.setInitialData( costEffectivenessDialog.getInitialAge(),
+		  costEffectivenessDialog.getFinalAge(),
+		  costEffectivenessDialog.getDiscount());
+		  try {
+			excelTarget.useTemplate(RESOURCE_EXCEL_TEMPLATE);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  try {
+			excelTarget.writeExcelReportOptimalInterventions
+			  (interventions,frontier,
+			  costEffectivenessDialog.getOutputFileName());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  JOptionPane.showMessageDialog( Utilities.getOwner(this),
+		  "Report has been created", //stringResource
+		 //.getString("ErrorWindow.Title.Label"),
+		 "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE);
+		  
+		try {
+			Runtime.getRuntime().exec( "rundll32 SHELL32.DLL, ShellExec_RunDLL "+
+			  excelTarget.getPathFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		   
+		  
+		/*  } catch (IOException e) { JOptionPane.showMessageDialog(
+		  Utilities.getOwner(this), e.getMessage(), stringResource
+		  .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }*/
+		  
+	  
+		/* } catch (NotEnoughMemoryException e1) {
+		  JOptionPane.showMessageDialog( Utilities.getOwner(this),
+		  e1.getMessage(), stringResource
+		  .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+		  /*catch (NormalizeNullVectorException e1) { // TODO Auto-generated
+		  catch block e1.printStackTrace();
+		  }*/
+		  
+/*		  catch (DoEditException e1) { //
+		 // TODO Auto-generated catch block e1.printStackTrace();
+			  } catch
+		  (ConstraintViolationException e1) { // TODO Auto-generated catch
+		  //block e1.printStackTrace();
+				  } 
+		  catch (CanNotDoEditException e1) { //
+		 //TODO Auto-generated catch block e1.printStackTrace();
+			/*  } catch (NotEvaluableNetworkException e1) { // TODO Auto-generated catch
+		  block e1.printStackTrace(); }*/
+ /*		  catch (NonProjectablePotentialException
+		  e1) {
+			  // TODO Auto-generated catch block e1.printStackTrace(); }
+		  }
+		  catch (WrongCriterionException e1) { // TODO Auto-generated catch
+		 // block e1.printStackTrace();
+			  }
+		  catch (IncompatibleEvidenceException
+		 exc) { JOptionPane.showMessageDialog(Utilities.getOwner(this),
+		  "ERROR\n" +
+		  stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
+		  + "\n\n" + exc.getMessage(), stringResource.getString(
+		  "ExceptionIncompatibleEvidence.Title.Label"),
+		  JOptionPane.ERROR_MESSAGE); }
+		  catch (InvalidStateException exc) {
+		  JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+		  stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
+		  + exc.getMessage(),
+		  stringResource.getString("ExceptionInvalidState.Title.Label"),
+		  JOptionPane.ERROR_MESSAGE); }
+		  */
+		  
+		  }
+		 
 	}
 
 	public void showSensitivityAnalysisCostEffectivenessDialog() {
@@ -2832,6 +3009,8 @@ public class EditorPanel extends JPanel implements MouseListener,
     {
         return visualNetwork;
     }	
+    
+	
 
 	public void setProbNet(ProbNet probNet) {
 		networkChanged = true;

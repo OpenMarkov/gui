@@ -119,7 +119,7 @@ public class BottomPanelButtonDialog extends DialogBase {
 	 * 
 	 * @return a new bottom panel.
 	 */
-	private JPanel getBottomPanel() {
+	protected JPanel getBottomPanel() {
 
 		if (bottomPanel == null) {
 			bottomPanel = new JPanel();

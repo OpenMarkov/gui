@@ -196,17 +196,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
             StringResourceLoader.getUniqueInstance().getBundleMessages();
         
         if (probNode.getNodeType() == NodeType.DECISION) {
-        	String title = dialogStringResource
-                    .getString("ImposePolicydialog.Title.Label ");
-            
-            setTitle(dialogStringResource
+        	setTitle(dialogStringResource
                 .getString("ImposePolicydialog.Title.Label")
                 + ": " + (probNode == null? "":probNode.getName()));
         } else {
         	
-        String title = dialogStringResource
-                .getString("NodePotentialDialog.Title.Label");
-        
         setTitle(dialogStringResource
             .getString("NodePotentialDialog.Title.Label")
             + ": " + (probNode == null? "":probNode.getName()));

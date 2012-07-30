@@ -308,6 +308,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			// learning();
 		} else if (actionCommand
 				.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
+			//Deterministic
 			getCurrentNetworkPanel().showCostEffectivenessDialog(false);
 		} else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
 			getCurrentNetworkPanel().showCostEffectivenessDialog(true);

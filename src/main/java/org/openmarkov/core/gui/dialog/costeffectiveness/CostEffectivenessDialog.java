@@ -7,13 +7,15 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.gui.dialog;
+package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -24,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
@@ -33,9 +36,11 @@ import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
-
+//TODO internationalization
 	/**
 	 * 
 	 */
@@ -59,6 +64,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	private JLabel lblSimulationsNumber;
 	private Integer simulationsNumber;
 	private JButton btnBrowse;
+	private boolean isThereNodeAge = false;
+	private JLabel numSlicesLabel;
+	private JTextField numSlicesJTextField;
+	private Integer numSlices;
 
 	/**
 	 * Launch the application.
@@ -111,18 +120,20 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	 * @param owner
 	 * 		The parent of the dialog
 	 */
-	public CostEffectivenessDialog(Window owner) {
+	public CostEffectivenessDialog(Window owner, boolean isThereNodeAge) {
 		super(owner);
 		setLocationRelativeTo(owner);
+		this.isThereNodeAge = isThereNodeAge;
 		initialize();
 	}
+	
 	private void initialize(){
 		
 		setMinimumSize(new Dimension(380, 230));
 		setTitle("Cost Effectiveness Analysis");
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
-						
+		if (isThereNodeAge) {				
 		GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -192,6 +203,68 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 					.addGap(128))
 		);
 		getComponentsPanel().setLayout(groupLayout);
+		} else if (!isThereNodeAge) {
+			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
+			groupLayout.setHorizontalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getJLabelNumSlices())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+											)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getDiscountLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getDiscountTextField(),GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+											
+											)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getOutputFileLabel()) 
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 180, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getBtnBrowse())
+											)
+											)
+								
+								.addContainerGap())
+				)));
+				groupLayout.setVerticalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getJLabelNumSlices())
+								.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getDiscountTextField())
+								)
+								
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getOutputFileLabel())
+								.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getBtnBrowse())
+									)
+							.addGap(21)
+							.addContainerGap(77, Short.MAX_VALUE))
+				);
+			getComponentsPanel().setLayout(groupLayout);
+			
+			Component[] components = new Component [3];
+			components[0] = getJLabelNumSlices();
+			components[1] = getDiscountLabel();
+			components[2] = getOutputFileLabel();
+			groupLayout.linkSize(components);
+		}
 		
 	}
 	
@@ -214,7 +287,20 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	}
 	
 	
+	private JLabel getJLabelNumSlices() {
+		if (numSlicesLabel == null){
+			numSlicesLabel = new JLabel("Number of Slices");
+		}
+		return numSlicesLabel;
+	}
 	
+	private JTextField getNumSlicesJTextField(){
+		if (numSlicesJTextField == null){
+			numSlicesJTextField = new JTextField();
+			numSlicesJTextField.setColumns(10);
+		}
+		return numSlicesJTextField;
+	}
 	private JTextField getTxtSimulationsNumber(){
 		if (txtSimulationNumber == null){
 			txtSimulationNumber = new JTextField("20");
@@ -314,8 +400,13 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	@Override
 	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
 		//TODO realizar la validación de los datos capturados
-		initialAge = Integer.valueOf(getInitialAgeTextField().getText());
-		finalAge = Integer.valueOf(getFinalAgeTextField().getText());
+		if (isThereNodeAge) {
+			initialAge = Integer.valueOf(getInitialAgeTextField().getText());
+			finalAge = Integer.valueOf(getFinalAgeTextField().getText());
+		} else {
+			numSlices = Integer.valueOf(getNumSlicesJTextField().getText());
+		}
+		
 		discount = Double.valueOf(getDiscountTextField().getText());
 		nameFile = getOutputFileJTextField().getText();
 		simulationsNumber = Integer.valueOf(getTxtSimulationsNumber().getText());
@@ -333,6 +424,9 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	}
 	public String getOutputFileName(){
 		return nameFile;
+	}
+	public int getNumSlices(){
+		return numSlices;
 	}
 	public void showSimulationsNumberElements(boolean isProbabilistic){
 		getLblSimulationsNumber().setVisible(isProbabilistic);

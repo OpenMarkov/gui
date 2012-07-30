@@ -1,0 +1,240 @@
+/*
+* Copyright 2011 CISIAD, UNED, Spain
+*
+* Licensed under the European Union Public Licence, version 1.1 (EUPL)
+*
+* Unless required by applicable law, this code is distributed
+* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+*/
+
+package org.openmarkov.core.gui.dialog.costeffectiveness;
+
+import java.util.ArrayList;
+
+import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
+import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.SameAsPrevious;
+
+public class FactoryExpandedSMM {
+
+	// Attributes
+	/** Horizontal separation in pixels between slices. */
+	private double coordinateXOffset;
+
+	/** Vertical separation in pixels between slices. */
+	private final double coordinateYOffset = 0;
+	
+	private ProbNet probNet;
+
+	/** Set of probNodes that will be cloned in each slice. */
+	private ArrayList<ProbNode> generatedNodes;
+	
+	/** Each <ArrayList<ProbNode> contains the nodes of a time slice */
+	private ArrayList<ArrayList<ProbNode>> classifiedNodes;
+	
+	// Constructor
+	/** @param conciseNet. <code>ProbNet</code>
+	 * @param numSlices. <code>int</code>
+	 * @param simulationIndexVariable. <code>Variable</code>
+	 * @param coordinateXOffset. <code>int</code>
+	 * @throws NotEnoughMemoryException */
+	public FactoryExpandedSMM(ProbNet conciseNet, int numSlices, 
+			Variable simulationIndexVariable, double coordinateXOffset) 
+	throws NotEnoughMemoryException {
+		this.coordinateXOffset = coordinateXOffset;
+		this.probNet = conciseNet;
+		
+		if (simulationIndexVariable != null) {
+			sampleProbNet(simulationIndexVariable);
+		}
+		
+		// if some of the slices of the concise net misses a node present
+		// in previous slices, adds the node to that slice
+		makeNetCompact();
+		
+		// expands the net
+		while (classifiedNodes.size() < numSlices) {
+			generateNextSlice();
+		}
+
+	}
+
+	// Methods
+	/** @param simulationIndexVariable. <code>Variable</code>
+	 * @throws NotEnoughMemoryException */
+	private void sampleProbNet(Variable simulationIndexVariable) 
+			throws NotEnoughMemoryException {
+		for (ProbNode probNode : probNet.getProbNodes()) {
+			probNode.samplePotentials(simulationIndexVariable);
+		}
+	}
+
+	/** When invoking this method, probNet is a copy of the concise net. We add
+	 * new nodes, links, and potentials to make it a compact net. */
+	private void makeNetCompact() {
+		classifiedNodes = classifyNodes(probNet, probNet.getVariables());
+
+		// generate the new nodes of the compact net
+		ArrayList<ProbNode> generatingNodes = new ArrayList<ProbNode>();
+		generatedNodes = new ArrayList<ProbNode>();
+
+		for (int slice = 0; slice < classifiedNodes.size()-1; slice++) {
+			ArrayList<ProbNode> generatedNodesInThisSlice = 
+				new ArrayList<ProbNode>(classifiedNodes.get(slice).size());
+			for (ProbNode generatingProbNode : classifiedNodes.get(slice)) {
+				Variable generatingVariable = generatingProbNode.getVariable();
+				int newSliceIndex = generatingVariable.getTimeSlice() + 1;
+				String nameOfNewVariable = generatingVariable.getBaseName() + 
+							" [" + newSliceIndex + "]";
+				if ( !probNet.containsVariable(nameOfNewVariable) ) {
+					ProbNode newProbNode =
+						probNet.addShiftedProbNode(generatingProbNode, 1,
+							coordinateXOffset, coordinateYOffset );
+					generatingNodes.add(generatingProbNode);
+					generatedNodes.add(newProbNode);
+					generatedNodesInThisSlice.add(newProbNode);
+				}
+			}
+			for (ProbNode probNode : generatedNodesInThisSlice) {
+				classifiedNodes.get(probNode.getVariable().getTimeSlice()).
+					add(probNode);
+			}
+		}
+		
+		// assign potentials to the new nodes of the compact net
+		ProbNode generatingNode, generatedNode;
+		for (int i = 0; i < generatedNodes.size(); i++) {
+			generatingNode = generatingNodes.get(i);
+			generatedNode = generatedNodes.get(i);
+			expandPotentialAndLinks(generatingNode, generatedNode, 1);
+		}
+	}
+
+	/** Assigns nodes to slices in a collection of slices. Each slice is a
+	 * collection of nodes.
+	 * @return <code>ArrayList</code> of <code>ArrayList</code> of 
+	 *  <code>ProbNode</code> */
+	public static ArrayList<ArrayList<ProbNode>> classifyNodes(ProbNet probNet,
+			ArrayList<Variable> variables) {
+		ArrayList<ArrayList<ProbNode>> classifiedNodes;
+		int firstSliceIndex = Integer.MAX_VALUE;
+		int lastSliceIndex = Integer.MIN_VALUE;
+
+		// find the indexes of the first and last slice
+		int timeSlice;
+		for (Variable variable : variables) {
+			if (variable.isTemporal()) {
+				timeSlice = variable.getTimeSlice();
+				if ( timeSlice < firstSliceIndex ) {
+					firstSliceIndex = timeSlice;
+				}
+				if ( timeSlice > lastSliceIndex ) {
+					lastSliceIndex = timeSlice;
+				}
+			}
+		}
+		
+		int numSlices = lastSliceIndex - firstSliceIndex + 1;
+		
+		// initializes the variable classifiedNodes
+		classifiedNodes = new ArrayList<ArrayList<ProbNode>>(numSlices);
+		for (int slice = 0; slice < numSlices; slice++) {
+			classifiedNodes.add(new ArrayList<ProbNode>());
+		}
+
+		// assigns each node to its slice 
+		Variable variable;
+		for (ProbNode node : probNet.getProbNodes()) {
+			variable = node.getVariable();
+			if (variable.isTemporal()) {
+				classifiedNodes.get(variable.getTimeSlice()).add(node);
+			} 
+			
+		}
+		
+		return classifiedNodes;
+	}
+	
+	public ProbNet getExtendedNet(){
+		return probNet;
+	}
+	
+	/** 
+	 * @precondition extendedNet in this class must be a compact net */
+	private void generateNextSlice() {
+
+		ArrayList<ProbNode> lastSliceNodes = 
+			classifiedNodes.get(classifiedNodes.size()-1);
+		ArrayList<ProbNode> newSliceNodes = new ArrayList<ProbNode>();
+
+		// generates the new nodes
+		for (ProbNode generatingProbNode : lastSliceNodes) {
+			ProbNode newProbNode =
+				probNet.addShiftedProbNode(generatingProbNode, 1,
+					coordinateXOffset, coordinateYOffset );
+			newSliceNodes.add(newProbNode);
+		}
+		// generates new slices
+		// assign potentials to the new nodes
+		ProbNode generatingNode, generatedNode;
+		for (int i = 0; i < lastSliceNodes.size(); i++) {
+			generatingNode = lastSliceNodes.get(i);
+			generatedNode = newSliceNodes.get(i);
+			expandPotentialAndLinks(generatingNode, generatedNode, 1);
+		}
+		
+		classifiedNodes.add(newSliceNodes);
+	}		
+
+	/** TODO documentar
+	 * oldNode is a node in the last slice of the compact net
+	 * TODO We are assuming that there is only one potential per node. Revise */
+	private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, 
+			int timeDifference) {
+		Potential oldPotential = oldNode.getPotentials().get(0);
+		Potential newPotential = null;
+		if (oldPotential.getPotentialType() == 
+				PotentialType.CYCLE_LENGTH_SHIFT) {
+			newPotential = new CycleLengthShift(
+					oldPotential.getShiftedVariables(probNet, 
+							timeDifference));
+		} else {
+			if (oldPotential.getPotentialType() == 
+					PotentialType.SAME_AS_PREVIOUS) {
+				Potential originalPotential = 
+					((SameAsPrevious)oldPotential).getOriginalPotential();
+				// Sets time difference respect to the original potential
+				Variable firstOriginalVariable = 
+					originalPotential.getVariables().get(0);
+				Variable newVariable = newNode.getVariable();
+				int thisTimeDifference = newVariable.getTimeSlice() - 
+					firstOriginalVariable.getTimeSlice();
+				try {
+					newPotential = new SameAsPrevious(
+							((SameAsPrevious)oldPotential).getOriginalPotential(), 
+							probNet,	thisTimeDifference);
+				} catch (NodeNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					newPotential = new SameAsPrevious(oldPotential, probNet, 
+							timeDifference);
+				} catch (NodeNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		newNode.addPotential(newPotential);
+		newPotential.createDirectedLinks(probNet);
+	}
+
+}

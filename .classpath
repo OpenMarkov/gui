@@ -4,7 +4,23 @@
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="src" path="/org.openmarkov.inference.variableElimination"/>
+	<classpathentry kind="lib" path="C:/Users/Mar/.m2/repository/org/apache/poi/poi/3.0-FINAL/poi-3.0-FINAL.jar" sourcepath="C:/Users/Mar/.m2/repository/org/apache/poi/poi/3.0-FINAL/poi-3.0-FINAL-sources.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.apache.poi"/>
+			<attribute name="maven.artifactId" value="poi"/>
+			<attribute name="maven.version" value="3.0-FINAL"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.14-experimental.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.14-swt.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.14.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mar/workspace Stable/org.openmarkov.core.gui/lib/poi-ooxml-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mar/workspace Stable/org.openmarkov.core.gui/lib/poi-3.8-20120326.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

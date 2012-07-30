@@ -447,6 +447,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 			
 		}
 		
+		public Object[][] getData() {
+			return this.data;
+		}
 	
 	}
 

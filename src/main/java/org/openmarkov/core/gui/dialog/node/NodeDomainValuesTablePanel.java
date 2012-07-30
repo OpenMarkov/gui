@@ -367,9 +367,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		setUploadingData(true);
 		//jComboBoxStatesValues.removeItemListener(this);
 		(((DiscretizeTablePanel)getNodeDiscretizedStatesTablePanel()).getStandarDomainButton()).removeActionListener( this );
-		/*jFormattedTextFieldPrecision.removePropertyChangeListener("value", 
-		listener);*/
-
+		
 	//	jFormattedTextFieldPrecision.setValue( Double.valueOf( properties.getVariable().getPrecision() ) );
 		getJComboBoxPrecision().setSelectedItem(String.valueOf(properties.getVariable().getPrecision()));
 		//getJComboBoxPrecision().setSelectedIndex(4);// initialized precision to 0.01
