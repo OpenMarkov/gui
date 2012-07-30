@@ -33,10 +33,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -2350,11 +2352,23 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  }
 			  try {
 				  //probNet must be the original network and expandedNetwork the probNet espanded numSlices times
-				  probNet.setDecisionCriteria(
-							new String[]{"cost", "effectiveness"});
-				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet.copy(), numSlices, null, 200.0);
-				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+				  ProbNet probNetCopy = probNet.copy();
+				  probNetCopy.setDecisionCriteria(new String[]{"cost", "effectiveness"});
+				//make all utility nodes of the expanded probNet 
+				  ArrayList<ProbNode> utilityNodes = probNetCopy.getProbNodes(NodeType.UTILITY);
+				  for (int i = 0; i < utilityNodes.size(); i++) {
+					  try {
+						probNetCopy.addLink(probNetCopy.getDecisionCriteriaVariable(), utilityNodes.get(i).getVariable(), true);
+					} catch (NodeNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				  }
 				  
+				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNetCopy, numSlices, null, 200.0);
+				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+				  //expandedNetwork.setDecisionCriteria(new String[]{"cost", "effectiveness"});
+				  //make all utility nodes of the expanded probNet 
 				  try {
 					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 					ArrayList<Variable> conditioningVariables = new ArrayList<>();
