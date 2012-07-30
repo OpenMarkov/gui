@@ -50,7 +50,6 @@ import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
-import org.openmarkov.core.gui.window.edition.mode.EditionState;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
@@ -63,6 +62,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.oon.OOBNet;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -721,7 +721,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private void createNewNetwork() {
 
 		ProbNet probNet = null;
+		// TODO OOBN start
 		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		//probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
+        // TODO OOBN end
 		messagesStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		String networkName = new String(messagesStringResource
@@ -1169,8 +1172,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
 		}
 		getCurrentNetworkPanel().setSelectedAllObjects(false);
-		mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(
-				newWorkingMode, getCurrentNetworkPanel());
+		mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
 		if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 			getCurrentNetworkPanel().updateIndividualProbabilities();
 			mainPanel.getInferenceToolBar().

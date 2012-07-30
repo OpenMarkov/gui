@@ -16,17 +16,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
 import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
-import org.openmarkov.core.gui.window.edition.EditorPanel;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oon.InstanceLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
@@ -34,34 +34,31 @@ import org.openmarkov.core.oon.action.AddInstanceLinkEdit;
 
 public class VisualOONetwork extends VisualNetwork
 {
-    
-    
     /**
      * HashMap of visual instances.
      */
-    private HashMap<String, VisualInstance> visualInstances = new HashMap<String, VisualInstance>();
+    private Map<String, VisualInstance> visualInstances = new HashMap<String, VisualInstance>();
 
     /**
      * List of visual instance links.
      */
-    private ArrayList<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
+    private List<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
     
     /**
      * Set of selected links.
      */
-    private HashSet<VisualInstance> selectedInstances = new HashSet<VisualInstance>();  
-    
-    /**
-     * Listener to the selection.
-     */
-    private Set<VisualOOSelectionListener> selectionListeners = new HashSet<VisualOOSelectionListener>();
+    private Set<VisualInstance> selectedInstances = new HashSet<VisualInstance>();  
 
     private VisualInstance newInstanceLinkSource;    
 
     
-    public VisualOONetwork (ProbNet probNet, EditorPanel editorPanel)
+    public VisualOONetwork (OOBNet probNet, OOEditorPanel editorPanel)
     {
         super (probNet, editorPanel);
+        visualInstances = new HashMap<> ();
+        visualInstanceLinks = new ArrayList<> ();
+        selectedInstances = new HashSet<> ();
+        selectionListeners = new HashSet<> ();
     }
 
 
@@ -74,19 +71,26 @@ public class VisualOONetwork extends VisualNetwork
         super.constructVisualInfo ();
         
         // construct visual instances
-        visualInstances.clear();
-        for(String instanceName : ((OOBNet)probNet).getInstances().keySet())
+        if(probNet instanceof OOBNet && visualInstances != null)
         {
-            visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
-        }   
+            visualInstances.clear();
+            for(String instanceName : ((OOBNet)probNet).getInstances().keySet())
+            {
+                visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
+            }
+        }
+        
         // construct visual instance links
-        visualInstanceLinks.clear();
-        for(InstanceLink link : ((OOBNet)probNet).getInstanceLinks())
+        if(probNet instanceof OOBNet && visualInstanceLinks != null)
         {
-            VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
-            VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
-            visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
-        }        
+            visualInstanceLinks.clear();
+            for(InstanceLink link : ((OOBNet)probNet).getInstanceLinks())
+            {
+                VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
+                VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
+                visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
+            }       
+        }
     }
     
     /**
@@ -219,11 +223,16 @@ public class VisualOONetwork extends VisualNetwork
      * are selected, and which are the especific selected nodes. 
      * Also notifies this situation to the menu assistant.
      */
-    private void notifyObjectsSelected() {
+    protected void notifyObjectsSelected() {
 
-        for (VisualOOSelectionListener listener : selectionListeners) {
+        for (SelectionListener listener : selectionListeners) {
             listener.objectsSelected(
-                getSelectedNodes(), getSelectedLinks(), getSelectedInstances());
+                getSelectedNodes(), getSelectedLinks());
+            if(listener instanceof OOSelectionListener)
+            {
+                ((OOSelectionListener)listener).objectsSelected(
+                                         getSelectedNodes(), getSelectedLinks(), getSelectedInstances());
+            }
         }
     }    
     
@@ -346,8 +355,8 @@ public class VisualOONetwork extends VisualNetwork
         for (VisualInstance instance : visualInstances.values()) {
             if (selection.containsRectangle (instance.getCoordinateX (),
                                              instance.getCoordinateY (), 
-                                             instance.getCoordinateX () + instance.getWidth (),
-                                             instance.getCoordinateY () + instance.getHeight ()))
+                                             instance.getWidth (),
+                                             instance.getHeight ()))
             {
                 setSelectedElement (instance, true);
             }
@@ -411,7 +420,8 @@ public class VisualOONetwork extends VisualNetwork
      * @param g
      * @return element in the position given, null if none
      */
-    public VisualElement select (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
+    @Override
+    public VisualElement selectElementInPosition (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
     {
         VisualInstance instance = null;
         VisualElement selectedElement = null;

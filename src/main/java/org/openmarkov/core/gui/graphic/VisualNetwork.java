@@ -103,7 +103,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * Listener to the selection.
 	 */
-	private HashSet<SelectionListener> selectionListeners =
+	protected HashSet<SelectionListener> selectionListeners =
 		new HashSet<SelectionListener>();
 
 	protected Graphics2D g2;
@@ -123,8 +123,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */ 
 	public VisualNetwork(ProbNet probNet, EditorPanel editorPanel) {
         
-		//this.pNESupport.addUndoableEditListener(this);
 		this.probNet = probNet;
+        this.probNet.getPNESupport().addUndoableEditListener(this);
 		this.editorPanel = editorPanel;
 		
 		//network.addNetworkChangeListener(this);
@@ -1018,7 +1018,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * are selected, and which are the especific selected nodes. 
 	 * Also notifies this situation to the menu assistant.
 	 */
-	private void notifyObjectsSelected() {
+	protected void notifyObjectsSelected() {
 
 		for (SelectionListener listener : selectionListeners) {
 			listener.objectsSelected(

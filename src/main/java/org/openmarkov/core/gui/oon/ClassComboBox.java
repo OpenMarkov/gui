@@ -14,8 +14,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
 
 import org.openmarkov.core.gui.window.MainPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 
@@ -26,7 +28,7 @@ import org.openmarkov.core.gui.window.mdi.MDIListener;
  * 
  * @author ibermejo
  */
-public class ClassComboBox extends JComboBox implements MDIListener {
+public class ClassComboBox extends JComboBox<String> implements MDIListener {
 
 	/**
 	 * Static field for serializable class.
@@ -60,6 +62,13 @@ public class ClassComboBox extends JComboBox implements MDIListener {
 		setPreferredSize(new Dimension(120, 25));
 		setMaximumSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
+		for(JInternalFrame frame : MainPanel.getUniqueInstance().getMdi().getFrames ())
+		{
+		    if(frame.getContentPane () instanceof NetworkPanel)
+		    {
+		        this.addItem(frame.getTitle ());
+		    }
+		}
 		MainPanel.getUniqueInstance().getMdi().addFrameStateListener(this);
 	}
 
@@ -107,6 +116,7 @@ public class ClassComboBox extends JComboBox implements MDIListener {
 		// TODO Update list
 		this.removeItem(oldName);
 		this.addItem(newName);
+		this.setSelectedItem (newName);
 	}
 
 	public boolean frameClosing(FrameContentPanel contentPanel) {

@@ -67,12 +67,12 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Horizontal margin for the bounding box
 	 */
-	protected static final double HORIZONTAL_MARGIN = 120;
+	protected static final double HORIZONTAL_MARGIN = 50;
 	
 	/**
 	 * Vertical margin for the bounding box
 	 */
-	protected static final double VERTICAL_MARGIN = 50;	
+	protected static final double VERTICAL_MARGIN = 25;	
 	
 	private  static final Font FONT_HELVETICA_BOLD = new Font("Helvetica", Font.BOLD, 15);	
 

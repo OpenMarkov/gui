@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -297,7 +296,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		messageStringResource = StringResourceLoader.getUniqueInstance()
 				.getBundleMessages();
 
-		this.probNet.getPNESupport().addUndoableEditListener(visualNetwork);
 		initialize();
 
 		inferenceManager = new InferenceManager();

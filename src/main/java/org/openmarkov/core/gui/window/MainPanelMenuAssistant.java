@@ -30,6 +30,8 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
+import org.openmarkov.core.gui.oon.OOSelectionListener;
+import org.openmarkov.core.gui.oon.VisualInstance;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
@@ -53,8 +55,7 @@ import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
  *          Introduction and elimination of evidence - Management of multiple
  *          evidence cases.
  */
-public class MainPanelMenuAssistant extends MenuAssistant implements
-		SelectionListener, PNUndoableEditListener {
+public class MainPanelMenuAssistant extends MenuAssistant implements OOSelectionListener, PNUndoableEditListener {
 
 	/**
 	 * Composed action command that contains all the save and close actions
@@ -72,7 +73,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	public static final String[] EDITING_ACTION_COMMANDS = {
 			ActionCommands.OBJECT_SELECTION, ActionCommands.CHANCE_CREATION,
 			ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-			ActionCommands.LINK_CREATION/*, TODO OOBN ActionCommands.INSTANCE_CREATION*/};
+			ActionCommands.LINK_CREATION, /*//TODO OOBN */ActionCommands.INSTANCE_CREATION};
 
 	/**
 	 * Composed action command that contains inference actions.
@@ -581,6 +582,172 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, canPaste);
 	}
 
+    /**
+     * This method activates o desactivates some options depending on the
+     * numbers of nodes or links selected or the expanded state of the specific
+     * nodes selected
+     * 
+     * @param nodes
+     *            number of selected nodes.
+     * @param links
+     *            number of selected links.
+     * @param arrayOfNodes
+     *            an array with the selected nodes.
+     */
+    public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks)
+    {	
+        boolean canCut = false;
+        boolean canCopy = false;
+        boolean canRemove = false;
+        boolean canNodeProperties = false;
+        boolean canNodeTable = false;
+        boolean canLinkProperties = false;
+        boolean canExpand = false;
+        boolean canContract = false;
+        boolean canAddFinding = false;
+        boolean canRemoveFinding = false;
+        boolean canLog = false;
+        boolean canImposePolicy = false;
+        boolean canEditPolicy = false;
+        boolean canRemovePolicy = false;
+        boolean canShowExpectedUtility = false;
+        boolean canShowOptimalPolicy = false;
+
+        int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+        if (!(currentNetworkPanel == null)) {
+            workingMode = currentNetworkPanel.getWorkingMode();
+        }
+        if (selectedNodes.size() > 0) {
+            canCopy = true;
+            if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                canRemove = true;
+                canCut = true;
+            }
+            if (selectedLinks.size() <= 0) {
+                //if we are in Inference Mode, options about expansion and
+                //contraction must be activated
+                if (workingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+                    if (selectedNodes.size() > 0) {
+                        VisualNode visualNode = null;
+                        for (int i=0; i < selectedNodes.size(); i++) {
+                            visualNode = selectedNodes.get(i);
+                            //if at least one selected node is expanded, 
+                            //'contract node(s)' option must be active
+                            if (visualNode.isExpanded()) {
+                                canContract = true;
+                            }
+                            //if at least one selected node is contracted, 
+                            //'expand node(s)' option must be active
+                            if (!(visualNode.isExpanded())) {
+                                canExpand = true;
+                            }
+                        }           
+                    }
+                }
+                //if at least one selected node has a post-Resolution finding, 
+                //'remove finding' option must be active 
+                VisualNode vNode = null;
+                for (int i=0; i < selectedNodes.size(); i++) {
+                    vNode = selectedNodes.get(i);
+                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                        if (vNode.isPreResolutionFinding()) { 
+                            canRemoveFinding = true;
+                        } else {
+                            canRemoveFinding = false;
+                        }
+                    } else {
+                        if (vNode.isPostResolutionFinding()) { 
+                            canRemoveFinding = true;
+                        } else {
+                            canRemoveFinding = false;
+                        }                       
+                    }
+                }
+                if (selectedNodes.size() == 1) {
+                     canNodeProperties = true;
+                     VisualNode visualNode = selectedNodes.get(0);
+                     if (visualNode.getProbNode().getVariable().isTemporal()){
+                         canLog = true;
+                     }
+                     String label = null;
+                     switch (visualNode.getProbNode().getNodeType()){
+                     case CHANCE:
+                         canNodeTable = true;
+                         if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                             label = stringResource.getString("Edit.NodePotential.Label");
+                         } else {
+                             label = stringResource.getString("Edit.ViewNodePotential.Label");
+                         }
+                         break;
+                     case UTILITY:
+                         canNodeTable = true;
+                         if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                             label = stringResource.getString("Edit.Utility.Label");
+                         } else {
+                             label = stringResource.getString("Edit.ViewUtility.Label");
+                         }                           
+                         break;
+                     case DECISION:
+                         if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                             label = stringResource.getString("Edit.NodePotential.Label");
+                             if (((VisualDecisionNode)visualNode).isHasPolicy()) { 
+                                 canEditPolicy = true;
+                                 canRemovePolicy = true;                     
+                             } else {
+                                 canImposePolicy = true;    
+                             }
+                         } else {
+                             label = stringResource.getString("Edit.ViewNodePotential.Label");
+                             if (true) { //...asaez...if network compiled...currently not needed
+                                         //...because if not compiled, those options are not shown.
+                                 canShowExpectedUtility = true;
+                                 canShowOptimalPolicy = true;
+                             }
+                         }                       
+                         break;
+                     }
+                     setText(ActionCommands.EDIT_POTENTIAL, label);
+                     canAddFinding = !visualNode.isAnyFinding() 
+                             || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
+                             || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding());
+                     canAddFinding &= !(visualNode instanceof VisualUtilityNode);
+                     boolean addOrChange = (workingMode == NetworkPanel.EDITION_WORKING_MODE && !visualNode.isPreResolutionFinding()) 
+                             || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode.isPostResolutionFinding());
+                     setText(ActionCommands.NODE_ADD_FINDING, stringResource.getString((addOrChange)? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
+                }
+            }
+        } else {
+            if (selectedLinks.size() > 0) {
+                if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                    canRemove = true;
+                }
+                if (selectedLinks.size() == 1) {
+                    if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+                        canLinkProperties = true;
+                    }
+                }
+            }
+        }
+        setOptionEnabled(ActionCommands.CLIPBOARD_CUT, canCut);
+        setOptionEnabled(ActionCommands.CLIPBOARD_COPY, canCopy);
+        setOptionEnabled(ActionCommands.OBJECT_REMOVAL, canRemove);
+        setOptionEnabled(ActionCommands.NODE_PROPERTIES, canNodeProperties);
+        setOptionEnabled(ActionCommands.EDIT_POTENTIAL, canNodeTable);
+        setOptionEnabled(ActionCommands.LINK_PROPERTIES, canLinkProperties);
+        setOptionEnabled(ActionCommands.NODE_EXPANSION, canExpand);
+        setOptionEnabled(ActionCommands.NODE_CONTRACTION, canContract);
+        setOptionEnabled(ActionCommands.NODE_ADD_FINDING, canAddFinding);
+        setOptionEnabled(ActionCommands.NODE_REMOVE_FINDING, canRemoveFinding);
+        setOptionEnabled(ActionCommands.LOG, canLog);
+        setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, canImposePolicy);
+        setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, canEditPolicy);
+        setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
+        setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
+        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);        
+    }
+    
+    //TODO OOBN start
+    
 	/**
 	 * This method activates o desactivates some options depending on the
 	 * numbers of nodes or links selected or the expanded state of the specific
@@ -593,7 +760,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 	 * @param arrayOfNodes
 	 *            an array with the selected nodes.
 	 */
-	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks)
+	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks, List<VisualInstance> selectedInstances)
 	{
 		boolean canCut = false;
 		boolean canCopy = false;
@@ -616,8 +783,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
 		}
-		//TODO OOBN
-		/*List<VisualInstance> selectedInstances = new ArrayList<>();
 		if (selectedInstances.size() > 0) {
 			canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
@@ -629,8 +794,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 			{
 				isInstanceInput &= instance.isInput();
 			}
-			setOptionSelected(ActionCommands.INSTANCE_INPUT, isInstanceInput);
-		}*/
+			setOptionSelected(ActionCommands.MARK_AS_INPUT, isInstanceInput);
+		}
 		if (selectedNodes.size() > 0) {
 			canCopy = true;
 			if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
@@ -759,6 +924,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
 	}
+    //TODO OOBN end
 
 	/**
 	 * This method indicates that some information has been put into the

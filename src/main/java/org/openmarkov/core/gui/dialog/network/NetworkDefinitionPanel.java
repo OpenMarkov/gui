@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -45,8 +46,7 @@ import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 
 /**
- * Panel to set the definition of a network. It will have no title field, a
- * TypeNetwork group (with two radio buttons) and a HTML comment text field
+ * Panel to set the definition of a network. 
  * 
  * @author jlgozalo
  * @version 1.1 ibermejo
@@ -139,7 +139,18 @@ public class NetworkDefinitionPanel extends JPanel implements
 																												GroupLayout.PREFERRED_SIZE,
 																												182,
 																												GroupLayout.PREFERRED_SIZE)
-																										.addContainerGap()))))));
+																										.addContainerGap())))
+                                                        .addGroup(
+                                                                groupLayout
+                                                                        .createSequentialGroup()
+                                                                        .addComponent(
+                                                                                      getCheckBoxIsObjectOriented (),
+                                                                                      GroupLayout.PREFERRED_SIZE,
+                                                                                      180,
+                                                                                      GroupLayout.PREFERRED_SIZE)
+                                                                                     .addContainerGap())																										
+										        
+										        )));
 		groupLayout
 				.setVerticalGroup(groupLayout
 						.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -175,6 +186,14 @@ public class NetworkDefinitionPanel extends JPanel implements
 																GroupLayout.DEFAULT_SIZE,
 																117,
 																Short.MAX_VALUE))
+                                        .addGroup(
+                                                groupLayout
+                                                        .createParallelGroup(
+                                                                GroupLayout.Alignment.LEADING,
+                                                                false)
+                                                        .addComponent(
+                                                                getCheckBoxIsObjectOriented ()))
+																
 										.addContainerGap(189, Short.MAX_VALUE)));
 		setLayout(groupLayout);
 	}
@@ -282,6 +301,15 @@ public class NetworkDefinitionPanel extends JPanel implements
 		}
 		return commentHTMLScrollPaneNetworkDefinition;
 	}
+	
+	private JCheckBox getCheckBoxIsObjectOriented ()
+	{
+	    if(jcheckBoxIsObjectOriented == null)
+	    {
+	        jcheckBoxIsObjectOriented = new JCheckBox ("Is Object Oriented", false);
+	    }
+	    return jcheckBoxIsObjectOriented;
+	}
 
 	/**
 	 * This method fills the content of the fields from a NetworkProperties
@@ -356,7 +384,12 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 */
 	private CommentHTMLScrollPane commentHTMLScrollPaneNetworkDefinition = null;
 
-	/**
+    /**
+     * Checkbox to define Object Orientedness of Network
+     */
+    private JCheckBox jcheckBoxIsObjectOriented = null;
+
+    /**
 	 * Dialog string resource.
 	 */
 	private StringResource dialogStringResource;

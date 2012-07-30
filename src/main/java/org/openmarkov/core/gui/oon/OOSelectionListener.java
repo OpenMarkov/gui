@@ -9,8 +9,9 @@ package org.openmarkov.core.gui.oon;
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-import java.util.ArrayList;
+import java.util.List;
 
+import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 
@@ -22,7 +23,7 @@ import org.openmarkov.core.gui.graphic.VisualNode;
  * @version 1.0
  *             
  */
-public interface VisualOOSelectionListener {
+public interface OOSelectionListener extends SelectionListener {
 
     /**
      * This method indicates the selected elements
@@ -34,9 +35,9 @@ public interface VisualOOSelectionListener {
      * @param selectedInstances
      *            array of instances that are currently selected
      */
-    void objectsSelected(ArrayList<VisualNode> selectedNodes,
-            ArrayList<VisualLink> selectedLinks,
-            ArrayList<VisualInstance> selectedInstances);
+    void objectsSelected(List<VisualNode> selectedNodes,
+            List<VisualLink> selectedLinks,
+            List<VisualInstance> selectedInstances);
     
 }
 

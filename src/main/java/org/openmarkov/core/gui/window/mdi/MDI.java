@@ -450,4 +450,8 @@ public class MDI extends JPanel implements FrameTitleListener,
 	public Container getFrameByTitle(String title) {
 		return ((InternalFrame)desktopPane.getFrameByTitle(title)).getContentPane();
 	}
+	
+    public JInternalFrame[] getFrames() {
+        return desktopPane.getAllFrames ();
+    }	
 }

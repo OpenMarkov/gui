@@ -29,6 +29,7 @@ import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.oon.OOEditorPanel;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
@@ -216,7 +217,12 @@ public class NetworkPanel extends FrameContentPanel implements
 	public EditorPanel getEditorPanel() {
 
 		if (editorPanel == null) {
-			editorPanel = new EditorPanel(this);
+		    // TODO OOBN start
+//		    if(probNet instanceof OOBNet)
+//		        editorPanel = new OOEditorPanel(this);
+//		    else
+            // TODO OOBN end
+		        editorPanel = new EditorPanel(this);
 			// editorPanel.addEditionListener(this);
 			// It is necessary for edition actions like movement node.
 		}
