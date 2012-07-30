@@ -50,6 +50,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -1361,7 +1362,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		
 		int [] parentsConfiguration = new int [variables.size()];
 		//Gets the start position of a reordered potential
-		int startPosition = Utilities.toPositionOnPotentialReordered(variable.
+		int startPosition = UtilStrings.toPositionOnPotentialReordered(variable.
 				getNumStates()+ variables.size()-1, col, variable.getNumStates(), 
 				variables.size());
 		int finalPosition = startPosition + variable.getNumStates() - 1;

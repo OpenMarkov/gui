@@ -40,7 +40,7 @@ import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
@@ -433,7 +433,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 				
 				for (int i = 0 ; i < limits.length; i++) {
 					if (limits[i] != Double.POSITIVE_INFINITY && limits[i] != Double.NEGATIVE_INFINITY) {
-						double newLimit = Utilities.roundWithPrecision(limits[i], Double.toString(precision));
+						double newLimit = UtilStrings.roundWithPrecision(limits[i], Double.toString(precision));
 						if (limits[i] != newLimit) {
 							limits[i] = newLimit;
 							int j = i;
@@ -475,7 +475,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 				
 				for (int m = 0 ; m < limits.length; m++) {
 					if (limits[m] != Double.POSITIVE_INFINITY && limits[m] != Double.NEGATIVE_INFINITY) {
-						limits[m] = Utilities.roundWithPrecision(limits[m], Double.toString(precision));
+						limits[m] = UtilStrings.roundWithPrecision(limits[m], Double.toString(precision));
 					}
 				}
 				PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
@@ -522,7 +522,7 @@ public class NodeDiscretizeValuesTablePanelListener implements ActionListener,
 						
 						if (value != Double.NEGATIVE_INFINITY && value != Double.POSITIVE_INFINITY ) {
 							
-							String roundedValue = Utilities.roundedString(value,
+							String roundedValue = UtilStrings.roundedString(value,
 								Double.toString((Double) getPanel().getJFormattedTextFieldPrecision().getValue()));
 							
 							panel.getValuesTable().setValueAt(roundedValue, i, j);

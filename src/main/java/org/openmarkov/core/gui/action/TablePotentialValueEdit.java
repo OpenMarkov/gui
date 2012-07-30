@@ -20,7 +20,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -172,7 +172,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		case CHANCE:
 		case DECISION:
 		case UTILITY:
-			this.potentialSelected = Utilities.toPositionOnPotentialReordered(
+			this.potentialSelected = UtilStrings.toPositionOnPotentialReordered(
 					row, col, probNode.getVariable().getNumStates(), probNode
 							.getNode().getNumParents());
 			break;
@@ -204,18 +204,18 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 
 			epsilon = Math.pow(10, -(maxDecimals + 2));
 
-			newTable[potentialSelected] = Utilities.roundAndReduce(newValue,
+			newTable[potentialSelected] = UtilStrings.roundAndReduce(newValue,
 					epsilon, maxDecimals);
 
 			while (listIterator.hasNext() == true) {
 				position = (Integer) listIterator.next();
 				if (isEditablePosition(position)) {
-					sum = Utilities.roundAndReduce(sum + newTable[position],
+					sum = UtilStrings.roundAndReduce(sum + newTable[position],
 							epsilon, maxDecimals);
 				}
 				// sum += newTable[pos];
 			}
-			rest = Math.abs(Utilities.roundAndReduce(1 - sum, epsilon,
+			rest = Math.abs(UtilStrings.roundAndReduce(1 - sum, epsilon,
 					maxDecimals));
 			// rest = Math.abs( 1 - sum );
 
@@ -224,7 +224,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				while (listIterator.hasNext() == true && rest != 0) {
 					position = (Integer) listIterator.next();
 					if (this.isEditablePosition(position)) {
-						rest = Utilities.roundAndReduce(rest
+						rest = UtilStrings.roundAndReduce(rest
 								- newTable[position], epsilon, maxDecimals);
 						// rest = rest - newTable[pos];
 						if (rest < 0) {// it is because the value of the table
@@ -232,7 +232,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 										// bigger than the rest
 							// and now there's nothing left to reach one
 							newTable[position] = Math
-									.abs(Utilities.roundAndReduce(rest,
+									.abs(UtilStrings.roundAndReduce(rest,
 											epsilon, maxDecimals));
 							break;
 						} else
@@ -246,7 +246,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				while (listIterator.hasNext() == true && !updated) {
 					position = (Integer) listIterator.next();
 					if (this.isEditablePosition(position)) {
-						newTable[position] = Utilities
+						newTable[position] = UtilStrings
 								.roundAndReduce(newTable[position] + rest,
 										epsilon, maxDecimals);
 						updated=true;
@@ -378,7 +378,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 */
 	public int getRowPosition(int position) {
 
-		return Utilities.toPositionOnJtable(position, col, probNode
+		return UtilStrings.toPositionOnJtable(position, col, probNode
 				.getVariable().getNumStates(), probNode.getNode()
 				.getNumParents());
 

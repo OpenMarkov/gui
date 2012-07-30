@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
@@ -229,16 +229,16 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		int priorityListPosition=0;
 		
 		if (!leakyFlag){//noisy parameters
-			newNoisyParameters[position] = Utilities.roundAndReduce(newValue, epsilon, maxDecimals);
+			newNoisyParameters[position] = UtilStrings.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()== true){
 				priorityListPosition = (Integer) listIterator.next();
-				sum = Utilities.roundAndReduce(sum + newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
+				sum = UtilStrings.roundAndReduce(sum + newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
 				//sum = sum + newNoisyParameters[priorityListPosition];
 				//sum = roundingDouble(sum + newNoisyParameters[priorityListPosition]);
 				//sum += newTable[pos];
 			}
 			//rest = Math.abs(1-sum);
-			rest = Math.abs(Utilities.roundAndReduce(1-sum, epsilon, maxDecimals));
+			rest = Math.abs(UtilStrings.roundAndReduce(1-sum, epsilon, maxDecimals));
 			//rest = Math.abs( 1 - sum );
 		
 			if (sum > 1.0 ){
@@ -246,10 +246,10 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				while (listIterator.hasNext()== true && rest != 0){
 					priorityListPosition = (Integer) listIterator.next();
 					//rest = rest - newNoisyParameters[priorityListPosition];
-					rest = Utilities.roundAndReduce( rest - newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
+					rest = UtilStrings.roundAndReduce( rest - newNoisyParameters[priorityListPosition], epsilon, maxDecimals);
 					//rest = rest - newTable[pos];
 					if (rest < 0){
-						newNoisyParameters[priorityListPosition] = Math.abs( Utilities.roundAndReduce(rest, epsilon, maxDecimals));
+						newNoisyParameters[priorityListPosition] = Math.abs( UtilStrings.roundAndReduce(rest, epsilon, maxDecimals));
 						break;
 					}else
 						newNoisyParameters[priorityListPosition] = 0.0;
@@ -257,33 +257,33 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 					}
 			}else{
 				priorityListPosition = (Integer) priorityList.getFirst();
-				newNoisyParameters[priorityListPosition] = Utilities.roundAndReduce(newNoisyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
+				newNoisyParameters[priorityListPosition] = UtilStrings.roundAndReduce(newNoisyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
 				//newNoisyParameters[priorityListPosition] = roundingDouble(newNoisyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
 			}
 			iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
 			
 		}else if (leakyFlag) {//leaky parameters
-			newLeakyParameters[position] = Utilities.roundAndReduce(newValue, epsilon, maxDecimals);
+			newLeakyParameters[position] = UtilStrings.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()== true){
 				priorityListPosition = (Integer) listIterator.next();
-				sum = Utilities.roundAndReduce(sum + newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
+				sum = UtilStrings.roundAndReduce(sum + newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
 				//sum = roundingDouble(sum + newLeakyParameters[priorityListPosition]);
 				//sum += newTable[pos];
 			}
 			//rest = Math.abs(1-sum);
-			rest = Math.abs(Utilities.roundAndReduce(1-sum, epsilon, maxDecimals));
+			rest = Math.abs(UtilStrings.roundAndReduce(1-sum, epsilon, maxDecimals));
 			//rest = Math.abs( 1 - sum );
 		
 			if (sum > 1.0){
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext()== true && rest != 0){
 					priorityListPosition = (Integer) listIterator.next();
-					rest = Utilities.roundAndReduce(rest - newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
+					rest = UtilStrings.roundAndReduce(rest - newLeakyParameters[priorityListPosition], epsilon, maxDecimals);
 					//rest = roundingDouble(rest - newLeakyParameters[priorityListPosition]);
 					//rest = rest - newTable[pos];
 					if (rest < 0){
-						newLeakyParameters[priorityListPosition] = Math.abs(Utilities.roundAndReduce(rest, epsilon, maxDecimals));
+						newLeakyParameters[priorityListPosition] = Math.abs(UtilStrings.roundAndReduce(rest, epsilon, maxDecimals));
 						break;
 					}else
 						newLeakyParameters[priorityListPosition] = 0.0;
@@ -291,7 +291,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 					}
 			}else{
 				priorityListPosition = (Integer) priorityList.getFirst();
-				newLeakyParameters[priorityListPosition] = Utilities.roundAndReduce(newLeakyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
+				newLeakyParameters[priorityListPosition] = UtilStrings.roundAndReduce(newLeakyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
 				//newLeakyParameters[priorityListPosition] = roundingDouble(newLeakyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
 			}

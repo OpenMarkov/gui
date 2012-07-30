@@ -24,7 +24,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.model.network.ProbNode;
@@ -588,7 +588,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 					JOptionPane.ERROR_MESSAGE );
 				//valuesTable.getSelectionModel().setSelectionInterval(row, 
 					//	e.getColumn());
-				int i = Utilities.toPositionOnPotentialReordered(row,e.getColumn(), 
+				int i = UtilStrings.toPositionOnPotentialReordered(row,e.getColumn(), 
 						probNode.getVariable().getNumStates(), probNode.
 						getNode().getNumParents()) ;
 				valuesTable.setValueAt(probNode.getVariable().getStates()[i].

@@ -63,6 +63,7 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -386,7 +387,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							.getIndex(states));
 				if (jComboBoxStatesValues.getSelectedIndex() == 
 						(jComboBoxStatesValues.getItemCount() - 1) 
-						&& Utilities.hasLimitBracketSymbols(states)) { 
+						&& UtilStrings.hasLimitBracketSymbols(states)) { 
 							// if the values are others and there are partitioned intervals 
 							// described
 							tableData = convertStringsToTableFormat(states);
@@ -401,12 +402,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 									if (j==3 || j==5) {
 										String value = (String) tableData [i][j];
 										if (value != "\u221E" && value != "-"+"\u221E" ) { // Infinity values
-											/*String roundedValue = Utilities.roundedString(value, 
+											/*String roundedValue = UtilStrings.roundedString(value, 
 													Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));
 											getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);*/
 											
 											
-												/*String roundedValue = Utilities.roundWithPrecisionToString(Double.parseDouble(value), 
+												/*String roundedValue = UtilStrings.roundWithPrecisionToString(Double.parseDouble(value), 
 															Double.toString((Double) getJFormattedTextFieldPrecision().getValue()));*/
 											//getNodeStatesTablePanel().getValuesTable().setValueAt(roundedValue, i, j);
 											getNodeDiscretizedStatesTablePanel().getValuesTable().setValueAt(value, i, j);
@@ -1374,7 +1375,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 			for (int i = 0 ; i < limits.length; i++) {
 				if (limits[i] != Double.POSITIVE_INFINITY && limits[i] != Double.NEGATIVE_INFINITY) {
-					double newLimit = Utilities.roundWithPrecision(limits[i], itemSelected);
+					double newLimit = UtilStrings.roundWithPrecision(limits[i], itemSelected);
 					if (limits[i] != newLimit) {
 						limits[i] = newLimit;
 						int j = i;
@@ -1416,7 +1417,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 			
 			for (int m = 0 ; m < limits.length; m++) {
 				if (limits[m] != Double.POSITIVE_INFINITY && limits[m] != Double.NEGATIVE_INFINITY) {
-					limits[m] = Utilities.roundWithPrecision(limits[m], itemSelected);
+					limits[m] = UtilStrings.roundWithPrecision(limits[m], itemSelected);
 				}
 			}
 			PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);

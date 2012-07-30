@@ -58,7 +58,7 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Purpose;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -1461,7 +1461,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if ((name == null) || name.equals("")) {
 			result = false;
 		} else if (!probNode.getName().equals(name)
-				&& Utilities.existNode(probNode.getProbNet(), name)) {
+				&& UtilStrings.existNode(probNode.getProbNet(), name)) {
 			result = false;
 		}
 		if (!result) {

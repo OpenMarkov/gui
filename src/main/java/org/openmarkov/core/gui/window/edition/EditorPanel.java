@@ -70,6 +70,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
@@ -711,7 +712,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 							existingNames.add(node.getName());
 						}
 					}
-					String nodeName = Utilities.getNextNodeName(nodeType,
+					String nodeName = UtilStrings.getNextNodeName(nodeType,
 							existingNames);
 					State states [] = DefaultStates.getStatesNodeType(nodeType,
 							probNet.getDefaultStates());
@@ -792,7 +793,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()),
 				zoom.screenToPanel(e.getY()));
 		if (SwingUtilities.isLeftMouseButton(e)
-				&& Utilities.noMouseModifiers(e)) {
+				&& UtilStrings.noMouseModifiers(e)) {
 			if (visualNetwork.whatElementInPosition(cursorPosition, g) == null) {
 				probNet.getPNESupport().setWithUndo(true);
 				String activeClassName = MainPanel.getUniqueInstance()
