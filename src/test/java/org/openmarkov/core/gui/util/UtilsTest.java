@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.UtilStrings;
+
 /**
  * This class tests the CommonNodePropertiesDialog class (not the visual
  * behaviour).
@@ -42,7 +44,7 @@ public class UtilsTest {
 		states[2] =new State("(0.15,0.4]");
 		states[3] =new State("[0,0.15]");
 
-		assertTrue(Utilities.hasLimitBracketSymbols(states));
+		assertTrue(UtilStrings.hasLimitBracketSymbols(states));
 		
 	}
 	/**
@@ -57,7 +59,7 @@ public class UtilsTest {
 		states[1] =new State("presente");
 		states[2] =new State("desconocido");
 
-		assertTrue(! Utilities.hasLimitBracketSymbols(states));
+		assertTrue(! UtilStrings.hasLimitBracketSymbols(states));
 		
 	}
 

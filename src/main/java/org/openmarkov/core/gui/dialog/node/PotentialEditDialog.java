@@ -26,7 +26,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
@@ -47,16 +46,15 @@ import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
 import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
@@ -329,7 +327,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
         // so here we will see if there are intervals in the states
-        if (Utilities.hasLimitBracketSymbols(probNode.getVariable().getStates())
+        if (UtilStrings.hasLimitBracketSymbols(probNode.getVariable().getStates())
                         && (probNode.getVariable().getVariableType() == 
                             VariableType.FINITE_STATES)) {
             // really DISCRETIZED, so change the value of the VariableType

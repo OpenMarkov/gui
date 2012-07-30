@@ -21,7 +21,7 @@ import javax.swing.event.ChangeListener;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.VariableType;
@@ -155,7 +155,7 @@ public abstract class NodePropertiesDialog extends
 		// Elvira do not distinguish between DISCRETE and DISCRETIZED
 		// so here we will see if there are intervals in the states
 
-		if (Utilities.hasLimitBracketSymbols(probNode.getVariable().getStates())
+		if (UtilStrings.hasLimitBracketSymbols(probNode.getVariable().getStates())
 						&& (probNode.getVariable().getVariableType() == 
 							VariableType.FINITE_STATES)) {
 			// really DISCRETIZED, so change the value of the VariableType

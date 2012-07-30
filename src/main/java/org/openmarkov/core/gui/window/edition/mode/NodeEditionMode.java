@@ -28,6 +28,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.StringWithProperties;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 
 public abstract class NodeEditionMode extends EditionMode
@@ -64,7 +65,7 @@ public abstract class NodeEditionMode extends EditionMode
                             existingNames.add (node.getName ());
                         }
                     }
-                    String nodeName = Utilities.getNextNodeName (nodeType, existingNames);
+                    String nodeName = UtilStrings.getNextNodeName (nodeType, existingNames);
                     State states[] = DefaultStates.getStatesNodeType (nodeType,
                                                                       probNet.getDefaultStates ());
                     for (int i = 0; i < states.length; i++)
