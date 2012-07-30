@@ -12,7 +12,7 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 
-@EditionState(name="EditionMode.Decision", icon="decision.gif", cursor="decision.gif")
+@EditionState(name="Edit.Mode.Decision", icon="decision.gif", cursor="decision.gif")
 public class DecisionNodeEditionMode extends NodeEditionMode
 {
 

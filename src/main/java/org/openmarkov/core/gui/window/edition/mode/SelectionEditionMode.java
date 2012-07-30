@@ -23,7 +23,7 @@ import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.ProbNet;
 
-@EditionState(name="EditionMode.Selection", icon="selection.gif")
+@EditionState(name="Edit.Mode.Selection", icon="selection.gif")
 public class SelectionEditionMode extends EditionMode
 {
     /**

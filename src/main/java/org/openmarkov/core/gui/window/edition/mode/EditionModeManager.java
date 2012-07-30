@@ -95,6 +95,6 @@ public class EditionModeManager
 
     public EditionMode getDefaultEditionMode ()
     {
-        return getEditionMode("EditionMode.Selection");
+        return getEditionMode("Edit.Mode.Selection");
     }    
 }

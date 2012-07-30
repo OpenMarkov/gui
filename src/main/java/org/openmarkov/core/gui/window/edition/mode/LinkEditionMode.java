@@ -20,7 +20,7 @@ import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.ProbNet;
 
-@EditionState(name="EditionMode.Link", icon="link.gif", cursor="link.gif")
+@EditionState(name="Edit.Mode.Link", icon="link.gif", cursor="link.gif")
 public class LinkEditionMode extends EditionMode
 {
 

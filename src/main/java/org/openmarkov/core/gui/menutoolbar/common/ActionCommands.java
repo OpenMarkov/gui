@@ -132,7 +132,7 @@ public class ActionCommands {
     /**
      * Prefix used for edition mode changes
      */
-    public static final String EDITION_MODE_PREFIX = "EditionMode";
+    public static final String EDITION_MODE_PREFIX = "Edit.Mode";
 	
 	/**
 	 * Action invoked when the user wants to activate the selection option.
@@ -162,10 +162,15 @@ public class ActionCommands {
 	 */
 	public static final String LINK_CREATION = "Edit.Mode.Link";
 	
-	/**
+    /**
+     * Action invoked when the user wants to mark an object as input parameter.
+     */
+    public static final String INSTANCE_CREATION = "Edit.Mode.Instance";        
+
+    /**
 	 * Action invoked when the user wants to mark an object as input parameter.
 	 */
-	public static final String INSTANCE_INPUT = "InstanceInput";		
+	public static final String MARK_AS_INPUT = "MarkAsInput";		
 
 	/**
 	 * Action invoked when the user wants to change the working mode by
