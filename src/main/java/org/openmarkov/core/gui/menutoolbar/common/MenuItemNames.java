@@ -112,38 +112,32 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'Edit - Object selection'.
      */
-    public static final String EDIT_OBJECTSELECTION_MENUITEM =
-        EDIT_MENU + ".ObjectSelection";
+    public static final String EDIT_MODE_SELECTION_MENUITEM =
+        EDIT_MENU + ".Mode.Selection";
 
     /**
      * Constant that defines the item 'Edit - Chance nodes creation'.
      */
-    public static final String EDIT_CHANCECREATION_MENUITEM =
-        EDIT_MENU + ".ChanceCreation";
+    public static final String EDIT_MODE_CHANCE_MENUITEM =
+        EDIT_MENU + ".Mode.Chance";
 
     /**
      * Constant that defines the item 'Edit - Decision nodes creation'.
      */
-    public static final String EDIT_DECISIONCREATION_MENUITEM =
-        EDIT_MENU + ".DecisionCreation";
+    public static final String EDIT_MODE_DECISION_MENUITEM =
+        EDIT_MENU + ".Mode.Decision";
 
     /**
      * Constant that defines the item 'Edit - Utility nodes creation'.
      */
-    public static final String EDIT_UTILITYCREATION_MENUITEM =
-        EDIT_MENU + ".UtilityCreation";
+    public static final String EDIT_MODE_UTILITY_MENUITEM =
+        EDIT_MENU + ".Mode.Utility";
 
     /**
      * Constant that defines the item 'Edit - Links creation'.
      */
-    public static final String EDIT_LINKCREATION_MENUITEM =
-        EDIT_MENU + ".LinkCreation";
-    
-    /**
-     * Constant that defines the item 'Edit - Instance creation'.
-     */
-    public static final String EDIT_INSTANCECREATION_MENUITEM =
-        EDIT_MENU + ".InstanceCreation";    
+    public static final String EDIT_MODE_LINK_MENUITEM =
+        EDIT_MENU + ".Mode.Link";
     
     /**
      * Constant that defines the item 'Edit - Instance Input'.

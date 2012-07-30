@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  <Edit>
+    <Mode>
+        <Link>
+            <ToolTip>
+              <Label value="Insert links" />
+            </ToolTip>
+        </Link>
+        <Selection>
+            <ToolTip>
+              <Label value="Object selection" />
+            </ToolTip>
+        </Selection>        
+        <Decision>
+            <ToolTip>
+              <Label value="Insert decision nodes" />
+            </ToolTip>
+        </Decision>
+        <Utility>
+            <ToolTip>
+              <Label value="Insert utility nodes" />
+            </ToolTip>
+        </Utility>
+        <Chance>
+            <ToolTip>
+              <Label value="Insert chance nodes" />
+            </ToolTip>
+        </Chance>       
+    </Mode>  
+  </Edit>
   <ClearOutAllEvidenceCases>
     <ToolTip>
       <Label value="Vaciar la lista de casos de evidencia" />
@@ -20,16 +49,6 @@
       <Label value="modo Inferencia/Edición" />
     </ToolTip>
   </ChangeWorkingMode>
-  <LinkCreation>
-    <ToolTip>
-      <Label value="Insertar nuevo enlace" />
-    </ToolTip>
-  </LinkCreation>
-  <DecisionCreation>
-    <ToolTip>
-      <Label value="Insertar nuevo nodo de Decision" />
-    </ToolTip>
-  </DecisionCreation>
   <Undo>
     <ToolTip>
       <Label value="Deshace la última operación" />
@@ -50,11 +69,6 @@
       <Label value="Abre una red existente" />
     </ToolTip>
   </OpenNetwork>
-  <UtilityCreation>
-    <ToolTip>
-      <Label value="Insertar nuevo nodo de Utilidad" />
-    </ToolTip>
-  </UtilityCreation>
   <GoToNextEvidenceCase>
     <ToolTip>
       <Label value="Ir al siguiente caso de evidencia" />
@@ -91,11 +105,6 @@
       <Label value="Elimina los objetos seleccionados" />
     </ToolTip>
   </ObjectRemoval>
-  <ChanceCreation>
-    <ToolTip>
-      <Label value="Insertar nuevo nodo de Probabilidad" />
-    </ToolTip>
-  </ChanceCreation>
   <NewNetwork>
     <ToolTip>
       <Label value="Crea una nueva red" />
@@ -111,11 +120,6 @@
       <Label value="Guarda la red actual" />
     </ToolTip>
   </SaveNetwork>
-  <InstanceCreation>
-    <ToolTip>
-      <Label value="Insertar nueva instancia" />
-    </ToolTip>
-  </InstanceCreation>
   <CaseNumber>
     <Label value="Caso Número" />
   </CaseNumber>
@@ -137,10 +141,5 @@
       <Label value="Reduce el zoom de la red actual en un 20%" />
     </ToolTip>
   </ZoomOut>
-  <ObjectSelection>
-    <ToolTip>
-      <Label value="Selección de objetos" />
-    </ToolTip>
-  </ObjectSelection>
 </properties>
 

@@ -137,30 +137,30 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to activate the selection option.
 	 */
-	public static final String OBJECT_SELECTION = "EditionMode.Selection";
+	public static final String OBJECT_SELECTION = "Edit.Mode.Selection";
 
 	/**
 	 * Action invoked when the user wants to activate the chance node creation
 	 * option.
 	 */
-	public static final String CHANCE_CREATION = "EditionMode.Chance";
+	public static final String CHANCE_CREATION = "Edit.Mode.Chance";
 
 	/**
 	 * Action invoked when the user wants to activate the decision node creation
 	 * option.
 	 */
-	public static final String DECISION_CREATION = "EditionMode.Decision";
+	public static final String DECISION_CREATION = "Edit.Mode.Decision";
 
 	/**
 	 * Action invoked when the user wants to activate the utility node creation
 	 * option.
 	 */
-	public static final String UTILITY_CREATION = "EditionMode.Utility";
+	public static final String UTILITY_CREATION = "Edit.Mode.Utility";
 
 	/**
 	 * Action invoked when the user wants to activate the link creation option.
 	 */
-	public static final String LINK_CREATION = "EditionMode.Link";
+	public static final String LINK_CREATION = "Edit.Mode.Link";
 	
 	/**
 	 * Action invoked when the user wants to mark an object as input parameter.

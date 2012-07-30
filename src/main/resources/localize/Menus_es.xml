@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <Edit>
+    <Mode>
+        <Link>
+          <Mnemonic value="l" />
+          <Label value="Insertar enlaces" />
+        </Link>
+        <Selection>
+          <Label value="Selección de objetos" />
+          <Mnemonic value="j" />
+        </Selection>        
+        <Decision>
+          <Mnemonic value="e" />
+          <Label value="Insertar nodos de decisión" />
+        </Decision>
+        <Utility>
+          <Mnemonic value="u" />
+          <Label value="Insertar nodos de utilidad" />
+        </Utility>
+        <Chance>
+          <Mnemonic value="a" />
+          <Label value="Insertar nodos de probabilidad" />
+        </Chance>       
+    </Mode>
     <Remove>
       <Mnemonic value="e" />
       <Label value="Eliminar" />
     </Remove>
-    <LinkCreation>
-      <Mnemonic value="l" />
-      <Label value="Insertar enlaces" />
-    </LinkCreation>
     <Undo>
       <Mnemonic value="d" />
       <Label value="Deshacer" />
@@ -22,14 +40,6 @@
     <NodeTest>
       <Label value="Testing ..." />
     </NodeTest>
-    <DecisionCreation>
-      <Mnemonic value="e" />
-      <Label value="Insertar nodos de decisión" />
-    </DecisionCreation>
-    <UtilityCreation>
-      <Mnemonic value="u" />
-      <Label value="Insertar nodos de utilidad" />
-    </UtilityCreation>
     <LinkRestrictionEnable>
       <Mnemonic value="a" />
       <Label value="Añadir restricciones" />
@@ -45,10 +55,6 @@
       <Label value="Registrar evolución temporal" />
       <Mnemonic value="l" />
     </Log>
-    <ChanceCreation>
-      <Mnemonic value="a" />
-      <Label value="Insertar nodos de probabilidad" />
-    </ChanceCreation>
     <RevelationArc>
       <Mnemonic value="a" />
       <Label value="Editar condiciones de revelación" />
@@ -82,10 +88,6 @@
       <Mnemonic value="s" />
     </SwitchToInference>
     <Mnemonic value="e" />
-    <ObjectSelection>
-      <Label value="Selección de objetos" />
-      <Mnemonic value="j" />
-    </ObjectSelection>
     <Copy>
       <Label value="Copiar" />
       <Mnemonic value="o" />

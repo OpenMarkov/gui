@@ -971,7 +971,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 
 		if (editObjectSelectionMenuItem == null) {
             editObjectSelectionMenuItem = new LocalizedCheckBoxMenuItem (
-                                                                         MenuItemNames.EDIT_OBJECTSELECTION_MENUITEM,
+                                                                         MenuItemNames.EDIT_MODE_SELECTION_MENUITEM,
                                                                          ActionCommands.OBJECT_SELECTION,
                                                                          IconLoader.ICON_SELECTION_ENABLED);
 			editObjectSelectionMenuItem.addActionListener(listener);
@@ -991,7 +991,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 
 		if (editChanceCreationMenuItem == null) {
             editChanceCreationMenuItem = new LocalizedCheckBoxMenuItem (
-                                                                        MenuItemNames.EDIT_CHANCECREATION_MENUITEM,
+                                                                        MenuItemNames.EDIT_MODE_CHANCE_MENUITEM,
                                                                         ActionCommands.CHANCE_CREATION,
                                                                         IconLoader.ICON_CHANCE_ENABLED);
 			editChanceCreationMenuItem.addActionListener(listener);
@@ -1011,7 +1011,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 
 		if (editDecisionCreationMenuItem == null) {
             editDecisionCreationMenuItem = new LocalizedCheckBoxMenuItem (
-                                                                          MenuItemNames.EDIT_DECISIONCREATION_MENUITEM,
+                                                                          MenuItemNames.EDIT_MODE_DECISION_MENUITEM,
                                                                           ActionCommands.DECISION_CREATION,
                                                                           IconLoader.ICON_DECISION_ENABLED);
 			editDecisionCreationMenuItem.addActionListener(listener);
@@ -1031,7 +1031,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 
 		if (editUtilityCreationMenuItem == null) {
             editUtilityCreationMenuItem = new LocalizedCheckBoxMenuItem (
-                                                                         MenuItemNames.EDIT_UTILITYCREATION_MENUITEM,
+                                                                         MenuItemNames.EDIT_MODE_UTILITY_MENUITEM,
                                                                          ActionCommands.UTILITY_CREATION,
                                                                          IconLoader.ICON_UTILITY_ENABLED);
 			editUtilityCreationMenuItem.addActionListener(listener);
@@ -1051,7 +1051,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 
 		if (editLinkCreationMenuItem == null) {
             editLinkCreationMenuItem = new LocalizedCheckBoxMenuItem (
-                                                                      MenuItemNames.EDIT_LINKCREATION_MENUITEM,
+                                                                      MenuItemNames.EDIT_MODE_LINK_MENUITEM,
                                                                       ActionCommands.LINK_CREATION,
                                                                       IconLoader.ICON_LINK_ENABLED);
 			editLinkCreationMenuItem.addActionListener(listener);

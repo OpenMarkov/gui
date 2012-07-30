@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  <Edit>
+    <Mode>
+        <Link>
+            <ToolTip>
+              <Label value="Insert links" />
+            </ToolTip>
+        </Link>
+        <Selection>
+            <ToolTip>
+              <Label value="Object selection" />
+            </ToolTip>
+        </Selection>        
+        <Decision>
+            <ToolTip>
+              <Label value="Insert decision nodes" />
+            </ToolTip>
+        </Decision>
+        <Utility>
+            <ToolTip>
+              <Label value="Insert utility nodes" />
+            </ToolTip>
+        </Utility>
+        <Chance>
+            <ToolTip>
+              <Label value="Insert chance nodes" />
+            </ToolTip>
+        </Chance>       
+    </Mode>  
+  </Edit>
   <ClearOutAllEvidenceCases>
     <ToolTip>
       <Label value="Clear out the list of evidence cases" />
@@ -20,16 +49,6 @@
       <Label value="Inference/Edition mode" />
     </ToolTip>
   </ChangeWorkingMode>
-  <LinkCreation>
-    <ToolTip>
-      <Label value="Insert new link" />
-    </ToolTip>
-  </LinkCreation>
-  <DecisionCreation>
-    <ToolTip>
-      <Label value="Insert new Decision node" />
-    </ToolTip>
-  </DecisionCreation>
   <Undo>
     <ToolTip>
       <Label value="Undo the last operation" />
@@ -50,11 +69,6 @@
       <Label value="Opens an existing network" />
     </ToolTip>
   </OpenNetwork>
-  <UtilityCreation>
-    <ToolTip>
-      <Label value="Insert new Utility node" />
-    </ToolTip>
-  </UtilityCreation>
   <GoToNextEvidenceCase>
     <ToolTip>
       <Label value="Go to the next evidence case" />
@@ -88,11 +102,6 @@
       <Label value="Deletes the selected nodes" />
     </ToolTip>
   </ObjectRemoval>
-  <ChanceCreation>
-    <ToolTip>
-      <Label value="Insert new Chance node" />
-    </ToolTip>
-  </ChanceCreation>
   <NewNetwork>
     <ToolTip>
       <Label value="Creates a new network" />
@@ -108,11 +117,6 @@
       <Label value="Saves the actual network" />
     </ToolTip>
   </SaveNetwork>
-  <InstanceCreation>
-    <ToolTip>
-      <Label value="Insert new instance" />
-    </ToolTip>
-  </InstanceCreation>
   <CaseNumber>
     <Label value="Case Number" />
   </CaseNumber>
@@ -134,11 +138,6 @@
       <Label value="Zoom out the current network on 20%" />
     </ToolTip>
   </ZoomOut>
-  <ObjectSelection>
-    <ToolTip>
-      <Label value="Object selection" />
-    </ToolTip>
-  </ObjectSelection>
 	<BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

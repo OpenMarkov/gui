@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <Edit>
+    <Mode>
+        <Link>
+          <Mnemonic value="l" />
+          <Label value="Insert links" />
+        </Link>
+        <Selection>
+          <Label value="Object selection" />
+          <Mnemonic value="j" />
+        </Selection>        
+        <Decision>
+          <Mnemonic value="d" />
+          <Label value="Insert decision nodes" />
+        </Decision>
+        <Utility>
+          <Mnemonic value="t" />
+          <Label value="Insert utility nodes" />
+        </Utility>
+        <Chance>
+          <Mnemonic value="h" />
+          <Label value="Insert chance nodes" />
+        </Chance>       
+    </Mode>
     <Remove>
       <Mnemonic value="e" />
       <Label value="Remove" />
     </Remove>
-    <LinkCreation>
-      <Mnemonic value="l" />
-      <Label value="Insert links" />
-    </LinkCreation>
     <Undo>
       <Mnemonic value="u" />
       <Label value="Undo" />
     </Undo>
-    <InstanceCreation>
-      <Label value="Instance creation            " />
-    </InstanceCreation>
     <ViewPolicy>
       <Label value="View policy ..." />
     </ViewPolicy>
     <NodeTest>
       <Label value="Testing ..." />
     </NodeTest>
-    <DecisionCreation>
-      <Mnemonic value="d" />
-      <Label value="Insert decision nodes" />
-    </DecisionCreation>
-    <UtilityCreation>
-      <Mnemonic value="t" />
-      <Label value="Insert utility nodes" />
-    </UtilityCreation>
     <LinkRestrictionEnable>
       <Mnemonic value="a" />
       <Label value="Add restrictions" />
@@ -45,10 +52,6 @@
       <Label value="Log temporal evolution" />
       <Mnemonic value="l" />
     </Log>
-    <ChanceCreation>
-      <Mnemonic value="h" />
-      <Label value="Insert chance nodes" />
-    </ChanceCreation>
     <RevelationArc>
       <Mnemonic value="a" />
       <Label value="Edit revelation conditions" />
