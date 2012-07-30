@@ -312,6 +312,11 @@ public class MenuItemNames
         VIEW_NODES_MENU + ".ByTitle";
 
     /**
+     * Constant that defines the item 'View - Toolbars'.
+     */
+    public static final String VIEW_TOOLBARS_MENU = VIEW_MENU + ".Toolbars";
+
+    /**
      * Constant that defines the item 'View - Zoom'.
      */
     public static final String VIEW_ZOOM_MENU = VIEW_MENU + ".Zoom";

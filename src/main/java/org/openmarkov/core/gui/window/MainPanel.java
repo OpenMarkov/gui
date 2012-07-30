@@ -13,6 +13,7 @@ package org.openmarkov.core.gui.window;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
@@ -23,15 +24,13 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.core.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.InferenceToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.StandardToolBar;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.MDI;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-
-
-
 
 
 /**
@@ -47,11 +46,6 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
  */
 public class MainPanel extends JPanel {
 
-	
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7852474978327911654L;
 
 	/**
@@ -116,6 +110,8 @@ public class MainPanel extends JPanel {
 	private JFrame mainFrame = null;
 
 	private JScrollPane propertiesScrollPanel;
+	
+	private ToolbarManager toolbarManager;
 
 	/**
 	 * Creates a new instance with a clear declared parent.
@@ -129,8 +125,9 @@ public class MainPanel extends JPanel {
 		mainPanel.setName("MainPanel");
 		mainFrame = parentFrame;
 		mainFrame.setName(parentFrame.getName());
-		initialize();
+        toolbarManager = new ToolbarManager (this);
 
+        initialize();
 	}
 
 	/**
@@ -266,7 +263,7 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @return a new toolbar panel.
 	 */
-	private JPanel getToolBarPanel() {
+	public JPanel getToolBarPanel() {
 
 		if (toolBarPanel == null) {
 			toolBarPanel = new JPanel();
@@ -277,9 +274,9 @@ public class MainPanel extends JPanel {
 				toolBarPanel.add(getEditionToolBar());
 				*/
 			// This way, the main toolbar and the secondary are in the same line
-			toolBarPanel.setLayout(new BorderLayout(2,0));
-			toolBarPanel.add(getStandardToolBar(),BorderLayout.WEST);
-			toolBarPanel.add(getEditionToolBar(),BorderLayout.CENTER);
+			toolBarPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			toolBarPanel.add(getStandardToolBar());
+			toolBarPanel.add(getEditionToolBar());
 		}
 
 		return toolBarPanel;	
@@ -430,4 +427,13 @@ public class MainPanel extends JPanel {
 	{
 	    getMainPanelListenerAssistant().openNetwork (fileName);
 	}
+
+	/**
+	 * Returns instance of toolbarManager
+	 * @return
+	 */
+    public ToolbarManager getToolbarManager ()
+    {
+        return toolbarManager;
+    }
 }

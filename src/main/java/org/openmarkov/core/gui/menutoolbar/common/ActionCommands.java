@@ -333,12 +333,17 @@ public class ActionCommands {
 	
 	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
 	
-	/**
+    /**
+     * Action invoked when the user wants to view a toolbar
+     */
+    public static final String VIEW_TOOLBARS = "View.Toolbars";
+
+    /**
 	 * Action invoked when the user wants to change the zoom of the panel to
 	 * another value.
 	 */
 	public static final String ZOOM_OTHER = "ZoomOther";
-
+    
 	/**
 	 * Action invoked when the user wants to increment the zoom of the panel.
 	 */

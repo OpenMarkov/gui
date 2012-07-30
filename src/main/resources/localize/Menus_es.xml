@@ -212,6 +212,10 @@
     </ChangeFinding>
   </Inference>
   <View>
+    <Toolbars>
+      <Mnemonic value="t" />
+      <Label value="Barras de herramientas" />
+    </Toolbars>
     <Zoom>
       <Mnemonic value="z" />
       <x75>

@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.help.CSH;
 import javax.swing.ButtonGroup;
@@ -36,7 +37,9 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
+import org.openmarkov.core.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
+import org.openmarkov.core.gui.window.MainPanel;
 
 
 
@@ -306,6 +309,11 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	 * Object that represents the menu 'View - Zoom'.
 	 */
 	private JMenu viewZoomMenu = null;
+	
+    /**
+     * Object that represents the menu 'View - Toolbars'.
+     */
+    private JMenu viewToolbarsMenu = null;	
 
 	/**
 	 * Object that represents the item 'View - Zoom - Zoom in'.
@@ -1438,6 +1446,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
             viewMenu.setMnemonic (MenuLocalizer.getMnemonic (MenuItemNames.VIEW_MENU).charAt (0));
 			// viewMenu.add(getViewNodesMenu()); 29/03/2009 - jlgozalo- Not
 			// required in OpenMarkov
+            viewMenu.add(getViewToolbarsMenu());
 			viewMenu.add(getViewZoomMenu());
 			viewMenu.addSeparator();
 			viewMenu.add(getViewMessageWindowMenuItem());
@@ -1535,6 +1544,41 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		return viewZoomMenu;
 
 	}
+	
+    /**
+     * This method initializes viewToolbarsMenu.
+     * 
+     * @return a new menu 'View - Toolbars'.
+     */
+    private JMenu getViewToolbarsMenu() {
+
+        if (viewToolbarsMenu == null) {
+            viewToolbarsMenu = new JMenu();
+            viewToolbarsMenu.setName(MenuItemNames.VIEW_TOOLBARS_MENU);
+            viewToolbarsMenu.setText (MenuLocalizer.getLabel (MenuItemNames.VIEW_TOOLBARS_MENU));
+            viewToolbarsMenu.setMnemonic (MenuLocalizer.getMnemonic (MenuItemNames.VIEW_TOOLBARS_MENU).charAt (0));
+            ToolbarManager toolbarManager = MainPanel.getUniqueInstance ().getToolbarManager();
+            Set<String> toolbarNames = toolbarManager.getToolbarNames ();
+            if(!toolbarNames.isEmpty ())
+            {
+                for(String toolbarName : toolbarManager.getToolbarNames ())
+                {
+                    JMenuItem menuItem = new LocalizedMenuItem (MenuItemNames.VIEW_TOOLBARS_MENU + "." + toolbarName,
+                                                                ActionCommands.VIEW_TOOLBARS + "." + toolbarName);
+                    menuItem.addActionListener(listener);
+                    viewToolbarsMenu.add (menuItem);
+                }
+            }else 
+            {
+                JMenuItem emptyMenuItem = new JMenuItem ("(empty)");
+                emptyMenuItem.setEnabled (false);
+                viewToolbarsMenu.add (emptyMenuItem);
+            }
+        }
+
+        return viewToolbarsMenu;
+
+    }	
 
 	/**
 	 * This method initializes viewZoomInMenuItem.

@@ -290,9 +290,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			activateByTitle(true);
 		} else if (actionCommand.equals(ActionCommands.BYNAME_NODES)) {
 			activateByTitle(false);
-		} else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
-			incrementZoomNetwork(getCurrentNetworkPanel());
-		} else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
+		} else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS)) {
+            MainPanel.getUniqueInstance ().getToolbarManager ().addToolbar (actionCommand.replace (ActionCommands.VIEW_TOOLBARS+".", ""));
+        } else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
+            incrementZoomNetwork(getCurrentNetworkPanel());
+        } else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
 			decrementZoomNetwork(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
 			setZoom(true, getCurrentNetworkPanel(), 0);
