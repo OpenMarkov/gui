@@ -2346,66 +2346,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				  numSlices = costEffectivenessDialog.getNumSlices();
 			  }
 			  try {
-				  //probNet must be the original network and expandedNetwork the probNet espanded numSlices times
-				  ProbNet probNetCopy = probNet.copy();
-				  //TODO get decisionCriteria from the probNet
 				  
-				  probNetCopy.setDecisionCriteria(new String[]{"cost", "effectiveness"});
-				//make all utility nodes of the expanded probNet 
-				  ArrayList<ProbNode> utilityNodes = probNetCopy.getProbNodes(NodeType.UTILITY);
-				  ProbNode decisionCriteria = new ProbNode(probNetCopy, probNetCopy.getDecisionCriteriaVariable(), NodeType.DECISION);
-				  probNetCopy.addProbNode(decisionCriteria);
-				  for (int i = 0; i < utilityNodes.size(); i++) {
-					  Potential utility = utilityNodes.get(i).getPotentials().get(0);
-					  probNetCopy.addLink(decisionCriteria, utilityNodes.get(i), true);
-					  ArrayList<Variable> treeVariables = utility.getVariables();
-					  treeVariables.add(decisionCriteria.getVariable());
-					  TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNetCopy.getDecisionCriteriaVariable(),
-							  utility.getPotentialRole(), utility.getUtilityVariable());
-					  if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("cost")) {
-						  //efectiveness branch is 0
-						  ArrayList<Potential> potentials = new ArrayList<>();
-						  ArrayList<Variable> variables = new ArrayList<>();
-						  variables.add(decisionCriteria.getVariable());
-						  double []table = {1.0, 0.0};
-						  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-						 // zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
-						  potentials.add(zeroEffectiveness);
-						  decisionCriteria.setPotentials(potentials);
-						  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
-							  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
-								  treeADDPotential.getBranches().get(j).setPotential(utility);
-							  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
-								  //zero potential
-								  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
-							  }
-						  }
-						  
-					  } else if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("effectiveness")) {
-						  //cost branch is 0
-						  ArrayList<Potential> potentials = new ArrayList<>();
-						  ArrayList<Variable> variables = new ArrayList<>();
-						  variables.add(decisionCriteria.getVariable());
-						  double []table = {0.0, 1.0};
-						  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-						  //zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
-						  potentials.add(zeroEffectiveness);
-						  decisionCriteria.setPotentials(potentials);
-						  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
-							  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
-								  treeADDPotential.getBranches().get(j).setPotential(utility);
-							  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
-								  //zero potential
-								  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
-							  }
-						  }
-					  }
-					  ArrayList<Potential> potentials = new ArrayList<>();
-					  potentials.add(treeADDPotential);
-					 utilityNodes.get(i).setPotentials(potentials);
-				  }
 				  
-				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNetCopy, numSlices, null, 200.0);
+				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 				  expandedNetFactory.applyDiscountToUtilityNodes(costEffectivenessDialog.getDiscount());
 				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 				 
