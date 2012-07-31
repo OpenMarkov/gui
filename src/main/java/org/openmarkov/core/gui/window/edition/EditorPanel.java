@@ -42,6 +42,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
@@ -85,8 +86,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
+import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
@@ -2351,23 +2354,90 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  try {
 				  //probNet must be the original network and expandedNetwork the probNet espanded numSlices times
 				  ProbNet probNetCopy = probNet.copy();
+				  //TODO get decisionCriteria from the probNet
+				  
 				  probNetCopy.setDecisionCriteria(new String[]{"cost", "effectiveness"});
 				//make all utility nodes of the expanded probNet 
 				  ArrayList<ProbNode> utilityNodes = probNetCopy.getProbNodes(NodeType.UTILITY);
+				  ProbNode decisionCriteria = new ProbNode(probNetCopy, probNetCopy.getDecisionCriteriaVariable(), NodeType.DECISION);
+				  probNetCopy.addProbNode(decisionCriteria);
 				  for (int i = 0; i < utilityNodes.size(); i++) {
-					  try {
-						probNetCopy.addLink(probNetCopy.getDecisionCriteriaVariable(), utilityNodes.get(i).getVariable(), true);
-					} catch (NodeNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					  Potential utility = utilityNodes.get(i).getPotentials().get(0);
+					  probNetCopy.addLink(decisionCriteria, utilityNodes.get(i), true);
+					  ArrayList<Variable> treeVariables = utility.getVariables();
+					  treeVariables.add(decisionCriteria.getVariable());
+					  TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNetCopy.getDecisionCriteriaVariable(),
+							  utility.getPotentialRole(), utility.getUtilityVariable());
+					  if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("cost")) {
+						  //efectiveness branch is 0
+						  ArrayList<Potential> potentials = new ArrayList<>();
+						  ArrayList<Variable> variables = new ArrayList<>();
+						  variables.add(decisionCriteria.getVariable());
+						  double []table = {1.0, 0.0};
+						  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
+						 // zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
+						  potentials.add(zeroEffectiveness);
+						  decisionCriteria.setPotentials(potentials);
+						  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
+							  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
+								  treeADDPotential.getBranches().get(j).setPotential(utility);
+							  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
+								  //zero potential
+								  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
+							  }
+						  }
+						  
+					  } else if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("effectiveness")) {
+						  //cost branch is 0
+						  ArrayList<Potential> potentials = new ArrayList<>();
+						  ArrayList<Variable> variables = new ArrayList<>();
+						  variables.add(decisionCriteria.getVariable());
+						  double []table = {0.0, 1.0};
+						  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
+						  //zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
+						  potentials.add(zeroEffectiveness);
+						  decisionCriteria.setPotentials(potentials);
+						  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
+							  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
+								  treeADDPotential.getBranches().get(j).setPotential(utility);
+							  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
+								  //zero potential
+								  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
+							  }
+						  }
+					  }
+					  ArrayList<Potential> potentials = new ArrayList<>();
+					  potentials.add(treeADDPotential);
+					 utilityNodes.get(i).setPotentials(potentials);
 				  }
 				  
 				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNetCopy, numSlices, null, 200.0);
 				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-				  //expandedNetwork.setDecisionCriteria(new String[]{"cost", "effectiveness"});
-				  //make all utility nodes of the expanded probNet 
-				  try {
+				  // apply discount rate for all temporal utility nodes in the expanded network
+				  ArrayList<ProbNode> utilityExpandedNodes = expandedNetwork.getProbNodes(NodeType.UTILITY);
+				  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
+					  if (utilityExpandedNodes.get(i).getVariable().isTemporal() && utilityExpandedNodes.get(i).getVariable().getTimeSlice() > 0) {
+						  double discountRate = 1 / (Math.pow((1 + costEffectivenessDialog.getDiscount()), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
+						  //project TreeADD original potential to a table
+						 try {
+							TablePotential projectedPotential = ((TreeADDPotential)((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0)).getOriginalPotential()).tableProject(null, null).get(0);
+							for (int j = 0; j < projectedPotential.getValues().length; j++) {
+								projectedPotential.getValues()[j] = projectedPotential.getValues()[j] * discountRate;
+							}
+							ArrayList<Potential> potentials = new ArrayList<>();
+							potentials.add(projectedPotential);
+							utilityExpandedNodes.get(i).setPotentials(potentials);
+						} catch (NonProjectablePotentialException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (WrongCriterionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						  //utilityExpandedNodes.get(i).getPotentials().get(0).get
+					  }
+				  }
+				 try {
 					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 					ArrayList<Variable> conditioningVariables = new ArrayList<>();
 					conditioningVariables.add(probNet.getDecisionCriteriaVariable());
