@@ -28,6 +28,7 @@ import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.window.MainPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.InstanceLink;
 import org.openmarkov.core.oon.InstanceNode;
@@ -70,7 +71,7 @@ public class VisualOONetwork extends VisualNetwork
     {
         super.constructVisualInfo ();
         
-        if(probNet instanceof OOBNet)
+        if(probNet instanceof OOBNet && getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
         {
             // construct visual instances
             if(visualInstances == null)
@@ -146,7 +147,7 @@ public class VisualOONetwork extends VisualNetwork
      * @param g
      * @return
      */
-    public VisualInstance whatInstanceInPosition (java.awt.geom.Point2D.Double position,
+    public VisualInstance getInstanceInPosition (java.awt.geom.Point2D.Double position,
                                                   Graphics2D g)
     {
         VisualInstance instance = null;
@@ -180,7 +181,7 @@ public class VisualOONetwork extends VisualNetwork
         VisualElement elementSelected = null;
 
         if ((elementSelected = super.getElementInPosition (position, g)) == null) {
-            elementSelected = whatInstanceInPosition(position, g);
+            elementSelected = getInstanceInPosition(position, g);
         }
 
         return elementSelected;
@@ -405,7 +406,7 @@ public class VisualOONetwork extends VisualNetwork
         VisualLink link = null;
         VisualInstance instance = null;
         
-        if ((instance = whatInstanceInPosition (cursorPosition, g)) != null)
+        if ((instance = getInstanceInPosition (cursorPosition, g)) != null)
         {
             setSelectedInstance (instance, !instance.isSelected ());
         }
@@ -430,7 +431,7 @@ public class VisualOONetwork extends VisualNetwork
     {
         VisualInstance instance = null;
         VisualElement selectedElement = null;
-        if ((instance = whatInstanceInPosition (cursorPosition, g)) != null)
+        if ((instance = getInstanceInPosition (cursorPosition, g)) != null)
         {
             setSelectedAllObjects (false);
             setSelectedInstance (instance, true);
@@ -453,17 +454,19 @@ public class VisualOONetwork extends VisualNetwork
     {
         VisualInstance instance = null;
         
-        if ((instance = whatInstanceInPosition (cursorPosition, g)) != null)
+        VisualNode node = null;
+        
+        if ((node = whatNodeInPosition (cursorPosition, g)) != null)
+        {
+            newLink = new VisualArrow (node.getPosition (), cursorPosition);
+            newLinkSource = node;
+        }else if ((instance = getInstanceInPosition (cursorPosition, g)) != null)
         {
             newLink = new VisualArrow (new Point2D.Double (instance.getCenter ().getX (),
                                                            instance.getCenter ().getY ()),
                                        cursorPosition);
             newInstanceLinkSource = instance;
         }
-        else
-        {
-            super.startLinkCreation (cursorPosition, g);
-        }  
     }    
     
     /**
@@ -504,17 +507,18 @@ public class VisualOONetwork extends VisualNetwork
         PNEdit linkEdit = null;
         VisualInstance newInstanceLinkDestination = null;
             
-        if ((newInstanceLinkDestination = whatInstanceInPosition(point, g)) != null
+        if ((newInstanceLinkDestination = getInstanceInPosition(point, g)) != null
                 && newInstanceLinkSource != null) {
+            newLink = null;
             VisualInstance inputParameter = newInstanceLinkDestination
-                    .whatParameterInPosition(point, g);
+                    .getParameterInPosition(point, g);
             if (inputParameter != null
                     && inputParameter
                             .getInstance()
                             .getClassNet()
                             .getName()
-                            .equals(newInstanceLinkSource.getInstance()
-                                    .getClassNet().getName())) {
+                            .compareToIgnoreCase (newInstanceLinkSource.getInstance()
+                                    .getClassNet().getName()) == 0) {
                 linkEdit = new AddInstanceLinkEdit(probNet,
                         newInstanceLinkSource.getInstance(),
                         newInstanceLinkDestination.getInstance(),
@@ -542,6 +546,22 @@ public class VisualOONetwork extends VisualNetwork
         Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
         MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().createNewFrame (selectedInstance.getClassNet ());
         
+    }
+
+    @Override
+    public void setWorkingMode (int workingMode)
+    {
+        super.setWorkingMode (workingMode);
+        if(workingMode == NetworkPanel.EDITION_WORKING_MODE)
+        {
+            constructVisualInfo ();
+        }else
+        {
+            visualInstances.clear ();
+            visualInstanceLinks.clear ();
+        }
     }    
+
+    
    
 }

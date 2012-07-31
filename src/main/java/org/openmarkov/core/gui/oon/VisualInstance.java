@@ -68,7 +68,7 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Horizontal margin for the bounding box
 	 */
-	protected static final double HORIZONTAL_MARGIN = 50;
+	protected static final double HORIZONTAL_MARGIN = 70;
 	
 	/**
 	 * Vertical margin for the bounding box
@@ -398,7 +398,7 @@ public class VisualInstance extends VisualElement {
 	 * @param g
 	 * @return
 	 */
-	public VisualInstance whatParameterInPosition(Point2D.Double position, Graphics2D g) {
+	public VisualInstance getParameterInPosition(Point2D.Double position, Graphics2D g) {
 		VisualInstance instance = null;
 		VisualInstance instanceFound = null;
 

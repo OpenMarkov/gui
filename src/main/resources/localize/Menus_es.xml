@@ -223,6 +223,9 @@
     <Toolbars>
       <Mnemonic value="t" />
       <Label value="Barras de herramientas" />
+      <ObjectOriented>
+        <Label value="Orientación a objetos"/>
+      </ObjectOriented>
     </Toolbars>
     <Zoom>
       <Mnemonic value="z" />

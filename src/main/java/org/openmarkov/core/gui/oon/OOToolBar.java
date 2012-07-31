@@ -17,7 +17,7 @@ import org.openmarkov.core.gui.menutoolbar.plugin.Toolbar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.ToolBarBasic;
 
 @SuppressWarnings("serial")
-@Toolbar(name="Object Oriented")
+@Toolbar(name="ObjectOriented")
 public class OOToolBar extends ToolBarBasic implements MouseMotionListener
 {
     

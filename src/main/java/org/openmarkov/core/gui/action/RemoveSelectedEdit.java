@@ -94,10 +94,13 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             edits.add ( new CRemoveProbNodeEdit( probNet, node.getProbNode ()));
         }
      
-        //TODO OOBN
-        for(VisualInstance instance: instancesToRemove)
+        //TODO OOBN start
+        if(instancesToRemove != null)
         {
-        	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
+            for(VisualInstance instance: instancesToRemove)
+            {
+            	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
+            }
         }
 
     }
