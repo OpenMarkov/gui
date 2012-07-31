@@ -250,7 +250,7 @@ public class ExpectedValueBox extends InnerBox {
 	 */
 	public double getInnerBoxHeight(Graphics2D g) {
 		double innerBoxHeight = 0.0;
-		if (visualNode.getEditorPanel().isPropagationActive()) {	
+		if (visualNode.getVisualNetwork().isPropagationActive()) {	
 			innerBoxHeight = INTERNAL_MARGIN*2 + 
 				STATES_VERTICAL_SEPARATION + 
 				SCALE_VERTICAL_SEPARATION +

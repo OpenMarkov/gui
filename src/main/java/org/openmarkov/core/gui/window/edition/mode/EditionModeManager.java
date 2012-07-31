@@ -91,6 +91,11 @@ public class EditionModeManager
     {
         return CursorLoader.load (editionStates.get (newEditionModeName).cursor());
     }
+    
+    public Cursor getDefaultCursor ()
+    {
+        return CursorLoader.load (editionStates.get ("Edit.Mode.Selection").cursor());
+    }    
 
 
     public EditionMode getDefaultEditionMode ()

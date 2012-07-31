@@ -16,6 +16,7 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -103,6 +104,11 @@ public class VisualState extends VisualElement {
 	private int currentStateValue;		
 	
 	/**
+	 * Array of booleans that determine whether the state has evidence or not
+	 */
+	private List<Boolean> evidence = new ArrayList<>();
+	
+	/**
 	 * String resource.
 	 */
 	private StringResource stringResource = null;
@@ -123,6 +129,8 @@ public class VisualState extends VisualElement {
 		this.stateName = name;
 		stateValues = new ArrayList<Double>(1);
 		stateValues.add(0, 0.0);
+		evidence = new ArrayList<>();
+		evidence.add (false);
 		currentStateValue = 0;
 		stringResource = StringResourceLoader.getUniqueInstance().getBundleMessages();
 	}
@@ -224,6 +232,7 @@ public class VisualState extends VisualElement {
 	 */
 	public void createNewStateValue() {
 		stateValues.add(0.0);
+		evidence.add (false);
 	}	
 	
 	/**
@@ -233,6 +242,8 @@ public class VisualState extends VisualElement {
 	public void clearAllStateValues() {
 		stateValues.clear();
 		stateValues.add(0, 0.0);
+		evidence.clear ();
+		evidence.add (false);
 	}	
 	
 	/**
@@ -349,7 +360,7 @@ public class VisualState extends VisualElement {
 				(InnerBox.STATES_INDENT *2) + 1;
 		Double y = 0.0;
 		Double h = 0.0;
-		if (visualNode.getEditorPanel().isPropagationActive()) {
+		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			y = visualNode.getUpperLeftCornerY(g) + 
 				visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
 				(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
@@ -392,7 +403,7 @@ public class VisualState extends VisualElement {
 			xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION;
 			xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION;
 		}	
-		if (visualNode.getEditorPanel().isPropagationActive()) {
+		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			yText =  visualNode.getUpperLeftCornerY(g) + 
 					visualNode.getTextHeight(g) + InnerBox.INTERNAL_MARGIN + 
 					(InnerBox.STATES_VERTICAL_SEPARATION*getStatePosition()) +
@@ -418,7 +429,7 @@ public class VisualState extends VisualElement {
 				2, STATES_FONT, g);
 		g.drawString(stateName, xName.intValue(), yText.intValue());
 		
-		if (getVisualNode().getEditorPanel().isPropagationActive()) {
+		if (getVisualNode().getVisualNetwork().isPropagationActive()) {
 			
 			for (int i=0; i<stateValues.size(); i++) {
 				g.setPaint(Color.BLACK);
@@ -476,13 +487,9 @@ public class VisualState extends VisualElement {
 							InnerBox.BAR_FULL_LENGTH).intValue(), 
 					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue()
 					);
-			if (getVisualNode().isAnyFinding()) {
-				int currentCase = getVisualNode().getEditorPanel().getCurrentCase();
-				EvidenceCase evidenceCase = (getVisualNode().isPostResolutionFinding())? getVisualNode().getEditorPanel().
-						getCurrentEvidenceCase() : getVisualNode().getEditorPanel().getPreResolutionEvidence();
-				String stateWithFinding = evidenceCase.getFinding(visualNode.getProbNode().getVariable()).getState();
-				if (stateName.equals(stateWithFinding)) {
-					setColorCaseDependent(currentCase, g); 
+			if (getVisualNode().hasAnyFinding()) {
+				if (evidence.get (currentStateValue)) {
+					setColorCaseDependent(currentStateValue, g); 
 					g.fill(new Rectangle2D.Double(xBar, 
 							yFirstBar,
 							InnerBox.BAR_FULL_LENGTH,
@@ -496,8 +503,17 @@ public class VisualState extends VisualElement {
 				paintNotCompiled(xBar, yFirstBar, g);
 			}
 		}
-		g.setPaint(TEXT_COLOR);		
-		
+		g.setPaint(TEXT_COLOR);				
 	}
 
+    public void removeFinding ()
+    {
+        evidence.set (currentStateValue, false);
+    }
+    
+    public void addFinding ()
+    {
+        evidence.set (currentStateValue, true);
+    }
+    
 }

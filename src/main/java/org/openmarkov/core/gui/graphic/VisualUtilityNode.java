@@ -65,9 +65,8 @@ public class VisualUtilityNode extends VisualNode {
 	 * @param panel  
 	 *            editor panel to which this visual node is associated. 
 	 */
-	public VisualUtilityNode(ProbNode node, EditorPanel panel) {
-		probNode = node;
-		editorPanel = panel;
+	public VisualUtilityNode(ProbNode node, VisualNetwork visualNetwork) {
+		super(node, visualNetwork);
 		expanded = false;
 		preResolutionFinding = false;
 		postResolutionFinding = false;

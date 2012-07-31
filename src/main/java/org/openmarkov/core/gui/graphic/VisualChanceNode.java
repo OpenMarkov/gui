@@ -94,12 +94,11 @@ public class VisualChanceNode extends VisualNode {
 	 * 
 	 * @param node
 	 *            object that has the information of the node.
-	 * @param panel
+	 * @param visualNetwork
 	 *            editor panel to which this visual node is associated.
 	 */
-	public VisualChanceNode(ProbNode node, EditorPanel panel) {
-		probNode = node;
-		editorPanel = panel;
+	public VisualChanceNode(ProbNode node, VisualNetwork visualNetwork) {
+		super(node, visualNetwork);
 		expanded = false;
 		preResolutionFinding = false;
 		postResolutionFinding = false;
@@ -327,7 +326,7 @@ public class VisualChanceNode extends VisualNode {
 		if (preResolutionFinding) {
 			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
 		} else if (postResolutionFinding && 
-				(editorPanel.getNetworkPanel().getWorkingMode() == 
+				(visualNetwork.getWorkingMode() == 
 					NetworkPanel.INFERENCE_WORKING_MODE)) {
 			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
 		} else {

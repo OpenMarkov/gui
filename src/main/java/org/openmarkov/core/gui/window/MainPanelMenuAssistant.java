@@ -707,7 +707,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                          break;
                      }
                      setText(ActionCommands.EDIT_POTENTIAL, label);
-                     canAddFinding = !visualNode.isAnyFinding() 
+                     canAddFinding = !visualNode.hasAnyFinding() 
                              || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
                              || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding());
                      canAddFinding &= !(visualNode instanceof VisualUtilityNode);
@@ -886,7 +886,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 						 break;
 					 }
 					 setText(ActionCommands.EDIT_POTENTIAL, label);
-					 canAddFinding = !visualNode.isAnyFinding() 
+					 canAddFinding = !visualNode.hasAnyFinding() 
 							 || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
 							 || (workingMode == NetworkPanel.INFERENCE_WORKING_MODE && visualNode.isPostResolutionFinding());
 					 canAddFinding &= !(visualNode instanceof VisualUtilityNode);

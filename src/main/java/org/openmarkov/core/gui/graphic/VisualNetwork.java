@@ -28,6 +28,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -51,11 +52,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * Network whose visual representation is managed by this object.
 	 */
 	protected ProbNet probNet = null;
-	
-	/**
-	 * Editor panel associated to this network.
-	 */
-	private EditorPanel editorPanel = null;
 	
 	/**
 	 * This variable indicates if nodes must be drawn by title.
@@ -100,7 +96,11 @@ public class VisualNetwork implements PNUndoableEditListener {
      */
     protected SelectionRectangle selection = null;    
     
-	/**
+    protected boolean isPropagationActive = true;
+    
+    protected int workingMode = NetworkPanel.EDITION_WORKING_MODE;
+    
+    /**
 	 * Listener to the selection.
 	 */
 	protected HashSet<SelectionListener> selectionListeners =
@@ -121,16 +121,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param editorPanel
 	 *            editor panel associated to this network.
 	 */ 
-	public VisualNetwork(ProbNet probNet, EditorPanel editorPanel) {
+	public VisualNetwork(ProbNet probNet) {
         
 		this.probNet = probNet;
         this.probNet.getPNESupport().addUndoableEditListener(this);
-		this.editorPanel = editorPanel;
 		
 		//network.addNetworkChangeListener(this);
 		//changed by mpalacios
 		constructVisualInfo();
-
 	}
 
 	/**
@@ -1150,16 +1148,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		switch (node.getNodeType()) {
 			case CHANCE: {
-				return new VisualChanceNode(node, editorPanel);
+				return new VisualChanceNode(node, this);
 			}
 			case DECISION: {
-				VisualDecisionNode vdn= new VisualDecisionNode(node, editorPanel);
+				VisualDecisionNode vdn= new VisualDecisionNode(node, this);
 			/*	if ( node.getPolicyType() == PolicyType.PROBABILISTIC )
 					vdn.setSelected(true);*/
 				return  vdn;
 			}
 			case UTILITY: {
-				return new VisualUtilityNode(node, editorPanel);
+				return new VisualUtilityNode(node, this);
 			}
 			default: {
 				return null;
@@ -1199,15 +1197,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 	}
 	
-	/**
-	 * 
-	 * @return instance of editor panel
-	 */
-	protected EditorPanel getEditorPanel()
-	{
-	    return this.editorPanel;
-	}
-
 	public void setProbNet(ProbNet probNet) {
 		if(!this.probNet.equals(probNet))
 		{
@@ -1346,4 +1335,31 @@ public class VisualNetwork implements PNUndoableEditListener {
                           selection.getHeight() + diffY);
         selectElementsInsideSelection(selection);
     }
+    
+    /**
+     * Returns the isPropagationActive.
+     * @return the isPropagationActive.
+     */
+    public boolean isPropagationActive ()
+    {
+        return isPropagationActive;
+    }
+
+    /**
+     * Sets the isPropagationActive.
+     * @param isPropagationActive the isPropagationActive to set.
+     */
+    public void setPropagationActive (boolean isPropagationActive)
+    {
+        this.isPropagationActive = isPropagationActive;
+    }
+
+    public void setWorkingMode (int workingMode)
+    {
+        this.workingMode = workingMode;
+    }  
+    public int getWorkingMode ()
+    {
+        return workingMode;
+    }    
 }

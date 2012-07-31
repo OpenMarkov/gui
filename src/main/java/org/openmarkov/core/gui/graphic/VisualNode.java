@@ -77,9 +77,9 @@ public abstract class VisualNode extends VisualElement {
 		new JPanel().getFontMetrics(FONT_HELVETICA);
 	
 	/**
-	 * Editor panel to which this visual node is associated.
+	 * Visual Network to which this visual node is associated.
 	 */
-	protected EditorPanel editorPanel;
+	protected VisualNetwork visualNetwork;
 
 	/**
 	 * Object that has the node information.
@@ -126,6 +126,12 @@ public abstract class VisualNode extends VisualElement {
 	 * Value of the Y coordinate in temporal position of the node.
 	 */
 	protected int temporalCoordinateY;
+	
+	public VisualNode(ProbNode node, VisualNetwork visualNetwork)
+	{
+	    this.probNode = node;
+	    this.visualNetwork = visualNetwork;
+	}
 
 	/**
 	 * Returns the height of the visual node. It's calculated depending on the
@@ -214,15 +220,7 @@ public abstract class VisualNode extends VisualElement {
 
 		return probNode.getName();
 	}
-	
-	/**
-	 * Returns the editor panel to which this visual node is associated.
-	 * 
-	 * @return the editor panel to which this visual node is associated.
-	 */
-	public EditorPanel getEditorPanel() {
-		return editorPanel;
-	}
+
 
 	/**
 	 * Returns the node associated with the visual node.
@@ -340,7 +338,7 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return true if the node has a finding established (pre or post-Resolution).
 	 */	
-	public boolean isAnyFinding() {
+	public boolean hasAnyFinding() {
 		return this.preResolutionFinding || this.postResolutionFinding;
 	}
 	
@@ -377,5 +375,14 @@ public abstract class VisualNode extends VisualElement {
 	 * @return the text's height of node's name.
 	 */
 	public abstract double getTextHeight(Graphics2D g);
+
+    /**
+     * Returns the visualNetwork.
+     * @return the visualNetwork.
+     */
+    public VisualNetwork getVisualNetwork ()
+    {
+        return visualNetwork;
+    }
 
 }

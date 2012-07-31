@@ -71,7 +71,7 @@ public class NodeAddFindingDialogListener implements ActionListener {
 			if (innerBox instanceof FSVariableBox) {
 				FSVariableBox fsVariableBox = (FSVariableBox)innerBox;
 				VisualState visualState = fsVariableBox.getVisualState(selectedState);
-				editorPanel.setNewFinding(visualState);
+				editorPanel.setNewFinding(visualNode, visualState);
 			}
 		} else if (command.equals(stringResource.getString("NodeAddFindingDialog.jButtonCancel.Label"))) {
 			//do nothing

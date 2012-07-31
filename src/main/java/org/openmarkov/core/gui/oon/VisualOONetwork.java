@@ -27,6 +27,7 @@ import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
+import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.oon.InstanceLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
@@ -37,12 +38,12 @@ public class VisualOONetwork extends VisualNetwork
     /**
      * HashMap of visual instances.
      */
-    private Map<String, VisualInstance> visualInstances = new HashMap<String, VisualInstance>();
+    private Map<String, VisualInstance> visualInstances;
 
     /**
      * List of visual instance links.
      */
-    private List<VisualInstanceLink> visualInstanceLinks = new ArrayList<VisualInstanceLink>();
+    private List<VisualInstanceLink> visualInstanceLinks;
     
     /**
      * Set of selected links.
@@ -52,11 +53,9 @@ public class VisualOONetwork extends VisualNetwork
     private VisualInstance newInstanceLinkSource;    
 
     
-    public VisualOONetwork (OOBNet probNet, OOEditorPanel editorPanel)
+    public VisualOONetwork (OOBNet probNet)
     {
-        super (probNet, editorPanel);
-        visualInstances = new HashMap<> ();
-        visualInstanceLinks = new ArrayList<> ();
+        super (probNet);
         selectedInstances = new HashSet<> ();
         selectionListeners = new HashSet<> ();
     }
@@ -70,19 +69,24 @@ public class VisualOONetwork extends VisualNetwork
     {
         super.constructVisualInfo ();
         
-        // construct visual instances
-        if(probNet instanceof OOBNet && visualInstances != null)
+        if(probNet instanceof OOBNet)
         {
+            // construct visual instances
+            if(visualInstances == null)
+            {
+                visualInstances = new HashMap<> ();
+            }
             visualInstances.clear();
             for(String instanceName : ((OOBNet)probNet).getInstances().keySet())
             {
                 visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
             }
-        }
         
-        // construct visual instance links
-        if(probNet instanceof OOBNet && visualInstanceLinks != null)
-        {
+            // construct visual instance links
+            if(visualInstanceLinks == null)
+            {
+                visualInstanceLinks = new ArrayList<> ();
+            }
             visualInstanceLinks.clear();
             for(InstanceLink link : ((OOBNet)probNet).getInstanceLinks())
             {
@@ -497,30 +501,27 @@ public class VisualOONetwork extends VisualNetwork
     public PNEdit finishLinkCreation (java.awt.geom.Point2D.Double point, Graphics2D g)
     {
         PNEdit linkEdit = null;
-        if (newLink != null) {
-            newLink = null;
-            VisualInstance newInstanceLinkDestination = null;
+        VisualInstance newInstanceLinkDestination = null;
             
-            if ((newInstanceLinkDestination = whatInstanceInPosition(point, g)) != null
-                    && newInstanceLinkSource != null) {
-                VisualInstance inputParameter = newInstanceLinkDestination
-                        .whatParameterInPosition(point, g);
-                if (inputParameter != null
-                        && inputParameter
-                                .getInstance()
-                                .getClassNet()
-                                .getName()
-                                .equals(newInstanceLinkSource.getInstance()
-                                        .getClassNet().getName())) {
-                    linkEdit = new AddInstanceLinkEdit(probNet,
-                            newInstanceLinkSource.getInstance(),
-                            newInstanceLinkDestination.getInstance(),
-                            inputParameter.getInstance());
-                }
-            } else {
-                super.finishLinkCreation (point, g);
+        if ((newInstanceLinkDestination = whatInstanceInPosition(point, g)) != null
+                && newInstanceLinkSource != null) {
+            VisualInstance inputParameter = newInstanceLinkDestination
+                    .whatParameterInPosition(point, g);
+            if (inputParameter != null
+                    && inputParameter
+                            .getInstance()
+                            .getClassNet()
+                            .getName()
+                            .equals(newInstanceLinkSource.getInstance()
+                                    .getClassNet().getName())) {
+                linkEdit = new AddInstanceLinkEdit(probNet,
+                        newInstanceLinkSource.getInstance(),
+                        newInstanceLinkDestination.getInstance(),
+                        inputParameter.getInstance());
             }
-        } 
+        } else {
+            linkEdit = super.finishLinkCreation (point, g);
+        }
         return linkEdit;
     }
    

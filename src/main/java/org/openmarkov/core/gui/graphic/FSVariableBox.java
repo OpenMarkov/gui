@@ -174,7 +174,7 @@ public class FSVariableBox extends InnerBox {
 	public double getInnerBoxHeight(Graphics2D g) {
 		double innerBoxHeight = 0.0;
 		int numEstados = visualStates.size();
-		if (visualNode.getEditorPanel().isPropagationActive()) {	
+		if (visualNode.getVisualNetwork().isPropagationActive()) {	
 			innerBoxHeight = INTERNAL_MARGIN + 
 				(STATES_VERTICAL_SEPARATION*(numEstados)) + 
 				((getVisualState(0).getNumberOfValues()-1)*BAR_HEIGHT*numEstados);

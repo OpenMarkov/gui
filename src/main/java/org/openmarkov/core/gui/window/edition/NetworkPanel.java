@@ -25,11 +25,12 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualLink;
+import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.oon.OOEditorPanel;
+import org.openmarkov.core.gui.oon.VisualOONetwork;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
@@ -218,11 +219,11 @@ public class NetworkPanel extends FrameContentPanel implements
 
 		if (editorPanel == null) {
 		    // TODO OOBN start
-//		    if(probNet instanceof OOBNet)
-//		        editorPanel = new OOEditorPanel(this);
-//		    else
+		    if(probNet instanceof OOBNet)
+		        editorPanel = new EditorPanel(this, new VisualOONetwork ((OOBNet)probNet));
+		    else
             // TODO OOBN end
-		        editorPanel = new EditorPanel(this);
+		        editorPanel = new EditorPanel(this, new VisualNetwork (probNet));
 			// editorPanel.addEditionListener(this);
 			// It is necessary for edition actions like movement node.
 		}
@@ -354,6 +355,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	 */
 	public void setWorkingMode(int workingMode) {
 		this.workingMode = workingMode;
+		editorPanel.setWorkingMode(workingMode);
 		//TODO OOBN 
 		if(probNet instanceof OOBNet)
 		{
