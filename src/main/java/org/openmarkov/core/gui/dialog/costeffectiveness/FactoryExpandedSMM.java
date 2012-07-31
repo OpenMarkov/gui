@@ -12,7 +12,10 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 import java.util.ArrayList;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -20,6 +23,8 @@ import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 public class FactoryExpandedSMM {
 
@@ -163,6 +168,34 @@ public class FactoryExpandedSMM {
 	
 	public ProbNet getExtendedNet(){
 		return probNet;
+	}
+	
+	
+	public void applyDiscountToUtilityNodes(double discount) throws NotEnoughMemoryException{
+		// apply discount rate for all temporal utility nodes in the expanded network
+		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
+		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
+			  if (utilityExpandedNodes.get(i).getVariable().isTemporal() && utilityExpandedNodes.get(i).getVariable().getTimeSlice() > 0) {
+				  double discountRate = 1 / (Math.pow((1 + discount), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
+				  //project TreeADD original potential to a table
+				 try {
+					TablePotential projectedPotential = ((TreeADDPotential)((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0)).getOriginalPotential()).tableProject(null, null).get(0);
+					for (int j = 0; j < projectedPotential.getValues().length; j++) {
+						projectedPotential.getValues()[j] = projectedPotential.getValues()[j] * discountRate;
+					}
+					ArrayList<Potential> potentials = new ArrayList<>();
+					potentials.add(projectedPotential);
+					utilityExpandedNodes.get(i).setPotentials(potentials);
+				} catch (NonProjectablePotentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (WrongCriterionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				  //utilityExpandedNodes.get(i).getPotentials().get(0).get
+			  }
+		  }
 	}
 	
 	/** 

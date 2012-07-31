@@ -2406,31 +2406,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				  }
 				  
 				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNetCopy, numSlices, null, 200.0);
+				  expandedNetFactory.applyDiscountToUtilityNodes(costEffectivenessDialog.getDiscount());
 				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-				  // apply discount rate for all temporal utility nodes in the expanded network
-				  ArrayList<ProbNode> utilityExpandedNodes = expandedNetwork.getProbNodes(NodeType.UTILITY);
-				  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
-					  if (utilityExpandedNodes.get(i).getVariable().isTemporal() && utilityExpandedNodes.get(i).getVariable().getTimeSlice() > 0) {
-						  double discountRate = 1 / (Math.pow((1 + costEffectivenessDialog.getDiscount()), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
-						  //project TreeADD original potential to a table
-						 try {
-							TablePotential projectedPotential = ((TreeADDPotential)((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0)).getOriginalPotential()).tableProject(null, null).get(0);
-							for (int j = 0; j < projectedPotential.getValues().length; j++) {
-								projectedPotential.getValues()[j] = projectedPotential.getValues()[j] * discountRate;
-							}
-							ArrayList<Potential> potentials = new ArrayList<>();
-							potentials.add(projectedPotential);
-							utilityExpandedNodes.get(i).setPotentials(potentials);
-						} catch (NonProjectablePotentialException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (WrongCriterionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						  //utilityExpandedNodes.get(i).getPotentials().get(0).get
-					  }
-				  }
+				 
 				 try {
 					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 					ArrayList<Variable> conditioningVariables = new ArrayList<>();
