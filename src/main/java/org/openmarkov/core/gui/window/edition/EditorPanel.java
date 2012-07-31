@@ -79,6 +79,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -304,7 +305,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 		editionModeManager = new EditionModeManager (this, probNet);
 		editionMode = editionModeManager.getDefaultEditionMode ();
 	}
-	
 
 	/**
 	 * This method initializes this instance.
@@ -1181,28 +1181,31 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
 				
 				ProbNode probNode = node.getProbNode();
-				ProbNode dummyProbNode = new ProbNode(probNode);
+				//TODO manage other kinf of polici types from the interface
+				probNode.setPolicyType(PolicyType.OPTIMAL);
 				ArrayList<Variable> variables = new ArrayList<Variable>();
 				//it is added first conditioned variable
 				variables.add(node.getProbNode().getVariable());
-				ArrayList<ProbNode> probNodes = dummyProbNode.getProbNet().getProbNodes();
+				ArrayList<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
 	        	for (ProbNode possibleParent :probNodes) {
-	        		if (dummyProbNode.isParent(possibleParent)) {
+	        		if (probNode.isParent(possibleParent)) {
 	        			variables.add(possibleParent.getVariable());
 	        		}
 	        	}
-				
 				UniformPotential policy = new UniformPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
 				ArrayList<Potential> policies = new ArrayList<Potential>();
 				policies.add(policy);
-				dummyProbNode.setPotentials(policies);
-			//	ImposePolicyDialog imposePolicyDialog = new ImposePolicyDialog(Utilities.getOwner(this), node.getProbNode());
-				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummyProbNode, false);
+				probNode.setPotentials(policies);
+				
+				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), probNode, false);
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
-					this.imposedPolicies.add(dummyProbNode.getPotentials().get(0));
 					//change it colour
 					((VisualDecisionNode) node).setHasPolicy(true);
+				} else { //if user cancel policy imposition restore no potential to de probNode
+					ArrayList<Potential> noPolicy = new ArrayList<Potential>();
+					probNode.setPotentials(noPolicy);
 				}
+				
 				
 			}
 		}
@@ -1222,49 +1225,15 @@ public class EditorPanel extends JPanel implements MouseListener,
 			node = selectedNode.get(0);
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
 				ProbNode probNode = node.getProbNode();
-				ProbNode dummyProbNode = new ProbNode(probNode);
-				ArrayList<Variable> variables = new ArrayList<Variable>();
-				//it is added first conditioned variable
-				variables.add(node.getProbNode().getVariable());
-				ArrayList<ProbNode> probNodes = dummyProbNode.getProbNet().getProbNodes();
-	        	for (ProbNode possibleParent :probNodes) {
-	        		if (dummyProbNode.isParent(possibleParent)) {
-	        			variables.add(possibleParent.getVariable());
-	        		}
-	        	}
-	        	//search the imposed policy in imposedPolicies 
-	        	Potential imposedPolicy = null; 
-	        	for (int i = 0; i < imposedPolicies.size(); i++) {
-	        		if (imposedPolicies.get(i).getVariables().get(0) == dummyProbNode.getVariable()) {
-	        			imposedPolicy = imposedPolicies.get(i);
-	        			break;
-	        		}
-	        	}
-	        	
-	        	//if its variables are not the same as variables read from network, it could be because there have been added a new parent
-	        	//in this case a new UniformPotencial would be set
-	        	ArrayList<Potential> policies = new ArrayList<Potential>();
-	        	if (!imposedPolicy.getVariables().equals(variables)) {
-	        		UniformPotential policy = new UniformPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-					policies.add(policy);
-					dummyProbNode.setPotentials(policies);
-	        	} else if (imposedPolicy.getVariables().equals(variables)) {
-	        		policies.add(imposedPolicy);
-	        		dummyProbNode.setPotentials(policies);
-	        	}
-	        	PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummyProbNode, false);
+				//TODO manage other kind of policy types from the interface
+				probNode.setPolicyType(PolicyType.OPTIMAL);
+				Potential imposedPolicy = probNode.getPotentials().get(0);
+				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), probNode, false);
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
-					//substitute in imposedPolicies the new policy edited
-					for (int i = 0; i < imposedPolicies.size(); i++) {
-		        		if (imposedPolicies.get(i).getVariables().get(0) == dummyProbNode.getVariable()) {
-		        			imposedPolicies.remove(i);
-		        			break;
-		        		}
-		        	}
-					this.imposedPolicies.add(dummyProbNode.getPotentials().get(0));
 					//change it colour
 					((VisualDecisionNode) node).setHasPolicy(true);
 				}
+
 			}
 		}
 		
@@ -1282,12 +1251,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
-				for (int i = 0; i < imposedPolicies.size(); i++) {
-	        		if (imposedPolicies.get(i).getVariables().get(0) == node.getProbNode().getVariable()) {
-	        			imposedPolicies.remove(i);
-	        			break;
-	        		}
-	        	}
+				ProbNode probNode = node.getProbNode();
+				ArrayList<Potential> noPolicy = new ArrayList<>();
+				probNode.setPotentials(noPolicy);
 				((VisualDecisionNode) node).setHasPolicy(false);
 			}
 		}
@@ -2347,11 +2313,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  }
 			  try {
 				  
-				  
 				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 				  expandedNetFactory.applyDiscountToUtilityNodes(costEffectivenessDialog.getDiscount());
 				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-				 
+
 				 try {
 					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 					ArrayList<Variable> conditioningVariables = new ArrayList<>();
@@ -2387,7 +2352,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				  // TODO Auto-generated catch block
 				  e2.printStackTrace();
 			  }
-			  
+  		  
 	/*		  
 			  ArrayList<Intervention> interventions = new ArrayList<Intervention>();
 		  final String RESOURCE_EXCEL_TEMPLATE ="/openmarkov/gui/resources/" +
