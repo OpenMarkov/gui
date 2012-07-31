@@ -41,7 +41,7 @@ public class FactoryExpandedSMMTest {
 	}*/
 	
 	
-	//@Test
+	@Test
 	public void testExpansionSimpleSMM() {
 
 		ProbNet network = NetsFactory.createSMMWithoutStateVariable();

@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 public class FactoryExpandedSMM {
@@ -94,52 +95,66 @@ public class FactoryExpandedSMM {
 				  probNet.addLink(decisionCriteria, utilityNodes.get(i), true);
 				  ArrayList<Variable> treeVariables = utility.getVariables();
 				  treeVariables.add(decisionCriteria.getVariable());
-				  TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNet.getDecisionCriteriaVariable(),
-						  utility.getPotentialRole(), utility.getUtilityVariable());
-				  if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("cost")) {
-					  //efectiveness branch is 0
-					  ArrayList<Potential> potentials = new ArrayList<>();
-					  ArrayList<Variable> variables = new ArrayList<>();
-					  variables.add(decisionCriteria.getVariable());
-					  double []table = {1.0, 0.0};
-					  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-					 // zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
-					  potentials.add(zeroEffectiveness);
-					  decisionCriteria.setPotentials(potentials);
-					  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
-						  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
-							  treeADDPotential.getBranches().get(j).setPotential(utility);
-						  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
-							  //zero potential
-							  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
-						  }
-					  }
-					  
-				  } else if (utilityNodes.get(i).getVariable().getDecisionCriteria().getString().equals("effectiveness")) {
-					  //cost branch is 0
-					  ArrayList<Potential> potentials = new ArrayList<>();
-					  ArrayList<Variable> variables = new ArrayList<>();
-					  variables.add(decisionCriteria.getVariable());
-					  double []table = {0.0, 1.0};
-					  TablePotential zeroEffectiveness = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-					  //zeroEffectiveness.setUtilityVariable(utilityNodes.get(i).getVariable());
-					  potentials.add(zeroEffectiveness);
-					  decisionCriteria.setPotentials(potentials);
-					  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
-						  if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("effectiveness")) {
-							  treeADDPotential.getBranches().get(j).setPotential(utility);
-						  } else if (treeADDPotential.getBranches().get(j).getBranchStates().get(0).getName().equals("cost")) {
-							  //zero potential
-							  treeADDPotential.getBranches().get(j).setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilityNodes.get(i).getVariable()));
-						  }
-					  }
+				  
+				  String iUtilityDecisionCriteriaName = utilityNodes.get(i).getVariable().getDecisionCriteria().getString();
+				  boolean hasDecisionCriteria = false;
+				  String otherDecisionCriteria = null;
+				  TreeADDPotential treeADDPotential = null;
+				  if (iUtilityDecisionCriteriaName.equals("cost")){
+					  hasDecisionCriteria = true;
+					  otherDecisionCriteria = "effectiveness";
 				  }
+				  else if (iUtilityDecisionCriteriaName.equals("effectiveness")){
+					  hasDecisionCriteria = true;
+					  otherDecisionCriteria = "cost";
+				  }
+				  if (hasDecisionCriteria){
+					  treeADDPotential = constructTreeADDForCE(decisionCriteria,treeVariables,utility,utilityNodes.get(i),iUtilityDecisionCriteriaName,otherDecisionCriteria);
+				  }
+			
 				  ArrayList<Potential> potentials = new ArrayList<>();
 				  potentials.add(treeADDPotential);
 				 utilityNodes.get(i).setPotentials(potentials);
 			  }
 			
 		
+	}
+	
+	
+	/**
+	 * @param decisionCriteria
+	 * @param treeVariables
+	 * @param utility
+	 * @param utilProbNode
+	 * @param decisionCriteriaName
+	 * @param otherDecisionCriteriaName
+	 * @return A TreeADD for the utility potential where the branch of the criteria of the node is the old utility table, and the branch of the other criteria is 0.
+	 */
+	public TreeADDPotential constructTreeADDForCE(ProbNode decisionCriteria, ArrayList<Variable> treeVariables, Potential utility, ProbNode utilProbNode, String decisionCriteriaName, String otherDecisionCriteriaName){
+		
+		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables, probNet.getDecisionCriteriaVariable(),
+				  utility.getPotentialRole(), utility.getUtilityVariable());
+		
+		  ArrayList<Potential> potentials = new ArrayList<>();
+		  ArrayList<Variable> variables = new ArrayList<>();
+		  variables.add(decisionCriteria.getVariable());
+		  double []table = {1.0, 0.0};
+		  TablePotential zeroCriteria = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
+		 // zeroCriteria.setUtilityVariable(utilityNodes.get(i).getVariable());
+		  potentials.add(zeroCriteria);
+		  decisionCriteria.setPotentials(potentials);
+		  for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
+			  TreeADDBranch jBranch = treeADDPotential.getBranches().get(j);
+			String jBranchName = jBranch.getBranchStates().get(0).getName();
+			
+			if (jBranchName.equalsIgnoreCase(decisionCriteriaName)) {
+				  jBranch.setPotential(utility);
+			  } else if (jBranchName.equalsIgnoreCase(otherDecisionCriteriaName)) {
+				  //zero potential
+				  jBranch.setPotential(new UniformPotential(utility.getVariables(), PotentialRole.UTILITY, utilProbNode.getVariable()));
+			  }
+		  }
+		  return treeADDPotential;
 	}
 
 	// Methods
