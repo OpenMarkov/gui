@@ -337,18 +337,11 @@ public class VisualChanceNode extends VisualNode {
 
 		if (probNode.getVariable().isAlwaysObserved()) {
 			g.setPaint(ALWAYS_OBSERVED_COLOR);
-			if (isSelected()) {
-				g.setStroke(OBSERVED_WIDE_STROKE);
-			} else {
-				g.setStroke(OBSERVED_NORMAL_STROKE);
-			}
+			g.setStroke((isSelected())? OBSERVED_WIDE_STROKE : OBSERVED_NORMAL_STROKE);
+		} else if (probNode.isInput ()) {
+		    g.setStroke((isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE);
 		} else {
-			if (isSelected()) {
-				g.setStroke(WIDE_STROKE);
-			} else {
-				g.setStroke(NORMAL_STROKE);
-			}
-
+            g.setStroke((isSelected())? WIDE_STROKE : NORMAL_STROKE);
 		}
 
 		g.draw(shape);

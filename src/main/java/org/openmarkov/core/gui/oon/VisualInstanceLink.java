@@ -9,12 +9,24 @@
 
 package org.openmarkov.core.gui.oon;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
 
 import org.openmarkov.core.gui.graphic.VisualArrow;
 
 public class VisualInstanceLink extends VisualArrow {
+    
+    /**
+     * Used to paint normal lines.
+     */
+    protected static final BasicStroke NORMAL_INSTANCE_LINK_STROKE = new BasicStroke(3.0f);
+
+    /**
+     * Used to paint wide lines.
+     */
+    protected static final BasicStroke SELECTED_INSTANCE_LINK_STROKE = new BasicStroke(5.0f);    
 
 	private VisualInstance sourceInstance;
 	private VisualInstance destinationInstance;
@@ -52,6 +64,13 @@ public class VisualInstanceLink extends VisualArrow {
 		
 		super.paint(g);
 	}	
+	
+    @Override
+    protected Stroke getStroke ()
+    {
+        return (isSelected ())? WIDE_STROKE : NORMAL_STROKE;
+    }
+	
 	
 
 }

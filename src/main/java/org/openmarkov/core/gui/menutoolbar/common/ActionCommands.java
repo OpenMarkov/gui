@@ -167,10 +167,17 @@ public class ActionCommands {
      */
     public static final String INSTANCE_CREATION = "Edit.Mode.Instance";        
 
+    //TODO OOBN start
     /**
 	 * Action invoked when the user wants to mark an object as input parameter.
 	 */
 	public static final String MARK_AS_INPUT = "MarkAsInput";		
+
+    /**
+     * Action invoked when the user wants to edit the class of the instance selected
+     */
+    public static final String EDIT_CLASS = "EditClass";       
+	//TODO OOBN end
 
 	/**
 	 * Action invoked when the user wants to change the working mode by

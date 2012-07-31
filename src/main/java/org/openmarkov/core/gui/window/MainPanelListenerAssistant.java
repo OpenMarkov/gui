@@ -335,8 +335,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}else if (actionCommand
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableRevelationArc();
+			//TODO OOBN start 			
 		} else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
-			//TODO OOBN this.getCurrentNetworkPanel().markSelectedInstancesAsInput();
+			this.getCurrentNetworkPanel().markSelectedAsInput();
+		} else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
+            this.getCurrentNetworkPanel().editClass();
+			//TODO OOBN end
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
@@ -722,8 +726,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		ProbNet probNet = null;
 		// TODO OOBN start
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		//probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
+		//probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
         // TODO OOBN end
 		messagesStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();

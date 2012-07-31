@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
   <Edit>
+    <!-- TODO OOBN start  -->
+    <MarkAsInput>
+        <Label value="Mark as input"/>
+    </MarkAsInput>
+    <EditClass>
+        <Label value="Edit class"/>
+    </EditClass>
+    <!-- TODO OOBN end -->
     <Mode>
         <Link>
           <Mnemonic value="l" />

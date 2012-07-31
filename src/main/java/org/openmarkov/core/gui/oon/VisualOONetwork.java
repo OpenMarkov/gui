@@ -27,7 +27,8 @@ import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
-import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.gui.window.MainPanel;
+import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.InstanceLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
@@ -178,8 +179,8 @@ public class VisualOONetwork extends VisualNetwork
 
         VisualElement elementSelected = null;
 
-        if ((elementSelected = whatInstanceInPosition(position, g)) == null) {
-           elementSelected = super.getElementInPosition (position, g);
+        if ((elementSelected = super.getElementInPosition (position, g)) == null) {
+            elementSelected = whatInstanceInPosition(position, g);
         }
 
         return elementSelected;
@@ -524,5 +525,23 @@ public class VisualOONetwork extends VisualNetwork
         }
         return linkEdit;
     }
+    
+    @Override
+    public void markSelectedAsInput ()
+    {
+        super.markSelectedAsInput ();
+        
+        for(VisualInstance visualInstance : getSelectedInstances ())
+        {
+            visualInstance.getInstance().setInput (!visualInstance.getInstance().isInput ());
+        }
+    }    
+    
+    public void editClass ()
+    {
+        Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
+        MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().createNewFrame (selectedInstance.getClassNet ());
+        
+    }    
    
 }

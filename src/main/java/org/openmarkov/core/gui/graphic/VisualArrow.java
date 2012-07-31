@@ -9,9 +9,11 @@
 
 package org.openmarkov.core.gui.graphic;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
@@ -377,17 +379,12 @@ public class VisualArrow extends VisualElement {
 	 *            graphics object where paint the link.
 	 */
 
-	public void paintArrow(Graphics2D g, Point2D.Double start,
-			Point2D.Double end) {
+	public void paintArrow(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
 		Shape shape = null;
 		if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01)
 					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
-				if (isSelected()) {
-					g.setStroke(WIDE_STROKE);
-				} else {
-					g.setStroke(NORMAL_STROKE);
-				}
+                g.setStroke(stroke);
 				shape = getShapeToPaint(start, end);
 				g.fill(shape);
 				g.draw(shape);
@@ -404,19 +401,16 @@ public class VisualArrow extends VisualElement {
 	 *            starting point
 	 * @param end
 	 *            end point
+	 * @param stroke 
 	 */
 	public void paintDoubleStripe(Graphics2D g, Point2D.Double start,
-			Point2D.Double end) {
+			Point2D.Double end, Stroke stroke) {
 
 		Shape shape = null;
 		if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01)
 					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
-				if (isSelected()) {
-					g.setStroke(WIDE_STROKE);
-				} else {
-					g.setStroke(NORMAL_STROKE);
-				}
+				g.setStroke(stroke);
 				shape = getStripeShape(start, end, STRIPE_DISTANCE);
 				g.fill(shape);
 				g.draw(shape);
@@ -438,19 +432,16 @@ public class VisualArrow extends VisualElement {
 	 *            starting point
 	 * @param end
 	 *            end point
+	 * @param stroke 
 	 */
 	public void paintSingleStripe(Graphics2D g, Point2D.Double start,
-			Point2D.Double end) {
+			Point2D.Double end, Stroke stroke) {
 
 		Shape shape = null;
 		if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01)
 					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
-				if (isSelected()) {
-					g.setStroke(WIDE_STROKE);
-				} else {
-					g.setStroke(NORMAL_STROKE);
-				}
+                g.setStroke(stroke);
 				shape = getStripeShape(start, end, 0);
 				g.fill(shape);
 				g.draw(shape);
@@ -507,18 +498,15 @@ public class VisualArrow extends VisualElement {
 	 * 
 	 * @param g
 	 *            graphics object where paint the link.
+	 * @param stroke 
 	 */
 
-	public void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end) {
+	public void paintLine(Graphics2D g, Point2D.Double start, Point2D.Double end, Stroke stroke) {
 		Shape shape = null;
 		if ((start != null) && (end != null)) {
 			if ((Math.abs(start.getX() - end.getX()) > 0.01)
 					|| (Math.abs(start.getY() - end.getY()) > 0.01)) {
-				if (isSelected()) {
-					g.setStroke(WIDE_STROKE);
-				} else {
-					g.setStroke(NORMAL_STROKE);
-				}
+                g.setStroke(stroke);
 				shape = getLineToPaint(start, end);
 				g.draw(shape);
 			}
@@ -535,23 +523,28 @@ public class VisualArrow extends VisualElement {
 	public void paint(Graphics2D g) {
 		
 		g.setPaint(linkColor);
-		
+		Stroke stroke = getStroke ();
 		if(isDoubleStriped)
 		{
-			paintDoubleStripe(g, startPoint, endPoint);
+			paintDoubleStripe(g, startPoint, endPoint, stroke);
 		}
 		if(isSingleStriped)
 		{
-			paintSingleStripe(g, startPoint, endPoint);
+			paintSingleStripe(g, startPoint, endPoint, stroke);
 		}
 		if (isDirected) {
 			// Paint the arrow while the user has not released the button of the
 			// mouse
-			paintArrow(g, startPoint, endPoint);
+			paintArrow(g, startPoint, endPoint, stroke);
 		} else {
-			paintLine(g, startPoint, endPoint);
+			paintLine(g, startPoint, endPoint, stroke);
 		}
 	}
+
+    protected Stroke getStroke ()
+    {
+        return (isSelected ())? WIDE_STROKE : NORMAL_STROKE;
+    }
 
 	/**
 	 * @return the isDirected

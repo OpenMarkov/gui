@@ -238,10 +238,11 @@ public class PopupMenuFactory implements MenuToolBarBasic {
         }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
         {
             popUpMenu = getLinkPopup((VisualLink)selectedElement, panel);
-        }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
+        //TODO OOBN start 
+        }else if(VisualInstance.class.isAssignableFrom (selectedElement.getClass ()))
         {
-          //TODO OOBN 
           popUpMenu =  getInstancePopup((VisualInstance)selectedElement, panel);
+        //TODO OOBN end 
         }
         return popUpMenu;
     }

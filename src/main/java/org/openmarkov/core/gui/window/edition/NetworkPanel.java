@@ -998,4 +998,16 @@ public class NetworkPanel extends FrameContentPanel implements
         
     }
 
+    // TODO OOBN start
+    public void markSelectedAsInput ()
+    {
+        editorPanel.markSelectedAsInput();
+    }
+
+    public void editClass ()
+    {
+        editorPanel.editClass();
+    }
+    // TODO OOBN end
+
 }

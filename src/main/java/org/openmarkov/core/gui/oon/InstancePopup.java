@@ -35,16 +35,16 @@ public class InstancePopup extends PopupMenuBasic {
 	 * Object that represents the item 'Remove'.
 	 */
 	private JMenuItem removeMenuItem = null;
-
-	/**
-	 * Object that represents the item 'Properties'.
-	 */
-	private JMenuItem propertiesMenuItem = null;
 	
 	/**
-	 * Object that represents the item 'Input'.
+	 * Object that represents the item 'Mark as Input'.
 	 */
 	private JMenuItem inputMenuItem = null;
+	
+    /**
+     * Object that represents the item 'Edit Class'.
+     */
+    private JMenuItem editClassMenuItem = null;	
 	
 
 	/**
@@ -66,6 +66,7 @@ public class InstancePopup extends PopupMenuBasic {
 	 */
 	private void initialize() {
 
+        add(getEditClassMenuItem ());
 		add(getRemoveMenuItem());
 		// addSeparator();
 		// add(getPropertiesMenuItem());
@@ -90,24 +91,6 @@ public class InstancePopup extends PopupMenuBasic {
 		return removeMenuItem;
 
 	}
-
-	/**
-	 * This method initialises propertiesMenuItem.
-	 * 
-	 * @return a new 'Properties' menu item.
-	 */
-	private JMenuItem getPropertiesMenuItem() {
-
-		if (propertiesMenuItem == null) {
-			propertiesMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
-					ActionCommands.LINK_PROPERTIES);
-			propertiesMenuItem.addActionListener(listener);
-		}
-
-		return propertiesMenuItem;
-
-	}
 	
 	/**
 	 * This method initialises inputMenuItem.
@@ -117,14 +100,29 @@ public class InstancePopup extends PopupMenuBasic {
 	private JMenuItem getInputMenuItem() {
 
 		if (inputMenuItem == null) {
-			inputMenuItem  = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_INSTANCEINPUT_MENUITEM));
+			inputMenuItem  = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_MARKASINPUT_MENUITEM));
 			inputMenuItem.setActionCommand(ActionCommands.MARK_AS_INPUT);
 			inputMenuItem .addActionListener(listener);
 		}
 
 		return inputMenuItem ;
+	}
+	
+    /**
+     * This method initialises inputMenuItem.
+     * 
+     * @return a new 'Edit Class' menu item.
+     */
+    private JMenuItem getEditClassMenuItem() {
 
-	}	
+        if (editClassMenuItem == null) {
+            editClassMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_CLASS_MENUITEM,
+                                                       ActionCommands.EDIT_CLASS);
+            editClassMenuItem .addActionListener(listener);
+        }
+
+        return editClassMenuItem ;
+    }	
 
 	/**
 	 * Returns the component that corresponds to an action command.
@@ -141,8 +139,10 @@ public class InstancePopup extends PopupMenuBasic {
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
 		}else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
-			component = inputMenuItem;
-		}
+            component = inputMenuItem;
+        }else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
+            component = editClassMenuItem;
+        }
 
 		return component;
 

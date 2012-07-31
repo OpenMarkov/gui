@@ -1361,5 +1361,28 @@ public class VisualNetwork implements PNUndoableEditListener {
     public int getWorkingMode ()
     {
         return workingMode;
-    }    
+    }
+
+    //TODO OOBN start
+    public void markSelectedAsInput ()
+    {
+        for(VisualNode visualNode : getSelectedNodes ())
+        {
+            visualNode.getProbNode ().setInput (!visualNode.getProbNode ().isInput ());
+        }
+    }
+
+    public void editClass ()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    //TODO OOBN end
+
+    public void selectElement (VisualElement selectedElement)
+    {
+        setSelectedAllObjects (false);
+        setSelectedElement (selectedElement, true);
+    }
+    
 }

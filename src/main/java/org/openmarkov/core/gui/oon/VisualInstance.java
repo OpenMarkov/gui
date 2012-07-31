@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Vertical margin for the bounding box
 	 */
-	protected static final double VERTICAL_MARGIN = 25;	
+	protected static final double VERTICAL_MARGIN = 35;	
 	
 	private  static final Font FONT_HELVETICA_BOLD = new Font("Helvetica", Font.BOLD, 15);	
 
@@ -158,7 +159,7 @@ public class VisualInstance extends VisualElement {
 		
 		for(Instance subInstance : instance.getSubInstances().values())
 		{
-			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance, allVisualNodes, false));
+			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance, allVisualNodes, true));
 		}
 		
 		setExpanded (isExpanded);
@@ -178,14 +179,16 @@ public class VisualInstance extends VisualElement {
 	@Override
 	public void paint(Graphics2D g) {
 		Shape shape = getShape(g);
-		Color backgroundColor= (instance.isInput())? BACKGROUND_COLOR_INPUT : BACKGROUND_COLOR;
+		Color backgroundColor= BACKGROUND_COLOR;
 		g.setPaint(backgroundColor);
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
 		
 		String text = adjustText(instance.getClassNet().getName(), dimensions[2], 3, FONT_HELVETICA_BOLD, g);
 		g.drawString(text, (float) dimensions[0] + 10.0f, (float) dimensions[1] + 15.0f);
-		g.setStroke((isSelected())? WIDE_STROKE : NORMAL_STROKE);
+		Stroke s = (isSelected())? WIDE_STROKE : NORMAL_STROKE;
+		if(instance.isInput ()) s = (isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE; 
+		g.setStroke(s);
 		g.draw(shape);
 		
 		if(isExpanded)

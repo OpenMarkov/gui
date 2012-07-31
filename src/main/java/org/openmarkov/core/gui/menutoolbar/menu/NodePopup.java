@@ -12,11 +12,13 @@ package org.openmarkov.core.gui.menutoolbar.menu;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
+import org.openmarkov.core.gui.localize.MenuLocalizer;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -117,6 +119,14 @@ public class NodePopup extends PopupMenuBasic {
 	 * Object that represents the item 'removeFinding'.
 	 */
 	private JMenuItem removeFindingMenuItem = null;
+	
+    // TODO OOBN start
+    /**
+     * Object that represents the item 'Mark as Input'.
+     */
+    private JMenuItem inputMenuItem = null;
+    // TODO OOBN end
+
 
 	private JMenuItem logMenuItem;
 	
@@ -181,6 +191,10 @@ public class NodePopup extends PopupMenuBasic {
 		add(getRemoveFindingMenuItem());
 		addSeparator();
 		add(getLogMenuItem());
+		// TODO OOBN start
+		addSeparator();
+        add(getInputMenuItem ());
+        // TODO OOBN start
 		
 	}
 	
@@ -204,6 +218,10 @@ public class NodePopup extends PopupMenuBasic {
 		add(getRemoveFindingMenuItem());
 		addSeparator();
 		add(getLogMenuItem());
+        // TODO OOBN start
+        addSeparator();
+        add(getInputMenuItem ());
+        // TODO OOBN start
 		pack();
 	}
 	
@@ -540,6 +558,25 @@ public class NodePopup extends PopupMenuBasic {
 
 	}
 	
+	// TODO OOBN start
+    /**
+     * This method initialises inputMenuItem.
+     * 
+     * @return a new 'Input' menu item.
+     */
+    private JMenuItem getInputMenuItem() {
+
+        if (inputMenuItem == null) {
+            inputMenuItem  = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_MARKASINPUT_MENUITEM));
+            inputMenuItem.setActionCommand(ActionCommands.MARK_AS_INPUT);
+            inputMenuItem .addActionListener(listener);
+        }
+
+        return inputMenuItem ;
+
+    }   	
+    // TODO OOBN end
+	
 	/**
 	 * Returns the component that corresponds to an action command.
 	 * 
@@ -582,7 +619,11 @@ public class NodePopup extends PopupMenuBasic {
 			component = removeFindingMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LOG)) {
 			component = logMenuItem;
-		}
+		// TODO OOBN start
+		}else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
+            component = inputMenuItem;
+        // TODO OOBN end
+        }
 
 		return component;
 
