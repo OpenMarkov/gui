@@ -99,7 +99,7 @@ public class FactoryExpandedSMMTest {
 				}
 			}
 
-			TablePotential globalPotential = null;
+			/*			TablePotential globalPotential = null;
 			try {
 				globalPotential = DiscretePotentialOperations.sum(tablePotentials);
 			} catch (NotEnoughMemoryException e) {
@@ -132,6 +132,7 @@ public class FactoryExpandedSMMTest {
 			
 			//Compare the global utility potential of the expanded network with the expected results
 			TablePotentialTest.checkEqualPotentials(globalPotential, expectedPotential, maxError);
+			*/
 		}
 
 	}

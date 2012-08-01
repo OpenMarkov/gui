@@ -270,7 +270,14 @@ public class FactoryExpandedSMM {
 				  double discountRate = 1 / (Math.pow((1 + discount), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
 				  //project TreeADD original potential to a table
 				 try {
-					TablePotential projectedPotential = ((TreeADDPotential)((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0)).getOriginalPotential()).tableProject(null, null).get(0);
+					 TablePotential projectedPotential = null;
+					 if (utilityExpandedNodes.get(i).getPotentials().get(0) instanceof SameAsPrevious) {
+						 projectedPotential = (((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0))
+								 .getOriginalPotential()).tableProject(null, null).get(0);
+					 } else {
+						 projectedPotential = ((utilityExpandedNodes.get(i).getPotentials().get(0))).tableProject(null, null).get(0);
+					 }
+					
 					for (int j = 0; j < projectedPotential.getValues().length; j++) {
 						projectedPotential.getValues()[j] = projectedPotential.getValues()[j] * discountRate;
 					}
@@ -328,14 +335,22 @@ public class FactoryExpandedSMM {
 			newPotential = new CycleLengthShift(
 					oldPotential.getShiftedVariables(probNet, 
 							timeDifference));
+			/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
+				newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
+			}*/
 		} else {
 			if (oldPotential.getPotentialType() == 
 					PotentialType.SAME_AS_PREVIOUS) {
 				Potential originalPotential = 
 					((SameAsPrevious)oldPotential).getOriginalPotential();
 				// Sets time difference respect to the original potential
-				Variable firstOriginalVariable = 
+				Variable firstOriginalVariable = null;
+				if (originalPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+				firstOriginalVariable = 
 					originalPotential.getVariables().get(0);
+				} else if (originalPotential.getPotentialRole() == PotentialRole.UTILITY) {
+					firstOriginalVariable = originalPotential.getUtilityVariable();
+				}
 				Variable newVariable = newNode.getVariable();
 				int thisTimeDifference = newVariable.getTimeSlice() - 
 					firstOriginalVariable.getTimeSlice();
@@ -343,6 +358,9 @@ public class FactoryExpandedSMM {
 					newPotential = new SameAsPrevious(
 							((SameAsPrevious)oldPotential).getOriginalPotential(), 
 							probNet,	thisTimeDifference);
+					/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
+						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
+					}*/
 				} catch (NodeNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -351,6 +369,9 @@ public class FactoryExpandedSMM {
 				try {
 					newPotential = new SameAsPrevious(oldPotential, probNet, 
 							timeDifference);
+					/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
+						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
+					}*/
 				} catch (NodeNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
