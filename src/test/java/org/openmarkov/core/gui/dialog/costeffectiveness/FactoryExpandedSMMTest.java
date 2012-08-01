@@ -8,6 +8,8 @@
 */
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import org.junit.Test;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -83,8 +85,14 @@ public class FactoryExpandedSMMTest {
 			ArrayList<TablePotential> tablePotentials;
 			tablePotentials = new ArrayList<>();
 			for (Potential auxPotential : utilityPotentials) {
+				assertNotNull(auxPotential.getUtilityVariable());
 				try {
-					tablePotentials.addAll(auxPotential.tableProject(null, null));
+					ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, null);
+					//Check utilityVariables are not null
+					for (TablePotential auxTable:tableProject){
+						assertNotNull(auxTable.getUtilityVariable());
+					}
+					tablePotentials.addAll(tableProject);
 				} catch (NotEnoughMemoryException | NonProjectablePotentialException
 						| WrongCriterionException e) {
 					e.printStackTrace();
