@@ -450,7 +450,11 @@ public class ActionCommands {
 	 * Action invoked when the user selects another class to instantiate
 	 */
 	public static final String CHANGE_ACTIVE_CLASS = "PRM.ChangeActiveClass";	
-
+	
+	/**
+	 * Action invoked when the user selects temporal evolution menu item
+	 */
+	public static final String TEMPORAL_EVOLUTION_ACTION = "Temporal.Evolution";	
 
 	/**
 	 * Checks if the action command corresponds to a zoom action command.

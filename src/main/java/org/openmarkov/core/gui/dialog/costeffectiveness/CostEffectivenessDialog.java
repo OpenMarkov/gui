@@ -126,11 +126,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		this.isThereNodeAge = isThereNodeAge;
 		initialize();
 	}
-	
+		
 	private void initialize(){
 		
 		setMinimumSize(new Dimension(380, 230));
-		setTitle("Cost Effectiveness Analysis");
+		
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		if (isThereNodeAge) {				
@@ -268,7 +268,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		
 	}
 	
-	private JButton getBtnBrowse(){
+	public JButton getBtnBrowse(){
 		if (btnBrowse == null){
 			btnBrowse = new JButton("Browse ...");
 			btnBrowse.addActionListener(new ActionListener() {
@@ -316,14 +316,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		}
 		return lblSimulationsNumber;
 	}
-	private JTextField getOutputFileJTextField(){
+	public JTextField getOutputFileJTextField(){
 		if (outputJTextField == null){
 			outputJTextField = new JTextField();
 			outputJTextField.setColumns(10);
 		}
 		return outputJTextField;
 	}
-	private JLabel getOutputFileLabel(){
+	public JLabel getOutputFileLabel(){
 		if (lblOutputFile == null){
 			lblOutputFile = new JLabel("Output file name");
 		}
@@ -386,6 +386,15 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 			nameFile = getOnlyName(probNetName) + nameFile;
 		}
 		//getOutputFileJTextField().setText(file);
+		
+		String title = "";
+		if (suffixTypeAnalysis.equals("cea")) {
+			title = "Cost Effectiveness Analysis";
+		} else if (suffixTypeAnalysis.equals("te")) {
+			title = "Temporal Evolution";
+		}
+		setTitle(title);
+		
 		setVisible(true);
 		return selectedButton;
 	}

@@ -40,6 +40,7 @@ import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
@@ -336,6 +337,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableRevelationArc();
 			//TODO OOBN start 			
+		} else if (actionCommand
+				.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
+			this.getCurrentNetworkPanel().temporalEvolution();
 		} else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
 			this.getCurrentNetworkPanel().markSelectedAsInput();
 		} else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
@@ -344,7 +348,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
-		}
+		} 
 	}
 
     private void createExpandeNetwork(ProbNet probNet)

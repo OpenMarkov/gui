@@ -62,7 +62,7 @@ public class FactoryExpandedSMM {
 		probNet = conciseNet.copy();
 		  //TODO get decisionCriteria from the probNet
 		
-		adaptProbNetForCE();
+		//adaptProbNetForCE();
 		
 		if (simulationIndexVariable != null) {
 			sampleProbNet(simulationIndexVariable);
@@ -83,7 +83,7 @@ public class FactoryExpandedSMM {
 	/**
 	 * Adapts the concise network for performing cost-effectiveness analysis.
 	 */
-	private void adaptProbNetForCE(){
+	public void adaptProbNetForCE(){
 		
 		  probNet.setDecisionCriteria(new String[]{"cost", "effectiveness"});
 			//make all utility nodes of the expanded probNet 
@@ -111,7 +111,6 @@ public class FactoryExpandedSMM {
 				  if (hasDecisionCriteria){
 					  treeADDPotential = constructTreeADDForCE(decisionCriteria,treeVariables,utility,utilityNodes.get(i),iUtilityDecisionCriteriaName,otherDecisionCriteria);
 				  }
-			
 				  ArrayList<Potential> potentials = new ArrayList<>();
 				  potentials.add(treeADDPotential);
 				 utilityNodes.get(i).setPotentials(potentials);

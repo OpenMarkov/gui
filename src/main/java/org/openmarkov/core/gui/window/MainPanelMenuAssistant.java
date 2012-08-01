@@ -207,6 +207,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, false);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, false);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
+		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
 	}
 
 	/**
@@ -221,6 +222,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC,
 					enable);
 			setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, enable);
+			//setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, enable);
 
 		}
 		setOptionEnabled(FILING_ACTION_COMMANDS, true);
@@ -231,6 +233,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, true);
 		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
+		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
+		
 	}
 	
 	
@@ -612,6 +616,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         boolean canRemovePolicy = false;
         boolean canShowExpectedUtility = false;
         boolean canShowOptimalPolicy = false;
+        boolean canTemporalEvolution = false;
 
         int workingMode = NetworkPanel.EDITION_WORKING_MODE;
         if (!(currentNetworkPanel == null)) {
@@ -668,6 +673,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
                      VisualNode visualNode = selectedNodes.get(0);
                      if (visualNode.getProbNode().getVariable().isTemporal()){
                          canLog = true;
+                         canTemporalEvolution = true;
                      }
                      String label = null;
                      switch (visualNode.getProbNode().getNodeType()){
@@ -743,7 +749,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, canEditPolicy);
         setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
         setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
-        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);        
+        setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
+        setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
     }
     
     //TODO OOBN start
@@ -778,6 +785,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		boolean canRemovePolicy = false;
 		boolean canShowExpectedUtility = false;
 		boolean canShowOptimalPolicy = false;
+		boolean canTemporalEvolution = false;
 
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
@@ -847,6 +855,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 					 VisualNode visualNode = selectedNodes.get(0);
 					 if (visualNode.getProbNode().getVariable().isTemporal()){
 						 canLog = true;
+						 canTemporalEvolution = true;
 					 }
 					 String label = null;
 					 switch (visualNode.getProbNode().getNodeType()){
@@ -923,6 +932,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
+		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
 	}
     //TODO OOBN end
 

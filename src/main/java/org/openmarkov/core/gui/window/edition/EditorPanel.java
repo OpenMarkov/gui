@@ -34,21 +34,20 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.UndoManagerSupport;
+import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.FactoryExpandedSMM;
+import org.openmarkov.core.gui.dialog.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
@@ -86,11 +85,8 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -1168,6 +1164,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		return (clipboardAssistant != null) ? clipboardAssistant
 				.isThereDataStored() : false;
 	}
+	
 
 	/**
 	 * This method imposes a policy in a decision node.
@@ -2278,7 +2275,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 	private boolean requestCostEffectiveness(Window owner,
 			String suffixTypeAnalysis, boolean isProbabilistic) {
-		checkIfThereIsAgeNode();
+		isThereNodeAge = probNet.checkIfThereIsAgeNode();
 		costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
 		//costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
 		return (costEffectivenessDialog.requestData(probNet.getName(),
@@ -2286,72 +2283,25 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 	
 
-	public boolean checkIfThereIsAgeNode() {
-		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
-		for (int i = 0; i < probNodes.size() ; i++) {
-			if (probNodes.get(i).getVariable().isTemporal() 
-					&& probNodes.get(i).getVariable().getBaseName().equals("Age")) {
-				isThereNodeAge = true;
-				break;
-			}
-		}
-		return isThereNodeAge;
-	}
-
 	public void showCostEffectivenessDeterministicDialog() {
 
 		
 		  if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
 		  { 
-			 
-			  //Expand the network
+			
 			  int numSlices;
 			  if (isThereNodeAge) {
 				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
 			  } else {
 				  numSlices = costEffectivenessDialog.getNumSlices();
 			  }
-			  try {
-				  
-				  FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-				  expandedNetFactory.applyDiscountToUtilityNodes(costEffectivenessDialog.getDiscount());
-				  ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-
-				 try {
-					VariableElimination variableElimination = new VariableElimination(expandedNetwork);
-					ArrayList<Variable> conditioningVariables = new ArrayList<>();
-					conditioningVariables.add(probNet.getDecisionCriteriaVariable());
-					ArrayList<ProbNode> decisionNodes = 
-							probNet.getProbNodes(NodeType.DECISION);
-					for (ProbNode decisionNode : decisionNodes) {
-						if (!decisionNode.hasPolicy()) {
-							conditioningVariables.add(decisionNode.getVariable());
-						}
-					}
-					variableElimination.setConditioningVariables(conditioningVariables);
-					try {
-						TablePotential globalUtility = variableElimination.getGlobalUtility();
-						//open cost effectiveness result dialog to show results
-						//CostEffectivenessResultsDialog resultDialog = 
-								new CostEffectivenessResultsDialog(Utilities.getOwner(this), globalUtility, costEffectivenessDialog) ;
+			  double discountRate = costEffectivenessDialog.getDiscount();
+			  
+			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, discountRate, numSlices);
+			  
+			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis.costEffectivenessCalculator(), costEffectivenessDialog) ;
 						
-						
-					} catch (IncompatibleEvidenceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (UnexpectedInferenceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (NotEvaluableNetworkException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				  
-			  } catch (NotEnoughMemoryException e2) {
-				  // TODO Auto-generated catch block
-				  e2.printStackTrace();
-			  }
+		  }
   		  
 	/*		  
 			  ArrayList<Intervention> interventions = new ArrayList<Intervention>();
@@ -2507,8 +2457,53 @@ public class EditorPanel extends JPanel implements MouseListener,
 		  JOptionPane.ERROR_MESSAGE); }
 		  */
 		  
-		  }
 		 
+		 
+	}
+	
+
+
+	public void temporalEvolution() {
+		
+		VisualNode node = null;
+		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
+		if (selectedNode.size() == 1) {
+			node = selectedNode.get(0);
+			Variable variableOfInterest = node.getProbNode().getVariable();
+			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
+			
+			costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
+			costEffectivenessDialog.getOutputFileLabel().setVisible(false);
+			costEffectivenessDialog.getBtnBrowse().setVisible(false);
+			if (costEffectivenessDialog.requestData(probNet.getName(), "te") == CostEffectivenessDialog.OK_BUTTON) 
+			//if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
+			{ 
+
+				int numSlices;
+				if (isThereNodeAge) {
+					numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+				} else {
+					numSlices = costEffectivenessDialog.getNumSlices();
+				}
+				double discountRate = costEffectivenessDialog.getDiscount();
+
+				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, discountRate, numSlices);
+
+				try {
+					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
+					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog);
+
+				} catch (ImposedPoliciesException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			setSelectedAllNodes(false);
+			repaint();
+
+		}
+		
 	}
 
 	public void showSensitivityAnalysisCostEffectivenessDialog() {

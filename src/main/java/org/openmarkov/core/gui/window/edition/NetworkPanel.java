@@ -424,6 +424,14 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 	
 	/**
+	 * This method manage the temporal evolution of a variable.
+	 */
+	public void temporalEvolution() {
+		
+		editorPanel.temporalEvolution();
+		
+	}
+	/**
 	 * This method imposes a policy in a decision node.
 	 */
 	public void imposePolicyInNode() {

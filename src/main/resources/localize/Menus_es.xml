@@ -397,6 +397,11 @@
     <Mnemonic value="o" />
     <Label value="Opciones" />
   </Options>
+  <Temporal>
+  	<Evolution>
+  		<Label value = " Evolución temporal" />>
+  	</Evolution> 
+  </Temporal>
   <BUNDLEFILE>
     <Text value="Español" />
   </BUNDLEFILE>

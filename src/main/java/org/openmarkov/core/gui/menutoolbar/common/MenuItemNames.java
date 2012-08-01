@@ -496,4 +496,10 @@ public class MenuItemNames
 	 * Constant that defines the item 'Show Optimal Policy' in decision node's popupmenu
 	 */
 	public static final String SHOW_OPTIMAL_POLICY_MENUITEM = "Decision.ShowOptimalPolicy";
+	
+	/**
+	 * Constant that defines the item 'Temporal Evolution' in temporal node's popupmenu
+	 */
+	public static final String TEMPORAL_EVOLUTION_MENUITEM = "Temporal.Evolution";
+
 }

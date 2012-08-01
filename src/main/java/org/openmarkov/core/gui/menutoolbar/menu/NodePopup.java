@@ -129,6 +129,8 @@ public class NodePopup extends PopupMenuBasic {
 
 
 	private JMenuItem logMenuItem;
+
+	private JMenuItem temporalEvolutionMenuItem;
 	
 	/**
 	 * This constructor creates a new instance.
@@ -181,6 +183,8 @@ public class NodePopup extends PopupMenuBasic {
 		addSeparator();
 		add(getRemoveMenuItem());
 		addSeparator();
+		add(getTemporalEvolutionMenuItem());
+		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
 		addSeparator();
@@ -207,6 +211,8 @@ public class NodePopup extends PopupMenuBasic {
 		add(getCopyMenuItem());
 		addSeparator();
 		add(getRemoveMenuItem());
+		addSeparator();
+		add(getTemporalEvolutionMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
@@ -235,6 +241,8 @@ public class NodePopup extends PopupMenuBasic {
 		addSeparator();
 		add(getRemoveMenuItem());
 		addSeparator();
+		add(getTemporalEvolutionMenuItem());
+		addSeparator();
 		add(getPropertiesMenuItem());
 		addSeparator();
 		add(getExpandMenuItem());
@@ -262,6 +270,8 @@ public class NodePopup extends PopupMenuBasic {
 		addSeparator();
 		add(getRemoveMenuItem());
 		addSeparator();
+		add(getTemporalEvolutionMenuItem());
+		addSeparator();
 		add(getPropertiesMenuItem());
 		addSeparator();
 		add(getExpandMenuItem());
@@ -288,6 +298,8 @@ public class NodePopup extends PopupMenuBasic {
 		addSeparator();
 		add(getRemoveMenuItem());
 		addSeparator();
+		add(getTemporalEvolutionMenuItem());
+		addSeparator();
 		add(getPropertiesMenuItem());
 		addSeparator();
 		add(getExpandMenuItem());
@@ -311,7 +323,24 @@ public class NodePopup extends PopupMenuBasic {
 	}
 
 	/**
-	 * This method initialises cutMenuItem.
+	 * This method initializes temporalEvolutionMenuItem.
+	 * 
+	 * @return a new 'Temporal Evolution' menu item.
+	 */
+	private JMenuItem getTemporalEvolutionMenuItem() {
+
+		if (temporalEvolutionMenuItem == null) {
+			temporalEvolutionMenuItem = new LocalizedMenuItem (MenuItemNames.TEMPORAL_EVOLUTION_MENUITEM,
+                                                 ActionCommands.TEMPORAL_EVOLUTION_ACTION);
+			temporalEvolutionMenuItem.addActionListener(listener);
+		}
+
+		return temporalEvolutionMenuItem;
+
+	}
+	
+	/**
+	 * This method initializes cutMenuItem.
 	 * 
 	 * @return a new 'Cut' menu item.
 	 */
@@ -623,6 +652,8 @@ public class NodePopup extends PopupMenuBasic {
 		}else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
             component = inputMenuItem;
         // TODO OOBN end
+        } else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
+        	component = temporalEvolutionMenuItem;
         }
 
 		return component;

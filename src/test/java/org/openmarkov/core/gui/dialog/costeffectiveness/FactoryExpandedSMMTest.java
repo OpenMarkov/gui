@@ -131,7 +131,7 @@ public class FactoryExpandedSMMTest {
 			expectedPotential.setValues(values);
 			
 			//Compare the global utility potential of the expanded network with the expected results
-			TablePotentialTest.checkEqualPotentials(globalPotential, globalPotential, maxError);
+			TablePotentialTest.checkEqualPotentials(globalPotential, expectedPotential, maxError);
 		}
 
 	}
