@@ -267,7 +267,7 @@ public class FactoryExpandedSMM {
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
 			  if (utilityExpandedNodes.get(i).getVariable().isTemporal() && utilityExpandedNodes.get(i).getVariable().getTimeSlice() > 0) {
-				  double discountRate = 1 / (Math.pow((1 + discount), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
+				  double discountRate = 1.0 / (Math.pow((1.0 + discount), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
 				  //project TreeADD original potential to a table
 				 try {
 					 TablePotential projectedPotential = null;

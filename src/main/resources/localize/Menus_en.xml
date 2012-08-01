@@ -403,7 +403,7 @@
   </Options>
   <Temporal>
   	<Evolution>
-  		<Label value = " Temporal Evolution" />>
+  		<Label value = "Temporal Evolution" />>
   	</Evolution> 
   </Temporal>
   <BUNDLEFILE>

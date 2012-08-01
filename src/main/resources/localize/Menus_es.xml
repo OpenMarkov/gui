@@ -399,7 +399,7 @@
   </Options>
   <Temporal>
   	<Evolution>
-  		<Label value = " Evolución temporal" />>
+  		<Label value = "Evolución temporal" />>
   	</Evolution> 
   </Temporal>
   <BUNDLEFILE>

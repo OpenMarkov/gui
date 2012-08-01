@@ -5,19 +5,22 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -25,15 +28,20 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizontalDialog {
 	
 	private static HashMap<Variable,TablePotential> temporalEvolution;
-	private CostEffectivenessDialog costEffectivenessDialog;
+	private static CostEffectivenessDialog costEffectivenessDialog;
 	private StringResource dialogStringResource;
 	private StringResource messageStringResource;
 	private ChartPanel chartPanel;
+	private static Variable variableOfInterest;
+	private static ProbNet expandedNetwork;
 
-	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution, CostEffectivenessDialog costEffectivenessDialog) {
+	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution,
+			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork) {
 		super(owner);
 		this.temporalEvolution = temporalEvolution;
 		this.costEffectivenessDialog = costEffectivenessDialog;
+		this.variableOfInterest = variableOfInterest;
+		this.expandedNetwork = expandedNetwork;
 		initialize();
         
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -77,7 +85,9 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 private ChartPanel getChartsPanel () {
 		 if(chartPanel == null){
 			 XYDataset dataset = createDataset();
-			 JFreeChart chart = ChartFactory.createScatterPlot("Temporal Evolution Result", "t", "value", dataset, PlotOrientation.VERTICAL, true, true, false);
+			 JFreeChart chart = ChartFactory.createXYLineChart("Temporal Evolution Result", "t", "value", dataset, PlotOrientation.VERTICAL, true, true, true);
+			 chart.getXYPlot().setRenderer(new XYSplineRenderer());
+					 //createScatterPlot("Temporal Evolution Result", "t", "value", dataset, PlotOrientation.VERTICAL, true, true, false);
 			 chartPanel = new ChartPanel(chart);
 	        }
 	        return chartPanel;
@@ -85,17 +95,22 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 
 	 private static XYDataset createDataset() {
 		    XYSeriesCollection result = new XYSeriesCollection();
-		    for (int i = 0; i < temporalEvolution.size(); i++) {
-			    XYSeries series = new XYSeries("");
-			   // Object data [][] = ((ProbabilityTablePanel)getPotentialPanel()).getData();
-			    
-			    //para cada estado tienes que formarte la serie entera
-			   /* for (int j = 0; j < data[1].length; j++) {
-			        double time = (Double) data[data.length-1][i];
-			        double value = (Double) data[data.length][i];
-			        series.add(time, value);
+		    for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
+			    XYSeries series = new XYSeries(variableOfInterest.getStateName(i));
+			    for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
+			    	String basename = variableOfInterest.getBaseName();
+			    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
+			    	for (int k = 0; k < probNodes.size(); k++) {
+			    		if (probNodes.get(k).getVariable().getBaseName().equals(basename) 
+			    				&& probNodes.get(k).getVariable().getTimeSlice() == j) {
+			    			double value = temporalEvolution.get(probNodes.get(k).getVariable()).getValues()[i];
+			    			int time = j;
+					    	series.add(time, value);
+					   }
+			    	}
+			    	
 			    }
-			    result.addSeries(series);*/
+			    result.addSeries(series);
 		    }
 		    return result;
 		}

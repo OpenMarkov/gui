@@ -2491,10 +2491,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 				try {
 					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
-					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog);
+					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog, variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork());
 
 				} catch (ImposedPoliciesException e) {
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(this, stringResource
+							.getString( e.getMessage() ),
+							stringResource.getString( e.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
 					e.printStackTrace();
 				}
 

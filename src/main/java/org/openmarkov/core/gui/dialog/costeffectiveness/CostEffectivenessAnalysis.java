@@ -19,6 +19,7 @@ public class CostEffectivenessAnalysis {
 	private double discountRate;
 	private int numSlices;
 	private ProbNet probNet;
+	private ProbNet expandedNetwork;
 	
  public CostEffectivenessAnalysis (ProbNet probNet, double discountRate, int numSlices) {
 	 this.probNet = probNet;
@@ -74,15 +75,15 @@ public class CostEffectivenessAnalysis {
 	 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 	 //check if all decision nodes has an imposed policy, potential set in probNode
 	 for (ProbNode node : decisionNodes) {
-		 if (node.getPotentials() == null) {
-			 throw new ImposedPoliciesException("All decision nodes must has an imposed policy");
+		 if (node.getPotentials().size() == 0) {
+			 throw new ImposedPoliciesException("All decision nodes must have an imposed policy");
 		 }
 	 }
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
 	 try {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		expandedNetFactory.applyDiscountToUtilityNodes(discountRate); 
-		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet(); 
+		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();
 		ArrayList<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
@@ -115,5 +116,8 @@ public class CostEffectivenessAnalysis {
 	return probsAndUtilities;
  }
 	
+ public ProbNet getExpandedNetwork() {
+	 return expandedNetwork;
+ }
 
  }
