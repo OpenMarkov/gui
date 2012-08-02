@@ -15,6 +15,8 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -259,38 +261,40 @@ public class FactoryExpandedSMM {
 	
 	/**
 	 * @param discount
+	 * @param inferenceOptions 
 	 * @throws NotEnoughMemoryException
 	 * It applies the discount to each utility potential
 	 */
-	public void applyDiscountToUtilityNodes(double discount) throws NotEnoughMemoryException{
+	public void applyDiscountToUtilityNodes(double discount, InferenceOptions inferenceOptions) throws NotEnoughMemoryException{
 		// apply discount rate for all temporal utility nodes in the expanded network
 		  ArrayList<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
 		  for (int i = 0; i < utilityExpandedNodes.size(); i++) {
-			  if (utilityExpandedNodes.get(i).getVariable().isTemporal() && utilityExpandedNodes.get(i).getVariable().getTimeSlice() > 0) {
-				  double discountRate = 1.0 / (Math.pow((1.0 + discount), utilityExpandedNodes.get(i).getVariable().getTimeSlice()));
+			  ProbNode iUtilityProbNode = utilityExpandedNodes.get(i);
+			int timeSlice = iUtilityProbNode.getVariable().getTimeSlice();
+			if (iUtilityProbNode.getVariable().isTemporal() && timeSlice > 0) {
+				  double discountRate = 1.0 / (Math.pow((1.0 + discount), timeSlice));
 				  //project TreeADD original potential to a table
 				 try {
 					 TablePotential projectedPotential = null;
-					 if (utilityExpandedNodes.get(i).getPotentials().get(0) instanceof SameAsPrevious) {
-						 projectedPotential = (((SameAsPrevious)utilityExpandedNodes.get(i).getPotentials().get(0))
-								 .getOriginalPotential()).tableProject(null, null).get(0);
+					 Potential potentialToBeProjected;
+					Potential potential = iUtilityProbNode.getPotentials().get(0);
+					if (potential instanceof SameAsPrevious) {
+						 potentialToBeProjected = (((SameAsPrevious)potential).getOriginalPotential());
 					 } else {
-						 projectedPotential = ((utilityExpandedNodes.get(i).getPotentials().get(0))).tableProject(null, null).get(0);
+						 potentialToBeProjected = (potential);
 					 }
+					 projectedPotential = potentialToBeProjected.tableProject(new EvidenceCase(), inferenceOptions).get(0);
 					
-					for (int j = 0; j < projectedPotential.getValues().length; j++) {
-						projectedPotential.getValues()[j] = projectedPotential.getValues()[j] * discountRate;
+					double[] valuesProjectedPotential = projectedPotential.getValues();
+					for (int j = 0; j < valuesProjectedPotential.length; j++) {
+						valuesProjectedPotential[j] = valuesProjectedPotential[j] * discountRate;
 					}
 					ArrayList<Potential> potentials = new ArrayList<>();
 					potentials.add(projectedPotential);
-					utilityExpandedNodes.get(i).setPotentials(potentials);
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
+					iUtilityProbNode.setPotentials(potentials);
+				} catch (NonProjectablePotentialException | WrongCriterionException e) {					
 					e.printStackTrace();
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
 				  //utilityExpandedNodes.get(i).getPotentials().get(0).get
 			  }
 		  }
@@ -326,57 +330,51 @@ public class FactoryExpandedSMM {
 	/** TODO documentar
 	 * oldNode is a node in the last slice of the compact net
 	 * TODO We are assuming that there is only one potential per node. Revise */
-	private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, 
-			int timeDifference) {
+	private void expandPotentialAndLinks(ProbNode oldNode, ProbNode newNode, int timeDifference) {
 		Potential oldPotential = oldNode.getPotentials().get(0);
 		Potential newPotential = null;
-		if (oldPotential.getPotentialType() == 
-				PotentialType.CYCLE_LENGTH_SHIFT) {
-			newPotential = new CycleLengthShift(
-					oldPotential.getShiftedVariables(probNet, 
-							timeDifference));
-			/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
-				newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
-			}*/
+		if (oldPotential.getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+			newPotential = new CycleLengthShift(oldPotential.getShiftedVariables(probNet,
+					timeDifference));
+			/*
+			 * if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
+			 * newPotential
+			 * .setUtilityVariable(oldPotential.getUtilityVariable()); }
+			 */
 		} else {
-			if (oldPotential.getPotentialType() == 
-					PotentialType.SAME_AS_PREVIOUS) {
-				Potential originalPotential = 
-					((SameAsPrevious)oldPotential).getOriginalPotential();
+			int timeDifferenceWithNew;
+			Potential referencePotentialForNewPotential;
+			if (oldPotential.getPotentialType() == PotentialType.SAME_AS_PREVIOUS) {
+				 Potential originalPotential = ((SameAsPrevious) oldPotential)
+						.getOriginalPotential();
 				// Sets time difference respect to the original potential
 				Variable firstOriginalVariable = null;
-				if (originalPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
-				firstOriginalVariable = 
-					originalPotential.getVariables().get(0);
-				} else if (originalPotential.getPotentialRole() == PotentialRole.UTILITY) {
+				PotentialRole potentialRole = originalPotential.getPotentialRole();
+				switch (potentialRole) {
+				case CONDITIONAL_PROBABILITY:
+					firstOriginalVariable = originalPotential.getVariables().get(0);
+					break;
+				case UTILITY:
 					firstOriginalVariable = originalPotential.getUtilityVariable();
+					break;
 				}
 				Variable newVariable = newNode.getVariable();
-				int thisTimeDifference = newVariable.getTimeSlice() - 
-					firstOriginalVariable.getTimeSlice();
-				try {
-					newPotential = new SameAsPrevious(
-							((SameAsPrevious)oldPotential).getOriginalPotential(), 
-							probNet,	thisTimeDifference);
-					/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
-						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
-					}*/
-				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				timeDifferenceWithNew = newVariable.getTimeSlice() - firstOriginalVariable.getTimeSlice();
+				referencePotentialForNewPotential = originalPotential;
 			} else {
-				try {
-					newPotential = new SameAsPrevious(oldPotential, probNet, 
-							timeDifference);
-					/*if (oldPotential.getPotentialRole() == PotentialRole.UTILITY) {
-						newPotential.setUtilityVariable(oldPotential.getUtilityVariable());
-					}*/
-				} catch (NodeNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				referencePotentialForNewPotential = oldPotential;
+				timeDifferenceWithNew = timeDifference;
 			}
+			 
+			try {
+				newPotential = new SameAsPrevious(referencePotentialForNewPotential, probNet, timeDifferenceWithNew);
+				/*if (referencePotentialForNewPotential.getPotentialRole() == PotentialRole.UTILITY) {
+					newPotential.setUtilityVariable(referencePotentialForNewPotential.getUtilityVariable());
+				}*/
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+			
 		}
 		newNode.addPotential(newPotential);
 		newPotential.createDirectedLinks(probNet);

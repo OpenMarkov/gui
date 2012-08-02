@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.NetsFactory;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -57,22 +58,27 @@ public class FactoryExpandedSMMTest {
 		int maximumNumSlices;
 
 		maximumNumSlices = 100;
+		int startNumSlices = 100;
 
 		qoLTreat = 1.0;
 		qoLNoTreat = 0.9;
 		costTreat = -2;
 		costNoTreat = 0;
 
-		for (int numSlices = 1; numSlices <= maximumNumSlices; numSlices++) {
+		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
 			
 			//Create the SMM and expand it
 			ProbNet network = NetsFactory.createSMMWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
 			FactoryExpandedSMM expandedNetFactory = null;
+			InferenceOptions inferenceOptions;
+			
 			try {
 				expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
-				expandedNetFactory.applyDiscountToUtilityNodes(discount);
+				inferenceOptions = new InferenceOptions(network, null);
+				expandedNetFactory.adaptProbNetForCE();
+				expandedNetFactory.applyDiscountToUtilityNodes(discount,inferenceOptions);
 			} catch (NotEnoughMemoryException e) {
 				e.printStackTrace();
 			}
@@ -81,13 +87,15 @@ public class FactoryExpandedSMMTest {
 			//Sum the utility potentials of the expanded network
 			ArrayList<Potential> utilityPotentials = expandedNetwork
 					.getPotentialsRole(PotentialRole.UTILITY);
+			
+			inferenceOptions = new InferenceOptions(expandedNetwork, null);
 
 			ArrayList<TablePotential> tablePotentials;
 			tablePotentials = new ArrayList<>();
 			for (Potential auxPotential : utilityPotentials) {
 				assertNotNull(auxPotential.getUtilityVariable());
 				try {
-					ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, null);
+					ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
 					//Check utilityVariables are not null
 					for (TablePotential auxTable:tableProject){
 						assertNotNull(auxTable.getUtilityVariable());
@@ -99,7 +107,7 @@ public class FactoryExpandedSMMTest {
 				}
 			}
 
-			/*			TablePotential globalPotential = null;
+			TablePotential globalPotential = null;
 			try {
 				globalPotential = DiscretePotentialOperations.sum(tablePotentials);
 			} catch (NotEnoughMemoryException e) {
@@ -132,7 +140,7 @@ public class FactoryExpandedSMMTest {
 			
 			//Compare the global utility potential of the expanded network with the expected results
 			TablePotentialTest.checkEqualPotentials(globalPotential, expectedPotential, maxError);
-			*/
+			
 		}
 
 	}

@@ -35,7 +35,9 @@ public class CostEffectivenessAnalysis {
 	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
-		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate);
+		 
+		 //TODO Mar: Null inferenceOptions gives problems
+		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate,null);
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
@@ -82,7 +84,8 @@ public class CostEffectivenessAnalysis {
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
 	 try {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-		expandedNetFactory.applyDiscountToUtilityNodes(discountRate); 
+		//TODO Mar: Null inferenceOptions gives problems
+		expandedNetFactory.applyDiscountToUtilityNodes(discountRate,null); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();
