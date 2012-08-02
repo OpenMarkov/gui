@@ -125,16 +125,20 @@ public class FactoryExpandedSMM {
 	 * @param numSlices
 	 * @param network
 	 * @param discount
-	 * @return An expanded network built from a SMM
+	 * @param adaptForCE
+	 * @return An expanded network built from a SMM. It adapts the network to Cost-Effectiveness analysis is 
+	 * adaptForCE is true.
 	 */
-	static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double discount) {
+	static ProbNet constructExpandedNetwork(int numSlices, ProbNet network, double discount,boolean adaptForCE) {
 		FactoryExpandedSMM expandedNetFactory = null;
 		InferenceOptions inferenceOptions;
 		
 		try {
 			expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
 			inferenceOptions = new InferenceOptions(network, null);
-			expandedNetFactory.adaptProbNetForCE();
+			if (adaptForCE){
+				expandedNetFactory.adaptProbNetForCE();
+			}
 			expandedNetFactory.applyDiscountToUtilityNodes(discount,inferenceOptions);
 		} catch (NotEnoughMemoryException e) {
 			e.printStackTrace();

@@ -71,7 +71,7 @@ public class FactoryExpandedSMMTest {
 			ProbNet network = NetsFactory.createSMMWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
-			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount);
+			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount,true);
 			
 			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
@@ -142,7 +142,7 @@ public class FactoryExpandedSMMTest {
 					costTreat, costNoTreat);
 			double discount = 0.01;
 
-			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount);
+			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount, true);
 			
 		
 			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
