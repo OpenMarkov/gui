@@ -50,19 +50,19 @@ public class FactoryExpandedSMMTest {
 	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
 	 */
 	@Test
-	public void testExpansionSimpleSMM() {
+	public void testExpansionSMMWithoutStateVariable() {
 		double qoLTreat;
 		double qoLNoTreat;
 		double costTreat;
 		double costNoTreat;
 		int maximumNumSlices;
 
-		maximumNumSlices = 100;
-		int startNumSlices = 100;
+		maximumNumSlices = 4;
+		int startNumSlices = 1;
 
-		qoLTreat = 1.0;
-		qoLNoTreat = 0.9;
-		costTreat = -2;
+		qoLTreat = 0.9;
+		qoLNoTreat = 1.0;
+		costTreat = 40000;
 		costNoTreat = 0;
 
 		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
@@ -71,41 +71,9 @@ public class FactoryExpandedSMMTest {
 			ProbNet network = NetsFactory.createSMMWithoutStateVariable(qoLTreat, qoLNoTreat,
 					costTreat, costNoTreat);
 			double discount = 0.01;
-			FactoryExpandedSMM expandedNetFactory = null;
-			InferenceOptions inferenceOptions;
+			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount);
 			
-			try {
-				expandedNetFactory = new FactoryExpandedSMM(network, numSlices, null, 200.0);
-				inferenceOptions = new InferenceOptions(network, null);
-				expandedNetFactory.adaptProbNetForCE();
-				expandedNetFactory.applyDiscountToUtilityNodes(discount,inferenceOptions);
-			} catch (NotEnoughMemoryException e) {
-				e.printStackTrace();
-			}
-			ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-			
-			//Sum the utility potentials of the expanded network
-			ArrayList<Potential> utilityPotentials = expandedNetwork
-					.getPotentialsRole(PotentialRole.UTILITY);
-			
-			inferenceOptions = new InferenceOptions(expandedNetwork, null);
-
-			ArrayList<TablePotential> tablePotentials;
-			tablePotentials = new ArrayList<>();
-			for (Potential auxPotential : utilityPotentials) {
-				assertNotNull(auxPotential.getUtilityVariable());
-				try {
-					ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
-					//Check utilityVariables are not null
-					for (TablePotential auxTable:tableProject){
-						assertNotNull(auxTable.getUtilityVariable());
-					}
-					tablePotentials.addAll(tableProject);
-				} catch (NotEnoughMemoryException | NonProjectablePotentialException
-						| WrongCriterionException e) {
-					e.printStackTrace();
-				}
-			}
+			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
 
 			TablePotential globalPotential = null;
 			try {
@@ -144,6 +112,149 @@ public class FactoryExpandedSMMTest {
 		}
 
 	}
+
+
+		
+	/**
+	 * Test a SMM with three variables: Treatment, CostOfTreatment and QoL (temporal variable)
+	 * It performs a battery of tests: for numSlices = 1, numSlices = 2, ..., numSlices = 100
+	 */
+	@Test
+	public void testExpansionSMMWithStateVariable() {
+		double qoLTreat;
+		double qoLNoTreat;
+		double costTreat;
+		double costNoTreat;
+		int maximumNumSlices;
+
+		maximumNumSlices = 5;
+		int startNumSlices = 1;
+
+		qoLTreat = 0.9;
+		qoLNoTreat = 1.0;
+		costTreat = 40000;
+		costNoTreat = 0;
+
+		for (int numSlices = startNumSlices; numSlices <= maximumNumSlices; numSlices++) {
+			
+			//Create the SMM and expand it
+			ProbNet network = NetsFactory.createSMMWithStateVariable(qoLTreat, qoLNoTreat,
+					costTreat, costNoTreat);
+			double discount = 0.01;
+
+			ProbNet expandedNetwork = FactoryExpandedSMM.constructExpandedNetwork(numSlices, network, discount);
+			
+		
+			ArrayList<TablePotential> tablePotentials = extractUtilityPotentialsProjecToTablesAndCheckVariables(expandedNetwork);
+			//Check utility potentials starting in slice 1
+			double ratio = 1.0 / (1.0 + discount);
+			for (TablePotential auxPot:tablePotentials){
+				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot,PotentialRole.UTILITY)){
+					int slice = auxPot.getUtilityVariable().getTimeSlice();
+					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+				}
+			}
+			
+			/*//Check probability potentials starting in slice 1
+			for (TablePotential auxPot:tablePotentials){
+				if (hasTemporalVariableRoleAndNotZeroSlice(auxPot)){
+					int slice = auxPot.getUtilityVariable().getTimeSlice();
+				
+					checkUtilityPotentialQoLSMMWithState(expandedNetwork,auxPot,qoLTreat,qoLNoTreat,ratio,slice);
+				}
+			}
+	*/
+					
+		}
+
+	}
+
+
+
+
+
+	private void checkUtilityPotentialQoLSMMWithState(ProbNet expandedNetwork, TablePotential auxPot, double qoLTreat, double qoLNoTreat, double ratio, int slice) {
+		// TODO Auto-generated method stub
+		
+		ArrayList<Variable> variablesUtil = new ArrayList<>();
+		try {
+			variablesUtil.add(expandedNetwork.getVariable("Treatment"));
+			variablesUtil.add(expandedNetwork.decisionCriteria);
+			variablesUtil.add(expandedNetwork.getVariable(nameStateVariable(auxPot.getUtilityVariable())));
+
+		} catch (ProbNodeNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+				
+		double termQoLTreat = termGeometricProgression(qoLTreat,ratio,slice);
+		double termQoLNoTreat = termGeometricProgression(qoLNoTreat,ratio,slice);
+		
+		double expectedValues[] = {0.0,0.0,0.0,0.0,0.0,0.0,termQoLTreat,termQoLNoTreat};
+		TablePotential expectedPotential = null;
+		try {
+			expectedPotential = new TablePotential(variablesUtil, PotentialRole.UTILITY);
+		} catch (NotEnoughMemoryException e) {
+			e.printStackTrace();
+		}
+		expectedPotential.setValues(expectedValues);
+		//Compare the global utility potential of the expanded network with the expected results
+		TablePotentialTest.checkEqualPotentials(auxPot, expectedPotential, maxError);
+		
+	}
+
+
+	private String nameStateVariable(Variable variable) {
+		Variable aux;
+		aux = new Variable("State");
+		aux.setBaseName(aux.getName());
+		aux.setTimeSlice(variable.getTimeSlice());
+		return aux.getName();
+	}
+
+
+	private boolean hasTemporalVariableRoleAndNotZeroSlice(TablePotential auxPot, PotentialRole role) {
+		
+		boolean has;
+		has = false;
+		if (auxPot.getPotentialRole()==role){
+			switch (role){
+			
+			}
+			Variable utilVar = auxPot.getUtilityVariable();
+			has = utilVar.isTemporal() && utilVar.getTimeSlice()>0;
+		}
+		return has;
+	}
+
+
+	private ArrayList<TablePotential> extractUtilityPotentialsProjecToTablesAndCheckVariables(
+			ProbNet expandedNetwork) {
+		InferenceOptions inferenceOptions;
+		ArrayList<Potential> utilityPotentials = expandedNetwork
+				.getPotentialsRole(PotentialRole.UTILITY);
+		
+		
+		inferenceOptions = new InferenceOptions(expandedNetwork, null);
+
+		ArrayList<TablePotential> tablePotentials;
+		tablePotentials = new ArrayList<>();
+		for (Potential auxPotential : utilityPotentials) {
+			assertNotNull(auxPotential.getUtilityVariable());
+			try {
+				ArrayList<TablePotential> tableProject = auxPotential.tableProject(null, inferenceOptions);
+				//Check utilityVariables are not null
+				for (TablePotential auxTable:tableProject){
+					assertNotNull(auxTable.getUtilityVariable());
+				}
+				tablePotentials.addAll(tableProject);
+			} catch (NotEnoughMemoryException | NonProjectablePotentialException
+					| WrongCriterionException e) {
+				e.printStackTrace();
+			}
+		}
+		return tablePotentials;
+	}
 	
 	/**
 	 * @param firstTerm
@@ -155,6 +266,18 @@ public class FactoryExpandedSMMTest {
 	private double sumTermsGeometricProgression(double firstTerm,double ratio,int numTerms){
 		return (firstTerm-firstTerm*Math.pow(ratio, numTerms))/(1.0-ratio);
 	}
+	
+	/**
+	 * @param firstTerm
+	 * @param ratio
+	 * @param numTerm
+	 * @return The term of a geometric progression whose first term is 'firsTerm'
+	 * and its ratio is 'ratio'
+	 */
+	private double termGeometricProgression(double firstTerm,double ratio,int numTerm){
+		return (firstTerm*Math.pow(ratio, numTerm));
+	}
+
 
 	
 	
