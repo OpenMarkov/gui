@@ -34,6 +34,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
+import org.openmarkov.core.gui.dialog.io.FileFilterXLS;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
@@ -466,7 +467,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "." ) );
 		fileChooser.setCurrentDirectory( currentDirectory );
-		fileChooser.setExcelFilter();
+		fileChooser.setFileFilter(new FileFilterXLS());
 		fileChooser.setSelectedFile( new File( suggestedFileName ) );
 
 		return (fileChooser.showSaveDialog( this ) == 

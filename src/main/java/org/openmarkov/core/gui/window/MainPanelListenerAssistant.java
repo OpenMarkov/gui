@@ -40,9 +40,9 @@ import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterAll;
+import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -710,12 +710,22 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
 		fileChooser.setCurrentDirectory(currentDirectory);
-		// fileChooser.setPGMXFilter();
 		fileChooser.setSelectedFile(new File(suggestedFileName));
 		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setFileFilter(OpenMarkovPreferences.get(
+				OpenMarkovPreferences.LAST_SAVED_FORMAT,
+				OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
 
-		return (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) ? fileChooser
-				.getSelectedFile().getAbsolutePath() : null;
+		String filename = null;
+		if(fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
+		{
+			filename = fileChooser.getSelectedFile().getAbsolutePath();
+			OpenMarkovPreferences.set(
+					OpenMarkovPreferences.LAST_SAVED_FORMAT,
+					((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
+					OpenMarkovPreferences.OPENMARKOV_FORMATS);
+		}
+		return filename;
 
 	}
 

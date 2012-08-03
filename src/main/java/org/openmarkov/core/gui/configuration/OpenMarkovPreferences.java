@@ -58,6 +58,8 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		OPENMARKOV_PREFERENCES.node( "colors" );
 	public static Preferences OPENMARKOV_LANGUAGES =
 		OPENMARKOV_PREFERENCES.node( "languages" );
+	public static Preferences OPENMARKOV_FORMATS =
+			OPENMARKOV_PREFERENCES.node( "formats" );
 
 	/**
 	 * a default String value

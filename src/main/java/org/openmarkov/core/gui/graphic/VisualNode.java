@@ -13,12 +13,11 @@ package org.openmarkov.core.gui.graphic;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
 
 import javax.swing.JPanel;
 
-
-import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.ProbNode;
 
 
@@ -383,6 +382,21 @@ public abstract class VisualNode extends VisualElement {
     public VisualNetwork getVisualNetwork ()
     {
         return visualNetwork;
+    }
+    
+    /**
+     * Returns stroke to be used for the contour
+     * @return
+     */
+    protected Stroke getContourStroke()
+    {
+    	Stroke s = null;
+    	if (probNode.isInput ()) {
+		    s = (isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
+		} else {
+            s = (isSelected())? WIDE_STROKE : NORMAL_STROKE;
+		}    	
+    	return s;
     }
 
 }

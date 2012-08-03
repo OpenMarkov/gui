@@ -71,6 +71,8 @@ public interface OpenMarkovPreferencesKeys {
 	// languages
 	public String PREFERENCE_LANGUAGE = "user prefered language";
 	
+	// parsers & writers
+	public String LAST_SAVED_FORMAT = "last saved format";
 
 	
 }

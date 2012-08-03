@@ -227,11 +227,8 @@ public class VisualUtilityNode extends VisualNode {
 		g.setPaint(BACKGROUND_COLOR);
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
-		if (isSelected()) {
-			g.setStroke(WIDE_STROKE);
-		} else {
-			g.setStroke(NORMAL_STROKE);
-		}
+		g.setStroke(getContourStroke());
+	
 		g.draw(shape);
 		g.setFont(FONT_HELVETICA);
 		g.setPaint(TEXT_FOREGROUND_COLOR);

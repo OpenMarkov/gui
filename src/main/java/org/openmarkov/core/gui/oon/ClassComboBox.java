@@ -12,6 +12,8 @@ package org.openmarkov.core.gui.oon;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
@@ -39,7 +41,15 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 	 * Object that listen to the user's actions.
 	 */
 	private ActionListener listener;
-
+	
+	/**
+	 *  List of class names
+	 */
+	List<String> classNames;
+	
+	String currentFrameTitle;
+	
+	
 	/**
 	 * Constructor that fills and initialize the combobox.
 	 * 
@@ -50,6 +60,19 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 
 		super();
 		listener = newListener;
+		classNames = new ArrayList<>();
+		MainPanel mainPanel = MainPanel.getUniqueInstance();
+		if(mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel() != null)
+		{
+			currentFrameTitle = mainPanel.getMainPanelMenuAssistant().getCurrentNetworkPanel().getTitle();
+		}
+		for(JInternalFrame frame : mainPanel.getMdi().getFrames ())
+		{
+		    if(frame.getContentPane () instanceof NetworkPanel)
+		    {
+		    	classNames.add(frame.getTitle ());
+		    }
+		}
 		initialize();
 	}
 
@@ -62,13 +85,7 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 		setPreferredSize(new Dimension(120, 25));
 		setMaximumSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
-		for(JInternalFrame frame : MainPanel.getUniqueInstance().getMdi().getFrames ())
-		{
-		    if(frame.getContentPane () instanceof NetworkPanel)
-		    {
-		        this.addItem(frame.getTitle ());
-		    }
-		}
+		updateComboBoxData(classNames, currentFrameTitle);
 		MainPanel.getUniqueInstance().getMdi().addFrameStateListener(this);
 	}
 
@@ -103,19 +120,23 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 
 	public void frameClosed(FrameContentPanel contentPanel) {
 		// Remove from list
-		this.removeItem(contentPanel.getTitle());
+		classNames.remove(contentPanel.getTitle());
+		updateComboBoxData(classNames, currentFrameTitle);
 	}
 	
 	public void frameSelected(FrameContentPanel contentPanel) {
-		// Do nothing
-		
+		currentFrameTitle = contentPanel.getTitle();
+		updateComboBoxData(classNames, currentFrameTitle);
 	}
 
-	public void frameTitleChanged(FrameContentPanel contentPanel,
-			String oldName, String newName) {
-		// TODO Update list
-		this.removeItem(oldName);
-		this.addItem(newName);
+	public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
+		if(oldName.equals(currentFrameTitle))
+		{
+			currentFrameTitle = newName;
+		}
+		classNames.remove(oldName);
+		classNames.add(newName);
+		updateComboBoxData(classNames, currentFrameTitle);
 		this.setSelectedItem (newName);
 	}
 
@@ -127,5 +148,21 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 	public void frameOpened(FrameContentPanel contentPanel) {
 		//No need to add here as setTitle adds it before reaching here
 		//this.addItem(contentPanel.getTitle());
+	}
+	
+	private void updateComboBoxData(List<String> classNames, String selectedFrame)
+	{
+		List<String> showableClassNames = new ArrayList<>(classNames);
+		showableClassNames.remove(selectedFrame);
+		updateComboBoxData(showableClassNames);
+	}
+	
+	private void updateComboBoxData(List<String> classNames)
+	{
+		this.removeAllItems();
+		for(String className : classNames)
+		{
+	        this.addItem(className);
+		}
 	}
 }

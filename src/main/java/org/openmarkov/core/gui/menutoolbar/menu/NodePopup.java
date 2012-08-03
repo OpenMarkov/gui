@@ -256,6 +256,10 @@ public class NodePopup extends PopupMenuBasic {
 		add(getRemoveFindingMenuItem());
 		addSeparator();
 		add(getLogMenuItem());
+		// TODO OOBN start
+		addSeparator();
+        add(getInputMenuItem ());
+        // TODO OOBN start
 		pack();
 	}
 	
@@ -598,7 +602,7 @@ public class NodePopup extends PopupMenuBasic {
         if (inputMenuItem == null) {
             inputMenuItem  = new JCheckBoxMenuItem(MenuLocalizer.getLabel(MenuItemNames.EDIT_MARKASINPUT_MENUITEM));
             inputMenuItem.setActionCommand(ActionCommands.MARK_AS_INPUT);
-            inputMenuItem .addActionListener(listener);
+            inputMenuItem.addActionListener(listener);
         }
 
         return inputMenuItem ;

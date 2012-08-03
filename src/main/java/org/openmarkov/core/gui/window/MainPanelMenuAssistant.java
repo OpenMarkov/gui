@@ -41,6 +41,7 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
+import org.openmarkov.core.model.network.type.TuningNetworkType;
 
 /**
  * This class assists to the class MainPanel to manage the menus and toolbars.
@@ -339,7 +340,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_CREATION, false);
 		setOptionEnabled(ActionCommands.UTILITY_CREATION, false);
 		setOptionEnabled(ActionCommands.LINK_CREATION, false);
-		//TODO OOBNsetOptionEnabled(ActionCommands.INSTANCE_CREATION, false);
 		setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
 		setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
@@ -355,6 +355,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 					|| networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType
 					|| networkPanel.getProbNet().getNetworkType() instanceof MDPType
 					|| networkPanel.getProbNet().getNetworkType() instanceof POMDPType
+					|| networkPanel.getProbNet().getNetworkType() instanceof TuningNetworkType
 					|| networkPanel.getProbNet().getNetworkType() instanceof DecisionAnalysisNetworkType) {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
