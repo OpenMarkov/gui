@@ -8,6 +8,9 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -17,6 +20,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.core.gui.dialog.common.TemporalEvolutionTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
@@ -32,6 +36,8 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	private StringResource dialogStringResource;
 	private StringResource messageStringResource;
 	private ChartPanel chartPanel;
+	private TemporalEvolutionTablePanel tablePanel;
+	private JTabbedPane tabbedPane;
 	private static Variable variableOfInterest;
 	private static ProbNet expandedNetwork;
 
@@ -42,9 +48,10 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.variableOfInterest = variableOfInterest;
 		this.expandedNetwork = expandedNetwork;
+		
 		initialize();
         
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
+       Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
        
         Rectangle bounds = owner.getBounds();
@@ -54,9 +61,13 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		int x = bounds.x/2 - width/2;
 		int y = bounds.y/2 - height/2;
 		this.setBounds(x, y, width, height);
-		setLocationRelativeTo(owner);
+		
         setMinimumSize(new Dimension( width, height/2 ));
+		setLocationRelativeTo(owner);
         setResizable(true);
+        setVisible(true);
+        repaint();
+        createExcel();
         pack();
 	}
 	
@@ -67,29 +78,67 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	        messageStringResource =
 	            StringResourceLoader.getUniqueInstance().getBundleMessages();
 	        setTitle(dialogStringResource
-	            .getString("CostEffectivenessResultDialog.Title.Label"));
+	            .getString("TemporalEvolutionResultDialog.Title.Label")+ " " +variableOfInterest.getBaseName());
 	       
 	        configureComponentsPanel();
 	        pack();
-	        setVisible(true);
+	        
+	        
 	    }
 	 
 	 private void configureComponentsPanel() {
 		 	//do not want to see ok cancel buttons
 		 	getBottomPanel().setVisible(false);
+		 	
 	        getComponentsPanel().setLayout(new BorderLayout(5, 5));
 	        getComponentsPanel().setMaximumSize(new Dimension( 180,40));
-	        getComponentsPanel().add(getChartsPanel());
+	        
+	        getComponentsPanel().add(getTabbedPane());
+	      //  getComponentsPanel().add(getTablePanel(),BorderLayout.CENTER);
+	       // getComponentsPanel().add(getChartsPanel(), BorderLayout.SOUTH);
 	        pack();
 	   }
+	 /**
+		 * This method initialises tabbedPane.
+		 * 
+		 * @return a new tabbed pane.
+		 */
+		protected JTabbedPane getTabbedPane() {
+
+			if (tabbedPane == null) {
+				tabbedPane = new JTabbedPane();
+				tabbedPane.setName("TraceTemporalEvolutionTabbedPane");
+				
+			tabbedPane
+					.addTab(
+						dialogStringResource
+							.getString("TemporalEvolutionChart.Title.Label"),
+						null, getChartsPanel(), null);
+				tabbedPane
+				.addTab(
+					dialogStringResource
+						.getString("TemporalEvolutionTable.Title.Label"),
+					null, ((TemporalEvolutionTablePanel)getTablePanel()).getValuesTableScrollPane(), null);
+		}
+			return tabbedPane;
+		}
 	 private ChartPanel getChartsPanel () {
 		 if(chartPanel == null){
 			 XYDataset dataset = createDataset();
-			 JFreeChart chart = ChartFactory.createXYLineChart("Temporal Evolution Result", "t", "value", dataset, PlotOrientation.VERTICAL, true, true, true);
+			 JFreeChart chart = ChartFactory.createXYLineChart("Temporal Evolution of: "+variableOfInterest.getBaseName(), "t", "value", dataset, PlotOrientation.VERTICAL, true, true, true);
 			 chart.getXYPlot().setRenderer(new XYSplineRenderer());
+			/* try {
+				ChartUtilities.saveChartAsPNG(new File(costEffectivenessDialog.getOutputFileName()), chart, 400, 300);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 					 //createScatterPlot("Temporal Evolution Result", "t", "value", dataset, PlotOrientation.VERTICAL, true, true, false);
 			 chartPanel = new ChartPanel(chart);
-	        }
+			 chartPanel.setAutoscrolls(true);
+			 chartPanel.setDisplayToolTips(true);
+			 chartPanel.setMouseZoomable(true);
+			 }
 	        return chartPanel;
 	 } 
 	 
@@ -114,4 +163,19 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		    }
 		    return result;
 		}
+	 
+	 public JPanel getTablePanel () {
+		 if(tablePanel == null){
+		  tablePanel = new  TemporalEvolutionTablePanel(temporalEvolution, expandedNetwork, costEffectivenessDialog, variableOfInterest);
+		  //add(tablePanel.getValuesTableScrollPane());
+		  //tablePanel.setAutoscrolls(true);
+		 }
+		 return tablePanel;
+	 }
+	 
+	 private void createExcel() {
+		 ExcelReport excel = ExcelReport.getUniqueInstance();
+		 excel.createTemporalEvolutionExcelReport(temporalEvolution, expandedNetwork, costEffectivenessDialog, variableOfInterest);
+		
+	 }
 }

@@ -2472,12 +2472,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 			Variable variableOfInterest = node.getProbNode().getVariable();
 			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
 			
-			costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
-			costEffectivenessDialog.getOutputFileLabel().setVisible(false);
-			costEffectivenessDialog.getBtnBrowse().setVisible(false);
-			if (costEffectivenessDialog.requestData(probNet.getName(), "te") == CostEffectivenessDialog.OK_BUTTON) 
-			//if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
-			{ 
+			//costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
+			//costEffectivenessDialog.getOutputFileLabel().setVisible(false);
+			//costEffectivenessDialog.getBtnBrowse().setVisible(false);
+			
+			if (costEffectivenessDialog.requestData(probNet.getName(), "te") == CostEffectivenessDialog.OK_BUTTON) { 
 
 				int numSlices;
 				if (isThereNodeAge) {
@@ -2491,7 +2490,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 				try {
 					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
-					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog, variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork());
+					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog,
+							variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork());
+					adjustPanelDimension();
+					repaint();
 
 				} catch (ImposedPoliciesException e) {
 					JOptionPane.showMessageDialog(this, stringResource

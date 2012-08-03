@@ -9,6 +9,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.FactoryExpandedSMM;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -36,9 +37,8 @@ public class CostEffectivenessAnalysis {
 	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
-		 
-		 //TODO Mar: Null inferenceOptions gives problems
-		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate,null);
+		 //InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate, null);
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
@@ -85,8 +85,8 @@ public class CostEffectivenessAnalysis {
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
 	 try {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-		//TODO Mar: Null inferenceOptions gives problems
-		expandedNetFactory.applyDiscountToUtilityNodes(discountRate,null); 
+		//InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		expandedNetFactory.applyDiscountToUtilityNodes(discountRate, null); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();

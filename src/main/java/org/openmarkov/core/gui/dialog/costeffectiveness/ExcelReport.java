@@ -1,10 +1,14 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -21,6 +25,16 @@ import org.apache.poi.ss.usermodel.charts.LegendPosition;
 import org.apache.poi.ss.usermodel.charts.ScatterChartData;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTDrawing;
+
+
 
 public class ExcelReport {
 
@@ -30,7 +44,8 @@ public class ExcelReport {
 		private static ExcelReport writer = null;
 		
 		private static final String PATH_EXCEL_FILES = "c:/openmarkov/" ;
-		
+
+	
 		// Methods
 		/** Singleton pattern.
 		 * @return <code>Reader</code> */
@@ -73,16 +88,16 @@ public class ExcelReport {
 			HSSFSheet parametersSheet = workBook.getSheet("Input");
 			
 			HSSFRow row = parametersSheet.getRow(0);
-			row.getCell((short)0).setCellValue(new HSSFRichTextString("Initial Age"));
-			row.getCell((short)1).setCellValue(initialAge);
+			row.getCell(0).setCellValue(new HSSFRichTextString("Initial Age"));
+			row.getCell(1).setCellValue(initialAge);
 			
 			row = parametersSheet.getRow(1);
-			row.getCell((short)0).setCellValue(new HSSFRichTextString("Final Age"));
-			row.getCell((short)1).setCellValue(finalAge);
+			row.getCell(0).setCellValue(new HSSFRichTextString("Final Age"));
+			row.getCell(1).setCellValue(finalAge);
 			
 			row = parametersSheet.getRow(2);
-			row.getCell((short)0).setCellValue(new HSSFRichTextString("Discount Rate"));
-			row.getCell((short)1).setCellValue(discount);
+			row.getCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
+			row.getCell(1).setCellValue(discount);
 			
 		}
 		
@@ -92,7 +107,7 @@ public class ExcelReport {
 			//cuidado con los indices de la tablita!!!!
 			//for each intervention
 			int rowIndex = 1;
-			short cellIndex;
+			int cellIndex;
 			HSSFRow row;
 			HSSFCellStyle style = workBook.createCellStyle();
 			HSSFDataFormat format = workBook.createDataFormat();
@@ -121,6 +136,115 @@ public class ExcelReport {
 			
 		
 	}
+		/**
+		 * creates a new book with temporal evolution of a variable
+		 */
+		public void createTemporalEvolutionExcelReport( HashMap<Variable,TablePotential> temporalEvolution, ProbNet expandedNetwork,
+				CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest) {
+			String filename = costEffectivenessDialog.getOutputFileName();
+			HSSFWorkbook hwb = new HSSFWorkbook();
+			
+			String sheetName = "Temporal evolution for "+ variableOfInterest.getBaseName().toString();
+			
+			HSSFSheet sheetTable = hwb.createSheet(sheetName);
+
+			//first row, column names
+			HSSFRow rowIndexes = sheetTable.createRow(0);
+			rowIndexes.createCell(0).setCellValue("");
+			String basename = variableOfInterest.getBaseName();
+	    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
+			for (int i = 0; i < probNodes.size(); i++) {
+	    		if (probNodes.get(i).getVariable().getBaseName().equals(basename)) {
+	    			rowIndexes.createCell(i+1).setCellValue(probNodes.get(i).getVariable().getName());
+			   }
+			}
+			
+			//first column
+			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
+				HSSFRow rowi=   sheetTable.createRow(i+1);
+				rowi.createCell(0).setCellValue(variableOfInterest.getStateName(i));
+			}
+			
+			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
+				for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
+					String basenameInterest = variableOfInterest.getBaseName();
+					ArrayList<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes();
+					for (int k = 0; k < expandedProbNodes.size(); k++) {
+						if (expandedProbNodes.get(k).getVariable().getBaseName().equals(basenameInterest) 
+								&& expandedProbNodes.get(k).getVariable().getTimeSlice() == j) {
+							double value = temporalEvolution.get(expandedProbNodes.get(k).getVariable()).getValues()[i];
+							//cell(row, column) = cell(i+1, j+1)
+							sheetTable.getRow(i+1).createCell(j+1).setCellValue(value);
+							
+						}
+					}
+
+				}
+			}
+			
+			
+			
+/*			
+			CTDrawing drawing = CTDrawing.Factory.newInstance();
+			//XSSFChart chart =  createChart(XSSFClientAnchor anchor) 
+			
+			//HSSFPatriarch drawing = (HSSFPatriarch) sheetTable.createDrawingPatriarch();
+			//ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
+			XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 1, variableOfInterest.getNumStates()+5, 10, 10);
+			
+			XSSFChart chart =  (XSSFChart) ((Drawing) drawing).createChart(anchor); 
+			//Chart chart = drawing.createChart(anchor);
+			ChartLegend legend = chart.getOrCreateLegend();
+			legend.setPosition(LegendPosition.TOP_RIGHT);
+
+			ScatterChartData data = chart.getChartDataFactory().createScatterChartData();
+
+			ValueAxis bottomAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
+			ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+			leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+
+					
+			
+			ChartDataSource<Number> xs = DataSources.fromNumericCellRange((org.apache.poi.ss.usermodel.Sheet) sheetTable,
+					new CellRangeAddress(0, 0, 1, costEffectivenessDialog.getNumSlices()));
+			
+			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
+				ChartDataSource<Number> ysi = DataSources.fromNumericCellRange((org.apache.poi.ss.usermodel.Sheet) sheetTable,
+						new CellRangeAddress(i+1, i+1, 1, costEffectivenessDialog.getNumSlices()));
+				data.addSerie(xs, ysi);
+			}
+			
+
+			//data.addSerie(xs, ys1);
+			//data.addSerie(xs, ys2);
+
+			chart.plot(data, bottomAxis, leftAxis);
+*/
+			
+			
+			FileOutputStream fileOut;
+			try {
+				fileOut = new FileOutputStream(filename);
+				try {
+					hwb.write(fileOut);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					fileOut.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+		}
+		
 		public void drawScatterChart() {
 		//	Workbook wb = new XSSFWorkbook();
 	      //  Sheet sheet = wb.createSheet("Sheet 1");

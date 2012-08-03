@@ -68,6 +68,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	private JLabel numSlicesLabel;
 	private JTextField numSlicesJTextField;
 	private Integer numSlices;
+	private StringResource dialogStringResource;
 
 	/**
 	 * Launch the application.
@@ -124,6 +125,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		super(owner);
 		setLocationRelativeTo(owner);
 		this.isThereNodeAge = isThereNodeAge;
+		dialogStringResource =
+	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		initialize();
 	}
 		
@@ -456,7 +459,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 
 		FileChooser fileChooser = new FileChooser();
 
-		fileChooser.setDialogTitle( stringResource
+		fileChooser.setDialogTitle( dialogStringResource
 			.getString( "SaveNetwork.Title.Label" ) );
 		File currentDirectory =
 			new File( OpenMarkovPreferences.get(

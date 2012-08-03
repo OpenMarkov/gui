@@ -5,6 +5,26 @@
 		<Label value = "Cost-Effectiveness Analisys Results"/>
 	</Title>
 </CostEffectivenessResultDialog>
+<TemporalEvolutionResultDialog>
+	<Title>
+		<Label value = "Temporal Evolution of:"/>
+	</Title>
+</TemporalEvolutionResultDialog>
+<TemporalEvolutionTable>
+	<Title>
+		<Label value = "Table"/>
+	</Title>
+</TemporalEvolutionTable>
+<TemporalEvolutionChart>
+	<Title>
+		<Label value = "Chart"/>
+	</Title>
+</TemporalEvolutionChart>
+<SaveNetwork>
+	<Title>
+		<Label value = "Save"/>
+	</Title>
+</SaveNetwork>
   <DiscreteTablePanel>
     <Table>
       <Columns>

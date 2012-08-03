@@ -5,6 +5,26 @@
 		<Label value = "Resultados de coste-efectividad"/>
 	</Title>
 </CostEffectivenessResultDialog>
+<TemporalEvolutionResultDialog>
+	<Title>
+		<Label value = "Evolución temporal de:"/>
+	</Title>
+</TemporalEvolutionResultDialog>
+<TemporalEvolutionTable>
+	<Title>
+		<Label value = "Tabla"/>
+	</Title>
+</TemporalEvolutionTable>
+<TemporalEvolutionChart>
+	<Title>
+		<Label value = "Gráfico"/>
+	</Title>
+</TemporalEvolutionChart>
+<SaveNetwork>
+	<Title>
+		<Label value = "Guardar"/>
+	</Title>
+</SaveNetwork>
   <NodeProbsValuesTablePanel>
     <jLabelNodeRelationComment>
       <Text value="Comentario:" />
