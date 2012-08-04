@@ -167,4 +167,21 @@ public abstract class VisualElement {
 	 *            graphics object where to paint the element.
 	 */
 	public abstract void paint(Graphics2D g);
+
+	/**
+	 * Returns the point where the segment cuts with the border of the visual element.
+	 * 
+	 * @param segment
+	 *            segment that cuts the border of the element.
+	 * @return the point where the segments cuts the border or null if it
+	 *         doesn't.
+	 */
+	public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
+		return new Point2D.Double();
+	}
+	
+	public Point2D.Double getCenter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

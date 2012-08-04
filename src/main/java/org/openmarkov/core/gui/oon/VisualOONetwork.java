@@ -29,11 +29,13 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.InstanceLink;
+import org.openmarkov.core.oon.ParameterLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
-import org.openmarkov.core.oon.action.AddInstanceLinkEdit;
+import org.openmarkov.core.oon.action.AddInputParameterLinkEdit;
 
 public class VisualOONetwork extends VisualNetwork
 {
@@ -45,7 +47,7 @@ public class VisualOONetwork extends VisualNetwork
     /**
      * List of visual instance links.
      */
-    private List<VisualInstanceLink> visualInstanceLinks;
+    private List<VisualParameterLink> visualInstanceLinks;
     
     /**
      * Set of selected links.
@@ -90,11 +92,11 @@ public class VisualOONetwork extends VisualNetwork
                 visualInstanceLinks = new ArrayList<> ();
             }
             visualInstanceLinks.clear();
-            for(InstanceLink link : ((OOBNet)probNet).getInstanceLinks())
+            for(ParameterLink link : ((OOBNet)probNet).getInstanceLinks())
             {
                 VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
                 VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
-                visualInstanceLinks.add(new VisualInstanceLink(sourceVisualInstance, destVisualInstance));
+                visualInstanceLinks.add(new VisualParameterLink(sourceVisualInstance, destVisualInstance));
             }       
         }
     }
@@ -121,7 +123,7 @@ public class VisualOONetwork extends VisualNetwork
      */
     protected void paintInstanceLinks(Graphics2D g) {
 
-        for (VisualInstanceLink visualInstanceLink : visualInstanceLinks) {
+        for (VisualParameterLink visualInstanceLink : visualInstanceLinks) {
             visualInstanceLink.paint(g);
         }
 
@@ -506,7 +508,8 @@ public class VisualOONetwork extends VisualNetwork
     {
         PNEdit linkEdit = null;
         VisualInstance newInstanceLinkDestination = null;
-            
+        VisualNode newLinkDestination = null;
+        
         if ((newInstanceLinkDestination = getInstanceInPosition(point, g)) != null
                 && newInstanceLinkSource != null) {
             newLink = null;
@@ -519,18 +522,59 @@ public class VisualOONetwork extends VisualNetwork
                             .getName()
                             .compareToIgnoreCase (newInstanceLinkSource.getInstance()
                                     .getClassNet().getName()) == 0) {
-                linkEdit = new AddInstanceLinkEdit(probNet,
+                linkEdit = new AddInputParameterLinkEdit(probNet,
                         newInstanceLinkSource.getInstance(),
                         newInstanceLinkDestination.getInstance(),
                         inputParameter.getInstance());
             }
-        } else {
-            linkEdit = super.finishLinkCreation (point, g);
+        } else if((newLinkDestination = whatNodeInPosition (point, g)) != null
+                && newLinkSource != null)
+        {
+        	if(newLinkDestination.getProbNode().isInput() &&
+        			isEquivalentVariable(newLinkDestination.getProbNode().getVariable(), newLinkSource.getProbNode().getVariable()))
+        	{
+        		newLink = null;
+        		
+        	}else
+        	{
+        		linkEdit = super.finishLinkCreation (point, g);
+        	}
         }
         return linkEdit;
     }
-    
-    @Override
+
+    /**
+     * Checks whether two variables are similar: in case of FS variables, if they have the same states
+     * @param variable
+     * @param otherVariable
+     * @return
+     */
+    private boolean isEquivalentVariable(Variable variable, Variable otherVariable) {
+    	boolean isEquivalent = true;
+    	
+    	switch(variable.getVariableType())
+    	{
+	    	case DISCRETIZED:
+	    	case FINITE_STATES:
+	    		isEquivalent &= otherVariable.getVariableType() == VariableType.DISCRETIZED 
+	    			|| otherVariable.getVariableType() == VariableType.FINITE_STATES;
+	    		isEquivalent &= variable.getStates().length == otherVariable.getStates().length;
+	    		int i=0;
+	    		while(isEquivalent && i< variable.getStates().length)
+	    		{
+	    			isEquivalent &= variable.getStates()[i].equals(variable.getStates()[i]);
+	    			++i;
+	    		}
+	    		break;
+	    	case NUMERIC:
+	    		isEquivalent &= otherVariable.getVariableType() == VariableType.NUMERIC;
+	    		break;
+    	}
+		return isEquivalent;
+	}
+
+
+	@Override
     public void markSelectedAsInput ()
     {
         super.markSelectedAsInput ();

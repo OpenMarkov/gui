@@ -286,9 +286,8 @@ public class VisualInstance extends VisualElement {
 		return visualSubInstances.get(name);
 	}
 
-	public Point2D.Double getCutPoint(Point2D.Double position) {
+	public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
 		
-		Segment segment = new Segment(getCenter(), position);
 		double radius = dimensions[4] / 2;
 		double left = dimensions[0];
 		double top = dimensions[1];

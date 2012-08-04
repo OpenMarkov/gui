@@ -165,8 +165,8 @@ public class VisualLink extends VisualArrow {
 		boolean hasAbsoluteLinkRestriction= link.hasTotalRestriction();
 		setDoubleStriped(hasAbsoluteLinkRestriction);
 		setSingleStriped(link.hasRestrictions()&&!hasAbsoluteLinkRestriction);
-		setStartPoint(source.cutPoint(line, g));
-		setEndPoint(destination.cutPoint(line, g));
+		setStartPoint(source.getCutPoint(line, g));
+		setEndPoint(destination.getCutPoint(line, g));
 		
 		super.paint(g);
 	}

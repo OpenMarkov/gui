@@ -206,7 +206,7 @@ public class VisualChanceNode extends VisualNode {
 	 *         doesn't.
 	 */
 	@Override
-	public Point2D.Double cutPoint(Segment segment, Graphics2D g) {
+	public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
 
 		double dimensions[] = getNodeDimensions(g);
 		double radius = dimensions[4] / 2;

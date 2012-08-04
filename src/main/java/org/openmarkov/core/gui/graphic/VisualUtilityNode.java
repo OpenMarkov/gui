@@ -187,7 +187,7 @@ public class VisualUtilityNode extends VisualNode {
 	 *         doesn't.
 	 */
 	@Override
-	public Point2D.Double cutPoint(Segment segment, Graphics2D g) {
+	public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
 
 		Point2D.Double[] points = getPoints(g);
 		int length = points.length;

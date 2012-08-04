@@ -352,7 +352,7 @@ public abstract class VisualNode extends VisualElement {
 	 * @return the point where the segments cuts the border or null if it
 	 *         doesn't.
 	 */
-	public abstract Point2D.Double cutPoint(Segment segment, Graphics2D g);
+	public abstract Point2D.Double getCutPoint(Segment segment, Graphics2D g);
 	
 	/**
 	 * Returns the X-coordinate of the upper-left corner of the visual node.

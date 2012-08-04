@@ -14,9 +14,11 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 
+import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualArrow;
+import org.openmarkov.core.gui.graphic.VisualElement;
 
-public class VisualInstanceLink extends VisualArrow {
+public class VisualParameterLink extends VisualArrow {
     
     /**
      * Used to paint normal lines.
@@ -28,10 +30,10 @@ public class VisualInstanceLink extends VisualArrow {
      */
     protected static final BasicStroke SELECTED_INSTANCE_LINK_STROKE = new BasicStroke(5.0f);    
 
-	private VisualInstance sourceInstance;
-	private VisualInstance destinationInstance;
+	private VisualElement sourceInstance;
+	private VisualElement destinationInstance;
 	
-	public VisualInstanceLink(VisualInstance sourceInstance, VisualInstance destinationInstance) {
+	public VisualParameterLink(VisualInstance sourceInstance, VisualInstance destinationInstance) {
 		super(sourceInstance.getPosition(), destinationInstance.getPosition());
 		this.sourceInstance = sourceInstance;
 		this.destinationInstance = destinationInstance;
@@ -45,8 +47,8 @@ public class VisualInstanceLink extends VisualArrow {
 	@Override
 	public Shape getShape(Graphics2D g) {
 
-		setStartPoint(sourceInstance.getCutPoint(destinationInstance.getCenter()));
-		setEndPoint(destinationInstance.getCutPoint(sourceInstance.getCenter()));
+		setStartPoint(sourceInstance.getCutPoint(new Segment(sourceInstance.getCenter(), destinationInstance.getCenter()), g));
+		setEndPoint(destinationInstance.getCutPoint(new Segment(destinationInstance.getCenter(), sourceInstance.getCenter()), g));
 		return super.getShape(g);
 	}
 
@@ -59,8 +61,8 @@ public class VisualInstanceLink extends VisualArrow {
 	@Override
 	public void paint(Graphics2D g) {
 		
-		setStartPoint(sourceInstance.getCutPoint(destinationInstance.getCenter()));
-		setEndPoint(destinationInstance.getCutPoint(sourceInstance.getCenter()));
+		setStartPoint(sourceInstance.getCutPoint(new Segment(sourceInstance.getCenter(), destinationInstance.getCenter()), g));
+		setEndPoint(destinationInstance.getCutPoint(new Segment(destinationInstance.getCenter(), sourceInstance.getCenter()), g));
 		
 		super.paint(g);
 	}	
