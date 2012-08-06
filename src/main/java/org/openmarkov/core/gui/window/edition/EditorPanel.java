@@ -592,8 +592,15 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
 		VisualElement selectedElement = visualNetwork.getElementInPosition (cursorPosition, g); 
-		JPopupMenu contextualMenu = (selectedElement != null)? getPopupMenu(selectedElement, this) : popupMenuFactory.getNetworkPopup ();
-		visualNetwork.selectElement (selectedElement);
+		JPopupMenu contextualMenu = null;
+		if(selectedElement != null)
+		{
+			contextualMenu = getPopupMenu(selectedElement, this);
+			visualNetwork.selectElement (selectedElement);
+		}else
+		{
+			contextualMenu = popupMenuFactory.getNetworkPopup ();
+		}
 		contextualMenu.show (this, e.getX(), e.getY());
 	}
 
