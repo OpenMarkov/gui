@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.oon;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,13 +30,16 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oon.InstanceParameterLink;
+import org.openmarkov.core.oon.NodeParameterLink;
 import org.openmarkov.core.oon.ParameterLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
-import org.openmarkov.core.oon.action.AddInputParameterLinkEdit;
+import org.openmarkov.core.oon.action.AddParameterLinkEdit;
 
 public class VisualOONetwork extends VisualNetwork
 {
@@ -47,7 +51,7 @@ public class VisualOONetwork extends VisualNetwork
     /**
      * List of visual instance links.
      */
-    private List<VisualParameterLink> visualInstanceLinks;
+    private List<VisualParameterLink> visualParameterLinks;
     
     /**
      * Set of selected links.
@@ -86,22 +90,47 @@ public class VisualOONetwork extends VisualNetwork
                 visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
             }
         
-            // construct visual instance links
-            if(visualInstanceLinks == null)
+            // construct visual parameter links
+            if(visualParameterLinks == null)
             {
-                visualInstanceLinks = new ArrayList<> ();
+                visualParameterLinks = new ArrayList<> ();
             }
-            visualInstanceLinks.clear();
-            for(ParameterLink link : ((OOBNet)probNet).getInstanceLinks())
+            visualParameterLinks.clear();
+            for(ParameterLink link : ((OOBNet)probNet).getParameterLinks())
             {
-                VisualInstance sourceVisualInstance = visualInstances.get(link.getSourceInstance().getName());
-                VisualInstance destVisualInstance = visualInstances.get(link.getDestInstance().getName()).getSubInstance(link.getDestSubInstance().getName());
-                visualInstanceLinks.add(new VisualParameterLink(sourceVisualInstance, destVisualInstance));
+                if(link instanceof InstanceParameterLink)
+                {
+                	InstanceParameterLink instanceLink = (InstanceParameterLink)link;             	
+                	VisualInstance sourceVisualInstance = visualInstances.get(instanceLink.getSourceInstance().getName());
+                	VisualInstance destVisualInstance = visualInstances.get(instanceLink.getDestInstance().getName()).getSubInstance(instanceLink.getDestSubInstance().getName());
+                	visualParameterLinks.add(new VisualParameterLink(sourceVisualInstance, destVisualInstance));
+                }else if(link instanceof NodeParameterLink)
+                {
+                	NodeParameterLink nodeLink = (NodeParameterLink)link;
+                	VisualNode sourceNode = getVisualNode(nodeLink.getSourceNode());
+                	VisualNode destinationNode = getVisualNode(nodeLink.getDestinationNode());
+                	visualParameterLinks.add(new VisualParameterLink(sourceNode, destinationNode));
+                }
             }       
         }
     }
     
-    /**
+    private VisualNode getVisualNode(ProbNode sourceNode) {
+		VisualNode visualNode = null;
+    	int i = 0;
+		while (visualNode == null && i < visualNodes.size())
+		{
+			if(sourceNode.equals(visualNodes.get(i).getProbNode()))
+			{
+				visualNode = visualNodes.get(i);
+			}
+			++i;
+		}
+		return visualNode;
+	}
+
+
+	/**
      * Paints the instances.
      * 
      * @param g
@@ -121,10 +150,10 @@ public class VisualOONetwork extends VisualNetwork
      * @param g
      *            the graphics context in which to paint.
      */
-    protected void paintInstanceLinks(Graphics2D g) {
+    protected void paintParameterLinks(Graphics2D g) {
 
-        for (VisualParameterLink visualInstanceLink : visualInstanceLinks) {
-            visualInstanceLink.paint(g);
+        for (VisualParameterLink visualParameterLink : visualParameterLinks) {
+            visualParameterLink.paint(g);
         }
 
     }   
@@ -139,7 +168,7 @@ public class VisualOONetwork extends VisualNetwork
     @Override
     public void paint(Graphics2D g) {
         paintInstances(g);
-        paintInstanceLinks(g);
+        paintParameterLinks(g);
         super.paint (g);
     }
     
@@ -183,14 +212,33 @@ public class VisualOONetwork extends VisualNetwork
         VisualElement elementSelected = null;
 
         if ((elementSelected = super.getElementInPosition (position, g)) == null) {
-            elementSelected = getInstanceInPosition(position, g);
+        	if ((elementSelected = getParameterLinkInPosition (position, g)) == null) {
+        		elementSelected = getInstanceInPosition(position, g);
+        	}
         }
 
         return elementSelected;
 
     }
     
-    /**
+    public VisualElement getParameterLinkInPosition(Double position,
+			Graphics2D g) {
+		VisualLink link = null;
+		VisualLink linkFound = null;
+		int i = 0;
+		int length = visualParameterLinks.size();
+
+		while ((linkFound == null) && (i < length)) {
+			if (visualParameterLinks.get(i++).pointInsideShape(position, g)) {
+				linkFound = link;
+			}
+		}
+
+		return linkFound;
+	}
+
+
+	/**
      * Sets the selection state of an element.
      * 
      * @param element
@@ -522,7 +570,7 @@ public class VisualOONetwork extends VisualNetwork
                             .getName()
                             .compareToIgnoreCase (newInstanceLinkSource.getInstance()
                                     .getClassNet().getName()) == 0) {
-                linkEdit = new AddInputParameterLinkEdit(probNet,
+                linkEdit = new AddParameterLinkEdit(probNet,
                         newInstanceLinkSource.getInstance(),
                         newInstanceLinkDestination.getInstance(),
                         inputParameter.getInstance());
@@ -534,7 +582,7 @@ public class VisualOONetwork extends VisualNetwork
         			isEquivalentVariable(newLinkDestination.getProbNode().getVariable(), newLinkSource.getProbNode().getVariable()))
         	{
         		newLink = null;
-        		
+        		linkEdit = new AddParameterLinkEdit(probNet, newLinkSource.getProbNode(), newLinkDestination.getProbNode());
         	}else
         	{
         		linkEdit = super.finishLinkCreation (point, g);
@@ -602,7 +650,7 @@ public class VisualOONetwork extends VisualNetwork
         }else
         {
             visualInstances.clear ();
-            visualInstanceLinks.clear ();
+            visualParameterLinks.clear ();
         }
     }    
 

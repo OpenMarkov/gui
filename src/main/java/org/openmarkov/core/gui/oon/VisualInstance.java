@@ -211,8 +211,9 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Returns the real position of the instance.
 	 * 
-	 * @return position of the node in the screen.
+	 * @return position of the instance in the screen.
 	 */
+	@Override
 	public Point2D.Double getPosition() {
 
 		return new Point2D.Double(dimensions[0], dimensions[1]);

@@ -740,8 +740,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		ProbNet probNet = null;
 		// TODO OOBN start
-		probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		//probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
+		//probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
         // TODO OOBN end
 		messagesStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();

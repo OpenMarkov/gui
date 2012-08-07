@@ -167,6 +167,7 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return position of the node in the screen.
 	 */
+	@Override
 	public Point2D.Double getPosition() {
 
 		return new Point2D.Double(probNode.getNode().getCoordinateX(),
@@ -397,6 +398,22 @@ public abstract class VisualNode extends VisualElement {
             s = (isSelected())? WIDE_STROKE : NORMAL_STROKE;
 		}    	
     	return s;
+    }
+    
+    @Override
+    public Point2D.Double getCenter()
+    {
+    	return getTemporalPosition();
+    }
+    
+    @Override
+    public String toString()
+    {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(probNode.getName());
+    	sb.append("-");
+    	sb.append(getPosition());
+    	return sb.toString();
     }
 
 }

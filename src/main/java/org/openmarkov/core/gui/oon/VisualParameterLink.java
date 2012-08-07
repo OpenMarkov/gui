@@ -30,13 +30,13 @@ public class VisualParameterLink extends VisualArrow {
      */
     protected static final BasicStroke SELECTED_INSTANCE_LINK_STROKE = new BasicStroke(5.0f);    
 
-	private VisualElement sourceInstance;
-	private VisualElement destinationInstance;
+	private VisualElement sourceElement;
+	private VisualElement destinationElement;
 	
-	public VisualParameterLink(VisualInstance sourceInstance, VisualInstance destinationInstance) {
-		super(sourceInstance.getPosition(), destinationInstance.getPosition());
-		this.sourceInstance = sourceInstance;
-		this.destinationInstance = destinationInstance;
+	public VisualParameterLink(VisualElement sourceElement, VisualElement destinationElement) {
+		super(sourceElement.getPosition(), destinationElement.getPosition());
+		this.sourceElement = sourceElement;
+		this.destinationElement = destinationElement;
 	}
 	
 	/**
@@ -47,8 +47,8 @@ public class VisualParameterLink extends VisualArrow {
 	@Override
 	public Shape getShape(Graphics2D g) {
 
-		setStartPoint(sourceInstance.getCutPoint(new Segment(sourceInstance.getCenter(), destinationInstance.getCenter()), g));
-		setEndPoint(destinationInstance.getCutPoint(new Segment(destinationInstance.getCenter(), sourceInstance.getCenter()), g));
+		setStartPoint(sourceElement.getCutPoint(new Segment(sourceElement.getCenter(), destinationElement.getCenter()), g));
+		setEndPoint(destinationElement.getCutPoint(new Segment(destinationElement.getCenter(), sourceElement.getCenter()), g));
 		return super.getShape(g);
 	}
 
@@ -61,8 +61,8 @@ public class VisualParameterLink extends VisualArrow {
 	@Override
 	public void paint(Graphics2D g) {
 		
-		setStartPoint(sourceInstance.getCutPoint(new Segment(sourceInstance.getCenter(), destinationInstance.getCenter()), g));
-		setEndPoint(destinationInstance.getCutPoint(new Segment(destinationInstance.getCenter(), sourceInstance.getCenter()), g));
+		setStartPoint(sourceElement.getCutPoint(new Segment(sourceElement.getCenter(), destinationElement.getCenter()), g));
+		setEndPoint(destinationElement.getCutPoint(new Segment(destinationElement.getCenter(), sourceElement.getCenter()), g));
 		
 		super.paint(g);
 	}	
@@ -70,7 +70,7 @@ public class VisualParameterLink extends VisualArrow {
     @Override
     protected Stroke getStroke ()
     {
-        return (isSelected ())? WIDE_STROKE : NORMAL_STROKE;
+        return (isSelected ())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
     }
 	
 	
