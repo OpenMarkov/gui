@@ -3,12 +3,12 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -25,14 +25,10 @@ import org.apache.poi.ss.usermodel.charts.LegendPosition;
 import org.apache.poi.ss.usermodel.charts.ScatterChartData;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFChart;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTDrawing;
 
 
 
@@ -42,10 +38,6 @@ public class ExcelReport {
 		/** Attribute that points to the unique instance of this object (singleton
 		 *  pattern) */
 		private static ExcelReport writer = null;
-		
-		private static final String PATH_EXCEL_FILES = "c:/openmarkov/" ;
-
-	
 		// Methods
 		/** Singleton pattern.
 		 * @return <code>Reader</code> */
@@ -58,84 +50,13 @@ public class ExcelReport {
 		private int initialAge;
 		private double discount;
 		private int finalAge;
+		private int numSlices;
+		private boolean isThereNodeAge;
 		private String targetFileName;
 
 		private HSSFWorkbook workBook;
 		
-		public void writeExcelReportOptimalInterventions(Object [][]data, 
-				/*Intervention[] frontier,*/ String fileName) throws IOException{
-			
-				//HSSFCellStyle style = wb.createCellStyle();
-		       //style.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex());
-		       //style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND );
-				workBook = new HSSFWorkbook();
-				HSSFSheet input = workBook.createSheet("Input");
-				HSSFSheet allInterventions = workBook.createSheet("All interventions");
-				HSSFSheet chart = workBook.createSheet("Result Chart");
-				
-				writeInputSheet();
-				writeAllInterventionsSheet(data);
-				//writeFrontierSheet(frontier);
-				this.targetFileName = checkXLSExtention(fileName);
-				//FileOutputStream file = new FileOutputStream(
-					//	PATH_EXCEL_FILES + targetFileName);
-				FileOutputStream file = new FileOutputStream( targetFileName );
-				workBook.write(file);
-				file.close();
-			
-		}
-		private void writeInputSheet() {
-			HSSFSheet parametersSheet = workBook.getSheet("Input");
-			
-			HSSFRow row = parametersSheet.getRow(0);
-			row.getCell(0).setCellValue(new HSSFRichTextString("Initial Age"));
-			row.getCell(1).setCellValue(initialAge);
-			
-			row = parametersSheet.getRow(1);
-			row.getCell(0).setCellValue(new HSSFRichTextString("Final Age"));
-			row.getCell(1).setCellValue(finalAge);
-			
-			row = parametersSheet.getRow(2);
-			row.getCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
-			row.getCell(1).setCellValue(discount);
-			
-		}
-		
-		private void writeAllInterventionsSheet(Object [][] data) {
-			HSSFSheet allInterventionsSheet = workBook.getSheet("All interventions");
-			int numDecisions = data.length - 2;//o menos 3 por la fila final que se oculta
-			//cuidado con los indices de la tablita!!!!
-			//for each intervention
-			int rowIndex = 1;
-			int cellIndex;
-			HSSFRow row;
-			HSSFCellStyle style = workBook.createCellStyle();
-			HSSFDataFormat format = workBook.createDataFormat();
-			style.setDataFormat(format.getFormat("#######.00"));
-			for (int i = 2; i < data[1].length; i++) {//o i = 1 no se si hay una columna inicial más
-				String intervention = null;
-				//for each decision
-				for (int j = 0; j < numDecisions; j++) {
-					intervention += "Dec: " + data [j][1].toString() + " = " + data[j][i].toString();
-					if (j < numDecisions-1) {
-						intervention += ", ";
-					}
-				}
-				cellIndex=0;
-				row = allInterventionsSheet.createRow(rowIndex++);
-				row.createCell(cellIndex++).setCellValue(
-						new HSSFRichTextString(intervention));
-				//effectiveness
-				row.createCell(cellIndex).setCellValue((Double)data[data.length-1][i]);
-				row.getCell(cellIndex++).setCellStyle(style);
-				//cost
-				row.createCell(cellIndex).setCellValue((Double)data[data.length-2][i]);
-				row.getCell(cellIndex++).setCellStyle(style);
-				//row.createCell(cellIndex++).setCellValue(intervention.iCER);
-			}
-			
-		
-	}
+
 		/**
 		 * creates a new book with temporal evolution of a variable
 		 */
@@ -292,18 +213,163 @@ public class ExcelReport {
 	        //fileOut.close();
 		}
 		
+		
+		
+		/**
+		 * @param interventions
+		 * @param frontier
+		 * @param fileName
+		 * @throws IOException
+		 */
+		public void writeExcelReportOptimalInterventions(ArrayList<Intervention> interventions, 
+				ArrayList<Intervention> frontier, String fileName) throws IOException{
+			
+				//HSSFCellStyle style = wb.createCellStyle();
+		       //style.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex());
+		       //style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND );
+				workBook = new HSSFWorkbook();
+				writeInputSheet();
+				writeAllInterventionsSheet(interventions);
+				writeFrontierSheet(frontier);
+				this.targetFileName = checkXLSExtention(fileName);
+				//FileOutputStream file = new FileOutputStream(
+					//	PATH_EXCEL_FILES + targetFileName);
+				FileOutputStream file = new FileOutputStream( targetFileName );
+				workBook.write(file);
+				file.close();
+			
+		}
+		public String getPathFile(){
+			//return PATH_EXCEL_FILES + targetFileName;
+			return targetFileName;
+		}
+
+		private void writeInputSheet() {
+			HSSFSheet parametersSheet = workBook.createSheet("Input");
+			
+			
+			if (isThereNodeAge) {
+				HSSFRow row = parametersSheet.createRow(0);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Initial Age"));
+				row.createCell(1).setCellValue(initialAge);
+				row = parametersSheet.createRow(1);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Final Age"));
+				row.createCell(1).setCellValue(finalAge);
+				row = parametersSheet.createRow(2);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
+				row.createCell(1).setCellValue(discount);
+			} else {
+				HSSFRow row = parametersSheet.createRow(0);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Number of slices"));
+				row.createCell(1).setCellValue(numSlices);
+				row = parametersSheet.createRow(1);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
+				row.createCell(1).setCellValue(discount);
+			}
+			
+			
+			
+			
+			
+			
+		}
+		private void writeAllInterventionsSheet(ArrayList<Intervention> interventions) {
+			HSSFSheet allInterventionsSheet = workBook.createSheet("All interventions");
+			int rowIndex = 1;
+			int cellIndex;
+			HSSFRow row;
+			HSSFCellStyle style = workBook.createCellStyle();
+			HSSFDataFormat format = workBook.createDataFormat();
+			style.setDataFormat(format.getFormat("#######.00"));
+			row = allInterventionsSheet.createRow(0);
+			row.createCell(0).setCellValue("Strategy");
+			row.createCell(1).setCellValue("Effectiveness");
+			row.createCell(2).setCellValue("Cost");
+			for (Intervention intervention:interventions){
+				cellIndex=0;
+				row = allInterventionsSheet.createRow(rowIndex++);
+				row.createCell(cellIndex++).setCellValue(
+						new HSSFRichTextString(intervention.name));
+				row.createCell(cellIndex).setCellValue(intervention.effectiveness);
+				row.getCell(cellIndex++).setCellStyle(style);
+				row.createCell(cellIndex).setCellValue(intervention.cost);
+				row.getCell(cellIndex++).setCellStyle(style);
+				//row.createCell(cellIndex++).setCellValue(intervention.iCER);
+				
+			}
+			
+			
+		}
+
+		private void writeFrontierSheet(ArrayList<Intervention> interventions) {
+			HSSFSheet frontierInterventionsSheet = workBook.createSheet("Frontier");
+			int rowIndex = 1;
+			int cellIndex;
+			HSSFRow row;
+			HSSFCellStyle style = workBook.createCellStyle();
+			HSSFDataFormat format = workBook.createDataFormat();
+			style.setDataFormat(format.getFormat("#.00"));
+			
+			row = frontierInterventionsSheet.createRow(0);
+			row.createCell(0).setCellValue("Strategy");
+			row.createCell(1).setCellValue("Effectiveness");
+			row.createCell(2).setCellValue("Cost");
+			row.createCell(2).setCellValue("ICER");
+			for (int i=0;i<interventions.size();i++){
+				Intervention intervention = interventions.get(i);
+				cellIndex=0;
+				row = frontierInterventionsSheet.createRow(rowIndex++);
+				row.createCell(cellIndex++).setCellValue(
+						new HSSFRichTextString(intervention.name));
+				row.createCell(cellIndex).setCellValue(intervention.effectiveness);
+				row.getCell(cellIndex++).setCellStyle(style);
+				row.createCell(cellIndex).setCellValue(intervention.cost);
+				row.getCell(cellIndex++).setCellStyle(style);
+				
+				if (i>0){
+					row.createCell(cellIndex).setCellValue(intervention.iCER);
+					row.getCell(cellIndex++).setCellStyle(style);
+				}
+				
+			}
+			
+			
+		}
+
+		
+
+		public void setInitialData(CostEffectivenessDialog costEffectivenessDialog) {
+			this.isThereNodeAge = costEffectivenessDialog.isThereNodeAge();
+			if (isThereNodeAge) {
+				this.initialAge = costEffectivenessDialog.getInitialAge();
+				this.finalAge = costEffectivenessDialog.getFinalAge();
+			} else {
+				this.numSlices = costEffectivenessDialog.getNumSlices();
+			}
+			
+			this.discount = costEffectivenessDialog.getDiscount();
+			
+		}
+
 		private String checkXLSExtention(String fileName2) {
 			if ( !fileName2.endsWith(".xls") ){
 				fileName2 += ".xls";
 			}
 			return fileName2;
 		}
-		
 
-		public void setInitialData(int initialAge, int finalAge, double discount) {
-			this.initialAge = initialAge;
-			this.finalAge = finalAge;
-			this.discount = discount;
+		public void useTemplate(String templateFileName) throws IOException {
+			
+				InputStream inp;// = new FileInputStream(templateFileName);
+				Class<? extends ExcelReport> class1 = getClass();
+				inp = class1.getResourceAsStream(templateFileName);
+						
+				/*URL path = getClass().getResource(templateFileName);
+				String realPath= path.toString().replaceFirst("file:/", "");
+				InputStream inp = new FileInputStream(realPath);*/
+				workBook = new HSSFWorkbook(inp);
+				inp.close();    			
+			
 			
 		}
 

@@ -25,6 +25,22 @@
 		<Label value = "Guardar"/>
 	</Title>
 </SaveNetwork>
+
+<AllInterventionsChart> 
+	<Title>
+		<Label value = "Gráfico de todas las intervenciones"/>
+	</Title>
+</AllInterventionsChart>
+<AllInterventionsTable> 
+	<Title>
+		<Label value = "Tabla de todas las intervenciones"/>
+	</Title>
+</AllInterventionsTable>
+<FrontierInterventions> 
+	<Title>
+		<Label value = "Intervenciones frontera"/>
+	</Title>
+</FrontierInterventions>
   <NodeProbsValuesTablePanel>
     <jLabelNodeRelationComment>
       <Text value="Comentario:" />

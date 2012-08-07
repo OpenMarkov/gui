@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+
 import org.openmarkov.inference.variableElimination.VariableElimination;
 
 public class CostEffectivenessAnalysis {
@@ -22,6 +23,7 @@ public class CostEffectivenessAnalysis {
 	private int numSlices;
 	private ProbNet probNet;
 	private ProbNet expandedNetwork;
+	private ArrayList<Intervention> interventions;
 	
  public CostEffectivenessAnalysis (ProbNet probNet, double discountRate, int numSlices) {
 	 this.probNet = probNet;
@@ -37,14 +39,14 @@ public class CostEffectivenessAnalysis {
 	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
-		 //InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate, null);
+		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate, inferenceOptions);
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
 			 variableElimination = new VariableElimination(expandedNetwork);
 			 ArrayList<Variable> conditioningVariables = new ArrayList<>();
-			 conditioningVariables.add(probNet.getDecisionCriteriaVariable());
+			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
 			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 			 for (ProbNode decisionNode : decisionNodes) {
 				 if (!decisionNode.hasPolicy()) {
@@ -71,7 +73,7 @@ public class CostEffectivenessAnalysis {
 		 // TODO Auto-generated catch block
 		 e.printStackTrace();
 	 }
-	 return globalUtility;
+ 	 return globalUtility;
 }
  
  public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest) throws ImposedPoliciesException {
@@ -119,7 +121,102 @@ public class CostEffectivenessAnalysis {
 	}
 	return probsAndUtilities;
  }
+ 
+ /**
+	 * @param allInterventions
+	 * @return
+	 */
+	public ArrayList<Intervention> getFrontierIntervention(
+			Intervention[] allInterventions) {
+		// 0) Create auxiliar variables
+		ArrayList<Intervention> remainingInterventions = 
+			new ArrayList<Intervention>(allInterventions.length);
+		for (int i = 0; i < allInterventions.length; i++) {
+			remainingInterventions.add(allInterventions[i]);
+		}
+		ArrayList<Intervention> frontierInterventions = 
+			new ArrayList<Intervention>();
+		
+		// 1) Get minor cost intervention
+		Intervention minorIntervention = allInterventions[0];
+		for (int i = 1; i < allInterventions.length; i++) {
+			if ((allInterventions[i].cost < minorIntervention.cost) || 
+					(allInterventions[i].cost == minorIntervention.cost &&
+						allInterventions[i].effectiveness > 
+							minorIntervention.effectiveness)) {
+				minorIntervention = allInterventions[i]; 
+			}
+		}
+		frontierInterventions.add(minorIntervention);
+		remainingInterventions.remove(minorIntervention);
+		
+		while (!remainingInterventions.isEmpty()) {
+			// Remove interventions with minor effectiveness
+			ArrayList<Intervention> toRemove = new ArrayList<Intervention>();
+			for (Intervention intervention : remainingInterventions) {
+				if (intervention.effectiveness <= 
+						minorIntervention.effectiveness) {
+					toRemove.add(intervention);
+				}
+			}
+			for (Intervention intervention : toRemove) {
+				remainingInterventions.remove(intervention);
+			}
+			// Get minor ICER from minor intervention
+			double bestICER = Double.POSITIVE_INFINITY;
+			Intervention candidateIntervention = null;
+			for (Intervention intervention : remainingInterventions) {
+				double ICER = (intervention.cost - minorIntervention.cost) / 
+						(intervention.effectiveness - 
+								minorIntervention.effectiveness);
+				if (ICER < bestICER) {
+					candidateIntervention = intervention;
+					bestICER = ICER;
+				}
+			}
+			if (!remainingInterventions.isEmpty()) {
+				candidateIntervention.iCER = bestICER;
+				frontierInterventions.add(candidateIntervention);
+				remainingInterventions.remove(candidateIntervention);
+				minorIntervention = candidateIntervention;
+			}
+		}
+		return frontierInterventions;
+	}
 	
+	/** @param frontierInterventions. <code>ArrayList</code> of <code>Intervention</code>
+	 * @return Interventions with incremental CE ratio.
+	 * 	<code>ArrayList</code> of <code>Intervention</code> */
+	ArrayList<Intervention> calculateIncrementalCERatiosOfFrontier(
+			ArrayList<Intervention> frontierInterventions) {
+		ArrayList<Intervention> interventionsWithICERs;
+		if (frontierInterventions == null){
+			interventionsWithICERs = null;
+		}
+		else{
+			int size = frontierInterventions.size();
+			interventionsWithICERs = new ArrayList<Intervention>();
+			interventionsWithICERs.add(frontierInterventions.get(0));
+			//calculates the ICER of each intervention except the first one
+			for (int i=1; i < size; i++){
+				Intervention previousAuxIntervention = frontierInterventions.get(i-1);
+				Intervention auxIntervention = frontierInterventions.get(i);
+				auxIntervention.calculateIncrementalCERatio(previousAuxIntervention);
+				interventionsWithICERs.add(auxIntervention);
+			}
+		}
+		return interventionsWithICERs;
+		
+	}
+
+	
+ public ArrayList<Intervention> getInterventions() {
+	 return interventions;
+ }
+ 
+ public void setInterventions(ArrayList<Intervention> interventions) {
+	this.interventions = interventions; 
+ }
  public ProbNet getExpandedNetwork() {
 	 return expandedNetwork;
  }

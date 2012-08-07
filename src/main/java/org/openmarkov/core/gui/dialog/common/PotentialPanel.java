@@ -72,7 +72,7 @@ public abstract class PotentialPanel extends JPanel
 	 * 
 	 * @return a new comment HTML scroll pane.
 	 */
-	protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+	public CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
 
 		if (commentHTMLScrollPaneNodeProbsComment == null) {
 			commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();

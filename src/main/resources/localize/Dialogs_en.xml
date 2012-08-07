@@ -25,6 +25,22 @@
 		<Label value = "Save"/>
 	</Title>
 </SaveNetwork>
+<AllInterventionsChart> 
+	<Title>
+		<Label value = "All interventions chart"/>
+	</Title>
+</AllInterventionsChart>
+<AllInterventionsTable> 
+	<Title>
+		<Label value = "All interventions table"/>
+	</Title>
+</AllInterventionsTable>
+<FrontierInterventions> 
+	<Title>
+		<Label value = "Frontier interventions"/>
+	</Title>
+</FrontierInterventions>
+
   <DiscreteTablePanel>
     <Table>
       <Columns>

@@ -449,6 +449,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	public int getSimulationsNumber() {
 		return simulationsNumber;
 	}
+	
+	public boolean isThereNodeAge() {
+		return isThereNodeAge;
+	}
 	/**
 	 * It asks the user to choose a file by means of a save-file dialog box.
 	 * 

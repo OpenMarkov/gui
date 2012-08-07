@@ -2306,7 +2306,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  
 			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, discountRate, numSlices);
 			  
-			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis.costEffectivenessCalculator(), costEffectivenessDialog) ;
+			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis, costEffectivenessAnalysis.costEffectivenessCalculator(),
+					  costEffectivenessDialog) ;
 						
 		  }
   		  

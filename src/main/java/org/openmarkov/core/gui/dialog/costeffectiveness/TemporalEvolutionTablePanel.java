@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.common;
+package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,7 +13,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.poi.ss.formula.functions.Columns;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -27,6 +26,8 @@ public class TemporalEvolutionTablePanel extends JPanel {
 	private Variable variableOfInterest;
 	private ProbNet expandedNetwork;
 	private CostEffectivenessDialog costEffectivenessDialog;
+	
+	
 	public TemporalEvolutionTablePanel(HashMap<Variable,TablePotential> temporalEvolution, ProbNet expandedNetwork,
 			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest) {
 		super();
