@@ -395,7 +395,10 @@ public class ActionCommands {
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */
 	public static final String COST_EFFECTIVENESS_DETERMINISTIC = "Tools.CostEffectivenessDeterministic";
-	
+	/**
+	 * Action invoked when the user wants to expands the network.
+	 */
+	public static final String EXPAND_NETWORK = "ExpandNetwork";
 	/**
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */

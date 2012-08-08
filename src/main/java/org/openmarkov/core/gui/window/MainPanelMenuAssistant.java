@@ -209,6 +209,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, false);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
+		setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
+		
 	}
 
 	/**
@@ -235,6 +237,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, true);
 		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
+		setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
 		
 	}
 	
@@ -362,6 +365,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				setOptionEnabled(
 						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
 				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
+			}
+			if (networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType) {
+				setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
 			}
 		} else {
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);

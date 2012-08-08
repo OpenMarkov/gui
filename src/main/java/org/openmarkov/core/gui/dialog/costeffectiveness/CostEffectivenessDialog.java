@@ -340,19 +340,19 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		return yearsLabel2;
 	}
 
-	private JLabel getInitialAgeLabel(){
+	public JLabel getInitialAgeLabel(){
 		if ( initialAgeLabel == null ){
 			initialAgeLabel = new JLabel("Initial age");
 		}
 		return initialAgeLabel;
 	}
-	private JLabel getFinalAgeLabel(){
+	public JLabel getFinalAgeLabel(){
 		if ( finalAgeLabel == null ){
 			finalAgeLabel = new JLabel("Final age");
 		}
 		return finalAgeLabel;
 	}
-	private JLabel getDiscountLabel(){
+	public JLabel getDiscountLabel(){
 		if ( discountLabel == null ){
 			discountLabel = new JLabel("Discount");
 		}
@@ -364,19 +364,19 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		}
 		return yearsLabel;
 	}
-	private JTextField getFinalAgeTextField(){
+	public JTextField getFinalAgeTextField(){
 		if ( finalAgeTextField == null ){
 			finalAgeTextField = new JTextField("100");
 		}
 		return finalAgeTextField;
 	}
-	private JTextField getInitialAgeTextField(){
+	public JTextField getInitialAgeTextField(){
 		if ( initialAgeTextField == null ){
 			initialAgeTextField = new JTextField("12");
 		}
 		return initialAgeTextField;
 	}
-	private JTextField getDiscountTextField(){
+	public JTextField getDiscountTextField(){
 		if ( discountTextField == null ){
 			discountTextField = new JTextField("1.03");
 		}
@@ -391,11 +391,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		}
 		//getOutputFileJTextField().setText(file);
 		
+		//TODO internationalization
 		String title = "";
 		if (suffixTypeAnalysis.equals("cea")) {
 			title = "Cost Effectiveness Analysis";
 		} else if (suffixTypeAnalysis.equals("te")) {
 			title = "Temporal Evolution";
+		} else if (suffixTypeAnalysis.equals("expanded")) {
+			title = "Network expansion";
 		}
 		setTitle(title);
 		

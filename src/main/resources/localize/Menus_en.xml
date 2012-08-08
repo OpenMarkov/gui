@@ -406,6 +406,9 @@
   		<Label value = "Temporal Evolution" />>
   	</Evolution> 
   </Temporal>
+  <ExpandNetwork>
+  	<Label value = "Expand Network" />
+  </ExpandNetwork>
   <BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

@@ -40,6 +40,7 @@ import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
@@ -54,6 +55,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
+import org.openmarkov.core.inference.FactoryExpandedSMM;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -61,6 +63,7 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.oon.OOBNet;
@@ -185,6 +188,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
             saveEvidence(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
+		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
+			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), false);
+			costEffectivenessDialog.getDiscountTextField().setVisible(false);
+			costEffectivenessDialog.getDiscountLabel().setVisible(false);
+			costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
+			costEffectivenessDialog.getOutputFileLabel().setVisible(false);
+			costEffectivenessDialog.getBtnBrowse().setVisible(false);
+			costEffectivenessDialog.pack();
+			costEffectivenessDialog.repaint();
+			if (costEffectivenessDialog.requestData(getCurrentNetworkPanel().getProbNet().getName(),
+					"expanded") == CostEffectivenessDialog.OK_BUTTON) {
+				expandNetwork(getCurrentNetworkPanel().getProbNet(), costEffectivenessDialog.getNumSlices());
+			}
+			
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
 			closeApplication();
 		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
@@ -845,6 +862,36 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private void openNetwork() {
 
 		openNetwork("");
+	}
+	
+	/**
+	*  Creates an expanded network from current network
+	 * 
+	 * @param probNet
+	 * @param numSlices
+	 */
+	private void expandNetwork(ProbNet probNet, int numSlices) {
+		 FactoryExpandedSMM expandedNetFactory;
+		 	try {
+		 		double maxX = 0.0;
+		 		for (ProbNode probNode : probNet.getProbNodes()) {
+		 			if (probNode.getNode().getCoordinateX() > maxX) {
+		 				maxX = probNode.getNode().getCoordinateX();
+		 			}
+		 		}
+		 		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/2);
+				ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+				String fileName = probNet.getName()+"_expanded";
+				expandedNetwork.setName(fileName);
+				NetworkPanel networkPanel = createNewFrame2(expandedNetwork);
+				networkPanel.setNetworkFile(fileName);
+				networkPanels.add (networkPanel);
+			 } catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+			
 	}
 
 	/**

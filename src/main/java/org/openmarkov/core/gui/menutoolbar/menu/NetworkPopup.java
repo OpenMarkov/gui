@@ -58,6 +58,8 @@ class NetworkPopup extends PopupMenuBasic {
 	 */
 	private StringResource stringResource = null;
 
+	private JMenuItem expandNetworkMenuItem;
+
 	/**
 	 * This constructor creates a new instance.
 	 * 
@@ -82,6 +84,27 @@ class NetworkPopup extends PopupMenuBasic {
 		add(getPasteMenuItem());
 		addSeparator();
 		add(getNetworkPropertiesMenuItem());
+		addSeparator();
+		add(getExpandedNetworkMenuItem());
+
+	}
+	
+	/**
+	 * This method initializes pasteMenuItem.
+	 * 
+	 * @return a new 'Paste' menu item.
+	 */
+	private JMenuItem getExpandedNetworkMenuItem() {
+
+		if (expandNetworkMenuItem == null) {
+			expandNetworkMenuItem = new LocalizedMenuItem (
+                                                   MenuItemNames.EXPAND_NETWORK_MENUITEM,
+                                                   ActionCommands.EXPAND_NETWORK
+                                                   );                                                   
+			expandNetworkMenuItem.addActionListener(listener);
+		}
+
+		return expandNetworkMenuItem;
 
 	}
 

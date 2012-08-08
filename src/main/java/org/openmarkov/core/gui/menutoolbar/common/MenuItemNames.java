@@ -60,6 +60,11 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'File - Network adittionalProperties'.
      */
+    public static final String EXPAND_NETWORK_MENUITEM =
+        "ExpandNetwork";
+    /**
+     * Constant that defines the item 'Expand Network Porperties'.
+     */
     public static final String FILE_NETWORKPROPERTIES_MENUITEM =
         FILE_MENU + ".NetworkProperties";
 

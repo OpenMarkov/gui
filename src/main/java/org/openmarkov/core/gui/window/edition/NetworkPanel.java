@@ -401,6 +401,15 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.changeNetworkProperties();
 
 	}
+	/**
+	 * This method shows a dialog box with to introduce the number of slices and the display
+	 * the expanded network  
+	 */
+/*	public void expandNetwork() {
+
+		editorPanel.expandNetwork();
+
+	}*/
 
 	/**
 	 * This method shows a dialog box with the adittionalProperties of a node.
