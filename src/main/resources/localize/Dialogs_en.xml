@@ -27,12 +27,12 @@
 </SaveNetwork>
 <AllInterventionsChart> 
 	<Title>
-		<Label value = "All interventions chart"/>
+		<Label value = "Chart"/>
 	</Title>
 </AllInterventionsChart>
 <AllInterventionsTable> 
 	<Title>
-		<Label value = "All interventions table"/>
+		<Label value = "Table"/>
 	</Title>
 </AllInterventionsTable>
 <FrontierInterventions> 

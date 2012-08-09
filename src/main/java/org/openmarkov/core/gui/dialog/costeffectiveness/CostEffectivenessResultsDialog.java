@@ -54,7 +54,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 	private CostEffectivenessDialog costEffectivenessDialog;
 	private CostEffectivenessAnalysis costeffectivenessAnalysis;
 	private JTabbedPane tabbedPane;
-	private ArrayList<Intervention> interventions;
+	private static ArrayList<Intervention> interventions;
 	private FrontierInterventionsTablePanel frontierInterventionsTablePanel;
 	@SuppressWarnings("static-access")
 	public CostEffectivenessResultsDialog(Window owner, CostEffectivenessAnalysis costeffectivenessAnalysis, 
@@ -91,7 +91,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 	            StringResourceLoader.getUniqueInstance().getBundleMessages();
 	        setTitle(dialogStringResource
 	            .getString("CostEffectivenessResultDialog.Title.Label"));
-	       
+	        createInterventions();	
 	        configureComponentsPanel();
 	        pack();
 	        
@@ -139,7 +139,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 				dialogStringResource
 					.getString("AllInterventionsTable.Title.Label"),
 				null,getPotentialPanel() , null);
-			createInterventions();
+			
 			tabbedPane
 				.addTab(
 					dialogStringResource
@@ -205,7 +205,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 		 return chartPanel;
 	 } 
 	 
-	 private static XYDataset createDataset() {
+	/* private static XYDataset createDataset() {
 		    XYSeriesCollection result = new XYSeriesCollection();
 		    XYSeries series = new XYSeries("Cost Effectiveness");
 		    Object data [][] = ((ProbabilityTablePanel)getPotentialPanel()).getData();
@@ -217,6 +217,21 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 		      		        
 		    }
 		    result.addSeries(series);
+		    return result;
+		}*/
+	 
+	 private static XYDataset createDataset() {
+		    XYSeriesCollection result = new XYSeriesCollection();
+		   Object data [][] = ((ProbabilityTablePanel)getPotentialPanel()).getData();
+		    for (int i = 1; i < data[1].length; i++) {
+		    	XYSeries series = new XYSeries(interventions.get(i-1).getName());
+				double effectiveness = Double.valueOf(data[data.length-3][i].toString()).doubleValue();
+		    	double cost = Double.valueOf(data[data.length-2][i].toString()).doubleValue();
+		    	//generateToolTip(result, int series, int item);
+		        series.add(effectiveness, cost);
+		        result.addSeries(series);        
+		    }
+		    
 		    return result;
 		}
 	 private void createInterventions() {

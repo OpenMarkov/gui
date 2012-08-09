@@ -14,9 +14,12 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -25,6 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -40,7 +44,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 
-public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
+public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener  {
 //TODO internationalization
 	/**
 	 * 
@@ -70,6 +74,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	private JTextField numSlicesJTextField;
 	private Integer numSlices;
 	private StringResource dialogStringResource;
+	private JRadioButton instantButton;
+	private JRadioButton acumulativeButton;
+	private ButtonGroup buttonGroup;
+	private boolean isUtility;
+	private boolean isTemporalEvolution;
 
 	/**
 	 * Launch the application.
@@ -126,11 +135,34 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 		super(owner);
 		setLocationRelativeTo(owner);
 		this.isThereNodeAge = isThereNodeAge;
+		
 		dialogStringResource =
 	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		initialize();
 	}
 		
+	/**
+	 * Creates a CostEffectivenessDialog for temporal evolution
+	 * @param owner
+	 * 		The parent of the dialog
+	 */
+	public CostEffectivenessDialog(Window owner, boolean isThereNodeAge, boolean isUtility, boolean isTemporalEvolution) {
+		super(owner);
+		setLocationRelativeTo(owner);
+		this.isThereNodeAge = isThereNodeAge;
+		this.isUtility = isUtility;
+		this.isTemporalEvolution = isTemporalEvolution;
+		dialogStringResource =
+	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		initialize(isTemporalEvolution);
+	}
+	private void initialize(boolean isTemporalEvolution) {
+		if(isUtility) {
+			
+		} else {
+			
+		}
+	}
 	private void initialize(){
 		
 		setMinimumSize(new Dimension(380, 230));
@@ -354,7 +386,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	}
 	public JLabel getDiscountLabel(){
 		if ( discountLabel == null ){
-			discountLabel = new JLabel("Discount");
+			discountLabel = new JLabel("Discount (%)");
 		}
 		return discountLabel;
 	}
@@ -378,9 +410,33 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 	}
 	public JTextField getDiscountTextField(){
 		if ( discountTextField == null ){
-			discountTextField = new JTextField("1.03");
+			discountTextField = new JTextField("3.0");
 		}
 		return discountTextField;
+	}
+	
+	public JRadioButton getInstanValuesButton() {
+		if ( instantButton == null ){
+			instantButton = new JRadioButton("Instant values", true);
+			instantButton.addItemListener(this);
+		}
+		return instantButton;
+	}
+	public JRadioButton getAccumulativeValuesButton() {
+		if ( acumulativeButton == null ){
+			acumulativeButton = new JRadioButton("Accumulative values", true);
+			acumulativeButton.addItemListener(this);
+		}
+		return acumulativeButton;
+	}
+	
+	public ButtonGroup getButtonGroup() {
+		if ( buttonGroup == null ){
+			buttonGroup = new ButtonGroup();
+			buttonGroup.add(getInstanValuesButton());
+			buttonGroup.add(getAccumulativeValuesButton());
+		}
+		return buttonGroup;
 	}
 
 	public int requestData(String probNetName, String suffixTypeAnalysis) {
@@ -481,5 +537,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
 			JFileChooser.APPROVE_OPTION)
 			? fileChooser.getSelectedFile().getAbsolutePath() : null;
 
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

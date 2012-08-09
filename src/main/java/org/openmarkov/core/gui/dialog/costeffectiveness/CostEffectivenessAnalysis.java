@@ -88,12 +88,19 @@ public class CostEffectivenessAnalysis {
 	 try {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		//InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		//boolean isUtility = false;
 		expandedNetFactory.applyDiscountToUtilityNodes(discountRate, null); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();
 		ArrayList<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
 		for (ProbNode node :expandedProbNetProbNodes) {
+			/*if (node.getVariable().getBaseName().equals(baseName) &&
+					node.getVariable().getTimeSlice()==0) {
+				if (node.getNodeType() == NodeType.UTILITY) {
+					isUtility = true;
+				}
+			}*/
 			if (node.getVariable().getBaseName().equals(baseName)) {
 				variablesOfInterest.add(node.getVariable());
 			}
@@ -102,6 +109,7 @@ public class CostEffectivenessAnalysis {
 			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 			try {
 				probsAndUtilities =  variableElimination.getProbsAndUtilities(variablesOfInterest);
+				
 			} catch (IncompatibleEvidenceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

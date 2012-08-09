@@ -2281,9 +2281,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	private boolean requestCostEffectiveness(Window owner,
-			String suffixTypeAnalysis, boolean isProbabilistic) {
+			String suffixTypeAnalysis, boolean isProbabilistic, boolean isUtility, boolean isTemporalEvolution) {
 		isThereNodeAge = probNet.checkIfThereIsAgeNode();
-		costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
+		if (isTemporalEvolution) {
+			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge, isUtility, isTemporalEvolution);
+		} else {
+			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
+		}
+		
 		//costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
 		return (costEffectivenessDialog.requestData(probNet.getName(),
 				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
@@ -2292,10 +2297,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 	public void showCostEffectivenessDeterministicDialog() {
 
-		
-		  if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false))
+		  if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false, false, false))
 		  { 
 			
+		/*CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
+		
+		if (costEffectivenessDialog.requestData(probNet.getName(), "cea") == CostEffectivenessDialog.OK_BUTTON) { */
 			  int numSlices;
 			  if (isThereNodeAge) {
 				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
@@ -2478,14 +2485,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			Variable variableOfInterest = node.getProbNode().getVariable();
-			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
-			
-			//costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
-			//costEffectivenessDialog.getOutputFileLabel().setVisible(false);
-			//costEffectivenessDialog.getBtnBrowse().setVisible(false);
+			boolean isUtility = node.getProbNode().getNodeType() == NodeType.UTILITY ? true : false;
+			/*CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
 			
 			if (costEffectivenessDialog.requestData(probNet.getName(), "te") == CostEffectivenessDialog.OK_BUTTON) { 
-
+*/
+			 if (requestCostEffectiveness(Utilities.getOwner(this),"te", false, isUtility, true))
+			  {
 				int numSlices;
 				if (isThereNodeAge) {
 					numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
@@ -2499,9 +2505,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				try {
 					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
 					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog,
-							variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork());
-					adjustPanelDimension();
-					repaint();
+							variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork(), isUtility);
+					/*adjustPanelDimension();
+					repaint();*/
 
 				} catch (ImposedPoliciesException e) {
 					JOptionPane.showMessageDialog(this, stringResource

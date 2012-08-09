@@ -28,12 +28,12 @@
 
 <AllInterventionsChart> 
 	<Title>
-		<Label value = "Gráfico de todas las intervenciones"/>
+		<Label value = "Gráfico"/>
 	</Title>
 </AllInterventionsChart>
 <AllInterventionsTable> 
 	<Title>
-		<Label value = "Tabla de todas las intervenciones"/>
+		<Label value = "Tabla"/>
 	</Title>
 </AllInterventionsTable>
 <FrontierInterventions> 

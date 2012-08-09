@@ -44,14 +44,16 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	private JTabbedPane tabbedPane;
 	private static Variable variableOfInterest;
 	private static ProbNet expandedNetwork;
+	private static boolean isUtility;
 
 	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution,
-			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork) {
+			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork, boolean isUtility) {
 		super(owner);
 		this.temporalEvolution = temporalEvolution;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.variableOfInterest = variableOfInterest;
 		this.expandedNetwork = expandedNetwork;
+		this.isUtility = isUtility;
 		
 		initialize();
         
@@ -147,8 +149,13 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 private static XYDataset createDataset() {
 		    XYSeriesCollection result = new XYSeriesCollection();
 		    for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
-			    XYSeries series = new XYSeries(variableOfInterest.getStateName(i));
-			    for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
+		    	XYSeries series = null;
+		    	if (isUtility) {
+		    		series = new XYSeries(variableOfInterest.getBaseName());
+		    	} else {
+		    		series = new XYSeries(variableOfInterest.getStateName(i));
+				}
+			   for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
 			    	String basename = variableOfInterest.getBaseName();
 			    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
 			    	for (int k = 0; k < probNodes.size(); k++) {
@@ -168,7 +175,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 
 	 public JPanel getTablePanel () {
 		 if(tablePanel == null){
-		  tablePanel = new  TemporalEvolutionTablePanel(temporalEvolution, expandedNetwork, costEffectivenessDialog, variableOfInterest);
+		  tablePanel = new  TemporalEvolutionTablePanel(temporalEvolution, expandedNetwork, costEffectivenessDialog, variableOfInterest, isUtility/*, isAccumulative*/);
 		  //add(tablePanel.getValuesTableScrollPane());
 		  //tablePanel.setAutoscrolls(true);
 		 }
