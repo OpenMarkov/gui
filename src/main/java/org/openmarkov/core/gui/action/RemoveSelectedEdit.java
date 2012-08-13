@@ -28,7 +28,9 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.oon.VisualInstance;
 import org.openmarkov.core.gui.oon.VisualOONetwork;
+import org.openmarkov.core.gui.oon.VisualParameterLink;
 import org.openmarkov.core.oon.action.RemoveInstanceEdit;
+import org.openmarkov.core.oon.action.RemoveParameterLinkEdit;
 
 @SuppressWarnings("serial")
 /**
@@ -40,8 +42,10 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 {
     private List<VisualNode> nodesToRemove;
     private List<VisualLink> linksToRemove;
-   //TODO OOBN 
+    //TODO OOBN start
     private List<VisualInstance> instancesToRemove;
+    private List<VisualParameterLink> parameterLinksToRemove;
+    //TODO OOBN end
 
     private StringResource messageStringResource;
 
@@ -54,11 +58,13 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     {
         super (visualNetwork.getNetwork ());
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
-      //TODO OOBN 
+        //TODO OOBN start
         if(visualNetwork instanceof VisualOONetwork)
         {
             this.instancesToRemove = ((VisualOONetwork)visualNetwork).getSelectedInstances();
+            this.parameterLinksToRemove = ((VisualOONetwork)visualNetwork).getSelectedParameterLinks();
         }
+        //TODO OOBN end
         
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
                 visualNetwork.getLinksOfNodes (this.nodesToRemove));
@@ -102,7 +108,14 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
             }
         }
-
+        if(parameterLinksToRemove != null)
+        {
+            for(VisualParameterLink visualLink: parameterLinksToRemove)
+            {
+            	edits.add ( new RemoveParameterLinkEdit(getProbNet(), visualLink.getParameterLink()));
+            }
+        }
+        //TODO OOBN end
     }
     
     /**

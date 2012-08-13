@@ -37,7 +37,8 @@ public interface OOSelectionListener extends SelectionListener {
      */
     void objectsSelected(List<VisualNode> selectedNodes,
             List<VisualLink> selectedLinks,
-            List<VisualInstance> selectedInstances);
+            List<VisualInstance> selectedInstances,
+            List<VisualParameterLink> selectedParameterLinks);
     
 }
 

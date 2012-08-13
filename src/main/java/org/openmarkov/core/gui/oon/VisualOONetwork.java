@@ -39,6 +39,7 @@ import org.openmarkov.core.oon.NodeParameterLink;
 import org.openmarkov.core.oon.ParameterLink;
 import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.action.AddParameterLinkEdit;
 
 public class VisualOONetwork extends VisualNetwork
@@ -54,20 +55,23 @@ public class VisualOONetwork extends VisualNetwork
     private List<VisualParameterLink> visualParameterLinks;
     
     /**
-     * Set of selected links.
+     * Set of selected instances.
      */
     private Set<VisualInstance> selectedInstances = new HashSet<VisualInstance>();  
 
+    /**
+     * Set of selected parameter links.
+     */
+    private Set<VisualParameterLink> selectedParameterLinks = new HashSet<VisualParameterLink>();  
+
     private VisualInstance newInstanceLinkSource;    
 
-    
     public VisualOONetwork (OOBNet probNet)
     {
         super (probNet);
         selectedInstances = new HashSet<> ();
         selectionListeners = new HashSet<> ();
     }
-
 
     /**
      * Constructs visual elements
@@ -103,13 +107,13 @@ public class VisualOONetwork extends VisualNetwork
                 	InstanceParameterLink instanceLink = (InstanceParameterLink)link;             	
                 	VisualInstance sourceVisualInstance = visualInstances.get(instanceLink.getSourceInstance().getName());
                 	VisualInstance destVisualInstance = visualInstances.get(instanceLink.getDestInstance().getName()).getSubInstance(instanceLink.getDestSubInstance().getName());
-                	visualParameterLinks.add(new VisualParameterLink(sourceVisualInstance, destVisualInstance));
+                	visualParameterLinks.add(new VisualParameterLink(link, sourceVisualInstance, destVisualInstance));
                 }else if(link instanceof NodeParameterLink)
                 {
                 	NodeParameterLink nodeLink = (NodeParameterLink)link;
                 	VisualNode sourceNode = getVisualNode(nodeLink.getSourceNode());
                 	VisualNode destinationNode = getVisualNode(nodeLink.getDestinationNode());
-                	visualParameterLinks.add(new VisualParameterLink(sourceNode, destinationNode));
+                	visualParameterLinks.add(new VisualParameterLink(link, sourceNode, destinationNode));
                 }
             }       
         }
@@ -223,15 +227,15 @@ public class VisualOONetwork extends VisualNetwork
     
     public VisualElement getParameterLinkInPosition(Double position,
 			Graphics2D g) {
-		VisualLink link = null;
-		VisualLink linkFound = null;
+		VisualParameterLink linkFound = null;
 		int i = 0;
 		int length = visualParameterLinks.size();
 
 		while ((linkFound == null) && (i < length)) {
-			if (visualParameterLinks.get(i++).pointInsideShape(position, g)) {
-				linkFound = link;
+			if (visualParameterLinks.get(i).pointInsideShape(position, g)) {
+				linkFound = visualParameterLinks.get(i);
 			}
+			++i;
 		}
 
 		return linkFound;
@@ -262,11 +266,17 @@ public class VisualOONetwork extends VisualNetwork
                 } else {
                     selectedLinks.remove(element);
                 }
-            } else {
+            } else if (element instanceof VisualInstance){
                 if (selected) {
                     selectedInstances.add((VisualInstance) element);
                 } else {
                     selectedInstances.remove(element);
+                }
+            } else if (element instanceof VisualParameterLink){
+                if (selected) {
+                    selectedParameterLinks.add((VisualParameterLink) element);
+                } else {
+                	selectedParameterLinks.remove(element);
                 }
             }
             notifyObjectsSelected();
@@ -287,7 +297,7 @@ public class VisualOONetwork extends VisualNetwork
             if(listener instanceof OOSelectionListener)
             {
                 ((OOSelectionListener)listener).objectsSelected(
-                                         getSelectedNodes(), getSelectedLinks(), getSelectedInstances());
+                                         getSelectedNodes(), getSelectedLinks(), getSelectedInstances(), getSelectedParameterLinks());
             }
         }
     }    
@@ -329,7 +339,7 @@ public class VisualOONetwork extends VisualNetwork
     }    
     
     /**
-     * Selects all instances.
+     * Selects/deselects all instances.
      * 
      * @param selected
      *            new selection state.
@@ -344,8 +354,22 @@ public class VisualOONetwork extends VisualNetwork
         {
             selectedInstances.clear();
         }
-        
-    }   
+    }
+    
+    /**
+     * Selects/deselects all parameter links
+     * @param selected
+     */
+    private void setSelectedAllParameterLinks(boolean selected) {
+        for (VisualParameterLink link : visualParameterLinks){
+            setSelectedElement(link, selected);
+        }
+
+        if(!selected)
+        {
+            selectedParameterLinks.clear();
+        }
+	}    
     
     /**
      * Selects all nodes and links.
@@ -358,10 +382,10 @@ public class VisualOONetwork extends VisualNetwork
 
         super.setSelectedAllObjects (selected);
         setSelectedAllInstances(selected);
+        setSelectedAllParameterLinks(selected);
+    }
 
-    }    
-    
-    /**
+	/**
      * Move the selected nodes an amount in both axis.
      * 
      * @param diffX
@@ -444,9 +468,27 @@ public class VisualOONetwork extends VisualNetwork
 
         return new ArrayList<VisualInstance>(selectedInstances);
 
-    }       
+    }  
     
     /**
+     * This method returns a list containing the selected parameter links.
+     * 
+     * @return a list containing the selected parameter links.
+     */
+    public ArrayList<VisualParameterLink> getSelectedParameterLinks() {
+
+        return new ArrayList<VisualParameterLink>(selectedParameterLinks);
+    }          
+    
+    public Map<String, VisualInstance> getVisualInstances() {
+		return visualInstances;
+	}
+
+	public List<VisualParameterLink> getVisualParameterLinks() {
+		return visualParameterLinks;
+	}
+
+	/**
      * 
      */
     @Override
@@ -479,13 +521,15 @@ public class VisualOONetwork extends VisualNetwork
     @Override
     public VisualElement selectElementInPosition (java.awt.geom.Point2D.Double cursorPosition, Graphics2D g)
     {
-        VisualInstance instance = null;
         VisualElement selectedElement = null;
-        if ((instance = getInstanceInPosition (cursorPosition, g)) != null)
+        if ((selectedElement = getParameterLinkInPosition (cursorPosition, g)) != null)
         {
             setSelectedAllObjects (false);
-            setSelectedInstance (instance, true);
-            selectedElement = instance;
+            setSelectedElement(selectedElement, true);
+        } else if ((selectedElement = getInstanceInPosition (cursorPosition, g)) != null)
+        {
+            setSelectedAllObjects (false);
+            setSelectedElement(selectedElement, true);
         }
         else
         {
@@ -653,6 +697,14 @@ public class VisualOONetwork extends VisualNetwork
             visualParameterLinks.clear ();
         }
     }    
+    
+    @Override
+	public void setParameterArity(ParameterArity arity) {
+    	for(VisualInstance visualInstance : getSelectedInstances())
+    	{
+    		visualInstance.getInstance().setArity(arity);
+    	}
+	}    
 
     
    

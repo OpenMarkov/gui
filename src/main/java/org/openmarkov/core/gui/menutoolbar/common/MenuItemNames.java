@@ -155,6 +155,10 @@ public class MenuItemNames
      */
     public static final String EDIT_CLASS_MENUITEM = EDIT_MENU + ".EditClass";
         
+    /**
+     * Constant that defines the item 'Arity'.
+     */
+    public static final String ARITY_MENUITEM = EDIT_MENU + ".Arity";
     //TODO OOBN end
 
     /**

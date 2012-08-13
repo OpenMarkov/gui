@@ -177,7 +177,22 @@ public class ActionCommands {
      * Action invoked when the user wants to edit the class of the instance selected
      */
     public static final String EDIT_CLASS = "EditClass";       
-	//TODO OOBN end
+
+    /**
+     * Action invoked when the user wants to set the arity of the selected parameter
+     */
+    public static final String SET_ARITY = "Arity";       
+
+    /**
+     * Action invoked when the user wants to set the arity of the selected parameter to one
+     */
+    public static final String SET_ARITY_ONE = "Arity.One";
+    
+    /**
+     * Action invoked when the user wants to set the arity of the selected parameter to one
+     */
+    public static final String SET_ARITY_MANY = "Arity.Many";
+    //TODO OOBN end
 
 	/**
 	 * Action invoked when the user wants to change the working mode by

@@ -458,4 +458,10 @@ public class VisualInstance extends VisualElement {
         this.isExpanded = isExpanded;
         
     }
+    
+    @Override
+    public String toString()
+    {
+    	return instance.getName();
+    }
 }

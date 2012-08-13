@@ -66,6 +66,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.OOBNet;
 
 /**
@@ -361,6 +362,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			this.getCurrentNetworkPanel().markSelectedAsInput();
 		} else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
             this.getCurrentNetworkPanel().editClass();
+		} else if (actionCommand.equals(ActionCommands.SET_ARITY_ONE)) {
+			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
+		} else if (actionCommand.equals(ActionCommands.SET_ARITY_MANY)) {
+			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
 			//TODO OOBN end
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,

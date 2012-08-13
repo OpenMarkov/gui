@@ -37,6 +37,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.PropertyNames;
+import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.OOBNet;
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
@@ -1026,5 +1027,9 @@ public class NetworkPanel extends FrameContentPanel implements
         editorPanel.editClass();
     }
     // TODO OOBN end
+
+	public void setParameterArity(ParameterArity arity) {
+		editorPanel.setParameterArity(arity);
+	}
 
 }

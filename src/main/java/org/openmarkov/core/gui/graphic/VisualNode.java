@@ -411,7 +411,7 @@ public abstract class VisualNode extends VisualElement {
     {
     	StringBuilder sb = new StringBuilder();
     	sb.append(probNode.getName());
-    	sb.append("-");
+    	sb.append(" - ");
     	sb.append(getPosition());
     	return sb.toString();
     }

@@ -32,6 +32,7 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.oon.OOSelectionListener;
 import org.openmarkov.core.gui.oon.VisualInstance;
+import org.openmarkov.core.gui.oon.VisualParameterLink;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
@@ -774,7 +775,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * @param arrayOfNodes
 	 *            an array with the selected nodes.
 	 */
-	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks, List<VisualInstance> selectedInstances)
+	public void objectsSelected(List<VisualNode> selectedNodes,
+            List<VisualLink> selectedLinks,
+            List<VisualInstance> selectedInstances,
+            List<VisualParameterLink> selectedParameterLinks)
 	{
 		boolean canCut = false;
 		boolean canCopy = false;
@@ -912,7 +916,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				}
 			}
 		} else {
-			if (selectedLinks.size() > 0) {
+			if (selectedLinks.size() > 0 || selectedParameterLinks.size() > 0) {
 				if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 					canRemove = true;
 				}

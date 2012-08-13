@@ -11,8 +11,10 @@ package org.openmarkov.core.gui.oon;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
@@ -45,7 +47,16 @@ public class InstancePopup extends PopupMenuBasic {
      * Object that represents the item 'Edit Class'.
      */
     private JMenuItem editClassMenuItem = null;	
+    
+    /**
+     * Object that represents the item 'Arity'
+     */
+    private JMenu arityMenuItem = null;
 	
+	/**
+	 * Object used to make autoexclusive the menu item to select the arity.
+	 */
+	private ButtonGroup arityGroup = new ButtonGroup();    
 
 	/**
 	 * This constructor creates a new instance.
@@ -71,7 +82,8 @@ public class InstancePopup extends PopupMenuBasic {
 		// addSeparator();
 		// add(getPropertiesMenuItem());
 		add(getInputMenuItem());
-
+		addSeparator();
+		add(getArityMenuItem());
 	}
 
 	/**
@@ -123,6 +135,39 @@ public class InstancePopup extends PopupMenuBasic {
 
         return editClassMenuItem ;
     }	
+    
+    /**
+     * This method initialises arityMenuItem.
+     * 
+     * @return a new 'Arity' menu item.
+     */
+	private JMenu getArityMenuItem()
+	{
+		if(arityMenuItem == null)
+		{
+			arityMenuItem = new JMenu (MenuItemNames.ARITY_MENUITEM);
+			arityMenuItem.setActionCommand(ActionCommands.SET_ARITY);
+			arityMenuItem .addActionListener(listener);
+			
+			JCheckBoxMenuItem setArityOneMenuItem  = new JCheckBoxMenuItem("1");
+			setArityOneMenuItem.setActionCommand(ActionCommands.SET_ARITY_ONE);
+			setArityOneMenuItem .addActionListener(listener);
+			arityMenuItem.add(setArityOneMenuItem);
+			arityGroup.add(setArityOneMenuItem);
+			
+			JCheckBoxMenuItem setArityManyMenuItem  = new JCheckBoxMenuItem("*");
+			setArityManyMenuItem.setActionCommand(ActionCommands.SET_ARITY_MANY);
+			setArityManyMenuItem .addActionListener(listener);
+			arityMenuItem.add(setArityManyMenuItem);
+			arityGroup.add(setArityManyMenuItem);
+			
+			setArityOneMenuItem.setSelected(true);
+			
+		}
+		
+		return arityMenuItem;
+	}
+    
 
 	/**
 	 * Returns the component that corresponds to an action command.
@@ -147,5 +192,6 @@ public class InstancePopup extends PopupMenuBasic {
 		return component;
 
 	}
+	
 
 }

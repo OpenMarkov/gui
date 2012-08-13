@@ -17,6 +17,7 @@ import java.awt.Stroke;
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualElement;
+import org.openmarkov.core.oon.ParameterLink;
 
 public class VisualParameterLink extends VisualArrow {
     
@@ -32,9 +33,15 @@ public class VisualParameterLink extends VisualArrow {
 
 	private VisualElement sourceElement;
 	private VisualElement destinationElement;
+
+	/**
+	 * ParameterLink this VisualLink represents
+	 */
+	private ParameterLink parameterLink;
 	
-	public VisualParameterLink(VisualElement sourceElement, VisualElement destinationElement) {
+	public VisualParameterLink(ParameterLink parameterLink, VisualElement sourceElement, VisualElement destinationElement) {
 		super(sourceElement.getPosition(), destinationElement.getPosition());
+		this.parameterLink = parameterLink;
 		this.sourceElement = sourceElement;
 		this.destinationElement = destinationElement;
 	}
@@ -72,7 +79,29 @@ public class VisualParameterLink extends VisualArrow {
     {
         return (isSelected ())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
     }
-	
-	
+    
+    @Override
+    public String toString()
+    {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append(sourceElement.toString());
+    	sb.append(" |--> ");
+    	sb.append(destinationElement.toString());
+
+    	return sb.toString();
+    }
+
+	public VisualElement getSourceElement() {
+		return sourceElement;
+	}
+
+	public VisualElement getDestinationElement() {
+		return destinationElement;
+	}
+
+	public ParameterLink getParameterLink() {
+		return parameterLink;
+	}
 
 }
