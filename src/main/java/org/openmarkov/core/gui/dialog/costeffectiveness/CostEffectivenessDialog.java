@@ -9,8 +9,11 @@
 
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +22,7 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -31,8 +35,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.UIManager;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
@@ -70,15 +76,21 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private Integer simulationsNumber;
 	private JButton btnBrowse;
 	private boolean isThereNodeAge = false;
-	private JLabel numSlicesLabel;
+	private JLabel numSlicesLabell;
 	private JTextField numSlicesJTextField;
 	private Integer numSlices;
 	private StringResource dialogStringResource;
 	private JRadioButton instantButton;
-	private JRadioButton acumulativeButton;
+	private JRadioButton accumulativeButton;
 	private ButtonGroup buttonGroup;
 	private boolean isUtility;
 	private boolean isTemporalEvolution;
+	private JPanel numSlicesPanel;
+	private JPanel nodeAgePanel;
+	private JPanel utilityParametersPanel;
+	private JPanel instantOrAccumulativePanel;
+	private JPanel outputPanel;
+	private boolean isAccumulative = false; 
 
 	/**
 	 * Launch the application.
@@ -155,14 +167,95 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		dialogStringResource =
 	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		initialize(isTemporalEvolution);
+		setResizable(true);
+		pack();
+		repaint();
 	}
 	private void initialize(boolean isTemporalEvolution) {
-		if(isUtility) {
+		//BorderLayout layout = new BorderLayout(5, 5);
+		BoxLayout layout = new BoxLayout(getComponentsPanel(), BoxLayout.Y_AXIS);
+		//FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		getComponentsPanel().setLayout(layout);
+		//getComponentsPanel().setMaximumSize(new Dimension( 180,40));
+        if (isThereNodeAge) {
+        	getComponentsPanel().add(getNodeAgePanel(), BorderLayout.NORTH );
+       } else {
+    	   	getComponentsPanel().add(getNumSlicesPanel(), BorderLayout.NORTH );
+		}
+		
+        if(isUtility) {
+        	getComponentsPanel().add(getUtilityParametersPanel(), BorderLayout.CENTER );
 			
+		} 
+		
+		getComponentsPanel().add(getOutputPanel(), BorderLayout.SOUTH);
+		
+		getNodeAgePanel().setAlignmentX(Component.LEFT_ALIGNMENT);	
+		getNumSlicesPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
+		getUtilityParametersPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
+		getOutputPanel().setAlignmentX(Component.LEFT_ALIGNMENT);
+		 pack();
+		 repaint();
+		
+			/*GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
+			groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getNodeAgeorNumSlicesPanel())
+										)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getUtilityOrEmptyPanel())
+										)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getOutputPanel()) 
+										))
+																
+							.addContainerGap())
+			)));
+			groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getNodeAgeorNumSlicesPanel())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getUtilityOrEmptyPanel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getOutputPanel())
+							)
+						.addContainerGap(77, Short.MAX_VALUE))
+			);
+			getComponentsPanel().setLayout(groupLayout);*/
+		}
+		
+
+	
+	private JPanel getNodeAgeorNumSlicesPanel(){
+		if (isThereNodeAge) {
+			return getNodeAgePanel();
 		} else {
-			
+			return getNumSlicesPanel();
 		}
 	}
+	private JPanel getUtilityOrEmptyPanel() {
+		if (isUtility) {
+			return getUtilityParametersPanel();
+		} else {
+			JPanel emptyPanel = new JPanel();
+			emptyPanel.setSize(0, 0);
+			return emptyPanel;
+		}
+	}
+	
 	private void initialize(){
 		
 		setMinimumSize(new Dimension(380, 230));
@@ -322,12 +415,164 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		return btnBrowse;
 	}
 	
-	
-	private JLabel getJLabelNumSlices() {
-		if (numSlicesLabel == null){
-			numSlicesLabel = new JLabel("Number of Slices");
+
+	private JPanel getNumSlicesPanel() {
+		if (numSlicesPanel == null){
+			numSlicesPanel = new JPanel();
+			GroupLayout groupLayout = new GroupLayout(numSlicesPanel);
+			groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getJLabelNumSlices())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										))
+							.addContainerGap())
+			)));
+			groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addComponent(getJLabelNumSlices())
+							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							)
+						.addContainerGap(77, Short.MAX_VALUE))
+			);
 		}
-		return numSlicesLabel;
+		return numSlicesPanel;
+	}
+	private JPanel getNodeAgePanel() {
+		if (nodeAgePanel == null){
+			nodeAgePanel = new JPanel();
+			GroupLayout groupLayout = new GroupLayout(nodeAgePanel);
+			groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getInitialAgeLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getFinalAgeLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+										))
+							.addContainerGap())
+			)));
+			groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addComponent(getInitialAgeLabel())
+							.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getFinalAgeLabel())
+							.addComponent(getInitialAgeTextField())
+							)
+						.addContainerGap(77, Short.MAX_VALUE))
+			);
+		}
+		return nodeAgePanel;
+	}
+	
+	private JPanel getUtilityParametersPanel () {
+		if (utilityParametersPanel == null) {
+			utilityParametersPanel = new JPanel();
+			GroupLayout groupLayout = new GroupLayout(utilityParametersPanel);
+			groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getDiscountLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getDiscountTextField()/*, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE*/)
+										//.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										//.addComponent(getJPanelInstantOrAccumulative(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getJPanelInstantOrAccumulative(), GroupLayout.PREFERRED_SIZE, /*203*/196, GroupLayout.PREFERRED_SIZE)
+										//.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										)
+									
+										)
+							
+							.addContainerGap())
+			)));
+			groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getDiscountLabel(),GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							//.addComponent(getJPanelInstantOrAccumulative(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getJPanelInstantOrAccumulative(), GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+							//.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							
+							)
+										
+						.addContainerGap(77, Short.MAX_VALUE))
+			);
+		}
+		return utilityParametersPanel;
+	}
+	
+	private JPanel getOutputPanel () {
+		if (outputPanel == null){
+			outputPanel = new JPanel();
+			GroupLayout groupLayout = new GroupLayout(outputPanel);
+			groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getOutputFileLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getBtnBrowse())
+										))
+							.addContainerGap())
+			)));
+			groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addComponent(getOutputFileLabel())
+							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getBtnBrowse())
+							)
+						.addContainerGap(77, Short.MAX_VALUE))
+			);
+		}
+		return outputPanel;
+	}
+	private JLabel getJLabelNumSlices() {
+		if (numSlicesLabell == null){
+			numSlicesLabell = new JLabel("Number of Slices");
+		}
+		return numSlicesLabell;
 	}
 	
 	private JTextField getNumSlicesJTextField(){
@@ -411,6 +656,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public JTextField getDiscountTextField(){
 		if ( discountTextField == null ){
 			discountTextField = new JTextField("3.0");
+			discountTextField.setColumns(10);
 		}
 		return discountTextField;
 	}
@@ -418,25 +664,55 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public JRadioButton getInstanValuesButton() {
 		if ( instantButton == null ){
 			instantButton = new JRadioButton("Instant values", true);
+			//instantButton.setText("Instant values");
+			//instantButton.setBounds( 1, 25, 189, 24 );
+		//	instantButton.setVisible(true);
+			//instantButton.setEnabled(true);
+			//instantButton.setSelected(true);
 			instantButton.addItemListener(this);
 		}
 		return instantButton;
 	}
 	public JRadioButton getAccumulativeValuesButton() {
-		if ( acumulativeButton == null ){
-			acumulativeButton = new JRadioButton("Accumulative values", true);
-			acumulativeButton.addItemListener(this);
+		if ( accumulativeButton == null ){
+			accumulativeButton = new JRadioButton("Accumulative values", false);
+			//accumulativeButton.setBounds( 1, 1, 189, 24 );
+			//accumulativeButton.setText("Accumulative values");
+			//accumulativeButton.setVisible(true);
+			//accumulativeButton.setEnabled(true);
+			//accumulativeButton.setSelected(false);
+			accumulativeButton.addItemListener(this);
 		}
-		return acumulativeButton;
+		return accumulativeButton;
 	}
 	
-	public ButtonGroup getButtonGroup() {
-		if ( buttonGroup == null ){
+	public void initButtonGroup() {
+		
 			buttonGroup = new ButtonGroup();
 			buttonGroup.add(getInstanValuesButton());
 			buttonGroup.add(getAccumulativeValuesButton());
+		
+	}
+	
+	/**
+	 * @return the panel with the two buttons
+	 */
+	protected JPanel getJPanelInstantOrAccumulative() {
+
+		if (instantOrAccumulativePanel == null) {
+			instantOrAccumulativePanel = new JPanel();
+			instantOrAccumulativePanel.setLayout( new GridLayout(1, 2));
+			//jPanelTpcOrCanonical.setSize( 152, 58 );
+			//instantOrAccumulativePanel.setBorder( new LineBorder( UIManager
+				//.getColor( "List.dropLineColor" ), 1, false ) );
+			instantOrAccumulativePanel.setName( "instantOrAccumulativePanel" );
+			initButtonGroup();
+			instantOrAccumulativePanel.add( getInstanValuesButton());
+			instantOrAccumulativePanel.add( getAccumulativeValuesButton());
+			//instantOrAccumulativePanel.setEnabled( true);
+			//instantOrAccumulativePanel.setVisible(true);
 		}
-		return buttonGroup;
+		return instantOrAccumulativePanel;
 	}
 
 	public int requestData(String probNetName, String suffixTypeAnalysis) {
@@ -538,10 +814,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			? fileChooser.getSelectedFile().getAbsolutePath() : null;
 
 	}
+	public boolean isAccumulative () {
+		return this.isAccumulative;
+	}
 
 	@Override
-	public void itemStateChanged(ItemEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getItem().equals(getInstanValuesButton())) {
+			this.isAccumulative = false;
+		}
+		if (e.getItem().equals(getAccumulativeValuesButton())) {
+			this.isAccumulative = true;
+		}
+
 	}
 }

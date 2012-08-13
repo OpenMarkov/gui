@@ -20,7 +20,7 @@ import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -132,14 +132,21 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		 if(chartPanel == null){
 			 XYDataset dataset = createDataset();
 			 JFreeChart chart = ChartFactory.createXYLineChart("Temporal Evolution of: "+variableOfInterest.getBaseName(), "t", "value", dataset, PlotOrientation.VERTICAL, true, true, true);
-			 chart.getXYPlot().setRenderer(new XYSplineRenderer());
+			 XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+			  for (int i = 0; i < dataset.getSeriesCount(); i++) {
+				 renderer.setSeriesLinesVisible(i, true);
+				 renderer.setSeriesShapesVisible(i, true);
+			 }
+			
+			 chart.getXYPlot().setRenderer(renderer);
+			 // chart.getXYPlot().setRenderer(new XYSplineRenderer());
 			 chartPanel = new ChartPanel(chart);
 			 chartPanel.setAutoscrolls(true);
 			 chartPanel.setDisplayToolTips(true);
 			 chartPanel.setMouseZoomable(true);
 			 
 			 XYPlot plot = (XYPlot) chart.getPlot();
-			 XYItemRenderer renderer = plot.getRenderer();
+			 //XYItemRenderer renderer = plot.getRenderer();
 			 XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"), new DecimalFormat("0.00"));
 			 renderer.setToolTipGenerator(generator);
 			 }
@@ -148,6 +155,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 
 	 private static XYDataset createDataset() {
 		    XYSeriesCollection result = new XYSeriesCollection();
+		    double value = 0.0;
 		    for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
 		    	XYSeries series = null;
 		    	if (isUtility) {
@@ -161,9 +169,17 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 			    	for (int k = 0; k < probNodes.size(); k++) {
 			    		if (probNodes.get(k).getVariable().getBaseName().equals(basename) 
 			    				&& probNodes.get(k).getVariable().getTimeSlice() == j) {
-			    			double value = temporalEvolution.get(probNodes.get(k).getVariable()).getValues()[i];
-			    			int time = j;
-					    	series.add(time, value);
+			    			
+			    			if (isUtility && costEffectivenessDialog.isAccumulative()) {
+			    				value += temporalEvolution.get(probNodes.get(k).getVariable()).getValues()[i];
+				    			int time = j;
+						    	series.add(time, value);
+							} else {
+								value = temporalEvolution.get(probNodes.get(k).getVariable()).getValues()[i];
+				    			int time = j;
+						    	series.add(time, value);
+							}
+			    			
 					   }
 			    	}
 			    	

@@ -60,6 +60,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 	public CostEffectivenessResultsDialog(Window owner, CostEffectivenessAnalysis costeffectivenessAnalysis, 
 			TablePotential globalUtility, CostEffectivenessDialog costEffectivenessDialog) {
 		super(owner);
+		removeAll();
 		this.globalUtility = globalUtility;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.costeffectivenessAnalysis = costeffectivenessAnalysis;

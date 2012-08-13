@@ -28,7 +28,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 	private ProbNet expandedNetwork;
 	private CostEffectivenessDialog costEffectivenessDialog;
 	private boolean isUtility;
-	private boolean isAcumulative;
+	private boolean isAccumulative;
 	
 	public TemporalEvolutionTablePanel(HashMap<Variable,TablePotential> temporalEvolution, ProbNet expandedNetwork,
 			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, boolean isUtility/*, boolean isAcumulative*/) {
@@ -39,6 +39,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 		this.expandedNetwork = expandedNetwork;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.isUtility = isUtility;
+		this.isAccumulative = costEffectivenessDialog.isAccumulative();
 		//this.isAcumulative = isAcumulative;
 		
 		setLayout(new BorderLayout());
@@ -108,7 +109,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 				//model.addRow(columnNames);
 				//model.addColumn(columnNames);
 				
-				
+		    double value = 0.0;
 			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {//row
 				for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) { //column
 					String basenameInterest = variableOfInterest.getBaseName();
@@ -116,8 +117,8 @@ public class TemporalEvolutionTablePanel extends JPanel {
 					for (int k = 0; k < expandedProbNodes.size(); k++) {
 						if (expandedProbNodes.get(k).getVariable().getBaseName().equals(basenameInterest) 
 								&& expandedProbNodes.get(k).getVariable().getTimeSlice() == j) {
-							double value = 0.0;
-							if (isUtility && isAcumulative) {
+							
+							if (isUtility && isAccumulative) {
 								value += temporalEvolution.get(expandedProbNodes.get(k).getVariable()).getValues()[i];
 								//cell(row, column) = cell(i+1, j+1)
 								info[i][j+1] = value;
