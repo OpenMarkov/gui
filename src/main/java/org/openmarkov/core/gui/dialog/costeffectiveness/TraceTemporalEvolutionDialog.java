@@ -49,6 +49,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution,
 			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork, boolean isUtility) {
 		super(owner);
+		removeAll();
 		this.temporalEvolution = temporalEvolution;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.variableOfInterest = variableOfInterest;
