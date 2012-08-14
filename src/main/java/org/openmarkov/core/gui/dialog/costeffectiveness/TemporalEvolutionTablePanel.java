@@ -33,7 +33,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 	public TemporalEvolutionTablePanel(HashMap<Variable,TablePotential> temporalEvolution, ProbNet expandedNetwork,
 			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, boolean isUtility/*, boolean isAcumulative*/) {
 		super();
-		removeAll();
+		//removeAll();
 		this.temporalEvolution = temporalEvolution;
 		this.variableOfInterest = variableOfInterest;
 		this.expandedNetwork = expandedNetwork;

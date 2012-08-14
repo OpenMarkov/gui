@@ -7,7 +7,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -60,7 +59,6 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 	public CostEffectivenessResultsDialog(Window owner, CostEffectivenessAnalysis costeffectivenessAnalysis, 
 			TablePotential globalUtility, CostEffectivenessDialog costEffectivenessDialog) {
 		super(owner);
-		removeAll();
 		this.globalUtility = globalUtility;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.costeffectivenessAnalysis = costeffectivenessAnalysis;
@@ -80,8 +78,9 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 		setLocationRelativeTo(owner);
         setMinimumSize(new Dimension( width, height/2 ));
         setResizable(true);
-        setVisible(true);
+        repaint();
         pack();
+        setVisible(true);
 	}
 	
 	 private void initialize() {

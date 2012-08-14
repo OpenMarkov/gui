@@ -263,11 +263,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private CostEffectivenessDialog costEffectivenessDialog;
 
 	private boolean approximateInferenceWarningGiven = false;
-	/**
-	 * Imposed policies
-	 */
-	private ArrayList<Potential> imposedPolicies = new ArrayList<Potential>();
-
+	
 	private boolean isThereNodeAge;
 	/**
 	 * Constructor that creates the instance.
@@ -1206,6 +1202,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
 					//change it colour
 					((VisualDecisionNode) node).setHasPolicy(true);
+					networkChanged = true;
 				} else { //if user cancel policy imposition restore no potential to de probNode
 					ArrayList<Potential> noPolicy = new ArrayList<Potential>();
 					probNode.setPotentials(noPolicy);
@@ -1214,6 +1211,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				
 			}
 		}
+		
 		setSelectedAllNodes(false);
 		repaint();
 	}
@@ -1237,6 +1235,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
 					//change it colour
 					((VisualDecisionNode) node).setHasPolicy(true);
+					networkChanged = true;
 				}
 
 			}
@@ -1262,6 +1261,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				((VisualDecisionNode) node).setHasPolicy(false);
 			}
 		}
+		networkChanged = true;
 		setSelectedAllNodes(false);
 		repaint();
 	}

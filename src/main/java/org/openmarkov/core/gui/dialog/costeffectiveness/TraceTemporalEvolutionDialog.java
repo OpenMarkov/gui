@@ -19,7 +19,6 @@ import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -49,7 +48,6 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution,
 			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork, boolean isUtility) {
 		super(owner);
-		removeAll();
 		this.temporalEvolution = temporalEvolution;
 		this.costEffectivenessDialog = costEffectivenessDialog;
 		this.variableOfInterest = variableOfInterest;
@@ -72,10 +70,10 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
         setMinimumSize(new Dimension( width, height/2 ));
 		setLocationRelativeTo(owner);
         setResizable(true);
-        setVisible(true);
         repaint();
         createExcel();
         pack();
+        setVisible(true);
 	}
 	
 	 private void initialize() {
@@ -133,6 +131,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		 if(chartPanel == null){
 			 XYDataset dataset = createDataset();
 			 JFreeChart chart = ChartFactory.createXYLineChart("Temporal Evolution of: "+variableOfInterest.getBaseName(), "t", "value", dataset, PlotOrientation.VERTICAL, true, true, true);
+			// chart.getXYPlot().setRenderer(new XYSplineRenderer());
 			 XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 			  for (int i = 0; i < dataset.getSeriesCount(); i++) {
 				 renderer.setSeriesLinesVisible(i, true);
@@ -145,7 +144,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 			 chartPanel.setAutoscrolls(true);
 			 chartPanel.setDisplayToolTips(true);
 			 chartPanel.setMouseZoomable(true);
-			 
+			 	
 			 XYPlot plot = (XYPlot) chart.getPlot();
 			 //XYItemRenderer renderer = plot.getRenderer();
 			 XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"), new DecimalFormat("0.00"));
