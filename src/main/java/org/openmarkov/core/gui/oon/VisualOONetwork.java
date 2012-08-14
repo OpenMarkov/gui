@@ -21,6 +21,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
 import org.openmarkov.core.gui.graphic.VisualArrow;
@@ -37,10 +43,11 @@ import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.InstanceParameterLink;
 import org.openmarkov.core.oon.NodeParameterLink;
 import org.openmarkov.core.oon.ParameterLink;
-import org.openmarkov.core.oon.InstanceNode;
 import org.openmarkov.core.oon.OOBNet;
 import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.action.AddParameterLinkEdit;
+import org.openmarkov.core.oon.action.ChangeParameterArityEdit;
+import org.openmarkov.core.oon.action.MarkAsInputEdit;
 
 public class VisualOONetwork extends VisualNetwork
 {
@@ -421,7 +428,7 @@ public class VisualOONetwork extends VisualNetwork
         // Select nodes
         ArrayList<VisualNode> selectedVisualNodes = new ArrayList<VisualNode> (); 
         for (VisualNode node : visualNodes) {
-            if(selection.containsNode(node) && !(node.getProbNode() instanceof InstanceNode)){
+            if(selection.containsNode(node)){
                 setSelectedElement(node, true);
                 selectedVisualNodes.add (node);
             }
@@ -439,6 +446,11 @@ public class VisualOONetwork extends VisualNetwork
                                              instance.getHeight ()))
             {
                 setSelectedElement (instance, true);
+                for(VisualNode node: instance.getVisualNodes())
+                {
+                	setSelectedElement(node, false);
+                	selectedVisualNodes.remove(node);
+                }
             }
         }       
     }
@@ -673,7 +685,16 @@ public class VisualOONetwork extends VisualNetwork
         
         for(VisualInstance visualInstance : getSelectedInstances ())
         {
-            visualInstance.getInstance().setInput (!visualInstance.getInstance().isInput ());
+        	MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, 
+        											!visualInstance.getInstance().isInput (), 
+        											visualInstance.getInstance());
+            try {
+				probNet.doEdit(markAsInputEdit);
+			} catch (NotEnoughMemoryException | ConstraintViolationException
+					| CanNotDoEditException | NonProjectablePotentialException
+					| WrongCriterionException | DoEditException e) {
+				e.printStackTrace();
+			}
         }
     }    
     
@@ -702,7 +723,15 @@ public class VisualOONetwork extends VisualNetwork
 	public void setParameterArity(ParameterArity arity) {
     	for(VisualInstance visualInstance : getSelectedInstances())
     	{
-    		visualInstance.getInstance().setArity(arity);
+    		ChangeParameterArityEdit changeParameterArityEdit = 
+    				new ChangeParameterArityEdit(probNet, visualInstance.getInstance(), arity);
+    		try {
+				probNet.doEdit(changeParameterArityEdit);
+			} catch (NotEnoughMemoryException | ConstraintViolationException
+					| CanNotDoEditException | NonProjectablePotentialException
+					| WrongCriterionException | DoEditException e) {
+				e.printStackTrace();
+			}
     	}
 	}    
 
