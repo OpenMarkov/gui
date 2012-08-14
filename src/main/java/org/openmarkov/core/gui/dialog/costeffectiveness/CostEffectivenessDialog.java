@@ -9,8 +9,10 @@
 
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -78,12 +80,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private ButtonGroup buttonGroup;
 	private boolean isUtility;
 	private boolean isTemporalEvolution;
-	private JPanel numSlicesPanel;
 	private JPanel nodeAgePanel;
 	private JPanel utilityParametersPanel;
 	private JPanel instantOrAccumulativePanel;
 	private JPanel outputPanel;
-	private boolean isAccumulative = false; 
+	private boolean isAccumulative = false;
+	private JPanel numSlicesPanel; 
 
 	/**
 	 * Launch the application.
@@ -131,6 +133,89 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			}
 		}*/
 	}
+	
+	/**
+	 * Creates a CostEffectivenessDialog for expansion only
+	 * @param owner
+	 * 		The parent of the dialog
+	 */
+	public CostEffectivenessDialog(Window owner) {
+		super(owner);
+		setLocationRelativeTo(owner);
+		dialogStringResource =
+	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		
+		//setMinimumSize(new Dimension(250 , 150));
+		BorderLayout layout = new BorderLayout(5, 5);
+		getComponentsPanel().setLayout(layout);
+		getComponentsPanel().add(getNumSlicesPanel(), BorderLayout.NORTH);
+		setResizable(true);
+		pack();
+		repaint();
+	}
+	
+	private JPanel getNumSlicesPanel() {
+
+		if (numSlicesPanel == null){
+
+			numSlicesPanel = new JPanel();
+
+			GroupLayout groupLayout = new GroupLayout(numSlicesPanel);
+
+			groupLayout.setHorizontalGroup(
+
+				groupLayout.createParallelGroup(Alignment.LEADING)
+
+					.addGroup(groupLayout.createSequentialGroup()
+
+						.addContainerGap()
+
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+
+							.addGroup(groupLayout.createSequentialGroup()
+
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+
+									.addGroup(groupLayout.createSequentialGroup()
+
+										.addComponent(getJLabelNumSlices())
+
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+
+										.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+
+										))
+
+							.addContainerGap())
+
+			)));
+
+			groupLayout.setVerticalGroup(
+
+				groupLayout.createParallelGroup(Alignment.LEADING)
+
+					.addGroup(groupLayout.createSequentialGroup()
+
+						.addContainerGap()
+
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+
+							.addComponent(getJLabelNumSlices())
+
+							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+
+							)
+
+						.addContainerGap())
+
+			);
+			numSlicesPanel.setLayout(groupLayout);
+		}
+
+		return numSlicesPanel;
+
+	}
+
 	/**
 	 * Creates a CostEffectivenessDialog
 	 * @param owner
@@ -163,6 +248,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		setResizable(true);
 		pack();
 		repaint();
+		setVisible(true);
 	}
 	private void initialize(boolean isTemporalEvolution) {
 
@@ -460,7 +546,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 									.addComponent(getYearsLabel2(), 70, 70, 70)))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(getBtnBrowse())))
-					.addContainerGap(20, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -488,7 +574,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addComponent(getOutputFileLabel())
 						.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(getBtnBrowse()))
-					.addGap(128))
+					.addContainerGap())
 		);
 		getComponentsPanel().setLayout(groupLayout);
 		} else if (!isThereNodeAge) {
@@ -543,7 +629,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 								.addComponent(getBtnBrowse())
 									)
 							.addGap(21)
-							.addContainerGap(77, Short.MAX_VALUE))
+							.addContainerGap())
 				);
 			getComponentsPanel().setLayout(groupLayout);
 			

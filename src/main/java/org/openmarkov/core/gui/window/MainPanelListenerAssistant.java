@@ -190,19 +190,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
 		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
-			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), false);
-			costEffectivenessDialog.getDiscountTextField().setVisible(false);
-			costEffectivenessDialog.getDiscountLabel().setVisible(false);
-			costEffectivenessDialog.getOutputFileJTextField().setVisible(false);
-			costEffectivenessDialog.getOutputFileLabel().setVisible(false);
-			costEffectivenessDialog.getBtnBrowse().setVisible(false);
-			costEffectivenessDialog.pack();
-			costEffectivenessDialog.repaint();
+			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
 			if (costEffectivenessDialog.requestData(getCurrentNetworkPanel().getProbNet().getName(),
-					"expanded") == CostEffectivenessDialog.OK_BUTTON) {
-				expandNetwork(getCurrentNetworkPanel().getProbNet(), costEffectivenessDialog.getNumSlices());
+						"expanded") == CostEffectivenessDialog.OK_BUTTON) {
+					expandNetwork(getCurrentNetworkPanel().getProbNet(), costEffectivenessDialog.getNumSlices());
 			}
-			
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
 			closeApplication();
 		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
