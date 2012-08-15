@@ -876,7 +876,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		 				maxX = probNode.getNode().getCoordinateX();
 		 			}
 		 		}
-		 		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/2);
+		 		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null,  maxX/3);
 				ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 				String fileName = probNet.getName()+"_expanded";
 				expandedNetwork.setName(fileName);
