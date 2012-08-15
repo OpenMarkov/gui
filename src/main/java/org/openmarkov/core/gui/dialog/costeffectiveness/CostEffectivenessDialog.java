@@ -248,7 +248,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		setResizable(true);
 		pack();
 		repaint();
-		setVisible(true);
+		
 	}
 	private void initialize(boolean isTemporalEvolution) {
 
