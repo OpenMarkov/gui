@@ -701,7 +701,7 @@ public class VisualOONetwork extends VisualNetwork
     public void editClass ()
     {
         Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
-        MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().createNewFrame (selectedInstance.getClassNet ());
+        MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet ());
         
     }
 

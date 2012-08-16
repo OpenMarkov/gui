@@ -769,7 +769,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		if (NetworkPanel.requestNetworkProperties(probNet,
 				Utilities.getOwner(mainPanel), true)) {
 			probNet.getPNESupport().setWithUndo(true);
-			networkPanels.add (createNewFrame2(probNet));
+			networkPanels.add (createNewFrame(probNet));
 			frameIndex++;
 			// mainPanelMenuAssistant is added as listener to probNet
 			// for menus updated purposes.
@@ -787,41 +787,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            network to be painted into the frame
 	 * @return the network panel that is created.
 	 */
-	// changed by mpalacios
-	// called only in learnButtonActionPerformed method in learningGui
 	public NetworkPanel createNewFrame(ProbNet probNet) {
-
-		NetworkPanel networkPanel = null;
-		messagesStringResource =
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-
-		try {
-			networkPanel = new NetworkPanel(probNet, mainPanel);
-
-			mainPanel.getMdi().createNewFrame(networkPanel);
-			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
-			// mpalacios mainPanel listen to networkPanel.
-			// networkPanel.addEditionListener( mainPanel
-			// .getMainPanelMenuAssistant() );
-			networkPanel.addSelectionListener(mainPanel
-					.getMainPanelMenuAssistant());
-			mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
-			mainPanel.getMainPanelMenuAssistant()
-					.updateOptionsNetworkDependent(networkPanel);
-			mainPanel.getInferenceToolBar().
-					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
-		} catch (UnsupportedOperationException e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					e.getMessage(),
-					messagesStringResource.getString("ErrorWindow.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		}
-
-		return networkPanel;
-
-	}
-
-	public NetworkPanel createNewFrame2(ProbNet probNet) {
 
 		NetworkPanel networkPanel = null;
 		messagesStringResource =
@@ -880,7 +846,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 				String fileName = probNet.getName()+"_expanded";
 				expandedNetwork.setName(fileName);
-				NetworkPanel networkPanel = createNewFrame2(expandedNetwork);
+				NetworkPanel networkPanel = createNewFrame(expandedNetwork);
 				networkPanel.setNetworkFile(fileName);
 				networkPanels.add (networkPanel);
 			 } catch (NotEnoughMemoryException e) {
@@ -921,7 +887,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						mainPanel.getMainPanelMenuAssistant());
 				netReadFromFile.getPNESupport().setWithUndo(true);
 				netReadFromFile.setName(new File(fileName).getName());
-				networkPanel = createNewFrame2(netReadFromFile);
+				networkPanel = createNewFrame(netReadFromFile);
 				networkPanel.setNetworkFile(fileName);
 				ArrayList<EvidenceCase> evidence = probNetInfo.getEvidence ();
 				if(evidence!=null && !evidence.isEmpty())
@@ -956,7 +922,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				e.printStackTrace ();
 			}
 		}
-
+	}
+	
+	public void openNetwork(ProbNet probNet)
+	{
+		networkPanels.add(createNewFrame(probNet));
 	}
 
 	/**
