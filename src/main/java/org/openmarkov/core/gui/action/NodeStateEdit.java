@@ -29,6 +29,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /**
  * <code>NodeStateEdit</code> is a simple edit that allow modify the states of
@@ -281,8 +282,27 @@ public class NodeStateEdit extends SimplePNEdit {
 			if (selectedStateIndex >= 0
 					&& selectedStateIndex < probNode.getVariable()
 							.getNumStates()) {
-
-				probNode.getVariable().getStates()[selectedStateIndex] = newState;
+				
+				State newStates[] = new State[probNode.getVariable()
+				      						.getStates().length];
+				for (int i = 0; i < probNode.getVariable().getStates().length; i++) {
+					if (i == selectedStateIndex) {
+						newStates[i] = newState;
+					} else {
+						newStates[i] = probNode.getVariable().getStates()[i];
+					}
+				
+				}
+				probNode.getVariable().setStates(newStates);
+				
+				//probNode.getVariable().getStates()[selectedStateIndex] = newState;
+				
+				for (Node child: probNode.getNode().getChildren()) {
+					ProbNode probnode = (ProbNode) child.getObject();
+					if (probnode.getPotentials().get(0) instanceof TreeADDPotential) {
+						//substitute the new state in branches
+					}
+				}
 			}
 			break;
 
