@@ -16,6 +16,8 @@ import javax.swing.undo.UndoableEdit;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
@@ -85,8 +87,12 @@ public class PasteEdit extends CompoundEdit
         ArrayList<ProbNode> pastedNodes = new ArrayList<ProbNode> ();
         for (UndoableEdit edit : edits)
         {
-            ((PNEdit) edit).doEdit ();
-            pastedNodes.add (((AddProbNodeEdit) edit).getProbNode ());
+        	try {
+				probNet.doEdit(((PNEdit) edit));
+				pastedNodes.add (((AddProbNodeEdit) edit).getProbNode ());
+			} catch (ConstraintViolationException | CanNotDoEditException e) {
+				e.printStackTrace();
+			}
         }
         
         //Gather link creation edits
@@ -117,8 +123,12 @@ public class PasteEdit extends CompoundEdit
             if (edit instanceof AddLinkEdit)
             {
                 AddLinkEdit linkEdit = ((AddLinkEdit) edit);
-                linkEdit.doEdit ();
-                pastedLinks.add (linkEdit.getLink ());
+                try {
+					probNet.doEdit(linkEdit);
+	                pastedLinks.add (linkEdit.getLink ());
+				} catch (ConstraintViolationException | CanNotDoEditException e) {
+					e.printStackTrace();
+				}
             }
         }
         super.end ();
@@ -172,7 +182,7 @@ public class PasteEdit extends CompoundEdit
     //@Override
     public void setSignificant (boolean significant)
     {
-        // TODO Auto-generated method stub
+        // Do nothing
     }
     
     /**

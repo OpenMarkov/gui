@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.event.UndoableEditEvent;
+
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -734,6 +736,15 @@ public class VisualOONetwork extends VisualNetwork
 			}
     	}
 	}    
+
+	public void undoableEditHappened(UndoableEditEvent e) {
+		super.undoableEditHappened(e);
+	}
+		
+
+	public void undoEditHappened(UndoableEditEvent event) {
+		super.undoEditHappened(event);
+	}
 
     
    

@@ -5,17 +5,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
+import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.SimplePNEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
 public class ICITablePotentialValueEdit extends  SimplePNEdit {
@@ -39,15 +41,6 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * 
 	 */
 	private int decimalPositions = 10;
-	/**
-	 * 
-	 */
-	private ArrayList<double []> lastNoisyValues;
-	
-	/**
-	 * 
-	 */
-	private ArrayList<double []> newNoisyValues;
 	
 	/*
 	 * 
@@ -227,6 +220,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		Double sum = 0.0;
 		Double rest = 0.0;
 		int priorityListPosition=0;
+		ICIPotentialEdit iciPotentialEdit = null;
 		
 		if (!leakyFlag){//noisy parameters
 			newNoisyParameters[position] = UtilStrings.roundAndReduce(newValue, epsilon, maxDecimals);
@@ -261,7 +255,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				//newNoisyParameters[priorityListPosition] = roundingDouble(newNoisyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
 			}
-			iciPotential.setNoisyParameters(noisyVariable,newNoisyParameters);
+			iciPotentialEdit = new ICIPotentialEdit(probNet, iciPotential, noisyVariable, newNoisyParameters);
 			
 		}else if (leakyFlag) {//leaky parameters
 			newLeakyParameters[position] = UtilStrings.roundAndReduce(newValue, epsilon, maxDecimals);
@@ -295,25 +289,24 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				//newLeakyParameters[priorityListPosition] = roundingDouble(newLeakyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
 			}
-			iciPotential.setLeakyParameters(newLeakyParameters);
+			iciPotentialEdit = new ICIPotentialEdit(probNet, iciPotential, newLeakyParameters);
 		}                                         
 		
-		
-		ArrayList <Potential> potentials = new ArrayList<Potential>();
-		potentials.add(iciPotential);
-		probNode.setPotentials(potentials);
+		try {
+			probNet.doEdit(iciPotentialEdit);
+		} catch (NotEnoughMemoryException | ConstraintViolationException
+				| CanNotDoEditException | NonProjectablePotentialException
+				| WrongCriterionException e) {
+			e.printStackTrace();
+			throw new DoEditException(e);
+		}
+
 	}
 	
 	public void undo() {
-		super.undo();
-		if (!leakyFlag){	
-			iciPotential.setNoisyParameters(noisyVariable,lastNoisyParameters);
-		}else {
-			iciPotential.setLeakyParameters(lastLeakyParameters);
-		}                                         
-		
-		
+		super.undo();		
 	}
+	
 	public LinkedList<Integer> getPriorityListInitialization() {
 		
 		if (!leakyFlag){
