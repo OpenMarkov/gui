@@ -137,9 +137,9 @@ public class NodeStateEdit extends SimplePNEdit {
 				newObjectState[i] = probNode.getVariable().getStates()[i - 1];
 			}
 			// }
-			if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+/*			if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
 				Collections.reverse(Arrays.asList(newObjectState));
-			}
+			}*/
 
 			probNode.getVariable().setStates(newObjectState);
 
