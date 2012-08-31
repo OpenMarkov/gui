@@ -1124,9 +1124,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		treeADDPotential.setTopVariable(newTopVariable);
 		ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
 		if (newTopVariable.getVariableType() == VariableType.FINITE_STATES || newTopVariable.getVariableType() == VariableType.DISCRETIZED) {
-			for (State state : newTopVariable.getStates()) {
+			//for (State state : newTopVariable.getStates()) {
+			for (int i = newTopVariable.getStates().length-1; i >= 0; i--) {
 				ArrayList<State> branchStates = new ArrayList<State>();
-				branchStates.add(state);
+				//branchStates.add(state);
+				branchStates.add(newTopVariable.getStates()[i]);
 				newBranches.add(new TreeADDBranch(branchStates, potential, newTopVariable, variables));
 			}
 		} else if (newTopVariable.getVariableType() == VariableType.NUMERIC) {
