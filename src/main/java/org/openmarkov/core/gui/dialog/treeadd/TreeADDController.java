@@ -221,19 +221,25 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			}
 		}
 		Variable currentTopVariable = treeADD.getTopVariable();
-		Variable conditionedVariable = treeADD.getConditionedVariable();
+		Variable conditionedOrUtilityVariable = null;
+		if (treeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
+			conditionedOrUtilityVariable = treeADD.getConditionedVariable();
+		} else if (treeADD.getPotentialRole() == PotentialRole.UTILITY) {
+			conditionedOrUtilityVariable = treeADD.getUtilityVariable();
+		}
+		
+		
 		ArrayList<Variable> newPosibleTopVariables = new ArrayList<Variable>();
 		for (Variable variable : treeADD.getVariables()) {
-			if (variable != currentTopVariable && variable !=  conditionedVariable) {
+			if (variable != currentTopVariable && variable !=  conditionedOrUtilityVariable) {
 				newPosibleTopVariables.add(variable);
 			}
 		}
 		
 		if (!hasSubTrees && newPosibleTopVariables.size() != 0){
 			
-			
 			for (Variable variable : treeADD.getVariables()) {
-				if (variable != currentTopVariable && variable !=  conditionedVariable) {
+				if (variable != currentTopVariable && variable !=  conditionedOrUtilityVariable) {
 					JMenuItem posibleTopVariable = new JMenuItem(variable.getName());
 					posibleTopVariable.addActionListener (this);
 					
@@ -705,7 +711,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 				potentialVariables.add(parentTreeADD.getVariables().get(0));
 			} else if (parentTreeADD.getPotentialRole() == PotentialRole.UTILITY) {
-				potentialVariables.add(parentTreeADD.getUtilityVariable());
+				//potentialVariables.add(parentTreeADD.getUtilityVariable());
 			}
 			UniformPotential potential = new UniformPotential(potentialVariables, treeADDBranch.getPotential().getPotentialRole());
 			if (parentTreeADD.getPotentialRole() == PotentialRole.UTILITY) {
@@ -822,7 +828,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			Variable conditionedVariable = treeADDBranch.getParentVariables().get(0);
 			potentialVariables.add(conditionedVariable);
 		} else if (parentTreeADD.getPotentialRole() == PotentialRole.UTILITY) {
-			potentialVariables.add(parentTreeADD.getUtilityVariable());
+			//potentialVariables.add(parentTreeADD.getUtilityVariable());
 		}
 		
 		UniformPotential newPotential = new UniformPotential(potentialVariables, parentTreeADD.getPotentialRole());
