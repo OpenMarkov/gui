@@ -19,7 +19,6 @@ import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
@@ -43,6 +42,7 @@ import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
+import org.openmarkov.core.oon.OOBNet;
 
 /**
  * This class assists to the class MainPanel to manage the menus and toolbars.
@@ -411,7 +411,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		// updateUndoRedo(networkPanel.getUndoManager());
 
 		mainPanel.setToolBarPanel(networkPanel.getWorkingMode());
-
+		
+		//OOBN start
+		setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet() instanceof OOBNet);
+		//OOBN end
 	}
 
 	/**

@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -99,7 +100,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 	/**
 	 * Button group to make autoexclusive the edition options.
 	 */
-	private ButtonGroup groupEditionOptions = new ButtonGroup();
+	private ButtonGroup editionButtonGroup = new ButtonGroup();
 
 	/**
 	 * String resource.
@@ -292,7 +293,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 					+ STRING_TOOLTIP_SUFFIX));
 			objectSelectionButton.addActionListener(listener);
 			objectSelectionButton.addMouseMotionListener(this);
-			groupEditionOptions.add(objectSelectionButton);
+			editionButtonGroup.add(objectSelectionButton);
 		}
 		return objectSelectionButton;
 	}
@@ -316,7 +317,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 					+ STRING_TOOLTIP_SUFFIX));
 			chanceCreationButton.addActionListener(listener);
 			chanceCreationButton.addMouseMotionListener(this);
-			groupEditionOptions.add(chanceCreationButton);
+			editionButtonGroup.add(chanceCreationButton);
 		}
 		return chanceCreationButton;
 	}
@@ -340,7 +341,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 					+ STRING_TOOLTIP_SUFFIX));
 			decisionCreationButton.addActionListener(listener);
 			decisionCreationButton.addMouseMotionListener(this);
-			groupEditionOptions.add(decisionCreationButton);
+			editionButtonGroup.add(decisionCreationButton);
 		}
 		return decisionCreationButton;
 	}
@@ -364,7 +365,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 					+ STRING_TOOLTIP_SUFFIX));
 			utilityCreationButton.addActionListener(listener);
 			utilityCreationButton.addMouseMotionListener(this);
-			groupEditionOptions.add(utilityCreationButton);
+			editionButtonGroup.add(utilityCreationButton);
 		}
 		return utilityCreationButton;
 	}
@@ -388,7 +389,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 						+ STRING_TOOLTIP_SUFFIX));
 			linkCreationButton.addActionListener(listener);
 			linkCreationButton.addMouseMotionListener(this);
-			groupEditionOptions.add(linkCreationButton);
+			editionButtonGroup.add(linkCreationButton);
 		}
 		return linkCreationButton;
 	}
@@ -496,6 +497,11 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener{
 					.getString(ActionCommands.LINK_CREATION
 							+ STRING_TOOLTIP_SUFFIX));
 		} 
+	}
 	
+	public void addEditionButton(AbstractButton button)
+	{
+		add(button);
+		editionButtonGroup.add(button);
 	}
 }

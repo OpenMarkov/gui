@@ -15,6 +15,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.plugin.Toolbar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.ToolBarBasic;
+import org.openmarkov.core.gui.window.MainPanel;
 
 @SuppressWarnings("serial")
 @Toolbar(name="ObjectOriented")
@@ -46,12 +47,6 @@ public class OOToolBar extends ToolBarBasic implements MouseMotionListener
      * Icon loader.
      */
     private IconLoader iconLoader = null;
-
-    
-    /**
-     * Button group to make autoexclusive the edition options.
-     */
-    private ButtonGroup inferenceButtonGroup = new ButtonGroup();    
 
     public OOToolBar (ActionListener newListener)
     {
@@ -91,7 +86,8 @@ public class OOToolBar extends ToolBarBasic implements MouseMotionListener
                         + STRING_TOOLTIP_SUFFIX));
             instanceCreationButton.addActionListener(listener);
             instanceCreationButton.addMouseMotionListener(this);
-            inferenceButtonGroup.add(instanceCreationButton);
+            
+            MainPanel.getUniqueInstance().getEditionToolBar().addEditionButton(instanceCreationButton);
         }
         return instanceCreationButton;
     }   
