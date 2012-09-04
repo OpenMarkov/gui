@@ -96,17 +96,6 @@ public class VisualUtilityNode extends VisualNode {
 	}
 	
 	/**
-	 * Returns the text's height of node's name.
-	 * 
-	 * @return the text's height of node's name.
-	 */
-	public double getTextHeight(Graphics2D g) {
-		String text = getNodeString();
-		double textHeight = getHeight(text, g);
-		return textHeight;
-	}
-	
-	/**
 	 * Returns the six points of the hexagon that limits the node. The order is:
 	 * first the most left point, then the left and right top points, then the
 	 * most right point and the right and left bottom points. 

@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,11 +43,11 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.InstanceReferenceLink;
 import org.openmarkov.core.oon.NodeReferenceLink;
-import org.openmarkov.core.oon.ReferenceLink;
 import org.openmarkov.core.oon.OOBNet;
-import org.openmarkov.core.oon.Instance.ParameterArity;
+import org.openmarkov.core.oon.ReferenceLink;
 import org.openmarkov.core.oon.action.AddReferenceLinkEdit;
 import org.openmarkov.core.oon.action.ChangeParameterArityEdit;
 import org.openmarkov.core.oon.action.MarkAsInputEdit;
@@ -59,9 +60,15 @@ public class VisualOONetwork extends VisualNetwork
     private Map<String, VisualInstance> visualInstances;
 
     /**
-     * List of visual instance links.
+     * List of visual reference links.
      */
     private List<VisualReferenceLink> visualReferenceLinks;
+
+    /**
+     * List of visual contracted node links.
+     */
+    private List<VisualContractedNodeLink> visualContractedNodeLinks;
+    
     
     /**
      * Set of selected instances.
@@ -89,7 +96,7 @@ public class VisualOONetwork extends VisualNetwork
     protected void constructVisualInfo ()
     {
         super.constructVisualInfo ();
-        
+       
         if(probNet instanceof OOBNet && getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
         {
             // construct visual instances
@@ -102,7 +109,7 @@ public class VisualOONetwork extends VisualNetwork
             {
                 visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
             }
-        
+            
             // construct visual parameter links
             if(visualReferenceLinks == null)
             {
@@ -124,10 +131,53 @@ public class VisualOONetwork extends VisualNetwork
                 	VisualNode destinationNode = getVisualNode(nodeLink.getDestinationNode());
                 	visualReferenceLinks.add(new VisualReferenceLink(link, sourceNode, destinationNode));
                 }
-            }       
+            } 
+            
+            HashMap<VisualNode, VisualInstance> contractedNodes = getContractedNodes(visualInstances.values ());
+            // Do not paint nodes of contracted instances
+            visualNodes.removeAll (contractedNodes.keySet ());
+            // Do not paint links to nodes of contracted instances, paint contracted node links instead
+            if(visualContractedNodeLinks == null)
+            {
+                visualContractedNodeLinks = new ArrayList<> ();
+            }
+            visualContractedNodeLinks.clear();
+            
+            Collection<VisualLink> linksToRemove = new HashSet<> ();
+            for(VisualLink visualLink : visualLinks)
+            {
+                if(contractedNodes.containsKey (visualLink.getSourceNode ()))
+                {
+                    linksToRemove.add (visualLink);
+                    if(!contractedNodes.containsKey (visualLink.getDestinationNode ()))
+                    {
+                        visualContractedNodeLinks.add (new VisualContractedNodeLink (contractedNodes.get(visualLink.getSourceNode ()), 
+                                                                                 visualLink.getDestinationNode ()));
+                    }
+                }
+            }
+            visualLinks.removeAll (linksToRemove);
         }
     }
     
+    private HashMap<VisualNode, VisualInstance> getContractedNodes (Collection<VisualInstance> visualInstances)
+    {
+        HashMap<VisualNode, VisualInstance> contractedNodes = new HashMap<> ();
+        
+        for(VisualInstance visualInstance : visualInstances)
+        {
+            if(!visualInstance.isExpanded ())
+            {
+                for(VisualNode visualNode : visualInstance.getVisualNodes ())
+                {
+                    contractedNodes.put (visualNode, visualInstance);
+                }
+            }
+            contractedNodes.putAll (getContractedNodes (visualInstance.getSubInstances ()));
+        }
+        return contractedNodes;
+    }
+
     private VisualNode getVisualNode(ProbNode sourceNode) {
 		VisualNode visualNode = null;
     	int i = 0;
@@ -158,7 +208,7 @@ public class VisualOONetwork extends VisualNetwork
     }
     
     /**
-     * Paints the instance links.
+     * Paints the reference links.
      * 
      * @param g
      *            the graphics context in which to paint.
@@ -171,6 +221,19 @@ public class VisualOONetwork extends VisualNetwork
 
     }   
     
+    /**
+     * Paints the links for contracted nodes.
+     * 
+     * @param g
+     *            the graphics context in which to paint.
+     */
+    protected void paintContractedNodeLinks(Graphics2D g) {
+
+        for (VisualContractedNodeLink visualContractedNodeLink : visualContractedNodeLinks) {
+            visualContractedNodeLink.paint(g);
+        }
+
+    }      
     
     /**
      * Overwrited 'paint' method to avoid to call it explicitly.
@@ -182,6 +245,7 @@ public class VisualOONetwork extends VisualNetwork
     public void paint(Graphics2D g) {
         paintInstances(g);
         paintReferenceLinks(g);
+        paintContractedNodeLinks(g);
         super.paint (g);
     }
     
@@ -467,7 +531,7 @@ public class VisualOONetwork extends VisualNetwork
 
         for (VisualInstance instance : visualInstances.values()) {
             if (instance.isSelected()) {
-                visualNodes.addAll(instance.getVisualNodes());
+                visualNodes.addAll(instance.getVisualNodes(true));
             }
         }
         return visualNodes;
@@ -718,6 +782,7 @@ public class VisualOONetwork extends VisualNetwork
         {
             visualInstances.clear ();
             visualReferenceLinks.clear ();
+            visualContractedNodeLinks.clear ();
         }
     }    
     

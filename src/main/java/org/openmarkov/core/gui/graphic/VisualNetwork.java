@@ -63,7 +63,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	// TODO este valor debe asignarse usando las preferencias de usuario de
 	// visualización de redes
-	private boolean byTitle = false;
+	protected boolean byTitle = false;
 	
 	/**
 	 * List of visual nodes.
@@ -185,7 +185,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		VisualNode vNode1 = null;
 		VisualNode vNode2 = null;
 		int i = -1;
-		int l = -1;
+		int visualNodesCount = -1;
 
 		
 		nodes = probNet.getProbNodes();
@@ -227,12 +227,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 			}
 		}
 		visualLinks.removeAll(vLinksToDelete);
-		l = visualNodes.size();
+		visualNodesCount = visualNodes.size();
 		for (Link link : links) {
 			i = 0;
 			vNode1 = null;
 			vNode2 = null;
-			while ((i < l) && ((vNode1 == null) || (vNode2 == null))) {
+			while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
 				if (vNode1 == null) {
 					if (link.getNode1().equals(
 						visualNodes.get(i).getProbNode().getNode())) {
@@ -260,7 +260,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param vNodesToDelete
 	 * @return
 	 */
-	private boolean containsNodeToDelete(Link linkToCheck, ArrayList<VisualNode> vNodesToDelete) {
+	protected boolean containsNodeToDelete(Link linkToCheck, ArrayList<VisualNode> vNodesToDelete) {
 		
 		for (VisualNode vNode: vNodesToDelete)
 		if (linkToCheck.contains(vNode.getProbNode().getNode()))

@@ -146,17 +146,6 @@ public class VisualDecisionNode extends VisualNode {
 	}
 	
 	/**
-	 * Returns the text's height of node's name.
-	 * 
-	 * @return the text's height of node's name.
-	 */
-	public double getTextHeight(Graphics2D g) {
-		String text = getNodeString();
-		double textHeight = getHeight(text, g);
-		return textHeight;		
-	}
-	
-	/**
 	 * Returns the four points of the rectangle that limits the node. First
 	 * point is top left corner. Second point is top right corner. Third point
 	 * is bottom right corner. And fourth one is bottom left corner.

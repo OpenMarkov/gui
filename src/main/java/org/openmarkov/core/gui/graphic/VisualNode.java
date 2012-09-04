@@ -369,12 +369,14 @@ public abstract class VisualNode extends VisualElement {
 	 */
 	public abstract double getUpperLeftCornerY(Graphics2D g);
 	
-	/**
-	 * Returns the text's height of node's name.
-	 * 
-	 * @return the text's height of node's name.
-	 */
-	public abstract double getTextHeight(Graphics2D g);
+    /**
+     * Returns the text's height of node's name.
+     * 
+     * @return the text's height of node's name.
+     */
+    public double getTextHeight(Graphics2D g) {
+        return getHeight(getNodeString(), g);
+    }
 
     /**
      * Returns the visualNetwork.

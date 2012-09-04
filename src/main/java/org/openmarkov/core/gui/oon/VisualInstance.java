@@ -12,15 +12,19 @@ package org.openmarkov.core.gui.oon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
@@ -68,7 +72,7 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Horizontal margin for the bounding box
 	 */
-	protected static final double HORIZONTAL_MARGIN = 70;
+	protected static final double HORIZONTAL_MARGIN = 50;
 	
 	/**
 	 * Vertical margin for the bounding box
@@ -79,6 +83,11 @@ public class VisualInstance extends VisualElement {
 
 	private  static final Font FONT_HELVETICA_PLAIN = new Font("Helvetica", Font.PLAIN, 15);	
 	
+    /**
+     * Object used to measure text in a specific font.
+     */
+    private static FontMetrics fontMeter =
+        new JPanel().getFontMetrics(FONT_HELVETICA_BOLD);	
 	/**
 	 * Embedded instance
 	 */
@@ -95,7 +104,6 @@ public class VisualInstance extends VisualElement {
 	private double rightCorner;
 	
 	private List<VisualNode> visualNodes = new ArrayList<>();
-    private List<Point2D.Double> visualNodeRelativePositions = new ArrayList<>();
 
 	private HashMap<String, VisualInstance> visualSubInstances = new HashMap<String, VisualInstance>();
 	
@@ -105,64 +113,89 @@ public class VisualInstance extends VisualElement {
 	{
 		this.instance = instance;
 		
-		// Calculate bounding box
-		topCorner = Double.POSITIVE_INFINITY; 
-		bottomCorner = 0.0;
-		leftCorner = Double.POSITIVE_INFINITY;
-		rightCorner = 0;
-		for(ProbNode probNode: instance.getNodes())
-		{
-
-			if(probNode.getNode().getCoordinateX() < leftCorner)
-			{
-				leftCorner = probNode.getNode().getCoordinateX();
-			}
-			if(probNode.getNode().getCoordinateX() > rightCorner)
-			{
-				rightCorner = probNode.getNode().getCoordinateX();
-			}
-			if(probNode.getNode().getCoordinateY() < topCorner)
-			{
-				topCorner = probNode.getNode().getCoordinateY();
-			}
-			if(probNode.getNode().getCoordinateY() > bottomCorner)
-			{
-				bottomCorner = probNode.getNode().getCoordinateY();
-			}					
-		}
+		// Create visual subInstances
+        for(Instance subInstance : instance.getSubInstances().values())
+        {
+            visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance, allVisualNodes, false));
+        }
+        setExpanded (isExpanded);		
 		
-        leftCorner -= HORIZONTAL_MARGIN;
-        rightCorner += HORIZONTAL_MARGIN;
-        topCorner -= VERTICAL_MARGIN;
-        bottomCorner += VERTICAL_MARGIN;
-        
-        for(ProbNode probNode: instance.getNodes())
+		List<ProbNode> instanceNodes = new ArrayList<> (instance.getNodes());
+        for(Instance subInstance : instance.getSubInstances().values())
+        {
+            instanceNodes.removeAll (subInstance.getNodes ());
+        }
+		
+        for(ProbNode probNode: instanceNodes)
         {
             for(VisualNode visualNode: allVisualNodes)
             {
                 if(probNode.equals(visualNode.getProbNode()))
                 {
                     visualNodes.add(visualNode);
-                    visualNodeRelativePositions.add (new Point2D.Double(probNode.getNode().getCoordinateX () - leftCorner, 
-                                                                        probNode.getNode().getCoordinateY () - topCorner));
                 }
             }
         }           
+  
+        // Calculate bounding box
+        topCorner = Double.POSITIVE_INFINITY; 
+        bottomCorner = 0.0;
+        leftCorner = Double.POSITIVE_INFINITY;
+        rightCorner = 0;
+        
+        for(VisualNode visualNode: visualNodes)
+        {
+
+            if(visualNode.getTemporalPosition ().getX () < leftCorner)
+            {
+                leftCorner = visualNode.getTemporalPosition ().getX ();
+            }
+            if(visualNode.getTemporalPosition ().getX () > rightCorner)
+            {
+                rightCorner = visualNode.getTemporalPosition ().getX ();
+            }
+            if(visualNode.getTemporalPosition ().getY () < topCorner)
+            {
+                topCorner = visualNode.getTemporalPosition ().getY();
+            }
+            if(visualNode.getTemporalPosition ().getY() > bottomCorner)
+            {
+                bottomCorner = visualNode.getTemporalPosition ().getY();
+            }                   
+        }
+        
+        for(VisualInstance visualInstance: visualSubInstances.values ())
+        {
+            if(visualInstance.getCoordinateX () < leftCorner)
+            {
+                leftCorner = visualInstance.getCoordinateX ();
+            }
+            if(visualInstance.getCoordinateX () > rightCorner)
+            {
+                rightCorner = visualInstance.getCoordinateX ();
+            }
+            if(visualInstance.getCoordinateY () < topCorner)
+            {
+                topCorner = visualInstance.getCoordinateY();
+            }
+            if(visualInstance.getCoordinateY () > bottomCorner)
+            {
+                bottomCorner = visualInstance.getCoordinateY ();
+            }             
+        }
+        
+        leftCorner -= 50;
+        rightCorner += 150;
+        topCorner -= 50;
+        bottomCorner += 50;       
         
         dimensions[0] = leftCorner;
         dimensions[1] = topCorner;
-
         dimensions[2] = rightCorner - leftCorner;
         dimensions[3] = bottomCorner - topCorner;
         dimensions[4] = ARC_WIDTH;
-        dimensions[5] = ARC_HEIGHT;     
+        dimensions[5] = ARC_HEIGHT;          
 		
-		for(Instance subInstance : instance.getSubInstances().values())
-		{
-			visualSubInstances.put(subInstance.getName(), new VisualInstance(subInstance, allVisualNodes, true));
-		}
-		
-		setExpanded (isExpanded);
 	}
 	
     public VisualInstance (Instance instance, ArrayList<VisualNode> allVisualNodes)
@@ -172,6 +205,21 @@ public class VisualInstance extends VisualElement {
 
 	@Override
 	public Shape getShape(Graphics2D g) {
+
+        if(!isExpanded)
+        {   
+            double textWidth = fontMeter.getStringBounds(instance.getClassNet().getName(), g).getWidth ();
+            double textHeight =  fontMeter.getStringBounds(instance.getClassNet().getName(), g).getHeight();
+            dimensions[2] =   textWidth + 20;
+            dimensions[3] =  textHeight + 3;
+        }else
+        {
+            dimensions[2] = rightCorner - leftCorner;
+            dimensions[3] = bottomCorner - topCorner;
+        }
+        dimensions[4] = ARC_WIDTH;
+        dimensions[5] = ARC_HEIGHT;  	    
+
 		return new RoundRectangle2D.Double(dimensions[0], dimensions[1],
 				dimensions[2], dimensions[3], dimensions[4], dimensions[5]);
 	}
@@ -238,7 +286,7 @@ public class VisualInstance extends VisualElement {
 		dimensions[1] += diffY;
 		for(VisualInstance subInstance : visualSubInstances.values())
 		{
-			subInstance.move(diffX, diffY, false);
+			subInstance.move(diffX, diffY, true);
 		}
 		if(moveNodes)
 		{
@@ -389,8 +437,25 @@ public class VisualInstance extends VisualElement {
 	 */
 	public List<VisualNode> getVisualNodes()
 	{
-		return visualNodes;
+	    return visualNodes;
 	}
+
+    /**
+     * Returns list of visual nodes
+     * @return
+     */
+    public List<VisualNode> getVisualNodes(boolean recursive)
+    {
+        List<VisualNode> visualNodes = new ArrayList<VisualNode>(this.visualNodes);
+        if(recursive)
+        {
+            for(VisualInstance visualSubInstance : visualSubInstances.values ())
+            {
+                visualNodes.addAll (visualSubInstance.getVisualNodes (recursive));
+            }
+        }
+        return visualNodes;
+    }	
 
 	/**
 	 * Returns the parameter in the position given (if any)
@@ -432,29 +497,11 @@ public class VisualInstance extends VisualElement {
 
 //        dimensions[2] = rightCorner - leftCorner;
 //        dimensions[3] = bottomCorner - topCorner;
-        dimensions[2] = (isExpanded)? rightCorner - leftCorner : 100;
+        dimensions[2] = (isExpanded)? rightCorner - leftCorner : 20;
         dimensions[3] = (isExpanded)? bottomCorner - topCorner : 100;
         dimensions[4] = ARC_WIDTH;
         dimensions[5] = ARC_HEIGHT;           
-        
-        if(this.isExpanded != isExpanded) // If nothing changed, ignore
-        {
-            for(int i = 0; i < visualNodes.size (); ++i)
-            {
-                Point2D.Double newPosition = null;
-                // Contract
-                if(this.isExpanded && !isExpanded)
-                {
-                    newPosition = new Point2D.Double ((leftCorner + rightCorner) / 2, (topCorner + bottomCorner) / 2);
-                }else if(this.isExpanded && !isExpanded) // expand 
-                {
-                    newPosition = new Point2D.Double (leftCorner + visualNodeRelativePositions.get (i).getX (),
-                                                      topCorner + visualNodeRelativePositions.get (i).getY ());
-                }
-                visualNodes.get (i).setTemporalPosition(newPosition);
-                visualNodes.get (i).setVisible (isExpanded);
-            }
-        }
+
         this.isExpanded = isExpanded;
         
     }
@@ -463,5 +510,10 @@ public class VisualInstance extends VisualElement {
     public String toString()
     {
     	return instance.getName();
+    }
+
+    public Collection<VisualInstance> getSubInstances ()
+    {
+        return visualSubInstances.values ();
     }
 }

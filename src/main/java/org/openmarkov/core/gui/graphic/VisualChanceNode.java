@@ -170,18 +170,7 @@ public class VisualChanceNode extends VisualNode {
 		double[] dims = getNodeDimensions(g);
 		return dims[1];
 	}
-
-	/**
-	 * Returns the text's height of node's name.
-	 * 
-	 * @return the text's height of node's name.
-	 */
-	public double getTextHeight(Graphics2D g) {
-		String text = getNodeString();
-		double textHeight = getHeight(text, g);
-		return textHeight;
-	}
-
+	
 	/**
 	 * Returns the shape of the node.
 	 * 
