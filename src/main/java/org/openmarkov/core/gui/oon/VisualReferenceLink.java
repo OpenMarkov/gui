@@ -17,9 +17,9 @@ import java.awt.Stroke;
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualElement;
-import org.openmarkov.core.oon.ParameterLink;
+import org.openmarkov.core.oon.ReferenceLink;
 
-public class VisualParameterLink extends VisualArrow {
+public class VisualReferenceLink extends VisualArrow {
     
     /**
      * Used to paint normal lines.
@@ -35,13 +35,13 @@ public class VisualParameterLink extends VisualArrow {
 	private VisualElement destinationElement;
 
 	/**
-	 * ParameterLink this VisualLink represents
+	 * ReferenceLink this VisualLink represents
 	 */
-	private ParameterLink parameterLink;
+	private ReferenceLink referenceLink;
 	
-	public VisualParameterLink(ParameterLink parameterLink, VisualElement sourceElement, VisualElement destinationElement) {
+	public VisualReferenceLink(ReferenceLink referenceLink, VisualElement sourceElement, VisualElement destinationElement) {
 		super(sourceElement.getPosition(), destinationElement.getPosition());
-		this.parameterLink = parameterLink;
+		this.referenceLink = referenceLink;
 		this.sourceElement = sourceElement;
 		this.destinationElement = destinationElement;
 	}
@@ -100,8 +100,8 @@ public class VisualParameterLink extends VisualArrow {
 		return destinationElement;
 	}
 
-	public ParameterLink getParameterLink() {
-		return parameterLink;
+	public ReferenceLink getReferenceLink() {
+		return referenceLink;
 	}
 
 }

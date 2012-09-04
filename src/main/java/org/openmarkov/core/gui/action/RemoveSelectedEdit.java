@@ -28,9 +28,9 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.oon.VisualInstance;
 import org.openmarkov.core.gui.oon.VisualOONetwork;
-import org.openmarkov.core.gui.oon.VisualParameterLink;
+import org.openmarkov.core.gui.oon.VisualReferenceLink;
 import org.openmarkov.core.oon.action.RemoveInstanceEdit;
-import org.openmarkov.core.oon.action.RemoveParameterLinkEdit;
+import org.openmarkov.core.oon.action.RemoveReferenceLinkEdit;
 
 @SuppressWarnings("serial")
 /**
@@ -44,7 +44,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     private List<VisualLink> linksToRemove;
     //TODO OOBN start
     private List<VisualInstance> instancesToRemove;
-    private List<VisualParameterLink> parameterLinksToRemove;
+    private List<VisualReferenceLink> referenceLinksToRemove;
     //TODO OOBN end
 
     private StringResource messageStringResource;
@@ -62,7 +62,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         if(visualNetwork instanceof VisualOONetwork)
         {
             this.instancesToRemove = ((VisualOONetwork)visualNetwork).getSelectedInstances();
-            this.parameterLinksToRemove = ((VisualOONetwork)visualNetwork).getSelectedParameterLinks();
+            this.referenceLinksToRemove = ((VisualOONetwork)visualNetwork).getSelectedReferenceLinks();
         }
         //TODO OOBN end
         
@@ -108,11 +108,11 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             	edits.add ( new RemoveInstanceEdit(getProbNet(), instance.getName()));
             }
         }
-        if(parameterLinksToRemove != null)
+        if(referenceLinksToRemove != null)
         {
-            for(VisualParameterLink visualLink: parameterLinksToRemove)
+            for(VisualReferenceLink visualLink: referenceLinksToRemove)
             {
-            	edits.add ( new RemoveParameterLinkEdit(getProbNet(), visualLink.getParameterLink()));
+            	edits.add ( new RemoveReferenceLinkEdit(getProbNet(), visualLink.getReferenceLink()));
             }
         }
         //TODO OOBN end
