@@ -246,7 +246,7 @@
     <NetworkTypes>
       <Items>
         <InfluenceDiagram value="Influence diagram" />
-        <SMM value="Simple Markov Model" />
+        <SMM value="Markov process" />
         <POMDP value="POMDP" />
         <TuningNetwork value="Tuning network" />
         <MarkovNetwork value="Markov Net" />

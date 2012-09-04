@@ -183,8 +183,6 @@ public class NodePopup extends PopupMenuBasic {
 		addSeparator();
 		add(getRemoveMenuItem());
 		addSeparator();
-		add(getTemporalEvolutionMenuItem());
-		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
 		addSeparator();
@@ -194,7 +192,9 @@ public class NodePopup extends PopupMenuBasic {
 		add(getAddFindingMenuItem());
 		add(getRemoveFindingMenuItem());
 		addSeparator();
-		add(getLogMenuItem());
+		add(getTemporalEvolutionMenuItem());
+		//addSeparator();
+		//add(getLogMenuItem());
 		// TODO OOBN start
 		addSeparator();
         add(getInputMenuItem ());

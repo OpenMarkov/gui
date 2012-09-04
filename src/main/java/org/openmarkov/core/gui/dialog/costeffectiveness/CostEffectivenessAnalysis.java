@@ -18,16 +18,20 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.inference.variableElimination.VariableElimination;
 
 public class CostEffectivenessAnalysis {
-	private double discountRate;
+	private double costDiscountRate;
+	private double effectivenessDiscountRate;
 	private int numSlices;
 	private ProbNet probNet;
 	private ProbNet expandedNetwork;
 	private ArrayList<Intervention> interventions;
+	private Variable numIndexVariable;
 	
- public CostEffectivenessAnalysis (ProbNet probNet, double discountRate, int numSlices) {
+ public CostEffectivenessAnalysis (ProbNet probNet, double costDiscountRate, double effectivenessDiscountRate, int numSlices, Variable numIndexVariable) {
 	 this.probNet = probNet;
-	 this.discountRate = discountRate;
+	 this.costDiscountRate = costDiscountRate;
+	 this.effectivenessDiscountRate = effectivenessDiscountRate;
 	 this.numSlices = numSlices;
+	 this.numIndexVariable = numIndexVariable;
  }
  
  public TablePotential costEffectivenessCalculator() {
@@ -36,10 +40,10 @@ public class CostEffectivenessAnalysis {
 	 TablePotential globalUtility = null;		  
 	 FactoryExpandedSMM expandedNetFactory;
 	 try {
-		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(discountRate, inferenceOptions);
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
@@ -88,7 +92,7 @@ public class CostEffectivenessAnalysis {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		//InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		//boolean isUtility = false;
-		expandedNetFactory.applyDiscountToUtilityNodes(discountRate, null); 
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, null); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();

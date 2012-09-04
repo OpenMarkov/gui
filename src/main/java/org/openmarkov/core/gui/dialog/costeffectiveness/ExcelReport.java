@@ -48,7 +48,8 @@ public class ExcelReport {
 			return writer;
 		}
 		private int initialAge;
-		private double discount;
+		private double costDiscount;
+		private double effectivenessDiscount;
 		private int finalAge;
 		private int numSlices;
 		private boolean isThereNodeAge;
@@ -246,8 +247,6 @@ public class ExcelReport {
 
 		private void writeInputSheet() {
 			HSSFSheet parametersSheet = workBook.createSheet("Input");
-			
-			
 			if (isThereNodeAge) {
 				HSSFRow row = parametersSheet.createRow(0);
 				row.createCell(0).setCellValue(new HSSFRichTextString("Initial Age"));
@@ -256,23 +255,25 @@ public class ExcelReport {
 				row.createCell(0).setCellValue(new HSSFRichTextString("Final Age"));
 				row.createCell(1).setCellValue(finalAge);
 				row = parametersSheet.createRow(2);
-				row.createCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
-				row.createCell(1).setCellValue(discount);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Cost Discount Rate"));
+				row.createCell(1).setCellValue(costDiscount);
+				row = parametersSheet.createRow(3);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Effectiveness Discount Rate"));
+				row.createCell(1).setCellValue(effectivenessDiscount);
 			} else {
 				HSSFRow row = parametersSheet.createRow(0);
 				row.createCell(0).setCellValue(new HSSFRichTextString("Number of slices"));
 				row.createCell(1).setCellValue(numSlices);
 				row = parametersSheet.createRow(1);
-				row.createCell(0).setCellValue(new HSSFRichTextString("Discount Rate"));
-				row.createCell(1).setCellValue(discount);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Cost Discount Rate"));
+				row.createCell(1).setCellValue(costDiscount);
+				row = parametersSheet.createRow(2);
+				row.createCell(0).setCellValue(new HSSFRichTextString("Effectiveness Discount Rate"));
+				row.createCell(1).setCellValue(effectivenessDiscount);
 			}
 			
-			
-			
-			
-			
-			
 		}
+		
 		private void writeAllInterventionsSheet(ArrayList<Intervention> interventions) {
 			HSSFSheet allInterventionsSheet = workBook.createSheet("All interventions");
 			int rowIndex = 1;
@@ -347,8 +348,8 @@ public class ExcelReport {
 				this.numSlices = costEffectivenessDialog.getNumSlices();
 			}
 			
-			this.discount = costEffectivenessDialog.getDiscount();
-			
+			this.costDiscount = costEffectivenessDialog.getCostDiscount();
+			this.effectivenessDiscount = costEffectivenessDialog.getEffectivenessDiscount();
 		}
 
 		private String checkXLSExtention(String fileName2) {

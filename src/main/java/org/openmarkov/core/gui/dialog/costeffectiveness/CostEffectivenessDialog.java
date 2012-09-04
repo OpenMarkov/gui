@@ -37,6 +37,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
+import org.jfree.chart.plot.ThermometerPlot;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
@@ -56,12 +57,15 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private JLabel finalAgeLabel;
 	private JTextField finalAgeTextField;
 	private JTextField initialAgeTextField;
-	private JLabel discountLabel;
-	private JTextField discountTextField;
+	private JLabel costDiscountLabel;
+	private JLabel effectivenessDiscountLabel;
+	private JTextField costDiscountTextField;
+	private JTextField effectivenessDiscountTextField;
 	private JLabel yearsLabel;
 	private Integer initialAge;
 	private Integer finalAge;
-	private Double discount;
+	private Double costDiscount;
+	private Double effectivenessDiscount;
 	private JLabel lblOutputFile;
 	private JLabel yearsLabel2;
 	private JTextField outputJTextField;
@@ -255,7 +259,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		setMinimumSize(new Dimension(250 , 150));
 		
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		
+		if (isTemporalEvolution) {
 		if (isUtility && isThereNodeAge) {
 			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
 			groupLayout.setHorizontalGroup(
@@ -276,9 +280,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 										.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 										)
 									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getDiscountLabel())
+										.addComponent(getCostDiscountLabel())
 										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+										.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getEffectivenessDiscountLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
 										)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getJPanelInstantOrAccumulative()) 
@@ -307,8 +316,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getDiscountTextField())
+							.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getCostDiscountTextField())
+							.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getEffectivenessDiscountTextField())
 							)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -323,7 +334,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			);
 			Component[] components = new Component [4];
 			components[0] = getInitialAgeLabel();
-			components[1] = getDiscountLabel();
+			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
 			components[3] = getFinalAgeLabel();
 			groupLayout.linkSize(components);
@@ -344,10 +355,15 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 										.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
 										)
 									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getDiscountLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE/* 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE*/)
-										)
+											.addComponent(getCostDiscountLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getEffectivenessDiscountLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+											)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getJPanelInstantOrAccumulative()) 
 										)
@@ -372,8 +388,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getDiscountTextField())
+							.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getCostDiscountTextField())
+							.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getEffectivenessDiscountTextField())
 							)
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -389,7 +407,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			
 			Component[] components = new Component [3];
 			components[0] = getJLabelNumSlices();
-			components[1] = getDiscountLabel();
+			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
@@ -443,7 +461,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			);
 			Component[] components = new Component [3];
 			components[0] = getJLabelNumSlices();
-			components[1] = getDiscountLabel();
+			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
@@ -494,6 +512,152 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
 		}
+		} else if (!isTemporalEvolution) {
+			if (isThereNodeAge) {
+
+				GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
+				groupLayout.setHorizontalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getInitialAgeLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getFinalAgeLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+											)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getCostDiscountLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getEffectivenessDiscountLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+											)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getOutputFileLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE,  203, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getBtnBrowse())
+											)
+											)
+								
+								.addContainerGap())
+				)));
+				groupLayout.setVerticalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getInitialAgeLabel())
+								.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getFinalAgeLabel())
+								.addComponent(getFinalAgeTextField())
+								)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getCostDiscountTextField())
+								.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getEffectivenessDiscountTextField())
+								)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGap(21)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getOutputFileLabel())
+								.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getBtnBrowse()))
+							.addContainerGap())
+				);
+				Component[] components = new Component [4];
+				components[0] = getInitialAgeLabel();
+				components[1] = getCostDiscountLabel();
+				components[2] = getOutputFileLabel();
+				components[3] = getFinalAgeLabel();
+				groupLayout.linkSize(components);
+				getComponentsPanel().setLayout(groupLayout);
+				
+			
+			} else if (!isThereNodeAge) {
+
+				GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
+				groupLayout.setHorizontalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getJLabelNumSlices())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+											)
+										.addGroup(groupLayout.createSequentialGroup()
+												.addComponent(getCostDiscountLabel())
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+												.addGap(18)
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(getEffectivenessDiscountLabel())
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
+												)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getOutputFileLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203,	Short.MAX_VALUE)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getBtnBrowse())
+											)
+											)
+								
+								.addContainerGap())
+				)));
+				groupLayout.setVerticalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getJLabelNumSlices())
+								.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getCostDiscountTextField())
+								.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getEffectivenessDiscountTextField())
+								)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGap(21)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(getOutputFileLabel())
+								.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getBtnBrowse()))
+							.addContainerGap())
+				);
+				
+				Component[] components = new Component [3];
+				components[0] = getJLabelNumSlices();
+				components[1] = getCostDiscountLabel();
+				components[2] = getOutputFileLabel();
+				groupLayout.linkSize(components);
+				getComponentsPanel().setLayout(groupLayout);
+				
+			
+			}
+		}
 		
 		 pack();
 		 repaint();
@@ -519,7 +683,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(getInitialAgeLabel(), 70, 70, 70)
-										.addComponent(getDiscountLabel(), 70, 70, 70))
+										.addComponent(getCostDiscountLabel(), 70, 70, 70))
 									.addGap(26))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(getLblSimulationsNumber())
@@ -531,7 +695,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 									.addComponent(getYearsLabel(), 70, 70, 70))
 								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
 									.addComponent(getTxtSimulationsNumber(), Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-									.addComponent(getDiscountTextField(), Alignment.LEADING, 70, 70, Short.MAX_VALUE))))
+									.addComponent(getCostDiscountTextField(), Alignment.LEADING, 70, 70, Short.MAX_VALUE))))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 								.addGroup(groupLayout.createSequentialGroup()
@@ -563,8 +727,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addComponent(getFinalAgeTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(getDiscountTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(getDiscountLabel()))
+						.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(getCostDiscountLabel()))
 					.addGap(7)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(getLblSimulationsNumber())
@@ -592,9 +756,9 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 											.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
 											)
 										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getDiscountLabel())
+											.addComponent(getCostDiscountLabel())
 											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getDiscountTextField(),GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+											.addComponent(getCostDiscountTextField(),GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
 											
 											)
 										.addGroup(groupLayout.createSequentialGroup()
@@ -618,8 +782,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 								)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(getDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getDiscountTextField())
+								.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(getCostDiscountTextField())
 								)
 								
 							.addPreferredGap(ComponentPlacement.RELATED)
@@ -635,7 +799,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			
 			Component[] components = new Component [3];
 			components[0] = getJLabelNumSlices();
-			components[1] = getDiscountLabel();
+			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
 			groupLayout.linkSize(components);
 		}
@@ -664,7 +828,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
 	private JLabel getJLabelNumSlices() {
 		if (numSlicesLabell == null){
-			numSlicesLabell = new JLabel("Number of Slices");
+			numSlicesLabell = new JLabel("Number of Cycles");
 		}
 		return numSlicesLabell;
 	}
@@ -723,11 +887,17 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		}
 		return finalAgeLabel;
 	}
-	public JLabel getDiscountLabel(){
-		if ( discountLabel == null ){
-			discountLabel = new JLabel("Discount (%)");
+	public JLabel getCostDiscountLabel(){
+		if ( costDiscountLabel == null ){
+			costDiscountLabel = new JLabel("Cost discount (%)");
 		}
-		return discountLabel;
+		return costDiscountLabel;
+	}
+	public JLabel getEffectivenessDiscountLabel(){
+		if ( effectivenessDiscountLabel == null ){
+			effectivenessDiscountLabel = new JLabel("Effectiveness discount (%)");
+		}
+		return effectivenessDiscountLabel;
 	}
 	private JLabel getYearsLabel(){
 		if ( yearsLabel == null ){
@@ -747,12 +917,19 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		}
 		return initialAgeTextField;
 	}
-	public JTextField getDiscountTextField(){
-		if ( discountTextField == null ){
-			discountTextField = new JTextField("3.0");
-			discountTextField.setColumns(10);
+	public JTextField getCostDiscountTextField(){
+		if ( costDiscountTextField == null ){
+			costDiscountTextField = new JTextField("3.0");
+			costDiscountTextField.setColumns(10);
 		}
-		return discountTextField;
+		return costDiscountTextField;
+	}
+	public JTextField getEffectivenessDiscountTextField(){
+		if ( effectivenessDiscountTextField == null ){
+			effectivenessDiscountTextField = new JTextField("3.0");
+			effectivenessDiscountTextField.setColumns(10);
+		}
+		return effectivenessDiscountTextField;
 	}
 	
 	public JRadioButton getInstanValuesButton() {
@@ -764,7 +941,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	}
 	public JRadioButton getAccumulativeValuesButton() {
 		if ( accumulativeButton == null ){
-			accumulativeButton = new JRadioButton("Accumulative values", false);
+			accumulativeButton = new JRadioButton("Cumulative values", false);
 			accumulativeButton.addItemListener(this);
 		}
 		return accumulativeButton;
@@ -841,7 +1018,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			numSlices = Integer.valueOf(getNumSlicesJTextField().getText());
 		}
 		
-		discount = Double.valueOf(getDiscountTextField().getText());
+		costDiscount = Double.valueOf(getCostDiscountTextField().getText());
+		effectivenessDiscount = Double.valueOf(getEffectivenessDiscountTextField().getText());
 		nameFile = getOutputFileJTextField().getText();
 		simulationsNumber = Integer.valueOf(getTxtSimulationsNumber().getText());
 		
@@ -853,8 +1031,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public int getFinalAge(){
 		return finalAge;
 	}
-	public double getDiscount(){
-		return discount;
+	public double getCostDiscount(){
+		return costDiscount;
+	}
+	public double getEffectivenessDiscount(){
+		return effectivenessDiscount;
 	}
 	public String getOutputFileName(){
 		return nameFile;

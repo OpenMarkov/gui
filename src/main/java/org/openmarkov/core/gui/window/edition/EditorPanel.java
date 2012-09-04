@@ -2287,7 +2287,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 		if (isTemporalEvolution) {
 			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge, isUtility, isTemporalEvolution);
 		} else {
-			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
+			//costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
+			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge, true, false);
 		}
 		
 		//costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
@@ -2310,9 +2311,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  } else {
 				  numSlices = costEffectivenessDialog.getNumSlices();
 			  }
-			  double discountRate = costEffectivenessDialog.getDiscount();
-			  
-			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, discountRate, numSlices);
+			  double costDiscountRate = costEffectivenessDialog.getCostDiscount();
+			  double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
+			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate, effectivenessDiscountRate, numSlices, null);
 			  
 			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis, costEffectivenessAnalysis.costEffectivenessCalculator(),
 					  costEffectivenessDialog) ;
@@ -2499,9 +2500,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				} else {
 					numSlices = costEffectivenessDialog.getNumSlices();
 				}
-				double discountRate = costEffectivenessDialog.getDiscount();
-
-				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, discountRate, numSlices);
+				double costDiscountRate = costEffectivenessDialog.getCostDiscount();
+				double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
+				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate,effectivenessDiscountRate, numSlices, null);
 
 				try {
 					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
