@@ -26,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -54,6 +55,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JLabel initialAgeLabel;
+	private JLabel cycleLengthLabel;
+	private JLabel unitLabel;
+	private JTextField cycleLengthTextField;
+	private JComboBox unitsCombo;
 	private JLabel finalAgeLabel;
 	private JTextField finalAgeTextField;
 	private JTextField initialAgeTextField;
@@ -270,6 +275,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getCycleLengthLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getUnitsJComboBox())
+										)
+									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getInitialAgeLabel())
 										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
@@ -309,6 +322,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 					.addGroup(groupLayout.createSequentialGroup()
 						.addContainerGap()
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(getInitialAgeLabel())
 							.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addComponent(getFinalAgeLabel())
@@ -332,11 +351,13 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addComponent(getBtnBrowse()))
 						.addContainerGap())
 			);
-			Component[] components = new Component [4];
+			Component[] components = new Component [6];
 			components[0] = getInitialAgeLabel();
 			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
 			components[3] = getFinalAgeLabel();
+			components[4] = getCycleLengthLabel();
+			components[5] = getUnitsJComboBox();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
 			
@@ -349,6 +370,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getCycleLengthLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getUnitsJComboBox())
+										)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getJLabelNumSlices())
 										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -383,6 +412,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 					.addGroup(groupLayout.createSequentialGroup()
 						.addContainerGap()
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(getJLabelNumSlices())
 							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							)
@@ -405,10 +440,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addContainerGap())
 			);
 			
-			Component[] components = new Component [3];
+			Component[] components = new Component [5];
 			components[0] = getJLabelNumSlices();
 			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
+			components[3] = getCycleLengthLabel();
+			components[4] = getUnitsJComboBox();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
 			
@@ -421,6 +458,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getCycleLengthLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getUnitsJComboBox())
+										)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getInitialAgeLabel())
 										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -447,6 +492,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 					.addGroup(groupLayout.createSequentialGroup()
 						.addContainerGap()
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(getInitialAgeLabel())
 							.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addComponent(getFinalAgeLabel())
@@ -459,10 +510,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addComponent(getBtnBrowse()))
 						.addContainerGap())
 			);
-			Component[] components = new Component [3];
+			Component[] components = new Component [5];
 			components[0] = getJLabelNumSlices();
 			components[1] = getCostDiscountLabel();
 			components[2] = getOutputFileLabel();
+			components[3] = getCycleLengthLabel();
+			components[4] = getUnitsJComboBox();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
 			
@@ -475,6 +528,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(getCycleLengthLabel())
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(getUnitsJComboBox())
+												)
 									.addGroup(groupLayout.createSequentialGroup()
 										.addComponent(getJLabelNumSlices())
 										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -496,6 +557,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 					.addGroup(groupLayout.createSequentialGroup()
 						.addContainerGap()
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(getJLabelNumSlices())
 							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							)
@@ -506,9 +573,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addComponent(getBtnBrowse()))
 						.addContainerGap())
 			);
-			Component[] components = new Component [2];
+			Component[] components = new Component [4];
 			components[0] = getJLabelNumSlices();
 			components[1] = getOutputFileLabel();
+			components[2] = getCycleLengthLabel();
+			components[3] = getUnitsJComboBox();
 			groupLayout.linkSize(components);
 			getComponentsPanel().setLayout(groupLayout);
 		}
@@ -523,6 +592,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getCycleLengthLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getUnitsJComboBox())
+											)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addComponent(getInitialAgeLabel())
 											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -559,6 +636,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(getInitialAgeLabel())
 								.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(getFinalAgeLabel())
@@ -579,11 +662,13 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 								.addComponent(getBtnBrowse()))
 							.addContainerGap())
 				);
-				Component[] components = new Component [4];
+				Component[] components = new Component [6];
 				components[0] = getInitialAgeLabel();
 				components[1] = getCostDiscountLabel();
 				components[2] = getOutputFileLabel();
 				components[3] = getFinalAgeLabel();
+				components[4] = getCycleLengthLabel();
+				components[5] = getUnitsJComboBox();
 				groupLayout.linkSize(components);
 				getComponentsPanel().setLayout(groupLayout);
 				
@@ -598,6 +683,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(getCycleLengthLabel())
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+											.addGap(18)
+											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+											.addComponent(getUnitsJComboBox())
+											)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addComponent(getJLabelNumSlices())
 											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -629,6 +722,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(getCycleLengthLabel())
+							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(getUnitsJComboBox())
+							)
+						.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(getJLabelNumSlices())
 								.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								)
@@ -648,10 +747,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							.addContainerGap())
 				);
 				
-				Component[] components = new Component [3];
+				Component[] components = new Component [5];
 				components[0] = getJLabelNumSlices();
 				components[1] = getCostDiscountLabel();
 				components[2] = getOutputFileLabel();
+				components[3] = getCycleLengthLabel();
+				components[4] = getUnitsJComboBox();
 				groupLayout.linkSize(components);
 				getComponentsPanel().setLayout(groupLayout);
 				
@@ -881,6 +982,33 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		}
 		return initialAgeLabel;
 	}
+	public JLabel unitLabel(){
+		if ( unitLabel == null ){
+			unitLabel = new JLabel("Cycle Length");
+		}
+		return unitLabel;
+	}
+	public JComboBox<String> getUnitsJComboBox() {
+		if (unitsCombo == null) {
+			String units[] = {"months", "years"}; 
+			unitsCombo = new JComboBox<>(units);
+			//unitsCombo.addItemListener(this);
+		}
+		return unitsCombo;
+	}
+	
+	public JLabel getCycleLengthLabel(){
+		if ( cycleLengthLabel == null ){
+			cycleLengthLabel = new JLabel("Cycle Length");
+		}
+		return cycleLengthLabel;
+	}
+	public JTextField getCycleLengthTextField(){
+		if ( cycleLengthTextField == null ){
+			cycleLengthTextField = new JTextField("1");
+		}
+		return cycleLengthTextField;
+	}
 	public JLabel getFinalAgeLabel(){
 		if ( finalAgeLabel == null ){
 			finalAgeLabel = new JLabel("Final age");
@@ -1093,6 +1221,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		if (e.getItem().equals(getAccumulativeValuesButton())) {
 			this.isAccumulative = true;
 		}
-
+		
 	}
 }
