@@ -78,7 +78,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmarkov</groupId>
-			<artifactId>org.openmarkov.io.probmodel</artifactId>
+			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
