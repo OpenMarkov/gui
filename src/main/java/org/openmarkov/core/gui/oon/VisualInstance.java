@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualNode;
@@ -72,7 +73,7 @@ public class VisualInstance extends VisualElement {
 	/**
 	 * Horizontal margin for the bounding box
 	 */
-	protected static final double HORIZONTAL_MARGIN = 50;
+	protected static final double HORIZONTAL_MARGIN = 70;
 	
 	/**
 	 * Vertical margin for the bounding box
@@ -120,6 +121,10 @@ public class VisualInstance extends VisualElement {
         }
         setExpanded (isExpanded);		
 		
+        if(isExpanded)
+        {
+            System.out.println ();
+        }        
 		List<ProbNode> instanceNodes = new ArrayList<> (instance.getNodes());
         for(Instance subInstance : instance.getSubInstances().values())
         {
@@ -184,15 +189,15 @@ public class VisualInstance extends VisualElement {
             }             
         }
         
-        leftCorner -= 50;
-        rightCorner += 150;
+        leftCorner -= 70;
+        rightCorner += 90;
         topCorner -= 50;
         bottomCorner += 50;       
         
-        dimensions[0] = leftCorner;
-        dimensions[1] = topCorner;
-        dimensions[2] = rightCorner - leftCorner;
-        dimensions[3] = bottomCorner - topCorner;
+        dimensions[0] = (isExpanded)? leftCorner : (rightCorner + leftCorner) / 2;
+        dimensions[1] = (isExpanded)? topCorner : (bottomCorner + topCorner) / 2;
+        dimensions[2] = (isExpanded)? rightCorner - leftCorner : 25;
+        dimensions[3] = (isExpanded)? bottomCorner - topCorner: 100;
         dimensions[4] = ARC_WIDTH;
         dimensions[5] = ARC_HEIGHT;          
 		
@@ -208,8 +213,10 @@ public class VisualInstance extends VisualElement {
 
         if(!isExpanded)
         {   
-            double textWidth = fontMeter.getStringBounds(instance.getClassNet().getName(), g).getWidth ();
-            double textHeight =  fontMeter.getStringBounds(instance.getClassNet().getName(), g).getHeight();
+            double textWidth = fontMeter.getStringBounds(toString(), g).getWidth ();
+            double textHeight =  fontMeter.getStringBounds(toString(), g).getHeight();
+            dimensions[0] = (rightCorner + leftCorner) / 2;
+            dimensions[1] = (bottomCorner + topCorner) / 2;
             dimensions[2] =   textWidth + 20;
             dimensions[3] =  textHeight + 3;
         }else
@@ -232,7 +239,7 @@ public class VisualInstance extends VisualElement {
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
 		
-		String text = adjustText(instance.getClassNet().getName(), dimensions[2], 3, FONT_HELVETICA_BOLD, g);
+		String text = adjustText(toString(), dimensions[2], 3, FONT_HELVETICA_BOLD, g);
 		g.drawString(text, (float) dimensions[0] + 10.0f, (float) dimensions[1] + 15.0f);
 		Stroke s = (isSelected())? WIDE_STROKE : NORMAL_STROKE;
 		if(instance.isInput ()) s = (isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE; 
@@ -273,8 +280,7 @@ public class VisualInstance extends VisualElement {
 	 * @return center of the node in the screen.
 	 */
 	public Point2D.Double getCenter() {
-
-		return new Point2D.Double(dimensions[0]+ dimensions[2]/2, dimensions[1]+dimensions[3]/2);
+		return new Point2D.Double (dimensions[0] + dimensions[2]/2, dimensions[1] + dimensions[3]/2);
 	}	
 	
 	public void move(double diffX, double diffY) {
@@ -284,6 +290,12 @@ public class VisualInstance extends VisualElement {
 	private void move(double diffX, double diffY, boolean moveNodes) {
 		dimensions[0] += diffX;
 		dimensions[1] += diffY;
+		
+		leftCorner += diffX;
+        rightCorner += diffX;
+        topCorner += diffY;
+        bottomCorner += diffY;
+
 		for(VisualInstance subInstance : visualSubInstances.values())
 		{
 			subInstance.move(diffX, diffY, true);
@@ -492,15 +504,15 @@ public class VisualInstance extends VisualElement {
      */
     public void setExpanded (boolean isExpanded)
     {
-        dimensions[0] = (isExpanded)? leftCorner : (leftCorner + rightCorner) / 2;
-        dimensions[1] = (isExpanded)? topCorner : (topCorner + bottomCorner) / 2;
-
-//        dimensions[2] = rightCorner - leftCorner;
-//        dimensions[3] = bottomCorner - topCorner;
-        dimensions[2] = (isExpanded)? rightCorner - leftCorner : 20;
-        dimensions[3] = (isExpanded)? bottomCorner - topCorner : 100;
-        dimensions[4] = ARC_WIDTH;
-        dimensions[5] = ARC_HEIGHT;           
+//        dimensions[0] = (isExpanded)? leftCorner : (leftCorner + rightCorner) / 2;
+//        dimensions[1] = (isExpanded)? topCorner : (topCorner + bottomCorner) / 2;
+//
+////        dimensions[2] = rightCorner - leftCorner;
+////        dimensions[3] = bottomCorner - topCorner;
+//        dimensions[2] = (isExpanded)? rightCorner - leftCorner : 20;
+//        dimensions[3] = (isExpanded)? bottomCorner - topCorner : 100;
+//        dimensions[4] = ARC_WIDTH;
+//        dimensions[5] = ARC_HEIGHT;           
 
         this.isExpanded = isExpanded;
         
@@ -509,7 +521,7 @@ public class VisualInstance extends VisualElement {
     @Override
     public String toString()
     {
-    	return instance.getName();
+    	return FilenameUtils.getBaseName (instance.getClassNet().getName()) + " " + instance.getName();
     }
 
     public Collection<VisualInstance> getSubInstances ()

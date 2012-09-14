@@ -37,8 +37,8 @@ public class InstanceEditionMode extends EditionMode
                 && Utilities.noMouseModifiers(e)) {
             if (visualNetwork.getElementInPosition(position, g) == null) {
                 probNet.getPNESupport().setWithUndo(true);
-                String activeClassName = getClassComboBox().getSelectedItem().toString();
-                NetworkPanel instanceNetworkPanel = ((NetworkPanel) MainPanel.getUniqueInstance().getMdi().getFrameByTitle(activeClassName));
+                String selectedClassFrameTitle = getClassComboBox().getSelectedClassFrameTitle();
+                NetworkPanel instanceNetworkPanel = ((NetworkPanel) MainPanel.getUniqueInstance().getMdi().getFrameByTitle(selectedClassFrameTitle));
                 if(instanceNetworkPanel != null)
                 {
                     ProbNet classNet = instanceNetworkPanel.getProbNet();
@@ -69,9 +69,9 @@ public class InstanceEditionMode extends EditionMode
         }
     }
 
-    private JComboBox<String> getClassComboBox ()
+    private ClassComboBox getClassComboBox ()
     {
-        JComboBox<String> classComboBox = null;
+        ClassComboBox classComboBox = null;
         
         for(Component toolbar : MainPanel.getUniqueInstance().getToolBarPanel ().getComponents ())
         {

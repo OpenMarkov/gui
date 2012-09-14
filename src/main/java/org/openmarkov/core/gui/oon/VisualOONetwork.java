@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.gui.oon;
 
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JPanel;
 import javax.swing.event.UndoableEditEvent;
 
 import org.openmarkov.core.action.PNEdit;
@@ -767,7 +769,14 @@ public class VisualOONetwork extends VisualNetwork
     public void editClass ()
     {
         Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
-        MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet ());
+        Container openedFrame = MainPanel.getUniqueInstance ().getMdi ().getFrameByTitle (selectedInstance.getClassNet ().getName ());
+        if(openedFrame !=  null)
+        {
+            MainPanel.getUniqueInstance ().getMdi ().selectFrame ((JPanel)openedFrame);
+        }else
+        {
+            MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet ());
+        }
         
     }
 

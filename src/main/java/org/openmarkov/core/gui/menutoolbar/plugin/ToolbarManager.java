@@ -1,13 +1,14 @@
 package org.openmarkov.core.gui.menutoolbar.plugin;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openmarkov.core.gui.menutoolbar.toolbar.ToolBarBasic;
 import org.openmarkov.core.gui.window.MainPanel;
@@ -18,6 +19,7 @@ public class ToolbarManager
 {
     private MainPanel mainPanel;
     private Map<String, Class<?>> toolbarClasses;
+    private List<String> activeToolbars = new ArrayList<> ();
     
     public ToolbarManager(MainPanel mainPanel)
     {
@@ -40,22 +42,25 @@ public class ToolbarManager
     public void addToolbar(String name)
     {
         ToolBarBasic instance = null;
-        
-        if(toolbarClasses.containsKey (name))
+
+        if(!activeToolbars.contains (name))
         {
-            try
+            if(toolbarClasses.containsKey (name))
             {
-                Constructor constructor = toolbarClasses.get (name).getConstructor (ActionListener.class);
-                instance = (ToolBarBasic) constructor.newInstance (mainPanel.getMainPanelListenerAssistant ());
+                try
+                {
+                    Constructor constructor = toolbarClasses.get (name).getConstructor (ActionListener.class);
+                    instance = (ToolBarBasic) constructor.newInstance (mainPanel.getMainPanelListenerAssistant ());
+                }
+                catch (NoSuchMethodException | SecurityException | InstantiationException
+                        | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
             }
-            catch (NoSuchMethodException | SecurityException | InstantiationException
-                    | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-            {
-                e.printStackTrace();
-            }
+            mainPanel.getToolBarPanel ().add (instance);
         }
-        
-        mainPanel.getToolBarPanel ().add (instance);
+        activeToolbars.add (name);
     }
     
     /**

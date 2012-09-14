@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 

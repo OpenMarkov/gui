@@ -12,6 +12,8 @@ package org.openmarkov.core.gui.window.mdi;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
@@ -20,6 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -307,6 +310,8 @@ public class MDIMenu extends Component{
 			windowPreviousMenuItem.setActionCommand(WINDOW_PREVIOUS_MENUITEM);
 			windowPreviousMenuItem.addActionListener(listener);
 			windowPreviousMenuItem.setEnabled(false);
+			windowPreviousMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_A,
+                                                                       InputEvent.CTRL_DOWN_MASK));
 		}
 
 		return windowPreviousMenuItem;
@@ -330,6 +335,8 @@ public class MDIMenu extends Component{
 			windowNextMenuItem.setActionCommand(WINDOW_NEXT_MENUITEM);
 			windowNextMenuItem.addActionListener(listener);
 			windowNextMenuItem.setEnabled(false);
+			windowNextMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Q,
+                                                                                  InputEvent.CTRL_DOWN_MASK));
 		}
 
 		return windowNextMenuItem;

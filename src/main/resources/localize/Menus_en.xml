@@ -8,6 +8,9 @@
     <EditClass>
         <Label value="Edit class"/>
     </EditClass>
+    <Arity>
+        <Label value="Arity"/>
+    </Arity>    
     <!-- TODO OOBN end -->
     <Mode>
         <Link>

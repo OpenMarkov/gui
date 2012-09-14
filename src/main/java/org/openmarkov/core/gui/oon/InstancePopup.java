@@ -145,7 +145,7 @@ public class InstancePopup extends PopupMenuBasic {
 	{
 		if(arityMenuItem == null)
 		{
-			arityMenuItem = new JMenu (MenuItemNames.ARITY_MENUITEM);
+			arityMenuItem = new JMenu (MenuLocalizer.getLabel(MenuItemNames.ARITY_MENUITEM));
 			arityMenuItem.setActionCommand(ActionCommands.SET_ARITY);
 			arityMenuItem .addActionListener(listener);
 			
