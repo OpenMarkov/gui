@@ -879,7 +879,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 			} else {
 				jComboBoxNetworkAgents.setSelectedIndex(0);
 			}
-			jComboBoxNetworkAgents.setEditable(true);
+			jComboBoxNetworkAgents.setEditable(false);
 			jComboBoxNetworkAgents.addItemListener(this);
 
 		}

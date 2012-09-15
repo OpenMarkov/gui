@@ -58,12 +58,17 @@ public class MenuItemNames
     public static final String FILE_SAVE_EVIDENCE_MENUITEM = FILE_MENU + ".SaveEvidence";
 
     /**
-     * Constant that defines the item 'File - Network adittionalProperties'.
+     * Constant that defines the item 'Expand network'.
      */
     public static final String EXPAND_NETWORK_MENUITEM =
         "ExpandNetwork";
     /**
-     * Constant that defines the item 'Expand Network Porperties'.
+     * Constant that defines the item 'Expand network for CE analysis'.
+     */
+    public static final String EXPAND_NETWORK_CE_MENUITEM =
+        "ExpandNetwork";
+    /**
+     * Constant that defines the item 'File - Network adittionalProperties'.
      */
     public static final String FILE_NETWORKPROPERTIES_MENUITEM =
         FILE_MENU + ".NetworkProperties";

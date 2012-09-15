@@ -2284,11 +2284,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private boolean requestCostEffectiveness(Window owner,
 			String suffixTypeAnalysis, boolean isProbabilistic, boolean isUtility, boolean isTemporalEvolution) {
 		isThereNodeAge = probNet.checkIfThereIsAgeNode();
+		ArrayList<ProbNode> numericTemporalNodes = probNet.getSpecialTimeDependantNodes();	
 		if (isTemporalEvolution) {
-			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge, isUtility, isTemporalEvolution);
+			costEffectivenessDialog = new CostEffectivenessDialog(owner, numericTemporalNodes, isThereNodeAge, isUtility, isTemporalEvolution);
 		} else {
 			//costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge);
-			costEffectivenessDialog = new CostEffectivenessDialog(owner, isThereNodeAge, true, false);
+			costEffectivenessDialog = new CostEffectivenessDialog(owner, numericTemporalNodes, isThereNodeAge, true, false);
 		}
 		
 		//costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
@@ -2305,15 +2306,56 @@ public class EditorPanel extends JPanel implements MouseListener,
 		/*CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
 		
 		if (costEffectivenessDialog.requestData(probNet.getName(), "cea") == CostEffectivenessDialog.OK_BUTTON) { */
+			  EvidenceCase evidenceCase  = new EvidenceCase();
 			  int numSlices;
 			  if (isThereNodeAge) {
 				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+				  //set up findings from the network and values introduced by the user
+				  //TODO the same for nodes duration
+				  Finding ageFinding = null;
+				  ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+					for (int i = 0; i < probNodes.size() ; i++) {
+						if (probNodes.get(i).getVariable().isTemporal() 
+								&& probNodes.get(i).getVariable().getBaseName().equals("Age")
+								&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+							ageFinding = new  Finding(probNodes.get(i).getVariable(), costEffectivenessDialog.getInitialAge());
+							break;
+						}
+					}
+					try {
+						evidenceCase.addFinding(ageFinding);
+					} catch (InvalidStateException
+							| IncompatibleEvidenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			  } else {
 				  numSlices = costEffectivenessDialog.getNumSlices();
 			  }
+			//There are other numeric temporal variables apart from age so it is necessary to add the values introduced by the user to the evidence of the network
+			  if (probNet.getSpecialTimeDependantNodes().size()>=0) {
+				  Finding finding = null;
+				  for (int i = 0; i < probNet.getSpecialTimeDependantNodes().size(); i++) {
+					  if (!probNet.getSpecialTimeDependantNodes().get(i).getVariable().getBaseName().equalsIgnoreCase("age")) {
+						  finding =  new Finding(probNet.getSpecialTimeDependantNodes().get(i).getVariable(),
+								 Double.valueOf(costEffectivenessDialog.getNumericTemporalValues().get(probNet.getSpecialTimeDependantNodes().get(i).getVariable().getName()).getText()));
+					  }
+					  try {
+							evidenceCase.addFinding(finding);
+						} catch (InvalidStateException
+								| IncompatibleEvidenceException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				  }
+			  } 
+			  
 			  double costDiscountRate = costEffectivenessDialog.getCostDiscount();
 			  double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
-			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate, effectivenessDiscountRate, numSlices, null);
+			  double cycleLength = costEffectivenessDialog.getCycleLength();
+			  String units = costEffectivenessDialog.getUnits();
+			  
+			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate, effectivenessDiscountRate, numSlices, evidenceCase, cycleLength, null);
 			  
 			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis, costEffectivenessAnalysis.costEffectivenessCalculator(),
 					  costEffectivenessDialog) ;
@@ -2502,7 +2544,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 				}
 				double costDiscountRate = costEffectivenessDialog.getCostDiscount();
 				double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
-				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate,effectivenessDiscountRate, numSlices, null);
+				//evidenceCase and cycleLegth null by the moment
+				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate,effectivenessDiscountRate, numSlices, null, (Double) null, null);
 
 				try {
 					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);

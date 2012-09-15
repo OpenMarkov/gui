@@ -34,6 +34,7 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.AboutBox;
@@ -56,6 +57,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.FactoryExpandedSMM;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -193,7 +195,45 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
 			if (costEffectivenessDialog.requestData(getCurrentNetworkPanel().getProbNet().getName(),
 						"expanded") == CostEffectivenessDialog.OK_BUTTON) {
-					expandNetwork(getCurrentNetworkPanel().getProbNet(), costEffectivenessDialog.getNumSlices());
+				int numSlices;
+				  if (getCurrentNetworkPanel().getProbNet().checkIfThereIsAgeNode()) {
+					  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+				  } else {
+					  numSlices = costEffectivenessDialog.getNumSlices();
+				  }
+					expandNetwork(getCurrentNetworkPanel().getProbNet(), numSlices);
+			}
+		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
+			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
+			if (costEffectivenessDialog.requestData(getCurrentNetworkPanel().getProbNet().getName(),
+						"expandedCE") == CostEffectivenessDialog.OK_BUTTON) {
+				 EvidenceCase evidenceCase  = new EvidenceCase();
+				  int numSlices;
+				  if (getCurrentNetworkPanel().getProbNet().checkIfThereIsAgeNode()) {
+					  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+					  //set up findings from the network and values introduced by the user
+					  Finding ageFinding = null;
+					  ArrayList<ProbNode> probNodes = getCurrentNetworkPanel().getProbNet().getProbNodes();
+						for (int i = 0; i < probNodes.size() ; i++) {
+							if (probNodes.get(i).getVariable().isTemporal() 
+									&& probNodes.get(i).getVariable().getBaseName().equals("Age")
+									&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+								ageFinding = new  Finding(probNodes.get(i).getVariable(), costEffectivenessDialog.getInitialAge());
+								break;
+							}
+						}
+						try {
+							evidenceCase.addFinding(ageFinding);
+						} catch (InvalidStateException
+								| IncompatibleEvidenceException e1) {
+							e1.printStackTrace();
+						}
+				  } else {
+					  numSlices = costEffectivenessDialog.getNumSlices();
+				  }
+				
+					expandNetwokCE(getCurrentNetworkPanel().getProbNet(), numSlices,
+							costEffectivenessDialog.getCostDiscount(), costEffectivenessDialog.getEffectivenessDiscount(),costEffectivenessDialog.getCycleLength(), evidenceCase );
 			}
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
 			closeApplication();
@@ -855,6 +895,45 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			}
 			 
 			
+	}
+	/**
+	 * expand the network like it would be done in CE analysis
+	 * to show it in the GUI
+	 */
+	private void expandNetwokCE(ProbNet probNet, int numSlices, double costDiscountRate, double effectivenessDiscountRate, double cycleLength, EvidenceCase evidence) {
+		 FactoryExpandedSMM expandedNetFactory;
+		try{
+			 double maxX = 0.0;
+		 		for (ProbNode probNode : probNet.getProbNodes()) {
+		 			if (probNode.getNode().getCoordinateX() > maxX) {
+		 				maxX = probNode.getNode().getCoordinateX();
+		 			}
+		 		}
+		 	 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/3);
+			 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+			 try {
+				evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
+			} catch (IncompatibleEvidenceException e2) {
+				e2.printStackTrace();
+			} catch (InvalidStateException e2) {
+				e2.printStackTrace();
+			} catch (WrongCriterionException e2) {
+				e2.printStackTrace();
+			}
+			 expandedNetFactory.adaptProbNetForCE();
+			//project all the evidence
+			expandedNetFactory.projectEvidence(evidence);	
+			ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+			String fileName = probNet.getName()+"_expandedCE";
+			expandedNetwork.setName(fileName);
+			NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+			networkPanel.setNetworkFile(fileName);
+			networkPanels.add(networkPanel);
+		 } catch (NotEnoughMemoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
 	/**

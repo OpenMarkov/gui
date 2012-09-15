@@ -5,11 +5,15 @@ import java.util.HashMap;
 
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.FactoryExpandedSMM;
 import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -25,16 +29,101 @@ public class CostEffectivenessAnalysis {
 	private ProbNet expandedNetwork;
 	private ArrayList<Intervention> interventions;
 	private Variable numIndexVariable;
+	private EvidenceCase evidence;// = new EvidenceCase();
+	private double cycleLength;
 	
- public CostEffectivenessAnalysis (ProbNet probNet, double costDiscountRate, double effectivenessDiscountRate, int numSlices, Variable numIndexVariable) {
+	
+ public CostEffectivenessAnalysis (ProbNet probNet, double costDiscountRate, double effectivenessDiscountRate, int numSlices, EvidenceCase evidence, double cycleLength, Variable numIndexVariable) {
 	 this.probNet = probNet;
 	 this.costDiscountRate = costDiscountRate;
 	 this.effectivenessDiscountRate = effectivenessDiscountRate;
 	 this.numSlices = numSlices;
 	 this.numIndexVariable = numIndexVariable;
+	 this.evidence = evidence;
+	 this.cycleLength = cycleLength;
+	 
+ }
+ 
+ public void probabilisticAdaptation() throws Exception {
+	 //check if the network has uncertainty
+	 boolean hasUncertainty = false;
+	 for (ProbNode node : probNet.getProbNodes()) {
+		 if (node.getPotentials().get(0).isUncertain()) {
+			 hasUncertainty = true;
+			 //add numIndexVariable as a parent of this node
+			 //new potential will be set to the node for each estate of indexSimulationVariable a projected table
+			 //the evidence for this will be configurationEvidence.addFinding(new Finding(simulationIndexVariable, indexSimulation));
+			 //it would be a tree for each state of the simulation variable a table with the evidence of the simulation index
+		 }
+	 }
+	 if (!hasUncertainty) {
+		 throw new RuntimeException("To perform probabilistic cost effectiveness analysis it is necessary uncertainty within the network");
+	 }
+	 
+	 
  }
  
  public TablePotential costEffectivenessCalculator() {
+	 TablePotential globalUtility = null;
+	 FactoryExpandedSMM expandedNetFactory;
+	 try {
+		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
+		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+		 if (!evidence.getFindings().isEmpty()) {
+		 try {
+			evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
+		} catch (IncompatibleEvidenceException e2) {
+			e2.printStackTrace();
+		} catch (InvalidStateException e2) {
+			e2.printStackTrace();
+		} catch (WrongCriterionException e2) {
+			e2.printStackTrace();
+		}
+		 }
+		 expandedNetFactory.adaptProbNetForCE();
+		//project all the evidence
+		 if (!evidence.getFindings().isEmpty()) {
+			 expandedNetFactory.projectEvidence(evidence);
+		 }
+			
+		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		 VariableElimination variableElimination;
+		 try {
+			 variableElimination = new VariableElimination(expandedNetwork);
+			 ArrayList<Variable> conditioningVariables = new ArrayList<>();
+			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
+			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+			 for (ProbNode decisionNode : decisionNodes) {
+				 if (!decisionNode.hasPolicy()) {
+					 conditioningVariables.add(decisionNode.getVariable());
+				 }
+			 }
+			 variableElimination.setConditioningVariables(conditioningVariables);
+
+			 try {
+				 globalUtility =  variableElimination.getGlobalUtility();
+			 } catch (IncompatibleEvidenceException e) {
+				 // TODO Auto-generated catch block
+				 e.printStackTrace();
+			 } catch (UnexpectedInferenceException e) {
+				 // TODO Auto-generated catch block
+				 e.printStackTrace();
+			 }
+		 } catch (NotEvaluableNetworkException e1) {
+			 // TODO Auto-generated catch block
+			 e1.printStackTrace();
+		 }
+
+	 } catch (NotEnoughMemoryException e) {
+		 // TODO Auto-generated catch block
+		 e.printStackTrace();
+	 }
+ 	 return globalUtility;
+ }
+ 
+ 
+ public TablePotential costEffectivenessCalculatorV1() {
 	
 
 	 TablePotential globalUtility = null;		  
@@ -219,7 +308,6 @@ public class CostEffectivenessAnalysis {
 		return interventionsWithICERs;
 		
 	}
-
 	
  public ArrayList<Intervention> getInterventions() {
 	 return interventions;

@@ -415,6 +415,10 @@ public class ActionCommands {
 	 */
 	public static final String EXPAND_NETWORK = "ExpandNetwork";
 	/**
+	 * Action invoked when the user wants to expands the network for CE analysis.
+	 */
+	public static final String EXPAND_NETWORK_CE = "ExpandNetworkCE";
+	/**
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */
 	public static final String SENSITIVITY_ANALYSIS = "Tools.SensitivityAnalysis";
