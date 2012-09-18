@@ -911,7 +911,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		 		}
 		 	 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/3);
 			 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
 			 try {
 				evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
 			} catch (IncompatibleEvidenceException e2) {

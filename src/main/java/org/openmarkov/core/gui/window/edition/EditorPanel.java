@@ -2311,7 +2311,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  if (isThereNodeAge) {
 				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
 				  //set up findings from the network and values introduced by the user
-				  //TODO the same for nodes duration
 				  Finding ageFinding = null;
 				  ArrayList<ProbNode> probNodes = probNet.getProbNodes();
 					for (int i = 0; i < probNodes.size() ; i++) {
@@ -2332,7 +2331,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			  } else {
 				  numSlices = costEffectivenessDialog.getNumSlices();
 			  }
-			//There are other numeric temporal variables apart from age so it is necessary to add the values introduced by the user to the evidence of the network
+			  //There are other numeric temporal variables apart from age so it is necessary to add the values introduced by the user to the evidence of the network
 			  if (probNet.getSpecialTimeDependantNodes().size()>=0) {
 				  Finding finding = null;
 				  for (int i = 0; i < probNet.getSpecialTimeDependantNodes().size(); i++) {

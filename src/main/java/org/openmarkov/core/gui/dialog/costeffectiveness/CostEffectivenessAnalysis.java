@@ -63,36 +63,47 @@ public class CostEffectivenessAnalysis {
 	 
  }
  
- public TablePotential costEffectivenessCalculator() {
+ @SuppressWarnings("unused")
+public TablePotential costEffectivenessCalculator() {
 	 TablePotential globalUtility = null;
 	 FactoryExpandedSMM expandedNetFactory;
 	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+		//to test
+		 ArrayList<ProbNode> test3 =  expandedNetFactory.getExtendedNet().getProbNodes();
+		 
 		 if (!evidence.getFindings().isEmpty()) {
-		 try {
-			evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
-		} catch (IncompatibleEvidenceException e2) {
-			e2.printStackTrace();
-		} catch (InvalidStateException e2) {
-			e2.printStackTrace();
-		} catch (WrongCriterionException e2) {
-			e2.printStackTrace();
-		}
+			 try {
+				 evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
+			 } catch (IncompatibleEvidenceException e2) {
+				 e2.printStackTrace();
+			 } catch (InvalidStateException e2) {
+				 e2.printStackTrace();
+			 } catch (WrongCriterionException e2) {
+				 e2.printStackTrace();
+			 }
 		 }
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
+		 //to test
+		 ArrayList<ProbNode> test =  expandedNetFactory.getExtendedNet().getProbNodes();
+		 
+		 
 		 expandedNetFactory.adaptProbNetForCE();
-		//project all the evidence
+		 //project all the evidence
 		 if (!evidence.getFindings().isEmpty()) {
 			 expandedNetFactory.projectEvidence(evidence);
 		 }
-			
-		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		 //to test
+		 ArrayList<ProbNode> test2 =  expandedNetFactory.getExtendedNet().getProbNodes();
+		 
+		// ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		 ProbNet prunedExpandedNetwork = expandedNetFactory.prepareExpandedNetworkToInference(evidence);
 		 VariableElimination variableElimination;
 		 try {
-			 variableElimination = new VariableElimination(expandedNetwork);
-			 ArrayList<Variable> conditioningVariables = new ArrayList<>();
-			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
+			 variableElimination = new VariableElimination(prunedExpandedNetwork);
+			ArrayList<Variable> conditioningVariables = new ArrayList<>();
+			 conditioningVariables.add(prunedExpandedNetwork.getDecisionCriteriaVariable());
 			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 			 for (ProbNode decisionNode : decisionNodes) {
 				 if (!decisionNode.hasPolicy()) {
@@ -119,9 +130,9 @@ public class CostEffectivenessAnalysis {
 		 // TODO Auto-generated catch block
 		 e.printStackTrace();
 	 }
- 	 return globalUtility;
+	 return globalUtility;
  }
- 
+
  
  public TablePotential costEffectivenessCalculatorV1() {
 	
@@ -132,7 +143,7 @@ public class CostEffectivenessAnalysis {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, new EvidenceCase());
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
@@ -181,7 +192,7 @@ public class CostEffectivenessAnalysis {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		//InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		//boolean isUtility = false;
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, null); 
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, null, new EvidenceCase()); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();

@@ -570,6 +570,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			if (numericTemporalNodes.size() > 0) { // it means there are numeric variables 
 				
 				int rows = numericTemporalNodes.size() + 2;
+				rows = (!isThereNodeAge) ? (rows + 1) : rows;
 				JPanel panel = new JPanel();
 				panel.setLayout(new GridLayout(rows, 4, 10, 10));
 				
@@ -585,6 +586,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 						panel.add(getFinalAgeLabel());
 						panel.add(getFinalAgeTextField());
 					} else {
+						panel.add(getJLabelNumSlices());
+						panel.add(getNumSlicesJTextField());
+						panel.add(new JLabel(""));
+						panel.add(new JLabel(""));
 						if (!numericTemporalNodes.get(i).getVariable().getBaseName().equalsIgnoreCase("Age")) {
 							JLabel label = new JLabel(numericTemporalNodes.get(i).getVariable().getName());
 							//label.setSize(getCycleLengthLabel().getSize());
@@ -592,8 +597,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 							//textField.setColumns(10);
 							panel.add(label);
 							panel.add(textField);
-							numericTemporalComponents.put(label.getName(), textField);
-							panel.add(new JLabel(""));
+							numericTemporalComponents.put(label.getText(), textField);
+							panel.add(new JLabel("Cycles"));
 							panel.add(new JLabel(""));
 							
 						}
@@ -1308,5 +1313,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		if (e.getItem().equals(getUnitsJComboBox())) {
 			units = (String) getUnitsJComboBox().getSelectedItem();
 		}
+		
 	}
 }
