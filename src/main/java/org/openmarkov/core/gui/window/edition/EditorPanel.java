@@ -2726,8 +2726,10 @@ public class EditorPanel extends JPanel implements MouseListener,
         networkPanel.getMainPanel().getInferenceToolBar()
                 .setCurrentEvidenceCaseName(currentCase);
         setSelectedAllNodes(false);
-        if(!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
-            setPropagationActive(false);
+        if(isPropagationActive () &&  networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) {
+          if(!doPropagation(postResolutionEvidence.get(currentCase), currentCase))
+              setPropagationActive(false);
+        }
     }
 	
 	/**
