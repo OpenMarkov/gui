@@ -70,9 +70,6 @@ public TablePotential costEffectivenessCalculator() {
 	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		//to test
-		 ArrayList<ProbNode> test3 =  expandedNetFactory.getExtendedNet().getProbNodes();
-		 
 		 if (!evidence.getFindings().isEmpty()) {
 			 try {
 				 evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
@@ -84,26 +81,26 @@ public TablePotential costEffectivenessCalculator() {
 				 e2.printStackTrace();
 			 }
 		 }
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+		
 		 //to test
-		 ArrayList<ProbNode> test =  expandedNetFactory.getExtendedNet().getProbNodes();
-		 
+		 ArrayList<ProbNode> test=  expandedNetFactory.getExtendedNet().getProbNodes();
 		 
 		 expandedNetFactory.adaptProbNetForCE();
-		 //project all the evidence
+		 /*//project all the evidence
 		 if (!evidence.getFindings().isEmpty()) {
 			 expandedNetFactory.projectEvidence(evidence);
-		 }
+		 }*/
 		 //to test
 		 ArrayList<ProbNode> test2 =  expandedNetFactory.getExtendedNet().getProbNodes();
 		 
-		// ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-		 ProbNet prunedExpandedNetwork = expandedNetFactory.prepareExpandedNetworkToInference(evidence);
+		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		// ProbNet prunedExpandedNetwork = expandedNetFactory.prepareExpandedNetworkToInference(evidence);
 		 VariableElimination variableElimination;
 		 try {
-			 variableElimination = new VariableElimination(prunedExpandedNetwork);
+			variableElimination = new VariableElimination(expandedNetwork);
 			ArrayList<Variable> conditioningVariables = new ArrayList<>();
-			 conditioningVariables.add(prunedExpandedNetwork.getDecisionCriteriaVariable());
+			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
 			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 			 for (ProbNode decisionNode : decisionNodes) {
 				 if (!decisionNode.hasPolicy()) {
@@ -143,7 +140,7 @@ public TablePotential costEffectivenessCalculator() {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 expandedNetFactory.adaptProbNetForCE();
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, new EvidenceCase());
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
@@ -192,7 +189,7 @@ public TablePotential costEffectivenessCalculator() {
 		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
 		//InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		//boolean isUtility = false;
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, null, new EvidenceCase()); 
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, null); 
 		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		String baseName = variableOfInterest.getBaseName();
 		ArrayList<Variable> variablesOfInterest = new ArrayList<>();
