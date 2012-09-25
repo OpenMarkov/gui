@@ -820,6 +820,15 @@ public class VisualOONetwork extends VisualNetwork
 		super.undoEditHappened(event);
 	}
 
-    
+    protected void clean ()
+    {
+        super.clean ();
+        visualInstances.clear ();
+        visualReferenceLinks.clear ();
+        visualContractedNodeLinks.clear ();
+        selectedInstances.clear ();
+        selectedReferenceLinks.clear ();
+        newInstanceLinkSource = null;
+    }    
    
 }

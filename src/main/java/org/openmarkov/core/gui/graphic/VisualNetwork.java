@@ -1207,11 +1207,22 @@ public class VisualNetwork implements PNUndoableEditListener {
 		{
 			this.probNet = probNet;
 			setSelectedAllObjects(false);
+			clean();
 			constructVisualInfo();
 		}
 	}
 
-	/**
+	protected void clean ()
+    {
+        visualNodes.clear ();
+        visualLinks.clear ();
+        selectedNodes.clear ();
+        selectedLinks.clear ();
+        newLink = null;
+        newLinkSource = null;
+    }
+
+    /**
 	 * Adds whatever is in that position to the selection
 	 * @param cursorPosition
 	 * @param g

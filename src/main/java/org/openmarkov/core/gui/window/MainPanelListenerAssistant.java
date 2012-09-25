@@ -46,6 +46,7 @@ import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
+import org.openmarkov.core.gui.dialog.io.SaveOptions;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -597,10 +598,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            network panel which contains the network to be saved.
 	 * @param fileName
 	 *            file where save the network.
+	 * @param savePlainNetwork 
 	 * @return true if the network could be saved; otherwise, false.
 	 */
 	private boolean saveNetworkActions(NetworkPanel networkPanel,
-			String fileName) {
+			String fileName, boolean savePlainNetwork) {
 
 		boolean result = false;
 
@@ -611,6 +613,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						messagesStringResource.getString("SavingNetwork.Text.Label")
 								+ " " + fileName);
 		try {
+		    if(savePlainNetwork)
+		    {
+		        networkPanel.showPlainNetwork();
+		    }
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel ().getEvidence (), fileName);
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
 			networkPanel.setModified(false);
@@ -653,6 +659,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		return result;
 	}
+	
+    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
+        return saveNetworkActions(networkPanel, fileName, false);        
+    }
 
 	/**
 	 * Save a network. First it requests the file in which save the network and
@@ -737,13 +747,23 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		fileName = requestNetworkFileToSave((fileName != null) ? fileName
 				: networkPanel.getProbNet().getName());
+
+        SaveOptions saveOptions = null;
+
 		if (fileName != null) {
 			networkPanel.setNetworkFile(fileName);
 			networkPanel.getProbNet().setName(new File(fileName).getName());
+
+            MainPanel mainPanel = MainPanel.getUniqueInstance ();
+			saveOptions = new SaveOptions (null, true);
+	        saveOptions.setLocation ( mainPanel.getLocation ().x + (mainPanel.getWidth () - saveOptions.getWidth ()) / 2 , 
+	                                  mainPanel.getLocation ().y + (mainPanel.getHeight () - saveOptions.getHeight ()) / 2);
+	        saveOptions.setVisible (true);
+			
 		}
 
-		return (fileName != null) ? saveNetworkActions(networkPanel, fileName)
-				: false;
+        
+        return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions.isSavePlainNetwork ()) : false;
 
 	}
 

@@ -1032,4 +1032,15 @@ public class NetworkPanel extends FrameContentPanel implements
 		editorPanel.setParameterArity(arity);
 	}
 
+    public void showPlainNetwork ()
+    {
+        if(probNet instanceof OOBNet)
+        {
+            probNet = ((OOBNet)probNet).getPlainProbNet ();          
+            editorPanel.setProbNet (probNet);
+            repaint ();
+        }
+        
+    }
+
 }
