@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
@@ -1135,10 +1136,24 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
         fileChooser.setAcceptAllFileFilterUsed (false);
         CaseDatabaseManager caseDbManager = new CaseDatabaseManager (); 
         HashMap<String, String> readersInfo = caseDbManager.getAllReaders ();
+        HashMap<String, FileFilter> fileFilters = new HashMap<> ();
+        
         for(String extension : readersInfo.keySet ())
         {
-            fileChooser.addChoosableFileFilter(new FileFilterAll(extension, readersInfo.get (extension)));
-        }        
+            FileFilter fileFilter = new FileFilterAll(extension, readersInfo.get (extension));
+            fileFilters.put (extension, fileFilter);
+            fileChooser.addChoosableFileFilter(fileFilter);
+        }
+        
+        // Set last used evidence format as default 
+        String lastFileFilter = OpenMarkovPreferences.get( OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, 
+                                                                     OpenMarkovPreferences.OPENMARKOV_FORMATS, "xls");
+
+        if(fileFilters.containsKey (lastFileFilter))
+        {
+            fileChooser.setFileFilter (fileFilters.get (lastFileFilter));
+        }
+        
         if((fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION))
          {
             // load the selected file
@@ -1193,6 +1208,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                     }
                     currentNetworkPanel.getEditorPanel ().addNewEvidenceCase (newEvidenceCase);
                 }
+                // save format extension in preferences
+                OpenMarkovPreferences.set( OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
+                                           ((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
+                                           OpenMarkovPreferences.OPENMARKOV_FORMATS);
+                
+                
             }
             catch (IOException e)
             {

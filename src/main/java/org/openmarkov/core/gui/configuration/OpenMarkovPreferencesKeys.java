@@ -73,6 +73,7 @@ public interface OpenMarkovPreferencesKeys {
 	
 	// parsers & writers
 	public String LAST_SAVED_FORMAT = "last saved format";
+    public String LAST_LOADED_EVIDENCE_FORMAT = "last loaded evidence format";
 
 	
 }
