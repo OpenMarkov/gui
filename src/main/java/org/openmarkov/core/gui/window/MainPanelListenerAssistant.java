@@ -1024,9 +1024,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 	}
 	
-	public void openNetwork(ProbNet probNet)
+	public void openNetwork(ProbNet probNet, String folder)
 	{
-		networkPanels.add(createNewFrame(probNet));
+	    NetworkPanel newNetworkPanel = createNewFrame(probNet);
+        newNetworkPanel.setNetworkFile(folder + File.separator + probNet.getName ());
+		networkPanels.add(newNetworkPanel);
 	}
 
 	/**

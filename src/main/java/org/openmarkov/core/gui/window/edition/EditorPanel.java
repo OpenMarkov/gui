@@ -3057,9 +3057,9 @@ public class EditorPanel extends JPanel implements MouseListener,
     }
 
 
-    public void editClass ()
+    public void editClass (String folder)
     {
-        visualNetwork.editClass();
+        visualNetwork.editClass(folder);
     }
 
 	public void setParameterArity(ParameterArity arity) {

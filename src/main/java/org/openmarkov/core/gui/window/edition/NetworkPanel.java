@@ -12,6 +12,7 @@ package org.openmarkov.core.gui.window.edition;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -1024,7 +1025,7 @@ public class NetworkPanel extends FrameContentPanel implements
 
     public void editClass ()
     {
-        editorPanel.editClass();
+        editorPanel.editClass(new File(networkFile).getParent ());
     }
     // TODO OOBN end
 
