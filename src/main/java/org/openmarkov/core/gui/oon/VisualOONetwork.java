@@ -766,7 +766,7 @@ public class VisualOONetwork extends VisualNetwork
         }
     }    
     
-    public void editClass (String folder)
+    public void editClass ()
     {
         Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
         Container openedFrame = MainPanel.getUniqueInstance ().getMdi ().getFrameByTitle (selectedInstance.getClassNet ().getName ());
@@ -775,7 +775,7 @@ public class VisualOONetwork extends VisualNetwork
             MainPanel.getUniqueInstance ().getMdi ().selectFrame ((JPanel)openedFrame);
         }else
         {
-            MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet (), folder);
+            MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet ());
         }
         
     }

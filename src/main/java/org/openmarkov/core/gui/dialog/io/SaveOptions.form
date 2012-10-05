@@ -93,7 +93,7 @@
     <Component class="javax.swing.JCheckBox" name="chkSaveClassesInFile">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save Classes in file"/>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="enabled" type="boolean" value="true"/>
       </Properties>
     </Component>
   </SubComponents>

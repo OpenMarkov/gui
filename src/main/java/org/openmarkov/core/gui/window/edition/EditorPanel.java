@@ -22,7 +22,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.help.UnsupportedOperationException;
@@ -1703,6 +1702,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			// done the first time that inference mode is selected
 			doPropagation(postResolutionEvidence.get(currentCase), currentCase);
 		}
+		updateAllVisualStates ("", currentCase);
 		repaint();
 	}
 
@@ -2862,9 +2862,8 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void updateAllVisualStates(String option, int caseNumber) {
 		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
-		Iterator<VisualNode> iterator = allVisualNodes.iterator();
-		while (iterator.hasNext()) {
-			VisualNode visualNode = iterator.next();
+		for (VisualNode visualNode : allVisualNodes)
+		{
 			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
 			for (int i = 0; i < innerBox.getNumStates(); i++) {
@@ -3057,9 +3056,9 @@ public class EditorPanel extends JPanel implements MouseListener,
     }
 
 
-    public void editClass (String folder)
+    public void editClass ()
     {
-        visualNetwork.editClass(folder);
+        visualNetwork.editClass();
     }
 
 	public void setParameterArity(ParameterArity arity) {

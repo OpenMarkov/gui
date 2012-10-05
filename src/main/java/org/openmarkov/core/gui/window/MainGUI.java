@@ -13,12 +13,10 @@ package org.openmarkov.core.gui.window;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
@@ -111,26 +109,25 @@ public class MainGUI {
 	 */
 	private static void configureUI() {
 		
-		try {
-			UIManager
-				.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-		} catch (ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(
-				null, "Unable to progress Look & Feel : ClassNotFound problem",
-				"Look & Feel error", JOptionPane.ERROR_MESSAGE );
-		} catch (InstantiationException e) {
-			JOptionPane.showMessageDialog(
-				null, "Unable to progress Look & Feel : Instatiation problem",
-				"Look & Feel error", JOptionPane.ERROR_MESSAGE );
-		} catch (IllegalAccessException e) {
-			JOptionPane.showMessageDialog(
-				null, "Unable to progress Look & Feel : IllegalAccess problem",
-				"Look & Feel error", JOptionPane.ERROR_MESSAGE );
-		} catch (UnsupportedLookAndFeelException e) {
-			JOptionPane.showMessageDialog(
-				null, "Unable to progress Look & Feel : Unsupported problem",
-				"Look & Feel error", JOptionPane.ERROR_MESSAGE );
-		}
+        try
+        {
+            UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException e)
+        {
+            // If Nimbus is not available, you can set the GUI to default look
+            // and feel.
+            try
+            {
+                UIManager.setLookAndFeel (UIManager.getSystemLookAndFeelClassName ());
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | UnsupportedLookAndFeelException e1)
+            {
+                e1.printStackTrace ();
+            }
+        }
 		/*
 		 * The next line is used to avoid that disabled menuitems are
 		 * highlighted.

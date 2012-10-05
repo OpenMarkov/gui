@@ -1025,7 +1025,7 @@ public class NetworkPanel extends FrameContentPanel implements
 
     public void editClass ()
     {
-        editorPanel.editClass(new File(networkFile).getParent ());
+        editorPanel.editClass();
     }
     // TODO OOBN end
 

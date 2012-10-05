@@ -1395,7 +1395,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         }
     }
 
-    public void editClass (String folder)
+    public void editClass ()
     {
         // TODO Auto-generated method stub
     }

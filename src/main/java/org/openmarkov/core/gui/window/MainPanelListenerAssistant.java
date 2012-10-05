@@ -599,11 +599,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            network panel which contains the network to be saved.
 	 * @param fileName
 	 *            file where save the network.
-	 * @param savePlainNetwork 
+	 * @param saveOptions 
 	 * @return true if the network could be saved; otherwise, false.
 	 */
 	private boolean saveNetworkActions(NetworkPanel networkPanel,
-			String fileName, boolean savePlainNetwork) {
+			String fileName, SaveOptions saveOptions) {
 
 		boolean result = false;
 
@@ -614,10 +614,17 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 						messagesStringResource.getString("SavingNetwork.Text.Label")
 								+ " " + fileName);
 		try {
-		    if(savePlainNetwork)
+		    if(saveOptions != null && 
+		            saveOptions.isSavePlainNetwork ())
 		    {
 		        networkPanel.showPlainNetwork();
 		    }
+            if(saveOptions != null && 
+                    saveOptions.isSaveClassesInFile () && 
+                    networkPanel.getProbNet() instanceof OOBNet)
+            {
+                ((OOBNet)networkPanel.getProbNet ()).fillClassList();
+            }
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel ().getEvidence (), fileName);
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
 			networkPanel.setModified(false);
@@ -662,7 +669,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 	
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
-        return saveNetworkActions(networkPanel, fileName, false);        
+        return saveNetworkActions(networkPanel, fileName, null);        
     }
 
 	/**
@@ -760,12 +767,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	        saveOptions.setLocation ( mainPanel.getLocation ().x + (mainPanel.getWidth () - saveOptions.getWidth ()) / 2 , 
 	                                  mainPanel.getLocation ().y + (mainPanel.getHeight () - saveOptions.getHeight ()) / 2);
 	        saveOptions.setVisible (true);
-			
 		}
-
         
-        return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions.isSavePlainNetwork ()) : false;
-
+        return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions) : false;
 	}
 
 	/**
@@ -1024,10 +1028,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}
 	}
 	
-	public void openNetwork(ProbNet probNet, String folder)
+	public void openNetwork(ProbNet probNet)
 	{
 	    NetworkPanel newNetworkPanel = createNewFrame(probNet);
-        newNetworkPanel.setNetworkFile(folder + File.separator + probNet.getName ());
 		networkPanels.add(newNetworkPanel);
 	}
 
