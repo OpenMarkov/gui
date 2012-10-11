@@ -111,22 +111,12 @@ public class MainGUI {
 		
         try
         {
-            UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel (UIManager.getSystemLookAndFeelClassName ());
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException
                 | UnsupportedLookAndFeelException e)
         {
-            // If Nimbus is not available, you can set the GUI to default look
-            // and feel.
-            try
-            {
-                UIManager.setLookAndFeel (UIManager.getSystemLookAndFeelClassName ());
-            }
-            catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | UnsupportedLookAndFeelException e1)
-            {
-                e1.printStackTrace ();
-            }
+            e.printStackTrace ();
         }
 		/*
 		 * The next line is used to avoid that disabled menuitems are

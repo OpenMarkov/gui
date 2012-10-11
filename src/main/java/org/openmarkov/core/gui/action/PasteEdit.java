@@ -168,7 +168,7 @@ public class PasteEdit extends CompoundEdit
                 newNode.setComment (originalNode.getComment ());
                 newNode.setRelevance (originalNode.getRelevance ());
                 newNode.setPurpose (originalNode.getPurpose ());
-                newNode.additionalProperties = (HashMap<String, String>)originalNode.additionalProperties.clone ();
+                newNode.additionalProperties = new HashMap<String, String>(originalNode.additionalProperties);
             }
             catch (Exception e)
             {
