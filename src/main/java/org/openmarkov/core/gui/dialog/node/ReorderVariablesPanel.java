@@ -35,7 +35,7 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 	private StringResource dialogStringResource;
 	private AdvancedPropertiesTableModel netWorkAgentstableModel;
 	private Object dataTable [][];
-	private ArrayList<Variable> newVariables = new ArrayList<>();
+	private ArrayList<Variable> newVariables;
 	
 	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 	
@@ -168,6 +168,8 @@ public class ReorderVariablesPanel extends KeyTablePanel implements TableModelLi
 				}
 			}
 		}
+		
+		newVariables = new ArrayList<>();
 		if (probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			newVariables.add(probNode.getPotentials().get(0).getVariables().get(0));
 			newVariables.addAll(newVariablesDown);
