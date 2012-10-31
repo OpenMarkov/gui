@@ -293,16 +293,27 @@ public class NodeStateEdit extends SimplePNEdit {
 					}
 				
 				}
+				
+				//if there is any child with a tree potential the correspondent branch must change
+				String oldName = probNode.getVariable().getStates()[selectedStateIndex].getName();
+				nodes = probNode.getNode().getChildren();
+				for (Node node : nodes) {
+					ProbNode child = (ProbNode) node.getObject();
+					if (child.getPotentials().get(0) instanceof TreeADDPotential) {
+						renameBranchesStates((TreeADDPotential)child.getPotentials().get(0), oldName, newState.getName() );
+					}
+				}
+				
 				probNode.getVariable().setStates(newStates);
 				
 				//probNode.getVariable().getStates()[selectedStateIndex] = newState;
-				
+				/*
 				for (Node child: probNode.getNode().getChildren()) {
 					ProbNode probnode = (ProbNode) child.getObject();
 					if (probnode.getPotentials().get(0) instanceof TreeADDPotential) {
 						//substitute the new state in branches
 					}
-				}
+				}*/
 			}
 			break;
 
@@ -310,6 +321,35 @@ public class NodeStateEdit extends SimplePNEdit {
 
 	}
 
+	public void renameBranchesStates(TreeADDPotential tree, String oldName, String newName) {
+		if (tree.getTopVariable().equals(probNode.getVariable())) {
+			for (int i = 0; i < tree.getBranches().size(); i++) {
+				ArrayList<State> newBranchStates = new ArrayList<>();
+				for (int j = 0; j < tree.getBranches().get(i).getBranchStates().size(); j++ ) {
+					if (tree.getBranches().get(i).getBranchStates().get(j).getName().equals(oldName)) {
+						newBranchStates.add(new State(newName));
+						//tree.getBranches().get(i).getBranchStates().get(j).setName(newName);
+					} else {
+						newBranchStates.add(tree.getBranches().get(i).getBranchStates().get(j));
+					}
+				}
+				tree.getBranches().get(i).setStates(newBranchStates);
+				if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
+					renameBranchesStates((TreeADDPotential)tree.getBranches().get(i).getPotential(), oldName, newName);
+				}
+				
+			}
+			
+		} else {//look if there are more subtrees within the tree
+			for (int i = 0; i < tree.getBranches().size(); i++) {
+				
+				if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
+					renameBranchesStates((TreeADDPotential)tree.getBranches().get(i).getPotential(), oldName, newName);
+				}
+				
+			}
+		}
+	}
 	@Override
 	public void undo() {
 		super.undo();
