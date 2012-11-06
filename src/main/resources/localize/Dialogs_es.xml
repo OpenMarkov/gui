@@ -564,7 +564,7 @@
   </ZoomOther>
   <AboutBox>
     <Advertisement>
-      <Text value="Por favor, visite la pagina Web de OpenMarkov para obtener las ultimas actualizaciones" />
+      <Text value="Por favor, visite la pagina Web de OpenMarkov (www.openmarkov.org) para obtener las ultimas actualizaciones" />
     </Advertisement>
     <LineSeparatorImage>
       <URL value="lineSeparator.jpg" />
@@ -573,7 +573,7 @@
       <AllRightsReserved>
         <Text value="Todos los derechos reservados" />
       </AllRightsReserved>
-      <Text value=" (c) UNED - 2008-2009" />
+      <Text value=" (c) UNED - 2008-2012" />
     </Copyright>
     <jLabelLogo>
       <BlankSpace>

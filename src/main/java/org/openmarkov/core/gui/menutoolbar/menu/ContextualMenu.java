@@ -66,8 +66,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 *            action command that identifies the component.
 	 * @return a components identified by the action command.
 	 */
-	protected abstract JComponent getJComponentActionCommand(
-																String actionCommand);
+	protected abstract JComponent getJComponentActionCommand(String actionCommand);
 
 	/**
 	 * Enables or disabled an option identified by an action command.
@@ -122,8 +121,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 */
 	public void processStringResourceLocaleChange(LocaleChangeEvent event) {
 
-		StringResourceLoader.getUniqueInstance().allComponentsUpdateSetText(
-			this );
+		StringResourceLoader.getUniqueInstance().allComponentsUpdateSetText(this);
 		repaint();
 	}
 	

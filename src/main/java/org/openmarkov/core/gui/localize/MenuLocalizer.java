@@ -20,7 +20,7 @@ public class MenuLocalizer
     /**
      * String resource.
      */    
-    private static StringResource stringResource = StringResourceLoader.getUniqueInstance().getBundleMenus();
+    private static StringResourceLoader stringResourceLoader = StringResourceLoader.getUniqueInstance();
 
     /**
      * Suffix that has label string resources.
@@ -32,24 +32,19 @@ public class MenuLocalizer
      */
     private final static String MNEMONIC_SUFFIX = ".Mnemonic";
 
-    /**
-     * Suffix to retrieve tooltip strings from a string resource.
-     */
-    private final static String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
-    
     public static String getString(String stringId)
     {
-        return stringResource.getString(stringId);
+        return stringResourceLoader.getBundleMenus ().getString(stringId);
     }
     
     public static String getLabel(String stringId)
     {
-        return stringResource.getString(stringId + LABEL_SUFFIX);
+        return stringResourceLoader.getBundleMenus ().getString(stringId + LABEL_SUFFIX);
     }
     
     public static String getMnemonic(String stringId)
     {
-        return stringResource.getString(stringId + MNEMONIC_SUFFIX);
+        return stringResourceLoader.getBundleMenus ().getString(stringId + MNEMONIC_SUFFIX);
     }
     
     

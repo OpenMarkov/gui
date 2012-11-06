@@ -571,7 +571,7 @@
   </ZoomOther>
   <AboutBox>
     <Advertisement>
-      <Text value="Please visit OpenMarkov Web pages for the latest update" />
+      <Text value="Please visit OpenMarkov's Web page (www.openmarkov.org) for the latest updates" />
     </Advertisement>
     <LineSeparatorImage>
       <URL value="lineSeparator.jpg" />
@@ -580,7 +580,7 @@
       <AllRightsReserved>
         <Text value="All rights reserved" />
       </AllRightsReserved>
-      <Text value=" (c) UNED - 2008-2009" />
+      <Text value=" (c) UNED - 2008-2012" />
     </Copyright>
     <jLabelLogo>
       <BlankSpace>
@@ -597,7 +597,7 @@
       <Text value="OK" />
     </OK>
     <Product>
-      <Text value=" " />
+      <Text value="An open source tool for Probabilistic Graphical Models" />
     </Product>
     <Title>
       <Text value="About ... OpenMarkov v.0.0.1" />

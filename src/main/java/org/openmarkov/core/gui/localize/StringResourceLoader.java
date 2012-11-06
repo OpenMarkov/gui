@@ -12,7 +12,6 @@ package org.openmarkov.core.gui.localize;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.List;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
@@ -54,13 +54,6 @@ import org.openmarkov.core.gui.window.message.NonEditableTextArea;
  */
 public class StringResourceLoader implements LocaleChangeListener {
 
-	/**
-	 * Path of the resource files.
-	 */
-	private static final String STRING_LANGUAGE_PATH  = 
-		OpenMarkovPreferences.get(OpenMarkovPreferences.STRING_LANGUAGES_PATH, 
-			OpenMarkovPreferences.OPENMARKOV_LANGUAGES,
-			"localize/");
 	/**
 	 * Default language.
 	 */
@@ -394,19 +387,16 @@ public class StringResourceLoader implements LocaleChangeListener {
 	}
 
 	// Create the listener list
-	protected javax.swing.event.EventListenerList listenerList =
-		new javax.swing.event.EventListenerList();
+	protected EventListenerList listenerList = new EventListenerList();
 
 	// This methods allows classes to register for LocaleChangeEvent
-	public void addStringResourceLocaleChangeListener(
-														StringResourceLocaleChangeListener listener) {
+	public void addStringResourceLocaleChangeListener(StringResourceLocaleChangeListener listener) {
 
 		listenerList.add(StringResourceLocaleChangeListener.class, listener);
 	}
 
 	// This methods allows classes to unregister for LocaleChangeEvent
-	public void removeStringResourceLocaleChangeListener(
-															StringResourceLocaleChangeListener listener) {
+	public void removeStringResourceLocaleChangeListener(StringResourceLocaleChangeListener listener) {
 
 		listenerList.remove(StringResourceLocaleChangeListener.class, listener);
 	}
@@ -415,11 +405,9 @@ public class StringResourceLoader implements LocaleChangeListener {
 	 * This private class is used to fire LocaleChangeEvent
 	 * @param evt - event to manage for locale change
 	 */
-	protected static void fireLocaleChangeEvent(LocaleChangeEvent evt) {
+	protected void fireLocaleChangeEvent(LocaleChangeEvent evt) {
 
-		Object[] listeners =
-			StringResourceLoader.getUniqueInstance().listenerList
-				.getListenerList();
+		Object[] listeners = listenerList.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance
 		for (int i = 0; i < listeners.length; i += 2) {
