@@ -850,6 +850,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 		NetworkPanel networkPanel = null;
 
+
 		try {
 			networkPanel = new NetworkPanel(probNet, mainPanel);
 			
@@ -928,7 +929,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		 		}
 		 	 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/3);
 			 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions);
+			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, null);
 			 try {
 				evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
 			} catch (IncompatibleEvidenceException e2) {
@@ -940,7 +941,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			}
 			 expandedNetFactory.adaptProbNetForCE();
 			//project all the evidence
-			expandedNetFactory.projectEvidence(evidence);	
+			//expandedNetFactory.projectEvidence(evidence);	
 			ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 			String fileName = probNet.getName()+"_expandedCE";
 			expandedNetwork.setName(fileName);
