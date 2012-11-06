@@ -23,7 +23,7 @@ import javax.swing.JScrollPane;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.core.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.InferenceToolBar;
@@ -84,9 +84,9 @@ public class MainPanel extends JPanel {
 	private InferenceToolBar inferenceToolBar = null;
 	
 	/**
-	 * Object that supplies the popup menus.
+	 * Object that supplies the contextual menus.
 	 */
-	private PopupMenuFactory popupMenuFactory = null;
+	private ContextualMenuFactory contextualMenuFactory = null;
 
 	/**
 	 * Object that assists this in the management of the menus and toolbars.
@@ -94,7 +94,7 @@ public class MainPanel extends JPanel {
 	private MainPanelMenuAssistant mainPanelMenuAssistant = null;
 
 	/**
-	 * Object that listens and manages the user's actions on the menus, popup
+	 * Object that listens and manages the user's actions on the menus, contextual
 	 * menus and toolbars. This object also listens and manages the mdi events.
 	 */
 	private MainPanelListenerAssistant mainPanelListenerAssistant = null;
@@ -166,7 +166,7 @@ public class MainPanel extends JPanel {
 
 		getMainPanelListenerAssistant();
 		getMainMenu();
-		getPopupMenuFactory();
+		getContextualMenuFactory();
 		setLayout(new BorderLayout());
 		setSize(new Dimension(500, 500));
 		add(getToolBarPanel(), BorderLayout.NORTH);
@@ -244,17 +244,17 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * This method initialises popupMenuFactory.
+	 * This method initialises contextualMenuFactory.
 	 * 
-	 * @return a new popup menu factory.
+	 * @return a new contextual menu factory.
 	 */
-	PopupMenuFactory getPopupMenuFactory() {
+	ContextualMenuFactory getContextualMenuFactory() {
 
-		if (popupMenuFactory == null) {
-			popupMenuFactory = new PopupMenuFactory(mainPanelListenerAssistant);
+		if (contextualMenuFactory == null) {
+			contextualMenuFactory = new ContextualMenuFactory(mainPanelListenerAssistant);
 		}
 
-		return popupMenuFactory;
+		return contextualMenuFactory;
 
 	}
 
@@ -387,7 +387,7 @@ public class MainPanel extends JPanel {
 		if (mainPanelMenuAssistant == null) {
 			mainPanelMenuAssistant =
 				new MainPanelMenuAssistant(new MenuToolBarBasic[] { mainMenu,
-					standardToolBar, editionToolBar, getInferenceToolBar(), popupMenuFactory },
+					standardToolBar, editionToolBar, getInferenceToolBar(), contextualMenuFactory },
 					new ZoomMenuToolBar[] { mainMenu, standardToolBar }, this);
 			mainPanelMenuAssistant.updateOptionsAllNetworkClosed();
 		}

@@ -29,14 +29,14 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
 
 /**
- * This class implements a popup menu that shows when a user click on tha
+ * This class implements a contextual menu that shows when a user click on tha
  * background of a network panel.
  * 
  * @author jmendoza
  * @author jlgozalo 
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
  */
-class NetworkPopup extends PopupMenuBasic {
+class NetworkContextualMenu extends ContextualMenu {
 
 	/**
 	 * Static field for serializable class.
@@ -68,7 +68,7 @@ class NetworkPopup extends PopupMenuBasic {
 	 * @param newListener
 	 *            object that listens to the menu events.
 	 */
-	public NetworkPopup(ActionListener newListener) {
+	public NetworkContextualMenu(ActionListener newListener) {
 
 		super(newListener);
 

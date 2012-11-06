@@ -6,25 +6,18 @@
 
 package org.openmarkov.core.gui.dialog.common;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -125,9 +118,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 		//private ProbNode probNode;
 		/**
-		 * The popupMenu that appears when there is a click on the valuesTable Object 
+		 * The contextualMenu that appears when there is a click on the valuesTable Object 
 		 */
-		protected PopupMenuFactory popupMenuFactory;
+		protected ContextualMenuFactory contextualMenuFactory;
 
 		protected EvidenceCase evidenceCase ;
 		/**

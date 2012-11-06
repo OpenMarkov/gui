@@ -26,14 +26,14 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 
 
 /**
- * This class is used to set the common features of all popup menus of the
+ * This class is used to set the common features of all contextual menus of the
  * application.
  * 
  * @author jmendoza
  * @author jlgozalo 
  * @version 1.1 adding StringResourceLocaleChangeListener
  */
-public abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
+public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
 
 	/**
 	 * 
@@ -50,7 +50,7 @@ public abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBa
 	 * @param newListener
 	 *            listener that listen to the user's actions.
 	 */
-	public PopupMenuBasic(ActionListener newListener) {
+	public ContextualMenu(ActionListener newListener) {
 
 		super();
 		listener = newListener;
@@ -113,7 +113,6 @@ public abstract class PopupMenuBasic extends JPopupMenu implements MenuToolBarBa
 	 *            text to add to the label of the options. If null, nothing is
 	 *            added.
 	 */
-	@SuppressWarnings("unused")
 	public void addOptionText(String actionCommand, String text) {
 
 	}

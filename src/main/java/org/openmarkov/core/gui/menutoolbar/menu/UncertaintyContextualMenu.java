@@ -28,9 +28,9 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
  * @author mpalacios
  *
  */
-public class UncertaintyPopup extends PopupMenuBasic{
+public class UncertaintyContextualMenu extends ContextualMenu{
 
-	public UncertaintyPopup(ActionListener newListener) {
+	public UncertaintyContextualMenu(ActionListener newListener) {
 		super(newListener);
 		// TODO Auto-generated constructor stub
 		initialize();

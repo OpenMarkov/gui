@@ -66,7 +66,8 @@ import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.graphic.VisualState;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenu;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.edition.mode.EditionMode;
@@ -227,9 +228,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private HashSet<EditorPanelSizeListener> sizeListeners = new HashSet<EditorPanelSizeListener>();
 
 	/**
-	 * Object that creates the popup menus.
+	 * Object that creates the contextual menus.
 	 */
-	private PopupMenuFactory popupMenuFactory = null;
+	private ContextualMenuFactory contextualMenuFactory = null;
 
 	/**
 	 * Object that assists this panel in the operations with the clipboard.
@@ -588,14 +589,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	private void showContextualMenu(MouseEvent e, Graphics2D g) {
 		VisualElement selectedElement = visualNetwork.getElementInPosition (cursorPosition, g); 
-		JPopupMenu contextualMenu = null;
+		ContextualMenu contextualMenu = null;
 		if(selectedElement != null)
 		{
-			contextualMenu = getPopupMenu(selectedElement, this);
+			contextualMenu = getContextualMenu(selectedElement, this);
 			visualNetwork.selectElement (selectedElement);
 		}else
 		{
-			contextualMenu = popupMenuFactory.getNetworkPopup ();
+			contextualMenu = contextualMenuFactory.getNetworkContextualMenu ();
 		}
 		contextualMenu.show (this, e.getX(), e.getY());
 	}
@@ -790,28 +791,26 @@ public class EditorPanel extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * Sets a new popup menu factory.
+	 * Sets a new contextual menu factory.
 	 * 
-	 * @param newPopupMenuFactory
-	 *            popup menu factory to be set.
+	 * @param newContextualMenuFactory
+	 *            contextual menu factory to be set.
 	 */
-	public void setPopupMenuFactory(PopupMenuFactory newPopupMenuFactory) {
+	public void setContextualMenuFactory(ContextualMenuFactory newContextualMenuFactory) {
 
-		popupMenuFactory = newPopupMenuFactory;
+		contextualMenuFactory = newContextualMenuFactory;
 
 	}
 
 	/**
-	 * Retrieves the popup menu that corresponds to the parameter.
+	 * Retrieves the contextual menu that corresponds to the selectedElement.
 	 * 
-	 * @param popup
-	 *            popup menu to be returned.
-	 * @return the popup menu corresponding the the parameter.
+	 * @return the contextual menu corresponding the the parameter.
 	 */
-	private JPopupMenu getPopupMenu(VisualElement selectedElement, EditorPanel panel) {
+	private ContextualMenu getContextualMenu(VisualElement selectedElement, EditorPanel panel) {
 
-		return (popupMenuFactory != null) ? popupMenuFactory
-				.getPopupMenu(selectedElement, panel) : null;
+		return (contextualMenuFactory != null) ? contextualMenuFactory
+				.getContextualMenu(selectedElement, panel) : null;
 
 	}
 

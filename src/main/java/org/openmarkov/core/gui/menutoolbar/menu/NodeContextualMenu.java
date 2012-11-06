@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.ProbNode;
 
 
 /**
- * This class implements a popup menu that is displayed when the user clicks on
+ * This class implements a contextual menu that is displayed when the user clicks on
  * a node.
  * 
  * @author jmendoza
@@ -41,7 +41,7 @@ import org.openmarkov.core.model.network.ProbNode;
  * @version	1.2 asaez - Add options for expanding and contracting nodes,
  * 						setting and deleting findings and policies.
  */
-public class NodePopup extends PopupMenuBasic {
+public class NodeContextualMenu extends ContextualMenu {
 
 	/**
 	 * Static field for serializable class.
@@ -140,7 +140,7 @@ public class NodePopup extends PopupMenuBasic {
 	 * @param panel 
 	 * @param selectedNode 
 	 */
-	public NodePopup(ActionListener newListener, VisualNode selectedNode, EditorPanel panel) {
+	public NodeContextualMenu(ActionListener newListener, VisualNode selectedNode, EditorPanel panel) {
 
 		super(newListener);
 
@@ -150,23 +150,23 @@ public class NodePopup extends PopupMenuBasic {
         {
             if (panel.getNetworkPanel ().getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
             {
-                setPopupDecisionNodeInEditionMode ();
+                setDecisionNodeContextualMenuInEditionMode ();
             }
             else
             {
                 if (panel.getEvidenceCasesCompilationState (panel.getCurrentCase ()))
                 {
-                    setPopupDecisionNodeInCompiledInferenceMode ();
+                    setDecisionNodeContextualMenuInCompiledInferenceMode ();
                 }
                 else
                 {
-                    setPopupDecisionNodeInNotCompiledInferenceMode ();
+                    setDecisionNodeContextualMenuInNotCompiledInferenceMode ();
                 }
             }
         }
         else
         {
-            setDefaultPopupNode ();
+            setDefaultNodeContextualMenu ();
         }
 
 	}
@@ -203,9 +203,9 @@ public class NodePopup extends PopupMenuBasic {
 	}
 	
 	/**
-	 * This method sets the default popup for nodes
+	 * This method sets the default contextual menu for nodes
 	 */
-	public void setDefaultPopupNode() {
+	public void setDefaultNodeContextualMenu() {
 		removeAll();
 		add(getCutMenuItem());
 		add(getCopyMenuItem());
@@ -232,9 +232,9 @@ public class NodePopup extends PopupMenuBasic {
 	}
 	
 	/**
-	 * This method sets the popup for Decision nodes in Edition mode
+	 * This method sets the contextual menu for Decision nodes in Edition mode
 	 */
-	public void setPopupDecisionNodeInEditionMode() {
+	public void setDecisionNodeContextualMenuInEditionMode() {
 		removeAll();
 		add(getCutMenuItem());
 		add(getCopyMenuItem());
@@ -264,10 +264,10 @@ public class NodePopup extends PopupMenuBasic {
 	}
 	
 	/**   
-	 * This method sets the popup for Decision nodes in Inference mode
+	 * This method sets the contextual menu for Decision nodes in Inference mode
 	 * when the network is compiled
 	 */
-	public void setPopupDecisionNodeInCompiledInferenceMode() {
+	public void setDecisionNodeContextualMenuInCompiledInferenceMode() {
 		removeAll();
 		add(getCutMenuItem());
 		add(getCopyMenuItem());
@@ -292,10 +292,10 @@ public class NodePopup extends PopupMenuBasic {
 	}
 	
 	/**   
-	 * This method sets the popup for Decision nodes in Inference mode
+	 * This method sets the ContextualMenu for Decision nodes in Inference mode
 	 * when the network is compiled
 	 */
-	public void setPopupDecisionNodeInNotCompiledInferenceMode() {
+	public void setDecisionNodeContextualMenuInNotCompiledInferenceMode() {
 		removeAll();
 		add(getCutMenuItem());
 		add(getCopyMenuItem());

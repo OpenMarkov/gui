@@ -21,17 +21,17 @@ import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.MenuLocalizer;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuBasic;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenu;
 
 /**
- * This class implements a popup menu that is displays when the user right-clicks on
+ * This class implements a contextual menu that is displays when the user right-clicks on
  * an instance.
  * 
  * @author ibermejo
  * @version 1.0 
  */
 @SuppressWarnings("serial")
-public class InstancePopup extends PopupMenuBasic {
+public class InstanceContextualMenu extends ContextualMenu {
 
 	/**
 	 * Object that represents the item 'Remove'.
@@ -64,7 +64,7 @@ public class InstancePopup extends PopupMenuBasic {
 	 * @param newListener
 	 *            object that listens to the menu events.
 	 */
-	public InstancePopup(ActionListener newListener) {
+	public InstanceContextualMenu(ActionListener newListener) {
 
 		super(newListener);
 

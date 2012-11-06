@@ -19,7 +19,7 @@ import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.core.gui.oon.InstancePopup;
+import org.openmarkov.core.gui.oon.InstanceContextualMenu;
 import org.openmarkov.core.gui.oon.VisualInstance;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 
@@ -27,59 +27,59 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
 
 
 /**
- * This class has a reference to all the popup menus of the application.
+ * This class has a reference to all the contextual menus of the application.
  * 
  * @author jmendoza
  */
-public class PopupMenuFactory implements MenuToolBarBasic {
+public class ContextualMenuFactory implements MenuToolBarBasic {
 
 	/**
-	 * Constant that indentifies the network popup.
+	 * Constant that indentifies the network contextual menu.
 	 */
 	public static final int NETWORK = 0;
 
 	/**
-	 * Constant that indentifies the node popup.
+	 * Constant that indentifies the node contextual menu.
 	 */
 	public static final int NODE = 1;
 
 	/**
-	 * Constant that indentifies the link popup.
+	 * Constant that indentifies the link contextual menu.
 	 */
 	public static final int LINK = 2;
 	
 	/**
-	 * Constant that indentifies the instance popup.
+	 * Constant that indentifies the instance contextual menu.
 	 */
 	public static final int INSTANCE = 3;
 	
 	/**
-	 * Popup menu that has the options of a whole network.
+	 * Contextual menu that has the options of a whole network.
 	 */
-	private PopupMenuBasic networkPopup = null;
+	private ContextualMenu networkContextualMenu = null;
 
 	/**
-	 * Popup menu that has the options of a node.
+	 * Contextual menu that has the options of a node.
 	 */
-	private PopupMenuBasic nodePopup = null;
+	private ContextualMenu nodeContextualMenu = null;
 
 	/**
-	 * Popup menu that has the options of a link.
+	 * Contextual menu that has the options of a link.
 	 */
-	private PopupMenuBasic linkPopup = null;
+	private ContextualMenu linkContextualMenu = null;
 	
 	/**
-	 * Popup menu that has the options of an instance.
+	 * Contextual menu that has the options of an instance.
 	 */
-	private PopupMenuBasic instancePopup = null;	
+	private ContextualMenu instanceContextualMenu = null;	
 
 	/**
-	 * Assistant that manages all the popup menus.
+	 * Assistant that manages all the contextual menus.
 	 */
 	private MenuAssistant menuAssistant = null;
 
 	/**
-	 * Listener for all the popup menus.
+	 * Listener for all the contextual menus.
 	 */
 	private ActionListener listener = null;
 	
@@ -89,7 +89,7 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	 * @param newListener
 	 *            listener of the user's actions.
 	 */
-	public PopupMenuFactory(ActionListener newListener) {
+	public ContextualMenuFactory(ActionListener newListener) {
 
 		listener = newListener;
 		initialize();
@@ -104,68 +104,68 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 	}
 
 	/**
-	 * This method initialises networkPopup.
+	 * This method initialises networkContextualMenu.
 	 * 
-	 * @return the network panel popup menu.
+	 * @return the network panel contextual menu.
 	 */
-	public JPopupMenu getNetworkPopup() {
+	public ContextualMenu getNetworkContextualMenu() {
 
-		if (networkPopup == null) {
-			networkPopup = new NetworkPopup(listener);
-			networkPopup.setName("networkPopup");
-			menuAssistant.addMenu (networkPopup);
+		if (networkContextualMenu == null) {
+			networkContextualMenu = new NetworkContextualMenu(listener);
+			networkContextualMenu.setName("networkContextualMenu");
+			menuAssistant.addMenu (networkContextualMenu);
 		}
-		return networkPopup;
+		return networkContextualMenu;
 	}
 
 	/**
-	 * This method initialises nodePopup.
+	 * This method initialises nodeContextualMenu.
 	 * @param panel 
 	 * @param selectedElement 
 	 * 
-	 * @return the node popup menu.
+	 * @return the node contextual menu.
 	 */
-	private JPopupMenu getNodePopup(VisualNode selectedNode, EditorPanel panel) {
+	private ContextualMenu getNodeContextualMenu(VisualNode selectedNode, EditorPanel panel) {
 
-	    menuAssistant.removeMenu (nodePopup);
-		nodePopup = new NodePopup(listener, selectedNode, panel);
-		nodePopup.setName("nodePopup");
-        menuAssistant.addMenu (nodePopup);
-		return nodePopup;
+	    menuAssistant.removeMenu (nodeContextualMenu);
+		nodeContextualMenu = new NodeContextualMenu(listener, selectedNode, panel);
+		nodeContextualMenu.setName("nodeContextualMenu");
+        menuAssistant.addMenu (nodeContextualMenu);
+		return nodeContextualMenu;
 	}
 
 	/**
-	 * This method initialises linkPopup.
+	 * This method initialises linkContextualMenu.
 	 * @param panel 
 	 * @param selectedLink 
 	 * 
-	 * @return the link popup menu.
+	 * @return the link contextual menu.
 	 */
-	private JPopupMenu getLinkPopup(VisualLink selectedLink, EditorPanel panel) {
+	private ContextualMenu getLinkContextualMenu(VisualLink selectedLink, EditorPanel panel) {
 
-        menuAssistant.removeMenu (linkPopup);
-		linkPopup = new LinkPopup(listener, selectedLink, panel);
-		linkPopup.setName("linkPopup");
-        menuAssistant.addMenu (linkPopup);
-		return linkPopup;
+        menuAssistant.removeMenu (linkContextualMenu);
+		linkContextualMenu = new LinkContextualMenu(listener, selectedLink, panel);
+		linkContextualMenu.setName("linkContextualMenu");
+        menuAssistant.addMenu (linkContextualMenu);
+		return linkContextualMenu;
 	}
 	
 	/**
-	 * This method initialises linkPopup.
+	 * This method initialises instanceContextualMenu.
 	 * @param panel 
 	 * @param selectedInstance 
 	 * 
-	 * @return the link popup menu.
+	 * @return the instance contextual menu .
 	 */
 	//TODO OOBN start
-	private JPopupMenu getInstancePopup(VisualInstance selectedInstance, EditorPanel panel) {
+	private ContextualMenu getInstanceContextualMenu(VisualInstance selectedInstance, EditorPanel panel) {
 
-		if (instancePopup == null) {
-			instancePopup = new InstancePopup(listener);
-			instancePopup.setName("instancePopup");
-            menuAssistant.addMenu (instancePopup);
+		if (instanceContextualMenu == null) {
+			instanceContextualMenu = new InstanceContextualMenu(listener);
+			instanceContextualMenu.setName("instanceContextualMenu");
+            menuAssistant.addMenu (instanceContextualMenu);
 		}
-		return instancePopup;
+		return instanceContextualMenu;
 	}
     //TODO OOBN end
 	
@@ -226,24 +226,22 @@ public class PopupMenuFactory implements MenuToolBarBasic {
 
 	/**
 	 * Returns an instance of a pop up menu given the class and some additional info
-	 * @param popupClass
-	 * @param panel
 	 * @return
 	 */
-    public JPopupMenu getPopupMenu (VisualElement selectedElement, EditorPanel panel)
+    public ContextualMenu getContextualMenu (VisualElement selectedElement, EditorPanel panel)
     {
-        JPopupMenu popUpMenu = null;
+        ContextualMenu contextualMenu = null;
         if (VisualNode.class.isAssignableFrom (selectedElement.getClass ())) {
-            popUpMenu = getNodePopup((VisualNode)selectedElement, panel);
+            contextualMenu = getNodeContextualMenu((VisualNode)selectedElement, panel);
         }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
         {
-            popUpMenu = getLinkPopup((VisualLink)selectedElement, panel);
+            contextualMenu = getLinkContextualMenu((VisualLink)selectedElement, panel);
         //TODO OOBN start 
         }else if(VisualInstance.class.isAssignableFrom (selectedElement.getClass ()))
         {
-          popUpMenu =  getInstancePopup((VisualInstance)selectedElement, panel);
+          contextualMenu =  getInstanceContextualMenu((VisualInstance)selectedElement, panel);
         //TODO OOBN end 
         }
-        return popUpMenu;
+        return contextualMenu;
     }
 }

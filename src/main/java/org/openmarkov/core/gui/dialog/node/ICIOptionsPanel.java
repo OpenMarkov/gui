@@ -23,11 +23,7 @@ import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
-import javax.swing.event.UndoableEditEvent;
 
-import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.PotentialsTablePanel;
@@ -135,7 +131,7 @@ public class ICIOptionsPanel extends JPanel {
 
 	private ProbNode probNode;
 
-	private JPopupMenu uncertaintyPopup;
+	private JPopupMenu uncertaintyContextualMenu;
 	
 	private StringResource messageStringResource;
 

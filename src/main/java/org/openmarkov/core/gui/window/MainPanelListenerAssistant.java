@@ -862,7 +862,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			networkPanel = new NetworkPanel(probNet, mainPanel);
 			
 			mainPanel.getMdi().createNewFrame(networkPanel);
-			networkPanel.setPopupMenuFactory(mainPanel.getPopupMenuFactory());
+			networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
 			// networkPanel.addEditionListener( mainPanel
 			// .getMainPanelMenuAssistant() );
 			networkPanel.addSelectionListener(mainPanel

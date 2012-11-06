@@ -30,7 +30,7 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.gui.oon.VisualOONetwork;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
@@ -649,14 +649,14 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * Sets a new popup menu factory.
+	 * Sets a new contextual menu factory.
 	 * 
-	 * @param newPopupMenuFactory
-	 *            popup menu factory to be set.
+	 * @param newContextuaMenuFactory
+	 *            contextual menu factory to be set.
 	 */
-	public void setPopupMenuFactory(PopupMenuFactory newPopupMenuFactory) {
+	public void setContextualMenuFactory(ContextualMenuFactory newContextualMenuFactory) {
 
-		editorPanel.setPopupMenuFactory(newPopupMenuFactory);
+		editorPanel.setContextualMenuFactory(newContextualMenuFactory);
 
 	}
 

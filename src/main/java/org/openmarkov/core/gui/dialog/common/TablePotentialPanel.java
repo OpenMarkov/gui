@@ -10,20 +10,13 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import javax.swing.GroupLayout;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
@@ -44,14 +37,14 @@ import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.core.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
+import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyContextualMenu;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -127,7 +120,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * when the user do right click on the table.
 	 */
 
-	private UncertaintyPopup uncertaintyPopup;
+	private UncertaintyContextualMenu uncertaintyContextualMenu;
 
 	/**
 	 * Sets a new table model with new data.
@@ -1233,7 +1226,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 
 	}
 
-	private void updatePopupMenuOptions() {
+	private void updateContextualMenuOptions() {
 		if (probNode.getPotentials().size() > 0
 				&& probNode.getPotentials().get(0) instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential) probNode
@@ -1241,23 +1234,23 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			boolean hasUncertainty = tablePotential
 					.hasUncertainty(getEvidenceCaseFromSelectedColumn());
 			if (hasUncertainty) {
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_ASSIGN.toString())
 						.setEnabled(false);
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(
 						true);
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_REMOVE.toString())
 						.setEnabled(true);
 			} else {
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_ASSIGN.toString())
 						.setEnabled(true);
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(
 						false);
-				getUncertaintyPopup().getJComponentActionCommand(
+				getUncertaintyContextualMenu().getJComponentActionCommand(
 						ActionCommands.UNCERTAINTY_REMOVE.toString())
 						.setEnabled(false);
 			}
@@ -1265,17 +1258,17 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	}
 
 	/**
-	 * This method initializes uncertaintyPopup.
+	 * This method initializes uncertaintyContextualMenu.
 	 * 
-	 * @return the node popup menu.
+	 * @return the node contextual menu.
 	 */
-	private UncertaintyPopup getUncertaintyPopup() {
+	private UncertaintyContextualMenu getUncertaintyContextualMenu() {
 
-		if (uncertaintyPopup == null) {
-			uncertaintyPopup = new UncertaintyPopup(this);
-			uncertaintyPopup.setName("uncertaintyPopup");
+		if (uncertaintyContextualMenu == null) {
+			uncertaintyContextualMenu = new UncertaintyContextualMenu(this);
+			uncertaintyContextualMenu.setName("uncertaintyContextualMenu");
 		}
-		return uncertaintyPopup;
+		return uncertaintyContextualMenu;
 	}
 
 	/**
@@ -1346,10 +1339,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 
 					if ((row > -1) && (col > 0)) {
 
-						if (getUncertaintyPopup() != null) {
+						if (getUncertaintyContextualMenu() != null) {
 							selectedColumn = col;
-							updatePopupMenuOptions();
-							getUncertaintyPopup().show(valuesTable, e.getX(),
+							updateContextualMenuOptions();
+							getUncertaintyContextualMenu().show(valuesTable, e.getX(),
 									e.getY());
 
 						}

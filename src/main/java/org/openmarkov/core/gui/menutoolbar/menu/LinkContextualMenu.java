@@ -24,14 +24,14 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
 
 /**
- * This class implements a popup menu that is displayes when the user clicks on
+ * This class implements a contextual menu that is displayes when the user clicks on
  * a link.
  * 
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
  */
-class LinkPopup extends PopupMenuBasic {
+class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * Static field for serializable class.
@@ -77,7 +77,7 @@ class LinkPopup extends PopupMenuBasic {
 	 * @param panel 
 	 * @param selectedLink 
 	 */
-	public LinkPopup(ActionListener newListener, VisualLink selectedLink, EditorPanel panel) {
+	public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, EditorPanel panel) {
 
 		super(newListener);
 

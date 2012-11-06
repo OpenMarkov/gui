@@ -19,7 +19,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -47,15 +46,15 @@ import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.menutoolbar.menu.PopupMenuFactory;
-import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyPopup;
+import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyContextualMenu;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -176,7 +175,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * The popuMenu that appears when there is a click on the valuesTable Object 
 	 */
-	private PopupMenuFactory popupMenuFactory;
+	private ContextualMenuFactory contextualMenuFactory;
 
 	protected EvidenceCase evidenceCase ;
 	/**
@@ -184,7 +183,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 */
 	private int selectedColumn = -1;
 
-	private UncertaintyPopup uncertaintyPopup;
+	private UncertaintyContextualMenu uncertaintyContextualMenu;
 	
 	private Logger logger;
 
@@ -1296,10 +1295,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 					
 					if ((row > -1) && (col > 0)) {
 						
-						if ( getUncertaintyPopup() != null ){
+						if ( getUncertaintyContextualMenu() != null ){
 							selectedColumn = col;
-							updatePopupMenuOptions();
-							getUncertaintyPopup().show( valuesTable, e.getX(),
+							updateContextualMenuOptions();
+							getUncertaintyContextualMenu().show( valuesTable, e.getX(),
 									e.getY() );
 							
 						}
@@ -1312,19 +1311,19 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 
 	}
 	
-	private void updatePopupMenuOptions(){
+	private void updateContextualMenuOptions(){
 		if ( probNode.getPotentials().size() >0 && probNode.getPotentials().get(0)
 				instanceof TablePotential ){
 			TablePotential tablePotential = (TablePotential)probNode.getPotentials().get(0);
 			boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
 			if ( hasUncertainty ){
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString()).setEnabled(false);
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(true);
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString()).setEnabled(true);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString()).setEnabled(false);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(true);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString()).setEnabled(true);
 			}else{
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString()).setEnabled(true);
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(false);
-				getUncertaintyPopup().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString()).setEnabled(false);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString()).setEnabled(true);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString()).setEnabled(false);
+				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString()).setEnabled(false);
 			}
 		}
 	}
@@ -1563,17 +1562,17 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	
 	
 	/**
-	 * This method initializes uncertaintyPopup.
+	 * This method initializes uncertaintyContextualMenu.
 	 * 
-	 * @return the node popup menu.
+	 * @return the node contextual menu.
 	 */
-	private UncertaintyPopup getUncertaintyPopup() {
+	private UncertaintyContextualMenu getUncertaintyContextualMenu() {
 
-		if (uncertaintyPopup == null) {
-			uncertaintyPopup = new UncertaintyPopup(this);
-			uncertaintyPopup.setName("uncertaintyPopup");
+		if (uncertaintyContextualMenu == null) {
+			uncertaintyContextualMenu = new UncertaintyContextualMenu(this);
+			uncertaintyContextualMenu.setName("uncertaintyContextualMenu");
 		}
-		return uncertaintyPopup;
+		return uncertaintyContextualMenu;
 	}
 	
 
