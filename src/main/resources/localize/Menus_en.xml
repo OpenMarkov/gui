@@ -412,6 +412,9 @@
   <ExpandNetwork>
   	<Label value = "Expand Network" />
   </ExpandNetwork>
+  <ExpandNetworkCE>
+    <Label value = "Expand Network CE" />
+  </ExpandNetworkCE>
   <BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

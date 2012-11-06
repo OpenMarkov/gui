@@ -66,7 +66,7 @@ public class MenuItemNames
      * Constant that defines the item 'Expand network for CE analysis'.
      */
     public static final String EXPAND_NETWORK_CE_MENUITEM =
-        "ExpandNetwork";
+        "ExpandNetworkCE";
     /**
      * Constant that defines the item 'File - Network adittionalProperties'.
      */

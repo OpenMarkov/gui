@@ -405,6 +405,9 @@
   <ExpandNetwork>
   	<Label value = "Expandir red" />
   </ExpandNetwork>
+  <ExpandNetworkCE>
+    <Label value = "Expandir red CE" />
+  </ExpandNetworkCE>  
   <BUNDLEFILE>
     <Text value="Español" />
   </BUNDLEFILE>
