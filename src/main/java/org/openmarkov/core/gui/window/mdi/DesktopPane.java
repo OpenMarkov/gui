@@ -85,8 +85,7 @@ public class DesktopPane extends JDesktopPane {
 	 *            content panel of the frame.
 	 * @return the internal frame that has been created.
 	 */
-	public JInternalFrame createNewInternalFrame(
-													FrameContentPanel newContentPanel) {
+	public JInternalFrame createNewInternalFrame(FrameContentPanel newContentPanel) {
 
 		JInternalFrame frame = null;
 		int posX = 0, posY = 0;

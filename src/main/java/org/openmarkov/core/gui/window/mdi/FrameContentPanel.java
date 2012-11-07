@@ -41,8 +41,7 @@ public abstract class FrameContentPanel extends JPanel {
 	 * @param newContainer
 	 *            container title listener.
 	 */
-	public void setFrameContentPanelContainer(
-												FrameContentPanelContainer newContainer) {
+	public void setFrameContentPanelContainer(FrameContentPanelContainer newContainer) {
 
 		container = newContainer;
 	}

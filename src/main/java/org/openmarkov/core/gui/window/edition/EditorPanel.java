@@ -1180,7 +1180,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
 				
 				ProbNode probNode = node.getProbNode();
-				//TODO manage other kinf of polici types from the interface
+				//TODO manage other kind of policy types from the interface
 				probNode.setPolicyType(PolicyType.OPTIMAL);
 				ArrayList<Variable> variables = new ArrayList<Variable>();
 				//it is added first conditioned variable
@@ -1201,7 +1201,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					//change it colour
 					((VisualDecisionNode) node).setHasPolicy(true);
 					networkChanged = true;
-				} else { //if user cancel policy imposition restore no potential to de probNode
+				} else { //if user cancel policy imposition then no potential is restored to the probnode
 					ArrayList<Potential> noPolicy = new ArrayList<Potential>();
 					probNode.setPotentials(noPolicy);
 				}
