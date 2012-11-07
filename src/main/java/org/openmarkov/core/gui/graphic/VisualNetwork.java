@@ -1160,9 +1160,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 			/*	if ( node.getPolicyType() == PolicyType.PROBABILISTIC )
 					vdn.setSelected(true);*/
 				
-				if (node.getPotentials().get(0) != null) 
+				if (node.getPotentials().size() != 0) 
 					vdn.setHasPolicy(true);
-				
 				
 				return  vdn;
 			}
