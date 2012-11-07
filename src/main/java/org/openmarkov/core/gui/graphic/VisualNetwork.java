@@ -1319,20 +1319,23 @@ public class VisualNetwork implements PNUndoableEditListener {
         {
             newLink = null;
             VisualNode newLinkDestination = null;
-            if ((newLinkDestination = whatNodeInPosition (point, g)) != null
-                && newLinkSource != null)
+            if(newLinkSource != null)
             {
-                if (!newLinkSource.equals (newLinkDestination))
+                if ((newLinkDestination = whatNodeInPosition (point, g)) != null)
                 {
-                    try {
-                        linkEdit = new AddLinkEdit(probNet,
-                                probNet.getVariable(newLinkSource
-                                        .getProbNode().getName()),
-                                probNet.getVariable(newLinkDestination
-                                        .getProbNode().getName()), true);
-                    } catch (ProbNodeNotFoundException e1) {/* Cannot happen */
+                    if (!newLinkSource.equals (newLinkDestination))
+                    {
+                        try {
+                            linkEdit = new AddLinkEdit(probNet,
+                                    probNet.getVariable(newLinkSource
+                                            .getProbNode().getName()),
+                                    probNet.getVariable(newLinkDestination
+                                            .getProbNode().getName()), true);
+                        } catch (ProbNodeNotFoundException e1) {/* Cannot happen */
+                        }
                     }
                 }
+                newLinkSource = null;
             }
         }
         return linkEdit;

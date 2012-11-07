@@ -711,6 +711,10 @@ public class VisualOONetwork extends VisualNetwork
         	{
         		linkEdit = super.finishLinkCreation (point, g);
         	}
+        }else
+        {
+            newLink = null;
+            newLinkSource = null;
         }
         return linkEdit;
     }
