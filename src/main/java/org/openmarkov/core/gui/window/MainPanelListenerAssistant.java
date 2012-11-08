@@ -758,10 +758,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			networkPanel.getProbNet().setName(new File(fileName).getName());
 
             MainPanel mainPanel = MainPanel.getUniqueInstance ();
-			saveOptions = new SaveOptions (null, true);
-	        saveOptions.setLocation ( mainPanel.getLocation ().x + (mainPanel.getWidth () - saveOptions.getWidth ()) / 2 , 
-	                                  mainPanel.getLocation ().y + (mainPanel.getHeight () - saveOptions.getHeight ()) / 2);
-	        saveOptions.setVisible (true);
+			saveOptions = new SaveOptions (null, networkPanel.getProbNet (), true);
+			if(saveOptions.isWorthShowing ())
+			{
+    	        saveOptions.setLocation ( mainPanel.getLocation ().x + (mainPanel.getWidth () - saveOptions.getWidth ()) / 2 , 
+    	                                  mainPanel.getLocation ().y + (mainPanel.getHeight () - saveOptions.getHeight ()) / 2);
+    	        saveOptions.setVisible (true);
+			}
 		}
         
         return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions) : false;

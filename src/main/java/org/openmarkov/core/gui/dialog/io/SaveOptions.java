@@ -4,6 +4,9 @@
  */
 package org.openmarkov.core.gui.dialog.io;
 
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.oon.OOBNet;
+
 /**
  *
  * @author ibermejo
@@ -14,9 +17,11 @@ public class SaveOptions extends javax.swing.JDialog {
     /**
      * Creates new form SaveOptions
      */
-    public SaveOptions(java.awt.Frame parent, boolean modal) {
+    public SaveOptions(java.awt.Frame parent, ProbNet probNet, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        chkSavePlainNetwork.setEnabled(probNet instanceof OOBNet && !((OOBNet)probNet).getInstances ().isEmpty ());
     }
 
     /**
@@ -38,6 +43,7 @@ public class SaveOptions extends javax.swing.JDialog {
         setTitle("Save Options");
 
         chkSavePlainNetwork.setText("Save Plain Network");
+        chkSavePlainNetwork.setEnabled(false);
         chkSavePlainNetwork.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkSavePlainNetworkActionPerformed(evt);
@@ -58,7 +64,7 @@ public class SaveOptions extends javax.swing.JDialog {
         chkSavePolicies.setEnabled(false);
 
         chkSaveClassesInFile.setText("Save Classes in file");
-        chkSaveClassesInFile.setEnabled(true);
+        chkSaveClassesInFile.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,7 +129,15 @@ public class SaveOptions extends javax.swing.JDialog {
     public boolean isSaveClassesInFile()
     {
         return chkSaveClassesInFile.isSelected ();
-    }    
+    }
+    
+    public boolean isWorthShowing()
+    {
+        return chkSavePlainNetwork.isEnabled () ||
+        chkSaveEvidence.isEnabled () ||
+        chkSavePolicies.isEnabled () ||
+        chkSaveClassesInFile.isEnabled ();
+    }        
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOk;
