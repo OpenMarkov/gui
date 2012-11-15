@@ -19,7 +19,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -27,7 +26,7 @@ import org.openmarkov.core.model.network.constraint.UtilConstraints;
 
 /** Checks that the state field is filled and there isn't any node
  * with the same name. */
-public class ValidState extends PNConstraint implements PropertyNames {
+public class ValidState extends PNConstraint{
 
 	// Attributes.
 	private String message;

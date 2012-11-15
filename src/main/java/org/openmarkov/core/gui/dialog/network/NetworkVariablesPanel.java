@@ -10,9 +10,8 @@
 package org.openmarkov.core.gui.dialog.network;
 
 
-import java.awt.ItemSelectable;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -46,46 +45,66 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
  * Panel to set the definition of the variables of a network. It will have a
  * variable type group selector with two check boxes, and a drop-down list with
  * the default values for the nodes
- * 
  * @author jlgozalo
  * @version 1.0 jlgozalo initial
  */
-public class NetworkVariablesPanel extends JPanel implements ItemListener {
+public class NetworkVariablesPanel extends JPanel
+{
+    /**
+     * 
+     */
+    private static final long    serialVersionUID       = -5183671164848473079L;
+    /**
+     * Label of the variables Type checkboxes
+     */
+    private JLabel               jLabelVariablesType    = null;
+    /**
+     * Label of the default states field.
+     */
+    private JLabel               jLabelDefaultStates    = null;
+    /**
+     * Combobox where the user can choose the default states.
+     */
+    private JComboBox<String>            jComboBoxDefaultStates = null;
+    /**
+     * Dialog string resource.
+     */
+    private final StringResource dialogStringResource;
+    /**
+     * Specifies if the network whose additionalProperties are edited is new.
+     */
+    private boolean              newNetwork             = false;
+    private StringResource       messageStringResource;
 
-	private ProbNet probNet;
+    private ProbNet   probNet;
+    private JComboBox<String> jComboBoxVariableType;
 
+    /**
+     * constructor without construction parameters
+     */
+    public NetworkVariablesPanel (ProbNet probNet)
+    {
+        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
+        this.probNet = probNet;
+        this.newNetwork = probNet == null;
+        setName ("NetworkVariablesPanel");
+        initialize ();
+        fill ();
+    }
 
-	private JComboBox jComboBoxVariableType;
-
-	/**
-	 * constructor without construction parameters
-	 */
-	public NetworkVariablesPanel(ProbNet probNet) {
-
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		this.probNet = probNet;
-		setName("NetworkVariablesPanel");
-		initialize();
-
-	}
-
-	/**
-	 * This method initialises this instance.
-	 * 
-	 * @param newNetwork
-	 *            true if the network to show is new, otherwise false
-	 * @wbp.parser.constructor
-	 */
-	public NetworkVariablesPanel(final boolean newNetwork) {
-
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		this.newNetwork = newNetwork;
-		setName("NetworkVariablesPanel");
-		initialize();
-
-	}
+    /**
+     * This method initialises this instance.
+     * @param newNetwork true if the network to show is new, otherwise false
+     * @wbp.parser.constructor
+     */
+    public NetworkVariablesPanel ()
+    {
+        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
+        this.newNetwork = true;
+        setName ("NetworkVariablesPanel");
+        initialize ();
+        fill ();
+    }
 
 	
 	/**
@@ -126,365 +145,197 @@ public class NetworkVariablesPanel extends JPanel implements ItemListener {
 
 	}
 
-	/**
-	 * This method initialises jLabelVariablesType
-	 * 
-	 * @return the Variables Type JLabel
-	 */
-	private JLabel getJLabelVariablesType() {
+    /**
+     * This method initialises jLabelVariablesType
+     * @return the Variables Type JLabel
+     */
+    private JLabel getJLabelVariablesType ()
+    {
+        if (jLabelVariablesType == null)
+        {
+            jLabelVariablesType = new JLabel ();
+            jLabelVariablesType.setName ("jLabelVariablesType");
+            jLabelVariablesType.setText ("a Label : ");
+            jLabelVariablesType.setText (dialogStringResource.getString ("NetworkVariablesPanel.jLabelVariablesType.Text"));
+        }
+        return jLabelVariablesType;
+    }
 
-		if (jLabelVariablesType == null) {
-			jLabelVariablesType = new JLabel();
-			jLabelVariablesType.setName("jLabelVariablesType");
-			jLabelVariablesType.setText("a Label : ");
-			jLabelVariablesType.setText(dialogStringResource
-				.getString("NetworkVariablesPanel.jLabelVariablesType.Text"));
-		}
-		return jLabelVariablesType;
-	}
+    /**
+     * This method initialises jLabelDefaultStates.
+     * @return the Default States JLabel
+     */
+    private JLabel getJLabelDefaultStates ()
+    {
+        if (jLabelDefaultStates == null)
+        {
+            jLabelDefaultStates = new JLabel ();
+            jLabelDefaultStates.setName ("jLabelDefaultStates");
+            jLabelDefaultStates.setText ("a Label : ");
+            jLabelDefaultStates.setText (dialogStringResource.getString ("NetworkVariablesPanel.jLabelDefaultStates.Text"));
+            jLabelDefaultStates.setLabelFor (jComboBoxDefaultStates);
+        }
+        return jLabelDefaultStates;
+    }
 
-	
-	/**
-	 * This method initialises jLabelDefaultStates.
-	 * 
-	 * @return the Default States JLabel
-	 */
-	private JLabel getJLabelDefaultStates() {
+    /**
+     * This method initialises jComboBoxDefaultStates.
+     * @return the Default States JCombo Box
+     */
+    private JComboBox<String> getJComboBoxDefaultStates ()
+    {
+        if (jComboBoxDefaultStates == null)
+        {
+            jComboBoxDefaultStates = new JComboBox<String> (GUIDefaultStates.getListStrings ());
+            jComboBoxDefaultStates.setName ("jComboBoxDefaultStates");
+            // jComboBoxDefaultStates.addItemListener(this);
+        }
+        return jComboBoxDefaultStates;
+    }
 
-		if (jLabelDefaultStates == null) {
-			jLabelDefaultStates = new JLabel();
-			jLabelDefaultStates.setName("jLabelDefaultStates");
-			jLabelDefaultStates.setText("a Label : ");
-			jLabelDefaultStates.setText(dialogStringResource
-				.getString("NetworkVariablesPanel.jLabelDefaultStates.Text"));
-			jLabelDefaultStates.setLabelFor(jComboBoxDefaultStates);
+    /**
+     * This method initialises jComboBoxDefaultStates.
+     * @return the Default States JCombo Box
+     */
+    private JComboBox<String> getJComboBoxVariableType ()
+    {
+        if (jComboBoxVariableType == null)
+        {
+            jComboBoxVariableType = new JComboBox<String> (getListOfTypes ());
+            jComboBoxVariableType.setName ("jComboBoxVariableType");
+        }
+        return jComboBoxVariableType;
+    }
 
-		}
-		return jLabelDefaultStates;
-	}
+    private String[] getListOfTypes ()
+    {
+        // TODO only discrete variable are enable
+        String[] types = {
+                dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType.Items."
+                                                + "onlydiscrete"),
+                dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                                + "items.discreteandcontinuous")};
+        return types;
+    }
 
-	/**
-	 * This method initialises jComboBoxDefaultStates.
-	 * 
-	 * @return the Default States JCombo Box
-	 */
-	private JComboBox getJComboBoxDefaultStates() {
+    /**
+     * This method fills the content of the fields from a network Properties
+     * (ProbNet object)
+     */
+    private void fill ()
+    {
+        if (!newNetwork)
+        {
+            State[] states = probNet.getDefaultStates ();
+            // TODO modificar el indice a 2 cuando la creacion de variables
+            // continuas este implementado
+            int index = 1;
+            for (PNConstraint constraint : probNet.getConstraints ())
+            {
+                if (constraint instanceof OnlyDiscreteVariables)
+                {
+                    index = 0;
+                    break;
+                }
+                /*
+                 * }else if (constraint instanceof OnlyContinuousVariables){
+                 * index=1; break; }
+                 */
+            }
+            jComboBoxVariableType.setSelectedIndex (index);
+            jComboBoxDefaultStates.setSelectedIndex (DefaultStates.getIndex (states));
+            jComboBoxVariableType.addActionListener (new ActionListener ()
+                {
+                    @Override
+                    public void actionPerformed (ActionEvent arg0)
+                    {
+                        variableTypeChanged ();
+                    }
+                });
+            jComboBoxDefaultStates.addActionListener (new ActionListener ()
+                {
+                    @Override
+                    public void actionPerformed (ActionEvent arg0)
+                    {
+                        defaultStatesChanged ();
+                    }
+                });
+        }
+    }
 
-		if (jComboBoxDefaultStates == null) {
-			jComboBoxDefaultStates =
-				new JComboBox(GUIDefaultStates.getListStrings());
-			jComboBoxDefaultStates.setName("jComboBoxDefaultStates");
-			//jComboBoxDefaultStates.addItemListener(this);
-			
-		}
-		return jComboBoxDefaultStates;
+    private void variableTypeChanged ()
+    {
+        VariableTypeConstraintEdit variableTypeCE = null;
+        Object itemSelected = jComboBoxVariableType.getSelectedItem ();
+        if (itemSelected != null && itemSelected.equals (dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                                                 + "Items.onlydiscrete")))
+        {
+            variableTypeCE = new VariableTypeConstraintEdit (probNet, new OnlyDiscreteVariables ());
 
-	}
-	
-	/**
-	 * This method initialises jComboBoxDefaultStates.
-	 * 
-	 * @return the Default States JCombo Box
-	 */
-	private JComboBox getJComboBoxVariableType() {
+        }
+        else if (itemSelected != null && itemSelected.equals (dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                                                      + "Items.onlycontinuous")))
+        {
+            variableTypeCE = new VariableTypeConstraintEdit (probNet,
+                                                             new OnlyContinuousVariables ());
+        }
+        
+        if(variableTypeCE != null)
+        {
+            try
+            {
+                probNet.doEdit (variableTypeCE);
+            }
+            catch (NotEnoughMemoryException | ConstraintViolationException | CanNotDoEditException
+                    | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
+            {
+                e.printStackTrace ();
+                messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
+                JOptionPane.showMessageDialog (this,
+                                               messageStringResource.getString (e.getMessage ()),
+                                               messageStringResource.getString (e.getMessage ()),
+                                               JOptionPane.ERROR_MESSAGE);
+            }            
+        }
+    }
 
-		if (jComboBoxVariableType == null) {
-			
-			jComboBoxVariableType =
-				new JComboBox(getListOfTypes());
-				jComboBoxVariableType.setName("jComboBoxVariableType");
-				
-				
-		}
-		
-		return jComboBoxVariableType;
-
-	}
-	
-
-	private String [] getListOfTypes() {
-		//TODO only discrete variable are enable 
-		String[] types = { dialogStringResource
-		.getString("NetworkVariablesPanel.ConstraintVariableType.Items." +
-				"onlydiscrete"), 
-				dialogStringResource.getString( 
-						"NetworkVariablesPanel.ConstraintVariableType." +
-				"items.discreteandcontinuous")};
-				
-				
-				/*, dialogStringResource.getString(
-						"NetworkVariablesPanel.ConstraintVariableType.Items." +
-						"onlycontinuous"),dialogStringResource.getString(
-								"NetworkVariablesPanel.ConstraintVariableType." +
-								"items.discreteandcontinuous")};*/
-		return types;
-	}
-
-
-	/**
-	 * This method fills the content of the fields from a network Properties
-	 * (ProbNet object)
-	 * 
-	 */
-	public void setFieldsFromProperties() {
-
-		State [] states =  probNet.getDefaultStates();
-				
-		jComboBoxVariableType.removeItemListener(this);
-		jComboBoxDefaultStates.removeItemListener(this);
-		//TODO modificar el indice a 2 cuando la creacion de variables continuas
-		//este implementado
-		int index = 1;
-		
-		for (PNConstraint constraint:probNet.getConstraints()){
-			if (constraint instanceof OnlyDiscreteVariables) {
-				index = 0;
-				break;
-				}
-			/*}else if (constraint instanceof OnlyContinuousVariables){
-				index=1;
-				break;
-			}*/
-		}
-		
-		
-		jComboBoxVariableType.setSelectedIndex(index);
-		
-	
-		jComboBoxDefaultStates.setSelectedIndex(DefaultStates
-					.getIndex(states));
-			
-			jComboBoxVariableType.addItemListener(this);
-			jComboBoxDefaultStates.addItemListener(this);
-		
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5183671164848473079L;
-
-	/**
-	 * Label of the variables Type checkboxes
-	 */
-	private JLabel jLabelVariablesType = null;
-
-	/**
-	 * Label of the default states field.
-	 */
-	private JLabel jLabelDefaultStates = null;
-
-	/**
-	 * Combobox where the user can choose the default states.
-	 */
-	private JComboBox jComboBoxDefaultStates = null;
-
-	/**
-	 * Dialog string resource.
-	 */
-	private final StringResource dialogStringResource;
-
-	/**
-	 * Specifies if the network whose adittionalProperties are edited is new.
-	 */
-	private boolean newNetwork = false;
-	
-
-	private StringResource messageStringResource;
-	/**
-	 * @return
-	 */
-
-	
-	public void itemStateChanged(ItemEvent arg0) {
-		
-		VariableTypeConstraintEdit variableTypeCE=null;
-		ItemSelectable itemSelectable = arg0.getItemSelectable();
-		Object selected[] = itemSelectable.getSelectedObjects();
-		String itemSelected = selected.length == 0 ? "null" :
-			(String)selected[0];
-		JComboBox comboBox= (JComboBox)arg0.getSource();
-			
-		messageStringResource =	
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-		
-		if (comboBox.getName().equals("jComboBoxVariableType")){
-			if (!(itemSelected==null) && arg0.getStateChange() == ItemEvent.
-					SELECTED){
-				if (itemSelected.equals(dialogStringResource
-					.getString("NetworkVariablesPanel.ConstraintVariableType." +
-							"Items.onlydiscrete"))) {
-				
-					variableTypeCE =
-					new VariableTypeConstraintEdit(probNet,
-							new OnlyDiscreteVariables());
-					try {
-						probNet.getPNESupport().announceEdit(variableTypeCE);
-						probNet.getPNESupport().doEdit(variableTypeCE);
-					} catch (ConstraintViolationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (DoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NotEnoughMemoryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					}
-								
-				
-				}else if (itemSelected.equals(dialogStringResource
-					.getString("NetworkVariablesPanel.ConstraintVariableType." +
-							"Items.onlycontinuous"))) {
-				
-					variableTypeCE =
-					new VariableTypeConstraintEdit(probNet,
-							new OnlyContinuousVariables());
-					try {
-						probNet.getPNESupport().announceEdit(variableTypeCE);
-						probNet.getPNESupport().doEdit(variableTypeCE);
-					} catch (ConstraintViolationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (DoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NotEnoughMemoryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					}
-				}
-				
-			
-			}
-		}else if (comboBox.getName().equals("jComboBoxDefaultStates")){
-			//warning mpalacios relative function to options position. 
-			//Review "otros" option		
-				
-			if (!(itemSelected==null) && arg0.getStateChange() == ItemEvent.
-					SELECTED){
-				int i= 0;
-				State [] defaultStates = new State[DefaultStates.getByIndex(
-						comboBox.getSelectedIndex()).length];
-				for (String str : DefaultStates.getByIndex(
-						comboBox.getSelectedIndex())){
-					defaultStates[i] = new State(str);
-					i++;
-				}
-				
-				NetworkDefaultStatesEdit networkDefaultStatesEdit = 
-					new NetworkDefaultStatesEdit(probNet, 
-							defaultStates);
-				try {
-					probNet.getPNESupport().announceEdit(networkDefaultStatesEdit);
-					probNet.getPNESupport().doEdit(networkDefaultStatesEdit);
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
-			}
-			
-				
-		}
-		
-	}
-
+    private void defaultStatesChanged ()
+    {
+        // warning mpalacios relative function to options position.
+        // Review "otros" option
+        Object itemSelected = jComboBoxDefaultStates.getSelectedItem ();
+        if (itemSelected != null)
+        {
+            NetworkDefaultStatesEdit networkDefaultStatesEdit = new NetworkDefaultStatesEdit (probNet, getDefaultStates());
+            try
+            {
+                probNet.doEdit (networkDefaultStatesEdit);
+            }
+            catch (NotEnoughMemoryException | ConstraintViolationException
+                    | CanNotDoEditException | NonProjectablePotentialException
+                    | WrongCriterionException | DoEditException e)
+            {
+                e.printStackTrace ();
+                messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
+                JOptionPane.showMessageDialog (this,
+                                               messageStringResource.getString (e.getMessage ()),
+                                               messageStringResource.getString (e.getMessage ()),
+                                               JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }    
+    
+    public State[] getDefaultStates()
+    {
+        int i = 0;
+        int selectedIndex = jComboBoxDefaultStates.getSelectedIndex ();
+        String[] defaultStateNames = DefaultStates.getByIndex (selectedIndex);
+        State[] defaultStates = new State[defaultStateNames.length];
+        for (String str : defaultStateNames)
+        {
+            defaultStates[i] = new State (str);
+            i++;
+        }
+        return defaultStates;
+    }
 }

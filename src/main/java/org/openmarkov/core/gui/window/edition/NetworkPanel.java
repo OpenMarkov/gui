@@ -12,7 +12,6 @@ package org.openmarkov.core.gui.window.edition;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -37,7 +36,6 @@ import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.PropertyNames;
 import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.OOBNet;
 
@@ -57,7 +55,7 @@ import org.openmarkov.core.oon.OOBNet;
  *          Management of multiple evidence cases.
  */
 public class NetworkPanel extends FrameContentPanel implements
-		PNUndoableEditListener, PropertyNames {
+		PNUndoableEditListener {
 
 	/**
 	 * Static field for serializable class.
@@ -644,7 +642,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	public static boolean requestNetworkProperties(ProbNet probNet,
 			Window owner, boolean newNetwork) {
 
-		return EditorPanel.requestNetworkProperties(owner, probNet, newNetwork);
+		return EditorPanel.requestNetworkProperties(owner, probNet);
 
 	}
 

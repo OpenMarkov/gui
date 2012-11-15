@@ -22,7 +22,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,8 +41,9 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.PropertyNames;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
+import org.openmarkov.core.oon.OOBNet;
 
 /**
  * Panel to set the definition of a network. 
@@ -51,38 +51,90 @@ import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
  * @author jlgozalo
  * @version 1.1 ibermejo
  */
-public class NetworkDefinitionPanel extends JPanel implements 
-		PropertyNames, CommentListener, ActionListener {
+public class NetworkDefinitionPanel extends JPanel
+    implements
+        CommentListener
+{
 
+    /**
+     * internal serial id
+     */
+    private static final long serialVersionUID = 1047978130482205148L;
+
+    /**
+     * The Network Type Label
+     */
+    private JLabel jLabelNetworkTypes = null;
+    /**
+     * The Network Types Combo Box Drop Down List
+     */
+    private JComboBox<String> jComboBoxNetworkTypes = null;
+    /**
+     * The Network Definition Comment Label
+     */
+    private JTextArea jTextAreaLabelNetworkDefinitionComment;
+    /**
+     * The Network Comment Scroll Panel box
+     */
+    private CommentHTMLScrollPane commentHTMLScrollPaneNetworkDefinition = null;
+
+    /**
+     * Checkbox to define Object Orientedness of Network
+     */
+    private JCheckBox jcheckBoxIsObjectOriented = null;
+
+    /**
+     * Dialog string resource.
+     */
+    private StringResource dialogStringResource;
+
+    /**
+     * Specifies if the network whose adittionalProperties are edited is new.
+     */
+    private boolean newNetwork = false;    
 	private ProbNet probNet;
 	private StringResource messageStringResource;
-	private JDialog parent;
+	private NetworkPropertiesDialog parent;
 	private NetworkTypeManager networkTypeManager;
-	
+
+    /**
+     * Constructor.
+     * 
+     * @param parent
+     *            this panel's parent dialog
+     */
+    public NetworkDefinitionPanel(NetworkPropertiesDialog parent) {
+        this.parent = parent;
+        this.newNetwork = true;
+        initialize();
+    }
+    
 	/**
-	 * This method initialises this instance.
+	 * Constructor.
 	 * 
-	 * @param newNetwork
-	 *            to indicate if the panel is for new networks
-	 * @param probNet2
+	 * @param probNet
 	 *            manage the network access
 	 */
-	public NetworkDefinitionPanel(final boolean newNetwork, ProbNet probNet, JDialog parent) {
-
-		this.probNet = probNet;
-		dialogStringResource = StringResourceLoader.getUniqueInstance()
-				.getBundleDialogs();
-		this.newNetwork = newNetwork;
-		this.parent = parent;
-		setName("NetworkDefinitionPanel");
-        networkTypeManager = new NetworkTypeManager (); 
-		initialize();
+	public NetworkDefinitionPanel(NetworkPropertiesDialog parent, ProbNet probNet) {
+        this.parent = parent;
+		this.newNetwork = probNet == null;
+        this.probNet = probNet;
+        initialize();
+        if(probNet != null)
+        {
+            setFieldsFromProperties(probNet);            
+        }
 	}
 
 	/**
 	 * initialises the panel
 	 */
 	private void initialize() {
+        setName("NetworkDefinitionPanel");
+        networkTypeManager = new NetworkTypeManager (); 
+        dialogStringResource = StringResourceLoader.getUniqueInstance()
+                .getBundleDialogs();
+	    
 
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
 		groupLayout
@@ -243,15 +295,20 @@ public class NetworkDefinitionPanel extends JPanel implements
 			jComboBoxNetworkTypes.setEditable(false);
 			//
 			if (newNetwork) {
-				//jComboBoxNetworkTypes.setSelectedItem(networkTypes[0]);
-				jComboBoxNetworkTypes.addActionListener((ActionListener) this);
 				// Set Bayesian Network as default
 				jComboBoxNetworkTypes.setSelectedItem (dialogStringResource.getString("NetworkDefinitionPanel.NetworkTypes.Items.BayesianNetwork"));
-			} else if (!newNetwork) {
+			} else {
 				jComboBoxNetworkTypes.setSelectedItem(dialogStringResource
 						.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 								+ networkTypeManager.getName (probNet.getNetworkType())));
-				jComboBoxNetworkTypes.addActionListener((ActionListener) this);		
+                jComboBoxNetworkTypes.addActionListener(new ActionListener()
+                {
+                    @Override
+                    public void actionPerformed (ActionEvent arg0)
+                    {
+                        networkTypeChanged();
+                    }
+                });
 			}
 		}
 		return jComboBoxNetworkTypes;
@@ -296,8 +353,10 @@ public class NetworkDefinitionPanel extends JPanel implements
 			commentHTMLScrollPaneNetworkDefinition
 					.setName("commentHTMLScrollPaneNetworkDefinition");
 
-			commentHTMLScrollPaneNetworkDefinition.addCommentListener(this);
-
+			if(!newNetwork)
+			{
+			    commentHTMLScrollPaneNetworkDefinition.addCommentListener(this);
+			}
 		}
 		return commentHTMLScrollPaneNetworkDefinition;
 	}
@@ -307,6 +366,8 @@ public class NetworkDefinitionPanel extends JPanel implements
 	    if(jcheckBoxIsObjectOriented == null)
 	    {
 	        jcheckBoxIsObjectOriented = new JCheckBox ("Is Object Oriented", false);
+	        jcheckBoxIsObjectOriented.setSelected (probNet != null && probNet instanceof OOBNet);
+	        jcheckBoxIsObjectOriented.setEnabled (newNetwork);
 	    }
 	    return jcheckBoxIsObjectOriented;
 	}
@@ -318,16 +379,13 @@ public class NetworkDefinitionPanel extends JPanel implements
 	 * @param propNet
 	 *            network from where load the information.
 	 */
-	public void setFieldsFromProperties(ProbNet network) {
+	private void setFieldsFromProperties(ProbNet probNet) {
 
-		getJComboBoxNetworkTypes().removeActionListener(this);
 		getJComboBoxNetworkTypes()
 				.setSelectedItem(
 						dialogStringResource
 								.getString("NetworkDefinitionPanel.NetworkTypes.Items."
 										+ networkTypeManager.getName (probNet.getNetworkType())));
-
-		getJComboBoxNetworkTypes().addActionListener(this);
 
 		// set the title for comment
 		MessageFormat messageForm = new MessageFormat(
@@ -336,7 +394,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 
 		// String shortNetworkName = (String)network.properties.
 		// get(netPropertyNames.NAME.toString());
-		String shortNetworkName = network.getName();
+		String shortNetworkName = probNet.getName();
 		int lastIndexOfSlashPath = shortNetworkName.lastIndexOf("\\");
 		shortNetworkName = shortNetworkName.substring(lastIndexOfSlashPath + 1);
 		Object[] labelArgs = new Object[] { shortNetworkName };
@@ -347,7 +405,7 @@ public class NetworkDefinitionPanel extends JPanel implements
 		// netPropertyNames.COMMENT.toString());
 
 		getCommentHTMLScrollPaneNetworkDefinition().setCommentHTMLTextPaneText(
-				network.getComment());
+				probNet.getComment());
 	}
 
 	/**
@@ -361,43 +419,6 @@ public class NetworkDefinitionPanel extends JPanel implements
 		return true;
 
 	}
-
-	/**
-	 * internal serial id
-	 */
-	private static final long serialVersionUID = 1047978130482205148L;
-
-	/**
-	 * The Network Type Label
-	 */
-	private JLabel jLabelNetworkTypes = null;
-	/**
-	 * The Network Types Combo Box Drop Down List
-	 */
-	private JComboBox<String> jComboBoxNetworkTypes = null;
-	/**
-	 * The Network Definition Comment Label
-	 */
-	private JTextArea jTextAreaLabelNetworkDefinitionComment;
-	/**
-	 * The Network Comment Scroll Panel box
-	 */
-	private CommentHTMLScrollPane commentHTMLScrollPaneNetworkDefinition = null;
-
-    /**
-     * Checkbox to define Object Orientedness of Network
-     */
-    private JCheckBox jcheckBoxIsObjectOriented = null;
-
-    /**
-	 * Dialog string resource.
-	 */
-	private StringResource dialogStringResource;
-
-	/**
-	 * Specifies if the network whose adittionalProperties are edited is new.
-	 */
-	private boolean newNetwork = false;
 
 	public void commentHasChanged() {
 
@@ -418,8 +439,8 @@ public class NetworkDefinitionPanel extends JPanel implements
 		}
 
 	}
-	@Override
-	public void actionPerformed(ActionEvent ae) {
+	
+	private void networkTypeChanged() {
 		String itemSelected  = (String) jComboBoxNetworkTypes.getSelectedItem(); 
 		if (!(itemSelected == null)) {
 			org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
@@ -432,16 +453,14 @@ public class NetworkDefinitionPanel extends JPanel implements
 			        selectedNetworkType = networkTypeManager.getNetworkType (networkTypeName);
 			    }
 			}
-			
 
 			if (selectedNetworkType != null) {
 			    ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
 				try {
 					probNet.doEdit(changeNetworkType);
 
-					((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getAgentsButton().setEnabled((probNet.getAgents() != null));
-					
-					((NetworkPropertiesDialog)parent).getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled((probNet.onlyChanceNodes()));
+					parent.getNetworkAdvancedPanel().getAgentsButton().setEnabled((probNet.getAgents() != null));
+					parent.getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled((probNet.onlyChanceNodes()));
 					
                 }
                 catch (NotEnoughMemoryException | ConstraintViolationException
@@ -473,4 +492,30 @@ public class NetworkDefinitionPanel extends JPanel implements
 			
 		}
 	}
+
+    public NetworkType getNetworkType ()
+    {
+        org.openmarkov.core.model.network.type.NetworkType selectedNetworkType = null;
+        for(String networkTypeName : networkTypeManager.getNetworkTypeNames ())
+        {
+            if(jComboBoxNetworkTypes.getSelectedItem ().equals(dialogStringResource
+                                   .getString("NetworkDefinitionPanel.NetworkTypes.Items."
+                                           + networkTypeName)))
+            {
+                selectedNetworkType = networkTypeManager.getNetworkType (networkTypeName);
+            }
+        }
+       return selectedNetworkType;
+    }
+    
+    public String getNetworkComment ()
+    {
+       return getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
+    }
+    
+    public boolean isObjectOriented ()
+    {
+       return jcheckBoxIsObjectOriented.isSelected ();
+    }    
+    
 }

@@ -13,7 +13,6 @@ package org.openmarkov.core.gui.dialog.network;
 import java.awt.Window;
 
 import javax.help.BadIDException;
-import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
 import org.openmarkov.core.gui.dialog.HelpViewer;
@@ -22,6 +21,8 @@ import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.type.NetworkType;
+import org.openmarkov.core.oon.OOBNet;
 
 
 
@@ -35,9 +36,48 @@ import org.openmarkov.core.model.network.ProbNet;
 public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	PropertyNames{
 	
-	private ProbNet probNet;
+    private static final long serialVersionUID = -8734100506781534551L;
+    
+    private ProbNet probNet = null;
 
-	private NetworkAdvancedPanel networkAdvancedPanel;
+    /**
+     * Panel to tab the different options.
+     */
+    private JTabbedPane tabbedPane = null;
+
+    /**
+     * Panel that contains the panel where definition fields are. It is used to
+     * place the fields at the top of the panel.
+     */
+    private NetworkDefinitionPanel networkDefinitionPanel = null;
+
+    /**
+     * Panel that contains the panel where variables definition fields are. It
+     * is used to place the fields at the top of the panel.
+     */
+    private NetworkVariablesPanel networkVariablesPanel = null;
+
+    /**
+     * Panel that contains the panel where a set of other adittionalProperties are. It is
+     * used to place the fields at the top of the panel.
+     */
+    private NetworkOtherPropertiesPanel networkOtherPropertiesPanel = null;
+
+    /**
+     * Advanced panel containing agents and decision criteria
+     */
+    private NetworkAdvancedPanel networkAdvancedPanel;
+    
+    /**
+     * Dialog string resource.
+     */
+    private StringResource dialogStringResource;
+
+
+    /**
+     * Specifies if the network whose adittionalProperties are edited is new.
+     */
+    private boolean newNetwork = false;	
 
 	/**
 	 * This method initializes this instance.
@@ -49,15 +89,14 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 *            false, an existing network is being modified.
 	 * @wbp.parser.constructor
 	 */
-	public NetworkPropertiesDialog(Window owner, boolean newElement) {
+	public NetworkPropertiesDialog(Window owner) {
 
 		super(owner);
 
-		newNetwork = newElement;
+		newNetwork = true;
 		initialize();
 		setName("NetworkPropertiesDialog");
 		setLocationRelativeTo(owner);
-		//setOnlineHelp("Network Properties Dialog");
 	}
 	/**
 	 * This method initializes this instance.
@@ -68,18 +107,19 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 *            if true, it indicates that a new network is being created; if
 	 *            false, an existing network is being modified.
 	 */
-	public NetworkPropertiesDialog(Window owner, ProbNet probNet, boolean newElement) {
+	public NetworkPropertiesDialog(Window owner, ProbNet probNet) {
 		
 		super(owner);
-		if (!newElement) {
-			probNet.getPNESupport().setWithUndo(true);
+		if(probNet != null)
+		{
+    		probNet.getPNESupport().setWithUndo(true);
+    		probNet.getPNESupport().openParenthesis();
+    	    this.probNet = probNet;
+    		newNetwork = false;
+    		initialize();
+    		setName("NetworkPropertiesDialog");
+    		setLocationRelativeTo(owner);
 		}
-		probNet.getPNESupport().openParenthesis();
-	    this.probNet = probNet;
-		newNetwork = newElement;
-		initialize();
-		setName("NetworkPropertiesDialog");
-		setLocationRelativeTo(owner);
 		//SsetOnlineHelp("Network Properties Dialog");
 	}
 	
@@ -90,12 +130,15 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 */
 	private void initialize() {
 
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		setTitle(dialogStringResource
-			.getString("NetworkPropertiesDialog.Title.Label"));
-		configureComponentsPanel();
-		pack();
+        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
+        String title = dialogStringResource.getString ("NetworkPropertiesDialog.Title.Label");
+        if(probNet != null)
+        {
+            title += ": " + probNet.getName (); 
+        }
+        setTitle (title);
+        configureComponentsPanel ();
+        pack ();
 	}
 
 	
@@ -126,16 +169,19 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 				dialogStringResource
 					.getString("NetworkPropertiesDialog.VariablesTab.Label"),
 				null, getNetworkVariablesPanel(), null);
-			tabbedPane.addTab(
-					dialogStringResource
-						.getString("NetworkPropertiesDialog.Advanced.Label"),
-					null, getNetworkAdvancedPanel(), null);
-
-			tabbedPane
-				.addTab(
-					dialogStringResource
-						.getString("NetworkPropertiesDialog.OtherPropertiesTab.Label"),
-					null, getNetworkOtherPropertiesPanel(), null);
+			if(!newNetwork)
+			{
+    			tabbedPane.addTab(
+    					dialogStringResource
+    						.getString("NetworkPropertiesDialog.Advanced.Label"),
+    					null, getNetworkAdvancedPanel(), null);
+    
+    			tabbedPane
+    				.addTab(
+    					dialogStringResource
+    						.getString("NetworkPropertiesDialog.OtherPropertiesTab.Label"),
+    					null, getNetworkOtherPropertiesPanel(), null);
+			}
 			tabbedPane.setName("tabbedPane");
 		}
 
@@ -148,73 +194,63 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * 
 	 * @return a new definition panel.
 	 */
-	NetworkAdvancedPanel getNetworkAdvancedPanel() {
+    NetworkAdvancedPanel getNetworkAdvancedPanel ()
+    {
+        if (networkAdvancedPanel == null)
+        {
+            networkAdvancedPanel = new NetworkAdvancedPanel (newNetwork, probNet);
+            networkAdvancedPanel.setName ("networkAdvancedPanel");
+        }
+        return networkAdvancedPanel;
+    }
+    
+    /**
+     * This method initialises networkDefinitionPanel.
+     * @return a new definition panel.
+     */
+    private NetworkDefinitionPanel getNetworkDefinitionPanel ()
+    {
+        if (networkDefinitionPanel == null)
+        {
+            networkDefinitionPanel = new NetworkDefinitionPanel (this, probNet);
+            networkDefinitionPanel.setName ("networkDefinitionPanel");
+        }
+        return networkDefinitionPanel;
+    }
 
-		if (networkAdvancedPanel == null) {
-			networkAdvancedPanel = new NetworkAdvancedPanel(newNetwork, 
-					probNet);
-			networkAdvancedPanel.setName("networkAdvancedPanel");
-		}	
-		return networkAdvancedPanel;
-		}
-	/**
-	 * This method initialises networkDefinitionPanel.
-	 * 
-	 * @return a new definition panel.
-	 */
-	private NetworkDefinitionPanel getNetworkDefinitionPanel() {
+    /**
+     * This method initialises networkVariablesPanel.
+     * @return a new variables definition panel.
+     */
+    private NetworkVariablesPanel getNetworkVariablesPanel ()
+    {
+        if (networkVariablesPanel == null)
+        {
+            networkVariablesPanel = new NetworkVariablesPanel (probNet);
+            networkVariablesPanel.setName ("networkVariablesPanel");
+        }
+        return networkVariablesPanel;
+    }
 
-		if (networkDefinitionPanel == null) {
-			networkDefinitionPanel = new NetworkDefinitionPanel(newNetwork, 
-					probNet, this);
-			networkDefinitionPanel.setName("networkDefinitionPanel");
-			
-		
-		}
-
-		return networkDefinitionPanel;
-
-	}
-
-	/**
-	 * This method initialises networkVariablesPanel.
-	 * 
-	 * @return a new variables definition panel.
-	 */
-	private NetworkVariablesPanel getNetworkVariablesPanel() {
-
-		if (networkVariablesPanel == null) {
-			networkVariablesPanel = new NetworkVariablesPanel(probNet);
-			networkVariablesPanel.setName("networkVariablesPanel");
-
-		}
-
-		return networkVariablesPanel;
-
-	}
-
-	/**
-	 * This method initialises networkOtherPropertiesPanel.
-	 * 
-	 * @return a new other adittionalProperties panel.
-	 */
-	private NetworkOtherPropertiesPanel getNetworkOtherPropertiesPanel() {
-
-		if (networkOtherPropertiesPanel == null) {
-			networkOtherPropertiesPanel =
-				new NetworkOtherPropertiesPanel(newNetwork);
-			networkOtherPropertiesPanel.setName("networkOtherPropertiesPanel");
-
-		}
-
-		return networkOtherPropertiesPanel;
-
-	}
+    /**
+     * This method initialises networkOtherPropertiesPanel.
+     * @return a new other adittionalProperties panel.
+     */
+    private NetworkOtherPropertiesPanel getNetworkOtherPropertiesPanel ()
+    {
+        if (networkOtherPropertiesPanel == null)
+        {
+            networkOtherPropertiesPanel = new NetworkOtherPropertiesPanel (newNetwork);
+            networkOtherPropertiesPanel.setName ("networkOtherPropertiesPanel");
+        }
+        return networkOtherPropertiesPanel;
+    }
 
 	/**
 	 * online help convenience method
 	 */
-	private void setOnlineHelp(String onlineSection) {
+	@SuppressWarnings("unused")
+    private void setOnlineHelp(String onlineSection) {
 		/**
 		 * auxiliar help Viewer
 		 */
@@ -234,52 +270,29 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	
 		}
      }
-	
 
-	
-
-	
-	/**
-	 * This method fills the content of the fields from a NetworkProperties
-	 * object.
-	 * 
-	 * @param adittionalProperties
-	 *            object from where load the information.
-	 */
-	private void setFieldsFromProperties() {
-
-		setTitle(dialogStringResource
-			.getString("NetworkPropertiesDialog.Title.Label") + ": "
-			+ probNet.getName());
-
-		getNetworkDefinitionPanel().setFieldsFromProperties(
-				probNet);
-		getNetworkVariablesPanel().setFieldsFromProperties();
-		//getNetworkOtherPropertiesPanel().setFieldsFromProperties(adittionalProperties);*/
-		// TODO set the fields in the OtherProperties Table Panel
-
-	}
-
-
-	/**
-	 * This method carries out the actions when the user press the Ok button
-	 * before hide the dialog.
-	 * 
-	 * @return true always
-	 */
-	@Override
-	protected boolean doOkClickBeforeHide() {
-			
-		probNet.getPNESupport().closeParenthesis();
-		
-        if (!getNetworkDefinitionPanel().checkName()) {
-			return false;
-		}
-		//changed by mpalacios: probNet will be updated by Edits
-		//setPropertiesFromFields(networkProperties);
-		return true;
-
-	}
+    /**
+     * This method carries out the actions when the user press the Ok button
+     * before hide the dialog.
+     * @return true always
+     */
+    @Override
+    protected boolean doOkClickBeforeHide ()
+    {
+        if (newNetwork)
+        {
+            // TODO Create probNet instance
+            NetworkType networkType = getNetworkDefinitionPanel ().getNetworkType();
+            probNet = (getNetworkDefinitionPanel ().isObjectOriented ())? new OOBNet(networkType) : new ProbNet(networkType);
+            probNet.setComment ( getNetworkDefinitionPanel ().getNetworkComment ());
+            probNet.setDefaultStates (getNetworkVariablesPanel().getDefaultStates ());
+        }
+        else
+        {
+            probNet.getPNESupport ().closeParenthesis ();
+        }
+        return getNetworkDefinitionPanel ().checkName ();
+    }
 
 	// ESCA-JAVA0025: allows an empty method to override another one
 	/**
@@ -288,7 +301,10 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 */
 	@Override
 	protected void doCancelClickBeforeHide() {
-		probNet.getPNESupport().closeParenthesis();
+        if(!newNetwork)
+        {
+            probNet.getPNESupport().closeParenthesis();
+        }	    
 	}
 
 	/**
@@ -310,55 +326,17 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
 	 *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */
-	public int requestProperties() {
-
-		setFieldsFromProperties();
-		//setFieldsFromProperties(networkName, pNESupport.getProbNet());
-		//networkProperties = adittionalProperties;
+	public int showProperties() {
 		setVisible(true);
-
 		return selectedButton;
-
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8734100506781534551L;
-
-	/**
-	 * Panel to tab the different options.
-	 */
-	private JTabbedPane tabbedPane = null;
-
-	/**
-	 * Panel that contains the panel where definition fields are. It is used to
-	 * place the fields at the top of the panel.
-	 */
-	private NetworkDefinitionPanel networkDefinitionPanel = null;
-
-	/**
-	 * Panel that contains the panel where variables definition fields are. It
-	 * is used to place the fields at the top of the panel.
-	 */
-	private NetworkVariablesPanel networkVariablesPanel = null;
-
-	/**
-	 * Panel that contains the panel where a set of other adittionalProperties are. It is
-	 * used to place the fields at the top of the panel.
-	 */
-	private NetworkOtherPropertiesPanel networkOtherPropertiesPanel = null;
-
-	/**
-	 * Dialog string resource.
-	 */
-	private StringResource dialogStringResource;
-
-
-	/**
-	 * Specifies if the network whose adittionalProperties are edited is new.
-	 */
-	private boolean newNetwork = false;
-	
+    /**
+     * Returns the probNet.
+     * @return the probNet.
+     */
+    public ProbNet getProbNet ()
+    {
+        return probNet;
+    }
 	
 }

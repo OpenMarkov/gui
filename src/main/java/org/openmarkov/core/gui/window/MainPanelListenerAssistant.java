@@ -48,6 +48,7 @@ import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.dialog.io.SaveOptions;
+import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -69,7 +70,6 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.OOBNet;
 
@@ -414,11 +414,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 	}
 
-	private void showUncertainValuesDialog() {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * Create a Java Help viewer
 	 * 
@@ -438,7 +433,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private LanguageDialog showLanguageChangeDialog() {
 
 		return LanguageDialog.getUniqueInstance(mainPanel.getMainFrame());
-
 	}
 
 	/**
@@ -449,7 +443,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	private PreferencesDialog showUserConfigurationDialog() {
 
 		return new PreferencesDialog(mainPanel.getMainFrame());
-
 	}
 
 	/**
@@ -816,20 +809,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void createNewNetwork() {
 
-		ProbNet probNet = null;
-		// TODO OOBN start
-		//probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		probNet = new OOBNet(BayesianNetworkType.getUniqueInstance());
-        // TODO OOBN end
-		String networkName = new String(stringResourceLoader.getBundleMessages()
-				.getString("InternalFrame.Title.Label") + " " + frameIndex);
-		
-		probNet.setName(networkName);
-
-		probNet.getPNESupport().setWithUndo(false);
-
-		if (NetworkPanel.requestNetworkProperties(probNet,
-				Utilities.getOwner(mainPanel), true)) {
+		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
+		                                                               
+		if (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON) {
+		    ProbNet probNet = dialogProperties.getProbNet ();
+	        String networkName = new String(stringResourceLoader.getBundleMessages()
+	                                        .getString("InternalFrame.Title.Label") + " " + frameIndex);
+            probNet.setName(networkName);
 			probNet.getPNESupport().setWithUndo(true);
 			networkPanels.add (createNewFrame(probNet));
 			frameIndex++;

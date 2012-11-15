@@ -59,6 +59,12 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.openmarkov</groupId>
+            <artifactId>org.openmarkov.inference.variableElimination</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

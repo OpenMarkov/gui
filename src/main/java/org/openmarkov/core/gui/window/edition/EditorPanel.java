@@ -1029,7 +1029,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void changeNetworkProperties() {
 		// TODO be careful with local pNESupport and extern pNESupport
-		if (!requestNetworkProperties(Utilities.getOwner(this), probNet, false)) {
+		if (!requestNetworkProperties(Utilities.getOwner(this), probNet)) {
 			probNet.getPNESupport().undoAndDelete();
 		}
 
@@ -1050,12 +1050,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return true, if the user has made changes on the adittionalProperties;
 	 *         otherwise, false.
 	 */
-	public static boolean requestNetworkProperties(Window owner,
-			ProbNet probNet, boolean newNetwork) {
+	public static boolean requestNetworkProperties(Window owner, ProbNet probNet) {
 
-		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(
-				owner, probNet, newNetwork);
-		return (dialogProperties.requestProperties() == NetworkPropertiesDialog.OK_BUTTON);
+		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
+		return (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON);
 
 	}
 
