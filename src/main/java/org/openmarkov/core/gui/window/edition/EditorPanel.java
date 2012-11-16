@@ -1420,8 +1420,18 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @return the list of Evidence Cases.
 	 */
 	public ArrayList<EvidenceCase> getEvidence() {
-		ArrayList<EvidenceCase> evidence = new ArrayList<EvidenceCase>(postResolutionEvidence);
-		evidence.add(0, preResolutionEvidence);
+		ArrayList<EvidenceCase> evidence = new ArrayList<EvidenceCase>();
+        for(EvidenceCase postResolutionEvidenceCase: postResolutionEvidence)
+        {
+            if(!postResolutionEvidenceCase.isEmpty ())
+            {
+                evidence.add (postResolutionEvidenceCase);
+            }
+        }
+        if(!evidence.isEmpty () || !preResolutionEvidence.isEmpty ())
+        {
+            evidence.add(0, preResolutionEvidence);
+        }
 		return evidence;
 	}
 

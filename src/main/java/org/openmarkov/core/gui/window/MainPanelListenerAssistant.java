@@ -974,7 +974,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                 netReadFromFile.setName (new File (fileName).getName ());
                 networkPanel = createNewFrame (netReadFromFile);
                 networkPanel.setNetworkFile (fileName);
-                ArrayList<EvidenceCase> evidence = probNetInfo.getEvidence ();
+                List<EvidenceCase> evidence = probNetInfo.getEvidence ();
                 if (evidence != null && !evidence.isEmpty ())
                 {
                     EvidenceCase preResolutionEvidence = evidence.get (0);
