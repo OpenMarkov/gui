@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;

@@ -5,7 +5,7 @@
 package org.openmarkov.core.gui.dialog.io;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oon.OOPNet;
+import org.openmarkov.core.oopn.OOPNet;
 
 /**
  *

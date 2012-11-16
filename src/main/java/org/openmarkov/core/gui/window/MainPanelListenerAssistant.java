@@ -70,8 +70,8 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.OOPNet;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
 
 /**
  * This class receives the main events of the application and helps the class

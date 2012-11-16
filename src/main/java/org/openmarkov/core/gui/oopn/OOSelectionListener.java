@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 /*
 * Copyright 2011 CISIAD, UNED, Spain

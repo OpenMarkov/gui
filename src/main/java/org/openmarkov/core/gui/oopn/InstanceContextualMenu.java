@@ -7,7 +7,7 @@
  * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.event.ActionListener;
 

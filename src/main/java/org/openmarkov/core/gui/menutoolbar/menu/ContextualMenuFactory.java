@@ -19,8 +19,8 @@ import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
-import org.openmarkov.core.gui.oon.InstanceContextualMenu;
-import org.openmarkov.core.gui.oon.VisualInstance;
+import org.openmarkov.core.gui.oopn.InstanceContextualMenu;
+import org.openmarkov.core.gui.oopn.VisualInstance;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 
 

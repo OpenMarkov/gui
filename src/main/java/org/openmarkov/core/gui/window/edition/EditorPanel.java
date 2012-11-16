@@ -87,7 +87,7 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.oon.Instance.ParameterArity;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
 
 /**
  * This class implements the behaviour of a panel where a network will be

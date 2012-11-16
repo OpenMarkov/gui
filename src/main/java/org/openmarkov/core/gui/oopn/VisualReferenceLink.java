@@ -7,7 +7,7 @@
  * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -17,7 +17,7 @@ import java.awt.Stroke;
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualArrow;
 import org.openmarkov.core.gui.graphic.VisualElement;
-import org.openmarkov.core.oon.ReferenceLink;
+import org.openmarkov.core.oopn.ReferenceLink;
 
 public class VisualReferenceLink extends VisualArrow {
     

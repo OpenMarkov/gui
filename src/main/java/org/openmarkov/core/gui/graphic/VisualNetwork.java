@@ -35,8 +35,8 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.action.MarkAsInputEdit;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
+import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 
 
 

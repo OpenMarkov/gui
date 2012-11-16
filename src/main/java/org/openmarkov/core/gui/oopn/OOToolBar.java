@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;

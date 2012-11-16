@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.Component;
 import java.awt.Graphics2D;
@@ -17,8 +17,8 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.mode.EditionMode;
 import org.openmarkov.core.gui.window.edition.mode.EditionState;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oon.OOPNet;
-import org.openmarkov.core.oon.action.AddInstanceEdit;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.action.AddInstanceEdit;
 
 @EditionState(name="Edit.Mode.Instance", icon="instance.gif", cursor="instance.gif")
 public class InstanceEditionMode extends EditionMode

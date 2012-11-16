@@ -7,7 +7,7 @@
  * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,7 +31,7 @@ import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.oon.Instance;
+import org.openmarkov.core.oopn.Instance;
 
 /**
  * This class is the visual representation of a chance node.

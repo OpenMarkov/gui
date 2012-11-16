@@ -26,11 +26,11 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.oon.VisualInstance;
-import org.openmarkov.core.gui.oon.VisualOONetwork;
-import org.openmarkov.core.gui.oon.VisualReferenceLink;
-import org.openmarkov.core.oon.action.RemoveInstanceEdit;
-import org.openmarkov.core.oon.action.RemoveReferenceLinkEdit;
+import org.openmarkov.core.gui.oopn.VisualInstance;
+import org.openmarkov.core.gui.oopn.VisualOONetwork;
+import org.openmarkov.core.gui.oopn.VisualReferenceLink;
+import org.openmarkov.core.oopn.action.RemoveInstanceEdit;
+import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 
 @SuppressWarnings("serial")
 /**

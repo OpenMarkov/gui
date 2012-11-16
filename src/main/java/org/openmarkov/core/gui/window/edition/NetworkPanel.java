@@ -30,14 +30,14 @@ import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
-import org.openmarkov.core.gui.oon.VisualOONetwork;
+import org.openmarkov.core.gui.oopn.VisualOONetwork;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.OOPNet;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
 /**

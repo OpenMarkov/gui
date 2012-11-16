@@ -7,7 +7,7 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.gui.oon;
+package org.openmarkov.core.gui.oopn;
 
 import java.awt.Container;
 import java.awt.Graphics2D;
@@ -44,15 +44,15 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.oon.Instance;
-import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.InstanceReferenceLink;
-import org.openmarkov.core.oon.NodeReferenceLink;
-import org.openmarkov.core.oon.OOPNet;
-import org.openmarkov.core.oon.ReferenceLink;
-import org.openmarkov.core.oon.action.AddReferenceLinkEdit;
-import org.openmarkov.core.oon.action.ChangeParameterArityEdit;
-import org.openmarkov.core.oon.action.MarkAsInputEdit;
+import org.openmarkov.core.oopn.Instance;
+import org.openmarkov.core.oopn.InstanceReferenceLink;
+import org.openmarkov.core.oopn.NodeReferenceLink;
+import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.core.oopn.ReferenceLink;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
+import org.openmarkov.core.oopn.action.AddReferenceLinkEdit;
+import org.openmarkov.core.oopn.action.ChangeParameterArityEdit;
+import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 
 public class VisualOONetwork extends VisualNetwork
 {

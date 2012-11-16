@@ -29,9 +29,9 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.core.gui.oon.OOSelectionListener;
-import org.openmarkov.core.gui.oon.VisualInstance;
-import org.openmarkov.core.gui.oon.VisualReferenceLink;
+import org.openmarkov.core.gui.oopn.OOSelectionListener;
+import org.openmarkov.core.gui.oopn.VisualInstance;
+import org.openmarkov.core.gui.oopn.VisualReferenceLink;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
@@ -42,7 +42,7 @@ import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
-import org.openmarkov.core.oon.OOPNet;
+import org.openmarkov.core.oopn.OOPNet;
 
 /**
  * This class assists to the class MainPanel to manage the menus and toolbars.
