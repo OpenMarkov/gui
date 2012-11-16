@@ -48,7 +48,7 @@ import org.openmarkov.core.oon.Instance;
 import org.openmarkov.core.oon.Instance.ParameterArity;
 import org.openmarkov.core.oon.InstanceReferenceLink;
 import org.openmarkov.core.oon.NodeReferenceLink;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 import org.openmarkov.core.oon.ReferenceLink;
 import org.openmarkov.core.oon.action.AddReferenceLinkEdit;
 import org.openmarkov.core.oon.action.ChangeParameterArityEdit;
@@ -84,7 +84,7 @@ public class VisualOONetwork extends VisualNetwork
 
     private VisualInstance newInstanceLinkSource;    
 
-    public VisualOONetwork (OOBNet probNet)
+    public VisualOONetwork (OOPNet probNet)
     {
         super (probNet);
         selectedInstances = new HashSet<> ();
@@ -99,7 +99,7 @@ public class VisualOONetwork extends VisualNetwork
     {
         super.constructVisualInfo ();
        
-        if(probNet instanceof OOBNet && getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
+        if(probNet instanceof OOPNet && getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
         {
             // construct visual instances
             if(visualInstances == null)
@@ -107,9 +107,9 @@ public class VisualOONetwork extends VisualNetwork
                 visualInstances = new HashMap<> ();
             }
             visualInstances.clear();
-            for(String instanceName : ((OOBNet)probNet).getInstances().keySet())
+            for(String instanceName : ((OOPNet)probNet).getInstances().keySet())
             {
-                visualInstances.put(instanceName, new VisualInstance(((OOBNet)probNet).getInstances().get(instanceName), visualNodes));
+                visualInstances.put(instanceName, new VisualInstance(((OOPNet)probNet).getInstances().get(instanceName), visualNodes));
             }
             
             // construct visual parameter links
@@ -118,7 +118,7 @@ public class VisualOONetwork extends VisualNetwork
                 visualReferenceLinks = new ArrayList<> ();
             }
             visualReferenceLinks.clear();
-            for(ReferenceLink link : ((OOBNet)probNet).getReferenceLinks())
+            for(ReferenceLink link : ((OOPNet)probNet).getReferenceLinks())
             {
                 if(link instanceof InstanceReferenceLink)
                 {

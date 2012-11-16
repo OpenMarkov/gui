@@ -5,7 +5,7 @@
 package org.openmarkov.core.gui.dialog.io;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 /**
  *
@@ -21,7 +21,7 @@ public class SaveOptions extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-        chkSavePlainNetwork.setEnabled(probNet instanceof OOBNet && !((OOBNet)probNet).getInstances ().isEmpty ());
+        chkSavePlainNetwork.setEnabled(probNet instanceof OOPNet && !((OOPNet)probNet).getInstances ().isEmpty ());
     }
 
     /**

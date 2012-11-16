@@ -22,7 +22,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 
 
@@ -283,7 +283,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
         {
             // TODO Create probNet instance
             NetworkType networkType = getNetworkDefinitionPanel ().getNetworkType();
-            probNet = (getNetworkDefinitionPanel ().isObjectOriented ())? new OOBNet(networkType) : new ProbNet(networkType);
+            probNet = (getNetworkDefinitionPanel ().isObjectOriented ())? new OOPNet(networkType) : new ProbNet(networkType);
             probNet.setComment ( getNetworkDefinitionPanel ().getNetworkComment ());
             probNet.setDefaultStates (getNetworkVariablesPanel().getDefaultStates ());
         }

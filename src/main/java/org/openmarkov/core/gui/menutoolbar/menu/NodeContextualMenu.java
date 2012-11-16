@@ -120,12 +120,12 @@ public class NodeContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem removeFindingMenuItem = null;
 	
-    // TODO OOBN start
+    // TODO OOPN start
     /**
      * Object that represents the item 'Mark as Input'.
      */
     private JMenuItem inputMenuItem = null;
-    // TODO OOBN end
+    // TODO OOPN end
 
 
 	private JMenuItem logMenuItem;
@@ -195,10 +195,10 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getTemporalEvolutionMenuItem());
 		//addSeparator();
 		//add(getLogMenuItem());
-		// TODO OOBN start
+		// TODO OOPN start
 		addSeparator();
         add(getInputMenuItem ());
-        // TODO OOBN start
+        // TODO OOPN start
 		
 	}
 	
@@ -224,10 +224,10 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getRemoveFindingMenuItem());
 		addSeparator();
 		add(getLogMenuItem());
-        // TODO OOBN start
+        // TODO OOPN start
         addSeparator();
         add(getInputMenuItem ());
-        // TODO OOBN start
+        // TODO OOPN start
 		pack();
 	}
 	
@@ -256,10 +256,10 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getRemoveFindingMenuItem());
 		addSeparator();
 		add(getLogMenuItem());
-		// TODO OOBN start
+		// TODO OOPN start
 		addSeparator();
         add(getInputMenuItem ());
-        // TODO OOBN start
+        // TODO OOPN start
 		pack();
 	}
 	
@@ -591,7 +591,7 @@ public class NodeContextualMenu extends ContextualMenu {
 
 	}
 	
-	// TODO OOBN start
+	// TODO OOPN start
     /**
      * This method initialises inputMenuItem.
      * 
@@ -608,7 +608,7 @@ public class NodeContextualMenu extends ContextualMenu {
         return inputMenuItem ;
 
     }   	
-    // TODO OOBN end
+    // TODO OOPN end
 	
 	/**
 	 * Returns the component that corresponds to an action command.
@@ -652,10 +652,10 @@ public class NodeContextualMenu extends ContextualMenu {
 			component = removeFindingMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LOG)) {
 			component = logMenuItem;
-		// TODO OOBN start
+		// TODO OOPN start
 		}else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
             component = inputMenuItem;
-        // TODO OOBN end
+        // TODO OOPN end
         } else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
         	component = temporalEvolutionMenuItem;
         }

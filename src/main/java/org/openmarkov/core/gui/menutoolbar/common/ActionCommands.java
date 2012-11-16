@@ -167,7 +167,7 @@ public class ActionCommands {
      */
     public static final String INSTANCE_CREATION = "Edit.Mode.Instance";        
 
-    //TODO OOBN start
+    //TODO OOPN start
     /**
 	 * Action invoked when the user wants to mark an object as input parameter.
 	 */
@@ -192,7 +192,7 @@ public class ActionCommands {
      * Action invoked when the user wants to set the arity of the selected parameter to one
      */
     public static final String SET_ARITY_MANY = "Arity.Many";
-    //TODO OOBN end
+    //TODO OOPN end
 
 	/**
 	 * Action invoked when the user wants to change the working mode by

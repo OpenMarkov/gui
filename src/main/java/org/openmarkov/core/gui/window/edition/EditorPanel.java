@@ -3046,7 +3046,7 @@ public class EditorPanel extends JPanel implements MouseListener,
         }
     }
     
-    //TODO OOBN start
+    //TODO OOPN start
     public void markSelectedAsInput() {
         visualNetwork.markSelectedAsInput();
         repaint();
@@ -3061,6 +3061,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void setParameterArity(ParameterArity arity) {
 		visualNetwork.setParameterArity(arity);		
 	}
-    //TODO OOBN end
+    //TODO OOPN end
 
 }

@@ -71,7 +71,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -384,7 +384,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}else if (actionCommand
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableRevelationArc();
-			//TODO OOBN start 			
+			//TODO OOPN start 			
 		} else if (actionCommand
 				.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
 			this.getCurrentNetworkPanel().temporalEvolution();
@@ -396,7 +396,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
 		} else if (actionCommand.equals(ActionCommands.SET_ARITY_MANY)) {
 			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-			//TODO OOBN end
+			//TODO OOPN end
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
@@ -611,9 +611,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		    }
             if(saveOptions != null && 
                     saveOptions.isSaveClassesInFile () && 
-                    networkPanel.getProbNet() instanceof OOBNet)
+                    networkPanel.getProbNet() instanceof OOPNet)
             {
-                ((OOBNet)networkPanel.getProbNet ()).fillClassList();
+                ((OOPNet)networkPanel.getProbNet ()).fillClassList();
             }
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel ().getEvidence (), fileName);
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );

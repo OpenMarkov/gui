@@ -149,7 +149,7 @@ public class MenuItemNames
     public static final String EDIT_MODE_LINK_MENUITEM =
         EDIT_MENU + ".Mode.Link";
     
-    //TODO OOBN start
+    //TODO OOPN start
     /**
      * Constant that defines the item 'Edit - Instance Input'.
      */
@@ -164,7 +164,7 @@ public class MenuItemNames
      * Constant that defines the item 'Arity'.
      */
     public static final String ARITY_MENUITEM = EDIT_MENU + ".Arity";
-    //TODO OOBN end
+    //TODO OOPN end
 
     /**
      * Constant that defines the item 'Edit - Node adittionalProperties'.

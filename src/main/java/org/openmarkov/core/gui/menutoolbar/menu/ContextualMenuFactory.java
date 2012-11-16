@@ -157,7 +157,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * 
 	 * @return the instance contextual menu .
 	 */
-	//TODO OOBN start
+	//TODO OOPN start
 	private ContextualMenu getInstanceContextualMenu(VisualInstance selectedInstance, EditorPanel panel) {
 
 		if (instanceContextualMenu == null) {
@@ -167,7 +167,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 		}
 		return instanceContextualMenu;
 	}
-    //TODO OOBN end
+    //TODO OOPN end
 	
 	/**
 	 * Enables or disabled an option identified by an action command.
@@ -236,11 +236,11 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
         }else if(VisualLink.class.isAssignableFrom (selectedElement.getClass ()))
         {
             contextualMenu = getLinkContextualMenu((VisualLink)selectedElement, panel);
-        //TODO OOBN start 
+        //TODO OOPN start 
         }else if(VisualInstance.class.isAssignableFrom (selectedElement.getClass ()))
         {
           contextualMenu =  getInstanceContextualMenu((VisualInstance)selectedElement, panel);
-        //TODO OOBN end 
+        //TODO OOPN end 
         }
         return contextualMenu;
     }

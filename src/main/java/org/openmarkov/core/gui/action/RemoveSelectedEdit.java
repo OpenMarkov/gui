@@ -42,10 +42,10 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 {
     private List<VisualNode> nodesToRemove;
     private List<VisualLink> linksToRemove;
-    //TODO OOBN start
+    //TODO OOPN start
     private List<VisualInstance> instancesToRemove;
     private List<VisualReferenceLink> referenceLinksToRemove;
-    //TODO OOBN end
+    //TODO OOPN end
 
     private StringResource messageStringResource;
 
@@ -58,13 +58,13 @@ public class RemoveSelectedEdit extends CompoundPNEdit
     {
         super (visualNetwork.getNetwork ());
         this.nodesToRemove = visualNetwork.getSelectedNodes ();
-        //TODO OOBN start
+        //TODO OOPN start
         if(visualNetwork instanceof VisualOONetwork)
         {
             this.instancesToRemove = ((VisualOONetwork)visualNetwork).getSelectedInstances();
             this.referenceLinksToRemove = ((VisualOONetwork)visualNetwork).getSelectedReferenceLinks();
         }
-        //TODO OOBN end
+        //TODO OOPN end
         
         this.linksToRemove = union (visualNetwork.getSelectedLinks (),
                 visualNetwork.getLinksOfNodes (this.nodesToRemove));
@@ -100,7 +100,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             edits.add ( new CRemoveProbNodeEdit( probNet, node.getProbNode ()));
         }
      
-        //TODO OOBN start
+        //TODO OOPN start
         if(instancesToRemove != null)
         {
             for(VisualInstance instance: instancesToRemove)
@@ -115,7 +115,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             	edits.add ( new RemoveReferenceLinkEdit(getProbNet(), visualLink.getReferenceLink()));
             }
         }
-        //TODO OOBN end
+        //TODO OOPN end
     }
     
     /**

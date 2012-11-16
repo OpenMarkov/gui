@@ -37,7 +37,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oon.Instance.ParameterArity;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 // ESCA-JAVA0136: allows more than 30 methods in the class
 /**
@@ -218,11 +218,11 @@ public class NetworkPanel extends FrameContentPanel implements
 	public EditorPanel getEditorPanel() {
 
 		if (editorPanel == null) {
-		    // TODO OOBN start
-		    if(probNet instanceof OOBNet)
-		        editorPanel = new EditorPanel(this, new VisualOONetwork ((OOBNet)probNet));
+		    // TODO OOPN start
+		    if(probNet instanceof OOPNet)
+		        editorPanel = new EditorPanel(this, new VisualOONetwork ((OOPNet)probNet));
 		    else
-            // TODO OOBN end
+            // TODO OOPN end
 		        editorPanel = new EditorPanel(this, new VisualNetwork (probNet));
 			// editorPanel.addEditionListener(this);
 			// It is necessary for edition actions like movement node.
@@ -356,10 +356,10 @@ public class NetworkPanel extends FrameContentPanel implements
 	public void setWorkingMode(int workingMode) {
 		this.workingMode = workingMode;
 		editorPanel.setWorkingMode(workingMode);
-		//TODO OOBN 
-		if(probNet instanceof OOBNet)
+		//TODO OOPN 
+		if(probNet instanceof OOPNet)
 		{
-		    editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? ((OOBNet)probNet).getPlainProbNet() : probNet);
+		    editorPanel.setProbNet((workingMode == INFERENCE_WORKING_MODE)? ((OOPNet)probNet).getPlainProbNet() : probNet);
 		}
 	}
 
@@ -1015,7 +1015,7 @@ public class NetworkPanel extends FrameContentPanel implements
         
     }
 
-    // TODO OOBN start
+    // TODO OOPN start
     public void markSelectedAsInput ()
     {
         editorPanel.markSelectedAsInput();
@@ -1025,7 +1025,7 @@ public class NetworkPanel extends FrameContentPanel implements
     {
         editorPanel.editClass();
     }
-    // TODO OOBN end
+    // TODO OOPN end
 
 	public void setParameterArity(ParameterArity arity) {
 		editorPanel.setParameterArity(arity);
@@ -1033,9 +1033,9 @@ public class NetworkPanel extends FrameContentPanel implements
 
     public void showPlainNetwork ()
     {
-        if(probNet instanceof OOBNet)
+        if(probNet instanceof OOPNet)
         {
-            probNet = ((OOBNet)probNet).getPlainProbNet ();          
+            probNet = ((OOPNet)probNet).getPlainProbNet ();          
             editorPanel.setProbNet (probNet);
             repaint ();
         }

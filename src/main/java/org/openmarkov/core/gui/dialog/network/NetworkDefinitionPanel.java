@@ -43,7 +43,7 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 /**
  * Panel to set the definition of a network. 
@@ -366,7 +366,7 @@ public class NetworkDefinitionPanel extends JPanel
 	    if(jcheckBoxIsObjectOriented == null)
 	    {
 	        jcheckBoxIsObjectOriented = new JCheckBox ("Is Object Oriented", false);
-	        jcheckBoxIsObjectOriented.setSelected (probNet != null && probNet instanceof OOBNet);
+	        jcheckBoxIsObjectOriented.setSelected (probNet != null && probNet instanceof OOPNet);
 	        jcheckBoxIsObjectOriented.setEnabled (newNetwork);
 	    }
 	    return jcheckBoxIsObjectOriented;

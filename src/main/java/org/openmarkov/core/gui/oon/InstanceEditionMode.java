@@ -17,7 +17,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.mode.EditionMode;
 import org.openmarkov.core.gui.window.edition.mode.EditionState;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 import org.openmarkov.core.oon.action.AddInstanceEdit;
 
 @EditionState(name="Edit.Mode.Instance", icon="instance.gif", cursor="instance.gif")
@@ -45,7 +45,7 @@ public class InstanceEditionMode extends EditionMode
                     String instanceName = JOptionPane.showInputDialog(null,"Instance Name:");
     
                     if (instanceName != null) {
-                        AddInstanceEdit addInstanceEdit = new AddInstanceEdit((OOBNet)probNet, classNet, instanceName, position);
+                        AddInstanceEdit addInstanceEdit = new AddInstanceEdit((OOPNet)probNet, classNet, instanceName, position);
                         try {
                             probNet.doEdit(addInstanceEdit);
                         } catch (Exception e1) {

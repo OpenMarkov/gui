@@ -1386,7 +1386,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         return workingMode;
     }
 
-    //TODO OOBN start
+    //TODO OOPN start
     public void markSelectedAsInput ()
     {
         for(VisualNode visualNode : getSelectedNodes ())
@@ -1410,7 +1410,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void setParameterArity(ParameterArity arity) {
 		// TODO Auto-generated method stub
 	}
-    //TODO OOBN end
+    //TODO OOPN end
     
     public void selectElement (VisualElement selectedElement)
     {

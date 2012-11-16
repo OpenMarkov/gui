@@ -42,7 +42,7 @@ import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 import org.openmarkov.core.model.network.type.TuningNetworkType;
-import org.openmarkov.core.oon.OOBNet;
+import org.openmarkov.core.oon.OOPNet;
 
 /**
  * This class assists to the class MainPanel to manage the menus and toolbars.
@@ -75,7 +75,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	public static final String[] EDITING_ACTION_COMMANDS = {
 			ActionCommands.OBJECT_SELECTION, ActionCommands.CHANCE_CREATION,
 			ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-			ActionCommands.LINK_CREATION, /*//TODO OOBN */ActionCommands.INSTANCE_CREATION};
+			ActionCommands.LINK_CREATION, /*//TODO OOPN */ActionCommands.INSTANCE_CREATION};
 
 	/**
 	 * Composed action command that contains inference actions.
@@ -412,9 +412,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 
 		mainPanel.setToolBarPanel(networkPanel.getWorkingMode());
 		
-		//OOBN start
-		setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet() instanceof OOBNet);
-		//OOBN end
+		//OOPN start
+		setOptionEnabled(ActionCommands.INSTANCE_CREATION, networkPanel.getProbNet() instanceof OOPNet);
+		//OOPN end
 	}
 
 	/**
@@ -764,7 +764,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
         setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
     }
     
-    //TODO OOBN start
+    //TODO OOPN start
     
 	/**
 	 * This method activates o desactivates some options depending on the
@@ -948,7 +948,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
 	}
-    //TODO OOBN end
+    //TODO OOPN end
 
 	/**
 	 * This method indicates that some information has been put into the

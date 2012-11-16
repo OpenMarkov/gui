@@ -91,14 +91,14 @@ public enum NetworkType {
 	
 	/****
 	 * 
-	 * OOBN
+	 * OOPN
 	 * 
 	 */
-	OOBN(12),
+	OOPN(12),
 	
     /****
      * 
-     * OOBN
+     * TUNING
      * 
      */
     TUNING(13);
