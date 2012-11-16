@@ -188,11 +188,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		if (probNode.getPotentials() != null) {
 			// listPotentials =
 			// PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials,
-			// adittionalProperties);
+			// additionalProperties);
 			// setListPotentials(probNode.getPotentials());
 			// tableData =
 			// convertListPotentialsToTableFormat( listPotentials,
-			// adittionalProperties );
+			// additionalProperties );
 			tableData = convertListPotentialsToTableFormat(probNode);
 			newColumns = ValuesTable.getColumnsIdsSpreedSheetStyle(ValuesTable
 					.howManyColumns(probNode));
@@ -222,8 +222,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * calculate the number of rows of the table based on the type of the node,
 	 * the number of parents and the number of states of the variable
 	 * 
-	 * @param adittionalProperties
-	 *            - node adittionalProperties
+	 * @param additionalProperties
+	 *            - node additionalProperties
 	 * @return the number of rows of this Potentials Table
 	 */
 	protected int howManyRows(ProbNode properties) {
@@ -245,7 +245,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	/**
 	 * Set a blank data table
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            - to obtain the required number of rows and columns
 	 * @return the blank data table
 	 */
@@ -336,8 +336,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 *            - the table that is being modified
 	 * @param listPotentials
 	 *            - the list of potentials of the node
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 
 	private Object[][] setValuesTableSize(Object[][] oldValues,
@@ -407,8 +407,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @param values
 	 *            - the table that is being modified
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setParentsNameInUpperLeftCornerArea(
 			Object[][] oldValues, ProbNode properties) {
@@ -434,8 +434,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 *            - the table that is being modified
 	 * @param listPotentials
 	 *            - the list of potentials of the node
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setParentsStatesInTopArea(Object[][] oldValues,
 			ProbNode properties) {
@@ -491,7 +491,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * @param listPotentials
 	 *            - the list of potentials of the node
 	 * @param additionalProperties
-	 *            - the adittionalProperties of the node
+	 *            - the additionalProperties of the node
 	 */
 	private int setNumberOfPostions(ArrayList<Potential> listPotentials) {
 
@@ -521,8 +521,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 *            - the table that is being modified
 	 * @param listPotentials
 	 *            - the list of potentials of the node
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues,
 			ProbNode properties) {
@@ -555,8 +555,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 *            - the table that is being modified
 	 * @param listPotentials
 	 *            - the list of potentials of the node
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues,
 			ProbNode properties) {
@@ -714,8 +714,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 *            - the table that is being modified
 	 * @param listPotentials
 	 *            - the list of potentials of the node
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setVariableNameInLowerLeftCornerArea(
 			Object[][] oldValues, ProbNode properties) {
@@ -731,8 +731,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @param values
 	 *            - the table that is being modified
-	 * @param adittionalProperties
-	 *            - the adittionalProperties of the node
+	 * @param additionalProperties
+	 *            - the additionalProperties of the node
 	 */
 	private Object[][] setVariableStatesInBottomArea(Object[][] oldValues,
 			ProbNode properties) {

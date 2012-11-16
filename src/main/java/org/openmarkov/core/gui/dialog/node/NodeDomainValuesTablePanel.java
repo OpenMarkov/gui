@@ -99,7 +99,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	private ProbNode probNode = null;
 
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 
@@ -359,7 +359,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	/**
 	 * This method fills the content of the fields from a NodeProperties object.
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            object from where load the information.
 	 */
 	public void setFieldsFromProperties(ProbNode properties) {

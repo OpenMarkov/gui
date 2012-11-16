@@ -25,10 +25,10 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 /**
- * Panel to set other adittionalProperties in the network not managed by OpenMarkov directly.
+ * Panel to set other additionalProperties in the network not managed by OpenMarkov directly.
  * It will have a scroll table with two visible columns and a third column to
  * store the object type. Also, a "+" and "-" buttons to manage the insert and
- * delete adittionalProperties in the right side and the "Accept" and "Cancel" buttons on
+ * delete additionalProperties in the right side and the "Accept" and "Cancel" buttons on
  * the bottom, and a HTML comment text field
  * 
  * @author jlgozalo
@@ -64,7 +64,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	/**
 	 * init the layout for this panel. Firstly, the horizontal layout will be
 	 * set with one row (parallel group) in the first row the table with
-	 * adittionalProperties and the Add/Delete buttons and to force the buttons to be
+	 * additionalProperties and the Add/Delete buttons and to force the buttons to be
 	 * aligned, we will do: - sequential group (gap, table, gap,
 	 * buttonsParalellGroup) Then, the vertical layout will be set with the two
 	 * columns (parallel group) in the first column, the table in the second
@@ -121,7 +121,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	/**
 	 * This method initialises otherPropertiesTable.
 	 * 
-	 * @return the PrefixedKeyTablePanel for the Other adittionalProperties of the network
+	 * @return the PrefixedKeyTablePanel for the Other additionalProperties of the network
 	 */
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 
@@ -156,11 +156,11 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	
 	/**
 	 * 
-	 * label for the table to show the other adittionalProperties
+	 * label for the table to show the other additionalProperties
 	 */
 	private JLabel jLabelOtherPropertiesTable = null;
 	/**
-	 * table to show the other adittionalProperties
+	 * table to show the other additionalProperties
 	 */
 	private PrefixedOtherPropertiesTablePanel otherPropertiesTablePanel = null;
 
@@ -171,7 +171,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 
 	
 	/**
-	 * Specifies if the network whose adittionalProperties are edited is new.
+	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
 	private boolean newNetwork = false;
 

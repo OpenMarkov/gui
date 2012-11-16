@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.VariableType;
 
 
 /**
- * This class implements the chance node adittionalProperties dialog box adding more
+ * This class implements the chance node additionalProperties dialog box adding more
  * fields.
  * 
  * @author jlgozalo

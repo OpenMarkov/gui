@@ -81,7 +81,7 @@ public class ICIOptionsPanel extends JPanel {
 	private StringResource dialogStringResource;
 	
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 

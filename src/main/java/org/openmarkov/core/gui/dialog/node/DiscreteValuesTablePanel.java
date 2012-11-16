@@ -65,7 +65,7 @@ public class DiscreteValuesTablePanel extends JPanel implements
 	private ProbNode nodeProperties = null;
 
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 
@@ -84,7 +84,7 @@ public class DiscreteValuesTablePanel extends JPanel implements
 	 */
 	private JLabel jLabelValuesPanel = null;
 	/**
-	 * table to show the other adittionalProperties
+	 * table to show the other additionalProperties
 	 */
 	private PrefixedKeyTablePanel prefixedKeyTablePanelNodeStatesValues = null;
 
@@ -175,7 +175,7 @@ public class DiscreteValuesTablePanel extends JPanel implements
 	}
 
 	/**
-	 * Set the node adittionalProperties in this panel with the provided ones
+	 * Set the node additionalProperties in this panel with the provided ones
 	 * 
 	 * @param nodeProperties
 	 *            the nodeProperties to set

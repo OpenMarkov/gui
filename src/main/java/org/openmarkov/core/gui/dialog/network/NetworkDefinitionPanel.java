@@ -89,7 +89,7 @@ public class NetworkDefinitionPanel extends JPanel
     private StringResource dialogStringResource;
 
     /**
-     * Specifies if the network whose adittionalProperties are edited is new.
+     * Specifies if the network whose additionalProperties are edited is new.
      */
     private boolean newNetwork = false;    
 	private ProbNet probNet;

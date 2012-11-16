@@ -31,10 +31,10 @@ import org.openmarkov.core.model.network.ProbNode;
 
 
 /**
- * Panel to set other adittionalProperties in the node not managed by OpenMarkov directly. It
+ * Panel to set other additionalProperties in the node not managed by OpenMarkov directly. It
  * will have a scroll table with two visible columns and a third column to store
  * the object type. Also, a "+" and "-" buttons to manage the insert and delete
- * adittionalProperties in the right side and the "Accept" and "Cancel" buttons on the
+ * additionalProperties in the right side and the "Accept" and "Cancel" buttons on the
  * bottom, and a HTML comment text field
  * 
  * @author jlgozalo
@@ -91,7 +91,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * Set the node adittionalProperties in this panel with the provided ones
+	 * Set the node additionalProperties in this panel with the provided ones
 	 * 
 	 * @param nodeProperties
 	 *            the nodeProperties to set
@@ -121,7 +121,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	/**
 	 * init the layout for this panel. Firstly, the horizontal layout will be
 	 * set with one row (parallel group) in the first row the table with
-	 * adittionalProperties and the Add/Delete buttons and to force the buttons to be
+	 * additionalProperties and the Add/Delete buttons and to force the buttons to be
 	 * aligned, we will do: - sequential group (gap, table, gap,
 	 * buttonsParalellGroup) Then, the vertical layout will be set with the two
 	 * columns (parallel group) in the first column, the table in the second
@@ -182,7 +182,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	/**
 	 * This method initialises otherPropertiesTable.
 	 * 
-	 * @return the PrefixedKeyTablePanel for the Other adittionalProperties of the network
+	 * @return the PrefixedKeyTablePanel for the Other additionalProperties of the network
 	 */
 	private PrefixedOtherPropertiesTablePanel getOtherPropertiesTablePanel() {
 
@@ -223,13 +223,13 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	/**
 	 * This method fills the content of the fields from a NodeProperties object.
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            object from where load the information.
 	 */
 	public void setFieldsFromProperties(ProbNode properties) {
 
 		//getOtherPropertiesTablePanel()
-			//.setData( adittionalProperties.getOtherProperties() );
+			//.setData( additionalProperties.getOtherProperties() );
 	}
 
 	/**
@@ -244,11 +244,11 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	private StringResource dialogStringResource;
 
 	/**
-	 * label for the table to show the other adittionalProperties
+	 * label for the table to show the other additionalProperties
 	 */
 	private JLabel jLabelOtherPropertiesTable = null;
 	/**
-	 * table to show the other adittionalProperties
+	 * table to show the other additionalProperties
 	 */
 	private PrefixedOtherPropertiesTablePanel otherPropertiesTablePanel = null;
 
@@ -259,7 +259,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 
 	
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 

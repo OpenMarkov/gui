@@ -127,7 +127,7 @@ public class ICIOptionsPanelTest {
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
         //network = new ProbNet(simpleProbNet);
-		//adittionalProperties.setNetwork(simpleProbNet);
+		//additionalProperties.setNetwork(simpleProbNet);
 		
 		return simpleProbNet;
 	}

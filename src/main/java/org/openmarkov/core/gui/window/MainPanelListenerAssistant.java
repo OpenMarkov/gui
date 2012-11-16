@@ -802,7 +802,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
 	/**
 	 * Creates a new network in the workspace. First, it requests the
-	 * adittionalProperties of the new network and, if the user accepts the
+	 * additionalProperties of the new network and, if the user accepts the
 	 * dialog box, a new network is created.
 	 * 
 	 * @wbp.parser.entryPoint

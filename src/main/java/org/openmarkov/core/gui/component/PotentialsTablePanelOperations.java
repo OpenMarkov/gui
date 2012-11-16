@@ -35,7 +35,7 @@ public class PotentialsTablePanelOperations {
 	/** To check if the list of <code>Potential</code>s must be changed when
 	 *  parents or states have been changed
 	 * @param listPotentials - current list of potentials
-	 * @param adittionalProperties - adittionalProperties related to this
+	 * @param additionalProperties - additionalProperties related to this
 	 *  variable
 	 * @return new list of potentials for the variable with the changes applied
 	 */
@@ -63,7 +63,7 @@ public class PotentialsTablePanelOperations {
 	/** Method to generate a new ArrayList of <code>Potential</code> by adding 
 	 * a new parent to the previous ones
 	 * @param listPotentials - previous list of potentials
-	 * @param adittionalProperties - adittionalProperties related to the
+	 * @param additionalProperties - additionalProperties related to the
 	 * variable in use that contains a new parent
 	 * @return new list of Potentials with the new parent add */
 	private static ArrayList<Potential> doAddParent (
@@ -101,7 +101,7 @@ public class PotentialsTablePanelOperations {
 	/** Method to generate a new ArrayList of <code>Potential</code> by removing
 	 * a parent from the previous ones
 	 * @param listPotentials - previous list of potentials
-	 * @param adittionalProperties - adittionalProperties related to the 
+	 * @param additionalProperties - additionalProperties related to the 
 	 * variable in use that contains the parent
 	 * @return new list of Potentials with the parent removed */
 	private static ArrayList<Potential> doDeleteParent (
@@ -142,8 +142,8 @@ public class PotentialsTablePanelOperations {
 	 * 
 	 * @param listPotentials -
 	 *            potentials for the variable
-	 * @param adittionalProperties -
-	 *            adittionalProperties for this variable
+	 * @param additionalProperties -
+	 *            additionalProperties for this variable
 	 */
 	public static int calculateFirstEditableRow(
 			ArrayList<Potential> listPotentials,
@@ -172,8 +172,8 @@ public class PotentialsTablePanelOperations {
 	 * 
 	 * @param listPotentials -
 	 *            potentials for the variable
-	 * @param adittionalProperties -
-	 *            adittionalProperties for this variable
+	 * @param additionalProperties -
+	 *            additionalProperties for this variable
 	 */
 	public static int calculateLastEditableRow(
 			ArrayList<Potential> listPotentials,

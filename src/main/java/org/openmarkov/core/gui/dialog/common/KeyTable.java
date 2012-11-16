@@ -77,7 +77,7 @@ public class KeyTable extends JTable {
 	 */
 	private ListSelectionListener listener = null; 
 	/**
-	 * Outer object that listens to the changes of the adittionalProperties in the table
+	 * Outer object that listens to the changes of the additionalProperties in the table
 	 */
 	private PropertyChangeListener propertyListener = null;
 
@@ -92,11 +92,11 @@ public class KeyTable extends JTable {
 	private boolean firstColumnHidden = true;
 
 	/**
-	 * This variable is used to set adittionalProperties for the columns in the table
+	 * This variable is used to set additionalProperties for the columns in the table
 	 */ 
 	protected TableColumn column = null;
 	/**
-	 * This variable is used to set adittionalProperties for the header in the table
+	 * This variable is used to set additionalProperties for the header in the table
 	 */
 	protected JTableHeader header = null;
 /**

@@ -392,7 +392,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of the
+	 * This method shows a dialog box with the additionalProperties of the
 	 * network. If some property has changed, insert a new undo point into the
 	 * network undo manager.
 	 */
@@ -412,7 +412,7 @@ public class NetworkPanel extends FrameContentPanel implements
 	}*/
 
 	/**
-	 * This method shows a dialog box with the adittionalProperties of a node.
+	 * This method shows a dialog box with the additionalProperties of a node.
 	 * If some property has changed, insert a new undo point into the network
 	 * undo manager.
 	 */
@@ -625,18 +625,18 @@ public class NetworkPanel extends FrameContentPanel implements
 	}
 
 	/**
-	 * This method requests to the user the adittionalProperties of a network.
+	 * This method requests to the user the additionalProperties of a network.
 	 * 
 	 * @param owner
 	 *            window that owns the dialog box.
-	 * @param adittionalProperties
-	 *            object that contains the adittionalProperties of the network
+	 * @param additionalProperties
+	 *            object that contains the additionalProperties of the network
 	 *            and where changes will be saved, if the user accepts the
 	 *            changes.
 	 * @param newNetwork
-	 *            specifies if the network whose adittionalProperties are going
+	 *            specifies if the network whose additionalProperties are going
 	 *            to be edited is new.
-	 * @return true, if the user has made changes on the adittionalProperties;
+	 * @return true, if the user has made changes on the additionalProperties;
 	 *         otherwise, false.
 	 */
 	public static boolean requestNetworkProperties(ProbNet probNet,

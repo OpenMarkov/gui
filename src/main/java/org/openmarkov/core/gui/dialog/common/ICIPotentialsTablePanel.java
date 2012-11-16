@@ -172,10 +172,10 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		Object[][] tableData = null;
 		String[] newColumns = null;
 		if (properties.getPotentials() != null) {
-			//listPotentials = PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials, adittionalProperties);
+			//listPotentials = PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials, additionalProperties);
 			//setListPotentials(probNode.getPotentials());
 			//tableData =
-				//convertListPotentialsToTableFormat( listPotentials, adittionalProperties );
+				//convertListPotentialsToTableFormat( listPotentials, additionalProperties );
 			tableData =
 				convertListPotentialsToCanonicalTableFormat(properties );
 			newColumns =
@@ -208,8 +208,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * 
 	 * @param listPotentials -
 	 *            potentials for the variable
-	 * @param adittionalProperties -
-	 *            adittionalProperties for this variable
+	 * @param additionalProperties -
+	 *            additionalProperties for this variable
 	 */
 	public static int calculateLastEditableRow(ArrayList<Potential> listPotentials) {
 		int row = 0;
@@ -240,8 +240,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * the number of parents and the number of states of the variable for
 	 * canonical models
 	 * 
-	 * @param adittionalProperties -
-	 *            node adittionalProperties
+	 * @param additionalProperties -
+	 *            node additionalProperties
 	 * @return the number of rows of this Potentials Table
 	 */
 	protected int howManyCanonicalRows(ProbNode properties) {
@@ -257,7 +257,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	/**
 	 * Set a blank data table for canonical models
 	 * 
-	 * @param adittionalProperties -
+	 * @param additionalProperties -
 	 *            to obtain the required number of rows and columns
 	 * @return the blank data table
 	 */
@@ -300,7 +300,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * @param listPotentials -
 	 *            the list of potentials of the node
 	 * @param additionalProperties -
-	 *            the adittionalProperties of the node
+	 *            the additionalProperties of the node
 	 */
 	private int getNumberOfPostions( ArrayList<Potential> listPotentials) {
 		
@@ -362,8 +362,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * @param values -
 	 *            the table that is being modified
 	 *
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 
 	private Object[][] setCanonicalTableSize (Object [][]oldValues,

@@ -83,7 +83,7 @@ public class ActionCommands {
     public static final String SAVE_EVIDENCE = "SaveEvidence";
 
     /**
-	 * Action invoked when the user wants to edit the adittionalProperties of a network.
+	 * Action invoked when the user wants to edit the additionalProperties of a network.
 	 */
 	public static final String NETWORK_PROPERTIES = "NetworkProperties";
 
@@ -264,7 +264,7 @@ public class ActionCommands {
 	public static final String REDO = "Redo";
 
 	/**
-	 * Action invoked when the user wants to show the adittionalProperties of a node.
+	 * Action invoked when the user wants to show the additionalProperties of a node.
 	 */
 	public static final String NODE_PROPERTIES = "NodeProperties";
 	
@@ -330,7 +330,7 @@ public class ActionCommands {
 	public static final String NODE_REMOVE_ALL_FINDINGS = "NodeRemoveAllFindings"; 
 	
 	/**
-	 * Action invoked when the user wants to show the adittionalProperties of a link.
+	 * Action invoked when the user wants to show the additionalProperties of a link.
 	 */
 	public static final String LINK_PROPERTIES = "LinkProperties";
 

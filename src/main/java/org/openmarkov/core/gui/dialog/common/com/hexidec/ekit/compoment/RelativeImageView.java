@@ -816,7 +816,7 @@ public class RelativeImageView extends View implements ImageObserver,
 	}
 
 	/**
-	 * On double-click, open image adittionalProperties dialog.
+	 * On double-click, open image additionalProperties dialog.
 	 */
 	public void mouseClicked(MouseEvent me) {
 

@@ -541,10 +541,10 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		Object[][] tableData = null;
 		String[] newColumns = null;
 		if (properties.getPotentials() != null) {
-			//listPotentials = PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials, adittionalProperties);
+			//listPotentials = PotentialsTablePanelOperations.checkIfPotentialsMustBeChanged(listPotentials, additionalProperties);
 			//setListPotentials(probNode.getPotentials());
 			//tableData =
-				//convertListPotentialsToTableFormat( listPotentials, adittionalProperties );
+				//convertListPotentialsToTableFormat( listPotentials, additionalProperties );
 			tableData =
 				convertListPotentialsToTableFormat(properties );
 			newColumns =
@@ -668,8 +668,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * calculate the number of rows of the table based on the type of the node,
 	 * the number of parents and the number of states of the variable
 	 * 
-	 * @param adittionalProperties -
-	 *            node adittionalProperties
+	 * @param additionalProperties -
+	 *            node additionalProperties
 	 * @return the number of rows of this Potentials Table
 	 */
 	protected int howManyRows(ProbNode properties) {
@@ -693,8 +693,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * the number of parents and the number of states of the variable for
 	 * canonical models
 	 * 
-	 * @param adittionalProperties -
-	 *            node adittionalProperties
+	 * @param additionalProperties -
+	 *            node additionalProperties
 	 * @return the number of rows of this Potentials Table
 	 */
 	protected int howManyCanonicalRows(ProbNode properties) {
@@ -720,7 +720,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * Set a blank data table
 	 * 
-	 * @param adittionalProperties -
+	 * @param additionalProperties -
 	 *            to obtain the required number of rows and columns
 	 * @return the blank data table
 	 */
@@ -742,7 +742,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * Set a blank data table for canonical models
 	 * 
-	 * @param adittionalProperties -
+	 * @param additionalProperties -
 	 *            to obtain the required number of rows and columns
 	 * @return the blank data table
 	 */
@@ -849,8 +849,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 *            the table that is being modified
 	 * @param listPotentials -
 	 *            the list of potentials of the node
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 
 	private Object[][] setValuesTableSize (Object [][]oldValues,
@@ -907,8 +907,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * 
 	 * @param values -
 	 *            the table that is being modified
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setParentsNameInUpperLeftCornerArea(
 														Object[][] oldValues,
@@ -951,8 +951,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 *            the table that is being modified
 	 * @param listPotentials -
 	 *            the list of potentials of the node
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setParentsStatesInTopArea(Object[][] oldValues,
 										ProbNode properties) {
@@ -1009,7 +1009,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * @param listPotentials -
 	 *            the list of potentials of the node
 	 * @param additionalProperties -
-	 *            the adittionalProperties of the node
+	 *            the additionalProperties of the node
 	 */
 	private int setNumberOfPostions( ArrayList<Potential> listPotentials) {
 		
@@ -1039,8 +1039,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 *            the table that is being modified
 	 * @param listPotentials -
 	 *            the list of potentials of the node
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setNodeStatesInLeftArea(
 											Object[][] oldValues,
@@ -1073,8 +1073,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 *            the table that is being modified
 	 * @param listPotentials -
 	 *            the list of potentials of the node
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues,
 													ProbNode properties) {
@@ -1146,8 +1146,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 *            the table that is being modified
 	 * @param listPotentials -
 	 *            the list of potentials of the node
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setVariableNameInLowerLeftCornerArea (Object [][]oldValues,
 	                                                  ProbNode properties) {
@@ -1163,8 +1163,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * 
 	 * @param values -
 	 *            the table that is being modified
-	 * @param adittionalProperties -
-	 *            the adittionalProperties of the node
+	 * @param additionalProperties -
+	 *            the additionalProperties of the node
 	 */
 	private Object[][] setVariableStatesInBottomArea (Object [][]oldValues,
 	                                                  ProbNode properties) {

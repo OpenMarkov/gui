@@ -58,7 +58,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
     private NetworkVariablesPanel networkVariablesPanel = null;
 
     /**
-     * Panel that contains the panel where a set of other adittionalProperties are. It is
+     * Panel that contains the panel where a set of other additionalProperties are. It is
      * used to place the fields at the top of the panel.
      */
     private NetworkOtherPropertiesPanel networkOtherPropertiesPanel = null;
@@ -75,7 +75,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 
 
     /**
-     * Specifies if the network whose adittionalProperties are edited is new.
+     * Specifies if the network whose additionalProperties are edited is new.
      */
     private boolean newNetwork = false;	
 
@@ -234,7 +234,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 
     /**
      * This method initialises networkOtherPropertiesPanel.
-     * @return a new other adittionalProperties panel.
+     * @return a new other additionalProperties panel.
      */
     private NetworkOtherPropertiesPanel getNetworkOtherPropertiesPanel ()
     {
@@ -309,20 +309,20 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 
 	/**
 	 * This method shows the dialog and requests the user the network
-	 * adittionalProperties.
+	 * additionalProperties.
 	 * 
-	 * @param adittionalProperties
-	 *            adittionalProperties of the network.
+	 * @param additionalProperties
+	 *            additionalProperties of the network.
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
 	 *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */
 	
 	/**
 	 * This method shows the dialog and requests the user the network
-	 * adittionalProperties.
+	 * additionalProperties.
 	 * 
-	 * @param adittionalProperties
-	 *            adittionalProperties of the network.
+	 * @param additionalProperties
+	 *            additionalProperties of the network.
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
 	 *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */

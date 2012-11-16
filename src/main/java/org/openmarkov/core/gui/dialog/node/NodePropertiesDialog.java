@@ -28,8 +28,8 @@ import org.openmarkov.core.model.network.VariableType;
 
 
 /**
- * Dialog box to set the adittionalProperties of a node. This is the basic of all the node
- * adittionalProperties dialog. Subclasses adds the fields that corresponds to each type
+ * Dialog box to set the additionalProperties of a node. This is the basic of all the node
+ * additionalProperties dialog. Subclasses adds the fields that corresponds to each type
  * of node.
  * If the node is a utility node, then no Values panel is displayed
  * 
@@ -92,7 +92,7 @@ public abstract class NodePropertiesDialog extends
 	private NodeOtherPropsTablePanel nodeOtherPropsTablePanel = null;
 
 	/**
-	 * Specifies if the network whose adittionalProperties are edited is new.
+	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 
@@ -195,8 +195,8 @@ public abstract class NodePropertiesDialog extends
 			/*
 			 * TODO when Continuous variable will be included, remember to include
 			 * also in the previous two else if, the appropiate method setVisible()
-			 * else if (adittionalProperties.getVariableType()==VariableType.CONTINUOUS) {
-			 * nodeContinuousValuesTablePanel.setFieldsFromProperties(adittionalProperties); }
+			 * else if (additionalProperties.getVariableType()==VariableType.CONTINUOUS) {
+			 * nodeContinuousValuesTablePanel.setFieldsFromProperties(additionalProperties); }
 			 */
 		} else {
 		/*	tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
@@ -244,7 +244,7 @@ public abstract class NodePropertiesDialog extends
 		//nodeProbsValuesTablePanel.setFieldsFromProperties(probNode);
 		// set the NodeOtherPropsTablePanel fields //Disable by mpalacios
 		nodeOtherPropsTablePanel.setFieldsFromProperties(probNode);
-		// setSpecificFieldsFromProperties(adittionalProperties);
+		// setSpecificFieldsFromProperties(additionalProperties);
 	}
 
 	/**
@@ -407,7 +407,7 @@ public abstract class NodePropertiesDialog extends
 	/**
 	 * This method initializes nodeOtherPropsTablePanel.
 	 * 
-	 * @return a new node other adittionalProperties table panel
+	 * @return a new node other additionalProperties table panel
 	 */
 	protected JPanel getNodeOtherPropsTablePanel() {
 
@@ -431,12 +431,12 @@ public abstract class NodePropertiesDialog extends
 	}
 
 	/**
-	 * This method shows the dialog and requests the user the node adittionalProperties.
+	 * This method shows the dialog and requests the user the node additionalProperties.
 	 * 
 	 * @param newNetwork
 	 *            network to which the node belongs.
-	 * @param adittionalProperties
-	 *            adittionalProperties of the node.
+	 * @param additionalProperties
+	 *            additionalProperties of the node.
 	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
 	 *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */

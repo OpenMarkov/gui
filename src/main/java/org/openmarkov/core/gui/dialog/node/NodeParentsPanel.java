@@ -156,7 +156,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * Get the node adittionalProperties in this panel
+	 * Get the node additionalProperties in this panel
 	 * 
 	 * @return the nodeProperties
 	 */
@@ -166,7 +166,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * Set the node adittionalProperties in this panel with the provided ones
+	 * Set the node additionalProperties in this panel with the provided ones
 	 * 
 	 * @param nodeProperties
 	 *            the nodeProperties to set
@@ -219,12 +219,12 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 * This method fills a NodeProperties object from the content of the fields
 	 * of the dialog box.
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            object where save the information.
 	 */
-	/*public void setPropertiesFromFields(NodeProperties adittionalProperties) {
+	/*public void setPropertiesFromFields(NodeProperties additionalProperties) {
 
-		adittionalProperties
+		additionalProperties
 			.setParents(fillNodeWrapperWithArray(prefixedDataTablePanelParentsTable
 				.getData()));
 
@@ -233,7 +233,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	/**
 	 * This method fills the content of the fields from a NodeProperties object.
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            object from where load the information.
 	 */
 	public void setFieldsFromProperties(ProbNode node) {
@@ -297,7 +297,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	private ProbNode probNode = null;
 
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 

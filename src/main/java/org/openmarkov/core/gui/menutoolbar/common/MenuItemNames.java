@@ -68,7 +68,7 @@ public class MenuItemNames
     public static final String EXPAND_NETWORK_CE_MENUITEM =
         "ExpandNetworkCE";
     /**
-     * Constant that defines the item 'File - Network adittionalProperties'.
+     * Constant that defines the item 'File - Network additionalProperties'.
      */
     public static final String FILE_NETWORKPROPERTIES_MENUITEM =
         FILE_MENU + ".NetworkProperties";
@@ -167,7 +167,7 @@ public class MenuItemNames
     //TODO OOPN end
 
     /**
-     * Constant that defines the item 'Edit - Node adittionalProperties'.
+     * Constant that defines the item 'Edit - Node additionalProperties'.
      */
     public static final String EDIT_NODEPROPERTIES_MENUITEM =
         EDIT_MENU + ".NodeProperties";
@@ -185,7 +185,7 @@ public class MenuItemNames
         EDIT_MENU + ".NodeTest";
     
     /**
-     * Constant that defines the item 'Edit - Link adittionalProperties'.
+     * Constant that defines the item 'Edit - Link additionalProperties'.
      */
     public static final String EDIT_LINKPROPERTIES_MENUITEM =
         EDIT_MENU + ".LinkProperties";

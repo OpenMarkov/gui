@@ -49,7 +49,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem pasteMenuItem = null;
 
 	/**
-	 * Object that represents the item 'Network adittionalProperties'.
+	 * Object that represents the item 'Network additionalProperties'.
 	 */
 	private JMenuItem networkPropertiesMenuItem = null;
 
@@ -155,7 +155,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	/**
 	 * This method initializes networkPropertiesMenuItem.
 	 * 
-	 * @return a new 'Network adittionalProperties' menu item.
+	 * @return a new 'Network additionalProperties' menu item.
 	 */
 	private JMenuItem getNetworkPropertiesMenuItem() {
 

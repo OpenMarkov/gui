@@ -143,7 +143,7 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	 */
 
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 

@@ -190,7 +190,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	}
 
 	/**
-	 * Set the node adittionalProperties in this panel with the provided ones
+	 * Set the node additionalProperties in this panel with the provided ones
 	 * 
 	 * @param nodeProperties
 	 *            the nodeProperties to set
@@ -1376,7 +1376,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	/**
 	 * This method fills the content of the fields from a NodeProperties object.
 	 * 
-	 * @param adittionalProperties
+	 * @param additionalProperties
 	 *            object from where load the information.
 	 */
 	public void setFieldsFromProperties(ProbNode properties) {
@@ -1385,7 +1385,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		// node type elements in the panel depending network type
 		/*
 		 * NetworkType netType =
-		 * adittionalProperties.getNetwork().getNetworkType(); if
+		 * additionalProperties.getNetwork().getNetworkType(); if
 		 * (NetworkType.BAYESIAN_NET == netType) {
 		 * jRadioButtonChanceNodeType.setEnabled( true );
 		 * jRadioButtonDecisionNodeType.setEnabled( false );
@@ -1399,14 +1399,14 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		 */
 		// node type
 		/*
-		 * switch (adittionalProperties.getNodeType()) { case CHANCE: {
+		 * switch (additionalProperties.getNodeType()) { case CHANCE: {
 		 * jRadioButtonChanceNodeType.setEnabled( true );
 		 * jRadioButtonChanceNodeType.setSelected( true ); break; } case
 		 * DECISION: { jRadioButtonDecisionNodeType.setEnabled( true );
 		 * jRadioButtonDecisionNodeType.setSelected( true ); break; } case
 		 * UTILITY: { jRadioButtonUtilityNodeType.setEnabled( true );
 		 * jRadioButtonUtilityNodeType.setSelected( true ); break; } default:
-		 * break; } if (adittionalProperties.getNodeType() == NodeType.UTILITY)
+		 * break; } if (additionalProperties.getNodeType() == NodeType.UTILITY)
 		 * { jRadioButtonDiscreteNodeVariableType.setEnabled( false );
 		 * jRadioButtonDiscretizedNodeVariableType.setEnabled( false );
 		 * jRadioButtonContinuousNodeVariableType.setEnabled( false ); }
@@ -1584,7 +1584,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	private ProbNode probNode = null;
 
 	/**
-	 * Specifies if the node whose adittionalProperties are edited is new.
+	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
 

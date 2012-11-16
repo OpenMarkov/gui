@@ -110,7 +110,7 @@ class LinkContextualMenu extends ContextualMenu {
 		add(getRemoveMenuItem());
 		/*
 		 * This item must be added to the menu when is active the possibility of
-		 * editing the adittionalProperties of a link in future versions.
+		 * editing the additionalProperties of a link in future versions.
 		 */
 	
 		addSeparator();

@@ -111,7 +111,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
     private JMenuItem fileSaveEvidenceMenuItem = null;
 
     /**
-	 * Object that represents the item 'File - Network adittionalProperties'.
+	 * Object that represents the item 'File - Network additionalProperties'.
 	 */
 	private JMenuItem fileNetworkPropertiesMenuItem = null;
 
@@ -196,7 +196,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	private ButtonGroup groupEditOptions = new ButtonGroup();
 
 	/**
-	 * Object that represents the item 'Edit - Node adittionalProperties'.
+	 * Object that represents the item 'Edit - Node additionalProperties'.
 	 */
 	private JMenuItem editNodePropertiesMenuItem = null;
 	
@@ -206,7 +206,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	private JMenuItem editRelationMenuItem = null;
 
 	/**
-	 * Object that represents the item 'Edit - Link adittionalProperties'.
+	 * Object that represents the item 'Edit - Link additionalProperties'.
 	 */
 	private JMenuItem editLinkPropertiesMenuItem = null;
 	
@@ -684,7 +684,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	/**
 	 * This method initializes fileNetworkPropertiesMenuItem.
 	 * 
-	 * @return a new item 'File - Network adittionalProperties'.
+	 * @return a new item 'File - Network additionalProperties'.
 	 */
 	private JMenuItem getFileNetworkPropertiesMenuItem() {
 
@@ -813,7 +813,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			
 			/*
 			 * This item must be added to the menu when is active the
-			 * possibility of editing the adittionalProperties of a link in future
+			 * possibility of editing the additionalProperties of a link in future
 			 * versions.
 			 */
 			// editMenu.add(getEditLinkPropertiesMenuItem());
@@ -1073,7 +1073,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	/**
 	 * This method initializes editNodePropertiesMenuItem.
 	 * 
-	 * @return a new item 'Edit - Node adittionalProperties'.
+	 * @return a new item 'Edit - Node additionalProperties'.
 	 */
 	private JMenuItem getEditNodePropertiesMenuItem() {
 
@@ -1125,7 +1125,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 	/**
 	 * This method initializes editLinkPropertiesMenuItem.
 	 * 
-	 * @return a new item 'Edit - Link adittionalProperties'.
+	 * @return a new item 'Edit - Link additionalProperties'.
 	 */
 	private JMenuItem getEditLinkPropertiesMenuItem() {
 
