@@ -15,6 +15,8 @@ import java.awt.Graphics2D;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -2304,69 +2306,76 @@ public class EditorPanel extends JPanel implements MouseListener,
 				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
 	}
 	
+	/**
+	 * If there are temporal nodes within the network that requires evidence must be retrieved from CostEffectivenessDialog
+	 * @return EvidenceCase
+	 */
+	public EvidenceCase getEvidenceFromNetwork() {
+		 EvidenceCase evidenceCase  = new EvidenceCase();
+		 Finding ageFinding = null;
+		 if (isThereNodeAge) {
+		  ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+			for (int i = 0; i < probNodes.size() ; i++) {
+				if (probNodes.get(i).getVariable().isTemporal() 
+						&& probNodes.get(i).getVariable().getBaseName().equals("Age")
+						&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
+					
+					ageFinding = new  Finding(probNodes.get(i).getVariable(), costEffectivenessDialog.getInitialAge());
+					break;
+				}
+			}
+			try {
+				evidenceCase.addFinding(ageFinding);
+			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+				JOptionPane.showMessageDialog(this, stringResource
+						.getString( e.getMessage() ),
+						stringResource.getString( e.getMessage() ),
+					JOptionPane.ERROR_MESSAGE );
+				e.printStackTrace();
+			}
+		 } else if (probNet.getSpecialTimeDependantNodes().size()>=0) {
+			 Finding finding = null;
+			  for (int i = 0; i < probNet.getSpecialTimeDependantNodes().size(); i++) {
+				  if (!probNet.getSpecialTimeDependantNodes().get(i).getVariable().getBaseName().equalsIgnoreCase("age")) {
+					  finding =  new Finding(probNet.getSpecialTimeDependantNodes().get(i).getVariable(),
+							 Double.valueOf(costEffectivenessDialog.getNumericTemporalValues().get(probNet.getSpecialTimeDependantNodes().get(i).getVariable().getName()).getText()));
+				  }
+				  try {
+						evidenceCase.addFinding(finding);
+					} catch (InvalidStateException | IncompatibleEvidenceException e) {
+						JOptionPane.showMessageDialog(this, stringResource
+								.getString( e.getMessage() ),
+								stringResource.getString( e.getMessage() ),
+							JOptionPane.ERROR_MESSAGE );
+						e.printStackTrace();
+					}
+			  }
+		 }
+			return evidenceCase;
+	}
 
 	public void showCostEffectivenessDeterministicDialog() {
 
-		  if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false, false, false))
-		  { 
-			
-		/*CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
-		
-		if (costEffectivenessDialog.requestData(probNet.getName(), "cea") == CostEffectivenessDialog.OK_BUTTON) { */
-			  EvidenceCase evidenceCase  = new EvidenceCase();
-			  int numSlices;
-			  if (isThereNodeAge) {
-				  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
-				  //set up findings from the network and values introduced by the user
-				  Finding ageFinding = null;
-				  ArrayList<ProbNode> probNodes = probNet.getProbNodes();
-					for (int i = 0; i < probNodes.size() ; i++) {
-						if (probNodes.get(i).getVariable().isTemporal() 
-								&& probNodes.get(i).getVariable().getBaseName().equals("Age")
-								&& probNodes.get(i).getVariable().getTimeSlice() == 0) {
-							ageFinding = new  Finding(probNodes.get(i).getVariable(), costEffectivenessDialog.getInitialAge());
-							break;
-						}
-					}
-					try {
-						evidenceCase.addFinding(ageFinding);
-					} catch (InvalidStateException
-							| IncompatibleEvidenceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			  } else {
-				  numSlices = costEffectivenessDialog.getNumSlices();
-			  }
-			  //There are other numeric temporal variables apart from age so it is necessary to add the values introduced by the user to the evidence of the network
-			  if (probNet.getSpecialTimeDependantNodes().size()>=0) {
-				  Finding finding = null;
-				  for (int i = 0; i < probNet.getSpecialTimeDependantNodes().size(); i++) {
-					  if (!probNet.getSpecialTimeDependantNodes().get(i).getVariable().getBaseName().equalsIgnoreCase("age")) {
-						  finding =  new Finding(probNet.getSpecialTimeDependantNodes().get(i).getVariable(),
-								 Double.valueOf(costEffectivenessDialog.getNumericTemporalValues().get(probNet.getSpecialTimeDependantNodes().get(i).getVariable().getName()).getText()));
-					  }
-					  try {
-							evidenceCase.addFinding(finding);
-						} catch (InvalidStateException
-								| IncompatibleEvidenceException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				  }
-			  } 
-			  
-			  double costDiscountRate = costEffectivenessDialog.getCostDiscount();
-			  double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
-			  double cycleLength = costEffectivenessDialog.getCycleLength();
-			  String units = costEffectivenessDialog.getUnits();
-			  
-			  CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate, effectivenessDiscountRate, numSlices, evidenceCase, cycleLength, null);
-			  
-			  new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis, costEffectivenessAnalysis.costEffectivenessCalculator(),
-					  costEffectivenessDialog) ;
-						
-		  }
+		if (requestCostEffectiveness(Utilities.getOwner(this),"cea", false, false, false))
+		{ 
+
+			int numSlices;
+			if (isThereNodeAge) {
+				numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
+				
+			} else {
+				numSlices = costEffectivenessDialog.getNumSlices();
+			}
+			double costDiscountRate = costEffectivenessDialog.getCostDiscount();
+			double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
+			double cycleLength = costEffectivenessDialog.getCycleLength();
+			String units = costEffectivenessDialog.getUnits();
+			CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate, effectivenessDiscountRate, numSlices, getEvidenceFromNetwork(), cycleLength, null);
+
+			new CostEffectivenessResultsDialog(Utilities.getOwner(this), costEffectivenessAnalysis, costEffectivenessAnalysis.costEffectivenessCalculator(),
+					costEffectivenessDialog) ;
+
+		}
   		  
 	/*		  
 			  ArrayList<Intervention> interventions = new ArrayList<Intervention>();
@@ -2536,10 +2545,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			node = selectedNode.get(0);
 			Variable variableOfInterest = node.getProbNode().getVariable();
 			boolean isUtility = node.getProbNode().getNodeType() == NodeType.UTILITY ? true : false;
-			/*CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(this), probNet.checkIfThereIsAgeNode());
 			
-			if (costEffectivenessDialog.requestData(probNet.getName(), "te") == CostEffectivenessDialog.OK_BUTTON) { 
-*/
 			 if (requestCostEffectiveness(Utilities.getOwner(this),"te", false, isUtility, true))
 			  {
 				int numSlices;
@@ -2554,12 +2560,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, costDiscountRate,effectivenessDiscountRate, numSlices, null, (Double) null, null);
 
 				try {
-					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest);
+					HashMap<Variable,TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution(variableOfInterest, getEvidenceFromNetwork());
 					new TraceTemporalEvolutionDialog(Utilities.getOwner(this), temporalEvolution, costEffectivenessDialog,
 							variableOfInterest, costEffectivenessAnalysis.getExpandedNetwork(), isUtility);
-					/*adjustPanelDimension();
-					repaint();*/
-
 				} catch (ImposedPoliciesException e) {
 					JOptionPane.showMessageDialog(this, stringResource
 							.getString( e.getMessage() ),
@@ -3072,5 +3075,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		visualNetwork.setParameterArity(arity);		
 	}
     //TODO OOPN end
+
+	
 
 }

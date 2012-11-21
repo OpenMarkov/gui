@@ -63,84 +63,38 @@ public class CostEffectivenessAnalysis {
 	 
  }
  
- @SuppressWarnings("unused")
+ public void extendEvidence(ProbNet extendedNetwork) {
+	 if (!evidence.getFindings().isEmpty()) {
+		 try {
+			 evidence.extendEvidence(extendedNetwork, cycleLength);
+		 } catch (IncompatibleEvidenceException e2) {
+			 e2.printStackTrace();
+		 } catch (InvalidStateException e2) {
+			 e2.printStackTrace();
+		 } catch (WrongCriterionException e2) {
+			 e2.printStackTrace();
+		 } catch (NotEnoughMemoryException e) {
+			e.printStackTrace();
+		}
+	 }
+ }
+ 
 public TablePotential costEffectivenessCalculator() {
 	 TablePotential globalUtility = null;
 	 FactoryExpandedSMM expandedNetFactory;
 	 try {
-		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
-		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 if (!evidence.getFindings().isEmpty()) {
-			 try {
-				 evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
-			 } catch (IncompatibleEvidenceException e2) {
-				 e2.printStackTrace();
-			 } catch (InvalidStateException e2) {
-				 e2.printStackTrace();
-			 } catch (WrongCriterionException e2) {
-				 e2.printStackTrace();
-			 }
-		 }
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, null);
-		
-		 
-		 expandedNetFactory.adaptProbNetForCE();
-		 /*//project all the evidence
-		 if (!evidence.getFindings().isEmpty()) {
-			 expandedNetFactory.projectEvidence(evidence);
-		 }*/
-		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-		// ProbNet prunedExpandedNetwork = expandedNetFactory.prepareExpandedNetworkToInference(evidence);
-		 VariableElimination variableElimination;
-		 try {
-			variableElimination = new VariableElimination(expandedNetwork);
-			variableElimination.setPreResolutionEvidence(evidence);
-			ArrayList<Variable> conditioningVariables = new ArrayList<>();
-			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
-			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
-			 for (ProbNode decisionNode : decisionNodes) {
-				 if (!decisionNode.hasPolicy()) {
-					 conditioningVariables.add(decisionNode.getVariable());
-				 }
-			 }
-			 variableElimination.setConditioningVariables(conditioningVariables);
-
-			 try {
-				 globalUtility =  variableElimination.getGlobalUtility();
-			 } catch (IncompatibleEvidenceException e) {
-				 // TODO Auto-generated catch block
-				 e.printStackTrace();
-			 } catch (UnexpectedInferenceException e) {
-				 // TODO Auto-generated catch block
-				 e.printStackTrace();
-			 }
-		 } catch (NotEvaluableNetworkException e1) {
-			 // TODO Auto-generated catch block
-			 e1.printStackTrace();
-		 }
-
-	 } catch (NotEnoughMemoryException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-	 }
-	 return globalUtility;
- }
-
- 
- public TablePotential costEffectivenessCalculatorV1() {
-	
-
-	 TablePotential globalUtility = null;		  
-	 FactoryExpandedSMM expandedNetFactory;
-	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
-		 expandedNetFactory.adaptProbNetForCE();
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, null);
+		 extendEvidence(expandedNetFactory.getExtendedNet());
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
+		// ArrayList<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
+		 expandedNetFactory.adaptProbNetForCE();
+		// ArrayList<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
 		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 VariableElimination variableElimination;
 		 try {
 			 variableElimination = new VariableElimination(expandedNetwork);
+			 variableElimination.setPreResolutionEvidence(evidence);
 			 ArrayList<Variable> conditioningVariables = new ArrayList<>();
 			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
 			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
@@ -154,25 +108,22 @@ public TablePotential costEffectivenessCalculator() {
 			 try {
 				 globalUtility =  variableElimination.getGlobalUtility();
 			 } catch (IncompatibleEvidenceException e) {
-				 // TODO Auto-generated catch block
 				 e.printStackTrace();
 			 } catch (UnexpectedInferenceException e) {
-				 // TODO Auto-generated catch block
 				 e.printStackTrace();
 			 }
 		 } catch (NotEvaluableNetworkException e1) {
-			 // TODO Auto-generated catch block
 			 e1.printStackTrace();
 		 }
 
 	 } catch (NotEnoughMemoryException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
+		e.printStackTrace();
 	 }
- 	 return globalUtility;
-}
- 
- public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest) throws ImposedPoliciesException {
+	 return globalUtility;
+ }
+
+
+ public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest, EvidenceCase evidence) throws ImposedPoliciesException {
 	 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 	 //check if all decision nodes has an imposed policy, potential set in probNode
 	 for (ProbNode node : decisionNodes) {
@@ -182,48 +133,37 @@ public TablePotential costEffectivenessCalculator() {
 	 }
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
 	 try {
-		FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-		//boolean isUtility = false;
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, null); 
-		this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
-		String baseName = variableOfInterest.getBaseName();
-		ArrayList<Variable> variablesOfInterest = new ArrayList<>();
-		ArrayList<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
-		for (ProbNode node :expandedProbNetProbNodes) {
-			/*if (node.getVariable().getBaseName().equals(baseName) &&
-					node.getVariable().getTimeSlice()==0) {
-				if (node.getNodeType() == NodeType.UTILITY) {
-					isUtility = true;
-				}
-			}*/
+		 FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+		 extendEvidence(expandedNetFactory.getExtendedNet());
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, new InferenceOptions(probNet, null), evidence); 
+		 this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
+		 String baseName = variableOfInterest.getBaseName();
+		 ArrayList<Variable> variablesOfInterest = new ArrayList<>();
+		 ArrayList<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
+		 for (ProbNode node :expandedProbNetProbNodes) {
 			if (node.getVariable().getBaseName().equals(baseName)) {
-				variablesOfInterest.add(node.getVariable());
-			}
-		}
-		try {
-			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
-			try {
-				probsAndUtilities =  variableElimination.getProbsAndUtilities(variablesOfInterest);
-				
-			} catch (IncompatibleEvidenceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (UnexpectedInferenceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (NotEvaluableNetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		
-	} catch (NotEnoughMemoryException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return probsAndUtilities;
+				 variablesOfInterest.add(node.getVariable());
+			 }
+		 }
+		 try {
+			 VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+			 variableElimination.setPreResolutionEvidence(evidence);
+			 try {
+				 probsAndUtilities =  variableElimination.getProbsAndUtilities(variablesOfInterest);
+			 } catch (IncompatibleEvidenceException e) {
+				 e.printStackTrace();
+			 } catch (UnexpectedInferenceException e) {
+				 e.printStackTrace();
+			 }
+		 } catch (NotEvaluableNetworkException e) {
+			 e.printStackTrace();
+		 }
+
+
+	 } catch (NotEnoughMemoryException e) {
+		 e.printStackTrace();
+	 }
+	 return probsAndUtilities;
  }
  
  /**
