@@ -790,9 +790,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		if(fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
 		{
 			filename = fileChooser.getSelectedFile().getAbsolutePath();
+			String chosenFilterExtension = ((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension();
+			if(!filename.toLowerCase ().endsWith ("."+chosenFilterExtension.toLowerCase ()))
+			{
+			    filename += "."+chosenFilterExtension.toLowerCase ();
+			}
 			OpenMarkovPreferences.set(
 					OpenMarkovPreferences.LAST_SAVED_FORMAT,
-					((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
+					chosenFilterExtension,
 					OpenMarkovPreferences.OPENMARKOV_FORMATS);
 		}
 		return filename;
