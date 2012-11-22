@@ -11,7 +11,6 @@ package org.openmarkov.core.gui.localize;
 
 
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 
 /**
@@ -23,7 +22,7 @@ import java.util.ResourceBundle;
  * @author jlgozalo 1.2
  * @version 1.1 toString() added
  * @version 1.2 always return a String. If the key is not found, return a blank
- *          string to avoid stop OPENMARKOV
+ *          string to avoid stopping OPENMARKOV
  */
 public class StringResource {
 

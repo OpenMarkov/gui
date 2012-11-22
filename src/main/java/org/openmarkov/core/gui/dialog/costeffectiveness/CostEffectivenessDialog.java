@@ -11,9 +11,7 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -25,17 +23,13 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import javax.swing.BorderFactory;
-
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -52,8 +46,8 @@ import javax.swing.border.EmptyBorder;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
-import org.openmarkov.core.gui.dialog.io.FileFilterXLS;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
@@ -1279,7 +1273,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	 */
 	private String requestNetworkFileToSave(String suggestedFileName) {
 
-		FileChooser fileChooser = new FileChooser();
+		JFileChooser fileChooser = new JFileChooser();
 
 		fileChooser.setDialogTitle( dialogStringResource
 			.getString( "SaveNetwork.Title.Label" ) );

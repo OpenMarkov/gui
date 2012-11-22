@@ -209,9 +209,9 @@
     <Excel>
       <Description value="Excel files" />
     </Excel>
-    <Weka>
+    <WekaDB>
       <Description value="Weka DB file" />
-    </Weka>
+    </WekaDB>
     <ElviraDB>
       <Description value="Elvira DB file" />
     </ElviraDB>

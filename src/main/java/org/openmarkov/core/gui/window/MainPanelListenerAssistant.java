@@ -18,12 +18,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
@@ -43,10 +41,11 @@ import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
-import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
+import org.openmarkov.core.gui.dialog.io.NetworkFileChooser;
 import org.openmarkov.core.gui.dialog.io.SaveOptions;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -70,8 +69,8 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
+import org.openmarkov.core.oopn.OOPNet;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -772,7 +771,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private String requestNetworkFileToSave(String suggestedFileName) {
 
-		FileChooser fileChooser = new FileChooser(false);
+		NetworkFileChooser fileChooser = new NetworkFileChooser(false);
 
 		String title = stringResourceLoader.getBundleMessages().getString("SaveNetwork.Title.Label");
 		        
@@ -1017,7 +1016,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private String requestNetworkFileToOpen() {
 
-		FileChooser fileChooser = new FileChooser();
+		NetworkFileChooser fileChooser = new NetworkFileChooser();
 
         fileChooser.setDialogTitle (stringResourceLoader.getBundleMessages ().getString ("OpenNetwork.Title.Label"));
 		File currentDirectory = new File(OpenMarkovPreferences.get(
@@ -1105,45 +1104,31 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
     private void loadEvidence (NetworkPanel currentNetworkPanel)
     {
 
-        JFileChooser fileChooser = new JFileChooser();
+        FileChooser evidenceFileChooser = new DBReaderFileChooser();
         StringResource messageBundle = stringResourceLoader.getBundleMessages();
 
-        fileChooser.setDialogTitle(messageBundle
+        evidenceFileChooser.setDialogTitle(messageBundle
                 .getString("LoadEvidence.Title.Label"));
         File currentDirectory = new File(OpenMarkovPreferences.get(
                 OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                 OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-        fileChooser.setCurrentDirectory(currentDirectory);
-        fileChooser.setAcceptAllFileFilterUsed (false);
-        CaseDatabaseManager caseDbManager = new CaseDatabaseManager (); 
-        HashMap<String, String> readersInfo = caseDbManager.getAllReaders ();
-        HashMap<String, FileFilter> fileFilters = new HashMap<> ();
-        
-        for(String extension : readersInfo.keySet ())
-        {
-            FileFilter fileFilter = new FileFilterAll(extension, readersInfo.get (extension));
-            fileFilters.put (extension, fileFilter);
-            fileChooser.addChoosableFileFilter(fileFilter);
-        }
+        evidenceFileChooser.setCurrentDirectory(currentDirectory);
         
         // Set last used evidence format as default 
         String lastFileFilter = OpenMarkovPreferences.get( OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, 
                                                                      OpenMarkovPreferences.OPENMARKOV_FORMATS, "xls");
-
-        if(fileFilters.containsKey (lastFileFilter))
-        {
-            fileChooser.setFileFilter (fileFilters.get (lastFileFilter));
-        }
+        evidenceFileChooser.setFileFilter (lastFileFilter);
         
-        if((fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION))
+        if((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION))
          {
             // load the selected file
-            System.out.println("Load evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
-            CaseDatabaseReader caseDbReader = caseDbManager.getReader (FilenameUtils.getExtension (fileChooser.getSelectedFile ().getName ()));        
+            System.out.println("Load evidence file " + evidenceFileChooser.getSelectedFile().getAbsolutePath());
+            CaseDatabaseManager caseDbManager = new CaseDatabaseManager ();
+            CaseDatabaseReader caseDbReader = caseDbManager.getReader (FilenameUtils.getExtension (evidenceFileChooser.getSelectedFile ().getName ()));        
             ProbNet currentNet = currentNetworkPanel.getProbNet ();
             try
             {
-                CaseDatabase caseDatabase = caseDbReader.load (fileChooser.getSelectedFile().getAbsolutePath());
+                CaseDatabase caseDatabase = caseDbReader.load (evidenceFileChooser.getSelectedFile().getAbsolutePath());
                 List<Variable> variables = caseDatabase.getVariables ();
                 int[][] cases = caseDatabase.getCases (); 
                 for(int i= 0; i < cases.length; ++i)
@@ -1191,9 +1176,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
                 }
                 // save format extension in preferences
                 OpenMarkovPreferences.set( OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
-                                           ((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
+                                           ((FileFilterBasic)evidenceFileChooser.getFileFilter()).getFilterExtension(),
                                            OpenMarkovPreferences.OPENMARKOV_FORMATS);
-                
+                OpenMarkovPreferences.set(
+                                          OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                                          getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
+                                          OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);                
                 
             }
             catch (IOException e)

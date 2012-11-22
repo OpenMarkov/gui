@@ -7,11 +7,12 @@
 * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
 */
 
-package org.openmarkov.core.gui.dialog.io;
+package org.openmarkov.core.gui.dialog.costeffectiveness.io;
 
 
 import java.io.File;
 
+import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 
@@ -19,13 +20,12 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 
 
 /**
- * Class that filter only the files that contain Elvira nets.
+ * Class that filter only the XLS files.
  * 
- * @author jmendoza
- * @version 1.0 jmendoza
- * @version 1.1 jlgozalo - fix public methods
+ * @author mkpalacio
+
  */
-public class FileFilterElv extends FileFilterBasic {
+public class FileFilterXLS extends FileFilterBasic {
 
 	/**
 	 * String resource.
@@ -35,12 +35,12 @@ public class FileFilterElv extends FileFilterBasic {
 	/**
 	 * Extension of the files that match this filter.
 	 */
-	public static final String elviraExtension = "elv";
+	static final String xlsExtension = "xls";
 
 	/**
 	 * Create a new instance and create a new string resource.
 	 */
-	public FileFilterElv() {
+	public FileFilterXLS() {
 
 		stringResource =
 			StringResourceLoader.getUniqueInstance().getBundleDialogs();
@@ -49,7 +49,7 @@ public class FileFilterElv extends FileFilterBasic {
 
 	/**
 	 * Accepts all the directories (by default in OpenMarkovtFileFilter) and files
-	 * whose extension is 'elv'.
+	 * whose extension is 'xls'.
 	 * 
 	 * @return true if the file is a directory; false otherwise
 	 */
@@ -62,7 +62,7 @@ public class FileFilterElv extends FileFilterBasic {
 		if (!result) {
 			fileExtension = getExtension(file);
 
-			return (fileExtension.equals(elviraExtension));
+			return (fileExtension.equals(xlsExtension));
 		}
 
 		return true;
@@ -77,8 +77,8 @@ public class FileFilterElv extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("FileExtension.Elvira.Description")
-			+ " (*." + elviraExtension + ")";
+		return stringResource.getString("FileExtension.Excel.Description")
+			+ " (*." + xlsExtension + ")";
 
 	}
 
@@ -90,7 +90,9 @@ public class FileFilterElv extends FileFilterBasic {
 	@Override
 	public String getFilterExtension() {
 
-		return elviraExtension;
+		return xlsExtension;
 
 	}
+
 }
+
