@@ -1023,10 +1023,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
 		fileChooser.setCurrentDirectory(currentDirectory);
+		fileChooser.setFileFilter(OpenMarkovPreferences.get(
+		                                        OpenMarkovPreferences.LAST_OPENED_FORMAT,
+		                                        OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
+		
 		// fileChooser.setPGMXFilter();
-		String fileName = (fileChooser.showOpenDialog(Utilities
-				.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) ? fileChooser
-				.getSelectedFile().getAbsolutePath() : null;
+		String fileName = null;
+		if(fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
+		{
+		    OpenMarkovPreferences.set(
+		                              OpenMarkovPreferences.LAST_OPENED_FORMAT,
+		                              ((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
+		                              OpenMarkovPreferences.OPENMARKOV_FORMATS);		    
+			fileName = fileChooser.getSelectedFile().getAbsolutePath();
+		}
 
 		return fileName;
 
