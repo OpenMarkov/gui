@@ -109,6 +109,7 @@
 		    <artifactId>poi</artifactId>
 		    <version>3.8</version>
 		</dependency>
+
 		<dependency>
 		    <groupId>jfree</groupId>
 		    <artifactId>jcommon</artifactId>

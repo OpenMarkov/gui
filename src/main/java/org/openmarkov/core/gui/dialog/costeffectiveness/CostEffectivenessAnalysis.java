@@ -87,10 +87,11 @@ public TablePotential costEffectivenessCalculator() {
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
-		// ArrayList<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
+		 ArrayList<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
 		 expandedNetFactory.adaptProbNetForCE();
-		// ArrayList<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
-		 ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		 ArrayList<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
+		// ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		 ProbNet expandedNetwork =  expandedNetFactory.prepareExpandedNetworkToInference(evidence);
 		 VariableElimination variableElimination;
 		 try {
 			 variableElimination = new VariableElimination(expandedNetwork);

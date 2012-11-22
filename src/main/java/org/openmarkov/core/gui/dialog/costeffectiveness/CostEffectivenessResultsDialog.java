@@ -32,9 +32,11 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 	
 /**
  * Dialog box to show the results from cost-effectiveness analysis
@@ -153,6 +155,25 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 		 		
 		 		//create a dummy probnet
 		 		ProbNet dummyProbNet = new ProbNet();
+		 		//make sure first variable in globalUtility is decisionCriteria one
+		 		ArrayList<Variable> corectOrder = new ArrayList<>();
+		 		for (int i = 0; i < globalUtility.getVariables().size(); i++) {
+		 			if (globalUtility.getVariables().get(i).getName().equalsIgnoreCase("Decision Criteria")) {
+		 				corectOrder.add(globalUtility.getVariables().get(i));
+		 			}
+		 		}
+		 		for (int i = 0; i < globalUtility.getVariables().size(); i++) {
+		 			if (!globalUtility.getVariables().get(i).getName().equalsIgnoreCase("Decision Criteria")) {
+		 				corectOrder.add(globalUtility.getVariables().get(i));
+		 			}
+		 		}
+		 		
+		 		try {
+					globalUtility = DiscretePotentialOperations.reorder(globalUtility, corectOrder);
+				} catch (NotEnoughMemoryException e1) {
+					e1.printStackTrace();
+				}
+		 		
 		 		ProbNode dummy = new ProbNode(dummyProbNet, globalUtility.getVariables().get(0), NodeType.CHANCE);
 	        	
         		for (int i = 1; i < globalUtility.getVariables().size(); i++) {
