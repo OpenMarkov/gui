@@ -41,6 +41,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
@@ -2068,6 +2069,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				individualProbabilities = inferenceAlgorithm
 						.getProbsAndUtilities();
+			} catch (NotEvaluableNetworkException e){
+				JOptionPane.showMessageDialog(Utilities.getOwner(this),e.getMessage());
+				return false;
 			}
 			long elapsedTimeMillis = System.currentTimeMillis() - start;
 			System.out.println("Inference took " + elapsedTimeMillis
