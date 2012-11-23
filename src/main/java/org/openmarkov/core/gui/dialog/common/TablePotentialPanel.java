@@ -11,9 +11,12 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -979,7 +982,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * 
 	 * @return a new values table.
 	 */
-	protected ValuesTable getValuesTable() {
+	public ValuesTable getValuesTable() {
 
 		if (valuesTable == null) {
 			valuesTable = new ValuesTable(probNode, getTableModel(), modifiable);
@@ -1329,6 +1332,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * when the user do right click on the table.
 	 */
 	protected void setTableSpecificListeners() {
+
 
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
 

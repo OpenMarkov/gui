@@ -41,7 +41,7 @@ public class CPTablePanel extends TablePotentialPanel{
 	 * @return a new values table.
 	 */
 	@Override
-	protected ValuesTable getValuesTable() {
+	public ValuesTable getValuesTable() {
 
 		if (valuesTable == null) {
 			valuesTable = new ValuesTable(probNode, getTableModel(), modifiable );

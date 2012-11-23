@@ -49,10 +49,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 * Static field for serializable class.
 		 */
 		private static final long serialVersionUID = 6257314234781632512L;
-
-		
-		
-
 		/**
 		 * Name of the columns of the table.
 		 */
