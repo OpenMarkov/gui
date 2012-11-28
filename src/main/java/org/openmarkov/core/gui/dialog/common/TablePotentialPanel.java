@@ -18,6 +18,7 @@ import java.util.ListIterator;
 
 import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -105,13 +106,20 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		super();
 		this.probNode = probNode;
 		modifiable = true;
-		showValuesTable(true);
-		setTableSpecificListeners();
-		setData(probNode);
-		setLayout(new BorderLayout());
-		add(getValuesTableScrollPane(), BorderLayout.CENTER);
-		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
-		repaint();
+		
+		if (probNode.getPotentials().get(0).getVariables().isEmpty()) {
+			add(/*new EmptyPotentialPanel(probNode)*/ new JPanel(), BorderLayout.CENTER);
+		} else {
+			showValuesTable(true);
+			setTableSpecificListeners();
+			setData(probNode);
+			setLayout(new BorderLayout());
+			add(getValuesTableScrollPane(), BorderLayout.CENTER);
+			add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
+			repaint();
+		}
+		
+		
 		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
 	}

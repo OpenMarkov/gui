@@ -299,7 +299,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     public int requestValues() {
         // Shows the potentials' options table
         if (!(probNode.getNodeType() == NodeType.DECISION && 
-                probNode.getPolicyType() == PolicyType.OPTIMAL)){
+                probNode.getPolicyType() == PolicyType.OPTIMAL) /*&& !probNode.getPotentials().get(0).getVariables().isEmpty()*/){
             showFields(probNode);
         }else{
             /**setEnabledDecisionOptions(true);**/
@@ -339,8 +339,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         //*******
         setTitle(dialogStringResource.getString(
                 "NodePotentialDialog.Title.Label")+ ": " + probNode.getName());
-
-        getPotentialPanel().setData( probNode );
+		if (!probNode.getPotentials().get(0).getVariables().isEmpty()) {//for constants 
+			 getPotentialPanel().setData( probNode );
+		}
+       
         //updatePotentialPanel();
         if ( probNode.getNodeType() == NodeType.DECISION ){
             setEnabledDecisionOptions(true);
