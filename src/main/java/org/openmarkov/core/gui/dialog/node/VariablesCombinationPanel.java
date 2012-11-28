@@ -2,6 +2,7 @@ package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -9,7 +10,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 
@@ -30,13 +30,13 @@ private ProbNode probNode;
 	public void initialize() {
 		 setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		// ButtonGroup buttonGroup = new ButtonGroup();
-		ArrayList<Variable> variables =  probNode.getPotentials().get(0).getVariables();
-		ArrayList<Variable> possibleVariables = new ArrayList<Variable>();
+		List<Variable> variables =  probNode.getPotentials().get(0).getVariables();
+		List<Variable> possibleVariables = new ArrayList<Variable>();
 		for (int i = 1; i < variables.size(); i++) {
 			possibleVariables.add(variables.get(i));
 		}
 			
-		ArrayList<String> possibilities = new ArrayList<String>();
+		List<String> possibilities = new ArrayList<String>();
 		int size = possibleVariables.size();
 		@SuppressWarnings("rawtypes")
 		Vector vector= new Vector();

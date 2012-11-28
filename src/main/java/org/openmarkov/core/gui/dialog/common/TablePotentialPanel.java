@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.CellEditor;
@@ -282,9 +283,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		return result;
 	}
 
-	private Potential getThisPotential(ArrayList<Potential> listPotentials) {
+	private TablePotential getThisPotential(List<Potential> listPotentials) {
 
-		Potential aPotential = null;
+	    TablePotential aPotential = null;
 		try {
 			aPotential = ((TablePotential) listPotentials.get(0));
 		} catch (Exception ex) {
@@ -293,7 +294,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			logger.error("no Potential.get(0) !!!");
 
 		}
-
 		return aPotential;
 	}
 
@@ -354,10 +354,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				properties.getPotentials(), properties);
 		setBaseIndexForCoordinates(row);
 		setFirstEditableRow(row);
-		TablePotential tablePotential = (TablePotential) getThisPotential(properties
-				.getPotentials());
-		ArrayList<Variable> variablesBeforeReorder = tablePotential
-				.getVariables();
+		TablePotential tablePotential = getThisPotential(properties.getPotentials());
+		List<Variable> variablesBeforeReorder = tablePotential.getVariables();
 
 		setVariables(variablesBeforeReorder);
 		if (properties.getNodeType() == NodeType.UTILITY) {
@@ -392,7 +390,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		return values;
 	}
 
-	private void setVariables(ArrayList<Variable> variables) {
+	private void setVariables(List<Variable> variables) {
 		// TODO update this statement, when constructor of this class with
 		// potential as parameter is implemented
 		if (probNode != null && probNode.getNodeType() == NodeType.UTILITY) {
@@ -498,7 +496,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * @param additionalProperties
 	 *            - the additionalProperties of the node
 	 */
-	private int setNumberOfPostions(ArrayList<Potential> listPotentials) {
+	private int setNumberOfPostions(List<Potential> listPotentials) {
 
 		int numPositions = 1;
 		try {
@@ -586,9 +584,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 
 		tablePotential.setValues(roundedValues);
 
-		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
-		ArrayList<Variable> variables = probNode.getPotentials().get(0)
-				.getVariables();
+		List<Variable> newOrderVariables = new ArrayList<Variable>();
+		List<Variable> variables = probNode.getPotentials().get(0).getVariables();
 		// Collections.reverse(variables); // reorder the variables
 		int end = -1;
 		if (variables.size() > 0) {
@@ -665,13 +662,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		Object[][] notEditablePositions = null;
 		notEditablePositions = setValuesTableSize(notEditablePositions,
 				probNode);
-		ArrayList<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
+		List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
 				.getStateCombinationsWithLinkRestriction(probNode);
 
 		TablePotential potential = (TablePotential) probNode.getPotentials()
 				.get(0);
-		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
-		ArrayList<Variable> variables = probNode.getPotentials().get(0)
+		List<Variable> newOrderVariables = new ArrayList<Variable>();
+		List<Variable> variables = probNode.getPotentials().get(0)
 				.getVariables();
 
 		int end = -1;
@@ -808,7 +805,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	private EvidenceCase getConfiguration(TablePotential tablePotential, int col)
 			throws InvalidStateException, IncompatibleEvidenceException {
 		Variable variable = null;
-		ArrayList<Variable> variables = null;
+		
 		EvidenceCase evidence = new EvidenceCase();
 		// configuration of all variables
 

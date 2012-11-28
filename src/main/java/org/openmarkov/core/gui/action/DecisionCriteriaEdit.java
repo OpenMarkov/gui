@@ -1,6 +1,7 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
@@ -10,6 +11,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
 
+@SuppressWarnings("serial")
 public class DecisionCriteriaEdit extends SimplePNEdit {
 		
 		private String criteriaName;
@@ -17,9 +19,9 @@ public class DecisionCriteriaEdit extends SimplePNEdit {
 		private int criteriaIndex;
 		private StateAction stateAction;
 		//private StringsWithProperties lastAgents;
-		private ArrayList<StringWithProperties> lastCriteria;
+		private List<StringWithProperties> lastCriteria;
 		private Object [][]dataTable;
-		private ArrayList<ProbNode> oldNodes;
+		private List<ProbNode> oldNodes;
 
 		public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 			super(probnet);
@@ -29,20 +31,20 @@ public class DecisionCriteriaEdit extends SimplePNEdit {
 			this.newName = newName;
 			if(probnet.getAgents() != null){
 				//StringsWithProperties agents =  probnet.getAgents();
-				ArrayList<StringWithProperties> decisionCriteria =  probnet.getDecisionCriteria();
+				List<StringWithProperties> decisionCriteria =  probnet.getDecisionCriteria();
 				//this.lastAgents = probnet.getAgents().copy();
-				this.lastCriteria = (ArrayList<StringWithProperties>) probnet.getDecisionCriteria().clone();
+				this.lastCriteria = new ArrayList<StringWithProperties>(probnet.getDecisionCriteria());
 			}else {
 				this.lastCriteria = probnet.getDecisionCriteria();
 			}
 			this.dataTable = dataTable;
-			this.oldNodes = (ArrayList<ProbNode>) probNet.getProbNodes().clone();
+			this.oldNodes = new ArrayList<ProbNode>(probNet.getProbNodes());
 		}
 
 		@Override
 		public void doEdit() throws DoEditException, NotEnoughMemoryException {
 			//StringsWithProperties agents = probNet.getAgents();
-			ArrayList<StringWithProperties> criterias = probNet.getDecisionCriteria();
+			List<StringWithProperties> criterias = probNet.getDecisionCriteria();
 			StringWithProperties criteria = null;
 			switch (stateAction){
 			case ADD:

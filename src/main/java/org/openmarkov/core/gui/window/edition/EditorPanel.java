@@ -1175,7 +1175,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void imposePolicyInNode() {
 		System.out.println("Pulsada la opción 'Imponer Política'"); // ...Borrar
 		VisualNode node = null;
-		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
+		List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
@@ -1183,17 +1183,17 @@ public class EditorPanel extends JPanel implements MouseListener,
 				ProbNode probNode = node.getProbNode();
 				//TODO manage other kind of policy types from the interface
 				probNode.setPolicyType(PolicyType.OPTIMAL);
-				ArrayList<Variable> variables = new ArrayList<Variable>();
+				List<Variable> variables = new ArrayList<Variable>();
 				//it is added first conditioned variable
 				variables.add(node.getProbNode().getVariable());
-				ArrayList<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
+				List<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
 	        	for (ProbNode possibleParent :probNodes) {
 	        		if (probNode.isParent(possibleParent)) {
 	        			variables.add(possibleParent.getVariable());
 	        		}
 	        	}
 				UniformPotential policy = new UniformPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-				ArrayList<Potential> policies = new ArrayList<Potential>();
+				List<Potential> policies = new ArrayList<Potential>();
 				policies.add(policy);
 				probNode.setPotentials(policies);
 				
@@ -1203,7 +1203,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 					((VisualDecisionNode) node).setHasPolicy(true);
 					networkChanged = true;
 				} else { //if user cancel policy imposition then no potential is restored to the probnode
-					ArrayList<Potential> noPolicy = new ArrayList<Potential>();
+				    List<Potential> noPolicy = new ArrayList<Potential>();
 					probNode.setPotentials(noPolicy);
 				}
 				
@@ -1722,11 +1722,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void removeAllFindings() {
 	    setPropagationActive (isAutomaticPropagation());
-		ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
+	    List<VisualNode> visualNodes = visualNetwork.getAllNodes();
 		for (int i = 0; i < visualNodes.size(); i++) {
 			visualNodes.get(i).setPostResolutionFinding(false);
 		}
-		ArrayList<Finding> findings = postResolutionEvidence.get(currentCase)
+		List<Finding> findings = postResolutionEvidence.get(currentCase)
 				.getFindings();
 		for (int i = 0; i < findings.size(); i++) {
 			try {
@@ -1764,7 +1764,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public void removeNodeEvidenceInAllCases(ProbNode node) {
 		for (int i = 0; i < postResolutionEvidence.size(); i++) {
-			ArrayList<Finding> findings = postResolutionEvidence.get(i).getFindings();
+		    List<Finding> findings = postResolutionEvidence.get(i).getFindings();
 			for (int j = 0; j < findings.size(); j++) {
 				try {
 					if (node.getVariable() == (findings.get(j).getVariable())) {
@@ -1776,7 +1776,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 								setPropagationActive(false);
 						}
 						if (i == currentCase) {
-							ArrayList<VisualNode> visualNodes = visualNetwork.getAllNodes();
+						    List<VisualNode> visualNodes = visualNetwork.getAllNodes();
 							for (int k = 0; k < visualNodes.size(); k++) {
 								if (visualNodes.get(k).getProbNode() == node) {
 									visualNodes.get(k).setPostResolutionFinding(false);//...asaez....PENDIENTE........
@@ -1813,7 +1813,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 */
 	public boolean areThereFindingsInCase() {
 		boolean areFindings = false;
-		ArrayList<Finding> findings = postResolutionEvidence.get(currentCase)
+		List<Finding> findings = postResolutionEvidence.get(currentCase)
 				.getFindings();
 		if (findings != null) {
 			if (findings.size() > 0) {
@@ -2138,8 +2138,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @throws NotEnoughMemoryException 
 	 */
 	private void calculateMinAndMaxUtilityRanges() throws NotEnoughMemoryException, NonProjectablePotentialException {
-		ArrayList<Variable> utilityVariables = probNet
-				.getVariables(NodeType.UTILITY);
+	    List<Variable> utilityVariables = probNet.getVariables(NodeType.UTILITY);
 		for (Variable utility : utilityVariables) {
 			ProbNode probNode = probNet.getProbNode(utility);
 			minUtilityRange.put(utility, probNode.getApproximateMinimumUtilityFunction());
@@ -2297,7 +2296,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	private boolean requestCostEffectiveness(Window owner,
 			String suffixTypeAnalysis, boolean isProbabilistic, boolean isUtility, boolean isTemporalEvolution) {
 		isThereNodeAge = probNet.checkIfThereIsAgeNode();
-		ArrayList<ProbNode> numericTemporalNodes = probNet.getSpecialTimeDependantNodes();	
+		List<ProbNode> numericTemporalNodes = probNet.getSpecialTimeDependantNodes();	
 		if (isTemporalEvolution) {
 			costEffectivenessDialog = new CostEffectivenessDialog(owner, numericTemporalNodes, isThereNodeAge, isUtility, isTemporalEvolution);
 		} else {
@@ -2318,7 +2317,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		 EvidenceCase evidenceCase  = new EvidenceCase();
 		 Finding ageFinding = null;
 		 if (isThereNodeAge) {
-		  ArrayList<ProbNode> probNodes = probNet.getProbNodes();
+		     List<ProbNode> probNodes = probNet.getProbNodes();
 			for (int i = 0; i < probNodes.size() ; i++) {
 				if (probNodes.get(i).getVariable().isTemporal() 
 						&& probNodes.get(i).getVariable().getBaseName().equals("Age")
@@ -2691,7 +2690,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		try {
 			EvidenceCase newEvidenceCase = new EvidenceCase();
 			EvidenceCase currentEvidenceCase = getCurrentEvidenceCase();
-			ArrayList<Finding> currentFindings = currentEvidenceCase
+			List<Finding> currentFindings = currentEvidenceCase
 					.getFindings();
 			for (int i = 0; i < currentFindings.size(); i++) {
 				newEvidenceCase.addFinding(currentFindings.get(i));

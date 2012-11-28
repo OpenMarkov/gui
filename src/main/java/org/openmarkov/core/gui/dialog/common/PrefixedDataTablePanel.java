@@ -10,6 +10,7 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -115,8 +116,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		setEnabledAddValue(absentData.length != 0);
 
 	}
-	private static Object[][] fillArrayWithNodes(
-			ArrayList<Node> nodes) {
+	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
 
 		int i, l;
 		Object[][] result;
@@ -233,8 +233,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @return the prefixed data that aren't in the array 'data'.
 	 */
 	private Object[][] absentPrefixedData() {
-		ArrayList<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
-		ArrayList<Node> nodes = new ArrayList<Node>();
+	    List<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
+	    List<Node> nodes = new ArrayList<Node>();
 		edits.clear();
 		
 		for (ProbNode pProbNode:probNodes){

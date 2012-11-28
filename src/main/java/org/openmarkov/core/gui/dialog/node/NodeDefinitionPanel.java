@@ -20,7 +20,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -58,11 +58,10 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.util.Purpose;
-import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.StringsWithProperties;
+import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.VariableType;
 /**
  * Panel to set the definition of a node.
@@ -841,7 +840,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 
 		if (jComboBoxNetworkAgents == null) {
 			//StringsWithProperties agents = probNode.getProbNet().getAgents();
-			ArrayList<StringWithProperties> agents = probNode.getProbNet().getAgents();
+			List<StringWithProperties> agents = probNode.getProbNet().getAgents();
 			String [] agentNames = null;
 			if (agents != null) {
 				//Set<String> names = agents.getNames();
@@ -931,7 +930,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	
 	private JComboBox getJComboBoxDecisionCriteria() {
 		if (jComboBoxDecisionCriteria == null) {
-			ArrayList<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
+			List<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
 			String [] criteriaNames = null;
 			if (decisionCriteria != null) {
 				criteriaNames  = new String [decisionCriteria.size()+1];

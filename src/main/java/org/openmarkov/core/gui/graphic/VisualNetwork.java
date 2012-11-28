@@ -176,10 +176,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	protected void constructVisualInfo() {
 
-		ArrayList<ProbNode> nodes = null;
-		ArrayList<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
-		ArrayList<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-		ArrayList<Link> links = null;
+		List<ProbNode> nodes = null;
+		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
+		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
+		List<Link> links = null;
 		ProbNode nodeToCheck = null;
 		Link linkToCheck = null;
 		VisualNode vNode1 = null;
@@ -260,7 +260,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param vNodesToDelete
 	 * @return
 	 */
-	protected boolean containsNodeToDelete(Link linkToCheck, ArrayList<VisualNode> vNodesToDelete) {
+	protected boolean containsNodeToDelete(Link linkToCheck, List<VisualNode> vNodesToDelete) {
 		
 		for (VisualNode vNode: vNodesToDelete)
 		if (linkToCheck.contains(vNode.getProbNode().getNode()))

@@ -13,6 +13,7 @@
 package org.openmarkov.core.gui.component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.model.graph.Node;
@@ -39,15 +40,15 @@ public class PotentialsTablePanelOperations {
 	 *  variable
 	 * @return new list of potentials for the variable with the changes applied
 	 */
-	public static ArrayList<Potential> checkIfPotentialsMustBeChanged (
-			ArrayList<Potential> listPotentials,
+	public static List<Potential> checkIfPotentialsMustBeChanged (
+			List<Potential> listPotentials,
 			ProbNode properties)  {
-		ArrayList<Potential> newListPotentials = listPotentials;
+	    List<Potential> newListPotentials = listPotentials;
 		if (listPotentials != null) {
 			if (listPotentials.get( 0 ) != null) {
-				ArrayList<Variable> variablesPotential = 
+			    List<Variable> variablesPotential = 
 					listPotentials.get(0).getVariables();
-				ArrayList<Node> parents = properties.getNode().getParents();
+			    List<Node> parents = properties.getNode().getParents();
 				if ((variablesPotential.size()-1) > parents.size()) {
 					newListPotentials = 
 						doDeleteParent (listPotentials, properties);		
@@ -66,11 +67,11 @@ public class PotentialsTablePanelOperations {
 	 * @param additionalProperties - additionalProperties related to the
 	 * variable in use that contains a new parent
 	 * @return new list of Potentials with the new parent add */
-	private static ArrayList<Potential> doAddParent (
-			ArrayList<Potential> listPotentials,
+	private static List<Potential> doAddParent (
+			List<Potential> listPotentials,
 			ProbNode properties)  {
-		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
-		ArrayList<Variable> variables = new ArrayList<Variable> ();
+	    List<Potential> newListPotentials = new ArrayList<Potential> ();
+	    List<Variable> variables = new ArrayList<Variable> ();
         // first, this variable. The potentials is not null
 		Variable thisVariable =listPotentials.get( 0 ).getVariable( 0 ); 
 		variables.add(thisVariable ); //this variable
@@ -104,11 +105,11 @@ public class PotentialsTablePanelOperations {
 	 * @param additionalProperties - additionalProperties related to the 
 	 * variable in use that contains the parent
 	 * @return new list of Potentials with the parent removed */
-	private static ArrayList<Potential> doDeleteParent (
-			ArrayList<Potential> listPotentials,
+	private static List<Potential> doDeleteParent (
+			List<Potential> listPotentials,
 			ProbNode properties)  {
-		ArrayList<Potential> newListPotentials = new ArrayList<Potential> ();
-		ArrayList<Variable> variables = new ArrayList<Variable> ();
+	    List<Potential> newListPotentials = new ArrayList<Potential> ();
+	    List<Variable> variables = new ArrayList<Variable> ();
         // first, this variable. The potentials is not null
 		Variable thisVariable =listPotentials.get( 0 ).getVariable( 0 ); 
 		variables.add(thisVariable ); //this variable
@@ -146,7 +147,7 @@ public class PotentialsTablePanelOperations {
 	 *            additionalProperties for this variable
 	 */
 	public static int calculateFirstEditableRow(
-			ArrayList<Potential> listPotentials,
+			List<Potential> listPotentials,
 			ProbNode properties) {
 		int row = 0;
 		if (listPotentials != null) {
@@ -176,7 +177,7 @@ public class PotentialsTablePanelOperations {
 	 *            additionalProperties for this variable
 	 */
 	public static int calculateLastEditableRow(
-			ArrayList<Potential> listPotentials,
+			List<Potential> listPotentials,
 			ProbNode properties) {
 		int row = 0;
 		if (listPotentials != null) {
@@ -197,7 +198,7 @@ public class PotentialsTablePanelOperations {
 	 * determine if a list of potentials is empty or not
 	 * @param listPotentials - the list of potentials to check
 	 */
-	public static void checkIfNoPotential(ArrayList<Potential> listPotentials)
+	public static void checkIfNoPotential(List<Potential> listPotentials)
 					throws NullListPotentialsException{
 
 		if (listPotentials == null) {

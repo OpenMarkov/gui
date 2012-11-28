@@ -2,6 +2,7 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -13,7 +14,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.FactoryExpandedSMM;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -87,18 +87,18 @@ public TablePotential costEffectivenessCalculator() {
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
-		 ArrayList<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
+		 List<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
 		 expandedNetFactory.adaptProbNetForCE();
-		 ArrayList<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
+		 List<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
 		// ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
 		 ProbNet expandedNetwork =  expandedNetFactory.prepareExpandedNetworkToInference(evidence);
 		 VariableElimination variableElimination;
 		 try {
 			 variableElimination = new VariableElimination(expandedNetwork);
 			 variableElimination.setPreResolutionEvidence(evidence);
-			 ArrayList<Variable> conditioningVariables = new ArrayList<>();
+			 List<Variable> conditioningVariables = new ArrayList<>();
 			 conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
-			 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+			 List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 			 for (ProbNode decisionNode : decisionNodes) {
 				 if (!decisionNode.hasPolicy()) {
 					 conditioningVariables.add(decisionNode.getVariable());
@@ -125,7 +125,7 @@ public TablePotential costEffectivenessCalculator() {
 
 
  public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest, EvidenceCase evidence) throws ImposedPoliciesException {
-	 ArrayList<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+     List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 	 //check if all decision nodes has an imposed policy, potential set in probNode
 	 for (ProbNode node : decisionNodes) {
 		 if (node.getPotentials().size() == 0) {
@@ -139,8 +139,8 @@ public TablePotential costEffectivenessCalculator() {
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, new InferenceOptions(probNet, null), evidence); 
 		 this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
 		 String baseName = variableOfInterest.getBaseName();
-		 ArrayList<Variable> variablesOfInterest = new ArrayList<>();
-		 ArrayList<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
+		 List<Variable> variablesOfInterest = new ArrayList<>();
+		 List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
 		 for (ProbNode node :expandedProbNetProbNodes) {
 			if (node.getVariable().getBaseName().equals(baseName)) {
 				 variablesOfInterest.add(node.getVariable());

@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.gui.constraint;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -41,7 +41,7 @@ public class ValidName extends PNConstraint {
 
 	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
 	throws NonProjectablePotentialException, WrongCriterionException {
-		ArrayList<PNEdit> edits;
+	    List<PNEdit> edits;
 		try {
             edits = UtilConstraints.getEditsType (edit, NodeNameEdit.class);
 			for (PNEdit simpleEdit : edits) {
@@ -108,7 +108,7 @@ public class ValidName extends PNConstraint {
 
 	
 	public boolean checkProbNet(ProbNet probNet) {
-		ArrayList<Variable> variables = probNet.getVariables();
+		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			String name = variable.getName(); 
 			if ((name == null) || (name.contentEquals(""))) {

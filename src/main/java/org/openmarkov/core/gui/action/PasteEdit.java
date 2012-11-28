@@ -55,7 +55,6 @@ public class PasteEdit extends CompoundEdit
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */
-    @SuppressWarnings("unchecked")
     public void doEdit ()
         throws DoEditException,
         NotEnoughMemoryException,

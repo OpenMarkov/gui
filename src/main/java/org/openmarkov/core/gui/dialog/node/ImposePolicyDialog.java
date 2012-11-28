@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -20,9 +21,6 @@ import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -121,7 +119,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         	//conditiones variable
         	variables.add(probNode.getVariable());
         	//adding variable parents
-        	ArrayList<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
+        	List<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
         	for (ProbNode probNode :probNodes) {
         		if (probNode.isParent(this.probNode)) {
         			variables.add(probNode.getVariable());

@@ -1,8 +1,7 @@
 package org.openmarkov.core.gui.component;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTable;
 
@@ -19,7 +18,7 @@ import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 public class ICIValuesTableCellRenderer extends ValuesTableCellRenderer{
 
 	private ICIPotential iciPotential;
-	private ArrayList<Variable> variables;
+	private List<Variable> variables;
 	private int columnGroup;
 	private int conditionedStates;
 	private int[] numColumnsParents;

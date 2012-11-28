@@ -13,8 +13,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -328,7 +328,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		else {
 			String varName= topVariable.getName();
 			
-					ArrayList<State> branchStates= treeBranch.getBranchStates();
+					List<State> branchStates= treeBranch.getBranchStates();
 					String varStateNames= "";
 					
 					if (branchStates.size()>1) {

@@ -1,8 +1,8 @@
 package org.openmarkov.core.gui.action;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.action.ICIPotentialEdit;
@@ -57,7 +57,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	/**
 	 * 
 	 */
-	private ArrayList<Variable> variables;
+	private List<Variable> variables;
 	/**
 	 * 
 	 */
@@ -122,7 +122,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		this.indexSelected = probNode.getVariable().getNumStates()- ( 
 				row - 2 + 1 );
 		
-		this.iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());
+		this.iciPotential = getThisICIPotential(probNode.getPotentials());
 		this.variables = iciPotential.getVariables();
 		
 		this.conditionedStates = variables.get(0).getNumStates();
@@ -343,9 +343,9 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * @return
 	 */
 	
-	private Potential getThisICIPotential(ArrayList<Potential> listPotentials) {
+	private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
 
-		Potential aPotential = null;
+	    ICIPotential aPotential = null;
 		try {
 			aPotential = ((ICIPotential) listPotentials.get( 0 ));
 		} catch (Exception ex) {
@@ -354,7 +354,6 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 			logger.error("no Potential.get(0) !!!");
 			
 		}
-
 		return aPotential;
 	}
 	

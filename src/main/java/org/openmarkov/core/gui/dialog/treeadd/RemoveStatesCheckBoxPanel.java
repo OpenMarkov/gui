@@ -11,13 +11,13 @@ package org.openmarkov.core.gui.dialog.treeadd;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 /**
@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
  */
 @SuppressWarnings("serial")
 public class RemoveStatesCheckBoxPanel extends JPanel {
-	private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 	private TreeADDBranch branch;
 	private TreeADDPotential treeADD;
 	
@@ -42,7 +42,7 @@ public class RemoveStatesCheckBoxPanel extends JPanel {
 	
 	 public void initialize() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		ArrayList<State> states = branch.getBranchStates();
+		List<State> states = branch.getBranchStates();
 		
 		for (State state : states) {
 			
@@ -59,7 +59,7 @@ public class RemoveStatesCheckBoxPanel extends JPanel {
 	public TreeADDPotential getTreeADDPotential() {
 		 return this.treeADD;
 	}
-	public ArrayList<JCheckBox> getCheckBoxes () {
+	public List<JCheckBox> getCheckBoxes () {
 		return this.checkBoxes;
 	}
 }

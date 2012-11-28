@@ -1,6 +1,7 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
@@ -141,7 +142,7 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 
 	}
 		
-	protected void setDataFromAdvancedProperties( ArrayList<StringWithProperties> advancedProperties) {
+	protected void setDataFromAdvancedProperties( List<StringWithProperties> advancedProperties) {
 		 if (advancedProperties != null) {
 			 Object [][] tableData =new Object [advancedProperties.size()][1];
 				

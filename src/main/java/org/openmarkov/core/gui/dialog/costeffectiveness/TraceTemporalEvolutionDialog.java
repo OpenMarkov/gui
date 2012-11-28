@@ -6,8 +6,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -45,8 +45,13 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	private static ProbNet expandedNetwork;
 	private static boolean isUtility;
 
-	public TraceTemporalEvolutionDialog (Window owner, HashMap<Variable,TablePotential> temporalEvolution,
-			CostEffectivenessDialog costEffectivenessDialog, Variable variableOfInterest, ProbNet expandedNetwork, boolean isUtility) {
+    public TraceTemporalEvolutionDialog (Window owner,
+                                         HashMap<Variable, TablePotential> temporalEvolution,
+                                         CostEffectivenessDialog costEffectivenessDialog,
+                                         Variable variableOfInterest,
+                                         ProbNet expandedNetwork,
+                                         boolean isUtility)
+    {
 		super(owner);
 		this.temporalEvolution = temporalEvolution;
 		this.costEffectivenessDialog = costEffectivenessDialog;
@@ -165,7 +170,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 				}
 			   for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
 			    	String basename = variableOfInterest.getBaseName();
-			    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
+			    	List<ProbNode> probNodes = expandedNetwork.getProbNodes();
 			    	for (int k = 0; k < probNodes.size(); k++) {
 			    		if (probNodes.get(k).getVariable().getBaseName().equals(basename) 
 			    				&& probNodes.get(k).getVariable().getTimeSlice() == j) {

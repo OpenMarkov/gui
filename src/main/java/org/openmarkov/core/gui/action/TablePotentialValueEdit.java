@@ -12,6 +12,7 @@ package org.openmarkov.core.gui.action;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -93,9 +94,9 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 */
 	private double[] newTable;
 
-	private ArrayList<Variable> orderVariables = new ArrayList<Variable>();
+	private List<Variable> orderVariables = new ArrayList<Variable>();
 
-	private ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
+	private List<Variable> newOrderVariables = new ArrayList<Variable>();
 
 	private Object[][] notEditablePostitions = new Object[0][0];
 

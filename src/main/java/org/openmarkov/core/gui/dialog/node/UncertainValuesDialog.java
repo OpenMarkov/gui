@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
@@ -309,7 +310,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		sizeCoordinates = sizeEvi + (isChanceVariable?1:0);
 		coordinates = new int[sizeCoordinates];
 		
-		ArrayList<Variable> varsTable = potential.getVariables();
+		List<Variable> varsTable = potential.getVariables();
 		
 		int startLoop;
 		if (isChanceVariable){
@@ -436,7 +437,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		
 		numFindings = configuration.getNumberOfFindings();
 		String[][] initialData = new String[numFindings][2];
-		ArrayList<Finding> findings = configuration.getFindings();
+		List<Finding> findings = configuration.getFindings();
 		int lastIndexFindings;
 		lastIndexFindings = numFindings-1;
 		for (int i=0;i<numFindings;i++){

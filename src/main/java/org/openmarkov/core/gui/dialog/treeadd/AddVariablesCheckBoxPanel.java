@@ -9,13 +9,12 @@
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.tree.TreePath;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -45,11 +44,11 @@ public class AddVariablesCheckBoxPanel extends JPanel{
 		//setLayout(new BorderLayout());
 		setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		ArrayList<Variable> variables = branch.getParentVariables();
+		List<Variable> variables = branch.getParentVariables();
 	
-		ArrayList<Variable> potentialVariables = branch.getPotential().getVariables();
+		List<Variable> potentialVariables = branch.getPotential().getVariables();
 		Variable topVariable =  branch.getTopVariable();
-		ArrayList<Variable> posibleVariables = new ArrayList<Variable>();
+		List<Variable> posibleVariables = new ArrayList<Variable>();
 		if (branch.getPotential().getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			for (Variable variable : variables) {
 				if (variable != topVariable && variable!= variables.get(0) && !potentialVariables.contains(variable) ) {

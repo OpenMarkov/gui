@@ -1,8 +1,8 @@
 package org.openmarkov.core.gui.dialog.link;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JScrollPane;
 
 import org.openmarkov.core.gui.component.LinkRestrictionCellRenderer;
@@ -389,7 +389,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 	}
 
-	private void setVariables(ArrayList<Variable> variables) {
+	private void setVariables(List<Variable> variables) {
 
 		this.variables = variables;
 

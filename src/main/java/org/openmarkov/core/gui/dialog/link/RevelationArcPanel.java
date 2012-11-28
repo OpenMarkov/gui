@@ -1,13 +1,11 @@
 package org.openmarkov.core.gui.dialog.link;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -237,7 +235,7 @@ public class RevelationArcPanel extends JPanel implements ItemListener {
 	protected Object[][] convertStringsToTableDiscreteFormat(Link link) {
 		ProbNode node = (ProbNode) link.getNode1().getObject();
 		State[] values = node.getVariable().getStates();
-		ArrayList<State> revealingStates = link.getRevealingStates();
+		List<State> revealingStates = link.getRevealingStates();
 		Object[][] data;
 		int i, l;
 

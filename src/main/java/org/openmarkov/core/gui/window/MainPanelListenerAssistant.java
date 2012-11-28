@@ -109,7 +109,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	//private StringResource stringResource;
 	
-	private ArrayList<NetworkPanel> networkPanels;
+	private List<NetworkPanel> networkPanels;
 
 	/**
 	 * Counter incremented each time a network frame is created.
@@ -212,7 +212,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 					  numSlices = costEffectivenessDialog.getFinalAge() - costEffectivenessDialog.getInitialAge();
 					  //set up findings from the network and values introduced by the user
 					  Finding ageFinding = null;
-					  ArrayList<ProbNode> probNodes = getCurrentNetworkPanel().getProbNet().getProbNodes();
+					  List<ProbNode> probNodes = getCurrentNetworkPanel().getProbNet().getProbNodes();
 						for (int i = 0; i < probNodes.size() ; i++) {
 							if (probNodes.get(i).getVariable().isTemporal() 
 									&& probNodes.get(i).getVariable().getBaseName().equals("Age")
@@ -1477,7 +1477,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * Returns current list of opened network panels
 	 * @return current list of opened network panels
 	 */
-	public ArrayList<NetworkPanel> getNetworkPanels() {
+	public List<NetworkPanel> getNetworkPanels() {
 		return networkPanels;
 	}
 

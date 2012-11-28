@@ -121,7 +121,6 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
 	 *            text to add to the label of the options. If null, nothing is
 	 *            added.
 	 */
-	@SuppressWarnings("unused")
 	public void addOptionText(String actionCommand, String text) {
 
 	}
@@ -134,7 +133,6 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
 	 *            text to set to Item. If null, nothing is
 	 *            added.
 	 */
-	@SuppressWarnings("unused")
 	public void setText(String actionCommand, String text) {
 
 	}

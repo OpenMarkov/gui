@@ -11,8 +11,8 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -211,7 +211,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * @param additionalProperties -
 	 *            additionalProperties for this variable
 	 */
-	public static int calculateLastEditableRow(ArrayList<Potential> listPotentials) {
+	public static int calculateLastEditableRow(List<Potential> listPotentials) {
 		int row = 0;
 		if (listPotentials != null) {
 			row = listPotentials.get(0).getVariables().get(0).getNumStates()+1; 
@@ -222,7 +222,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 
 		return row+1;
 	}
-	public static int calculateFirstEditableRow(ArrayList<Potential> listPotentials) {
+	public static int calculateFirstEditableRow(List<Potential> listPotentials) {
 		int row = 0;
 		if (listPotentials != null) {
 		
@@ -276,9 +276,9 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * @param listPotentials
 	 * @return
 	 */
-	private Potential getThisICIPotential(ArrayList<Potential> listPotentials) {
+	private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
 
-		Potential aPotential = null;
+	    ICIPotential aPotential = null;
 		try {
 			aPotential = ((ICIPotential) listPotentials.get( 0 ));
 		} catch (Exception ex) {
@@ -302,29 +302,31 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 	 * @param additionalProperties -
 	 *            the additionalProperties of the node
 	 */
-	private int getNumberOfPostions( ArrayList<Potential> listPotentials) {
-		
-		int numPositions = 0;
-		int numParentStates;
-				try {
-			ArrayList<Variable> variables = listPotentials.get( 0 ).getVariables();
-			int numChildStates= variables.get(0).getNumStates();
-			for (int i = 1; i < variables.size() ; i++) {
-				numParentStates = variables.get(i).getNumStates();
-				numPositions += numParentStates * numChildStates;
-			}
-		
-			numPositions +=  numChildStates; //for the leak column
-		} catch (NullPointerException exception) {
-			numPositions = 0;
-			//ExceptionsHandler.handleException(
-				//exception, "not enougth memory", false );
-			logger.error("not enougth memory");
-		}
-		setPosition( numPositions);
-		return numPositions;
-
-	}
+    private int getNumberOfPostions (List<Potential> listPotentials)
+    {
+        int numPositions = 0;
+        int numParentStates;
+        try
+        {
+            List<Variable> variables = listPotentials.get (0).getVariables ();
+            int numChildStates = variables.get (0).getNumStates ();
+            for (int i = 1; i < variables.size (); i++)
+            {
+                numParentStates = variables.get (i).getNumStates ();
+                numPositions += numParentStates * numChildStates;
+            }
+            numPositions += numChildStates; // for the leak column
+        }
+        catch (NullPointerException exception)
+        {
+            numPositions = 0;
+            // ExceptionsHandler.handleException(
+            // exception, "not enougth memory", false );
+            logger.error ("not enougth memory");
+        }
+        setPosition (numPositions);
+        return numPositions;
+    }
 	/**
 	 * Prepare the table data from the <code>Potential</code>s and States.
 	 * <p>
@@ -378,8 +380,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		setBaseIndexForCoordinates( row );
 		setFirstEditableRow( row );
 		
-		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(properties.getPotentials());
-		ArrayList<Variable> variables = iciPotential.getVariables();
+		ICIPotential iciPotential = getThisICIPotential(properties.getPotentials());
+		List<Variable> variables = iciPotential.getVariables();
 		
 		setVariables( variables );
 		
@@ -406,7 +408,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		
 		Object[][] values = oldValues;
 		ICIPotential iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());
-		ArrayList<Variable> variables = iciPotential.getVariables();
+		List<Variable> variables = iciPotential.getVariables();
 		int lastRow = values.length -1;
 		int lastColumn = values[0].length-1;
 		
@@ -489,7 +491,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 		getICIValuesTable().close();
 	}
 	
-	private void setVariables(ArrayList<Variable> variables) {
+	private void setVariables(List<Variable> variables) {
 		//TODO update this statement, when constructor of this class with 
 		//potential as parameter is implemented
 		if (probNode != null && probNode.getNodeType() == NodeType.UTILITY){

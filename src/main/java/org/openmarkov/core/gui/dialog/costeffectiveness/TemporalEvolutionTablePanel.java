@@ -2,21 +2,17 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 
-import org.apache.poi.ss.formula.functions.Columns;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 @SuppressWarnings("serial")
@@ -86,7 +82,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 				table.getColumnModel().getColumn(0).setHeaderValue("");
 				//model.setValueAt("", 0, 0);
 				String basename = variableOfInterest.getBaseName();
-		    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
+				List<ProbNode> probNodes = expandedNetwork.getProbNodes();
 		    	
 		    	for (int i = 0; i < columnNames.length; i++) {
 		    		for (int j = 0; j < probNodes.size(); j++ ) {
@@ -113,7 +109,7 @@ public class TemporalEvolutionTablePanel extends JPanel {
 			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {//row
 				for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) { //column
 					String basenameInterest = variableOfInterest.getBaseName();
-					ArrayList<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes();
+					List<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes();
 					for (int k = 0; k < expandedProbNodes.size(); k++) {
 						if (expandedProbNodes.get(k).getVariable().getBaseName().equals(basenameInterest) 
 								&& expandedProbNodes.get(k).getVariable().getTimeSlice() == j) {

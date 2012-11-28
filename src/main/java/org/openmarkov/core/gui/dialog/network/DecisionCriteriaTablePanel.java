@@ -1,6 +1,7 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
@@ -14,7 +15,6 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
-import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -33,48 +33,41 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 		
 	}
 
-	@Override
-	public void tableChanged(TableModelEvent tableEvent) {
-		int column = tableEvent.getColumn();
-		int row = tableEvent.getLastRow();
-		if (tableEvent.getType()== TableModelEvent.UPDATE) {
-			String criteriaName = (String) dataTable[row][0];
-			String newName = (String) ((AdvancedPropertiesTableModel)tableEvent.getSource()).
-					getValueAt(row, column);
-			 dataTable[row][0] = newName;
-			if (criteriaName != newName) {
-			DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
-					StateAction.RENAME, newName, criteriaName, dataTable);
-			try {
-				probNet.getPNESupport().announceEdit(criteriaEdit);
-				probNet.getPNESupport().doEdit(criteriaEdit);
-				edits.add(criteriaEdit);
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			 setData(dataTable);
-			 valuesTable.getSelectionModel().setSelectionInterval(row, row);
-		}
-		}
-	}
+    @Override
+    public void tableChanged (TableModelEvent tableEvent)
+    {
+        int column = tableEvent.getColumn ();
+        int row = tableEvent.getLastRow ();
+        if (tableEvent.getType () == TableModelEvent.UPDATE)
+        {
+            String criteriaName = (String) dataTable[row][0];
+            String newName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource ()).getValueAt (row,
+                                                                                                           column);
+            dataTable[row][0] = newName;
+            if (criteriaName != newName)
+            {
+                DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit (probNet,
+                                                                              StateAction.RENAME,
+                                                                              newName,
+                                                                              criteriaName,
+                                                                              dataTable);
+                try
+                {
+                    probNet.doEdit (criteriaEdit);
+                    edits.add (criteriaEdit);
+                }
+                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                        | CanNotDoEditException | NonProjectablePotentialException
+                        | WrongCriterionException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace ();
+                }
+                setData (dataTable);
+                valuesTable.getSelectionModel ().setSelectionInterval (row, row);
+            }
+        }
+    }
 	@Override
 	protected void actionPerformedAddValue() {
 		int rowCount = 0;
@@ -98,32 +91,21 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 				probNet.getPNESupport().announceEdit(criteriaEdit);
 				probNet.getPNESupport().doEdit(criteriaEdit);
 				edits.add(criteriaEdit);
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+                }
+                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                        | CanNotDoEditException | NonProjectablePotentialException
+                        | WrongCriterionException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace ();
+                }
 			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);*/	
 			
 			 //StringsWithProperties agents = probNet.getAgents();
 			 //setDataFromNetworkAgents(agents);
-			 ArrayList<StringWithProperties> criterias = probNet.getDecisionCriteria();
+			List<StringWithProperties> criterias = probNet.getDecisionCriteria();
 			 setDataFromAdvancedProperties(criterias);
 			 //getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
@@ -172,7 +154,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 			e.printStackTrace();
 		}
 		//StringsWithProperties agents = probNet.getAgents();
-		ArrayList<StringWithProperties> criterias = probNet.getDecisionCriteria();
+		List<StringWithProperties> criterias = probNet.getDecisionCriteria();
 		setDataFromAdvancedProperties(criterias);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);

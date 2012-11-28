@@ -1,26 +1,15 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.AdditionalProperties;
-import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.StringsWithProperties;
-import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 /**
  * <code>NetworkAgentEdit</code> is a simple edit that allow modify
  * the agents of a network
@@ -35,9 +24,9 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	private int agentIndex;
 	private StateAction stateAction;
 	//private StringsWithProperties lastAgents;
-	private ArrayList<StringWithProperties> lastAgents;
+	private List<StringWithProperties> lastAgents;
 	private Object [][]dataTable;
-	private ArrayList<ProbNode> oldNodes;
+	private List<ProbNode> oldNodes;
 
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 		super(probnet);
@@ -47,20 +36,20 @@ public class NetworkAgentEdit extends SimplePNEdit {
 		this.newName = newName;
 		if(probnet.getAgents() != null){
 			//StringsWithProperties agents =  probnet.getAgents();
-			ArrayList<StringWithProperties> agents =  probnet.getAgents();
+			List<StringWithProperties> agents =  probnet.getAgents();
 			//this.lastAgents = probnet.getAgents().copy();
-			this.lastAgents = (ArrayList<StringWithProperties>) probnet.getAgents().clone();
+			this.lastAgents = new ArrayList<StringWithProperties>(probnet.getAgents());
 		}else {
 			this.lastAgents = probnet.getAgents();
 		}
 		this.dataTable = dataTable;
-		this.oldNodes = (ArrayList<ProbNode>) probNet.getProbNodes().clone();
+		this.oldNodes = new ArrayList<ProbNode>(probNet.getProbNodes());
 	}
 
 	@Override
 	public void doEdit() throws DoEditException, NotEnoughMemoryException {
 		//StringsWithProperties agents = probNet.getAgents();
-		ArrayList<StringWithProperties> agents = probNet.getAgents();
+		List<StringWithProperties> agents = probNet.getAgents();
 		StringWithProperties agent = null;
 		switch (stateAction){
 		case ADD:

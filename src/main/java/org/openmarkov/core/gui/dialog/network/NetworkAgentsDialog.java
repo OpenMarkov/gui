@@ -1,21 +1,17 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.awt.Window;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.StringsWithProperties;
 /**
  * 
  * @author myebra
@@ -118,7 +114,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 	public void setFieldFromProperties (ProbNet probNet) {
 		 
 		// StringsWithProperties agents = probNet.getAgents();
-		 ArrayList<StringWithProperties> agents = probNet.getAgents();
+	    List<StringWithProperties> agents = probNet.getAgents();
 		if (agents != null) {
 			Object [][] data = new Object [agents.size()][1];
 			for (int i = 0; i < agents.size(); i++) {

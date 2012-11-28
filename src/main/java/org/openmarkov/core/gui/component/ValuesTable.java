@@ -16,6 +16,7 @@ package org.openmarkov.core.gui.component;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.JOptionPane;
@@ -1443,7 +1444,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				getEdit());
 		isChance = edit.isChanceVariable();
 		TablePotential tablePotential = (TablePotential) edit.getProbNode().getPotentials().get(0);
-		ArrayList<Variable> varsPotential = tablePotential.getVariables();
+		List<Variable> varsPotential = tablePotential.getVariables();
 		int numVarsPotential = varsPotential.size();
 		int numParents = (isChance)?numVarsPotential-1:numVarsPotential;
 		int col = edit.getSelectedColumn();
@@ -1481,9 +1482,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			priorityList = edit.getPriorityList();
 			ListIterator<Integer> listIterator = priorityList.listIterator();
 			
-			ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
-			ArrayList<Variable> orderVariables = probNode.getPotentials().
-				get(0).getVariables();
+			List<Variable> newOrderVariables = new ArrayList<Variable>();
+			List<Variable> orderVariables = probNode.getPotentials().get(0).getVariables();
 			
 			newOrderVariables.add(orderVariables.get(0));
 			for (int i = orderVariables.size()-1; i>0; i--){

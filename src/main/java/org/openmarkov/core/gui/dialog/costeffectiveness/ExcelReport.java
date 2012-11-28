@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -74,7 +75,7 @@ public class ExcelReport {
 			HSSFRow rowIndexes = sheetTable.createRow(0);
 			rowIndexes.createCell(0).setCellValue("");
 			String basename = variableOfInterest.getBaseName();
-	    	ArrayList<ProbNode> probNodes = expandedNetwork.getProbNodes();
+	    	List<ProbNode> probNodes = expandedNetwork.getProbNodes();
 			for (int i = 0; i < probNodes.size(); i++) {
 	    		if (probNodes.get(i).getVariable().getBaseName().equals(basename)) {
 	    			rowIndexes.createCell(i+1).setCellValue(probNodes.get(i).getVariable().getName());
@@ -90,7 +91,7 @@ public class ExcelReport {
 			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
 				for (int j = 0; j < costEffectivenessDialog.getNumSlices(); j++) {
 					String basenameInterest = variableOfInterest.getBaseName();
-					ArrayList<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes();
+					List<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes();
 					for (int k = 0; k < expandedProbNodes.size(); k++) {
 						if (expandedProbNodes.get(k).getVariable().getBaseName().equals(basenameInterest) 
 								&& expandedProbNodes.get(k).getVariable().getTimeSlice() == j) {

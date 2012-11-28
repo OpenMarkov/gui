@@ -9,14 +9,12 @@
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -54,7 +52,6 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 /**
  * <code>JScrollPane<code> for creating and modifying <code>TreeADDModel<code>s
@@ -213,7 +210,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		popupMenu.removeAll();
 		submenuChangeTopVariable.removeAll();
 		//change topVariable
-		ArrayList<TreeADDBranch> branches = treeADD.getBranches();
+		List<TreeADDBranch> branches = treeADD.getBranches();
 		boolean hasSubTrees = false ;
 		for (TreeADDBranch branch: branches){
 			if (branch.getPotential() instanceof TreeADDPotential) {
@@ -229,7 +226,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		}
 		
 		
-		ArrayList<Variable> newPosibleTopVariables = new ArrayList<Variable>();
+		List<Variable> newPosibleTopVariables = new ArrayList<Variable>();
 		for (Variable variable : treeADD.getVariables()) {
 			if (variable != currentTopVariable && variable !=  conditionedOrUtilityVariable) {
 				newPosibleTopVariables.add(variable);
@@ -270,13 +267,13 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		
 		//Adding treeADD
-		ArrayList<Variable> variables = branch.getParentVariables();
+		List<Variable> variables = branch.getParentVariables();
 		if (branch.getPotential().getPotentialRole() == PotentialRole.UTILITY) {
 			variables.add(branch.getPotential().getUtilityVariable());
 		}
 		Variable topVariable =  branch.getTopVariable();
 		
-		ArrayList<Variable> possibleVariables = new ArrayList<Variable>();
+		List<Variable> possibleVariables = new ArrayList<Variable>();
 		for (Variable variable : variables) {
 			if (branch.getPotential().getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 				if (variable != topVariable && variable!= variables.get(0)) {
@@ -538,7 +535,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			}
 		
 			
-			ArrayList<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+			List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
 			int branchToChangeIndex = 0;
 			for (int i = 0; i < parentBranches.size(); i++) {
 				if (parentBranches.get(i) == treeADDBranch) {
@@ -717,8 +714,8 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			if (parentTreeADD.getPotentialRole() == PotentialRole.UTILITY) {
 				potential.setUtilityVariable(parentTreeADD.getUtilityVariable());
 			}
-			ArrayList<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
-			ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
+			List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
+			List<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
 			
 			//Top variable domain
 			Float minDomainLimit = (float) parentTreeADD.getTopVariable().getPartitionedInterval().getMin();
@@ -857,12 +854,12 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		if (dialog.requestValues()==AddVariablesDialog.OK_BUTTON) {
 			AddVariablesCheckBoxPanel panel = dialog.getJPanelVariables();
-			ArrayList<JCheckBox> checkBoxes = panel.getCheckBoxes();
+			List<JCheckBox> checkBoxes = panel.getCheckBoxes();
 			
 			Potential branchPotential = ((TreeADDBranch)branch).getPotential();
-			ArrayList<Variable> branchPotentialVariables = branchPotential.getVariables();
+			List<Variable> branchPotentialVariables = branchPotential.getVariables();
 			
-			ArrayList<Variable> newVariables = new ArrayList<Variable>();
+			List<Variable> newVariables = new ArrayList<Variable>();
 			for (JCheckBox checkBox : checkBoxes) {
 				if (checkBox.isSelected()){
 					String variableName = checkBox.getText();
@@ -905,10 +902,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		
 		if (dialog.requestValues()==RemoveVariablesDialog.OK_BUTTON) {
-			ArrayList<JCheckBox> checkBoxes = ((RemoveVariablesCheckBoxPanel)dialog.getJPanelVariables()).getCheckBoxes();
+			List<JCheckBox> checkBoxes = ((RemoveVariablesCheckBoxPanel)dialog.getJPanelVariables()).getCheckBoxes();
 			
-			ArrayList<Variable> variablesToEliminate = new ArrayList<Variable>();
-			ArrayList<Variable> branchVariables = treeADDBranch.getPotential().getVariables();
+			List<Variable> variablesToEliminate = new ArrayList<Variable>();
+			List<Variable> branchVariables = treeADDBranch.getPotential().getVariables();
 			for (JCheckBox checkBox : checkBoxes) {
 				if (checkBox.isSelected()){
 					String variableName = checkBox.getText();
@@ -954,9 +951,9 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		
 		
 		if (dialog.requestValues()==RemoveStatesDialog.OK_BUTTON) {
-			ArrayList<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel)dialog.getJPanelRemoveStates()).getCheckBoxes();
+			List<JCheckBox> checkBoxes = ((RemoveStatesCheckBoxPanel)dialog.getJPanelRemoveStates()).getCheckBoxes();
 			
-			ArrayList<State> statesToEliminate = new ArrayList<State>();
+			List<State> statesToEliminate = new ArrayList<State>();
 			
 			for (JCheckBox checkBox : checkBoxes) {
 				if (checkBox.isSelected()){
@@ -974,10 +971,10 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 						"You have selected all states to remove, you must leave at least one in each branch");
 			} else {
 				
-			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
+			List<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
 			for (TreeADDBranch treeParentBranch : parentTreeADD.getBranches()) {
 				
-				ArrayList<State> states = treeParentBranch.getBranchStates();
+				List<State> states = treeParentBranch.getBranchStates();
 			
 				if (treeADDBranch.getBranchStates().containsAll(states)) {
 					continue;
@@ -986,7 +983,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				}
 			}
 			//Updating branches
-			ArrayList<State> branchStates = treeADDBranch.getBranchStates();
+			List<State> branchStates = treeADDBranch.getBranchStates();
 			for (State state :statesToEliminate ){
 				branchStates.remove(state);
 			}
@@ -1064,13 +1061,13 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				
 			}
 			//Updating branches
-			ArrayList<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
+			List<TreeADDBranch> newTreeADDBranches =  new ArrayList<TreeADDBranch>();
 			
 			treeADDBranch.setStates(newOrderedStates);
 			newTreeADDBranches.add(treeADDBranch);
 			for (TreeADDBranch treeBranch : parentTreeADD.getBranches()) {
 				
-				ArrayList<State> states = treeBranch.getBranchStates();
+				List<State> states = treeBranch.getBranchStates();
 			
 				if (newBranchStates.containsAll(states)) {
 					continue;
@@ -1107,7 +1104,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		}
 		
 		TreeADDPotential treeADDPotential = (TreeADDPotential) treeADD;
-		ArrayList<Variable> variables = treeADDPotential.getVariables();
+		List<Variable> variables = treeADDPotential.getVariables();
 		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();
 		//to get the variable
 		Variable newTopVariable = null;
@@ -1117,7 +1114,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			} 
 		}
 		
-		ArrayList<Variable> potentialVariables = new ArrayList<Variable>();
+		List<Variable> potentialVariables = new ArrayList<Variable>();
 		if (treeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			potentialVariables.add(treeADDPotential.getVariables().get(0));
 		} else if (treeADDPotential.getPotentialRole() == PotentialRole.UTILITY) {
@@ -1128,11 +1125,11 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 			potential.setUtilityVariable(treeADDPotential.getUtilityVariable());
 		}
 		treeADDPotential.setTopVariable(newTopVariable);
-		ArrayList<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
+		List<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
 		if (newTopVariable.getVariableType() == VariableType.FINITE_STATES || newTopVariable.getVariableType() == VariableType.DISCRETIZED) {
 			//for (State state : newTopVariable.getStates()) {
 			for (int i = newTopVariable.getStates().length-1; i >= 0; i--) {
-				ArrayList<State> branchStates = new ArrayList<State>();
+				List<State> branchStates = new ArrayList<State>();
 				//branchStates.add(state);
 				branchStates.add(newTopVariable.getStates()[i]);
 				newBranches.add(new TreeADDBranch(branchStates, potential, newTopVariable, variables));
@@ -1168,7 +1165,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 					getName());	
 		}
 		TreeADDBranch treeBranch = ((TreeADDBranch)branch);
-		ArrayList<Variable> parentVariables = treeBranch.getParentVariables();
+		List<Variable> parentVariables = treeBranch.getParentVariables();
 		Variable parentTopVariable = treeBranch.getTopVariable();
 		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();
 		//to get the variable
@@ -1178,7 +1175,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				newTopVariable = variable;
 			} 
 		}
-		ArrayList<Variable> newTreeVariables = new ArrayList<Variable>();
+		List<Variable> newTreeVariables = new ArrayList<Variable>();
 		//initialize variables of the new tree
 		for (Variable variable : parentVariables) {
 			if (variable != parentTopVariable ) {
@@ -1195,7 +1192,7 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 				} 
 			}
 			if (newTopVariable.getVariableType() == VariableType.FINITE_STATES || newTopVariable.getVariableType() == VariableType.DISCRETIZED) {
-				ArrayList<State> groupedStates = null ;
+				List<State> groupedStates = null ;
 				TreePath parentPath = path.getParentPath() ; //treeADD
 				 while (parentPath.getLastPathComponent() != treeADDPotentialRoot ) {
 					 TreePath grandParentPath = parentPath.getParentPath();//branch
@@ -1369,9 +1366,9 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		PotentialRole role= branchPotential.getPotentialRole();
 		
 			JMenuItem menuPotentialVariable= (JMenuItem) ae.getSource();
-			ArrayList<Variable> parentVariables = ((TreeADDBranch)branch).getParentVariables();
+			List<Variable> parentVariables = ((TreeADDBranch)branch).getParentVariables();
 			
-			ArrayList<Variable> branchPotentialVariables = branchPotential.getVariables();
+			List<Variable> branchPotentialVariables = branchPotential.getVariables();
 			
 			Variable newPotentialVariable = null;
 			for (Variable var : parentVariables ) {
@@ -1402,9 +1399,9 @@ public class TreeADDController extends JScrollPane implements ActionListener {
 		}
 		//find the top variable to create a new tree with that topVariable and expand tree with new tree
 		JMenuItem menuTopVariable= (JMenuItem) ae.getSource();//topVariable
-		ArrayList<Variable> parentVariables = ((TreeADDPotential)parentTreeBranch).getVariables();
+		List<Variable> parentVariables = ((TreeADDPotential)parentTreeBranch).getVariables();
 		Variable parentTopVariable = ((TreeADDPotential)parentTreeBranch).getTopVariable();
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<Variable>();
 		for (Variable var : parentVariables ) {
 			if (var == parentTopVariable) {
 				continue;

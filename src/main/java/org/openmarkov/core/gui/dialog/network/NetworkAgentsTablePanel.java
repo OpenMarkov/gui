@@ -1,10 +1,10 @@
 package org.openmarkov.core.gui.dialog.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
-
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
@@ -125,7 +125,7 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			
 			 //StringsWithProperties agents = probNet.getAgents();
 			 //setDataFromNetworkAgents(agents);
-			 ArrayList<StringWithProperties> agents = probNet.getAgents();
+			 List<StringWithProperties> agents = probNet.getAgents();
 			 setDataFromAdvancedProperties(agents);
 			// getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			 valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
@@ -172,7 +172,7 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			e.printStackTrace();
 		}
 		//StringsWithProperties agents = probNet.getAgents();
-		ArrayList<StringWithProperties> agents = probNet.getAgents();
+		List<StringWithProperties> agents = probNet.getAgents();
 		setDataFromAdvancedProperties(agents);
 		valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow, selectedRow);

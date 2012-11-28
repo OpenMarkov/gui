@@ -12,8 +12,8 @@ package org.openmarkov.core.gui.window.edition.mode;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -80,7 +80,7 @@ public abstract class NodeEditionMode extends EditionMode
                         variable.setName (nodeName + "[" + 0 + "]");
                         variable.setTimeSlice (0);
                     }
-                    ArrayList<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
+                    List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
                     if (nodeType == NodeType.UTILITY && decisionCriteria != null)
                     {
                         variable.setDecisionCriteria (decisionCriteria.get (0));

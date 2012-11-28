@@ -23,8 +23,8 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -47,7 +47,6 @@ import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
-import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
@@ -102,7 +101,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private JPanel outputPanel;
 	private boolean isAccumulative = false;
 	private JPanel numSlicesPanel; 
-	private ArrayList<ProbNode> numericTemporalNodes;
+	private List<ProbNode> numericTemporalNodes;
 	private HashMap<String, JTextField> numericTemporalComponents = new HashMap<>();	
 
 	/**
@@ -211,7 +210,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	 * @param owner
 	 * 		The parent of the dialog
 	 */
-	public CostEffectivenessDialog(Window owner, ArrayList<ProbNode> numericTemporalNodes, boolean isThereNodeAge, boolean isUtility, boolean isTemporalEvolution) {
+	public CostEffectivenessDialog(Window owner, List<ProbNode> numericTemporalNodes, boolean isThereNodeAge, boolean isUtility, boolean isTemporalEvolution) {
 		super(owner);
 		setLocationRelativeTo(owner);
 		this.isThereNodeAge = isThereNodeAge;

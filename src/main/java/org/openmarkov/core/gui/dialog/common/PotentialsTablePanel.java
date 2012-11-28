@@ -13,6 +13,7 @@ package org.openmarkov.core.gui.dialog.common;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.GroupLayout;
@@ -119,12 +120,12 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * list of variables that are shown in this table
 	 */
-	protected ArrayList<Variable> variables = null;
+	protected List<Variable> variables = null;
 	
 	/**
 	 * list of potentials for the variable
 	 */
-	protected ArrayList<Potential> listPotentials = null;
+	protected List<Potential> listPotentials = null;
 	
 	/**
 	 * first editable row (only for temporal storage)
@@ -641,8 +642,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * @return the variables
 	 */
-	protected ArrayList<Variable> getVariables() {
-	
+	protected List<Variable> getVariables() {
 		return variables;
 	}
 
@@ -650,7 +650,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	/**
 	 * @param variables the variables to set
 	 */
-	protected void setVariables(ArrayList<Variable> variables) {
+	protected void setVariables(List<Variable> variables) {
 		//TODO update this statement, when constructor of this class with 
 		//potential as parameter is implemented
 		if (probNode != null && probNode.getNodeType() == NodeType.UTILITY){
@@ -762,9 +762,9 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	}
 
 
-	private Potential getThisPotential(ArrayList<Potential> listPotentials) {
+	private TablePotential getThisPotential(List<Potential> listPotentials) {
 
-		Potential aPotential = null;
+	    TablePotential aPotential = null;
 		try {
 			aPotential = ((TablePotential) listPotentials.get( 0 ));
 		} catch (Exception ex) {
@@ -777,7 +777,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		return aPotential;
 	}
 	
-	private Potential getThisICIPotential(ArrayList<Potential> listPotentials) {
+	private Potential getThisICIPotential(List<Potential> listPotentials) {
 
 		Potential aPotential = null;
 		try {
@@ -863,10 +863,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				properties.getPotentials(), properties );
 		setBaseIndexForCoordinates( row );
 		setFirstEditableRow( row );
-		TablePotential tablePotential =
-			(TablePotential) getThisPotential( properties.getPotentials() );
-		ArrayList<Variable> variablesBeforeReorder =
-			tablePotential.getVariables();
+		TablePotential tablePotential = getThisPotential( properties.getPotentials());
+		List<Variable> variablesBeforeReorder = tablePotential.getVariables();
 		
 		setVariables( variablesBeforeReorder );
 		if (properties.getNodeType() == NodeType.UTILITY) {
@@ -958,8 +956,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 										ProbNode properties) {
 
 		Object[][] values = oldValues;
-		TablePotential tablePotential =
-			(TablePotential) getThisPotential( properties.getPotentials());
+		TablePotential tablePotential = getThisPotential( properties.getPotentials());
 		ArrayList<Variable> variablesReordered = new ArrayList<Variable>();
 		ListIterator<Variable> it =
 			getVariables().listIterator( getVariables().size() );
@@ -1011,7 +1008,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * @param additionalProperties -
 	 *            the additionalProperties of the node
 	 */
-	private int setNumberOfPostions( ArrayList<Potential> listPotentials) {
+	private int setNumberOfPostions( List<Potential> listPotentials) {
 		
 		int numPositions = 1;
 		try {
@@ -1047,8 +1044,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 											ProbNode properties) {
 
 		Object[][] values = oldValues;
-	    TablePotential tablePotential =
-			(TablePotential) getThisPotential( properties.getPotentials());
+	    TablePotential tablePotential = getThisPotential( properties.getPotentials());
 		int row = getFirstEditableRow();
 		if (properties.getNodeType() == NodeType.UTILITY) {
 			values[row][0] = properties.getName();
@@ -1082,12 +1078,11 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		Object[][] values = oldValues;
 		int position = 0;
 		int numColumns = (values.length == 0 ? 0 : values[0].length);
-		TablePotential tablePotential =
-			(TablePotential) getThisPotential( properties.getPotentials());
+		TablePotential tablePotential = getThisPotential( properties.getPotentials());
 		
 		
-		ArrayList<Variable> newOrderVariables = new ArrayList<Variable>();
-		ArrayList<Variable> variables = probNode.getPotentials().get(0).getVariables();
+		List<Variable> newOrderVariables = new ArrayList<Variable>();
+		List<Variable> variables = probNode.getPotentials().get(0).getVariables();
 		//Collections.reverse(variables); // reorder the variables
 		int end=-1;
 		if ( variables.size() > 0 ){
@@ -1172,8 +1167,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		Object[][] values = oldValues;
 		int position = 0;
 		int numColumns = (values.length==0?0:values[0].length);
-		TablePotential tablePotential =
-			(TablePotential) getThisPotential( properties.getPotentials());
+		TablePotential tablePotential = getThisPotential( properties.getPotentials());
 		State[] states = tablePotential.getVariable( 0 ).getStates();
 		double max;
 	    for (int j = numColumns - 1; j >= 1; j--, position++) {
@@ -1344,7 +1338,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	private EvidenceCase getConfiguration(TablePotential tablePotential, int col)
 		throws InvalidStateException, IncompatibleEvidenceException {
 		Variable variable = null;
-		ArrayList<Variable> variables = null;
+		List<Variable> variables = null;
 		EvidenceCase evidence = new EvidenceCase();
 		//configuration of all variables
 		

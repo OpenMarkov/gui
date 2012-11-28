@@ -9,6 +9,7 @@ package org.openmarkov.core.gui.dialog.common;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 
@@ -65,12 +66,12 @@ import org.openmarkov.core.model.network.potential.Potential;
 		/**
 		 * list of variables that are shown in this table
 		 */
-		protected ArrayList<Variable> variables = null;
+		protected List<Variable> variables = null;
 		
 		/**
 		 * list of potentials for the variable
 		 */
-		protected ArrayList<Potential> listPotentials = null;
+		protected List<Potential> listPotentials = null;
 		
 		/**
 		 * first editable row (only for temporal storage)
@@ -341,7 +342,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 		/**
 		 * @return the variables
 		 */
-		protected ArrayList<Variable> getVariables() {
+		protected List<Variable> getVariables() {
 		
 			return variables;
 		}
