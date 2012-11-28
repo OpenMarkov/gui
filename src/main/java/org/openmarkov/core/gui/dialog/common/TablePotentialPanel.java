@@ -106,19 +106,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		super();
 		this.probNode = probNode;
 		modifiable = true;
-		
-		if (probNode.getPotentials().get(0).getVariables().isEmpty()) {
-			add(/*new EmptyPotentialPanel(probNode)*/ new JPanel(), BorderLayout.CENTER);
-		} else {
-			showValuesTable(true);
-			setTableSpecificListeners();
-			setData(probNode);
-			setLayout(new BorderLayout());
-			add(getValuesTableScrollPane(), BorderLayout.CENTER);
-			add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
-			repaint();
-		}
-		
+		showValuesTable(true);
+		setTableSpecificListeners();
+		setData(probNode);
+		setLayout(new BorderLayout());
+		add(getValuesTableScrollPane(), BorderLayout.CENTER);
+		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
+		repaint();
 		
 		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
