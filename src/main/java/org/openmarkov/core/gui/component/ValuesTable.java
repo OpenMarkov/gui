@@ -436,10 +436,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	public void setValueAt(Object newValue, int row, int col) {
 	 	Object oldValue = getValueAt( row, col );
 	 	
-	 	if (((Double)newValue).isNaN() && probNode.getNodeType() != NodeType.UTILITY) {
-	 		newValue = oldValue;
-	 		JOptionPane.showMessageDialog(this.getParent(), "Introduced value is not a number");
-	 	} else if (((Double)newValue) < 0 && probNode.getNodeType() != NodeType.UTILITY) {
+	 	if (((Double)newValue) < 0 && probNode.getNodeType() != NodeType.UTILITY) {
 	 		newValue = oldValue;
 	 		JOptionPane.showMessageDialog(this.getParent(), "Introduced value cannot be negative");
 	 	}
