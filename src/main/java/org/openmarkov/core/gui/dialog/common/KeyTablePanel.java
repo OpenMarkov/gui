@@ -473,6 +473,13 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 				downValueButton.setEnabled( true );
 			}
 		}
+		if (rowCount <= 2) {
+			removeValueButton.setEnabled(false);
+			removeValueButton.setVisible(true);
+		} else {
+			removeValueButton.setEnabled(true);
+			removeValueButton.setVisible(true);
+		}
 	}
 
 	/**

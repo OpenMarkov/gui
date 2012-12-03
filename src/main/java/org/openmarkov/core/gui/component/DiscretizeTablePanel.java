@@ -2133,6 +2133,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements
 		int row = valuesTable.rowAtPoint(e.getPoint());
 		int column = valuesTable.columnAtPoint(e.getPoint());
 		//if ((row > -1) && (column > -1)) {
+		
 		if (probNode.getVariable().getVariableType() == VariableType.NUMERIC ||probNode.getVariable().getVariableType() == VariableType.DISCRETIZED){
 		if (column == lowerLimitSymbolColumnNum
 				|| column == upperLimitSymbolColumnNum) {
