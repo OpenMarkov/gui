@@ -440,7 +440,7 @@
     <jComboBoxNodeVariableType>
       <Items>
         <Continuous value="Numérica" />
-        <Discrete value="Estados finitos" />
+        <Discrete value="Finitos estados" />
         <Discretized value="Discretizada" />
       </Items>
     </jComboBoxNodeVariableType>
