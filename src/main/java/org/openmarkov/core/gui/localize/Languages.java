@@ -92,7 +92,7 @@ public class Languages {
 	 * @return an array that contains a list of string that contains the
 	 *         different purposes.
 	 */
-	public static String[] getListStrings() {
+	public static String[] getStringList() {
 
 		String[] strings = null;
 		int i = 0;

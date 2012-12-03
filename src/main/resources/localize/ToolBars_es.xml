@@ -141,5 +141,10 @@
       <Label value="Reduce el zoom de la red actual en un 20%" />
     </ToolTip>
   </ZoomOut>
+  <DecisionTree>
+    <ToolTip>
+      <Label value="Arbol de decisiones" />
+    </ToolTip>
+  </DecisionTree>
 </properties>
 

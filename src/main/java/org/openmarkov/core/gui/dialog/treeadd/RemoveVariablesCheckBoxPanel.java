@@ -30,7 +30,6 @@ public class RemoveVariablesCheckBoxPanel extends JPanel{
 	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 	private TreeADDBranch branch;
 	private TreeADDPotential treeADD;
-	private JPanel addVariablesPanel;
 	
 	
 	public RemoveVariablesCheckBoxPanel (TreeADDBranch branch, TreeADDPotential treeADD) {

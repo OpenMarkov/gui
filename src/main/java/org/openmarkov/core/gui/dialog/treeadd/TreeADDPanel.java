@@ -10,7 +10,6 @@ package org.openmarkov.core.gui.dialog.treeadd;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.JOptionPane;
 
@@ -49,18 +48,15 @@ public class TreeADDPanel extends PotentialPanel
     {
         super();
         setData(probNode);
-       
     }
     
     public void saveChanges() throws NotEnoughMemoryException
     {
-        SetPotentialEdit setPotentialEdit = new SetPotentialEdit (
-                                                                  probNode,
+        SetPotentialEdit setPotentialEdit = new SetPotentialEdit (probNode,
                                                                   treeADDController.getTreePotential ());
         try
         {
-            probNode.getProbNet ().getPNESupport ().announceEdit (setPotentialEdit);
-            probNode.getProbNet ().getPNESupport ().doEdit (setPotentialEdit);
+            probNode.getProbNet ().doEdit (setPotentialEdit);
         }
         catch (ConstraintViolationException e1)
         {
@@ -68,8 +64,6 @@ public class TreeADDPanel extends PotentialPanel
                                           e1.getMessage (),
                                            messageStringResource.getString ("ConstraintViolationException"),
                                            JOptionPane.ERROR_MESSAGE);
-            // comboBox.setSelectedIndex(optionDeselected);
-            // comboBox.requestFocus();
         }
         catch (Exception e)
         {
@@ -82,8 +76,8 @@ public class TreeADDPanel extends PotentialPanel
     {
     	setLayout(new BorderLayout());
     	 this.probNode = probNode;
-        treeADDController = new TreeADDController ( 
-                (TreeADDPotential)probNode.getPotentials().get( 0 ));
+        treeADDController = new TreeADDController ( probNode.getProbNet (),
+                                                    (TreeADDPotential)probNode.getPotentials().get( 0 ));
         removeAll();
        // treeADDController.setMaximumSize(new Dimension(10, 10));
        // treeADDController.setPreferredSize(new Dimension(10, 10));

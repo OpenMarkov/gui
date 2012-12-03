@@ -28,14 +28,12 @@ public class ChangeIntervalPanel extends JPanel{
 	final String[] intervalUpperSymbols = new String[] { "]", ")" };
 	private JTextField minText;
 	private JTextField maxText;
-	private TreeADDBranch treeBranch;
 	private Threshold min;
 	private Threshold max;
-	private JComboBox jComboBoxUpperSymbol;
-	private JComboBox jComboBoxLowerSymbol;
+	private JComboBox<String> jComboBoxUpperSymbol;
+	private JComboBox<String> jComboBoxLowerSymbol;
 	
 	public ChangeIntervalPanel(TreeADDBranch treeBranch) {
-		this.treeBranch = treeBranch;
 		min = treeBranch.getMinThreshold();
 		max = treeBranch.getMaxThreshold();
 		
@@ -56,7 +54,7 @@ public class ChangeIntervalPanel extends JPanel{
 		maxText.setBounds(189, 64, 86, 20);
 		maxText.setColumns(10);
 	
-		jComboBoxLowerSymbol = new JComboBox(intervalLowerSymbols);
+		jComboBoxLowerSymbol = new JComboBox<String>(intervalLowerSymbols);
 		if (min.belongsToLeft()) {// "(" intervalLowerSymbols [1]
 			jComboBoxLowerSymbol.setSelectedItem(intervalLowerSymbols [1]);
 		} else if (!min.belongsToLeft()) {// "[" intervalLowerSymbols [0]
@@ -64,7 +62,7 @@ public class ChangeIntervalPanel extends JPanel{
 		}
 		jComboBoxLowerSymbol.setBounds(10, 64, 48, 20);
 		
-		jComboBoxUpperSymbol = new JComboBox(intervalUpperSymbols);
+		jComboBoxUpperSymbol = new JComboBox<String>(intervalUpperSymbols);
 		if (max.belongsToLeft()) {// "]" intervalLowerSymbols [0]
 			jComboBoxUpperSymbol.setSelectedItem(intervalUpperSymbols [0]);
 		} else if (!max.belongsToLeft()) {// ")" intervalLowerSymbols [1]
@@ -98,10 +96,10 @@ public class ChangeIntervalPanel extends JPanel{
 	public JTextField getMax() {
 		return maxText;
 	}
-	public JComboBox minBelongsToLeft() {
+	public JComboBox<String> minBelongsToLeft() {
 		return jComboBoxLowerSymbol;
 	}
-	public JComboBox maxBelongsToLeft() {
+	public JComboBox<String> maxBelongsToLeft() {
 		return jComboBoxUpperSymbol;
 	}
 }

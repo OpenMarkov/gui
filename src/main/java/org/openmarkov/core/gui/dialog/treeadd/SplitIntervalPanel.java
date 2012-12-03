@@ -11,9 +11,7 @@ package org.openmarkov.core.gui.dialog.treeadd;
 
 
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Component;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -23,7 +21,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.Component;
 
 
 @SuppressWarnings("serial")

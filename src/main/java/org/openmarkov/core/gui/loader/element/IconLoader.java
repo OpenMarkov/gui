@@ -227,6 +227,10 @@ public class IconLoader {
 	 */
 	public static final String ICON_UNCERTAINTY = "uncertainty2.png";
 	
+    /**
+     * Name of the 'decision tree' enabled icon.
+     */
+    public static final String ICON_DECISION_TREE = "dectree.gif";
 	
 	
 	/**

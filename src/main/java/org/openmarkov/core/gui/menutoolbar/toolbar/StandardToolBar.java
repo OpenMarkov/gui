@@ -84,6 +84,11 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 */
 	private JToggleButton workingModeButton = null;
 
+    /**
+     * Button to open a decision tree panel.
+     */
+	private JButton decisionTreeButton = null;
+	
 	/**
 	 * String resource.
 	 */
@@ -124,6 +129,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		add(getZoomInButton());
 		addSeparator();
 		add(getWorkingModeButton());
+		//add(getDecisionTreeButton());
 		add(Box.createHorizontalGlue());
 	}
 
@@ -153,46 +159,42 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 * 
 	 * @return a new button.
 	 */
-	private JButton getOpenNetworkButton() {
-
-		if (openNetworkButton == null) {
-			openNetworkButton = new JButton();
-			openNetworkButton.setIcon(iconLoader
-				.load(IconLoader.ICON_OPEN_ENABLED));
-			openNetworkButton.setActionCommand(ActionCommands.OPEN_NETWORK);
-			openNetworkButton.setFocusable(false);
-			openNetworkButton
-				.setToolTipText(stringResource
-					.getString(ActionCommands.OPEN_NETWORK
-						+ STRING_TOOLTIP_SUFFIX));
-			openNetworkButton.addActionListener(listener);
-			openNetworkButton.addMouseMotionListener(this);
-		}
-		return openNetworkButton;
-	}
+    private JButton getOpenNetworkButton ()
+    {
+        if (openNetworkButton == null)
+        {
+            openNetworkButton = new JButton ();
+            openNetworkButton.setIcon (iconLoader.load (IconLoader.ICON_OPEN_ENABLED));
+            openNetworkButton.setActionCommand (ActionCommands.OPEN_NETWORK);
+            openNetworkButton.setFocusable (false);
+            openNetworkButton.setToolTipText (stringResource.getString (ActionCommands.OPEN_NETWORK
+                                                                        + STRING_TOOLTIP_SUFFIX));
+            openNetworkButton.addActionListener (listener);
+            openNetworkButton.addMouseMotionListener (this);
+        }
+        return openNetworkButton;
+    }
 
 	/**
 	 * This method initialises saveNetworkButton.
 	 * 
 	 * @return a new button.
 	 */
-	private JButton getSaveNetworkButton() {
-
-		if (saveNetworkButton == null) {
-			saveNetworkButton = new JButton();
-			saveNetworkButton.setIcon(iconLoader
-				.load(IconLoader.ICON_SAVE_ENABLED));
-			saveNetworkButton.setActionCommand(ActionCommands.SAVE_NETWORK);
-			saveNetworkButton.setFocusable(false);
-			saveNetworkButton
-				.setToolTipText(stringResource
-					.getString(ActionCommands.SAVE_NETWORK
-						+ STRING_TOOLTIP_SUFFIX));
-			saveNetworkButton.addActionListener(listener);
-			saveNetworkButton.addMouseMotionListener(this);
-		}
-		return saveNetworkButton;
-	}
+    private JButton getSaveNetworkButton ()
+    {
+        if (saveNetworkButton == null)
+        {
+            saveNetworkButton = new JButton ();
+            saveNetworkButton.setIcon (iconLoader.load (IconLoader.ICON_SAVE_ENABLED));
+            saveNetworkButton.setActionCommand (ActionCommands.SAVE_NETWORK);
+            saveNetworkButton.setFocusable (false);
+            saveNetworkButton.setToolTipText (stringResource.getString (ActionCommands.SAVE_NETWORK
+                                                                        + STRING_TOOLTIP_SUFFIX));
+            saveNetworkButton.addActionListener (listener);
+            saveNetworkButton.addMouseMotionListener (this);
+        }
+        return saveNetworkButton;
+    }
 
 	/**
 	 * This method initialises closeNetworkButton.
@@ -304,6 +306,26 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		}
 		return workingModeButton;		
 	}	
+	
+    /**
+     * This method initialises decisionTreeButton.
+     * 
+     * @return a new button.
+     */
+    private JButton getDecisionTreeButton() {
+
+        if (decisionTreeButton == null) {
+            decisionTreeButton = new JButton();
+            decisionTreeButton.setIcon(iconLoader.load(IconLoader.ICON_DECISION_TREE));
+            decisionTreeButton.setActionCommand(ActionCommands.DECISION_TREE);
+            decisionTreeButton.setFocusable(false);
+            decisionTreeButton.setToolTipText(stringResource
+                .getString(ActionCommands.DECISION_TREE + STRING_TOOLTIP_SUFFIX));
+            decisionTreeButton.addActionListener(listener);
+            decisionTreeButton.addMouseMotionListener(this);
+        }
+        return decisionTreeButton;
+    }	
 	
 	/**
 	 * This method sets the button for switching between Edition/inference to

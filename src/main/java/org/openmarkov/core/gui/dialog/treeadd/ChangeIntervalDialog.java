@@ -14,17 +14,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
-import javax.swing.border.EmptyBorder;
-
-
 import org.openmarkov.core.exception.NotEnoughMemoryException;
-
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 /**
  * 
  * @author myebra
@@ -38,9 +32,9 @@ public class ChangeIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog 
 	/**
 	 * Dialog string resource.
 	 */
-	private StringResource dialogStringResource;
+	//private StringResource dialogStringResource;
 	
-	private TreeADDPotential treeADDParent;
+	//private TreeADDPotential treeADDParent;
 	private TreeADDBranch treeBranch;
 	@SuppressWarnings("unused")
 	private StringResource messageStringResource;
@@ -80,8 +74,8 @@ public class ChangeIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog 
 	protected ChangeIntervalPanel getChangeIntervalPanel() {
 		
 		if (changeIntervalPanel == null) {
-			dialogStringResource = StringResourceLoader.getUniqueInstance()
-					.getBundleDialogs();
+//			dialogStringResource = StringResourceLoader.getUniqueInstance()
+//					.getBundleDialogs();
 			messageStringResource =
 					StringResourceLoader.getUniqueInstance().getBundleMessages();
 	

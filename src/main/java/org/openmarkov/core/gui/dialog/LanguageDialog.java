@@ -57,7 +57,7 @@ public class LanguageDialog extends JDialog implements
 	/**
 	 * components of the dialog
 	 */
-	private JComboBox jComboBoxLanguages;
+	private JComboBox<String> jComboBoxLanguages;
 	private JLabel jLabelLanguageChoice;
 	private JTextArea jTextAreaInstructions;
 	private JButton jButtonAccept;
@@ -227,10 +227,10 @@ public class LanguageDialog extends JDialog implements
 	/**
 	 * @return a combo box to choice language
 	 */
-	protected JComboBox getJComboBoxLanguages() {
+	protected JComboBox<String> getJComboBoxLanguages() {
 
 		if (jComboBoxLanguages == null) {
-			jComboBoxLanguages = new JComboBox( Languages.getListStrings() );
+			jComboBoxLanguages = new JComboBox<String>( Languages.getStringList() );
 			jComboBoxLanguages
 				.setName( "LanguageDialog.jComboBoxLanguages" );
 			jComboBoxLanguages.setEditable( false );
@@ -244,7 +244,7 @@ public class LanguageDialog extends JDialog implements
 				// future languages
 			}
 
-			// special behaviour to handle i18n
+			// special behavior to handle i18n
 			StringResourceLoader.getUniqueInstance()
 				.addStringResourceLocaleChangeListener(
 					new StringResourceLocaleChangeListener() {
@@ -256,7 +256,7 @@ public class LanguageDialog extends JDialog implements
 								jComboBoxLanguages.getSelectedIndex();
 							jComboBoxLanguages.removeAllItems();
 							Languages.resetStringResource();
-							for (String item : Languages.getListStrings()) {
+							for (String item : Languages.getStringList()) {
 								jComboBoxLanguages.addItem( item );
 							}
 							jComboBoxLanguages

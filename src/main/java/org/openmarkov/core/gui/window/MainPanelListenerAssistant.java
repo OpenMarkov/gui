@@ -54,6 +54,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.gui.window.dt.DecisionTreePanel;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
@@ -383,7 +384,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		}else if (actionCommand
 				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableRevelationArc();
-			//TODO OOPN start 			
+//TODO OOPN start 			
 		} else if (actionCommand
 				.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
 			this.getCurrentNetworkPanel().temporalEvolution();
@@ -395,7 +396,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
 		} else if (actionCommand.equals(ActionCommands.SET_ARITY_MANY)) {
 			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
-			//TODO OOPN end
+//TODO OOPN end
+        } else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
+            buildDecisionTree(this.getCurrentNetworkPanel().getProbNet ());
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
@@ -1491,5 +1494,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		// TODO Auto-generated method stub
 		
 	}
+	
+    private void buildDecisionTree (ProbNet probNet)
+    {
+        DecisionTreePanel decisionTree = new DecisionTreePanel (probNet);
+        mainPanel.getMdi().createNewFrame(decisionTree);
+    }	
 
 }

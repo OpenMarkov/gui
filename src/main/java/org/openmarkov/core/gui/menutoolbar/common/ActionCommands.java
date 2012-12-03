@@ -298,6 +298,11 @@ public class ActionCommands {
 	 */
 	public static final String DECISION_SHOW_OPTIMAL_POLICY = "ShowOptimalPolicy"; 	
 	
+    /**
+     * Action invoked when the user wants to show the optimal policy of a decision node.
+     */
+    public static final String DECISION_TREE = "DecisionTree";  
+
 	/**
 	 * Action invoked for testing
 	 */

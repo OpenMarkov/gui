@@ -138,6 +138,11 @@
       <Label value="Zoom out the current network on 20%" />
     </ToolTip>
   </ZoomOut>
+  <DecisionTree>
+    <ToolTip>
+      <Label value="Decision tree" />
+    </ToolTip>
+  </DecisionTree>
 	<BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

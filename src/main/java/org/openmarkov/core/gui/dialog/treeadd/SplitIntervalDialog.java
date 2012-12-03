@@ -11,10 +11,7 @@ package org.openmarkov.core.gui.dialog.treeadd;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Window;
-
-
 
 import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;

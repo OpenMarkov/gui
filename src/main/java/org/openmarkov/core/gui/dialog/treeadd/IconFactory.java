@@ -32,29 +32,29 @@ abstract public class IconFactory {
 		FontRenderContext fr= new FontRenderContext(null,false,false);
 		TextLayout t= new TextLayout(text, f, fr );
 		
-		int margenH=6;
-		int margenV=6;
+		int hMargin=6;
+		int vMargin=6;
 		
 		Rectangle2D r= t.getBounds();
-		int width= (int) r.getWidth() + 2*(margenH+1);
-		int height= (int) r.getHeight() + 2*margenV;
+		int width= (int) r.getWidth() + 2*(hMargin+1);
+		int height= (int) r.getHeight() + 2*vMargin;
 		BufferedImage image = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g= (Graphics2D) image.createGraphics();
 				
-		int anchoOval= Math.min(height,width);
+		int ovalWidth= Math.min(height,width);
 
 		g.setColor(new Color(255,255,200));		
-		g.fillArc(0,0,anchoOval,height-1,90,180);
-		g.fillArc(width-anchoOval-1,0,anchoOval,height-1,270,180);
-		g.fillRect(anchoOval/2,0,width-anchoOval, height-1);
+		g.fillArc(0,0,ovalWidth,height-1,90,180);
+		g.fillArc(width-ovalWidth-1,0,ovalWidth,height-1,270,180);
+		g.fillRect(ovalWidth/2,0,width-ovalWidth, height-1);
 		
 		g.setColor(Color.black);
-		g.drawArc(0,0,anchoOval,height-1,90,180);
-		g.drawArc(width-anchoOval-1,0,anchoOval,height-1,270,180);
-		g.drawLine(anchoOval/2,0,width-anchoOval/2,0);
-		g.drawLine(anchoOval/2,height-1,width-anchoOval/2,height-1);
+		g.drawArc(0,0,ovalWidth,height-1,90,180);
+		g.drawArc(width-ovalWidth-1,0,ovalWidth,height-1,270,180);
+		g.drawLine(ovalWidth/2,0,width-ovalWidth/2,0);
+		g.drawLine(ovalWidth/2,height-1,width-ovalWidth/2,height-1);
 
-		t.draw( g, margenH, height-margenV-1 );
+		t.draw( g, hMargin, height-vMargin-1 );
 		
 		return new ImageIcon( image );
 	}
@@ -68,12 +68,12 @@ abstract public class IconFactory {
 		FontRenderContext fr= new FontRenderContext(null,false,false);
 		TextLayout t= new TextLayout(text, f, fr );
 		
-		int margenH=6;
-		int margenV=6;
+		int hMargin=6;
+		int vMargin=6;
 		
 		Rectangle2D r= t.getBounds();
-		int width= (int) r.getWidth() + 2*margenH;
-		int height= (int) r.getHeight() + 2*margenV;
+		int width= (int) r.getWidth() + 2*hMargin;
+		int height= (int) r.getHeight() + 2*vMargin;
 		BufferedImage image = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g= (Graphics2D) image.getGraphics();
 		
@@ -82,7 +82,7 @@ abstract public class IconFactory {
 		g.setColor(Color.black);
 		g.drawRect(0,1,width-2,height-2);
 		
-		t.draw( g, margenH, height-margenV );
+		t.draw( g, hMargin, height-vMargin );
 		
 		return new ImageIcon( image );
 	}
@@ -98,11 +98,11 @@ abstract public class IconFactory {
 		
 		Rectangle2D r= t.getBounds();
 		
-		int margenH= (int) (6+r.getHeight()/2);
-		int margenV=6;
+		int hMargin= (int) (6+r.getHeight()/2);
+		int vMargin=6;
 		
-		int width= (int) (r.getWidth() + 2*margenH);
-		int height= (int) (r.getHeight() + 2*margenV);
+		int width= (int) (r.getWidth() + 2*hMargin);
+		int height= (int) (r.getHeight() + 2*vMargin);
 		
 		BufferedImage image = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g= (Graphics2D) image.getGraphics();
@@ -111,19 +111,19 @@ abstract public class IconFactory {
 		 g.setColor(new Color(0,255,255));
 		 g.fillRect(0,1,width-2,height-2);
 		 */
-		Polygon poly= new Polygon();
-		poly.addPoint(1,height/2);
-		poly.addPoint(height/2,height-1);
-		poly.addPoint(width-height/2,height-1);
-		poly.addPoint(width-1,height/2);
-		poly.addPoint(width-height/2,1);
-		poly.addPoint(height/2,1);
+		Polygon polygon= new Polygon();
+		polygon.addPoint(1,height/2);
+		polygon.addPoint(height/2,height-1);
+		polygon.addPoint(width-height/2,height-1);
+		polygon.addPoint(width-1,height/2);
+		polygon.addPoint(width-height/2,1);
+		polygon.addPoint(height/2,1);
 		
 		g.setColor(new Color(200,255,200));
-		g.fillPolygon(poly);
+		g.fillPolygon(polygon);
 		g.setColor(Color.black);
-		g.drawPolygon(poly);
-		t.draw( g, margenH, height-margenV );
+		g.drawPolygon(polygon);
+		t.draw( g, hMargin, height-vMargin );
 		
 		return new ImageIcon( image );
 	}
