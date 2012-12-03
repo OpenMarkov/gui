@@ -21,6 +21,7 @@ import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -1336,6 +1337,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
 
 			public void mouseClicked(java.awt.event.MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					valuesTable.editCellAt(valuesTable.rowAtPoint(e.getPoint()), valuesTable.columnAtPoint(e.getPoint()), e);
+				}
+				
 				if (SwingUtilities.isRightMouseButton(e)) {
 					int row = valuesTable.rowAtPoint(e.getPoint());
 					int col = valuesTable.columnAtPoint(e.getPoint());

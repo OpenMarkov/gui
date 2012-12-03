@@ -14,7 +14,12 @@ package org.openmarkov.core.gui.component;
 
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -22,6 +27,7 @@ import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.TableCellEditor;
@@ -29,6 +35,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
@@ -397,6 +404,14 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	@Override
 	public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 								boolean extend) {
+		super.changeSelection(rowIndex, columnIndex, toggle, extend);
+		 
+	   /*if (editCellAt(rowIndex, columnIndex))
+	    {
+	        Component editor = getEditorComponent();
+	        ((Component)editor).selectAll();
+	        //.requestFocusInWindow();
+	    }*/
 
 		if (columnIndex < FIRST_EDITABLE_COLUMN) { // not selectable
 			super.changeSelection( rowIndex, columnIndex + 1, toggle, extend );
@@ -1549,6 +1564,75 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				super.getModel().setValueAt( tablePotential.values[position], 
 						edit.getRowPosition(), edit.getColumnPosition());
 			}
+		}
+	}
+
+	 boolean isSelectAllForMouseEvent = true;
+	 boolean isSelectAllForActionEvent = false;
+	 boolean isSelectAllForKeyEvent = false;
+
+	/*
+	 *  Override to provide Select All editing functionality
+	 */
+	public boolean editCellAt(int row, int column, EventObject e)
+	{
+		boolean result = super.editCellAt(row, column, e);
+
+		
+
+		if (isSelectAllForMouseEvent
+		||  isSelectAllForActionEvent
+		||  isSelectAllForKeyEvent)
+		{
+			selectAll(e);
+		}
+
+		return result;
+	}
+	private void selectAll(EventObject e)
+	{
+		final Component editor = getEditorComponent();
+
+		if (editor == null
+		|| ! (editor instanceof JTextComponent))
+			return;
+
+		if (e == null)
+		{
+			((JTextComponent)editor).selectAll();
+			return;
+		}
+
+		//  Typing in the cell was used to activate the editor
+
+		if (e instanceof KeyEvent && isSelectAllForKeyEvent)
+		{
+			((JTextComponent)editor).selectAll();
+			return;
+		}
+
+		//  F2 was used to activate the editor
+
+		if (e instanceof ActionEvent && isSelectAllForActionEvent)
+		{
+			((JTextComponent)editor).selectAll();
+			return;
+		}
+
+		//  A mouse click was used to activate the editor.
+		//  Generally this is a double click and the second mouse click is
+		//  passed to the editor which would remove the text selection unless
+		//  we use the invokeLater()
+
+		if (e instanceof MouseEvent && isSelectAllForMouseEvent)
+		{
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					((JTextComponent)editor).selectAll();
+				}
+			});
 		}
 	}
 

@@ -446,7 +446,6 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 
 		int index = valuesTable.getSelectedRow();
 		int rowCount = valuesTable.getRowCount();
-
 		if ((rowCount == 0) || (index == -1)) {
 			removeValueButton.setEnabled( false );
 			upValueButton.setEnabled( false );
