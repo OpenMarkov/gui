@@ -1,3 +1,4 @@
+
 package org.openmarkov.core.gui.window.dt;
 
 import java.awt.BorderLayout;
@@ -9,26 +10,27 @@ import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDController;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.PartialOrder;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 public class DecisionTreePanel extends FrameContentPanel
 {
-    private ProbNet probNet = null;
-    
+    private ProbNet           probNet = null;
     /**
      * The builder object of Tree - ADDs
      */
     private TreeADDController treeADDController;
-    
-    
-    public  DecisionTreePanel(ProbNet probNet)
+
+    public DecisionTreePanel (ProbNet probNet)
     {
         this.probNet = probNet;
-        
         PartialOrder partialOrder = null;
         try
         {
@@ -36,18 +38,40 @@ public class DecisionTreePanel extends FrameContentPanel
         }
         catch (WrongGraphStructureException e)
         {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        
-        List<Variable> variables  =  new ArrayList<Variable>(partialOrder.getNumVariables ());
-        for(List<Variable> variableSubList : partialOrder.getOrder ())
+        List<Variable> variables = new ArrayList<Variable> (partialOrder.getNumVariables ());
+        for (List<Variable> variableSubList : partialOrder.getOrder ())
         {
             variables.addAll (variableSubList);
         }
-        setLayout(new BorderLayout());
-        treeADDController = new TreeADDController ( probNet, new TreeADDPotential (variables, PotentialRole.UTILITY, variables.get (variables.size () -1)));
-        add( treeADDController, BorderLayout.CENTER );
-       setBackground(Color.blue);        
+        setLayout (new BorderLayout ());
+        Variable svVariable = findSuperValueNode (probNet).getVariable ();
+        TreeADDPotential treeADDPotential = new TreeADDPotential (variables, PotentialRole.UTILITY,
+                                                                  svVariable);
+        // Remove first as the constructor of TreeADDPotential already creates
+        // branches for the first variable
+        variables.remove (0);
+        List<TreeADDBranch> lastStepBranches = new ArrayList<> ();
+        lastStepBranches.addAll (treeADDPotential.getBranches ());
+        List<Variable> remainingVariables = new ArrayList<>(variables);
+        for (Variable variable : variables)
+        {
+            List<TreeADDBranch> currentStepBranches = new ArrayList<> ();
+                for (TreeADDBranch branch : lastStepBranches)
+                {
+                    TreeADDPotential potential = new TreeADDPotential (remainingVariables,
+                                                                       variable,
+                                                                       PotentialRole.UTILITY,
+                                                                       svVariable);
+                    branch.setPotential (potential);
+                    currentStepBranches.addAll (potential.getBranches ());
+                }
+            lastStepBranches = currentStepBranches;
+        }
+        treeADDController = new TreeADDController (probNet, treeADDPotential);
+        add (treeADDController, BorderLayout.CENTER);
+        setBackground (Color.blue);
     }
 
     @Override
@@ -60,5 +84,18 @@ public class DecisionTreePanel extends FrameContentPanel
     public void close ()
     {
         // TODO Auto-generated method stub
+    }
+
+    public ProbNode findSuperValueNode (ProbNet probNet)
+    {
+        ProbNode svNode = null;
+        for (ProbNode node : probNet.getProbNodes (NodeType.UTILITY))
+        {
+            if (node.getNode ().getChildren ().isEmpty ())
+            {
+                svNode = node;
+            }
+        }
+        return svNode;
     }
 }

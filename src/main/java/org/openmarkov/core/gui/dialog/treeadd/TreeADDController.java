@@ -1510,7 +1510,7 @@ public class TreeADDController extends JScrollPane
             dummy = dummyProbNet.getProbNode (conditionedVariable);
             for (Variable variable : potential.getVariables ())
             {
-                if (variable == conditionedVariable)
+                if (variable.equals (conditionedVariable))
                 {
                     continue;
                 }
@@ -1552,9 +1552,9 @@ public class TreeADDController extends JScrollPane
             {
                 retPotential.setUtilityVariable (parentTreeADD.getUtilityVariable ());
             }
-            if (!(retPotential instanceof TablePotential))
+            if (!(retPotential instanceof TablePotential || retPotential instanceof UniformPotential))
             {
-                throw new RuntimeException ("Expected TablePotential found: "
+                throw new RuntimeException ("Expected TablePotential or UniformPotential and found: "
                                             + retPotential.getClass ().getSimpleName ());
             }
             if (parentTreeADD.getPotentialRole () != retPotential.getPotentialRole ())
