@@ -229,7 +229,8 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
 					nodes.add(pProbNode.getNode());
-				} catch (CanNotDoEditException | ConstraintViolationException
+				} catch(ConstraintViolationException ignore){
+				} catch (CanNotDoEditException
 						| NonProjectablePotentialException
 						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
@@ -266,8 +267,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		try {
 			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name),
 					probNode.getVariable(), true);
-			probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
-			probNode.getProbNet().getPNESupport().doEdit(linkEdit);
+			probNode.getProbNet().doEdit(linkEdit);
 				
 			tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
