@@ -173,8 +173,8 @@ public class TreeADDCellRenderer extends JPanel
         else
         {
             rightLabel.setText (" " + potential.treeADDString ());
-            Variable variable = (potential.getPotentialRole() == PotentialRole.UTILITY)? potential.getUtilityVariable() : potential.getVariable(0);
-            leftLabel.setIcon(getIcon(variable));
+            //Variable variable = (potential.getPotentialRole() == PotentialRole.UTILITY)? potential.getUtilityVariable() : potential.getVariable(0);
+            //leftLabel.setIcon(getIcon(variable));
         }
         return this;
     }
