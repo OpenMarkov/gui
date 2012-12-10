@@ -75,17 +75,13 @@ public class NodePartitionedIntervalEditTest {
 		VariableTypeEdit variableTypeEdit = new VariableTypeEdit (
 				node1, VariableType.DISCRETIZED );
 		
-		probNet.getPNESupport().announceEdit(
-				variableTypeEdit);
-		probNet.getPNESupport().doEdit(
-				variableTypeEdit);
+		probNet.doEdit(variableTypeEdit);
 
 		NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
 			new NodePartitionedIntervalEdit(node1, 
 					StateAction.MODIFYDELIMITERINTERVAL, 0, true);
 		
-        probNet.getPNESupport ().announceEdit (nodePartitionedIntervalEdit);
-        probNet.getPNESupport ().doEdit (nodePartitionedIntervalEdit);
+        probNet.doEdit (nodePartitionedIntervalEdit);
 	}
 
 

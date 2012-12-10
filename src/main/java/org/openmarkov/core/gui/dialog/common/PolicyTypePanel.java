@@ -202,8 +202,7 @@ public class PolicyTypePanel extends JPanel
                 removePolicyEdit = new RemovePolicyEdit (probNode);
                 try
                 {
-                    probNode.getProbNet ().getPNESupport ().announceEdit (removePolicyEdit);
-                    probNode.getProbNet ().getPNESupport ().doEdit (removePolicyEdit);
+                    probNode.getProbNet ().doEdit (removePolicyEdit);
                 }
                 catch (ConstraintViolationException e1)
                 {
@@ -238,8 +237,7 @@ public class PolicyTypePanel extends JPanel
                 setPotentialEdit = new SetPotentialEdit (probNode, TablePotential.class.getAnnotation (RelationPotentialType.class).name ());
                 try
                 {
-                    probNode.getProbNet ().getPNESupport ().announceEdit (setPotentialEdit);
-                    probNode.getProbNet ().getPNESupport ().doEdit (setPotentialEdit);
+                    probNode.getProbNet ().doEdit (setPotentialEdit);
                 }
                 catch (ConstraintViolationException e1)
                 {

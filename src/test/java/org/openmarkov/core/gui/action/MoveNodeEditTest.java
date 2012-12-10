@@ -85,8 +85,7 @@ public class MoveNodeEditTest {
 		probNet.getPNESupport().setWithUndo(true);
 		MoveNodeEdit moveNodeEdit = new MoveNodeEdit(movedNodes);
 			
-		probNet.getPNESupport().announceEdit(moveNodeEdit);
-		probNet.getPNESupport().doEdit(moveNodeEdit);
+		probNet.doEdit(moveNodeEdit);
 	}
 
 
