@@ -15,21 +15,19 @@ import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -57,6 +55,7 @@ public class TreeADDCellRenderer extends JPanel
     private Font                    textIconFont;
     private StringResource          messageStringResource;
 
+    private ProbNet probNet;
     /**
      * Precision Proxy: every node of the tree could have its own precision
      * (number of decimals)
@@ -64,10 +63,12 @@ public class TreeADDCellRenderer extends JPanel
     // protected PrecisionProxy precisionProxy;
     /**
      * TODO: Add a new constructor with font and default precision values
+     * @param probNet 
      */
-    public TreeADDCellRenderer ()
+    public TreeADDCellRenderer (ProbNet probNet)
     {
         super (new BorderLayout ());
+        this.probNet = probNet;
         messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         this.add (leftLabel, BorderLayout.WEST);
         this.add (rightLabel, BorderLayout.CENTER);
@@ -91,31 +92,18 @@ public class TreeADDCellRenderer extends JPanel
         leftLabel.setText (null);
         rightLabel.setText (null);
         Component retCode = null;
-        try
-        {
-            if (value instanceof TreeADDBranch)
-            {
-                retCode = getTreeCellRendererComponent (tree, (TreeADDBranch) value, selected,
-                                                        expanded, leaf, row, hasFocus);
-            }
-            else if (value instanceof Potential)
-            {
-                retCode = getTreeCellRendererComponent (tree, (Potential) value, selected,
-                                                        expanded, leaf, row, hasFocus);
-            }
-            else
-            {
-                throw new RuntimeException ("Class not allowed: " + value.getClass ().getName ());
-            }
-        }
-        catch (NotEnoughMemoryException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (null, messageStringResource.getString (e.getMessage ()),
-                                           messageStringResource.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
+
+		if (value instanceof TreeADDBranch) {
+			retCode = getTreeCellRendererBranch(tree, (TreeADDBranch) value,
+					selected, expanded, leaf, row, hasFocus);
+		} else if (value instanceof Potential) {
+			retCode = getTreeCellRendererPotential(tree, (Potential) value,
+					selected, expanded, leaf, row, hasFocus);
+		} else {
+			throw new RuntimeException("Class not allowed: "
+					+ value.getClass().getName());
+		}
+        
         return retCode;
     }
 
@@ -130,7 +118,7 @@ public class TreeADDCellRenderer extends JPanel
      * @param hasFocus
      * @return
      */
-    public Component getTreeCellRendererComponent (JTree tree,
+    public Component getTreeCellRendererBranch (JTree tree,
                                                    TreeADDBranch branch,
                                                    boolean selected,
                                                    boolean expanded,
@@ -152,7 +140,7 @@ public class TreeADDCellRenderer extends JPanel
         {
             getTreeCellRendererComponent (tree, child, selected, expanded, leaf, row, hasFocus);
         }
-        leftLabel.setText (getHTML (branch));
+        leftLabel.setText (getBranchDescriptiontHTML (branch));
         return this;
     }
 
@@ -168,85 +156,72 @@ public class TreeADDCellRenderer extends JPanel
      * @return
      * @throws NotEnoughMemoryException
      */
-    public Component getTreeCellRendererComponent (JTree tree,
+    public Component getTreeCellRendererPotential (JTree tree,
                                                    Potential potential,
                                                    boolean selected,
                                                    boolean expanded,
                                                    boolean leaf,
                                                    int row,
                                                    boolean hasFocus)
-        throws NotEnoughMemoryException
     {
         if (potential instanceof TreeADDPotential)
         {
             TreeADDPotential treeADDPotential = (TreeADDPotential) potential;
             Variable topVariable = treeADDPotential.getTopVariable ();
-            if (iconsPool.containsKey (topVariable))
-            {
-                leftLabel.setIcon (iconsPool.get (topVariable));
-            }
-            else
-            {
-                String description = topVariable.getName ();
-                Icon icon = createNodeIcon (treeADDPotential, description);
-                iconsPool.put (topVariable, icon);
-                leftLabel.setIcon (icon);
-            }
+            leftLabel.setIcon(getIcon(topVariable));
         }
-        else if (potential instanceof TablePotential || 
-                potential instanceof UniformPotential)
+        else
         {
             rightLabel.setText (" " + potential.treeADDString ());
+            Variable variable = (potential.getPotentialRole() == PotentialRole.UTILITY)? potential.getUtilityVariable() : potential.getVariable(0);
+            leftLabel.setIcon(getIcon(variable));
         }
         return this;
     }
 
-    /**
-     * Create a new icon for a node of the ADD/Tree
-     * @param n Node of the ADD/Tree
-     * @param description Description of the variable/potential
-     * @return
-     */
-    protected Icon createNodeIcon (Potential potential, String description)
-    {
+    private Icon getIcon(Variable variable) {
         Icon icon = null;
-        if (potential instanceof TreeADDPotential)
+    	if (iconsPool.containsKey (variable))
         {
-            TreeADDPotential tree = (TreeADDPotential) potential;
-            if (tree.getTopVariable () instanceof Variable)
-            {
-                icon = IconFactory.createChanceIcon (description, textIconFont);
-            }
-        }
-        else if (potential instanceof TablePotential || potential instanceof UniformPotential)
-        {
-            if (potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
-            {
-                if (potential.getVariable (0) instanceof Variable)
-                {
-                    icon = IconFactory.createChanceIcon (description, textIconFont);
-                }
-            }
-            else if (potential.getPotentialRole () == PotentialRole.UTILITY)
-            {
-                if (potential.getUtilityVariable () instanceof Variable)
-                {
-                    icon = IconFactory.createUtilityIcon (description, textIconFont);
-                }
-            }
+    		icon = iconsPool.get (variable);
         }
         else
         {
-            throw new RuntimeException ("Unknown AbstractNode: " + potential.getClass ().getName ());
+            icon = createNodeIcon (variable);
+            iconsPool.put (variable, icon);
         }
         return icon;
-    }
+	}
+
+	/**
+     * Create a new icon for a node of the ADD/Tree
+     * @return
+     */
+	protected Icon createNodeIcon(Variable variable) {
+		Icon icon = null;
+		ProbNode node = probNet.getProbNode(variable);
+		switch (node.getNodeType()) {
+		case CHANCE: {
+			icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);
+			break;
+		}
+		case DECISION: {
+			icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);
+			break;
+		}
+		case UTILITY: {
+			icon = IconFactory.createUtilityIcon(variable.getName(), textIconFont);
+			break;
+		}
+		}
+		return icon;
+	}
 
     /**
      * Creates what is displayed in a branch for discretized or finite states
      * variables
      */
-    public String getHTML (TreeADDBranch treeBranch)
+    public String getBranchDescriptiontHTML (TreeADDBranch treeBranch)
     {
         String txtLeft = "<html><table border=1>";
         Variable topVariable = treeBranch.getTopVariable ();

@@ -109,12 +109,12 @@
   </NewNetwork>
   <CloseNetwork>
     <ToolTip>
-      <Label value="Close the actual network" />
+      <Label value="Close the current network" />
     </ToolTip>
   </CloseNetwork>
   <SaveNetwork>
     <ToolTip>
-      <Label value="Saves the actual network" />
+      <Label value="Saves the current network" />
     </ToolTip>
   </SaveNetwork>
   <CaseNumber>

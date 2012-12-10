@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelPlugin;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -50,7 +49,7 @@ public class TreeADDPanel extends PotentialPanel
         setData(probNode);
     }
     
-    public void saveChanges() throws NotEnoughMemoryException
+    public void saveChanges()
     {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit (probNode,
                                                                   treeADDController.getTreePotential ());
@@ -76,7 +75,7 @@ public class TreeADDPanel extends PotentialPanel
     {
     	setLayout(new BorderLayout());
     	 this.probNode = probNode;
-        treeADDController = new TreeADDController ( probNode.getProbNet (),
+        treeADDController = new TreeADDController ( new TreeADDCellRenderer(probNode.getProbNet ()),
                                                     (TreeADDPotential)probNode.getPotentials().get( 0 ));
         removeAll();
        // treeADDController.setMaximumSize(new Dimension(10, 10));
@@ -94,7 +93,7 @@ public class TreeADDPanel extends PotentialPanel
     }
 
 	@Override
-	public void close() throws NotEnoughMemoryException {
+	public void close() {
 		// TODO Auto-generated method stub
 		
 	}

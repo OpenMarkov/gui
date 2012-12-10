@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -138,19 +137,9 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 
 				
 				public void actionPerformed(ActionEvent e) {
-
-					try {
-						if (doOkClickBeforeHide()) {
-							selectedButton = OK_BUTTON;
-							dispose();
-						}
-					} catch (NotEnoughMemoryException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, messageStringResource
-								.getString( e1.getMessage() ),
-							messageStringResource.getString( e1.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
+					if (doOkClickBeforeHide()) {
+						selectedButton = OK_BUTTON;
+						dispose();
 					}
 				}
 			});
@@ -178,17 +167,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			jButtonCancel.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {
-
-					try {
-						doCancelClickBeforeHide();
-					} catch (NotEnoughMemoryException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, messageStringResource
-								.getString( e1.getMessage() ),
-							messageStringResource.getString( e1.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					}					
+					doCancelClickBeforeHide();
 					selectedButton = CANCEL_BUTTON;
 					setVisible(false);
 					dispose();
@@ -229,7 +208,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * @return true if the dialog box can be closed.
 	 * @throws NotEnoughMemoryException 
 	 */
-	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+	protected boolean doOkClickBeforeHide() {
 
 		return false;
 	}
@@ -238,7 +217,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
-	protected void doCancelClickBeforeHide() throws NotEnoughMemoryException {
+	protected void doCancelClickBeforeHide() {
 
 	}
 

@@ -39,7 +39,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.core.gui.action.NodeStateEdit;
@@ -377,7 +376,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                         {
                             probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
                         }
-                        catch (ConstraintViolationException | NotEnoughMemoryException
+                        catch (ConstraintViolationException
                                 | CanNotDoEditException | NonProjectablePotentialException
                                 | WrongCriterionException | DoEditException e)
                         {
@@ -414,7 +413,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                         {
                             probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
                         }
-                        catch (ConstraintViolationException | NotEnoughMemoryException
+                        catch (ConstraintViolationException
                                 | CanNotDoEditException | NonProjectablePotentialException
                                 | WrongCriterionException | DoEditException e)
                         {
@@ -465,7 +464,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                         {
                             probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
                         }
-                        catch (ConstraintViolationException | NotEnoughMemoryException
+                        catch (ConstraintViolationException
                                 | DoEditException | NonProjectablePotentialException
                                 | WrongCriterionException | CanNotDoEditException e)
                         {
@@ -502,7 +501,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                         {
                             probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
                         }
-                        catch (ConstraintViolationException | NotEnoughMemoryException
+                        catch (ConstraintViolationException
                                 | CanNotDoEditException | NonProjectablePotentialException
                                 | WrongCriterionException | DoEditException e)
                         {
@@ -1122,7 +1121,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                     valuesTable.getSelectionModel ().setSelectionInterval (newIndex, newIndex);
                 }
             }
-            catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 JOptionPane.showMessageDialog (this,
@@ -1209,7 +1208,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
                 }
             }
         }
-        catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+        catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
             e.printStackTrace ();
@@ -1242,7 +1241,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
             valuesTable.setValueAt (swap, selectedRow - 1, 1);
             valuesTable.getSelectionModel ().setSelectionInterval (selectedRow - 1, selectedRow - 1);
         }
-        catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+        catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
             JOptionPane.showMessageDialog (this, messageStringResource.getString (e.getMessage ()),
@@ -1271,7 +1270,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
             valuesTable.setValueAt (swap, selectedRow + 1, 1);
             valuesTable.getSelectionModel ().setSelectionInterval (selectedRow + 1, selectedRow + 1);
         }
-        catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+        catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
             JOptionPane.showMessageDialog (this, messageStringResource.getString (e.getMessage ()),
@@ -1299,7 +1298,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
         {
             probNode.getProbNet ().doEdit (partitionedIntervalEdit);
         }
-        catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+        catch (DoEditException | ConstraintViolationException
                 | CanNotDoEditException | NonProjectablePotentialException
                 | WrongCriterionException e)
         {
@@ -1327,7 +1326,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
         {
             probNode.getProbNet ().doEdit (partitionedIntervalEdit);
         }
-        catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+        catch (DoEditException | ConstraintViolationException
                 | CanNotDoEditException | NonProjectablePotentialException
                 | WrongCriterionException e)
         {
@@ -1406,7 +1405,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
             {
                 probNode.getProbNet ().doEdit (nodeStateEdit);
             }
-            catch (NotEnoughMemoryException | ConstraintViolationException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
@@ -1503,7 +1502,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
             {
                 probNode.getProbNet ().doEdit (partitionedIntervalEdit);
             }
-            catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+            catch (DoEditException | ConstraintViolationException
                     | CanNotDoEditException | NonProjectablePotentialException
                     | WrongCriterionException e)
             {

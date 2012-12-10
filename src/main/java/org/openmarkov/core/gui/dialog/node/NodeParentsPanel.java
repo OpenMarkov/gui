@@ -13,7 +13,7 @@ package org.openmarkov.core.gui.dialog.node;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -255,8 +255,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 *         title of the nodes.
 	 */
 
-	private static Object[][] fillArrayWithNodes(
-														ArrayList<Node> nodes) {
+	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
 
 		int i, l;
 		Object[][] result;

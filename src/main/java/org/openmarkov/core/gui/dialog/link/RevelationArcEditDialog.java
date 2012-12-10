@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.text.MessageFormat;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -99,7 +98,7 @@ public class RevelationArcEditDialog extends
 	 * @throws NotEnoughMemoryException
 	 */
 	@Override
-	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+	protected boolean doOkClickBeforeHide() {
 		getRevelationArcPanel().saveChanges();
 		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
 				.closeParenthesis();

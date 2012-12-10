@@ -33,7 +33,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.openmarkov.core.exception.ExceptionUncertainValuesDialogEdition;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
@@ -194,7 +193,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 * @wbp.parser.constructor
 	 */
 	public UncertainValuesDialog(Window owner,EvidenceCase 
-			configuration,TablePotential potential) throws NotEnoughMemoryException, WrongCriterionException {
+			configuration,TablePotential potential) throws WrongCriterionException {
 		super(owner);
 		
 	
@@ -332,7 +331,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 
 
 	private void fillDistributionsTableModel(Variable variable,
-			EvidenceCase configuration, TablePotential potential) throws NotEnoughMemoryException, WrongCriterionException {
+			EvidenceCase configuration, TablePotential potential) throws WrongCriterionException {
 				
 		UncertainValue[] uncertainTable = potential.getUncertainTable();
 		

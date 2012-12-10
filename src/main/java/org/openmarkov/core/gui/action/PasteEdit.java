@@ -20,7 +20,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
@@ -57,7 +56,6 @@ public class PasteEdit extends CompoundEdit
      */
     public void doEdit ()
         throws DoEditException,
-        NotEnoughMemoryException,
         NonProjectablePotentialException,
         WrongCriterionException
     {

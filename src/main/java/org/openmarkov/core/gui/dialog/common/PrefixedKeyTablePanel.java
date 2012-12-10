@@ -12,22 +12,21 @@ package org.openmarkov.core.gui.dialog.common;
 
 
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
+import org.openmarkov.core.action.NodeStateEdit;
+import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.model.network.UtilStrings;
-import org.openmarkov.core.action.NodeStateEdit;
-import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.UtilStrings;
 
 
 
@@ -210,8 +209,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 					StateAction.ADD,newIndex, option);
 			
 			try {
-				probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
-				probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+				probNode.getProbNet().doEdit(nodeStateEdit);
 				renameAction = false;
 				tableModel.insertRow(0, new Object[] { 
 						getKeyString(newIndex),	option });
@@ -219,7 +217,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 					.setSelectionInterval(0, 0);
 				renameAction = false;
 				
-			} catch (ConstraintViolationException e) {
+			} catch (ConstraintViolationException | CanNotDoEditException
+					| NonProjectablePotentialException
+					| WrongCriterionException | DoEditException e) {
 				JOptionPane
 				.showMessageDialog(
 					this, messageStringResource
@@ -231,41 +231,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				//jTextFieldNodeName.setText( this.nodeProperties.getName() );
 				//jTextFieldNodeName.requestFocus();
 				
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e.getMessage() ),
-						stringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e.getMessage() ),
-						stringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e.getMessage() ),
-						stringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e.getMessage() ),
-						stringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e.getMessage() ),
-						stringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
 			}
 			
 			
@@ -287,8 +252,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				StateAction.REMOVE, selectedRow, "");
 		
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
-			probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+			probNode.getProbNet().doEdit(nodeStateEdit);
 			
 			cancelCellEditing();
 			renameAction = false;
@@ -311,7 +275,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			}
 			
 			renameAction = false;
-		} catch (ConstraintViolationException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | WrongCriterionException
+				| DoEditException e) {
 			JOptionPane
 			.showMessageDialog(
 				this, messageStringResource
@@ -323,52 +289,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			//jTextFieldNodeName.setText( this.nodeProperties.getName() );
 			//jTextFieldNodeName.requestFocus();
 			//e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
 		}
-		
-		
-		
-		
-		
-		
-		
-
-		
-
 	}
 
 	/**
@@ -384,8 +305,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				StateAction.UP, selectedRow, "");
 		
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
-			probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+			probNode.getProbNet().doEdit(nodeStateEdit);
 			
 			stopCellEditing();
 			swap = valuesTable.getValueAt(selectedRow, 1);
@@ -398,56 +318,15 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				selectedRow - 1, selectedRow - 1);
 			renameAction = false;
 			
-		} catch (ConstraintViolationException e) {
-			JOptionPane
-			.showMessageDialog(
-				this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource
-					.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-			
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | WrongCriterionException
+				| DoEditException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog(this,
+					messageStringResource.getString(e.getMessage()),
+					messageStringResource.getString(e.getMessage()),
+					JOptionPane.ERROR_MESSAGE);
 		}
-		
-		
-
-		
-
 	}
 
 	/**
@@ -463,8 +342,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				StateAction.DOWN, selectedRow, "");
 		
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
-			probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+			probNode.getProbNet().doEdit(nodeStateEdit);
 			
 			stopCellEditing();
 			swap = valuesTable.getValueAt(selectedRow, 1);
@@ -477,56 +355,15 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				selectedRow + 1, selectedRow + 1);
 			renameAction = false;
 								
-		} catch (ConstraintViolationException e) {
-			JOptionPane
-			.showMessageDialog(
-				this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource
-					.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-			
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | WrongCriterionException
+				| DoEditException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
-		
-		
-
-		
-
+			JOptionPane.showMessageDialog(this,
+					messageStringResource.getString(e.getMessage()),
+					messageStringResource.getString(e.getMessage()),
+					JOptionPane.ERROR_MESSAGE);
+		} 
 	}
 
 	/**
@@ -576,8 +413,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, 
 				StateAction.RENAME, row, newName );
 			try {
-				probNode.getProbNet().getPNESupport().announceEdit(nodeStateEdit);
-				probNode.getProbNet().getPNESupport().doEdit(nodeStateEdit);
+				probNode.getProbNet().doEdit(nodeStateEdit);
 			} catch (ConstraintViolationException e1) {
 				JOptionPane
 				.showMessageDialog(
@@ -595,53 +431,16 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 						getName(), row, e.getColumn());
 				
 				
-			} catch (CanNotDoEditException e1) {
-				// TODO Auto-generated catch block
+			} catch (CanNotDoEditException | DoEditException
+					| NonProjectablePotentialException
+					| WrongCriterionException e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringResource
 						.getString( e1.getMessage() ),
 						stringResource.getString( e1.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (DoEditException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e1.getMessage() ),
-						stringResource.getString( e1.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NotEnoughMemoryException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e1.getMessage() ),
-						stringResource.getString( e1.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (NonProjectablePotentialException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e2.getMessage() ),
-						stringResource.getString( e2.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			} catch (WrongCriterionException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e3.getMessage() ),
-						stringResource.getString( e3.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
-			
 		}
 		renameAction = true;
 	}
-
-	
-
-	
-
-		
-		
-		
-	
 }

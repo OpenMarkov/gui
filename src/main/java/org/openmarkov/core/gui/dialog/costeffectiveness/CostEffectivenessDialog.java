@@ -43,7 +43,6 @@ import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
@@ -1211,7 +1210,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	}
 
 	@Override
-	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+	protected boolean doOkClickBeforeHide() {
 		if (isThereNodeAge) {
 			initialAge = Integer.valueOf(getInitialAgeTextField().getText());
 			finalAge = Integer.valueOf(getFinalAgeTextField().getText());

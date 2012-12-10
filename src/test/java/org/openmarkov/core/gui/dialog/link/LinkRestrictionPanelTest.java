@@ -2,11 +2,7 @@ package org.openmarkov.core.gui.dialog.link;
 
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-
 import org.junit.Before;
-import org.junit.Test;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.graph.Node;
@@ -39,13 +35,9 @@ public class LinkRestrictionPanelTest {
 		ProbNode node = new ProbNode(net, varB, NodeType.CHANCE);
 		Node nodeB = new Node(graph, node);
 		Link link = new Link(nodeA, nodeB, true);
-		try {
-			link.initializesRestrictionsPotential();
-			link.setCompatibilityValue(stateA[1], stateB[0], 0);
-			link.setCompatibilityValue(stateA[0], stateB[1], 0);
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
+		link.initializesRestrictionsPotential();
+		link.setCompatibilityValue(stateA[1], stateB[0], 0);
+		link.setCompatibilityValue(stateA[0], stateB[1], 0);
 		panel = new LinkRestrictionPanel(link);
 		
 	}

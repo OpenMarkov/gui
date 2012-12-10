@@ -23,7 +23,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
@@ -168,11 +167,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 		 			}
 		 		}
 		 		
-		 		try {
-					globalUtility = DiscretePotentialOperations.reorder(globalUtility, corectOrder);
-				} catch (NotEnoughMemoryException e1) {
-					e1.printStackTrace();
-				}
+				globalUtility = DiscretePotentialOperations.reorder(globalUtility, corectOrder);
 		 		
 		 		ProbNode dummy = new ProbNode(dummyProbNet, globalUtility.getVariables().get(0), NodeType.CHANCE);
 	        	
@@ -182,24 +177,18 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 				}
 		 		
 	        	ArrayList<Potential> potentials = new ArrayList<>();
-	        	try {
-	        		/*ArrayList<Variable> variables = new ArrayList<>();
-	        		for (int i = 1; i < globalUtility.getVariables().size(); i++) {
-	        			variables.add(globalUtility.getVariables().get(i));
-	        		}*/
 	        		
-					TablePotential aux = new TablePotential(globalUtility.getVariables(), PotentialRole.CONDITIONAL_PROBABILITY);
-					//aux.setUtilityVariable(globalUtility.getVariables().get(0));
-					aux.setValues(globalUtility.getValues());
-					potentials.add(aux);
-		        	dummy.setPotentials(potentials);
-		        	//not modifiable table potential panel 
-		        	cpTablePanel = new CPTablePanel(dummy);
-		        	cpTablePanel.getCommentHTMLScrollPaneNodeDefinitionComment().setVisible(false);
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				TablePotential aux = new TablePotential(
+						globalUtility.getVariables(),
+						PotentialRole.CONDITIONAL_PROBABILITY);
+				// aux.setUtilityVariable(globalUtility.getVariables().get(0));
+				aux.setValues(globalUtility.getValues());
+				potentials.add(aux);
+				dummy.setPotentials(potentials);
+				// not modifiable table potential panel
+				cpTablePanel = new CPTablePanel(dummy);
+				cpTablePanel.getCommentHTMLScrollPaneNodeDefinitionComment()
+						.setVisible(false);
 	        	
 	        }
 	        return cpTablePanel;

@@ -21,7 +21,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.Utilities;
@@ -162,7 +161,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 								tableModel.insertRow(newIndex + i, newData[i]);
 								edits.remove(edit);
 								break;
-							} catch (DoEditException e) {
+							} catch (DoEditException
+									| NonProjectablePotentialException
+									| WrongCriterionException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 								JOptionPane.showMessageDialog(
@@ -170,28 +171,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 										stringResource
 										.getString("ErrorWindow.Title.Label"),
 										JOptionPane.ERROR_MESSAGE);
-							} catch (NotEnoughMemoryException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								JOptionPane.showMessageDialog(this, stringResource
-										.getString( e.getMessage() ),
-										stringResource.getString( e.getMessage() ),
-									JOptionPane.ERROR_MESSAGE );
-							} catch (NonProjectablePotentialException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								JOptionPane.showMessageDialog(this, stringResource
-										.getString( e.getMessage() ),
-										stringResource.getString( e.getMessage() ),
-									JOptionPane.ERROR_MESSAGE );
-							} catch (WrongCriterionException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								JOptionPane.showMessageDialog(this, stringResource
-										.getString( e.getMessage() ),
-										stringResource.getString( e.getMessage() ),
-									JOptionPane.ERROR_MESSAGE );
-							}
+							} 
 						}
 						
 					}
@@ -249,42 +229,16 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
 					nodes.add(pProbNode.getNode());
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-					/*JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );*/
-				} catch (CanNotDoEditException e) {
+				} catch (CanNotDoEditException | ConstraintViolationException
+						| NonProjectablePotentialException
+						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, stringResource
 							.getString( e.getMessage() ),
 							stringResource.getString( e.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
+				} 
 				
 			}
 			
@@ -344,13 +298,6 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			Utilities.getOwner(this), e.getMessage(),
 			stringResource.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

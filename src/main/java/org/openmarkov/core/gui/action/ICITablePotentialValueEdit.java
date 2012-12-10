@@ -11,7 +11,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.UtilStrings;
@@ -294,7 +293,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		
 		try {
 			probNet.doEdit(iciPotentialEdit);
-		} catch (NotEnoughMemoryException | ConstraintViolationException
+		} catch (ConstraintViolationException
 				| CanNotDoEditException | NonProjectablePotentialException
 				| WrongCriterionException e) {
 			e.printStackTrace();

@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.openmarkov.core.action.RevelationStateEdit;
@@ -12,7 +11,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
@@ -125,15 +123,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 			RevelationStateEdit arcEdit = new RevelationStateEdit(link,
 					selectedState, Boolean.valueOf((Boolean) data));
 			try {
-				node.getProbNet().getPNESupport().announceEdit(arcEdit);
-				node.getProbNet().getPNESupport().doEdit(arcEdit);
+				node.getProbNet().doEdit(arcEdit);
 			} catch (ConstraintViolationException e1) {
-			} catch (NotEnoughMemoryException e2) {
-				e2.printStackTrace();
-				JOptionPane.showMessageDialog(this,
-						stringResource.getString(e2.getMessage()),
-						stringResource.getString(e2.getMessage()),
-						JOptionPane.ERROR_MESSAGE);
 			} catch (CanNotDoEditException e3) {
 				e3.printStackTrace();
 				JOptionPane.showMessageDialog(this,

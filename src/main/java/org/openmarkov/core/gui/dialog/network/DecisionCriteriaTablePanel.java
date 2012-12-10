@@ -12,7 +12,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
 import org.openmarkov.core.model.network.ProbNet;
@@ -56,7 +55,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
                     probNet.doEdit (criteriaEdit);
                     edits.add (criteriaEdit);
                 }
-                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                catch (DoEditException | ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException e)
                 {
@@ -88,12 +87,11 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 		
 			//doEdit
 			try {
-				probNet.getPNESupport().announceEdit(criteriaEdit);
-				probNet.getPNESupport().doEdit(criteriaEdit);
+				probNet.doEdit(criteriaEdit);
 				edits.add(criteriaEdit);
 
                 }
-                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                catch (DoEditException | ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException e)
                 {
@@ -130,17 +128,13 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 				StateAction.REMOVE, "", criteriaName, null);
 		
 		try {
-			probNet.getPNESupport().announceEdit(criteriaEdit);
-			probNet.getPNESupport().doEdit(criteriaEdit);
+			probNet.doEdit(criteriaEdit);
 			edits.add(criteriaEdit);
 		} catch (DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
+		catch (ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
@@ -178,8 +172,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 				StateAction.UP, "", "", dataTable);
 		
 		try {
-			probNet.getPNESupport().announceEdit(criteriaEdit);
-			probNet.getPNESupport().doEdit(criteriaEdit);
+			probNet.doEdit(criteriaEdit);
 			edits.add(criteriaEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
@@ -192,10 +185,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
+		catch (ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
@@ -226,8 +216,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, 
 				StateAction.DOWN, "", "", dataTable);
 		try {
-			probNet.getPNESupport().announceEdit(criteriaEdit);
-			probNet.getPNESupport().doEdit(criteriaEdit);
+			probNet.doEdit(criteriaEdit);
 			edits.add(criteriaEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
@@ -240,10 +229,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
+		catch (ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {

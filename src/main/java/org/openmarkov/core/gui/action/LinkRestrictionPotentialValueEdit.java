@@ -2,7 +2,6 @@ package org.openmarkov.core.gui.action;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
@@ -68,7 +67,7 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	}
 
 	@Override
-	public void doEdit() throws DoEditException, NotEnoughMemoryException {
+	public void doEdit() throws DoEditException {
 		int numStates2 = node2.getVariable().getNumStates();
 		int stateIndex1 = col - 1;
 		int stateIndex2 = numStates2 - row;
@@ -84,15 +83,9 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		this.setTypicalRedo(false);
 		super.redo();
 		if (!link.hasRestrictions()) {
-			try {
-				link.initializesRestrictionsPotential();
-				this.tablePotential = (TablePotential) link
-				.getRestrictionsPotential();
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			link.initializesRestrictionsPotential();
+			this.tablePotential = (TablePotential) link
+					.getRestrictionsPotential();
 		}
 		tablePotential.setValues(newTable);
 		checkRestrictionPotential(newTable);
@@ -101,15 +94,9 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		if (!link.hasRestrictions()) {
-			try {
-				link.initializesRestrictionsPotential();
-				this.tablePotential = (TablePotential) link
-				.getRestrictionsPotential();
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			link.initializesRestrictionsPotential();
+			this.tablePotential = (TablePotential) link
+					.getRestrictionsPotential();
 		}
 		tablePotential.setValues(lastTable);
 		checkRestrictionPotential(lastTable);

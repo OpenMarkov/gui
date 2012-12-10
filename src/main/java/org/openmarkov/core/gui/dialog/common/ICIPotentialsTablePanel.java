@@ -23,7 +23,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.ICIValuesTableCellRenderer;
@@ -487,7 +486,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 }
 
 	@Override
-	public void close() throws NotEnoughMemoryException {
+	public void close() {
 		getICIValuesTable().close();
 	}
 	

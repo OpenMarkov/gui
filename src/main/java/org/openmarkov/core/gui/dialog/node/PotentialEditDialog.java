@@ -35,7 +35,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
@@ -86,7 +85,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     /**
      * The JComboBox object that shows all the potentials types 
      */
-    private JComboBox potentialTypeComboBox;
+    private JComboBox<String> potentialTypeComboBox;
 
     /**
      * The node edited
@@ -247,12 +246,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     /**
      * @return ComboBox with the types of families of relation to be used
      */
-    protected JComboBox getPotentialTypeJCombobox() {
+    protected JComboBox<String> getPotentialTypeJCombobox() {
 
         if (potentialTypeComboBox == null) {
             List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode); 
             Collections.sort(filteredPotentialNames);
-            potentialTypeComboBox = new JComboBox (filteredPotentialNames.toArray ());
+            potentialTypeComboBox = new JComboBox<> ((String[])filteredPotentialNames.toArray ());
             potentialTypeComboBox.setSelectedItem(probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ());            
             potentialTypeComboBox.setBorder( new LineBorder( UIManager.getColor(
                     "List.dropLineColor" ), 1, false ) );
@@ -436,7 +435,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
      * @throws NotEnoughMemoryException 
      */
     @Override
-    protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+    protected boolean doOkClickBeforeHide() {
         if (getPotentialPanel() instanceof  TablePotentialPanel ) {
      	 ((TablePotentialPanel)getPotentialPanel()).getValuesTable().stopCellEditing();
         }
@@ -449,7 +448,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     }
     
     @Override
-    protected void doCancelClickBeforeHide() throws NotEnoughMemoryException {
+    protected void doCancelClickBeforeHide() {
     	getPotentialPanel ().close ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
     }
@@ -459,11 +458,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
      */
     public void updatePotentialPanel() {
         getComponentsPanel ().remove (getPotentialPanel ());
-        try {
-			potentialPanel.close();
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-		}
+		potentialPanel.close();
         potentialPanel = null;
        
         if (((probNode.getPotentials().get(0).getVariables().size() > 1 && probNode.getPotentials().get(0).getPotentialRole() == PotentialRole.UTILITY) ||
@@ -567,41 +562,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 			}*/
 			if (getPotentialPanel() instanceof TablePotentialPanel ) {
 			//if (probNode.getPotentials().get(0) instanceof TablePotential) {
+				Potential potential = DiscretePotentialOperations.reorder(
+						(TablePotential) probNode.getPotentials().get(0),
+						newVariables);
+				SetPotentialEdit potentialEdit = new SetPotentialEdit(probNode,
+						potential);
+
 				try {
-					Potential potential =  DiscretePotentialOperations.reorder((TablePotential)probNode.getPotentials().get(0), 
-							newVariables);
-					SetPotentialEdit potentialEdit = new SetPotentialEdit(probNode, 
-							potential);
-					
-					try {
-						
-						probNode.getProbNet().getPNESupport().announceEdit(potentialEdit);
-						probNode.getProbNet().getPNESupport().doEdit(potentialEdit);
-						
-					} catch (DoEditException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-					} catch (ConstraintViolationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				
-					
-				} catch (NotEnoughMemoryException e) {
+					probNode.getProbNet().doEdit(potentialEdit);
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 				updatePotentialPanel();
 				
 			} else if (getPotentialPanel() instanceof ICIPotentialsTablePanel ) {
@@ -609,27 +584,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 				
 				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(probNode, newVariables);
 				try {
-					
-					probNode.getProbNet().getPNESupport().announceEdit(setPotentialVariables);
-					probNode.getProbNet().getPNESupport().doEdit(setPotentialVariables);
-					
-				} catch (DoEditException e) {
+					probNode.getProbNet().doEdit(setPotentialVariables);
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e) {
 						// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NotEnoughMemoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (WrongCriterionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

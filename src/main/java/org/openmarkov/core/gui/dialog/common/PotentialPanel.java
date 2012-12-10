@@ -9,14 +9,10 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.Dimension;
-import java.text.MessageFormat;
 
-import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.GroupLayout.Alignment;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.model.network.ProbNode;
 
 @SuppressWarnings("serial")
@@ -44,13 +40,13 @@ public abstract class PotentialPanel extends JPanel
      * Modify the node according to the changes entered by the user in the panel
      * @throws NotEnoughMemoryException
      */
-    public void saveChanges() throws NotEnoughMemoryException
+    public void saveChanges()
     {
     	close();
     }
     
     
-    public abstract void close() throws NotEnoughMemoryException;
+    public abstract void close();
 
 	/**
 	 * @return the readOnly

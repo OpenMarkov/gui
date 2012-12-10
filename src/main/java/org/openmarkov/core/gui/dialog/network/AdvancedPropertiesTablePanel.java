@@ -15,7 +15,6 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -165,7 +164,7 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 	@Override
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException,
-			NotEnoughMemoryException, NonProjectablePotentialException,
+			NonProjectablePotentialException,
 			WrongCriterionException {
 		// TODO Auto-generated method stub
 		

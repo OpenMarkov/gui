@@ -27,7 +27,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
@@ -233,7 +232,7 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 getPanel ().getProbNode ().getProbNet ().doEdit (precisionEdit);
             }
-            catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
@@ -254,7 +253,7 @@ public class NodeDiscretizeValuesTablePanelListener
                 getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
                 getPanel ().getJTextFieldUnit ().setText (getPanel ().getJTextFieldUnit ().getText ());
             }
-            catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+            catch (DoEditException | ConstraintViolationException
                     | CanNotDoEditException | NonProjectablePotentialException
                     | WrongCriterionException e)
             {
@@ -273,7 +272,7 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 getPanel ().getProbNode ().getProbNet ().doEdit (precisionEdit);
             }
-            catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
@@ -361,7 +360,7 @@ public class NodeDiscretizeValuesTablePanelListener
                 {
                     getPanel ().getProbNode ().getProbNet ().doEdit (partitionedIntervalEdit);
                 }
-                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                catch (DoEditException | ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException e)
                 {
@@ -380,7 +379,7 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
             }
-            catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+            catch (DoEditException | ConstraintViolationException
                     | CanNotDoEditException | NonProjectablePotentialException
                     | WrongCriterionException e)
             {

@@ -13,7 +13,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
@@ -131,26 +130,11 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 				TablePotential policy = new TablePotential(variables, PotentialRole.POLICY);
 				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(dummyProbNode, policy);
 				
-				try {
-					probNode.getProbNet().getPNESupport().announceEdit(setPotentialEdit);
-					probNode.getProbNet().getPNESupport().doEdit(setPotentialEdit);
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
+					probNode.getProbNet().doEdit(setPotentialEdit);
+
+			} catch (WrongCriterionException | ConstraintViolationException
+					| CanNotDoEditException | NonProjectablePotentialException
+					| DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -180,7 +164,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      * @throws NotEnoughMemoryException 
      */
     @Override
-    protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+    protected boolean doOkClickBeforeHide() {
         getPotentialPanel ().close ();
         probNode.getProbNet().getPNESupport().closeParenthesis();
         return true;

@@ -22,7 +22,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -153,17 +152,9 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		}
 
 		// Reorder the values table of TablePotential
-		try {
-			this.tablePotential = DiscretePotentialOperations.reorder(
-					oldTablePotential, newOrderVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
-					JOptionPane.ERROR_MESSAGE);
-		}
+		this.tablePotential = DiscretePotentialOperations.reorder(
+				oldTablePotential, newOrderVariables);
+
 		// values table reordered
 		this.newTable = tablePotential.getValues().clone();
 
@@ -268,22 +259,13 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		}
 		tablePotential.setValues(newTable);
 		// back to the original order of valuesTable
-		try {
-			this.tablePotential = DiscretePotentialOperations.reorder(
-					this.tablePotential, orderVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
-					JOptionPane.ERROR_MESSAGE);
-		}
+		this.tablePotential = DiscretePotentialOperations.reorder(
+				this.tablePotential, orderVariables);
 		
 		ChangePotentialEdit changePotentialEdit = new ChangePotentialEdit(probNet, oldTablePotential, tablePotential);
 		try {
 			probNet.doEdit(changePotentialEdit);
-		} catch (NotEnoughMemoryException | ConstraintViolationException
+		} catch (ConstraintViolationException
 				| CanNotDoEditException | NonProjectablePotentialException
 				| WrongCriterionException e) {
 			e.printStackTrace();
@@ -299,30 +281,12 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		this.setTypicalRedo(false);
 		super.redo();
 		// reorder the tablePotential
-		try {
 			this.tablePotential = DiscretePotentialOperations.reorder(
 					this.tablePotential, newOrderVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
-					JOptionPane.ERROR_MESSAGE);
-		}
 		tablePotential.setValues(newTable);
 		// back to the original order of the tablePotential
-		try {
 			this.tablePotential = DiscretePotentialOperations.reorder(
 					this.tablePotential, orderVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
-					JOptionPane.ERROR_MESSAGE);
-		}
 
 		ArrayList<Potential> potentials = new ArrayList<Potential>();
 		potentials.add(tablePotential);

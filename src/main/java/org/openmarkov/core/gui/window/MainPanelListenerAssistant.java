@@ -29,7 +29,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
@@ -303,11 +302,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				 * Utilities.getOwner(getCurrentNetworkPanel().getRootPane()),
 				 * e1.getMessage(), "Network not evaluable", MessageType.ERROR);
 				 */
-			} catch (NotEnoughMemoryException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-				JOptionPane.showMessageDialog(null, e2.getMessage(), e2.getMessage(), 
-					JOptionPane.ERROR_MESSAGE );
 			}
 		} else if (actionCommand.
 				equals(ActionCommands.DECISION_IMPOSE_POLICY )) {
@@ -406,7 +400,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 
     private void createExpandeNetwork(ProbNet probNet)
-			throws NotEvaluableNetworkException, NotEnoughMemoryException {
+			throws NotEvaluableNetworkException {
 		/*
 		 * VarEliminationSMM simpleMarkovEvaluation = new
 		 * VarEliminationSMM(probNet, 15, null, 500.0);
@@ -889,65 +883,57 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 */
 	private void expandNetwork(ProbNet probNet, int numSlices) {
 		 FactoryExpandedSMM expandedNetFactory;
-		 	try {
-		 		double maxX = 0.0;
-		 		for (ProbNode probNode : probNet.getProbNodes()) {
-		 			if (probNode.getNode().getCoordinateX() > maxX) {
-		 				maxX = probNode.getNode().getCoordinateX();
-		 			}
-		 		}
-		 		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null,  maxX/3);
-				ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-				String fileName = probNet.getName()+"_expanded";
-				expandedNetwork.setName(fileName);
-				NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-				networkPanel.setNetworkFile(fileName);
-				networkPanels.add (networkPanel);
-			 } catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		double maxX = 0.0;
+		for (ProbNode probNode : probNet.getProbNodes()) {
+			if (probNode.getNode().getCoordinateX() > maxX) {
+				maxX = probNode.getNode().getCoordinateX();
 			}
-			 
-			
+		}
+		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null,
+				maxX / 3);
+		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		String fileName = probNet.getName() + "_expanded";
+		expandedNetwork.setName(fileName);
+		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+		networkPanel.setNetworkFile(fileName);
+		networkPanels.add(networkPanel);
 	}
 	/**
 	 * expand the network like it would be done in CE analysis
 	 * to show it in the GUI
 	 */
 	private void expandNetwokCE(ProbNet probNet, int numSlices, double costDiscountRate, double effectivenessDiscountRate, double cycleLength, EvidenceCase evidence) {
-		 FactoryExpandedSMM expandedNetFactory;
-		try{
-			 double maxX = 0.0;
-		 		for (ProbNode probNode : probNet.getProbNodes()) {
-		 			if (probNode.getNode().getCoordinateX() > maxX) {
-		 				maxX = probNode.getNode().getCoordinateX();
-		 			}
-		 		}
-		 	 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null, maxX/3);
-			 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-			 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, null);
-			 try {
-				evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
-			} catch (IncompatibleEvidenceException e2) {
-				e2.printStackTrace();
-			} catch (InvalidStateException e2) {
-				e2.printStackTrace();
-			} catch (WrongCriterionException e2) {
-				e2.printStackTrace();
+		FactoryExpandedSMM expandedNetFactory;
+		double maxX = 0.0;
+		for (ProbNode probNode : probNet.getProbNodes()) {
+			if (probNode.getNode().getCoordinateX() > maxX) {
+				maxX = probNode.getNode().getCoordinateX();
 			}
-			 expandedNetFactory.adaptProbNetForCE();
-			//project all the evidence
-			//expandedNetFactory.projectEvidence(evidence);	
-			ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-			String fileName = probNet.getName()+"_expandedCE";
-			expandedNetwork.setName(fileName);
-			NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-			networkPanel.setNetworkFile(fileName);
-			networkPanels.add(networkPanel);
-		 } catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
+		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null,
+				maxX / 3);
+		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate,
+				effectivenessDiscountRate, inferenceOptions, null);
+		try {
+			evidence.extendEvidence(expandedNetFactory.getExtendedNet(),
+					cycleLength);
+		} catch (IncompatibleEvidenceException e2) {
+			e2.printStackTrace();
+		} catch (InvalidStateException e2) {
+			e2.printStackTrace();
+		} catch (WrongCriterionException e2) {
+			e2.printStackTrace();
+		}
+		expandedNetFactory.adaptProbNetForCE();
+		// project all the evidence
+		// expandedNetFactory.projectEvidence(evidence);
+		ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
+		String fileName = probNet.getName() + "_expandedCE";
+		expandedNetwork.setName(fileName);
+		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+		networkPanel.setNetworkFile(fileName);
+		networkPanels.add(networkPanel);
 	}
 
 	/**
@@ -1499,6 +1485,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
     {
         DecisionTreePanel decisionTree = new DecisionTreePanel (probNet);
         mainPanel.getMdi().createNewFrame(decisionTree);
+        mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree();
     }	
 
 }

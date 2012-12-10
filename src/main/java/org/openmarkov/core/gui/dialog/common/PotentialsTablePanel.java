@@ -34,7 +34,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.component.ICIValuesTable;
@@ -1096,15 +1095,7 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 			}
 			
 		}
-		try {
-			tablePotential =
-				DiscretePotentialOperations.reorder(
-					tablePotential, newOrderVariables );
-		} catch (NotEnoughMemoryException exception) {
-			//ExceptionsHandler.handleException(
-				//exception, "not enougth memory", true );
-			logger.fatal("not enougth memory");
-		}
+		tablePotential = DiscretePotentialOperations.reorder(tablePotential, newOrderVariables);
 		
 		/*for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
 			for (int j = numColumns - 1; j >= 1; j--, position++) {
@@ -1370,18 +1361,8 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 			reorderedVariables.add(variables.get(i));
 		}
 		//gets the potential with variables and values table reordered
-		TablePotential reorderedTablePotential = null;
-		try {
-			reorderedTablePotential = DiscretePotentialOperations.reorder( 
+		TablePotential reorderedTablePotential = DiscretePotentialOperations.reorder( 
 					tablePotential,reorderedVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
 		//gets the configuration selected
 		int [] configuration = reorderedTablePotential.getConfiguration(
 				startPosition);
@@ -1432,72 +1413,40 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * @throws WrongCriterionException 
 	 */
 	public void showUncertaintyDialog() throws WrongCriterionException {
-		//Generates the evidenceCase based on the column
-		//selected on the JTable object
+		// Generates the evidenceCase based on the column
+		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
-		
-		try {
-			UncertainValuesDialog uncertDialog = new UncertainValuesDialog(
-					Utilities.getOwner(this), evidenceCase,  
-					(TablePotential)probNode.getPotentials().get( 0 ));
-			int button = uncertDialog.requestUncertainValues();
-			 if (button == UncertainValuesDialog.OK_BUTTON){
-				 UncertainValuesEdit uncertEdit = new UncertainValuesEdit(
-						 probNode,uncertDialog.getUncertainColumn(),uncertDialog.getValuesColumn(),uncertDialog.getPosBase(),selectedColumn,uncertDialog.isChanceVariable());  
-				 
-				 try{
-				 	probNode.getProbNet().getPNESupport().announceEdit(uncertEdit);
-					probNode.getProbNet().getPNESupport().doEdit(uncertEdit);
-					
-					if ( selectedColumn > 0 ){ 
-						( (ValuesTableCellRenderer)	getValuesTable().getDefaultRenderer(
-							 Double.class)).setMark(selectedColumn-1) ;
-					 		getValuesTable().repaint();
-					}
-				 }catch (ConstraintViolationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (DoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					}
-			 
-			 
-			 }
-			
-			
-			
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} 
-		
+
+		UncertainValuesDialog uncertDialog = new UncertainValuesDialog(
+				Utilities.getOwner(this), evidenceCase,
+				(TablePotential) probNode.getPotentials().get(0));
+		int button = uncertDialog.requestUncertainValues();
+		if (button == UncertainValuesDialog.OK_BUTTON) {
+			UncertainValuesEdit uncertEdit = new UncertainValuesEdit(probNode,
+					uncertDialog.getUncertainColumn(),
+					uncertDialog.getValuesColumn(), uncertDialog.getPosBase(),
+					selectedColumn, uncertDialog.isChanceVariable());
+
+			try {
+				probNode.getProbNet().doEdit(uncertEdit);
+
+				if (selectedColumn > 0) {
+					((ValuesTableCellRenderer) getValuesTable()
+							.getDefaultRenderer(Double.class))
+							.setMark(selectedColumn - 1);
+					getValuesTable().repaint();
+				}
+			} catch (ConstraintViolationException | CanNotDoEditException
+					| NonProjectablePotentialException | DoEditException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this,
+						messageStringResource.getString(e.getMessage()),
+						messageStringResource.getString(e.getMessage()),
+						JOptionPane.ERROR_MESSAGE);
+			} 
+
+		}
 	}
 	
 	
@@ -1506,14 +1455,13 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 	 * @throws WrongCriterionException 
 	 * @throws NotEnoughMemoryException 
 	 */
-	public void removeUncertainty() throws NotEnoughMemoryException, WrongCriterionException{
+	public void removeUncertainty() throws WrongCriterionException{
 		
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 		UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(probNode,evidenceCase);
 		
 		 try{
-			 	probNode.getProbNet().getPNESupport().announceEdit(uncertEdit);
-				probNode.getProbNet().getPNESupport().doEdit(uncertEdit);
+			 	probNode.getProbNet().doEdit(uncertEdit);
 				
 				if ( selectedColumn > 0 ){ 
 					( (ValuesTableCellRenderer)	getValuesTable().getDefaultRenderer(
@@ -1521,37 +1469,16 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 				 		getValuesTable().repaint();
 				}
 				
-			 }catch (ConstraintViolationException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString( e.getMessage() ),
 						messageStringResource.getString( e.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e.getMessage() ),
-						messageStringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
-				
-			
+			} 		
+	
 	}
 	
 	
@@ -1598,12 +1525,6 @@ public class PotentialsTablePanel extends JPanel implements ActionListener {
 		else if (actionCommand.equals( ActionCommands.UNCERTAINTY_REMOVE )) {
 			try {
 				removeUncertainty();
-			} catch (NotEnoughMemoryException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e1.getMessage() ),
-					messageStringResource.getString( e1.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, messageStringResource

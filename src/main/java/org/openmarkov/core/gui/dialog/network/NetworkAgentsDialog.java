@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -139,7 +138,7 @@ public class NetworkAgentsDialog extends OkCancelHorizontalDialog{
 		 * @return true if the dialog box can be closed.
 		 * @throws NotEnoughMemoryException 
 		 */
-		protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+		protected boolean doOkClickBeforeHide() {
 			probNet.getPNESupport().closeParenthesis();
 			return true;
 		}

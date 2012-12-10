@@ -7,7 +7,6 @@ import java.util.List;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -73,8 +72,6 @@ public class CostEffectivenessAnalysis {
 			 e2.printStackTrace();
 		 } catch (WrongCriterionException e2) {
 			 e2.printStackTrace();
-		 } catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
 		}
 	 }
  }
@@ -82,7 +79,6 @@ public class CostEffectivenessAnalysis {
 public TablePotential costEffectivenessCalculator() {
 	 TablePotential globalUtility = null;
 	 FactoryExpandedSMM expandedNetFactory;
-	 try {
 		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
@@ -117,53 +113,54 @@ public TablePotential costEffectivenessCalculator() {
 			 e1.printStackTrace();
 		 }
 
-	 } catch (NotEnoughMemoryException e) {
-		e.printStackTrace();
-	 }
+
 	 return globalUtility;
  }
 
 
  public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest, EvidenceCase evidence) throws ImposedPoliciesException {
-     List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
-	 //check if all decision nodes has an imposed policy, potential set in probNode
-	 for (ProbNode node : decisionNodes) {
-		 if (node.getPotentials().size() == 0) {
-			 throw new ImposedPoliciesException("All decision nodes must have an imposed policy");
-		 }
-	 }
+		List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+		// check if all decision nodes has an imposed policy, potential set in
+		// probNode
+		for (ProbNode node : decisionNodes) {
+			if (node.getPotentials().size() == 0) {
+				throw new ImposedPoliciesException(
+						"All decision nodes must have an imposed policy");
+			}
+		}
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
-	 try {
-		 FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
-		 extendEvidence(expandedNetFactory.getExtendedNet());
-		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, new InferenceOptions(probNet, null), evidence); 
-		 this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
-		 String baseName = variableOfInterest.getBaseName();
-		 List<Variable> variablesOfInterest = new ArrayList<>();
-		 List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
-		 for (ProbNode node :expandedProbNetProbNodes) {
+		FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet,
+				numSlices, null, 200.0);
+		extendEvidence(expandedNetFactory.getExtendedNet());
+		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate,
+				effectivenessDiscountRate, new InferenceOptions(probNet, null),
+				evidence);
+		this.expandedNetwork = expandedNetFactory.getExtendedNet();
+		String baseName = variableOfInterest.getBaseName();
+		List<Variable> variablesOfInterest = new ArrayList<>();
+		List<ProbNode> expandedProbNetProbNodes = expandedNetwork
+				.getProbNodes();
+		for (ProbNode node : expandedProbNetProbNodes) {
 			if (node.getVariable().getBaseName().equals(baseName)) {
-				 variablesOfInterest.add(node.getVariable());
-			 }
-		 }
-		 try {
-			 VariableElimination variableElimination = new VariableElimination(expandedNetwork);
-			 variableElimination.setPreResolutionEvidence(evidence);
-			 try {
-				 probsAndUtilities =  variableElimination.getProbsAndUtilities(variablesOfInterest);
-			 } catch (IncompatibleEvidenceException e) {
-				 e.printStackTrace();
-			 } catch (UnexpectedInferenceException e) {
-				 e.printStackTrace();
-			 }
-		 } catch (NotEvaluableNetworkException e) {
-			 e.printStackTrace();
-		 }
+				variablesOfInterest.add(node.getVariable());
+			}
+		}
+		try {
+			VariableElimination variableElimination = new VariableElimination(
+					expandedNetwork);
+			variableElimination.setPreResolutionEvidence(evidence);
+			try {
+				probsAndUtilities = variableElimination
+						.getProbsAndUtilities(variablesOfInterest);
+			} catch (IncompatibleEvidenceException e) {
+				e.printStackTrace();
+			} catch (UnexpectedInferenceException e) {
+				e.printStackTrace();
+			}
+		} catch (NotEvaluableNetworkException e) {
+			e.printStackTrace();
+		}
 
-
-	 } catch (NotEnoughMemoryException e) {
-		 e.printStackTrace();
-	 }
 	 return probsAndUtilities;
  }
  

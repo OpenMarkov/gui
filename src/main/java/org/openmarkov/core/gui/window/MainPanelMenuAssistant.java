@@ -211,6 +211,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
 		setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
+		setOptionEnabled(ActionCommands.DECISION_TREE, false);
 		
 	}
 
@@ -348,6 +349,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+		setOptionEnabled(ActionCommands.DECISION_TREE, false);
 
 		if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
@@ -366,6 +368,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				setOptionEnabled(
 						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
 				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
+				setOptionEnabled(ActionCommands.DECISION_TREE, true);
 			}
 			if (networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType) {
 				setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
@@ -1058,5 +1061,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		}
 		updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
 		updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
+	}
+
+	public void updateOptionsDecisionTree() {
+		setOptionEnabled(EDITING_ACTION_COMMANDS, false);
+		setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
+		setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
+		setOptionEnabled(ActionCommands.SAVE_NETWORK, false);
+		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
+		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
+		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
+		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
 	}
 }

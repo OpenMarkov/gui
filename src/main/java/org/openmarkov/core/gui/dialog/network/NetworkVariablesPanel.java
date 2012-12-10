@@ -28,7 +28,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -286,7 +285,7 @@ public class NetworkVariablesPanel extends JPanel
             {
                 probNet.doEdit (variableTypeCE);
             }
-            catch (NotEnoughMemoryException | ConstraintViolationException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
@@ -311,7 +310,7 @@ public class NetworkVariablesPanel extends JPanel
             {
                 probNet.doEdit (networkDefaultStatesEdit);
             }
-            catch (NotEnoughMemoryException | ConstraintViolationException
+            catch (ConstraintViolationException
                     | CanNotDoEditException | NonProjectablePotentialException
                     | WrongCriterionException | DoEditException e)
             {

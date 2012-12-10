@@ -34,7 +34,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
@@ -428,7 +427,7 @@ public class NetworkDefinitionPanel extends JPanel
 			probNet.doEdit(networkCommentEdit);
         }
         catch (ConstraintViolationException | CanNotDoEditException | DoEditException
-                | NotEnoughMemoryException | NonProjectablePotentialException
+                | NonProjectablePotentialException
                 | WrongCriterionException e)
         {
 			e.printStackTrace();
@@ -463,7 +462,7 @@ public class NetworkDefinitionPanel extends JPanel
 					parent.getNetworkAdvancedPanel().getDecisionCriteriaButton().setEnabled((probNet.onlyChanceNodes()));
 					
                 }
-                catch (NotEnoughMemoryException | ConstraintViolationException
+                catch (ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException e)
                 {

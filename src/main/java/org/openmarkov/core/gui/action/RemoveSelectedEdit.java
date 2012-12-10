@@ -18,7 +18,6 @@ import org.openmarkov.core.action.CRemoveProbNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
@@ -76,8 +75,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
 
     @Override
     public void generateEdits ()
-        throws NotEnoughMemoryException,
-        NonProjectablePotentialException,
+        throws NonProjectablePotentialException,
         WrongCriterionException
     {
         for (VisualLink link : linksToRemove) {

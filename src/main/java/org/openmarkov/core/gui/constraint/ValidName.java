@@ -11,12 +11,9 @@ package org.openmarkov.core.gui.constraint;
 
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -39,25 +36,17 @@ public class ValidName extends PNConstraint {
 	private String message;
 	private StringResource messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit) 
-	throws NonProjectablePotentialException, WrongCriterionException {
-	    List<PNEdit> edits;
-		try {
-            edits = UtilConstraints.getEditsType (edit, NodeNameEdit.class);
-			for (PNEdit simpleEdit : edits) {
-				String name = ((NodeNameEdit)simpleEdit).getNewName();
-				String currentName = ((NodeNameEdit)simpleEdit).getPreviousName();
-				//if ((name == null) || (name.contentEquals(""))) {
-				if (!checkName(name, currentName, probNet)){
-					return false;
-				}
+	public boolean checkEdit(ProbNet probNet, PNEdit edit)
+			throws NonProjectablePotentialException, WrongCriterionException {
+		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit,
+				NodeNameEdit.class);
+		for (PNEdit simpleEdit : edits) {
+			String name = ((NodeNameEdit) simpleEdit).getNewName();
+			String currentName = ((NodeNameEdit) simpleEdit).getPreviousName();
+			// if ((name == null) || (name.contentEquals(""))) {
+			if (!checkName(name, currentName, probNet)) {
+				return false;
 			}
-		} catch (NotEnoughMemoryException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, messageStringResource
-					.getString(  e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
 		}
 		return true;
 	}

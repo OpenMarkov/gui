@@ -48,7 +48,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
@@ -1062,7 +1061,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                                                        JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                catch (ConstraintViolationException | NotEnoughMemoryException
+                catch (ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException | DoEditException e1)
                 {
@@ -1108,7 +1107,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                                                        JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                catch (ConstraintViolationException | NotEnoughMemoryException
+                catch (ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException | DoEditException e)
                 {
@@ -1133,7 +1132,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                 {
                     probNode.getProbNet ().doEdit (precisionEdit);
                 }
-                catch (ConstraintViolationException | NotEnoughMemoryException
+                catch (ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException | DoEditException e1)
                 {
@@ -1222,7 +1221,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                 {
                     probNode.getProbNet ().doEdit (partitionedIntervalEdit);
                 }
-                catch (DoEditException | NotEnoughMemoryException | ConstraintViolationException
+                catch (DoEditException | ConstraintViolationException
                         | CanNotDoEditException | NonProjectablePotentialException
                         | WrongCriterionException e)
                 {
@@ -1303,7 +1302,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                                                    JOptionPane.ERROR_MESSAGE);
                 }
             }
-            catch (ConstraintViolationException | NotEnoughMemoryException | CanNotDoEditException
+            catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();

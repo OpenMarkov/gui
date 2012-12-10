@@ -11,17 +11,12 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.swing.CellEditor;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -33,7 +28,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
@@ -600,14 +594,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			}
 
 		}
-		try {
-			tablePotential = DiscretePotentialOperations.reorder(
-					tablePotential, newOrderVariables);
-		} catch (NotEnoughMemoryException exception) {
-			// ExceptionsHandler.handleException(
-			// exception, "not enougth memory", true );
-			logger.fatal("not enougth memory");
-		}
+
+		tablePotential = DiscretePotentialOperations.reorder(tablePotential,
+				newOrderVariables);
 
 		/*
 		 * for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
@@ -681,14 +670,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				newOrderVariables.add(variables.get(i));
 			}
 		}
-		try {
-			potential = DiscretePotentialOperations.reorder(potential,
-					newOrderVariables);
-		} catch (NotEnoughMemoryException exception) {
-			// ExceptionsHandler.handleException(
-			// exception, "not enougth memory", true );
-			logger.fatal("not enougth memory");
-		}
+		potential = DiscretePotentialOperations.reorder(potential,
+				newOrderVariables);
 
 		for (int[] state : statesWithRestriction) {
 			// reorder the variables
@@ -844,18 +827,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			reorderedVariables.add(variables.get(i));
 		}
 		// gets the potential with variables and values table reordered
-		TablePotential reorderedTablePotential = null;
-		try {
-			reorderedTablePotential = DiscretePotentialOperations.reorder(
+		TablePotential reorderedTablePotential = DiscretePotentialOperations.reorder(
 					tablePotential, reorderedVariables);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
 		// gets the configuration selected
 		int[] configuration = reorderedTablePotential
 				.getConfiguration(startPosition);
@@ -910,7 +883,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 
-		try {
+
 			UncertainValuesDialog uncertDialog = new UncertainValuesDialog(
 					Utilities.getOwner(this), evidenceCase,
 					(TablePotential) probNode.getPotentials().get(0));
@@ -923,9 +896,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 						uncertDialog.isChanceVariable());
 
 				try {
-					probNode.getProbNet().getPNESupport()
-							.announceEdit(uncertEdit);
-					probNode.getProbNet().getPNESupport().doEdit(uncertEdit);
+					probNode.getProbNet().doEdit(uncertEdit);
 
 					if (selectedColumn > 0) {
 						((ValuesTableCellRenderer) getValuesTable()
@@ -933,28 +904,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 								.setMark(selectedColumn - 1);
 						getValuesTable().repaint();
 					}
-				} catch (ConstraintViolationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e) {
+			} catch (ConstraintViolationException | CanNotDoEditException
+					| NonProjectablePotentialException | DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, stringResource
@@ -964,15 +915,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				}
 
 			}
-
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
-					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
 
 	}
 
@@ -1156,12 +1098,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
 			try {
 				removeUncertainty();
-			} catch (NotEnoughMemoryException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
-						.getString( e1.getMessage() ),
-						stringResource.getString( e1.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
 			} catch (WrongCriterionException e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringResource
@@ -1180,16 +1116,14 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * @throws WrongCriterionException
 	 * @throws NotEnoughMemoryException
 	 */
-	public void removeUncertainty() throws NotEnoughMemoryException,
-			WrongCriterionException {
+	public void removeUncertainty() throws WrongCriterionException {
 
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 		UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(
 				probNode, evidenceCase);
 
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(uncertEdit);
-			probNode.getProbNet().getPNESupport().doEdit(uncertEdit);
+			probNode.getProbNet().doEdit(uncertEdit);
 
 			if (selectedColumn > 0) {
 				((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(
@@ -1363,7 +1297,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void close() throws NotEnoughMemoryException {
+	public void close() {
 		getValuesTable().close();
 	}
 	

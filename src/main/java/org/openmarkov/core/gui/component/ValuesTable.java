@@ -45,7 +45,6 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DeterministicValueNotAllowedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbabilisticValueNotAllowedException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.TablePotentialValueEdit;
@@ -467,55 +466,23 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 					}
 					
 					TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
-						probNode, (Double)newValue, row, col, priorityList,getTableModel().getNotEditablePositions());
+							probNode, (Double) newValue, row, col,
+							priorityList, getTableModel()
+									.getNotEditablePositions());
 					try {
-						probNode.getProbNet().getPNESupport().announceEdit(
-								nodePotentialEdit);
-						probNode.getProbNet().getPNESupport().doEdit(
-							nodePotentialEdit);
-						
-					} catch (ConstraintViolationException e) {
+						probNode.getProbNet().doEdit(nodePotentialEdit);
+					} catch (ConstraintViolationException
+							| CanNotDoEditException
+							| NonProjectablePotentialException
+							| WrongCriterionException | DoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (DoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NotEnoughMemoryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
+						JOptionPane
+								.showMessageDialog(this, messageStringResource
+										.getString(e.getMessage()),
+										messageStringResource.getString(e
+												.getMessage()),
+										JOptionPane.ERROR_MESSAGE);
 					}
 				
 				//checkProbabilistic( oldValue, newValue, row, col );
@@ -524,47 +491,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
 						probNode, (Double)newValue, row, col, priorityList,this.getTableModel().getNotEditablePositions());
 					try {
-						probNode.getProbNet().getPNESupport().announceEdit(
-								nodePotentialEdit);
-						probNode.getProbNet().getPNESupport().doEdit(
-							nodePotentialEdit);
+						probNode.getProbNet().doEdit(nodePotentialEdit);
 						
-					} catch (ConstraintViolationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (CanNotDoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (DoEditException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NotEnoughMemoryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (NonProjectablePotentialException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(this, messageStringResource
-								.getString( e.getMessage() ),
-							messageStringResource.getString( e.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					} catch (WrongCriterionException e) {
+				} catch (ConstraintViolationException | CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException | DoEditException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						JOptionPane.showMessageDialog(this, messageStringResource
@@ -1501,26 +1432,15 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				newOrderVariables.add(orderVariables.get(i));
 				
 			}
-			TablePotential auxPotential = null;
-			try {
-				auxPotential = DiscretePotentialOperations.reorder( 
+			TablePotential auxPotential =  DiscretePotentialOperations.reorder( 
 						tablePotential, newOrderVariables);
-			} catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, messageStringResource
-						.getString( e.getMessage() ),
-					messageStringResource.getString( e.getMessage() ),
-					JOptionPane.ERROR_MESSAGE );
-			}
 			
 			double[] values =  auxPotential.getValues();
 			
 			while (listIterator.hasNext()== true){
 				position = (Integer)listIterator.next();
 				super.getModel().setValueAt(values[position], 
-						edit.getRowPosition(position), edit.getColumnPosition());
-
+					edit.getRowPosition(position), edit.getColumnPosition());
 			}
 			break;
 		case UTILITY:

@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
@@ -105,9 +104,7 @@ public class ChangeIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog 
 	 * @return true if the dialog box can be closed.
 	 * @throws NotEnoughMemoryException 
 	 */
-	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
-		
-		
+	protected boolean doOkClickBeforeHide() {
 		return true;
 	}
 

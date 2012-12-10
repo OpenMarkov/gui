@@ -27,7 +27,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
@@ -1394,7 +1393,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         	MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getProbNode ().isInput (), visualNode.getProbNode ());
         	try {
 				probNet.doEdit(markAsInputEdit);
-			} catch (NotEnoughMemoryException | ConstraintViolationException
+			} catch (ConstraintViolationException
 					| CanNotDoEditException | NonProjectablePotentialException
 					| WrongCriterionException | DoEditException e) {
 				e.printStackTrace();

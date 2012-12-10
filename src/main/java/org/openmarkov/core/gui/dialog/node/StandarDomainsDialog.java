@@ -1,14 +1,11 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Window;
 
 import javax.swing.JPanel;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.dialog.treeadd.AddStatesCheckBoxPanel;
 
 /**
  * 
@@ -67,7 +64,7 @@ public int requestValues() {
  * @return true if the dialog box can be closed.
  * @throws NotEnoughMemoryException 
  */
-protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+protected boolean doOkClickBeforeHide() {
 	
 	
 	return true;

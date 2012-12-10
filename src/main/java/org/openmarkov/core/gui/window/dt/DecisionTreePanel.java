@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
+import org.openmarkov.core.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDController;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -69,7 +69,7 @@ public class DecisionTreePanel extends FrameContentPanel
                 }
             lastStepBranches = currentStepBranches;
         }
-        treeADDController = new TreeADDController (probNet, treeADDPotential);
+        treeADDController = new TreeADDController (new TreeADDCellRenderer(probNet), treeADDPotential);
         add (treeADDController, BorderLayout.CENTER);
         setBackground (Color.blue);
     }

@@ -12,7 +12,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NetworkAgentEdit;
 import org.openmarkov.core.model.network.ProbNet;
@@ -50,26 +49,12 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
 					StateAction.RENAME, newName, agentName, dataTable);
 			try {
-				probNet.getPNESupport().announceEdit(networkAgentEdit);
-				probNet.getPNESupport().doEdit(networkAgentEdit);
+				probNet.doEdit(networkAgentEdit);
 				edits.add(networkAgentEdit);
-			} catch (DoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -97,29 +82,15 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 					StateAction.ADD, "", option, null);
 			//doEdit
 			try {
-				probNet.getPNESupport().announceEdit(networkAgentEdit);
-				probNet.getPNESupport().doEdit(networkAgentEdit);
+				probNet.doEdit(networkAgentEdit);
 				edits.add(networkAgentEdit);
-			} catch (DoEditException e) {
+			} catch (DoEditException | ConstraintViolationException
+					| CanNotDoEditException | NonProjectablePotentialException
+					| WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			catch (NotEnoughMemoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ConstraintViolationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CanNotDoEditException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NonProjectablePotentialException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			/*getTableModel().insertRow(newIndex, new Object[] {getKeyString(newIndex), option });
 			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);*/	
 			
@@ -148,29 +119,15 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
 				StateAction.REMOVE, "", agentName, null);
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
+			probNet.doEdit(networkAgentEdit);
 			edits.add(networkAgentEdit);
-		} catch (DoEditException e) {
+		} catch (DoEditException | ConstraintViolationException
+				| CanNotDoEditException | NonProjectablePotentialException
+				| WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		//StringsWithProperties agents = probNet.getAgents();
 		List<StringWithProperties> agents = probNet.getAgents();
 		setDataFromAdvancedProperties(agents);
@@ -195,8 +152,7 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
 				StateAction.UP, "", "", dataTable);
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
+			probNet.doEdit(networkAgentEdit);
 			edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
@@ -205,23 +161,9 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException
+				| CanNotDoEditException | NonProjectablePotentialException
+				| WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -243,8 +185,7 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 		NetworkAgentEdit networkAgentEdit = new NetworkAgentEdit(probNet, 
 				StateAction.DOWN, "", "", dataTable);
 		try {
-			probNet.getPNESupport().announceEdit(networkAgentEdit);
-			probNet.getPNESupport().doEdit(networkAgentEdit);
+			probNet.doEdit(networkAgentEdit);
 			edits.add(networkAgentEdit);
 			setData(dataTable);
 			/*swap = valuesTable.getValueAt(selectedRow, 1);
@@ -253,23 +194,9 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(
 				selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException
+				| CanNotDoEditException | NonProjectablePotentialException
+				| WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

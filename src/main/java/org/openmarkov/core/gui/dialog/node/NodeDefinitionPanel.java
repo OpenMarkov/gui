@@ -19,10 +19,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
@@ -31,7 +29,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -48,7 +45,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodeAgentEdit;
 import org.openmarkov.core.gui.action.NodeDecisionCriteriaEdit;
@@ -73,11 +69,11 @@ import org.openmarkov.core.model.network.VariableType;
 public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		ItemListener, CommentListener, ActionListener {
 
-	private JComboBox jComboBoxNetworkAgents;
+	private JComboBox<String> jComboBoxNetworkAgents;
 	private JLabel jLabelTimeSlice;
-	private JComboBox jComboBoxTimeSlice;
+	private JComboBox<String> jComboBoxTimeSlice;
 	private JLabel jLabelDecisionCriteria;
-	private JComboBox jComboBoxDecisionCriteria;
+	private JComboBox<String> jComboBoxDecisionCriteria;
 
 	/**
 	 * constructor without construction parameters
@@ -359,10 +355,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * 
 	 * @return the JComboBoxNodeRelevance
 	 */
-	private JComboBox getJComboBoxTimeSlice() {
+	private JComboBox<String> getJComboBoxTimeSlice() {
 
 		if (jComboBoxTimeSlice == null) {
-			jComboBoxTimeSlice = new JComboBox();
+			jComboBoxTimeSlice = new JComboBox<>();
 			jComboBoxTimeSlice.setName("jComboBoxTimeSlice");
 			jComboBoxTimeSlice.setEditable(true);
 			jComboBoxTimeSlice.setSize(60, 40);
@@ -744,10 +740,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * 
 	 * @return the JComboBoxNodeRelevance
 	 */
-	private JComboBox getJComboBoxNodeRelevance() {
+	private JComboBox<Double> getJComboBoxNodeRelevance() {
 
 		if (jComboBoxNodeRelevance == null) {
-			jComboBoxNodeRelevance = new JComboBox();
+			jComboBoxNodeRelevance = new JComboBox<>();
 			jComboBoxNodeRelevance.setName("jComboBoxNodeRelevance");
 			jComboBoxNodeRelevance.setEditable(true);
 			jComboBoxNodeRelevance.setSize(60, 40);
@@ -818,10 +814,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * 
 	 * @return the JComboBoxNodePurpose
 	 */
-	private JComboBox getJComboBoxNodePurpose() {
+	private JComboBox<String> getJComboBoxNodePurpose() {
 
 		if (jComboBoxNodePurpose == null) {
-			jComboBoxNodePurpose = new JComboBox(Purpose.getListStrings(false));
+			jComboBoxNodePurpose = new JComboBox<>(Purpose.getListStrings(false));
 			jComboBoxNodePurpose.setName("jComboBoxNodePurpose");
 			jComboBoxNodePurpose.setSelectedIndex(0);
 			jComboBoxNodePurpose.setMaximumRowCount(9);
@@ -836,7 +832,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * 
 	 * @return the JComboBoxNodePurpose
 	 */
-	private JComboBox getJComboBoxNetworkAgents() {
+	private JComboBox<String> getJComboBoxNetworkAgents() {
 
 		if (jComboBoxNetworkAgents == null) {
 			//StringsWithProperties agents = probNode.getProbNet().getAgents();
@@ -863,7 +859,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				agentNames[0] = "";
 				agentNames[1] = probNode.getVariable().getAgent().getString();
 			}*/
-			jComboBoxNetworkAgents = new JComboBox(agentNames);
+			jComboBoxNetworkAgents = new JComboBox<>(agentNames);
 			jComboBoxNetworkAgents.setName("jComboBoxAgents");
 			jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
 			if (probNode.getVariable().getAgent() != null && agents != null) {
@@ -928,7 +924,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	}
 	
 	
-	private JComboBox getJComboBoxDecisionCriteria() {
+	private JComboBox<String> getJComboBoxDecisionCriteria() {
 		if (jComboBoxDecisionCriteria == null) {
 			List<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
 			String [] criteriaNames = null;
@@ -943,7 +939,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				criteriaNames = new String[1]; 
 				criteriaNames[0] = "";
 			}
-			jComboBoxDecisionCriteria = new JComboBox(criteriaNames);
+			jComboBoxDecisionCriteria = new JComboBox<>(criteriaNames);
 			jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
 			jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
 			if (probNode.getVariable().getDecisionCriteria() != null && decisionCriteria != null) {
@@ -1018,14 +1014,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		return variableType;
 	}
 
-	/**
-	 * @param variableType
-	 *            the variableType to set
-	 */
-	private void setNodeVariable(VariableType variableType) {
-
-		this.variableType = variableType;
-	}
 
 	/**
 	 * Invoked when an item has been selected.
@@ -1036,7 +1024,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	public void itemStateChanged(ItemEvent e) {
 	
 		int optionDeselected = 0;
-		int optionSelected = 0;
 		ItemSelectable itemSelectable = e.getItemSelectable();
 		Object selected[] = itemSelectable.getSelectedObjects();
 		String itemSelected = selected.length == 0 ? "null" : selected[0]
@@ -1045,10 +1032,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		if (e.getStateChange() == ItemEvent.DESELECTED) {
 			optionDeselected = comboBox.getSelectedIndex();
 		}
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			optionSelected = comboBox.getSelectedIndex();
-		}
-		//optionSelected = comboBox.getSelectedIndex();
 		
 		if (comboBox.getName().equals("jComboBoxNodePurpose")) {
 
@@ -1063,9 +1046,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 
 				}
 				try {
-					probNode.getProbNet().getPNESupport()
-							.announceEdit(purposeEdit);
-					probNode.getProbNet().getPNESupport().doEdit(purposeEdit);
+						probNode.getProbNet().doEdit(purposeEdit);
 				} catch (ConstraintViolationException e1) {
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString(e1.getMessage()), messageStringResource
@@ -1074,7 +1055,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
 
-				} catch (CanNotDoEditException e1) {
+				} catch (NonProjectablePotentialException
+						| WrongCriterionException | DoEditException | CanNotDoEditException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, messageStringResource
@@ -1082,36 +1064,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 						messageStringResource.getString( e1.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
 
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-
-				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-
-				} catch (NonProjectablePotentialException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e2.getMessage() ),
-						messageStringResource.getString( e2.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e3) {
-					// TODO Auto-generated catch block
-					e3.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e3.getMessage() ),
-						messageStringResource.getString( e3.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
 				}
 			}
 		} else if (comboBox.getName().equals("jComboBoxNodeRelevance")) {
@@ -1123,9 +1075,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 						Double.valueOf(itemSelected));
 
 				try {
-					probNode.getProbNet().getPNESupport()
-							.announceEdit(relevanceEdit);
-					probNode.getProbNet().getPNESupport().doEdit(relevanceEdit);
+						probNode.getProbNet().doEdit(relevanceEdit);
+
 				} catch (ConstraintViolationException e1) {
 					JOptionPane.showMessageDialog(this, messageStringResource
 							.getString(e1.getMessage()), messageStringResource
@@ -1133,43 +1084,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							JOptionPane.ERROR_MESSAGE);
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
+				} catch (NonProjectablePotentialException
+						| WrongCriterionException | DoEditException | CanNotDoEditException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(this, messageStringResource
+							.getString( e1.getMessage() ),
+						messageStringResource.getString( e1.getMessage() ),
+						JOptionPane.ERROR_MESSAGE );
+				}					
 
-				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e2.getMessage() ),
-						messageStringResource.getString( e2.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e3) {
-					// TODO Auto-generated catch block
-					e3.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e3.getMessage() ),
-						messageStringResource.getString( e3.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
 			}
 		} else if (comboBox.getName().equals("jComboBoxTimeSlice")) {
 			if (!(itemSelected == null)
@@ -1185,45 +1108,17 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				}
 				
 				try {
-					probNode.getProbNet().getPNESupport().announceEdit(timeSliceEdit);
-					probNode.getProbNet().getPNESupport().doEdit(timeSliceEdit);
+					probNode.getProbNet().doEdit(timeSliceEdit);
 					//comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException e1) {
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(this, messageStringResource
 								.getString( e1.getMessage() ),
 							messageStringResource.getString( e1.getMessage() ),
 							JOptionPane.ERROR_MESSAGE );
-				} catch (NotEnoughMemoryException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (ConstraintViolationException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (CanNotDoEditException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
 				}
 				
 			}
@@ -1235,25 +1130,12 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				
 				try {
 					
-					probNode.getProbNet().getPNESupport().announceEdit(nodeAgentEdit);
-					probNode.getProbNet().getPNESupport().doEdit(nodeAgentEdit);
+					probNode.getProbNet().doEdit(nodeAgentEdit);
 				//	comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ConstraintViolationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NonProjectablePotentialException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (WrongCriterionException e1) {
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -1266,24 +1148,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				
 				try {
 					
-					probNode.getProbNet().getPNESupport().announceEdit(nodeDecisionCriteriaEdit);
-					probNode.getProbNet().getPNESupport().doEdit(nodeDecisionCriteriaEdit);
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ConstraintViolationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (CanNotDoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NonProjectablePotentialException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (WrongCriterionException e1) {
+					probNode.getProbNet().doEdit(nodeDecisionCriteriaEdit);
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -1306,9 +1175,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				NodeNameEdit nodeNameEdit = new NodeNameEdit(probNode,
 						this.jTextFieldNodeName.getText());
 				try {
-					probNode.getProbNet().getPNESupport()
-							.announceEdit(nodeNameEdit);
-					probNode.getProbNet().getPNESupport().doEdit(nodeNameEdit);
+					probNode.getProbNet().doEdit(nodeNameEdit);
 				} catch (ConstraintViolationException e1) {
 					// TODO Auto-generated catch block
 					// e1.printStackTrace();
@@ -1318,41 +1185,15 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 							JOptionPane.ERROR_MESSAGE);
 					jTextFieldNodeName.setText(probNode.getName());
 					jTextFieldNodeName.requestFocus();
-				} catch (CanNotDoEditException e1) {
+				} catch (CanNotDoEditException | DoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (DoEditException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NotEnoughMemoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (NonProjectablePotentialException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e2.getMessage() ),
-						messageStringResource.getString( e2.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e3) {
-					// TODO Auto-generated catch block
-					e3.printStackTrace();
-					JOptionPane.showMessageDialog(this, messageStringResource
-							.getString( e3.getMessage() ),
-						messageStringResource.getString( e3.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
+					JOptionPane.showMessageDialog(this,
+							messageStringResource.getString(e1.getMessage()),
+							messageStringResource.getString(e1.getMessage()),
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -1501,42 +1342,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	 * The always observed checkbox
 	 */
 	private JCheckBox jCheckboxAlwaysObserved = null;
-	/**
-	 * The Node Type Label
-	 */
-	private JLabel jLabelNodeType = null;
-	/**
-	 * Panel that contains the node type options group.
-	 */
-	private JPanel jPanelNodeType = null;
-	/**
-	 * The Node Type Button Group
-	 */
-	private ButtonGroup jButtonGroupNodeType = null;
-	/**
-	 * The Node Type Chance Radio Button
-	 */
-	private JRadioButton jRadioButtonChanceNodeType = null;
-	/**
-	 * The Node Type Decision Radio Button
-	 */
-	private JRadioButton jRadioButtonDecisionNodeType = null;
-	/**
-	 * The Node Type Utility Radio Button
-	 */
-	private JRadioButton jRadioButtonUtilityNodeType = null;
-	/**
-	 * The Node Variable Type Label
-	 */
-	private JLabel jLabelNodeVariableType = null;
+
 	/**
 	 * Network agents label
 	 */
 	private JLabel jLabelNetworkAgents = null;
-	/**
-	 * Panel that contains the variables type options group.
-	 */
-	private JPanel jPanelNodeVariableType = null;
 
 	/**
 	 * internal node type item for convenience purpose
@@ -1549,7 +1359,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	/**
 	 * The Node Relevance Combo Box
 	 */
-	private JComboBox jComboBoxNodeRelevance = null;
+	private JComboBox<Double> jComboBoxNodeRelevance = null;
 	/**
 	 * The Node Purpose Label
 	 */
@@ -1557,7 +1367,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 	/**
 	 * The Node Purpose Combo Box
 	 */
-	private JComboBox jComboBoxNodePurpose = null;
+	private JComboBox<String> jComboBoxNodePurpose = null;
 
 	/**
 	 * The Node Definition Comment Label
@@ -1592,51 +1402,17 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 				getCommentHTMLScrollPaneNodeDefinitionComment()
 						.getCommentText(), "DefinitionComment");
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(nodeCommentEdit);
-			probNode.getProbNet().getPNESupport().doEdit(nodeCommentEdit);
-		} catch (ConstraintViolationException e) {
+			probNode.getProbNet().doEdit(nodeCommentEdit);
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | WrongCriterionException
+				| DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, messageStringResource
 					.getString( e.getMessage() ),
 				messageStringResource.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
+		} 
 
 	}
 
@@ -1647,44 +1423,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.probNode,
 				this.jCheckboxAlwaysObserved.isSelected());
 		try {
-			probNode.getProbNet().getPNESupport().announceEdit(edit);
-			probNode.getProbNet().getPNESupport().doEdit(edit);
-		} catch (NotEnoughMemoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, messageStringResource
-					.getString( e.getMessage() ),
-				messageStringResource.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
+			probNode.getProbNet().doEdit(edit);
+		} catch (DoEditException | ConstraintViolationException
+				| CanNotDoEditException | NonProjectablePotentialException
+				| WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, messageStringResource

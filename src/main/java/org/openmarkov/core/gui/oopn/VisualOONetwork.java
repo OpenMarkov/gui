@@ -30,7 +30,6 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.SelectionRectangle;
@@ -45,11 +44,11 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oopn.Instance;
+import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.NodeReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.ReferenceLink;
-import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.AddReferenceLinkEdit;
 import org.openmarkov.core.oopn.action.ChangeParameterArityEdit;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
@@ -762,7 +761,7 @@ public class VisualOONetwork extends VisualNetwork
         											visualInstance.getInstance());
             try {
 				probNet.doEdit(markAsInputEdit);
-			} catch (NotEnoughMemoryException | ConstraintViolationException
+			} catch (ConstraintViolationException
 					| CanNotDoEditException | NonProjectablePotentialException
 					| WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
@@ -807,7 +806,7 @@ public class VisualOONetwork extends VisualNetwork
     				new ChangeParameterArityEdit(probNet, visualInstance.getInstance(), arity);
     		try {
 				probNet.doEdit(changeParameterArityEdit);
-			} catch (NotEnoughMemoryException | ConstraintViolationException
+			} catch (ConstraintViolationException
 					| CanNotDoEditException | NonProjectablePotentialException
 					| WrongCriterionException | DoEditException e) {
 				e.printStackTrace();

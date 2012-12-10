@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
@@ -113,46 +112,29 @@ public class ICIOptionListenerAssistant implements ItemListener{
 				ICIPotential iciPotential = (ICIPotential)iciProbnode.getPotentials().get(0);
 				TablePotential tablePotential;
 				try {
-					try {
 						tablePotential = (TablePotential)iciPotential.getCPT();
 						ArrayList<Potential> potentials = new ArrayList<Potential>();
 						potentials.add(tablePotential);
 						iciProbnode.setPotentials(potentials);
-					} catch (NotEnoughMemoryException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, messageStringResource
-								.getString( e1.getMessage() ),
-							messageStringResource.getString( e1.getMessage() ),
-							JOptionPane.ERROR_MESSAGE );
-					}
-					
-					
-				} catch (NonProjectablePotentialException e1) {
+				} catch (NonProjectablePotentialException | WrongCriterionException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(null, messageStringResource
 							.getString( e1.getMessage() ),
 						messageStringResource.getString( e1.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
-				} catch (WrongCriterionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, messageStringResource
-							.getString( e1.getMessage() ),
-						messageStringResource.getString( e1.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
+				} 
 				this.cpTablePanel = new CPTablePanel(iciProbnode);
 				JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane();
 				ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
 				this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane();
 				
-				for (Component component : parentPanel.getComponents()) {
-					if(component instanceof ICIOptionsPanel) {continue;} 
-					component.setVisible(false);
-					}
-
+			for (Component component : parentPanel.getComponents()) {
+				if (component instanceof ICIOptionsPanel) {
+					continue;
+				}
+				component.setVisible(false);
+			}
 				
 				parentPanel.repaint();
 				parentPanel.validate();

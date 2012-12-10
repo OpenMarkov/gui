@@ -30,7 +30,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.gui.localize.StringResource;
@@ -89,7 +88,7 @@ public class TreeADDController extends JScrollPane
      * @param probNet
      * @param treeADDPotential
      */
-    public TreeADDController (ProbNet probNet, TreeADDPotential treeADDPotential)
+    public TreeADDController (TreeADDCellRenderer cellRenderer, TreeADDPotential treeADDPotential)
     {
         if (treeADDPotential.getTopVariable () == null)
         { // first time we create the panel
@@ -118,10 +117,10 @@ public class TreeADDController extends JScrollPane
         messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         readOnlyMode = false;
         // treeVariables = treeADDPotential.getVariables();
-        setupUserInterface ();
+        setupUserInterface (cellRenderer);
     }
 
-    private void setupUserInterface ()
+    private void setupUserInterface (TreeADDCellRenderer cellRenderer)
     {
         TreeADDModel model = new TreeADDModel (treeADDPotentialRoot);
         jTree = new JTree (model);
@@ -131,7 +130,7 @@ public class TreeADDController extends JScrollPane
         // Allows JTree nodes to accept CR/LF codes
         jTree.setShowsRootHandles (true);
         jTree.setRowHeight (0);
-        jTree.setCellRenderer (new TreeADDCellRenderer ());
+        jTree.setCellRenderer (cellRenderer);
         jTree.setUI (new TreeADDUserInterface ());
         for (int i = 0; i < jTree.getRowCount (); i++)
         {
@@ -448,19 +447,8 @@ public class TreeADDController extends JScrollPane
                 node = path.getLastPathComponent ();
             }
             // node must be a branch
-            try
-            {
-                actionEditPotential (ae, (TreeADDBranch)node, path);
-            }
-            catch (NotEnoughMemoryException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
-                JOptionPane.showMessageDialog (null,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
-                                               JOptionPane.ERROR_MESSAGE);
-            }
+			actionEditPotential(ae, (TreeADDBranch) node, path);
+            
         }
         else if (actionComand.equals ("ChangeTopVariable"))
         {
@@ -1496,7 +1484,6 @@ public class TreeADDController extends JScrollPane
      * @throws NotEnoughMemoryException
      */
     private void actionEditPotential (ActionEvent ae, TreeADDBranch branch, TreePath path)
-        throws NotEnoughMemoryException
     {
         Object parentPath = path.getParentPath ();
         TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent ();

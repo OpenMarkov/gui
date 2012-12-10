@@ -15,8 +15,6 @@ import java.awt.Graphics2D;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,7 +27,6 @@ import java.util.List;
 import javax.help.UnsupportedOperationException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -40,7 +37,6 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
@@ -2051,7 +2047,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
 				calculateMinAndMaxUtilityRanges();
 				individualProbabilities = inferenceAlgorithm.getProbsAndUtilities();
-			} catch (NotEnoughMemoryException e) {
+			} catch (OutOfMemoryError e) {
 				if (!approximateInferenceWarningGiven) {
 					JOptionPane
 							.showMessageDialog(
@@ -2137,7 +2133,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @throws NonProjectablePotentialException 
 	 * @throws NotEnoughMemoryException 
 	 */
-	private void calculateMinAndMaxUtilityRanges() throws NotEnoughMemoryException, NonProjectablePotentialException {
+	private void calculateMinAndMaxUtilityRanges() throws NonProjectablePotentialException {
 	    List<Variable> utilityVariables = probNet.getVariables(NodeType.UTILITY);
 		for (Variable utility : utilityVariables) {
 			ProbNode probNode = probNet.getProbNode(utility);
@@ -2963,21 +2959,14 @@ public class EditorPanel extends JPanel implements MouseListener,
 		ArrayList<VisualLink> links = visualNetwork.getSelectedLinks();
 		if (!links.isEmpty()) {
 			Link link = links.get(0).getLink();
-			try {
-				if (!link.hasRestrictions()) {
-					link.initializesRestrictionsPotential();
-				}
-				if (!requestLinkRestrictionValues(Utilities.getOwner(this),
-						link)) {
-					probNet.getPNESupport().undoAndDelete();
-				}
-				link.resetRestrictionsPotential();
-			} catch (NotEnoughMemoryException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this),
-						e.getMessage(),
-						stringResource.getString("ErrorWindow.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
+
+			if (!link.hasRestrictions()) {
+				link.initializesRestrictionsPotential();
 			}
+			if (!requestLinkRestrictionValues(Utilities.getOwner(this), link)) {
+				probNet.getPNESupport().undoAndDelete();
+			}
+			link.resetRestrictionsPotential();
 			repaint();
 		}
 	}

@@ -13,7 +13,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
 
-import org.openmarkov.core.exception.NotEnoughMemoryException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 /**
  * 
@@ -82,7 +81,7 @@ public class SplitIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	 * @return true if the dialog box can be closed.
 	 * @throws NotEnoughMemoryException 
 	 */
-	protected boolean doOkClickBeforeHide() throws NotEnoughMemoryException {
+	protected boolean doOkClickBeforeHide() {
 		if (((SplitIntervalPanel)getJPanelSplitInterval()).getLimit().getText() == null) {
 			
 			return false;
