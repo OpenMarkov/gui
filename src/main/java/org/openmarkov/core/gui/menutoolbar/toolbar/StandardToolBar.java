@@ -26,9 +26,6 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 
-
-
-
 /**
  * This class implements the standard toolbar of the application.
  * 
@@ -369,6 +366,8 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 			component = zoomComboBox;
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			component = workingModeButton;
+		} else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
+			component = decisionTreeButton;
 		}
 		return component;
 	}
