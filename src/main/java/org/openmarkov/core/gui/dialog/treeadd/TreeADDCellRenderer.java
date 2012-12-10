@@ -19,15 +19,12 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -53,7 +50,6 @@ public class TreeADDCellRenderer extends JPanel
      * Font used in icon text
      */
     private Font                    textIconFont;
-    private StringResource          messageStringResource;
 
     private ProbNet probNet;
     /**
@@ -69,7 +65,6 @@ public class TreeADDCellRenderer extends JPanel
     {
         super (new BorderLayout ());
         this.probNet = probNet;
-        messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         this.add (leftLabel, BorderLayout.WEST);
         this.add (rightLabel, BorderLayout.CENTER);
         leftLabel.setHorizontalAlignment (JLabel.CENTER);

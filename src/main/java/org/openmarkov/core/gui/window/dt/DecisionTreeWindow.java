@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDCellRenderer;
-import org.openmarkov.core.gui.dialog.treeadd.TreeADDController;
+import org.openmarkov.core.gui.dialog.treeadd.TreeADDEditorPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.network.NodeType;
@@ -20,15 +20,15 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
-public class DecisionTreePanel extends FrameContentPanel
+public class DecisionTreeWindow extends FrameContentPanel
 {
     private ProbNet           probNet = null;
     /**
      * The builder object of Tree - ADDs
      */
-    private TreeADDController treeADDController;
+    private TreeADDEditorPanel treeADDEditorpanel;
 
-    public DecisionTreePanel (ProbNet probNet)
+    public DecisionTreeWindow (ProbNet probNet)
     {
         this.probNet = probNet;
         PartialOrder partialOrder = null;
@@ -69,8 +69,8 @@ public class DecisionTreePanel extends FrameContentPanel
                 }
             lastStepBranches = currentStepBranches;
         }
-        treeADDController = new TreeADDController (new TreeADDCellRenderer(probNet), treeADDPotential);
-        add (treeADDController, BorderLayout.CENTER);
+        treeADDEditorpanel = new TreeADDEditorPanel (new TreeADDCellRenderer(probNet), treeADDPotential);
+        add (treeADDEditorpanel, BorderLayout.CENTER);
         setBackground (Color.blue);
     }
 

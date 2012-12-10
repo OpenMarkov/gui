@@ -30,7 +30,7 @@ public class TreeADDPanel extends PotentialPanel
     /**
      * The builder object of Tree - ADDs
      */
-    private TreeADDController treeADDController;
+    private TreeADDEditorPanel treeADDController;
     
     /**
      * The node edited
@@ -75,7 +75,7 @@ public class TreeADDPanel extends PotentialPanel
     {
     	setLayout(new BorderLayout());
     	 this.probNode = probNode;
-        treeADDController = new TreeADDController ( new TreeADDCellRenderer(probNode.getProbNet ()),
+        treeADDController = new TreeADDEditorPanel ( new TreeADDCellRenderer(probNode.getProbNet ()),
                                                     (TreeADDPotential)probNode.getPotentials().get( 0 ));
         removeAll();
        // treeADDController.setMaximumSize(new Dimension(10, 10));

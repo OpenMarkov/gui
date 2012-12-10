@@ -53,7 +53,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.gui.window.dt.DecisionTreePanel;
+import org.openmarkov.core.gui.window.dt.DecisionTreeWindow;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
@@ -1483,7 +1483,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	
     private void buildDecisionTree (ProbNet probNet)
     {
-        DecisionTreePanel decisionTree = new DecisionTreePanel (probNet);
+        DecisionTreeWindow decisionTree = new DecisionTreeWindow (probNet);
         mainPanel.getMdi().createNewFrame(decisionTree);
         mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree();
     }	
