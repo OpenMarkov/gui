@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core.gui</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>org.openmarkov.core.gui</name>
 	<url>http://openmarkov.org/core/gui</url>
 
@@ -56,13 +56,13 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 
         <dependency>
             <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.inference.variableElimination</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
         
 		
@@ -81,12 +81,12 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.elvira</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 
 	<!-- 	<dependency>
