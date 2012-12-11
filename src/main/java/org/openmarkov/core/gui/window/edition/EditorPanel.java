@@ -2029,86 +2029,77 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * @param caseNumber
 	 *            number of this evidence case.
 	 */
-	public boolean doPropagation(EvidenceCase evidenceCase, int caseNumber) {
-		HashMap<Variable, TablePotential> individualProbabilities = null;
-		boolean propagationSucceded = false;
-		try {
-
-			long start = System.currentTimeMillis();
-			try {
-				inferenceAlgorithm = inferenceManager
-						.getDefaultInferenceAlgorithm(probNet);
-
-				if (inferenceAlgorithm == null) {
-					throw new UnsupportedOperationException();
-				}
-
-				inferenceAlgorithm.setPreResolutionEvidence(preResolutionEvidence);
-				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
-				calculateMinAndMaxUtilityRanges();
-				individualProbabilities = inferenceAlgorithm.getProbsAndUtilities();
-			} catch (OutOfMemoryError e) {
-				if (!approximateInferenceWarningGiven) {
-					JOptionPane
-							.showMessageDialog(
-									Utilities.getOwner(this),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Text"),
-									stringResource
-											.getString("NotEnoughMemoryForExactInference.Title"),
-									JOptionPane.WARNING_MESSAGE);
-					approximateInferenceWarningGiven = true;
-				}
-
-				inferenceAlgorithm = inferenceManager
-						.getDefaultApproximateAlgorithm(probNet);
-				inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
-				individualProbabilities = inferenceAlgorithm
-						.getProbsAndUtilities();
-			} catch (NotEvaluableNetworkException e){
-				JOptionPane.showMessageDialog(Utilities.getOwner(this),e.getMessage());
-				return false;
-			}
-			long elapsedTimeMillis = System.currentTimeMillis() - start;
-			System.out.println("Inference took " + elapsedTimeMillis
-					+ " milliseconds.");
-
-			updateNodesFindingState(evidenceCase);
-
-			paintInferenceResults(caseNumber, individualProbabilities);
-
-			propagationSucceded = true;
-		} catch (IncompatibleEvidenceException e) {
-			JOptionPane
-					.showMessageDialog(Utilities.getOwner(this),
-							"Incompatible evidence", "Error",
-							JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e) {
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"ERROR\n"
-									+ stringResource
-											.getString("NoPropagationCanBeDoneMessage1.Text.Label")
-									+ "\n"
-									+ stringResource
-											.getString("NoPropagationCanBeDoneMessage2.Text.Label")
-									+ "\n\n" + probNet.getNetworkType(),
-							stringResource
-									.getString("NoPropagationCanBeDoneMessage.Title.Label"),
-							JOptionPane.ERROR_MESSAGE);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this),
-					"Error during inference", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
-
-		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
-		repaint();
-		return propagationSucceded;
-	}
+    public boolean doPropagation (EvidenceCase evidenceCase, int caseNumber)
+    {
+        HashMap<Variable, TablePotential> individualProbabilities = null;
+        boolean propagationSucceded = false;
+        try
+        {
+            long start = System.currentTimeMillis ();
+            try
+            {
+                inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
+                if (inferenceAlgorithm == null)
+                {
+                    throw new UnsupportedOperationException ();
+                }
+                inferenceAlgorithm.setPreResolutionEvidence (preResolutionEvidence);
+                inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
+                calculateMinAndMaxUtilityRanges ();
+                individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
+            }
+            catch (OutOfMemoryError e)
+            {
+                if (!approximateInferenceWarningGiven)
+                {
+                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                                   stringResource.getString ("NotEnoughMemoryForExactInference.Text"),
+                                                   stringResource.getString ("NotEnoughMemoryForExactInference.Title"),
+                                                   JOptionPane.WARNING_MESSAGE);
+                    approximateInferenceWarningGiven = true;
+                }
+                inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm (probNet);
+                inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
+                individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
+            }
+            catch (NotEvaluableNetworkException e)
+            {
+                JOptionPane.showMessageDialog (Utilities.getOwner (this), e.getMessage ());
+                return false;
+            }
+            long elapsedTimeMillis = System.currentTimeMillis () - start;
+            System.out.println ("Inference took " + elapsedTimeMillis + " milliseconds.");
+            updateNodesFindingState (evidenceCase);
+            paintInferenceResults (caseNumber, individualProbabilities);
+            propagationSucceded = true;
+        }
+        catch (IncompatibleEvidenceException e)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this), "Incompatible evidence",
+                                           "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace ();
+        }
+        catch (UnsupportedOperationException e)
+        {
+            JOptionPane.showMessageDialog (null,
+                                           "ERROR\n"
+                                                   + stringResource.getString ("NoPropagationCanBeDoneMessage1.Text.Label")
+                                                   + "\n"
+                                                   + stringResource.getString ("NoPropagationCanBeDoneMessage2.Text.Label")
+                                                   + "\n\n" + probNet.getNetworkType (),
+                                           stringResource.getString ("NoPropagationCanBeDoneMessage.Title.Label"),
+                                           JOptionPane.ERROR_MESSAGE);
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this), "Error during inference",
+                                           "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace ();
+        }
+        evidenceCasesCompilationState.set (caseNumber, propagationSucceded);
+        repaint ();
+        return propagationSucceded;
+    }
 
 	//This commented method computes the exact ranges of the utility functions.
 	//However, we are using an approximation in the method currently offered by this class.
