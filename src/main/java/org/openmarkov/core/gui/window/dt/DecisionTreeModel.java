@@ -1,28 +1,25 @@
 package org.openmarkov.core.gui.window.dt;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.openmarkov.core.model.network.Variable;
-
 public class DecisionTreeModel implements TreeModel
 {
     private Set<TreeModelListener> listeners;
-    private List<Variable> variables;
+    private DecisionTreeBranch root;
     
     /**
      * Constructor for DecisionTreeModel.
      */
-    public DecisionTreeModel (List<Variable> variables)
+    public DecisionTreeModel (DecisionTreeBranch root)
     {
         super ();
-        this.variables = variables;
         this.listeners = new HashSet<> ();
+        this.root = root;
     }
 
     @Override
@@ -34,35 +31,57 @@ public class DecisionTreeModel implements TreeModel
     @Override
     public Object getChild (Object parent, int index)
     {
-        // TODO Auto-generated method stub
-        return null;
+        Object child = null;
+        if(parent instanceof DecisionTreeNode)
+        {
+            child = ((DecisionTreeNode)parent).getChildren ().get (index);
+        }else if(parent instanceof DecisionTreeBranch)
+        {
+            child = ((DecisionTreeBranch)parent).getChild ();
+        }
+        return child;
     }
 
     @Override
     public int getChildCount (Object parent)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        int count = 0;
+        if(parent instanceof DecisionTreeNode)
+        {
+            count = ((DecisionTreeNode)parent).getChildren ().size ();
+        }else if(parent instanceof DecisionTreeBranch)
+        {
+            count = (((DecisionTreeBranch) parent).getChild () == null)? 0 : 1;
+        }        
+        return count;
     }
 
     @Override
     public int getIndexOfChild (Object parent, Object child)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        int index = 0;
+        if(parent instanceof DecisionTreeNode)
+        {
+            index = ((DecisionTreeNode)parent).getChildren ().indexOf (child);
+        }
+        else if ((parent instanceof DecisionTreeBranch)
+                 && ((DecisionTreeBranch) parent).getChild ().equals (child))
+        {
+            index = 0;
+        }        
+        return index;
     }
 
     @Override
     public Object getRoot ()
     {
-        return variables.get (0);
+        return root;
     }
 
     @Override
     public boolean isLeaf (Object node)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return getChildCount (node) == 0;
     }
 
     @Override

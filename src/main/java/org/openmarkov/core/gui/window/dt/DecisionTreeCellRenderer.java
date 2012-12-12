@@ -18,7 +18,6 @@ TreeCellRenderer
                                                    int row,
                                                    boolean hasFocus)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return (Component)object;
     }
 }

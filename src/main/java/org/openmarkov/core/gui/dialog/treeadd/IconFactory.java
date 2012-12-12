@@ -28,7 +28,7 @@ abstract public class IconFactory {
 	 * @param f
 	 * @return
 	 */
-	static Icon createChanceIcon( String text, Font f ) {
+	public static Icon createChanceIcon( String text, Font f ) {
 		FontRenderContext fr= new FontRenderContext(null,false,false);
 		TextLayout t= new TextLayout(text, f, fr );
 		
@@ -64,7 +64,7 @@ abstract public class IconFactory {
 	 * @param f
 	 * @return
 	 */
-	static Icon createDecisionIcon( String text, Font f ) {
+    public static Icon createDecisionIcon( String text, Font f ) {
 		FontRenderContext fr= new FontRenderContext(null,false,false);
 		TextLayout t= new TextLayout(text, f, fr );
 		
@@ -92,7 +92,7 @@ abstract public class IconFactory {
 	 * @param f
 	 * @return
 	 */
-	static Icon createUtilityIcon( String text, Font f ) {
+    public static Icon createUtilityIcon( String text, Font f ) {
 		FontRenderContext fr= new FontRenderContext(null,false,false);
 		TextLayout t= new TextLayout(text, f, fr );
 		
