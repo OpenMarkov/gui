@@ -36,8 +36,10 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.LIMIDType;
 import org.openmarkov.core.model.network.type.MDPType;
 import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
@@ -357,12 +359,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-			if (networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
-					|| networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType
-					|| networkPanel.getProbNet().getNetworkType() instanceof MDPType
-					|| networkPanel.getProbNet().getNetworkType() instanceof POMDPType
-					|| networkPanel.getProbNet().getNetworkType() instanceof TuningNetworkType
-					|| networkPanel.getProbNet().getNetworkType() instanceof DecisionAnalysisNetworkType) {
+			if (!networkPanel.getProbNet().hasConstraint (OnlyChanceNodes.class)) {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
 				setOptionEnabled(
