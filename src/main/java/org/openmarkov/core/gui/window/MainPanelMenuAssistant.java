@@ -37,13 +37,8 @@ import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.LIMIDType;
-import org.openmarkov.core.model.network.type.MDPType;
-import org.openmarkov.core.model.network.type.POMDPType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
-import org.openmarkov.core.model.network.type.TuningNetworkType;
 import org.openmarkov.core.oopn.OOPNet;
 
 /**

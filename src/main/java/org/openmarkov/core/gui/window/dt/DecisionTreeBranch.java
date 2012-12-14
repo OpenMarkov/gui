@@ -1,13 +1,9 @@
 
 package org.openmarkov.core.gui.window.dt;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -19,16 +15,9 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
-public class DecisionTreeBranch extends JPanel
+public class DecisionTreeBranch extends DecisionTreeElement
 {
-    /**
-     * Container of SummaryBox' text or the variable icon
-     */
-    private JLabel           leftLabel  = new JLabel ();
-    /**
-     * Container of leaf data: Potential description or value
-     */
-    private JLabel           rightLabel = new JLabel ();
+
     private Variable         branchVariable;
     private State            branchState;
     private DecisionTreeNode parent;
@@ -45,9 +34,6 @@ public class DecisionTreeBranch extends JPanel
         this.parent = parent;
         this.branchState = branchState;
         this.branchVariable = branchVariable;
-        this.add (leftLabel, BorderLayout.WEST);
-        this.add (rightLabel, BorderLayout.CENTER);
-        setBackground (Color.white);
         if (!variables.isEmpty ())
         {
             this.child = new DecisionTreeNode (this, probNet, variables);
@@ -57,7 +43,6 @@ public class DecisionTreeBranch extends JPanel
         {
             probability = getBranchProbability();
         }
-        leftLabel.setText (getBranchDescriptiontHTML ());
     }
 
     public DecisionTreeBranch (ProbNet probNet, List<Variable> variables)
@@ -70,7 +55,17 @@ public class DecisionTreeBranch extends JPanel
      */
     public String getBranchDescriptiontHTML ()
     {
+        DecimalFormat df = new DecimalFormat("0.00");        
         StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
+        if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.DECISION)
+        {
+            if( ((DecisionTreeNode)parent).isBestDecision(this)) {
+                txtLeft.append ("<td width=10px bgcolor=red border=0></td>");
+            }
+            else {
+                txtLeft.append ("<td width=10px border=0></td>");                   
+            }
+        }
         txtLeft.append ("<td align=center border=0>");
         if (branchVariable != null)
         {
@@ -79,23 +74,29 @@ public class DecisionTreeBranch extends JPanel
         }
         if(probability >= 0)
         {
-            DecimalFormat df = new DecimalFormat("#.##");
-            txtLeft.append (" P= " + df.format (probability));
+            txtLeft.append (" P=" + df.format (probability));
         }
-        txtLeft.append (" U= " + utility);
+        txtLeft.append (" U=" + df.format (utility));
         txtLeft.append ("</td>");
         txtLeft.append ("</table></html>");
         return txtLeft.toString ();
     }
 
-    public DecisionTreeNode getChild ()
+    public List<DecisionTreeElement> getChildren ()
     {
-        return child;
+        List<DecisionTreeElement> children = new LinkedList<> ();
+        children.add (child);
+        return children;
     }
     
     public double getUtility ()
     {
-        return (child != null)? child.getUtility () : 0;
+        double utility = (child != null)? child.getUtility () : 0;
+        if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.CHANCE)
+        {
+            utility *= getBranchProbability ();
+        }
+        return utility;
     } 
     
     public double getBranchProbability ()
@@ -118,5 +119,11 @@ public class DecisionTreeBranch extends JPanel
             }
         }
         return evidenceCase;
+    }
+
+    @Override
+    public void update (boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
+    {
+        leftLabel.setText (getBranchDescriptiontHTML ());
     }
 }

@@ -126,7 +126,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		add(getZoomInButton());
 		addSeparator();
 		add(getWorkingModeButton());
-		//add(getDecisionTreeButton());
+		add(getDecisionTreeButton());
 		add(Box.createHorizontalGlue());
 	}
 

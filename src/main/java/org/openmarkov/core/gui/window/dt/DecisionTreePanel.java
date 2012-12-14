@@ -13,6 +13,8 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.SumPotential;
 
 @SuppressWarnings("serial")
 public class DecisionTreePanel  extends JScrollPane
@@ -21,83 +23,72 @@ public class DecisionTreePanel  extends JScrollPane
 
     public DecisionTreePanel(ProbNet probNet)
     {
-        List<Variable> variables = getPartiallySortedVariables (probNet);
-        List<Variable> utilityVariables = getSortedUtilityVariables(probNet);
-        //variables.addAll (utilityVariables);
+        long start = System.currentTimeMillis ();
+
+        ProbNet dtProbNet = probNet.copy ();
+        Variable svVariable = getSuperValueVariable(dtProbNet);
+        List<Variable> variables = getPartiallySortedVariables (dtProbNet);
+        variables.add (svVariable);
         
-        DecisionTreeBranch root = new DecisionTreeBranch (probNet, variables);
-        
+        DecisionTreeBranch root = new DecisionTreeBranch (dtProbNet, variables);
         DecisionTreeModel model = new DecisionTreeModel (root);
         jTree = new JTree (model);
         jTree.getSelectionModel ().setSelectionMode (TreeSelectionModel.SINGLE_TREE_SELECTION);
         // Allows JTree nodes to accept CR/LF codes
         jTree.setShowsRootHandles (true);
         jTree.setRowHeight (0);
-        jTree.setCellRenderer (new DecisionTreeCellRenderer ());        
+        jTree.setCellRenderer (new DecisionTreeCellRenderer ());
+        for (int i = 0; i < jTree.getRowCount (); i++)
+        {
+            jTree.expandRow (i);
+        }        
         setViewportView (jTree);
+        long elapsedTimeMillis = System.currentTimeMillis () - start;
+        System.out.print ("Ellapsed milliseconds: " + elapsedTimeMillis);
     }
     
-    private List<Variable> getSortedUtilityVariables (ProbNet probNet)
+    
+    private Variable getSuperValueVariable (ProbNet probNet)
     {
-        ProbNet utilityProbNet = probNet.copy ();
-        // Remove all nodes that aren't utility nodes
-        for(ProbNode node : utilityProbNet.getProbNodes ())
-        {
-            if(node.getNodeType () != NodeType.UTILITY)
-            {
-                utilityProbNet.removeProbNode (node);
-            }
-        }
+        Variable svVariable = null;
         // Look for leaves
-        List<ProbNode> leaves = getLeaves (utilityProbNet);
+        List<ProbNode> leaves = getUtilityLeaves (probNet);
         // if there is more than one leave, create a new super value node
         if(leaves.size () > 1)
         {
-            Variable svVariable = new Variable ("Global Utility");
-            ProbNode svNode = utilityProbNet.addVariable (svVariable, NodeType.UTILITY);
+            svVariable = new Variable ("Global Utility");
+            ProbNode svNode = probNet.addVariable (svVariable, NodeType.UTILITY);
+            List<Variable> leafVariables = new ArrayList<> (leaves.size ());
+            for(ProbNode leafNode : leaves)
+            {
+                leafVariables.add(leafNode.getVariable ());
+            }
+            svNode.addPotential (new SumPotential (leafVariables, PotentialRole.UTILITY));
             for(ProbNode leaf : leaves)
             {
-                utilityProbNet.addLink (leaf, svNode, true);
+                probNet.addLink (leaf, svNode, true);
             }
-        }
-        
-        List<Variable> sortedUtilityVariables = new ArrayList<> ();
-        while(!utilityProbNet.getProbNodes ().isEmpty ())
+        }else if (leaves.size () == 1)
         {
-            for(ProbNode leaf : getLeaves (utilityProbNet))
-            {
-                sortedUtilityVariables.add (leaf.getVariable ());
-                utilityProbNet.removeProbNode (leaf);
-            }
+            svVariable = leaves.get (0).getVariable ();
         }
-        return sortedUtilityVariables;
+
+        return svVariable;
     }
     
-    private List<ProbNode> getLeaves(ProbNet probNet)
+    private List<ProbNode> getUtilityLeaves(ProbNet probNet)
     {
         List<ProbNode> leaves = new ArrayList<> ();
         for(ProbNode node : probNet.getProbNodes ())
         {
-            if(node.getNode ().getChildren ().isEmpty ())
+            if (node.getNodeType () == NodeType.UTILITY
+                && node.getNode ().getChildren ().isEmpty ())
             {
                 leaves.add (node);
             }
         }
         return leaves;
-    }
-
-    private ProbNode findSuperValueNode (ProbNet probNet)
-    {
-        ProbNode svNode = null;
-        for (ProbNode node : probNet.getProbNodes (NodeType.UTILITY))
-        {
-            if (node.getNode ().getChildren ().isEmpty ())
-            {
-                svNode = node;
-            }
-        }
-        return svNode;
-    }    
+    } 
     
     private List<Variable> getPartiallySortedVariables(ProbNet probNet)
     {

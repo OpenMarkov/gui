@@ -18,6 +18,12 @@ TreeCellRenderer
                                                    int row,
                                                    boolean hasFocus)
     {
+        if(object instanceof DecisionTreeElement)
+        {
+            ((DecisionTreeElement)object).update(selected, expanded, leaf, row, hasFocus);
+        }
         return (Component)object;
     }
+    
+    
 }
