@@ -11,8 +11,10 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 
 @SuppressWarnings("serial")
 public class DecisionTreeBranch extends DecisionTreeElement
@@ -22,8 +24,7 @@ public class DecisionTreeBranch extends DecisionTreeElement
     private State            branchState;
     private DecisionTreeNode parent;
     private DecisionTreeNode child;
-    private double           utility    = 0;
-    private double           probability = -1;
+    private ProbNet			 probNet;
 
     public DecisionTreeBranch (DecisionTreeNode parent,
                                ProbNet probNet,
@@ -32,16 +33,12 @@ public class DecisionTreeBranch extends DecisionTreeElement
                                List<Variable> variables)
     {
         this.parent = parent;
+        this.probNet = probNet;
         this.branchState = branchState;
         this.branchVariable = branchVariable;
         if (!variables.isEmpty ())
         {
             this.child = new DecisionTreeNode (this, probNet, variables);
-        }
-        utility = getUtility();
-        if(parent != null && parent.getProbNode ().getNodeType () == NodeType.CHANCE)
-        {
-            probability = getBranchProbability();
         }
     }
 
@@ -72,11 +69,11 @@ public class DecisionTreeBranch extends DecisionTreeElement
             txtLeft.append (branchVariable.getName () + "=");
             txtLeft.append (branchState.getName ());
         }
-        if(probability >= 0)
+        if(parent != null && parent.getProbNode ().getNodeType () == NodeType.CHANCE)
         {
-            txtLeft.append (" P=" + df.format (probability));
+            txtLeft.append (" P=" + df.format (getBranchProbability()));
         }
-        txtLeft.append (" U=" + df.format (utility));
+        txtLeft.append (" U=" + df.format (child.getUtility ()));
         txtLeft.append ("</td>");
         txtLeft.append ("</table></html>");
         return txtLeft.toString ();
@@ -101,7 +98,8 @@ public class DecisionTreeBranch extends DecisionTreeElement
     
     public double getBranchProbability ()
     {
-        return parent.getMarginalProbabilities ()[branchVariable.getStateIndex (branchState)];
+    	double parentScenarioProb = parent.getScenarioProbability();
+    	return (parentScenarioProb!=0)?getScenarioProbability()/parentScenarioProb:0;
     }   
     
     public EvidenceCase getBranchStates()
@@ -120,6 +118,28 @@ public class DecisionTreeBranch extends DecisionTreeElement
         }
         return evidenceCase;
     }
+    
+    public double getScenarioProbability()
+    {
+    	double scenarioProbability = 1;    	
+    	if(child.getProbNode().getNodeType() == NodeType.UTILITY)
+    	{
+        	EvidenceCase evidenceCase = getBranchStates();
+	    	for(Finding finding : evidenceCase.getFindings())
+	    	{
+	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
+	    		if(probNode.getNodeType() == NodeType.CHANCE)
+	    		{
+	    			Potential potential = probNode.getPotentials().get(0);
+	    			scenarioProbability *= potential.getProbability(evidenceCase);
+	    		}
+	    	}
+    	}else
+    	{
+    		scenarioProbability = child.getScenarioProbability();
+    	}
+        return scenarioProbability;
+    }       
 
     @Override
     public void update (boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)

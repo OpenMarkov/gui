@@ -40,4 +40,6 @@ public abstract class DecisionTreeElement extends JPanel
                            boolean leaf,
                            int row,
                            boolean hasFocus);
+    
+    public abstract double getScenarioProbability();
 }

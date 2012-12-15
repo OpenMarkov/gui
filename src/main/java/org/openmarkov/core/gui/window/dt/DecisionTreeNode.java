@@ -8,9 +8,6 @@ import java.util.List;
 
 import javax.swing.Icon;
 
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.treeadd.IconFactory;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -23,7 +20,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
 public class DecisionTreeNode extends DecisionTreeElement
@@ -31,7 +27,6 @@ public class DecisionTreeNode extends DecisionTreeElement
     private ProbNode                  probNode              = null;
     private List<DecisionTreeElement> children              = null;
     private DecisionTreeElement        parent                = null;
-    private double[]                  marginalProbabilities = null;
 
     public DecisionTreeNode (DecisionTreeElement parent, ProbNet probNet, List<Variable> variables)
     {
@@ -173,44 +168,10 @@ public class DecisionTreeNode extends DecisionTreeElement
         return utility;
     }
 
-    public double[] getMarginalProbabilities ()
-    {
-        if(marginalProbabilities == null)
-        {
-            Variable variableOfInterest = probNode.getVariable ();
-            List<Potential> potentials = probNode.getProbNet ().getPotentials ();
-            EvidenceCase evidenceCase = getBranchStates ();
-            List<Variable> variablesOfInterest = new ArrayList<> ();
-            variablesOfInterest.add (variableOfInterest);
-            try
-            {
-                List<TablePotential> projectedPotentials = new ArrayList<> ();
-                for(Potential potential : potentials)
-                {
-                    if(!potential.isUtility ())
-                    {
-                        projectedPotentials.addAll(potential.tableProject (evidenceCase, null));
-                    }
-                }
-                TablePotential marginalizedProbs = DiscretePotentialOperations.multiplyAndMarginalize (projectedPotentials, variablesOfInterest);
-                marginalProbabilities = DiscretePotentialOperations.normalize (marginalizedProbs).values;
-            }
-            catch (NormalizeNullVectorException e)
-            {
-                marginalProbabilities = new double [variableOfInterest.getNumStates ()];
-            }
-            catch (NonProjectablePotentialException | WrongCriterionException e)
-            {
-                e.printStackTrace ();
-            }
-        }
-        return marginalProbabilities;
-    }
-
     public EvidenceCase getBranchStates ()
     {
         return parent.getBranchStates ();
-    }
+    } 
 
     public boolean isBestDecision (DecisionTreeElement branch)
     {
@@ -234,5 +195,21 @@ public class DecisionTreeNode extends DecisionTreeElement
         {
             rightLabel.setText (" U ="+getUtility ());
         }
+    }
+    
+    public double getScenarioProbability()
+    {
+    	double scenarioProbability = 0;
+    	if(probNode.getNodeType() == NodeType.CHANCE)
+    	{
+	    	for(DecisionTreeElement child : children)
+	    	{
+	    		scenarioProbability +=child.getScenarioProbability();
+	    	}
+    	}else if(probNode.getNodeType() == NodeType.DECISION)
+    	{
+    		scenarioProbability = children.get(0).getScenarioProbability();
+    	}
+    	return scenarioProbability;
     }
 }
