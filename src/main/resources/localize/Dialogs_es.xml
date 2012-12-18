@@ -93,7 +93,7 @@
       <Text value="Comentario para nodo {0}" />
     </commentHTMLScrollPaneNodeProbsComment>
     <jRadioButtonTPC>
-      <Text value="Tabla completa de parametros" />
+      <Text value="Tabla completa" />
     </jRadioButtonTPC>
     <jRadioButtonOptimal>
       <Text value="Política óptima" />

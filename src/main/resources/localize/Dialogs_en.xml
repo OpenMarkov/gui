@@ -121,7 +121,7 @@
       <Text value="Comment for node {0}" />
     </commentHTMLScrollPaneNodeProbsComment>
     <jRadioButtonTPC>
-      <Text value="Full parameters table" />
+      <Text value="Whole table" />
     </jRadioButtonTPC>
     <jRadioButtonOptimal>
       <Text value="Optimal policy" />
