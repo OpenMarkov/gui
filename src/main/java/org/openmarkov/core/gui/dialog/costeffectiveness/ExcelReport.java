@@ -31,7 +31,12 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-
+/**
+ * This class is used to generate excel reports with cost effectiveness analysis  and temporal evolution results
+ * 
+ * @author myebra
+ *
+ */
 
 public class ExcelReport {
 
@@ -75,11 +80,17 @@ public class ExcelReport {
 			HSSFRow rowIndexes = sheetTable.createRow(0);
 			rowIndexes.createCell(0).setCellValue("");
 			String basename = variableOfInterest.getBaseName();
-	    	List<ProbNode> probNodes = expandedNetwork.getProbNodes();
+			List<ProbNode> probNodes = expandedNetwork.getProbNodes();
+			List<ProbNode> interestProbNodes =  new ArrayList<>();
+
 			for (int i = 0; i < probNodes.size(); i++) {
-	    		if (probNodes.get(i).getVariable().getBaseName().equals(basename)) {
-	    			rowIndexes.createCell(i+1).setCellValue(probNodes.get(i).getVariable().getName());
-			   }
+				if (probNodes.get(i).getVariable().getBaseName().equals(basename)) {
+					interestProbNodes.add(probNodes.get(i));
+				}
+			}
+	    	
+			for (int i = 0; i < interestProbNodes.size(); i++) {
+	    		rowIndexes.createCell(i+1).setCellValue(interestProbNodes.get(i).getVariable().getName());
 			}
 			
 			//first column
@@ -105,64 +116,28 @@ public class ExcelReport {
 				}
 			}
 			
+			this.targetFileName = checkXLSExtention(filename);
 			
+			if (!filename.isEmpty()) {
+				FileOutputStream fileOut;
 			
-/*			
-			CTDrawing drawing = CTDrawing.Factory.newInstance();
-			//XSSFChart chart =  createChart(XSSFClientAnchor anchor) 
-			
-			//HSSFPatriarch drawing = (HSSFPatriarch) sheetTable.createDrawingPatriarch();
-			//ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
-			XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 1, variableOfInterest.getNumStates()+5, 10, 10);
-			
-			XSSFChart chart =  (XSSFChart) ((Drawing) drawing).createChart(anchor); 
-			//Chart chart = drawing.createChart(anchor);
-			ChartLegend legend = chart.getOrCreateLegend();
-			legend.setPosition(LegendPosition.TOP_RIGHT);
-
-			ScatterChartData data = chart.getChartDataFactory().createScatterChartData();
-
-			ValueAxis bottomAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
-			ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
-			leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-
+					try {
+						fileOut = new FileOutputStream(targetFileName);
+						hwb.write(fileOut);
+						try {
+							fileOut.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
-			
-			ChartDataSource<Number> xs = DataSources.fromNumericCellRange((org.apache.poi.ss.usermodel.Sheet) sheetTable,
-					new CellRangeAddress(0, 0, 1, costEffectivenessDialog.getNumSlices()));
-			
-			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
-				ChartDataSource<Number> ysi = DataSources.fromNumericCellRange((org.apache.poi.ss.usermodel.Sheet) sheetTable,
-						new CellRangeAddress(i+1, i+1, 1, costEffectivenessDialog.getNumSlices()));
-				data.addSerie(xs, ysi);
-			}
-			
-
-			//data.addSerie(xs, ys1);
-			//data.addSerie(xs, ys2);
-
-			chart.plot(data, bottomAxis, leftAxis);
-*/
-			
-			
-			FileOutputStream fileOut;
-			try {
-				fileOut = new FileOutputStream(filename);
-				try {
-					hwb.write(fileOut);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					fileOut.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			
 
