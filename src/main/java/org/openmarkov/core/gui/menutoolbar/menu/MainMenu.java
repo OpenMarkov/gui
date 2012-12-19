@@ -1827,8 +1827,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 			    menuItem.addActionListener(listener);
 			    toolsMenu.add(menuItem);
 			}
-            toolsMenu.addSeparator();
-			toolsMenu.add(getToolsCostEffectivenessMenuItem());
+			toolsMenu.addSeparator();
+	        toolsMenu.add(getToolsCostEffectivenessMenuItem());
 			toolsMenu.addSeparator();
 			toolsMenu.add(getToolsConfigurationMenuItem());
 		}
@@ -1845,6 +1845,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
             toolsSensitivityAnalysisMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_P,
                                                                                      InputEvent.CTRL_DOWN_MASK));
 			toolsSensitivityAnalysisMenuItem.addActionListener(listener);
+			toolsSensitivityAnalysisMenuItem.setEnabled(false);
 		}
 
 		return toolsSensitivityAnalysisMenuItem;
@@ -1858,6 +1859,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
             toolsCostEffectivenessDeterministicMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_T,
                                                                                                 InputEvent.CTRL_DOWN_MASK));
 			toolsCostEffectivenessDeterministicMenuItem.addActionListener(listener);
+			toolsCostEffectivenessDeterministicMenuItem.setEnabled(false);
 		}
 
 		return toolsCostEffectivenessDeterministicMenuItem;

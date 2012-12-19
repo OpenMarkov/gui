@@ -7,22 +7,29 @@ import java.util.List;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.FactoryExpandedSMM;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.inference.variableElimination.VariableElimination;
-
+/**
+ * Cost effectiveness and temporal evolution calculator
+ * @author myebra
+ *
+ */
 public class CostEffectivenessAnalysis {
 	private double costDiscountRate;
 	private double effectivenessDiscountRate;
+	private boolean checkZeroCycle;
 	private int numSlices;
 	private ProbNet probNet;
 	private ProbNet expandedNetwork;
@@ -32,7 +39,7 @@ public class CostEffectivenessAnalysis {
 	private double cycleLength;
 	
 	
- public CostEffectivenessAnalysis (ProbNet probNet, double costDiscountRate, double effectivenessDiscountRate, int numSlices, EvidenceCase evidence, double cycleLength, Variable numIndexVariable) {
+ public CostEffectivenessAnalysis (ProbNet probNet, double costDiscountRate, double effectivenessDiscountRate, int numSlices, EvidenceCase evidence, double cycleLength, Variable numIndexVariable, boolean checkZeroCycle) {
 	 this.probNet = probNet;
 	 this.costDiscountRate = costDiscountRate;
 	 this.effectivenessDiscountRate = effectivenessDiscountRate;
@@ -40,6 +47,7 @@ public class CostEffectivenessAnalysis {
 	 this.numIndexVariable = numIndexVariable;
 	 this.evidence = evidence;
 	 this.cycleLength = cycleLength;
+	 this.checkZeroCycle = checkZeroCycle;
 	 
  }
  
@@ -64,15 +72,15 @@ public class CostEffectivenessAnalysis {
  
  public void extendEvidence(ProbNet extendedNetwork) {
 	 if (!evidence.getFindings().isEmpty()) {
-		 try {
-			 evidence.extendEvidence(extendedNetwork, cycleLength);
-		 } catch (IncompatibleEvidenceException e2) {
-			 e2.printStackTrace();
-		 } catch (InvalidStateException e2) {
-			 e2.printStackTrace();
-		 } catch (WrongCriterionException e2) {
-			 e2.printStackTrace();
-		}
+		
+			 try {
+				evidence.extendEvidence(extendedNetwork, cycleLength);
+			} catch (IncompatibleEvidenceException | InvalidStateException
+					| WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
 	 }
  }
  
@@ -83,11 +91,12 @@ public TablePotential costEffectivenessCalculator() {
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
-		 List<ProbNode> probnodesDiscount = expandedNetFactory.getExtendedNet().getProbNodes();
 		 expandedNetFactory.adaptProbNetForCE();
-		 List<ProbNode> probnodes = expandedNetFactory.getExtendedNet().getProbNodes();
-		// ProbNet expandedNetwork = expandedNetFactory.getExtendedNet();
-		 ProbNet expandedNetwork =  expandedNetFactory.prepareExpandedNetworkToInference(evidence);
+		 ProbNet expandedNetwork =  expandedNetFactory.getExtendedNet();
+		 if (!checkZeroCycle) {
+			 expandedNetFactory.pruneZeroCycleUtilities();
+			 expandedNetwork =  expandedNetFactory.getExtendedNet();
+		 }
 		 VariableElimination variableElimination;
 		 try {
 			 variableElimination = new VariableElimination(expandedNetwork);
@@ -112,54 +121,51 @@ public TablePotential costEffectivenessCalculator() {
 		 } catch (NotEvaluableNetworkException e1) {
 			 e1.printStackTrace();
 		 }
-
-
 	 return globalUtility;
  }
 
 
  public HashMap<Variable,TablePotential> traceTemporalEvolution(Variable variableOfInterest, EvidenceCase evidence) throws ImposedPoliciesException {
-		List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
-		// check if all decision nodes has an imposed policy, potential set in
-		// probNode
-		for (ProbNode node : decisionNodes) {
-			if (node.getPotentials().size() == 0) {
-				throw new ImposedPoliciesException(
-						"All decision nodes must have an imposed policy");
-			}
-		}
+     List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+	 //check if all decision nodes has an imposed policy, potential set in probNode
+	 for (ProbNode node : decisionNodes) {
+		 if (node.getPotentials().size() == 0) {
+			 throw new ImposedPoliciesException("All decision nodes must have an imposed policy");
+		 }
+	 }
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
-		FactoryExpandedSMM expandedNetFactory = new FactoryExpandedSMM(probNet,
-				numSlices, null, 200.0);
-		extendEvidence(expandedNetFactory.getExtendedNet());
-		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate,
-				effectivenessDiscountRate, new InferenceOptions(probNet, null),
-				evidence);
-		this.expandedNetwork = expandedNetFactory.getExtendedNet();
-		String baseName = variableOfInterest.getBaseName();
-		List<Variable> variablesOfInterest = new ArrayList<>();
-		List<ProbNode> expandedProbNetProbNodes = expandedNetwork
-				.getProbNodes();
-		for (ProbNode node : expandedProbNetProbNodes) {
+	
+		 FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+		 extendEvidence(expandedNetFactory.getExtendedNet());
+		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, new InferenceOptions(probNet, null), evidence); 
+		 this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
+		 String baseName = variableOfInterest.getBaseName();
+		 List<Variable> variablesOfInterest = new ArrayList<>();
+		/*if (!checkZeroCycle) {
+			 expandedNetFactory.pruneZeroCycleUtilities();
+			 this.expandedNetwork = expandedNetFactory.getExtendedNet();
+		 }*/
+		 List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
+		 for (ProbNode node :expandedProbNetProbNodes) {
 			if (node.getVariable().getBaseName().equals(baseName)) {
-				variablesOfInterest.add(node.getVariable());
-			}
-		}
-		try {
-			VariableElimination variableElimination = new VariableElimination(
-					expandedNetwork);
-			variableElimination.setPreResolutionEvidence(evidence);
-			try {
-				probsAndUtilities = variableElimination
-						.getProbsAndUtilities(variablesOfInterest);
-			} catch (IncompatibleEvidenceException e) {
-				e.printStackTrace();
-			} catch (UnexpectedInferenceException e) {
-				e.printStackTrace();
-			}
-		} catch (NotEvaluableNetworkException e) {
-			e.printStackTrace();
-		}
+				 variablesOfInterest.add(node.getVariable());
+			 }
+		 }
+		 try {
+			 VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+			 variableElimination.setPreResolutionEvidence(evidence);
+			 try {
+				 probsAndUtilities =  variableElimination.getProbsAndUtilities(variablesOfInterest);
+			 } catch (IncompatibleEvidenceException e) {
+				 e.printStackTrace();
+			 } catch (UnexpectedInferenceException e) {
+				 e.printStackTrace();
+			 }
+		 } catch (NotEvaluableNetworkException e) {
+			 e.printStackTrace();
+		 }
+
+
 
 	 return probsAndUtilities;
  }

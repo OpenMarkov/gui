@@ -222,8 +222,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
 		add(getAddFindingMenuItem());
 		add(getRemoveFindingMenuItem());
-		addSeparator();
-		add(getLogMenuItem());
+		/*addSeparator();
+		add(getLogMenuItem());*/
         // TODO OOPN start
         addSeparator();
         add(getInputMenuItem ());
@@ -254,8 +254,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
 		add(getAddFindingMenuItem());
 		add(getRemoveFindingMenuItem());
-		addSeparator();
-		add(getLogMenuItem());
+		/*addSeparator();
+		add(getLogMenuItem());*/
 		// TODO OOPN start
 		addSeparator();
         add(getInputMenuItem ());
@@ -286,8 +286,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
 		add(getAddFindingMenuItem());
 		add(getRemoveFindingMenuItem());
-		addSeparator();
-		add(getLogMenuItem());
+		/*addSeparator();
+		add(getLogMenuItem());*/
 		pack();
 	}
 	
@@ -311,12 +311,12 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
 		add(getAddFindingMenuItem());
 		add(getRemoveFindingMenuItem());
-		addSeparator();
-		add(getLogMenuItem());
+		/*addSeparator();
+		add(getLogMenuItem());*/
 		pack();
 	}
 	
-	private JMenuItem getLogMenuItem() {
+	/*private JMenuItem getLogMenuItem() {
 		if (logMenuItem == null) {
             logMenuItem = new LocalizedMenuItem (MenuItemNames.EDIT_LOG_MENUITEM,
                                                  ActionCommands.LOG);
@@ -324,7 +324,7 @@ public class NodeContextualMenu extends ContextualMenu {
 	}
 
 	return logMenuItem;
-	}
+	}*/
 
 	/**
 	 * This method initializes temporalEvolutionMenuItem.

@@ -108,13 +108,13 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * 
 	 * @return the network panel contextual menu.
 	 */
-	public ContextualMenu getNetworkContextualMenu() {
+	public ContextualMenu getNetworkContextualMenu( boolean canBeExpanded) {
 
-		if (networkContextualMenu == null) {
-			networkContextualMenu = new NetworkContextualMenu(listener);
+		
+			networkContextualMenu = new NetworkContextualMenu(listener, canBeExpanded);
 			networkContextualMenu.setName("networkContextualMenu");
 			menuAssistant.addMenu (networkContextualMenu);
-		}
+		
 		return networkContextualMenu;
 	}
 

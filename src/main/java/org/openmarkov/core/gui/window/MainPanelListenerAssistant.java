@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.gui.window;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -203,7 +204,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 					expandNetwork(getCurrentNetworkPanel().getProbNet(), numSlices);
 			}
 		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
-			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
+			CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), 
+					getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes(), getCurrentNetworkPanel().getProbNet().checkIfThereIsAgeNode(), false,false, false );
 			if (costEffectivenessDialog.requestData(getCurrentNetworkPanel().getProbNet().getName(),
 						"expandedCE") == CostEffectivenessDialog.OK_BUTTON) {
 				 EvidenceCase evidenceCase  = new EvidenceCase();
@@ -230,6 +232,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 				  } else {
 					  numSlices = costEffectivenessDialog.getNumSlices();
 				  }
+				  if (getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes().size()>=0) {
+						 Finding finding = null;
+						  for (int i = 0; i < getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes().size(); i++) {
+							  if (!getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes().get(i).getVariable().getBaseName().equalsIgnoreCase("age")) {
+								  finding =  new Finding(getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes().get(i).getVariable(),
+										 Double.valueOf(costEffectivenessDialog.getNumericTemporalValues().get(getCurrentNetworkPanel().getProbNet().getSpecialTimeDependantNodes().get(i).getVariable().getName()).getText()));
+							  }
+							  try {
+									evidenceCase.addFinding(finding);
+								} catch (InvalidStateException | IncompatibleEvidenceException e1) {
+									e1.printStackTrace();
+								}
+						  }
+					 }
 				
 					expandNetwokCE(getCurrentNetworkPanel().getProbNet(), numSlices,
 							costEffectivenessDialog.getCostDiscount(), costEffectivenessDialog.getEffectivenessDiscount(),costEffectivenessDialog.getCycleLength(), evidenceCase );
@@ -902,7 +918,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 * expand the network like it would be done in CE analysis
 	 * to show it in the GUI
 	 */
-	private void expandNetwokCE(ProbNet probNet, int numSlices, double costDiscountRate, double effectivenessDiscountRate, double cycleLength, EvidenceCase evidence) {
+	private void expandNetwokCE(ProbNet probNet, int numSlices, double costDiscountRate, double effectivenessDiscountRate,
+			double cycleLength, EvidenceCase evidence) {
 		FactoryExpandedSMM expandedNetFactory;
 		double maxX = 0.0;
 		for (ProbNode probNode : probNet.getProbNodes()) {
@@ -913,18 +930,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, null,
 				maxX / 3);
 		InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+		//extend evidence
+		if (!evidence.getFindings().isEmpty()) {
+				
+			 try {
+				evidence.extendEvidence(expandedNetFactory.getExtendedNet(), cycleLength);
+			} catch (IncompatibleEvidenceException | InvalidStateException
+					| WrongCriterionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
+	 }
 		expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate,
-				effectivenessDiscountRate, inferenceOptions, null);
-		try {
-			evidence.extendEvidence(expandedNetFactory.getExtendedNet(),
-					cycleLength);
-		} catch (IncompatibleEvidenceException e2) {
-			e2.printStackTrace();
-		} catch (InvalidStateException e2) {
-			e2.printStackTrace();
-		} catch (WrongCriterionException e2) {
-			e2.printStackTrace();
-		}
+				effectivenessDiscountRate, inferenceOptions, evidence);
+		
 		expandedNetFactory.adaptProbNetForCE();
 		// project all the evidence
 		// expandedNetFactory.projectEvidence(evidence);

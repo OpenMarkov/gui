@@ -10,8 +10,10 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -31,6 +33,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -42,6 +45,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.GapContent;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
@@ -49,6 +53,13 @@ import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
 import org.openmarkov.core.gui.localize.StringResource;
 import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNode;
+/**
+ * Input dialog for cost effectiveness purposes used to introduce relevant information such as cycle length,
+ *  number of cycles, introduce findings to numerical variables within the network, cost and effectiveness discount rate...
+ *  
+ * @author myebra
+ *
+ */
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener, PropertyChangeListener, FocusListener{
 //TODO internationalization
 	/**
@@ -59,8 +70,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private JLabel initialAgeLabel;
 	private JLabel cycleLengthLabel;
 	private JLabel unitLabel;
+	private boolean checkZero;
 	private JTextField cycleLengthTextField;
 	private JComboBox unitsCombo;
+	private JCheckBox checkZeroCycle;
 	private JLabel finalAgeLabel;
 	private JTextField finalAgeTextField;
 	private JTextField initialAgeTextField;
@@ -83,7 +96,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private JLabel lblSimulationsNumber;
 	private Integer simulationsNumber;
 	private JButton btnBrowse;
-	private boolean isThereNodeAge = false;
+	private boolean thereIsNodeAge = false;
 	private JLabel numSlicesLabell;
 	private JTextField numSlicesJTextField;
 	private Integer numSlices;
@@ -102,6 +115,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	private JPanel numSlicesPanel; 
 	private List<ProbNode> numericTemporalNodes;
 	private HashMap<String, JTextField> numericTemporalComponents = new HashMap<>();	
+	private boolean outputFile;
 
 	/**
 	 * Launch the application.
@@ -196,7 +210,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public CostEffectivenessDialog(Window owner, boolean isThereNodeAge) {
 		super(owner);
 		setLocationRelativeTo(owner);
-		this.isThereNodeAge = isThereNodeAge;
+		this.thereIsNodeAge = isThereNodeAge;
 		
 		dialogStringResource =
 	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
@@ -209,13 +223,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	 * @param owner
 	 * 		The parent of the dialog
 	 */
-	public CostEffectivenessDialog(Window owner, List<ProbNode> numericTemporalNodes, boolean isThereNodeAge, boolean isUtility, boolean isTemporalEvolution) {
+	public CostEffectivenessDialog(Window owner, List<ProbNode> numericTemporalNodes, boolean isThereNodeAge, boolean isUtility, boolean isTemporalEvolution, boolean outputFile) {
 		super(owner);
 		setLocationRelativeTo(owner);
-		this.isThereNodeAge = isThereNodeAge;
+		this.thereIsNodeAge = isThereNodeAge;
 		this.isUtility = isUtility;
 		this.isTemporalEvolution = isTemporalEvolution;
 		this.numericTemporalNodes = numericTemporalNodes;
+		this.outputFile = outputFile;
 		dialogStringResource =
 	            StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		initialize(isTemporalEvolution);
@@ -229,566 +244,78 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		setMinimumSize(new Dimension(250 , 150));
 		
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		if (isTemporalEvolution) {
-		if (isUtility && isThereNodeAge) {
-			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-			groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCycleLengthLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getUnitsJComboBox())
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getInitialAgeLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getFinalAgeLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCostDiscountLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getEffectivenessDiscountLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getJPanelInstantOrAccumulative()) 
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getOutputFileLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE,  203, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getBtnBrowse())
-										)
-										)
-							
-							.addContainerGap())
-			)));
-			groupLayout.setVerticalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getInitialAgeLabel())
-							.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getFinalAgeLabel())
-							.addComponent(getFinalAgeTextField())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getCostDiscountTextField())
-							.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getEffectivenessDiscountTextField())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getJPanelInstantOrAccumulative())
-							)
-						.addGap(21)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getOutputFileLabel())
-							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getBtnBrowse()))
-						.addContainerGap())
-			);
-			Component[] components = new Component [6];
-			components[0] = getInitialAgeLabel();
-			components[1] = getCostDiscountLabel();
-			components[2] = getOutputFileLabel();
-			components[3] = getFinalAgeLabel();
-			components[4] = getCycleLengthLabel();
-			components[5] = getUnitsJComboBox();
-			groupLayout.linkSize(components);
-			getComponentsPanel().setLayout(groupLayout);
-			
-		} else if (isUtility && !isThereNodeAge) {
-			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-			groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCycleLengthLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getUnitsJComboBox())
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getJLabelNumSlices())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCostDiscountLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getEffectivenessDiscountLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getJPanelInstantOrAccumulative()) 
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getOutputFileLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203,	Short.MAX_VALUE)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getBtnBrowse())
-										)
-										)
-							
-							.addContainerGap())
-			)));
-			groupLayout.setVerticalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getJLabelNumSlices())
-							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getCostDiscountTextField())
-							.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getEffectivenessDiscountTextField())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getJPanelInstantOrAccumulative())
-							)
-						.addGap(21)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getOutputFileLabel())
-							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getBtnBrowse()))
-						.addContainerGap())
-			);
-			
-			Component[] components = new Component [5];
-			components[0] = getJLabelNumSlices();
-			components[1] = getCostDiscountLabel();
-			components[2] = getOutputFileLabel();
-			components[3] = getCycleLengthLabel();
-			components[4] = getUnitsJComboBox();
-			groupLayout.linkSize(components);
-			getComponentsPanel().setLayout(groupLayout);
-			
-		} else if (!isUtility && isThereNodeAge) {
-			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-			groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCycleLengthLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getUnitsJComboBox())
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getInitialAgeLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getFinalAgeLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getOutputFileLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getBtnBrowse())
-										)
-										)
-							
-							.addContainerGap())
-			)));
-			groupLayout.setVerticalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getInitialAgeLabel())
-							.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getFinalAgeLabel())
-							.addComponent(getFinalAgeTextField())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getOutputFileLabel())
-							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getBtnBrowse()))
-						.addContainerGap())
-			);
-			Component[] components = new Component [5];
-			components[0] = getJLabelNumSlices();
-			components[1] = getCostDiscountLabel();
-			components[2] = getOutputFileLabel();
-			components[3] = getCycleLengthLabel();
-			components[4] = getUnitsJComboBox();
-			groupLayout.linkSize(components);
-			getComponentsPanel().setLayout(groupLayout);
-			
-		} else if (!isUtility && !isThereNodeAge) {
-			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-			groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getCycleLengthLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getUnitsJComboBox())
-												)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getJLabelNumSlices())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-										)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(getOutputFileLabel())
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(getBtnBrowse())
-										)
-										)
-							
-							.addContainerGap())
-			)));
-			groupLayout.setVerticalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getJLabelNumSlices())
-							.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE,GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getOutputFileLabel())
-							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getBtnBrowse()))
-						.addContainerGap())
-			);
-			Component[] components = new Component [4];
-			components[0] = getJLabelNumSlices();
-			components[1] = getOutputFileLabel();
-			components[2] = getCycleLengthLabel();
-			components[3] = getUnitsJComboBox();
-			groupLayout.linkSize(components);
-			getComponentsPanel().setLayout(groupLayout);
-		}
-		} else if (!isTemporalEvolution) {//CE analysis
-			if (numericTemporalNodes.size() > 0) { // it means there are numeric variables 
-				
-				int rows = numericTemporalNodes.size() + 2;
-				rows = (!isThereNodeAge) ? (rows + 1) : rows;
+		
+		int rows = numericTemporalNodes.size() + 2;
+				rows = (!thereIsNodeAge) ? (rows + 1) : rows;
 				JPanel panel = new JPanel();
 				panel.setLayout(new GridLayout(rows, 4, 10, 10));
 				
 				panel.add(getCycleLengthLabel());
 				panel.add(getCycleLengthTextField());
 				panel.add(getUnitsJComboBox());
-				panel.add(new JLabel(""));
+				if (isTemporalEvolution) {
+					panel.add(new JLabel(""));
+				} else {
+					panel.add(getCheckCycleCero());
+				}
+				
+				if (thereIsNodeAge) {
+					panel.add(getInitialAgeLabel());
+					panel.add(getInitialAgeTextField());
+					panel.add(getFinalAgeLabel());
+					panel.add(getFinalAgeTextField());
+				} else {
+					panel.add(getJLabelNumSlices());
+					panel.add(getNumSlicesJTextField());
+					panel.add(new JLabel(""));
+					panel.add(new JLabel(""));
+				}
 				
 				for (int i = 0; i < numericTemporalNodes.size(); i++) {
-					if (isThereNodeAge) {
-						panel.add(getInitialAgeLabel());
-						panel.add(getInitialAgeTextField());
-						panel.add(getFinalAgeLabel());
-						panel.add(getFinalAgeTextField());
-					} else {
-						panel.add(getJLabelNumSlices());
-						panel.add(getNumSlicesJTextField());
-						panel.add(new JLabel(""));
-						panel.add(new JLabel(""));
+					
 						if (!numericTemporalNodes.get(i).getVariable().getBaseName().equalsIgnoreCase("Age")) {
 							JLabel label = new JLabel(numericTemporalNodes.get(i).getVariable().getName());
-							//label.setSize(getCycleLengthLabel().getSize());
 							JTextField textField = new JTextField(10);
 							textField.setName(numericTemporalNodes.get(i).getVariable().getName());
 							textField.setText("0");
-							//textField.addActionListener(this);
 							textField.addPropertyChangeListener(this);
 							textField.addFocusListener(this);
-							//textField.setColumns(10);
 							panel.add(label);
 							panel.add(textField);
 							numericTemporalComponents.put(label.getText(), textField);
 							panel.add(new JLabel("Cycles"));
 							panel.add(new JLabel(""));
-							
 						}
-					}
+					
 				}
 				panel.add(getCostDiscountLabel());
 				panel.add(getCostDiscountTextField());
 				panel.add(getEffectivenessDiscountLabel());
 				panel.add(getEffectivenessDiscountTextField());
 				
-				getComponentsPanel().add(panel);
-/*
-				GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-				groupLayout.setHorizontalGroup(
-					groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getCycleLengthLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-											.addGap(18)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getUnitsJComboBox())
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getNumericTemporalPanel(), GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getInitialAgeLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-											.addGap(18)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getFinalAgeLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getFinalAgeTextField(),GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getCostDiscountLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-											.addGap(18)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getEffectivenessDiscountLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getOutputFileLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE,  203, GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getBtnBrowse())
-											)
-											)
-								
-								.addContainerGap())
-				)));
-				groupLayout.setVerticalGroup(
-					groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 20GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getNumericTemporalPanel())
-							)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(getInitialAgeLabel())
-								.addComponent(getInitialAgeTextField(), GroupLayout.PREFERRED_SIZE, 20GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getFinalAgeLabel())
-								.addComponent(getFinalAgeTextField())
-								)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getCostDiscountTextField())
-							.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getEffectivenessDiscountTextField())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGap(21)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getOutputFileLabel())
-							.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getBtnBrowse()))
-							.addContainerGap())
-				);
-				Component[] components = new Component [4 + numericTemporalCoomponents.size()];
-				components[0] = getCostDiscountLabel();
-				components[1] = getOutputFileLabel();
-				components[2] = getCycleLengthLabel();
-				components[3] = getUnitsJComboBox();
-				if (!numericTemporalCoomponents.isEmpty()) {
-					Object labels[] = numericTemporalCoomponents.keySet().toArray();
-					for (int i = 0; i < labels.length; i++) {
-						components[4+i] = (JLabel)labels[i];
-					}
-				}
-				groupLayout.linkSize(components);
-				if (!numericTemporalCoomponents.isEmpty()) {
-					Object labels[] = numericTemporalCoomponents.keySet().toArray();
-					for (int i = 0; i < labels.length; i++) {
-						((JLabel)labels[i]).setSize(getCycleLengthLabel().getSize());
-						numericTemporalCoomponents.get((JLabel)labels[i]).setSize(getCycleLengthTextField().getSize());
-					}
-					}
-				getComponentsPanel().setLayout(groupLayout);
-			
-			*/
-			} else if (!isThereNodeAge && numericTemporalNodes.size() == 0) {
-
-				GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
-				groupLayout.setHorizontalGroup(
-					groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getCycleLengthLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-											.addGap(18)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getUnitsJComboBox())
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getJLabelNumSlices())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-											)
-										.addGroup(groupLayout.createSequentialGroup()
-												.addComponent(getCostDiscountLabel())
-												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(getCostDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-												.addGap(18)
-												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(getEffectivenessDiscountLabel())
-												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(getEffectivenessDiscountTextField(), GroupLayout.PREFERRED_SIZE,  75, GroupLayout.PREFERRED_SIZE)
-												)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(getOutputFileLabel())
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, 203,	Short.MAX_VALUE)
-											.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(getBtnBrowse())
-											)
-											)
-								
-								.addContainerGap())
-				)));
-				groupLayout.setVerticalGroup(
-					groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(getCycleLengthLabel())
-							.addComponent(getCycleLengthTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(getUnitsJComboBox())
-							)
-						.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(getJLabelNumSlices())
-								.addComponent(getNumSlicesJTextField(), GroupLayout.PREFERRED_SIZE, /*20*/GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(getCostDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getCostDiscountTextField())
-								.addComponent(getEffectivenessDiscountLabel(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getEffectivenessDiscountTextField())
-								)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGap(21)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(getOutputFileLabel())
-								.addComponent(getOutputFileJTextField(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getBtnBrowse()))
-							.addContainerGap())
-				);
 				
-				Component[] components = new Component [5];
-				components[0] = getJLabelNumSlices();
-				components[1] = getCostDiscountLabel();
-				components[2] = getOutputFileLabel();
-				components[3] = getCycleLengthLabel();
-				components[4] = getUnitsJComboBox();
-				groupLayout.linkSize(components);
-				getComponentsPanel().setLayout(groupLayout);
-				
-			
-			}
-		}
+					getComponentsPanel().setLayout(new BorderLayout(20, 0));
+					getComponentsPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+					getComponentsPanel().add(panel, BorderLayout.NORTH);	
+					if (isTemporalEvolution) {
+						getComponentsPanel().add(new JPanel());
+						getComponentsPanel().add(getJPanelInstantOrAccumulative(), BorderLayout.CENTER);
+					}
+					
+					JPanel outputPanel = new JPanel();
+				//	outputPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+					//outputPanel.setLayout(new GridLayout(1, 3, 10, 10));
+					if (outputFile)  {
+						outputPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+						outputPanel.add(getOutputFileLabel());
+						outputPanel.add(new JPanel());
+						outputPanel.add(getOutputFileJTextField());
+						outputPanel.add(new JPanel());
+						outputPanel.add(getBtnBrowse());
+						getComponentsPanel().add(new JPanel());
+						getComponentsPanel().add(outputPanel, BorderLayout.SOUTH);
+					}
+					
 		
 		 pack();
 		 repaint();
@@ -802,7 +329,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
-		if (isThereNodeAge) {				
+		if (thereIsNodeAge) {				
 		GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -872,7 +399,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 					.addContainerGap())
 		);
 		getComponentsPanel().setLayout(groupLayout);
-		} else if (!isThereNodeAge) {
+		} else if (!thereIsNodeAge) {
 			GroupLayout groupLayout = new GroupLayout(getComponentsPanel());
 			groupLayout.setHorizontalGroup(
 					groupLayout.createParallelGroup(Alignment.LEADING)
@@ -990,7 +517,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public JTextField getOutputFileJTextField(){
 		if (outputJTextField == null){
 			outputJTextField = new JTextField();
-			outputJTextField.setColumns(10);
+			outputJTextField.setColumns(50);
 		}
 		return outputJTextField;
 	}
@@ -1026,6 +553,13 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 			unitsCombo.addItemListener(this);
 		}
 		return unitsCombo;
+	}
+	
+	public JCheckBox getCheckCycleCero() {
+		if (checkZeroCycle == null) {
+			checkZeroCycle = new JCheckBox("Zero cycle");
+		}
+		return checkZeroCycle;
 	}
 	
 	public JLabel getCycleLengthLabel(){
@@ -1120,42 +654,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 		
 	}
 	
-	/*protected JPanel getNumericTemporalPanel() {
-		
-		if (numericTemporalPanel ==null) {
-			numericTemporalPanel = new JPanel();
-			int columns;
-			int rows;
-			columns = isThereNodeAge ? 4 : 2;
-			rows = numericTemporalNodes.size();
-			numericTemporalPanel.setLayout( new GridLayout(rows, columns, 20, 0));
-			for (int i = 0; i < rows; i++) {
-				if (isThereNodeAge) {
-					numericTemporalPanel.add(getInitialAgeLabel());
-					numericTemporalPanel.add(getInitialAgeTextField());
-					numericTemporalComponents.put(getInitialAgeLabel().getName(), getInitialAgeTextField());
-					numericTemporalPanel.add(getFinalAgeLabel());
-					numericTemporalPanel.add(getFinalAgeTextField());
-					numericTemporalComponents.put(getFinalAgeLabel().getName(), getFinalAgeTextField());
-				} else {
-					if (!numericTemporalNodes.get(i).getVariable().getBaseName().equalsIgnoreCase("Age")) {
-						JLabel label = new JLabel(numericTemporalNodes.get(i).getVariable().getName());
-						label.setSize(getCycleLengthLabel().getSize());
-						JTextField textField = new JTextField(10);
-						textField.setColumns(10);
-						numericTemporalPanel.add(label);
-						numericTemporalPanel.add(textField);
-						numericTemporalComponents.put(label.getName(), textField);
-					}
-				}
-			}
-			numericTemporalPanel.setName( "numericTemporalPanel" );
-			
-		}
-		return numericTemporalPanel;
-	}*/
-	
-	
+
 	/**
 	 * @return the panel with the two buttons
 	 */
@@ -1211,7 +710,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
 	@Override
 	protected boolean doOkClickBeforeHide() {
-		if (isThereNodeAge) {
+		if (thereIsNodeAge) {
 			initialAge = Integer.valueOf(getInitialAgeTextField().getText());
 			finalAge = Integer.valueOf(getFinalAgeTextField().getText());
 		} else {
@@ -1250,6 +749,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	public String getUnits(){
 		return units;
 	}
+	public boolean getZeroCycle () {
+		return checkZero = (getCheckCycleCero().isSelected()) ? true : false;
+	}
+	
 	public void showSimulationsNumberElements(boolean isProbabilistic){
 		getLblSimulationsNumber().setVisible(isProbabilistic);
 		getTxtSimulationsNumber().setVisible(isProbabilistic);
@@ -1260,7 +763,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 	}
 	
 	public boolean isThereNodeAge() {
-		return isThereNodeAge;
+		return thereIsNodeAge;
 	}
 	/**
 	 * It asks the user to choose a file by means of a save-file dialog box.

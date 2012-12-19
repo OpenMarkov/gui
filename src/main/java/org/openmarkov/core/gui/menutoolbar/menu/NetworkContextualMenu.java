@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.text.StyledEditorKit.BoldAction;
 
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
@@ -61,6 +62,7 @@ class NetworkContextualMenu extends ContextualMenu {
 	private JMenuItem expandNetworkMenuItem;
 	
 	private JMenuItem expandNetworCEkMenuItem;
+	private boolean canBeExpanded;
 
 	/**
 	 * This constructor creates a new instance.
@@ -68,10 +70,9 @@ class NetworkContextualMenu extends ContextualMenu {
 	 * @param newListener
 	 *            object that listens to the menu events.
 	 */
-	public NetworkContextualMenu(ActionListener newListener) {
-
+	public NetworkContextualMenu(ActionListener newListener, boolean canBeExpanded) {
 		super(newListener);
-
+		this.canBeExpanded = canBeExpanded;
 		initialize();
 
 	}
@@ -86,11 +87,12 @@ class NetworkContextualMenu extends ContextualMenu {
 		add(getPasteMenuItem());
 		addSeparator();
 		add(getNetworkPropertiesMenuItem());
-		addSeparator();
-		add(getExpandedNetworkMenuItem());
-		addSeparator();
-		add(getExpandedNetworkCEMenuItem());
-
+		if (canBeExpanded) {
+			addSeparator();
+			add(getExpandedNetworkMenuItem());
+			addSeparator();
+			add(getExpandedNetworkCEMenuItem());	
+		}
 	}
 	
 	/**

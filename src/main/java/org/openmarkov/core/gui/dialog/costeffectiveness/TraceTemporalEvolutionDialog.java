@@ -30,7 +30,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
-
+/**
+ * Dialog where to plot temporal evolution of variables in CEA
+ * 
+ * @author myebra
+ *
+ */
 @SuppressWarnings("serial")
 public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizontalDialog {
 	
@@ -44,13 +49,14 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	private static Variable variableOfInterest;
 	private static ProbNet expandedNetwork;
 	private static boolean isUtility;
+	private static boolean checkZeroCycle;
 
     public TraceTemporalEvolutionDialog (Window owner,
                                          HashMap<Variable, TablePotential> temporalEvolution,
                                          CostEffectivenessDialog costEffectivenessDialog,
                                          Variable variableOfInterest,
                                          ProbNet expandedNetwork,
-                                         boolean isUtility)
+                                         boolean isUtility, boolean checkZeroCycle)
     {
 		super(owner);
 		this.temporalEvolution = temporalEvolution;
@@ -58,6 +64,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 		this.variableOfInterest = variableOfInterest;
 		this.expandedNetwork = expandedNetwork;
 		this.isUtility = isUtility;
+		this.checkZeroCycle = checkZeroCycle;
 		
 		initialize();
         
@@ -161,6 +168,7 @@ public class TraceTemporalEvolutionDialog  extends OkCancelApplyUndoRedoHorizont
 	 private static XYDataset createDataset() {
 		    XYSeriesCollection result = new XYSeriesCollection();
 		    double value = 0.0;
+		   // int numSlices = (checkZeroCycle) ? costEffectivenessDialog.getNumSlices() : costEffectivenessDialog.getNumSlices() -1;
 		    for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
 		    	XYSeries series = null;
 		    	if (isUtility) {

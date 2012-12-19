@@ -14,7 +14,12 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
-
+/**
+ * Table to show temporal evolution of temporal variables
+ * 
+ * @author myebra
+ *
+ */
 @SuppressWarnings("serial")
 public class TemporalEvolutionTablePanel extends JPanel {
 

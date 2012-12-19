@@ -150,7 +150,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 			return tabbedPane;
 		}
 	 private static  ProbabilityTablePanel getPotentialPanel () {
-		 	if(cpTablePanel == null){
+		 if(cpTablePanel == null){
 		 		
 		 		//create a dummy probnet
 		 		ProbNet dummyProbNet = new ProbNet();
@@ -194,7 +194,8 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
 	        return cpTablePanel;
 	    }
 	
-	 private ChartPanel getChartsPanel () {
+	 @SuppressWarnings("deprecation")
+	private ChartPanel getChartsPanel () {
 		 if(chartPanel == null){
 			 XYDataset dataset = createDataset();
 			 JFreeChart chart = ChartFactory.createScatterPlot("Cost-Effectiveness Analysis Result",

@@ -10,7 +10,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
+/**
+ * Table to show frontiers interventions and ICER 
+ * 
+ * @author myebra
+ *
+ */
 
 @SuppressWarnings("serial")
 public class FrontierInterventionsTablePanel extends JPanel{

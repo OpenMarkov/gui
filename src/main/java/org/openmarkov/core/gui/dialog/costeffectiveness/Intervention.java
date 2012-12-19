@@ -1,5 +1,11 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
-
+/**
+ * Each intervention has a name a cost and an effectiveness. Each intervention represents an strategy, 
+ * which is a possible configuration of the policies of the decision nodes
+ * 
+ * @author myebra
+ *
+ */
 public class Intervention {
 
 	// Attributes

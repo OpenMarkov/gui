@@ -221,8 +221,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			workingMode = currentNetworkPanel.getWorkingMode();
 			boolean enable = currentNetworkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType
 					|| currentNetworkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType;
-			setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC,
-					enable);
+			setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
 			setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, enable);
 			//setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, enable);
 
@@ -358,12 +357,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
 				setOptionEnabled(
-						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
-				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
+						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
+				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 				setOptionEnabled(ActionCommands.DECISION_TREE, true);
 			}
-			if (networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType) {
+			if (networkPanel.getProbNet().getNetworkType() instanceof SimpleMarkovModelType ||
+					networkPanel.getProbNet().getNetworkType() instanceof InfluenceDiagramType) {
 				setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
+				setOptionEnabled(
+						ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
+				setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
 			}
 		} else {
 			setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
