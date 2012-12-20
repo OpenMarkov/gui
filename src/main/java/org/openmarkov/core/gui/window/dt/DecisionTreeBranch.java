@@ -2,8 +2,10 @@
 package org.openmarkov.core.gui.window.dt;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -52,7 +54,7 @@ public class DecisionTreeBranch extends DecisionTreeElement
      */
     public String getBranchDescriptiontHTML ()
     {
-        DecimalFormat df = new DecimalFormat("0.00");        
+        DecimalFormat df = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));        
         StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
         if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.DECISION)
         {
@@ -68,12 +70,14 @@ public class DecisionTreeBranch extends DecisionTreeElement
         {
             txtLeft.append (branchVariable.getName () + "=");
             txtLeft.append (branchState.getName ());
+            txtLeft.append (" / ");
         }
         if(parent != null && parent.getProbNode ().getNodeType () == NodeType.CHANCE)
         {
             txtLeft.append (" P=" + df.format (getBranchProbability()));
+            txtLeft.append (" / ");
         }
-        txtLeft.append (" U=" + df.format (child.getUtility ()));
+        txtLeft.append ("U=" + df.format (child.getUtility ()));
         txtLeft.append ("</td>");
         txtLeft.append ("</table></html>");
         return txtLeft.toString ();

@@ -1,13 +1,15 @@
 package org.openmarkov.core.gui.window.dt;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
+import org.openmarkov.core.gui.window.edition.ZoomablePanel;
 import org.openmarkov.core.inference.PartialOrder;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -17,14 +19,12 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.SumPotential;
 
 @SuppressWarnings("serial")
-public class DecisionTreePanel  extends JScrollPane
+public class DecisionTreePanel  extends ZoomablePanel
 {
     protected JTree jTree;    
-
+      
     public DecisionTreePanel(ProbNet probNet)
     {
-        long start = System.currentTimeMillis ();
-
         ProbNet dtProbNet = probNet.copy ();
         Variable svVariable = getSuperValueVariable(dtProbNet);
         List<Variable> variables = getPartiallySortedVariables (dtProbNet);
@@ -43,8 +43,6 @@ public class DecisionTreePanel  extends JScrollPane
             jTree.expandRow (i);
         }        
         setViewportView (jTree);
-        long elapsedTimeMillis = System.currentTimeMillis () - start;
-        System.out.print ("Ellapsed milliseconds: " + elapsedTimeMillis);
     }
     
     
@@ -109,4 +107,26 @@ public class DecisionTreePanel  extends JScrollPane
         }
         return variables;
     }
+    
+    /**
+     * Overwrite 'paint' method to avoid to call it explicitly.
+     * 
+     * @param g
+     *            the graphics context in which to paint.
+     */
+    @Override
+    public void paint(Graphics g) {
+
+        Graphics2D g2D = (Graphics2D) g;
+
+        super.paint(g);
+        g2D.scale(zoom.getZoom(), zoom.getZoom());
+        jTree.paint(g2D);
+    }   
+    
+    @Override
+    protected double[] getBounds (Graphics2D graphics)
+    {
+        return new double[4];
+    } 
 }

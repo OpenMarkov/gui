@@ -11,12 +11,13 @@ import org.openmarkov.core.model.network.ProbNet;
 public class DecisionTreeWindow extends FrameContentPanel
 {
     private String  title   = null;
+    private DecisionTreePanel decisionTreePanel = null;
 
     public DecisionTreeWindow (ProbNet probNet)
     {
         setLayout(new BorderLayout());
-        title  = probNet.getName () + " DT";
-        DecisionTreePanel decisionTreePanel = new DecisionTreePanel (probNet);
+        title  = probNet.getName () + "- decision tree";
+        decisionTreePanel = new DecisionTreePanel (probNet);
         add (decisionTreePanel, BorderLayout.CENTER);
         setBackground (Color.blue);
     }
@@ -31,6 +32,18 @@ public class DecisionTreeWindow extends FrameContentPanel
     public void close ()
     {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public double getZoom ()
+    {
+        return decisionTreePanel.getZoom ();
+    }
+
+    @Override
+    public void setZoom (double zoom)
+    {
+        decisionTreePanel.setZoom (zoom);
     }
 
 }

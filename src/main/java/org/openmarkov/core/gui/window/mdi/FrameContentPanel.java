@@ -58,4 +58,8 @@ public abstract class FrameContentPanel extends JPanel {
 	 */
 	public abstract void close();
 
+    public abstract double getZoom ();
+
+    public abstract void setZoom (double zoom);
+
 }

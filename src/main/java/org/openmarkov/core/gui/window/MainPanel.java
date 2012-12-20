@@ -339,7 +339,7 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @return a new standard toolbar.
 	 */
-	private StandardToolBar getStandardToolBar() {
+	public StandardToolBar getStandardToolBar() {
 
 		if (standardToolBar == null) {
 			standardToolBar = new StandardToolBar(mainPanelListenerAssistant);

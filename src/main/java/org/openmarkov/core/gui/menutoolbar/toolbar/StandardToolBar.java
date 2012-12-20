@@ -84,7 +84,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
     /**
      * Button to open a decision tree panel.
      */
-	private JButton decisionTreeButton = null;
+	private JToggleButton decisionTreeButton = null;
 	
 	/**
 	 * String resource.
@@ -309,10 +309,10 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
      * 
      * @return a new button.
      */
-    private JButton getDecisionTreeButton() {
+    public JToggleButton getDecisionTreeButton() {
 
         if (decisionTreeButton == null) {
-            decisionTreeButton = new JButton();
+            decisionTreeButton = new JToggleButton();
             decisionTreeButton.setIcon(iconLoader.load(IconLoader.ICON_DECISION_TREE));
             decisionTreeButton.setActionCommand(ActionCommands.DECISION_TREE);
             decisionTreeButton.setFocusable(false);

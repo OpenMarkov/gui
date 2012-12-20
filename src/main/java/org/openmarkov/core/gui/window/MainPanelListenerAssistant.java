@@ -39,6 +39,7 @@ import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
+import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
@@ -352,13 +353,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		} else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS)) {
             MainPanel.getUniqueInstance ().getToolbarManager ().addToolbar (actionCommand.replace (ActionCommands.VIEW_TOOLBARS+".", ""));
         } else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
-            incrementZoomNetwork(getCurrentNetworkPanel());
+            incrementZoom(getCurrentPanel());
         } else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
-			decrementZoomNetwork(getCurrentNetworkPanel());
+			decrementZoom(getCurrentPanel());
 		} else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
-			setZoom(true, getCurrentNetworkPanel(), 0);
+			setZoom(true, getCurrentPanel(), 0);
 		} else if (ActionCommands.isZoomActionCommand(actionCommand)) {
-			setZoom(false, getCurrentNetworkPanel(),
+			setZoom(false, getCurrentPanel(),
 					ActionCommands.getValueZoomActionCommand(actionCommand));
 		} else if (actionCommand.equals(ActionCommands.MESSAGE_WINDOW)) {
 			showMessageWindow();
@@ -408,7 +409,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
 //TODO OOPN end
         } else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
-            buildDecisionTree(this.getCurrentNetworkPanel().getProbNet ());
+            toggleDecisionTree(this.getCurrentNetworkPanel().getProbNet ());
 		} else {
 			ToolPluginManager.getInstance().processCommand(actionCommand,
 					mainPanel.getMainFrame());
@@ -488,6 +489,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	public NetworkPanel getCurrentNetworkPanel() {
 	    return mainPanel.getMainPanelMenuAssistant ().getCurrentNetworkPanel ();
 	}
+	
+    /**
+     * Returns the current network panel of the current frame.
+     * 
+     * @return the current network panel.
+     */
+    public FrameContentPanel getCurrentPanel() {
+        return mainPanel.getMdi ().getCurrentPanel ();
+    }	
 
 	/**
 	 * Returns a value indicating if the network can be closed. If the network
@@ -579,16 +589,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	 *            content panel of the frame that has been selected.
 	 */
 	public void frameSelected(FrameContentPanel contentPanel) {
-        if (NetworkPanel.class.isAssignableFrom (contentPanel.getClass ()))
+        if (contentPanel instanceof NetworkPanel)
         {
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent ((NetworkPanel) contentPanel);
-    		mainPanel.getInferenceToolBar().
-					setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());	
-        }
-        if (contentPanel instanceof MessageWindow) {
+    		mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+    		mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
+        }else if (contentPanel instanceof MessageWindow) {
         	mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
-        } else if (contentPanel instanceof NetworkPanel) {
-        	mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);        	
+        } else if (contentPanel instanceof DecisionTreeWindow) {
+            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree ((DecisionTreeWindow) contentPanel);
         }
 
 	}
@@ -1420,55 +1429,70 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 	}
 
 	/**
-	 * This method increments the zoom of the actual network.
+	 * This method increments the zoom of the current panel.
 	 * 
-	 * @param network
+	 * @param frameContentPanel
 	 *            network whose zoom will be changed.
 	 */
-	private void incrementZoomNetwork(NetworkPanel network) {
+	private void incrementZoom(FrameContentPanel frameContentPanel) {
 
-		setZoom(false, network, network.getZoom() + zoomChangeValue);
+		setZoom(false, frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
 
 	}
 
 	/**
-	 * This method decrements the zoom of the actual network.
+	 * This method decrements the zoom of the current panel.
 	 * 
-	 * @param network
+	 * @param frameContentPanel
 	 *            network whose zoom will be changed.
 	 */
-	private void decrementZoomNetwork(NetworkPanel network) {
+	private void decrementZoom(FrameContentPanel frameContentPanel) {
 
-		setZoom(false, network, network.getZoom() - zoomChangeValue);
+		setZoom(false, frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
 
 	}
 
 	/**
-	 * Sets the zoom of the actual network and updates the menu and the toolbar.
+	 * Sets the zoom of the current panel and updates the menu and the toolbar.
 	 * 
 	 * @param dialogBox
 	 *            if true, the parameter 'value' is ignored and this value is
 	 *            requested to user.
-	 * @param networkPanel
+	 * @param frameContentPanel
 	 *            network whose zoom will be changed.
 	 * @param value
 	 *            new zoom value.
 	 */
-	private void setZoom(boolean dialogBox, NetworkPanel networkPanel,
-			double value) {
+	private void setZoom(boolean dialogBox, FrameContentPanel frameContentPanel, double value) {
 
 		double newZoom = 0.0;
 
 		if (dialogBox) {
-			networkPanel.requestZoomToUser(Utilities.getOwner(mainPanel));
+			requestZoomToUser(Utilities.getOwner(mainPanel), frameContentPanel);
 		} else {
-			networkPanel.setZoom(value);
+			frameContentPanel.setZoom(value);
 		}
-		newZoom = networkPanel.getZoom();
+		newZoom = frameContentPanel.getZoom();
 		mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
 
 	}
 
+    /**
+     * This method requests to the user a new value of zoom for the actual
+     * network.
+     * 
+     * @param owner
+     *            window that owns the dialog box.
+     */
+    public void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
+
+        SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
+
+        if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == SelectZoomDialog.OK_BUTTON) {
+            frameContentPanel.setZoom(dialogZoom.getZoom());
+        }
+
+    }
 	
 	/**
 	 * commodity method to provide the path directory for the network file name
@@ -1501,11 +1525,17 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		
 	}
 	
-    private void buildDecisionTree (ProbNet probNet)
+    private void toggleDecisionTree (ProbNet probNet)
     {
-        DecisionTreeWindow decisionTree = new DecisionTreeWindow (probNet);
-        mainPanel.getMdi().createNewFrame(decisionTree);
-        mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree();
+        if(mainPanel.getStandardToolBar ().getDecisionTreeButton().isSelected ())
+        {
+            DecisionTreeWindow decisionTree = new DecisionTreeWindow (probNet);
+            mainPanel.getMdi().createNewFrame(decisionTree);
+            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+        }else
+        {
+            mainPanel.getMdi ().closeCurrentFrame ();
+        }
     }	
 
 }

@@ -9,11 +9,10 @@
 
 package org.openmarkov.core.gui.window.edition;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import javax.help.UnsupportedOperationException;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -41,7 +39,6 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
-import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
@@ -103,7 +100,7 @@ import org.openmarkov.core.oopn.Instance.ParameterArity;
  *          contraction of nodes, - Introduction and elimination of evidence -
  *          Management of multiple evidence cases.
  */
-public class EditorPanel extends JPanel implements MouseListener,
+public class EditorPanel extends ZoomablePanel implements MouseListener,
 		MouseMotionListener {
 
 	protected ProbNet probNet;
@@ -205,23 +202,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	protected Point2D.Double cursorPosition = new Point2D.Double();
 
 	/**
-	 * Object to convert coordinates of the screen to the panel and vice versa.
-	 */
-	protected Zoom zoom = new Zoom();
-
-	/**
-	 * Maximum width of the panel.
-	 */
-	private double maxWidth = Toolkit.getDefaultToolkit().getScreenSize()
-			.getWidth() * 20;
-
-	/**
-	 * Maximum height of the panel.
-	 */
-	private double maxHeight = Toolkit.getDefaultToolkit().getScreenSize()
-			.getHeight() * 20;
-
-	/**
 	 * Listener that listen to the changes of size.
 	 */
 	private HashSet<EditorPanelSizeListener> sizeListeners = new HashSet<EditorPanelSizeListener>();
@@ -299,6 +279,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 		inferenceManager = new InferenceManager();
 		editionModeManager = new EditionModeManager (this, probNet);
 		editionMode = editionModeManager.getDefaultEditionMode ();
+		getViewport ().setBackground (Color.white);
 	}
 
 	/**
@@ -309,35 +290,11 @@ public class EditorPanel extends JPanel implements MouseListener,
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	
-		this.setBackground(SystemColor.WHITE);
+		this.setBackground(Color.white);
 		adjustPanelDimension();
-		stringResource = StringResourceLoader.getUniqueInstance()
-				.getBundleMessages();
-		// undoManager = new UndoManagerWrapper();
+		stringResource = StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		clipboardAssistant = new EditorPanelClipboardAssistant();
-	}
-
-	/**
-	 * Return the maximum height of the panel till now.
-	 * 
-	 * @return maximum height of the panel till now.
-	 */
-	double getMaxHeight() {
-
-		return zoom.panelToScreen(maxHeight);
-
-	}
-
-	/**
-	 * Return the maximum width of the panel till now.
-	 * 
-	 * @return maximum width of the panel till now.
-	 */
-	double getMaxWidth() {
-
-		return zoom.panelToScreen(maxWidth);
-
 	}
 
 	/**
@@ -419,51 +376,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		visualNetwork.setSelectedAllObjects(true);
 		repaint();
-
-	}
-
-	/**
-	 * If the dimensions of the network are greater than the dimensions of the
-	 * panel, changes the dimensions of the panel in order to accomodate the
-	 * whole network.
-	 */
-	public void adjustPanelDimension() {
-
-		double[] networkBounds = visualNetwork
-				.getNetworkBounds((Graphics2D) getGraphics());
-		Dimension newDimension = null;
-		double incrLeft = 0, incrTop = 0;
-		double incrRight = networkBounds[1];
-		double incrBottom = networkBounds[3];
-
-		if (networkBounds[0] < 0) {
-			incrLeft = -networkBounds[0];
-		}
-		if (networkBounds[2] < 0) {
-			incrTop = -networkBounds[2];
-		}
-		//TODO: Review utility of this. Right now all it is seemingly doing is causing a bug
-		//      where expanded nodes aren't kept expanded and nodes are moved all at once in a direction  
-//		if ((incrLeft > 0) || (incrTop > 0)) {
-//			visualNetwork.moveAllNodes(incrLeft, incrTop);
-//			networkBounds[0] = 0;
-//			networkBounds[1] += incrLeft;
-//			networkBounds[2] = 0;
-//			networkBounds[3] += incrTop;
-//		}
-		maxWidth = Math.max(maxWidth, networkBounds[1]);
-		maxHeight = Math.max(maxHeight, networkBounds[3]);
-		newDimension = new Dimension((int) Math.round(getMaxWidth()),
-				(int) Math.round(getMaxHeight()));
-		setPreferredSize(newDimension);
-		setSize(newDimension);
-	//TODO: Review utility of this. Right now all it is seemingly doing is causing a bug
-	//      where expanded nodes aren't kept expanded and nodes are moved all at once in a direction		
-//		if ((incrLeft > 0) || (incrTop > 0)) {
-//			notifySizeChanged(zoom.panelToScreen(incrLeft),
-//					zoom.panelToScreen(incrTop), zoom.panelToScreen(incrRight),
-//					zoom.panelToScreen(incrBottom));
-//		}
 
 	}
 
@@ -1057,23 +969,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 
 		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
 		return (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON);
-
-	}
-
-	/**
-	 * This method requests to the user a new value of zoom for the actual
-	 * network.
-	 * 
-	 * @param owner
-	 *            window that owns the dialog box.
-	 */
-	public void requestZoomToUser(Window owner) {
-
-		SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
-
-		if (dialogZoom.requestZoom(getZoom()) == SelectZoomDialog.OK_BUTTON) {
-			setZoom(dialogZoom.getZoom());
-		}
 
 	}
 
@@ -2916,6 +2811,12 @@ public class EditorPanel extends JPanel implements MouseListener,
 		visualNetwork.setParameterArity(arity);		
 	}
     //TODO OOPN end
+
+    @Override
+    protected double[] getBounds (Graphics2D graphics)
+    {
+       return visualNetwork.getNetworkBounds (graphics);
+    }
 
 	
 

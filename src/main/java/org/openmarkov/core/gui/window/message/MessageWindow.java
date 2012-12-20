@@ -288,4 +288,17 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
     {
         setVisible (false);
     }
+
+    @Override
+    public double getZoom ()
+    {
+        // Ignore
+        return 0;
+    }
+
+    @Override
+    public void setZoom (double zoom)
+    {
+        // Ignore
+    }
 }

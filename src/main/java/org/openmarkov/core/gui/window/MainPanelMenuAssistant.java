@@ -32,6 +32,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.oopn.OOSelectionListener;
 import org.openmarkov.core.gui.oopn.VisualInstance;
 import org.openmarkov.core.gui.oopn.VisualReferenceLink;
+import org.openmarkov.core.gui.window.dt.DecisionTreeWindow;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
@@ -336,6 +337,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		} else {
 			setOptionSelected(ActionCommands.BYNAME_NODES, true);
 		}
+        setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, true);
+        setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
+        setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, true);
 		setOptionEnabled(ActionCommands.OBJECT_SELECTION, false);
 		setOptionEnabled(ActionCommands.CHANCE_CREATION, false);
 		setOptionEnabled(ActionCommands.DECISION_CREATION, false);
@@ -377,11 +381,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			} else {
 				setOptionEnabled(ActionCommands.PROPAGATE_EVIDENCE, true);
 			}
+            if (!networkPanel.getProbNet().hasConstraint (OnlyChanceNodes.class)) {
+                setOptionEnabled(ActionCommands.DECISION_TREE, true);
+            }
 		}
 
 		updateOptionsFindingsDependent(networkPanel);
 		updatePropagateEvidenceButton();
 		mainPanel.changeWorkingModeButton(workingMode);
+		mainPanel.getStandardToolBar ().getDecisionTreeButton().setSelected (false);
 		
 		/*
 		 * for (NodeType type : networkPanel.getNetwork().getNetworkType()
@@ -393,8 +401,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		 * default: { setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 		 * break; } } }
 		 */
-		setOptionEnabled(ActionCommands.SAVE_NETWORK,
-				networkPanel.getModified());
+        setOptionEnabled (ActionCommands.SAVE_NETWORK, networkPanel.getModified ());
 		objectsSelected(networkPanel.getSelectedNodes(),
 				networkPanel.getSelectedLinks());
 		setZoom(networkPanel.getZoom());
@@ -1058,14 +1065,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
 	}
 
-	public void updateOptionsDecisionTree() {
+	public void updateOptionsDecisionTree(DecisionTreeWindow decisionTreeWindow) {
 		setOptionEnabled(EDITING_ACTION_COMMANDS, false);
 		setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-		setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
+		//setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, false);
 		setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
+		mainPanel.getStandardToolBar ().getDecisionTreeButton().setSelected (true);
+		setZoom(decisionTreeWindow.getZoom());
 	}
 }

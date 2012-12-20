@@ -73,11 +73,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	public static final int INFERENCE_WORKING_MODE = 1;
 
 	/**
-	 * Scroll panel to scroll the editor panel.
-	 */
-	private ScrollEditorPanel networkScrollPanel = null;
-
-	/**
 	 * Panel where the network is painted.
 	 */
 	private EditorPanel editorPanel = null;
@@ -176,40 +171,9 @@ public class NetworkPanel extends FrameContentPanel implements
 
 		// splitPane.setTopComponent(getNetworkScrollPanel());
 		// splitPane.setBottomComponent(getPropertiesScrollPanel());
-		add(getNetworkScrollPanel());
+		add(getEditorPanel());
 	}
 
-	/**
-	 * This method initializes networkScrollPanel.
-	 * 
-	 * @return a new scroll panel.
-	 */
-	private ScrollEditorPanel getNetworkScrollPanel() {
-
-		if (networkScrollPanel == null) {
-			networkScrollPanel = new ScrollEditorPanel(getEditorPanel());
-			networkScrollPanel.setPreferredSize(new Dimension(300, 500));
-		}
-
-		return networkScrollPanel;
-
-	}
-
-	/**
-	 * This method initializes editorPanel.
-	 * 
-	 * @return a new editor panel.
-	 */
-	/*
-	 * private EditorPanel getEditorPanel() {
-	 * 
-	 * if (editorPanel == null) { editorPanel = new EditorPanel(network);
-	 * editorPanel.addEditionListener(this); }
-	 * 
-	 * return editorPanel;
-	 * 
-	 * }
-	 */
 	/**
 	 * This method initializes editorPanel.
 	 * 
@@ -226,6 +190,7 @@ public class NetworkPanel extends FrameContentPanel implements
 		        editorPanel = new EditorPanel(this, new VisualNetwork (probNet));
 			// editorPanel.addEditionListener(this);
 			// It is necessary for edition actions like movement node.
+		    editorPanel.setPreferredSize (new Dimension(300, 500));
 		}
 
 		return editorPanel;
@@ -746,19 +711,6 @@ public class NetworkPanel extends FrameContentPanel implements
 	public double getZoom() {
 
 		return editorPanel.getZoom();
-
-	}
-
-	/**
-	 * This method requests to the user a new value of zoom for the actual
-	 * network.
-	 * 
-	 * @param owner
-	 *            window that owns the dialog box.
-	 */
-	public void requestZoomToUser(Window owner) {
-
-		editorPanel.requestZoomToUser(owner);
 
 	}
 
