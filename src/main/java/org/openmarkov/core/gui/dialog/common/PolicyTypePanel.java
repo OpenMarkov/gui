@@ -77,6 +77,7 @@ public class PolicyTypePanel extends JPanel
     public PolicyTypePanel (PotentialEditDialog parent, ProbNode probNode)
     {
         this.parent = parent;
+        this.probNode = probNode;
         setBorder (new LineBorder (UIManager.getColor ("List.dropLineColor"), 1, false));
         setLayout (new FlowLayout ());
         // jPanelRelationTableType.setSize( 294, 29 );

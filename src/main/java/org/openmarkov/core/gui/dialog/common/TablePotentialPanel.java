@@ -34,6 +34,7 @@ import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableModel;
+import org.openmarkov.core.gui.component.ValuesTableOptimalPolicyCellRenderer;
 import org.openmarkov.core.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.core.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
@@ -42,6 +43,7 @@ import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.UtilStrings;
@@ -109,7 +111,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		add(getValuesTableScrollPane(), BorderLayout.CENTER);
 		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
 		repaint();
-		
 		//add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
 		// TODO Auto-generated constructor stub
 	}
@@ -1217,7 +1218,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		boolean[] aux = new boolean[size - 1];
 		boolean hasUncertainty;
 		if (probNode.getPotentials().size() > 0
-				&& probNode.getNodeType() != NodeType.DECISION) {
+				/*&& probNode.getNodeType() != NodeType.DECISION*/) {
+		if (probNode.getNodeType() != NodeType.DECISION) {
 			TablePotential tablePotential = (TablePotential) probNode
 					.getPotentials().get(0);
 
@@ -1244,19 +1246,27 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				aux[i - 1] = hasUncertainty;
 			}
 
-		}
+		
 		if (!hasLinkRestriction) {
 			valuesTable.setDefaultRenderer(Double.class,
 					new ValuesTableCellRenderer(getFirstEditableRow(), aux));
 			valuesTable.setDefaultRenderer(String.class,
 					new ValuesTableCellRenderer(getFirstEditableRow(), aux));
-		} else {
+		}  else {
 			valuesTable.setDefaultRenderer(Double.class,
 					new ValuesTableWithLinkRestrictionCellRenderer(
 							getFirstEditableRow(), aux));
 			valuesTable.setDefaultRenderer(String.class,
 					new ValuesTableWithLinkRestrictionCellRenderer(
 							getFirstEditableRow(), aux));
+		}
+	} else if (probNode.getNodeType() == NodeType.DECISION 
+				&& probNode.getPolicyType() == PolicyType.OPTIMAL) {
+			valuesTable.setDefaultRenderer(Double.class,
+					new ValuesTableOptimalPolicyCellRenderer(getFirstEditableRow(), aux));
+			valuesTable.setDefaultRenderer(String.class,
+					new ValuesTableOptimalPolicyCellRenderer(getFirstEditableRow(), aux));
+		}
 		}
 	}
 

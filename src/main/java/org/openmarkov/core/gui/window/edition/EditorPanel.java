@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import javax.help.UnsupportedOperationException;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -34,8 +37,10 @@ import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
@@ -380,7 +385,7 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	}
 
 	/**
-	 * Notifies to the registered size listener (if any) that the panel's size
+		 * Notifies to the registered size listener (if any) that the panel's size
 	 * has changed.
 	 * 
 	 * @param incrLeft
@@ -1123,7 +1128,7 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 			if (node.getProbNode().getNodeType() == NodeType.DECISION) {
 				ProbNode probNode = node.getProbNode();
 				//TODO manage other kind of policy types from the interface
-				probNode.setPolicyType(PolicyType.OPTIMAL);
+			//	probNode.setPolicyType(PolicyType.OPTIMAL);
 				Potential imposedPolicy = probNode.getPotentials().get(0);
 				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), probNode, false);
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
@@ -1164,10 +1169,32 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	 * This method shows the expected utility of a decision node.
 	 */
 	public void showExpectedUtilityOfNode() {
-		System.out.println("Pulsada la opción 'Ver Utilidad Esperada'"); // ...Borrar
-		
-		
-		
+		VisualNode node = null;
+		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
+		if (selectedNode.size() == 1) {
+			node = selectedNode.get(0);
+			ProbNode probNode = node.getProbNode();
+		//	try {
+				Potential expectedUtility = null;// = inferenceAlgorithm.getExpectedtedUtility(node.getProbNode().getVariable());
+				ProbNode dummy = new ProbNode(new ProbNet(), node.getProbNode().getVariable(), node.getProbNode().getNodeType());
+				dummy.setPotential(expectedUtility);
+				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
+				imposePolicyDialog.requestValues();
+			/*} catch (IncompatibleEvidenceException
+					| UnexpectedInferenceException e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"ERROR\n"
+								+ e.getMessage(),
+								e.getMessage(),
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}*/
+		}
+		networkChanged = false;
+		setSelectedAllNodes(false);
+		repaint();
 		
 		setSelectedAllNodes(false);
 		repaint();
@@ -1177,7 +1204,48 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	 * This method shows the optimal policy for a decision node.
 	 */
 	public void showOptimalPolicyOfNode() {
-		System.out.println("Pulsada la opción 'Ver Política Óptima'"); // ...Borrar
+		VisualNode node = null;
+		ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
+		if (selectedNode.size() == 1) {
+			node = selectedNode.get(0);
+			ProbNet dummyProbNet = new ProbNet ();
+			ProbNode dummy = null;
+			try {
+				Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicies().get(node.getProbNode().getVariable());
+				dummyProbNet.addPotential (optimalPolicy);
+				
+				 Variable conditionedVariable = optimalPolicy.getVariable(0);
+		            dummy = dummyProbNet.getProbNode (conditionedVariable);
+		            dummy.setNodeType(NodeType.DECISION);
+		            dummy.setPolicyType(PolicyType.OPTIMAL);
+		            for (Variable variable : optimalPolicy.getVariables ()) {
+		                if (variable.equals (conditionedVariable)){
+		                    continue;
+		                }
+		                try {
+		                	dummyProbNet.addLink (variable, conditionedVariable, true);
+		                }catch (NodeNotFoundException e) {
+		                    throw new RuntimeException ("Node not found: " + e.getMessage ());
+		                }
+		            }
+				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy	, false, true);
+				imposePolicyDialog.requestValues();
+			} catch (IncompatibleEvidenceException
+					| UnexpectedInferenceException e) {
+				JOptionPane
+				.showMessageDialog(
+						Utilities.getOwner(this),
+						"ERROR\n"
+								+ e.getMessage(),
+								e.getMessage(),
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+		}
+		networkChanged = false;
+		setSelectedAllNodes(false);
+		repaint();
+		
 		setSelectedAllNodes(false);
 		repaint();
 	}
@@ -2812,11 +2880,11 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	}
     //TODO OOPN end
 
-    @Override
-    protected double[] getBounds (Graphics2D graphics)
-    {
-       return visualNetwork.getNetworkBounds (graphics);
-    }
+	@Override
+	protected double[] getBounds(Graphics2D graphics) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

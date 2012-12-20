@@ -301,7 +301,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
                 probNode.getPolicyType() == PolicyType.OPTIMAL) ){
             showFields(probNode);
         }else{
-            /**setEnabledDecisionOptions(true);**/
+           setEnabledDecisionOptions(true);
         }
         setVisible(true);
         return selectedButton;
