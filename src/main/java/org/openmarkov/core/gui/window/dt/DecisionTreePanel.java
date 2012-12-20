@@ -120,7 +120,7 @@ public class DecisionTreePanel  extends ZoomablePanel
         Graphics2D g2D = (Graphics2D) g;
 
         super.paint(g);
-        g2D.scale(zoom.getZoom(), zoom.getZoom());
+       // g2D.scale(zoom.getZoom(), zoom.getZoom());
         jTree.paint(g2D);
     }   
     

@@ -2882,8 +2882,7 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 
 	@Override
 	protected double[] getBounds(Graphics2D graphics) {
-		// TODO Auto-generated method stub
-		return null;
+		return visualNetwork.getNetworkBounds (graphics);
 	}
 
 	
