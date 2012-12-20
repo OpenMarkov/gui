@@ -15,8 +15,10 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
@@ -466,7 +468,7 @@ public class VisualState extends VisualElement {
 						);
 				setColorCaseDependent(currentStateValue, g);
 				//Value is currently formatted fixely with 4 decimals
-				DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+				DecimalFormat decimalFormat = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 				String formattedValue = String.valueOf(decimalFormat.
 						format(stateValues.get(currentStateValue)));
 				g.drawString(formattedValue, 
