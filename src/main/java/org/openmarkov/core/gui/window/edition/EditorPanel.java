@@ -1174,13 +1174,16 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 		if (selectedNode.size() == 1) {
 			node = selectedNode.get(0);
 			ProbNode probNode = node.getProbNode();
-		//	try {
-				Potential expectedUtility = null;// = inferenceAlgorithm.getExpectedtedUtility(node.getProbNode().getVariable());
+			try {
+				//Potential expectedUtility = null;// = inferenceAlgorithm.getExpectedtedUtility(node.getProbNode().getVariable());
+			    Potential expectedUtility;
+				expectedUtility = inferenceAlgorithm.getExpectedUtilities(node.getProbNode().getVariable());
+				
 				ProbNode dummy = new ProbNode(new ProbNet(), node.getProbNode().getVariable(), node.getProbNode().getNodeType());
 				dummy.setPotential(expectedUtility);
 				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
 				imposePolicyDialog.requestValues();
-			/*} catch (IncompatibleEvidenceException
+			} catch (IncompatibleEvidenceException
 					| UnexpectedInferenceException e) {
 				JOptionPane
 				.showMessageDialog(
@@ -1190,7 +1193,7 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 								e.getMessage(),
 						JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
-			}*/
+			}
 		}
 		networkChanged = false;
 		setSelectedAllNodes(false);
@@ -1211,7 +1214,8 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 			ProbNet dummyProbNet = new ProbNet ();
 			ProbNode dummy = null;
 			try {
-				Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicies().get(node.getProbNode().getVariable());
+				//Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicies().get(node.getProbNode().getVariable());
+				Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicy(node.getProbNode().getVariable());
 				dummyProbNet.addPotential (optimalPolicy);
 				
 				 Variable conditionedVariable = optimalPolicy.getVariable(0);
