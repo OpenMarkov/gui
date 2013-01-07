@@ -1,12 +1,13 @@
 package org.openmarkov.core.gui.window.dt;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTree;
-import javax.swing.tree.TreeSelectionModel;
 
 import org.openmarkov.core.exception.WrongGraphStructureException;
 import org.openmarkov.core.gui.window.edition.ZoomablePanel;
@@ -32,17 +33,40 @@ public class DecisionTreePanel  extends ZoomablePanel
         
         DecisionTreeBranch root = new DecisionTreeBranch (dtProbNet, variables);
         DecisionTreeModel model = new DecisionTreeModel (root);
-        jTree = new JTree (model);
-        jTree.getSelectionModel ().setSelectionMode (TreeSelectionModel.SINGLE_TREE_SELECTION);
-        // Allows JTree nodes to accept CR/LF codes
-        jTree.setShowsRootHandles (true);
-        jTree.setRowHeight (0);
-        jTree.setCellRenderer (new DecisionTreeCellRenderer ());
+        jTree = new DecisionTree (model, this);
         for (int i = 0; i < jTree.getRowCount (); i++)
         {
             jTree.expandRow (i);
         }        
         setViewportView (jTree);
+        MouseListener ml = new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		int newX = (int)(e.getX() * zoom.getZoom());
+        		int newY = (int)(e.getY() * zoom.getZoom());
+        		e.translatePoint(newX - e.getX(), newY - e.getY()); 
+        		super.mouseClicked(e);
+        	}
+
+
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		int newX = (int)(e.getX() * zoom.getZoom());
+        		int newY = (int)(e.getY() * zoom.getZoom());
+        		e.translatePoint(newX - e.getX(), newY - e.getY()); 	
+        		super.mouseClicked(e);
+        	}
+
+
+        	@Override
+        	public void mouseReleased(MouseEvent e) {
+        		int newX = (int)(e.getX() * zoom.getZoom());
+        		int newY = (int)(e.getY() * zoom.getZoom());
+        		e.translatePoint(newX - e.getX(), newY - e.getY()); 
+        		super.mouseClicked(e);
+        	}        	
+		};
+		jTree.addMouseListener(ml);         
     }
     
     
@@ -108,25 +132,15 @@ public class DecisionTreePanel  extends ZoomablePanel
         return variables;
     }
     
-    /**
-     * Overwrite 'paint' method to avoid to call it explicitly.
-     * 
-     * @param g
-     *            the graphics context in which to paint.
-     */
-    @Override
-    public void paint(Graphics g) {
-
-        Graphics2D g2D = (Graphics2D) g;
-
-        super.paint(g);
-       // g2D.scale(zoom.getZoom(), zoom.getZoom());
-        jTree.paint(g2D);
-    }   
+ 
     
     @Override
     protected double[] getBounds (Graphics2D graphics)
     {
         return new double[4];
-    } 
+    }
+
+
+
+ 
 }
