@@ -1,21 +1,23 @@
-
+/*
+ * Copyright 2012 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 package org.openmarkov.core.gui.window.dt;
 
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.Icon;
 
 import org.openmarkov.core.gui.dialog.treeadd.IconFactory;
-import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.ProductPotential;
 import org.openmarkov.core.model.network.potential.SumPotential;
@@ -28,44 +30,12 @@ public class DecisionTreeNode extends DecisionTreeElement
     private List<DecisionTreeElement> children              = null;
     private DecisionTreeElement        parent                = null;
 
-    public DecisionTreeNode (DecisionTreeElement parent, ProbNet probNet, List<Variable> variables)
+    public DecisionTreeNode (DecisionTreeElement parent, ProbNode probNode)
     {
         this.parent = parent;
-        Variable variable = variables.remove (0);
-        probNode = probNet.getProbNode (variable);
+        this.probNode = probNode;
         children = new LinkedList<> ();
-        if (probNode.getNodeType () != NodeType.UTILITY)
-        {
-            for (State state : variable.getStates ())
-            {
-                children.add (new DecisionTreeBranch (this, probNet, variable, state,
-                                                      new ArrayList<> (variables)));
-            }
-        }
-        else
-        {
-            for (Node parentNode : probNode.getNode ().getParents ())
-            {
-                children.add (new DecisionTreeNode (this, (ProbNode)parentNode.getObject (), probNet));
-            }            
-        }
         leftLabel.setIcon (createNodeIcon (probNode));
-    }
-
-    public DecisionTreeNode (DecisionTreeNode parent, ProbNode probNode, ProbNet probNet)
-    {
-        this.parent = parent;
-        this.probNode = probNode; 
-        leftLabel.setIcon (createNodeIcon (probNode));
-        children = new LinkedList<> ();
-        for (Node parentNode : probNode.getNode ().getParents ())
-        {
-            ProbNode parentProbNode = (ProbNode)parentNode.getObject ();
-            if(parentProbNode.getNodeType () == NodeType.UTILITY)
-            {
-                children.add (new DecisionTreeNode (this, (ProbNode)parentNode.getObject (), probNet));
-            }
-        }           
     }
 
     /**
@@ -212,4 +182,22 @@ public class DecisionTreeNode extends DecisionTreeElement
     	}
     	return scenarioProbability;
     }
+    
+    public void addChild(DecisionTreeElement child)
+    {
+        children.add (child);
+    }
+
+    @Override
+    public String toString ()
+    {
+        StringBuilder builder = new StringBuilder ();
+        builder.append ("DecisionTreeNode [probNode=");
+        builder.append (probNode.getName ());
+        builder.append (", children=").append (children);
+        builder.append ("]");
+        return builder.toString ();
+    }
+    
+    
 }

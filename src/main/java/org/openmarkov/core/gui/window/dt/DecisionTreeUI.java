@@ -6,8 +6,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.plaf.basic.BasicTreeUI;
 
-import org.openmarkov.core.gui.window.edition.Zoom;
-
 public class DecisionTreeUI extends BasicTreeUI {
 
 	protected java.awt.event.MouseListener createMouseListener() {

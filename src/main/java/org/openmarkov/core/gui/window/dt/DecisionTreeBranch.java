@@ -1,4 +1,11 @@
-
+/*
+ * Copyright 2012 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 package org.openmarkov.core.gui.window.dt;
 
 import java.text.DecimalFormat;
@@ -31,22 +38,17 @@ public class DecisionTreeBranch extends DecisionTreeElement
     public DecisionTreeBranch (DecisionTreeNode parent,
                                ProbNet probNet,
                                Variable branchVariable,
-                               State branchState,
-                               List<Variable> variables)
+                               State branchState)
     {
         this.parent = parent;
         this.probNet = probNet;
         this.branchState = branchState;
         this.branchVariable = branchVariable;
-        if (!variables.isEmpty ())
-        {
-            this.child = new DecisionTreeNode (this, probNet, variables);
-        }
     }
 
-    public DecisionTreeBranch (ProbNet probNet, List<Variable> variables)
+    public DecisionTreeBranch (ProbNet probNet)
     {
-        this (null, probNet, null, null, variables);
+        this (null, probNet, null, null);
     }
 
     /**
@@ -56,9 +58,9 @@ public class DecisionTreeBranch extends DecisionTreeElement
     {
         DecimalFormat df = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));        
         StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
-        if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.DECISION)
+        if(parent != null && parent.getProbNode ().getNodeType () == NodeType.DECISION)
         {
-            if( ((DecisionTreeNode)parent).isBestDecision(this)) {
+            if(parent.isBestDecision(this)) {
                 txtLeft.append ("<td width=10px bgcolor=red border=0></td>");
             }
             else {
@@ -123,6 +125,15 @@ public class DecisionTreeBranch extends DecisionTreeElement
         return evidenceCase;
     }
     
+    /**
+     * Returns the branchVariable.
+     * @return the branchVariable.
+     */
+    protected Variable getBranchVariable ()
+    {
+        return branchVariable;
+    }
+
     public double getScenarioProbability()
     {
     	double scenarioProbability = 1;    	
@@ -150,4 +161,23 @@ public class DecisionTreeBranch extends DecisionTreeElement
     {
         leftLabel.setText (getBranchDescriptiontHTML ());
     }
+
+    /**
+     * Sets the child.
+     * @param child the child to set.
+     */
+    protected void setChild (DecisionTreeNode child)
+    {
+        this.child = child;
+    }
+
+    @Override
+    public String toString ()
+    {
+        StringBuilder builder = new StringBuilder ();
+        builder.append ("DecisionTreeBranch [branchVariable=").append (branchVariable).append (", branchState=").append (branchState).append ("]");
+        return builder.toString ();
+    }
+    
+    
 }
