@@ -41,8 +41,7 @@ public class VisualDecisionNode extends VisualNode {
 	private static final Color BACKGROUND_COLOR = 
 	OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEDECISION_BACKGROUND_COLOR, 
 	                             OpenMarkovPreferences.OPENMARKOV_COLORS,
-	                             //new Color(207,227,253));
-								 new Color(255, 10, 255));
+	                             new Color(207,227,253));
 
 	/**
 	 * Internal color of the visual node when there is a preResolution 

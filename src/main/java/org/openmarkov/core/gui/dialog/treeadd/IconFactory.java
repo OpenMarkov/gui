@@ -43,7 +43,7 @@ abstract public class IconFactory {
 				
 		int ovalWidth= Math.min(height,width);
 
-		g.setColor(new Color(255,255,200));		
+		g.setColor(new Color(251,249,153));		
 		g.fillArc(0,0,ovalWidth,height-1,90,180);
 		g.fillArc(width-ovalWidth-1,0,ovalWidth,height-1,270,180);
 		g.fillRect(ovalWidth/2,0,width-ovalWidth, height-1);
@@ -77,7 +77,7 @@ abstract public class IconFactory {
 		BufferedImage image = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g= (Graphics2D) image.getGraphics();
 		
-		g.setColor(new Color(200,255,255));
+		g.setColor(new Color(207,227,253));
 		g.fillRect(0,1,width-2,height-2);
 		g.setColor(Color.black);
 		g.drawRect(0,1,width-2,height-2);
@@ -119,7 +119,7 @@ abstract public class IconFactory {
 		polygon.addPoint(width-height/2,1);
 		polygon.addPoint(height/2,1);
 		
-		g.setColor(new Color(200,255,200));
+		g.setColor(new Color(208,230,178));
 		g.fillPolygon(polygon);
 		g.setColor(Color.black);
 		g.drawPolygon(polygon);
