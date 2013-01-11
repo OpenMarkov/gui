@@ -297,9 +297,12 @@ public class NodeStateEdit extends SimplePNEdit {
 				nodes = probNode.getNode().getChildren();
 				for (Node node : nodes) {
 					ProbNode child = (ProbNode) node.getObject();
-					if (child.getPotentials().get(0) instanceof TreeADDPotential) {
-						renameBranchesStates((TreeADDPotential)child.getPotentials().get(0), oldName, newState.getName() );
-					}
+					for(Potential childPotential : child.getPotentials ())
+					{
+					    if (childPotential instanceof TreeADDPotential) {
+					        renameBranchesStates((TreeADDPotential)child.getPotentials().get(0), oldName, newState.getName() );
+					    }
+				    }
 				}
 				
 				probNode.getVariable().setStates(newStates);
