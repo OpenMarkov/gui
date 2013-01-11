@@ -32,7 +32,7 @@ public class DecisionTreeBuilder
         List<Variable> variables = getPartiallySortedVariables (dtProbNet);
         variables.add (svVariable);
         
-        DecisionTreeElement root = new DecisionTreeBranch (probNet);
+        DecisionTreeElement root = new DecisionTreeBranch (dtProbNet);
         
         Stack<DecisionTreeElement> treeStack = new Stack<> ();
         
@@ -50,7 +50,7 @@ public class DecisionTreeBuilder
                     Variable variable = probNode.getVariable ();                
                     for (State state : variable.getStates ())
                     {
-                        DecisionTreeBranch treeBranch = new DecisionTreeBranch ((DecisionTreeNode)treeElement, probNet, variable, state);
+                        DecisionTreeBranch treeBranch = new DecisionTreeBranch ((DecisionTreeNode)treeElement, dtProbNet, variable, state);
                         ((DecisionTreeNode)treeElement).addChild (treeBranch);
                         treeStack.push (treeBranch);
                     }
@@ -79,7 +79,7 @@ public class DecisionTreeBuilder
                     variable = variables.get (variables.indexOf (branchVariable) + 1);
                 }
                     
-                DecisionTreeNode child = new DecisionTreeNode (treeElement, probNet.getProbNode (variable));
+                DecisionTreeNode child = new DecisionTreeNode (treeElement, dtProbNet.getProbNode (variable));
                 ((DecisionTreeBranch)treeElement).setChild (child);
                 treeStack.push (child);
             }
