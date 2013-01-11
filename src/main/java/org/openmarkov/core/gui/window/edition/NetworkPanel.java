@@ -171,31 +171,30 @@ public class NetworkPanel extends FrameContentPanel implements
 
 		// splitPane.setTopComponent(getNetworkScrollPanel());
 		// splitPane.setBottomComponent(getPropertiesScrollPanel());
-		add(getEditorPanel());
+		add(new ScrollableEditorPanel (getEditorPanel()));
 	}
 
-	/**
-	 * This method initializes editorPanel.
-	 * 
-	 * @return a new editor panel.
-	 */
-	public EditorPanel getEditorPanel() {
-
-		if (editorPanel == null) {
-		    // TODO OOPN start
-		    if(probNet instanceof OOPNet)
-		        editorPanel = new EditorPanel(this, new VisualOONetwork ((OOPNet)probNet));
-		    else
-            // TODO OOPN end
-		        editorPanel = new EditorPanel(this, new VisualNetwork (probNet));
-			// editorPanel.addEditionListener(this);
-			// It is necessary for edition actions like movement node.
-		    editorPanel.setPreferredSize (new Dimension(300, 500));
-		}
-
-		return editorPanel;
-
-	}
+    /**
+     * This method initializes editorPanel.
+     * @return a new editor panel.
+     */
+    public EditorPanel getEditorPanel ()
+    {
+        if (editorPanel == null)
+        {
+            // TODO OOPN start
+            if (probNet instanceof OOPNet)
+            {
+                editorPanel = new EditorPanel (this, new VisualOONetwork ((OOPNet) probNet));
+            }
+            else
+            {
+                // TODO OOPN end
+                editorPanel = new EditorPanel (this, new VisualNetwork (probNet));
+            }
+        }
+        return editorPanel;
+    }
 
 	/**
 	 * Returns the network which is edited.

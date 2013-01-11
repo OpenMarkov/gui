@@ -9,23 +9,20 @@
 
 package org.openmarkov.core.gui.window.dt;
 
-import java.awt.Graphics2D;
+import javax.swing.JScrollPane;
 
-import javax.swing.JTree;
-
-import org.openmarkov.core.gui.window.edition.ZoomablePanel;
 import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
-public class DecisionTreePanel extends ZoomablePanel
+public class DecisionTreePanel extends JScrollPane
 {
-    protected JTree jTree;    
+    protected DecisionTree jTree;    
       
     public DecisionTreePanel(ProbNet probNet)
     {
         DecisionTreeElement root = DecisionTreeBuilder.buildDecisionTree (probNet); 
         DecisionTreeModel model = new DecisionTreeModel (root);
-        jTree = new DecisionTree (model, this);
+        jTree = new DecisionTree (model);
         for (int i = 0; i < jTree.getRowCount (); i++)
         {
             jTree.expandRow (i);
@@ -33,10 +30,21 @@ public class DecisionTreePanel extends ZoomablePanel
         setViewportView (jTree);
     }
     
-    @Override
-    protected double[] getBounds (Graphics2D graphics)
+    /**
+     * Returns the zoom.
+     * @return the zoom.
+     */
+    protected double getZoom ()
     {
-        return new double[4];
+        return jTree.getZoom ();
     }
- 
+
+    /**
+     * Sets the zoom.
+     * @param zoom the zoom to set.
+     */
+    protected void setZoom (Double zoom)
+    {
+        jTree.setZoom (zoom);
+    }    
 }

@@ -15,23 +15,25 @@ import java.awt.RenderingHints;
 import javax.swing.JTree;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.openmarkov.core.gui.window.edition.ZoomablePanel;
+import org.openmarkov.core.gui.window.edition.Zoom;
 
 @SuppressWarnings("serial")
 public class DecisionTree extends JTree {
 
-	private ZoomablePanel panel;
-
+    /**
+     * Object to convert coordinates of the screen to the panel and vice versa.
+     */
+    protected Zoom zoom;   	
 	
-	public DecisionTree(DecisionTreeModel model, ZoomablePanel panel) {
+	public DecisionTree(DecisionTreeModel model) {
 		super(model);
-		this.panel = panel;
 		getSelectionModel ().setSelectionMode (TreeSelectionModel.SINGLE_TREE_SELECTION);
         // Allows JTree nodes to accept CR/LF codes
         setShowsRootHandles (true);
         setRowHeight (0);
         setCellRenderer (new DecisionTreeCellRenderer ());
         setUI(new DecisionTreeUI());
+        zoom = new Zoom ();
 	}
 
 
@@ -47,13 +49,23 @@ public class DecisionTree extends JTree {
 	    g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 	    
 	    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2D.scale(panel.getZoom(), panel.getZoom());
+        g2D.scale(zoom.getZoom(), zoom.getZoom());
         super.paint(g2D);
     }  
 
     
     public double getZoom()
     {
-    	return panel.getZoom();
+    	return zoom.getZoom();
     }
+    
+    /**
+     * Sets the zoom.
+     * @param zoom the zoom to set.
+     */
+    protected void setZoom (Double zoom)
+    {
+        this.zoom.setZoom (zoom);
+        repaint ();
+    }      
 }

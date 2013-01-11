@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
@@ -105,8 +104,9 @@ import org.openmarkov.core.oopn.Instance.ParameterArity;
  *          contraction of nodes, - Introduction and elimination of evidence -
  *          Management of multiple evidence cases.
  */
-public class EditorPanel extends ZoomablePanel implements MouseListener,
+public class EditorPanel extends JPanel implements MouseListener,
 		MouseMotionListener {
+    
 
 	protected ProbNet probNet;
 
@@ -115,6 +115,22 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	 */
 	private static final long serialVersionUID = 2789011585460326400L;
 
+    /**
+     * Object to convert coordinates of the screen to the panel and vice versa.
+     */
+    protected Zoom zoom;	
+    /**
+     * Maximum width of the panel.
+     */
+    private double maxWidth = Toolkit.getDefaultToolkit().getScreenSize()
+            .getWidth() * 20;
+
+    /**
+     * Maximum height of the panel.
+     */
+    private double maxHeight = Toolkit.getDefaultToolkit().getScreenSize()
+            .getHeight() * 20;
+    
 	/**
 	 * Constant that indicates the value of the Expansion Threshold by default.
 	 */
@@ -259,7 +275,7 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	 *            network that will be edited.
 	 */
 	public EditorPanel(NetworkPanel networkPanel, VisualNetwork visualNetwork) {
-
+        zoom = new Zoom ();
 		// super();
 		this.networkPanel = networkPanel;
 		this.probNet = networkPanel.getProbNet();
@@ -284,7 +300,6 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 		inferenceManager = new InferenceManager();
 		editionModeManager = new EditionModeManager (this, probNet);
 		editionMode = editionModeManager.getDefaultEditionMode ();
-		getViewport ().setBackground (Color.white);
 	}
 
 	/**
@@ -597,6 +612,27 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 		sizeListeners.add(l);
 
 	}
+	
+    /**
+     * Return the maximum height of the panel till now.
+     * 
+     * @return maximum height of the panel till now.
+     */
+    double getMaxHeight() {
+
+        return zoom.panelToScreen(maxHeight);
+
+    }
+
+    /**
+     * Return the maximum width of the panel till now.
+     * 
+     * @return maximum width of the panel till now.
+     */
+    double getMaxWidth() {
+
+        return zoom.panelToScreen(maxWidth);
+    }	
 
 	/**
 	 * Changes the value of the zoom.
@@ -2884,11 +2920,25 @@ public class EditorPanel extends ZoomablePanel implements MouseListener,
 	}
     //TODO OOPN end
 
-	@Override
 	protected double[] getBounds(Graphics2D graphics) {
 		return visualNetwork.getNetworkBounds (graphics);
 	}
-
 	
+    /**
+     * If the dimensions of the network are greater than the dimensions of the
+     * panel, changes the dimensions of the panel in order to accommodate the
+     * whole network.
+     */
+    public void adjustPanelDimension() {
+
+        double[] bounds = getBounds((Graphics2D) getGraphics());
+        Dimension newDimension = null;
+        maxWidth = Math.min(maxWidth, bounds[1]);
+        maxHeight = Math.min(maxHeight, bounds[3]);
+        newDimension = new Dimension((int) Math.round(getMaxWidth()),
+                (int) Math.round(getMaxHeight()));
+        setPreferredSize(newDimension);
+        setSize(newDimension);
+    }  
 
 }
