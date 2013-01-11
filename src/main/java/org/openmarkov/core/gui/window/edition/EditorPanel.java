@@ -1109,7 +1109,6 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 * This method imposes a policy in a decision node.
 	 */
 	public void imposePolicyInNode() {
-		System.out.println("Pulsada la opción 'Imponer Política'"); // ...Borrar
 		VisualNode node = null;
 		List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
 		if (selectedNode.size() == 1) {
@@ -1135,10 +1134,10 @@ public class EditorPanel extends JPanel implements MouseListener,
 				
 				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), probNode, false);
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
-					//change it colour
+					//change its color
 					((VisualDecisionNode) node).setHasPolicy(true);
 					networkChanged = true;
-				} else { //if user cancel policy imposition then no potential is restored to the probnode
+				} else { //if user cancels policy imposition then no potential is restored to the probnode
 				    List<Potential> noPolicy = new ArrayList<Potential>();
 					probNode.setPotentials(noPolicy);
 				}

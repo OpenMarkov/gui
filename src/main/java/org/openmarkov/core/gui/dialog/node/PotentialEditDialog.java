@@ -298,7 +298,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
     public int requestValues() {
         // Shows the potentials' options table
         if (!(probNode.getNodeType() == NodeType.DECISION && 
-                probNode.getPolicyType() == PolicyType.OPTIMAL) ){
+                probNode.getPolicyType() == PolicyType.OPTIMAL && readOnly) ){
             showFields(probNode);
         }else{
            setEnabledDecisionOptions(true);
@@ -341,10 +341,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
 		
         getPotentialPanel().setData( probNode );
 		
-        //updatePotentialPanel();
-        if ( probNode.getNodeType() == NodeType.DECISION ){
-            setEnabledDecisionOptions(true);
-        }
     }
     /**
      * @return The panel that indicates the type of the table 
