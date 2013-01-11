@@ -9,6 +9,8 @@
 
 package org.openmarkov.core.gui.window.dt;
 
+import java.awt.Color;
+
 import javax.swing.JScrollPane;
 
 import org.openmarkov.core.model.network.ProbNet;
@@ -28,6 +30,7 @@ public class DecisionTreePanel extends JScrollPane
             jTree.expandRow (i);
         }        
         setViewportView (jTree);
+        setBackground (Color.white);
     }
     
     /**
@@ -46,5 +49,6 @@ public class DecisionTreePanel extends JScrollPane
     protected void setZoom (Double zoom)
     {
         jTree.setZoom (zoom);
+        repaint();
     }    
 }

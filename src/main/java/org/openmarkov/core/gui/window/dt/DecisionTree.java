@@ -66,6 +66,5 @@ public class DecisionTree extends JTree {
     protected void setZoom (Double zoom)
     {
         this.zoom.setZoom (zoom);
-        repaint ();
     }      
 }
