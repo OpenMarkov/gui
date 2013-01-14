@@ -57,8 +57,7 @@ public abstract class NodeEditionMode extends EditionMode
                         String name = node.getName ();
                         if (name.contains ("["))
                         {
-                            String[] nameParts = name.split (" \\[");
-                            existingNames.add (nameParts[0]);
+                            existingNames.add (name.substring (0, name.indexOf (" [")));
                         }
                         else
                         {
@@ -77,7 +76,6 @@ public abstract class NodeEditionMode extends EditionMode
                     {
                         // default value
                         variable.setBaseName (nodeName);
-                        variable.setName (nodeName + " [" + 0 + "]");
                         variable.setTimeSlice (0);
                     }
                     List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
@@ -93,7 +91,7 @@ public abstract class NodeEditionMode extends EditionMode
                     }
                     catch (Exception e1)
                     {
-                        System.err.println (e1.toString () + " 1");
+                        System.err.println (e1.toString ());
                         e1.printStackTrace ();
                         JOptionPane.showMessageDialog (this.editorPanel,
                                                        e1.toString (),
