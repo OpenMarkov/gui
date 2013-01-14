@@ -77,7 +77,7 @@ public abstract class NodeEditionMode extends EditionMode
                     {
                         // default value
                         variable.setBaseName (nodeName);
-                        variable.setName (nodeName + "[" + 0 + "]");
+                        variable.setName (nodeName + " [" + 0 + "]");
                         variable.setTimeSlice (0);
                     }
                     List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
