@@ -30,9 +30,8 @@ public class DecisionTreeNode extends DecisionTreeElement
     private List<DecisionTreeElement> children              = null;
     private DecisionTreeElement        parent                = null;
 
-    public DecisionTreeNode (DecisionTreeElement parent, ProbNode probNode)
+    public DecisionTreeNode (ProbNode probNode)
     {
-        this.parent = parent;
         this.probNode = probNode;
         children = new LinkedList<> ();
         leftLabel.setIcon (createNodeIcon (probNode));
@@ -185,6 +184,7 @@ public class DecisionTreeNode extends DecisionTreeElement
     
     public void addChild(DecisionTreeElement child)
     {
+        child.setParent (this);
         children.add (child);
     }
 
@@ -197,6 +197,12 @@ public class DecisionTreeNode extends DecisionTreeElement
         builder.append (", children=").append (children);
         builder.append ("]");
         return builder.toString ();
+    }
+
+    @Override
+    public void setParent (DecisionTreeElement parent)
+    {
+        this.parent = parent;
     }
     
     

@@ -51,4 +51,6 @@ public abstract class DecisionTreeElement extends JPanel
                            boolean hasFocus);
     
     public abstract double getScenarioProbability();
+    
+    public abstract void setParent(DecisionTreeElement parent);
 }

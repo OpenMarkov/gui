@@ -35,12 +35,10 @@ public class DecisionTreeBranch extends DecisionTreeElement
     private DecisionTreeNode child;
     private ProbNet			 probNet;
 
-    public DecisionTreeBranch (DecisionTreeNode parent,
-                               ProbNet probNet,
+    public DecisionTreeBranch (ProbNet probNet,
                                Variable branchVariable,
                                State branchState)
     {
-        this.parent = parent;
         this.probNet = probNet;
         this.branchState = branchState;
         this.branchVariable = branchVariable;
@@ -48,7 +46,7 @@ public class DecisionTreeBranch extends DecisionTreeElement
 
     public DecisionTreeBranch (ProbNet probNet)
     {
-        this (null, probNet, null, null);
+        this (probNet, null, null);
     }
 
     /**
@@ -169,6 +167,7 @@ public class DecisionTreeBranch extends DecisionTreeElement
     protected void setChild (DecisionTreeNode child)
     {
         this.child = child;
+        child.setParent (this);
     }
 
     @Override
@@ -177,6 +176,12 @@ public class DecisionTreeBranch extends DecisionTreeElement
         StringBuilder builder = new StringBuilder ();
         builder.append ("DecisionTreeBranch [branchVariable=").append (branchVariable).append (", branchState=").append (branchState).append ("]");
         return builder.toString ();
+    }
+
+    @Override
+    public void setParent (DecisionTreeElement parent)
+    {
+        this.parent = (DecisionTreeNode) parent;
     }
     
     
