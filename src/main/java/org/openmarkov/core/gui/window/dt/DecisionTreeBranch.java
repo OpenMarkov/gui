@@ -141,10 +141,6 @@ public class DecisionTreeBranch extends DecisionTreeElement
 	    	for(Finding finding : evidenceCase.getFindings())
 	    	{
 	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
-	    		if(probNode == null && !finding.getVariable().getName ().equals ("OD"))
-	    		{
-	    		    System.out.println ("Holy cow!");
-	    		}
 	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
 	    		{
 	    			Potential potential = probNode.getPotentials().get(0);

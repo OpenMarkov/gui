@@ -121,10 +121,6 @@ public class VisualInstance extends VisualElement {
         }
         setExpanded (isExpanded);		
 		
-        if(isExpanded)
-        {
-            System.out.println ();
-        }        
 		List<ProbNode> instanceNodes = new ArrayList<> (instance.getNodes());
         for(Instance subInstance : instance.getSubInstances().values())
         {
