@@ -1213,62 +1213,96 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * set renders for the cells in the table. Only has to be called when set
 	 * data.
 	 */
-	protected void setCellRenderers() {
-		int size = valuesTable.getColumnCount();
-		boolean[] aux = new boolean[size - 1];
-		boolean hasUncertainty;
-		if (probNode.getPotentials().size() > 0
-				/*&& probNode.getNodeType() != NodeType.DECISION*/) {
-		if (probNode.getNodeType() != NodeType.DECISION) {
-			TablePotential tablePotential = (TablePotential) probNode
-					.getPotentials().get(0);
-
-			for (int i = 1; i < size; i++) {
-				hasUncertainty = false;
-				try {
-					hasUncertainty = tablePotential
-							.hasUncertainty(getConfiguration(tablePotential, i));
-				} catch (InvalidStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} catch (IncompatibleEvidenceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
-							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				}
-				aux[i - 1] = hasUncertainty;
-			}
-
+    protected void setCellRenderers ()
+    {
+        int size = valuesTable.getColumnCount ();
+        boolean[] aux = new boolean[size - 1];
+        boolean hasUncertainty;
+        if (probNode.getPotentials ().size () > 0
+        /* && probNode.getNodeType() != NodeType.DECISION */)
+        {
+            if (probNode.getNodeType () != NodeType.DECISION)
+            {
+                TablePotential tablePotential = (TablePotential) probNode.getPotentials ().get (0);
+                for (int i = 1; i < size; i++)
+                {
+                    hasUncertainty = false;
+                    try
+                    {
+                        hasUncertainty = tablePotential.hasUncertainty (getConfiguration (tablePotential,
+                                                                                          i));
+                    }
+                    catch (InvalidStateException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace ();
+                        JOptionPane.showMessageDialog (this,
+                                                       stringResource.getString (e.getMessage ()),
+                                                       stringResource.getString (e.getMessage ()),
+                                                       JOptionPane.ERROR_MESSAGE);
+                    }
+                    catch (IncompatibleEvidenceException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace ();
+                        JOptionPane.showMessageDialog (this,
+                                                       stringResource.getString (e.getMessage ()),
+                                                       stringResource.getString (e.getMessage ()),
+                                                       JOptionPane.ERROR_MESSAGE);
+                    }
+                    aux[i - 1] = hasUncertainty;
+                }
+                if (!hasLinkRestriction)
+                {
+                    valuesTable.setDefaultRenderer (Double.class,
+                                                    new ValuesTableCellRenderer (
+                                                                                 getFirstEditableRow (),
+                                                                                 aux));
+                    valuesTable.setDefaultRenderer (String.class,
+                                                    new ValuesTableCellRenderer (
+                                                                                 getFirstEditableRow (),
+                                                                                 aux));
+                }
+                else
+                {
+                    valuesTable.setDefaultRenderer (Double.class,
+                                                    new ValuesTableWithLinkRestrictionCellRenderer (
+                                                                                                    getFirstEditableRow (),
+                                                                                                    aux));
+                    valuesTable.setDefaultRenderer (String.class,
+                                                    new ValuesTableWithLinkRestrictionCellRenderer (
+                                                                                                    getFirstEditableRow (),
+                                                                                                    aux));
+                }
+            }
+            else if (probNode.getNodeType () == NodeType.DECISION)
+            {
+                if (probNode.getPolicyType () == PolicyType.OPTIMAL)
+                {
+                    valuesTable.setDefaultRenderer (Double.class,
+                                                    new ValuesTableOptimalPolicyCellRenderer (
+                                                                                              getFirstEditableRow (),
+                                                                                              aux));
+                    valuesTable.setDefaultRenderer (String.class,
+                                                    new ValuesTableOptimalPolicyCellRenderer (
+                                                                                              getFirstEditableRow (),
+                                                                                              aux));
+                }
+                else
+                {
+                    valuesTable.setDefaultRenderer (Double.class,
+                                                    new ValuesTableCellRenderer (
+                                                                                 getFirstEditableRow (),
+                                                                                 aux));
+                    valuesTable.setDefaultRenderer (String.class,
+                                                    new ValuesTableCellRenderer (
+                                                                                 getFirstEditableRow (),
+                                                                                 aux));
+                }
+            }
+        }
+    }
 		
-		if (!hasLinkRestriction) {
-			valuesTable.setDefaultRenderer(Double.class,
-					new ValuesTableCellRenderer(getFirstEditableRow(), aux));
-			valuesTable.setDefaultRenderer(String.class,
-					new ValuesTableCellRenderer(getFirstEditableRow(), aux));
-		}  else {
-			valuesTable.setDefaultRenderer(Double.class,
-					new ValuesTableWithLinkRestrictionCellRenderer(
-							getFirstEditableRow(), aux));
-			valuesTable.setDefaultRenderer(String.class,
-					new ValuesTableWithLinkRestrictionCellRenderer(
-							getFirstEditableRow(), aux));
-		}
-	} else if (probNode.getNodeType() == NodeType.DECISION 
-				&& probNode.getPolicyType() == PolicyType.OPTIMAL) {
-			valuesTable.setDefaultRenderer(Double.class,
-					new ValuesTableOptimalPolicyCellRenderer(getFirstEditableRow(), aux));
-			valuesTable.setDefaultRenderer(String.class,
-					new ValuesTableOptimalPolicyCellRenderer(getFirstEditableRow(), aux));
-		}
-		}
-	}
 
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
