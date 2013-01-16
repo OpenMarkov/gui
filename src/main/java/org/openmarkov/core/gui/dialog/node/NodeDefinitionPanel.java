@@ -1282,8 +1282,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener,
 		commentHTMLScrollPaneNodeDefinitionComment
 				.setCommentHTMLTextPaneText(properties.getComment());
 
-		jCheckboxAlwaysObserved.setSelected(properties.getVariable()
-				.isAlwaysObserved());
+		jCheckboxAlwaysObserved.setSelected(properties.isAlwaysObserved());
 	}
 
 	/**

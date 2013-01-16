@@ -160,10 +160,10 @@ public class DecisionTreeNode extends DecisionTreeElement
     @Override
     public void update (boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
     {
-        if(probNode.getNodeType () == NodeType.UTILITY)
-        {
-            rightLabel.setText (" U ="+getUtility ());
-        }
+//        if(probNode.getNodeType () == NodeType.UTILITY)
+//        {
+//            rightLabel.setText (" U ="+getUtility ());
+//        }
     }
     
     public double getScenarioProbability()
