@@ -139,7 +139,7 @@ public class DecisionTreeNode extends DecisionTreeElement
 
     public EvidenceCase getBranchStates ()
     {
-        return parent.getBranchStates ();
+        return (parent != null)? parent.getBranchStates () : new EvidenceCase();
     } 
 
     public boolean isBestDecision (DecisionTreeElement branch)

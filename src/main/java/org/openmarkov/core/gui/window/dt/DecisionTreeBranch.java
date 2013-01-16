@@ -54,7 +54,7 @@ public class DecisionTreeBranch extends DecisionTreeElement
      */
     public String getBranchDescriptiontHTML ()
     {
-        DecimalFormat df = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.US));        
+        DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));        
         StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
         if(parent != null && parent.getProbNode ().getNodeType () == NodeType.DECISION)
         {
@@ -141,7 +141,11 @@ public class DecisionTreeBranch extends DecisionTreeElement
 	    	for(Finding finding : evidenceCase.getFindings())
 	    	{
 	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
-	    		if(probNode.getNodeType() == NodeType.CHANCE)
+	    		if(probNode == null && !finding.getVariable().getName ().equals ("OD"))
+	    		{
+	    		    System.out.println ("Holy cow!");
+	    		}
+	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
 	    		{
 	    			Potential potential = probNode.getPotentials().get(0);
 	    			scenarioProbability *= potential.getProbability(evidenceCase);
