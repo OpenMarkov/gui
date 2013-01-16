@@ -37,6 +37,7 @@ public interface OpenMarkovPreferencesKeys {
 	public String LAST_OPEN_FILE_4 ="last open file 4";
 	public String LAST_OPEN_FILE_5 ="last open file 5";
 	public String STRING_LANGUAGES_PATH = "languages directory path";
+    public String LAST_OPEN_DB_DIRECTORY = "last open db directory";
 	
 	// positions
 	public String X_OPENMARKOV_MAIN_FRAME = "x openmarkov main frame";

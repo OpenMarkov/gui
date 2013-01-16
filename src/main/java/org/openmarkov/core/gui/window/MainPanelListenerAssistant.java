@@ -798,15 +798,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		String title = stringResourceLoader.getBundleMessages().getString("SaveNetwork.Title.Label");
 		        
 		fileChooser.setDialogTitle(title);
-		File currentDirectory = new File(OpenMarkovPreferences.get(
-				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-		fileChooser.setCurrentDirectory(currentDirectory);
 		fileChooser.setSelectedFile(new File(suggestedFileName));
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		fileChooser.setFileFilter(OpenMarkovPreferences.get(
-				OpenMarkovPreferences.LAST_SAVED_FORMAT,
-				OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
 
 		String filename = null;
 		if(fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
@@ -817,10 +809,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 			{
 			    filename += "."+chosenFilterExtension.toLowerCase ();
 			}
-			OpenMarkovPreferences.set(
-					OpenMarkovPreferences.LAST_SAVED_FORMAT,
-					chosenFilterExtension,
-					OpenMarkovPreferences.OPENMARKOV_FORMATS);
 		}
 		return filename;
 
@@ -1042,25 +1030,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 		NetworkFileChooser fileChooser = new NetworkFileChooser();
 
         fileChooser.setDialogTitle (stringResourceLoader.getBundleMessages ().getString ("OpenNetwork.Title.Label"));
-		File currentDirectory = new File(OpenMarkovPreferences.get(
-				OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-				OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-		fileChooser.setCurrentDirectory(currentDirectory);
-		fileChooser.setFileFilter(OpenMarkovPreferences.get(
-		                                        OpenMarkovPreferences.LAST_OPENED_FORMAT,
-		                                        OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
 		
-		// fileChooser.setPGMXFilter();
 		String fileName = null;
 		if(fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)
 		{
-		    OpenMarkovPreferences.set(
-		                              OpenMarkovPreferences.LAST_OPENED_FORMAT,
-		                              ((FileFilterBasic)fileChooser.getFileFilter()).getFilterExtension(),
-		                              OpenMarkovPreferences.OPENMARKOV_FORMATS);		    
 			fileName = fileChooser.getSelectedFile().getAbsolutePath();
 		}
-
 		return fileName;
 
 	}
@@ -1142,10 +1117,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
 
         evidenceFileChooser.setDialogTitle(messageBundle
                 .getString("LoadEvidence.Title.Label"));
-        File currentDirectory = new File(OpenMarkovPreferences.get(
-                OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-                OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-        evidenceFileChooser.setCurrentDirectory(currentDirectory);
         
         // Set last used evidence format as default 
         String lastFileFilter = OpenMarkovPreferences.get( OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, 
