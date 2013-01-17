@@ -698,6 +698,16 @@
       <Label value="Node Potential" />
     </Title>
   </NodePotentialDialog>
+  <ExpectedUtilityDialog>
+    <Title>
+      <Label value="Expected utility" />
+    </Title>
+  </ExpectedUtilityDialog>  
+  <OptimalPolicyDialog>
+    <Title>
+      <Label value="Optimal policy" />
+    </Title>
+  </OptimalPolicyDialog>    
   <VariableTypeOptions>
     <Title>
       <Label value="Variable Types:" />

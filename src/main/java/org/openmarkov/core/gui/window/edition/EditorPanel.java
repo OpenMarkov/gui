@@ -1133,6 +1133,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 				probNode.setPotentials(policies);
 				
 				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), probNode, false);
+				imposePolicyDialog.setTitle ("ImposePolicydialog.Title.Label");
 				if (imposePolicyDialog.requestValues()==NodePropertiesDialog.OK_BUTTON) {
 					//change its color
 					((VisualDecisionNode) node).setHasPolicy(true);
@@ -1212,12 +1213,13 @@ public class EditorPanel extends JPanel implements MouseListener,
 			try {
 				//Potential expectedUtility = null;// = inferenceAlgorithm.getExpectedtedUtility(node.getProbNode().getVariable());
 			    Potential expectedUtility;
-				expectedUtility = inferenceAlgorithm.getExpectedUtilities(node.getProbNode().getVariable());
+				expectedUtility = inferenceAlgorithm.getExpectedUtilities(probNode.getVariable());
 				
-				ProbNode dummy = new ProbNode(new ProbNet(), node.getProbNode().getVariable(), node.getProbNode().getNodeType());
-				dummy.setPotential(expectedUtility);
-				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
-				imposePolicyDialog.requestValues();
+				ProbNode dummyNode = new ProbNode(new ProbNet(), probNode.getVariable(), probNode.getNodeType());
+				dummyNode.setPotential(expectedUtility);
+				PotentialEditDialog expectedUtilityDialog= new PotentialEditDialog(Utilities.getOwner(this), dummyNode, false, true);
+				expectedUtilityDialog.setTitle ("ExpectedUtilityDialog.Title.Label");
+				expectedUtilityDialog.requestValues();
 			} catch (IncompatibleEvidenceException
 					| UnexpectedInferenceException e) {
 				JOptionPane
@@ -1267,8 +1269,9 @@ public class EditorPanel extends JPanel implements MouseListener,
 		                    throw new RuntimeException ("Node not found: " + e.getMessage ());
 		                }
 		            }
-				PotentialEditDialog imposePolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy	, false, true);
-				imposePolicyDialog.requestValues();
+				PotentialEditDialog optimalPolicyDialog= new PotentialEditDialog(Utilities.getOwner(this), dummy, false, true);
+				optimalPolicyDialog.setTitle ("OptimalPolicyDialog.Title.Label");
+				optimalPolicyDialog.requestValues();
 			} catch (IncompatibleEvidenceException
 					| UnexpectedInferenceException e) {
 				JOptionPane

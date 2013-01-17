@@ -192,16 +192,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         messageStringResource =
             StringResourceLoader.getUniqueInstance().getBundleMessages();
         
-        if (probNode.getNodeType() == NodeType.DECISION) {
-        	setTitle(dialogStringResource
-                .getString("ImposePolicydialog.Title.Label")
-                + ": " + (probNode == null? "":probNode.getName()));
-        } else {
-        	
-        setTitle(dialogStringResource
-            .getString("NodePotentialDialog.Title.Label")
-            + ": " + (probNode == null? "":probNode.getName()));
-        }
+        // Set default title	
+        setTitle("NodePotentialDialog.Title.Label");
+        
         configureComponentsPanel();
         pack();
     }
@@ -292,6 +285,14 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         return potentialPanel;
     }
     
+    
+    @Override
+    public void setTitle (String title)
+    {
+        String nodeName = (probNode == null)? "":probNode.getName();
+        super.setTitle (dialogStringResource.getString(title) + ": " + nodeName);
+    }
+
     /**
      * @return An integer indicating the button clicked by the user when closing this dialog
      */
@@ -336,9 +337,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog i
         // set the nodeProperties variable in this dialog and panels
         this.probNode = probNode;
         //*******
-        setTitle(dialogStringResource.getString(
-                "NodePotentialDialog.Title.Label")+ ": " + probNode.getName());
-		
         getPotentialPanel().setData( probNode );
 		
     }
