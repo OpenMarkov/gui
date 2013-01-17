@@ -103,6 +103,7 @@ public class VisualDecisionNode extends VisualNode {
 		setTemporalPosition(new Point2D.Double(probNode.getNode().
 				getCoordinateX(), probNode.getNode().getCoordinateY()));
 		innerBox = new FSVariableBox(this);
+        setHasPolicy(node.getPotentials().size() != 0);		
 	}
 		
 	/**

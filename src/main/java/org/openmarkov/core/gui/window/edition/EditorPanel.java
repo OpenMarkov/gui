@@ -1641,7 +1641,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	public void updateNodesExpansionState(int newWorkingMode) {
 		if (newWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
 			VisualNode visualNode = null;
-			ArrayList<VisualNode> allNodes = visualNetwork.getAllNodes();
+			List<VisualNode> allNodes = visualNetwork.getAllNodes();
 			if (allNodes.size() > 0) {
 				for (int i = 0; i < allNodes.size(); i++) {
 					visualNode = allNodes.get(i);
@@ -1654,7 +1654,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 			}
 		} else if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 			VisualNode visualNode = null;
-			ArrayList<VisualNode> allNodes = visualNetwork.getAllNodes();
+			List<VisualNode> allNodes = visualNetwork.getAllNodes();
 			if (allNodes.size() > 0) {
 				for (int i = 0; i < allNodes.size(); i++) {
 					visualNode = allNodes.get(i);
@@ -2724,7 +2724,7 @@ public class EditorPanel extends JPanel implements MouseListener,
 	 *            the specific operation to be done over the visual states.
 	 */
 	public void updateAllVisualStates(String option, int caseNumber) {
-		ArrayList<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
+		List<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
 		for (VisualNode visualNode : allVisualNodes)
 		{
 			InnerBox innerBox = visualNode.getInnerBox();

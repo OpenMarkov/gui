@@ -16,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.event.UndoableEditEvent;
 
@@ -67,22 +68,22 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * List of visual nodes.
 	 */
-	protected ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
+	protected List<VisualNode> visualNodes = new ArrayList<VisualNode>();
 
 	/**
 	 * List of visual links.
 	 */
-	protected ArrayList<VisualLink> visualLinks = new ArrayList<VisualLink>();
+	protected List<VisualLink> visualLinks = new ArrayList<VisualLink>();
 
 	/**
 	 * Set of selected nodes.
 	 */
-	protected HashSet<VisualNode> selectedNodes = new HashSet<VisualNode>();
+	protected Set<VisualNode> selectedNodes = new HashSet<VisualNode>();
 
 	/**
 	 * Set of selected links.
 	 */
-	protected HashSet<VisualLink> selectedLinks = new HashSet<VisualLink>();
+	protected Set<VisualLink> selectedLinks = new HashSet<VisualLink>();
 	
     /**
      * This object represents the arrow that is painted when a new link is being
@@ -107,7 +108,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     /**
 	 * Listener to the selection.
 	 */
-	protected HashSet<SelectionListener> selectionListeners =
+	protected Set<SelectionListener> selectionListeners =
 		new HashSet<SelectionListener>();
 
 	protected Graphics2D g2;
@@ -904,7 +905,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @return a list containing all the nodes in the network.
 	 */
-	public ArrayList<VisualNode> getAllNodes() {
+	public List<VisualNode> getAllNodes() {
 
 		return visualNodes;
 
@@ -1155,14 +1156,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 				return new VisualChanceNode(node, this);
 			}
 			case DECISION: {
-				VisualDecisionNode vdn= new VisualDecisionNode(node, this);
-			/*	if ( node.getPolicyType() == PolicyType.PROBABILISTIC )
-					vdn.setSelected(true);*/
-				
-				if (node.getPotentials().size() != 0) 
-					vdn.setHasPolicy(true);
-				
-				return  vdn;
+			    return new VisualDecisionNode(node, this);
 			}
 			case UTILITY: {
 				return new VisualUtilityNode(node, this);

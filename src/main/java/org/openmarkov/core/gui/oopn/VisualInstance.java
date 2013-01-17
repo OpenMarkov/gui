@@ -110,7 +110,7 @@ public class VisualInstance extends VisualElement {
 	
 	private boolean isExpanded = true;
 
-	public VisualInstance(Instance instance, ArrayList<VisualNode> allVisualNodes, boolean isExpanded)
+	public VisualInstance(Instance instance, List<VisualNode> allVisualNodes, boolean isExpanded)
 	{
 		this.instance = instance;
 		
@@ -199,7 +199,7 @@ public class VisualInstance extends VisualElement {
 		
 	}
 	
-    public VisualInstance (Instance instance, ArrayList<VisualNode> allVisualNodes)
+    public VisualInstance (Instance instance, List<VisualNode> allVisualNodes)
     {
         this(instance, allVisualNodes, true);
     }
