@@ -9,6 +9,7 @@
 
 package org.openmarkov.core.gui.window;
 
+import java.awt.TrayIcon.MessageType;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1500,9 +1501,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements
     {
         if(mainPanel.getStandardToolBar ().getDecisionTreeButton().isSelected ())
         {
-            DecisionTreeWindow decisionTree = new DecisionTreeWindow (probNet);
-            mainPanel.getMdi().createNewFrame(decisionTree);
-            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+            try
+            {
+                DecisionTreeWindow decisionTree = new DecisionTreeWindow (probNet);
+                mainPanel.getMdi().createNewFrame(decisionTree);
+                mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+            }catch(OutOfMemoryError e)
+            {
+                mainPanel.getStandardToolBar ().getDecisionTreeButton ().setSelected (false);
+                StringResource messageBundle = stringResourceLoader.getBundleMessages();                
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                              messageBundle.getString("ExceptionNotEnoughMemory.Text.Label"),
+                                              messageBundle.getString("ExceptionNotEnoughMemory.Title.Label"),
+                                              JOptionPane.ERROR_MESSAGE);
+            }
         }else
         {
             mainPanel.getMdi ().closeCurrentFrame ();

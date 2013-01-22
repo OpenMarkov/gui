@@ -9,8 +9,10 @@
 package org.openmarkov.core.gui.window.dt;
 
 import java.awt.Font;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 
@@ -26,10 +28,16 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class DecisionTreeNode extends DecisionTreeElement
 {
-    private ProbNode                  probNode              = null;
-    private List<DecisionTreeElement> children              = null;
-    private DecisionTreeElement        parent                = null;
+    private ProbNode                  probNode            = null;
+    private List<DecisionTreeElement> children            = null;
+    private DecisionTreeElement       parent              = null;
+    private double                    utility             = Double.NEGATIVE_INFINITY;
+    private double                    scenarioProbability = Double.NEGATIVE_INFINITY;
 
+    private static Map<String, Icon> chanceNodeIconPool = new HashMap<>();  
+    private static Map<String, Icon> decisionNodeIconPool = new HashMap<>();  
+    private static Map<String, Icon> utilityNodeIconPool = new HashMap<>();  
+    
     public DecisionTreeNode (ProbNode probNode)
     {
         this.probNode = probNode;
@@ -67,17 +75,30 @@ public class DecisionTreeNode extends DecisionTreeElement
         {
             case CHANCE :
             {
-                icon = IconFactory.createChanceIcon (node.getName (), textIconFont);
+                icon = chanceNodeIconPool.get (node.getName ());
+                if(icon == null)
+                {
+                    icon = IconFactory.createChanceIcon (node.getName (), textIconFont);
+                    chanceNodeIconPool.put (node.getName (), icon);
+                }
                 break;
             }
             case DECISION :
             {
-                icon = IconFactory.createDecisionIcon (node.getName (), textIconFont);
+                if(icon == null)
+                {
+                    icon = IconFactory.createDecisionIcon (node.getName (), textIconFont);
+                    decisionNodeIconPool.put (node.getName (), icon);
+                }
                 break;
             }
             case UTILITY :
             {
-                icon = IconFactory.createUtilityIcon (node.getName (), textIconFont);
+                if(icon == null)
+                {
+                    icon = IconFactory.createUtilityIcon (node.getName (), textIconFont);
+                    utilityNodeIconPool.put (node.getName (), icon);
+                }
                 break;
             }
         }
@@ -86,32 +107,23 @@ public class DecisionTreeNode extends DecisionTreeElement
 
     public double getUtility ()
     {
-        double utility = 0;
-        if (probNode.getNodeType () == NodeType.DECISION)
+        if(utility == Double.NEGATIVE_INFINITY)
         {
-            double maxUtility = Double.NEGATIVE_INFINITY;
-            for (DecisionTreeElement branch : children)
+            utility = 0;
+            if (probNode.getNodeType () == NodeType.DECISION)
             {
-                double branchUtility = branch.getUtility ();
-                if (branchUtility > maxUtility)
+                double maxUtility = Double.NEGATIVE_INFINITY;
+                for (DecisionTreeElement branch : children)
                 {
-                    maxUtility = branchUtility;
+                    double branchUtility = branch.getUtility ();
+                    if (branchUtility > maxUtility)
+                    {
+                        maxUtility = branchUtility;
+                    }
                 }
+                utility = maxUtility;
             }
-            utility = maxUtility;
-        }
-        else if (probNode.getNodeType () == NodeType.CHANCE)
-        {
-            double sumUtility = 0;
-            for (DecisionTreeElement child : children)
-            {
-                sumUtility += child.getUtility ();
-            }
-            utility = sumUtility;
-        }else if (probNode.getNodeType () == NodeType.UTILITY)
-        {
-            Potential potential = probNode.getPotentials ().get (0);
-            if(potential instanceof SumPotential)
+            else if (probNode.getNodeType () == NodeType.CHANCE)
             {
                 double sumUtility = 0;
                 for (DecisionTreeElement child : children)
@@ -119,21 +131,32 @@ public class DecisionTreeNode extends DecisionTreeElement
                     sumUtility += child.getUtility ();
                 }
                 utility = sumUtility;
-            }else if(potential instanceof ProductPotential)
+            }else if (probNode.getNodeType () == NodeType.UTILITY)
             {
-                double productUtility = 1;
-                for (DecisionTreeElement child : children)
+                Potential potential = probNode.getPotentials ().get (0);
+                if(potential instanceof SumPotential)
                 {
-                    productUtility *= child.getUtility ();
+                    double sumUtility = 0;
+                    for (DecisionTreeElement child : children)
+                    {
+                        sumUtility += child.getUtility ();
+                    }
+                    utility = sumUtility;
+                }else if(potential instanceof ProductPotential)
+                {
+                    double productUtility = 1;
+                    for (DecisionTreeElement child : children)
+                    {
+                        productUtility *= child.getUtility ();
+                    }
+                    utility = productUtility;
+                    
+                }else if(potential instanceof TablePotential)
+                {
+                    utility = ((TablePotential)potential).getValue (getBranchStates());
                 }
-                utility = productUtility;
-                
-            }else if(potential instanceof TablePotential)
-            {
-                utility = ((TablePotential)potential).getValue (getBranchStates());
             }
         }
-        
         return utility;
     }
 
@@ -168,17 +191,20 @@ public class DecisionTreeNode extends DecisionTreeElement
     
     public double getScenarioProbability()
     {
-    	double scenarioProbability = 0;
-    	if(probNode.getNodeType() == NodeType.CHANCE)
-    	{
-	    	for(DecisionTreeElement child : children)
-	    	{
-	    		scenarioProbability +=child.getScenarioProbability();
-	    	}
-    	}else if(probNode.getNodeType() == NodeType.DECISION)
-    	{
-    		scenarioProbability = children.get(0).getScenarioProbability();
-    	}
+        if(scenarioProbability == Double.NEGATIVE_INFINITY)
+        {
+        	scenarioProbability = 0;
+        	if(probNode.getNodeType() == NodeType.CHANCE)
+        	{
+    	    	for(DecisionTreeElement child : children)
+    	    	{
+    	    		scenarioProbability +=child.getScenarioProbability();
+    	    	}
+        	}else if(probNode.getNodeType() == NodeType.DECISION)
+        	{
+        		scenarioProbability = children.get(0).getScenarioProbability();
+        	}
+        }
     	return scenarioProbability;
     }
     

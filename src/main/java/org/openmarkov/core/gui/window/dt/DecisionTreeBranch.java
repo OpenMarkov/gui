@@ -34,6 +34,8 @@ public class DecisionTreeBranch extends DecisionTreeElement
     private DecisionTreeNode parent;
     private DecisionTreeNode child;
     private ProbNet			 probNet;
+    private double           utility = Double.NEGATIVE_INFINITY; 
+    private double           scenarioProbability = Double.NEGATIVE_INFINITY; 
 
     public DecisionTreeBranch (ProbNet probNet,
                                Variable branchVariable,
@@ -92,10 +94,13 @@ public class DecisionTreeBranch extends DecisionTreeElement
     
     public double getUtility ()
     {
-        double utility = (child != null)? child.getUtility () : 0;
-        if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.CHANCE)
+        if(utility == Double.NEGATIVE_INFINITY)
         {
-            utility *= getBranchProbability ();
+            utility = (child != null)? child.getUtility () : 0;
+            if(parent != null && ((DecisionTreeNode)parent).getProbNode ().getNodeType () == NodeType.CHANCE)
+            {
+                utility *= getBranchProbability ();
+            }
         }
         return utility;
     } 
@@ -134,23 +139,26 @@ public class DecisionTreeBranch extends DecisionTreeElement
 
     public double getScenarioProbability()
     {
-    	double scenarioProbability = 1;    	
-    	if(child.getProbNode().getNodeType() == NodeType.UTILITY)
-    	{
-        	EvidenceCase evidenceCase = getBranchStates();
-	    	for(Finding finding : evidenceCase.getFindings())
-	    	{
-	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
-	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
-	    		{
-	    			Potential potential = probNode.getPotentials().get(0);
-	    			scenarioProbability *= potential.getProbability(evidenceCase);
-	    		}
-	    	}
-    	}else
-    	{
-    		scenarioProbability = child.getScenarioProbability();
-    	}
+        if(scenarioProbability == Double.NEGATIVE_INFINITY)
+        {
+        	scenarioProbability = 1;    	
+        	if(child.getProbNode().getNodeType() == NodeType.UTILITY)
+        	{
+            	EvidenceCase evidenceCase = getBranchStates();
+    	    	for(Finding finding : evidenceCase.getFindings())
+    	    	{
+    	    		ProbNode probNode = probNet.getProbNode(finding.getVariable());
+    	    		if(probNode != null && probNode.getNodeType() == NodeType.CHANCE)
+    	    		{
+    	    			Potential potential = probNode.getPotentials().get(0);
+    	    			scenarioProbability *= potential.getProbability(evidenceCase);
+    	    		}
+    	    	}
+        	}else
+        	{
+        		scenarioProbability = child.getScenarioProbability();
+        	}
+        }
         return scenarioProbability;
     }       
 

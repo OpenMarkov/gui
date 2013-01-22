@@ -419,7 +419,7 @@
   </LoadingNetwork>
   <ExceptionNotEnoughMemory>
     <Text>
-      <Label value="Not enough memory. " />
+      <Label value="System run out of memory. " />
     </Text>
     <Title>
       <Label value="Error - Not Enough Memory" />
