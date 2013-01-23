@@ -16,10 +16,14 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.openmarkov.core.dt.DecisionTreeBranch;
+import org.openmarkov.core.dt.DecisionTreeElement;
+import org.openmarkov.core.dt.DecisionTreeNode;
+
 public class DecisionTreeModel implements TreeModel
 {
     private Set<TreeModelListener> listeners;
-    private DecisionTreeElement root;
+    private DecisionTreeElementPanel root;
     
     /**
      * Constructor for DecisionTreeModel.
@@ -28,7 +32,26 @@ public class DecisionTreeModel implements TreeModel
     {
         super ();
         this.listeners = new HashSet<> ();
-        this.root = root;
+        this.root = buildPanelTree(root);
+    }
+
+    private DecisionTreeElementPanel buildPanelTree (DecisionTreeElement treeElement)
+    {
+        DecisionTreeElementPanel treeElementPanel = null;
+        if(treeElement instanceof DecisionTreeNode)
+        {
+            treeElementPanel = new DecisionTreeNodePanel((DecisionTreeNode)treeElement);
+        }else if(treeElement instanceof DecisionTreeBranch)
+        {
+            treeElementPanel = new DecisionTreeBranchPanel((DecisionTreeBranch)treeElement);
+        }
+        
+        for(DecisionTreeElement child : treeElement.getChildren ())
+        {
+            treeElementPanel.addChild (buildPanelTree (child));
+        }
+        
+        return treeElementPanel;
     }
 
     @Override
@@ -40,19 +63,19 @@ public class DecisionTreeModel implements TreeModel
     @Override
     public Object getChild (Object parent, int index)
     {
-        return ((DecisionTreeElement)parent).getChildren ().get (index);
+        return ((DecisionTreeElementPanel)parent).getChildren ().get (index);
     }
 
     @Override
     public int getChildCount (Object parent)
     {
-        return ((DecisionTreeElement)parent).getChildren ().size ();
+        return ((DecisionTreeElementPanel)parent).getChildren ().size ();
     }
 
     @Override
     public int getIndexOfChild (Object parent, Object child)
     {
-        return ((DecisionTreeElement)parent).getChildren ().indexOf (child);
+        return ((DecisionTreeElementPanel)parent).getChildren ().indexOf (child);
     }
 
     @Override

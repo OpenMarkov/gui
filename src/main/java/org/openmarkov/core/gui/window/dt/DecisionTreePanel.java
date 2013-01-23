@@ -13,6 +13,8 @@ import java.awt.Color;
 
 import javax.swing.JScrollPane;
 
+import org.openmarkov.core.dt.DecisionTreeBuilder;
+import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.model.network.ProbNet;
 
 @SuppressWarnings("serial")
@@ -33,6 +35,12 @@ public class DecisionTreePanel extends JScrollPane
         setBackground (Color.white);
     }
     
+    private DecisionTreeElementPanel buildPanelTree (DecisionTreeElement root)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * Returns the zoom.
      * @return the zoom.
