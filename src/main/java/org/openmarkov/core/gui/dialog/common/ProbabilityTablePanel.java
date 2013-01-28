@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringBundle;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
@@ -87,13 +87,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 		 */
 		private int baseIndexForCoordinates = -1;
 
-		
-
-		/**
-		 * String resource.
-		 */
-		protected StringResource stringResource = null;
-
 		/**
 		 * Icon loader.
 		 */
@@ -110,8 +103,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 		protected boolean showProbabilitiesValues = true;
 		protected boolean showTPCvalues = true;
 		protected boolean showNetValues = true;
-		
-		
 
 		//private ProbNode probNode;
 		/**
@@ -127,11 +118,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 		private JLabel jLabelNodeRelationComment;
 		private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment = null;
-		/**
-		 * Dialog string resource.
-		 */
-		private StringResource dialogStringResource;
-		
+
+		protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
 		
 		private Logger logger;
 
@@ -156,8 +144,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 		public ProbabilityTablePanel( String[] newColumns, 
 				Object[][] newData) {
 
-			stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleButtons();
 			iconLoader = new IconLoader();
 			columns = newColumns.clone();
 			data = newData.clone();
@@ -212,7 +198,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 				jLabelNodeRelationComment.setName( "jLabelNodeRelationComment" );
 				jLabelNodeRelationComment.setText( "a Label" );
 				jLabelNodeRelationComment
-					.setText( dialogStringResource.getString( 
+					.setText( stringDatabase.getString( 
 							"NodeProbsValuesTablePanel.jLabelNodeRelationComment.Text" ) );
 			}
 			return jLabelNodeRelationComment;

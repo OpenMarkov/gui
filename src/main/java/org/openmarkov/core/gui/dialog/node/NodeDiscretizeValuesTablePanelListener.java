@@ -30,8 +30,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.UtilStrings;
@@ -54,7 +53,6 @@ public class NodeDiscretizeValuesTablePanelListener
      * the panel to handle the events
      */
     private NodeDomainValuesTablePanel panel;
-    private StringResource             messageStringResource;
     private int                        previousMonotony = -1;
     private static int                 DOWN             = 0;
     private static int                 UP               = 1;
@@ -66,7 +64,6 @@ public class NodeDiscretizeValuesTablePanelListener
     public NodeDiscretizeValuesTablePanelListener (NodeDomainValuesTablePanel panel)
     {
         this.panel = panel;
-        messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
     }
 
     /**
@@ -110,7 +107,7 @@ public class NodeDiscretizeValuesTablePanelListener
         {
             if (previousMonotony == UP)
             { // UP --> UP
-                // do nothing
+              // do nothing
                 getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (true);
             }
             else if (previousMonotony == DOWN)
@@ -187,7 +184,7 @@ public class NodeDiscretizeValuesTablePanelListener
             }
             else if (previousMonotony == DOWN)
             { // DOWN --> DOWN
-                // do nothing
+              // do nothing
                 getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (false);
             }
         }
@@ -226,7 +223,8 @@ public class NodeDiscretizeValuesTablePanelListener
     {
         if (evt.getSource ().equals (getPanel ().getJFormattedTextFieldPrecision ()))
         {
-            PrecisionEdit precisionEdit = new PrecisionEdit (getPanel ().getProbNode (),
+            PrecisionEdit precisionEdit = new PrecisionEdit (
+                                                             getPanel ().getProbNode (),
                                                              ((Double) getPanel ().getJFormattedTextFieldPrecision ().getValue ()).doubleValue ());
             try
             {
@@ -237,8 +235,8 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (null,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
             }
             System.out.println ("precision set to "
@@ -253,9 +251,8 @@ public class NodeDiscretizeValuesTablePanelListener
                 getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
                 getPanel ().getJTextFieldUnit ().setText (getPanel ().getJTextFieldUnit ().getText ());
             }
-            catch (DoEditException | ConstraintViolationException
-                    | CanNotDoEditException | NonProjectablePotentialException
-                    | WrongCriterionException e)
+            catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                    | NonProjectablePotentialException | WrongCriterionException e)
             {
                 e.printStackTrace ();
             }
@@ -266,7 +263,8 @@ public class NodeDiscretizeValuesTablePanelListener
     {
         if (evt.getSource ().equals (getPanel ().getJFormattedTextFieldPrecision ()))
         {
-            PrecisionEdit precisionEdit = new PrecisionEdit (panel.getProbNode (),
+            PrecisionEdit precisionEdit = new PrecisionEdit (
+                                                             panel.getProbNode (),
                                                              (Double) getPanel ().getJFormattedTextFieldPrecision ().getValue ());
             try
             {
@@ -277,13 +275,12 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (null,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
             }
             NumberFormat nf = NumberFormat.getNumberInstance ();
             nf.setGroupingUsed (false); // don't group by threes
-
             if (getPanel ().getProbNode ().getVariable ().getVariableType () == VariableType.DISCRETIZED
                 || getPanel ().getProbNode ().getVariable ().getVariableType () == VariableType.NUMERIC)
             {
@@ -353,22 +350,24 @@ public class NodeDiscretizeValuesTablePanelListener
                                                                     Double.toString (precision));
                     }
                 }
-                PartitionedInterval newPartitionedInterval = new PartitionedInterval (limits, belongs);
-                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (getPanel ().getProbNode (),
+                PartitionedInterval newPartitionedInterval = new PartitionedInterval (limits,
+                                                                                      belongs);
+                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (
+                                                                                               getPanel ().getProbNode (),
                                                                                                newPartitionedInterval);
                 try
                 {
                     getPanel ().getProbNode ().getProbNet ().doEdit (partitionedIntervalEdit);
                 }
-                catch (DoEditException | ConstraintViolationException
-                        | CanNotDoEditException | NonProjectablePotentialException
-                        | WrongCriterionException e)
+                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException e)
                 {
                     e.printStackTrace ();
                 }
                 PartitionedInterval newPartitionInterval = getPanel ().getProbNode ().getVariable ().getPartitionedInterval ();
                 State[] states = getPanel ().getProbNode ().getVariable ().getStates ();
-                getPanel ().getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (newPartitionInterval, states);
+                getPanel ().getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (newPartitionInterval,
+                                                                                                  states);
             }
         }
         else if (evt.getSource ().equals (getPanel ().getJTextFieldUnit ()))
@@ -379,9 +378,8 @@ public class NodeDiscretizeValuesTablePanelListener
             {
                 getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
             }
-            catch (DoEditException | ConstraintViolationException
-                    | CanNotDoEditException | NonProjectablePotentialException
-                    | WrongCriterionException e)
+            catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                    | NonProjectablePotentialException | WrongCriterionException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace ();

@@ -97,7 +97,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 				return false;
 		}
 
-		public Class getColumnClass(int c) {
+		public Class<?> getColumnClass(int c) {
 			if (getRowCount() > 0) {
 				return getValueAt(0, c).getClass();
 			} else
@@ -128,26 +128,26 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 			} catch (CanNotDoEditException e3) {
 				e3.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						stringResource.getString(e3.getMessage()),
-						stringResource.getString(e3.getMessage()),
+				                              stringDatabase.getString(e3.getMessage()),
+				                              stringDatabase.getString(e3.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e4) {
 				e4.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						stringResource.getString(e4.getMessage()),
-						stringResource.getString(e4.getMessage()),
+				                              stringDatabase.getString(e4.getMessage()),
+				                              stringDatabase.getString(e4.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (WrongCriterionException e5) {
 				e5.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						stringResource.getString(e5.getMessage()),
-						stringResource.getString(e5.getMessage()),
+				                              stringDatabase.getString(e5.getMessage()),
+				                              stringDatabase.getString(e5.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			} catch (DoEditException e6) {
 				e6.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						stringResource.getString(e6.getMessage()),
-						stringResource.getString(e6.getMessage()),
+				                              stringDatabase.getString(e6.getMessage()),
+				                              stringDatabase.getString(e6.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}

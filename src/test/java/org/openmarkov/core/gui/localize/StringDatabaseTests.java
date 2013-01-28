@@ -14,13 +14,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.MissingResourceException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
 /**
  * This class tests the classes
- * {@link openmarkov.gui.localize.StringResourceLoader} and
- * {@link openmarkov.gui.localize.StringResource}.
+ * {@link StringDatabase.gui.localize.StringResourceLoader} and
+ * {@link StringBundle.gui.localize.StringResource}.
  * 
  * @author jmendoza
  * @version 1.0
@@ -28,7 +29,14 @@ import org.junit.Test;
  * @version 1.1 jlgozalo. modified as MissingErrorExpectedException is not longer
  * required
  */
-public class StringResourceLoaderTest {
+public class StringDatabaseTests {
+
+    StringDatabase stringDatabase = null; 
+    
+    @Before
+    public void setUp() throws Exception {
+        stringDatabase = StringDatabase.getUniqueInstance ();
+    }
 	/**
 	 * This method gets a correct string identified by its key from a string
 	 * resource.
@@ -38,9 +46,9 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if the string can't be loaded from the
 	 * string resource.
 	 */
-	private void getCorrectString(StringResource stringResource, String key)
+	private void getCorrectString(StringDatabase stringDatabase, String key)
 			throws MissingResourceException {
-		assertNotNull(stringResource.getString(key));
+		assertNotNull(stringDatabase.getString(key));
 	}
 
 
@@ -51,17 +59,14 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringButtons() throws MissingResourceException {
-		StringResource stringResource;
 
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleButtons();
-		getCorrectString(stringResource, "Add.Text.Label");
-		getCorrectString(stringResource, "Cancel.Text.Label");
-		getCorrectString(stringResource, "Clear.Text.Label");
-		getCorrectString(stringResource, "Copy.Text.Label");
-		getCorrectString(stringResource, "Delete.Text.Label");
-		getCorrectString(stringResource, "Down.Text.Label");
-		getCorrectString(stringResource, "Ok.Text.Label");
+		getCorrectString(stringDatabase, "Add.Text.Label");
+		getCorrectString(stringDatabase, "Cancel.Text.Label");
+		getCorrectString(stringDatabase, "Clear.Text.Label");
+		getCorrectString(stringDatabase, "Copy.Text.Label");
+		getCorrectString(stringDatabase, "Delete.Text.Label");
+		getCorrectString(stringDatabase, "Down.Text.Label");
+		getCorrectString(stringDatabase, "Ok.Text.Label");
 	}
 
 
@@ -73,9 +78,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleButtons() throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    StringDatabase.getUniqueInstance ().setLanguage("en");
 		getStringButtons();
-		StringResourceLoader.setLanguage("es");
+		StringDatabase.getUniqueInstance ().setLanguage("es");
 		getStringButtons();
 	}
 
@@ -85,11 +90,8 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleButtonsWrong() {
-		StringResource bundle;
-
-		StringResourceLoader.setLanguage("en");
-		bundle = StringResourceLoader.getUniqueInstance().getBundleButtons();
-		String string = bundle.getString("incorrect");
+	    stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
@@ -101,17 +103,13 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringDialogs() throws MissingResourceException {
-		StringResource stringResource;
-
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		getCorrectString(stringResource, "Author.Text.Label");
-		getCorrectString(stringResource, "ChainGraph.Text.Mnemonic");
-		getCorrectString(stringResource, "Continuous.Text.Label");
-		getCorrectString(stringResource, "Defaults.Title.Label");
-		getCorrectString(stringResource, "Information.Title.Label");
-		getCorrectString(stringResource, "NetworkProperties.Title.Label");
-		getCorrectString(stringResource, "Values.Text.Mnemonic");
+		getCorrectString(stringDatabase, "Author.Text.Label");
+		getCorrectString(stringDatabase, "ChainGraph.Text.Mnemonic");
+		getCorrectString(stringDatabase, "Continuous.Text.Label");
+		getCorrectString(stringDatabase, "Defaults.Title.Label");
+		getCorrectString(stringDatabase, "Information.Title.Label");
+		getCorrectString(stringDatabase, "NetworkProperties.Title.Label");
+		getCorrectString(stringDatabase, "Values.Text.Mnemonic");
 	}
 
 
@@ -123,9 +121,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleDialogs() throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    StringDatabase.getUniqueInstance ().setLanguage("en");
 		getStringDialogs();
-		StringResourceLoader.setLanguage("es");
+		StringDatabase.getUniqueInstance ().setLanguage("es");
 		getStringDialogs();
 	}
 
@@ -135,11 +133,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleDialogsWrong() {
-		StringResource bundle;
 
-		StringResourceLoader.setLanguage("en");
-		bundle = StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		String string = bundle.getString("incorrect");
+		stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 		
 	}
@@ -152,17 +148,14 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMenus() throws MissingResourceException {
-		StringResource stringResource;
 
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleMenus();
-		getCorrectString(stringResource, "Edit.ChanceCreation.Label");
-		getCorrectString(stringResource, "Edit.Copy.Label");
-		getCorrectString(stringResource, "Edit.NodeProperties.Mnemonic");
-		getCorrectString(stringResource, "Edit.Paste.Mnemonic");
-		getCorrectString(stringResource, "File.Close.Label");
-		getCorrectString(stringResource, "File.Mnemonic");
-		getCorrectString(stringResource, "View.Label");
+		getCorrectString(stringDatabase, "Edit.ChanceCreation.Label");
+		getCorrectString(stringDatabase, "Edit.Copy.Label");
+		getCorrectString(stringDatabase, "Edit.NodeProperties.Mnemonic");
+		getCorrectString(stringDatabase, "Edit.Paste.Mnemonic");
+		getCorrectString(stringDatabase, "File.Close.Label");
+		getCorrectString(stringDatabase, "File.Mnemonic");
+		getCorrectString(stringDatabase, "View.Label");
 	}
 
 
@@ -174,9 +167,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleMenus() throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    StringDatabase.getUniqueInstance ().setLanguage("en");
 		getStringMenus();
-		StringResourceLoader.setLanguage("es");
+		StringDatabase.getUniqueInstance ().setLanguage("es");
 		getStringMenus();
 	}
 
@@ -186,11 +179,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleMenusWrong() {
-		StringResource bundle;
 
-		StringResourceLoader.setLanguage("en");
-		bundle = StringResourceLoader.getUniqueInstance().getBundleMenus();
-		String string = bundle.getString("incorrect");
+		stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
@@ -202,17 +193,14 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMessages() throws MissingResourceException {
-		StringResource stringResource;
 
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-		getCorrectString(stringResource, "Action.MoveNodes.Label");
-		getCorrectString(stringResource, "ClipboardNotSet.Text.Label");
-		getCorrectString(stringResource, "EmptyState.Text.Label");
-		getCorrectString(stringResource, "IconificationVetoed.Text.Label");
-		getCorrectString(stringResource, "LoadingNetwork.Text.Label");
-		getCorrectString(stringResource, "NodeNotCreated.Text.Label");
-		getCorrectString(stringResource, "SelectionVetoed.Text.Label");
+		getCorrectString(stringDatabase, "Action.MoveNodes.Label");
+		getCorrectString(stringDatabase, "ClipboardNotSet.Text.Label");
+		getCorrectString(stringDatabase, "EmptyState.Text.Label");
+		getCorrectString(stringDatabase, "IconificationVetoed.Text.Label");
+		getCorrectString(stringDatabase, "LoadingNetwork.Text.Label");
+		getCorrectString(stringDatabase, "NodeNotCreated.Text.Label");
+		getCorrectString(stringDatabase, "SelectionVetoed.Text.Label");
 	}
 
 
@@ -224,9 +212,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleMessages() throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    stringDatabase.setLanguage("en");
 		getStringMessages();
-		StringResourceLoader.setLanguage("es");
+		stringDatabase.setLanguage("es");
 		getStringMessages();
 	}
 
@@ -236,11 +224,8 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleMessagesWrong() {
-		StringResource bundle;
-
-		StringResourceLoader.setLanguage("en");
-		bundle = StringResourceLoader.getUniqueInstance().getBundleMessages();
-		String string = bundle.getString("incorrect");
+	    stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
@@ -252,17 +237,14 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringSelectables() throws MissingResourceException {
-		StringResource stringResource;
-
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleSelectables();
-		getCorrectString(stringResource, "absent.Text.Label");
-		getCorrectString(stringResource, "high.Text.Label");
-		getCorrectString(stringResource, "mild.Text.Label");
-		getCorrectString(stringResource, "other.Text.Label");
-		getCorrectString(stringResource, "present.Text.Label");
-		getCorrectString(stringResource, "sign.Text.Label");
-		getCorrectString(stringResource, "yes.Text.Label");
+		
+		getCorrectString(stringDatabase, "absent.Text.Label");
+		getCorrectString(stringDatabase, "high.Text.Label");
+		getCorrectString(stringDatabase, "mild.Text.Label");
+		getCorrectString(stringDatabase, "other.Text.Label");
+		getCorrectString(stringDatabase, "present.Text.Label");
+		getCorrectString(stringDatabase, "sign.Text.Label");
+		getCorrectString(stringDatabase, "yes.Text.Label");
 	}
 
 
@@ -275,9 +257,9 @@ public class StringResourceLoaderTest {
 	@Test
 	public final void testGetBundleSelectables()
 			throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    stringDatabase.setLanguage("en");
 		getStringSelectables();
-		StringResourceLoader.setLanguage("es");
+		stringDatabase.setLanguage("es");
 		getStringSelectables();
 	}
 
@@ -287,12 +269,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleSelectablesWrong() {
-		StringResource bundle;
-
-		StringResourceLoader.setLanguage("en");
-		bundle =
-			StringResourceLoader.getUniqueInstance().getBundleSelectables();
-		String string = bundle.getString("incorrect");
+		
+	    stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
@@ -304,17 +283,14 @@ public class StringResourceLoaderTest {
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringToolBars() throws MissingResourceException {
-		StringResource stringResource;
 
-		stringResource =
-				StringResourceLoader.getUniqueInstance().getBundleToolBars();
-		getCorrectString(stringResource, "ChanceCreation.ToolTip.Label");
-		getCorrectString(stringResource, "ClipboardCut.ToolTip.Label");
-		getCorrectString(stringResource, "DecisionCreation.ToolTip.Label");
-		getCorrectString(stringResource, "NewNetwork.ToolTip.Label");
-		getCorrectString(stringResource, "ObjectSelection.ToolTip.Label");
-		getCorrectString(stringResource, "Redo.ToolTip.Label");
-		getCorrectString(stringResource, "UtilityCreation.ToolTip.Label");
+		getCorrectString(stringDatabase, "ChanceCreation.ToolTip.Label");
+		getCorrectString(stringDatabase, "ClipboardCut.ToolTip.Label");
+		getCorrectString(stringDatabase, "DecisionCreation.ToolTip.Label");
+		getCorrectString(stringDatabase, "NewNetwork.ToolTip.Label");
+		getCorrectString(stringDatabase, "ObjectSelection.ToolTip.Label");
+		getCorrectString(stringDatabase, "Redo.ToolTip.Label");
+		getCorrectString(stringDatabase, "UtilityCreation.ToolTip.Label");
 	}
 
 
@@ -326,9 +302,9 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleToolBars() throws MissingResourceException {
-		StringResourceLoader.setLanguage("en");
+	    stringDatabase.setLanguage("en");
 		getStringToolBars();
-		StringResourceLoader.setLanguage("es");
+		stringDatabase.setLanguage("es");
 		getStringToolBars();
 	}
 
@@ -338,11 +314,8 @@ public class StringResourceLoaderTest {
 	 */
 	@Test
 	public final void testGetBundleToolBarsWrong() {
-		StringResource bundle;
-
-		StringResourceLoader.setLanguage("en");
-		bundle = StringResourceLoader.getUniqueInstance().getBundleToolBars();
-		String string = bundle.getString("incorrect");
+		stringDatabase.setLanguage("en");
+		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 }

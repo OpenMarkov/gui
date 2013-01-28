@@ -144,7 +144,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		if (absentData == null){
 			JOptionPane.showMessageDialog(
 					Utilities.getOwner(this), "Ningún nodo disponible",
-					stringResource.getString("ErrorWindow.Title.Label"),
+					stringDatabase.getString("ErrorWindow.Title.Label"),
 					JOptionPane.INFORMATION_MESSAGE);
 		}else{
 			newData = requestNewData();
@@ -168,7 +168,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 								e.printStackTrace();
 								JOptionPane.showMessageDialog(
 										Utilities.getOwner(this), e.getMessage(),
-										stringResource
+										stringDatabase
 										.getString("ErrorWindow.Title.Label"),
 										JOptionPane.ERROR_MESSAGE);
 							} 
@@ -235,9 +235,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringResource
+					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString( e.getMessage() ),
-							stringResource.getString( e.getMessage() ),
+							stringDatabase.getString( e.getMessage() ),
 						JOptionPane.ERROR_MESSAGE );
 				} 
 				
@@ -283,41 +283,36 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
 			Utilities.getOwner(this), e.getMessage(),
-			stringResource.getString("ErrorWindow.Title.Label"),
+			stringDatabase.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
-			e.printStackTrace();
-			/*JOptionPane.showMessageDialog(
-			Utilities.getOwner(this), e.getMessage(),
-			stringResource.getString("ErrorWindow.Title.Label"),
-			JOptionPane.ERROR_MESSAGE);*/
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
 			Utilities.getOwner(this), e.getMessage(),
-			stringResource.getString("ErrorWindow.Title.Label"),
+			stringDatabase.getString("ErrorWindow.Title.Label"),
 			JOptionPane.ERROR_MESSAGE);
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
+			JOptionPane.showMessageDialog(this, stringDatabase
 					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
+					stringDatabase.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
+			JOptionPane.showMessageDialog(this, stringDatabase
 					.getString( e.getMessage() ),
-					stringResource.getString( e.getMessage() ),
+					stringDatabase.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 		} catch (ProbNodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringResource
+			JOptionPane.showMessageDialog(this, stringDatabase
 					.getString( e1.getMessage() ),
-					stringResource.getString( e1.getMessage() ),
+					stringDatabase.getString( e1.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 		}
 		

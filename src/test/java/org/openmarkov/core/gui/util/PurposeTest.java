@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 /**
@@ -27,9 +27,8 @@ public class PurposeTest {
 	 */
 	@Before
 	public void setUp() {
-		StringResourceLoader.setLanguage("en");
+		StringDatabase.getUniqueInstance ().setLanguage("en");
 	}
-
 
 	/**
 	 * This method obtains the language-dependent string of a purpose that is

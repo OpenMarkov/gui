@@ -18,19 +18,17 @@ import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDial
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 
+@SuppressWarnings("serial")
 public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	 
 	private ProbNode probNode;
-	private StringResource dialogStringResource;
-	private StringResource messageStringResource;
 	private PolicyTypePanel pnlPolicyType;
 	private PotentialPanel potentialPanel;
 	private boolean readOnly;
@@ -65,14 +63,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      */
     private void initialize() {
 
-        dialogStringResource =
-            StringResourceLoader.getUniqueInstance().getBundleDialogs();
-        messageStringResource =
-            StringResourceLoader.getUniqueInstance().getBundleMessages();
-        String title = dialogStringResource
-                .getString("ImposePolicydialog.Title.Label ");
-        
-        setTitle(dialogStringResource
+        setTitle(StringDatabase.getUniqueInstance()
             .getString("ImposePolicydialog.Title.Label")
             + ": " + (probNode == null? "":probNode.getName()));
        

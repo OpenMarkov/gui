@@ -28,8 +28,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringBundle;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 
@@ -109,25 +109,22 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	 * Button to delete an existing value.
 	 */
 	protected JButton removeValueButton = null;
-	
-
-	/**
-	 * String resource.
-	 */
-	protected StringResource stringResource = null;
 
 	/**
 	 * Icon loader.
 	 */
 	protected IconLoader iconLoader = null;
+	
+	/**
+	 * String Database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
 
 	/**
 	 * this is a default constructor with no construction parameters
 	 */
 	public KeyTablePanel() {
 
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleButtons();
 		iconLoader = new IconLoader();
 		reorderEnabled = false;
 		modifiable = false;
@@ -150,8 +147,6 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 	public KeyTablePanel(String[] newColumns, Object[][] newData,
 							boolean newReorderEnabled, boolean newModifiable) {
 
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleButtons();
 		iconLoader = new IconLoader();
 		columns = newColumns.clone();
 		data = newData.clone();
@@ -286,8 +281,8 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		if (upValueButton == null) {
 			upValueButton = new JButton();
 			upValueButton.setName( "KeyTablePanel.upValueButton" );
-			upValueButton.setText( stringResource.getString( "Up.Text.Label" ) );
-			upValueButton.setMnemonic( stringResource.getString(
+			upValueButton.setText( stringDatabase.getString( "Up.Text.Label" ) );
+			upValueButton.setMnemonic( stringDatabase.getString(
 				"Up.Text.Mnemonic" ).charAt( 0 ) );
 			upValueButton.setIcon( iconLoader
 				.load( IconLoader.ICON_ARROW_UP_ENABLED ) );
@@ -308,9 +303,9 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		if (downValueButton == null) {
 			downValueButton = new JButton();
 			downValueButton.setName( "KeyTablePanel.downValueButton" );
-			downValueButton.setText( stringResource
+			downValueButton.setText( stringDatabase
 				.getString( "Down.Text.Label" ) );
-			downValueButton.setMnemonic( stringResource.getString(
+			downValueButton.setMnemonic( stringDatabase.getString(
 				"Down.Text.Mnemonic" ).charAt( 0 ) );
 			downValueButton.setIcon( iconLoader
 				.load( IconLoader.ICON_ARROW_DOWN_ENABLED ) );
@@ -332,8 +327,8 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 			addValueButton = new JButton();
 			addValueButton.setName( "KeyTablePanel.addValueButton" );
 			addValueButton
-				.setText( stringResource.getString( "Add.Text.Label" ) );
-			addValueButton.setMnemonic( stringResource.getString(
+				.setText( stringDatabase.getString( "Add.Text.Label" ) );
+			addValueButton.setMnemonic( stringDatabase.getString(
 				"Add.Text.Mnemonic" ).charAt( 0 ) );
 			addValueButton.setIcon( iconLoader
 				.load( IconLoader.ICON_PLUS_ENABLED ) );
@@ -377,9 +372,9 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		if (removeValueButton == null) {
 			removeValueButton = new JButton();
 			removeValueButton.setName( "KeyTablePanel.removeValueButton" );
-			removeValueButton.setText( stringResource
+			removeValueButton.setText( stringDatabase
 				.getString( "Delete.Text.Label" ) );
-			removeValueButton.setMnemonic( stringResource.getString(
+			removeValueButton.setMnemonic( stringDatabase.getString(
 				"Delete.Text.Mnemonic" ).charAt( 0 ) );
 			removeValueButton.setIcon( iconLoader
 				.load( IconLoader.ICON_MINUS_ENABLED ) );

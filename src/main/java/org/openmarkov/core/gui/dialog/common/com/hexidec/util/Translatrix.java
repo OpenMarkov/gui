@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 public class Translatrix {
@@ -58,18 +58,18 @@ public class Translatrix {
 		
 		Locale tempLocale;
 		
-		StringResourceLoader stringResourceLoader = StringResourceLoader.getUniqueInstance ();
+		StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
 		
 		if ((locale!=null)&&(locale.length>0)){
 			tempLocale = locale[0];
 		}
 		else{
-			String tempLanguage = stringResourceLoader.getLanguage();
+			String tempLanguage = stringDatabase.getLanguage();
 			tempLocale = new Locale(tempLanguage);
 		}
 		
 		
-		return stringResourceLoader.createXMLResourceBundle(bundleName,tempLocale);
+		return stringDatabase.createXMLResourceBundle(bundleName,tempLocale);
 	}
 
 	public static void setBundleName(String bundle) {

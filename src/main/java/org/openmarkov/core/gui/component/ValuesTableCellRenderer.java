@@ -363,18 +363,6 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 			jLabelIcon.setHorizontalTextPosition(SwingConstants.LEFT);
 			jLabelIcon.setIconTextGap(0);
 			jLabelIcon.setBackground(Color.WHITE);
-			//jButtonApply.setMnemonic(getStringResource().getString(
-				//"OKCancelApplyHorizontalDialog.jButtonApply.Mnemonic").charAt(0));
-			/*jButtonApply.addActionListener(new ActionListener() {
-
-				@SuppressWarnings("unused")
-				public void actionPerformed(ActionEvent e) {
-
-					if (doOkClickBeforeHide()) {
-						selectedButton = APPLY_BUTTON;
-					}
-				}
-			});*/
 		}
 		return jLabelIcon;
 	}

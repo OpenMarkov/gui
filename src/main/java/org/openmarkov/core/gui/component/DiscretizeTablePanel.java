@@ -45,8 +45,7 @@ import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
@@ -127,16 +126,17 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Button to select variable states.
      */
     protected JButton            standarDomainButton           = null;
+
     /**
-     * resource bundle
+     * String database
      */
-    private StringResource       dialogStringResource          = null;
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
+    
     /**
      * discretize table model
      */
     private DiscretizeTableModel discretizeTableModel          = null;
     protected ProbNode           probNode;
-    protected StringResource     messageStringResource;
 
     /**
      * default constructor
@@ -157,10 +157,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                  ProbNode probNode)
     {
         super (newColumns, new Object[0][0], true, true);// , notifier);
-        messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         this.probNode = probNode;
         keyPrefix = newKeyPrefix;
-        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
         initialize ();
         setData (noKeyData); // also it is setting the model for the table
         // define the look and feel for the table element
@@ -177,13 +175,13 @@ public class DiscretizeTablePanel extends KeyTablePanel
     protected void initialize ()
     {
         // get the number of each column from the external property file
-        idColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.IntervalId.Order"));
-        intervalNameColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.IntervalName.Order"));
-        lowerLimitSymbolColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.LowLimitSymbol.Order"));
-        lowLimitValueColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.LowLimitValue.Order"));
-        valuesSeparatorColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.ValuesSeparator.Order"));
-        upperLimitValueColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.UpperLimitValue.Order"));
-        upperLimitSymbolColumnNum = Integer.valueOf (dialogStringResource.getString ("DiscretizeTableModel.Columns.UpperLimitSymbol.Order"));
+        idColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.IntervalId.Order"));
+        intervalNameColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.IntervalName.Order"));
+        lowerLimitSymbolColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.LowLimitSymbol.Order"));
+        lowLimitValueColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.LowLimitValue.Order"));
+        valuesSeparatorColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.ValuesSeparator.Order"));
+        upperLimitValueColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.UpperLimitValue.Order"));
+        upperLimitSymbolColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.UpperLimitSymbol.Order"));
         // define the border and layout for the panel
         setBorder (new EmptyBorder (0, 0, 0, 0));
         final GroupLayout groupLayout = new GroupLayout ((JComponent) this);
@@ -381,8 +379,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                 | WrongCriterionException | DoEditException e)
                         {
                             JOptionPane.showMessageDialog (this,
-                                                           messageStringResource.getString (e.getMessage ()),
-                                                           messageStringResource.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
                                                            JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -418,8 +416,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                 | WrongCriterionException | DoEditException e)
                         {
                             JOptionPane.showMessageDialog (this,
-                                                           messageStringResource.getString (e.getMessage ()),
-                                                           messageStringResource.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
                                                            JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -469,8 +467,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                 | WrongCriterionException | CanNotDoEditException e)
                         {
                             JOptionPane.showMessageDialog (this,
-                                                           messageStringResource.getString (e.getMessage ()),
-                                                           messageStringResource.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
                                                            JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -506,8 +504,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                 | WrongCriterionException | DoEditException e)
                         {
                             JOptionPane.showMessageDialog (this,
-                                                           messageStringResource.getString (e.getMessage ()),
-                                                           messageStringResource.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
+                                                           stringDatabase.getString (e.getMessage ()),
                                                            JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -687,12 +685,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
         {
             standarDomainButton = new JButton ();
             standarDomainButton.setName ("KeyTablePanel.standarDomainButton");
-            standarDomainButton.setText (stringResource.getString ("StandarDomain.Text.Label"));
-            /*
-             * standarDomainButton.setMnemonic( stringResource.getString(
-             * "StandarDomain.Text.Mnemonic" ).charAt( 0 ) ); .setIcon(
-             * iconLoader .load( IconLoader.ICON_ARROW_UP_ENABLED ) );
-             */
+            standarDomainButton.setText (stringDatabase.getString ("StandarDomain.Text.Label"));
             standarDomainButton.setVisible (true);
             standarDomainButton.setEnabled (true);
             standarDomainButton.setActionCommand ("StandarDomain");
@@ -711,7 +704,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
         {
             jButtonInfinitePositiveDouble = new JButton ();
             jButtonInfinitePositiveDouble.setName ("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
-            jButtonInfinitePositiveDouble.setText (stringResource.getString ("InfinitePositive.Text.Label"));
+            jButtonInfinitePositiveDouble.setText (stringDatabase.getString ("InfinitePositive.Text.Label"));
             jButtonInfinitePositiveDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
             // jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
             jButtonInfinitePositiveDouble.setEnabled (false);
@@ -731,7 +724,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
         {
             jButtonInfiniteNegativeDouble = new JButton ();
             jButtonInfiniteNegativeDouble.setName ("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
-            jButtonInfiniteNegativeDouble.setText (stringResource.getString ("InfiniteNegative.Text.Label"));
+            jButtonInfiniteNegativeDouble.setText (stringDatabase.getString ("InfiniteNegative.Text.Label"));
             jButtonInfiniteNegativeDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
             // jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
             jButtonInfiniteNegativeDouble.setEnabled (false);
@@ -1125,8 +1118,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 JOptionPane.showMessageDialog (this,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                                               stringDatabase.getString (e.getMessage ()),
+                                               stringDatabase.getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
                 // jTextFieldNodeName.setText( this.nodeProperties.getName() );
                 // jTextFieldNodeName.requestFocus();
@@ -1212,8 +1205,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
             e.printStackTrace ();
-            JOptionPane.showMessageDialog (this, messageStringResource.getString (e.getMessage ()),
-                                           messageStringResource.getString (e.getMessage ()),
+            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
+                                           stringDatabase.getString (e.getMessage ()),
                                            JOptionPane.ERROR_MESSAGE);
             // jTextFieldNodeName.setText( this.nodeProperties.getName() );
             // jTextFieldNodeName.requestFocus();
@@ -1244,8 +1237,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
         catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
-            JOptionPane.showMessageDialog (this, messageStringResource.getString (e.getMessage ()),
-                                           messageStringResource.getString (e.getMessage ()),
+            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
+                                           stringDatabase.getString (e.getMessage ()),
                                            JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1273,8 +1266,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
         catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
         {
-            JOptionPane.showMessageDialog (this, messageStringResource.getString (e.getMessage ()),
-                                           messageStringResource.getString (e.getMessage ()),
+            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
+                                           stringDatabase.getString (e.getMessage ()),
                                            JOptionPane.ERROR_MESSAGE);
         }
     }

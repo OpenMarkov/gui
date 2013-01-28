@@ -18,8 +18,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 
@@ -58,17 +56,10 @@ public class UncertaintyContextualMenu extends ContextualMenu{
 
 	
 	/**
-	 * String resource.
-	 */
-	private StringResource stringResource = null;
-
-	/**
 	 * This method initializes this instance.
 	 */
 	private void initialize() {
 
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMenus();
 		add(getAssignMenuItem());
 		add(getEditMenuItem());
 		//addSeparator();

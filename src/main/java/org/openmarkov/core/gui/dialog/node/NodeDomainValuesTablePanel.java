@@ -52,8 +52,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
@@ -82,10 +81,6 @@ public class NodeDomainValuesTablePanel extends JPanel
      * serial uid
      */
     private static final long                     serialVersionUID                       = 1047978130482205148L;
-    /**
-     * Dialog string resource.
-     */
-    private StringResource                        dialogStringResource;
     /**
      * Object where all information will be saved.
      */
@@ -165,8 +160,11 @@ public class NodeDomainValuesTablePanel extends JPanel
      */
     public NodeDiscretizeValuesTablePanelListener listener                               = null;
     private JComboBox<String>                     jComboBoxNodeVariableType;
-    private StringResource                        messageStringResource;
     private boolean                               uploadingData                          = false;
+    /**
+     * String database
+     */
+    protected StringDatabase                      stringDatabase                         = StringDatabase.getUniqueInstance ();
 
     /**
      * constructor without construction parameters
@@ -190,8 +188,8 @@ public class NodeDomainValuesTablePanel extends JPanel
         catch (Throwable e)
         {
             e.printStackTrace ();
-            JOptionPane.showMessageDialog (null, messageStringResource.getString (e.getMessage ()),
-                                           messageStringResource.getString (e.getMessage ()),
+            JOptionPane.showMessageDialog (null, stringDatabase.getString (e.getMessage ()),
+                                           stringDatabase.getString (e.getMessage ()),
                                            JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -203,8 +201,6 @@ public class NodeDomainValuesTablePanel extends JPanel
     public NodeDomainValuesTablePanel (final boolean newNode)
     {
         // ElementObservable notifier) {
-        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
-        messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         setName ("NodeDomainValuesTablePanel");
         this.newNode = newNode;
         this.listener = new NodeDiscretizeValuesTablePanelListener (this);
@@ -222,8 +218,8 @@ public class NodeDomainValuesTablePanel extends JPanel
     {
         if (probNode.getNodeType () == NodeType.UTILITY)
         {
-            getJComboBoxNodeVariableType ().setSelectedItem (dialogStringResource.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
-                                                                                             + "Items.Continuous"));
+            getJComboBoxNodeVariableType ().setSelectedItem (stringDatabase.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
+                                                                                       + "Items.Continuous"));
             getNodeDiscretizedStatesTablePanel ().setEnabled (false);
             getNodeDiscretizedStatesTablePanel ().setVisible (false);
             getJPanelMonotonyUpDown ().setEnabled (false);
@@ -331,7 +327,7 @@ public class NodeDomainValuesTablePanel extends JPanel
                 || properties.getVariable ().getVariableType () == VariableType.NUMERIC)
             {
                 Object[][] tableData = null;
-                getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (probNode.getVariable ().getPartitionedInterval (), 
+                getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (probNode.getVariable ().getPartitionedInterval (),
                                                                                       probNode.getVariable ().getStates ());
                 tableData = getNodeDiscretizedStatesTablePanel ().getData ();
                 for (int i = 0; i < tableData.length; i++)
@@ -379,8 +375,8 @@ public class NodeDomainValuesTablePanel extends JPanel
             {
                 case FINITE_STATES :
                 {
-                    getJComboBoxNodeVariableType ().setSelectedItem (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                                                     + "jComboBoxNodeVariableType.Items.Discrete"));
+                    getJComboBoxNodeVariableType ().setSelectedItem (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                                               + "jComboBoxNodeVariableType.Items.Discrete"));
                     getJLabelPrecision ().setEnabled (false);
                     getJFormattedTextFieldPrecision ().setEnabled (false);
                     getJLabelValuesPanel ().setVisible (true);
@@ -432,8 +428,8 @@ public class NodeDomainValuesTablePanel extends JPanel
                 }
                 case NUMERIC :
                 {
-                    getJComboBoxNodeVariableType ().setSelectedItem (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                                                     + "jComboBoxNodeVariableType.Items.Continuous"));
+                    getJComboBoxNodeVariableType ().setSelectedItem (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                                               + "jComboBoxNodeVariableType.Items.Continuous"));
                     getJLabelPrecision ().setEnabled (true);
                     getJComboBoxPrecision ().setVisible (true);
                     getJComboBoxPrecision ().setEnabled (true);
@@ -470,8 +466,8 @@ public class NodeDomainValuesTablePanel extends JPanel
                 }
                 case DISCRETIZED :
                 {
-                    getJComboBoxNodeVariableType ().setSelectedItem (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                                                     + "jComboBoxNodeVariableType.Items.Discretized"));
+                    getJComboBoxNodeVariableType ().setSelectedItem (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                                               + "jComboBoxNodeVariableType.Items.Discretized"));
                     getJLabelPrecision ().setEnabled (true);
                     getJComboBoxPrecision ().setVisible (true);
                     getJComboBoxPrecision ().setEnabled (true);
@@ -527,20 +523,18 @@ public class NodeDomainValuesTablePanel extends JPanel
         if (discretizedNodeStatesTablePanel == null)
         {
             String[] columnNames = {
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "IntervalId.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "IntervalName.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "LowLimitSymbol.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "LowLimitValue.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "ValuesSeparator.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "UpperLimitValue.Text"),
-                    dialogStringResource.getString ("DiscretizeTableModel.Columns."
-                                                    + "UpperLimitSymbol.Text")};
+                    stringDatabase.getString ("DiscretizeTableModel.Columns." + "IntervalId.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns." + "IntervalName.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns."
+                                              + "LowLimitSymbol.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns."
+                                              + "LowLimitValue.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns."
+                                              + "ValuesSeparator.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns."
+                                              + "UpperLimitValue.Text"),
+                    stringDatabase.getString ("DiscretizeTableModel.Columns."
+                                              + "UpperLimitSymbol.Text")};
             discretizedNodeStatesTablePanel = new DiscretizeTablePanel (columnNames, probNode);
             discretizedNodeStatesTablePanel.setBorder (new EmptyBorder (0, 0, 0, 0));
         }
@@ -573,7 +567,7 @@ public class NodeDomainValuesTablePanel extends JPanel
             jLabelStatesValues = new JLabel ();
             jLabelStatesValues.setName ("jLabelStatesValues");
             jLabelStatesValues.setText ("a Label");
-            jLabelStatesValues.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel.jLabelStatesValues.Text"));
+            jLabelStatesValues.setText (stringDatabase.getString ("NodeDomainValuesTablePanel.jLabelStatesValues.Text"));
             jLabelStatesValues.setVisible (false);
             jLabelStatesValues.setEnabled (false);
         }
@@ -646,8 +640,8 @@ public class NodeDomainValuesTablePanel extends JPanel
             jRadioButtonMonotonyUp = new JRadioButton ();
             jRadioButtonMonotonyUp.setName ("jRadioButtonMonotonyUp");
             jRadioButtonMonotonyUp.setText ("New JRadioButton");
-            jRadioButtonMonotonyUp.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                            + "jRadioButtonMonotonyUp.Text"));
+            jRadioButtonMonotonyUp.setText (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                      + "jRadioButtonMonotonyUp.Text"));
             jRadioButtonMonotonyUp.addItemListener (listener);
         }
         return jRadioButtonMonotonyUp;
@@ -663,7 +657,7 @@ public class NodeDomainValuesTablePanel extends JPanel
             jRadioButtonMonotonyDown = new JRadioButton ();
             jRadioButtonMonotonyDown.setName ("jRadioButtonMonotonyDown");
             jRadioButtonMonotonyDown.setText ("New JRadioButton");
-            jRadioButtonMonotonyDown.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel.jRadioButtonMonotonyDown.Text"));
+            jRadioButtonMonotonyDown.setText (stringDatabase.getString ("NodeDomainValuesTablePanel.jRadioButtonMonotonyDown.Text"));
             jRadioButtonMonotonyDown.addItemListener (listener);
         }
         return jRadioButtonMonotonyDown;
@@ -690,7 +684,7 @@ public class NodeDomainValuesTablePanel extends JPanel
             jLabelUnit.setHorizontalTextPosition (SwingConstants.RIGHT);
             jLabelUnit.setName ("jLabelUnit");
             jLabelUnit.setText ("New JLabel");
-            jLabelUnit.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel.jLabelUnit.Text"));
+            jLabelUnit.setText (stringDatabase.getString ("NodeDomainValuesTablePanel.jLabelUnit.Text"));
         }
         return jLabelUnit;
     }
@@ -723,7 +717,7 @@ public class NodeDomainValuesTablePanel extends JPanel
             jLabelPrecision.setHorizontalTextPosition (SwingConstants.RIGHT);
             jLabelPrecision.setName ("jLabelPrecision");
             jLabelPrecision.setText ("New JLabel");
-            jLabelPrecision.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel.jLabelPrecision.Text"));
+            jLabelPrecision.setText (stringDatabase.getString ("NodeDomainValuesTablePanel.jLabelPrecision.Text"));
         }
         return jLabelPrecision;
     }
@@ -773,7 +767,7 @@ public class NodeDomainValuesTablePanel extends JPanel
             jLabelValuesPanel = new JLabel ();
             jLabelValuesPanel.setName ("jLabelValuesPanel");
             jLabelValuesPanel.setText ("a Label");
-            jLabelValuesPanel.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel.jLabelValuesPanel.Text"));
+            jLabelValuesPanel.setText (stringDatabase.getString ("NodeDomainValuesTablePanel.jLabelValuesPanel.Text"));
         }
         return jLabelValuesPanel;
     }
@@ -794,8 +788,8 @@ public class NodeDomainValuesTablePanel extends JPanel
             jTextAreaLabelNodeValuesComment.setEditable (false);
             jTextAreaLabelNodeValuesComment.setFont (getJLabelDomainValues ().getFont ());
             jTextAreaLabelNodeValuesComment.setText ("an Extended Label");
-            jTextAreaLabelNodeValuesComment.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                                     + "jTextAreaLabelNodeValuesComment.Text"));
+            jTextAreaLabelNodeValuesComment.setText (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                               + "jTextAreaLabelNodeValuesComment.Text"));
         }
         return jTextAreaLabelNodeValuesComment;
     }
@@ -976,9 +970,9 @@ public class NodeDomainValuesTablePanel extends JPanel
             jLabelNodeVariableType.setHorizontalAlignment (SwingConstants.LEFT);
             jLabelNodeVariableType.setHorizontalTextPosition (SwingConstants.LEFT);
             jLabelNodeVariableType.setText ("a Label");
-            jLabelNodeVariableType.setText (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                            + "jLabelNodeVariableType.Text"));
-            jLabelNodeVariableType.setDisplayedMnemonic (dialogStringResource.getString ("NodeDomainValuesTablePanel.jLabelNodeVariableType.Mnemonic").charAt (0));
+            jLabelNodeVariableType.setText (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                      + "jLabelNodeVariableType.Text"));
+            jLabelNodeVariableType.setDisplayedMnemonic (stringDatabase.getString ("NodeDomainValuesTablePanel.jLabelNodeVariableType.Mnemonic").charAt (0));
             // jLabelNodeVariableType.setLabelFor( getJPanelNodeType() );
         }
         return jLabelNodeVariableType;
@@ -988,21 +982,21 @@ public class NodeDomainValuesTablePanel extends JPanel
     {
         if (jComboBoxNodeVariableType == null)
         {
-            jComboBoxNodeVariableType = new JComboBox <>();
+            jComboBoxNodeVariableType = new JComboBox<> ();
             jComboBoxNodeVariableType.setName ("jComboBoxNodeVariableType");
             if (probNode.getNodeType () == NodeType.UTILITY)
             {
-                jComboBoxNodeVariableType.addItem (dialogStringResource.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
-                                                                                   + "Items.Continuous"));
+                jComboBoxNodeVariableType.addItem (stringDatabase.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
+                                                                             + "Items.Continuous"));
             }
             else
             {
-                jComboBoxNodeVariableType.addItem (dialogStringResource.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
-                                                                                   + "Items.Discrete"));
-                jComboBoxNodeVariableType.addItem (dialogStringResource.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
-                                                                                   + "Items.Discretized"));
-                jComboBoxNodeVariableType.addItem (dialogStringResource.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
-                                                                                   + "Items.Continuous"));
+                jComboBoxNodeVariableType.addItem (stringDatabase.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
+                                                                             + "Items.Discrete"));
+                jComboBoxNodeVariableType.addItem (stringDatabase.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
+                                                                             + "Items.Discretized"));
+                jComboBoxNodeVariableType.addItem (stringDatabase.getString ("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
+                                                                             + "Items.Continuous"));
             }
             // jComboBoxNodeVariableType.setSize(181, 80);
             // jComboBoxNodeVariableType.addItemListener(listener);
@@ -1029,13 +1023,13 @@ public class NodeDomainValuesTablePanel extends JPanel
                 && !isUploadingData ())
             {
                 VariableTypeEdit variableTypeEdit = null;
-                if (itemSelected.equals (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                         + "jComboBoxNodeVariableType.Items.Discrete")))
+                if (itemSelected.equals (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                   + "jComboBoxNodeVariableType.Items.Discrete")))
                 {
                     variableTypeEdit = new VariableTypeEdit (probNode, VariableType.FINITE_STATES);
                 }
-                else if (itemSelected.equals (dialogStringResource.getString ("NodeDomainValuesTablePanel."
-                                                                              + "jComboBoxNodeVariableType.Items.Discretized")))
+                else if (itemSelected.equals (stringDatabase.getString ("NodeDomainValuesTablePanel."
+                                                                        + "jComboBoxNodeVariableType.Items.Discretized")))
                 {
                     variableTypeEdit = new VariableTypeEdit (probNode, VariableType.DISCRETIZED);
                 }
@@ -1056,18 +1050,18 @@ public class NodeDomainValuesTablePanel extends JPanel
                     {
                         e.printStackTrace ();
                         JOptionPane.showMessageDialog (null,
-                                                       messageStringResource.getString (e.getMessage ()),
-                                                       messageStringResource.getString (e.getMessage ()),
+                                                       stringDatabase.getString (e.getMessage ()),
+                                                       stringDatabase.getString (e.getMessage ()),
                                                        JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                catch (ConstraintViolationException
-                        | CanNotDoEditException | NonProjectablePotentialException
-                        | WrongCriterionException | DoEditException e1)
+                catch (ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException
+                        | DoEditException e1)
                 {
                     JOptionPane.showMessageDialog (this,
-                                                   messageStringResource.getString (e1.getMessage ()),
-                                                   messageStringResource.getString ("ConstraintViolationException"),
+                                                   stringDatabase.getString (e1.getMessage ()),
+                                                   stringDatabase.getString ("ConstraintViolationException"),
                                                    JOptionPane.ERROR_MESSAGE);
                     comboBox.setSelectedIndex (optionDeselected);
                     comboBox.requestFocus ();
@@ -1102,21 +1096,21 @@ public class NodeDomainValuesTablePanel extends JPanel
                     {
                         e.printStackTrace ();
                         JOptionPane.showMessageDialog (null,
-                                                       messageStringResource.getString (e.getMessage ()),
-                                                       messageStringResource.getString (e.getMessage ()),
+                                                       stringDatabase.getString (e.getMessage ()),
+                                                       stringDatabase.getString (e.getMessage ()),
                                                        JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                catch (ConstraintViolationException
-                        | CanNotDoEditException | NonProjectablePotentialException
-                        | WrongCriterionException | DoEditException e)
+                catch (ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException
+                        | DoEditException e)
                 {
                     comboBox.setSelectedIndex (optionDeselected);
                     comboBox.requestFocus ();
                     e.printStackTrace ();
                     JOptionPane.showMessageDialog (null,
-                                                   messageStringResource.getString (e.getMessage ()),
-                                                   messageStringResource.getString (e.getMessage ()),
+                                                   stringDatabase.getString (e.getMessage ()),
+                                                   stringDatabase.getString (e.getMessage ()),
                                                    JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -1132,14 +1126,14 @@ public class NodeDomainValuesTablePanel extends JPanel
                 {
                     probNode.getProbNet ().doEdit (precisionEdit);
                 }
-                catch (ConstraintViolationException
-                        | CanNotDoEditException | NonProjectablePotentialException
-                        | WrongCriterionException | DoEditException e1)
+                catch (ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException
+                        | DoEditException e1)
                 {
                     e1.printStackTrace ();
                     JOptionPane.showMessageDialog (null,
-                                                   messageStringResource.getString (e1.getMessage ()),
-                                                   messageStringResource.getString (e1.getMessage ()),
+                                                   stringDatabase.getString (e1.getMessage ()),
+                                                   stringDatabase.getString (e1.getMessage ()),
                                                    JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -1221,15 +1215,15 @@ public class NodeDomainValuesTablePanel extends JPanel
                 {
                     probNode.getProbNet ().doEdit (partitionedIntervalEdit);
                 }
-                catch (DoEditException | ConstraintViolationException
-                        | CanNotDoEditException | NonProjectablePotentialException
-                        | WrongCriterionException e)
+                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException e)
                 {
                     e.printStackTrace ();
                 }
                 PartitionedInterval newPartitionInterval = probNode.getVariable ().getPartitionedInterval ();
                 State[] states = probNode.getVariable ().getStates ();
-                getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (newPartitionInterval, states);
+                getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (newPartitionInterval,
+                                                                                      states);
             }
         }
     }
@@ -1297,8 +1291,8 @@ public class NodeDomainValuesTablePanel extends JPanel
                 {
                     e.printStackTrace ();
                     JOptionPane.showMessageDialog (null,
-                                                   messageStringResource.getString (e.getMessage ()),
-                                                   messageStringResource.getString (e.getMessage ()),
+                                                   stringDatabase.getString (e.getMessage ()),
+                                                   stringDatabase.getString (e.getMessage ()),
                                                    JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -1306,9 +1300,8 @@ public class NodeDomainValuesTablePanel extends JPanel
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
-                JOptionPane.showMessageDialog (null,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                JOptionPane.showMessageDialog (null, stringDatabase.getString (e.getMessage ()),
+                                               stringDatabase.getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
             }
         }

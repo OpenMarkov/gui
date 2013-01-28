@@ -317,14 +317,6 @@
     <CostEffectivenessDeterministic>
       <Label value="Deterministic analysis" />
     </CostEffectivenessDeterministic>
-    <Learning>
-      <Label value="Learning" />
-      <Mnemonic value="l" />
-    </Learning>
-    <UtilityCalculator>
-      <Label value="Utility calculator" />
-      <Mnemonic value="u" />
-    </UtilityCalculator>
     <Evaluation>
       <Label value="Evaluation" />
       <Mnemonic value="e" />

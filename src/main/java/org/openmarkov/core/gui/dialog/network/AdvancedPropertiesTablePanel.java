@@ -17,17 +17,13 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
 @SuppressWarnings("serial")
 public class AdvancedPropertiesTablePanel extends KeyTablePanel implements TableModelListener,PNUndoableEditListener{
 
-	private StringResource messageStringResource;
 	private String keyPrefix;
-	private StringResource dialogStringResource;
 	private ProbNet probNet;
 	private AdvancedPropertiesTableModel advancedPropertiestableModel;
 	protected Object dataTable [][];
@@ -44,11 +40,6 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 	public AdvancedPropertiesTablePanel(String[] newColumns, Object[][] noKeyData,
 			String newKeyPrefix) {
 		super(newColumns, new Object[0][0], true, true);
-		messageStringResource =
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
-			keyPrefix = newKeyPrefix;
-		dialogStringResource = StringResourceLoader.getUniqueInstance()
-							.getBundleDialogs();
 			initialize();
 			setData(noKeyData);
 			defineTableLookAndFeel();			// define specific listeners

@@ -24,8 +24,7 @@ import javax.swing.WindowConstants;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLDocument;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 
@@ -76,10 +75,6 @@ public class HTMLTextEditor extends JDialog {
 	private ExtendedHTMLEditorKit extendedHTMLEditorKit=null;
 	private ExtendedHTMLDocument extendedHTMLDocument=null;
 
-	/**
-	 * Dialog string resource.
-	 */
-	private StringResource dialogStringResource=null;
 
 	/**
 	 * HTMLTextEditor dialog constructor
@@ -103,14 +98,12 @@ public class HTMLTextEditor extends JDialog {
 	 */
 	private void initialize() {
 
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		this.setSize(626, 321);
 		this.setLocation(new Point(240, 250));
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setModal(true);
 		this.setVisible(false);
-		this.setTitle(dialogStringResource
+		this.setTitle(StringDatabase.getUniqueInstance ()
 			.getString("HTMLTextEditor.Title.Text"));
 		this.setContentPane(getJContentPane());
 
@@ -178,7 +171,7 @@ public class HTMLTextEditor extends JDialog {
 		if (jButtonAcceptHTML == null) {
 			jButtonAcceptHTML = new JButton();
 			jButtonAcceptHTML.setBounds(new Rectangle(183, 258, 106, 21));
-			jButtonAcceptHTML.setText(dialogStringResource
+			jButtonAcceptHTML.setText(StringDatabase.getUniqueInstance ()
 				.getString("HTMLTextEditor.jButtonAcceptHTML.Text"));
 			jButtonAcceptHTML
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -208,7 +201,7 @@ public class HTMLTextEditor extends JDialog {
 		if (jButtonCancelHTML == null) {
 			jButtonCancelHTML = new JButton();
 			jButtonCancelHTML.setBounds(new Rectangle(306, 258, 106, 21));
-			jButtonCancelHTML.setText(dialogStringResource
+			jButtonCancelHTML.setText(StringDatabase.getUniqueInstance ()
 				.getString("HTMLTextEditor.jButtonCancelHTML.Text"));
 			// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			jButtonCancelHTML

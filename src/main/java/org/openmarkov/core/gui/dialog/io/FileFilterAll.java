@@ -11,9 +11,7 @@ package org.openmarkov.core.gui.dialog.io;
 
 import java.io.File;
 
-
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 /**
@@ -25,10 +23,6 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
  * @version 1.0
  */
 public class FileFilterAll extends FileFilterBasic {
-	/**
-	 * String resource.
-	 */
-	private StringResource stringResource;
 
 	/**
 	 * Extension of the files that match this filter.
@@ -46,9 +40,6 @@ public class FileFilterAll extends FileFilterBasic {
 	public FileFilterAll(String extension, String description) {
 		formatExtension = extension;
 		fileDescription = description;
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-
 	}
 
 	/**
@@ -80,7 +71,7 @@ public class FileFilterAll extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("FileExtension." + fileDescription + ".Description")
+		return StringDatabase.getUniqueInstance ().getString("FileExtension." + fileDescription + ".Description")
 			+ " (*." + formatExtension + ")";
 
 	}

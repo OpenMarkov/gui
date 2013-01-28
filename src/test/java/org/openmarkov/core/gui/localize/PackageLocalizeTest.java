@@ -22,7 +22,7 @@ import org.junit.runners.*;
  * @author jmendoza
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StringResourceLoaderTest.class})
+@Suite.SuiteClasses({StringDatabaseTests.class})
 public class PackageLocalizeTest {
 	/**
 	 * This method initiates the tests as an application.

@@ -22,8 +22,7 @@ import org.openmarkov.core.action.RemovePolicyEdit;
 import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -48,14 +47,6 @@ public class PolicyTypePanel extends JPanel
      */
     private JRadioButton        jRadioButtonOptimal;
     /**
-     * Dialog string resource.
-     */
-    private StringResource      dialogStringResource;
-    /**
-     * Message string resource for i18n
-     */
-    private StringResource      messageStringResource;
-    /**
      * The node edited
      */
     private ProbNode            probNode;
@@ -67,6 +58,10 @@ public class PolicyTypePanel extends JPanel
      * Parent dialog
      */
     private PotentialEditDialog parent;
+    /**
+     * String database
+     */
+    protected StringDatabase    stringDatabase = StringDatabase.getUniqueInstance ();
 
     /**
      * Constructor for PolicyTypePanel.
@@ -82,8 +77,6 @@ public class PolicyTypePanel extends JPanel
         setLayout (new FlowLayout ());
         // jPanelRelationTableType.setSize( 294, 29 );
         // jPanelRelationTableType.setName( "jPanelRadioRelationTableType" );
-        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
-        messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
         add (getJRadioButtonOptimalType ());
         add (getJRadioButtonProbabilisticType ());
         add (getJRadioButtonDeterministicType ());
@@ -101,8 +94,8 @@ public class PolicyTypePanel extends JPanel
             jRadioButtonOptimal.setMargin (new Insets (0, 0, 0, 0));
             jRadioButtonOptimal.setName ("jRadioButtonOptimal");
             jRadioButtonOptimal.setText ("New JRadioBut");
-            jRadioButtonOptimal.setText (dialogStringResource.getString ("NodeProbsValuesTablePanel."
-                                                                         + "jRadioButtonOptimal.Text"));
+            jRadioButtonOptimal.setText (stringDatabase.getString ("NodeProbsValuesTablePanel."
+                                                                   + "jRadioButtonOptimal.Text"));
             jRadioButtonOptimal.setSelected (true);
             jRadioButtonOptimal.setEnabled (false);
             jRadioButtonOptimal.addItemListener (this);
@@ -121,8 +114,8 @@ public class PolicyTypePanel extends JPanel
             jRadioButtonProbabilisticType.setMargin (new Insets (0, 0, 0, 0));
             jRadioButtonProbabilisticType.setName ("jRadioButtonProbabilisticType");
             jRadioButtonProbabilisticType.setText ("New JRadioBut");
-            jRadioButtonProbabilisticType.setText (dialogStringResource.getString ("NodeProbsValuesTablePanel."
-                                                                                   + "jRadioButtonProbabilisticType.Text"));
+            jRadioButtonProbabilisticType.setText (stringDatabase.getString ("NodeProbsValuesTablePanel."
+                                                                             + "jRadioButtonProbabilisticType.Text"));
             jRadioButtonProbabilisticType.addItemListener (this);
             jRadioButtonProbabilisticType.setEnabled (false);
         }
@@ -140,8 +133,8 @@ public class PolicyTypePanel extends JPanel
             jRadioButtonDeterministicType.setMargin (new Insets (0, 0, 0, 0));
             jRadioButtonDeterministicType.setName ("jRadioButtonDeterministicType");
             jRadioButtonDeterministicType.setText ("New JRadioBut");
-            jRadioButtonDeterministicType.setText (dialogStringResource.getString ("NodeProbsValuesTablePanel."
-                                                                                   + "jRadioButtonDeterministicType.Text"));
+            jRadioButtonDeterministicType.setText (stringDatabase.getString ("NodeProbsValuesTablePanel."
+                                                                             + "jRadioButtonDeterministicType.Text"));
             jRadioButtonDeterministicType.addItemListener (this);
             jRadioButtonDeterministicType.setEnabled (false);
         }
@@ -208,8 +201,8 @@ public class PolicyTypePanel extends JPanel
                 catch (ConstraintViolationException e1)
                 {
                     JOptionPane.showMessageDialog (this,
-                                                   messageStringResource.getString (e1.getMessage ()),
-                                                   messageStringResource.getString ("ConstraintViolationException"),
+                                                   stringDatabase.getString (e1.getMessage ()),
+                                                   stringDatabase.getString ("ConstraintViolationException"),
                                                    JOptionPane.ERROR_MESSAGE);
                     // getJComboBoxRelationType().requestFocus();
                     parent.revertPotentialTypeChange ();
@@ -235,7 +228,9 @@ public class PolicyTypePanel extends JPanel
             if (previousPolicy == PolicyType.OPTIMAL)
             {
                 SetPotentialEdit setPotentialEdit = null;
-                setPotentialEdit = new SetPotentialEdit (probNode, TablePotential.class.getAnnotation (RelationPotentialType.class).name ());
+                setPotentialEdit = new SetPotentialEdit (
+                                                         probNode,
+                                                         TablePotential.class.getAnnotation (RelationPotentialType.class).name ());
                 try
                 {
                     probNode.getProbNet ().doEdit (setPotentialEdit);
@@ -243,8 +238,8 @@ public class PolicyTypePanel extends JPanel
                 catch (ConstraintViolationException e1)
                 {
                     JOptionPane.showMessageDialog (this,
-                                                   messageStringResource.getString (e1.getMessage ()),
-                                                   messageStringResource.getString ("ConstraintViolationException"),
+                                                   stringDatabase.getString (e1.getMessage ()),
+                                                   stringDatabase.getString ("ConstraintViolationException"),
                                                    JOptionPane.ERROR_MESSAGE);
                     // getJComboBoxRelationType().requestFocus();
                 }

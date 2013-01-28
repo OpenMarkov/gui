@@ -7,8 +7,7 @@ import java.text.MessageFormat;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -26,11 +25,6 @@ public class LinkRestrictionEditDialog extends
 	 * The link containing the link restrictions
 	 */
 	private Link link;
-
-	/**
-	 * Dialog string resource.
-	 */
-	private StringResource dialogStringResource;
 
 	/**
 	 * Panel of the graphic editor
@@ -53,15 +47,12 @@ public class LinkRestrictionEditDialog extends
 	 */
 	private void initialize() {
 
-		dialogStringResource = StringResourceLoader.getUniqueInstance()
-				.getBundleDialogs();
 		ProbNode node1 = (ProbNode) link.getNode1().getObject();
 		ProbNode node2 = (ProbNode) link.getNode2().getObject();
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
-					dialogStringResource
-							.getString("LinkRestrictionDialog.Title.Label"));
+					StringDatabase.getUniqueInstance ().getString("LinkRestrictionDialog.Title.Label"));
 			Object[] labelArgs = new Object[] { node1.getName(),
 					node2.getName() };
 			title = messageForm.format(labelArgs);

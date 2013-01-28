@@ -11,12 +11,12 @@ package org.openmarkov.core.gui.menutoolbar.toolbar;
 
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
 import javax.swing.border.EtchedBorder;
 
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 
@@ -42,6 +42,10 @@ public abstract class ToolBarBasic extends JToolBar implements MenuToolBarBasic 
      */
     protected String STRING_TOOLTIP_SUFFIX = ".ToolTip.Label";
     
+    /**
+     * String database 
+     */
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();    
     
 	/**
 	 * Object that listen to the user's actions.

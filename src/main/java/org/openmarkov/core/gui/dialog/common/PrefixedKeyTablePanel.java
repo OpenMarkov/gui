@@ -23,8 +23,8 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringBundle;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.UtilStrings;
 
@@ -60,8 +60,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	 */
 	private String keyPrefix = null;
 	
-	private StringResource messageStringResource;
-
 	private ProbNode probNode;
 	
 	private boolean renameAction = true;
@@ -70,8 +68,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	 * this a default constructor with no construction parameters
 	 */
 	public PrefixedKeyTablePanel() {
-		messageStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMessages();
 
 		keyPrefix = "";
 		initialize();
@@ -89,42 +85,32 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	 *            prefix of the keys of each row that appear in the first
 	 *            column.
 	 */
-	public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData,
-									String newKeyPrefix,
-									boolean firstColumnHidden){//, ElementObservable notifier) {
-		
-		super(newColumns, new Object[0][0], true, true);//, notifier);
-		
-		messageStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMessages();
-		keyPrefix = newKeyPrefix;
-		initialize();
-		getValuesTable().getModel().addTableModelListener(this);
-		getValuesTable().setFirstColumnHidden(firstColumnHidden);
-		setData(noKeyData);
-		
+    public PrefixedKeyTablePanel (String[] newColumns,
+                                  Object[][] noKeyData,
+                                  String newKeyPrefix,
+                                  boolean firstColumnHidden)
+    {// , ElementObservable notifier) {
+        super (newColumns, new Object[0][0], true, true);// , notifier);
+        keyPrefix = newKeyPrefix;
+        initialize ();
+        getValuesTable ().getModel ().addTableModelListener (this);
+        getValuesTable ().setFirstColumnHidden (firstColumnHidden);
+        setData (noKeyData);
+    }
 
-
-	}
-
-	public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData,
-			String newKeyPrefix, boolean firstColumnHidden,	ProbNode probNode) {
-		
-		super(newColumns, new Object[0][0], true, true);//, notifier);
-
-		
-		this.probNode = probNode;
-
-		messageStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMessages();
-		keyPrefix = newKeyPrefix;
-		initialize();
-		getValuesTable().setFirstColumnHidden(firstColumnHidden);
-		setData(noKeyData);
-
-
-
-	}
+    public PrefixedKeyTablePanel (String[] newColumns,
+                                  Object[][] noKeyData,
+                                  String newKeyPrefix,
+                                  boolean firstColumnHidden,
+                                  ProbNode probNode)
+    {
+        super (newColumns, new Object[0][0], true, true);// , notifier);
+        this.probNode = probNode;
+        keyPrefix = newKeyPrefix;
+        initialize ();
+        getValuesTable ().setFirstColumnHidden (firstColumnHidden);
+        setData (noKeyData);
+    }
 
 	/**
 	 * Sets a new table model with new data.
@@ -222,9 +208,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 					| WrongCriterionException | DoEditException e) {
 				JOptionPane
 				.showMessageDialog(
-					this, messageStringResource
+					this, stringDatabase
 						.getString( e.getMessage() ),
-					messageStringResource
+						stringDatabase
 						.getString( e.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 				
@@ -280,9 +266,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				| DoEditException e) {
 			JOptionPane
 			.showMessageDialog(
-				this, messageStringResource
+				this, stringDatabase
 					.getString( e.getMessage() ),
-				messageStringResource
+					stringDatabase
 					.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
 			
@@ -323,8 +309,8 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				| DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -360,8 +346,8 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 				| DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
+					stringDatabase.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		} 
 	}
@@ -417,9 +403,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 			} catch (ConstraintViolationException e1) {
 				JOptionPane
 				.showMessageDialog(
-					this, messageStringResource
+					this, stringDatabase
 						.getString( e1.getMessage() ),
-					messageStringResource
+						stringDatabase
 						.getString( e1.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 				//valuesTable.getSelectionModel().setSelectionInterval(row, 
@@ -435,9 +421,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 					| NonProjectablePotentialException
 					| WrongCriterionException e1) {
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringResource
+				JOptionPane.showMessageDialog(this, stringDatabase
 						.getString( e1.getMessage() ),
-						stringResource.getString( e1.getMessage() ),
+						stringDatabase.getString( e1.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
 		}

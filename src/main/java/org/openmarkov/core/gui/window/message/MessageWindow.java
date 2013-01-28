@@ -23,8 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 
 
@@ -45,16 +44,6 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 4878811677752222720L;
-
-	/**
-	 * Messages string resource.
-	 */
-	private StringResource messageStringResource;
-
-	/**
-	 * Buttons string resource.
-	 */
-	private StringResource buttonStringResource;
 
 	/**
 	 * Scroll pane for the text area.
@@ -99,6 +88,11 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 * convenience variable to store the owner Frame
 	 */
 	private JFrame ownerFrame = null;
+	
+	/**
+	 * String database
+	 */
+	StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
 
 	/**
 	 * This is the default constructor
@@ -106,10 +100,6 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 */
 	public MessageWindow(JFrame owner) {
 
-		messageStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleMessages();
-		buttonStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleButtons();
 		ownerFrame = owner;
 		initialize();
 
@@ -206,9 +196,9 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		if (buttonClear == null) {
 			buttonClear = new JButton();
 			buttonClear.setName("Clear");
-			buttonClear.setText(buttonStringResource
+			buttonClear.setText(stringDatabase
 				.getString("Clear.Text.Label"));
-			buttonClear.setMnemonic(buttonStringResource.getString(
+			buttonClear.setMnemonic(stringDatabase.getString(
 				"Clear.Text.Mnemonic").charAt(0));
 			buttonClear.setFocusable(false);
 			buttonClear.addActionListener(this);
@@ -226,9 +216,9 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		if (buttonCopy == null) {
 			buttonCopy = new JButton();
 			buttonCopy.setName("Copy");
-			buttonCopy.setText(buttonStringResource
+			buttonCopy.setText(stringDatabase
 				.getString("Copy.Text.Label"));
-			buttonCopy.setMnemonic(buttonStringResource.getString(
+			buttonCopy.setMnemonic(stringDatabase.getString(
 				"Copy.Text.Mnemonic").charAt(0));
 			buttonCopy.setFocusable(false);
 			buttonCopy.addActionListener(this);
@@ -280,7 +270,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
     @Override
     public String getTitle ()
     {
-        return messageStringResource.getString("MessageWindow.Title.Label");
+        return stringDatabase.getString("MessageWindow.Title.Label");
     }
 
     @Override

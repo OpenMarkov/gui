@@ -12,6 +12,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.RevelationIntervalEdit;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
@@ -100,8 +101,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				| DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 
 		}
@@ -129,8 +130,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				| DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
-					messageStringResource.getString(e.getMessage()),
-					messageStringResource.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
+			                              stringDatabase.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -152,9 +153,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				double upperLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row, upperLimitValueColumnNum);
 				if (upperLimit < newValue) {
-					JOptionPane.showMessageDialog(this, messageStringResource
+					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalInconsistent.Text.Label"),
-							messageStringResource
+							stringDatabase
 									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 				}
@@ -163,9 +164,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 				double lowerLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row, lowLimitValueColumnNum);
 				if (lowerLimit > newValue) {
-					JOptionPane.showMessageDialog(this, messageStringResource
+					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalInconsistent.Text.Label"),
-							messageStringResource
+							stringDatabase
 									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
@@ -177,9 +178,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						.getSource()).getValueAt(row - 1,
 						upperLimitValueColumnNum);
 				if (previousLimit > newValue)
-					JOptionPane.showMessageDialog(this, messageStringResource
+					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalOverlap.Text.Label"),
-							messageStringResource
+							stringDatabase
 									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
@@ -189,9 +190,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						.getSource()).getValueAt(row + 1,
 						lowLimitValueColumnNum);
 				if (nextLimit < newValue)
-					JOptionPane.showMessageDialog(this, messageStringResource
+					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalOverlap.Text.Label"),
-							messageStringResource
+							stringDatabase
 									.getString("IntervalEditError.Text.Label"),
 							JOptionPane.ERROR_MESSAGE);
 
@@ -207,8 +208,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					| WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						messageStringResource.getString(e.getMessage()),
-						messageStringResource.getString(e.getMessage()),
+				                              stringDatabase.getString(e.getMessage()),
+				                              stringDatabase.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -318,8 +319,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					| WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-						messageStringResource.getString(e.getMessage()),
-						messageStringResource.getString(e.getMessage()),
+				                              stringDatabase.getString(e.getMessage()),
+				                              stringDatabase.getString(e.getMessage()),
 						JOptionPane.ERROR_MESSAGE);
 
 			}

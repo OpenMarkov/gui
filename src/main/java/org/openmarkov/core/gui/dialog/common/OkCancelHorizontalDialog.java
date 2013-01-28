@@ -18,8 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 
@@ -73,12 +72,11 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 */
 	protected IconLoader iconLoader = null;
 
-	/**
-	 * Buttons string resource.
-	 */
-	protected StringResource stringResource;
-	
-	private StringResource messageStringResource;
+    /**
+     * String database 
+     */
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
+    
 	/**
 	 * Constructor. initialises the instance.
 	 * 
@@ -88,8 +86,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	public OkCancelHorizontalDialog(Window owner) {
 
 		super(owner);
-		messageStringResource =	
-				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		initialize();
 		pack();
 	}
@@ -99,8 +95,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 */
 	private void initialize() {
 
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
 		// setSize(550, 310);
 		setName("OKCancelHorizontalDialog");
 		iconLoader = new IconLoader();
@@ -129,9 +123,9 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			jButtonOK.setName("jButtonApply");
 			jButtonOK.setIcon(iconLoader
 				.load(IconLoader.ICON_ACCEPT_ENABLED));
-			jButtonOK.setText(stringResource
+			jButtonOK.setText(stringDatabase
 				.getString("OKCancelHorizontalDialog.jButtonOK.Text"));
-			jButtonOK.setMnemonic(stringResource.getString(
+			jButtonOK.setMnemonic(stringDatabase.getString(
 				"OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
 			jButtonOK.addActionListener(new ActionListener() {
 
@@ -159,9 +153,9 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			jButtonCancel.setName("jButtonCancel");
 			jButtonCancel.setIcon(iconLoader
 				.load(IconLoader.ICON_REMOVE_ENABLED));
-			jButtonCancel.setText(stringResource
+			jButtonCancel.setText(stringDatabase
 				.getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
-			jButtonCancel.setMnemonic(stringResource.getString(
+			jButtonCancel.setMnemonic(stringDatabase.getString(
 				"OKCancelHorizontalDialog.jButtonCancel.Mnemonic").charAt(0));
 			setCancelButton(jButtonCancel);
 			jButtonCancel.addActionListener(new ActionListener() {
@@ -176,14 +170,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 		}
 		return jButtonCancel;
 	}
-
-	/**
-	 * @return the stringResource
-	 */
-	public StringResource getStringResource() {
-	
-		return stringResource;
-	};
 	
 	/**
 	 * Shows or hides this Dialog depending on the value of parameter b. If b is

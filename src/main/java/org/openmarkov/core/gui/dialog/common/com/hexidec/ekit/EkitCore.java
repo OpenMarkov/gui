@@ -110,8 +110,7 @@ import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.UnicodeD
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.thirdparty.print.DocumentRenderer;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.util.Base64Codec;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.util.Translatrix;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 
@@ -215,9 +214,6 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 	private JCheckBoxMenuItem jcbmiViewToolbarStyles;
 	private JCheckBoxMenuItem jcbmiViewSource;
 	
-
-	private StringResource messageStringResource;
-
 	/* Constants */
 	// Menu Keys
 	public static final String KEY_MENU_FILE = "file";
@@ -390,8 +386,6 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 
 		super();
 		
-		messageStringResource =	StringResourceLoader.getUniqueInstance().getBundleMessages();
-
 		exclusiveEdit = editModeExclusive;
 
 		frameHandler = new Frame();
@@ -411,7 +405,7 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 		// TODO must externalize the path for the language resources
 		
 		Translatrix
-			.setBundleName("localize/LanguageResources");
+			.setBundleName("ekit/LanguageResources");
 		Locale baseLocale = (Locale) null;
 		if (sLanguage != null && sCountry != null) {
 			baseLocale = new Locale(sLanguage, sCountry);
@@ -4016,9 +4010,9 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 				undoMngr.undo();
 			} catch (CannotUndoException ex) {
 				ex.printStackTrace();
-				JOptionPane.showMessageDialog(null, messageStringResource
+				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance()
 						.getString( ex.getMessage() ),
-					messageStringResource.getString( ex.getMessage() ),
+						StringDatabase.getUniqueInstance().getString( ex.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
 			updateUndoState();
@@ -4048,9 +4042,9 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 				undoMngr.redo();
 			} catch (CannotUndoException ex) {
 				ex.printStackTrace();
-				JOptionPane.showMessageDialog(null, messageStringResource
+				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance()
 						.getString( ex.getMessage() ),
-					messageStringResource.getString( ex.getMessage() ),
+						StringDatabase.getUniqueInstance().getString( ex.getMessage() ),
 					JOptionPane.ERROR_MESSAGE );
 			}
 			updateRedoState();

@@ -17,7 +17,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
-import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -72,8 +71,8 @@ public class ToolPluginManager
         {
             for (Class<?> plugin : plugins) {
                 ToolPlugin lAnnotation = plugin.getAnnotation (ToolPlugin.class);
-                JMenuItem menuItem = new LocalizedMenuItem (MenuItemNames.TOOLS_MENU + "." + lAnnotation.name (),
-                                                            MenuItemNames.TOOLS_MENU + "." + lAnnotation.name ());
+                JMenuItem menuItem = new LocalizedMenuItem (lAnnotation.name (),
+                                                            lAnnotation.command ());
                 menuItems.add (menuItem);
             }
         }

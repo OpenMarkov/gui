@@ -36,6 +36,7 @@ import javax.swing.table.TableCellEditor;
  *
  */
 
+@SuppressWarnings("serial")
 public class ColorTableCellEditor extends AbstractCellEditor 
 								implements TableCellEditor{
     

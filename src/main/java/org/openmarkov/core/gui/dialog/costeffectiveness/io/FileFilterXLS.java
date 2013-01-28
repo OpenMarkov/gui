@@ -13,8 +13,7 @@ package org.openmarkov.core.gui.dialog.costeffectiveness.io;
 import java.io.File;
 
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 
@@ -28,24 +27,9 @@ import org.openmarkov.core.gui.localize.StringResourceLoader;
 public class FileFilterXLS extends FileFilterBasic {
 
 	/**
-	 * String resource.
-	 */
-	private StringResource stringResource;
-
-	/**
 	 * Extension of the files that match this filter.
 	 */
 	static final String xlsExtension = "xls";
-
-	/**
-	 * Create a new instance and create a new string resource.
-	 */
-	public FileFilterXLS() {
-
-		stringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-
-	}
 
 	/**
 	 * Accepts all the directories (by default in OpenMarkovtFileFilter) and files
@@ -77,7 +61,7 @@ public class FileFilterXLS extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return stringResource.getString("FileExtension.Excel.Description")
+		return StringDatabase.getUniqueInstance ().getString("FileExtension.Excel.Description")
 			+ " (*." + xlsExtension + ")";
 
 	}

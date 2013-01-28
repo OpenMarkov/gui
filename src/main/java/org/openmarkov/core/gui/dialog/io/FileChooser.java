@@ -15,8 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 /**
  * This class implements a file chooser dialog file to select OpenMarkov files.
@@ -56,53 +55,54 @@ public abstract class FileChooser extends JFileChooser {
 	 */
 	private void setTextsInLocale() {
 
-		StringResource rb = StringResourceLoader.getUniqueInstance().getBundleDialogs();
+	    StringDatabase stringDb = StringDatabase.getUniqueInstance ();
+	    
 		UIManager.put("FileChooser.cancelButtonText",
-				rb.getString("FileChooser.cancelButtonText"));
+		              stringDb.getString("FileChooser.cancelButtonText"));
 		UIManager.put("FileChooser.cancelButtonToolTipText",
-				rb.getString("FileChooser.cancelButtonToolTipText"));
+		              stringDb.getString("FileChooser.cancelButtonToolTipText"));
 		UIManager.put("FileChooser.detailsViewActionLabelText",
-				rb.getString("FileChooser.detailsViewActionLabelText"));
+		              stringDb.getString("FileChooser.detailsViewActionLabelText"));
 		UIManager.put("FileChooser.detailsViewButtonToolTipText",
-				rb.getString("FileChooser.detailsViewButtonToolTipText"));
+		              stringDb.getString("FileChooser.detailsViewButtonToolTipText"));
 		UIManager.put("FileChooser.fileNameLabelText",
-				rb.getString("FileChooser.fileNameLabelText"));
+		              stringDb.getString("FileChooser.fileNameLabelText"));
 		UIManager.put("FileChooser.filesOfTypeLabelText",
-				rb.getString("FileChooser.filesOfTypeLabelText"));
+		              stringDb.getString("FileChooser.filesOfTypeLabelText"));
 		UIManager.put("FileChooser.helpButtonText",
-				rb.getString("FileChooser.helpButtonText"));
+		              stringDb.getString("FileChooser.helpButtonText"));
 		UIManager.put("FileChooser.helpButtonToolTipText",
-				rb.getString("FileChooser.helpButtonToolTipText"));
+		              stringDb.getString("FileChooser.helpButtonToolTipText"));
 		UIManager.put("FileChooser.homeFolderToolTipText",
-				rb.getString("FileChooser.homeFolderToolTipText"));
+		              stringDb.getString("FileChooser.homeFolderToolTipText"));
 		UIManager.put("FileChooser.listViewActionLabelText",
-				rb.getString("FileChooser.listViewActionLabelText"));
+		              stringDb.getString("FileChooser.listViewActionLabelText"));
 		UIManager.put("FileChooser.listViewButtonToolTipTextlist",
-				rb.getString("FileChooser.newFolderToolTipText"));
+		              stringDb.getString("FileChooser.newFolderToolTipText"));
 		UIManager.put("FileChooser.lookInLabelText",
-				rb.getString("FileChooser.lookInLabelText"));
+		              stringDb.getString("FileChooser.lookInLabelText"));
 		UIManager.put("FileChooser.newFolderActionLabelText",
-				rb.getString("FileChooser.newFolderActionLabelText"));
+		              stringDb.getString("FileChooser.newFolderActionLabelText"));
 		UIManager.put("FileChooser.newFolderToolTipText",
-				rb.getString("FileChooser.newFolderToolTipText"));
+		              stringDb.getString("FileChooser.newFolderToolTipText"));
 		UIManager.put("FileChooser.openButtonTextOpen",
-				rb.getString("FileChooser.openButtonTextOpen"));
+		              stringDb.getString("FileChooser.openButtonTextOpen"));
 		UIManager.put("FileChooser.openButtonToolTipText",
-				rb.getString("FileChooser.openButtonToolTipText"));
+		              stringDb.getString("FileChooser.openButtonToolTipText"));
 		UIManager.put("FileChooser.refreshActionLabelText",
-				rb.getString("FileChooser.refreshActionLabelText"));
+		              stringDb.getString("FileChooser.refreshActionLabelText"));
 		UIManager.put("FileChooser.saveButtonTextSave",
-				rb.getString("FileChooser.saveButtonTextSave"));
+		              stringDb.getString("FileChooser.saveButtonTextSave"));
 		UIManager.put("FileChooser.saveButtonToolTipText",
-				rb.getString("FileChooser.saveButtonToolTipText"));
+		              stringDb.getString("FileChooser.saveButtonToolTipText"));
 		UIManager.put("FileChooser.upFolderToolTipText",
-				rb.getString("FileChooser.upFolderToolTipText"));
+		              stringDb.getString("FileChooser.upFolderToolTipText"));
 		UIManager.put("FileChooser.updateButtonText",
-				rb.getString("FileChooser.updateButtonText"));
+		              stringDb.getString("FileChooser.updateButtonText"));
 		UIManager.put("FileChooser.updateButtonToolTipText",
-				rb.getString("FileChooser.updateButtonToolTipText"));
+		              stringDb.getString("FileChooser.updateButtonToolTipText"));
 		UIManager.put("FileChooser.viewMenuLabelText",
-				rb.getString("FileChooser.viewMenuLabelText"));
+		              stringDb.getString("FileChooser.viewMenuLabelText"));
 
 	}
 

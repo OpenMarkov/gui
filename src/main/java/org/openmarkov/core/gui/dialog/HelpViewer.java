@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.OpenMarkov;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.localize.LocaleChangeEvent;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
+import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.gui.localize.LocaleChangeListener;
 
 
 /**
@@ -34,7 +34,7 @@ import org.openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
  * @version 1.0 15/03/2009 jlgozalo
  */
 public class HelpViewer extends javax.swing.JFrame implements
-						StringResourceLocaleChangeListener{
+						LocaleChangeListener{
 
 	/**
 	 * 
@@ -70,8 +70,8 @@ public class HelpViewer extends javax.swing.JFrame implements
 	 * private constructor
 	 */
 	private HelpViewer() {
-		StringResourceLoader.getUniqueInstance()
-	              	.addStringResourceLocaleChangeListener( this );
+		StringDatabase.getUniqueInstance()
+	              	.addLocaleChangeListener( this );
     	this.theHelpBroker = myHelpBroker();
     	this.logger = Logger.getLogger(HelpViewer.class);
     	
@@ -101,7 +101,7 @@ public class HelpViewer extends javax.swing.JFrame implements
 			// find HelpSet from within the library of OpenMarkov
 			URL hsURL = HelpSet.findHelpSet(OpenMarkov.class.getClassLoader(), aHelpSet);
 			URL realHsURL = hsURL;
-			String language = StringResourceLoader.getUniqueInstance().getLanguage();
+			String language = StringDatabase.getUniqueInstance().getLanguage();
    		    if (language.equals("en") ) {
 				if (hsURL.toString().contains( "_es" )) {
 				   realHsURL = new URL(hsURL.toString().replace("_es","_en"));
@@ -177,7 +177,7 @@ public class HelpViewer extends javax.swing.JFrame implements
 	 * process a change in the String Resource Locale, settings the help 
 	 * to the new selected language
 	 */
-	public void processStringResourceLocaleChange(LocaleChangeEvent event) {
+	public void processLocaleChange(LocaleChangeEvent event) {
 
 		helpViewer.dispose();
 		helpViewer = new HelpViewer();

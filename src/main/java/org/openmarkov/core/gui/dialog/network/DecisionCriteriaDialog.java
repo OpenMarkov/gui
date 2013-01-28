@@ -7,15 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
 @SuppressWarnings("serial")
 public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
-
-	private StringResource dialogStringResource;
 
 	private DecisionCriteriaTablePanel decisionCriteriaTablePanel;
 
@@ -26,9 +22,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
 	public DecisionCriteriaDialog(Window owner, ProbNet probNet, boolean newElement) {
 		super(owner);
 		this.probNet = probNet;
-		/*if (!newElement) {
-			probNet.getPNESupport().setWithUndo(true);
-		}*/
+
 		probNet.getPNESupport().setWithUndo(true);
 		probNet.getPNESupport().openParenthesis();
 		initialize();
@@ -42,10 +36,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
 	 */
 	private void initialize() {
 
-		dialogStringResource =
-			StringResourceLoader.getUniqueInstance().getBundleDialogs();
-		setTitle(dialogStringResource
-			.getString("DecisionCriteria.Title.Label"));
+		setTitle(stringDatabase.getString("DecisionCriteria.Title.Label"));
 		configureComponentsPanel();
 		pack();
 	}
@@ -83,29 +74,6 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
 
 	}
 	
-	 /*public void setFieldFromProperties (ProbNet probNet) {
-		 Object [][] data = null;
-		 StringsWithProperties agents = probNet.getAgents();
-		 
-		 if (agents != null) {
-			 data =new Object [agents.getNames().size()][1];
-			 Set<String> agentsNames = agents.getNames();
-			 Iterator<String> iterator = agentsNames.iterator();
-		
-			 int i = 0;
-			 while (iterator.hasNext()) {
-				 String name = (String) iterator.next();
-				 if (name != null) {
-					 data [i][0] = name;
-					 i++;
-				 }
-			 }
-			 //initializing data structure for the table model
-			getNetworkAgentsPanel().setData(data);
-			// initializing data structure for supervising data order in GUI 
-			getNetworkAgentsPanel().setDataTable(data);
-		 }
-	}*/
 	public void setFieldFromProperties (ProbNet probNet) {
 		 
 		// StringsWithProperties agents = probNet.getAgents();

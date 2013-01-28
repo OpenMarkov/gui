@@ -17,8 +17,8 @@ import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 
 import org.openmarkov.core.gui.localize.LocaleChangeEvent;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
-import org.openmarkov.core.gui.localize.StringResourceLocaleChangeListener;
+import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.gui.localize.LocaleChangeListener;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 
@@ -33,7 +33,7 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
  * @author jlgozalo 
  * @version 1.1 adding StringResourceLocaleChangeListener
  */
-public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBasic, StringResourceLocaleChangeListener {
+public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBasic, LocaleChangeListener {
 
 	/**
 	 * 
@@ -43,7 +43,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * Object that listen to the user's actions.
 	 */
 	protected ActionListener listener;
-
+	
 	/**
 	 * This method initialises this instance.
 	 * 
@@ -54,8 +54,8 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 
 		super();
 		listener = newListener;
-		StringResourceLoader.getUniqueInstance()
-		.addStringResourceLocaleChangeListener( this );
+		StringDatabase.getUniqueInstance()
+		.addLocaleChangeListener( this );
 	
 	}
 
@@ -119,9 +119,9 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * process a change in the String Resource Locale, settings all the labels
 	 * menus, and strings in the component to the new selected language
 	 */
-	public void processStringResourceLocaleChange(LocaleChangeEvent event) {
+	public void processLocaleChange(LocaleChangeEvent event) {
 
-		StringResourceLoader.getUniqueInstance().allComponentsUpdateSetText(this);
+		StringDatabase.getUniqueInstance().allComponentsUpdateSetText(this);
 		repaint();
 	}
 	

@@ -1,14 +1,10 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.dialog.network;
-
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,8 +25,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.localize.StringResource;
-import org.openmarkov.core.gui.localize.StringResourceLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.ProbNet;
@@ -38,7 +33,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.constraint.OnlyContinuousVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-
 
 /**
  * Panel to set the definition of the variables of a network. It will have a
@@ -52,38 +46,35 @@ public class NetworkVariablesPanel extends JPanel
     /**
      * 
      */
-    private static final long    serialVersionUID       = -5183671164848473079L;
+    private static final long serialVersionUID       = -5183671164848473079L;
     /**
      * Label of the variables Type checkboxes
      */
-    private JLabel               jLabelVariablesType    = null;
+    private JLabel            jLabelVariablesType    = null;
     /**
      * Label of the default states field.
      */
-    private JLabel               jLabelDefaultStates    = null;
+    private JLabel            jLabelDefaultStates    = null;
     /**
      * Combobox where the user can choose the default states.
      */
-    private JComboBox<String>            jComboBoxDefaultStates = null;
-    /**
-     * Dialog string resource.
-     */
-    private final StringResource dialogStringResource;
+    private JComboBox<String> jComboBoxDefaultStates = null;
     /**
      * Specifies if the network whose additionalProperties are edited is new.
      */
-    private boolean              newNetwork             = false;
-    private StringResource       messageStringResource;
-
-    private ProbNet   probNet;
+    private boolean           newNetwork             = false;
+    private ProbNet           probNet;
     private JComboBox<String> jComboBoxVariableType;
+    /**
+     * String database
+     */
+    protected StringDatabase  stringDatabase         = StringDatabase.getUniqueInstance ();
 
     /**
      * constructor without construction parameters
      */
     public NetworkVariablesPanel (ProbNet probNet)
     {
-        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
         this.probNet = probNet;
         this.newNetwork = probNet == null;
         setName ("NetworkVariablesPanel");
@@ -98,51 +89,45 @@ public class NetworkVariablesPanel extends JPanel
      */
     public NetworkVariablesPanel ()
     {
-        dialogStringResource = StringResourceLoader.getUniqueInstance ().getBundleDialogs ();
         this.newNetwork = true;
         setName ("NetworkVariablesPanel");
         initialize ();
         fill ();
     }
 
-	
-	/**
-	 * initialises the layout for this panel.
-	 */
-	private void initialize() {
-
-		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(26)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJLabelVariablesType(), GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(getJComboBoxVariableType(), GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(getJLabelDefaultStates(), GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(getJComboBoxDefaultStates(), GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(17, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(11)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(getJLabelVariablesType(), GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)
-						.addComponent(getJComboBoxVariableType(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(6)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(getJLabelDefaultStates())
-						.addComponent(getJComboBoxDefaultStates(), GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(224, Short.MAX_VALUE))
-		);
-		setLayout(groupLayout);
-
-	}
+    /**
+     * initialises the layout for this panel.
+     */
+    private void initialize ()
+    {
+        final GroupLayout groupLayout = new GroupLayout ((JComponent) this);
+        groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGap (26).addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelVariablesType (),
+                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                  125,
+                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE).addPreferredGap (ComponentPlacement.RELATED).addComponent (getJComboBoxVariableType (),
+                                                                                                                                                                                                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                                                                                                         194,
+                                                                                                                                                                                                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE)).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelDefaultStates (),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   125,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   GroupLayout.PREFERRED_SIZE).addPreferredGap (ComponentPlacement.RELATED).addComponent (getJComboBoxDefaultStates (),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          194,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE))).addContainerGap (17,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         Short.MAX_VALUE)));
+        groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGap (11).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJLabelVariablesType (),
+                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                  39,
+                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE).addComponent (getJComboBoxVariableType (),
+                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                            GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE)).addGap (6).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJLabelDefaultStates ()).addComponent (getJComboBoxDefaultStates (),
+                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE)).addContainerGap (224,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Short.MAX_VALUE)));
+        setLayout (groupLayout);
+    }
 
     /**
      * This method initialises jLabelVariablesType
@@ -155,7 +140,7 @@ public class NetworkVariablesPanel extends JPanel
             jLabelVariablesType = new JLabel ();
             jLabelVariablesType.setName ("jLabelVariablesType");
             jLabelVariablesType.setText ("a Label : ");
-            jLabelVariablesType.setText (dialogStringResource.getString ("NetworkVariablesPanel.jLabelVariablesType.Text"));
+            jLabelVariablesType.setText (stringDatabase.getString ("NetworkVariablesPanel.jLabelVariablesType.Text"));
         }
         return jLabelVariablesType;
     }
@@ -171,7 +156,7 @@ public class NetworkVariablesPanel extends JPanel
             jLabelDefaultStates = new JLabel ();
             jLabelDefaultStates.setName ("jLabelDefaultStates");
             jLabelDefaultStates.setText ("a Label : ");
-            jLabelDefaultStates.setText (dialogStringResource.getString ("NetworkVariablesPanel.jLabelDefaultStates.Text"));
+            jLabelDefaultStates.setText (stringDatabase.getString ("NetworkVariablesPanel.jLabelDefaultStates.Text"));
             jLabelDefaultStates.setLabelFor (jComboBoxDefaultStates);
         }
         return jLabelDefaultStates;
@@ -208,12 +193,12 @@ public class NetworkVariablesPanel extends JPanel
 
     private String[] getListOfTypes ()
     {
-        // TODO only discrete variable are enable
+        // TODO only discrete variable are enabled
         String[] types = {
-                dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType.Items."
-                                                + "onlydiscrete"),
-                dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
-                                                + "items.discreteandcontinuous")};
+                stringDatabase.getString ("NetworkVariablesPanel.ConstraintVariableType.Items."
+                                          + "onlydiscrete"),
+                stringDatabase.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                          + "items.discreteandcontinuous")};
         return types;
     }
 
@@ -266,20 +251,20 @@ public class NetworkVariablesPanel extends JPanel
     {
         VariableTypeConstraintEdit variableTypeCE = null;
         Object itemSelected = jComboBoxVariableType.getSelectedItem ();
-        if (itemSelected != null && itemSelected.equals (dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
-                                                                 + "Items.onlydiscrete")))
+        if (itemSelected != null
+            && itemSelected.equals (stringDatabase.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                                              + "Items.onlydiscrete")))
         {
             variableTypeCE = new VariableTypeConstraintEdit (probNet, new OnlyDiscreteVariables ());
-
         }
-        else if (itemSelected != null && itemSelected.equals (dialogStringResource.getString ("NetworkVariablesPanel.ConstraintVariableType."
-                                                                      + "Items.onlycontinuous")))
+        else if (itemSelected != null
+                 && itemSelected.equals (stringDatabase.getString ("NetworkVariablesPanel.ConstraintVariableType."
+                                                                   + "Items.onlycontinuous")))
         {
             variableTypeCE = new VariableTypeConstraintEdit (probNet,
                                                              new OnlyContinuousVariables ());
         }
-        
-        if(variableTypeCE != null)
+        if (variableTypeCE != null)
         {
             try
             {
@@ -289,12 +274,11 @@ public class NetworkVariablesPanel extends JPanel
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
-                messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
                 JOptionPane.showMessageDialog (this,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
-            }            
+            }
         }
     }
 
@@ -305,26 +289,26 @@ public class NetworkVariablesPanel extends JPanel
         Object itemSelected = jComboBoxDefaultStates.getSelectedItem ();
         if (itemSelected != null)
         {
-            NetworkDefaultStatesEdit networkDefaultStatesEdit = new NetworkDefaultStatesEdit (probNet, getDefaultStates());
+            NetworkDefaultStatesEdit networkDefaultStatesEdit = new NetworkDefaultStatesEdit (
+                                                                                              probNet,
+                                                                                              getDefaultStates ());
             try
             {
                 probNet.doEdit (networkDefaultStatesEdit);
             }
-            catch (ConstraintViolationException
-                    | CanNotDoEditException | NonProjectablePotentialException
-                    | WrongCriterionException | DoEditException e)
+            catch (ConstraintViolationException | CanNotDoEditException
+                    | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
                 e.printStackTrace ();
-                messageStringResource = StringResourceLoader.getUniqueInstance ().getBundleMessages ();
                 JOptionPane.showMessageDialog (this,
-                                               messageStringResource.getString (e.getMessage ()),
-                                               messageStringResource.getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                               StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
             }
         }
-    }    
-    
-    public State[] getDefaultStates()
+    }
+
+    public State[] getDefaultStates ()
     {
         int i = 0;
         int selectedIndex = jComboBoxDefaultStates.getSelectedIndex ();
