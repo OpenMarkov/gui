@@ -499,7 +499,7 @@ public class PotentialsTablePanel extends JPanel
             // convertListPotentialsToTableFormat( listPotentials,
             // additionalProperties );
             tableData = convertListPotentialsToTableFormat (properties);
-            newColumns = ValuesTable.getColumnsIdsSpreedSheetStyle (ValuesTable.howManyColumns (properties));
+            newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle (ValuesTable.howManyColumns (properties));
             setFirstEditableRow (PotentialsTablePanelOperations.calculateFirstEditableRow (probNode.getPotentials (),
                                                                                            properties));
             setLastEditableRow (PotentialsTablePanelOperations.calculateLastEditableRow (probNode.getPotentials (),

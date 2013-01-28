@@ -1192,7 +1192,7 @@ public class ValuesTable extends KeyTable
     /**
      * set a default id for the columns (Excel format)
      */
-    public static String[] getColumnsIdsSpreedSheetStyle (int howManyColumns)
+    public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
     {
         String[] columnsId = new String[howManyColumns];
         String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

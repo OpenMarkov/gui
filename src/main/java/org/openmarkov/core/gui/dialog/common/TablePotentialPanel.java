@@ -196,8 +196,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 			// convertListPotentialsToTableFormat( listPotentials,
 			// additionalProperties );
 			tableData = convertListPotentialsToTableFormat(probNode);
-			newColumns = ValuesTable.getColumnsIdsSpreedSheetStyle(ValuesTable
-					.howManyColumns(probNode));
+			newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
 			setFirstEditableRow(PotentialsTablePanelOperations
 					.calculateFirstEditableRow(probNode.getPotentials(),
 							probNode));
@@ -1132,36 +1131,16 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				getValuesTable().repaint();
 			}
 
-		} catch (ConstraintViolationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (CanNotDoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (DoEditException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
-		}
-
+        }
+        catch (ConstraintViolationException | CanNotDoEditException
+                | NonProjectablePotentialException | DoEditException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace ();
+            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
+                                           stringDatabase.getString (e.getMessage ()),
+                                           JOptionPane.ERROR_MESSAGE);
+        }
 	}
 
 	private void updateContextualMenuOptions() {
@@ -1232,16 +1211,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                         hasUncertainty = tablePotential.hasUncertainty (getConfiguration (tablePotential,
                                                                                           i));
                     }
-                    catch (InvalidStateException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace ();
-                        JOptionPane.showMessageDialog (this,
-                                                       stringDatabase.getString (e.getMessage ()),
-                                                       stringDatabase.getString (e.getMessage ()),
-                                                       JOptionPane.ERROR_MESSAGE);
-                    }
-                    catch (IncompatibleEvidenceException e)
+                    catch (InvalidStateException | IncompatibleEvidenceException e)
                     {
                         // TODO Auto-generated catch block
                         e.printStackTrace ();
@@ -1277,7 +1247,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
             else if (probNode.getNodeType () == NodeType.DECISION)
             {
-                if (probNode.getPolicyType () == PolicyType.OPTIMAL)
+                if (probNode.getPolicyType () == PolicyType.OPTIMAL && 
+                        (probNode.getPotentials ().isEmpty () || !probNode.getPotentials ().get (0).isUtility ()))
                 {
                     valuesTable.setDefaultRenderer (Double.class,
                                                     new ValuesTableOptimalPolicyCellRenderer (

@@ -179,7 +179,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
 				convertListPotentialsToCanonicalTableFormat(properties );
 			newColumns =
 				ICIValuesTable
-					.getColumnsIdsSpreedSheetStyle( ICIValuesTable
+					.getColumnsIdsSpreadSheetStyle( ICIValuesTable
 						.howManyCanonicalColumns( properties ) );
 			setFirstEditableRow(calculateFirstEditableRow(probNode.getPotentials()));
 			setLastEditableRow(calculateLastEditableRow(

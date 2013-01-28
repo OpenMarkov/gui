@@ -144,7 +144,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		Object[][] tableData = null;
 		String[] newColumns = null;
-		newColumns = ValuesTable.getColumnsIdsSpreedSheetStyle(this.probNode1
+		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(this.probNode1
 				.getVariable().getNumStates() + 1);
 		setFirstEditableRow(1);
 		setLastEditableRow(probNode2.getVariable().getNumStates());

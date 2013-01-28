@@ -92,7 +92,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Relation Type Manager
      */
-    RelationPotentialTypeManager relationTypeManager;
+    private RelationPotentialTypeManager relationTypeManager;
     /**
      * Panel of the graphic editor
      */
@@ -274,14 +274,16 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     public int requestValues ()
     {
         // Shows the potentials' options table
-        if (!(probNode.getNodeType () == NodeType.DECISION
-              && probNode.getPolicyType () == PolicyType.OPTIMAL && readOnly))
+        if (probNode.getNodeType () == NodeType.DECISION
+              && probNode.getPolicyType () == PolicyType.OPTIMAL 
+              && (probNode.getPotentials ().isEmpty () || !probNode.getPotentials ().get (0).isUtility ())  
+              && readOnly)
         {
-            showFields (probNode);
+            setEnabledDecisionOptions (true);
         }
         else
         {
-            setEnabledDecisionOptions (true);
+            showFields (probNode);
         }
         setVisible (true);
         return selectedButton;
