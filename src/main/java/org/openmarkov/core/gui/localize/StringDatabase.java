@@ -15,12 +15,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -55,31 +58,27 @@ public class StringDatabase
     /**
      * Default language.
      */
-    private static final String   DEFAULT_LANGUAGE    = OpenMarkovPreferences.get(OpenMarkovPreferences.PREFERENCE_LANGUAGE, 
-                                                                                  OpenMarkovPreferences.OPENMARKOV_LANGUAGES, 
-                                                                                  System.getProperty ("user.language"));
-    
+    private static final String       DEFAULT_LANGUAGE = OpenMarkovPreferences.get (OpenMarkovPreferences.PREFERENCE_LANGUAGE,
+                                                                                    OpenMarkovPreferences.OPENMARKOV_LANGUAGES,
+                                                                                    System.getProperty ("user.language"));
     /**
      * Unique instance of this class.
      */
-    private static StringDatabase instance            = null;
-    
+    private static StringDatabase     instance         = null;
     /**
      * Language to use.
      */
-    private String                language            = DEFAULT_LANGUAGE;
+    private String                    language         = DEFAULT_LANGUAGE;
     /**
      * Locale to use
      */
-    private Locale                locale              = null;
-    
+    private Locale                    locale           = null;
     /**
      * Map containing all the bundles
      */
-    private Map<String, StringBundle> bundles = null;
-
+    private Map<String, StringBundle> bundles          = null;
     // Create the listener list
-    private EventListenerList listenerList = null;
+    private EventListenerList         listenerList     = null;
 
     /**
      * This constructor initializes the object with the language of the class.
@@ -114,28 +113,33 @@ public class StringDatabase
      */
     public void setLanguage (String newLanguage)
     {
-        if (!newLanguage.equals( language )) {
-            language = (newLanguage.equals ("es"))? "es" : "en";
+        if (!newLanguage.equals (language))
+        {
+            language = (newLanguage.equals ("es")) ? "es" : "en";
             setLocale (getLocaleByLanguage (language));
             resetBundles ();
-            fireLocaleChangeEvent (new LocaleChangeEvent( this, newLanguage ));            
-            OpenMarkovPreferences.set(
-                OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
-                OpenMarkovPreferences.OPENMARKOV_LANGUAGES );
-        }        
+            fireLocaleChangeEvent (new LocaleChangeEvent (this, newLanguage));
+            OpenMarkovPreferences.set (OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
+                                       OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
+        }
     }
 
     private Locale getLocaleByLanguage (String language)
     {
         Locale locale = Locale.ENGLISH;
-        if (language.equals(Locale.ENGLISH.getLanguage ())) {
+        if (language.equals (Locale.ENGLISH.getLanguage ()))
+        {
             locale = Locale.ENGLISH;
-        } else if (language.equals("es")) { 
-            locale = new Locale("es");
-        } else {
-            //System.out.println("LocaleChangeEvent failure for locale " 
-            //                   + locale.toString() + ": not defined");
-            //System.out.println("Setting english as default locale...");
+        }
+        else if (language.equals ("es"))
+        {
+            locale = new Locale ("es");
+        }
+        else
+        {
+            // System.out.println("LocaleChangeEvent failure for locale "
+            // + locale.toString() + ": not defined");
+            // System.out.println("Setting english as default locale...");
             locale = Locale.ENGLISH;
         }
         return locale;
@@ -203,32 +207,72 @@ public class StringDatabase
         stringBundle = new StringBundle (bundle);
         return stringBundle;
     }
-    
-    public Map<String, StringBundle> getAllBundles()
+
+    public Map<String, StringBundle> getAllBundles ()
     {
-        Map<String, StringBundle> bundleMap = new LinkedHashMap<>();
-        
+        Map<String, StringBundle> bundleMap = new LinkedHashMap<> ();
         String localeSuffix = "_" + locale.getLanguage ();
-        String         classPath = System.getProperty ("java.class.path", ".");
-        String[]       classPathElements = classPath.split (File.pathSeparator);
-        for (String element : classPathElements) {
-            File localizeFolder = new File(element + File.separator + "localize");
-            if(localizeFolder.listFiles() != null)
+        String classPath = System.getProperty ("java.class.path", ".");
+        String[] classPathElements = classPath.split (File.pathSeparator);
+        for (String element : classPathElements)
+        {
+            File classpathElement = new File (element);
+            
+            if(classpathElement.isDirectory ())
             {
-                for (final File fileEntry : localizeFolder.listFiles()) {
-                    if (fileEntry.isFile ()) {
-                        String baseName = FilenameUtils.getBaseName (fileEntry.getName ());
-                        if(baseName.endsWith (localeSuffix))
+                File localizeFolder =  new File (classpathElement.getAbsolutePath () + File.separator + "localize");
+                if(localizeFolder.listFiles () != null)
+                {
+                    for (final File fileEntry : localizeFolder.listFiles ())
+                    {
+                        if (fileEntry.isFile ())
                         {
-                            baseName = baseName.substring (0, baseName.length () - localeSuffix.length ());
-                            bundleMap.put (baseName, getBundle (baseName));
+                            if (fileEntry.getName ().endsWith (".xml"))
+                            {
+                                String baseName = FilenameUtils.getBaseName (fileEntry.getName ());
+                                if (baseName.endsWith (localeSuffix))
+                                {
+                                    baseName = baseName.substring (0,
+                                                                   baseName.length ()
+                                                                           - localeSuffix.length ());
+                                    bundleMap.put (baseName, getBundle (baseName));
+                                }
+                            }
                         }
-                        
                     }
                 }
-            }
-        }        
-        
+            }else{ // it is a jar file
+                if(classpathElement.getName ().startsWith ("org.openmarkov."))
+                {
+                    ZipFile zipFile;
+                    try
+                    {
+                        zipFile = new ZipFile (classpathElement.getAbsolutePath ());
+                        Enumeration<? extends ZipEntry> zipEntryEn = (Enumeration<? extends ZipEntry>) zipFile.entries ();
+                        while (zipEntryEn.hasMoreElements ())
+                        {
+                            ZipEntry aZipEntry = (ZipEntry) zipEntryEn.nextElement ();
+                            if (aZipEntry.getName ().startsWith ("localize/") && aZipEntry.getName ().endsWith (".xml"))
+                            {
+                                String baseName = FilenameUtils.getBaseName (aZipEntry.getName ());
+                                if (baseName.endsWith (localeSuffix))
+                                {
+                                    baseName = baseName.substring (0,
+                                                                   baseName.length ()
+                                                                           - localeSuffix.length ());
+                                    bundleMap.put (baseName, getBundle (baseName));
+                                }
+                            }
+                        }
+                        zipFile.close ();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace ();
+                    }   
+                }
+            }            
+        }
         return bundleMap;
     }
 
@@ -326,7 +370,6 @@ public class StringDatabase
             }
         }
     }
-
 
     /**
      * reset the StringResource to null
@@ -478,37 +521,34 @@ public class StringDatabase
             value = bundle.getString (key);
             found = value != null;
         }
-        if(value == null)
+        if (value == null)
         {
             value = ">>> " + key + " <<<";
         }
         return value;
     }
-    
+
     public String getString (String bundle, String key)
     {
         String value = bundles.get (bundle).getString (key);
-        if(value == null)
+        if (value == null)
         {
             value = ">>> " + key + " <<<";
         }
         return value;
     }
-    
+
     /**
      * This method returns the requested string resource, replacing each '~' by
      * an element of the array. The number of '~' replaced depends on the number
      * of elements of the array.
-     * 
-     * @param key
-     *            the key of the desired string.
-     * @param strings
-     *            strings that will replace the '~'.
+     * @param key the key of the desired string.
+     * @param strings strings that will replace the '~'.
      * @return the string associated with the key. if the resource doesn't
      *         exist, then a special string is returned.
      */
-    public String getFormattedString(String key, String... strings) {
-
+    public String getFormattedString (String key, String... strings)
+    {
         String result = "";
         String parameter = "";
         boolean flag = true;
@@ -516,32 +556,36 @@ public class StringDatabase
         int l = 0;
         int index = 0;
         final String diacritic = "~";
-
-        try {
-            result = getString( key );
-            if (strings != null) {
+        try
+        {
+            result = getString (key);
+            if (strings != null)
+            {
                 l = strings.length;
-                while (flag && (i < l)) {
-                    if ((index = result.indexOf( diacritic, index )) >= 0) {
+                while (flag && (i < l))
+                {
+                    if ((index = result.indexOf (diacritic, index)) >= 0)
+                    {
                         parameter = strings[i++];
-                        if (parameter == null) {
+                        if (parameter == null)
+                        {
                             parameter = "";
                         }
-                        result =
-                            result.substring( 0, index )
-                                + result.substring( index ).replaceFirst(
-                                    diacritic, parameter );
-                        index += parameter.length();
-                    } else {
+                        result = result.substring (0, index)
+                                 + result.substring (index).replaceFirst (diacritic, parameter);
+                        index += parameter.length ();
+                    }
+                    else
+                    {
                         flag = false;
                     }
                 }
             }
-        } catch (MissingResourceException e1) {
+        }
+        catch (MissingResourceException e1)
+        {
             result = ">>> " + key + " <<<";
         }
-
         return result;
-
     }
 }
