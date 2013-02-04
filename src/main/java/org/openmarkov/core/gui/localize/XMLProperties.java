@@ -20,17 +20,16 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.jdom.Comment;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Comment;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 /**
  * <b><code>XMLProperties</code></b> extends Java's 
@@ -38,6 +37,7 @@ import org.jdom.output.XMLOutputter;
  *  behavior similar to properties but that use XML as the
  *  input and output format.
  */
+@SuppressWarnings("serial")
 class XMLProperties extends Properties {
     
     /**
@@ -97,10 +97,9 @@ class XMLProperties extends Properties {
      * @param elements <code>List</code> of elements to load from.
      * @param baseName the base name of this property.
      */
-    private void loadFromElements(List elements, StringBuffer baseName) {
+    private void loadFromElements(List<Element> elements, StringBuffer baseName) {
         // Iterate through each element
-        for (Iterator i = elements.iterator(); i.hasNext(); ) {
-            Element current = (Element)i.next();
+        for (Element current : elements ) {
             String name = current.getName();
             //String text = current.getTextTrim();
             String text = current.getAttributeValue("value");            
@@ -118,7 +117,7 @@ class XMLProperties extends Properties {
                             text);
             }
             // Look for in the children
-            List children = current.getChildren();
+            List<Element> children = current.getChildren();
             if (children!=null){
             	loadFromElements(children,baseName);
             }            
@@ -169,9 +168,9 @@ class XMLProperties extends Properties {
         doc.getContent().add(0, comment);
         
         // Get the property names
-        Enumeration propertyNames = propertyNames();
+        Enumeration<?> propertyNames = propertyNames();
         while (propertyNames.hasMoreElements()) {
-            String propertyName = (String)propertyNames.nextElement();
+            String propertyName = propertyNames.nextElement().toString ();
             String propertyValue = getProperty(propertyName);
             createXMLRepresentation(root, propertyName, propertyValue);
         }        
