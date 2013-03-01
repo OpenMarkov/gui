@@ -998,15 +998,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void expandNetwork (ProbNet probNet, int numSlices)
     {
         FactoryExpandedSMM expandedNetFactory;
-        double maxX = 0.0;
-        for (ProbNode probNode : probNet.getProbNodes ())
-        {
-            if (probNode.getNode ().getCoordinateX () > maxX)
-            {
-                maxX = probNode.getNode ().getCoordinateX ();
-            }
-        }
-        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null, maxX / 3);
+        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
         ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
         String fileName = probNet.getName () + "_expanded";
         expandedNetwork.setName (fileName);
@@ -1035,7 +1027,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 maxX = probNode.getNode ().getCoordinateX ();
             }
         }
-        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null, maxX / 3);
+        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
         // extend evidence
         if (!evidence.getFindings ().isEmpty ())

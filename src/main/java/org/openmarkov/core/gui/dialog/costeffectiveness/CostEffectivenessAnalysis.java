@@ -87,7 +87,7 @@ public class CostEffectivenessAnalysis {
 public TablePotential costEffectivenessCalculator() {
 	 TablePotential globalUtility = null;
 	 FactoryExpandedSMM expandedNetFactory;
-		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable, 200.0);
+		 expandedNetFactory = new FactoryExpandedSMM(probNet, numSlices, numIndexVariable);
 		 InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, inferenceOptions, evidence);
@@ -135,7 +135,7 @@ public TablePotential costEffectivenessCalculator() {
 	 }
 	 HashMap<Variable,TablePotential> probsAndUtilities = null;
 	
-		 FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null, 200.0);
+		 FactoryExpandedSMM expandedNetFactory =  new FactoryExpandedSMM(probNet, numSlices, null);
 		 extendEvidence(expandedNetFactory.getExtendedNet());
 		 expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate, new InferenceOptions(probNet, null), evidence); 
 		 this.expandedNetwork = expandedNetFactory.getExtendedNet(); 
