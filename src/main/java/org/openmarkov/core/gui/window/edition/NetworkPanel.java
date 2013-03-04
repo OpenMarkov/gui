@@ -695,23 +695,6 @@ public class NetworkPanel extends FrameContentPanel
     }
 
     /**
-     * @param isProbabilistic if it is false then it indicates if the
-     *            cost-effectiveness analysis is deterministic (optimal
-     *            interventions) otherwise the analysis is probabilistic
-     */
-    public void showCostEffectivenessDialog (boolean isProbabilistic)
-    {
-        if (!isProbabilistic)
-        {
-            editorPanel.showCostEffectivenessDeterministicDialog ();
-        }
-        else
-        {
-            editorPanel.showSensitivityAnalysisCostEffectivenessDialog ();
-        }
-    }
-
-    /**
      * This method returns the number of the current Evidence Case.
      * @return the number of the current Evidence Case.
      */

@@ -81,7 +81,12 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
         setVisible (true);
     }
 
-    private void initialize ()
+    public TraceTemporalEvolutionDialog(Window owner,
+			Variable variableOfInterest, boolean isUtility) {
+    	super (owner);
+	}
+
+	private void initialize ()
     {
         setTitle (stringDatabase.getString ("TemporalEvolutionResultDialog.Title.Label") + " "
                   + variableOfInterest.getBaseName ());

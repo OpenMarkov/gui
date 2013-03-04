@@ -38,7 +38,9 @@ import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
@@ -230,7 +232,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
                                                                                            Utilities.getOwner (mainPanel),
-                                                                                           getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes (),
+                                                                                           getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes (),
                                                                                            getCurrentNetworkPanel ().getProbNet ().checkIfThereIsAgeNode (),
                                                                                            false,
                                                                                            false,
@@ -272,16 +274,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 {
                     numSlices = costEffectivenessDialog.getNumSlices ();
                 }
-                if (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes ().size () >= 0)
+                if (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().size () >= 0)
                 {
                     Finding finding = null;
-                    for (int i = 0; i < getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes ().size (); i++)
+                    for (int i = 0; i < getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().size (); i++)
                     {
-                        if (!getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
+                        if (!getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
                         {
                             finding = new Finding (
-                                                   getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes ().get (i).getVariable (),
-                                                   Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependantNodes ().get (i).getVariable ().getName ()).getText ()));
+                                                   getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable (),
+                                                   Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
                         }
                         try
                         {
@@ -489,11 +491,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         else if (actionCommand.equals (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC))
         {
             // Deterministic
-            getCurrentNetworkPanel ().showCostEffectivenessDialog (false);
+            showCostEffectivenessDialog (false);
         }
         else if (actionCommand.equals (ActionCommands.SENSITIVITY_ANALYSIS))
         {
-            getCurrentNetworkPanel ().showCostEffectivenessDialog (true);
+            showCostEffectivenessDialog (true);
         }
         else if (actionCommand.equals (ActionCommands.CONFIGURATION))
         {
@@ -564,7 +566,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
 
-    private void createExpandeNetwork (ProbNet probNet)
+	private void createExpandeNetwork (ProbNet probNet)
         throws NotEvaluableNetworkException
     {
         /*
@@ -1605,4 +1607,219 @@ public class MainPanelListenerAssistant extends WindowAdapter
             mainPanel.getMdi ().closeCurrentFrame ();
         }
     }
+    
+    private void showCostEffectivenessDialog(boolean sensitivityAnalysis) {
+    	CostEffectivenessDialog costEffectivenessDialog = null;
+        if (requestCostEffectiveness (Utilities.getOwner (mainPanel), "cea", getCurrentNetworkPanel ().probNet, false, false, false))
+        {
+            int numSlices;
+            if (getCurrentNetworkPanel ().probNet.checkIfThereIsAgeNode())
+            {
+                numSlices = costEffectivenessDialog.getFinalAge ()
+                            - costEffectivenessDialog.getInitialAge ();
+            }
+            else
+            {
+                numSlices = costEffectivenessDialog.getNumSlices ();
+            }
+            double costDiscountRate = costEffectivenessDialog.getCostDiscount ();
+            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount ();
+            double cycleLength = costEffectivenessDialog.getCycleLength ();
+            String units = costEffectivenessDialog.getUnits ();
+            boolean checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
+            CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
+            		getCurrentNetworkPanel ().probNet,
+                                                                                                 costDiscountRate,
+                                                                                                 effectivenessDiscountRate,
+                                                                                                 numSlices,
+                                                                                                 getEvidenceFromNetwork (getCurrentNetworkPanel ().probNet, costEffectivenessDialog),
+                                                                                                 cycleLength,
+                                                                                                 null,
+                                                                                                 checkZeroCycle);
+            new CostEffectivenessResultsDialog (
+                                                Utilities.getOwner (mainPanel),
+                                                costEffectivenessAnalysis,
+                                                costEffectivenessAnalysis.costEffectivenessCalculator (),
+                                                costEffectivenessDialog);
+        }
+    }
+    
+	private boolean requestCostEffectiveness(Window owner,
+			String suffixTypeAnalysis, ProbNet probNet,
+			boolean isProbabilistic, boolean isUtility,
+			boolean isTemporalEvolution) {
+		CostEffectivenessDialog costEffectivenessDialog;
+		boolean isThereNodeAge = probNet.checkIfThereIsAgeNode();
+		List<ProbNode> numericTemporalNodes = probNet
+				.getSpecialTimeDependentNodes();
+		if (isTemporalEvolution) {
+			costEffectivenessDialog = new CostEffectivenessDialog(owner,
+					numericTemporalNodes, isThereNodeAge, isUtility,
+					isTemporalEvolution, true);
+		} else {
+			costEffectivenessDialog = new CostEffectivenessDialog(owner,
+					numericTemporalNodes, isThereNodeAge, true, false, true);
+		}
+		return (costEffectivenessDialog.requestData(probNet.getName(),
+				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
+	}
+	
+	   /**
+     * If there are temporal nodes within the network that requires evidence
+     * must be retrieved from CostEffectivenessDialog
+     * @return EvidenceCase
+     */
+    public EvidenceCase getEvidenceFromNetwork (ProbNet probNet, CostEffectivenessDialog costEffectivenessDialog)
+    {
+        EvidenceCase evidenceCase = new EvidenceCase ();
+        Finding ageFinding = null;
+        if (probNet.checkIfThereIsAgeNode())
+        {
+            List<ProbNode> probNodes = probNet.getProbNodes ();
+            for (int i = 0; i < probNodes.size (); i++)
+            {
+                if (probNodes.get (i).getVariable ().isTemporal ()
+                    && probNodes.get (i).getVariable ().getBaseName ().equals ("Age")
+                    && probNodes.get (i).getVariable ().getTimeSlice () == 0)
+                {
+                    ageFinding = new Finding (probNodes.get (i).getVariable (),
+                                              costEffectivenessDialog.getInitialAge ());
+                    break;
+                }
+            }
+            try
+            {
+                evidenceCase.addFinding (ageFinding);
+            }
+            catch (InvalidStateException | IncompatibleEvidenceException e)
+            {
+                JOptionPane.showMessageDialog (mainPanel, stringDatabase.getString (e.getMessage ()),
+                                               stringDatabase.getString (e.getMessage ()),
+                                               JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace ();
+            }
+        }
+        if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
+        {
+            Finding finding = null;
+            for (int i = 0; i < probNet.getSpecialTimeDependentNodes ().size (); i++)
+            {
+                if (!probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
+                {
+                    finding = new Finding (
+                                           probNet.getSpecialTimeDependentNodes ().get (i).getVariable (),
+                                           Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
+                }
+                try
+                {
+                    evidenceCase.addFinding (finding);
+                }
+                catch (InvalidStateException | IncompatibleEvidenceException e)
+                {
+                    JOptionPane.showMessageDialog (mainPanel,
+                                                   stringDatabase.getString (e.getMessage ()),
+                                                   stringDatabase.getString (e.getMessage ()),
+                                                   JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace ();
+                }
+            }
+        }
+        return evidenceCase;
+    }	
+    
+    public void showSensitivityAnalysisCostEffectivenessDialog ()
+    {
+        /*
+         * ArrayList<Variable> decisionsWithoutPolicy = null; try {
+         * decisionsWithoutPolicy =
+         * VarEliminationSMM.getDecisionVariablesWithoutPolicies(this.probNet);
+         * } catch (NotEvaluableNetworkException e1) { // TODO Auto-generated
+         * catch block e1.printStackTrace(); } if
+         * (decisionsWithoutPolicy.size()!=1){ JOptionPane.showMessageDialog(
+         * Utilities.getOwner(this),
+         * "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model."
+         * , stringResource .getString("ErrorWindow.Title.Label"),
+         * JOptionPane.ERROR_MESSAGE); }else{ if
+         * (requestCostEffectiveness(Utilities.getOwner(this),"sa", true)) {
+         * //Perform a simulation with the reference values
+         * ArrayList<Intervention> interventionsDeterministic = null;
+         * CostEffectivenessAnalysis costEffectivenessAnalysisDeterministic; try
+         * { costEffectivenessAnalysisDeterministic = new
+         * CostEffectivenessAnalysis(probNet,
+         * costEffectivenessDialog.getInitialAge(),
+         * costEffectivenessDialog.getFinalAge(),
+         * costEffectivenessDialog.getDiscount(), 0); interventionsDeterministic
+         * = costEffectivenessAnalysisDeterministic.getAllInterventions(0)[0]; }
+         * catch (NotEnoughMemoryException e2) { JOptionPane.showMessageDialog(
+         * Utilities.getOwner(this), e2.getMessage(), stringResource
+         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+         * catch (NormalizeNullVectorException e2) { e2.printStackTrace(); }
+         * catch (DoEditException e2) { e2.printStackTrace(); } catch
+         * (ConstraintViolationException e2) { e2.printStackTrace(); } catch
+         * (CanNotDoEditException e2) { e2.printStackTrace(); } catch
+         * (NotEvaluableNetworkException e2) { e2.printStackTrace(); } catch
+         * (NonProjectablePotentialException e2) { e2.printStackTrace(); } catch
+         * (WrongCriterionException e2) { e2.printStackTrace(); } catch
+         * (IncompatibleEvidenceException exc) {
+         * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+         * stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
+         * + "\n\n" + exc.getMessage(),
+         * stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"
+         * ), JOptionPane.ERROR_MESSAGE); } catch (InvalidStateException exc) {
+         * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
+         * stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
+         * + exc.getMessage(),
+         * stringResource.getString("ExceptionInvalidState.Title.Label"),
+         * JOptionPane.ERROR_MESSAGE); } ArrayList<Intervention>[]
+         * interventionsProbabilistic = null; final String
+         * RESOURCE_EXCEL_TEMPLATE_2_STATES = "/openmarkov/gui/resources/" +
+         * "template/sa-plot-2-states-empty.xls"; final String
+         * RESOURCE_EXCEL_TEMPLATE_3_STATES = "/openmarkov/gui/resources/" +
+         * "template/sa-plot-3-states-empty.xls"; CostEffectivenessAnalysis
+         * costEffectivenessAnalysis = null; try { costEffectivenessAnalysis =
+         * new CostEffectivenessAnalysis(probNet,
+         * costEffectivenessDialog.getInitialAge(),
+         * costEffectivenessDialog.getFinalAge(),
+         * costEffectivenessDialog.getDiscount(),
+         * costEffectivenessDialog.getSimulationsNumber()); int
+         * numSimulationsInEachThread = 20; interventionsProbabilistic =
+         * costEffectivenessAnalysis
+         * .getAllInterventionsWithThreads(costEffectivenessDialog
+         * .getSimulationsNumber(),numSimulationsInEachThread);
+         * //interventionsProbabilistic =
+         * costEffectivenessAnalysis.getAllInterventions
+         * (costEffectivenessDialog.getSimulationsNumber()); } catch
+         * (NotEnoughMemoryException e1) { JOptionPane.showMessageDialog(
+         * Utilities.getOwner(this), e1.getMessage(), stringResource
+         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+         * catch (NormalizeNullVectorException e1) { e1.printStackTrace(); }
+         * catch (DoEditException e1) { e1.printStackTrace(); } catch
+         * (ConstraintViolationException e1) { e1.printStackTrace(); } catch
+         * (CanNotDoEditException e1) { e1.printStackTrace(); } catch
+         * (NotEvaluableNetworkException e1) { e1.printStackTrace(); } catch
+         * (NonProjectablePotentialException e1) { e1.printStackTrace(); } catch
+         * (WrongCriterionException e1) { e1.printStackTrace(); } Variable
+         * decision = decisionsWithoutPolicy.get(0); int
+         * numStatesDecisionToAnalyze = decision.getNumStates();
+         * ExcelSensitivityAnalysis excelTarget =
+         * ExcelSensitivityAnalysis.getUniqueInstance();
+         * excelTarget.setInitialData
+         * (costEffectivenessDialog.getSimulationsNumber(),
+         * decisionsWithoutPolicy.get(0)); try {
+         * excelTarget.useTemplate(numStatesDecisionToAnalyze
+         * ,RESOURCE_EXCEL_TEMPLATE_2_STATES,RESOURCE_EXCEL_TEMPLATE_3_STATES);
+         * } catch (IOException e) { JOptionPane.showMessageDialog(
+         * Utilities.getOwner(this), e.getMessage(), stringResource
+         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
+         * try { excelTarget.writeExcelReportSensitivityAnalysis(
+         * interventionsDeterministic,interventionsProbabilistic,
+         * costEffectivenessDialog.getOutputFileName()); } catch (IOException e)
+         * { JOptionPane.showMessageDialog( Utilities.getOwner(this),
+         * e.getMessage(), stringResource .getString("ErrorWindow.Title.Label"),
+         * JOptionPane.ERROR_MESSAGE); } JOptionPane.showMessageDialog(
+         * Utilities.getOwner(this), "Report has been created",
+         * "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE); } }
+         */
+    }
+    
 }
