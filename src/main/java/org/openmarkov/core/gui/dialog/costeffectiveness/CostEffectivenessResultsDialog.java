@@ -275,7 +275,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
         try
         {
             excel.writeExcelReportOptimalInterventions (interventions,
-                                                        costeffectivenessAnalysis.getFrontierIntervention (costeffectivenessAnalysis.getInterventions ().toArray (new Intervention[costeffectivenessAnalysis.getInterventions ().size ()])),
+                                                        costeffectivenessAnalysis.getFrontierInterventions (costeffectivenessAnalysis.getInterventions ()),
                                                         costEffectivenessDialog.getOutputFileName ());
         }
         catch (IOException e)

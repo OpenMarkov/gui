@@ -27,7 +27,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -58,7 +57,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-import org.openmarkov.core.inference.FactoryExpandedSMM;
+import org.openmarkov.core.inference.FactoryExpandedMPAD;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -210,96 +209,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
         else if (actionCommand.equals (ActionCommands.EXPAND_NETWORK))
         {
-            CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
-                                                                                           Utilities.getOwner (mainPanel));
-            if (costEffectivenessDialog.requestData (getCurrentNetworkPanel ().getProbNet ().getName (),
-                                                     "expanded") == CostEffectivenessDialog.OK_BUTTON)
-            {
-                int numSlices;
-                if (getCurrentNetworkPanel ().getProbNet ().checkIfThereIsAgeNode ())
-                {
-                    numSlices = costEffectivenessDialog.getFinalAge ()
-                                - costEffectivenessDialog.getInitialAge ();
-                }
-                else
-                {
-                    numSlices = costEffectivenessDialog.getNumSlices ();
-                }
-                expandNetwork (getCurrentNetworkPanel ().getProbNet (), numSlices);
-            }
+            expandNetwork(getCurrentNetworkPanel ().getProbNet ());
         }
         else if (actionCommand.equals (ActionCommands.EXPAND_NETWORK_CE))
         {
-            CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
-                                                                                           Utilities.getOwner (mainPanel),
-                                                                                           getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes (),
-                                                                                           getCurrentNetworkPanel ().getProbNet ().checkIfThereIsAgeNode (),
-                                                                                           false,
-                                                                                           false,
-                                                                                           false);
-            if (costEffectivenessDialog.requestData (getCurrentNetworkPanel ().getProbNet ().getName (),
-                                                     "expandedCE") == CostEffectivenessDialog.OK_BUTTON)
-            {
-                EvidenceCase evidenceCase = new EvidenceCase ();
-                int numSlices;
-                if (getCurrentNetworkPanel ().getProbNet ().checkIfThereIsAgeNode ())
-                {
-                    numSlices = costEffectivenessDialog.getFinalAge ()
-                                - costEffectivenessDialog.getInitialAge ();
-                    // set up findings from the network and values introduced by
-                    // the user
-                    Finding ageFinding = null;
-                    List<ProbNode> probNodes = getCurrentNetworkPanel ().getProbNet ().getProbNodes ();
-                    for (int i = 0; i < probNodes.size (); i++)
-                    {
-                        if (probNodes.get (i).getVariable ().isTemporal ()
-                            && probNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                            && probNodes.get (i).getVariable ().getTimeSlice () == 0)
-                        {
-                            ageFinding = new Finding (probNodes.get (i).getVariable (),
-                                                      costEffectivenessDialog.getInitialAge ());
-                            break;
-                        }
-                    }
-                    try
-                    {
-                        evidenceCase.addFinding (ageFinding);
-                    }
-                    catch (InvalidStateException | IncompatibleEvidenceException e1)
-                    {
-                        e1.printStackTrace ();
-                    }
-                }
-                else
-                {
-                    numSlices = costEffectivenessDialog.getNumSlices ();
-                }
-                if (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().size () >= 0)
-                {
-                    Finding finding = null;
-                    for (int i = 0; i < getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().size (); i++)
-                    {
-                        if (!getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
-                        {
-                            finding = new Finding (
-                                                   getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable (),
-                                                   Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (getCurrentNetworkPanel ().getProbNet ().getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
-                        }
-                        try
-                        {
-                            evidenceCase.addFinding (finding);
-                        }
-                        catch (InvalidStateException | IncompatibleEvidenceException e1)
-                        {
-                            e1.printStackTrace ();
-                        }
-                    }
-                }
-                expandNetwokCE (getCurrentNetworkPanel ().getProbNet (), numSlices,
-                                costEffectivenessDialog.getCostDiscount (),
-                                costEffectivenessDialog.getEffectivenessDiscount (),
-                                costEffectivenessDialog.getCycleLength (), evidenceCase);
-            }
+            expandNetworkCE(getCurrentNetworkPanel ().getProbNet ());
         }
         else if (actionCommand.equals (ActionCommands.EXIT_APPLICATION))
         {
@@ -393,23 +307,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             getCurrentNetworkPanel ().changePotential ();
         }
-        else if (actionCommand.equals (ActionCommands.TEST))
-        {
-            // getCurrentNetworkPanel().changeNodeTable();
-            try
-            {
-                createExpandeNetwork (getCurrentNetworkPanel ().probNet);
-            }
-            catch (NotEvaluableNetworkException e1)
-            {
-                // TODO Enviar mensaje
-                /*
-                 * JOptionPane.showMessageDialog(
-                 * Utilities.getOwner(getCurrentNetworkPanel().getRootPane()),
-                 * e1.getMessage(), "Network not evaluable", MessageType.ERROR);
-                 */
-            }
-        }
         else if (actionCommand.equals (ActionCommands.DECISION_IMPOSE_POLICY))
         {
             getCurrentNetworkPanel ().imposePolicyInNode ();
@@ -484,18 +381,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
         else if (actionCommand.equals (ActionCommands.MESSAGE_WINDOW))
         {
             showMessageWindow ();
-            // TODO: Make this dynamic
-            // } else if (actionCommand.equals( ActionCommands.LEARNING )) {
-            // learning();
         }
         else if (actionCommand.equals (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC))
         {
             // Deterministic
-            showCostEffectivenessDialog (false);
+            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), false);
         }
         else if (actionCommand.equals (ActionCommands.SENSITIVITY_ANALYSIS))
         {
-            showCostEffectivenessDialog (true);
+            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), true);
         }
         else if (actionCommand.equals (ActionCommands.CONFIGURATION))
         {
@@ -564,16 +458,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
             ToolPluginManager.getInstance ().processCommand (actionCommand,
                                                              mainPanel.getMainFrame ());
         }
-    }
-
-	private void createExpandeNetwork (ProbNet probNet)
-        throws NotEvaluableNetworkException
-    {
-        /*
-         * VarEliminationSMM simpleMarkovEvaluation = new
-         * VarEliminationSMM(probNet, 15, null, 500.0);
-         * createNewFrame2(simpleMarkovEvaluation.getExtendedNet());
-         */
     }
 
     /**
@@ -994,21 +878,108 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
     /**
      * Creates an expanded network from current network
-     * @param probNet
-     * @param numSlices
-     */
-    private void expandNetwork (ProbNet probNet, int numSlices)
+     * */
+    private void expandNetwork(ProbNet probNet)
     {
-        FactoryExpandedSMM expandedNetFactory;
-        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
-        String fileName = probNet.getName () + "_expanded";
-        expandedNetwork.setName (fileName);
-        NetworkPanel networkPanel = createNewFrame (expandedNetwork);
-        networkPanel.setNetworkFile (fileName);
-        networkPanels.add (networkPanel);
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel));
+        if (costEffectivenessDialog.requestData (probNet.getName (),
+                                                 "expanded") == CostEffectivenessDialog.OK_BUTTON)
+        {
+            int numSlices;
+            if (probNet.checkIfThereIsAgeNode ())
+            {
+                numSlices = costEffectivenessDialog.getFinalAge ()
+                            - costEffectivenessDialog.getInitialAge ();
+            }
+            else
+            {
+                numSlices = costEffectivenessDialog.getNumSlices ();
+            }
+            FactoryExpandedMPAD expandedNetFactory;
+            expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+            ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+            String fileName = probNet.getName () + "_expanded";
+            expandedNetwork.setName (fileName);
+            NetworkPanel networkPanel = createNewFrame (expandedNetwork);
+            networkPanel.setNetworkFile (fileName);
+            networkPanels.add (networkPanel);
+        }        
     }
 
+    private void expandNetworkCE (ProbNet probNet)
+    {
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
+                                                                                       Utilities.getOwner (mainPanel),
+                                                                                       probNet.getSpecialTimeDependentNodes (),
+                                                                                       probNet.checkIfThereIsAgeNode (),
+                                                                                       false,
+                                                                                       false,
+                                                                                       false);
+        if (costEffectivenessDialog.requestData (probNet.getName (), "expandedCE") == CostEffectivenessDialog.OK_BUTTON)
+        {
+            EvidenceCase evidenceCase = new EvidenceCase ();
+            int numSlices;
+            if (probNet.checkIfThereIsAgeNode ())
+            {
+                numSlices = costEffectivenessDialog.getFinalAge ()
+                            - costEffectivenessDialog.getInitialAge ();
+                // set up findings from the network and values introduced by
+                // the user
+                Finding ageFinding = null;
+                List<ProbNode> probNodes = probNet.getProbNodes ();
+                for (int i = 0; i < probNodes.size (); i++)
+                {
+                    Variable variable = probNodes.get (i).getVariable (); 
+                    if (variable.isTemporal ()
+                        && variable.getBaseName ().equals ("Age")
+                        && variable.getTimeSlice () == 0)
+                    {
+                        ageFinding = new Finding (variable,
+                                                  costEffectivenessDialog.getInitialAge ());
+                        break;
+                    }
+                }
+                try
+                {
+                    evidenceCase.addFinding (ageFinding);
+                }
+                catch (InvalidStateException | IncompatibleEvidenceException e1)
+                {
+                    e1.printStackTrace ();
+                }
+            }
+            else
+            {
+                numSlices = costEffectivenessDialog.getNumSlices ();
+            }
+            if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
+            {
+                Finding finding = null;
+                for (int i = 0; i < probNet.getSpecialTimeDependentNodes ().size (); i++)
+                {
+                    if (!probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
+                    {
+                        finding = new Finding (
+                                               probNet.getSpecialTimeDependentNodes ().get (i).getVariable (),
+                                               Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
+                    }
+                    try
+                    {
+                        evidenceCase.addFinding (finding);
+                    }
+                    catch (InvalidStateException | IncompatibleEvidenceException e1)
+                    {
+                        e1.printStackTrace ();
+                    }
+                }
+            }
+            expandNetwokCE (probNet, numSlices,
+                            costEffectivenessDialog.getCostDiscount (),
+                            costEffectivenessDialog.getEffectivenessDiscount (),
+                            costEffectivenessDialog.getCycleLength (), evidenceCase);
+        }
+   }    
+    
     /**
      * expand the network like it would be done in CE analysis to show it in the
      * GUI
@@ -1020,7 +991,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                  double cycleLength,
                                  EvidenceCase evidence)
     {
-        FactoryExpandedSMM expandedNetFactory;
+        FactoryExpandedMPAD expandedNetFactory;
         double maxX = 0.0;
         for (ProbNode probNode : probNet.getProbNodes ())
         {
@@ -1029,7 +1000,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 maxX = probNode.getNode ().getCoordinateX ();
             }
         }
-        expandedNetFactory = new FactoryExpandedSMM (probNet, numSlices, null);
+        expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
         // extend evidence
         if (!evidence.getFindings ().isEmpty ())
@@ -1040,7 +1011,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace ();
             }
         }
@@ -1608,34 +1578,28 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
-    private void showCostEffectivenessDialog(boolean sensitivityAnalysis) {
-    	CostEffectivenessDialog costEffectivenessDialog = null;
-        if (requestCostEffectiveness (Utilities.getOwner (mainPanel), "cea", getCurrentNetworkPanel ().probNet, false, false, false))
+    private void showCostEffectivenessDialog(ProbNet probNet, boolean sensitivityAnalysis) {
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), probNet.getSpecialTimeDependentNodes (),
+                                                                                       probNet.checkIfThereIsAgeNode (), true,
+                                                                                       false, true);
+
+        if (costEffectivenessDialog.requestData (probNet.getName (), "cea") == CostEffectivenessDialog.OK_BUTTON)
         {
-            int numSlices;
-            if (getCurrentNetworkPanel ().probNet.checkIfThereIsAgeNode())
-            {
-                numSlices = costEffectivenessDialog.getFinalAge ()
-                            - costEffectivenessDialog.getInitialAge ();
-            }
-            else
-            {
-                numSlices = costEffectivenessDialog.getNumSlices ();
-            }
-            double costDiscountRate = costEffectivenessDialog.getCostDiscount ();
-            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount ();
-            double cycleLength = costEffectivenessDialog.getCycleLength ();
+            int numSlices = (probNet.checkIfThereIsAgeNode ()) ? costEffectivenessDialog.getFinalAge ()
+                                                                 - costEffectivenessDialog.getInitialAge ()
+                                                              : costEffectivenessDialog.getNumSlices ();
             String units = costEffectivenessDialog.getUnits ();
-            boolean checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
+
             CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
-            		getCurrentNetworkPanel ().probNet,
-                                                                                                 costDiscountRate,
-                                                                                                 effectivenessDiscountRate,
+                                                                                                 probNet,
+                                                                                                 costEffectivenessDialog.getCostDiscount (),
+                                                                                                 costEffectivenessDialog.getEffectivenessDiscount (),
                                                                                                  numSlices,
-                                                                                                 getEvidenceFromNetwork (getCurrentNetworkPanel ().probNet, costEffectivenessDialog),
-                                                                                                 cycleLength,
+                                                                                                 costEffectivenessDialog.getInitialAge (),
+                                                                                                 costEffectivenessDialog.getNumericTemporalValues (),
+                                                                                                 costEffectivenessDialog.getCycleLength (),
                                                                                                  null,
-                                                                                                 checkZeroCycle);
+                                                                                                 costEffectivenessDialog.getZeroCycle ());            
             new CostEffectivenessResultsDialog (
                                                 Utilities.getOwner (mainPanel),
                                                 costEffectivenessAnalysis,
@@ -1644,95 +1608,27 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
-	private boolean requestCostEffectiveness(Window owner,
-			String suffixTypeAnalysis, ProbNet probNet,
-			boolean isProbabilistic, boolean isUtility,
-			boolean isTemporalEvolution) {
-		CostEffectivenessDialog costEffectivenessDialog;
-		boolean isThereNodeAge = probNet.checkIfThereIsAgeNode();
-		List<ProbNode> numericTemporalNodes = probNet
-				.getSpecialTimeDependentNodes();
-		if (isTemporalEvolution) {
-			costEffectivenessDialog = new CostEffectivenessDialog(owner,
-					numericTemporalNodes, isThereNodeAge, isUtility,
-					isTemporalEvolution, true);
-		} else {
-			costEffectivenessDialog = new CostEffectivenessDialog(owner,
-					numericTemporalNodes, isThereNodeAge, true, false, true);
-		}
-		return (costEffectivenessDialog.requestData(probNet.getName(),
-				suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
-	}
-	
-	   /**
-     * If there are temporal nodes within the network that requires evidence
-     * must be retrieved from CostEffectivenessDialog
-     * @return EvidenceCase
-     */
-    public EvidenceCase getEvidenceFromNetwork (ProbNet probNet, CostEffectivenessDialog costEffectivenessDialog)
+    private CostEffectivenessDialog requestCostEffectiveness (Window owner,
+                                                              String suffixTypeAnalysis,
+                                                              ProbNet probNet,
+                                                              boolean isProbabilistic,
+                                                              boolean isUtility,
+                                                              boolean isTemporalEvolution)
     {
-        EvidenceCase evidenceCase = new EvidenceCase ();
-        Finding ageFinding = null;
-        if (probNet.checkIfThereIsAgeNode())
-        {
-            List<ProbNode> probNodes = probNet.getProbNodes ();
-            for (int i = 0; i < probNodes.size (); i++)
-            {
-                if (probNodes.get (i).getVariable ().isTemporal ()
-                    && probNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                    && probNodes.get (i).getVariable ().getTimeSlice () == 0)
-                {
-                    ageFinding = new Finding (probNodes.get (i).getVariable (),
-                                              costEffectivenessDialog.getInitialAge ());
-                    break;
-                }
-            }
-            try
-            {
-                evidenceCase.addFinding (ageFinding);
-            }
-            catch (InvalidStateException | IncompatibleEvidenceException e)
-            {
-                JOptionPane.showMessageDialog (mainPanel, stringDatabase.getString (e.getMessage ()),
-                                               stringDatabase.getString (e.getMessage ()),
-                                               JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace ();
-            }
-        }
-        if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
-        {
-            Finding finding = null;
-            for (int i = 0; i < probNet.getSpecialTimeDependentNodes ().size (); i++)
-            {
-                if (!probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
-                {
-                    finding = new Finding (
-                                           probNet.getSpecialTimeDependentNodes ().get (i).getVariable (),
-                                           Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
-                }
-                try
-                {
-                    evidenceCase.addFinding (finding);
-                }
-                catch (InvalidStateException | IncompatibleEvidenceException e)
-                {
-                    JOptionPane.showMessageDialog (mainPanel,
-                                                   stringDatabase.getString (e.getMessage ()),
-                                                   stringDatabase.getString (e.getMessage ()),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    e.printStackTrace ();
-                }
-            }
-        }
-        return evidenceCase;
-    }	
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet.getSpecialTimeDependentNodes (),
+                                                               probNet.checkIfThereIsAgeNode (), isUtility || !isTemporalEvolution,
+                                                               isTemporalEvolution, true);
+        return (costEffectivenessDialog.requestData (probNet.getName (), suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON) ? costEffectivenessDialog
+                                                                                                                                  : null;
+    }
+
     
     public void showSensitivityAnalysisCostEffectivenessDialog ()
     {
         /*
          * ArrayList<Variable> decisionsWithoutPolicy = null; try {
          * decisionsWithoutPolicy =
-         * VarEliminationSMM.getDecisionVariablesWithoutPolicies(this.probNet);
+         * VarEliminationMPAD.getDecisionVariablesWithoutPolicies(this.probNet);
          * } catch (NotEvaluableNetworkException e1) { // TODO Auto-generated
          * catch block e1.printStackTrace(); } if
          * (decisionsWithoutPolicy.size()!=1){ JOptionPane.showMessageDialog(

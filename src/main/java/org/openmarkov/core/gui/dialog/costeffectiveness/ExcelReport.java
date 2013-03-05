@@ -198,8 +198,8 @@ public class ExcelReport {
 		 * @param fileName
 		 * @throws IOException
 		 */
-		public void writeExcelReportOptimalInterventions(ArrayList<Intervention> interventions, 
-				ArrayList<Intervention> frontier, String fileName) throws IOException{
+		public void writeExcelReportOptimalInterventions(List<Intervention> interventions, 
+				List<Intervention> frontier, String fileName) throws IOException{
 			
 				//HSSFCellStyle style = wb.createCellStyle();
 		       //style.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex());
@@ -250,7 +250,7 @@ public class ExcelReport {
 			
 		}
 		
-		private void writeAllInterventionsSheet(ArrayList<Intervention> interventions) {
+		private void writeAllInterventionsSheet(List<Intervention> interventions) {
 			HSSFSheet allInterventionsSheet = workBook.createSheet("All interventions");
 			int rowIndex = 1;
 			int cellIndex;
@@ -278,7 +278,7 @@ public class ExcelReport {
 			
 		}
 
-		private void writeFrontierSheet(ArrayList<Intervention> interventions) {
+		private void writeFrontierSheet(List<Intervention> interventions) {
 			HSSFSheet frontierInterventionsSheet = workBook.createSheet("Frontier");
 			int rowIndex = 1;
 			int cellIndex;

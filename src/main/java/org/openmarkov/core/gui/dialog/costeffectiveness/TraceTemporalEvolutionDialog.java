@@ -24,7 +24,11 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
@@ -37,15 +41,15 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizontalDialog
 {
-    private static HashMap<Variable, TablePotential> temporalEvolution;
-    private static CostEffectivenessDialog           costEffectivenessDialog;
-    private ChartPanel                               chartPanel;
-    private TemporalEvolutionTablePanel              tablePanel;
-    private JTabbedPane                              tabbedPane;
-    private static Variable                          variableOfInterest;
-    private static ProbNet                           expandedNetwork;
-    private static boolean                           isUtility;
-    private static boolean                           checkZeroCycle;
+    private HashMap<Variable, TablePotential> temporalEvolution;
+    private CostEffectivenessDialog           costEffectivenessDialog;
+    private ChartPanel                        chartPanel;
+    private TemporalEvolutionTablePanel       tablePanel;
+    private JTabbedPane                       tabbedPane;
+    private Variable                          variableOfInterest;
+    private ProbNet                           expandedNetwork;
+    private boolean                           isUtility;
+    private boolean                           checkZeroCycle;
 
     public TraceTemporalEvolutionDialog (Window owner,
                                          HashMap<Variable, TablePotential> temporalEvolution,
@@ -81,9 +85,42 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
         setVisible (true);
     }
 
-    public TraceTemporalEvolutionDialog(Window owner,
-			Variable variableOfInterest, boolean isUtility) {
+    public TraceTemporalEvolutionDialog(Window owner, ProbNode node) throws ImposedPoliciesException {
     	super (owner);
+    	ProbNet probNet = node.getProbNet ();
+        this.isUtility = node.getNodeType () == NodeType.UTILITY;
+    	costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet.getSpecialTimeDependentNodes (),
+                                                                                       probNet.checkIfThereIsAgeNode (), isUtility,
+                                                                                       true, true);
+
+        if (costEffectivenessDialog.requestData (probNet.getName (), "te") == CostEffectivenessDialog.OK_BUTTON)    	
+        {
+            int numSlices;
+            if (probNet.checkIfThereIsAgeNode ())
+            {
+                numSlices = costEffectivenessDialog.getFinalAge ()
+                            - costEffectivenessDialog.getInitialAge ();
+            }
+            else
+            {
+                numSlices = costEffectivenessDialog.getNumSlices ();
+            }
+            // evidenceCase and cycleLegth null by the moment
+            CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
+                                                                                                 probNet,
+                                                                                                 costEffectivenessDialog.getCostDiscount (),
+                                                                                                 costEffectivenessDialog.getEffectivenessDiscount (),
+                                                                                                 numSlices,
+                                                                                                 costEffectivenessDialog.getInitialAge (),
+                                                                                                 costEffectivenessDialog.getNumericTemporalValues (),
+                                                                                                 costEffectivenessDialog.getCycleLength (),
+                                                                                                 null,
+                                                                                                 costEffectivenessDialog.getZeroCycle ());
+
+            HashMap<Variable, TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);    	
+            this.variableOfInterest = node.getVariable ();
+        }
+    	
 	}
 
 	private void initialize ()
@@ -162,7 +199,7 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
         return chartPanel;
     }
 
-    private static XYDataset createDataset ()
+    private XYDataset createDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
         double value = 0.0;
@@ -224,6 +261,15 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
         }
         return tablePanel;
     }
+    
+    /**
+     * Returns the checkZeroCycle.
+     * @return the checkZeroCycle.
+     */
+    public boolean isCheckZeroCycle ()
+    {
+        return checkZeroCycle;
+    }    
 
     private void createExcel ()
     {

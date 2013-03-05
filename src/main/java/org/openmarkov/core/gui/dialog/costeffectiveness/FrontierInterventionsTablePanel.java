@@ -2,7 +2,7 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class FrontierInterventionsTablePanel extends JPanel{
 
-	private ArrayList<Intervention> frontierInterventions;
+	private List<Intervention> frontierInterventions;
 	private JScrollPane valuesTableScrollPane;
 	CostEffectivenessAnalysis costEffectivenessAnalysis;
 	
@@ -28,8 +28,7 @@ public class FrontierInterventionsTablePanel extends JPanel{
 		super();
 		removeAll();
 		this.costEffectivenessAnalysis = costEffectivenessAnalysis;
-		this.frontierInterventions = costEffectivenessAnalysis.getFrontierIntervention(
-				costEffectivenessAnalysis.getInterventions().toArray(new Intervention[costEffectivenessAnalysis.getInterventions().size()] ));
+		this.frontierInterventions = costEffectivenessAnalysis.getFrontierInterventions(costEffectivenessAnalysis.getInterventions());
 		
 		setLayout(new BorderLayout());
 		//add(getValuesTableScrollPane(), BorderLayout.CENTER);
@@ -58,9 +57,9 @@ public class FrontierInterventionsTablePanel extends JPanel{
 			table.getColumnModel().getColumn(1).setHeaderValue("Effectiveness");
 			table.getColumnModel().getColumn(2).setHeaderValue("Cost");
 			table.getColumnModel().getColumn(3).setHeaderValue("ICER");
-					
-			ArrayList<Intervention> frontierInterventionICER = costEffectivenessAnalysis.calculateIncrementalCERatiosOfFrontier(costEffectivenessAnalysis.getFrontierIntervention(
-					costEffectivenessAnalysis.getInterventions().toArray(new Intervention[costEffectivenessAnalysis.getInterventions().size()] )));
+			
+			List<Intervention> frontierInterventions = costEffectivenessAnalysis.getFrontierInterventions(costEffectivenessAnalysis.getInterventions());
+			List<Intervention> frontierInterventionICER = costEffectivenessAnalysis.calculateICERsOfFrontier(frontierInterventions);
 						
 			for (int i = 0; i < frontierInterventions.size(); i++) {
 				model.setValueAt(frontierInterventionICER.get(i).getName(), i, 0);

@@ -40,9 +40,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
@@ -2274,12 +2272,17 @@ public class EditorPanel extends JPanel
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
-            Variable variableOfInterest = node.getProbNode ().getVariable ();
-            boolean isUtility = node.getProbNode ().getNodeType () == NodeType.UTILITY;
-            new TraceTemporalEvolutionDialog (
-                    Utilities.getOwner (this),
-                    variableOfInterest,
-                    isUtility);
+            try
+            {
+                new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getProbNode ());
+            }
+            catch (ImposedPoliciesException e)
+            {
+                JOptionPane.showMessageDialog (Utilities.getOwner (this),
+                                               e.getMessage (),
+                                               stringDatabase.getString ("Error.Title.Label"),
+                                               JOptionPane.ERROR_MESSAGE);
+            }
             setSelectedAllNodes (false);
             repaint ();
         }
