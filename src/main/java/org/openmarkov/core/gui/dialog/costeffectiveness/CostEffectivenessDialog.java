@@ -391,7 +391,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         if (initialAgeTextField == null)
         {
             initialAgeTextField = new JTextField ("12");
-            finalAgeTextField.setName ("initialAgeText");
+            initialAgeTextField.setName ("initialAgeText");
             // initialAgeTextField.addActionListener(this);
         }
         return initialAgeTextField;

@@ -123,22 +123,21 @@ public class CostEffectivenessAnalysis
         }
         if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
         {
-            Finding finding = null;
             for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
             {
                 if (!timeDependentNode.getVariable ().getBaseName ().equalsIgnoreCase ("age"))
                 {
-                    finding = new Finding (
+                    Finding finding = new Finding (
                                            timeDependentNode.getVariable (),
                                            Double.valueOf (numericTemporalValues.get (timeDependentNode.getName ()).getText ()));
-                }
-                try
-                {
-                    evidenceCase.addFinding (finding);
-                }
-                catch (InvalidStateException | IncompatibleEvidenceException e)
-                {
-                    e.printStackTrace ();
+                    try
+                    {
+                        evidenceCase.addFinding (finding);
+                    }
+                    catch (InvalidStateException | IncompatibleEvidenceException e)
+                    {
+                        e.printStackTrace ();
+                    }
                 }
             }
         }

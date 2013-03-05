@@ -317,7 +317,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     {
         JFileChooser fileChooser = new JFileChooser ();
         String netName = FilenameUtils.getBaseName (expandedNetwork.getName ());
-        fileChooser.setSelectedFile(new File(netName +"-"+ variableOfInterest.getName () +"-temporalEvolution.xls"));        
+        fileChooser.setSelectedFile(new File(netName +"-"+ variableOfInterest.getBaseName () +"-temporalEvolution.xls"));        
         if(fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
         {
             String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
