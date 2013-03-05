@@ -46,7 +46,7 @@ public class CostEffectivenessAnalysis
                                       double costDiscountRate,
                                       double effectivenessDiscountRate,
                                       int numSlices,
-                                      int initialAge,
+                                      Integer initialAge,
                                       HashMap<String, JTextField> numericTemporalValues,
                                       double cycleLength,
                                       Variable numIndexVariable,
@@ -95,7 +95,7 @@ public class CostEffectivenessAnalysis
      * @return EvidenceCase
      */
     private EvidenceCase getEvidenceFromNetwork (ProbNet probNet,
-                                                 int initialAge,
+                                                 Integer initialAge,
                                                  HashMap<String, JTextField> numericTemporalValues)
     {
         EvidenceCase evidenceCase = new EvidenceCase ();

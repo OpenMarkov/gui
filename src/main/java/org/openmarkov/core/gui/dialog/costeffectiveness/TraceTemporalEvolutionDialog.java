@@ -26,8 +26,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -51,47 +49,14 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
     private boolean                           isUtility;
     private boolean                           checkZeroCycle;
 
-    public TraceTemporalEvolutionDialog (Window owner,
-                                         HashMap<Variable, TablePotential> temporalEvolution,
-                                         CostEffectivenessDialog costEffectivenessDialog,
-                                         Variable variableOfInterest,
-                                         ProbNet expandedNetwork,
-                                         boolean isUtility,
-                                         boolean checkZeroCycle)
-    {
-        super (owner);
-        this.temporalEvolution = temporalEvolution;
-        this.costEffectivenessDialog = costEffectivenessDialog;
-        this.variableOfInterest = variableOfInterest;
-        this.expandedNetwork = expandedNetwork;
-        this.isUtility = isUtility;
-        this.checkZeroCycle = checkZeroCycle;
-        initialize ();
-        Toolkit toolkit = Toolkit.getDefaultToolkit ();
-        Dimension screenSize = toolkit.getScreenSize ();
-        Rectangle bounds = owner.getBounds ();
-        int width = screenSize.width / 2;
-        int height = screenSize.height / 2;
-        // center point of the owner window
-        int x = bounds.x / 2 - width / 2;
-        int y = bounds.y / 2 - height / 2;
-        this.setBounds (x, y, width, height);
-        setMinimumSize (new Dimension (width, height / 2));
-        setLocationRelativeTo (owner);
-        setResizable (true);
-        repaint ();
-        createExcel ();
-        pack ();
-        setVisible (true);
-    }
-
     public TraceTemporalEvolutionDialog(Window owner, ProbNode node) throws ImposedPoliciesException {
     	super (owner);
     	ProbNet probNet = node.getProbNet ();
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
     	costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet.getSpecialTimeDependentNodes (),
-                                                                                       probNet.checkIfThereIsAgeNode (), isUtility,
-                                                                                       true, true);
+                                                                                       probNet.checkIfThereIsAgeNode (),
+                                                                                       true);
+        this.checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
 
         if (costEffectivenessDialog.requestData (probNet.getName (), "te") == CostEffectivenessDialog.OK_BUTTON)    	
         {
@@ -115,10 +80,28 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
                                                                                                  costEffectivenessDialog.getNumericTemporalValues (),
                                                                                                  costEffectivenessDialog.getCycleLength (),
                                                                                                  null,
-                                                                                                 costEffectivenessDialog.getZeroCycle ());
+                                                                                                 checkZeroCycle);
 
-            HashMap<Variable, TablePotential> temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);    	
             this.variableOfInterest = node.getVariable ();
+            this.temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);
+            this.expandedNetwork = costEffectivenessAnalysis.getExpandedNetwork ();
+            initialize ();
+            Toolkit toolkit = Toolkit.getDefaultToolkit ();
+            Dimension screenSize = toolkit.getScreenSize ();
+            Rectangle bounds = owner.getBounds ();
+            int width = screenSize.width / 2;
+            int height = screenSize.height / 2;
+            // center point of the owner window
+            int x = bounds.x / 2 - width / 2;
+            int y = bounds.y / 2 - height / 2;
+            this.setBounds (x, y, width, height);
+            setMinimumSize (new Dimension (width, height / 2));
+            setLocationRelativeTo (owner);
+            setResizable (true);
+            repaint ();
+            createExcel ();
+            pack ();
+            setVisible (true);            
         }
     	
 	}

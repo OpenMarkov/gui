@@ -9,7 +9,6 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -70,9 +69,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private JLabel                      initialAgeLabel;
     private JLabel                      cycleLengthLabel;
     private JLabel                      unitLabel;
-    private boolean                     checkZero;
     private JTextField                  cycleLengthTextField;
-    private JComboBox                   unitsCombo;
+    private JComboBox<String>           unitsCombo;
     private JCheckBox                   checkZeroCycle;
     private JLabel                      finalAgeLabel;
     private JTextField                  finalAgeTextField;
@@ -103,18 +101,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private JRadioButton                instantButton;
     private JRadioButton                accumulativeButton;
     private ButtonGroup                 buttonGroup;
-    private boolean                     isUtility;
-    private boolean                     isTemporalEvolution;
-    private JPanel                      nodeAgePanel;
-    private JPanel                      utilityParametersPanel;
     private JPanel                      instantOrAccumulativePanel;
-    private JPanel                      numericTemporalPanel;
-    private JPanel                      outputPanel;
     private boolean                     isAccumulative            = false;
     private JPanel                      numSlicesPanel;
     private List<ProbNode>              numericTemporalNodes;
     private HashMap<String, JTextField> numericTemporalComponents = new HashMap<> ();
-    private boolean                     outputFile;
 
     /**
      * Launch the application.
@@ -202,17 +193,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     public CostEffectivenessDialog (Window owner,
                                     List<ProbNode> numericTemporalNodes,
                                     boolean isThereNodeAge,
-                                    boolean isUtility,
-                                    boolean isTemporalEvolution,
-                                    boolean outputFile)
+                                    boolean isTemporalEvolution)
     {
         super (owner);
         setLocationRelativeTo (owner);
         this.thereIsNodeAge = isThereNodeAge;
-        this.isUtility = isUtility;
-        this.isTemporalEvolution = isTemporalEvolution;
         this.numericTemporalNodes = numericTemporalNodes;
-        this.outputFile = outputFile;
         initialize (isTemporalEvolution);
         setResizable (false);
         pack ();
@@ -280,20 +266,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         {
             getComponentsPanel ().add (new JPanel ());
             getComponentsPanel ().add (getJPanelInstantOrAccumulative (), BorderLayout.CENTER);
-        }
-        JPanel outputPanel = new JPanel ();
-        // outputPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        // outputPanel.setLayout(new GridLayout(1, 3, 10, 10));
-        if (outputFile)
-        {
-            outputPanel.setLayout (new FlowLayout (FlowLayout.LEFT, 0, 0));
-            outputPanel.add (getOutputFileLabel ());
-            outputPanel.add (new JPanel ());
-            outputPanel.add (getOutputFileJTextField ());
-            outputPanel.add (new JPanel ());
-            outputPanel.add (getBtnBrowse ());
-            getComponentsPanel ().add (new JPanel ());
-            getComponentsPanel ().add (outputPanel, BorderLayout.SOUTH);
         }
         pack ();
         repaint ();
@@ -613,7 +585,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return effectivenessDiscountTextField;
     }
 
-    public JRadioButton getInstanValuesButton ()
+    public JRadioButton getInstantValuesButton ()
     {
         if (instantButton == null)
         {
@@ -641,7 +613,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     public void initButtonGroup ()
     {
         buttonGroup = new ButtonGroup ();
-        buttonGroup.add (getInstanValuesButton ());
+        buttonGroup.add (getInstantValuesButton ());
         buttonGroup.add (getAccumulativeValuesButton ());
     }
 
@@ -661,7 +633,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
                                                                                     "Temporal display"));
             instantOrAccumulativePanel.setName ("instantOrAccumulativePanel");
             initButtonGroup ();
-            instantOrAccumulativePanel.add (getInstanValuesButton ());
+            instantOrAccumulativePanel.add (getInstantValuesButton ());
             instantOrAccumulativePanel.add (getAccumulativeValuesButton ());
             // instantOrAccumulativePanel.setEnabled( true);
             // instantOrAccumulativePanel.setVisible(true);
@@ -726,7 +698,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return true;
     }
 
-    public int getInitialAge ()
+    public Integer getInitialAge ()
     {
         return initialAge;
     }
@@ -768,7 +740,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
 
     public boolean getZeroCycle ()
     {
-        return checkZero = (getCheckCycleCero ().isSelected ()) ? true : false;
+        return getCheckCycleCero ().isSelected ();
     }
 
     public void showSimulationsNumberElements (boolean isProbabilistic)
@@ -816,7 +788,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     @Override
     public void itemStateChanged (ItemEvent e)
     {
-        if (e.getItem ().equals (getInstanValuesButton ()))
+        if (e.getItem ().equals (getInstantValuesButton ()))
         {
             this.isAccumulative = false;
         }

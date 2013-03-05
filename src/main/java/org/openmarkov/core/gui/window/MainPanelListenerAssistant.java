@@ -912,8 +912,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                        Utilities.getOwner (mainPanel),
                                                                                        probNet.getSpecialTimeDependentNodes (),
                                                                                        probNet.checkIfThereIsAgeNode (),
-                                                                                       false,
-                                                                                       false,
                                                                                        false);
         if (costEffectivenessDialog.requestData (probNet.getName (), "expandedCE") == CostEffectivenessDialog.OK_BUTTON)
         {
@@ -1580,8 +1578,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
     
     private void showCostEffectivenessDialog(ProbNet probNet, boolean sensitivityAnalysis) {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), probNet.getSpecialTimeDependentNodes (),
-                                                                                       probNet.checkIfThereIsAgeNode (), true,
-                                                                                       false, true);
+                                                                                       probNet.checkIfThereIsAgeNode (), 
+                                                                                       false);
 
         if (costEffectivenessDialog.requestData (probNet.getName (), "cea") == CostEffectivenessDialog.OK_BUTTON)
         {
@@ -1607,21 +1605,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                 costEffectivenessDialog);
         }
     }
-    
-    private CostEffectivenessDialog requestCostEffectiveness (Window owner,
-                                                              String suffixTypeAnalysis,
-                                                              ProbNet probNet,
-                                                              boolean isProbabilistic,
-                                                              boolean isUtility,
-                                                              boolean isTemporalEvolution)
-    {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet.getSpecialTimeDependentNodes (),
-                                                               probNet.checkIfThereIsAgeNode (), isUtility || !isTemporalEvolution,
-                                                               isTemporalEvolution, true);
-        return (costEffectivenessDialog.requestData (probNet.getName (), suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON) ? costEffectivenessDialog
-                                                                                                                                  : null;
-    }
-
     
     public void showSensitivityAnalysisCostEffectivenessDialog ()
     {
