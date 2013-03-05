@@ -882,8 +882,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void expandNetwork(ProbNet probNet)
     {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel));
-        if (costEffectivenessDialog.requestData (probNet.getName (),
-                                                 "expanded") == CostEffectivenessDialog.OK_BUTTON)
+        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
             int numSlices;
             if (probNet.checkIfThereIsAgeNode ())
@@ -897,7 +896,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             FactoryExpandedMPAD expandedNetFactory;
             expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
-            ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+            ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
             String fileName = probNet.getName () + "_expanded";
             expandedNetwork.setName (fileName);
             NetworkPanel networkPanel = createNewFrame (expandedNetwork);
@@ -910,10 +909,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
     {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
                                                                                        Utilities.getOwner (mainPanel),
-                                                                                       probNet.getSpecialTimeDependentNodes (),
-                                                                                       probNet.checkIfThereIsAgeNode (),
+                                                                                       probNet,
                                                                                        false);
-        if (costEffectivenessDialog.requestData (probNet.getName (), "expandedCE") == CostEffectivenessDialog.OK_BUTTON)
+        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
             EvidenceCase evidenceCase = new EvidenceCase ();
             int numSlices;
@@ -1005,7 +1003,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             try
             {
-                evidence.extendEvidence (expandedNetFactory.getExtendedNet (), cycleLength);
+                evidence.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
             }
             catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
             {
@@ -1018,7 +1016,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         expandedNetFactory.adaptProbNetForCE ();
         // project all the evidence
         // expandedNetFactory.projectEvidence(evidence);
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+        ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         String fileName = probNet.getName () + "_expandedCE";
         expandedNetwork.setName (fileName);
         NetworkPanel networkPanel = createNewFrame (expandedNetwork);
@@ -1577,16 +1575,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
     }
     
     private void showCostEffectivenessDialog(ProbNet probNet, boolean sensitivityAnalysis) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), probNet.getSpecialTimeDependentNodes (),
-                                                                                       probNet.checkIfThereIsAgeNode (), 
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), 
+                                                                                       probNet, 
                                                                                        false);
 
-        if (costEffectivenessDialog.requestData (probNet.getName (), "cea") == CostEffectivenessDialog.OK_BUTTON)
+        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
             int numSlices = (probNet.checkIfThereIsAgeNode ()) ? costEffectivenessDialog.getFinalAge ()
                                                                  - costEffectivenessDialog.getInitialAge ()
                                                               : costEffectivenessDialog.getNumSlices ();
-            String units = costEffectivenessDialog.getUnits ();
+            //String units = costEffectivenessDialog.getUnits ();
 
             CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
                                                                                                  probNet,

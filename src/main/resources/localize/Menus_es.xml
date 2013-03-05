@@ -402,12 +402,14 @@
   		<Label value = "Evolución temporal" />>
   	</Evolution> 
   </Temporal>
-  <ExpandNetwork>
-  	<Label value = "Expandir red" />
-  </ExpandNetwork>
-  <ExpandNetworkCE>
-    <Label value = "Expandir red CE" />
-  </ExpandNetworkCE>  
+  <CostEffectiveness>
+      <ExpandNetwork>
+        <Label value = "Expandir red" />
+      </ExpandNetwork>
+      <ExpandNetworkCE>
+        <Label value = "Expandir red CE" />
+      </ExpandNetworkCE>
+  </CostEffectiveness> 
   <BUNDLEFILE>
     <Text value="Español" />
   </BUNDLEFILE>

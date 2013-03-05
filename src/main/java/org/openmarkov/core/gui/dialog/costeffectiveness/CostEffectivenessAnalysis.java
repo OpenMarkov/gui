@@ -166,16 +166,16 @@ public class CostEffectivenessAnalysis
         FactoryExpandedMPAD expandedNetFactory;
         expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, numIndexVariable);
         InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
-        extendEvidence (expandedNetFactory.getExtendedNet ());
+        extendEvidence (expandedNetFactory.getExtendedNetwork ());
         expandedNetFactory.applyDiscountToUtilityNodes (costDiscountRate,
                                                         effectivenessDiscountRate,
                                                         inferenceOptions, evidence);
         expandedNetFactory.adaptProbNetForCE ();
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNet ();
+        ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         if (!checkZeroCycle)
         {
             expandedNetFactory.pruneZeroCycleUtilities ();
-            expandedNetwork = expandedNetFactory.getExtendedNet ();
+            expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         }
         VariableElimination variableElimination;
         try
@@ -224,12 +224,12 @@ public class CostEffectivenessAnalysis
         }
         HashMap<Variable, TablePotential> probsAndUtilities = null;
         FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
-        extendEvidence (expandedNetFactory.getExtendedNet ());
+        extendEvidence (expandedNetFactory.getExtendedNetwork ());
         expandedNetFactory.applyDiscountToUtilityNodes (costDiscountRate,
                                                         effectivenessDiscountRate,
                                                         new InferenceOptions (probNet, null),
                                                         evidence);
-        this.expandedNetwork = expandedNetFactory.getExtendedNet ();
+        this.expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         String baseName = variableOfInterest.getBaseName ();
         List<Variable> variablesOfInterest = new ArrayList<> ();
         /*
@@ -355,7 +355,7 @@ public class CostEffectivenessAnalysis
         return interventions;
     }
 
-    public void setInterventions (ArrayList<Intervention> interventions)
+    public void setInterventions (List<Intervention> interventions)
     {
         this.interventions = interventions;
     }
@@ -363,5 +363,14 @@ public class CostEffectivenessAnalysis
     public ProbNet getExpandedNetwork ()
     {
         return expandedNetwork;
+    }
+
+    /**
+     * Returns the probNet.
+     * @return the probNet.
+     */
+    public ProbNet getProbNet ()
+    {
+        return probNet;
     }
 }

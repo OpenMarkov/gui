@@ -2,17 +2,27 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,7 +35,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.exception.ImposedPoliciesException;
-import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -33,11 +43,11 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
- * Dialog where to plot temporal evolution of variables in CEA
+ * Plot of temporal evolution of variables in CEA
  * @author myebra
  */
 @SuppressWarnings("serial")
-public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizontalDialog
+public class TraceTemporalEvolutionDialog extends JDialog
 {
     private HashMap<Variable, TablePotential> temporalEvolution;
     private CostEffectivenessDialog           costEffectivenessDialog;
@@ -48,18 +58,18 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
     private ProbNet                           expandedNetwork;
     private boolean                           isUtility;
     private boolean                           checkZeroCycle;
+    
+    private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
-    public TraceTemporalEvolutionDialog(Window owner, ProbNode node) throws ImposedPoliciesException {
+    public TraceTemporalEvolutionDialog(Window owner, ProbNode node) {
     	super (owner);
     	ProbNet probNet = node.getProbNet ();
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
-    	costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet.getSpecialTimeDependentNodes (),
-                                                                                       probNet.checkIfThereIsAgeNode (),
-                                                                                       true);
-        this.checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
+    	costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet, true);
 
-        if (costEffectivenessDialog.requestData (probNet.getName (), "te") == CostEffectivenessDialog.OK_BUTTON)    	
+        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)    	
         {
+            this.checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
             int numSlices;
             if (probNet.checkIfThereIsAgeNode ())
             {
@@ -83,25 +93,35 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
                                                                                                  checkZeroCycle);
 
             this.variableOfInterest = node.getVariable ();
-            this.temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);
-            this.expandedNetwork = costEffectivenessAnalysis.getExpandedNetwork ();
-            initialize ();
-            Toolkit toolkit = Toolkit.getDefaultToolkit ();
-            Dimension screenSize = toolkit.getScreenSize ();
-            Rectangle bounds = owner.getBounds ();
-            int width = screenSize.width / 2;
-            int height = screenSize.height / 2;
-            // center point of the owner window
-            int x = bounds.x / 2 - width / 2;
-            int y = bounds.y / 2 - height / 2;
-            this.setBounds (x, y, width, height);
-            setMinimumSize (new Dimension (width, height / 2));
-            setLocationRelativeTo (owner);
-            setResizable (true);
-            repaint ();
-            createExcel ();
-            pack ();
-            setVisible (true);            
+            try
+            {
+                this.temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);
+                this.expandedNetwork = costEffectivenessAnalysis.getExpandedNetwork ();
+                initialize ();
+                Toolkit toolkit = Toolkit.getDefaultToolkit ();
+                Dimension screenSize = toolkit.getScreenSize ();
+                Rectangle bounds = owner.getBounds ();
+                int width = screenSize.width / 2;
+                int height = screenSize.height / 2;
+                // center point of the owner window
+                int x = bounds.x / 2 - width / 2;
+                int y = bounds.y / 2 - height / 2;
+                this.setBounds (x, y, width, height);
+                setMinimumSize (new Dimension (width, height / 2));
+                setLocationRelativeTo (owner);
+                setResizable (true);
+                repaint ();
+                pack ();
+                setVisible (true);
+            }
+            catch (ImposedPoliciesException e)
+            {
+                JOptionPane.showMessageDialog (owner,
+                                               e.getMessage (),
+                                               "Error",
+                                               JOptionPane.ERROR_MESSAGE);
+            }
+                
         }
     	
 	}
@@ -110,21 +130,60 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
     {
         setTitle (stringDatabase.getString ("TemporalEvolutionResultDialog.Title.Label") + " "
                   + variableOfInterest.getBaseName ());
-        configureComponentsPanel ();
+        setContentPane (getJContentPane ());
         pack ();
     }
 
-    private void configureComponentsPanel ()
+    /**
+     * This method initialises jContentPane.
+     * @return a new content panel.
+     */
+    private JPanel getJContentPane ()
     {
-        // do not want to see ok cancel buttons
-        getBottomPanel ().setVisible (false);
-        getComponentsPanel ().setLayout (new BorderLayout (5, 5));
-        getComponentsPanel ().setMaximumSize (new Dimension (180, 40));
-        getComponentsPanel ().add (getTabbedPane ());
-        // getComponentsPanel().add(getTablePanel(),BorderLayout.CENTER);
-        // getComponentsPanel().add(getChartsPanel(), BorderLayout.SOUTH);
-        pack ();
+        JPanel jContentPane = new JPanel ();
+        jContentPane.setLayout (new BorderLayout ());
+        jContentPane.add (getComponentsPanel (), BorderLayout.CENTER);
+        jContentPane.add (getBottomPanel (), BorderLayout.SOUTH);
+        return jContentPane;
     }
+    
+    private JPanel getBottomPanel ()
+    {
+        JPanel buttonsPanel = new JPanel ();
+        JButton jButtonSaveReport = new JButton ();
+        jButtonSaveReport.setName ("jButtonSaveReport");
+        jButtonSaveReport.setText (stringDatabase.getString ("Dialog.SaveReport.Label"));
+        jButtonSaveReport.addActionListener (new ActionListener ()
+            {
+                public void actionPerformed (ActionEvent e)
+                {
+                    saveReport();
+                }
+            });
+        buttonsPanel.add (jButtonSaveReport);
+        JButton jButtonClose = new JButton ();
+        jButtonClose.setName ("jButtonClose");
+        jButtonClose.setText (stringDatabase.getString ("Dialog.Close.Label"));
+        jButtonClose.addActionListener (new ActionListener ()
+            {
+                public void actionPerformed (ActionEvent e)
+                {
+                    setVisible (false);
+                    dispose ();
+                }
+            });
+        buttonsPanel.add (jButtonClose);
+        return buttonsPanel;
+    }
+    private Component getComponentsPanel ()
+    {
+        JPanel panel = new JPanel ();
+        panel.setLayout (new BorderLayout (5, 5));
+        panel.setMaximumSize (new Dimension (180, 40));
+        panel.add (getTabbedPane ());
+        pack ();
+        return panel;
+    }    
 
     /**
      * This method initialises tabbedPane.
@@ -254,10 +313,31 @@ public class TraceTemporalEvolutionDialog extends OkCancelApplyUndoRedoHorizonta
         return checkZeroCycle;
     }    
 
-    private void createExcel ()
+    private void saveReport()
+    {
+        JFileChooser fileChooser = new JFileChooser ();
+        String netName = FilenameUtils.getBaseName (expandedNetwork.getName ());
+        fileChooser.setSelectedFile(new File(netName +"-"+ variableOfInterest.getName () +"-temporalEvolution.xls"));        
+        if(fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
+        {
+            String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
+            try
+            {
+                createExcel (filename);
+            }
+            catch (IOException e)
+            {
+                JOptionPane.showMessageDialog (this, "Error when trying to generate report in " + filename);
+            }
+        }
+    }
+    
+    private void createExcel (String filename) throws IOException
     {
         ExcelReport excel = ExcelReport.getUniqueInstance ();
-        excel.createTemporalEvolutionExcelReport (temporalEvolution, expandedNetwork,
-                                                  costEffectivenessDialog, variableOfInterest);
+        excel.createTemporalEvolutionExcelReport (filename,
+                                                  temporalEvolution, expandedNetwork,
+                                                  costEffectivenessDialog.getNumSlices (), 
+                                                  variableOfInterest);
     }
 }

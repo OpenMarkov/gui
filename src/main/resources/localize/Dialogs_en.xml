@@ -40,6 +40,14 @@
 		<Label value = "Frontier interventions"/>
 	</Title>
 </FrontierInterventions>
+<Dialog>
+	<Close>
+	    <Label value = "Close"/>
+	</Close>
+    <SaveReport>
+        <Label value = "Save report"/>
+    </SaveReport>
+</Dialog>
 
   <DiscreteTablePanel>
     <Table>

@@ -2,17 +2,27 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,8 +35,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
-import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -41,18 +51,18 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
  * @author myebra
  */
 @SuppressWarnings("serial")
-public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizontalDialog
+public class CostEffectivenessResultsDialog extends JDialog
 {
-    private static TablePotential           globalUtility;
-    private static CPTablePanel             cpTablePanel;
+    private TablePotential                  globalUtility;
+    private CPTablePanel                    cpTablePanel;
     private ChartPanel                      chartPanel;
     private CostEffectivenessDialog         costEffectivenessDialog;
     private CostEffectivenessAnalysis       costeffectivenessAnalysis;
     private JTabbedPane                     tabbedPane;
-    private static ArrayList<Intervention>  interventions;
+    private List<Intervention>              interventions;
     private FrontierInterventionsTablePanel frontierInterventionsTablePanel;
+    private StringDatabase                  stringDatabase = StringDatabase.getUniqueInstance ();
 
-    @SuppressWarnings("static-access")
     public CostEffectivenessResultsDialog (Window owner,
                                            CostEffectivenessAnalysis costeffectivenessAnalysis,
                                            TablePotential globalUtility,
@@ -85,27 +95,60 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
     {
         setTitle (stringDatabase.getString ("CostEffectivenessResultDialog.Title.Label"));
         createInterventions ();
-        configureComponentsPanel ();
+        setContentPane (getJContentPane ());
         pack ();
     }
 
-    private void configureComponentsPanel ()
+    /**
+     * This method initialises jContentPane.
+     * @return a new content panel.
+     */
+    private JPanel getJContentPane ()
     {
-        // do not want to see ok cancel buttons
-        getBottomPanel ().setVisible (false);
-        getComponentsPanel ().setLayout (new BorderLayout (5, 5));
-        getComponentsPanel ().setMaximumSize (new Dimension (180, 40));
-        getComponentsPanel ().add (getTabbedPane ());
+        JPanel jContentPane = new JPanel ();
+        jContentPane.setLayout (new BorderLayout ());
+        jContentPane.add (getComponentsPanel (), BorderLayout.CENTER);
+        jContentPane.add (getBottomPanel (), BorderLayout.SOUTH);
+        return jContentPane;
+    }
+
+    private JPanel getBottomPanel ()
+    {
+        JPanel buttonsPanel = new JPanel ();
+        JButton jButtonSaveReport = new JButton ();
+        jButtonSaveReport.setName ("jButtonSaveReport");
+        jButtonSaveReport.setText (stringDatabase.getString ("Dialog.SaveReport.Label"));
+        jButtonSaveReport.addActionListener (new ActionListener ()
+            {
+                public void actionPerformed (ActionEvent e)
+                {
+                    saveReport();
+                }
+            });
+        buttonsPanel.add (jButtonSaveReport);
+        JButton jButtonClose = new JButton ();
+        jButtonClose.setName ("jButtonClose");
+        jButtonClose.setText (stringDatabase.getString ("Dialog.Close.Label"));
+        jButtonClose.addActionListener (new ActionListener ()
+            {
+                public void actionPerformed (ActionEvent e)
+                {
+                    setVisible (false);
+                    dispose ();
+                }
+            });
+        buttonsPanel.add (jButtonClose);
+        return buttonsPanel;
+    }
+
+    private Component getComponentsPanel ()
+    {
+        JPanel panel = new JPanel ();
+        panel.setLayout (new BorderLayout (5, 5));
+        panel.setMaximumSize (new Dimension (180, 40));
+        panel.add (getTabbedPane ());
         pack ();
-        // do not want to see ok cancel buttons
-        /*
-         * getBottomPanel().setVisible(false);
-         * getComponentsPanel().setLayout(new BorderLayout(5, 5));
-         * getComponentsPanel().setMaximumSize(new Dimension( 180,40));
-         * getComponentsPanel().add(getPotentialPanel (), BorderLayout.CENTER);
-         * getComponentsPanel().add(getChartsPanel()); createExcel(); pack();
-         */
-        createExcel ();
+        return panel;
     }
 
     /**
@@ -130,7 +173,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
         return tabbedPane;
     }
 
-    private static ProbabilityTablePanel getPotentialPanel ()
+    private ProbabilityTablePanel getPotentialPanel ()
     {
         if (cpTablePanel == null)
         {
@@ -216,7 +259,7 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
      * series.add(effectiveness, cost); } result.addSeries(series); return
      * result; }
      */
-    private static XYDataset createDataset ()
+    private XYDataset createDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
         Object data[][] = ((ProbabilityTablePanel) getPotentialPanel ()).getData ();
@@ -260,28 +303,39 @@ public class CostEffectivenessResultsDialog extends OkCancelApplyUndoRedoHorizon
     {
         if (frontierInterventionsTablePanel == null)
         {
-            frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (
-                                                                                   costeffectivenessAnalysis);
+            frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (costeffectivenessAnalysis);
             // add(tablePanel.getValuesTableScrollPane());
             // tablePanel.setAutoscrolls(true);
         }
         return frontierInterventionsTablePanel;
     }
+    
+    private void saveReport()
+    {
+        JFileChooser fileChooser = new JFileChooser ();
+        String netName = FilenameUtils.getBaseName (costeffectivenessAnalysis.getProbNet ().getName ());
+        fileChooser.setSelectedFile(new File(netName +"-cea.xls"));        
+        if(fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
+        {
+            String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
+            try
+            {
+                createExcel (filename);
+            }
+            catch (IOException e)
+            {
+                JOptionPane.showMessageDialog (this, "Error when trying to generate report in " + filename);
+            }
+        }
+    }
 
-    private void createExcel ()
+    private void createExcel (String filename)
+        throws IOException
     {
         ExcelReport excel = ExcelReport.getUniqueInstance ();
         excel.setInitialData (costEffectivenessDialog);
-        try
-        {
-            excel.writeExcelReportOptimalInterventions (interventions,
-                                                        costeffectivenessAnalysis.getFrontierInterventions (costeffectivenessAnalysis.getInterventions ()),
-                                                        costEffectivenessDialog.getOutputFileName ());
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace ();
-        }
+        excel.writeExcelReportOptimalInterventions (interventions,
+                                                    costeffectivenessAnalysis.getFrontierInterventions (costeffectivenessAnalysis.getInterventions ()),
+                                                    filename);
     }
 }

@@ -401,12 +401,20 @@
   		<Label value = "Temporal Evolution" />>
   	</Evolution> 
   </Temporal>
-  <ExpandNetwork>
-  	<Label value = "Expand Network" />
-  </ExpandNetwork>
-  <ExpandNetworkCE>
-    <Label value = "Expand Network CE" />
-  </ExpandNetworkCE>
+  <CostEffectiveness>
+	  <ExpandNetwork>
+	  	<Label value = "Expand Network" />
+	  </ExpandNetwork>
+	  <ExpandNetworkCE>
+	    <Label value = "Expand Network CE" />
+	  </ExpandNetworkCE>
+	  <Analysis>
+	    <Label value = "Cost Effectiveness Analysis" />
+	  </Analysis>
+      <TemporalEvolution>
+        <Label value = "Temporal Evolution" />
+      </TemporalEvolution>
+  </CostEffectiveness>
   <BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

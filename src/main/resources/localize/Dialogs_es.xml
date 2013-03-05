@@ -36,6 +36,14 @@
 		<Label value = "Tabla"/>
 	</Title>
 </AllInterventionsTable>
+<Dialog>
+    <Close>
+        <Label value = "Cerrar"/>
+    </Close>
+    <SaveReport>
+        <Label value = "Guardar informe"/>
+    </SaveReport>
+</Dialog>
 <FrontierInterventions> 
 	<Title>
 		<Label value = "Intervenciones frontera"/>

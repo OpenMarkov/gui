@@ -60,13 +60,11 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'Expand network'.
      */
-    public static final String EXPAND_NETWORK_MENUITEM =
-        "ExpandNetwork";
+    public static final String EXPAND_NETWORK_MENUITEM = "CostEffectiveness.ExpandNetwork";
     /**
      * Constant that defines the item 'Expand network for CE analysis'.
      */
-    public static final String EXPAND_NETWORK_CE_MENUITEM =
-        "ExpandNetworkCE";
+    public static final String EXPAND_NETWORK_CE_MENUITEM = "CostEffectiveness.ExpandNetworkCE";
     /**
      * Constant that defines the item 'File - Network additionalProperties'.
      */

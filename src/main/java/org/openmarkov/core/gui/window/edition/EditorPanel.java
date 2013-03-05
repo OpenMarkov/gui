@@ -29,7 +29,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.UndoManagerSupport;
-import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -2272,17 +2271,7 @@ public class EditorPanel extends JPanel
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
-            try
-            {
-                new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getProbNode ());
-            }
-            catch (ImposedPoliciesException e)
-            {
-                JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                               e.getMessage (),
-                                               stringDatabase.getString ("Error.Title.Label"),
-                                               JOptionPane.ERROR_MESSAGE);
-            }
+            new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getProbNode ());
             setSelectedAllNodes (false);
             repaint ();
         }

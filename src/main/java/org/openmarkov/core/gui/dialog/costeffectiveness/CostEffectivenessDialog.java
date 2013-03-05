@@ -7,12 +7,9 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -27,10 +24,8 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,13 +33,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 
 /**
@@ -88,12 +84,9 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private Double                      effectivenessDiscount;
     private JLabel                      lblOutputFile;
     private JLabel                      yearsLabel2;
-    private JTextField                  outputJTextField;
-    private String                      nameFile;
     private JTextField                  txtSimulationNumber;
     private JLabel                      lblSimulationsNumber;
     private Integer                     simulationsNumber;
-    private JButton                     btnBrowse;
     private boolean                     thereIsNodeAge            = false;
     private JLabel                      numSlicesLabell;
     private JTextField                  numSlicesJTextField;
@@ -106,36 +99,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private JPanel                      numSlicesPanel;
     private List<ProbNode>              numericTemporalNodes;
     private HashMap<String, JTextField> numericTemporalComponents = new HashMap<> ();
-
-    /**
-     * Launch the application.
-     */
-    public static void main (String[] args)
-    {
-        try
-        {
-            CostEffectivenessDialog dialog = new CostEffectivenessDialog ();
-            dialog.setDefaultCloseOperation (JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible (true);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (null,
-                                           StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                           StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /**
-     * Create the dialog.
-     */
-    public CostEffectivenessDialog ()
-    {
-        super (null);
-        initialize ();
-    }
+    
+    private StringDatabase stingDatabase = StringDatabase.getUniqueInstance ();
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
@@ -154,53 +119,21 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         repaint ();
     }
 
-    private JPanel getNumSlicesPanel ()
-    {
-        if (numSlicesPanel == null)
-        {
-            numSlicesPanel = new JPanel ();
-            GroupLayout groupLayout = new GroupLayout (numSlicesPanel);
-            groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                          false).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNumSlices ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getNumSlicesJTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            75,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE))).addContainerGap ()))));
-            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addComponent (getJLabelNumSlices ()).addComponent (getNumSlicesJTextField (),
-                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                 GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE)).addContainerGap ()));
-            numSlicesPanel.setLayout (groupLayout);
-        }
-        return numSlicesPanel;
-    }
-
-    /**
-     * Creates a CostEffectivenessDialog
-     * @param owner The parent of the dialog
-     */
-    public CostEffectivenessDialog (Window owner, boolean isThereNodeAge)
-    {
-        super (owner);
-        setLocationRelativeTo (owner);
-        this.thereIsNodeAge = isThereNodeAge;
-        initialize ();
-    }
-
     /**
      * Creates a CostEffectivenessDialog for temporal evolution
      * @param owner The parent of the dialog
      */
     public CostEffectivenessDialog (Window owner,
-                                    List<ProbNode> numericTemporalNodes,
-                                    boolean isThereNodeAge,
+                                    ProbNet probNet,
                                     boolean isTemporalEvolution)
     {
         super (owner);
         setLocationRelativeTo (owner);
-        this.thereIsNodeAge = isThereNodeAge;
-        this.numericTemporalNodes = numericTemporalNodes;
+        this.thereIsNodeAge = probNet.checkIfThereIsAgeNode ();
+        this.numericTemporalNodes = probNet.getSpecialTimeDependentNodes ();
         initialize (isTemporalEvolution);
         setResizable (false);
+        setTitle(probNet.getName (), isTemporalEvolution);
         pack ();
         repaint ();
     }
@@ -271,116 +204,25 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         repaint ();
     }
 
-    private void initialize ()
+    private JPanel getNumSlicesPanel ()
     {
-        setMinimumSize (new Dimension (380, 230));
-        contentPanel.setBorder (new EmptyBorder (5, 5, 5, 5));
-        if (thereIsNodeAge)
+        if (numSlicesPanel == null)
         {
-            GroupLayout groupLayout = new GroupLayout (getComponentsPanel ());
-            groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.TRAILING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.TRAILING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addComponent (getInitialAgeLabel (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          70).addComponent (getCostDiscountLabel (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70)).addGap (26)).addGroup (groupLayout.createSequentialGroup ().addComponent (getLblSimulationsNumber ()).addPreferredGap (ComponentPlacement.RELATED))).addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addComponent (getInitialAgeTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 70).addGap (28).addComponent (getYearsLabel (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               70)).addGroup (groupLayout.createParallelGroup (Alignment.TRAILING,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               false).addComponent (getTxtSimulationsNumber (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Short.MAX_VALUE).addComponent (getCostDiscountTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Short.MAX_VALUE)))).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 false).addGroup (groupLayout.createSequentialGroup ().addComponent (getOutputFileLabel ()).addGap (14).addComponent (getOutputFileJTextField ())).addGroup (groupLayout.createSequentialGroup ().addComponent (getFinalAgeLabel (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                70).addGap (26).addComponent (getFinalAgeTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              70).addGap (28).addComponent (getYearsLabel2 (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70))).addPreferredGap (ComponentPlacement.UNRELATED).addComponent (getBtnBrowse ()))).addContainerGap ()));
-            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getYearsLabel ()).addComponent (getInitialAgeLabel ()).addComponent (getInitialAgeTextField (),
-                                                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE)).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getFinalAgeLabel ()).addComponent (getYearsLabel2 ()).addComponent (getFinalAgeTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE)).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getCostDiscountTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    GroupLayout.PREFERRED_SIZE).addComponent (getCostDiscountLabel ())).addGap (7).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getLblSimulationsNumber ()).addComponent (getTxtSimulationsNumber (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          GroupLayout.PREFERRED_SIZE)).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getOutputFileLabel ()).addComponent (getOutputFileJTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GroupLayout.PREFERRED_SIZE).addComponent (getBtnBrowse ())).addContainerGap ()));
-            getComponentsPanel ().setLayout (groupLayout);
-        }
-        else if (!thereIsNodeAge)
-        {
-            GroupLayout groupLayout = new GroupLayout (getComponentsPanel ());
+            numSlicesPanel = new JPanel ();
+            GroupLayout groupLayout = new GroupLayout (numSlicesPanel);
             groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING,
                                                                                                                                                                                                                                                                                                                           false).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNumSlices ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getNumSlicesJTextField (),
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE)).addGroup (groupLayout.createSequentialGroup ().addComponent (getCostDiscountLabel ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getCostDiscountTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      70,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GroupLayout.PREFERRED_SIZE)).addGroup (groupLayout.createSequentialGroup ().addComponent (getOutputFileLabel ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getOutputFileJTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              180,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              GroupLayout.PREFERRED_SIZE).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getBtnBrowse ()))).addContainerGap ()))));
-            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJLabelNumSlices ()).addComponent (getNumSlicesJTextField (),
-                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE, /* 20 */
-                                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE)).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getCostDiscountLabel (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                         GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                         GroupLayout.PREFERRED_SIZE).addComponent (getCostDiscountTextField ())).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getOutputFileLabel ()).addComponent (getOutputFileJTextField (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                GroupLayout.PREFERRED_SIZE).addComponent (getBtnBrowse ())).addGap (21).addContainerGap ()));
-            getComponentsPanel ().setLayout (groupLayout);
-            Component[] components = new Component[3];
-            components[0] = getJLabelNumSlices ();
-            components[1] = getCostDiscountLabel ();
-            components[2] = getOutputFileLabel ();
-            groupLayout.linkSize (components);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            75,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GroupLayout.PREFERRED_SIZE))).addContainerGap ()))));
+            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addComponent (getJLabelNumSlices ()).addComponent (getNumSlicesJTextField (),
+                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                                                                                                                 GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE)).addContainerGap ()));
+            numSlicesPanel.setLayout (groupLayout);
         }
-    }
-
-    public JButton getBtnBrowse ()
-    {
-        if (btnBrowse == null)
-        {
-            btnBrowse = new JButton ("Browse ...");
-            btnBrowse.addActionListener (new ActionListener ()
-                {
-                    public void actionPerformed (ActionEvent arg0)
-                    {
-                        String tempNameFile = requestNetworkFileToSave (nameFile);
-                        if (tempNameFile != null)
-                        {
-                            nameFile = tempNameFile;
-                            getOutputFileJTextField ().setText (nameFile);
-                        }
-                    }
-                });
-        }
-        return btnBrowse;
-    }
+        return numSlicesPanel;
+    }    
 
     private JLabel getJLabelNumSlices ()
     {
@@ -421,16 +263,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
             lblSimulationsNumber.setVisible (false);
         }
         return lblSimulationsNumber;
-    }
-
-    public JTextField getOutputFileJTextField ()
-    {
-        if (outputJTextField == null)
-        {
-            outputJTextField = new JTextField ();
-            outputJTextField.setColumns (50);
-        }
-        return outputJTextField;
     }
 
     public JLabel getOutputFileLabel ()
@@ -641,41 +473,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return instantOrAccumulativePanel;
     }
 
-    public int requestData (String probNetName, String suffixTypeAnalysis)
+    public int requestData ()
     {
-        nameFile = "-" + suffixTypeAnalysis;
-        if (probNetName != null)
-        {
-            nameFile = getOnlyName (probNetName) + nameFile;
-        }
-        // getOutputFileJTextField().setText(file);
-        // TODO internationalization
-        String title = "";
-        if (suffixTypeAnalysis.equals ("cea"))
-        {
-            title = "Cost Effectiveness Analysis";
-        }
-        else if (suffixTypeAnalysis.equals ("te"))
-        {
-            title = "Temporal Evolution";
-        }
-        else if (suffixTypeAnalysis.equals ("expanded"))
-        {
-            title = "Network expansion";
-        }
-        setTitle (title);
         setVisible (true);
         return selectedButton;
-    }
-
-    private String getOnlyName (String file)
-    {
-        if (file.endsWith (".pgmx"))
-        {
-            int index = file.lastIndexOf (".pgmx");
-            file = file.substring (0, index);
-        }
-        return file;
     }
 
     @Override
@@ -693,7 +494,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         costDiscount = Double.valueOf (getCostDiscountTextField ().getText ());
         effectivenessDiscount = Double.valueOf (getEffectivenessDiscountTextField ().getText ());
         cycleLength = Double.valueOf (getCycleLengthTextField ().getText ());
-        nameFile = getOutputFileJTextField ().getText ();
         simulationsNumber = Integer.valueOf (getTxtSimulationsNumber ().getText ());
         return true;
     }
@@ -721,11 +521,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     public double getEffectivenessDiscount ()
     {
         return effectivenessDiscount;
-    }
-
-    public String getOutputFileName ()
-    {
-        return nameFile;
     }
 
     public int getNumSlices ()
@@ -1111,5 +906,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
                 }
             }
         }
+    }
+
+    public void setTitle (String netName, boolean isTemporalEvolution)
+    {
+        String title = stringDatabase.getString (((isTemporalEvolution)? "CostEffectiveness.TemporalEvolution" : "CostEffectiveness.Analysis") + ".Label");
+        super.setTitle (title + " - " +  FilenameUtils.getBaseName (netName));
     }
 }

@@ -418,11 +418,11 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to expands the network.
 	 */
-	public static final String EXPAND_NETWORK = "ExpandNetwork";
+	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
 	/**
 	 * Action invoked when the user wants to expands the network for CE analysis.
 	 */
-	public static final String EXPAND_NETWORK_CE = "ExpandNetworkCE";
+	public static final String EXPAND_NETWORK_CE = "CostEffectiveness.ExpandNetworkCE";
 	/**
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */
