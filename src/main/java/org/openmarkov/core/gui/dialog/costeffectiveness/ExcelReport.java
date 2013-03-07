@@ -136,7 +136,6 @@ public class ExcelReport
         // Workbook wb = new XSSFWorkbook();
         // Sheet sheet = wb.createSheet("Sheet 1");
         HSSFSheet sheet = workBook.getSheet ("All interventions");
-        final int NUM_OF_ROWS = 3;
         final int NUM_OF_COLUMNS = 10;
         // Create a row and put some cells in it. Rows are 0 based.
         // Row row;

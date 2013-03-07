@@ -884,18 +884,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel));
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
-            int numSlices;
-            if (probNet.checkIfThereIsAgeNode ())
-            {
-                numSlices = costEffectivenessDialog.getFinalAge ()
-                            - costEffectivenessDialog.getInitialAge ();
-            }
-            else
-            {
-                numSlices = costEffectivenessDialog.getNumSlices ();
-            }
-            FactoryExpandedMPAD expandedNetFactory;
-            expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+            int numSlices = costEffectivenessDialog.getNumSlices ();
+            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
             String fileName = probNet.getName () + "_expanded";
             expandedNetwork.setName (fileName);
@@ -905,6 +895,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }        
     }
 
+    /**
+     * expand the network like it would be done in CE analysis to show it in the
+     * GUI
+     */    
     private void expandNetworkCE (ProbNet probNet)
     {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
@@ -922,12 +916,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 // set up findings from the network and values introduced by
                 // the user
                 Finding ageFinding = null;
-                List<ProbNode> probNodes = probNet.getProbNodes ();
-                for (int i = 0; i < probNodes.size (); i++)
+                for (ProbNode probNode : probNet.getProbNodes ())
                 {
-                    Variable variable = probNodes.get (i).getVariable (); 
+                    Variable variable = probNode.getVariable (); 
                     if (variable.isTemporal ()
-                        && variable.getBaseName ().equals ("Age")
+                        && variable.getBaseName ().equalsIgnoreCase ("age")
                         && variable.getTimeSlice () == 0)
                     {
                         ageFinding = new Finding (variable,
@@ -950,79 +943,66 @@ public class MainPanelListenerAssistant extends WindowAdapter
             }
             if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
             {
-                Finding finding = null;
-                for (int i = 0; i < probNet.getSpecialTimeDependentNodes ().size (); i++)
+                for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
                 {
-                    if (!probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getBaseName ().equalsIgnoreCase ("age"))
+                    Variable timeDependentVariable = timeDependentNode.getVariable ();
+                    if (!timeDependentVariable.getBaseName ().equalsIgnoreCase ("age"))
                     {
-                        finding = new Finding (
-                                               probNet.getSpecialTimeDependentNodes ().get (i).getVariable (),
-                                               Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (probNet.getSpecialTimeDependentNodes ().get (i).getVariable ().getName ()).getText ()));
-                    }
-                    try
-                    {
-                        evidenceCase.addFinding (finding);
-                    }
-                    catch (InvalidStateException | IncompatibleEvidenceException e1)
-                    {
-                        e1.printStackTrace ();
+                        Finding finding = new Finding (
+                                               timeDependentVariable,
+                                               Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable.getName ()).getText ()));
+                        try
+                        {
+                            evidenceCase.addFinding (finding);
+                        }
+                        catch (InvalidStateException | IncompatibleEvidenceException e)
+                        {
+                            e.printStackTrace ();
+                        }
                     }
                 }
             }
-            expandNetwokCE (probNet, numSlices,
-                            costEffectivenessDialog.getCostDiscount (),
-                            costEffectivenessDialog.getEffectivenessDiscount (),
-                            costEffectivenessDialog.getCycleLength (), evidenceCase);
+
+            double costDiscountRate = costEffectivenessDialog.getCostDiscount ();
+            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount ();
+            double cycleLength = costEffectivenessDialog.getCycleLength ();
+            double maxX = 0.0;
+            for (ProbNode probNode : probNet.getProbNodes ())
+            {
+                if (probNode.getNode ().getCoordinateX () > maxX)
+                {
+                    maxX = probNode.getNode ().getCoordinateX ();
+                }
+            }
+            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+            InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
+            // extend evidence
+            if (!evidenceCase.getFindings ().isEmpty ())
+            {
+                try
+                {
+                    evidenceCase.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
+                }
+                catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
+                {
+                    e.printStackTrace ();
+                }
+            }
+            expandedNetFactory.applyDiscountToUtilityNodes (costDiscountRate,
+                                                            effectivenessDiscountRate,
+                                                            inferenceOptions, evidenceCase);
+            expandedNetFactory.adaptProbNetForCE ();
+            // project all the evidence
+            // expandedNetFactory.projectEvidence(evidence);
+            ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
+            String fileName = probNet.getName () + "_expandedCE";
+            expandedNetwork.setName (fileName);
+            NetworkPanel networkPanel = createNewFrame (expandedNetwork);
+            networkPanel.setNetworkFile (fileName);
+            networkPanels.add (networkPanel);
         }
    }    
-    
-    /**
-     * expand the network like it would be done in CE analysis to show it in the
-     * GUI
-     */
-    private void expandNetwokCE (ProbNet probNet,
-                                 int numSlices,
-                                 double costDiscountRate,
-                                 double effectivenessDiscountRate,
-                                 double cycleLength,
-                                 EvidenceCase evidence)
-    {
-        FactoryExpandedMPAD expandedNetFactory;
-        double maxX = 0.0;
-        for (ProbNode probNode : probNet.getProbNodes ())
-        {
-            if (probNode.getNode ().getCoordinateX () > maxX)
-            {
-                maxX = probNode.getNode ().getCoordinateX ();
-            }
-        }
-        expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
-        InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
-        // extend evidence
-        if (!evidence.getFindings ().isEmpty ())
-        {
-            try
-            {
-                evidence.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
-            }
-            catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
-            {
-                e.printStackTrace ();
-            }
-        }
-        expandedNetFactory.applyDiscountToUtilityNodes (costDiscountRate,
-                                                        effectivenessDiscountRate,
-                                                        inferenceOptions, evidence);
-        expandedNetFactory.adaptProbNetForCE ();
-        // project all the evidence
-        // expandedNetFactory.projectEvidence(evidence);
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
-        String fileName = probNet.getName () + "_expandedCE";
-        expandedNetwork.setName (fileName);
-        NetworkPanel networkPanel = createNewFrame (expandedNetwork);
-        networkPanel.setNetworkFile (fileName);
-        networkPanels.add (networkPanel);
-    }
+
 
     /**
      * Open a existing network in a new network frame. If it is not a recently

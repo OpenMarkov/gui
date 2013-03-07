@@ -8,7 +8,6 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -47,8 +46,7 @@ public class PotentialPanelManager
             }
             else
             {
-                throw new AnnotationFormatError (
-                                                 "PotentialPanelPlugin annotation must be in a class that extends PotentialPanel");
+                throw new AnnotationFormatError ("PotentialPanelPlugin annotation must be in a class that extends PotentialPanel");
             }
         }
     }

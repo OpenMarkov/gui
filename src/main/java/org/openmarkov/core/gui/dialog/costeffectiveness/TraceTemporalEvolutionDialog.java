@@ -29,7 +29,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -228,7 +227,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             chartPanel.setAutoscrolls (true);
             chartPanel.setDisplayToolTips (true);
             chartPanel.setMouseZoomable (true);
-            XYPlot plot = (XYPlot) chart.getPlot ();
+            // XYPlot plot = (XYPlot) chart.getPlot ();
             // XYItemRenderer renderer = plot.getRenderer();
             XYToolTipGenerator generator = new StandardXYToolTipGenerator (
                                                                            "{0}: ({1}, {2})",
@@ -236,7 +235,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
                                                                                               "0.00"),
                                                                            new DecimalFormat (
                                                                                               "0.00"));
-            renderer.setToolTipGenerator (generator);
+            renderer.setBaseToolTipGenerator (generator);
         }
         return chartPanel;
     }

@@ -16,7 +16,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,10 +34,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.io.FileFilterXLS;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -100,7 +95,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private List<ProbNode>              numericTemporalNodes;
     private HashMap<String, JTextField> numericTemporalComponents = new HashMap<> ();
     
-    private StringDatabase stingDatabase = StringDatabase.getUniqueInstance ();
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
@@ -503,7 +497,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return initialAge;
     }
 
-    public int getFinalAge ()
+    public Integer getFinalAge ()
     {
         return finalAge;
     }
@@ -525,7 +519,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
 
     public int getNumSlices ()
     {
-        return numSlices;
+        return (numSlices != null)? numSlices : finalAge - initialAge;
     }
 
     public String getUnits ()
@@ -552,27 +546,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     public boolean isThereNodeAge ()
     {
         return thereIsNodeAge;
-    }
-
-    /**
-     * It asks the user to choose a file by means of a save-file dialog box.
-     * @param suggestedFileName name of the file where the net can be saved as
-     *            default.
-     * @return complete path of the file, or null if the user selects cancel.
-     */
-    private String requestNetworkFileToSave (String suggestedFileName)
-    {
-        JFileChooser fileChooser = new JFileChooser ();
-        fileChooser.setDialogTitle (stringDatabase.getString ("SaveNetwork.Title.Label"));
-        File currentDirectory = new File (
-                                          OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-                                                                     OpenMarkovPreferences.OPENMARKOV_DIRECTORIES,
-                                                                     "."));
-        fileChooser.setCurrentDirectory (currentDirectory);
-        fileChooser.setFileFilter (new FileFilterXLS ());
-        fileChooser.setSelectedFile (new File (suggestedFileName));
-        return (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION) ? fileChooser.getSelectedFile ().getAbsolutePath ()
-                                                                                 : null;
     }
 
     public boolean isAccumulative ()

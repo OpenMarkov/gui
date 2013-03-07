@@ -66,7 +66,6 @@ public class TemporalEvolutionTablePanel extends JPanel {
 			model.setNumRows(variableOfInterest.getNumStates());
 			model.setRowCount(variableOfInterest.getNumStates());
 			final Object[][] info = new Object[variableOfInterest.getNumStates()][temporalEvolution.size()+1];
-			final Object[] states = new Object[variableOfInterest.getNumStates()];
 			//first column
 			for (int i = 0; i < variableOfInterest.getNumStates(); i++) {
 				if (isUtility){
@@ -78,8 +77,6 @@ public class TemporalEvolutionTablePanel extends JPanel {
 					//model.addColumn("", states);
 					model.setValueAt(variableOfInterest.getStateName(i), i, 0);
 				}
-				
-				
 			}
 			
 			final String[] columnNames = new String[temporalEvolution.size()+1];
