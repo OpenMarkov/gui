@@ -14,10 +14,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -35,8 +33,10 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 
 /**
  * Input dialog for cost effectiveness purposes used to introduce relevant
@@ -48,18 +48,12 @@ import org.openmarkov.core.model.network.ProbNode;
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     implements
         ItemListener,
-        PropertyChangeListener,
         FocusListener
 {
-    // TODO internationalization
-    /**
-	 * 
-	 */
     private static final long           serialVersionUID          = 1L;
     private final JPanel                contentPanel              = new JPanel ();
     private JLabel                      initialAgeLabel;
     private JLabel                      cycleLengthLabel;
-    private JLabel                      unitLabel;
     private JTextField                  cycleLengthTextField;
     private JComboBox<String>           unitsCombo;
     private JCheckBox                   checkZeroCycle;
@@ -70,21 +64,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private JLabel                      effectivenessDiscountLabel;
     private JTextField                  costDiscountTextField;
     private JTextField                  effectivenessDiscountTextField;
-    private JLabel                      yearsLabel;
     private Integer                     initialAge;
     private Integer                     finalAge;
     private Double                      costDiscount;
     private Double                      cycleLength;
     private String                      units;
     private Double                      effectivenessDiscount;
-    private JLabel                      lblOutputFile;
-    private JLabel                      yearsLabel2;
     private JTextField                  txtSimulationNumber;
     private JLabel                      lblSimulationsNumber;
     private Integer                     simulationsNumber;
-    private boolean                     thereIsNodeAge            = false;
+    private boolean                     containsAgeNode            = false;
     private JLabel                      numSlicesLabell;
-    private JTextField                  numSlicesJTextField;
+    private JTextField                  numSlicesTextField;
     private Integer                     numSlices;
     private JRadioButton                instantButton;
     private JRadioButton                accumulativeButton;
@@ -92,8 +83,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     private JPanel                      instantOrAccumulativePanel;
     private boolean                     isAccumulative            = false;
     private JPanel                      numSlicesPanel;
-    private List<ProbNode>              numericTemporalNodes;
-    private HashMap<String, JTextField> numericTemporalComponents = new HashMap<> ();
+    private Map<Variable, Double>       numericTemporalVariables;
+    private Map<String, JTextField> numericTemporalComponents = new HashMap<> ();
     
 
     /**
@@ -123,8 +114,13 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         super (owner);
         setLocationRelativeTo (owner);
-        this.thereIsNodeAge = probNet.checkIfThereIsAgeNode ();
-        this.numericTemporalNodes = probNet.getSpecialTimeDependentNodes ();
+        this.containsAgeNode = probNet.checkIfThereIsAgeNode ();
+        
+        this.numericTemporalVariables = new HashMap<>(); 
+        for(ProbNode numericalTemporalNode : probNet.getSpecialTimeDependentNodes ())
+        {
+            numericTemporalVariables.put (numericalTemporalNode.getVariable (), 0.0);
+        }
         initialize (isTemporalEvolution);
         setResizable (false);
         setTitle(probNet.getName (), isTemporalEvolution);
@@ -136,8 +132,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         setMinimumSize (new Dimension (250, 150));
         contentPanel.setBorder (new EmptyBorder (5, 5, 5, 5));
-        int rows = numericTemporalNodes.size () + 2;
-        rows = (!thereIsNodeAge) ? (rows + 1) : rows;
+        int rows = numericTemporalVariables.size () + 2;
+        rows = (!containsAgeNode) ? (rows + 1) : rows;
         JPanel panel = new JPanel ();
         panel.setLayout (new GridLayout (rows, 4, 10, 10));
         panel.add (getCycleLengthLabel ());
@@ -151,7 +147,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         {
             panel.add (getCheckCycleCero ());
         }
-        if (thereIsNodeAge)
+        if (containsAgeNode)
         {
             panel.add (getInitialAgeLabel ());
             panel.add (getInitialAgeTextField ());
@@ -161,24 +157,23 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         else
         {
             panel.add (getJLabelNumSlices ());
-            panel.add (getNumSlicesJTextField ());
+            panel.add (getNumSlicesTextField ());
             panel.add (new JLabel (""));
             panel.add (new JLabel (""));
         }
-        for (int i = 0; i < numericTemporalNodes.size (); i++)
+        for (Variable numericTemporalVariable : numericTemporalVariables.keySet ())
         {
-            if (!numericTemporalNodes.get (i).getVariable ().getBaseName ().equalsIgnoreCase ("Age"))
+            if (!numericTemporalVariable.getBaseName ().equalsIgnoreCase ("Age"))
             {
-                JLabel label = new JLabel (numericTemporalNodes.get (i).getVariable ().getName ());
+                JLabel label = new JLabel (numericTemporalVariable.getName ());
                 JTextField textField = new JTextField (10);
-                textField.setName (numericTemporalNodes.get (i).getVariable ().getName ());
-                textField.setText ("0");
-                textField.addPropertyChangeListener (this);
+                textField.setName (numericTemporalVariable.getName ());
+                textField.setText (""+numericTemporalVariables.get (numericTemporalVariable));
                 textField.addFocusListener (this);
                 panel.add (label);
                 panel.add (textField);
-                numericTemporalComponents.put (label.getText (), textField);
-                panel.add (new JLabel ("Cycles"));
+                numericTemporalComponents.put (numericTemporalVariable.getName (), textField);
+                panel.add (new JLabel (stringDatabase.getString ("CostEffectiveness.Cycles")));
                 panel.add (new JLabel (""));
             }
         }
@@ -205,11 +200,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
             numSlicesPanel = new JPanel ();
             GroupLayout groupLayout = new GroupLayout (numSlicesPanel);
             groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                          false).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNumSlices ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getNumSlicesJTextField (),
+                                                                                                                                                                                                                                                                                                                          false).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNumSlices ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getNumSlicesTextField (),
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             75,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE))).addContainerGap ()))));
-            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addComponent (getJLabelNumSlices ()).addComponent (getNumSlicesJTextField (),
+            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addComponent (getJLabelNumSlices ()).addComponent (getNumSlicesTextField (),
                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE,
                                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE)).addContainerGap ()));
@@ -222,20 +217,23 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         if (numSlicesLabell == null)
         {
-            numSlicesLabell = new JLabel ("Number of Cycles");
+            numSlicesLabell = new JLabel (stringDatabase.getString ("CostEffectiveness.NumberOfCycles"));
         }
         return numSlicesLabell;
     }
 
-    private JTextField getNumSlicesJTextField ()
+    private JTextField getNumSlicesTextField ()
     {
-        if (numSlicesJTextField == null)
+        if (numSlicesTextField == null)
         {
-            numSlicesJTextField = new JTextField ();
-            numSlicesJTextField.setText ("1");
-            numSlicesJTextField.setColumns (10);
+            numSlices = 1;
+            numSlicesTextField = new JTextField ();
+            numSlicesTextField.setText (""+numSlices);
+            numSlicesTextField.setColumns (10);
+            numSlicesTextField.setName ("numSlicesTextField");
+            numSlicesTextField.addFocusListener (this);
         }
-        return numSlicesJTextField;
+        return numSlicesTextField;
     }
 
     private JTextField getTxtSimulationsNumber ()
@@ -253,78 +251,51 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         if (lblSimulationsNumber == null)
         {
-            lblSimulationsNumber = new JLabel ("Simulations number");
+            lblSimulationsNumber = new JLabel (stringDatabase.getString ("CostEffectiveness.NumberOfSimulations"));
             lblSimulationsNumber.setVisible (false);
         }
         return lblSimulationsNumber;
     }
 
-    public JLabel getOutputFileLabel ()
-    {
-        if (lblOutputFile == null)
-        {
-            lblOutputFile = new JLabel ("Output file name");
-        }
-        return lblOutputFile;
-    }
-
-    private JLabel getYearsLabel2 ()
-    {
-        if (yearsLabel2 == null)
-        {
-            yearsLabel2 = new JLabel ("years");
-        }
-        return yearsLabel2;
-    }
-
-    public JLabel getInitialAgeLabel ()
+    private JLabel getInitialAgeLabel ()
     {
         if (initialAgeLabel == null)
         {
-            initialAgeLabel = new JLabel ("Initial age");
+            initialAgeLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.InitialAge"));
         }
         return initialAgeLabel;
     }
 
-    public JLabel unitLabel ()
-    {
-        if (unitLabel == null)
-        {
-            unitLabel = new JLabel ("Cycle Length");
-        }
-        return unitLabel;
-    }
-
-    public JComboBox<String> getUnitsJComboBox ()
+    private JComboBox<String> getUnitsJComboBox ()
     {
         if (unitsCombo == null)
         {
-            String units[] = {"months", "years"};
+            String units[] = {stringDatabase.getString ("CostEffectiveness.Months"), stringDatabase.getString ("CostEffectiveness.Years")};
             unitsCombo = new JComboBox<> (units);
             unitsCombo.addItemListener (this);
         }
         return unitsCombo;
     }
 
-    public JCheckBox getCheckCycleCero ()
+    private JCheckBox getCheckCycleCero ()
     {
         if (checkZeroCycle == null)
         {
-            checkZeroCycle = new JCheckBox ("Zero cycle");
+            checkZeroCycle = new JCheckBox (stringDatabase.getString ("CostEffectiveness.ZeroCycle"));
         }
         return checkZeroCycle;
     }
 
-    public JLabel getCycleLengthLabel ()
+    private JLabel getCycleLengthLabel ()
     {
         if (cycleLengthLabel == null)
         {
-            cycleLengthLabel = new JLabel ("Cycle Length");
+            cycleLengthLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.CycleLength"));
         }
         return cycleLengthLabel;
     }
 
-    public JTextField getCycleLengthTextField ()
+    private JTextField getCycleLengthTextField ()
     {
         if (cycleLengthTextField == null)
         {
@@ -333,43 +304,34 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return cycleLengthTextField;
     }
 
-    public JLabel getFinalAgeLabel ()
+    private JLabel getFinalAgeLabel ()
     {
         if (finalAgeLabel == null)
         {
-            finalAgeLabel = new JLabel ("Final age");
+            finalAgeLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.FinalAge"));
         }
         return finalAgeLabel;
     }
 
-    public JLabel getCostDiscountLabel ()
+    private JLabel getCostDiscountLabel ()
     {
         if (costDiscountLabel == null)
         {
-            costDiscountLabel = new JLabel ("Cost discount (%)");
+            costDiscountLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.CostDiscount"));
         }
         return costDiscountLabel;
     }
 
-    public JLabel getEffectivenessDiscountLabel ()
+    private JLabel getEffectivenessDiscountLabel ()
     {
         if (effectivenessDiscountLabel == null)
         {
-            effectivenessDiscountLabel = new JLabel ("Effectiveness discount (%)");
+            effectivenessDiscountLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.EffectivenessDiscount"));
         }
         return effectivenessDiscountLabel;
     }
 
-    private JLabel getYearsLabel ()
-    {
-        if (yearsLabel == null)
-        {
-            yearsLabel = new JLabel ("years");
-        }
-        return yearsLabel;
-    }
-
-    public JTextField getFinalAgeTextField ()
+    private JTextField getFinalAgeTextField ()
     {
         if (finalAgeTextField == null)
         {
@@ -380,7 +342,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return finalAgeTextField;
     }
 
-    public JTextField getInitialAgeTextField ()
+    private JTextField getInitialAgeTextField ()
     {
         if (initialAgeTextField == null)
         {
@@ -391,7 +353,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return initialAgeTextField;
     }
 
-    public JTextField getCostDiscountTextField ()
+    private JTextField getCostDiscountTextField ()
     {
         if (costDiscountTextField == null)
         {
@@ -401,7 +363,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return costDiscountTextField;
     }
 
-    public JTextField getEffectivenessDiscountTextField ()
+    private JTextField getEffectivenessDiscountTextField ()
     {
         if (effectivenessDiscountTextField == null)
         {
@@ -411,32 +373,32 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         return effectivenessDiscountTextField;
     }
 
-    public JRadioButton getInstantValuesButton ()
+    private JRadioButton getInstantValuesButton ()
     {
         if (instantButton == null)
         {
-            instantButton = new JRadioButton ("Instant values", true);
+            instantButton = new JRadioButton (stringDatabase.getString ("CostEffectiveness.InstantValues"), true);
             instantButton.addItemListener (this);
         }
         return instantButton;
     }
 
-    public JRadioButton getAccumulativeValuesButton ()
+    private JRadioButton getAccumulativeValuesButton ()
     {
         if (accumulativeButton == null)
         {
-            accumulativeButton = new JRadioButton ("Cumulative values", false);
+            accumulativeButton = new JRadioButton (stringDatabase.getString ("CostEffectiveness.CumulativeValues"), false);
             accumulativeButton.addItemListener (this);
         }
         return accumulativeButton;
     }
 
-    public HashMap<String, JTextField> getNumericTemporalValues ()
+    public Map<Variable, Double> getNumericTemporalValues ()
     {
-        return numericTemporalComponents;
+        return numericTemporalVariables;
     }
 
-    public void initButtonGroup ()
+    private void initButtonGroup ()
     {
         buttonGroup = new ButtonGroup ();
         buttonGroup.add (getInstantValuesButton ());
@@ -446,23 +408,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     /**
      * @return the panel with the two buttons
      */
-    protected JPanel getJPanelInstantOrAccumulative ()
+    private JPanel getJPanelInstantOrAccumulative ()
     {
         if (instantOrAccumulativePanel == null)
         {
             instantOrAccumulativePanel = new JPanel ();
             instantOrAccumulativePanel.setLayout (new GridLayout (2, 1));
-            // jPanelTpcOrCanonical.setSize( 152, 58 );
-            // instantOrAccumulativePanel.setBorder( new LineBorder( UIManager
-            // .getColor( "List.dropLineColor" ), 1, false ) );
             instantOrAccumulativePanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
-                                                                                    "Temporal display"));
+                                                                                    stringDatabase.getString ("CostEffectiveness.TemporalDisplay")));
             instantOrAccumulativePanel.setName ("instantOrAccumulativePanel");
             initButtonGroup ();
             instantOrAccumulativePanel.add (getInstantValuesButton ());
             instantOrAccumulativePanel.add (getAccumulativeValuesButton ());
-            // instantOrAccumulativePanel.setEnabled( true);
-            // instantOrAccumulativePanel.setVisible(true);
         }
         return instantOrAccumulativePanel;
     }
@@ -476,20 +433,24 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     @Override
     protected boolean doOkClickBeforeHide ()
     {
-        if (thereIsNodeAge)
+        boolean allValid = checkTextFieldsValidity();
+        if(allValid)
         {
-            initialAge = Integer.valueOf (getInitialAgeTextField ().getText ());
-            finalAge = Integer.valueOf (getFinalAgeTextField ().getText ());
+            if (containsAgeNode)
+            {
+                initialAge = Integer.valueOf (getInitialAgeTextField ().getText ());
+                finalAge = Integer.valueOf (getFinalAgeTextField ().getText ());
+            }
+            else
+            {
+                numSlices = Integer.valueOf (getNumSlicesTextField ().getText ());
+            }
+            costDiscount = Double.valueOf (getCostDiscountTextField ().getText ());
+            effectivenessDiscount = Double.valueOf (getEffectivenessDiscountTextField ().getText ());
+            cycleLength = Double.valueOf (getCycleLengthTextField ().getText ());
+            simulationsNumber = Integer.valueOf (getTxtSimulationsNumber ().getText ());
         }
-        else
-        {
-            numSlices = Integer.valueOf (getNumSlicesJTextField ().getText ());
-        }
-        costDiscount = Double.valueOf (getCostDiscountTextField ().getText ());
-        effectivenessDiscount = Double.valueOf (getEffectivenessDiscountTextField ().getText ());
-        cycleLength = Double.valueOf (getCycleLengthTextField ().getText ());
-        simulationsNumber = Integer.valueOf (getTxtSimulationsNumber ().getText ());
-        return true;
+        return allValid;
     }
 
     public Integer getInitialAge ()
@@ -545,7 +506,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
 
     public boolean isThereNodeAge ()
     {
-        return thereIsNodeAge;
+        return containsAgeNode;
     }
 
     public boolean isAccumulative ()
@@ -570,320 +531,153 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
         }
     }
 
-    @Override
-    public void propertyChange (PropertyChangeEvent e)
+    private void setTitle (String netName, boolean isTemporalEvolution)
     {
-        if (((JTextField) e.getSource ()).getName () != null)
+        String title = stringDatabase.getString (((isTemporalEvolution)? "CostEffectiveness.TemporalEvolution" : "CostEffectiveness.Analysis") + ".Label");
+        super.setTitle (title + " - " +  FilenameUtils.getBaseName (netName));
+    }
+
+    private boolean checkTextFieldsValidity()
+    {
+        boolean allValid = true;
+        if(initialAgeTextField != null)
         {
-            if (e.getSource () instanceof JTextField
-                && ((JTextField) e.getSource ()).getName ().equals ("initialAgeText"))
+            allValid &= checkTextFieldValidity(initialAgeTextField);
+        }
+        if(finalAgeTextField != null)
+        {
+            allValid &= checkTextFieldValidity(finalAgeTextField);
+        }
+        
+        for(JTextField numericTemporalField : numericTemporalComponents.values ())
+        {
+            allValid &= checkTextFieldValidity(numericTemporalField);
+        }
+        
+        return allValid;
+    }
+    private boolean checkTextFieldValidity (JTextField sourceTextField)
+    {
+        boolean valid = true;
+        if (sourceTextField.getName ().equals ("initialAgeText"))
+        {
+            for (Variable numericTemporalVariable : numericTemporalVariables.keySet ())
             {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
+                if (numericTemporalVariable.isTemporal ()
+                    && numericTemporalVariable.getBaseName ().equalsIgnoreCase ("age")
+                    && numericTemporalVariable.getTimeSlice () == 0)
                 {
-                    if (numericTemporalNodes.get (i).getVariable ().isTemporal ()
-                        && numericTemporalNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                        && numericTemporalNodes.get (i).getVariable ().getTimeSlice () == 0)
+                    double initialAge = Double.parseDouble (sourceTextField.getText ());
+                    PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval ();
+                    // check whether introduced values are correct or not
+                    if ((!interval.isLeftClosed () && initialAge <= interval.getMin ()) || initialAge < interval.getMin ())
                     {
-                        // check whether introduced values are correct or nor
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Initial age is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Initial age is less than the minimum of variable domain");
-                            }
-                        }
-                    }
-                }
-            }
-            if (e.getSource () instanceof JTextField
-                && ((JTextField) e.getSource ()).getName ().equals ("finalAgeText"))
-            {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
-                {
-                    if (numericTemporalNodes.get (i).getVariable ().isTemporal ()
-                        && numericTemporalNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                        && numericTemporalNodes.get (i).getVariable ().getTimeSlice () == 0)
+                        valid = false;
+                        JOptionPane.showMessageDialog (this.getParent (),
+                                                       stringDatabase.getString ("CostEffectiveness.InitialAge")+ " "+
+                                                               stringDatabase.getString ("CostEffectiveness.VariableTooLow"));
+                    }else
                     {
-                        // check whether introduced values are correct or nor
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is less than the minimum of variable domain");
-                            }
-                        }
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isRightClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is more than the maximum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is more than the maximum of variable domain");
-                            }
-                        }
+                        this.initialAge =  (int) initialAge; 
                     }
-                }
-            }
-            if (e.getSource () instanceof JTextField
-                && numericTemporalComponents.get (((JTextField) e.getSource ()).getName ()) != null)
-            {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
-                {
-                    if (((JTextField) e.getSource ()).getName ().equals (numericTemporalNodes.get (i).getVariable ().getName ()))
-                    {
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isRightClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is more than the maximum of variable domain");
-                            }
-                            if (getNumSlicesJTextField ().getText () != null
-                                && Double.parseDouble (((JTextField) e.getSource ()).getText ())
-                                   + Integer.valueOf (getNumSlicesJTextField ().getText ())
-                                   * Integer.valueOf (getCycleLengthTextField ().getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " exceeds the time horizon");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is more than the maximum of variable domain");
-                            }
-                            if (getNumSlicesJTextField ().getText () != null
-                                && Double.parseDouble (((JTextField) e.getSource ()).getText ())
-                                   + Integer.valueOf (getNumSlicesJTextField ().getText ())
-                                   * Integer.valueOf (getCycleLengthTextField ().getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " exceeds the time horizon");
-                            }
-                        }
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is less than the minimum of variable domain");
-                            }
-                        }
-                    }
+                    sourceTextField.setText (""+this.initialAge);
                 }
             }
         }
+        if (sourceTextField.getName ().equals ("finalAgeText"))
+        {
+            for (Variable numericTemporalVariable : numericTemporalVariables.keySet ())
+            {
+                if (numericTemporalVariable.isTemporal ()
+                    && numericTemporalVariable.getBaseName ().equalsIgnoreCase ("age")
+                    && numericTemporalVariable.getTimeSlice () == 0)
+                {
+                    double finalAge = Double.parseDouble (sourceTextField.getText ());
+                    PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval ();
+                    // check whether introduced values are correct or nor
+                    if ((!interval.isLeftClosed () && finalAge <= interval.getMin ())
+                        || finalAge < interval.getMin ())
+                    {
+                        JOptionPane.showMessageDialog (this.getParent (),
+                                                       stringDatabase.getString ("CostEffectiveness.FinalAge")+ " "+
+                                                       stringDatabase.getString ("CostEffectiveness.VariableTooLow"));
+                        valid = false;
+                        
+                    }
+                    else if ((!interval.isRightClosed () && finalAge >= interval.getMax ())
+                             || finalAge > interval.getMax ())
+                    {
+                        JOptionPane.showMessageDialog (this.getParent (),
+                                                       stringDatabase.getString ("CostEffectiveness.FinalAge")+ " "+
+                                                               stringDatabase.getString ("CostEffectiveness.VariableTooHigh"));
+                        valid = false;
+                    }else
+                    {
+                        this.finalAge =  (int) finalAge; 
+                    }
+                    sourceTextField.setText (""+this.finalAge);
+                }
+            }
+        }
+        if (numericTemporalComponents.containsKey (sourceTextField.getName ()) || 
+                sourceTextField.equals (getNumSlicesTextField ()))
+        {
+            int cycleLength = Integer.valueOf (getCycleLengthTextField ().getText ());
+            boolean numSlicesDefined = getNumSlicesTextField ().getText () != null;
+            int numSlices = (numSlicesDefined) ? Integer.valueOf (getNumSlicesTextField ().getText ()) : -1;
+            for (Variable numericTemporalVariable  : numericTemporalVariables.keySet ())
+            {
+                PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval ();
+                double numericValue = Double.parseDouble (numericTemporalComponents.get (numericTemporalVariable.getName ()) .getText ());
+                double timeHorizon = numericValue + numSlices * cycleLength;
+                if (numSlicesDefined)
+                {
+                    if ((!interval.isRightClosed () && timeHorizon >= interval.getMax ())
+                        || timeHorizon > interval.getMax ())
+                    {
+                        JOptionPane.showMessageDialog (this.getParent (),
+                                                       numericTemporalVariable.getBaseName ()
+                                                               + " " + stringDatabase.getString ("CostEffectiveness.ExceedsTimeHorizon"));
+                        valid = false;
+                    }
+                }
+                if ((!interval.isLeftClosed () && numericValue <= interval.getMin ())
+                    || numericValue < interval.getMin ())
+                {
+                    JOptionPane.showMessageDialog (this.getParent (),
+                                                   numericTemporalVariable.getBaseName () +  " "
+                                                           + stringDatabase.getString ("CostEffectiveness.VariableTooLow"));
+                    valid = false;
+                }
+                if(valid)
+                {
+                    numericTemporalVariables.put (numericTemporalVariable, numericValue); 
+                }
+                numericTemporalComponents.get (numericTemporalVariable.getName ()).setText (""+numericValue);
+           }
+            
+            if(valid)
+            {
+                this.numSlices = numSlices;
+            }
+            getNumSlicesTextField ().setText (""+this.numSlices);
+        }
+        return valid;
     }
 
     @Override
-    public void focusGained (FocusEvent arg0)
+    public void focusGained (FocusEvent e)
     {
-        // TODO Auto-generated method stub
+        // Ignore
     }
 
     @Override
     public void focusLost (FocusEvent e)
     {
-        if (((JTextField) e.getSource ()).getName () != null)
+        if (e.getSource () instanceof JTextField && ((JTextField) e.getSource ()).getName () != null)
         {
-            if (e.getSource () instanceof JTextField
-                && ((JTextField) e.getSource ()).getName ().equals ("initialAgeText"))
-            {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
-                {
-                    if (numericTemporalNodes.get (i).getVariable ().isTemporal ()
-                        && numericTemporalNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                        && numericTemporalNodes.get (i).getVariable ().getTimeSlice () == 0)
-                    {
-                        // check whether introduced values are correct or nor
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Initial age is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Initial age is less than the minimum of variable domain");
-                            }
-                        }
-                    }
-                }
-            }
-            if (e.getSource () instanceof JTextField
-                && ((JTextField) e.getSource ()).getName ().equals ("finalAgeText"))
-            {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
-                {
-                    if (numericTemporalNodes.get (i).getVariable ().isTemporal ()
-                        && numericTemporalNodes.get (i).getVariable ().getBaseName ().equals ("Age")
-                        && numericTemporalNodes.get (i).getVariable ().getTimeSlice () == 0)
-                    {
-                        // check whether introduced values are correct or nor
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is less than the minimum of variable domain");
-                            }
-                        }
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isRightClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is more than the maximum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               "Final age is more than the maximum of variable domain");
-                            }
-                        }
-                    }
-                }
-            }
-            if (e.getSource () instanceof JTextField
-                && numericTemporalComponents.get (((JTextField) e.getSource ()).getName ()) != null)
-            {
-                for (int i = 0; i < numericTemporalNodes.size (); i++)
-                {
-                    if (((JTextField) e.getSource ()).getName ().equals (numericTemporalNodes.get (i).getVariable ().getName ()))
-                    {
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isRightClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is more than the maximum of variable domain");
-                            }
-                            if (getNumSlicesJTextField ().getText () != null
-                                && Double.parseDouble (((JTextField) e.getSource ()).getText ())
-                                   + Integer.valueOf (getNumSlicesJTextField ().getText ())
-                                   * Integer.valueOf (getCycleLengthTextField ().getText ()) > numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " exceeds the time horizon");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is more than the maximum of variable domain");
-                            }
-                            if (getNumSlicesJTextField ().getText () != null
-                                && Double.parseDouble (((JTextField) e.getSource ()).getText ())
-                                   + Integer.valueOf (getNumSlicesJTextField ().getText ())
-                                   * Integer.valueOf (getCycleLengthTextField ().getText ()) >= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMax ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " exceeds the time horizon");
-                            }
-                        }
-                        if (numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().isLeftClosed ())
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) < numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is less than the minimum of variable domain");
-                            }
-                        }
-                        else
-                        {
-                            if (Double.parseDouble (((JTextField) e.getSource ()).getText ()) <= numericTemporalNodes.get (i).getVariable ().getPartitionedInterval ().getMin ())
-                            {
-                                ((JTextField) e.getSource ()).setText ("");
-                                JOptionPane.showMessageDialog (this.getParent (),
-                                                               numericTemporalNodes.get (i).getVariable ().getName ()
-                                                                       + " is less than the minimum of variable domain");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void setTitle (String netName, boolean isTemporalEvolution)
-    {
-        String title = stringDatabase.getString (((isTemporalEvolution)? "CostEffectiveness.TemporalEvolution" : "CostEffectiveness.Analysis") + ".Label");
-        super.setTitle (title + " - " +  FilenameUtils.getBaseName (netName));
-    }
+            JTextField sourceTextField = (JTextField) e.getSource ();
+            checkTextFieldValidity(sourceTextField);
+        }  
+    }    
 }

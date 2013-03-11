@@ -219,7 +219,6 @@ public class CostEffectivenessResultsDialog extends JDialog
         return cpTablePanel;
     }
 
-    @SuppressWarnings("deprecation")
     private ChartPanel getChartsPanel ()
     {
         if (chartPanel == null)
@@ -236,13 +235,10 @@ public class CostEffectivenessResultsDialog extends JDialog
             chartPanel.setMouseZoomable (true);
             XYPlot plot = (XYPlot) chart.getPlot ();
             XYItemRenderer renderer = plot.getRenderer ();
-            XYToolTipGenerator generator = new StandardXYToolTipGenerator (
-                                                                           "{0}: ({1}, {2})",
-                                                                           new DecimalFormat (
-                                                                                              "0.00"),
-                                                                           new DecimalFormat (
-                                                                                              "0.00"));
-            renderer.setToolTipGenerator (generator);
+            XYToolTipGenerator generator = new StandardXYToolTipGenerator ("{0}: ({1}, {2})",
+                                                                           new DecimalFormat ("0.00"),
+                                                                           new DecimalFormat ("0.00"));
+            renderer.setBaseToolTipGenerator (generator);
         }
         return chartPanel;
     }

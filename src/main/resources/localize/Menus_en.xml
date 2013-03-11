@@ -402,6 +402,20 @@
   	</Evolution> 
   </Temporal>
   <CostEffectiveness>
+      <Cycles value="Cycles"/>
+      <NumberOfCycles value = "Number of cycles"/>
+      <NumberOfSimulations value = "Number of Simulations"/>
+      <InitialAge value = "Initial age"/>
+      <FinalAge value = "Final age"/>
+      <Months value = "months"/>
+      <Years value = "years"/>
+      <CycleLength value = "Cycle length"/>
+      <ZeroCycle value = "Zero Cycle"/>
+      <CostDiscount value = "Cost discount (%)"/>
+      <EffectivenessDiscount value = "Effectiveness discount (%)"/>
+      <InstantValues value = "Instant values"/>
+      <CumulativeValues value = "Cumulative values"/>
+      <TemporalDisplay value = "Temporal display"/>
 	  <ExpandNetwork>
 	  	<Label value = "Expand Network" />
 	  </ExpandNetwork>

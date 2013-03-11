@@ -397,18 +397,30 @@
     <Mnemonic value="o" />
     <Label value="Opciones" />
   </Options>
-  <Temporal>
-  	<Evolution>
-  		<Label value = "Evolución temporal" />>
-  	</Evolution> 
-  </Temporal>
   <CostEffectiveness>
+      <Cycles value="Ciclos"/>
+      <NumberOfCycles value = "Número de ciclos"/>
+      <NumberOfSimulations value = "Número de simulaciones"/>
+      <InitialAge value = "Edad inicial"/>
+      <FinalAge value = "Edad final"/>
+      <Months value = "meses"/>
+      <Years value = "años"/>
+      <CycleLength value = "Longitud de ciclo"/>
+      <ZeroCycle value = "Ciclo cero"/>
+      <CostDiscount value = "Descuento de coste (%)"/>
+      <EffectivenessDiscount value = "Descuento de efectividad (%)"/>
+      <InstantValues value = "Valores instantáneo"/>
+      <CumulativeValues value = "Valores acumulados"/>
+      <TemporalDisplay value = "Vista temporal"/>  
       <ExpandNetwork>
         <Label value = "Expandir red" />
       </ExpandNetwork>
       <ExpandNetworkCE>
         <Label value = "Expandir red CE" />
       </ExpandNetworkCE>
+      <TemporalEvolution>
+        <Label value = "Evolución temporal" />
+      </TemporalEvolution>      
   </CostEffectiveness> 
   <BUNDLEFILE>
     <Text value="Español" />

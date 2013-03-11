@@ -950,7 +950,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     {
                         Finding finding = new Finding (
                                                timeDependentVariable,
-                                               Double.valueOf (costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable.getName ()).getText ()));
+                                               costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable.getName ()));
                         try
                         {
                             evidenceCase.addFinding (finding);

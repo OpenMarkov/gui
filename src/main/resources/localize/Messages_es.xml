@@ -502,5 +502,10 @@
       <Label value="Error edición de intervalo" />
     </Text>
   </IntervalEditError>
+    <CostEffectiveness>
+    <VariableTooLow value ="es más bajo que el mínimo del dominio de la variable"/>
+    <VariableTooHigh value ="es más alto que el máximo del dominio de la variable"/>
+    <ExceedsTimeHorizon value ="excede el límite temporal"/>
+  </CostEffectiveness>
 </properties>
 

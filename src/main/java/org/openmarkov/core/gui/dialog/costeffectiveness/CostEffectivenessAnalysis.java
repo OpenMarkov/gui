@@ -4,8 +4,7 @@ package org.openmarkov.core.gui.dialog.costeffectiveness;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.JTextField;
+import java.util.Map;
 
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -47,7 +46,7 @@ public class CostEffectivenessAnalysis
                                       double effectivenessDiscountRate,
                                       int numSlices,
                                       Integer initialAge,
-                                      HashMap<String, JTextField> numericTemporalValues,
+                                      Map<Variable, Double> numericTemporalValues,
                                       double cycleLength,
                                       Variable numIndexVariable,
                                       boolean checkZeroCycle)
@@ -96,7 +95,7 @@ public class CostEffectivenessAnalysis
      */
     private EvidenceCase getEvidenceFromNetwork (ProbNet probNet,
                                                  Integer initialAge,
-                                                 HashMap<String, JTextField> numericTemporalValues)
+                                                 Map<Variable, Double> numericTemporalValues)
     {
         EvidenceCase evidenceCase = new EvidenceCase ();
         Finding ageFinding = null;
@@ -125,11 +124,12 @@ public class CostEffectivenessAnalysis
         {
             for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
             {
-                if (!timeDependentNode.getVariable ().getBaseName ().equalsIgnoreCase ("age"))
+                Variable timeDependentVariable = timeDependentNode.getVariable ();
+                if (!timeDependentVariable.getBaseName ().equalsIgnoreCase ("age"))
                 {
                     Finding finding = new Finding (
-                                           timeDependentNode.getVariable (),
-                                           Double.valueOf (numericTemporalValues.get (timeDependentNode.getName ()).getText ()));
+                                           timeDependentVariable,
+                                           numericTemporalValues.get (timeDependentVariable));
                     try
                     {
                         evidenceCase.addFinding (finding);
