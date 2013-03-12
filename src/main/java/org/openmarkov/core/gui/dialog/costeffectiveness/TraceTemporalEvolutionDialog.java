@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.apache.commons.io.FilenameUtils;
@@ -51,12 +52,11 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private HashMap<Variable, TablePotential> temporalEvolution;
     private CostEffectivenessDialog           costEffectivenessDialog;
     private ChartPanel                        chartPanel;
-    private TemporalEvolutionTablePanel       tablePanel;
+    private JScrollPane                       tablePane;
     private JTabbedPane                       tabbedPane;
     private Variable                          variableOfInterest;
     private ProbNet                           expandedNetwork;
     private boolean                           isUtility;
-    private boolean                           checkZeroCycle;
     
     private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
@@ -68,28 +68,16 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)    	
         {
-            this.checkZeroCycle = costEffectivenessDialog.getZeroCycle ();
-            int numSlices;
-            if (probNet.checkIfThereIsAgeNode ())
-            {
-                numSlices = costEffectivenessDialog.getFinalAge ()
-                            - costEffectivenessDialog.getInitialAge ();
-            }
-            else
-            {
-                numSlices = costEffectivenessDialog.getNumSlices ();
-            }
+
             // evidenceCase and cycleLegth null by the moment
             CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
                                                                                                  probNet,
                                                                                                  costEffectivenessDialog.getCostDiscount (),
                                                                                                  costEffectivenessDialog.getEffectivenessDiscount (),
-                                                                                                 numSlices,
-                                                                                                 costEffectivenessDialog.getInitialAge (),
+                                                                                                 costEffectivenessDialog.getNumSlices (),
                                                                                                  costEffectivenessDialog.getNumericTemporalValues (),
-                                                                                                 costEffectivenessDialog.getCycleLength (),
                                                                                                  null,
-                                                                                                 checkZeroCycle);
+                                                                                                 costEffectivenessDialog.getTransitionTime ());
 
             this.variableOfInterest = node.getVariable ();
             try
@@ -197,9 +185,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             tabbedPane.addTab (stringDatabase.getString ("TemporalEvolutionChart.Title.Label"),
                                null, getChartsPanel (), null);
             tabbedPane.addTab (stringDatabase.getString ("TemporalEvolutionTable.Title.Label"),
-                               null,
-                               ((TemporalEvolutionTablePanel) getTablePanel ()).getValuesTableScrollPane (),
-                               null);
+                               null, getTablePane (), null);
         }
         return tabbedPane;
     }
@@ -244,9 +230,6 @@ public class TraceTemporalEvolutionDialog extends JDialog
     {
         XYSeriesCollection result = new XYSeriesCollection ();
         double value = 0.0;
-        // int numSlices = (checkZeroCycle) ?
-        // costEffectivenessDialog.getNumSlices() :
-        // costEffectivenessDialog.getNumSlices() -1;
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {
             XYSeries series = null;
@@ -267,7 +250,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
                     if (probNodes.get (k).getVariable ().getBaseName ().equals (basename)
                         && probNodes.get (k).getVariable ().getTimeSlice () == j)
                     {
-                        if (isUtility && costEffectivenessDialog.isAccumulative ())
+                        if (isUtility && costEffectivenessDialog.isCumulative ())
                         {
                             value += temporalEvolution.get (probNodes.get (k).getVariable ()).getValues ()[i];
                             int time = j;
@@ -287,31 +270,19 @@ public class TraceTemporalEvolutionDialog extends JDialog
         return result;
     }
 
-    public JPanel getTablePanel ()
+    private JScrollPane getTablePane ()
     {
-        if (tablePanel == null)
+        if (tablePane == null)
         {
-            tablePanel = new TemporalEvolutionTablePanel (temporalEvolution, expandedNetwork,
-                                                          costEffectivenessDialog,
-                                                          variableOfInterest, isUtility/*
-                                                                                        * ,
-                                                                                        * isAccumulative
-                                                                                        */);
-            // add(tablePanel.getValuesTableScrollPane());
-            // tablePanel.setAutoscrolls(true);
+            tablePane = new TemporalEvolutionTablePane (temporalEvolution, expandedNetwork,
+                                                          variableOfInterest,
+                                                          costEffectivenessDialog.getNumSlices (),
+                                                          isUtility,
+                                                          costEffectivenessDialog.isCumulative ());
         }
-        return tablePanel;
+        return tablePane;
     }
     
-    /**
-     * Returns the checkZeroCycle.
-     * @return the checkZeroCycle.
-     */
-    public boolean isCheckZeroCycle ()
-    {
-        return checkZeroCycle;
-    }    
-
     private void saveReport()
     {
         JFileChooser fileChooser = new JFileChooser ();

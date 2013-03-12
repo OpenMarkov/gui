@@ -909,63 +909,29 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             EvidenceCase evidenceCase = new EvidenceCase ();
             int numSlices;
-            if (probNet.checkIfThereIsAgeNode ())
-            {
-                numSlices = costEffectivenessDialog.getFinalAge ()
-                            - costEffectivenessDialog.getInitialAge ();
-                // set up findings from the network and values introduced by
-                // the user
-                Finding ageFinding = null;
-                for (ProbNode probNode : probNet.getProbNodes ())
-                {
-                    Variable variable = probNode.getVariable (); 
-                    if (variable.isTemporal ()
-                        && variable.getBaseName ().equalsIgnoreCase ("age")
-                        && variable.getTimeSlice () == 0)
-                    {
-                        ageFinding = new Finding (variable,
-                                                  costEffectivenessDialog.getInitialAge ());
-                        break;
-                    }
-                }
-                try
-                {
-                    evidenceCase.addFinding (ageFinding);
-                }
-                catch (InvalidStateException | IncompatibleEvidenceException e1)
-                {
-                    e1.printStackTrace ();
-                }
-            }
-            else
-            {
-                numSlices = costEffectivenessDialog.getNumSlices ();
-            }
+            
+            numSlices = costEffectivenessDialog.getNumSlices ();
             if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
             {
                 for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
                 {
                     Variable timeDependentVariable = timeDependentNode.getVariable ();
-                    if (!timeDependentVariable.getBaseName ().equalsIgnoreCase ("age"))
+                    Finding finding = new Finding (
+                                           timeDependentVariable,
+                                           costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable.getName ()));
+                    try
                     {
-                        Finding finding = new Finding (
-                                               timeDependentVariable,
-                                               costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable.getName ()));
-                        try
-                        {
-                            evidenceCase.addFinding (finding);
-                        }
-                        catch (InvalidStateException | IncompatibleEvidenceException e)
-                        {
-                            e.printStackTrace ();
-                        }
+                        evidenceCase.addFinding (finding);
+                    }
+                    catch (InvalidStateException | IncompatibleEvidenceException e)
+                    {
+                        e.printStackTrace ();
                     }
                 }
             }
 
             double costDiscountRate = costEffectivenessDialog.getCostDiscount ();
             double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount ();
-            double cycleLength = costEffectivenessDialog.getCycleLength ();
             double maxX = 0.0;
             for (ProbNode probNode : probNet.getProbNodes ())
             {
@@ -981,7 +947,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             {
                 try
                 {
-                    evidenceCase.extendEvidence (expandedNetFactory.getExtendedNetwork (), cycleLength);
+                    evidenceCase.extendEvidence (expandedNetFactory.getExtendedNetwork (), 1);
                 }
                 catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
                 {
@@ -1561,21 +1527,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
-            int numSlices = (probNet.checkIfThereIsAgeNode ()) ? costEffectivenessDialog.getFinalAge ()
-                                                                 - costEffectivenessDialog.getInitialAge ()
-                                                              : costEffectivenessDialog.getNumSlices ();
-            //String units = costEffectivenessDialog.getUnits ();
-
             CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
                                                                                                  probNet,
                                                                                                  costEffectivenessDialog.getCostDiscount (),
                                                                                                  costEffectivenessDialog.getEffectivenessDiscount (),
-                                                                                                 numSlices,
-                                                                                                 costEffectivenessDialog.getInitialAge (),
+                                                                                                 costEffectivenessDialog.getNumSlices (),
                                                                                                  costEffectivenessDialog.getNumericTemporalValues (),
-                                                                                                 costEffectivenessDialog.getCycleLength (),
                                                                                                  null,
-                                                                                                 costEffectivenessDialog.getZeroCycle ());            
+                                                                                                 costEffectivenessDialog.getTransitionTime ());            
             new CostEffectivenessResultsDialog (
                                                 Utilities.getOwner (mainPanel),
                                                 costEffectivenessAnalysis,

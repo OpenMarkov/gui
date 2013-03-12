@@ -40,7 +40,7 @@ public class PurposeTest {
 		String string;
 
 		string = Purpose.getString("treatment");
-		assertEquals(string, "Tratamiento");
+		assertEquals("Treatment", string);
 		string = Purpose.getString("unknown");
 		assertEquals(string, ">>> purpose.unknown.Text <<<");
 	}

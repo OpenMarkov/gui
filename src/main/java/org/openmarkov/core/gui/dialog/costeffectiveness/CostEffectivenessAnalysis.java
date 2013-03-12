@@ -31,34 +31,29 @@ public class CostEffectivenessAnalysis
 {
     private double             costDiscountRate;
     private double             effectivenessDiscountRate;
-    private boolean            checkZeroCycle;
+    private TransitionTime     transitionTime;
     private int                numSlices;
     private ProbNet            probNet;
     private ProbNet            expandedNetwork;
     private List<Intervention> interventions;
     private Variable           numIndexVariable;
-    private EvidenceCase       evidence;                 // = new
-                                                          // EvidenceCase();
-    private double             cycleLength;
+    private EvidenceCase       evidence;
 
     public CostEffectivenessAnalysis (ProbNet probNet,
                                       double costDiscountRate,
                                       double effectivenessDiscountRate,
                                       int numSlices,
-                                      Integer initialAge,
                                       Map<Variable, Double> numericTemporalValues,
-                                      double cycleLength,
                                       Variable numIndexVariable,
-                                      boolean checkZeroCycle)
+                                      TransitionTime transitionTime)
     {
         this.probNet = probNet;
         this.costDiscountRate = costDiscountRate;
         this.effectivenessDiscountRate = effectivenessDiscountRate;
         this.numSlices = numSlices;
         this.numIndexVariable = numIndexVariable;
-        this.evidence = getEvidenceFromNetwork (probNet, initialAge, numericTemporalValues);
-        this.cycleLength = cycleLength;
-        this.checkZeroCycle = checkZeroCycle;
+        this.evidence = getEvidenceFromNetwork (probNet, numericTemporalValues);
+        this.transitionTime = transitionTime;
     }
 
     public void probabilisticAdaptation ()
@@ -83,8 +78,7 @@ public class CostEffectivenessAnalysis
         }
         if (!hasUncertainty)
         {
-            throw new RuntimeException (
-                                        "To perform probabilistic cost effectiveness analysis it is necessary uncertainty within the network");
+            throw new RuntimeException ("To perform probabilistic cost effectiveness analysis it is necessary uncertainty within the network");
         }
     }
 
@@ -94,51 +88,23 @@ public class CostEffectivenessAnalysis
      * @return EvidenceCase
      */
     private EvidenceCase getEvidenceFromNetwork (ProbNet probNet,
-                                                 Integer initialAge,
                                                  Map<Variable, Double> numericTemporalValues)
     {
         EvidenceCase evidenceCase = new EvidenceCase ();
-        Finding ageFinding = null;
-        if (probNet.checkIfThereIsAgeNode ())
+        
+        for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
         {
-            for (ProbNode probNode : probNet.getProbNodes ())
-            {
-                Variable variable = probNode.getVariable ();
-                if (variable.isTemporal () && variable.getBaseName ().equalsIgnoreCase ("age")
-                    && variable.getTimeSlice () == 0)
-                {
-                    ageFinding = new Finding (variable, initialAge);
-                    break;
-                }
-            }
+            Variable timeDependentVariable = timeDependentNode.getVariable ();
+            Finding finding = new Finding (
+                                   timeDependentVariable,
+                                   numericTemporalValues.get (timeDependentVariable));
             try
             {
-                evidenceCase.addFinding (ageFinding);
+                evidenceCase.addFinding (finding);
             }
             catch (InvalidStateException | IncompatibleEvidenceException e)
             {
                 e.printStackTrace ();
-            }
-        }
-        if (probNet.getSpecialTimeDependentNodes ().size () >= 0)
-        {
-            for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes ())
-            {
-                Variable timeDependentVariable = timeDependentNode.getVariable ();
-                if (!timeDependentVariable.getBaseName ().equalsIgnoreCase ("age"))
-                {
-                    Finding finding = new Finding (
-                                           timeDependentVariable,
-                                           numericTemporalValues.get (timeDependentVariable));
-                    try
-                    {
-                        evidenceCase.addFinding (finding);
-                    }
-                    catch (InvalidStateException | IncompatibleEvidenceException e)
-                    {
-                        e.printStackTrace ();
-                    }
-                }
             }
         }
         return evidenceCase;
@@ -150,7 +116,7 @@ public class CostEffectivenessAnalysis
         {
             try
             {
-                evidence.extendEvidence (extendedNetwork, cycleLength);
+                evidence.extendEvidence (extendedNetwork, 1);
             }
             catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
             {
@@ -171,7 +137,7 @@ public class CostEffectivenessAnalysis
                                                         inferenceOptions, evidence);
         expandedNetFactory.adaptProbNetForCE ();
         ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
-        if (!checkZeroCycle)
+        if (transitionTime == TransitionTime.BEGINNING)
         {
             expandedNetFactory.pruneZeroCycleUtilities ();
             expandedNetwork = expandedNetFactory.getExtendedNetwork ();
@@ -276,10 +242,11 @@ public class CostEffectivenessAnalysis
         Intervention minorIntervention = allInterventions.get (0);
         for (int i = 1; i < allInterventions.size (); i++)
         {
-            if ((allInterventions.get (i).cost < minorIntervention.cost)
-                || (allInterventions.get (i).cost == minorIntervention.cost && allInterventions.get (i).effectiveness > minorIntervention.effectiveness))
+            Intervention intervention = allInterventions.get (i); 
+            if ((intervention.cost < minorIntervention.cost)
+                || (intervention.cost == minorIntervention.cost && intervention.effectiveness > minorIntervention.effectiveness))
             {
-                minorIntervention = allInterventions.get (i);
+                minorIntervention = intervention;
             }
         }
         frontierInterventions.add (minorIntervention);

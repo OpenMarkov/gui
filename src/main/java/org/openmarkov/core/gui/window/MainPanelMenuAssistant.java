@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 import org.openmarkov.core.oopn.OOPNet;
 
@@ -208,7 +209,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         {
             workingMode = currentNetworkPanel.getWorkingMode ();
             boolean enable = currentNetworkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType
-                             || currentNetworkPanel.getProbNet ().getNetworkType () instanceof SimpleMarkovModelType;
+                             || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MPADType;
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
             setOptionEnabled (ActionCommands.SENSITIVITY_ANALYSIS, enable);
             // setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION,
@@ -345,7 +346,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.SENSITIVITY_ANALYSIS, false);
                 setOptionEnabled (ActionCommands.DECISION_TREE, true);
             }
-            if (networkPanel.getProbNet ().getNetworkType () instanceof SimpleMarkovModelType
+            if (networkPanel.getProbNet ().getNetworkType () instanceof MPADType
                 || networkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType)
             {
                 setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);

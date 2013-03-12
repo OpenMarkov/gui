@@ -398,7 +398,7 @@
     <Label value="Opciones" />
   </Options>
   <CostEffectiveness>
-      <Cycles value="Ciclos"/>
+      <Cycles value="ciclos"/>
       <NumberOfCycles value = "Número de ciclos"/>
       <NumberOfSimulations value = "Número de simulaciones"/>
       <InitialAge value = "Edad inicial"/>
@@ -407,11 +407,14 @@
       <Years value = "años"/>
       <CycleLength value = "Longitud de ciclo"/>
       <ZeroCycle value = "Ciclo cero"/>
-      <CostDiscount value = "Descuento de coste (%)"/>
-      <EffectivenessDiscount value = "Descuento de efectividad (%)"/>
+      <Cost value = "Coste"/>
+      <Effectiveness value = "Efectividad"/>
       <InstantValues value = "Valores instantáneo"/>
       <CumulativeValues value = "Valores acumulados"/>
       <TemporalDisplay value = "Vista temporal"/>  
+      <BeginningOfCycle value = "Inicio del ciclo"/>
+      <HalfCycle value = "Mitad de ciclo"/>
+      <EndOfCycle value = "Final de ciclo"/>
       <ExpandNetwork>
         <Label value = "Expandir red" />
       </ExpandNetwork>

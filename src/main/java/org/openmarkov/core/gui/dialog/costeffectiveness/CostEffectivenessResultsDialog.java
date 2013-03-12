@@ -20,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.apache.commons.io.FilenameUtils;
@@ -53,15 +54,15 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 @SuppressWarnings("serial")
 public class CostEffectivenessResultsDialog extends JDialog
 {
-    private TablePotential                  globalUtility;
-    private CPTablePanel                    cpTablePanel;
-    private ChartPanel                      chartPanel;
-    private CostEffectivenessDialog         costEffectivenessDialog;
-    private CostEffectivenessAnalysis       costeffectivenessAnalysis;
-    private JTabbedPane                     tabbedPane;
-    private List<Intervention>              interventions;
-    private FrontierInterventionsTablePanel frontierInterventionsTablePanel;
-    private StringDatabase                  stringDatabase = StringDatabase.getUniqueInstance ();
+    private TablePotential            globalUtility;
+    private CPTablePanel              cpTablePanel;
+    private ChartPanel                chartPanel;
+    private CostEffectivenessDialog   costEffectivenessDialog;
+    private CostEffectivenessAnalysis costeffectivenessAnalysis;
+    private JTabbedPane               tabbedPane;
+    private List<Intervention>        interventions;
+    private JScrollPane               frontierInterventionsTablePanel;
+    private StringDatabase            stringDatabase = StringDatabase.getUniqueInstance ();
 
     public CostEffectivenessResultsDialog (Window owner,
                                            CostEffectivenessAnalysis costeffectivenessAnalysis,
@@ -166,9 +167,7 @@ public class CostEffectivenessResultsDialog extends JDialog
             tabbedPane.addTab (stringDatabase.getString ("AllInterventionsTable.Title.Label"),
                                null, getPotentialPanel (), null);
             tabbedPane.addTab (stringDatabase.getString ("FrontierInterventions.Title.Label"),
-                               null,
-                               ((FrontierInterventionsTablePanel) getFrontierInterventionsPanel ()).getValuesTableScrollPane (),
-                               null);
+                               null, getFrontierInterventionsPanel (), null);
         }
         return tabbedPane;
     }
@@ -295,13 +294,11 @@ public class CostEffectivenessResultsDialog extends JDialog
         costeffectivenessAnalysis.setInterventions (interventions);
     }
 
-    private JPanel getFrontierInterventionsPanel ()
+    private JScrollPane getFrontierInterventionsPanel ()
     {
         if (frontierInterventionsTablePanel == null)
         {
             frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (costeffectivenessAnalysis);
-            // add(tablePanel.getValuesTableScrollPane());
-            // tablePanel.setAutoscrolls(true);
         }
         return frontierInterventionsTablePanel;
     }
