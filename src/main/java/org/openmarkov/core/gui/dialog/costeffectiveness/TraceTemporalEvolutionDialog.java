@@ -50,35 +50,36 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public class TraceTemporalEvolutionDialog extends JDialog
 {
     private HashMap<Variable, TablePotential> temporalEvolution;
-    private CostEffectivenessDialog           costEffectivenessDialog;
     private ChartPanel                        chartPanel;
     private JScrollPane                       tablePane;
     private JTabbedPane                       tabbedPane;
     private Variable                          variableOfInterest;
     private ProbNet                           expandedNetwork;
     private boolean                           isUtility;
-    
+    private boolean                           isCumulative;
+    private CostEffectivenessAnalysis         costEffectivenessAnalysis;
     private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
-    public TraceTemporalEvolutionDialog(Window owner, ProbNode node) {
-    	super (owner);
-    	ProbNet probNet = node.getProbNet ();
+    public TraceTemporalEvolutionDialog (Window owner, ProbNode node)
+    {
+        super (owner);
+        ProbNet probNet = node.getProbNet ();
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
-    	costEffectivenessDialog = new CostEffectivenessDialog (owner, probNet, true);
-
-        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)    	
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (owner,
+                                                                                       probNet,
+                                                                                       true);
+        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
-
             // evidenceCase and cycleLegth null by the moment
-            CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
-                                                                                                 probNet,
-                                                                                                 costEffectivenessDialog.getCostDiscount (),
-                                                                                                 costEffectivenessDialog.getEffectivenessDiscount (),
-                                                                                                 costEffectivenessDialog.getNumSlices (),
-                                                                                                 costEffectivenessDialog.getNumericTemporalValues (),
-                                                                                                 null,
-                                                                                                 costEffectivenessDialog.getTransitionTime ());
-
+            costEffectivenessAnalysis = new CostEffectivenessAnalysis (
+                                                                       probNet,
+                                                                       costEffectivenessDialog.getCostDiscount (),
+                                                                       costEffectivenessDialog.getEffectivenessDiscount (),
+                                                                       costEffectivenessDialog.getNumSlices (),
+                                                                       costEffectivenessDialog.getNumericTemporalValues (),
+                                                                       null,
+                                                                       costEffectivenessDialog.getTransitionTime ());
+            this.isCumulative = costEffectivenessDialog.isCumulative ();
             this.variableOfInterest = node.getVariable ();
             try
             {
@@ -103,17 +104,13 @@ public class TraceTemporalEvolutionDialog extends JDialog
             }
             catch (ImposedPoliciesException e)
             {
-                JOptionPane.showMessageDialog (owner,
-                                               e.getMessage (),
-                                               "Error",
+                JOptionPane.showMessageDialog (owner, e.getMessage (), "Error",
                                                JOptionPane.ERROR_MESSAGE);
             }
-                
         }
-    	
-	}
+    }
 
-	private void initialize ()
+    private void initialize ()
     {
         setTitle (stringDatabase.getString ("TemporalEvolutionResultDialog.Title.Label") + " "
                   + variableOfInterest.getBaseName ());
@@ -133,7 +130,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         jContentPane.add (getBottomPanel (), BorderLayout.SOUTH);
         return jContentPane;
     }
-    
+
     private JPanel getBottomPanel ()
     {
         JPanel buttonsPanel = new JPanel ();
@@ -144,7 +141,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             {
                 public void actionPerformed (ActionEvent e)
                 {
-                    saveReport();
+                    saveReport ();
                 }
             });
         buttonsPanel.add (jButtonSaveReport);
@@ -162,6 +159,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         buttonsPanel.add (jButtonClose);
         return buttonsPanel;
     }
+
     private Component getComponentsPanel ()
     {
         JPanel panel = new JPanel ();
@@ -170,7 +168,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         panel.add (getTabbedPane ());
         pack ();
         return panel;
-    }    
+    }
 
     /**
      * This method initialises tabbedPane.
@@ -241,7 +239,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             {
                 series = new XYSeries (variableOfInterest.getStateName (i));
             }
-            for (int j = 0; j < costEffectivenessDialog.getNumSlices (); j++)
+            for (int j = 0; j < costEffectivenessAnalysis.getNumSlices (); j++)
             {
                 String basename = variableOfInterest.getBaseName ();
                 List<ProbNode> probNodes = expandedNetwork.getProbNodes ();
@@ -250,7 +248,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
                     if (probNodes.get (k).getVariable ().getBaseName ().equals (basename)
                         && probNodes.get (k).getVariable ().getTimeSlice () == j)
                     {
-                        if (isUtility && costEffectivenessDialog.isCumulative ())
+                        if (isUtility && isCumulative)
                         {
                             value += temporalEvolution.get (probNodes.get (k).getVariable ()).getValues ()[i];
                             int time = j;
@@ -275,20 +273,20 @@ public class TraceTemporalEvolutionDialog extends JDialog
         if (tablePane == null)
         {
             tablePane = new TemporalEvolutionTablePane (temporalEvolution, expandedNetwork,
-                                                          variableOfInterest,
-                                                          costEffectivenessDialog.getNumSlices (),
-                                                          isUtility,
-                                                          costEffectivenessDialog.isCumulative ());
+                                                        variableOfInterest,
+                                                        costEffectivenessAnalysis.getNumSlices (),
+                                                        isUtility, isCumulative);
         }
         return tablePane;
     }
-    
-    private void saveReport()
+
+    private void saveReport ()
     {
         JFileChooser fileChooser = new JFileChooser ();
         String netName = FilenameUtils.getBaseName (expandedNetwork.getName ());
-        fileChooser.setSelectedFile(new File(netName +"-"+ variableOfInterest.getBaseName () +"-temporalEvolution.xls"));        
-        if(fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
+        fileChooser.setSelectedFile (new File (netName + "-" + variableOfInterest.getBaseName ()
+                                               + "-temporalEvolution.xls"));
+        if (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
         {
             String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
             try
@@ -297,17 +295,18 @@ public class TraceTemporalEvolutionDialog extends JDialog
             }
             catch (IOException e)
             {
-                JOptionPane.showMessageDialog (this, "Error when trying to generate report in " + filename);
+                JOptionPane.showMessageDialog (this, "Error when trying to generate report in "
+                                                     + filename);
             }
         }
     }
-    
-    private void createExcel (String filename) throws IOException
+
+    private void createExcel (String filename)
+        throws IOException
     {
-        ExcelReport excel = ExcelReport.getUniqueInstance ();
-        excel.createTemporalEvolutionExcelReport (filename,
-                                                  temporalEvolution, expandedNetwork,
-                                                  costEffectivenessDialog.getNumSlices (), 
-                                                  variableOfInterest);
+        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
+        excel.createTemporalEvolutionReport (filename, temporalEvolution, expandedNetwork,
+                                             costEffectivenessAnalysis.getNumSlices (),
+                                             variableOfInterest);
     }
 }

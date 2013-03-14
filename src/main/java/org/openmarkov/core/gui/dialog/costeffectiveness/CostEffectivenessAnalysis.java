@@ -125,7 +125,7 @@ public class CostEffectivenessAnalysis
         }
     }
 
-    public TablePotential costEffectivenessCalculator ()
+    public List<Intervention> costEffectivenessCalculator ()
     {
         TablePotential globalUtility = null;
         FactoryExpandedMPAD expandedNetFactory;
@@ -179,8 +179,33 @@ public class CostEffectivenessAnalysis
         {
             e1.printStackTrace ();
         }
-        return globalUtility;
+        return createInterventions (globalUtility);
     }
+    
+    private List<Intervention> createInterventions (TablePotential globalUtility)
+    {
+        List<Intervention> interventions = new ArrayList<> ();
+        int[] dimensions = TablePotential.calculateDimensions (globalUtility.getVariables ());
+        List<Variable> decisions = globalUtility.getVariables ();
+        int[] offsets = TablePotential.calculateOffsets (dimensions);
+        double[] values = globalUtility.values; 
+        // each column of data is an intervention
+        for (int i = 0; i < values.length; i+=2)
+        {
+            double cost = values[i];
+            double effectiveness = values[i+1];
+            String name = null;
+            for (int j=1; j< decisions.size () ; ++j)
+            {
+                String decisionName =  decisions.get (j).getName ();
+                String stateName = decisions.get (j).getStateName ((i/offsets[j])% decisions.get (j).getNumStates ());
+                name = "Dec: " + decisionName + " = " + stateName  + "; ";
+            }
+            Intervention intervention = new Intervention (name, cost, effectiveness);
+            interventions.add (intervention);
+        }
+        return interventions;
+    }    
 
     public HashMap<Variable, TablePotential> traceTemporalEvolution (Variable variableOfInterest)
         throws ImposedPoliciesException
@@ -342,5 +367,32 @@ public class CostEffectivenessAnalysis
     public ProbNet getProbNet ()
     {
         return probNet;
+    }
+
+    /**
+     * Returns the costDiscountRate.
+     * @return the costDiscountRate.
+     */
+    public double getCostDiscountRate ()
+    {
+        return costDiscountRate;
+    }
+
+    /**
+     * Returns the effectivenessDiscountRate.
+     * @return the effectivenessDiscountRate.
+     */
+    public double getEffectivenessDiscountRate ()
+    {
+        return effectivenessDiscountRate;
+    }
+
+    /**
+     * Returns the numSlices.
+     * @return the numSlices.
+     */
+    public int getNumSlices ()
+    {
+        return numSlices;
     }
 }

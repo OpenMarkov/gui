@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.model.network.EvidenceCase;

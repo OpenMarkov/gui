@@ -1539,9 +1539,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                                  costEffectivenessDialog.getTransitionTime ());            
             new CostEffectivenessResultsDialog (
                                                 Utilities.getOwner (mainPanel),
-                                                costEffectivenessAnalysis,
-                                                costEffectivenessAnalysis.costEffectivenessCalculator (),
-                                                costEffectivenessDialog);
+                                                costEffectivenessAnalysis);
         }
     }
     

@@ -39,36 +39,26 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 public class ExcelReport
 {
     // Attributes
-    /**
-     * Attribute that points to the unique instance of this object (singleton
-     * pattern)
-     */
-    private static ExcelReport writer = null;
 
-    // Methods
-    /**
-     * Singleton pattern.
-     * @return <code>Reader</code>
-     */
-    public static ExcelReport getUniqueInstance ()
-    {
-        if (writer == null)
-        {
-            writer = new ExcelReport ();
-        }
-        return writer;
-    }
     private double       costDiscount;
     private double       effectivenessDiscount;
     private int          numSlices;
     private String       targetFilename;
     private HSSFWorkbook workBook;
 
+    public ExcelReport (CostEffectivenessAnalysis costEffectivenessAnalysis)
+    {
+        this.numSlices = costEffectivenessAnalysis.getNumSlices ();
+        this.costDiscount = costEffectivenessAnalysis.getCostDiscountRate ();
+        this.effectivenessDiscount = costEffectivenessAnalysis.getEffectivenessDiscountRate ();
+    }
+    
+    // Methods
     /**
      * creates a new book with temporal evolution of a variable
      * @throws IOException 
      */
-    public void createTemporalEvolutionExcelReport (String filename,
+    public void createTemporalEvolutionReport (String filename,
                                                     HashMap<Variable, TablePotential> temporalEvolution,
                                                     ProbNet expandedNetwork,
                                                     int numSlices,
@@ -184,7 +174,7 @@ public class ExcelReport
      * @param filename
      * @throws IOException
      */
-    public void writeExcelReportOptimalInterventions (List<Intervention> interventions,
+    public void writeOptimalInterventionsReport (List<Intervention> interventions,
                                                       List<Intervention> frontier,
                                                       String filename)
         throws IOException
@@ -281,13 +271,6 @@ public class ExcelReport
                 row.getCell (cellIndex++).setCellStyle (style);
             }
         }
-    }
-
-    public void setInitialData (CostEffectivenessDialog costEffectivenessDialog)
-    {
-        this.numSlices = costEffectivenessDialog.getNumSlices ();
-        this.costDiscount = costEffectivenessDialog.getCostDiscount ();
-        this.effectivenessDiscount = costEffectivenessDialog.getEffectivenessDiscount ();
     }
 
     private String checkXlsExtension (String filename)

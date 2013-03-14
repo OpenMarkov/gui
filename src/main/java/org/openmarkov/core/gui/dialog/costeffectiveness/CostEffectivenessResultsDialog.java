@@ -37,8 +37,8 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openmarkov.core.gui.dialog.common.CPTablePanel;
-import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
+import org.openmarkov.core.gui.component.ValuesTable;
+import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -56,26 +56,20 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 @SuppressWarnings("serial")
 public class CostEffectivenessResultsDialog extends JDialog
 {
-    private TablePotential            globalUtility;
-    private CPTablePanel              cpTablePanel;
-    private ChartPanel                chartPanel;
-    private CostEffectivenessDialog   costEffectivenessDialog;
-    private CostEffectivenessAnalysis costeffectivenessAnalysis;
-    private JTabbedPane               tabbedPane;
-    private List<Intervention>        interventions;
-    private JScrollPane               frontierInterventionsTablePanel;
-    private StringDatabase            stringDatabase = StringDatabase.getUniqueInstance ();
+    private CostEffectivenessAnalysis    costEffectivenessAnalysis;
+    private List<Intervention>           interventions;
+    private CostEffectivenessSummaryPane summaryPane;
+    private ChartPanel                   chartPanel;
+    private JScrollPane                  frontierInterventionsTablePanel;
+    private JTabbedPane                  tabbedPane;
+    private StringDatabase               stringDatabase = StringDatabase.getUniqueInstance ();
 
     public CostEffectivenessResultsDialog (Window owner,
-                                           CostEffectivenessAnalysis costeffectivenessAnalysis,
-                                           TablePotential globalUtility,
-                                           CostEffectivenessDialog costEffectivenessDialog)
+                                           CostEffectivenessAnalysis costeffectivenessAnalysis)
     {
         super (owner);
-        this.globalUtility = globalUtility;
-        this.costEffectivenessDialog = costEffectivenessDialog;
-        this.costeffectivenessAnalysis = costeffectivenessAnalysis;
-        this.interventions = new ArrayList<> ();
+        this.interventions = costeffectivenessAnalysis.costEffectivenessCalculator ();
+        this.costEffectivenessAnalysis = costeffectivenessAnalysis;
         initialize ();
         Toolkit toolkit = Toolkit.getDefaultToolkit ();
         Dimension screenSize = toolkit.getScreenSize ();
@@ -97,7 +91,6 @@ public class CostEffectivenessResultsDialog extends JDialog
     private void initialize ()
     {
         setTitle (stringDatabase.getString ("CostEffectivenessResultDialog.Title.Label"));
-        createInterventions ();
         setContentPane (getJContentPane ());
         pack ();
     }
@@ -125,7 +118,7 @@ public class CostEffectivenessResultsDialog extends JDialog
             {
                 public void actionPerformed (ActionEvent e)
                 {
-                    saveReport();
+                    saveReport ();
                 }
             });
         buttonsPanel.add (jButtonSaveReport);
@@ -167,49 +160,20 @@ public class CostEffectivenessResultsDialog extends JDialog
             tabbedPane.addTab (stringDatabase.getString ("AllInterventionsChart.Title.Label"),
                                null, getChartsPanel (), null);
             tabbedPane.addTab (stringDatabase.getString ("AllInterventionsTable.Title.Label"),
-                               null, getPotentialPanel (), null);
+                               null, getSummaryPane (), null);
             tabbedPane.addTab (stringDatabase.getString ("FrontierInterventions.Title.Label"),
                                null, getFrontierInterventionsPanel (), null);
         }
         return tabbedPane;
     }
 
-    private ProbabilityTablePanel getPotentialPanel ()
+    private CostEffectivenessSummaryPane getSummaryPane ()
     {
-        if (cpTablePanel == null)
+        if (summaryPane == null)
         {
-            // create a dummy probnet
-            ProbNet dummyProbNet = new ProbNet ();
-            // make sure first variable in globalUtility is decisionCriteria one
-            List<Variable> correctOrder = new ArrayList<> (globalUtility.getVariables ());
-            for (int i = 0; i < correctOrder.size (); i++)
-            {
-                if (correctOrder.get (i).getName ().equalsIgnoreCase ("Decision Criteria"))
-                {
-                    Variable decisionCriteriaVariable = correctOrder.remove (i);
-                    correctOrder.add (0, decisionCriteriaVariable);
-                }
-            }
-            globalUtility = DiscretePotentialOperations.reorder (globalUtility, correctOrder);
-            ProbNode dummyNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (0),
-                                           NodeType.CHANCE);
-            for (int i = 1; i < globalUtility.getVariables ().size (); i++)
-            {
-                ProbNode newProbNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
-                dummyProbNet.addLink (newProbNode, dummyNode, true);
-            }
-            List<Potential> potentials = new ArrayList<> ();
-            TablePotential aux = new TablePotential (globalUtility.getVariables (),
-                                                     PotentialRole.CONDITIONAL_PROBABILITY);
-            // aux.setUtilityVariable(globalUtility.getVariables().get(0));
-            aux.setValues (globalUtility.getValues ());
-            potentials.add (aux);
-            dummyNode.setPotentials (potentials);
-            // not modifiable table potential panel
-            cpTablePanel = new CPTablePanel (dummyNode);
-            cpTablePanel.getCommentHTMLScrollPaneNodeDefinitionComment ().setVisible (false);
+            summaryPane = new CostEffectivenessSummaryPane ();
         }
-        return cpTablePanel;
+        return summaryPane;
     }
 
     private ChartPanel getChartsPanel ()
@@ -228,81 +192,49 @@ public class CostEffectivenessResultsDialog extends JDialog
             chartPanel.setMouseZoomable (true);
             XYPlot plot = (XYPlot) chart.getPlot ();
             XYItemRenderer renderer = plot.getRenderer ();
-            XYToolTipGenerator generator = new StandardXYToolTipGenerator ("{0}: ({1}, {2})",
-                                                                           new DecimalFormat ("0.00", new DecimalFormatSymbols (Locale.US)),
-                                                                           new DecimalFormat ("0.00", new DecimalFormatSymbols (Locale.US)));
+            XYToolTipGenerator generator = new StandardXYToolTipGenerator (
+                                                                           "{0}: ({1}, {2})",
+                                                                           new DecimalFormat (
+                                                                                              "0.00",
+                                                                                              new DecimalFormatSymbols (
+                                                                                                                        Locale.US)),
+                                                                           new DecimalFormat (
+                                                                                              "0.00",
+                                                                                              new DecimalFormatSymbols (
+                                                                                                                        Locale.US)));
             renderer.setBaseToolTipGenerator (generator);
         }
         return chartPanel;
     }
 
-    /*
-     * private static XYDataset createDataset() { XYSeriesCollection result =
-     * new XYSeriesCollection(); XYSeries series = new
-     * XYSeries("Cost Effectiveness"); Object data [][] =
-     * ((ProbabilityTablePanel)getPotentialPanel()).getData(); for (int i = 1; i
-     * < data[1].length; i++) { double effectiveness =
-     * Double.valueOf(data[data.length-3][i].toString()).doubleValue(); double
-     * cost = Double.valueOf(data[data.length-2][i].toString()).doubleValue();
-     * //generateToolTip(result, int series, int item);
-     * series.add(effectiveness, cost); } result.addSeries(series); return
-     * result; }
-     */
     private XYDataset createDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
-        Object data[][] = ((ProbabilityTablePanel) getPotentialPanel ()).getData ();
-        for (int i = 1; i < data[1].length; i++)
+        for (Intervention intervention : interventions)
         {
-            XYSeries series = new XYSeries (interventions.get (i - 1).getName ());
-            double effectiveness = Double.valueOf (data[data.length - 3][i].toString ()).doubleValue ();
-            double cost = Double.valueOf (data[data.length - 2][i].toString ()).doubleValue ();
-            // generateToolTip(result, int series, int item);
-            series.add (effectiveness, cost);
+            XYSeries series = new XYSeries (intervention.getName ());
+            series.add (intervention.getEffectiveness (), intervention.getCost ());
             result.addSeries (series);
         }
         return result;
-    }
-
-    private void createInterventions ()
-    {
-        Object data[][] = ((ProbabilityTablePanel) getPotentialPanel ()).getData ();
-        int numDecisions = data.length - 3;
-        // each column of data is an intervention
-        for (int i = 1; i < data[0].length; i++)
-        {
-            double effectiveness = Double.valueOf (data[data.length - 3][i].toString ()).doubleValue ();
-            double cost = Double.valueOf (data[data.length - 2][i].toString ()).doubleValue ();
-            String name = null;
-            for (int j = 0; j < numDecisions; j++)
-            {
-                name = "Dec: " + data[j][0].toString () + " = " + data[j][i].toString ();
-                if (j != numDecisions - 1)
-                {
-                    name += "; ";
-                }
-            }
-            Intervention intervention = new Intervention (name, cost, effectiveness);
-            interventions.add (intervention);
-        }
-        costeffectivenessAnalysis.setInterventions (interventions);
     }
 
     private JScrollPane getFrontierInterventionsPanel ()
     {
         if (frontierInterventionsTablePanel == null)
         {
-            frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (costeffectivenessAnalysis);
+            frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (
+                                                                                   costEffectivenessAnalysis);
         }
         return frontierInterventionsTablePanel;
     }
-    
-    private void saveReport()
+
+    private void saveReport ()
     {
         JFileChooser fileChooser = new JFileChooser ();
-        String netName = FilenameUtils.getBaseName (costeffectivenessAnalysis.getProbNet ().getName ());
-        fileChooser.setSelectedFile(new File(netName +"-cea.xls"));        
-        if(fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
+        String netName = FilenameUtils.getBaseName (costEffectivenessAnalysis.getProbNet ().getName ());
+        fileChooser.setSelectedFile (new File (netName + "-cea.xls"));
+        if (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
         {
             String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
             try
@@ -311,7 +243,8 @@ public class CostEffectivenessResultsDialog extends JDialog
             }
             catch (IOException e)
             {
-                JOptionPane.showMessageDialog (this, "Error when trying to generate report in " + filename);
+                JOptionPane.showMessageDialog (this, "Error when trying to generate report in "
+                                                     + filename);
             }
         }
     }
@@ -319,10 +252,9 @@ public class CostEffectivenessResultsDialog extends JDialog
     private void createExcel (String filename)
         throws IOException
     {
-        ExcelReport excel = ExcelReport.getUniqueInstance ();
-        excel.setInitialData (costEffectivenessDialog);
-        excel.writeExcelReportOptimalInterventions (interventions,
-                                                    costeffectivenessAnalysis.getFrontierInterventions (costeffectivenessAnalysis.getInterventions ()),
-                                                    filename);
+        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
+        excel.writeOptimalInterventionsReport (interventions,
+                                               costEffectivenessAnalysis.getFrontierInterventions (costEffectivenessAnalysis.getInterventions ()),
+                                               filename);
     }
 }
