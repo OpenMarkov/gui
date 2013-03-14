@@ -1,16 +1,11 @@
 
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
-import java.awt.Component;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -36,10 +31,10 @@ public class TemporalEvolutionTablePane extends JScrollPane
         super ();
         NonEditableModel model = new NonEditableModel ();
         JTable table = new JTable (model);
-        model.setColumnCount (temporalEvolution.size () + 1);
+        model.setColumnCount (temporalEvolution.size () + 2);
         model.setNumRows (variableOfInterest.getNumStates ());
         model.setRowCount (variableOfInterest.getNumStates ());
-        final Object[][] info = new Object[variableOfInterest.getNumStates ()][temporalEvolution.size () + 1];
+        final Object[][] info = new Object[variableOfInterest.getNumStates ()][temporalEvolution.size () + 2];
         // first column
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {
@@ -56,7 +51,7 @@ public class TemporalEvolutionTablePane extends JScrollPane
                 model.setValueAt (variableOfInterest.getStateName (i), i, 0);
             }
         }
-        final String[] columnNames = new String[temporalEvolution.size () + 1];
+        final String[] columnNames = new String[temporalEvolution.size () + 2];
         columnNames[0] = " ";
         table.getColumnModel ().getColumn (0).setHeaderValue ("");
         String basename = variableOfInterest.getBaseName ();
@@ -80,7 +75,7 @@ public class TemporalEvolutionTablePane extends JScrollPane
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {// row
             String basenameInterest = variableOfInterest.getBaseName ();
-            for (int j = 0; j < numSlices; j++)
+            for (int j = 0; j <= numSlices; j++)
             { // column
                 for (ProbNode expandedProbNode : expandedProbNodes)
                 {

@@ -395,34 +395,24 @@ public class NodeDomainValuesTablePanel extends JPanel
                     jRadioButtonMonotonyDown.setEnabled (false);
                     jRadioButtonMonotonyUp.setSelected (false);
                     jRadioButtonMonotonyDown.setSelected (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnablePanelButton (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setVisibleButtonPanel (true);
+                    getNodeDiscretizedStatesTablePanel ().setEnablePanelButton (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleButtonPanel (true);
                     getJLabelDomainValues ().setVisible (false);
                     getJComboBoxStatesValues ().setVisible (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setVisible (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setEnabled (true);
-                    /*
-                     * discretizedNodeStatesTablePanel.
-                     * getInfiniteNegativeDoubleButton().setVisible(false);
-                     * discretizedNodeStatesTablePanel
-                     * .getInfinitePositiveDoubleButton().setVisible(false);
-                     */
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setVisible (true);
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setEnabled (true);
                     // node comment title
                     // states of the node
                     State[] states = properties.getVariable ().getStates ();
                     State[] reorderedStates = states.clone ();
                     Collections.reverse (Arrays.asList (reorderedStates));
-                    /*
-                     * jComboBoxStatesValues.setSelectedIndex(DefaultStates.getIndex
-                     * ( states)); if (jComboBoxStatesValues.getSelectedIndex()
-                     * == (jComboBoxStatesValues.getItemCount() - 1)) {
-                     * Object[][] tableData =
-                     * getDataFromStates(reorderedStates);
-                     * discretizedNodeStatesTablePanel.setData(tableData); }
-                     * else {
-                     */
                     Object[][] tableData = getDataFromStates (reorderedStates);
                     getNodeDiscretizedStatesTablePanel ().setData (tableData);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleAddValue (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleRemoveValue (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleUpValue (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleDownValue (true);
+                    
                     // }
                     break;
                 }
@@ -444,24 +434,22 @@ public class NodeDomainValuesTablePanel extends JPanel
                     jRadioButtonMonotonyDown.setEnabled (false);
                     jRadioButtonMonotonyUp.setSelected (false);
                     jRadioButtonMonotonyDown.setSelected (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnablePanelButton (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setVisibleButtonPanel (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnabledAddValue (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnabledRemoveValue (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnabledUpValue (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnabledDownValue (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setVisible (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setEnabled (false);
+                    getNodeDiscretizedStatesTablePanel ().setEnablePanelButton (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleButtonPanel (true);
+                    getNodeDiscretizedStatesTablePanel ().setEnabledAddValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setEnabledRemoveValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setEnabledUpValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setEnabledDownValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleAddValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleRemoveValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleUpValue (false);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleDownValue (false);
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setVisible (false);
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setEnabled (false);
                     getJTextFieldUnit ().setEnabled (true);
                     getJTextFieldUnit ().setVisible (true);
                     getJLabelUnit ().setEnabled (true);
                     getJLabelUnit ().setVisible (true);
-                    /*
-                     * discretizedNodeStatesTablePanel.
-                     * getInfiniteNegativeDoubleButton().setVisible(true);
-                     * discretizedNodeStatesTablePanel
-                     * .getInfinitePositiveDoubleButton().setVisible(true);
-                     */
                     break;
                 }
                 case DISCRETIZED :
@@ -482,29 +470,17 @@ public class NodeDomainValuesTablePanel extends JPanel
                     jRadioButtonMonotonyDown.setEnabled (true);
                     jRadioButtonMonotonyUp.setSelected (false);
                     jRadioButtonMonotonyDown.setSelected (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setUpMonotony (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setEnablePanelButton (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).setVisibleButtonPanel (true);
+                    getNodeDiscretizedStatesTablePanel ().setUpMonotony (false);
+                    getNodeDiscretizedStatesTablePanel ().setEnablePanelButton (true);
+                    getNodeDiscretizedStatesTablePanel ().setVisibleButtonPanel (true);
                     getJLabelDomainValues ().setVisible (false);
                     getJComboBoxStatesValues ().setVisible (false);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setVisible (true);
-                    ((DiscretizeTablePanel) getNodeDiscretizedStatesTablePanel ()).getStandarDomainButton ().setEnabled (true);
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setVisible (true);
+                    getNodeDiscretizedStatesTablePanel ().getStandarDomainButton ().setEnabled (true);
                     getJTextFieldUnit ().setEnabled (true);
                     getJTextFieldUnit ().setVisible (true);
                     getJLabelUnit ().setEnabled (true);
                     getJLabelUnit ().setVisible (true);
-                    /*
-                     * ((DiscretizeTablePanel)getNodeStatesTablePanel()).
-                     * setEnablePanelButton(true);
-                     * ((DiscretizeTablePanel)getNodeStatesTablePanel()).
-                     * setVisibleButtonPanel(true);
-                     */
-                    /*
-                     * discretizedNodeStatesTablePanel.
-                     * getInfiniteNegativeDoubleButton().setVisible(true);
-                     * discretizedNodeStatesTablePanel
-                     * .getInfinitePositiveDoubleButton().setVisible(true);
-                     */
                     break;
                 }
             }

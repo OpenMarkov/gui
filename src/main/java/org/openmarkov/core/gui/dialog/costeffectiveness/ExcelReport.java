@@ -103,7 +103,7 @@ public class ExcelReport
         }
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {
-            for (int j = 0; j < numSlices; j++)
+            for (int j = 0; j <= numSlices; j++)
             {
                 String basenameInterest = variableOfInterest.getBaseName ();
                 List<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes ();

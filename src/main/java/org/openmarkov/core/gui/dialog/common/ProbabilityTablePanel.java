@@ -158,37 +158,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 		}
 
 		/**
-		 * This method initialises this instance.
-		 */
-	/*	private void initialize() {
-			/*setBorder( new LineBorder( UIManager.getColor( "Table.dropLineColor" ),1, false ) );
-			
-				final GroupLayout groupLayout = new GroupLayout( (JComponent) this );
-				
-				groupLayout.setHorizontalGroup( 
-					groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING )
-					.addGroup(
-							groupLayout.createSequentialGroup().addComponent(
-						getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 474,
-						Short.MAX_VALUE ) ) );
-				
-				groupLayout.setVerticalGroup( 
-					groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING )
-					.addGroup(GroupLayout.Alignment.TRAILING,
-							groupLayout.createSequentialGroup().addComponent(
-						getValuesTableScrollPane(), GroupLayout.DEFAULT_SIZE, 349,
-						Short.MAX_VALUE ) ) );
-				
-				setLayout( groupLayout );
-				setAutoscrolls( true );
-				//setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
-				//setCellRenderers();
-		
-			setLayout(new BorderLayout());
-			
-		}*/
-		
-		/**
 		 * @return label for the node relation comment
 		 */
 		protected JLabel getJLabelNodeRelationComment() {
@@ -203,20 +172,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 			}
 			return jLabelNodeRelationComment;
 		}
-		/**
-		 * This method initializes commentHTMLScrollPaneNodeDefinitionComment
-		 * 
-		 * @return a new comment HTML scroll pane.
-		 */
-	/*	protected CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
-
-			if (commentHTMLScrollPaneNodeProbsComment == null) {
-				commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
-				commentHTMLScrollPaneNodeProbsComment.setName( 
-						"commentHTMLScrollPaneNodeProbsComment" );
-			}
-			return commentHTMLScrollPaneNodeProbsComment;
-		}*/
 
 		/**
 		 * @return the showAllParameters

@@ -140,8 +140,16 @@ public class CostEffectivenessAnalysis
         if (transitionTime == TransitionTime.BEGINNING)
         {
             expandedNetFactory.pruneZeroCycleUtilities ();
-            expandedNetwork = expandedNetFactory.getExtendedNetwork ();
+        }else if(transitionTime == TransitionTime.END)
+        {
+            // Prune last cycle utilities
+            expandedNetFactory.pruneLastCycleUtilities ();
+        }else
+        {
+            // Half zero and last cycle utilities
+            expandedNetFactory.pruneZeroCycleUtilities ();
         }
+        expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         VariableElimination variableElimination;
         try
         {
@@ -197,10 +205,6 @@ public class CostEffectivenessAnalysis
         this.expandedNetwork = expandedNetFactory.getExtendedNetwork ();
         String baseName = variableOfInterest.getBaseName ();
         List<Variable> variablesOfInterest = new ArrayList<> ();
-        /*
-         * if (!checkZeroCycle) { expandedNetFactory.pruneZeroCycleUtilities();
-         * this.expandedNetwork = expandedNetFactory.getExtendedNet(); }
-         */
         List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes ();
         for (ProbNode node : expandedProbNetProbNodes)
         {

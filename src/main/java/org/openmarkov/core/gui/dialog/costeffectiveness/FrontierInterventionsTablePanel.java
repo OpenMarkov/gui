@@ -1,14 +1,11 @@
 
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 

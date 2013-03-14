@@ -12,8 +12,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -179,40 +181,32 @@ public class CostEffectivenessResultsDialog extends JDialog
             // create a dummy probnet
             ProbNet dummyProbNet = new ProbNet ();
             // make sure first variable in globalUtility is decisionCriteria one
-            ArrayList<Variable> corectOrder = new ArrayList<> ();
-            for (int i = 0; i < globalUtility.getVariables ().size (); i++)
+            List<Variable> correctOrder = new ArrayList<> (globalUtility.getVariables ());
+            for (int i = 0; i < correctOrder.size (); i++)
             {
-                if (globalUtility.getVariables ().get (i).getName ().equalsIgnoreCase ("Decision Criteria"))
+                if (correctOrder.get (i).getName ().equalsIgnoreCase ("Decision Criteria"))
                 {
-                    corectOrder.add (globalUtility.getVariables ().get (i));
+                    Variable decisionCriteriaVariable = correctOrder.remove (i);
+                    correctOrder.add (0, decisionCriteriaVariable);
                 }
             }
-            for (int i = 0; i < globalUtility.getVariables ().size (); i++)
-            {
-                if (!globalUtility.getVariables ().get (i).getName ().equalsIgnoreCase ("Decision Criteria"))
-                {
-                    corectOrder.add (globalUtility.getVariables ().get (i));
-                }
-            }
-            globalUtility = DiscretePotentialOperations.reorder (globalUtility, corectOrder);
-            ProbNode dummy = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (0),
+            globalUtility = DiscretePotentialOperations.reorder (globalUtility, correctOrder);
+            ProbNode dummyNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (0),
                                            NodeType.CHANCE);
             for (int i = 1; i < globalUtility.getVariables ().size (); i++)
             {
-                ProbNode newProbNode = new ProbNode (dummyProbNet,
-                                                     globalUtility.getVariables ().get (i),
-                                                     NodeType.CHANCE);
-                dummyProbNet.addLink (newProbNode, dummy, true);
+                ProbNode newProbNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
+                dummyProbNet.addLink (newProbNode, dummyNode, true);
             }
-            ArrayList<Potential> potentials = new ArrayList<> ();
+            List<Potential> potentials = new ArrayList<> ();
             TablePotential aux = new TablePotential (globalUtility.getVariables (),
                                                      PotentialRole.CONDITIONAL_PROBABILITY);
             // aux.setUtilityVariable(globalUtility.getVariables().get(0));
             aux.setValues (globalUtility.getValues ());
             potentials.add (aux);
-            dummy.setPotentials (potentials);
+            dummyNode.setPotentials (potentials);
             // not modifiable table potential panel
-            cpTablePanel = new CPTablePanel (dummy);
+            cpTablePanel = new CPTablePanel (dummyNode);
             cpTablePanel.getCommentHTMLScrollPaneNodeDefinitionComment ().setVisible (false);
         }
         return cpTablePanel;
@@ -235,8 +229,8 @@ public class CostEffectivenessResultsDialog extends JDialog
             XYPlot plot = (XYPlot) chart.getPlot ();
             XYItemRenderer renderer = plot.getRenderer ();
             XYToolTipGenerator generator = new StandardXYToolTipGenerator ("{0}: ({1}, {2})",
-                                                                           new DecimalFormat ("0.00"),
-                                                                           new DecimalFormat ("0.00"));
+                                                                           new DecimalFormat ("0.00", new DecimalFormatSymbols (Locale.US)),
+                                                                           new DecimalFormat ("0.00", new DecimalFormatSymbols (Locale.US)));
             renderer.setBaseToolTipGenerator (generator);
         }
         return chartPanel;

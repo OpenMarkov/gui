@@ -117,11 +117,11 @@ public class DiscretizeTablePanel extends KeyTablePanel
     /**
      * Infinite Positive Button
      */
-    private JButton              jButtonInfinitePositiveDouble = null;
+    private JButton              jButtonPositiveInfinityDouble = null;
     /**
      * Infinite Positive Button
      */
-    private JButton              jButtonInfiniteNegativeDouble = null;
+    private JButton              jButtonNegativeInfinityDouble = null;
     /**
      * Button to select variable states.
      */
@@ -384,7 +384,6 @@ public class DiscretizeTablePanel extends KeyTablePanel
                                                            JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                    // checkIntervalDiscretize("[", fila, columna,upMonotony);
                 }
                 else if (aux.equals ("["))
                 {
@@ -519,98 +518,59 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * method to control and change the values and symbols when user changes the
      * values and limits in the table, depending upon the type of monotony
      */
-    protected void checkIntervalDiscretize (String statecurrent,
-                                            int fila,
-                                            int columna,
+    protected void checkIntervalDiscretize (String currentState,
+                                            int row,
+                                            int column,
                                             boolean upMonotony)
     {
         // double aux, aux2;
         if (upMonotony)
         { // monotony UP
-            if (fila != valuesTable.getRowCount () - 1 && columna == upperLimitSymbolColumnNum)
+            if (row != valuesTable.getRowCount () - 1 && column == upperLimitSymbolColumnNum)
             {
-                if (statecurrent.equals (")"))
+                if (currentState.equals (")"))
                 {
-                    valuesTable.setValueAt ("[", fila + 1, lowerLimitSymbolColumnNum);
-                    // Change Value
-                    // aux = (Double) valuesTable
-                    // .getValueAt(fila, upperLimitValueColumnNum);
-                    // valuesTable.setValueAt(aux, fila + 1,
-                    // lowLimitValueColumnNum);
+                    valuesTable.setValueAt ("[", row + 1, lowerLimitSymbolColumnNum);
                 }
                 else
                 {
-                    valuesTable.setValueAt ("(", fila + 1, lowerLimitSymbolColumnNum);
-                    // Change value
-                    /*
-                     * aux = (Double) valuesTable .getValueAt(fila - 1,
-                     * lowLimitValueColumnNum); aux2 = (Double) valuesTable
-                     * .getValueAt(fila, upperLimitValueColumnNum); if (aux ==
-                     * aux2) { valuesTable.setValueAt( aux , // required?? fila
-                     * - 1, lowLimitValueColumnNum); }
-                     */
+                    valuesTable.setValueAt ("(", row + 1, lowerLimitSymbolColumnNum);
                 }
             }
-            if (fila != 0 && columna == lowerLimitSymbolColumnNum)
+            if (row != 0 && column == lowerLimitSymbolColumnNum)
             {
-                if (statecurrent.equals ("("))
+                if (currentState.equals ("("))
                 {
-                    valuesTable.setValueAt ("]", fila - 1, upperLimitSymbolColumnNum);
+                    valuesTable.setValueAt ("]", row - 1, upperLimitSymbolColumnNum);
                 }
                 else
                 {
-                    valuesTable.setValueAt (")", fila - 1, upperLimitSymbolColumnNum);
-                    // Change Value
-                    /*
-                     * aux = (Double) valuesTable .getValueAt(fila + 1,
-                     * upperLimitValueColumnNum); valuesTable.setValueAt(aux,
-                     * fila, lowLimitValueColumnNum);
-                     */
+                    valuesTable.setValueAt (")", row - 1, upperLimitSymbolColumnNum);
                 }
             }
         }
         else
         { // Down monotony
-            if (fila != 0 && columna == upperLimitSymbolColumnNum)
+            if (row != 0 && column == upperLimitSymbolColumnNum)
             {
-                if (statecurrent.equals (")"))
+                if (currentState.equals (")"))
                 {
-                    valuesTable.setValueAt ("[", fila - 1, lowerLimitSymbolColumnNum);
-                    // Change Value
-                    /*
-                     * aux = (Double) valuesTable .getValueAt(fila,
-                     * upperLimitValueColumnNum); valuesTable.setValueAt(aux,
-                     * fila - 1, lowLimitValueColumnNum);
-                     */
+                    valuesTable.setValueAt ("[", row - 1, lowerLimitSymbolColumnNum);
                 }
                 else
                 {
-                    valuesTable.setValueAt ("(", fila - 1, lowerLimitSymbolColumnNum);
-                    // Change value
-                    /*
-                     * aux = (Double) valuesTable .getValueAt(fila - 1,
-                     * lowLimitValueColumnNum); aux2 = (Double) valuesTable
-                     * .getValueAt(fila, upperLimitValueColumnNum); if (aux ==
-                     * aux2) { valuesTable.setValueAt( aux , // required?? fila
-                     * - 1, lowLimitValueColumnNum); }
-                     */
+                    valuesTable.setValueAt ("(", row - 1, lowerLimitSymbolColumnNum);
                 }
             }
-            if (fila != valuesTable.getRowCount () - 1 && columna == lowerLimitSymbolColumnNum)
+            if (row != valuesTable.getRowCount () - 1 && column == lowerLimitSymbolColumnNum)
             {
-                if (statecurrent.equals ("("))
+                if (currentState.equals ("("))
                 {
-                    valuesTable.setValueAt ("]", fila + 1, upperLimitSymbolColumnNum);
+                    valuesTable.setValueAt ("]", row + 1, upperLimitSymbolColumnNum);
                 }
                 else
                 {
-                    valuesTable.setValueAt (")", fila + 1, upperLimitSymbolColumnNum);
-                    // Change Value
-                    /*
-                     * aux = (Double) valuesTable .getValueAt(fila + 1,
-                     * upperLimitValueColumnNum); valuesTable.setValueAt(aux,
-                     * fila, lowLimitValueColumnNum);
-                     */
+                    valuesTable.setValueAt (")", row + 1, upperLimitSymbolColumnNum);
                 }
             }
         }
@@ -700,18 +660,18 @@ public class DiscretizeTablePanel extends KeyTablePanel
      */
     public JButton getInfinitePositiveDoubleButton ()
     {
-        if (jButtonInfinitePositiveDouble == null)
+        if (jButtonPositiveInfinityDouble == null)
         {
-            jButtonInfinitePositiveDouble = new JButton ();
-            jButtonInfinitePositiveDouble.setName ("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
-            jButtonInfinitePositiveDouble.setText (stringDatabase.getString ("InfinitePositive.Text.Label"));
-            jButtonInfinitePositiveDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
+            jButtonPositiveInfinityDouble = new JButton ();
+            jButtonPositiveInfinityDouble.setName ("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
+            jButtonPositiveInfinityDouble.setText (stringDatabase.getString ("InfinitePositive.Text.Label"));
+            jButtonPositiveInfinityDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
             // jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
-            jButtonInfinitePositiveDouble.setEnabled (false);
-            jButtonInfinitePositiveDouble.addActionListener (this);
-            jButtonInfinitePositiveDouble.setVisible (false);
+            jButtonPositiveInfinityDouble.setEnabled (false);
+            jButtonPositiveInfinityDouble.addActionListener (this);
+            jButtonPositiveInfinityDouble.setVisible (false);
         }
-        return jButtonInfinitePositiveDouble;
+        return jButtonPositiveInfinityDouble;
     }
 
     /**
@@ -720,18 +680,18 @@ public class DiscretizeTablePanel extends KeyTablePanel
      */
     public JButton getInfiniteNegativeDoubleButton ()
     {
-        if (jButtonInfiniteNegativeDouble == null)
+        if (jButtonNegativeInfinityDouble == null)
         {
-            jButtonInfiniteNegativeDouble = new JButton ();
-            jButtonInfiniteNegativeDouble.setName ("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
-            jButtonInfiniteNegativeDouble.setText (stringDatabase.getString ("InfiniteNegative.Text.Label"));
-            jButtonInfiniteNegativeDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
+            jButtonNegativeInfinityDouble = new JButton ();
+            jButtonNegativeInfinityDouble.setName ("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
+            jButtonNegativeInfinityDouble.setText (stringDatabase.getString ("InfiniteNegative.Text.Label"));
+            jButtonNegativeInfinityDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
             // jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
-            jButtonInfiniteNegativeDouble.setEnabled (false);
-            jButtonInfiniteNegativeDouble.addActionListener (this);
-            jButtonInfiniteNegativeDouble.setVisible (false);
+            jButtonNegativeInfinityDouble.setEnabled (false);
+            jButtonNegativeInfinityDouble.addActionListener (this);
+            jButtonNegativeInfinityDouble.setVisible (false);
         }
-        return jButtonInfiniteNegativeDouble;
+        return jButtonNegativeInfinityDouble;
     }
 
     /**
@@ -1066,13 +1026,13 @@ public class DiscretizeTablePanel extends KeyTablePanel
     public void actionPerformed (ActionEvent e)
     {
         super.actionPerformed (e);
-        if (e.getSource ().equals (this.jButtonInfinitePositiveDouble))
+        if (e.getSource ().equals (this.jButtonPositiveInfinityDouble))
         {
-            actionPerformedInfinitePositiveValue ();
+            actionPerformedPositiveInfinityValue ();
         }
-        else if (e.getSource ().equals (this.jButtonInfiniteNegativeDouble))
+        else if (e.getSource ().equals (this.jButtonNegativeInfinityDouble))
         {
-            actionPerformedInfiniteNegativeValue ();
+            actionPerformedNegativeInfinityValue ();
         }/*
           * else if (e.getSource().equals(this.standarDomainButton)) {
           * actionPerformedStandarDomain(); }
@@ -1275,7 +1235,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
     /**
      * Invoked when the button 'InfinitePositive' is pressed.
      */
-    protected void actionPerformedInfinitePositiveValue ()
+    protected void actionPerformedPositiveInfinityValue ()
     {
         int selectedRow = valuesTable.getSelectedRow ();
         int selectedColumn = valuesTable.getSelectedColumn ();
@@ -1303,7 +1263,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
     /**
      * Invoked when the button 'InfiniteNegative' is pressed.
      */
-    protected void actionPerformedInfiniteNegativeValue ()
+    protected void actionPerformedNegativeInfinityValue ()
     {
         int selectedRow = valuesTable.getSelectedRow ();
         int selectedColumn = valuesTable.getSelectedColumn ();
@@ -1545,16 +1505,14 @@ public class DiscretizeTablePanel extends KeyTablePanel
                 int numIntervals = interval.getNumSubintervals ();
                 if (!isUpMonotony ())
                 {
-                    if (row == 0 && column == 3
-                    /* && valuesTable.getValueAt(0, 3) != minusInfinity */)
+                    if (row == 0 && column == 3)
                     {
                         getInfiniteNegativeDoubleButton ().setVisible (true);
                         getInfiniteNegativeDoubleButton ().setEnabled (true);
                         getInfinitePositiveDoubleButton ().setVisible (false);
                         getInfinitePositiveDoubleButton ().setEnabled (false);
                     }
-                    else if (row == numIntervals - 1 && column == 5
-                    /* && valuesTable.getValueAt(numIntervals-1, 5) != infinity */)
+                    else if (row == numIntervals - 1 && column == 5)
                     {
                         getInfinitePositiveDoubleButton ().setVisible (true);
                         getInfinitePositiveDoubleButton ().setEnabled (true);
@@ -1571,19 +1529,14 @@ public class DiscretizeTablePanel extends KeyTablePanel
                 }
                 else if (isUpMonotony ())
                 {
-                    if (row == 0 && column == 5
-                    /* && valuesTable.getValueAt(0, 5) != infinity */)
+                    if (row == 0 && column == 5)
                     {
                         getInfinitePositiveDoubleButton ().setVisible (true);
                         getInfinitePositiveDoubleButton ().setEnabled (true);
                         getInfiniteNegativeDoubleButton ().setVisible (false);
                         getInfiniteNegativeDoubleButton ().setEnabled (false);
                     }
-                    else if (row == numIntervals - 1 && column == 3
-                    /*
-                     * && valuesTable.getValueAt(numIntervals-1, 3) !=
-                     * minusInfinity
-                     */)
+                    else if (row == numIntervals - 1 && column == 3)
                     {
                         getInfiniteNegativeDoubleButton ().setVisible (true);
                         getInfiniteNegativeDoubleButton ().setEnabled (true);

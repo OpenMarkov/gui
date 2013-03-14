@@ -112,12 +112,7 @@ public class NodeDefinitionPanel extends JPanel
             getJComboBoxNetworkAgents ().setVisible (true);
             getJLabelNetworkAgents ().setVisible (true);
         }
-        else if (probNode.getProbNet ().getAgents () == null /*
-                                                              * &&
-                                                              * probNode.getVariable
-                                                              * ().getAgent() ==
-                                                              * null
-                                                              */)
+        else if (probNode.getProbNet ().getAgents () == null )
         {
             getJComboBoxNetworkAgents ().setEnabled (false);
             getJComboBoxNetworkAgents ().setVisible (false);

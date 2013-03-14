@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -201,7 +200,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         if (numSlicesTextField == null)
         {
-            numSlices = 1;
+            numSlices = 20;
             numSlicesTextField = new JTextField ();
             numSlicesTextField.setText ("" + numSlices);
             numSlicesTextField.setColumns (10);
@@ -256,7 +255,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         if (costDiscountTextField == null)
         {
-            costDiscountTextField = new JTextField ("3.0");
+            costDiscountTextField = new JTextField ("0.0");
             costDiscountTextField.setColumns (10);
         }
         return costDiscountTextField;
@@ -266,7 +265,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog
     {
         if (effectivenessDiscountTextField == null)
         {
-            effectivenessDiscountTextField = new JTextField ("3.0");
+            effectivenessDiscountTextField = new JTextField ("0.0");
             effectivenessDiscountTextField.setColumns (10);
         }
         return effectivenessDiscountTextField;

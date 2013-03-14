@@ -337,29 +337,49 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		return addValueButton;
 	}
 
-	/**
-	 * Enables or disabled the AddValue button.
-	 * 
-	 * @param enabled
-	 *            if true, it will be enabled; otherwise, disabled.
-	 */
-	public void setEnabledAddValue(boolean enabled) {
+    /**
+     * Enables or disabled the AddValue button.
+     * @param enabled if true, it will be enabled; otherwise, disabled.
+     */
+    public void setEnabledAddValue (boolean enabled)
+    {
+        addValueButton.setEnabled (enabled);
+    }
 
-		addValueButton.setEnabled( enabled );
-	}
-	
-	public void setEnabledRemoveValue(boolean enabled) {
+    public void setEnabledRemoveValue (boolean enabled)
+    {
+        removeValueButton.setEnabled (enabled);
+    }
 
-		removeValueButton.setEnabled( enabled );
-	}
-	public void setEnabledDownValue(boolean enabled) {
+    public void setEnabledDownValue (boolean enabled)
+    {
+        downValueButton.setEnabled (enabled);
+    }
 
-		downValueButton.setEnabled( enabled );
-	}
-	public void setEnabledUpValue(boolean enabled) {
+    public void setEnabledUpValue (boolean enabled)
+    {
+        upValueButton.setEnabled (enabled);
+    }
+    
+    public void setVisibleAddValue (boolean visible)
+    {
+        addValueButton.setVisible (visible);
+    }
 
-		upValueButton.setEnabled( enabled );
-	}
+    public void setVisibleRemoveValue (boolean visible)
+    {
+        removeValueButton.setVisible (visible);
+    }
+
+    public void setVisibleDownValue (boolean visible)
+    {
+        downValueButton.setVisible (visible);
+    }
+
+    public void setVisibleUpValue (boolean visible)
+    {
+        upValueButton.setVisible (visible);
+    }
 	
 
 	/**
@@ -469,10 +489,8 @@ public class KeyTablePanel extends JPanel implements ActionListener,
 		}
 		if (rowCount <= 2) {
 			removeValueButton.setEnabled(false);
-			removeValueButton.setVisible(true);
 		} else {
 			removeValueButton.setEnabled(true);
-			removeValueButton.setVisible(true);
 		}
 	}
 
