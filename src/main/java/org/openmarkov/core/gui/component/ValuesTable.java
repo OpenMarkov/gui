@@ -27,7 +27,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -48,9 +47,11 @@ import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -95,10 +96,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * Table Row Sorter/Filter
 	 */
 	protected TableRowSorter<ValuesTableModel> tableRowSorter = null;
-	/**
-	 * variable that use the instance of this object (table)
-	 */
-	protected Variable variable = null;
 	/**
 	 * type of node for this variable
 	 */
@@ -149,39 +146,37 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	protected StringDatabase stringDatabase = StringDatabase
 			.getUniqueInstance();
-	
+
 	protected ProbNode probNode;
-	
+
 	protected TablePotential tablePotential;
-	
+
+	protected ProbNet probNet;
+
 	/**
 	 * Define the last column of the table that was modified
 	 */
-	private int lastCol = -1;
+	protected int lastCol = -1;
 	/**
 	 * Define the priority list when potential values are edited
 	 */
-	protected LinkedList<Integer> priorityList = new LinkedList<Integer>();
+	protected List<Integer> priorityList = new LinkedList<Integer>();
 
-	/**
-	 * default constructor
-	 */
-	/*
-	 * public ValuesTable() { //TODO verify the use of this class in
-	 * NodeUtilityTable //call to constructor is null for probNode parameter
-	 * this( null, new ValuesTableModel(), false ); }
-	 */
+	private boolean isSelectAllForMouseEvent = true;
+	private boolean isSelectAllForActionEvent = false;
+	private boolean isSelectAllForKeyEvent = false;	
+
 	/**
 	 * default constructor with parameters
 	 */
 	public ValuesTable(ProbNode probNode, ValuesTableModel tableModel,
 			final boolean modifiable) {
 		super(tableModel, modifiable, true, true);
-		// probNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
 		probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
 		this.tableModel = tableModel;
 		this.probNode = probNode;
-		this.tablePotential = (TablePotential)probNode.getPotentials().get(0);
+		this.tablePotential = (TablePotential) probNode.getPotentials().get(0);
+		this.probNet = probNode.getProbNet();
 		if (modifiable) {
 			int numRowsModel = tableModel.getRowCount();
 			int numColumsModel = tableModel.getColumnCount();
@@ -209,22 +204,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	public boolean[][] getDataModified() {
 		if (dataModified == null) {
-			dataModified = new boolean[getTableModel().getRowCount()][getTableModel()
-					.getColumnCount()];
+			int numRowsModel = tableModel.getRowCount();
+			int numColumsModel = tableModel.getColumnCount();
+			dataModified = new boolean[numRowsModel][numColumsModel];
 		}
-		/*
-		 * new boolean[ getTableModel().getRowCount() ][ getTableModel()
-		 * .getColumnCount() +1 ];//le acabo de quitar ese 1
-		 */
 		return dataModified;
-	}
-
-	/**
-	 * @param dataModified
-	 *            the dataModified to set
-	 */
-	public void setDataModified(boolean[][] dataModified) {
-		this.dataModified = dataModified;
 	}
 
 	/**
@@ -320,37 +304,12 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				((ValuesTableModel) getModel()));
 		// not display the last row where the cells has states and not values
 		// and it is only required when displaying states values
-		/*
-		 * tableRowSorter.setRowFilter( RowFilter.notFilter(
-		 * RowFilter.regexFilter( "Edad\\[\\d\\]", 0 ) )); this.setRowSorter(
-		 * tableRowSorter);
-		 */
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JTable#getCellRenderer(int, int)
-	 */
-	@Override
-	public TableCellRenderer getCellRenderer(int row, int column) {
-		return super.getCellRenderer(row, column);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JTable#changeSelection(int, int, boolean, boolean)
-	 */
 	@Override
 	public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 			boolean extend) {
 		super.changeSelection(rowIndex, columnIndex, toggle, extend);
-		/*
-		 * if (editCellAt(rowIndex, columnIndex)) { Component editor =
-		 * getEditorComponent(); ((Component)editor).selectAll();
-		 * //.requestFocusInWindow(); }
-		 */
 		if (columnIndex < FIRST_EDITABLE_COLUMN) { // not selectable
 			super.changeSelection(rowIndex, columnIndex + 1, toggle, extend);
 		} else {
@@ -385,7 +344,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	public void setValueAt(Object newValue, int row, int col) {
 		Object oldValue = getValueAt(row, col);
 		if (((Double) newValue) < 0
-				&& probNode.getNodeType() != NodeType.UTILITY) {
+				&& tablePotential.getPotentialRole() != PotentialRole.UTILITY) {
 			newValue = oldValue;
 			JOptionPane.showMessageDialog(this.getParent(),
 					"Introduced value cannot be negative");
@@ -400,34 +359,32 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 						lastCol = col;
 					}
 					TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
-							probNode, (Double) newValue, row, col,
-							priorityList, getTableModel()
-									.getNotEditablePositions());
+							probNode, probNet, tablePotential,
+							(Double) newValue, row, col, priorityList,
+							getTableModel().getNotEditablePositions());
 					try {
-						probNode.getProbNet().doEdit(nodePotentialEdit);
+						probNet.doEdit(nodePotentialEdit);
 					} catch (ConstraintViolationException
 							| CanNotDoEditException
 							| NonProjectablePotentialException
 							| WrongCriterionException | DoEditException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						JOptionPane.showMessageDialog(this,
 								stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()),
 								JOptionPane.ERROR_MESSAGE);
 					}
-					// checkProbabilistic( oldValue, newValue, row, col );
 				}
 			} else if (nodeType == NodeType.UTILITY) {
 				TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit(
-						probNode, (Double) newValue, row, col, priorityList,
-						this.getTableModel().getNotEditablePositions());
+						probNode, probNet, tablePotential,
+						(Double) newValue, row, col, priorityList, this
+								.getTableModel().getNotEditablePositions());
 				try {
-					probNode.getProbNet().doEdit(nodePotentialEdit);
+					probNet.doEdit(nodePotentialEdit);
 				} catch (ConstraintViolationException | CanNotDoEditException
 						| NonProjectablePotentialException
 						| WrongCriterionException | DoEditException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this,
 							stringDatabase.getString(e.getMessage()),
@@ -730,15 +687,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @return the variable
 	 */
 	public Variable getVariable() {
-		return probNode.getVariable();
-	}
-
-	/**
-	 * @param variable
-	 *            the variable to set
-	 */
-	public void setVariable(Variable variable) {
-		this.variable = variable;
+		return tablePotential.getVariables().get(0);
 	}
 
 	/**
@@ -895,8 +844,9 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		tableRowSorter = new TableRowSorter<ValuesTableModel>(
 				((ValuesTableModel) getModel()));
 		if (isShowingAllParameters()) {
-			if ((getVariable() != null) && (getVariable().getName() != null)
-					&& probNode.getNodeType() != NodeType.UTILITY) {
+			if ((getVariable() != null)
+					&& (getVariable().getName() != null)
+					&& tablePotential.getPotentialRole() != PotentialRole.UTILITY) {
 				String name = getVariable().getName();
 				if (getVariable().getTimeSlice() != Integer.MIN_VALUE) {
 					name = getRegExp(name);
@@ -971,10 +921,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * Method to show/hide rows based upon the showingProbabilitiesValues
-	 * attribute If showingProbabilities, table shows numerical values for all
-	 * the configurations but if showingValues, table shows the name of the
-	 * state of the node corresponding to the maximum value in a deterministic
-	 * model.
+	 * parameter. If showingProbabilitiesValues is true, table shows numerical
+	 * values for all the configurations but if showingProbabilitiesValues is
+	 * false, table shows the name of the state of the node corresponding to the
+	 * maximum value in a deterministic model.
 	 * <ul>
 	 * <li>true = show probabilities</li>
 	 * <li>false = show values</li>
@@ -1159,8 +1109,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	public void printTable() {
 		System.out.println("NodePotentialTable: ");
-		if (variable != null) {
-			System.out.println("    variable = " + variable.getName());
+		if (getVariable() != null) {
+			System.out.println("    variable = " + getVariable().getName());
 		} else {
 			System.out.println("    variable = not defined yet");
 		}
@@ -1257,21 +1207,18 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	public void auxUndoableEditHappenedNodePotentialEdit(UndoableEditEvent arg0) {
 		int position = 0;
 		TablePotentialValueEdit edit = (TablePotentialValueEdit) arg0.getEdit();
-		TablePotential tablePotential = edit.getPotential();
-		switch (edit.getProbNode().getNodeType()) {
-		case DECISION:
-		case CHANCE:
+		TablePotential editPotential = edit.getPotential();
+		if (editPotential.getPotentialRole() != PotentialRole.UTILITY) {
 			priorityList = edit.getPriorityList();
 			ListIterator<Integer> listIterator = priorityList.listIterator();
 			List<Variable> newOrderVariables = new ArrayList<Variable>();
-			List<Variable> orderVariables = probNode.getPotentials().get(0)
-					.getVariables();
+			List<Variable> orderVariables = this.tablePotential.getVariables();
 			newOrderVariables.add(orderVariables.get(0));
 			for (int i = orderVariables.size() - 1; i > 0; i--) {
 				newOrderVariables.add(orderVariables.get(i));
 			}
 			TablePotential auxPotential = DiscretePotentialOperations.reorder(
-					tablePotential, newOrderVariables);
+					editPotential, newOrderVariables);
 			double[] values = auxPotential.getValues();
 			while (listIterator.hasNext() == true) {
 				position = (Integer) listIterator.next();
@@ -1280,49 +1227,37 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 								edit.getRowPosition(position),
 								edit.getColumnPosition());
 			}
-			break;
-		case UTILITY:
+		} else {
 			position = edit.getColumnPosition() - 1;
-			super.getModel().setValueAt(tablePotential.values[position],
+			super.getModel().setValueAt(editPotential.values[position],
 					edit.getRowPosition(), edit.getColumnPosition());
 		}
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
 			throws ConstraintViolationException, CanNotDoEditException {
-		// TODO Auto-generated method stub
+		// Ignore
 	}
 
 	public void undoEditHappened(UndoableEditEvent event) {
-		int position = 0;
 		if (event.getEdit() instanceof TablePotentialValueEdit) {
 			TablePotentialValueEdit edit = (TablePotentialValueEdit) event
 					.getEdit();
-			TablePotential tablePotential = edit.getPotential();
-			switch (edit.getProbNode().getNodeType()) {
-			case CHANCE:
+			TablePotential editPotential = edit.getPotential();
+			if (editPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 				priorityList = edit.getPriorityList();
-				ListIterator<Integer> listIterator = priorityList
-						.listIterator();
-				while (listIterator.hasNext() == true) {
-					position = (Integer) listIterator.next();
-					super.getModel().setValueAt(
-							tablePotential.values[position],
+				for (Integer position : priorityList) {
+					super.getModel().setValueAt(editPotential.values[position],
 							edit.getRowPosition(position),
 							edit.getColumnPosition());
 				}
-				break;
-			case UTILITY:
-				position = edit.getColumnPosition() - 1;
-				super.getModel().setValueAt(tablePotential.values[position],
+			} else if (editPotential.getPotentialRole() == PotentialRole.UTILITY) {
+				int position = edit.getColumnPosition() - 1;
+				super.getModel().setValueAt(editPotential.values[position],
 						edit.getRowPosition(), edit.getColumnPosition());
 			}
 		}
 	}
-
-	boolean isSelectAllForMouseEvent = true;
-	boolean isSelectAllForActionEvent = false;
-	boolean isSelectAllForKeyEvent = false;
 
 	/*
 	 * Override to provide Select All editing functionality
@@ -1373,19 +1308,19 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param probNode
 	 */
 	public void setData(ProbNode probNode) {
-		if (this.probNode.getProbNet().getPNESupport() != probNode.getProbNet()
+		if (this.probNet.getPNESupport() != probNode.getProbNet()
 				.getPNESupport()) {
-			this.probNode.getProbNet().getPNESupport()
-					.removeUndoableEditListener(this);
+			this.probNet.getPNESupport().removeUndoableEditListener(this);
 			probNode.getProbNet().getPNESupport().addUndoableEditListener(this);
 		}
-		this.probNode = probNode;
+		this.tablePotential = (TablePotential) probNode.getPotentials().get(0);
+		this.probNet = probNode.getProbNet();
 	}
 
 	/**
 	 * Close this object and prepare it for disposal
 	 */
 	public void close() {
-		probNode.getProbNet().getPNESupport().removeUndoableEditListener(this);
+		probNet.getPNESupport().removeUndoableEditListener(this);
 	}
 }

@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -37,17 +35,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /**
  * Dialog box to show the results from cost-effectiveness analysis
@@ -57,7 +45,6 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 public class CostEffectivenessResultsDialog extends JDialog
 {
     private CostEffectivenessAnalysis    costEffectivenessAnalysis;
-    private List<Intervention>           interventions;
     private CostEffectivenessSummaryPane summaryPane;
     private ChartPanel                   chartPanel;
     private JScrollPane                  frontierInterventionsTablePanel;
@@ -68,7 +55,6 @@ public class CostEffectivenessResultsDialog extends JDialog
                                            CostEffectivenessAnalysis costeffectivenessAnalysis)
     {
         super (owner);
-        this.interventions = costeffectivenessAnalysis.costEffectivenessCalculator ();
         this.costEffectivenessAnalysis = costeffectivenessAnalysis;
         initialize ();
         Toolkit toolkit = Toolkit.getDefaultToolkit ();
@@ -171,7 +157,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     {
         if (summaryPane == null)
         {
-            summaryPane = new CostEffectivenessSummaryPane ();
+            summaryPane = new CostEffectivenessSummaryPane (this.costEffectivenessAnalysis.getInterventions());
         }
         return summaryPane;
     }
@@ -210,7 +196,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     private XYDataset createDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
-        for (Intervention intervention : interventions)
+        for (Intervention intervention : costEffectivenessAnalysis.getInterventions())
         {
             XYSeries series = new XYSeries (intervention.getName ());
             series.add (intervention.getEffectiveness (), intervention.getCost ());
@@ -253,8 +239,6 @@ public class CostEffectivenessResultsDialog extends JDialog
         throws IOException
     {
         ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
-        excel.writeOptimalInterventionsReport (interventions,
-                                               costEffectivenessAnalysis.getFrontierInterventions (costEffectivenessAnalysis.getInterventions ()),
-                                               filename);
+        excel.writeOptimalInterventionsReport (filename);
     }
 }

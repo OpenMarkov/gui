@@ -1,7 +1,6 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -36,15 +35,6 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * The node
 	 */
 	private ProbNode probNode;
-	/**
-	 * 
-	 */
-	private int decimalPositions = 10;
-	
-	/*
-	 * 
-	 */
-	private Object[][] editableTableValues = null;
 	/*
 	 * 
 	 */
@@ -98,7 +88,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	/**
 	 * A list that store the edition order 
 	 */
-	private LinkedList<Integer> priorityList;
+	private List<Integer> priorityList;
 	// Constructor
 	/**
 	 * Creates a new <code>NodePotentialEdit</code> specifying the node to be 
@@ -111,7 +101,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * @param row the row in the edited table
 	 * */
 	public ICITablePotentialValueEdit(ProbNode probNode, Double 
-			newValue, int row, int col, LinkedList<Integer> priorityList) {
+			newValue, int row, int col, List<Integer> priorityList) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.row = row;
@@ -249,7 +239,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				
 					}
 			}else{
-				priorityListPosition = (Integer) priorityList.getFirst();
+				priorityListPosition = priorityList.get(0);
 				newNoisyParameters[priorityListPosition] = UtilStrings.roundAndReduce(newNoisyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
 				//newNoisyParameters[priorityListPosition] = roundingDouble(newNoisyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
@@ -283,7 +273,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 				
 					}
 			}else{
-				priorityListPosition = (Integer) priorityList.getFirst();
+				priorityListPosition =  priorityList.get(0);
 				newLeakyParameters[priorityListPosition] = UtilStrings.roundAndReduce(newLeakyParameters[priorityListPosition] + rest, epsilon, maxDecimals);
 				//newLeakyParameters[priorityListPosition] = roundingDouble(newLeakyParameters[priorityListPosition] + rest);
 				//newTable[pos] = newTable[pos] + rest;
@@ -306,7 +296,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		super.undo();		
 	}
 	
-	public LinkedList<Integer> getPriorityListInitialization() {
+	public List<Integer> getPriorityListInitialization() {
 		
 		if (!leakyFlag){
 		//noisy parameters
@@ -415,12 +405,11 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	
 	/**
 	 * Gets the priority list
+	 * 
 	 * @return the priority list
 	 */
-	public LinkedList<Integer> getPriorityList(){
-		
+	public List<Integer> getPriorityList() {
 		return priorityList;
-		
 	}
 	
 	public double[] getNewNoisyValues(){

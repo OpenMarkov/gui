@@ -32,7 +32,6 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NullListPotentialsException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.component.ICIValuesTable;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
@@ -41,7 +40,6 @@ import org.openmarkov.core.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.core.gui.menutoolbar.menu.UncertaintyContextualMenu;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -54,7 +52,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /**
@@ -122,10 +119,6 @@ public class PotentialsTablePanel extends JPanel
      */
     private int                       lastEditableRow         = -1;
     /**
-     * base index for coordinates in the table
-     */
-    private int                       baseIndexForCoordinates = -1;
-    /**
      * Indicates if the data of the table is modifiable.
      */
     private boolean                   modifiable;
@@ -133,10 +126,6 @@ public class PotentialsTablePanel extends JPanel
      * Icon loader.
      */
     protected IconLoader              iconLoader              = null;
-    /**
-     * EvidenceCase used when uncertainty is added
-     */
-    private EvidenceCase              evidence                = null;
     /**
      * Properties for options to display in the table
      */
@@ -146,10 +135,6 @@ public class PotentialsTablePanel extends JPanel
     protected boolean                 showNetValues           = true;
     protected StringDatabase          stringDatabase          = StringDatabase.getUniqueInstance ();
     private ProbNode                  probNode;
-    /**
-     * The popuMenu that appears when there is a click on the valuesTable Object
-     */
-    private ContextualMenuFactory     contextualMenuFactory;
     protected EvidenceCase            evidenceCase;
     /**
      * index of the column selected in valuesTable
@@ -415,7 +400,6 @@ public class PotentialsTablePanel extends JPanel
                 }
                 catch (InvalidStateException e)
                 {
-                    // TODO Auto-generated catch block
                     e.printStackTrace ();
                     JOptionPane.showMessageDialog (this,
                                                    stringDatabase.getString (e.getMessage ()),
@@ -424,7 +408,6 @@ public class PotentialsTablePanel extends JPanel
                 }
                 catch (IncompatibleEvidenceException e)
                 {
-                    // TODO Auto-generated catch block
                     e.printStackTrace ();
                     JOptionPane.showMessageDialog (this,
                                                    stringDatabase.getString (e.getMessage ()),
@@ -466,8 +449,6 @@ public class PotentialsTablePanel extends JPanel
         this.firstEditableRow = firstEditableRow;
         this.lastEditableRow = lastEditableRow;
         valuesTable.resetModel ();
-        // valuesTable.setVariable(probNode.getPotentials().get( 0
-        // ).getVariable( 0 ));
         valuesTable.setModel (getTableModel ());
         valuesTable.initializeDataModified (false);
         ((ValuesTableModel) valuesTable.getModel ()).setFirstEditableRow (firstEditableRow);
@@ -677,48 +658,12 @@ public class PotentialsTablePanel extends JPanel
         return blankTable;
     }
 
-    /**
-     * Set a blank data table for canonical models
-     * @param additionalProperties - to obtain the required number of rows and
-     *            columns
-     * @return the blank data table
-     */
-    private Object[][] setBlankCanonicalTable (ProbNode properties)
-    {
-        Object[][] blankTable = null;
-        int numRows = howManyCanonicalRows (properties);
-        int numColumns = ICIValuesTable.howManyCanonicalColumns (properties);
-        blankTable = new Object[numRows][numColumns];
-        // TODO seria mas practico hacer un potential y luego ejecutar
-        // el resto del metodo pero esto funciona
-        for (int i = 0; i < properties.getVariable ().getStates ().length; i++)
-        {
-        }
-        return blankTable;
-    }
-
     private TablePotential getThisPotential (List<Potential> listPotentials)
     {
         TablePotential aPotential = null;
         try
         {
             aPotential = ((TablePotential) listPotentials.get (0));
-        }
-        catch (Exception ex)
-        {
-            // ExceptionsHandler.handleException(
-            // ex, "no Potential.get(0) !!!", false );
-            logger.error ("no Potential.get(0) !!!");
-        }
-        return aPotential;
-    }
-
-    private Potential getThisICIPotential (List<Potential> listPotentials)
-    {
-        Potential aPotential = null;
-        try
-        {
-            aPotential = ((ICIPotential) listPotentials.get (0));
         }
         catch (Exception ex)
         {
@@ -766,16 +711,6 @@ public class PotentialsTablePanel extends JPanel
     }
 
     /**
-     * Set the Base index for the coordinates in the table related to the
-     * Potential of the variable of this node
-     * @param value - the new base index for coordinates in the table
-     */
-    private void setBaseIndexForCoordinates (int value)
-    {
-        this.baseIndexForCoordinates = value;
-    }
-
-    /**
      * set values table size for the potential
      * @param values - the table that is being modified
      * @param listPotentials - the list of potentials of the node
@@ -788,14 +723,12 @@ public class PotentialsTablePanel extends JPanel
         int numColumns = 1; // at least, there is one column for the node names
         int row = PotentialsTablePanelOperations.calculateFirstEditableRow (properties.getPotentials (),
                                                                             properties);
-        setBaseIndexForCoordinates (row);
         setFirstEditableRow (row);
         TablePotential tablePotential = getThisPotential (properties.getPotentials ());
         List<Variable> variablesBeforeReorder = tablePotential.getVariables ();
         setVariables (variablesBeforeReorder);
         if (properties.getNodeType () == NodeType.UTILITY)
         {
-            setBaseIndexForCoordinates (row - 1);
             numRows = getVariables ().size ();
             setLastEditableRow (numRows - 1);
             // numRows++;
@@ -856,22 +789,6 @@ public class PotentialsTablePanel extends JPanel
         return values;
     }
 
-    private Object[][] setFirstCanonicalColumn (Object[][] oldValues, ProbNode properties)
-    {
-        Object[][] values = oldValues;
-        ICIPotential iciPotential = (ICIPotential) getThisICIPotential (properties.getPotentials ());
-        Variable conditioned = iciPotential.getVariables ().get (0);
-        values[0][0] = ""; // First cell is empty
-        values[1][0] = conditioned.getBaseName ();// name of the conditioned
-                                                  // variable
-        State[] states = conditioned.getStates ();
-        for (int i = 0; i < states.length; i++)
-        {
-            values[i + 2][0] = states[i].getName ();
-        }
-        return values;
-    }
-
     /**
      * @param values - the table that is being modified
      * @param listPotentials - the list of potentials of the node
@@ -880,20 +797,12 @@ public class PotentialsTablePanel extends JPanel
     private Object[][] setParentsStatesInTopArea (Object[][] oldValues, ProbNode properties)
     {
         Object[][] values = oldValues;
-        TablePotential tablePotential = getThisPotential (properties.getPotentials ());
-        ArrayList<Variable> variablesReordered = new ArrayList<Variable> ();
+        List<Variable> variablesReordered = new ArrayList<Variable> ();
         ListIterator<Variable> it = getVariables ().listIterator (getVariables ().size ());
         while (it.hasPrevious ())
         {
             variablesReordered.add ((Variable) it.previous ());
         }
-        /*
-         * try { tablePotential = DiscretePotentialOperations.reorder(
-         * tablePotential, variablesReordered ); } catch
-         * (NotEnoughMemoryException exception) {
-         * ExceptionsHandler.handleException( exception, "not enougth memory",
-         * true ); }
-         */
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         State[] states;
         // 07/07/2010 mpalacios
@@ -1057,12 +966,11 @@ public class PotentialsTablePanel extends JPanel
     private Object[][] setVariableStatesInBottomArea (Object[][] oldValues, ProbNode properties)
     {
         Object[][] values = oldValues;
-        int position = 0;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         TablePotential tablePotential = getThisPotential (properties.getPotentials ());
         State[] states = tablePotential.getVariable (0).getStates ();
         double max;
-        for (int j = numColumns - 1; j >= 1; j--, position++)
+        for (int j = numColumns - 1; j >= 1; j--)
         {
             max = (Double) values[getFirstEditableRow ()][j];
             values[getLastEditableRow () + 1][j] = states[0].getName ();
@@ -1119,54 +1027,6 @@ public class PotentialsTablePanel extends JPanel
 
     public void deleteState (String state)
     {
-    }
-
-    public void doUpdateVariableName (String oldName, String newName)
-    {
-        if (oldName.equals (this.getVariables ().get (0).getName ()))
-        {
-            // replace variable name in ArrayListVariables
-            this.getVariables ().get (0).setName (newName);
-        }
-        if (oldName.equals (probNode.getPotentials ().get (0).getVariables ().get (0).getName ()))
-        {
-            // replace variable name in the TablePotential
-            probNode.getPotentials ().get (0).getVariables ().get (0).setName (newName);
-        }
-        // replace variable name in the NodePotentialTable
-        if (this.getValuesTable ().getVariable () != null)
-        {
-            if (oldName.equals (this.getValuesTable ().getVariable ().getName ()))
-            {
-                this.getValuesTable ().getVariable ().setName (newName);
-            }
-        }
-    }
-
-    /**
-     * Translates an integer position to the binary equivalent
-     * @param numSignificantPositions
-     * @param position
-     * @return
-     */
-    private String[] pos2Bin (int numSignificantPositions, int position)
-    {
-        String[] result = new String[numSignificantPositions];
-        String result1 = "";
-        result1 = Integer.toBinaryString (position);
-        int index = result1.length () - 1;
-        for (int i = numSignificantPositions - 1; (i >= 0 & index >= 0); i--, index--)
-        {
-            result[i] = result1.substring (index, index + 1);
-        }
-        result = new String ().split (result1);
-        System.out.println ("result1 =" + result1);
-        System.out.print ("result=");
-        for (int i = 0; i < result.length; i++)
-        {
-            System.out.print (result[i]);
-        }
-        return result;
     }
 
     /**
@@ -1252,13 +1112,9 @@ public class PotentialsTablePanel extends JPanel
         }
         int[] parentsConfiguration = new int[variables.size ()];
         // Gets the start position of a reordered potential
-        int startPosition = UtilStrings.toPositionOnPotentialReordered (variable.getNumStates ()
-                                                                                + variables.size ()
-                                                                                - 1,
-                                                                        col,
-                                                                        variable.getNumStates (),
-                                                                        variables.size ());
-        int finalPosition = startPosition + variable.getNumStates () - 1;
+		int startPosition = UtilStrings.toPositionOnPotentialReordered(
+				variable.getNumStates() + variables.size() - 1, col,
+				variable.getNumStates(), variables.size());
         // the source variables are reordered
         ArrayList<Variable> reorderedVariables = new ArrayList<Variable> ();
         if (!(tablePotential.getPotentialRole () == PotentialRole.UTILITY))
@@ -1308,15 +1164,9 @@ public class PotentialsTablePanel extends JPanel
             evi = getConfiguration ((TablePotential) probNode.getPotentials ().get (0),
                                     selectedColumn);
         }
-        catch (InvalidStateException e)
+        catch (InvalidStateException | IncompatibleEvidenceException e)
         {
-            // TODO Auto-generated catch block
-            System.err.println (e.getMessage ());
-        }
-        catch (IncompatibleEvidenceException e)
-        {
-            // TODO Auto-generated catch block
-            System.err.println (e.getMessage ());
+            e.printStackTrace();
         }
         return evi;
     }
@@ -1357,7 +1207,6 @@ public class PotentialsTablePanel extends JPanel
             catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | DoEditException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
                                                stringDatabase.getString (e.getMessage ()),
@@ -1389,7 +1238,6 @@ public class PotentialsTablePanel extends JPanel
         catch (ConstraintViolationException | CanNotDoEditException
                 | NonProjectablePotentialException | DoEditException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace ();
             JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
                                            stringDatabase.getString (e.getMessage ()),

@@ -45,12 +45,16 @@ public class ExcelReport
     private int          numSlices;
     private String       targetFilename;
     private HSSFWorkbook workBook;
+	private List<Intervention> interventions;
+	private List<Intervention> frontierInterventions;
 
     public ExcelReport (CostEffectivenessAnalysis costEffectivenessAnalysis)
     {
         this.numSlices = costEffectivenessAnalysis.getNumSlices ();
         this.costDiscount = costEffectivenessAnalysis.getCostDiscountRate ();
         this.effectivenessDiscount = costEffectivenessAnalysis.getEffectivenessDiscountRate ();
+        this.interventions = costEffectivenessAnalysis.getInterventions();
+        this.frontierInterventions = costEffectivenessAnalysis.getFrontierInterventions();
     }
     
     // Methods
@@ -170,13 +174,11 @@ public class ExcelReport
 
     /**
      * @param interventions
-     * @param frontier
+     * @param frontierInterventions
      * @param filename
      * @throws IOException
      */
-    public void writeOptimalInterventionsReport (List<Intervention> interventions,
-                                                      List<Intervention> frontier,
-                                                      String filename)
+    public void writeOptimalInterventionsReport (String filename)
         throws IOException
     {
         // HSSFCellStyle style = wb.createCellStyle();
@@ -186,7 +188,7 @@ public class ExcelReport
         workBook = new HSSFWorkbook ();
         writeInputSheet ();
         writeAllInterventionsSheet (interventions);
-        writeFrontierSheet (frontier);
+        writeFrontierSheet (frontierInterventions);
         this.targetFilename = checkXlsExtension (filename);
         // FileOutputStream file = new FileOutputStream(
         // PATH_EXCEL_FILES + targetFileName);

@@ -8,7 +8,6 @@ package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openmarkov.core.action.ChangePotentialEdit;
@@ -19,10 +18,12 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.UtilStrings;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -49,13 +50,9 @@ public class TablePotentialValueEdit extends SimplePNEdit
      */
     private Double              newValue;
     /**
-     * The node
-     */
-    private ProbNode            probNode;
-    /**
      * A list that store the edition order
      */
-    private LinkedList<Integer> priorityList;
+    private List<Integer> priorityList;
     /**
      * The index of the value selected in the graphic table
      */
@@ -76,10 +73,7 @@ public class TablePotentialValueEdit extends SimplePNEdit
      * the increment to get the real position of the value modified
      */
     private int                 increment;
-    /**
-     * The number of decimal positions in the potentials.
-     */
-    private int                 decimalPositions      = 10;
+
     /**
      * the table potential
      */
@@ -87,6 +81,7 @@ public class TablePotentialValueEdit extends SimplePNEdit
     private List<Variable>      orderVariables        = new ArrayList<Variable> ();
     private List<Variable>      newOrderVariables     = new ArrayList<Variable> ();
     private Object[][]          notEditablePostitions = new Object[0][0];
+	private ProbNode probNode;
 
     // Constructor
     /**
@@ -101,14 +96,11 @@ public class TablePotentialValueEdit extends SimplePNEdit
      * @param notEditablePositions two dimensional array with the information
      *            about editable positions.
      */
-    public TablePotentialValueEdit (ProbNode probNode,
-                                    Double newValue,
-                                    int row,
-                                    int col,
-                                    LinkedList<Integer> priorityList,
-                                    Object[][] notEditablePositions)
-    {
-        super (probNode.getProbNet ());
+	public TablePotentialValueEdit(ProbNode probNode,
+			ProbNet probNet,
+			TablePotential tablePotential, Double newValue, int row, int col,
+			List<Integer> priorityList, Object[][] notEditablePositions) {
+        super (probNet);
         this.probNode = probNode;
         this.row = row;
         this.col = col;
@@ -117,13 +109,13 @@ public class TablePotentialValueEdit extends SimplePNEdit
         this.notEditablePostitions = notEditablePositions;
         this.indexSelected = probNode.getVariable ().getNumStates ()
                              - (row - probNode.getNode ().getNumParents () + 1);
-        this.oldTablePotential = (TablePotential) probNode.getPotentials ().get (0);
+        this.oldTablePotential = tablePotential;
         orderVariables = oldTablePotential.getVariables ();
-        // reorder the variables like appear in PotentialsDialog
+        // reorder the variables like appear in PotentialEditDialog
         int end = -1;
         if (orderVariables.size () > 0)
         {
-            if (!(probNode.getNodeType () == NodeType.UTILITY))
+            if (tablePotential.getPotentialRole() != PotentialRole.UTILITY)
             {
                 newOrderVariables.add (orderVariables.get (0));
                 end = 0;
@@ -148,17 +140,10 @@ public class TablePotentialValueEdit extends SimplePNEdit
         }
         // The potentialSelected is the index in the values table reordered of
         // the value edited
-        switch (probNode.getNodeType ())
-        {
-            case CHANCE :
-            case DECISION :
-            case UTILITY :
-                this.potentialSelected = UtilStrings.toPositionOnPotentialReordered (row,
-                                                                                     col,
-                                                                                     probNode.getVariable ().getNumStates (),
-                                                                                     probNode.getNode ().getNumParents ());
-                break;
-        }
+		this.potentialSelected = UtilStrings.toPositionOnPotentialReordered(
+				row, col, probNode.getVariable().getNumStates(), probNode
+						.getNode().getNumParents());
+
     }
 
     @Override
@@ -166,8 +151,7 @@ public class TablePotentialValueEdit extends SimplePNEdit
     public void doEdit ()
         throws DoEditException
     {
-        if (probNode.getNodeType () == NodeType.CHANCE
-            || probNode.getNodeType () == NodeType.DECISION)
+        if (oldTablePotential.getPotentialRole() != PotentialRole.UTILITY)
         {
             if (priorityList.isEmpty ())
             {
@@ -241,7 +225,6 @@ public class TablePotentialValueEdit extends SimplePNEdit
                         updated = true;
                     }
                 }
-                // newTable[pos] = newTable[pos] + rest;
             }
         }
         else
@@ -267,36 +250,6 @@ public class TablePotentialValueEdit extends SimplePNEdit
         }
     }
 
-    public void undo ()
-    {
-        super.undo ();
-    }
-
-    public void redo ()
-    {
-        this.setTypicalRedo (false);
-        super.redo ();
-        // reorder the tablePotential
-        this.tablePotential = DiscretePotentialOperations.reorder (this.tablePotential,
-                                                                   newOrderVariables);
-        tablePotential.setValues (newTable);
-        // back to the original order of the tablePotential
-        this.tablePotential = DiscretePotentialOperations.reorder (this.tablePotential,
-                                                                   orderVariables);
-        ArrayList<Potential> potentials = new ArrayList<Potential> ();
-        potentials.add (tablePotential);
-        probNode.setPotentials (potentials);
-    }
-
-    /**
-     * Gets the node edited
-     * @return variable1 <code>Variable</code>
-     */
-    public ProbNode getProbNode ()
-    {
-        return probNode;
-    }
-
     /**
      * Gets the table-potential of the node
      * @return variable1 <code>Variable</code>
@@ -311,7 +264,7 @@ public class TablePotentialValueEdit extends SimplePNEdit
      * @return the priority list initialized with the the value edited in the
      *         last place of the list
      */
-    private LinkedList<Integer> getPriorityListInitialization ()
+    private List<Integer> getPriorityListInitialization ()
     {
         for (int i = 0; i < probNode.getVariable ().getNumStates (); i++)
         {
@@ -325,7 +278,7 @@ public class TablePotentialValueEdit extends SimplePNEdit
      * Gets the priority list
      * @return the priority list
      */
-    public LinkedList<Integer> getPriorityList ()
+    public List<Integer> getPriorityList ()
     {
         return priorityList;
     }

@@ -12,7 +12,6 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
@@ -76,10 +75,6 @@ public class KeyTable extends JTable {
 	 * Outer object that listens to the changes of the table selection.
 	 */
 	private ListSelectionListener listener = null; 
-	/**
-	 * Outer object that listens to the changes of the additionalProperties in the table
-	 */
-	private PropertyChangeListener propertyListener = null;
 
 	/**
 	 * This variable says if the table can be modified. False by default

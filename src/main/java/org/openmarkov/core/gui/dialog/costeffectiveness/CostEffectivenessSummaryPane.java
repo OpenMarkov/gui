@@ -6,18 +6,20 @@
 
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
-import javax.swing.JScrollPane;
+import java.util.List;
 
-import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.component.ValuesTableModel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public class CostEffectivenessSummaryPane extends JScrollPane
 {
-    public CostEffectivenessSummaryPane ()
+    public CostEffectivenessSummaryPane (List<Intervention> interventions)
     {
-        ValuesTableModel tableModel = new ValuesTableModel ();
-        ValuesTable valuesTable = new ValuesTable (null, tableModel, false);
-        add (valuesTable);
+    	TableModel summaryTableModel = new DefaultTableModel(3, interventions.size() +1);
+        JTable summaryTable = new JTable(summaryTableModel);
+        add (summaryTable);
     }
 }

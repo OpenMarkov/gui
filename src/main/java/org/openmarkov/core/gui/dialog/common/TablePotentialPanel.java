@@ -1054,25 +1054,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 		valuesTable.setShowingTPCvalues(showTPCvalues);
 	}
 
-	public void doUpdateVariableName(String oldName, String newName) {
-		if (oldName.equals(this.getVariables().get(0).getName())) {
-			// replace variable name in ArrayListVariables
-			this.getVariables().get(0).setName(newName);
-		}
-		if (oldName.equals(probNode.getPotentials().get(0).getVariables()
-				.get(0).getName())) {
-			// replace variable name in the TablePotential
-			probNode.getPotentials().get(0).getVariables().get(0)
-					.setName(newName);
-		}
-		// replace variable name in the NodePotentialTable
-		if (this.getValuesTable().getVariable() != null) {
-			if (oldName.equals(this.getValuesTable().getVariable().getName())) {
-				this.getValuesTable().getVariable().setName(newName);
-			}
-		}
-	}
-
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN)) {
