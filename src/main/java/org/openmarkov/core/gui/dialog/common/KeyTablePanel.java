@@ -28,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.gui.localize.StringDatabase;
 
 

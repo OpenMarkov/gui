@@ -157,7 +157,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     {
         if (summaryPane == null)
         {
-            summaryPane = new CostEffectivenessSummaryPane (this.costEffectivenessAnalysis.getInterventions());
+            summaryPane = new CostEffectivenessSummaryPane (this.costEffectivenessAnalysis.getGlobalUtility ());
         }
         return summaryPane;
     }

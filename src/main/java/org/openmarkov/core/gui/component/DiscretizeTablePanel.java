@@ -280,13 +280,13 @@ public class DiscretizeTablePanel extends KeyTablePanel
             jComboBoxUpperSymbol = getUpperSymbolComboBox ();
             TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel ().getColumn (lowerLimitSymbolColumnNum);
             lowLimitSymbolColumn.setCellEditor (new DefaultCellEditor (jComboBoxLowerSymbol));
-            lowLimitSymbolColumn.setCellRenderer (new MyComboBoxRenderer (intervalLowerSymbols));
+            lowLimitSymbolColumn.setCellRenderer (new DiscretizeComboBoxRenderer (intervalLowerSymbols));
             lowLimitSymbolColumn.setMinWidth (32);
             lowLimitSymbolColumn.setPreferredWidth (32);
             lowLimitSymbolColumn.setMaxWidth (32);
             TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel ().getColumn (upperLimitSymbolColumnNum);
             upperLimitSymbolColumn.setCellEditor (new DefaultCellEditor (jComboBoxUpperSymbol));
-            upperLimitSymbolColumn.setCellRenderer (new MyComboBoxRenderer (intervalUpperSymbols));
+            upperLimitSymbolColumn.setCellRenderer (new DiscretizeComboBoxRenderer (intervalUpperSymbols));
             upperLimitSymbolColumn.setMinWidth (32);
             upperLimitSymbolColumn.setPreferredWidth (32);
             upperLimitSymbolColumn.setMaxWidth (32);
@@ -1301,7 +1301,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Class to manage Discretize Render Table in columns "()" and "[]"
      * @author Alberto Ruiz
      */
-    public class MyComboBoxRenderer extends JComboBox
+    public class DiscretizeComboBoxRenderer extends JComboBox<String>
         implements
             TableCellRenderer
     {
@@ -1310,7 +1310,7 @@ public class DiscretizeTablePanel extends KeyTablePanel
 		 */
         private static final long serialVersionUID = 1L;
 
-        public MyComboBoxRenderer (String[] items)
+        public DiscretizeComboBoxRenderer (String[] items)
         {
             super (items);
         }

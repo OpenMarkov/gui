@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 @SuppressWarnings("serial")
 public class CEResultsCellRenderer extends DefaultTableCellRenderer
 {
-    private DecimalFormat formatter = new DecimalFormat ("#.000", new DecimalFormatSymbols(Locale.US));
+    private DecimalFormat formatter = new DecimalFormat ("0.###", new DecimalFormatSymbols(Locale.US));
 
     /**
      * Constructor for CEResultsCellRenderer.

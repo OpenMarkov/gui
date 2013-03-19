@@ -12,7 +12,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.RevelationIntervalEdit;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;

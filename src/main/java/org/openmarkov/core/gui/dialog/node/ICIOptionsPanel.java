@@ -6,8 +6,6 @@
 
 package org.openmarkov.core.gui.dialog.node;
 
-import java.awt.Container;
-
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -20,10 +18,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
-import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.PotentialsTablePanel;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
@@ -51,18 +47,10 @@ public class ICIOptionsPanel extends JPanel
      * to identify what is the panel container it could be CPTTablePanel or
      * ICIPotentialsTablePanel
      */
-    private Container                  parentPanel;
-    private CPTablePanel               cpTablePanel;
     private int                        prevModelPolicySelected                          = -1;
     private static int                 PROBABILISTIC_SELECTED                           = 0;
     private static int                 DETERMINISTIC_SELECTED                           = 1;
     private static int                 OPTIMAL_SELECTED                                 = 2;
-    /**
-     * remember the last model selected canonical or TPC
-     */
-    private int                        previousModel                                    = -1;
-    private static int                 CANONICAL                                        = 0;
-    private static int                 TPC                                              = 1;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -70,7 +58,6 @@ public class ICIOptionsPanel extends JPanel
     /** buttongroups of the options * */
     private ButtonGroup                buttonGroupNetOrCompound                         = null;
     private ButtonGroup                buttonGroupAllOrIndependent                      = null;
-    private ButtonGroup                buttonGroupProbabilisticOrDeterministicOrOptimal = null;
     private ButtonGroup                buttonGroupTpcOrCanonical                        = null;
     private ButtonGroup                buttonGroupProbabilityOrValue                    = null;
     /** radio buttons for the different options of the panel * */
@@ -87,7 +74,6 @@ public class ICIOptionsPanel extends JPanel
     private JPanel                     jPanelTpcOrCanonical;
     private JPanel                     jPanelProbabilityOrValue;
     private JPanel                     jPanelAllOrIndependant;
-    private JPanel                     jPanelRelationTableType;
     /**
      * Comment Scroll Panel box and its label
      */

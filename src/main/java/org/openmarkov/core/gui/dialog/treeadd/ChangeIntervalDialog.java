@@ -28,7 +28,6 @@ public class ChangeIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog
     // private TreeADDPotential treeADDParent;
     private TreeADDBranch       treeBranch;
 
-    @SuppressWarnings("unused")
     public ChangeIntervalDialog (Window owner, TreeADDBranch treeBranch)
     {
         super (owner);

@@ -23,8 +23,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.gui.localize.StringBundle;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.window.edition.Zoom;
 
 /**
