@@ -1240,9 +1240,9 @@ public class NodeDefinitionPanel extends JPanel
      * This method fills the content of the fields from a NodeProperties object.
      * @param additionalProperties object from where load the information.
      */
-    public void setFieldsFromProperties (ProbNode properties)
+    public void setFieldsFromProperties (ProbNode probNode)
     {
-        jTextFieldNodeName.setText (properties.getName ());
+        jTextFieldNodeName.setText (probNode.getVariable().getBaseName());
         // node type elements in the panel depending network type
         /*
          * NetworkType netType =
@@ -1278,10 +1278,10 @@ public class NodeDefinitionPanel extends JPanel
         // VariableType.FINITE_STATES){
         jComboBoxNodeRelevance.removeItemListener (this);
         jComboBoxNodePurpose.removeItemListener (this);
-        jComboBoxNodeRelevance.setSelectedItem (properties.getRelevance ());
+        jComboBoxNodeRelevance.setSelectedItem (probNode.getRelevance ());
         jComboBoxNodeRelevance.setEnabled (true);
         // purpose
-        jComboBoxNodePurpose.setSelectedIndex (Purpose.getIndex (properties.getPurpose ()));
+        jComboBoxNodePurpose.setSelectedIndex (Purpose.getIndex (probNode.getPurpose ()));
         jComboBoxNodePurpose.setEnabled (true);
         jComboBoxNodeRelevance.addItemListener (this);
         jComboBoxNodePurpose.addItemListener (this);
@@ -1293,8 +1293,8 @@ public class NodeDefinitionPanel extends JPanel
         Object[] labelArgs = new Object[] {shortNodeName};
         commentHTMLScrollPaneNodeDefinitionComment.setTitle (messageForm.format (labelArgs));
         // node def comment
-        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText (properties.getComment ());
-        jCheckboxAlwaysObserved.setSelected (properties.isAlwaysObserved ());
+        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText (probNode.getComment ());
+        jCheckboxAlwaysObserved.setSelected (probNode.isAlwaysObserved ());
     }
 
     /**

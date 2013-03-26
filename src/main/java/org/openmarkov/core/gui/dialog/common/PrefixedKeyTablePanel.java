@@ -61,7 +61,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	private ProbNode probNode;
 	
 	private boolean renameAction = true;
-
+	
 	/*
 	 * this a default constructor with no construction parameters
 	 */
@@ -181,7 +181,8 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements
 	protected void actionPerformedAddValue() {
 		//TODO warning esto afecta a la tabla de propiedades adicionales
 		String option= JOptionPane.showInputDialog(this, 
-				"Proporcione el nuevo estado", "Agregar estado", 
+				stringDatabase.getString("AddState.Message"), 
+				stringDatabase.getString("AddState.Title"), 
 				JOptionPane.QUESTION_MESSAGE);
 				
 		if (option != null){

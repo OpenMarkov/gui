@@ -24,17 +24,15 @@ import org.openmarkov.core.model.network.StringWithProperties;
 public class AdvancedPropertiesTablePanel extends KeyTablePanel implements TableModelListener,PNUndoableEditListener{
 
 	private String keyPrefix;
-	private ProbNet probNet;
 	private AdvancedPropertiesTableModel advancedPropertiestableModel;
 	protected Object dataTable [][];
 	/**
 	 * Each time an agent has been edited the corresponding edit would be stored 
 	 */
-	private ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
+	private List<PNEdit> edits = new ArrayList<PNEdit>();
 
 	public AdvancedPropertiesTablePanel(String[] newColumns, ProbNet probNet){
 		this(newColumns, new Object[0][0], "a");
-		this.probNet = probNet;
 	}
 	
 	public AdvancedPropertiesTablePanel(String[] newColumns, Object[][] noKeyData,
@@ -170,7 +168,7 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 	 * 
 	 * @return
 	 */
-	public ArrayList<PNEdit> getEdits () {
+	public List<PNEdit> getEdits () {
 		return edits;
 	}
 

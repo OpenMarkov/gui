@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+<AddState>
+	<Title value="Añadir estado"/>
+	<Message value="Introduzca el nombre del nuevo estado"/>
+</AddState>
 <CostEffectivenessResultDialog>
 	<Title>
 		<Label value = "Resultados de coste-efectividad"/>
@@ -262,6 +266,7 @@
         <BayesianNetwork value="Red bayesiana" />
         <DEC_POMDP value="Dec-POMDP" />
         <MDP value="Proceso de decisión de Markov" />
+        <MPAD value="MPAD" />
       </Items>
       <Mnemonic value="t" />
       <Text value="Tipo de red:" />

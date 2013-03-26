@@ -14,7 +14,6 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
 import org.openmarkov.core.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.gui.localize.StringDatabase;
 
 /**

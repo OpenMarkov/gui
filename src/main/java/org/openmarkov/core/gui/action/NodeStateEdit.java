@@ -60,10 +60,6 @@ public class NodeStateEdit extends SimplePNEdit {
 	 */
 	private ProbNode probNode = null;
 	/**
-	 * The last potential before the edition
-	 */
-	private List<Potential> oldPotential;
-	/**
 	 * The action to carry out
 	 */
 	private StateAction stateAction;
@@ -81,7 +77,7 @@ public class NodeStateEdit extends SimplePNEdit {
 	private Map<Link, double[]> linkRestrictionMap;
 	/***
 	 * Map with the revelation condition list for each link.
-	 */
+	 */ 
 	private Map<Link, List> revelationConditionMap;
 
 	private String oldName;
@@ -109,7 +105,6 @@ public class NodeStateEdit extends SimplePNEdit {
 		}
 		this.selectedStateIndex = probNode.getVariable().getNumStates()
 				- (stateIndex + 1);
-		this.oldPotential = probNode.getPotentials();
 		this.stateAction = stateAction;
 		this.currentPartitionedInterval = probNode.getVariable()
 				.getPartitionedInterval();
@@ -210,12 +205,11 @@ public class NodeStateEdit extends SimplePNEdit {
 				int positionToRemove = (oldLimits.length - 1)
 						- selectedStateIndex;
 
-				ArrayList<Double> newLimits = new ArrayList<Double>(
+				List<Double> newLimits = new ArrayList<Double>(
 						oldLimits.length - 1);
-				ArrayList<Boolean> newBelongs = new ArrayList<Boolean>(
+				List<Boolean> newBelongs = new ArrayList<Boolean>(
 						oldLimits.length - 1);
 
-				int length = oldLimits.length;
 				for (int j = 0; j < oldLimits.length; j++) {
 					if (j != positionToRemove) {
 						newLimits.add(oldLimits[j]);

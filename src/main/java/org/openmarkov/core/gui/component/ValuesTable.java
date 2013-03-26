@@ -51,7 +51,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -149,7 +148,6 @@ public class ValuesTable extends KeyTable
      */
     protected StringDatabase                   stringDatabase             = StringDatabase.getUniqueInstance ();
     protected ProbNode                         probNode;
-    protected Potential                        potential;
     protected ProbNet                          probNet;
     /**
      * Define the last column of the table that was modified
@@ -172,7 +170,6 @@ public class ValuesTable extends KeyTable
         probNode.getProbNet ().getPNESupport ().addUndoableEditListener (this);
         this.tableModel = tableModel;
         this.probNode = probNode;
-        this.potential = probNode.getPotentials ().get (0);
         this.probNet = probNode.getProbNet ();
         if (modifiable)
         {
@@ -354,13 +351,14 @@ public class ValuesTable extends KeyTable
     public void setValueAt (Object newValue, int row, int col)
     {
         Object oldValue = getValueAt (row, col);
-        if (((Double) newValue) < 0 && potential.getPotentialRole () != PotentialRole.UTILITY)
+        if (((Double) newValue) < 0 && probNode.getNodeType () != NodeType.UTILITY)
         {
             newValue = oldValue;
             JOptionPane.showMessageDialog (this.getParent (), "Introduced value cannot be negative");
         }
         if (!oldValue.equals (newValue))
         {
+        	TablePotential tablePotential = (TablePotential)probNode.getPotentials().get(0);
             if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
             {
                 if (deterministic)
@@ -377,7 +375,7 @@ public class ValuesTable extends KeyTable
                     TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
                                                                                              probNode,
                                                                                              probNet,
-                                                                                             (TablePotential) potential,
+                                                                                             tablePotential,
                                                                                              (Double) newValue,
                                                                                              row,
                                                                                              col,
@@ -404,7 +402,7 @@ public class ValuesTable extends KeyTable
                 TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
                                                                                          probNode,
                                                                                          probNet,
-                                                                                         (TablePotential) potential,
+                                                                                         tablePotential,
                                                                                          (Double) newValue,
                                                                                          row,
                                                                                          col,
@@ -738,7 +736,7 @@ public class ValuesTable extends KeyTable
      */
     public Variable getVariable ()
     {
-        return potential.getVariables ().get (0);
+        return probNode.getVariable();
     }
 
     /**
@@ -921,7 +919,7 @@ public class ValuesTable extends KeyTable
         if (isShowingAllParameters ())
         {
             if ((getVariable () != null) && (getVariable ().getName () != null)
-                && potential.getPotentialRole () != PotentialRole.UTILITY)
+                && probNode.getNodeType () != NodeType.UTILITY)
             {
                 String name = getVariable ().getName ();
                 if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
@@ -1312,7 +1310,7 @@ public class ValuesTable extends KeyTable
             priorityList = edit.getPriorityList ();
             ListIterator<Integer> listIterator = priorityList.listIterator ();
             List<Variable> newOrderVariables = new ArrayList<Variable> ();
-            List<Variable> orderVariables = this.potential.getVariables ();
+            List<Variable> orderVariables = probNode.getPotentials().get(0).getVariables ();
             newOrderVariables.add (orderVariables.get (0));
             for (int i = orderVariables.size () - 1; i > 0; i--)
             {
@@ -1429,7 +1427,6 @@ public class ValuesTable extends KeyTable
             this.probNet.getPNESupport ().removeUndoableEditListener (this);
             probNode.getProbNet ().getPNESupport ().addUndoableEditListener (this);
         }
-        this.potential = probNode.getPotentials ().get (0);
         this.probNet = probNode.getProbNet ();
     }
 

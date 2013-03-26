@@ -185,8 +185,7 @@ public class CostEffectivenessAnalysis {
 						(i / offsets[j]) % decisions.get(j).getNumStates());
 				name = "Dec: " + decisionName + " = " + stateName + "; ";
 			}
-			Intervention intervention = new Intervention(name, cost,
-					effectiveness);
+			Intervention intervention = new Intervention(name, cost, effectiveness);
 			interventions.add(intervention);
 		}
 		return interventions;

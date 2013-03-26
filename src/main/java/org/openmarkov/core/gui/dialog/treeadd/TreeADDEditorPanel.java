@@ -1511,11 +1511,6 @@ public class TreeADDEditorPanel extends JScrollPane
             {
                 retPotential.setUtilityVariable (parentTreeADD.getUtilityVariable ());
             }
-            if (!(retPotential instanceof TablePotential || retPotential instanceof UniformPotential))
-            {
-                throw new RuntimeException ("Expected TablePotential or UniformPotential and found: "
-                                            + retPotential.getClass ().getSimpleName ());
-            }
             if (parentTreeADD.getPotentialRole () != retPotential.getPotentialRole ())
             {
                 throw new RuntimeException ("Expected role " + parentTreeADD.getPotentialRole ()
