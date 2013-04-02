@@ -866,7 +866,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
             String strType = (String) row.get (1);
             TypeProbDensityFunction auxType = TypeProbDensityFunction.valueEnumOf (strType);
             UncertainValue aux = new UncertainValue (auxType, (String) (row.get (2)),
-                                                     (String) (row.get (3)), false, false);
+                                                     (String) (row.get (3)));
             dataUncertain.add (aux);
         }
         return dataUncertain;
