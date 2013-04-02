@@ -1232,11 +1232,11 @@ public class NodeDomainValuesTablePanel extends JPanel
 
     void actionPerformedStandarDomain (ActionEvent arg0)
     {
-        StandarDomainsDialog standarDomainDialog = new StandarDomainsDialog (
+        StandardDomainsDialog standarDomainDialog = new StandardDomainsDialog (
                                                                              Utilities.getOwner (this));
-        if (standarDomainDialog.requestValues () == StandarDomainsDialog.OK_BUTTON)
+        if (standarDomainDialog.requestValues () == StandardDomainsDialog.OK_BUTTON)
         {
-            List<JRadioButton> radioButtons = ((StandarDomainPanel) (standarDomainDialog.getJPanelStandarDomains ())).getRadioButtons ();
+            List<JRadioButton> radioButtons = ((StandardDomainPanel) (standarDomainDialog.getJPanelStandarDomains ())).getRadioButtons ();
             int index = 0;
             for (int j = 0; j < radioButtons.size (); j++)
             {

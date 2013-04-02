@@ -13,11 +13,11 @@ import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDial
  *
  */
 @SuppressWarnings("serial")
-public class StandarDomainsDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+public class StandardDomainsDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	private JPanel standarDomainsPanel;
 	
-	public StandarDomainsDialog(Window owner) {
+	public StandardDomainsDialog(Window owner) {
 		super(owner);
 		initialize();
 		setLocationRelativeTo(owner);
@@ -42,7 +42,7 @@ private void configureComponentsPanel() {
 public JPanel getJPanelStandarDomains() {
 	
 	if (standarDomainsPanel == null) {
-		standarDomainsPanel = new StandarDomainPanel();
+		standarDomainsPanel = new StandardDomainPanel();
 		//statesCheckBoxPanel.setLayout( new FlowLayout());
 		standarDomainsPanel.setName( "jPanelStandarDomains" );
 	}

@@ -17,7 +17,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
  * @author maryebra
  */
 @SuppressWarnings("serial")
-public class StandarDomainPanel extends JPanel
+public class StandardDomainPanel extends JPanel
     implements
         ItemListener
 {
@@ -28,7 +28,7 @@ public class StandarDomainPanel extends JPanel
     private ButtonGroup             buttonGroup    = new ButtonGroup ();
     private ArrayList<JRadioButton> radioButtons   = new ArrayList<JRadioButton> ();
 
-    public StandarDomainPanel ()
+    public StandardDomainPanel ()
     {
         initialize ();
         repaint ();
