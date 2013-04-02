@@ -884,16 +884,14 @@ public class DiscretizeTablePanel extends KeyTablePanel
         data = new Object[numIntervals][numColumns];
         for (i = 0; i < numIntervals; i++)
         {
-            // for (i = numIntervals-1; i <=0; i--) {
-            data[i][0] = GUIDefaultStates.getString (states[i].getName ()); // name
-            data[i][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
+            int row = numIntervals - i - 1;
+            data[row][0] = GUIDefaultStates.getString (states[i].getName ()); // name
+            data[row][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
                                                              // symbol
-            data[i][2] = limits[i]; // low interval value
-            data[i][3] = ","; // separator ","
-            data[i][4] = limits[i + 1]; // high interval value
-            data[i][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high
-                                                                 // interval
-                                                                 // symbol
+            data[row][2] = limits[i]; // low interval value
+            data[row][3] = ","; // separator ","
+            data[row][4] = limits[i + 1]; // high interval value
+            data[row][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high interval symbol
         }
         setData (data);
     }
