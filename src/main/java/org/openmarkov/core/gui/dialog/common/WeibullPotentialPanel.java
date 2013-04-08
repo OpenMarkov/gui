@@ -37,6 +37,8 @@ public class WeibullPotentialPanel extends PotentialPanel{
     private JPanel northPanel;
     private JLabel gammaLabel;
     private JTextField gammaText;
+    private JLabel relativeRiskLabel;
+    private JTextField relativeRiskText;
     private JTable coefficientTable;
     
     public WeibullPotentialPanel(ProbNode probNode) {
@@ -60,6 +62,12 @@ public class WeibullPotentialPanel extends PotentialPanel{
         gammaText.setPreferredSize(new Dimension(50, 20));
         northPanel.add(gammaLabel);
         northPanel.add(gammaText);
+        relativeRiskLabel = new JLabel();
+        relativeRiskLabel.setText("Relative Risk: ");
+        relativeRiskText = new JTextField();
+        relativeRiskText.setPreferredSize(new Dimension(50, 20));
+        northPanel.add(relativeRiskLabel);
+        northPanel.add(relativeRiskText);
         add(northPanel, BorderLayout.NORTH);
         coefficientTable = new JTable();
         JScrollPane tablePanel = new JScrollPane(coefficientTable);
@@ -72,6 +80,7 @@ public class WeibullPotentialPanel extends PotentialPanel{
         WeibullPotential potential = (WeibullPotential)this.probNode.getPotentials().get(0);
         constantText.setText(potential.getConstant()+"");
         gammaText.setText(potential.getGamma()+"");
+        relativeRiskText.setText(potential.getRelativeRisk()+"");
         DefaultTableModel dtm = new CoefficientTableModel(new Object[] {"Variable", "Coefficients"}, potential.getVariables().size()-1);
         for(int i=1; i<potential.getVariables().size(); ++i)
         {
@@ -86,13 +95,14 @@ public class WeibullPotentialPanel extends PotentialPanel{
         WeibullPotential potential = (WeibullPotential)this.probNode.getPotentials().get(0);
         double constant = Double.parseDouble(constantText.getText());
         double gamma = Double.parseDouble(gammaText.getText());
+        double relativeRisk = Double.parseDouble(relativeRiskText.getText());
         List<Double> coefficients = new ArrayList<>();
         for(int i=0; i < coefficientTable.getModel().getRowCount(); ++i)
         {
             double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
             coefficients.add(coefficient);
         }
-        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(), potential, constant, gamma, coefficients);
+        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(), potential, constant, gamma, coefficients, relativeRisk);
         
         try {
             probNode.getProbNet().doEdit(edit);

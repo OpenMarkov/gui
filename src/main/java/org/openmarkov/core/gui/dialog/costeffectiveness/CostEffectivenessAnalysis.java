@@ -172,7 +172,7 @@ public class CostEffectivenessAnalysis {
         for (int i = 0; i < values.length; i += 2) {
             double cost = values[i];
             double effectiveness = values[i + 1];
-            String name = null;
+            String name = "Baseline";
             for (int j = 1; j < decisions.size(); ++j) {
                 String decisionName = decisions.get(j).getName();
                 String stateName = decisions.get(j).getStateName(
