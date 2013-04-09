@@ -25,6 +25,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
@@ -45,7 +46,8 @@ public class CostEffectivenessAnalysis {
     private Variable numIndexVariable;
     private EvidenceCase evidence;
 
-    public CostEffectivenessAnalysis(ProbNet probNet, double costDiscountRate,
+    public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
+            double costDiscountRate,
             double effectivenessDiscountRate, int numSlices,
             Map<Variable, Double> numericTemporalValues, Variable numIndexVariable,
             TransitionTime transitionTime) {
@@ -54,7 +56,7 @@ public class CostEffectivenessAnalysis {
         this.effectivenessDiscountRate = effectivenessDiscountRate;
         this.numSlices = numSlices;
         this.numIndexVariable = numIndexVariable;
-        this.evidence = getEvidenceFromNetwork(probNet, numericTemporalValues);
+        this.evidence = getEvidenceFromNetwork(probNet, evidence, numericTemporalValues);
         this.transitionTime = transitionTime;
         this.globalUtility = costEffectivenessCalculator();
         this.interventions = createInterventions(globalUtility);
@@ -91,8 +93,9 @@ public class CostEffectivenessAnalysis {
      * @return EvidenceCase
      */
     private EvidenceCase getEvidenceFromNetwork(ProbNet probNet,
+            EvidenceCase evidence,
             Map<Variable, Double> numericTemporalValues) {
-        EvidenceCase evidenceCase = new EvidenceCase();
+        EvidenceCase evidenceCase = new EvidenceCase(evidence);
 
         for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
             Variable timeDependentVariable = timeDependentNode.getVariable();
@@ -108,13 +111,11 @@ public class CostEffectivenessAnalysis {
     }
 
     public void extendEvidence(ProbNet extendedNetwork) {
-        if (!evidence.getFindings().isEmpty()) {
-            try {
-                evidence.extendEvidence(extendedNetwork, 1);
-            } catch (IncompatibleEvidenceException | InvalidStateException
-                    | WrongCriterionException e) {
-                e.printStackTrace();
-            }
+        try {
+            evidence.extendEvidence(extendedNetwork, 1);
+        } catch (IncompatibleEvidenceException | InvalidStateException
+                | WrongCriterionException e) {
+            e.printStackTrace();
         }
     }
 
@@ -159,6 +160,22 @@ public class CostEffectivenessAnalysis {
         } catch (NotEvaluableNetworkException e1) {
             e1.printStackTrace();
         }
+        
+        // Reorder variables to make sure decision criteria is the conditioned variable
+        List<Variable> newOrderVariables = new ArrayList<>();
+        for(Variable variable: globalUtility.getVariables())
+        {
+            if(variable.getName().equals("Decision Criteria"))
+            {
+                newOrderVariables.add(0, variable);
+            }else
+            {
+                newOrderVariables.add(variable);
+            }
+        }
+        
+        globalUtility = DiscretePotentialOperations.reorder(globalUtility, newOrderVariables);
+        
         return globalUtility;
     }
 

@@ -2271,7 +2271,7 @@ public class EditorPanel extends JPanel
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
-            new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getProbNode ());
+            new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getProbNode (), preResolutionEvidence);
             setSelectedAllNodes (false);
             repaint ();
         }

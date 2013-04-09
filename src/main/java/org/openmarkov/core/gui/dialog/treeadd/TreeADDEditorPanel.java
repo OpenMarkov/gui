@@ -269,28 +269,19 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             }
             path = path.getParentPath();
         }
-        // Potential Edition, any case it is possible to edit branch´s potential
-        JSeparator separator = new JSeparator();
-        editPotential.setActionCommand("EditPotential");
-        popupMenu.add(editPotential);
-        popupMenu.add(separator);
+        // Potential Edition, any case it is possible to edit branch's potential
+        if(!(branch.getPotential() instanceof TreeADDPotential))
+        {
+            JSeparator separator = new JSeparator();
+            editPotential.setActionCommand("EditPotential");
+            popupMenu.add(editPotential);
+            popupMenu.add(separator);
+        }
 
         JSeparator separatorAddSubtree = new JSeparator();
-        if (possibleVariables.size() != 0 && !(branch.getPotential() instanceof TreeADDPotential)) { // if
-                                                                                                     // {variables}-{topVariable}-{conditionedVariable}
-                                                                                                     // is
-                                                                                                     // not
-                                                                                                     // empty
-                                                                                                     // so
-                                                                                                     // you
-                                                                                                     // can
-                                                                                                     // add
-                                                                                                     // also
-                                                                                                     // a
-                                                                                                     // subtree
-                                                                                                     // to
-                                                                                                     // the
-                                                                                                     // branch
+        // if {variables}-{topVariable}-{conditionedVariable} is not empty
+        // so you can add also a subtree to the branch
+        if (possibleVariables.size() != 0 && !(branch.getPotential() instanceof TreeADDPotential)) { 
             for (Variable variable : possibleVariables) {
                 // To add possible topVariables popups
                 JMenuItem posibleTopVariable = new JMenuItem(variable.getName());
@@ -307,9 +298,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             removeTreeADD.setActionCommand("RemoveTreeADD");
             popupMenu.add(removeTreeADD);
             popupMenu.add(addRemoveTree);
-        } else {
-            // popupMenu.add(addRemoveTree);
-        }
+        } 
         // Adding Variables to potential
         JSeparator addRemoveVariables = new JSeparator();
         if (possibleVariables.size() != 0 && !(branch.getPotential() instanceof TreeADDPotential)) {
@@ -340,13 +329,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             splitInterval.setActionCommand("SplitInterval");
             popupMenu.add(splitInterval);
             // Change interval
-            Float minDomainLimit = (float) branch.getTopVariable().getPartitionedInterval()
-                    .getMin();
-            Float maxDomainLimit = (float) branch.getTopVariable().getPartitionedInterval()
-                    .getMax();
-            Float min = branch.getMinThreshold().getLimit();
-            Float max = branch.getMaxThreshold().getLimit();
-            if (minDomainLimit.equals(min) && maxDomainLimit.equals(max)) {
+            double minDomainLimit = branch.getTopVariable().getPartitionedInterval().getMin();
+            double maxDomainLimit = branch.getTopVariable().getPartitionedInterval().getMax();
+            double min = branch.getMinThreshold().getLimit();
+            double max = branch.getMaxThreshold().getLimit();
+            if (minDomainLimit == min && maxDomainLimit == max) {
                 // do not offer the possibility to change domain
             } else {
                 changeInterval.setActionCommand("ChangeInterval");
@@ -363,14 +350,19 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreePath path = jTree.getPathForLocation(xx, yy);
         Object node = path.getLastPathComponent();
         if (actionComand.equals("AddTreeADD")) {
-
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionAddTreeADD(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("EditPotential")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionEditPotential(ae, (TreeADDBranch) node, path);
 
@@ -378,38 +370,59 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             // node must be a TreeADDPotential
             actionChangeTopVariable(ae, (TreeADDPotential) node, path);
         } else if (actionComand.equals("JoinBranches")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionJoinBranches(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("RemoveTreeADD")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionRemoveSubTree(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("AddVariables2Potential")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionAddVariablesToPotential(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("DissociateStates")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionDissociateStates(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("RemoveVariables")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionRemoveVariables(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("SplitInterval")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionSplitInterval(ae, (TreeADDBranch) node, path);
         } else if (actionComand.equals("ChangeInterval")) {
-            path = path.getParentPath();
-            node = path.getLastPathComponent();
+            if(node instanceof Potential)
+            {
+                path = path.getParentPath();
+                node = path.getLastPathComponent();
+            }
             // node must be a branch
             actionChangeInterval(ae, (TreeADDBranch) node, path);
         } else {

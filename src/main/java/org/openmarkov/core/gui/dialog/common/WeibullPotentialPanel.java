@@ -85,7 +85,13 @@ public class WeibullPotentialPanel extends PotentialPanel{
         for(int i=1; i<potential.getVariables().size(); ++i)
         {
             dtm.setValueAt(potential.getVariable(i).getName(), i-1, 0);
-            dtm.setValueAt(potential.getCoefficients().get(i - 1), i-1, 1);
+            if(potential.getCoefficients().size() > i-1)
+            {
+                dtm.setValueAt(potential.getCoefficients().get(i - 1), i-1, 1);
+            }else
+            {
+                dtm.setValueAt(0.0,i-1,1);
+            }
         }
         coefficientTable.setModel(dtm);
     }
@@ -102,7 +108,8 @@ public class WeibullPotentialPanel extends PotentialPanel{
             double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
             coefficients.add(coefficient);
         }
-        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(), potential, constant, gamma, coefficients, relativeRisk);
+        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(), potential, constant, gamma,
+                coefficients, relativeRisk);
         
         try {
             probNode.getProbNet().doEdit(edit);

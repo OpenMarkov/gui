@@ -209,11 +209,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
         else if (actionCommand.equals (ActionCommands.EXPAND_NETWORK))
         {
-            expandNetwork(getCurrentNetworkPanel ().getProbNet ());
+            expandNetwork(getCurrentNetworkPanel ().getProbNet (),
+                    getCurrentNetworkPanel ().getEditorPanel().getPreResolutionEvidence());
         }
         else if (actionCommand.equals (ActionCommands.EXPAND_NETWORK_CE))
         {
-            expandNetworkCE(getCurrentNetworkPanel ().getProbNet ());
+            expandNetworkCE(getCurrentNetworkPanel ().getProbNet (),
+                    getCurrentNetworkPanel ().getEditorPanel().getPreResolutionEvidence());
         }
         else if (actionCommand.equals (ActionCommands.EXIT_APPLICATION))
         {
@@ -385,11 +387,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
         else if (actionCommand.equals (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC))
         {
             // Deterministic
-            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), false);
+            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), 
+                    getCurrentNetworkPanel ().getEditorPanel().getPreResolutionEvidence(),
+                    false);
         }
         else if (actionCommand.equals (ActionCommands.SENSITIVITY_ANALYSIS))
         {
-            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), true);
+            showCostEffectivenessDialog (getCurrentNetworkPanel ().getProbNet (), 
+                    getCurrentNetworkPanel ().getEditorPanel().getPreResolutionEvidence(),
+                    true);
         }
         else if (actionCommand.equals (ActionCommands.CONFIGURATION))
         {
@@ -1001,7 +1007,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     /**
      * Creates an expanded network from current network
      * */
-    private void expandNetwork(ProbNet probNet)
+    private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence)
     {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel));
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
@@ -1013,6 +1019,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             expandedNetwork.setName (fileName);
             NetworkPanel networkPanel = createNewFrame (expandedNetwork);
             networkPanel.setNetworkFile (fileName);
+            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
             networkPanels.add (networkPanel);
         }        
     }
@@ -1021,7 +1028,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * expand the network like it would be done in CE analysis to show it in the
      * GUI
      */    
-    private void expandNetworkCE (ProbNet probNet)
+    private void expandNetworkCE (ProbNet probNet, EvidenceCase preResolutionEvidence)
     {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
                                                                                        Utilities.getOwner (mainPanel),
@@ -1029,7 +1036,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                        false);
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
-            EvidenceCase evidence = new EvidenceCase ();
+            EvidenceCase evidence = new EvidenceCase (preResolutionEvidence);
             int numSlices;
             
             numSlices = costEffectivenessDialog.getNumSlices ();
@@ -1522,7 +1529,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         }
     }
     
-    private void showCostEffectivenessDialog(ProbNet probNet, boolean sensitivityAnalysis) {
+    private void showCostEffectivenessDialog(ProbNet probNet, EvidenceCase evidence, boolean sensitivityAnalysis) {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), 
                                                                                        probNet, 
                                                                                        false);
@@ -1531,6 +1538,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
                                                                                                  probNet,
+                                                                                                 evidence,
                                                                                                  costEffectivenessDialog.getCostDiscount (),
                                                                                                  costEffectivenessDialog.getEffectivenessDiscount (),
                                                                                                  costEffectivenessDialog.getNumSlices (),

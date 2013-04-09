@@ -36,6 +36,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -60,7 +61,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private CostEffectivenessAnalysis         costEffectivenessAnalysis;
     private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
-    public TraceTemporalEvolutionDialog (Window owner, ProbNode node)
+    public TraceTemporalEvolutionDialog (Window owner, ProbNode node, EvidenceCase evidence)
     {
         super (owner);
         ProbNet probNet = node.getProbNet ();
@@ -73,6 +74,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             // evidenceCase and cycleLegth null by the moment
             costEffectivenessAnalysis = new CostEffectivenessAnalysis (
                                                                        probNet,
+                                                                       evidence,
                                                                        costEffectivenessDialog.getCostDiscount (),
                                                                        costEffectivenessDialog.getEffectivenessDiscount (),
                                                                        costEffectivenessDialog.getNumSlices (),
