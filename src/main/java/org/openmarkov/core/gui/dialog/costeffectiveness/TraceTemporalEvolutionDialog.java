@@ -68,6 +68,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (owner,
                                                                                        probNet,
+                                                                                       false,
                                                                                        true);
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {

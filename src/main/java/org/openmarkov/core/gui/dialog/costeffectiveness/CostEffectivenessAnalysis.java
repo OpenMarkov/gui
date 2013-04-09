@@ -47,8 +47,7 @@ public class CostEffectivenessAnalysis {
     private EvidenceCase evidence;
 
     public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
-            double costDiscountRate,
-            double effectivenessDiscountRate, int numSlices,
+            double costDiscountRate, double effectivenessDiscountRate, int numSlices,
             Map<Variable, Double> numericTemporalValues, Variable numIndexVariable,
             TransitionTime transitionTime) {
         this.probNet = probNet;
@@ -92,8 +91,7 @@ public class CostEffectivenessAnalysis {
      * 
      * @return EvidenceCase
      */
-    private EvidenceCase getEvidenceFromNetwork(ProbNet probNet,
-            EvidenceCase evidence,
+    private EvidenceCase getEvidenceFromNetwork(ProbNet probNet, EvidenceCase evidence,
             Map<Variable, Double> numericTemporalValues) {
         EvidenceCase evidenceCase = new EvidenceCase(evidence);
 
@@ -113,8 +111,7 @@ public class CostEffectivenessAnalysis {
     public void extendEvidence(ProbNet extendedNetwork) {
         try {
             evidence.extendEvidence(extendedNetwork, 1);
-        } catch (IncompatibleEvidenceException | InvalidStateException
-                | WrongCriterionException e) {
+        } catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
             e.printStackTrace();
         }
     }
@@ -160,22 +157,20 @@ public class CostEffectivenessAnalysis {
         } catch (NotEvaluableNetworkException e1) {
             e1.printStackTrace();
         }
-        
-        // Reorder variables to make sure decision criteria is the conditioned variable
+
+        // Reorder variables to make sure decision criteria is the conditioned
+        // variable
         List<Variable> newOrderVariables = new ArrayList<>();
-        for(Variable variable: globalUtility.getVariables())
-        {
-            if(variable.getName().equals("Decision Criteria"))
-            {
+        for (Variable variable : globalUtility.getVariables()) {
+            if (variable.getName().equals("Decision Criteria")) {
                 newOrderVariables.add(0, variable);
-            }else
-            {
+            } else {
                 newOrderVariables.add(variable);
             }
         }
-        
+
         globalUtility = DiscretePotentialOperations.reorder(globalUtility, newOrderVariables);
-        
+
         return globalUtility;
     }
 

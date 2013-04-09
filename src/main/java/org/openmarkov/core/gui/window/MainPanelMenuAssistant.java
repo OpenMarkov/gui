@@ -212,8 +212,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
                              || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MPADType;
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
             setOptionEnabled (ActionCommands.SENSITIVITY_ANALYSIS, enable);
-            // setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION,
-            // enable);
         }
         setOptionEnabled (FILING_ACTION_COMMANDS, true);
         if (workingMode == NetworkPanel.EDITION_WORKING_MODE)

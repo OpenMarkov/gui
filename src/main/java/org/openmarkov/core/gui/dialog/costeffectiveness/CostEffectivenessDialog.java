@@ -40,513 +40,479 @@ import org.openmarkov.core.model.network.Variable;
  * information such as cycle length, number of cycles, introduce findings to
  * numerical variables within the network, cost and effectiveness discount
  * rate...
+ * 
  * @author myebra
  */
-public class CostEffectivenessDialog extends OkCancelHorizontalDialog
-    implements
-        ItemListener,
-        FocusListener
-{
-    private static final long       serialVersionUID          = 1L;
-    private JLabel                  costDiscountLabel;
-    private JLabel                  effectivenessDiscountLabel;
-    private JTextField              costDiscountTextField;
-    private JTextField              effectivenessDiscountTextField;
-    private Double                  costDiscount;
-    private Double                  effectivenessDiscount;
-    private JTextField              txtSimulationNumber;
-    private JLabel                  lblSimulationsNumber;
-    private Integer                 simulationsNumber;
-    private JLabel                  numSlicesLabell;
-    private JTextField              numSlicesTextField;
-    private Integer                 numSlices;
-    private JRadioButton            beginningOfCycleButton;
-    private JRadioButton            endOfCycleButton;
-    private JRadioButton            halfCycleButton;
-    private ButtonGroup             transitionsButtonGroup;
-    private JPanel                  transitionsPanel;
-    private JRadioButton            instantButton;
-    private JRadioButton            cumulativeButton;
-    private ButtonGroup             instantOrCumulativeButtonGroup;
-    private JPanel                  instantOrCumulativePanel;
-    private boolean                 isCumulative            = false;
-    private JPanel                  numSlicesPanel;
-    private Map<Variable, Double>   numericTemporalVariables;
-    private Map<String, JTextField> numericTemporalComponents = new HashMap<> ();
+public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener,
+        FocusListener {
+    private static final long serialVersionUID = 1L;
+    private JLabel costDiscountLabel;
+    private JLabel effectivenessDiscountLabel;
+    private JTextField costDiscountTextField;
+    private JTextField effectivenessDiscountTextField;
+    private Double costDiscount;
+    private Double effectivenessDiscount;
+    private JTextField txtSimulationNumber;
+    private JLabel lblSimulationsNumber;
+    private Integer simulationsNumber;
+    private JLabel numSlicesLabel;
+    private JTextField numSlicesTextField;
+    private Integer numSlices;
+    private JRadioButton beginningOfCycleButton;
+    private JRadioButton endOfCycleButton;
+    private JRadioButton halfCycleButton;
+    private ButtonGroup transitionsButtonGroup;
+    private JPanel transitionsPanel;
+    private JRadioButton instantButton;
+    private JRadioButton cumulativeButton;
+    private ButtonGroup instantOrCumulativeButtonGroup;
+    private JPanel instantOrCumulativePanel;
+    private boolean isCumulative = false;
+    private JPanel numSlicesPanel;
+    private JLabel numSamplesLabel;
+    private Double numSamples;
+    private JTextField numSamplesTextField;
+    private Map<Variable, Double> numericTemporalVariables;
+    private Map<String, JTextField> numericTemporalComponents = new HashMap<>();
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
-     * @param owner The parent of the dialog
+     * 
+     * @param owner
+     *            The parent of the dialog
      */
-    public CostEffectivenessDialog (Window owner)
-    {
-        super (owner);
-        setLocationRelativeTo (owner);
+    public CostEffectivenessDialog(Window owner) {
+        super(owner);
+        setLocationRelativeTo(owner);
         // setMinimumSize(new Dimension(250 , 150));
-        BorderLayout layout = new BorderLayout (5, 5);
-        getComponentsPanel ().setLayout (layout);
-        getComponentsPanel ().add (getNumSlicesPanel (), BorderLayout.NORTH);
-        setResizable (false);
-        pack ();
-        repaint ();
+        BorderLayout layout = new BorderLayout(5, 5);
+        getComponentsPanel().setLayout(layout);
+        getComponentsPanel().add(getNumSlicesPanel(), BorderLayout.NORTH);
+        setResizable(false);
+        pack();
+        repaint();
     }
 
     /**
      * Creates a CostEffectivenessDialog for temporal evolution
-     * @param owner The parent of the dialog
+     * 
+     * @param owner
+     *            The parent of the dialog
+     * @param b
      */
-    public CostEffectivenessDialog (Window owner, ProbNet probNet, boolean isTemporalEvolution)
-    {
-        super (owner);
-        setLocationRelativeTo (owner);
-        this.numericTemporalVariables = new HashMap<> ();
-        for (ProbNode numericalTemporalNode : probNet.getSpecialTimeDependentNodes ())
-        {
-            numericTemporalVariables.put (numericalTemporalNode.getVariable (),
-                                          numericalTemporalNode.getVariable ().getPartitionedInterval ().getMin ());
+    public CostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
+            boolean isTemporalEvolution) {
+        super(owner);
+        setLocationRelativeTo(owner);
+        this.numericTemporalVariables = new HashMap<>();
+        for (ProbNode numericalTemporalNode : probNet.getSpecialTimeDependentNodes()) {
+            numericTemporalVariables.put(numericalTemporalNode.getVariable(), numericalTemporalNode
+                    .getVariable().getPartitionedInterval().getMin());
         }
-        initialize (isTemporalEvolution);
-        setResizable (false);
-        setTitle (probNet.getName (), isTemporalEvolution);
-        pack ();
-        repaint ();
+        initialize(sensitivityAnalysis, isTemporalEvolution);
+        setResizable(false);
+        setTitle(probNet.getName(), isTemporalEvolution);
+        pack();
+        repaint();
     }
 
-    private void initialize (boolean isTemporalEvolution)
-    {
-        setMinimumSize (new Dimension (250, 150));
-        JPanel panel = new JPanel ();
-        panel.setLayout (new BorderLayout ());
-        JPanel otherPanel = new JPanel ();
-        otherPanel.setLayout (new BorderLayout ());
-        JPanel slicesPanel = new JPanel ();
-        slicesPanel.add (getJLabelNumSlices ());
-        slicesPanel.add (getNumSlicesTextField ());
-        slicesPanel.setLayout (new FlowLayout (FlowLayout.LEFT, 10, 5));
-        otherPanel.add (slicesPanel, BorderLayout.NORTH);
-        if (!isTemporalEvolution)
-        {
-            otherPanel.add (getTransitionsPanel (), BorderLayout.CENTER);
+    private void initialize(boolean sensitivityAnalysis, boolean isTemporalEvolution) {
+        setMinimumSize(new Dimension(250, 150));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        JPanel otherPanel = new JPanel();
+        otherPanel.setLayout(new BorderLayout());
+        JPanel slicesPanel = new JPanel();
+        slicesPanel.add(getJLabelNumSlices());
+        slicesPanel.add(getNumSlicesTextField());
+        slicesPanel.setBorder(new TitledBorder("Time horizon"));
+        slicesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        otherPanel.add(slicesPanel, BorderLayout.NORTH);
+        if (!isTemporalEvolution) {
+            otherPanel.add(getTransitionsPanel(), BorderLayout.CENTER);
         }
-        panel.add (otherPanel, BorderLayout.NORTH);
-        JPanel discountTitlePanel = new JPanel ();
-        discountTitlePanel.setBorder (new TitledBorder ("Discounts"));
-        JPanel discountsPanel = new JPanel ();
-        discountsPanel.setBorder (new EmptyBorder (5, 5, 2, 2));
-        discountsPanel.setLayout (new GridLayout (2, 4, 5, 5));
-        discountsPanel.add (getCostDiscountLabel ());
-        discountsPanel.add (getCostDiscountTextField ());
-        discountsPanel.add (new JLabel ("%"));
-        discountsPanel.add (getEffectivenessDiscountLabel ());
-        discountsPanel.add (getEffectivenessDiscountTextField ());
-        discountsPanel.add (new JLabel ("%"));
-        discountTitlePanel.add (discountsPanel);
-        panel.add (discountTitlePanel, BorderLayout.CENTER);
-        JPanel initialValuesPanel = new JPanel ();
-        initialValuesPanel.setBorder (new TitledBorder ("Initial Values"));
-        initialValuesPanel.setLayout (new FlowLayout (FlowLayout.LEFT));
-        for (Variable numericTemporalVariable : numericTemporalVariables.keySet ())
-        {
-            JPanel initialValuePanel = new JPanel ();
-            JLabel label = new JLabel (numericTemporalVariable.getName ());
-            JTextField textField = new JTextField (10);
-            textField.setName (numericTemporalVariable.getName ());
-            textField.setText ("" + numericTemporalVariables.get (numericTemporalVariable));
-            textField.addFocusListener (this);
-            initialValuePanel.add (label);
-            initialValuePanel.add (textField);
-            numericTemporalComponents.put (numericTemporalVariable.getName (), textField);
-            initialValuePanel.add (new JLabel (
-                                               stringDatabase.getString ("CostEffectiveness.Cycles")));
-            initialValuesPanel.add (initialValuePanel);
+        JPanel discountTitlePanel = new JPanel();
+        discountTitlePanel.setBorder(new TitledBorder("Discounts"));
+        JPanel discountsPanel = new JPanel();
+        discountsPanel.setBorder(new EmptyBorder(5, 5, 2, 2));
+        discountsPanel.setLayout(new GridLayout(2, 4, 5, 5));
+        discountsPanel.add(getCostDiscountLabel());
+        discountsPanel.add(getCostDiscountTextField());
+        discountsPanel.add(new JLabel("%"));
+        discountsPanel.add(getEffectivenessDiscountLabel());
+        discountsPanel.add(getEffectivenessDiscountTextField());
+        discountsPanel.add(new JLabel("%"));
+        discountTitlePanel.add(discountsPanel);
+        otherPanel.add(discountTitlePanel, BorderLayout.SOUTH);
+        panel.add(otherPanel, BorderLayout.NORTH);
+        JPanel initialValuesPanel = new JPanel();
+        initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
+        initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        for (Variable numericTemporalVariable : numericTemporalVariables.keySet()) {
+            JPanel initialValuePanel = new JPanel();
+            JLabel label = new JLabel(numericTemporalVariable.getName());
+            JTextField textField = new JTextField(10);
+            textField.setName(numericTemporalVariable.getName());
+            textField.setText("" + numericTemporalVariables.get(numericTemporalVariable));
+            textField.addFocusListener(this);
+            initialValuePanel.add(label);
+            initialValuePanel.add(textField);
+            numericTemporalComponents.put(numericTemporalVariable.getName(), textField);
+            initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
+            initialValuesPanel.add(initialValuePanel);
         }
-        panel.add (initialValuesPanel, BorderLayout.SOUTH);
-        getComponentsPanel ().setLayout (new BorderLayout (20, 0));
-        getComponentsPanel ().setBorder (BorderFactory.createEmptyBorder (10, 10, 10, 10));
-        getComponentsPanel ().add (panel, BorderLayout.NORTH);
-        if (isTemporalEvolution)
-        {
-            getComponentsPanel ().add (new JPanel ());
-            getComponentsPanel ().add (getJPanelInstantOrAccumulative (), BorderLayout.SOUTH);
+        panel.add(initialValuesPanel, BorderLayout.CENTER);
+        getComponentsPanel().setLayout(new BorderLayout(20, 0));
+        getComponentsPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        getComponentsPanel().add(panel, BorderLayout.NORTH);
+        if (isTemporalEvolution) {
+            getComponentsPanel().add(new JPanel());
+            getComponentsPanel().add(getJPanelInstantOrAccumulative(), BorderLayout.SOUTH);
         }
-        pack ();
-        repaint ();
+        if (sensitivityAnalysis) {
+            JPanel sampleCountPanel = new JPanel();
+            sampleCountPanel.setBorder(new TitledBorder("Simulation"));
+            sampleCountPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            numSamplesLabel = new JLabel("Number of samples: ");
+            numSamplesTextField = new JTextField(10);
+            numSamplesTextField.addFocusListener(this);
+            numSamplesTextField.setName("numSamplesTextField");
+            numSamplesTextField.setText("1000");
+            sampleCountPanel.add(numSamplesLabel);
+            sampleCountPanel.add(numSamplesTextField);
+            panel.add(sampleCountPanel, BorderLayout.SOUTH);
+        }
+        pack();
+        repaint();
     }
 
-    private JPanel getNumSlicesPanel ()
-    {
-        if (numSlicesPanel == null)
-        {
-            numSlicesPanel = new JPanel ();
-            numSlicesPanel.setLayout (new GridLayout (1, 2, 10, 10));
-            numSlicesPanel.setBorder (new EmptyBorder (10, 10, 10, 10));
-            numSlicesPanel.add (getJLabelNumSlices ());
-            numSlicesPanel.add (getNumSlicesTextField ());
+    private JPanel getNumSlicesPanel() {
+        if (numSlicesPanel == null) {
+            numSlicesPanel = new JPanel();
+            numSlicesPanel.setLayout(new GridLayout(1, 2, 10, 10));
+            numSlicesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            numSlicesPanel.add(getJLabelNumSlices());
+            numSlicesPanel.add(getNumSlicesTextField());
         }
         return numSlicesPanel;
     }
 
-    private JLabel getJLabelNumSlices ()
-    {
-        if (numSlicesLabell == null)
-        {
-            numSlicesLabell = new JLabel (
-                                          stringDatabase.getString ("CostEffectiveness.NumberOfCycles"));
+    private JLabel getJLabelNumSlices() {
+        if (numSlicesLabel == null) {
+            numSlicesLabel = new JLabel(
+                    stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
         }
-        return numSlicesLabell;
+        return numSlicesLabel;
     }
 
-    private JTextField getNumSlicesTextField ()
-    {
-        if (numSlicesTextField == null)
-        {
+    private JTextField getNumSlicesTextField() {
+        if (numSlicesTextField == null) {
             numSlices = 20;
-            numSlicesTextField = new JTextField ();
-            numSlicesTextField.setText ("" + numSlices);
-            numSlicesTextField.setColumns (10);
-            numSlicesTextField.setName ("numSlicesTextField");
-            numSlicesTextField.addFocusListener (this);
+            numSlicesTextField = new JTextField();
+            numSlicesTextField.setText("" + numSlices);
+            numSlicesTextField.setColumns(10);
+            numSlicesTextField.setName("numSlicesTextField");
+            numSlicesTextField.addFocusListener(this);
         }
         return numSlicesTextField;
     }
 
-    private JTextField getTxtSimulationsNumber ()
-    {
-        if (txtSimulationNumber == null)
-        {
-            txtSimulationNumber = new JTextField ("20");
-            txtSimulationNumber.setColumns (10);
-            txtSimulationNumber.setVisible (false);
+
+    private JTextField getTxtSimulationsNumber() {
+        if (txtSimulationNumber == null) {
+            txtSimulationNumber = new JTextField("20");
+            txtSimulationNumber.setColumns(10);
+            txtSimulationNumber.setVisible(false);
         }
         return txtSimulationNumber;
     }
 
-    private JLabel getLblSimulationsNumber ()
-    {
-        if (lblSimulationsNumber == null)
-        {
-            lblSimulationsNumber = new JLabel (
-                                               stringDatabase.getString ("CostEffectiveness.NumberOfSimulations"));
-            lblSimulationsNumber.setVisible (false);
+    private JLabel getLblSimulationsNumber() {
+        if (lblSimulationsNumber == null) {
+            lblSimulationsNumber = new JLabel(
+                    stringDatabase.getString("CostEffectiveness.NumberOfSimulations"));
+            lblSimulationsNumber.setVisible(false);
         }
         return lblSimulationsNumber;
     }
 
-    private JLabel getCostDiscountLabel ()
-    {
-        if (costDiscountLabel == null)
-        {
-            costDiscountLabel = new JLabel (stringDatabase.getString ("CostEffectiveness.Cost"));
+    private JLabel getCostDiscountLabel() {
+        if (costDiscountLabel == null) {
+            costDiscountLabel = new JLabel(stringDatabase.getString("CostEffectiveness.Cost"));
         }
         return costDiscountLabel;
     }
 
-    private JLabel getEffectivenessDiscountLabel ()
-    {
-        if (effectivenessDiscountLabel == null)
-        {
-            effectivenessDiscountLabel = new JLabel (
-                                                     stringDatabase.getString ("CostEffectiveness.Effectiveness"));
+    private JLabel getEffectivenessDiscountLabel() {
+        if (effectivenessDiscountLabel == null) {
+            effectivenessDiscountLabel = new JLabel(
+                    stringDatabase.getString("CostEffectiveness.Effectiveness"));
         }
         return effectivenessDiscountLabel;
     }
 
-    private JTextField getCostDiscountTextField ()
-    {
-        if (costDiscountTextField == null)
-        {
-            costDiscountTextField = new JTextField ("0.0");
-            costDiscountTextField.setColumns (10);
+    private JTextField getCostDiscountTextField() {
+        if (costDiscountTextField == null) {
+            costDiscountTextField = new JTextField("0.0");
+            costDiscountTextField.setColumns(10);
         }
         return costDiscountTextField;
     }
 
-    private JTextField getEffectivenessDiscountTextField ()
-    {
-        if (effectivenessDiscountTextField == null)
-        {
-            effectivenessDiscountTextField = new JTextField ("0.0");
-            effectivenessDiscountTextField.setColumns (10);
+    private JTextField getEffectivenessDiscountTextField() {
+        if (effectivenessDiscountTextField == null) {
+            effectivenessDiscountTextField = new JTextField("0.0");
+            effectivenessDiscountTextField.setColumns(10);
         }
         return effectivenessDiscountTextField;
     }
 
-    private JRadioButton getInstantValuesButton ()
-    {
-        if (instantButton == null)
-        {
-            instantButton = new JRadioButton (
-                                              stringDatabase.getString ("CostEffectiveness.InstantValues"),
-                                              true);
-            instantButton.addItemListener (this);
+    private JRadioButton getInstantValuesButton() {
+        if (instantButton == null) {
+            instantButton = new JRadioButton(
+                    stringDatabase.getString("CostEffectiveness.InstantValues"), true);
+            instantButton.addItemListener(this);
         }
         return instantButton;
     }
 
-    private JRadioButton getCumulativeValuesButton ()
-    {
-        if (cumulativeButton == null)
-        {
-            cumulativeButton = new JRadioButton (stringDatabase.getString ("CostEffectiveness.CumulativeValues"),
-                                                   false);
-            cumulativeButton.addItemListener (this);
+    private JRadioButton getCumulativeValuesButton() {
+        if (cumulativeButton == null) {
+            cumulativeButton = new JRadioButton(
+                    stringDatabase.getString("CostEffectiveness.CumulativeValues"), false);
+            cumulativeButton.addItemListener(this);
         }
         return cumulativeButton;
     }
 
-    private void initInstantOrCumulativeButtonGroup ()
-    {
-        instantOrCumulativeButtonGroup = new ButtonGroup ();
-        instantOrCumulativeButtonGroup.add (getInstantValuesButton ());
-        instantOrCumulativeButtonGroup.add (getCumulativeValuesButton ());
+    private void initInstantOrCumulativeButtonGroup() {
+        instantOrCumulativeButtonGroup = new ButtonGroup();
+        instantOrCumulativeButtonGroup.add(getInstantValuesButton());
+        instantOrCumulativeButtonGroup.add(getCumulativeValuesButton());
     }
 
     /**
      * @return the panel with the two buttons
      */
-    private JPanel getJPanelInstantOrAccumulative ()
-    {
-        if (instantOrCumulativePanel == null)
-        {
-            instantOrCumulativePanel = new JPanel ();
-            instantOrCumulativePanel.setLayout (new GridLayout (2, 1));
-            instantOrCumulativePanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
-                                                                                    stringDatabase.getString ("CostEffectiveness.TemporalDisplay")));
-            instantOrCumulativePanel.setName ("instantOrAccumulativePanel");
-            initInstantOrCumulativeButtonGroup ();
-            instantOrCumulativePanel.add (getInstantValuesButton ());
-            instantOrCumulativePanel.add (getCumulativeValuesButton ());
+    private JPanel getJPanelInstantOrAccumulative() {
+        if (instantOrCumulativePanel == null) {
+            instantOrCumulativePanel = new JPanel();
+            instantOrCumulativePanel.setLayout(new GridLayout(2, 1));
+            instantOrCumulativePanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    stringDatabase.getString("CostEffectiveness.TemporalDisplay")));
+            instantOrCumulativePanel.setName("instantOrAccumulativePanel");
+            initInstantOrCumulativeButtonGroup();
+            instantOrCumulativePanel.add(getInstantValuesButton());
+            instantOrCumulativePanel.add(getCumulativeValuesButton());
         }
         return instantOrCumulativePanel;
     }
-    
-    private JRadioButton getBeginningOfCycleButton ()
-    {
-        if (beginningOfCycleButton == null)
-        {
-            beginningOfCycleButton = new JRadioButton (
-                                              stringDatabase.getString ("CostEffectiveness.BeginningOfCycle"),
-                                              true);
-            beginningOfCycleButton.addItemListener (this);
+
+    private JRadioButton getBeginningOfCycleButton() {
+        if (beginningOfCycleButton == null) {
+            beginningOfCycleButton = new JRadioButton(
+                    stringDatabase.getString("CostEffectiveness.BeginningOfCycle"), true);
+            beginningOfCycleButton.addItemListener(this);
         }
         return beginningOfCycleButton;
     }
-    
-    private JRadioButton getEndOfCycleButton ()
-    {
-        if (endOfCycleButton == null)
-        {
-            endOfCycleButton = new JRadioButton (stringDatabase.getString ("CostEffectiveness.EndOfCycle"),
-                                              true);
-            endOfCycleButton.addItemListener (this);
+
+    private JRadioButton getEndOfCycleButton() {
+        if (endOfCycleButton == null) {
+            endOfCycleButton = new JRadioButton(
+                    stringDatabase.getString("CostEffectiveness.EndOfCycle"), true);
+            endOfCycleButton.addItemListener(this);
         }
         return endOfCycleButton;
     }
 
-    private JRadioButton getHalfCycleButton ()
-    {
-        if (halfCycleButton == null)
-        {
-            halfCycleButton = new JRadioButton (stringDatabase.getString ("CostEffectiveness.HalfCycle"),
-                                              true);
-            halfCycleButton.addItemListener (this);
+    private JRadioButton getHalfCycleButton() {
+        if (halfCycleButton == null) {
+            halfCycleButton = new JRadioButton(
+                    stringDatabase.getString("CostEffectiveness.HalfCycle"), true);
+            halfCycleButton.addItemListener(this);
         }
         return halfCycleButton;
     }
-    
-    private void initTransitionsButtonGroup ()
-    {
-        transitionsButtonGroup = new ButtonGroup ();
-        transitionsButtonGroup.add (getBeginningOfCycleButton ());
-        transitionsButtonGroup.add (getHalfCycleButton ());
-        transitionsButtonGroup.add (getEndOfCycleButton ());
+
+    private void initTransitionsButtonGroup() {
+        transitionsButtonGroup = new ButtonGroup();
+        transitionsButtonGroup.add(getBeginningOfCycleButton());
+        transitionsButtonGroup.add(getHalfCycleButton());
+        transitionsButtonGroup.add(getEndOfCycleButton());
     }
 
     /**
      * @return the panel with the transition buttons
      */
-    private JPanel getTransitionsPanel ()
-    {
-        if (transitionsPanel == null)
-        {
-            transitionsPanel = new JPanel ();
-            transitionsPanel.setLayout (new GridLayout (3, 1));
-            transitionsPanel.setBorder (new TitledBorder ("Transitions"));
-            transitionsPanel.setName ("transitionsPanel");
-            initTransitionsButtonGroup ();
-            transitionsPanel.add (getBeginningOfCycleButton ());
-            transitionsPanel.add (getHalfCycleButton ());
-            transitionsPanel.add (getEndOfCycleButton ());
+    private JPanel getTransitionsPanel() {
+        if (transitionsPanel == null) {
+            transitionsPanel = new JPanel();
+            transitionsPanel.setLayout(new GridLayout(3, 1));
+            transitionsPanel.setBorder(new TitledBorder("Transitions"));
+            transitionsPanel.setName("transitionsPanel");
+            initTransitionsButtonGroup();
+            transitionsPanel.add(getBeginningOfCycleButton());
+            transitionsPanel.add(getHalfCycleButton());
+            transitionsPanel.add(getEndOfCycleButton());
         }
         return transitionsPanel;
-    }    
+    }
 
-    public int requestData ()
-    {
-        setVisible (true);
+    public int requestData() {
+        setVisible(true);
         return selectedButton;
     }
 
     @Override
-    protected boolean doOkClickBeforeHide ()
-    {
-        boolean allValid = checkTextFieldsValidity ();
-        if (allValid)
-        {
-            numSlices = Integer.valueOf (getNumSlicesTextField ().getText ());
-            costDiscount = Double.valueOf (getCostDiscountTextField ().getText ());
-            effectivenessDiscount = Double.valueOf (getEffectivenessDiscountTextField ().getText ());
-            simulationsNumber = Integer.valueOf (getTxtSimulationsNumber ().getText ());
+    protected boolean doOkClickBeforeHide() {
+        boolean allValid = checkTextFieldsValidity();
+        if (allValid) {
+            numSlices = Integer.valueOf(getNumSlicesTextField().getText());
+            costDiscount = Double.valueOf(getCostDiscountTextField().getText());
+            effectivenessDiscount = Double.valueOf(getEffectivenessDiscountTextField().getText());
+            simulationsNumber = Integer.valueOf(getTxtSimulationsNumber().getText());
         }
         return allValid;
     }
 
-    public double getCostDiscount ()
-    {
+    public double getCostDiscount() {
         return costDiscount;
     }
 
-    public double getEffectivenessDiscount ()
-    {
+    public double getEffectivenessDiscount() {
         return effectivenessDiscount;
     }
 
-    public int getNumSlices ()
-    {
+    public int getNumSlices() {
         return numSlices;
     }
 
-    public TransitionTime getTransitionTime()
-    {
+    public TransitionTime getTransitionTime() {
         TransitionTime transitionTime = TransitionTime.BEGINNING;
-        if(halfCycleButton!= null && halfCycleButton.isSelected ())
-        {
+        if (halfCycleButton != null && halfCycleButton.isSelected()) {
             transitionTime = TransitionTime.HALF;
         }
-        if(endOfCycleButton!= null && endOfCycleButton.isSelected ())
-        {
+        if (endOfCycleButton != null && endOfCycleButton.isSelected()) {
             transitionTime = TransitionTime.END;
         }
         return transitionTime;
     }
 
-    public void showSimulationsNumberElements (boolean isProbabilistic)
-    {
-        getLblSimulationsNumber ().setVisible (isProbabilistic);
-        getTxtSimulationsNumber ().setVisible (isProbabilistic);
+    public void showSimulationsNumberElements(boolean isProbabilistic) {
+        getLblSimulationsNumber().setVisible(isProbabilistic);
+        getTxtSimulationsNumber().setVisible(isProbabilistic);
     }
 
-    public int getSimulationsNumber ()
-    {
+    public int getSimulationsNumber() {
         return simulationsNumber;
     }
 
-    public boolean isCumulative ()
-    {
+    public boolean isCumulative() {
         return this.isCumulative;
     }
-    
-    public Map<Variable, Double> getNumericTemporalValues ()
-    {
+
+    public Map<Variable, Double> getNumericTemporalValues() {
         return numericTemporalVariables;
-    }    
+    }
 
     @Override
-    public void itemStateChanged (ItemEvent e)
-    {
-        if (e.getItem ().equals (getInstantValuesButton ()))
-        {
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getItem().equals(getInstantValuesButton())) {
             this.isCumulative = false;
         }
-        if (e.getItem ().equals (getCumulativeValuesButton ()))
-        {
+        if (e.getItem().equals(getCumulativeValuesButton())) {
             this.isCumulative = true;
         }
     }
 
-    private void setTitle (String netName, boolean isTemporalEvolution)
-    {
-        String title = stringDatabase.getString (((isTemporalEvolution) ? "CostEffectiveness.TemporalEvolution"
-                                                                       : "CostEffectiveness.Analysis")
-                                                 + ".Label");
-        super.setTitle (title + " - " + FilenameUtils.getBaseName (netName));
+    private void setTitle(String netName, boolean isTemporalEvolution) {
+        String title = stringDatabase
+                .getString(((isTemporalEvolution) ? "CostEffectiveness.TemporalEvolution"
+                        : "CostEffectiveness.Analysis") + ".Label");
+        super.setTitle(title + " - " + FilenameUtils.getBaseName(netName));
     }
 
-    private boolean checkTextFieldsValidity ()
-    {
+    private boolean checkTextFieldsValidity() {
         boolean allValid = true;
-        for (JTextField numericTemporalField : numericTemporalComponents.values ())
-        {
-            allValid &= checkTextFieldValidity (numericTemporalField);
+        for (JTextField numericTemporalField : numericTemporalComponents.values()) {
+            allValid &= checkTextFieldValidity(numericTemporalField);
         }
         return allValid;
     }
 
-    private boolean checkTextFieldValidity (JTextField sourceTextField)
-    {
+    private boolean checkTextFieldValidity(JTextField sourceTextField) {
         boolean valid = true;
-        if (numericTemporalComponents.containsKey (sourceTextField.getName ())
-            || sourceTextField.equals (getNumSlicesTextField ()))
-        {
-            boolean numSlicesDefined = getNumSlicesTextField ().getText () != null;
-            int numSlices = (numSlicesDefined) ? Integer.valueOf (getNumSlicesTextField ().getText ())
-                                              : -1;
-            for (Variable numericTemporalVariable : numericTemporalVariables.keySet ())
-            {
-                PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval ();
-                double numericValue = Double.parseDouble (numericTemporalComponents.get (numericTemporalVariable.getName ()).getText ());
+        if (numericTemporalComponents.containsKey(sourceTextField.getName())
+                || sourceTextField.equals(getNumSlicesTextField())) {
+            boolean numSlicesDefined = getNumSlicesTextField().getText() != null;
+            int numSlices = (numSlicesDefined) ? Integer.valueOf(getNumSlicesTextField().getText())
+                    : -1;
+            for (Variable numericTemporalVariable : numericTemporalVariables.keySet()) {
+                PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
+                double numericValue = Double.parseDouble(numericTemporalComponents.get(
+                        numericTemporalVariable.getName()).getText());
                 double timeHorizon = numericValue + numSlices;
-                if (numSlicesDefined)
-                {
-                    if ((!interval.isRightClosed () && timeHorizon >= interval.getMax ())
-                        || timeHorizon > interval.getMax ())
-                    {
-                        JOptionPane.showMessageDialog (this.getParent (),
-                                                       numericTemporalVariable.getBaseName ()
-                                                               + " "
-                                                               + stringDatabase.getString ("CostEffectiveness.ExceedsTimeHorizon"));
+                if (numSlicesDefined) {
+                    if ((!interval.isRightClosed() && timeHorizon >= interval.getMax())
+                            || timeHorizon > interval.getMax()) {
+                        JOptionPane.showMessageDialog(
+                                this.getParent(),
+                                numericTemporalVariable.getBaseName()
+                                        + " "
+                                        + stringDatabase
+                                                .getString("CostEffectiveness.ExceedsTimeHorizon"));
                         valid = false;
                     }
                 }
-                if ((!interval.isLeftClosed () && numericValue <= interval.getMin ())
-                    || numericValue < interval.getMin ())
-                {
-                    JOptionPane.showMessageDialog (this.getParent (),
-                                                   numericTemporalVariable.getBaseName ()
-                                                           + " "
-                                                           + stringDatabase.getString ("CostEffectiveness.VariableTooLow"));
+                if ((!interval.isLeftClosed() && numericValue <= interval.getMin())
+                        || numericValue < interval.getMin()) {
+                    JOptionPane.showMessageDialog(
+                            this.getParent(),
+                            numericTemporalVariable.getBaseName() + " "
+                                    + stringDatabase.getString("CostEffectiveness.VariableTooLow"));
                     valid = false;
                 }
-                if (valid)
-                {
-                    numericTemporalVariables.put (numericTemporalVariable, numericValue);
+                if (valid) {
+                    numericTemporalVariables.put(numericTemporalVariable, numericValue);
                 }
-                numericTemporalComponents.get (numericTemporalVariable.getName ()).setText (""
-                                                                                                    + numericValue);
+                numericTemporalComponents.get(numericTemporalVariable.getName()).setText(
+                        "" + numericValue);
             }
-            if (valid)
-            {
+            if (valid) {
                 this.numSlices = numSlices;
             }
-            getNumSlicesTextField ().setText ("" + this.numSlices);
+            getNumSlicesTextField().setText("" + this.numSlices);
+        }
+        if(sourceTextField.equals(numSamplesTextField))
+        {
+            try
+            {
+                double newValue = Double.parseDouble(numSamplesTextField.getText());
+                this.numSamples = newValue;
+            }catch(NumberFormatException e)
+            {
+                valid = false;
+            }
         }
         return valid;
     }
 
     @Override
-    public void focusGained (FocusEvent e)
-    {
+    public void focusGained(FocusEvent e) {
         // Ignore
     }
 
     @Override
-    public void focusLost (FocusEvent e)
-    {
-        if (e.getSource () instanceof JTextField
-            && ((JTextField) e.getSource ()).getName () != null)
-        {
-            JTextField sourceTextField = (JTextField) e.getSource ();
-            checkTextFieldValidity (sourceTextField);
+    public void focusLost(FocusEvent e) {
+        if (e.getSource() instanceof JTextField && ((JTextField) e.getSource()).getName() != null) {
+            JTextField sourceTextField = (JTextField) e.getSource();
+            checkTextFieldValidity(sourceTextField);
         }
+    }
+
+    public Double getNumSamples() {
+        return numSamples;
     }
 }

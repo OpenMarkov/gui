@@ -2151,7 +2151,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic,
 		} else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
 			component = toolsCostEffectivenessDeterministicMenuItem;
 		} else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
-			component = toolsCostEffectivenessDeterministicMenuItem;
+			component = toolsSensitivityAnalysisMenuItem;
 		} 
 		
 		

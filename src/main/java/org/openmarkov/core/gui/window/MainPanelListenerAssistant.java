@@ -1033,6 +1033,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (
                                                                                        Utilities.getOwner (mainPanel),
                                                                                        probNet,
+                                                                                       false,
                                                                                        false);
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
@@ -1532,6 +1533,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
     private void showCostEffectivenessDialog(ProbNet probNet, EvidenceCase evidence, boolean sensitivityAnalysis) {
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (Utilities.getOwner (mainPanel), 
                                                                                        probNet, 
+                                                                                       sensitivityAnalysis,
                                                                                        false);
 
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
