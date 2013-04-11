@@ -32,14 +32,14 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
+import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
@@ -1013,7 +1013,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
             int numSlices = costEffectivenessDialog.getNumSlices ();
-            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
             String fileName = probNet.getName () + "_expanded";
             expandedNetwork.setName (fileName);
@@ -1048,7 +1048,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     Variable timeDependentVariable = timeDependentNode.getVariable ();
                     Finding finding = new Finding (
                                            timeDependentVariable,
-                                           costEffectivenessDialog.getNumericTemporalValues ().get (timeDependentVariable));
+                                           costEffectivenessDialog.getInitialValues ().get (timeDependentVariable));
                     try
                     {
                         evidence.addFinding (finding);
@@ -1070,7 +1070,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     maxX = probNode.getNode ().getCoordinateX ();
                 }
             }
-            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices, null);
+            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices);
             InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
             // extend evidence
             if (!evidence.getFindings ().isEmpty ())
@@ -1544,8 +1544,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                                  costEffectivenessDialog.getCostDiscount (),
                                                                                                  costEffectivenessDialog.getEffectivenessDiscount (),
                                                                                                  costEffectivenessDialog.getNumSlices (),
-                                                                                                 costEffectivenessDialog.getNumericTemporalValues (),
-                                                                                                 null,
+                                                                                                 costEffectivenessDialog.getInitialValues (),
                                                                                                  costEffectivenessDialog.getTransitionTime ());            
             new CostEffectivenessResultsDialog (
                                                 Utilities.getOwner (mainPanel),

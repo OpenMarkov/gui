@@ -3,7 +3,7 @@
  * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.costeffectiveness;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,19 +43,17 @@ public class CostEffectivenessAnalysis {
     private TablePotential globalUtility;
     private List<Intervention> interventions;
     private List<Intervention> frontierInterventions;
-    private Variable numIndexVariable;
     private EvidenceCase evidence;
 
     public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
             double costDiscountRate, double effectivenessDiscountRate, int numSlices,
-            Map<Variable, Double> numericTemporalValues, Variable numIndexVariable,
+            Map<Variable, Double> initialValues, 
             TransitionTime transitionTime) {
         this.probNet = probNet;
         this.costDiscountRate = costDiscountRate;
         this.effectivenessDiscountRate = effectivenessDiscountRate;
         this.numSlices = numSlices;
-        this.numIndexVariable = numIndexVariable;
-        this.evidence = getEvidenceFromNetwork(probNet, evidence, numericTemporalValues);
+        this.evidence = getEvidenceFromNetwork(probNet, evidence, initialValues);
         this.transitionTime = transitionTime;
         this.globalUtility = costEffectivenessCalculator();
         this.interventions = createInterventions(globalUtility);
@@ -70,7 +68,7 @@ public class CostEffectivenessAnalysis {
             if (node.getPotentials().get(0).isUncertain()) {
                 hasUncertainty = true;
                 // add numIndexVariable as a parent of this node
-                // new potential will be set to the node for each estate of
+                // new potential will be set to the node for each state of
                 // indexSimulationVariable a projected table
                 // the evidence for this will be
                 // configurationEvidence.addFinding(new
@@ -119,7 +117,7 @@ public class CostEffectivenessAnalysis {
     private TablePotential costEffectivenessCalculator() {
         TablePotential globalUtility = null;
         FactoryExpandedMPAD expandedNetFactory;
-        expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices, numIndexVariable);
+        expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
         InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
         extendEvidence(expandedNetFactory.getExtendedNetwork());
         expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
@@ -264,7 +262,7 @@ public class CostEffectivenessAnalysis {
             for (int i = 1; i < size; i++) {
                 Intervention previousIntervention = frontierInterventions.get(i - 1);
                 Intervention intervention = frontierInterventions.get(i);
-                intervention.calculateIncrementalCERatio(previousIntervention);
+                intervention.calculateICER(previousIntervention);
                 interventionsWithICERs.add(intervention);
             }
         }
@@ -282,7 +280,7 @@ public class CostEffectivenessAnalysis {
             }
         }
         HashMap<Variable, TablePotential> probsAndUtilities = null;
-        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices, null);
+        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
         extendEvidence(expandedNetFactory.getExtendedNetwork());
         expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
                 new InferenceOptions(probNet, null), evidence);
@@ -360,4 +358,17 @@ public class CostEffectivenessAnalysis {
     public List<Intervention> getFrontierInterventions() {
         return frontierInterventions;
     }
+    
+    /**
+     * @param simulationIndexVariable. <code>Variable</code>
+     * @throws NotEnoughMemoryException
+     */
+    private void sampleProbNet (Variable simulationIndexVariable)
+    {
+        for (ProbNode probNode : probNet.getProbNodes ())
+        {
+            probNode.samplePotentials (simulationIndexVariable);
+        }
+    }
+    
 }

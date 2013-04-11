@@ -4,7 +4,7 @@
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -72,7 +72,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JLabel numSamplesLabel;
     private Double numSamples;
     private JTextField numSamplesTextField;
-    private Map<Variable, Double> numericTemporalVariables;
+    private Map<Variable, Double> initialValues;
     private Map<String, JTextField> numericTemporalComponents = new HashMap<>();
 
     /**
@@ -104,9 +104,9 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             boolean isTemporalEvolution) {
         super(owner);
         setLocationRelativeTo(owner);
-        this.numericTemporalVariables = new HashMap<>();
+        this.initialValues = new HashMap<>();
         for (ProbNode numericalTemporalNode : probNet.getSpecialTimeDependentNodes()) {
-            numericTemporalVariables.put(numericalTemporalNode.getVariable(), numericalTemporalNode
+            initialValues.put(numericalTemporalNode.getVariable(), numericalTemporalNode
                     .getVariable().getPartitionedInterval().getMin());
         }
         initialize(sensitivityAnalysis, isTemporalEvolution);
@@ -148,12 +148,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         JPanel initialValuesPanel = new JPanel();
         initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
         initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        for (Variable numericTemporalVariable : numericTemporalVariables.keySet()) {
+        for (Variable numericTemporalVariable : initialValues.keySet()) {
             JPanel initialValuePanel = new JPanel();
             JLabel label = new JLabel(numericTemporalVariable.getName());
             JTextField textField = new JTextField(10);
             textField.setName(numericTemporalVariable.getName());
-            textField.setText("" + numericTemporalVariables.get(numericTemporalVariable));
+            textField.setText("" + initialValues.get(numericTemporalVariable));
             textField.addFocusListener(this);
             initialValuePanel.add(label);
             initialValuePanel.add(textField);
@@ -413,8 +413,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         return this.isCumulative;
     }
 
-    public Map<Variable, Double> getNumericTemporalValues() {
-        return numericTemporalVariables;
+    public Map<Variable, Double> getInitialValues() {
+        return initialValues;
     }
 
     @Override
@@ -449,7 +449,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             boolean numSlicesDefined = getNumSlicesTextField().getText() != null;
             int numSlices = (numSlicesDefined) ? Integer.valueOf(getNumSlicesTextField().getText())
                     : -1;
-            for (Variable numericTemporalVariable : numericTemporalVariables.keySet()) {
+            for (Variable numericTemporalVariable : initialValues.keySet()) {
                 PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
                 double numericValue = Double.parseDouble(numericTemporalComponents.get(
                         numericTemporalVariable.getName()).getText());
@@ -475,7 +475,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
                     valid = false;
                 }
                 if (valid) {
-                    numericTemporalVariables.put(numericTemporalVariable, numericValue);
+                    initialValues.put(numericTemporalVariable, numericValue);
                 }
                 numericTemporalComponents.get(numericTemporalVariable.getName()).setText(
                         "" + numericValue);

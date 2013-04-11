@@ -1,5 +1,5 @@
 
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

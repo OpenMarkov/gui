@@ -1,5 +1,10 @@
+/*
+ * Copyright 2013 CISIAD, UNED, Spain Licensed under the European Union Public
+ * Licence, version 1.1 (EUPL) Unless required by applicable law, this code is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.costeffectiveness;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -79,8 +84,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
                                                                        costEffectivenessDialog.getCostDiscount (),
                                                                        costEffectivenessDialog.getEffectivenessDiscount (),
                                                                        costEffectivenessDialog.getNumSlices (),
-                                                                       costEffectivenessDialog.getNumericTemporalValues (),
-                                                                       null,
+                                                                       costEffectivenessDialog.getInitialValues (),
                                                                        costEffectivenessDialog.getTransitionTime ());
             this.isCumulative = costEffectivenessDialog.isCumulative ();
             this.variableOfInterest = node.getVariable ();
