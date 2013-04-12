@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.undo.CannotRedoException;
@@ -35,6 +36,7 @@ import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
+import org.openmarkov.core.gui.costeffectiveness.ProbabilisticCEA;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
@@ -1538,113 +1540,40 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
-            CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
-                                                                                                 probNet,
-                                                                                                 evidence,
-                                                                                                 costEffectivenessDialog.getCostDiscount (),
-                                                                                                 costEffectivenessDialog.getEffectivenessDiscount (),
-                                                                                                 costEffectivenessDialog.getNumSlices (),
-                                                                                                 costEffectivenessDialog.getInitialValues (),
-                                                                                                 costEffectivenessDialog.getTransitionTime ());            
-            new CostEffectivenessResultsDialog (
-                                                Utilities.getOwner (mainPanel),
-                                                costEffectivenessAnalysis);
+            if(sensitivityAnalysis)
+            {
+                ProbabilisticCEA probabilisticCEA = new ProbabilisticCEA (
+                        probNet,
+                        evidence,
+                        costEffectivenessDialog.getCostDiscount (),
+                        costEffectivenessDialog.getEffectivenessDiscount (),
+                        costEffectivenessDialog.getNumSlices (),
+                        costEffectivenessDialog.getNumSimulations(),
+                        costEffectivenessDialog.getInitialValues (),
+                        costEffectivenessDialog.getTransitionTime ());            
+                 
+                JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(
+                        Utilities.getOwner(mainPanel), probabilisticCEA);
+                
+                ceaResultsDialog.setVisible(true);
+            }else
+            {
+                CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis (
+                        probNet,
+                        evidence,
+                        costEffectivenessDialog.getCostDiscount (),
+                        costEffectivenessDialog.getEffectivenessDiscount (),
+                        costEffectivenessDialog.getNumSlices (),
+                        costEffectivenessDialog.getInitialValues (),
+                        costEffectivenessDialog.getTransitionTime ());            
+                 
+                JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(
+                        Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
+                
+                ceaResultsDialog.setVisible(true);
+                
+            }
         }
-    }
-    
-    public void showSensitivityAnalysisCostEffectivenessDialog ()
-    {
-        /*
-         * ArrayList<Variable> decisionsWithoutPolicy = null; try {
-         * decisionsWithoutPolicy =
-         * VarEliminationMPAD.getDecisionVariablesWithoutPolicies(this.probNet);
-         * } catch (NotEvaluableNetworkException e1) { // TODO Auto-generated
-         * catch block e1.printStackTrace(); } if
-         * (decisionsWithoutPolicy.size()!=1){ JOptionPane.showMessageDialog(
-         * Utilities.getOwner(this),
-         * "Sensitivity analysis requires all the decisions except one have a policy assigned by the user. Please, check the decisions in the model."
-         * , stringResource .getString("ErrorWindow.Title.Label"),
-         * JOptionPane.ERROR_MESSAGE); }else{ if
-         * (requestCostEffectiveness(Utilities.getOwner(this),"sa", true)) {
-         * //Perform a simulation with the reference values
-         * ArrayList<Intervention> interventionsDeterministic = null;
-         * CostEffectivenessAnalysis costEffectivenessAnalysisDeterministic; try
-         * { costEffectivenessAnalysisDeterministic = new
-         * CostEffectivenessAnalysis(probNet,
-         * costEffectivenessDialog.getInitialAge(),
-         * costEffectivenessDialog.getFinalAge(),
-         * costEffectivenessDialog.getDiscount(), 0); interventionsDeterministic
-         * = costEffectivenessAnalysisDeterministic.getAllInterventions(0)[0]; }
-         * catch (NotEnoughMemoryException e2) { JOptionPane.showMessageDialog(
-         * Utilities.getOwner(this), e2.getMessage(), stringResource
-         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
-         * catch (NormalizeNullVectorException e2) { e2.printStackTrace(); }
-         * catch (DoEditException e2) { e2.printStackTrace(); } catch
-         * (ConstraintViolationException e2) { e2.printStackTrace(); } catch
-         * (CanNotDoEditException e2) { e2.printStackTrace(); } catch
-         * (NotEvaluableNetworkException e2) { e2.printStackTrace(); } catch
-         * (NonProjectablePotentialException e2) { e2.printStackTrace(); } catch
-         * (WrongCriterionException e2) { e2.printStackTrace(); } catch
-         * (IncompatibleEvidenceException exc) {
-         * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-         * stringResource.getString("ExceptionIncompatibleEvidence.Text.Label")
-         * + "\n\n" + exc.getMessage(),
-         * stringResource.getString("ExceptionIncompatibleEvidence.Title.Label"
-         * ), JOptionPane.ERROR_MESSAGE); } catch (InvalidStateException exc) {
-         * JOptionPane.showMessageDialog(Utilities.getOwner(this), "ERROR\n" +
-         * stringResource.getString("ExceptionInvalidState.Text.Label") + "\n\n"
-         * + exc.getMessage(),
-         * stringResource.getString("ExceptionInvalidState.Title.Label"),
-         * JOptionPane.ERROR_MESSAGE); } ArrayList<Intervention>[]
-         * interventionsProbabilistic = null; final String
-         * RESOURCE_EXCEL_TEMPLATE_2_STATES = "/openmarkov/gui/resources/" +
-         * "template/sa-plot-2-states-empty.xls"; final String
-         * RESOURCE_EXCEL_TEMPLATE_3_STATES = "/openmarkov/gui/resources/" +
-         * "template/sa-plot-3-states-empty.xls"; CostEffectivenessAnalysis
-         * costEffectivenessAnalysis = null; try { costEffectivenessAnalysis =
-         * new CostEffectivenessAnalysis(probNet,
-         * costEffectivenessDialog.getInitialAge(),
-         * costEffectivenessDialog.getFinalAge(),
-         * costEffectivenessDialog.getDiscount(),
-         * costEffectivenessDialog.getSimulationsNumber()); int
-         * numSimulationsInEachThread = 20; interventionsProbabilistic =
-         * costEffectivenessAnalysis
-         * .getAllInterventionsWithThreads(costEffectivenessDialog
-         * .getSimulationsNumber(),numSimulationsInEachThread);
-         * //interventionsProbabilistic =
-         * costEffectivenessAnalysis.getAllInterventions
-         * (costEffectivenessDialog.getSimulationsNumber()); } catch
-         * (NotEnoughMemoryException e1) { JOptionPane.showMessageDialog(
-         * Utilities.getOwner(this), e1.getMessage(), stringResource
-         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
-         * catch (NormalizeNullVectorException e1) { e1.printStackTrace(); }
-         * catch (DoEditException e1) { e1.printStackTrace(); } catch
-         * (ConstraintViolationException e1) { e1.printStackTrace(); } catch
-         * (CanNotDoEditException e1) { e1.printStackTrace(); } catch
-         * (NotEvaluableNetworkException e1) { e1.printStackTrace(); } catch
-         * (NonProjectablePotentialException e1) { e1.printStackTrace(); } catch
-         * (WrongCriterionException e1) { e1.printStackTrace(); } Variable
-         * decision = decisionsWithoutPolicy.get(0); int
-         * numStatesDecisionToAnalyze = decision.getNumStates();
-         * ExcelSensitivityAnalysis excelTarget =
-         * ExcelSensitivityAnalysis.getUniqueInstance();
-         * excelTarget.setInitialData
-         * (costEffectivenessDialog.getSimulationsNumber(),
-         * decisionsWithoutPolicy.get(0)); try {
-         * excelTarget.useTemplate(numStatesDecisionToAnalyze
-         * ,RESOURCE_EXCEL_TEMPLATE_2_STATES,RESOURCE_EXCEL_TEMPLATE_3_STATES);
-         * } catch (IOException e) { JOptionPane.showMessageDialog(
-         * Utilities.getOwner(this), e.getMessage(), stringResource
-         * .getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE); }
-         * try { excelTarget.writeExcelReportSensitivityAnalysis(
-         * interventionsDeterministic,interventionsProbabilistic,
-         * costEffectivenessDialog.getOutputFileName()); } catch (IOException e)
-         * { JOptionPane.showMessageDialog( Utilities.getOwner(this),
-         * e.getMessage(), stringResource .getString("ErrorWindow.Title.Label"),
-         * JOptionPane.ERROR_MESSAGE); } JOptionPane.showMessageDialog(
-         * Utilities.getOwner(this), "Report has been created",
-         * "Cost effectiveness Analysis", JOptionPane.INFORMATION_MESSAGE); } }
-         */
     }
     
 }

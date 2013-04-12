@@ -70,8 +70,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private boolean isCumulative = false;
     private JPanel numSlicesPanel;
     private JLabel numSamplesLabel;
-    private Double numSamples;
-    private JTextField numSamplesTextField;
+    private Integer numSimulations;
+    private JTextField numSimulationsTextField;
     private Map<Variable, Double> initialValues;
     private Map<String, JTextField> numericTemporalComponents = new HashMap<>();
 
@@ -170,17 +170,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             getComponentsPanel().add(getJPanelInstantOrAccumulative(), BorderLayout.SOUTH);
         }
         if (sensitivityAnalysis) {
-            JPanel sampleCountPanel = new JPanel();
-            sampleCountPanel.setBorder(new TitledBorder("Simulation"));
-            sampleCountPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            numSamplesLabel = new JLabel("Number of samples: ");
-            numSamplesTextField = new JTextField(10);
-            numSamplesTextField.addFocusListener(this);
-            numSamplesTextField.setName("numSamplesTextField");
-            numSamplesTextField.setText("1000");
-            sampleCountPanel.add(numSamplesLabel);
-            sampleCountPanel.add(numSamplesTextField);
-            panel.add(sampleCountPanel, BorderLayout.SOUTH);
+            numSimulations = 1000;
+            JPanel numSimulationsPanel = new JPanel();
+            numSimulationsPanel.setBorder(new TitledBorder("Simulation"));
+            numSimulationsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            numSamplesLabel = new JLabel("Number of simulations: ");
+            numSimulationsTextField = new JTextField(10);
+            numSimulationsTextField.addFocusListener(this);
+            numSimulationsTextField.setName("numSimulationsTextField");
+            numSimulationsTextField.setText(numSimulations + "");
+            numSimulationsPanel.add(numSamplesLabel);
+            numSimulationsPanel.add(numSimulationsTextField);
+            panel.add(numSimulationsPanel, BorderLayout.SOUTH);
         }
         pack();
         repaint();
@@ -485,12 +486,12 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             }
             getNumSlicesTextField().setText("" + this.numSlices);
         }
-        if(sourceTextField.equals(numSamplesTextField))
+        if(sourceTextField.equals(numSimulationsTextField))
         {
             try
             {
-                double newValue = Double.parseDouble(numSamplesTextField.getText());
-                this.numSamples = newValue;
+                int newValue = Integer.parseInt(numSimulationsTextField.getText());
+                this.numSimulations = newValue;
             }catch(NumberFormatException e)
             {
                 valid = false;
@@ -512,7 +513,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         }
     }
 
-    public Double getNumSamples() {
-        return numSamples;
+    public Integer getNumSimulations() {
+        return numSimulations;
     }
 }

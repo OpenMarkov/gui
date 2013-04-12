@@ -71,7 +71,6 @@ public class CostEffectivenessResultsDialog extends JDialog
         setResizable (true);
         repaint ();
         pack ();
-        setVisible (true);
     }
 
     private void initialize ()
@@ -200,6 +199,15 @@ public class CostEffectivenessResultsDialog extends JDialog
         {
             XYSeries series = new XYSeries (intervention.getName ());
             series.add (intervention.getEffectiveness (), intervention.getCost ());
+            if(intervention instanceof ProbabilisticIntervention)
+            {
+                ProbabilisticIntervention pIntervention = (ProbabilisticIntervention)intervention;  
+                for(int i=0; i < pIntervention.getNumSimulations(); ++i)
+                {
+                    series.add(pIntervention.getEffectivenesses().get(i), pIntervention.getCosts()
+                            .get(i));
+                }
+            }
             result.addSeries (series);
         }
         return result;

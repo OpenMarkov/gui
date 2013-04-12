@@ -34,21 +34,31 @@ import org.openmarkov.inference.variableElimination.VariableElimination;
  * @author myebra
  */
 public class CostEffectivenessAnalysis {
-    private double costDiscountRate;
-    private double effectivenessDiscountRate;
-    private TransitionTime transitionTime;
-    private int numSlices;
-    private ProbNet probNet;
-    private ProbNet expandedNetwork;
-    private TablePotential globalUtility;
-    private List<Intervention> interventions;
-    private List<Intervention> frontierInterventions;
-    private EvidenceCase evidence;
+    protected ProbNet probNet;
+    protected double costDiscountRate;
+    protected double effectivenessDiscountRate;
+    protected TransitionTime transitionTime;
+    protected int numSlices;
+    protected ProbNet expandedNetwork;
+    protected TablePotential globalUtility;
+    protected List<Intervention> interventions;
+    protected List<Intervention> frontierInterventions;
+    protected EvidenceCase evidence;
 
+    /**
+     * Constructor for deterministic CEA
+     * 
+     * @param probNet
+     * @param evidence
+     * @param costDiscountRate
+     * @param effectivenessDiscountRate
+     * @param numSlices
+     * @param initialValues
+     * @param transitionTime
+     */
     public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
             double costDiscountRate, double effectivenessDiscountRate, int numSlices,
-            Map<Variable, Double> initialValues, 
-            TransitionTime transitionTime) {
+            Map<Variable, Double> initialValues, TransitionTime transitionTime) {
         this.probNet = probNet;
         this.costDiscountRate = costDiscountRate;
         this.effectivenessDiscountRate = effectivenessDiscountRate;
@@ -59,214 +69,6 @@ public class CostEffectivenessAnalysis {
         this.interventions = createInterventions(globalUtility);
         this.frontierInterventions = calculateFrontierInterventions(interventions);
         this.frontierInterventions = calculateICERsOfFrontier(this.frontierInterventions);
-    }
-
-    public void probabilisticAdaptation() throws Exception {
-        // check if the network has uncertainty
-        boolean hasUncertainty = false;
-        for (ProbNode node : probNet.getProbNodes()) {
-            if (node.getPotentials().get(0).isUncertain()) {
-                hasUncertainty = true;
-                // add numIndexVariable as a parent of this node
-                // new potential will be set to the node for each state of
-                // indexSimulationVariable a projected table
-                // the evidence for this will be
-                // configurationEvidence.addFinding(new
-                // Finding(simulationIndexVariable, indexSimulation));
-                // it would be a tree for each state of the simulation variable
-                // a table with the evidence of the simulation index
-            }
-        }
-        if (!hasUncertainty) {
-            throw new RuntimeException(
-                    "To perform probabilistic cost effectiveness analysis it is necessary uncertainty within the network");
-        }
-    }
-
-    /**
-     * If there are temporal nodes within the network that requires evidence
-     * must be retrieved from CostEffectivenessDialog
-     * 
-     * @return EvidenceCase
-     */
-    private EvidenceCase getEvidenceFromNetwork(ProbNet probNet, EvidenceCase evidence,
-            Map<Variable, Double> numericTemporalValues) {
-        EvidenceCase evidenceCase = new EvidenceCase(evidence);
-
-        for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
-            Variable timeDependentVariable = timeDependentNode.getVariable();
-            Finding finding = new Finding(timeDependentVariable,
-                    numericTemporalValues.get(timeDependentVariable));
-            try {
-                evidenceCase.addFinding(finding);
-            } catch (InvalidStateException | IncompatibleEvidenceException e) {
-                e.printStackTrace();
-            }
-        }
-        return evidenceCase;
-    }
-
-    public void extendEvidence(ProbNet extendedNetwork) {
-        try {
-            evidence.extendEvidence(extendedNetwork, 1);
-        } catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private TablePotential costEffectivenessCalculator() {
-        TablePotential globalUtility = null;
-        FactoryExpandedMPAD expandedNetFactory;
-        expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
-        InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-        extendEvidence(expandedNetFactory.getExtendedNetwork());
-        expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
-                inferenceOptions, evidence);
-        expandedNetFactory.adaptProbNetForCE();
-        ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
-        if (transitionTime == TransitionTime.BEGINNING) {
-            expandedNetFactory.pruneZeroCycleUtilities();
-        } else if (transitionTime == TransitionTime.END) {
-            // Prune last cycle utilities
-            expandedNetFactory.pruneLastCycleUtilities();
-        } else {
-            // Half zero and last cycle utilities
-            expandedNetFactory.pruneZeroCycleUtilities();
-        }
-        expandedNetwork = expandedNetFactory.getExtendedNetwork();
-        VariableElimination variableElimination;
-        try {
-            variableElimination = new VariableElimination(expandedNetwork);
-            variableElimination.setPreResolutionEvidence(evidence);
-            List<Variable> conditioningVariables = new ArrayList<>();
-            conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
-            List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
-            for (ProbNode decisionNode : decisionNodes) {
-                if (!decisionNode.hasPolicy()) {
-                    conditioningVariables.add(decisionNode.getVariable());
-                }
-            }
-            variableElimination.setConditioningVariables(conditioningVariables);
-            try {
-                globalUtility = variableElimination.getGlobalUtility();
-            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-                e.printStackTrace();
-            }
-        } catch (NotEvaluableNetworkException e1) {
-            e1.printStackTrace();
-        }
-
-        // Reorder variables to make sure decision criteria is the conditioned
-        // variable
-        List<Variable> newOrderVariables = new ArrayList<>();
-        for (Variable variable : globalUtility.getVariables()) {
-            if (variable.getName().equals("Decision Criteria")) {
-                newOrderVariables.add(0, variable);
-            } else {
-                newOrderVariables.add(variable);
-            }
-        }
-
-        globalUtility = DiscretePotentialOperations.reorder(globalUtility, newOrderVariables);
-
-        return globalUtility;
-    }
-
-    private List<Intervention> createInterventions(TablePotential globalUtility) {
-        List<Intervention> interventions = new ArrayList<>();
-        int[] dimensions = TablePotential.calculateDimensions(globalUtility.getVariables());
-        List<Variable> decisions = globalUtility.getVariables();
-        int[] offsets = TablePotential.calculateOffsets(dimensions);
-        double[] values = globalUtility.values;
-        // each column of data is an intervention
-        for (int i = 0; i < values.length; i += 2) {
-            double cost = values[i];
-            double effectiveness = values[i + 1];
-            String name = "Baseline";
-            for (int j = 1; j < decisions.size(); ++j) {
-                String decisionName = decisions.get(j).getName();
-                String stateName = decisions.get(j).getStateName(
-                        (i / offsets[j]) % decisions.get(j).getNumStates());
-                name = "Dec: " + decisionName + " = " + stateName + "; ";
-            }
-            Intervention intervention = new Intervention(name, cost, effectiveness);
-            interventions.add(intervention);
-        }
-        return interventions;
-    }
-
-    /**
-     * @param allInterventions
-     * @return
-     */
-    private List<Intervention> calculateFrontierInterventions(List<Intervention> allInterventions) {
-        // 0) Create auxiliar variables
-        List<Intervention> remainingInterventions = new ArrayList<Intervention>(allInterventions);
-        List<Intervention> frontierInterventions = new ArrayList<Intervention>();
-        // 1) Get minor cost intervention
-        Intervention minorIntervention = allInterventions.get(0);
-        for (int i = 1; i < allInterventions.size(); i++) {
-            Intervention intervention = allInterventions.get(i);
-            if ((intervention.cost < minorIntervention.cost)
-                    || (intervention.cost == minorIntervention.cost && intervention.effectiveness > minorIntervention.effectiveness)) {
-                minorIntervention = intervention;
-            }
-        }
-        frontierInterventions.add(minorIntervention);
-        remainingInterventions.remove(minorIntervention);
-        while (!remainingInterventions.isEmpty()) {
-            // Remove interventions with minor effectiveness
-            List<Intervention> toRemove = new ArrayList<Intervention>();
-            for (Intervention intervention : remainingInterventions) {
-                if (intervention.effectiveness <= minorIntervention.effectiveness) {
-                    toRemove.add(intervention);
-                }
-            }
-            for (Intervention intervention : toRemove) {
-                remainingInterventions.remove(intervention);
-            }
-            // Get minor ICER from minor intervention
-            double bestICER = Double.POSITIVE_INFINITY;
-            Intervention candidateIntervention = null;
-            for (Intervention intervention : remainingInterventions) {
-                double ICER = (intervention.cost - minorIntervention.cost)
-                        / (intervention.effectiveness - minorIntervention.effectiveness);
-                if (ICER < bestICER) {
-                    candidateIntervention = intervention;
-                    bestICER = ICER;
-                }
-            }
-            if (!remainingInterventions.isEmpty()) {
-                candidateIntervention.iCER = bestICER;
-                frontierInterventions.add(candidateIntervention);
-                remainingInterventions.remove(candidateIntervention);
-                minorIntervention = candidateIntervention;
-            }
-        }
-        return frontierInterventions;
-    }
-
-    /**
-     * @param frontierInterventions
-     *            . <code>ArrayList</code> of <code>Intervention</code>
-     * @return Interventions with incremental CE ratio. <code>ArrayList</code>
-     *         of <code>Intervention</code>
-     */
-    private List<Intervention> calculateICERsOfFrontier(List<Intervention> frontierInterventions) {
-        List<Intervention> interventionsWithICERs = null;
-        if (frontierInterventions != null) {
-            int size = frontierInterventions.size();
-            interventionsWithICERs = new ArrayList<Intervention>();
-            interventionsWithICERs.add(frontierInterventions.get(0));
-            // calculates the ICER of each intervention except the first one
-            for (int i = 1; i < size; i++) {
-                Intervention previousIntervention = frontierInterventions.get(i - 1);
-                Intervention intervention = frontierInterventions.get(i);
-                intervention.calculateICER(previousIntervention);
-                interventionsWithICERs.add(intervention);
-            }
-        }
-        return interventionsWithICERs;
     }
 
     public HashMap<Variable, TablePotential> traceTemporalEvolution(Variable variableOfInterest)
@@ -358,17 +160,206 @@ public class CostEffectivenessAnalysis {
     public List<Intervention> getFrontierInterventions() {
         return frontierInterventions;
     }
-    
+
     /**
-     * @param simulationIndexVariable. <code>Variable</code>
-     * @throws NotEnoughMemoryException
+     * If there are temporal nodes within the network that requires evidence
+     * must be retrieved from CostEffectivenessDialog
+     * 
+     * @return EvidenceCase
      */
-    private void sampleProbNet (Variable simulationIndexVariable)
+    private EvidenceCase getEvidenceFromNetwork(ProbNet probNet, EvidenceCase evidence,
+            Map<Variable, Double> initialValues) {
+        EvidenceCase evidenceCase = new EvidenceCase(evidence);
+
+        for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
+            Variable timeDependentVariable = timeDependentNode.getVariable();
+            Finding finding = new Finding(timeDependentVariable,
+                    initialValues.get(timeDependentVariable));
+            try {
+                evidenceCase.addFinding(finding);
+            } catch (InvalidStateException | IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            }
+        }
+        return evidenceCase;
+    }
+
+    private TablePotential costEffectivenessCalculator() {
+        expandedNetwork = buildExpandedNetwork(probNet, numSlices, costDiscountRate,
+                effectivenessDiscountRate, evidence);
+        return runAnalysis(expandedNetwork, evidence);
+    }
+
+    protected ProbNet buildExpandedNetwork(ProbNet probNet, int numSlices, double costDiscountRate,
+            double effectivenessDiscountRate, EvidenceCase evidence) {
+        FactoryExpandedMPAD expandedNetFactory;
+        expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
+        InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
+        extendEvidence(expandedNetFactory.getExtendedNetwork());
+        expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
+                inferenceOptions, evidence);
+        expandedNetFactory.adaptProbNetForCE();
+        if (transitionTime == TransitionTime.BEGINNING) {
+            expandedNetFactory.pruneZeroCycleUtilities();
+        } else if (transitionTime == TransitionTime.END) {
+            // Prune last cycle utilities
+            expandedNetFactory.pruneLastCycleUtilities();
+        } else {
+            // TODO Half zero and last cycle utilities
+            expandedNetFactory.pruneZeroCycleUtilities();
+        }
+        return expandedNetFactory.getExtendedNetwork();
+    }
+
+    protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
+        TablePotential globalUtility = null;
+        VariableElimination variableElimination;
+        try {
+            variableElimination = new VariableElimination(expandedNetwork);
+            variableElimination.setPreResolutionEvidence(evidence);
+            List<Variable> conditioningVariables = new ArrayList<>();
+            conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
+            List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+            for (ProbNode decisionNode : decisionNodes) {
+                if (!decisionNode.hasPolicy()) {
+                    conditioningVariables.add(decisionNode.getVariable());
+                }
+            }
+            variableElimination.setConditioningVariables(conditioningVariables);
+            try {
+                globalUtility = variableElimination.getGlobalUtility();
+            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+                e.printStackTrace();
+            }
+        } catch (NotEvaluableNetworkException e1) {
+            e1.printStackTrace();
+        }
+        return globalUtility;
+    }
+
+    private List<Intervention> createInterventions(TablePotential globalUtility) {
+        // Reorder variables to force decision criteria to be the conditioned
+        // variable
+        globalUtility = reorderVariables(globalUtility);
+        List<Intervention> interventions = new ArrayList<>();
+        int[] dimensions = TablePotential.calculateDimensions(globalUtility.getVariables());
+        List<Variable> decisions = globalUtility.getVariables();
+        int[] offsets = TablePotential.calculateOffsets(dimensions);
+        double[] values = globalUtility.values;
+        // each column of data is an intervention
+        for (int i = 0; i < values.length; i += 2) {
+            double cost = values[i];
+            double effectiveness = values[i + 1];
+            String name = "Baseline";
+            for (int j = 1; j < decisions.size(); ++j) {
+                String decisionName = decisions.get(j).getName();
+                String stateName = decisions.get(j).getStateName(
+                        (i / offsets[j]) % decisions.get(j).getNumStates());
+                name = "Dec: " + decisionName + " = " + stateName + "; ";
+            }
+            Intervention intervention = new Intervention(name, cost, effectiveness);
+            interventions.add(intervention);
+        }
+        return interventions;
+    }
+
+    /**
+     * Reorder variables to make sure decision criteria is the conditioned variable
+     * @param analysisResult
+     * @return
+     */
+    protected TablePotential reorderVariables(TablePotential analysisResult)
     {
-        for (ProbNode probNode : probNet.getProbNodes ())
-        {
-            probNode.samplePotentials (simulationIndexVariable);
+        List<Variable> newOrderVariables = new ArrayList<>();
+        for (Variable variable : analysisResult.getVariables()) {
+            if (variable.getName().equals("Decision Criteria")) {
+                newOrderVariables.add(0, variable);
+            } else {
+                newOrderVariables.add(variable);
+            }
+        }
+        return DiscretePotentialOperations.reorder(analysisResult, newOrderVariables);        
+    }
+
+    /**
+     * @param allInterventions
+     * @return
+     */
+    private List<Intervention> calculateFrontierInterventions(List<Intervention> allInterventions) {
+        // 0) Create auxiliar variables
+        List<Intervention> remainingInterventions = new ArrayList<Intervention>(allInterventions);
+        List<Intervention> frontierInterventions = new ArrayList<Intervention>();
+        // 1) Get minor cost intervention
+        Intervention minorIntervention = allInterventions.get(0);
+        for (int i = 1; i < allInterventions.size(); i++) {
+            Intervention intervention = allInterventions.get(i);
+            if ((intervention.cost < minorIntervention.cost)
+                    || (intervention.cost == minorIntervention.cost && intervention.effectiveness > minorIntervention.effectiveness)) {
+                minorIntervention = intervention;
+            }
+        }
+        frontierInterventions.add(minorIntervention);
+        remainingInterventions.remove(minorIntervention);
+        while (!remainingInterventions.isEmpty()) {
+            // Remove interventions with minor effectiveness
+            List<Intervention> toRemove = new ArrayList<Intervention>();
+            for (Intervention intervention : remainingInterventions) {
+                if (intervention.effectiveness <= minorIntervention.effectiveness) {
+                    toRemove.add(intervention);
+                }
+            }
+            for (Intervention intervention : toRemove) {
+                remainingInterventions.remove(intervention);
+            }
+            // Get minor ICER from minor intervention
+            double bestICER = Double.POSITIVE_INFINITY;
+            Intervention candidateIntervention = null;
+            for (Intervention intervention : remainingInterventions) {
+                double ICER = (intervention.cost - minorIntervention.cost)
+                        / (intervention.effectiveness - minorIntervention.effectiveness);
+                if (ICER < bestICER) {
+                    candidateIntervention = intervention;
+                    bestICER = ICER;
+                }
+            }
+            if (!remainingInterventions.isEmpty()) {
+                candidateIntervention.iCER = bestICER;
+                frontierInterventions.add(candidateIntervention);
+                remainingInterventions.remove(candidateIntervention);
+                minorIntervention = candidateIntervention;
+            }
+        }
+        return frontierInterventions;
+    }
+
+    /**
+     * @param frontierInterventions
+     *            . <code>ArrayList</code> of <code>Intervention</code>
+     * @return Interventions with incremental CE ratio. <code>ArrayList</code>
+     *         of <code>Intervention</code>
+     */
+    private List<Intervention> calculateICERsOfFrontier(List<Intervention> frontierInterventions) {
+        List<Intervention> interventionsWithICERs = null;
+        if (frontierInterventions != null) {
+            int size = frontierInterventions.size();
+            interventionsWithICERs = new ArrayList<Intervention>();
+            interventionsWithICERs.add(frontierInterventions.get(0));
+            // calculates the ICER of each intervention except the first one
+            for (int i = 1; i < size; i++) {
+                Intervention previousIntervention = frontierInterventions.get(i - 1);
+                Intervention intervention = frontierInterventions.get(i);
+                intervention.calculateICER(previousIntervention);
+                interventionsWithICERs.add(intervention);
+            }
+        }
+        return interventionsWithICERs;
+    }
+
+    private void extendEvidence(ProbNet extendedNetwork) {
+        try {
+            evidence.extendEvidence(extendedNetwork, 1);
+        } catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
+            e.printStackTrace();
         }
     }
-    
 }
