@@ -258,9 +258,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
                                               TablePotential potential)
         throws WrongCriterionException
     {
-        UncertainValue[] uncertainTable = potential.getUncertainTable ();
+        UncertainValue[] uncertainTable = potential.getUncertaintyTable ();
         TablePotential auxProjected = potential.tableProject (configuration, null).get (0);
-        UncertainValue[] auxUncertainTable = auxProjected.getUncertainTable ();
+        UncertainValue[] auxUncertainTable = auxProjected.getUncertaintyTable ();
         // GEt the table of uncertain values
         if (!hasUncertainValues (auxUncertainTable))
         {
@@ -270,7 +270,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         else
         {
             // Case edit
-            uncertainTable = auxProjected.getUncertainTable ();
+            uncertainTable = auxProjected.getUncertaintyTable ();
         }
         // Fill the table for the dialog
         int numColumnsTable = 4;

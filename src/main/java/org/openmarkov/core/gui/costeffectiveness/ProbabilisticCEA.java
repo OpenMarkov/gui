@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 public class ProbabilisticCEA extends CostEffectivenessAnalysis {
 
@@ -28,7 +29,26 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
                 initialValues, transitionTime);
         this.numSimulations = numSimulations;
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, this.evidence, numSimulations);
+        this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
+        this.frontierInterventions = calculateFrontierInterventions(interventions);
+    }
+
+    private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
+        TablePotential globalUtility = new TablePotential(this.globalUtility.getVariables(), PotentialRole.UTILITY);
+        double[] values = globalUtility.values;
+        for(TablePotential simulationResult : ceaResults)
+        {
+            for(int i=0; i < values.length; ++i)
+            {
+                values[i] += simulationResult.values[i];
+            }
+        }
+        for(int i=0; i < values.length; ++i)
+        {
+            values[i] /= ceaResults.size();
+        }
+        return globalUtility;
     }
 
     private List<Intervention> buildProbabilisticInterventions(List<TablePotential> results) {
@@ -47,7 +67,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
                 String decisionName = decisions.get(j).getName();
                 String stateName = decisions.get(j).getStateName(
                         (i / offsets[j]) % decisions.get(j).getNumStates());
-                name = "Dec: " + decisionName + " = " + stateName + "; ";
+                name = decisionName + " = " + stateName + "; ";
             }
             interventionNames.add(name);
             costs.add(new ArrayList<Double>(results.size()));

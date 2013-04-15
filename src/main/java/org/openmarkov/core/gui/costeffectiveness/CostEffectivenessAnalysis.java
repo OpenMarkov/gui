@@ -16,8 +16,8 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.FactoryExpandedMPAD;
-import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.inference.MPADFactory;
+import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -82,10 +82,9 @@ public class CostEffectivenessAnalysis {
             }
         }
         HashMap<Variable, TablePotential> probsAndUtilities = null;
-        FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
+        MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
         extendEvidence(expandedNetFactory.getExtendedNetwork());
-        expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
-                new InferenceOptions(probNet, null), evidence);
+        expandedNetFactory.adaptMPADforCE(numSlices, costDiscountRate, effectivenessDiscountRate, evidence, transitionTime);
         this.expandedNetwork = expandedNetFactory.getExtendedNetwork();
         String baseName = variableOfInterest.getBaseName();
         List<Variable> variablesOfInterest = new ArrayList<>();
@@ -186,28 +185,14 @@ public class CostEffectivenessAnalysis {
 
     private TablePotential costEffectivenessCalculator() {
         expandedNetwork = buildExpandedNetwork(probNet, numSlices, costDiscountRate,
-                effectivenessDiscountRate, evidence);
+                effectivenessDiscountRate, evidence, transitionTime);
         return runAnalysis(expandedNetwork, evidence);
     }
 
     protected ProbNet buildExpandedNetwork(ProbNet probNet, int numSlices, double costDiscountRate,
-            double effectivenessDiscountRate, EvidenceCase evidence) {
-        FactoryExpandedMPAD expandedNetFactory;
-        expandedNetFactory = new FactoryExpandedMPAD(probNet, numSlices);
-        InferenceOptions inferenceOptions = new InferenceOptions(probNet, null);
-        extendEvidence(expandedNetFactory.getExtendedNetwork());
-        expandedNetFactory.applyDiscountToUtilityNodes(costDiscountRate, effectivenessDiscountRate,
-                inferenceOptions, evidence);
-        expandedNetFactory.adaptProbNetForCE();
-        if (transitionTime == TransitionTime.BEGINNING) {
-            expandedNetFactory.pruneZeroCycleUtilities();
-        } else if (transitionTime == TransitionTime.END) {
-            // Prune last cycle utilities
-            expandedNetFactory.pruneLastCycleUtilities();
-        } else {
-            // TODO Half zero and last cycle utilities
-            expandedNetFactory.pruneZeroCycleUtilities();
-        }
+            double effectivenessDiscountRate, EvidenceCase evidence, TransitionTime transitionTime) {
+        MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
+        expandedNetFactory.adaptMPADforCE(numSlices, costDiscountRate, effectivenessDiscountRate, evidence, transitionTime);
         return expandedNetFactory.getExtendedNetwork();
     }
 
@@ -264,12 +249,13 @@ public class CostEffectivenessAnalysis {
     }
 
     /**
-     * Reorder variables to make sure decision criteria is the conditioned variable
+     * Reorder variables to make sure decision criteria is the conditioned
+     * variable
+     * 
      * @param analysisResult
      * @return
      */
-    protected TablePotential reorderVariables(TablePotential analysisResult)
-    {
+    protected TablePotential reorderVariables(TablePotential analysisResult) {
         List<Variable> newOrderVariables = new ArrayList<>();
         for (Variable variable : analysisResult.getVariables()) {
             if (variable.getName().equals("Decision Criteria")) {
@@ -278,14 +264,14 @@ public class CostEffectivenessAnalysis {
                 newOrderVariables.add(variable);
             }
         }
-        return DiscretePotentialOperations.reorder(analysisResult, newOrderVariables);        
+        return DiscretePotentialOperations.reorder(analysisResult, newOrderVariables);
     }
 
     /**
      * @param allInterventions
      * @return
      */
-    private List<Intervention> calculateFrontierInterventions(List<Intervention> allInterventions) {
+    protected List<Intervention> calculateFrontierInterventions(List<Intervention> allInterventions) {
         // 0) Create auxiliar variables
         List<Intervention> remainingInterventions = new ArrayList<Intervention>(allInterventions);
         List<Intervention> frontierInterventions = new ArrayList<Intervention>();

@@ -30,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
@@ -52,8 +53,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JTextField effectivenessDiscountTextField;
     private Double costDiscount;
     private Double effectivenessDiscount;
-    private JTextField txtSimulationNumber;
-    private JLabel lblSimulationsNumber;
     private Integer simulationsNumber;
     private JLabel numSlicesLabel;
     private JTextField numSlicesTextField;
@@ -69,7 +68,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JPanel instantOrCumulativePanel;
     private boolean isCumulative = false;
     private JPanel numSlicesPanel;
-    private JLabel numSamplesLabel;
+    private JLabel numSimulationsLabel;
     private Integer numSimulations;
     private JTextField numSimulationsTextField;
     private Map<Variable, Double> initialValues;
@@ -174,12 +173,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             JPanel numSimulationsPanel = new JPanel();
             numSimulationsPanel.setBorder(new TitledBorder("Simulation"));
             numSimulationsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            numSamplesLabel = new JLabel("Number of simulations: ");
             numSimulationsTextField = new JTextField(10);
             numSimulationsTextField.addFocusListener(this);
             numSimulationsTextField.setName("numSimulationsTextField");
             numSimulationsTextField.setText(numSimulations + "");
-            numSimulationsPanel.add(numSamplesLabel);
+            numSimulationsPanel.add(getSimulationsNumberLabel());
             numSimulationsPanel.add(numSimulationsTextField);
             panel.add(numSimulationsPanel, BorderLayout.SOUTH);
         }
@@ -218,23 +216,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         return numSlicesTextField;
     }
 
-
-    private JTextField getTxtSimulationsNumber() {
-        if (txtSimulationNumber == null) {
-            txtSimulationNumber = new JTextField("20");
-            txtSimulationNumber.setColumns(10);
-            txtSimulationNumber.setVisible(false);
+    private JLabel getSimulationsNumberLabel() {
+        if (numSimulationsLabel == null) {
+            numSimulationsLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfSimulations"));
         }
-        return txtSimulationNumber;
-    }
-
-    private JLabel getLblSimulationsNumber() {
-        if (lblSimulationsNumber == null) {
-            lblSimulationsNumber = new JLabel(
-                    stringDatabase.getString("CostEffectiveness.NumberOfSimulations"));
-            lblSimulationsNumber.setVisible(false);
-        }
-        return lblSimulationsNumber;
+        return numSimulationsLabel;
     }
 
     private JLabel getCostDiscountLabel() {
@@ -373,7 +359,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             numSlices = Integer.valueOf(getNumSlicesTextField().getText());
             costDiscount = Double.valueOf(getCostDiscountTextField().getText());
             effectivenessDiscount = Double.valueOf(getEffectivenessDiscountTextField().getText());
-            simulationsNumber = Integer.valueOf(getTxtSimulationsNumber().getText());
+            if(numSimulationsTextField != null)
+            {
+                simulationsNumber = Integer.valueOf(numSimulationsTextField.getText());
+            }
         }
         return allValid;
     }
@@ -399,11 +388,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             transitionTime = TransitionTime.END;
         }
         return transitionTime;
-    }
-
-    public void showSimulationsNumberElements(boolean isProbabilistic) {
-        getLblSimulationsNumber().setVisible(isProbabilistic);
-        getTxtSimulationsNumber().setVisible(isProbabilistic);
     }
 
     public int getSimulationsNumber() {

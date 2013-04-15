@@ -59,7 +59,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-import org.openmarkov.core.inference.FactoryExpandedMPAD;
+import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -1015,7 +1015,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
         {
             int numSlices = costEffectivenessDialog.getNumSlices ();
-            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices);
+            MPADFactory expandedNetFactory = new MPADFactory (probNet, numSlices);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
             String fileName = probNet.getName () + "_expanded";
             expandedNetwork.setName (fileName);
@@ -1072,27 +1072,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
                     maxX = probNode.getNode ().getCoordinateX ();
                 }
             }
-            FactoryExpandedMPAD expandedNetFactory = new FactoryExpandedMPAD (probNet, numSlices);
-            InferenceOptions inferenceOptions = new InferenceOptions (probNet, null);
-            // extend evidence
-            if (!evidence.getFindings ().isEmpty ())
-            {
-                try
-                {
-                    evidence.extendEvidence (expandedNetFactory.getExtendedNetwork (), 1);
-                }
-                catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e)
-                {
-                    e.printStackTrace ();
-                }
-            }
-            expandedNetFactory.applyDiscountToUtilityNodes (costDiscountRate,
-                                                            effectivenessDiscountRate,
-                                                            inferenceOptions, evidence);
-            expandedNetFactory.adaptProbNetForCE ();
+            MPADFactory expandedNetFactory = new MPADFactory (probNet, numSlices);
+            expandedNetFactory.adaptMPADforCE(numSlices, costDiscountRate,
+                    effectivenessDiscountRate, evidence,
+                    costEffectivenessDialog.getTransitionTime());
             // project all the evidence
             // expandedNetFactory.projectEvidence(evidence);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork ();
+            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
+                probNode.samplePotentials();
+            }
             String fileName = probNet.getName () + "_expandedCE";
             expandedNetwork.setName (fileName);
             NetworkPanel networkPanel = createNewFrame (expandedNetwork);
