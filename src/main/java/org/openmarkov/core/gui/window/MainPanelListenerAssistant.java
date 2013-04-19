@@ -1531,6 +1531,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         {
             if(sensitivityAnalysis)
             {
+                long start = System.currentTimeMillis ();
                 ProbabilisticCEA probabilisticCEA = new ProbabilisticCEA (
                         probNet,
                         evidence,
@@ -1540,6 +1541,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
                         costEffectivenessDialog.getNumSimulations(),
                         costEffectivenessDialog.getInitialValues (),
                         costEffectivenessDialog.getTransitionTime ());            
+
+                long elapsedTimeMillis = System.currentTimeMillis () - start;
+                JOptionPane.showMessageDialog (null, "PSA took " + (elapsedTimeMillis/1000) + " seconds.");
                  
                 JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(
                         Utilities.getOwner(mainPanel), probabilisticCEA);

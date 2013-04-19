@@ -44,7 +44,7 @@ import org.openmarkov.core.model.network.modelUncertainty.DirichletFamily;
 import org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.modelUncertainty.TypeProbDensityFunction;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensityFunctionType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -288,7 +288,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         namesColumnsDistributionsTable[3] = "Name";
         // String[] stringsDistributions =
         // TypeProbDensityFunction.getStringsValues();
-        allowedStringsDistributions = TypeProbDensityFunction.getAllowedStringsValues (isChanceVariable);
+        allowedStringsDistributions = ProbDensityFunctionType.getAllowedStringsValues (isChanceVariable);
         State[] states = variable.getStates ();
         int numStates = states.length;
         Object[][] initialData = new Object[numStates][numColumnsTable];
@@ -446,15 +446,15 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         indexOther = new ArrayList<Integer> ();
         refValues = new double[uncertainColumn.size ()];
         ComplementFamily comp = (ComplementFamily) extractFamilyDistribution (uncertainColumn,
-                                                                              TypeProbDensityFunction.COMPLEMENT);
+                                                                              ProbDensityFunctionType.COMPLEMENT);
         DirichletFamily dir = (DirichletFamily) extractFamilyDistribution (uncertainColumn,
-                                                                           TypeProbDensityFunction.DIRICHLET);
+                                                                           ProbDensityFunctionType.DIRICHLET);
         int sizeUncertain = uncertainColumn.size ();
         otherUncertain = new ArrayList<UncertainValue> ();
         for (int i = 0; i < sizeUncertain; i++)
         {
             UncertainValue aux = uncertainColumn.get (i);
-            TypeProbDensityFunction type = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType type = aux.getProbDensityFunction ().getType ();
             switch (type)
             {
                 case COMPLEMENT :
@@ -510,7 +510,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
     }
 
     private FamilyDistribution extractFamilyDistribution (List<UncertainValue> uncertainColumn,
-                                                          TypeProbDensityFunction type)
+                                                          ProbDensityFunctionType type)
     {
         List<UncertainValue> siblings = getUncertainValuesOfType (uncertainColumn, type);
         return FamilyDistribution.constructNewFamilyDistributions (siblings, type);
@@ -539,7 +539,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
             }
             else
             {
-                if (!auxUncertain.doParametersVerifyDomainConstraint (isChanceVariable))
+                if (!auxUncertain.verifyParametersDomain (isChanceVariable))
                 {
                     try
                     {
@@ -577,13 +577,13 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         boolean verify;
         int sizeExact;
         List<UncertainValue> exactRangeOrUncertain;
-        List<TypeProbDensityFunction> rangeOrTriangTypes;
-        rangeOrTriangTypes = new ArrayList<TypeProbDensityFunction> ();
-        rangeOrTriangTypes.add (TypeProbDensityFunction.RANGE);
-        rangeOrTriangTypes.add (TypeProbDensityFunction.TRIANGULAR);
+        List<ProbDensityFunctionType> rangeOrTriangTypes;
+        rangeOrTriangTypes = new ArrayList<ProbDensityFunctionType> ();
+        rangeOrTriangTypes.add (ProbDensityFunctionType.RANGE);
+        rangeOrTriangTypes.add (ProbDensityFunctionType.TRIANGULAR);
         List<UncertainValue> uncertainFamily = family.getFamily ();
         List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                        TypeProbDensityFunction.EXACT);
+                                                                        ProbDensityFunctionType.EXACT);
         totalSizeFamily = uncertainFamily.size ();
         List<UncertainValue> rangeOrTriangUncertain = getUncertainValuesOfTypes (uncertainFamily,
                                                                                  rangeOrTriangTypes);
@@ -592,7 +592,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         if ((sizeRangeOrTriang > 0) && thereAreExactValuesGreaterThanZero (exactUncertain))
         {
             int numComplement = getUncertainValuesOfType (uncertainFamily,
-                                                          TypeProbDensityFunction.COMPLEMENT).size ();
+                                                          ProbDensityFunctionType.COMPLEMENT).size ();
             exactRangeOrUncertain = new ArrayList<UncertainValue> (rangeOrTriangUncertain);
             exactRangeOrUncertain.addAll (exactUncertain);
             verify = ((numComplement > 0) && (sizeExact + sizeRangeOrTriang + numComplement == totalSizeFamily))
@@ -617,12 +617,12 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
     }
 
     private static List<UncertainValue> getUncertainValuesOfTypes (List<UncertainValue> arrayUncertain,
-                                                                   List<TypeProbDensityFunction> types)
+                                                                   List<ProbDensityFunctionType> types)
     {
         List<UncertainValue> selected = new ArrayList<UncertainValue> ();
         for (UncertainValue aux : arrayUncertain)
         {
-            TypeProbDensityFunction auxType = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
             boolean isInTypes = false;
             for (int i = 0; (i < types.size ()) && !isInTypes; i++)
             {
@@ -643,7 +643,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         {
             UncertainValue aux = arrayUncertain.get (i);
             ProbDensFunction probDensityFunction = aux.getProbDensityFunction ();
-            thereAre = (probDensityFunction.getType () == TypeProbDensityFunction.EXACT)
+            thereAre = (probDensityFunction.getType () == ProbDensityFunctionType.EXACT)
                        && probDensityFunction.getMean () > 0;
         }
         return thereAre;
@@ -655,13 +655,13 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
      * @return
      */
     private static int[] getIndexesUncertainValuesOfTypes (List<UncertainValue> uncertainValues,
-                                                           List<TypeProbDensityFunction> types)
+                                                           List<ProbDensityFunctionType> types)
     {
         List<Integer> indexes = new ArrayList<Integer> ();
         for (int i = 0; i < uncertainValues.size (); i++)
         {
             UncertainValue aux = uncertainValues.get (i);
-            TypeProbDensityFunction auxType = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
             boolean isInTypes = false;
             for (int j = 0; (j < types.size ()) && !isInTypes; j++)
             {
@@ -682,13 +682,13 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
     }
 
     public static int[] getIndexesUncertainValuesNotInTypes (List<UncertainValue> arrayUncertain,
-                                                             List<TypeProbDensityFunction> types)
+                                                             List<ProbDensityFunctionType> types)
     {
         List<Integer> indexes = new ArrayList<Integer> ();
         for (int i = 0; i < arrayUncertain.size (); i++)
         {
             UncertainValue aux = arrayUncertain.get (i);
-            TypeProbDensityFunction auxType = aux.getProbDensityFunction ().getType ();
+            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
             boolean notInTypes = true;
             for (int j = 0; (j < types.size ()) && notInTypes; j++)
             {
@@ -709,18 +709,18 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
     }
 
     public static int[] getIndexesUncertainValuesOfType (List<UncertainValue> uncertainValues,
-                                                         TypeProbDensityFunction type)
+                                                         ProbDensityFunctionType type)
     {
-        List<TypeProbDensityFunction> aux = new ArrayList<TypeProbDensityFunction> ();
+        List<ProbDensityFunctionType> aux = new ArrayList<ProbDensityFunctionType> ();
         aux.add (type);
         return getIndexesUncertainValuesOfTypes (uncertainValues, aux);
     }
 
     private static List<UncertainValue> getUncertainValuesOfType (List<UncertainValue> arrayUncertain,
-                                                                  TypeProbDensityFunction type)
+                                                                  ProbDensityFunctionType type)
     {
-        ArrayList<TypeProbDensityFunction> types;
-        types = new ArrayList<TypeProbDensityFunction> ();
+        ArrayList<ProbDensityFunctionType> types;
+        types = new ArrayList<ProbDensityFunctionType> ();
         types.add (type);
         return getUncertainValuesOfTypes (arrayUncertain, types);
     }
@@ -731,7 +731,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         List<UncertainValue> uncertainFamily = family.getFamily ();
         int totalSizeFamily = uncertainFamily.size ();
         List<UncertainValue> compUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                       TypeProbDensityFunction.COMPLEMENT);
+                                                                       ProbDensityFunctionType.COMPLEMENT);
         verify = (totalSizeFamily != compUncertain.size ());
         if (!verify)
         {
@@ -754,14 +754,14 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         List<UncertainValue> uncertainFamily = family.getFamily ();
         totalSizeFamily = uncertainFamily.size ();
         List<UncertainValue> dirUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                      TypeProbDensityFunction.DIRICHLET);
+                                                                      ProbDensityFunctionType.DIRICHLET);
         int numDirichlet = dirUncertain.size ();
         if (numDirichlet > 0)
         {
             if (numDirichlet > 1)
             {
                 List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                                TypeProbDensityFunction.EXACT);
+                                                                                ProbDensityFunctionType.EXACT);
                 int numExact = exactUncertain.size ();
                 verify = ((numExact + numDirichlet == totalSizeFamily) && areAllZero (new FamilyDistribution (
                                                                                                               exactUncertain).getMean ()));
@@ -801,16 +801,16 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         List<UncertainValue> uncertainFamily = family.getFamily ();
         totalSizeFamily = uncertainFamily.size ();
         List<UncertainValue> betaUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                       TypeProbDensityFunction.BETA);
+                                                                       ProbDensityFunctionType.BETA);
         int numBeta = betaUncertain.size ();
         if (numBeta > 0)
         {
             if (numBeta == 1)
             {
                 List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                                TypeProbDensityFunction.EXACT);
+                                                                                ProbDensityFunctionType.EXACT);
                 List<UncertainValue> compUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                               TypeProbDensityFunction.COMPLEMENT);
+                                                                               ProbDensityFunctionType.COMPLEMENT);
                 int numExact = exactUncertain.size ();
                 int numComp = compUncertain.size ();
                 verify = ((numExact + numComp + 1 == totalSizeFamily)
@@ -864,7 +864,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         {
             Vector<?> row = (Vector<?>) data.get (i);
             String strType = (String) row.get (1);
-            TypeProbDensityFunction auxType = TypeProbDensityFunction.valueEnumOf (strType);
+            ProbDensityFunctionType auxType = ProbDensityFunctionType.valueEnumOf (strType);
             UncertainValue aux = new UncertainValue (auxType, (String) (row.get (2)),
                                                      (String) (row.get (3)));
             dataUncertain.add (aux);
