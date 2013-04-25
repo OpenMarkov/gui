@@ -235,14 +235,18 @@ public class CostEffectivenessAnalysis {
         for (int i = 0; i < values.length; i += 2) {
             double cost = values[i];
             double effectiveness = values[i + 1];
-            String name = "Baseline";
+            StringBuffer description = new StringBuffer();
             for (int j = 1; j < decisions.size(); ++j) {
                 String decisionName = decisions.get(j).getName();
                 String stateName = decisions.get(j).getStateName(
                         (i / offsets[j]) % decisions.get(j).getNumStates());
-                name = "Dec: " + decisionName + " = " + stateName + "; ";
+                description.append(decisionName + " = " + stateName + "; ");
             }
-            Intervention intervention = new Intervention(name, cost, effectiveness);
+            if(description.length()==0)
+            {
+                description.append("Baseline");
+            }
+            Intervention intervention = new Intervention(description.toString(), cost, effectiveness);
             interventions.add(intervention);
         }
         return interventions;

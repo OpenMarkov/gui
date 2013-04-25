@@ -62,14 +62,14 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         List<Variable> decisions = exampleResult.getVariables();
         int[] offsets = exampleResult.getOffsets();
         for (int i = 0; i < exampleResult.values.length; i += 2) {
-            String name = "Baseline";
+            StringBuffer description = new StringBuffer();
             for (int j = 1; j < decisions.size(); ++j) {
                 String decisionName = decisions.get(j).getName();
                 String stateName = decisions.get(j).getStateName(
                         (i / offsets[j]) % decisions.get(j).getNumStates());
-                name = decisionName + " = " + stateName + "; ";
+                description.append(decisionName + " = " + stateName + "; ");
             }
-            interventionNames.add(name);
+            interventionNames.add((description.length()>0)?description.toString():"Baseline");
             costs.add(new ArrayList<Double>(results.size()));
             effectivenesses.add(new ArrayList<Double>(results.size()));
         }
