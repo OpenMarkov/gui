@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.gui.costeffectiveness;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -39,8 +40,22 @@ public class CEResultsCellRenderer extends DefaultTableCellRenderer
     {
         if (value instanceof Double)
         {
-            value = formatter.format ((Double) value);
+            if((Double)value <= 100.0 )
+            {
+                value = formatter.format ((Double) value);
+            }else 
+            {
+                value = Math.round((Double)value);                
+            }
         }
+        if(column == 0)
+        {
+            setBackground (new Color (220, 220, 220));
+        }else
+        {
+            setBackground (Color.WHITE);
+        }
+        setForeground (Color.BLACK);        
         return super.getTableCellRendererComponent (table, value, isSelected, hasFocus, row,
                                                     column);
     }

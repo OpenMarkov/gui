@@ -246,7 +246,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             {
                 series = new XYSeries (variableOfInterest.getStateName (i));
             }
-            for (int j = 0; j < costEffectivenessAnalysis.getNumSlices (); j++)
+            for (int j = 0; j <= costEffectivenessAnalysis.getNumSlices (); j++)
             {
                 String basename = variableOfInterest.getBaseName ();
                 List<ProbNode> probNodes = expandedNetwork.getProbNodes ();

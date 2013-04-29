@@ -6,6 +6,7 @@
 package org.openmarkov.core.gui.costeffectiveness;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MPADFactory;
@@ -24,6 +26,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.inference.variableElimination.VariableElimination;
@@ -94,8 +97,23 @@ public class CostEffectivenessAnalysis {
                 variablesOfInterest.add(node.getVariable());
             }
         }
+        // Impose policy according to interest variable's decision criterion
+        String decisionCriterion = variableOfInterest.getDecisionCriteria().getString();
+        Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriteriaVariable();
+        ProbNode decisionCriteriaNode =  expandedNetwork.getProbNode(expandedNetwork.getDecisionCriteriaVariable());
+        TablePotential decisionCriterionPolicy = new TablePotential(Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
+        for(int i=0; i < decisionCriterionPolicy.values.length; ++i) 
+        {
+            try {
+                decisionCriterionPolicy.values[i] = (decisionCriteriaVariable.getStateIndex(decisionCriterion) == i)? 1 : 0;
+            } catch (InvalidStateException e) {
+                e.printStackTrace();
+            }
+        }
+        decisionCriteriaNode.setPotential(decisionCriterionPolicy);        
         try {
             VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+          
             variableElimination.setPreResolutionEvidence(evidence);
             try {
                 probsAndUtilities = variableElimination.getProbsAndUtilities(variablesOfInterest);

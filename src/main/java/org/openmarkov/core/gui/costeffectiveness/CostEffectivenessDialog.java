@@ -127,9 +127,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         slicesPanel.setBorder(new TitledBorder("Time horizon"));
         slicesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
         otherPanel.add(slicesPanel, BorderLayout.NORTH);
-        if (!isTemporalEvolution) {
-            otherPanel.add(getTransitionsPanel(), BorderLayout.CENTER);
-        }
+        otherPanel.add(getTransitionsPanel(), BorderLayout.CENTER);
         JPanel discountTitlePanel = new JPanel();
         discountTitlePanel.setBorder(new TitledBorder("Discounts"));
         JPanel discountsPanel = new JPanel();
