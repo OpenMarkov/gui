@@ -13,7 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -45,9 +49,10 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 public class CostEffectivenessResultsDialog extends JDialog
 {
     private CostEffectivenessAnalysis    costEffectivenessAnalysis;
-    private CostEffectivenessSummaryPane summaryPane;
-    private ChartPanel                   chartPanel;
-    private JScrollPane                  frontierInterventionsTablePanel;
+    private CostEffectivenessAnalysisPane analysisPane;
+    private ChartPanel                   cePlanePanel;
+    private ChartPanel                   ceacPanel;
+    private JScrollPane                  frontierInterventionsPanel;
     private JTabbedPane                  tabbedPane;
     private StringDatabase               stringDatabase = StringDatabase.getUniqueInstance ();
 
@@ -75,7 +80,7 @@ public class CostEffectivenessResultsDialog extends JDialog
 
     private void initialize ()
     {
-        setTitle (stringDatabase.getString ("CostEffectivenessResultDialog.Title.Label"));
+        setTitle (stringDatabase.getString ("CostEffectivenessResults.Title.Label"));
         setContentPane (getJContentPane ());
         pack ();
     }
@@ -142,57 +147,56 @@ public class CostEffectivenessResultsDialog extends JDialog
         {
             tabbedPane = new JTabbedPane ();
             tabbedPane.setName ("CostEffectivenessResultTabbedPane");
-            tabbedPane.addTab (stringDatabase.getString ("AllInterventionsChart.Title.Label"),
-                               null, getChartsPanel (), null);
-            tabbedPane.addTab (stringDatabase.getString ("AllInterventionsTable.Title.Label"),
-                               null, getSummaryPane (), null);
-            tabbedPane.addTab (stringDatabase.getString ("FrontierInterventions.Title.Label"),
+            tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.Plane.Tab"),
+                               null, getCEPlanePanel (), null);
+            tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.Analysis.Tab"),
+                               null, getAnalysisPane (), null);
+            tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.FrontierInterventions.Tab"),
                                null, getFrontierInterventionsPanel (), null);
+            if(costEffectivenessAnalysis instanceof ProbabilisticCEA)
+            {
+                tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.AcceptabilityCurve.Tab"),
+                        null, getCEACPanel (), null);
+            }
         }
         return tabbedPane;
     }
 
-    private CostEffectivenessSummaryPane getSummaryPane ()
+    private CostEffectivenessAnalysisPane getAnalysisPane ()
     {
-        if (summaryPane == null)
+        if (analysisPane == null)
         {
-            summaryPane = new CostEffectivenessSummaryPane (this.costEffectivenessAnalysis.getGlobalUtility ());
+            analysisPane = new CostEffectivenessAnalysisPane (this.costEffectivenessAnalysis.getGlobalUtility ());
         }
-        return summaryPane;
+        return analysisPane;
     }
 
-    private ChartPanel getChartsPanel ()
+    private ChartPanel getCEPlanePanel ()
     {
-        if (chartPanel == null)
+        if (cePlanePanel == null)
         {
-            XYDataset dataset = createDataset ();
-            JFreeChart chart = ChartFactory.createScatterPlot ("Cost-Effectiveness Analysis Result",
-                                                               "effectiveness", "cost", dataset,
-                                                               PlotOrientation.VERTICAL, true,
-                                                               true, true);
+            XYDataset dataset = createCEPlaneDataset ();
+            JFreeChart chart = ChartFactory.createScatterPlot(
+                    stringDatabase.getString("CostEffectivenessResults.Plane.Label"),
+                    stringDatabase.getString("CostEffectivenessResults.Plane.Horizontal"),
+                    stringDatabase.getString("CostEffectivenessResults.Plane.Vertical"), dataset,
+                    PlotOrientation.VERTICAL, true, true, true);
             // chart.getXYPlot().setRenderer(new XYSplineRenderer());
-            chartPanel = new ChartPanel (chart);
-            chartPanel.setAutoscrolls (true);
-            chartPanel.setDisplayToolTips (true);
-            chartPanel.setMouseZoomable (true);
+            cePlanePanel = new ChartPanel (chart);
+            cePlanePanel.setAutoscrolls (true);
+            cePlanePanel.setDisplayToolTips (true);
+            cePlanePanel.setMouseZoomable (true);
             XYPlot plot = (XYPlot) chart.getPlot ();
             XYItemRenderer renderer = plot.getRenderer ();
-            XYToolTipGenerator generator = new StandardXYToolTipGenerator (
-                                                                           "{0}: ({1}, {2})",
-                                                                           new DecimalFormat (
-                                                                                              "0.00",
-                                                                                              new DecimalFormatSymbols (
-                                                                                                                        Locale.US)),
-                                                                           new DecimalFormat (
-                                                                                              "0.00",
-                                                                                              new DecimalFormatSymbols (
-                                                                                                                        Locale.US)));
+            NumberFormat format = new DecimalFormat ("0.00",new DecimalFormatSymbols (Locale.US));
+            XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})",
+                    format, format);
             renderer.setBaseToolTipGenerator (generator);
         }
-        return chartPanel;
+        return cePlanePanel;
     }
-
-    private XYDataset createDataset ()
+    
+    private XYDataset createCEPlaneDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
         for (Intervention intervention : costEffectivenessAnalysis.getInterventions())
@@ -215,13 +219,60 @@ public class CostEffectivenessResultsDialog extends JDialog
 
     private JScrollPane getFrontierInterventionsPanel ()
     {
-        if (frontierInterventionsTablePanel == null)
+        if (frontierInterventionsPanel == null)
         {
-            frontierInterventionsTablePanel = new FrontierInterventionsTablePanel (
-                                                                                   costEffectivenessAnalysis);
+            frontierInterventionsPanel = new FrontierInterventionsPanel(
+                    costEffectivenessAnalysis);
         }
-        return frontierInterventionsTablePanel;
+        return frontierInterventionsPanel;
     }
+    
+    private ChartPanel getCEACPanel() {
+        if (ceacPanel == null)
+        {
+            XYDataset dataset = createCEACDataset ();
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    stringDatabase.getString("CostEffectivenessResults.AcceptabilityCurve.Label"),
+                    stringDatabase.getString("CostEffectivenessResults.AcceptabilityCurve.Horizontal"),
+                    stringDatabase.getString("CostEffectivenessResults.AcceptabilityCurve.Vertical"), dataset,
+                    PlotOrientation.VERTICAL, true, true, true);
+            // chart.getXYPlot().setRenderer(new XYSplineRenderer());
+            ceacPanel = new ChartPanel (chart);
+            ceacPanel.setAutoscrolls (true);
+            ceacPanel.setDisplayToolTips (true);
+            ceacPanel.setMouseZoomable (true);
+            XYPlot plot = (XYPlot) chart.getPlot ();
+            XYItemRenderer renderer = plot.getRenderer ();
+            NumberFormat format = new DecimalFormat ("0.00",new DecimalFormatSymbols (Locale.US));
+            XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})",
+                    format, format);
+            renderer.setBaseToolTipGenerator (generator);
+        }
+        return ceacPanel;
+    }     
+
+    private XYDataset createCEACDataset() {
+        XYSeriesCollection result = new XYSeriesCollection ();
+        ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
+        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(pCEA.getInterventions(), 10000);
+        List<Intervention> interventions = costEffectivenessAnalysis.getInterventions();
+        List<Integer> ratios = new ArrayList<>(ceacData.keySet());
+        for (int i=0; i <interventions.size(); ++i)
+        {
+            Intervention intervention = interventions.get(i);
+            XYSeries series = new XYSeries (intervention.getName ());
+            if(intervention instanceof ProbabilisticIntervention)
+            {
+                for(int k=0; k < ratios.size(); ++k)
+                {
+                    Integer ratio = ratios.get(k);
+                    series.add((double)ratios.get(k), ceacData.get(ratio)[i]);
+                }
+            }
+            result.addSeries (series);
+        }
+        return result;
+   }
 
     private void saveReport ()
     {

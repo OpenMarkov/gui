@@ -9,13 +9,13 @@ public class ProbabilisticIntervention extends Intervention {
     private List<Double> effectivenesses;
     
     public ProbabilisticIntervention(String name, List<Double> costs, List<Double> effectivenesses) {
-        super(name, calculateCost(costs), calculateEffectiveness(effectivenesses));
+        super(name, calculateMeanCost(costs), calculateMeanEffectiveness(effectivenesses));
         this.costs = costs;
         this.effectivenesses = effectivenesses;
         this.numSimulations = costs.size();
     }
 
-    private static double calculateCost(List<Double> costs) {
+    private static double calculateMeanCost(List<Double> costs) {
         double cost = 0.0;
         for (Double simulatedCost : costs) {
             cost += simulatedCost;
@@ -26,7 +26,7 @@ public class ProbabilisticIntervention extends Intervention {
         return cost;
     }
 
-    private static double calculateEffectiveness(List<Double> effectivenesses) {
+    private static double calculateMeanEffectiveness(List<Double> effectivenesses) {
         double effectiveness = 0.0;
         for (Double simulatedEffectiveness : effectivenesses) {
             effectiveness += simulatedEffectiveness;

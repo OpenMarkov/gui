@@ -15,7 +15,6 @@ import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MPADFactory;
@@ -362,7 +361,7 @@ public class CostEffectivenessAnalysis {
         }
         return interventionsWithICERs;
     }
-
+    
     private void extendEvidence(ProbNet extendedNetwork) {
         try {
             evidence.extendEvidence(extendedNetwork, 1);

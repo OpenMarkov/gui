@@ -92,8 +92,8 @@ public class ExcelReport
         // first column
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {
-            HSSFRow rowi = sheetTable.createRow (i + 1);
-            rowi.createCell (0).setCellValue (variableOfInterest.getStateName (i));
+            HSSFRow row = sheetTable.createRow (i + 1);
+            row.createCell (0).setCellValue (variableOfInterest.getStateName (i));
         }
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
         {

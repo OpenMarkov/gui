@@ -25,9 +25,9 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
-public class CostEffectivenessSummaryPane extends JScrollPane
+public class CostEffectivenessAnalysisPane extends JScrollPane
 {
-    public CostEffectivenessSummaryPane (TablePotential globalUtility)
+    public CostEffectivenessAnalysisPane (TablePotential globalUtility)
     {
         // create a dummy ProbNet
         ProbNet dummyProbNet = new ProbNet ();

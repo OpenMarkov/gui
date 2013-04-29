@@ -19,11 +19,11 @@ import javax.swing.table.DefaultTableModel;
  * @author myebra
  */
 @SuppressWarnings("serial")
-public class FrontierInterventionsTablePanel extends JScrollPane {
+public class FrontierInterventionsPanel extends JScrollPane {
 	private List<Intervention> frontierInterventions;
 	CostEffectivenessAnalysis costEffectivenessAnalysis;
 
-	public FrontierInterventionsTablePanel(
+	public FrontierInterventionsPanel(
 			CostEffectivenessAnalysis costEffectivenessAnalysis) {
 		super();
 		this.costEffectivenessAnalysis = costEffectivenessAnalysis;

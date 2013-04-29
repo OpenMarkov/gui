@@ -6,6 +6,7 @@
 package org.openmarkov.core.gui.costeffectiveness;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,14 +78,6 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         // Gather data
         for(TablePotential simulationResult : results)
         {
-            List<Variable> newOrderVariables = new ArrayList<>();
-            for (Variable variable : simulationResult.getVariables()) {
-                if (variable.getName().equals("Decision Criteria")) {
-                    newOrderVariables.add(0, variable);
-                } else {
-                    newOrderVariables.add(variable);
-                }
-            }
             simulationResult = reorderVariables(simulationResult);
  
             // Gather cost-effectiveness data
@@ -118,6 +111,49 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         }
         return results;
     }
+    
+    public Map<Integer, double[]> calculateCEAC(List<Intervention> interventions, int maxRatio)
+    {
+        Map<Integer, double[]> results = new LinkedHashMap<>();
+        int numInterventions = interventions.size();
+        for(int i=0; i<=1000; ++i)
+        {
+            int ratio = maxRatio * i / 1000; 
+            // calculate CE probability for ratio
+            double[] ceProbabilities = new double[numInterventions];
+            // Initialize with zeros
+            for(int k=0; k< numInterventions; ++k)
+            {
+                ceProbabilities[k] = 0;
+            }               
+            int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
+            for(int j=0; j< numSimulations; ++j)
+            {
+                double maxNetBenefit = Double.NEGATIVE_INFINITY;
+                int maxBenefitInterventionIndex = -1; 
+                for(int k=0; k< numInterventions; ++k)
+                {
+                    ProbabilisticIntervention intervention = (ProbabilisticIntervention)interventions.get(k);
+                    double netBenefit = ratio * intervention.getEffectivenesses().get(j) - intervention.getCosts().get(j);
+                    if(netBenefit > maxNetBenefit)
+                    {
+                        maxNetBenefit = netBenefit;
+                        maxBenefitInterventionIndex = k;
+                    }
+                }
+                for(int k=0; k< numInterventions; ++k)
+                {
+                    ceProbabilities[k] += (maxBenefitInterventionIndex == k)? 1 : 0;
+                }                
+            }
+            for(int k=0; k< numInterventions; ++k)
+            {
+                ceProbabilities[k] /= numSimulations;
+            }                
+            results.put(ratio, ceProbabilities);
+        }
+        return results;
+    }    
 
     /**
      * @param simulationIndexVariable
