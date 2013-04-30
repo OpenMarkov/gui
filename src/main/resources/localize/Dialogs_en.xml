@@ -23,10 +23,15 @@
 		<AcceptabilityCurve>
 			<Tab value="CEAC" />
 			<Label value="Cost-Effectiveness Acceptability Curve" />
-			<Vertical value="Willingness to pay" />
-			<Horizontal value="Probability of cost effectiveness" />
+			<Vertical value="Probability of cost effectiveness" />
+			<Horizontal value="Willingness to pay" />
 		</AcceptabilityCurve>
-
+		<EVPI>
+			<Tab value="EVPI" />
+			<Label value="Expected Value of Information" />
+			<Vertical value="EVPI" />
+			<Horizontal value="Willingness to pay" />
+		</EVPI>
 	</CostEffectivenessResults>
 	<TemporalEvolutionResultDialog>
 		<Title>

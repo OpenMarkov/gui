@@ -116,6 +116,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
     {
         Map<Integer, double[]> results = new LinkedHashMap<>();
         int numInterventions = interventions.size();
+        int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
         for(int i=0; i<=1000; ++i)
         {
             int ratio = maxRatio * i / 1000; 
@@ -126,7 +127,6 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
             {
                 ceProbabilities[k] = 0;
             }               
-            int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
             for(int j=0; j< numSimulations; ++j)
             {
                 double maxNetBenefit = Double.NEGATIVE_INFINITY;
@@ -151,6 +151,74 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
                 ceProbabilities[k] /= numSimulations;
             }                
             results.put(ratio, ceProbabilities);
+        }
+        return results;
+    }
+    
+    public Map<Integer, Double> calculateEVPI(List<Intervention> interventions, int maxRatio,
+            int patientsPerAnnum, int lifetime, double discountRate)    {
+        Map<Integer, Double> results = new LinkedHashMap<>();
+        
+        // Calculate effective population
+        int effectivePopulation = 0;
+        for(int i=0; i<lifetime; ++i)
+        {
+            effectivePopulation += patientsPerAnnum / Math.pow(1 + discountRate, i);
+        }
+        int numInterventions = interventions.size();
+        int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
+        double[][] netBenefits = new double[numInterventions][numSimulations];
+        // Max benefit in each simulation
+        double[] maxNetBenefits = new double[numSimulations];
+        // Average net benefits for each intervention
+        double[] avgNetBenefits = new double[numInterventions];
+
+        for(int i=0; i<=1000; ++i)
+        {
+            // Calculate netBenefits and maxBenefit
+            int ratio = maxRatio * i / 1000; 
+            for(int j=0; j< numSimulations; ++j)
+            {
+                maxNetBenefits[j] = Double.NEGATIVE_INFINITY;
+                for(int k=0; k< numInterventions; ++k)
+                {
+                    ProbabilisticIntervention intervention = (ProbabilisticIntervention)interventions.get(k);
+                    double netBenefit = ratio * intervention.getEffectivenesses().get(j) - intervention.getCosts().get(j);
+                    netBenefits[k][j] = netBenefit;
+                    if(netBenefit > maxNetBenefits[j])
+                    {
+                        maxNetBenefits[j] = netBenefit;
+                    }
+                }
+            }
+            // Calculate average net benefit for each intervention
+            for(int k=0; k< numInterventions; ++k)
+            {
+                avgNetBenefits[k] = 0;
+                for(int j=0; j< numSimulations; ++j)
+                {                
+                    avgNetBenefits[k] += netBenefits[k][j];
+                }
+                avgNetBenefits[k] /= numSimulations;
+            }
+            // Calculate the maximum average net benefit across interventions
+            double maxAverage = Double.NEGATIVE_INFINITY;
+            for(int k=0; k< numInterventions; ++k)
+            {
+                if(maxAverage < avgNetBenefits[k])
+                {
+                    maxAverage = avgNetBenefits[k];
+                }
+            }
+            // Calculate the average of maximum net benefits for each simulation
+            double averageMax = 0;
+            for(int j=0; j< numSimulations; ++j)
+            {                
+                averageMax += maxNetBenefits[j];
+            }    
+            averageMax /= numSimulations;
+            double popEVPI = effectivePopulation * (averageMax - maxAverage);
+            results.put(ratio, popEVPI);
         }
         return results;
     }    
