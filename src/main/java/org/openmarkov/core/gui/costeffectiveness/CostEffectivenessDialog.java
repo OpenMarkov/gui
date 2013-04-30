@@ -72,7 +72,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private Integer numSimulations;
     private JTextField numSimulationsTextField;
     private Map<Variable, Double> initialValues;
-    private Map<String, JTextField> numericTemporalComponents = new HashMap<>();
+    private Map<String, JTextField> initialValueComponents = new HashMap<>();
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
@@ -154,7 +154,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             textField.addFocusListener(this);
             initialValuePanel.add(label);
             initialValuePanel.add(textField);
-            numericTemporalComponents.put(numericTemporalVariable.getName(), textField);
+            initialValueComponents.put(numericTemporalVariable.getName(), textField);
             initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
             initialValuesPanel.add(initialValuePanel);
         }
@@ -419,7 +419,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private boolean checkTextFieldsValidity() {
         boolean allValid = true;
-        for (JTextField numericTemporalField : numericTemporalComponents.values()) {
+        for (JTextField numericTemporalField : initialValueComponents.values()) {
             allValid &= checkTextFieldValidity(numericTemporalField);
         }
         return allValid;
@@ -427,14 +427,14 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private boolean checkTextFieldValidity(JTextField sourceTextField) {
         boolean valid = true;
-        if (numericTemporalComponents.containsKey(sourceTextField.getName())
+        if (initialValueComponents.containsKey(sourceTextField.getName())
                 || sourceTextField.equals(getNumSlicesTextField())) {
             boolean numSlicesDefined = getNumSlicesTextField().getText() != null;
             int numSlices = (numSlicesDefined) ? Integer.valueOf(getNumSlicesTextField().getText())
                     : -1;
             for (Variable numericTemporalVariable : initialValues.keySet()) {
                 PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
-                double numericValue = Double.parseDouble(numericTemporalComponents.get(
+                double numericValue = Double.parseDouble(initialValueComponents.get(
                         numericTemporalVariable.getName()).getText());
                 double timeHorizon = numericValue + numSlices;
                 if (numSlicesDefined) {
@@ -460,7 +460,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
                 if (valid) {
                     initialValues.put(numericTemporalVariable, numericValue);
                 }
-                numericTemporalComponents.get(numericTemporalVariable.getName()).setText(
+                initialValueComponents.get(numericTemporalVariable.getName()).setText(
                         "" + numericValue);
             }
             if (valid) {

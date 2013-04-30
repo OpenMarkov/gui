@@ -31,6 +31,10 @@
 			<Label value="Expected Value of Information" />
 			<Vertical value="EVPI" />
 			<Horizontal value="Willingness to pay" />
+			<MaxRatio value="Max ratio" />
+			<Population value="Population per annum" />
+			<Lifetime value="Technology lifetime" />
+			<Discount value="Discount rate" />
 		</EVPI>
 	</CostEffectivenessResults>
 	<TemporalEvolutionResultDialog>

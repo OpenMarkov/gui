@@ -52,7 +52,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     private CostEffectivenessAnalysisPane analysisPane;
     private ChartPanel                   cePlanePanel;
     private ChartPanel                   ceacPanel;
-    private ChartPanel                   evpiPanel;
+    private JScrollPane                   evpiPanel;
     private JScrollPane                  frontierInterventionsPanel;
     private JTabbedPane                  tabbedPane;
     private StringDatabase               stringDatabase = StringDatabase.getUniqueInstance ();
@@ -257,7 +257,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     private XYDataset createCEACDataset() {
         XYSeriesCollection result = new XYSeriesCollection ();
         ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
-        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(pCEA.getInterventions(), 10000);
+        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(10000);
         List<Intervention> interventions = costEffectivenessAnalysis.getInterventions();
         List<Integer> ratios = new ArrayList<>(ceacData.keySet());
         for (int i=0; i <interventions.size(); ++i)
@@ -277,44 +277,13 @@ public class CostEffectivenessResultsDialog extends JDialog
         return result;
    }
     
-    private ChartPanel getEVPIPanel() {
+    private JScrollPane getEVPIPanel() {
         if (evpiPanel == null)
         {
-            XYDataset dataset = createEVPIDataset ();
-            JFreeChart chart = ChartFactory.createXYLineChart(
-                    stringDatabase.getString("CostEffectivenessResults.EVPI.Label"),
-                    stringDatabase.getString("CostEffectivenessResults.EVPI.Horizontal"),
-                    stringDatabase.getString("CostEffectivenessResults.EVPI.Vertical"), dataset,
-                    PlotOrientation.VERTICAL, true, true, true);
-            // chart.getXYPlot().setRenderer(new XYSplineRenderer());
-            evpiPanel = new ChartPanel (chart);
-            evpiPanel.setAutoscrolls (true);
-            evpiPanel.setDisplayToolTips (true);
-            evpiPanel.setMouseZoomable (true);
-            XYPlot plot = (XYPlot) chart.getPlot ();
-            XYItemRenderer renderer = plot.getRenderer ();
-            NumberFormat format = new DecimalFormat ("0.00",new DecimalFormatSymbols (Locale.US));
-            XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})",
-                    format, format);
-            renderer.setBaseToolTipGenerator (generator);
+            evpiPanel = new EVPIPane((ProbabilisticCEA)costEffectivenessAnalysis);
         }
         return evpiPanel;
     }     
-
-    private XYDataset createEVPIDataset() {
-        XYSeriesCollection result = new XYSeriesCollection ();
-        ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
-        Map<Integer, Double> evpi = pCEA.calculateEVPI(pCEA.getInterventions(), 15000, 40000, 10, 0.06);
-        List<Integer> ratios = new ArrayList<>(evpi.keySet());
-        XYSeries series = new XYSeries ("EVPI");
-        for (int ratio : ratios)
-        {
-            series.add((double)ratio, evpi.get(ratio));
-        }
-        result.addSeries (series);
-        return result;
-   }
-    
 
     private void saveReport ()
     {

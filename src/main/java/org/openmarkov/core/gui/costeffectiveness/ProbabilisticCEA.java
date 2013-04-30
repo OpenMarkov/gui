@@ -112,7 +112,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         return results;
     }
     
-    public Map<Integer, double[]> calculateCEAC(List<Intervention> interventions, int maxRatio)
+    public Map<Integer, double[]> calculateCEAC(int maxRatio)
     {
         Map<Integer, double[]> results = new LinkedHashMap<>();
         int numInterventions = interventions.size();
@@ -155,7 +155,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         return results;
     }
     
-    public Map<Integer, Double> calculateEVPI(List<Intervention> interventions, int maxRatio,
+    public Map<Integer, Double> calculateEVPI(int maxRatio,
             int patientsPerAnnum, int lifetime, double discountRate)    {
         Map<Integer, Double> results = new LinkedHashMap<>();
         
