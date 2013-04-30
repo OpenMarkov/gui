@@ -8,7 +8,7 @@ package org.openmarkov.core.gui.window.edition;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
@@ -632,7 +632,7 @@ public class NetworkPanel extends FrameContentPanel
      * Returns a list containing the currently selected nodes.
      * @return a list containing the currently selected nodes.
      */
-    public ArrayList<VisualNode> getSelectedNodes ()
+    public List<VisualNode> getSelectedNodes ()
     {
         return editorPanel.getSelectedNodes ();
     }
@@ -641,7 +641,7 @@ public class NetworkPanel extends FrameContentPanel
      * Returns a list containing the currently selected links.
      * @return a list containing the currently selected links.
      */
-    public ArrayList<VisualLink> getSelectedLinks ()
+    public List<VisualLink> getSelectedLinks ()
     {
         return editorPanel.getSelectedLinks ();
     }
@@ -870,5 +870,9 @@ public class NetworkPanel extends FrameContentPanel
             editorPanel.setProbNet (probNet);
             repaint ();
         }
+    }
+
+    public void createNextSliceNode() {
+        editorPanel.createNextSliceNode();
     }
 }

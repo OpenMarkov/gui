@@ -842,9 +842,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @return list where are the moved nodes information.
 	 */
-	public ArrayList<MovedNodeInfo> fillActualNodesMovedInfo() {
+	public List<MovedNodeInfo> fillActualNodesMovedInfo() {
 
-		ArrayList<MovedNodeInfo> movedNodes = new ArrayList<MovedNodeInfo>();
+		List<MovedNodeInfo> movedNodes = new ArrayList<MovedNodeInfo>();
 
 		for (VisualNode node : visualNodes) {
 			if (node.isSelected()) {
@@ -864,8 +864,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param movedNodes
 	 *            list where is saved the moved nodes information.
 	 */
-	public void fillDifferencesNodesMovedInfo(
-												ArrayList<MovedNodeInfo> movedNodes) {
+    public void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
 
 		ProbNode probNodeAux = null;
 
@@ -977,7 +976,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @return a list containing the selected nodes.
 	 */
-	public ArrayList<VisualNode> getSelectedNodes() {
+	public List<VisualNode> getSelectedNodes() {
 
 		return new ArrayList<VisualNode>(selectedNodes);
 
@@ -988,7 +987,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @return a list containing the selected links.
 	 */
-	public ArrayList<VisualLink> getSelectedLinks() {
+	public List<VisualLink> getSelectedLinks() {
 
 		return new ArrayList<VisualLink>(selectedLinks);
 

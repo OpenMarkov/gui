@@ -481,7 +481,12 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user selects temporal evolution menu item
 	 */
-	public static final String TEMPORAL_EVOLUTION_ACTION = "Temporal.Evolution";	
+	public static final String TEMPORAL_EVOLUTION_ACTION = "Temporal.Evolution";
+	
+	/**
+     * Action invoked when the user selects temporal evolution menu item
+     */
+    public static final String NEXT_SLICE_NODE = "Edit.NextSliceNode";    	
 
 	/**
 	 * Checks if the action command corresponds to a zoom action command.

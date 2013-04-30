@@ -197,6 +197,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.DECISION_TREE, false);
+        setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
     }
 
     /**
@@ -224,6 +225,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
+        setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
     }
 
     /**
@@ -609,6 +611,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         boolean canShowExpectedUtility = false;
         boolean canShowOptimalPolicy = false;
         boolean canTemporalEvolution = false;
+        boolean canCreateNextSliceNode = false;
         int workingMode = NetworkPanel.EDITION_WORKING_MODE;
         if (!(currentNetworkPanel == null))
         {
@@ -686,6 +689,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                     {
                         canLog = true;
                         canTemporalEvolution = true;
+                        canCreateNextSliceNode = !visualNode.getProbNode ().getProbNet().containsShiftedVariable(visualNode.getProbNode ().getVariable (), 1);
                     }
                     String label = null;
                     switch (visualNode.getProbNode ().getNodeType ())
@@ -787,6 +791,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
         setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
+        setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, canCreateNextSliceNode);
     }
 
     // TODO OOPN start
@@ -820,6 +825,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         boolean canShowExpectedUtility = false;
         boolean canShowOptimalPolicy = false;
         boolean canTemporalEvolution = false;
+        boolean canCreateNextSliceNode = false;
         int workingMode = NetworkPanel.EDITION_WORKING_MODE;
         if (!(currentNetworkPanel == null))
         {
@@ -912,6 +918,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                     {
                         canLog = true;
                         canTemporalEvolution = true;
+                        canCreateNextSliceNode = !visualNode.getProbNode ().getProbNet().containsShiftedVariable(visualNode.getProbNode ().getVariable (), 1);
                     }
                     String label = null;
                     switch (visualNode.getProbNode ().getNodeType ())
@@ -1013,6 +1020,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
         setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
+        setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, canCreateNextSliceNode);
     }
 
     // TODO OOPN end

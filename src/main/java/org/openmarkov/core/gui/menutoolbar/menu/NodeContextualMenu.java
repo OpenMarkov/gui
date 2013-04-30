@@ -96,8 +96,17 @@ public class NodeContextualMenu extends ContextualMenu
     private JMenuItem         inputMenuItem               = null;
     // TODO OOPN end
     private JMenuItem         logMenuItem;
+
+    /**
+     * Object that represents the item 'Temporal evolution'.
+     */
     private JMenuItem         temporalEvolutionMenuItem;
 
+    /**
+     * Object that represents the item 'Create node in next slice'.
+     */
+    private JMenuItem         nextSliceNodeMenuItem;
+    
     /**
      * This constructor creates a new instance.
      * @param newListener object that listens to the menu events.
@@ -174,6 +183,7 @@ public class NodeContextualMenu extends ContextualMenu
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
+        add (getNextSliceNodeMenuItem ());
         addSeparator ();
         add (getPropertiesMenuItem ());
         add (getEditPotentialMenuItem ());
@@ -205,6 +215,7 @@ public class NodeContextualMenu extends ContextualMenu
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
+        add (getNextSliceNodeMenuItem ());
         addSeparator ();
         add (getPropertiesMenuItem ());
         addSeparator ();
@@ -305,6 +316,22 @@ public class NodeContextualMenu extends ContextualMenu
         }
         return temporalEvolutionMenuItem;
     }
+    
+    /**
+     * This method initializes temporalEvolutionMenuItem.
+     * @return a new 'Temporal Evolution' menu item.
+     */
+    private JMenuItem getNextSliceNodeMenuItem ()
+    {
+        if (nextSliceNodeMenuItem == null)
+        {
+            nextSliceNodeMenuItem = new LocalizedMenuItem (
+                                                               MenuItemNames.NEXT_SLICE_NODE,
+                                                               ActionCommands.NEXT_SLICE_NODE);
+            nextSliceNodeMenuItem.addActionListener (listener);
+        }
+        return nextSliceNodeMenuItem;
+    }    
 
     /**
      * This method initializes cutMenuItem.
@@ -620,6 +647,10 @@ public class NodeContextualMenu extends ContextualMenu
         else if (actionCommand.equals (ActionCommands.TEMPORAL_EVOLUTION_ACTION))
         {
             component = temporalEvolutionMenuItem;
+        }
+        else if (actionCommand.equals (ActionCommands.NEXT_SLICE_NODE))
+        {
+            component = nextSliceNodeMenuItem;
         }
         return component;
     }

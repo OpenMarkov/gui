@@ -117,6 +117,9 @@
     <ViewUtility>
       <Label value="Ver utilidad ..." />
     </ViewUtility>
+    <NextSliceNode>
+    	<Label value="Crear nodo en la próxima rodaja" />
+    </NextSliceNode>
   </Edit>
   <Window>
     <Mosaic>

@@ -124,6 +124,9 @@
     <ViewUtility>
       <Label value="View utility ..." />
     </ViewUtility>
+    <NextSliceNode>
+    	<Label value="Create node in next slice" />
+    </NextSliceNode>
   </Edit>
   <Window>
     <Mosaic>

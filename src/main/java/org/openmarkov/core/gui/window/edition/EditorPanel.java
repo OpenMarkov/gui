@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+import org.openmarkov.core.action.AddProbNodeEdit;
 import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -38,7 +39,6 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
-import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
@@ -220,9 +220,7 @@ public class EditorPanel extends JPanel
      * Dialog for revelation arc edition
      */
     RevelationArcEditDialog                  revelationArcDialog              = null;
-    private CostEffectivenessDialog          costEffectivenessDialog;
     private boolean                          approximateInferenceWarningGiven = false;
-    private boolean                          isThereNodeAge;
     private boolean                          canBeExpanded                    = false;
 
     /**
@@ -698,7 +696,7 @@ public class EditorPanel extends JPanel
      * Returns a list containing the selected nodes.
      * @return a list containing the selected nodes.
      */
-    public ArrayList<VisualNode> getSelectedNodes ()
+    public List<VisualNode> getSelectedNodes ()
     {
         return visualNetwork.getSelectedNodes ();
     }
@@ -707,7 +705,7 @@ public class EditorPanel extends JPanel
      * Returns a list containing the selected links.
      * @return a list containing the selected links.
      */
-    public ArrayList<VisualLink> getSelectedLinks ()
+    public List<VisualLink> getSelectedLinks ()
     {
         return visualNetwork.getSelectedLinks ();
     }
@@ -755,7 +753,7 @@ public class EditorPanel extends JPanel
 
     public void changeNodeProperties ()
     {
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         if (selectedNodes.size () == 1)
         {
             changeNodeProperties (selectedNodes.get (0));
@@ -767,7 +765,7 @@ public class EditorPanel extends JPanel
      */
     public void showPotentialDialog (boolean readOnly)
     {
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         ProbNode probNode = selectedNodes.get (0).getProbNode ();
         /*
          * Potential oldPotential = probNode.getPotentials().get(0);
@@ -1056,7 +1054,7 @@ public class EditorPanel extends JPanel
     {
         System.out.println ("Pulsada la opción 'Editar Política'"); // ...Borrar
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
@@ -1065,7 +1063,7 @@ public class EditorPanel extends JPanel
                 ProbNode probNode = node.getProbNode ();
                 // TODO manage other kind of policy types from the interface
                 // probNode.setPolicyType(PolicyType.OPTIMAL);
-                Potential imposedPolicy = probNode.getPotentials ().get (0);
+                // Potential imposedPolicy = probNode.getPotentials ().get (0);
                 PotentialEditDialog imposePolicyDialog = new PotentialEditDialog (
                                                                                   Utilities.getOwner (this),
                                                                                   probNode, false);
@@ -1088,7 +1086,7 @@ public class EditorPanel extends JPanel
     {
         System.out.println ("Pulsada la opción 'Eliminar Política'"); // ...Borrar
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
@@ -1111,7 +1109,7 @@ public class EditorPanel extends JPanel
     public void showExpectedUtilityOfNode ()
     {
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
@@ -1153,7 +1151,7 @@ public class EditorPanel extends JPanel
     public void showOptimalPolicyOfNode ()
     {
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
@@ -1212,7 +1210,7 @@ public class EditorPanel extends JPanel
     public void expandNode ()
     {
         VisualNode visualNode = null;
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         if (selectedNodes.size () > 0)
         {
             for (int i = 0; i < selectedNodes.size (); i++)
@@ -1234,7 +1232,7 @@ public class EditorPanel extends JPanel
     public void contractNode ()
     {
         VisualNode visualNode = null;
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         if (selectedNodes.size () > 0)
         {
             for (int i = 0; i < selectedNodes.size (); i++)
@@ -1258,7 +1256,7 @@ public class EditorPanel extends JPanel
         setPropagationActive (isAutomaticPropagation ());
         Graphics2D g = (Graphics2D) getGraphics ();
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
@@ -1282,7 +1280,7 @@ public class EditorPanel extends JPanel
     {
         setPropagationActive (isAutomaticPropagation ());
         VisualNode node = null;
-        ArrayList<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         for (int i = 0; i < selectedNodes.size (); i++)
         {
             node = selectedNodes.get (i);
@@ -2564,7 +2562,7 @@ public class EditorPanel extends JPanel
      */
     public void enableLinkRestriction ()
     {
-        ArrayList<VisualLink> links = visualNetwork.getSelectedLinks ();
+        List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
             Link link = links.get (0).getLink ();
@@ -2586,7 +2584,7 @@ public class EditorPanel extends JPanel
      */
     public void disableLinkRestriction ()
     {
-        ArrayList<VisualLink> links = visualNetwork.getSelectedLinks ();
+        List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
             Link link = links.get (0).getLink ();
@@ -2600,7 +2598,7 @@ public class EditorPanel extends JPanel
      */
     public void enableRevelationArc ()
     {
-        ArrayList<VisualLink> links = visualNetwork.getSelectedLinks ();
+        List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
             Link link = links.get (0).getLink ();
@@ -2700,5 +2698,31 @@ public class EditorPanel extends JPanel
                                       (int) Math.round (getMaxHeight ()));
         setPreferredSize (newDimension);
         setSize (newDimension);
+    }
+
+    public void createNextSliceNode() {
+        ProbNode selectedNode = visualNetwork.getSelectedNodes().get(0).getProbNode();
+        Variable selectedVariable = selectedNode.getVariable();
+        Variable newVariable = new Variable(selectedVariable);
+        newVariable.setTimeSlice(selectedVariable.getTimeSlice() + 1);
+        Point2D.Double position = new Point2D.Double(selectedNode.getNode().getCoordinateX() + 100,
+                selectedNode.getNode().getCoordinateY());
+        AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (probNet, newVariable,
+                selectedNode.getNodeType(), position);
+        try
+        {
+            probNet.doEdit (addProbNodeEdit);
+        }
+        catch (Exception e1)
+        {
+            System.err.println (e1.toString ());
+            e1.printStackTrace ();
+            JOptionPane.showMessageDialog (this,
+                                           e1.toString (),
+                                           "Error creating node",
+                                           JOptionPane.ERROR_MESSAGE);
+        }
+        adjustPanelDimension ();
+        repaint ();
     }
 }

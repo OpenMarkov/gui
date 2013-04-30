@@ -513,5 +513,10 @@ public class MenuItemNames
 	 * Constant that defines the item 'Temporal Evolution' in temporal node's contextual menu
 	 */
 	public static final String TEMPORAL_EVOLUTION_MENUITEM = "Temporal.Evolution";
+	
+	   /**
+     * Constant that defines the item 'Next Slice' in a temporal node's contextual menu
+     */
+    public static final String NEXT_SLICE_NODE = "Edit.NextSliceNode";
 
 }
