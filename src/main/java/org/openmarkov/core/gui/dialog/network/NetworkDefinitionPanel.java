@@ -343,8 +343,7 @@ public class NetworkDefinitionPanel extends JPanel
                 try
                 {
                     probNet.doEdit (changeNetworkType);
-                    parent.getNetworkAdvancedPanel ().getAgentsButton ().setEnabled ((probNet.getAgents () != null));
-                    parent.getNetworkAdvancedPanel ().getDecisionCriteriaButton ().setEnabled ((probNet.onlyChanceNodes ()));
+                    parent.getNetworkAdvancedPanel ().update (probNet);
                 }
                 catch (ConstraintViolationException | CanNotDoEditException
                         | NonProjectablePotentialException | WrongCriterionException e)

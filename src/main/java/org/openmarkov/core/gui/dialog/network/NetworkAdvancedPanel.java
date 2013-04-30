@@ -36,22 +36,8 @@ public class NetworkAdvancedPanel extends JPanel
         this.newNetwork = newNetwork;
         setName ("NetworkAdvancedPanel");
         initialize ();
-        if (probNet.getAgents () == null)
-        {
-            getAgentsButton ().setEnabled (false);
-        }
-        else if (probNet.getAgents () != null)
-        {
-            getAgentsButton ().setEnabled (true);
-        }
-        if (!probNet.onlyChanceNodes ())
-        {
-            getDecisionCriteriaButton ().setEnabled (true);
-        }
-        else if (probNet.onlyChanceNodes ())
-        {
-            getDecisionCriteriaButton ().setEnabled (false);
-        }
+        getAgentsButton ().setEnabled (probNet.getAgents () != null);
+        getDecisionCriteriaButton ().setEnabled (!probNet.onlyChanceNodes ());
     }
 
     private void initialize ()
@@ -72,24 +58,26 @@ public class NetworkAdvancedPanel extends JPanel
         setLayout (groupLayout);
     }
 
-    JButton getAgentsButton ()
+    private JButton getAgentsButton ()
     {
         if (agentsButton == null)
         {
-            agentsButton = new JButton (
-                                        StringDatabase.getUniqueInstance ().getString ("NetworkAdvancedPanel.Agents.Text"));
+            String buttonCaption = StringDatabase.getUniqueInstance().getString(
+                    "NetworkAdvancedPanel.Agents.Text");
+            agentsButton = new JButton (buttonCaption);
             // agentsButton.setMinimumSize();
             agentsButton.addActionListener (this);
         }
         return agentsButton;
     }
 
-    JButton getDecisionCriteriaButton ()
+    private JButton getDecisionCriteriaButton ()
     {
         if (decisionCriteriaButton == null)
         {
-            decisionCriteriaButton = new JButton (
-                                                  StringDatabase.getUniqueInstance ().getString ("NetworkAdvancedPanel.DecisionCriteria.Text"));
+            String buttonCaption = StringDatabase.getUniqueInstance().getString(
+                    "NetworkAdvancedPanel.DecisionCriteria.Text");
+            decisionCriteriaButton = new JButton (buttonCaption);
             // decisionCriteriaButton.setMinimumSize(60);
             decisionCriteriaButton.addActionListener (this);
         }
@@ -128,5 +116,11 @@ public class NetworkAdvancedPanel extends JPanel
         if (decisionCriteriaDialog.requestValues () == NodePropertiesDialog.OK_BUTTON)
         {
         }
+    }
+
+    public void update(ProbNet probNet) {
+        this.probNet = probNet;
+        getAgentsButton ().setEnabled (probNet.getAgents () != null);
+        getDecisionCriteriaButton ().setEnabled (!probNet.onlyChanceNodes ());        
     }
 }
