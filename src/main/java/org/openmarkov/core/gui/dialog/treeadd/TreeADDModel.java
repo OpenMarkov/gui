@@ -99,9 +99,7 @@ public class TreeADDModel implements TreeModel {
 			return ((TreeADDBranch)parent).getPotential();
 		} 
 		if (parent instanceof TreeADDPotential) {
-			TreeADDBranch branch = ((TreeADDPotential)parent).getBranches().get(index);
-			//return ((TreeADDPotential2)parent).getAssignedPotential(branch);
-			return branch;
+			return ((TreeADDPotential)parent).getBranches().get(index);
 		}
 		return null;
 	}

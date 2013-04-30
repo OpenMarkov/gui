@@ -12,11 +12,7 @@ package org.openmarkov.core.gui.localize;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
-
-
 
 /**
  * @author mluque
@@ -38,7 +34,4 @@ public class XMLResourceBundle extends ResourceBundle {
 	public Enumeration<String> getKeys() {
 		return (Enumeration<String>) props.keySet();
 	}
-	
-	
-	
 }
