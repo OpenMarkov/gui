@@ -428,6 +428,45 @@
         <Label value = "Evolución temporal" />
       </TemporalEvolution>      
   </CostEffectiveness> 
+  <TreeADD>
+  	<AddSubtree value="Añadir subárbol"/>
+  	<StartNode value="Establecer primer nodo"/>
+  	<ChangeVariable value="Cambiar variable"/>
+  	<EditPotential>
+  		<Label value="Editar potencial"/>
+  	</EditPotential>
+  	<JoinBranches>
+  		<Label value="Añadir estados a rama"/>
+  	</JoinBranches>
+  	<DissociateStates>
+  		<Label value="Quitar estados de rama"/>
+  	</DissociateStates>
+  	<ChangeVariable>
+  		<Label value="Cambiar variable"/>
+  	</ChangeVariable>
+  	<RemoveVariables>
+  		<Label value="Quitar variables"/>
+  	</RemoveVariables>
+  	<RemoveSubtree>
+  		<Label value="Quitar subárbol"/>
+  	</RemoveSubtree>
+  	<AddVariables>
+  		<Label value="Añadir variables a potencial"/>
+  	</AddVariables>
+  	<SplitInterval>
+  		<Label value="Dividir intervalo"/>
+  	</SplitInterval>
+  	<ChangeInterval>
+  		<Label value="Modificar intervalo"/>
+  	</ChangeInterval>
+  	<SetLabel >
+  		<Label value="Establecer etiqueta"/>
+  	</SetLabel>
+  	<SetReference>
+  		<Label value="Establecer referencia"/>
+  	</SetReference>
+  	<DomainChangeWarning value="Está tratando de modificar el dominio de la variable"/>
+  </TreeADD>  
   <BUNDLEFILE>
     <Text value="Español" />
   </BUNDLEFILE>

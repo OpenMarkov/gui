@@ -34,23 +34,23 @@ public class ChangeIntervalPanel extends JPanel{
 	private JComboBox<String> jComboBoxLowerSymbol;
 	
 	public ChangeIntervalPanel(TreeADDBranch treeBranch) {
-		min = treeBranch.getMinThreshold();
-		max = treeBranch.getMaxThreshold();
+		min = treeBranch.getLowerBound();
+		max = treeBranch.getUpperBound();
 		
-		Float minDomainLimit = (float) treeBranch.getTopVariable().getPartitionedInterval().getMin();
-		Float maxDomainLimit = (float) treeBranch.getTopVariable().getPartitionedInterval().getMax();
+		Float minDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMin();
+		Float maxDomainLimit = (float) treeBranch.getRootVariable().getPartitionedInterval().getMax();
 		
-		boolean isLeftClosed = treeBranch.getTopVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
-		boolean isRightClosed = treeBranch.getTopVariable().getPartitionedInterval().isRightClosed();
+		boolean isLeftClosed = treeBranch.getRootVariable().getPartitionedInterval().isLeftClosed(); // true -> [) 
+		boolean isRightClosed = treeBranch.getRootVariable().getPartitionedInterval().isRightClosed();
 		boolean minBelongsToLeftDomain = !isLeftClosed;
 		boolean maxBelongsToLeftDomain = isRightClosed;
 	
 		
-		minText = new JTextField( Float.toString(min.getLimit()));
+		minText = new JTextField( String.valueOf(min.getLimit()));
 		minText.setBounds(68, 64, 86, 20);
 		minText.setColumns(10);
 		
-		maxText = new JTextField( Float.toString(max.getLimit()));
+		maxText = new JTextField( String.valueOf(max.getLimit()));
 		maxText.setBounds(189, 64, 86, 20);
 		maxText.setColumns(10);
 	

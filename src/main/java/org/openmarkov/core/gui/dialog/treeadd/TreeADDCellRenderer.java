@@ -135,6 +135,11 @@ public class TreeADDCellRenderer extends JPanel
         {
             getTreeCellRendererComponent (tree, child, selected, expanded, leaf, row, hasFocus);
         }
+        if (branch.getLabel()!= null)
+        {
+            String oldText = (rightLabel.getText()!=null)? rightLabel.getText() : "";
+            rightLabel.setText (" {" + branch.getLabel() + "}" + oldText);
+        }
         leftLabel.setText (getBranchDescriptiontHTML (branch));
         return this;
     }
@@ -162,14 +167,12 @@ public class TreeADDCellRenderer extends JPanel
         if (potential instanceof TreeADDPotential)
         {
             TreeADDPotential treeADDPotential = (TreeADDPotential) potential;
-            Variable topVariable = treeADDPotential.getTopVariable ();
+            Variable topVariable = treeADDPotential.getRootVariable ();
             leftLabel.setIcon(getIcon(topVariable));
         }
         else
         {
             rightLabel.setText (" " + potential.treeADDString ());
-            //Variable variable = (potential.getPotentialRole() == PotentialRole.UTILITY)? potential.getUtilityVariable() : potential.getVariable(0);
-            //leftLabel.setIcon(getIcon(variable));
         }
         return this;
     }
@@ -219,13 +222,13 @@ public class TreeADDCellRenderer extends JPanel
     public String getBranchDescriptiontHTML (TreeADDBranch treeBranch)
     {
         String txtLeft = "<html><table border=1>";
-        Variable topVariable = treeBranch.getTopVariable ();
+        Variable topVariable = treeBranch.getRootVariable ();
         if (topVariable == null) throw new RuntimeException ();
         if (topVariable.getVariableType () == VariableType.NUMERIC)
         {
             String varName = topVariable.getName ();
-            Threshold min = treeBranch.getMinThreshold ();
-            Threshold max = treeBranch.getMaxThreshold ();
+            Threshold min = treeBranch.getLowerBound ();
+            Threshold max = treeBranch.getUpperBound ();
             String intervalString = "";
             String minimun = "";
             String maximun = "";

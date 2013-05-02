@@ -434,6 +434,45 @@
         <Label value = "Temporal Evolution" />
       </TemporalEvolution>
   </CostEffectiveness>
+  <TreeADD>
+  	<AddSubtree value="Add subtree"/>
+  	<StartNode value="Set start node"/>
+  	<ChangeVariable value="Change variable"/>
+  	<EditPotential>
+  		<Label value="Edit potential"/>
+  	</EditPotential>
+  	<JoinBranches>
+  		<Label value="Add states to branch"/>
+  	</JoinBranches>
+  	<DissociateStates>
+  		<Label value="Remove states from branch"/>
+  	</DissociateStates>
+  	<ChangeVariable>
+  		<Label value="Change variable"/>
+  	</ChangeVariable>
+  	<RemoveVariables>
+  		<Label value="Remove variables"/>
+  	</RemoveVariables>
+  	<RemoveSubtree>
+  		<Label value="Remove subtree"/>
+  	</RemoveSubtree>
+  	<AddVariables>
+  		<Label value="Add variables to potential"/>
+  	</AddVariables>
+  	<SplitInterval>
+  		<Label value="Split interval"/>
+  	</SplitInterval>
+  	<ChangeInterval>
+  		<Label value="Change interval"/>
+  	</ChangeInterval>
+  	<SetLabel >
+  		<Label value="Set label"/>
+  	</SetLabel>
+  	<SetReference>
+  		<Label value="Set reference"/>
+  	</SetReference>
+  	<DomainChangeWarning value="Be careful, you are trying to change variable domain"/>
+  </TreeADD>
   <BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

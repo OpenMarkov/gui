@@ -1,11 +1,11 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 package org.openmarkov.core.gui.dialog.treeadd;
 
@@ -17,70 +17,50 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+
 /**
  * 
  * @author myebra
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class AddVariablesCheckBoxPanel extends JPanel{
-	
-	private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-	private TreeADDBranch branch;
-	private TreeADDPotential treeADD;
-		
-	public AddVariablesCheckBoxPanel (TreeADDBranch branch, TreeADDPotential treeADD) {
-		//super();
-		this.branch = branch;
-		this.treeADD = treeADD;
-		initialize();
-		repaint();
-	
-	}
-	 public void initialize() {
-		//setLayout(new BorderLayout());
-		setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		List<Variable> variables = branch.getParentVariables();
-	
-		List<Variable> potentialVariables = branch.getPotential().getVariables();
-		Variable topVariable =  branch.getTopVariable();
-		List<Variable> posibleVariables = new ArrayList<Variable>();
-		if (branch.getPotential().getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
-			for (Variable variable : variables) {
-				if (variable != topVariable && variable!= variables.get(0) && !potentialVariables.contains(variable) ) {
-					posibleVariables.add(variable);
-					}
-			}
-		} else if (branch.getPotential().getPotentialRole() == PotentialRole.UTILITY) {
-			for (Variable variable : variables) {
-				if (variable != topVariable && variable!= branch.getPotential().getUtilityVariable() && !potentialVariables.contains(variable) ) {
-					posibleVariables.add(variable);
-					}
-			}
-		}
-		
-		for (Variable variable : posibleVariables) {
-			JCheckBox checkBox = new JCheckBox (variable.getName());
-			checkBoxes.add(checkBox);
-			//checkBox.setAlignmentX((float) 0.5);
-			//checkBox.setAlignmentY((float) 0.5);
-			add(checkBox, CENTER_ALIGNMENT);
-		}
-	 }
-	 
-	
-	 
-	public TreeADDBranch getBranch() {
-		 return this.branch;
-	}
-	public TreeADDPotential getTreeADDPotential() {
-		 return this.treeADD;
-	}
-	public ArrayList<JCheckBox> getCheckBoxes () {
-		return this.checkBoxes;
-	}
+public class AddVariablesCheckBoxPanel extends JPanel {
+
+    private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+    private TreeADDBranch branch;
+    private TreeADDPotential treeADD;
+
+    public AddVariablesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
+        // super();
+        this.branch = branch;
+        this.treeADD = treeADD;
+        initialize();
+        repaint();
+    }
+
+    public void initialize() {
+        // setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        List<Variable> possibleVariables = branch.getAddableVariables();
+        for (Variable variable : possibleVariables) {
+            JCheckBox checkBox = new JCheckBox(variable.getName());
+            checkBoxes.add(checkBox);
+            add(checkBox, CENTER_ALIGNMENT);
+        }
+    }
+
+    public TreeADDBranch getBranch() {
+        return this.branch;
+    }
+
+    public TreeADDPotential getTreeADDPotential() {
+        return this.treeADD;
+    }
+
+    public ArrayList<JCheckBox> getCheckBoxes() {
+        return this.checkBoxes;
+    }
 }
