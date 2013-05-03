@@ -94,11 +94,12 @@ public class TreeADDCellRenderer extends JPanel
 		} else if (value instanceof Potential) {
 			retCode = getTreeCellRendererPotential(tree, (Potential) value,
 					selected, expanded, leaf, row, hasFocus);
-		} else {
-			throw new RuntimeException("Class not allowed: "
-					+ value.getClass().getName());
+		} else if (value instanceof String) {
+		    leftLabel.setText ("@"+value.toString());
+		    retCode = this;
+		}else {
+			throw new RuntimeException("Class not allowed: " + value.getClass().getName());
 		}
-        
         return retCode;
     }
 
@@ -135,7 +136,7 @@ public class TreeADDCellRenderer extends JPanel
         {
             getTreeCellRendererComponent (tree, child, selected, expanded, leaf, row, hasFocus);
         }
-        if (branch.getLabel()!= null)
+        if (branch.isLabeled())
         {
             String oldText = (rightLabel.getText()!=null)? rightLabel.getText() : "";
             rightLabel.setText (" {" + branch.getLabel() + "}" + oldText);

@@ -50,9 +50,17 @@ public class ActionCommands {
      */
     public static final String SET_LABEL = "SetLabel";
     /**
+     * Action invoked when the user wants to remove a label.
+     */
+    public static final String REMOVE_LABEL = "RemoveLabel";
+    /**
      * Action invoked when the user wants to set a reference.
      */
     public static final String SET_REFERENCE = "SetReference";
+    /**
+     * Action invoked when the user wants to remove a reference.
+     */
+    public static final String REMOVE_REFERENCE = "RemoveReference";
     /**
      * Action invoked when the user wants to change the top variable
      */

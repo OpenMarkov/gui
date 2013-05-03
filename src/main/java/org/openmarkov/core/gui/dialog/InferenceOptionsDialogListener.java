@@ -19,14 +19,14 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
  * @author asaez
  * @version 1.0
  */
-public class OptionsInferenceDialogListener
+public class InferenceOptionsDialogListener
     implements
         ActionListener
 {
     /**
      * The Dialog to which this listener is associated
      */
-    OptionsInferenceDialog optionsInferenceDialog = null;
+    InferenceOptionsDialog optionsInferenceDialog = null;
     /**
      * The editor panel that called the associated dialog.
      */
@@ -39,7 +39,7 @@ public class OptionsInferenceDialogListener
     /**
      * constructor
      */
-    public OptionsInferenceDialogListener (OptionsInferenceDialog optionsInferenceDialog,
+    public InferenceOptionsDialogListener (InferenceOptionsDialog optionsInferenceDialog,
                                            EditorPanel editorPanel,
                                            InferenceToolBar inferenceToolBar)
     {

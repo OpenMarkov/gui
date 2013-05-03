@@ -117,7 +117,6 @@ public class NodeAddFindingDialog extends JDialog
             int posY = owner.getY () + (owner.getHeight () - this.getHeight ()) / 2;
             this.setLocation (posX, posY);
             setModal (true);
-            setVisible (true);
         }
     }
 

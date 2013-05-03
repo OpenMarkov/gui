@@ -40,7 +40,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
-import org.openmarkov.core.gui.dialog.OptionsInferenceDialog;
+import org.openmarkov.core.gui.dialog.InferenceOptionsDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
@@ -340,6 +340,7 @@ public class EditorPanel extends JPanel
      * @param incrRight increase for the right side.
      * @param incrBottom increase for below.
      */
+    @SuppressWarnings("unused")
     private void notifySizeChanged (double incrLeft,
                                     double incrTop,
                                     double incrRight,
@@ -1266,6 +1267,7 @@ public class EditorPanel extends JPanel
             NodeAddFindingDialog nodeAddFinding = new NodeAddFindingDialog (
                                                                             Utilities.getOwner (this),
                                                                             node, finding, g, this);
+            nodeAddFinding.setVisible (true);
         }
         repaint ();
         setSelectedAllNodes (false);
@@ -2529,10 +2531,11 @@ public class EditorPanel extends JPanel
      */
     public void setInferenceOptions ()
     {
-        OptionsInferenceDialog optionsInferenceDialog = new OptionsInferenceDialog (
+        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog (
                                                                                     Utilities.getOwner (this),
                                                                                     this,
                                                                                     networkPanel.getMainPanel ().getInferenceToolBar ());
+        inferenceOptionsDialog.setVisible (true);        
     }
 
     /**

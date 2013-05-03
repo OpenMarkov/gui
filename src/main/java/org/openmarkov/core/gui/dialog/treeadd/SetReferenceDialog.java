@@ -25,7 +25,7 @@ public class SetReferenceDialog  extends OkCancelHorizontalDialog{
 
     private TreeADDBranch branch;
     private JComboBox<String> labels;
-    private Map<String,Potential> labeledPotentials;
+    private Map<String,TreeADDBranch> labeledBranches;
     
     public SetReferenceDialog(Window owner, TreeADDBranch branch, TreeADDPotential rootTreeADDPotential) {
         super(owner);
@@ -36,10 +36,10 @@ public class SetReferenceDialog  extends OkCancelHorizontalDialog{
         setLocationRelativeTo(owner);
         getComponentsPanel().add(labels, BorderLayout.NORTH);
         
-        labeledPotentials = rootTreeADDPotential.getLabeledPotentials();
-        for(String label : labeledPotentials.keySet())
+        labeledBranches = rootTreeADDPotential.getLabeledBranches();
+        for(String label : labeledBranches.keySet())
         {
-            Potential labeledPotential = labeledPotentials.get(label);
+            Potential labeledPotential = labeledBranches.get(label).getPotential();
             if(branch.getParentVariables().containsAll(labeledPotential.getVariables()))
             {
                 labels.addItem(label);
@@ -50,8 +50,7 @@ public class SetReferenceDialog  extends OkCancelHorizontalDialog{
     @Override
     protected boolean doOkClickBeforeHide() {
         String selectedLabel = labels.getSelectedItem().toString();
-        branch.setReference(selectedLabel);
-        branch.setPotential(labeledPotentials.get(selectedLabel));
+        branch.setReferencedBranch(labeledBranches.get(selectedLabel));
         return true;
     }
 

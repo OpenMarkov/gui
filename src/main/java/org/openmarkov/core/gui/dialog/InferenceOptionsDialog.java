@@ -28,7 +28,7 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
  * @author asaez
  * @version 1.0
  */
-public class OptionsInferenceDialog extends JDialog
+public class InferenceOptionsDialog extends JDialog
 {
     /**
 	 * 
@@ -49,7 +49,7 @@ public class OptionsInferenceDialog extends JDialog
      * @param owner window that owns this dialog.
      * @param editorPanel the editor panel that called this dialog.
      */
-    public OptionsInferenceDialog (Window owner,
+    public InferenceOptionsDialog (Window owner,
                                    EditorPanel editorPanel,
                                    InferenceToolBar inferenceToolBar)
     {
@@ -88,7 +88,7 @@ public class OptionsInferenceDialog extends JDialog
         buttonsPanel.add (okButton);
         buttonsPanel.add (cancelButton);
         principalPanel.add (buttonsPanel, BorderLayout.SOUTH);
-        OptionsInferenceDialogListener optionsInferenceDialogListener = new OptionsInferenceDialogListener (
+        InferenceOptionsDialogListener optionsInferenceDialogListener = new InferenceOptionsDialogListener (
                                                                                                             this,
                                                                                                             editorPanel,
                                                                                                             inferenceToolBar);
@@ -97,7 +97,6 @@ public class OptionsInferenceDialog extends JDialog
         pack ();
         setMinimumSize (new Dimension (300, getHeight ()));
         setModal (true);
-        setVisible (true);
     }
 
     /**

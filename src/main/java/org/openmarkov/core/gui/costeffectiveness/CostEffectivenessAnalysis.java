@@ -97,19 +97,22 @@ public class CostEffectivenessAnalysis {
             }
         }
         // Impose policy according to interest variable's decision criterion
-        String decisionCriterion = variableOfInterest.getDecisionCriteria().getString();
-        Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriteriaVariable();
-        ProbNode decisionCriteriaNode =  expandedNetwork.getProbNode(expandedNetwork.getDecisionCriteriaVariable());
-        TablePotential decisionCriterionPolicy = new TablePotential(Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
-        for(int i=0; i < decisionCriterionPolicy.values.length; ++i) 
+        if(variableOfInterest.getDecisionCriteria() != null)
         {
-            try {
-                decisionCriterionPolicy.values[i] = (decisionCriteriaVariable.getStateIndex(decisionCriterion) == i)? 1 : 0;
-            } catch (InvalidStateException e) {
-                e.printStackTrace();
+            String decisionCriterion = variableOfInterest.getDecisionCriteria().getString();
+            Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriteriaVariable();
+            ProbNode decisionCriteriaNode =  expandedNetwork.getProbNode(expandedNetwork.getDecisionCriteriaVariable());
+            TablePotential decisionCriterionPolicy = new TablePotential(Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
+            for(int i=0; i < decisionCriterionPolicy.values.length; ++i) 
+            {
+                try {
+                    decisionCriterionPolicy.values[i] = (decisionCriteriaVariable.getStateIndex(decisionCriterion) == i)? 1 : 0;
+                } catch (InvalidStateException e) {
+                    e.printStackTrace();
+                }
             }
+            decisionCriteriaNode.setPotential(decisionCriterionPolicy);
         }
-        decisionCriteriaNode.setPotential(decisionCriterionPolicy);        
         try {
             VariableElimination variableElimination = new VariableElimination(expandedNetwork);
           
