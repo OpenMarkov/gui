@@ -1021,7 +1021,7 @@ public class EditorPanel extends JPanel
                 }
                 UniformPotential policy = new UniformPotential (
                                                                 variables,
-                                                                PotentialRole.CONDITIONAL_PROBABILITY);
+                                                                PotentialRole.POLICY);
                 List<Potential> policies = new ArrayList<Potential> ();
                 policies.add (policy);
                 probNode.setPotentials (policies);
