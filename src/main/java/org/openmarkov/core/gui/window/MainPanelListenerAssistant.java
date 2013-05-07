@@ -96,26 +96,26 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     /**
      * Main panel which this object helps.
      */
-    private MainPanel mainPanel = null;
+    private MainPanel           mainPanel       = null;
     /**
      * last open files instance
      */
-    private LastOpenFiles lastOpenFiles = new LastOpenFiles();
+    private LastOpenFiles       lastOpenFiles   = new LastOpenFiles();
     /**
      * Messages string resource.
      */
     // private StringResource stringResource;
-    private List<NetworkPanel> networkPanels;
+    private List<NetworkPanel>  networkPanels;
     /**
      * Counter incremented each time a network frame is created.
      */
-    private static int frameIndex = 1;
+    private static int          frameIndex      = 1;
     /**
      * Value for the Zoom increment/decrement
      */
     private static final double zoomChangeValue = 0.2;
 
-    private StringDatabase stringDatabase = null;
+    private StringDatabase      stringDatabase  = null;
 
     /**
      * Constructor that save the references to the objects that this class
@@ -181,11 +181,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
             getCurrentNetworkPanel().changeNetworkProperties();
         } else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
-            expandNetwork(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel()
-                    .getEditorPanel().getPreResolutionEvidence());
+            expandNetwork(getCurrentNetworkPanel().getProbNet(),
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
         } else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
-            expandNetworkCE(getCurrentNetworkPanel().getProbNet(), getCurrentNetworkPanel()
-                    .getEditorPanel().getPreResolutionEvidence());
+            expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
         } else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
             closeApplication();
         } else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
@@ -259,8 +259,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (actionCommand.equals(ActionCommands.BYNAME_NODES)) {
             activateByTitle(false);
         } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS)) {
-            MainPanel.getUniqueInstance().getToolbarManager()
-                    .addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS + ".", ""));
+            MainPanel.getUniqueInstance().getToolbarManager().addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS
+                    + ".",
+                    ""));
         } else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
             incrementZoom(getCurrentPanel());
         } else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
@@ -268,17 +269,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
             setZoom(true, getCurrentPanel(), 0);
         } else if (ActionCommands.isZoomActionCommand(actionCommand)) {
-            setZoom(false, getCurrentPanel(),
+            setZoom(false,
+                    getCurrentPanel(),
                     ActionCommands.getValueZoomActionCommand(actionCommand));
         } else if (actionCommand.equals(ActionCommands.MESSAGE_WINDOW)) {
             showMessageWindow();
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
             // Deterministic
             showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
-                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(), false);
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
+                    false);
         } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
             showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
-                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(), true);
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
+                    true);
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
@@ -311,7 +315,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             // TODO OOPN end
         } else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
             toggleDecisionTree(this.getCurrentNetworkPanel().getProbNet());
-        }else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
+        } else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
             this.getCurrentNetworkPanel().createNextSliceNode();
         } else {
             ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
@@ -400,8 +404,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     networkPanel.getTitle());
             String message = stringDatabase.getFormattedString("NetworkNotSaved.Text.Label",
                     networkPanel.getTitle());
-            response = JOptionPane.showConfirmDialog(Utilities.getOwner(mainPanel), message, title,
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+            response = JOptionPane.showConfirmDialog(Utilities.getOwner(mainPanel),
+                    message,
+                    title,
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
             switch (response) {
             case JOptionPane.YES_OPTION: {
                 canClose = saveNetwork(networkPanel);
@@ -460,16 +467,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     public void frameSelected(FrameContentPanel contentPanel) {
         if (contentPanel instanceof NetworkPanel) {
-            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(
-                    (NetworkPanel) contentPanel);
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(
-                    getCurrentNetworkPanel().getCurrentCase());
+            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent((NetworkPanel) contentPanel);
+            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
             mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
         } else if (contentPanel instanceof MessageWindow) {
             mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
         } else if (contentPanel instanceof DecisionTreeWindow) {
-            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(
-                    (DecisionTreeWindow) contentPanel);
+            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree((DecisionTreeWindow) contentPanel);
         }
     }
 
@@ -484,44 +488,51 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @param saveOptions
      * @return true if the network could be saved; otherwise, false.
      */
-    private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName,
+    private boolean saveNetworkActions(NetworkPanel networkPanel,
+            String fileName,
             SaveOptions saveOptions) {
         boolean result = false;
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                .println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
+        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("SavingNetwork.Text.Label")
+                + " "
+                + fileName);
         try {
             if (saveOptions != null && saveOptions.isSavePlainNetwork()) {
                 networkPanel.showPlainNetwork();
             }
-            if (saveOptions != null && saveOptions.isSaveClassesInFile()
+            if (saveOptions != null
+                    && saveOptions.isSaveClassesInFile()
                     && networkPanel.getProbNet() instanceof OOPNet) {
                 ((OOPNet) networkPanel.getProbNet()).fillClassList();
             }
-            NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel()
-                    .getEvidence(), fileName);
+            NetsIO.saveNetworkFile(networkPanel.getProbNet(),
+                    networkPanel.getEditorPanel().getEvidence(),
+                    fileName);
             // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
             networkPanel.setModified(false);
             networkPanel.setNetworkFile(fileName);
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
             lastOpenFiles.setLastFileName(fileName);
             OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-                    getDirectoryFileName(fileName), OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-            mainPanel.getMessageWindow().getNormalMessageStream()
-                    .println(stringDatabase.getString("NetworkSaved.Text.Label"));
+                    getDirectoryFileName(fileName),
+                    OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkSaved.Text.Label"));
             mainPanel.getMainMenu().rechargeLastOpenFiles();
             result = true;
         } catch (NotRecognisedNetworkFileExtensionException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                     stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         } catch (CanNotWriteNetworkToFileException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                     stringDatabase.getString("ErrorSavingNetwork.Text.Label"),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                     stringDatabase.getString("Generic I/O error"),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         }
         return result;
     }
@@ -567,12 +578,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 in.close();
                 out.close();
             } catch (IOException e) {
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                        .println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackupError.Text.Label"));
             }
         }
-        mainPanel.getMessageWindow().getNormalMessageStream()
-                .println(stringDatabase.getString("NetworkBackup.Text.Label"));
+        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackup.Text.Label"));
         saveNetwork(networkPanel);
         fileName = networkPanel.getNetworkFile();
         closeCurrentNetwork();
@@ -599,8 +608,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     private boolean saveNetworkAs(NetworkPanel networkPanel) {
         String fileName = networkPanel.getNetworkFile();
-        fileName = requestNetworkFileToSave((fileName != null) ? fileName : networkPanel
-                .getProbNet().getName());
+        fileName = requestNetworkFileToSave((fileName != null) ? fileName
+                : networkPanel.getProbNet().getName());
         SaveOptions saveOptions = null;
         if (fileName != null) {
             networkPanel.setNetworkFile(fileName);
@@ -608,11 +617,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             MainPanel mainPanel = MainPanel.getUniqueInstance();
             saveOptions = new SaveOptions(null, networkPanel.getProbNet(), true);
             if (saveOptions.isWorthShowing()) {
-                saveOptions.setLocation(
-                        mainPanel.getLocation().x + (mainPanel.getWidth() - saveOptions.getWidth())
-                                / 2,
+                saveOptions.setLocation(mainPanel.getLocation().x
+                        + (mainPanel.getWidth() - saveOptions.getWidth())
+                        / 2,
                         mainPanel.getLocation().y
-                                + (mainPanel.getHeight() - saveOptions.getHeight()) / 2);
+                                + (mainPanel.getHeight() - saveOptions.getHeight())
+                                / 2);
                 saveOptions.setVisible(true);
             }
         }
@@ -634,8 +644,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         String filename = null;
         if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
             filename = fileChooser.getSelectedFile().getAbsolutePath();
-            String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter())
-                    .getFilterExtension();
+            String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
             if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
                 filename += "." + chosenFilterExtension.toLowerCase();
             }
@@ -651,12 +660,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @wbp.parser.entryPoint
      */
     private void createNewNetwork() {
-        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(
-                Utilities.getOwner(mainPanel));
+        NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
         if (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON) {
             ProbNet probNet = dialogProperties.getProbNet();
             String networkName = new String(stringDatabase.getString("InternalFrame.Title.Label")
-                    + " " + frameIndex);
+                    + " "
+                    + frameIndex);
             probNet.setName(networkName);
             probNet.getPNESupport().setWithUndo(true);
             networkPanels.add(createNewFrame(probNet));
@@ -687,11 +696,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
             // mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(
-                    getCurrentNetworkPanel().getCurrentCase());
+            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
         } catch (UnsupportedOperationException e) {
-            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), e.getMessage(),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                    e.getMessage(),
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         }
         return networkPanel;
     }
@@ -719,16 +729,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         NetworkPanel networkPanel = null;
         if (fileName != null) {
             try {
-                mainPanel
-                        .getMessageWindow()
-                        .getNormalMessageStream()
-                        .println(
-                                stringDatabase.getString("LoadingNetwork.Text.Label") + " "
-                                        + fileName);
+                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("LoadingNetwork.Text.Label")
+                        + " "
+                        + fileName);
                 ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
                 netReadFromFile = probNetInfo.getProbNet();
-                netReadFromFile.getPNESupport().addUndoableEditListener(
-                        mainPanel.getMainPanelMenuAssistant());
+                netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
                 netReadFromFile.getPNESupport().setWithUndo(true);
                 netReadFromFile.setName(new File(fileName).getName());
                 networkPanel = createNewFrame(netReadFromFile);
@@ -746,8 +752,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                             getDirectoryFileName(fileName),
                             OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
                 }
-                mainPanel.getMessageWindow().getNormalMessageStream()
-                        .println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkLoaded.Text.Label"));
                 mainPanel.getMainMenu().rechargeLastOpenFiles();
             } catch (Exception e) {
                 mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
@@ -817,8 +822,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates an expanded network from current network
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(
-                Utilities.getOwner(mainPanel));
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
         if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
             int numSlices = costEffectivenessDialog.getNumSlices();
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
@@ -838,8 +842,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * GUI
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(
-                Utilities.getOwner(mainPanel), probNet, false, false);
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel),
+                probNet,
+                false,
+                false);
         if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
             EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
             int numSlices;
@@ -848,8 +854,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             if (probNet.getSpecialTimeDependentNodes().size() >= 0) {
                 for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
                     Variable timeDependentVariable = timeDependentNode.getVariable();
-                    Finding finding = new Finding(timeDependentVariable, costEffectivenessDialog
-                            .getInitialValues().get(timeDependentVariable));
+                    Finding finding = new Finding(timeDependentVariable,
+                            costEffectivenessDialog.getInitialValues().get(timeDependentVariable));
                     try {
                         evidence.addFinding(finding);
                     } catch (InvalidStateException | IncompatibleEvidenceException e) {
@@ -867,12 +873,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 }
             }
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-            expandedNetFactory.adaptMPADforCE(numSlices, costDiscountRate,
-                    effectivenessDiscountRate, evidence,
-                    costEffectivenessDialog.getTransitionTime());
-            // project all the evidence
-            // expandedNetFactory.projectEvidence(evidence);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
+            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
+                    numSlices,
+                    evidence,
+                    costEffectivenessDialog.getTransitionTime());
+            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
+                    costDiscountRate,
+                    effectivenessDiscountRate);
             for (ProbNode probNode : expandedNetwork.getProbNodes()) {
                 probNode.samplePotentials();
             }
@@ -895,9 +903,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
         evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
         JFileChooser fileChooser = new JFileChooser();
-        File currentDirectory = new File(OpenMarkovPreferences.get(
-                OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-                OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+        File currentDirectory = new File(OpenMarkovPreferences.get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+                OpenMarkovPreferences.OPENMARKOV_DIRECTORIES,
+                "."));
         fileChooser.setCurrentDirectory(currentDirectory);
         String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
         fileChooser.setSelectedFile(new File(suggestedFileName));
@@ -918,21 +926,19 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         FileChooser evidenceFileChooser = new DBReaderFileChooser();
         evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
         // Set last used evidence format as default
-        String lastFileFilter = OpenMarkovPreferences.get(
-                OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
-                OpenMarkovPreferences.OPENMARKOV_FORMATS, "xls");
+        String lastFileFilter = OpenMarkovPreferences.get(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
+                OpenMarkovPreferences.OPENMARKOV_FORMATS,
+                "xls");
         evidenceFileChooser.setFileFilter(lastFileFilter);
         if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
             // load the selected file
             System.out.println("Load evidence file "
                     + evidenceFileChooser.getSelectedFile().getAbsolutePath());
             CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
-            CaseDatabaseReader caseDbReader = caseDbManager.getReader(FilenameUtils
-                    .getExtension(evidenceFileChooser.getSelectedFile().getName()));
+            CaseDatabaseReader caseDbReader = caseDbManager.getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
             ProbNet currentNet = currentNetworkPanel.getProbNet();
             try {
-                CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile()
-                        .getAbsolutePath());
+                CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
                 List<Variable> variables = caseDatabase.getVariables();
                 int[][] cases = caseDatabase.getCases();
                 for (int i = 0; i < cases.length; ++i) {
@@ -945,47 +951,39 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                                     && !variables.get(j).getStateName(cases[i][j]).equals("?")) {
                                 variable = currentNet.getVariable(variables.get(j).getName());
                                 try {
-                                    newEvidenceCase.addFinding(new Finding(variable, variable
-                                            .getStateIndex(variables.get(j).getStateName(
-                                                    cases[i][j]))));
+                                    newEvidenceCase.addFinding(new Finding(variable,
+                                            variable.getStateIndex(variables.get(j).getStateName(cases[i][j]))));
                                 } catch (InvalidStateException e) {
-                                    JOptionPane
-                                            .showMessageDialog(
-                                                    Utilities.getOwner(mainPanel),
-                                                    stringDatabase
-                                                            .getString("LoadEvidence.Error.InvalidState.Text")
-                                                            + e.getMessage(), stringDatabase
-                                                            .getString("ErrorWindow.Title.Label"),
-                                                    JOptionPane.ERROR_MESSAGE);
+                                    JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                            stringDatabase.getString("LoadEvidence.Error.InvalidState.Text")
+                                                    + e.getMessage(),
+                                            stringDatabase.getString("ErrorWindow.Title.Label"),
+                                            JOptionPane.ERROR_MESSAGE);
                                 }
                             }
                         } catch (ProbNodeNotFoundException e) {
-                            JOptionPane.showMessageDialog(
-                                    Utilities.getOwner(mainPanel),
-                                    stringDatabase
-                                            .getString("LoadEvidence.Error.UnknownVariable.Text")
-                                            + ": " + variables.get(j).getName(), stringDatabase
-                                            .getString("ErrorWindow.Title.Label"),
+                            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                    stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text")
+                                            + ": "
+                                            + variables.get(j).getName(),
+                                    stringDatabase.getString("ErrorWindow.Title.Label"),
                                     JOptionPane.ERROR_MESSAGE);
                         } catch (IncompatibleEvidenceException e) {
-                            JOptionPane
-                                    .showMessageDialog(
-                                            Utilities.getOwner(mainPanel),
-                                            stringDatabase
-                                                    .getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
-                                            stringDatabase.getString("ErrorWindow.Title.Label"),
-                                            JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                                    stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
+                                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
                 }
                 // save format extension in preferences
                 OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
-                        ((FileFilterBasic) evidenceFileChooser.getFileFilter())
-                                .getFilterExtension(), OpenMarkovPreferences.OPENMARKOV_FORMATS);
+                        ((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
+                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
                 OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-                        getDirectoryFileName(evidenceFileChooser.getSelectedFile()
-                                .getAbsolutePath()), OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+                        getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
+                        OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                         stringDatabase.getString("LoadEvidence.Error.Text"),
@@ -1005,7 +1003,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } catch (CannotUndoException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                     stringDatabase.getString("CannotUndo.Text.Label"),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1018,7 +1017,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } catch (CannotRedoException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                     stringDatabase.getString("CannotRedo.Text.Label"),
-                    stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                    stringDatabase.getString("ErrorWindow.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1033,7 +1033,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @throws CannotRedoException
      *             - if redo can't be performed.
      */
-    private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
+    private void undoRedo(boolean undoOperation)
+            throws CannotUndoException, CannotRedoException {
         NetworkPanel networkPanel = null;
         networkPanel = getCurrentNetworkPanel();
         if (undoOperation) {
@@ -1079,12 +1080,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
         }
         getCurrentNetworkPanel().setSelectedAllObjects(false);
-        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(
-                getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
         if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
             getCurrentNetworkPanel().updateIndividualProbabilities();
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(
-                    getCurrentNetworkPanel().getCurrentCase());
+            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
         } else {
             // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
             // elimination of findings on returning to Edition Mode
@@ -1104,8 +1103,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void setNewExpansionThreshold(Double newValue) {
         getCurrentNetworkPanel().setExpansionThreshold(newValue);
         getCurrentNetworkPanel().setSelectedAllNodes(false);
-        mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(
-                NetworkPanel.INFERENCE_WORKING_MODE, getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNewWorkingMode(NetworkPanel.INFERENCE_WORKING_MODE,
+                getCurrentNetworkPanel());
         getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.INFERENCE_WORKING_MODE);
     }
 
@@ -1130,10 +1129,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (command.equals("CLEAR_OUT_ALL_EVIDENCE_CASES")) {
             getCurrentNetworkPanel().clearOutAllEvidenceCases();
         }
-        mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(
-                getCurrentNetworkPanel());
-        mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(
-                getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
     }
 
     /**
@@ -1274,15 +1271,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
-    private void showCostEffectivenessDialog(ProbNet probNet, EvidenceCase evidence,
+    private void showCostEffectivenessDialog(ProbNet probNet,
+            EvidenceCase evidence,
             boolean sensitivityAnalysis) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(
-                Utilities.getOwner(mainPanel), probNet, sensitivityAnalysis, false);
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel),
+                probNet,
+                sensitivityAnalysis,
+                false);
 
         if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
+            CostEffectivenessAnalysis costEffectivenessAnalysis = null;
             if (sensitivityAnalysis) {
                 long start = System.currentTimeMillis();
-                ProbabilisticCEA probabilisticCEA = new ProbabilisticCEA(probNet, evidence,
+                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
+                        evidence,
                         costEffectivenessDialog.getCostDiscount(),
                         costEffectivenessDialog.getEffectivenessDiscount(),
                         costEffectivenessDialog.getNumSlices(),
@@ -1291,27 +1293,23 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                         costEffectivenessDialog.getTransitionTime());
 
                 long elapsedTimeMillis = System.currentTimeMillis() - start;
-                JOptionPane.showMessageDialog(null, "PSA took " + (elapsedTimeMillis / 1000)
+                JOptionPane.showMessageDialog(null, "PSA took "
+                        + (elapsedTimeMillis / 1000)
                         + " seconds.");
 
-                JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(
-                        Utilities.getOwner(mainPanel), probabilisticCEA);
-
-                ceaResultsDialog.setVisible(true);
             } else {
-                CostEffectivenessAnalysis costEffectivenessAnalysis = new CostEffectivenessAnalysis(
-                        probNet, evidence, costEffectivenessDialog.getCostDiscount(),
+                costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
+                        evidence,
+                        costEffectivenessDialog.getCostDiscount(),
                         costEffectivenessDialog.getEffectivenessDiscount(),
                         costEffectivenessDialog.getNumSlices(),
                         costEffectivenessDialog.getInitialValues(),
                         costEffectivenessDialog.getTransitionTime());
-
-                JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(
-                        Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
-
-                ceaResultsDialog.setVisible(true);
-
             }
+            JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
+                    costEffectivenessAnalysis);
+            ceaResultsDialog.setVisible(true);
+
         }
     }
 

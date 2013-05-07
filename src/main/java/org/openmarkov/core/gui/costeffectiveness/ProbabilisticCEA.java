@@ -10,13 +10,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
+import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 public class ProbabilisticCEA extends CostEffectivenessAnalysis {
 
@@ -29,6 +35,8 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         super(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numSlices,
                 initialValues, transitionTime);
         this.numSimulations = numSimulations;
+        MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
+        extendEvidence(expandedNetFactory.getExtendedNetwork());
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, this.evidence, numSimulations);
         this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
@@ -106,12 +114,59 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         for (int i = 0; i < numSimulations; ++i)
         {
             sampleProbNet(expandedNetwork);
+            applyDiscountToUncertainValues(expandedNetwork, costDiscount, effectivenessDiscount);
             TablePotential simulationResult = runAnalysis(expandedNetwork, evidence);
             results.add(simulationResult);
         }
         return results;
     }
     
+    private void applyDiscountToUncertainValues(ProbNet expandedNetwork,
+            double costDiscount, double effectivenessDiscount) {
+        
+        // apply discount rate for all temporal utility nodes in the expanded
+        // network
+        List<ProbNode> utilityExpandedNodes = expandedNetwork.getProbNodes(NodeType.UTILITY);
+        for (ProbNode utilityProbNode : utilityExpandedNodes) {
+            Variable utilityVariable = utilityProbNode.getVariable();
+
+            if (utilityVariable.isTemporal()) {
+                Potential potential = utilityProbNode.getPotentials().get(0);
+                int timeSlice = utilityVariable.getTimeSlice();
+                String decisionCriterion = utilityVariable.getDecisionCriteria().getString();
+                double discount = decisionCriterion.equalsIgnoreCase("cost") ? costDiscount
+                        : effectivenessDiscount;
+                applyDiscountToUncertainPotential(potential, timeSlice, discount);
+            }
+        }
+    }
+    
+    public static void applyDiscountToUncertainPotential(Potential potential, int timeSlice, double discount) {
+        double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
+        if(potential instanceof TablePotential)
+        {
+            TablePotential tablePotential = ((TablePotential)potential);
+            double[] potentialValues = tablePotential.getValues();
+            if(tablePotential.getUncertaintyTable() != null)
+            {
+                UncertainValue[] uncertaintyTable = tablePotential.getUncertaintyTable();
+                for(int j=0; j < uncertaintyTable.length; ++j)
+                {
+                    if(uncertaintyTable[j] != null)
+                    {
+                        potentialValues[j] = potentialValues[j] * discountRate;
+                    }
+                }
+            }
+        }else if (potential instanceof TreeADDPotential)
+        {
+            TreeADDPotential treeADD = (TreeADDPotential)potential; 
+            for(TreeADDBranch branch : treeADD.getBranches())
+            {
+                applyDiscountToUncertainPotential(branch.getPotential(), timeSlice, discount);
+            }
+        }
+    }
     public Map<Integer, double[]> calculateCEAC(int maxRatio)
     {
         Map<Integer, double[]> results = new LinkedHashMap<>();
