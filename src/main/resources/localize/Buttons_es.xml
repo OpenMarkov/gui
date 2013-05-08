@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-  <StandarDomain>
+  <StandardDomain>
     <Text>
       <Mnemonic value="d" />
       <Label value="Dominios estándar" />
     </Text>
-  </StandarDomain>
+  </StandardDomain>
   <Apply>
     <Text>
       <Label value="Aplicar" />

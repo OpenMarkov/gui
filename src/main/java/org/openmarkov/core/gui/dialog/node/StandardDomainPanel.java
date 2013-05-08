@@ -59,7 +59,7 @@ public class StandardDomainPanel extends JPanel
     @Override
     public void itemStateChanged (ItemEvent e)
     {
-        String states = ((JRadioButton) e.getItem ()).getName ();
+        //String states = ((JRadioButton) e.getItem ()).getName ();
     }
 
     public ButtonGroup getButtonGroup ()

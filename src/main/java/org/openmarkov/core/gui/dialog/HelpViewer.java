@@ -18,13 +18,11 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
 
-
 import org.apache.log4j.Logger;
-import org.openmarkov.core.gui.OpenMarkov;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.localize.LocaleChangeEvent;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.localize.LocaleChangeListener;
+import org.openmarkov.core.gui.localize.StringDatabase;
 
 
 /**
@@ -99,7 +97,7 @@ public class HelpViewer extends javax.swing.JFrame implements
 		
 		try {
 			// find HelpSet from within the library of OpenMarkov
-			URL hsURL = HelpSet.findHelpSet(OpenMarkov.class.getClassLoader(), aHelpSet);
+			URL hsURL = HelpSet.findHelpSet(getClass().getClassLoader(), aHelpSet);
 			URL realHsURL = hsURL;
 			String language = StringDatabase.getUniqueInstance().getLanguage();
    		    if (language.equals("en") ) {

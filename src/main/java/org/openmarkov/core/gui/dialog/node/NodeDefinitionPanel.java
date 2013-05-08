@@ -751,6 +751,7 @@ public class NodeDefinitionPanel extends JPanel
      * Precision problems with the proccesors Therefore, it is using a "string"
      * concatenation with integers and then a conversion to doubles
      */
+    @SuppressWarnings("unused")
     private void fillJComboBoxNodeRelevance ()
     {
         String number = "0.0";
@@ -1040,13 +1041,14 @@ public class NodeDefinitionPanel extends JPanel
      * Invoked when an item has been selected.
      * @param e event information.
      */
+    @SuppressWarnings("unchecked")
     public void itemStateChanged (ItemEvent e)
     {
         int optionDeselected = 0;
         ItemSelectable itemSelectable = e.getItemSelectable ();
         Object selected[] = itemSelectable.getSelectedObjects ();
         String itemSelected = selected.length == 0 ? "null" : selected[0].toString ();
-        JComboBox comboBox = (JComboBox) e.getSource ();
+        JComboBox<String> comboBox = (JComboBox<String>) e.getSource ();
         if (e.getStateChange () == ItemEvent.DESELECTED)
         {
             optionDeselected = comboBox.getSelectedIndex ();

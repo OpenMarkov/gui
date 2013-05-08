@@ -72,149 +72,172 @@ import org.openmarkov.core.model.network.VariableType;
  * <li>Infinite positive and negative are allowed as values through specific
  * buttons</li>
  * </ul>
+ * 
  * @author jlgozalo
  * @author myebra
  * @version 1.0 29 Jun 2009
  */
-public class DiscretizeTablePanel extends KeyTablePanel
-    implements
-        TableModelListener,
-        MouseListener
-{
+public class DiscretizeTablePanel extends KeyTablePanel implements TableModelListener,
+        MouseListener {
+
+    /**
+     * Class to manage Discretize Render Table in columns "()" and "[]"
+     * 
+     * @author Alberto Ruiz
+     */
+    public class DiscretizeComboBoxRenderer extends JComboBox<String> implements TableCellRenderer {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        public DiscretizeComboBoxRenderer(String[] items) {
+            super(items);
+        }
+
+        public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            if (isSelected) {
+                setForeground(table.getSelectionForeground());
+                super.setBackground(table.getSelectionBackground());
+            } else {
+                setForeground(table.getForeground());
+                setBackground(table.getBackground());
+            }
+            // Select the current value
+            setSelectedItem(value);
+            return this;
+        }
+    }
+
     /**
      * default serial id
      */
-    private static final long    serialVersionUID              = 1L;
+    private static final long     serialVersionUID        = 1L;
+    private static final String   INFINITY                = "\u221E";
+    private static final String   NEGATIVE_INFINITY       = "-" + "\u221E";
     /**
      * ComboBox for intervals symbols
      */
-    final String[]               intervalLowerSymbols          = new String[] {"[", "("};
-    final String[]               intervalUpperSymbols          = new String[] {"]", ")"};
-    final String                 commaSeparator                = ",";
-    JComboBox<String>            jComboBoxLowerSymbol          = null;
-    JComboBox<String>            jComboBoxUpperSymbol          = null;
+    private static final String[] intervalLowerSymbols    = new String[] { "[", "(" };
+    private static final String[] intervalUpperSymbols    = new String[] { "]", ")" };
+    private JComboBox<String>     jComboBoxLowerSymbol    = null;
+    private JComboBox<String>     jComboBoxUpperSymbol    = null;
     /**
      * number of the columns in this type of table
      */
-    int                          idColumnNum;
-    int                          intervalNameColumnNum;
-    int                          lowerLimitSymbolColumnNum;
-    int                          lowLimitValueColumnNum;
-    int                          valuesSeparatorColumnNum;
-    int                          upperLimitValueColumnNum;
-    int                          upperLimitSymbolColumnNum;
-    private final String         infinity                      = "\u221E";
-    private final String         minusInfinity                 = "-" + "\u221E";
+    protected int                 idColumnNum;
+    protected int                 intervalNameColumnNum;
+    protected int                 lowerLimitSymbolColumnNum;
+    protected int                 lowLimitValueColumnNum;
+    protected int                 valuesSeparatorColumnNum;
+    protected int                 upperLimitValueColumnNum;
+    protected int                 upperLimitSymbolColumnNum;
     /**
      * monotony of the items in the table - true = up; false=down;
      */
-    private boolean              upMonotony                    = true;                   // default=UP
+    private boolean               upMonotony              = true;                              // default=UP
     /**
      * Key prefix (required to maintain the index of the table even if it is not
      * shown to the user)
      */
-    private String               keyPrefix                     = null;
+    private String                keyPrefix               = null;
     /**
      * Infinite Positive Button
      */
-    private JButton              jButtonPositiveInfinityDouble = null;
+    private JButton               jButtonPositiveInfinity = null;
     /**
      * Infinite Positive Button
      */
-    private JButton              jButtonNegativeInfinityDouble = null;
+    private JButton               jButtonNegativeInfinity = null;
     /**
      * Button to select variable states.
      */
-    protected JButton            standarDomainButton           = null;
+    protected JButton             standardDomainButton    = null;
 
     /**
      * String database
      */
-    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
-    
+    protected StringDatabase      stringDatabase          = StringDatabase.getUniqueInstance();
+
     /**
      * discretize table model
      */
-    private DiscretizeTableModel discretizeTableModel          = null;
-    protected ProbNode           probNode;
+    private DiscretizeTableModel  discretizeTableModel    = null;
+    protected ProbNode            probNode;
 
     /**
      * default constructor
+     * 
      * @wbp.parser.constructor
      */
-    public DiscretizeTablePanel (String[] newColumns, ProbNode probNode)
-    {
-        this (newColumns, new Object[0][0], "s", probNode);
+    public DiscretizeTablePanel(String[] newColumns, ProbNode probNode) {
+        this(newColumns, new Object[0][0], "s", probNode);
         // s = keyPrefix for id column; not shown to user
     }
 
     /**
      * constructor with parameters
      */
-    public DiscretizeTablePanel (String[] newColumns,
-                                 Object[][] noKeyData,
-                                 String newKeyPrefix,
-                                 ProbNode probNode)
-    {
-        super (newColumns, new Object[0][0], true, true);// , notifier);
+    public DiscretizeTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+            ProbNode probNode) {
+        super(newColumns, new Object[0][0], true, true);// , notifier);
         this.probNode = probNode;
         keyPrefix = newKeyPrefix;
-        initialize ();
-        setData (noKeyData); // also it is setting the model for the table
+        initialize();
+        setData(noKeyData); // also it is setting the model for the table
         // define the look and feel for the table element
-        defineTableLookAndFeel ();
+        defineTableLookAndFeel();
         // define specific listeners
-        defineTableSpecificListeners ();
-        getTableModel ().addTableModelListener (this);
+        defineTableSpecificListeners();
+        getTableModel().addTableModelListener(this);
     }
 
     /**
      * This method initializes this instance.
      */
     @Override
-    protected void initialize ()
-    {
+    protected void initialize() {
         // get the number of each column from the external property file
-        idColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.IntervalId.Order"));
-        intervalNameColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.IntervalName.Order"));
-        lowerLimitSymbolColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.LowLimitSymbol.Order"));
-        lowLimitValueColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.LowLimitValue.Order"));
-        valuesSeparatorColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.ValuesSeparator.Order"));
-        upperLimitValueColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.UpperLimitValue.Order"));
-        upperLimitSymbolColumnNum = Integer.valueOf (stringDatabase.getString ("DiscretizeTableModel.Columns.UpperLimitSymbol.Order"));
+        idColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.IntervalId.Order"));
+        intervalNameColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.IntervalName.Order"));
+        lowerLimitSymbolColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.LowLimitSymbol.Order"));
+        lowLimitValueColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.LowLimitValue.Order"));
+        valuesSeparatorColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.ValuesSeparator.Order"));
+        upperLimitValueColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.UpperLimitValue.Order"));
+        upperLimitSymbolColumnNum = Integer.valueOf(stringDatabase.getString("DiscretizeTableModel.Columns.UpperLimitSymbol.Order"));
         // define the border and layout for the panel
-        setBorder (new EmptyBorder (0, 0, 0, 0));
-        final GroupLayout groupLayout = new GroupLayout ((JComponent) this);
-        groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addComponent (getValuesTableScrollPane (),
-                                                                                                                                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                        406,
-                                                                                                                                                                                        GroupLayout.PREFERRED_SIZE).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getButtonPanel (),
-                                                                                                                                                                                                                                                                                           GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                           67,
-                                                                                                                                                                                                                                                                                           Short.MAX_VALUE)));
-        groupLayout.setVerticalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.TRAILING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.TRAILING).addComponent (getValuesTableScrollPane (),
-                                                                                                                                                                                                                                                                  GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                  /* 131 */200,
-                                                                                                                                                                                                                                                                  Short.MAX_VALUE).addComponent (getButtonPanel (),
-                                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                 /* 131 */200,
-                                                                                                                                                                                                                                                                                                 Short.MAX_VALUE)).addGap (24,
-                                                                                                                                                                                                                                                                                                                           24,
-                                                                                                                                                                                                                                                                                                                           24)));
-        setLayout (groupLayout);
+        setBorder(new EmptyBorder(0, 0, 0, 0));
+        final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+        groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(getValuesTableScrollPane(),
+                GroupLayout.PREFERRED_SIZE,
+                406,
+                GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getButtonPanel(),
+                GroupLayout.DEFAULT_SIZE,
+                67,
+                Short.MAX_VALUE)));
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addComponent(getValuesTableScrollPane(),
+                GroupLayout.Alignment.LEADING,
+                GroupLayout.DEFAULT_SIZE,
+                /* 131 */200,
+                Short.MAX_VALUE).addComponent(getButtonPanel(), GroupLayout.PREFERRED_SIZE,
+        /* 131 */200, Short.MAX_VALUE)).addGap(24, 24, 24)));
+        setLayout(groupLayout);
     }
 
     /**
      * This method initializes tableModel.
+     * 
      * @return a new tableModel.
      */
     @Override
-    protected DiscretizeTableModel getTableModel ()
-    {
-        if (discretizeTableModel == null)
-        {
-            discretizeTableModel = new DiscretizeTableModel (data, columns);
+    protected DiscretizeTableModel getTableModel() {
+        if (discretizeTableModel == null) {
+            discretizeTableModel = new DiscretizeTableModel(data, columns);
         }
         return discretizeTableModel;
     }
@@ -222,96 +245,85 @@ public class DiscretizeTablePanel extends KeyTablePanel
     /**
      * defines the look and feel of the table (column width, etc...)
      */
-    protected void defineTableLookAndFeel ()
-    {
+    protected void defineTableLookAndFeel() {
         // center the data in all columns
-        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer ();
-        tcr.setHorizontalAlignment (SwingConstants.CENTER);
-        DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer ();
-        statesRender.setHorizontalAlignment (SwingConstants.LEFT);
-        int maxColumn = valuesTable.getColumnModel ().getColumnCount ();
-        for (int i = 1; i < maxColumn; i++)
-        {
-            TableColumn aColumn = valuesTable.getColumnModel ().getColumn (i);
-            aColumn.setCellRenderer (tcr);
-            aColumn.setPreferredWidth (110);
-            aColumn.setMaxWidth (110);
-            aColumn.setMinWidth (110);
-            valuesTable.getTableHeader ().getColumnModel ().getColumn (i).setCellRenderer (tcr);
+        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
+        statesRender.setHorizontalAlignment(SwingConstants.LEFT);
+        int maxColumn = valuesTable.getColumnModel().getColumnCount();
+        for (int i = 1; i < maxColumn; i++) {
+            TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
+            aColumn.setCellRenderer(tcr);
+            aColumn.setPreferredWidth(110);
+            aColumn.setMaxWidth(110);
+            aColumn.setMinWidth(110);
+            valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
         }
         // set special columns
-        if (probNode.getVariable ().getVariableType () == VariableType.NUMERIC)
-        {
-            TableColumn aColumn = valuesTable.getColumnModel ().getColumn (1);
-            aColumn.setCellRenderer (tcr);
-            aColumn.setPreferredWidth (0);
-            aColumn.setMaxWidth (0);
-            aColumn.setMinWidth (0);
-            valuesTable.getTableHeader ().getColumnModel ().getColumn (1).setPreferredWidth (0);
-            valuesTable.getTableHeader ().getColumnModel ().getColumn (1).setMinWidth (0);
-            valuesTable.getTableHeader ().getColumnModel ().getColumn (1).setMaxWidth (0);
+        if (probNode.getVariable().getVariableType() == VariableType.NUMERIC) {
+            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            aColumn.setCellRenderer(tcr);
+            aColumn.setPreferredWidth(0);
+            aColumn.setMaxWidth(0);
+            aColumn.setMinWidth(0);
+            valuesTable.getTableHeader().getColumnModel().getColumn(1).setPreferredWidth(0);
+            valuesTable.getTableHeader().getColumnModel().getColumn(1).setMinWidth(0);
+            valuesTable.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(0);
         }
-        if (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES
-            || probNode.getVariable ().getVariableType () == VariableType.DISCRETIZED)
-        {
-            TableColumn aColumn = valuesTable.getColumnModel ().getColumn (1);
-            aColumn.setCellRenderer (statesRender);
-            if (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES)
-            {
-                valuesTable.getColumnModel ().getColumn (1).setPreferredWidth (406);
-                valuesTable.getColumnModel ().getColumn (1).setMaxWidth (406);
-                valuesTable.getColumnModel ().getColumn (1).setMinWidth (406);
-                for (int i = 2; i < maxColumn; i++)
-                {
-                    TableColumn columni = valuesTable.getColumnModel ().getColumn (i);
-                    columni.setCellRenderer (tcr);
-                    columni.setPreferredWidth (0);
-                    columni.setMaxWidth (0);
-                    columni.setMinWidth (0);
-                    valuesTable.getTableHeader ().getColumnModel ().getColumn (i).setCellRenderer (tcr);
+        if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES
+                || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            aColumn.setCellRenderer(statesRender);
+            if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+                valuesTable.getColumnModel().getColumn(1).setPreferredWidth(406);
+                valuesTable.getColumnModel().getColumn(1).setMaxWidth(406);
+                valuesTable.getColumnModel().getColumn(1).setMinWidth(406);
+                for (int i = 2; i < maxColumn; i++) {
+                    TableColumn columni = valuesTable.getColumnModel().getColumn(i);
+                    columni.setCellRenderer(tcr);
+                    columni.setPreferredWidth(0);
+                    columni.setMaxWidth(0);
+                    columni.setMinWidth(0);
+                    valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
                 }
             }
         }
         // set Columns = Up and Low limits
-        if (probNode.getVariable ().getVariableType () == VariableType.NUMERIC
-            || probNode.getVariable ().getVariableType () == VariableType.DISCRETIZED)
-        {
-            jComboBoxLowerSymbol = getLowerSymbolComboBox ();
-            jComboBoxUpperSymbol = getUpperSymbolComboBox ();
-            TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel ().getColumn (lowerLimitSymbolColumnNum);
-            lowLimitSymbolColumn.setCellEditor (new DefaultCellEditor (jComboBoxLowerSymbol));
-            lowLimitSymbolColumn.setCellRenderer (new DiscretizeComboBoxRenderer (intervalLowerSymbols));
-            lowLimitSymbolColumn.setMinWidth (32);
-            lowLimitSymbolColumn.setPreferredWidth (32);
-            lowLimitSymbolColumn.setMaxWidth (32);
-            TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel ().getColumn (upperLimitSymbolColumnNum);
-            upperLimitSymbolColumn.setCellEditor (new DefaultCellEditor (jComboBoxUpperSymbol));
-            upperLimitSymbolColumn.setCellRenderer (new DiscretizeComboBoxRenderer (intervalUpperSymbols));
-            upperLimitSymbolColumn.setMinWidth (32);
-            upperLimitSymbolColumn.setPreferredWidth (32);
-            upperLimitSymbolColumn.setMaxWidth (32);
+        if (probNode.getVariable().getVariableType() == VariableType.NUMERIC
+                || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+            jComboBoxLowerSymbol = getLowerSymbolComboBox();
+            jComboBoxUpperSymbol = getUpperSymbolComboBox();
+            TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel().getColumn(lowerLimitSymbolColumnNum);
+            lowLimitSymbolColumn.setCellEditor(new DefaultCellEditor(jComboBoxLowerSymbol));
+            lowLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalLowerSymbols));
+            lowLimitSymbolColumn.setMinWidth(32);
+            lowLimitSymbolColumn.setPreferredWidth(32);
+            lowLimitSymbolColumn.setMaxWidth(32);
+            TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel().getColumn(upperLimitSymbolColumnNum);
+            upperLimitSymbolColumn.setCellEditor(new DefaultCellEditor(jComboBoxUpperSymbol));
+            upperLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalUpperSymbols));
+            upperLimitSymbolColumn.setMinWidth(32);
+            upperLimitSymbolColumn.setPreferredWidth(32);
+            upperLimitSymbolColumn.setMaxWidth(32);
             // set Column = valuesSeparator = ","
-            TableColumn valuesSeparatorColumn = valuesTable.getColumnModel ().getColumn (valuesSeparatorColumnNum);
-            valuesSeparatorColumn.setMinWidth (10);
-            valuesSeparatorColumn.setPreferredWidth (10);
-            valuesSeparatorColumn.setMaxWidth (10);
+            TableColumn valuesSeparatorColumn = valuesTable.getColumnModel().getColumn(valuesSeparatorColumnNum);
+            valuesSeparatorColumn.setMinWidth(10);
+            valuesSeparatorColumn.setPreferredWidth(10);
+            valuesSeparatorColumn.setMaxWidth(10);
         }
     }
 
-    private JComboBox<String> getLowerSymbolComboBox ()
-    {
-        if (jComboBoxLowerSymbol == null)
-        {
-            jComboBoxLowerSymbol = new JComboBox<> (intervalLowerSymbols);
+    private JComboBox<String> getLowerSymbolComboBox() {
+        if (jComboBoxLowerSymbol == null) {
+            jComboBoxLowerSymbol = new JComboBox<>(intervalLowerSymbols);
         }
         return jComboBoxLowerSymbol;
     }
 
-    private JComboBox<String> getUpperSymbolComboBox ()
-    {
-        if (jComboBoxUpperSymbol == null)
-        {
-            jComboBoxUpperSymbol = new JComboBox<> (intervalUpperSymbols);
+    private JComboBox<String> getUpperSymbolComboBox() {
+        if (jComboBoxUpperSymbol == null) {
+            jComboBoxUpperSymbol = new JComboBox<>(intervalUpperSymbols);
         }
         return jComboBoxUpperSymbol;
     }
@@ -320,192 +332,153 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Method to define the specific listeners in this table (not defined in the
      * common KeyTable hierarchy
      */
-    protected void defineTableSpecificListeners ()
-    {
-        valuesTable.addMouseListener (this);
+    protected void defineTableSpecificListeners() {
+        valuesTable.addMouseListener(this);
     }
 
     /**
      * This method is used to change the interval's type in a discretize Table
      * To closed from opened To opened from closed
      */
-    private void changeLimitIntervalDiscretize (int row, int column)
-    {
-        if (column == lowerLimitSymbolColumnNum || column == upperLimitSymbolColumnNum)
-        {
+    private void changeLimitIntervalDiscretize(int row, int column) {
+        if (column == lowerLimitSymbolColumnNum || column == upperLimitSymbolColumnNum) {
             boolean lower = false;
-            String aux = (String) valuesTable.getValueAt (row, column);
-            if (column == lowerLimitSymbolColumnNum)
-            {
+            String aux = (String) valuesTable.getValueAt(row, column);
+            if (column == lowerLimitSymbolColumnNum) {
                 lower = true;
-                if (aux.equals ("("))
-                {
+                if (aux.equals("(")) {
                     // double lowerLimit = (Double)valuesTable.getValueAt(row,
                     // column +1);
                     // if ( lowerLimit == Double.NEGATIVE_INFINITY || lowerLimit
                     // == Double.POSITIVE_INFINITY) {
-                    if (valuesTable.getValueAt (row, lowLimitValueColumnNum) == infinity
-                        || valuesTable.getValueAt (row, lowLimitValueColumnNum) == minusInfinity)
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Infinity can not belong to the interval");
-                    }
-                    else if (row - 1 >= 0
-                             && valuesTable.getValueAt (row - 1, lowerLimitSymbolColumnNum) == "["
-                             && valuesTable.getValueAt (row - 1, lowLimitValueColumnNum) == valuesTable.getValueAt (row - 1,
-                                                                                                                    upperLimitValueColumnNum))
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Not permitted action. You must change limit values first");
-                    }
-                    else
-                    {
-                        valuesTable.setValueAt ("[", row, column);
-                        if (row > 0)
-                        {
-                            valuesTable.setValueAt (")", row - 1, upperLimitSymbolColumnNum);
+                    if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == INFINITY
+                            || valuesTable.getValueAt(row, lowLimitValueColumnNum) == NEGATIVE_INFINITY) {
+                        JOptionPane.showMessageDialog(this,
+                                "Infinity can not belong to the interval");
+                    } else if (row - 1 >= 0
+                            && valuesTable.getValueAt(row - 1, lowerLimitSymbolColumnNum) == "["
+                            && valuesTable.getValueAt(row - 1, lowLimitValueColumnNum) == valuesTable.getValueAt(row - 1,
+                                    upperLimitValueColumnNum)) {
+                        JOptionPane.showMessageDialog(this,
+                                "Not permitted action. You must change limit values first");
+                    } else {
+                        valuesTable.setValueAt("[", row, column);
+                        if (row > 0) {
+                            valuesTable.setValueAt(")", row - 1, upperLimitSymbolColumnNum);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit (
-                                                                                                                   probNode,
-                                                                                                                   StateAction.MODIFYDELIMITERINTERVAL,
-                                                                                                                   row,
-                                                                                                                   lower);
-                        try
-                        {
-                            probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
-                        }
-                        catch (ConstraintViolationException
-                                | CanNotDoEditException | NonProjectablePotentialException
-                                | WrongCriterionException | DoEditException e)
-                        {
-                            JOptionPane.showMessageDialog (this,
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           JOptionPane.ERROR_MESSAGE);
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                                StateAction.MODIFYDELIMITERINTERVAL,
+                                row,
+                                lower);
+                        try {
+                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                        } catch (ConstraintViolationException
+                                | CanNotDoEditException
+                                | NonProjectablePotentialException
+                                | WrongCriterionException
+                                | DoEditException e) {
+                            JOptionPane.showMessageDialog(this,
+                                    stringDatabase.getString(e.getMessage()),
+                                    stringDatabase.getString(e.getMessage()),
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
-                }
-                else if (aux.equals ("["))
-                {
-                    if (valuesTable.getValueAt (row, lowLimitValueColumnNum) == valuesTable.getValueAt (row,
-                                                                                                        upperLimitValueColumnNum)
-                        && valuesTable.getValueAt (row, upperLimitSymbolColumnNum) == "]")
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Not permitted action. You must change limit values first");
-                    }
-                    else
-                    {
-                        valuesTable.setValueAt ("(", row, column);
-                        if (row > 0)
-                        {
-                            valuesTable.setValueAt ("]", row - 1, upperLimitSymbolColumnNum);
+                } else if (aux.equals("[")) {
+                    if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row,
+                            upperLimitValueColumnNum)
+                            && valuesTable.getValueAt(row, upperLimitSymbolColumnNum) == "]") {
+                        JOptionPane.showMessageDialog(this,
+                                "Not permitted action. You must change limit values first");
+                    } else {
+                        valuesTable.setValueAt("(", row, column);
+                        if (row > 0) {
+                            valuesTable.setValueAt("]", row - 1, upperLimitSymbolColumnNum);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit (
-                                                                                                                   probNode,
-                                                                                                                   StateAction.MODIFYDELIMITERINTERVAL,
-                                                                                                                   row,
-                                                                                                                   lower);
-                        try
-                        {
-                            probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
-                        }
-                        catch (ConstraintViolationException
-                                | CanNotDoEditException | NonProjectablePotentialException
-                                | WrongCriterionException | DoEditException e)
-                        {
-                            JOptionPane.showMessageDialog (this,
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           JOptionPane.ERROR_MESSAGE);
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                                StateAction.MODIFYDELIMITERINTERVAL,
+                                row,
+                                lower);
+                        try {
+                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                        } catch (ConstraintViolationException
+                                | CanNotDoEditException
+                                | NonProjectablePotentialException
+                                | WrongCriterionException
+                                | DoEditException e) {
+                            JOptionPane.showMessageDialog(this,
+                                    stringDatabase.getString(e.getMessage()),
+                                    stringDatabase.getString(e.getMessage()),
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     // checkIntervalDiscretize("(", fila, columna,upMonotony);
                 }
             }
-            if (column == upperLimitSymbolColumnNum)
-            {
-                if (aux.equals (")"))
-                {
+            if (column == upperLimitSymbolColumnNum) {
+                if (aux.equals(")")) {
                     // double upperLimit = (Double)valuesTable.getValueAt(row,
                     // column -1);
                     // if ( upperLimit == Double.NEGATIVE_INFINITY || upperLimit
                     // == Double.POSITIVE_INFINITY) {
-                    if (valuesTable.getValueAt (row, upperLimitValueColumnNum) == infinity
-                        || valuesTable.getValueAt (row, upperLimitValueColumnNum) == minusInfinity)
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Infinity can not belong to the interval");
-                    }
-                    else if (row + 1 <= probNode.getVariable ().getStates ().length - 1
-                             && valuesTable.getValueAt (row + 1, upperLimitSymbolColumnNum) == "]"
-                             && valuesTable.getValueAt (row + 1, lowLimitValueColumnNum) == valuesTable.getValueAt (row + 1,
-                                                                                                                    upperLimitValueColumnNum))
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Not permitted action. You must change limit values first");
-                    }
-                    else
-                    {
-                        valuesTable.setValueAt ("]", row, column);
-                        if (row < valuesTable.getRowCount () - 1)
-                        {
-                            valuesTable.setValueAt ("(", row + 1, lowerLimitSymbolColumnNum);
+                    if (valuesTable.getValueAt(row, upperLimitValueColumnNum) == INFINITY
+                            || valuesTable.getValueAt(row, upperLimitValueColumnNum) == NEGATIVE_INFINITY) {
+                        JOptionPane.showMessageDialog(this,
+                                "Infinity can not belong to the interval");
+                    } else if (row + 1 <= probNode.getVariable().getStates().length - 1
+                            && valuesTable.getValueAt(row + 1, upperLimitSymbolColumnNum) == "]"
+                            && valuesTable.getValueAt(row + 1, lowLimitValueColumnNum) == valuesTable.getValueAt(row + 1,
+                                    upperLimitValueColumnNum)) {
+                        JOptionPane.showMessageDialog(this,
+                                "Not permitted action. You must change limit values first");
+                    } else {
+                        valuesTable.setValueAt("]", row, column);
+                        if (row < valuesTable.getRowCount() - 1) {
+                            valuesTable.setValueAt("(", row + 1, lowerLimitSymbolColumnNum);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit (
-                                                                                                                   probNode,
-                                                                                                                   StateAction.MODIFYDELIMITERINTERVAL,
-                                                                                                                   row,
-                                                                                                                   lower);
-                        try
-                        {
-                            probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
-                        }
-                        catch (ConstraintViolationException
-                                | DoEditException | NonProjectablePotentialException
-                                | WrongCriterionException | CanNotDoEditException e)
-                        {
-                            JOptionPane.showMessageDialog (this,
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           JOptionPane.ERROR_MESSAGE);
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                                StateAction.MODIFYDELIMITERINTERVAL,
+                                row,
+                                lower);
+                        try {
+                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                        } catch (ConstraintViolationException
+                                | DoEditException
+                                | NonProjectablePotentialException
+                                | WrongCriterionException
+                                | CanNotDoEditException e) {
+                            JOptionPane.showMessageDialog(this,
+                                    stringDatabase.getString(e.getMessage()),
+                                    stringDatabase.getString(e.getMessage()),
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     // checkIntervalDiscretize("]", fila, columna,upMonotony);
-                }
-                else if (aux.equals ("]"))
-                {
-                    if (valuesTable.getValueAt (row, lowLimitValueColumnNum) == valuesTable.getValueAt (row,
-                                                                                                        upperLimitValueColumnNum)
-                        && valuesTable.getValueAt (row, lowerLimitSymbolColumnNum) == "[")
-                    {
-                        JOptionPane.showMessageDialog (this,
-                                                       "Not permitted action. You must change limit values first");
-                    }
-                    else
-                    {
-                        valuesTable.setValueAt (")", row, column);
-                        if (row < valuesTable.getRowCount () - 1)
-                        {
-                            valuesTable.setValueAt ("[", row + 1, lowerLimitSymbolColumnNum);
+                } else if (aux.equals("]")) {
+                    if (valuesTable.getValueAt(row, lowLimitValueColumnNum) == valuesTable.getValueAt(row,
+                            upperLimitValueColumnNum)
+                            && valuesTable.getValueAt(row, lowerLimitSymbolColumnNum) == "[") {
+                        JOptionPane.showMessageDialog(this,
+                                "Not permitted action. You must change limit values first");
+                    } else {
+                        valuesTable.setValueAt(")", row, column);
+                        if (row < valuesTable.getRowCount() - 1) {
+                            valuesTable.setValueAt("[", row + 1, lowerLimitSymbolColumnNum);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit (
-                                                                                                                   probNode,
-                                                                                                                   StateAction.MODIFYDELIMITERINTERVAL,
-                                                                                                                   row,
-                                                                                                                   lower);
-                        try
-                        {
-                            probNode.getProbNet ().doEdit (nodePartitionedIntervalEdit);
-                        }
-                        catch (ConstraintViolationException
-                                | CanNotDoEditException | NonProjectablePotentialException
-                                | WrongCriterionException | DoEditException e)
-                        {
-                            JOptionPane.showMessageDialog (this,
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           stringDatabase.getString (e.getMessage ()),
-                                                           JOptionPane.ERROR_MESSAGE);
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                                StateAction.MODIFYDELIMITERINTERVAL,
+                                row,
+                                lower);
+                        try {
+                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                        } catch (ConstraintViolationException
+                                | CanNotDoEditException
+                                | NonProjectablePotentialException
+                                | WrongCriterionException
+                                | DoEditException e) {
+                            JOptionPane.showMessageDialog(this,
+                                    stringDatabase.getString(e.getMessage()),
+                                    stringDatabase.getString(e.getMessage()),
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     // checkIntervalDiscretize(")", fila, columna,upMonotony);
@@ -518,59 +491,39 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * method to control and change the values and symbols when user changes the
      * values and limits in the table, depending upon the type of monotony
      */
-    protected void checkIntervalDiscretize (String currentState,
-                                            int row,
-                                            int column,
-                                            boolean upMonotony)
-    {
+    protected void checkIntervalDiscretize(String currentState,
+            int row,
+            int column,
+            boolean upMonotony) {
         // double aux, aux2;
-        if (upMonotony)
-        { // monotony UP
-            if (row != valuesTable.getRowCount () - 1 && column == upperLimitSymbolColumnNum)
-            {
-                if (currentState.equals (")"))
-                {
-                    valuesTable.setValueAt ("[", row + 1, lowerLimitSymbolColumnNum);
-                }
-                else
-                {
-                    valuesTable.setValueAt ("(", row + 1, lowerLimitSymbolColumnNum);
+        if (upMonotony) { // monotony UP
+            if (row != valuesTable.getRowCount() - 1 && column == upperLimitSymbolColumnNum) {
+                if (currentState.equals(")")) {
+                    valuesTable.setValueAt("[", row + 1, lowerLimitSymbolColumnNum);
+                } else {
+                    valuesTable.setValueAt("(", row + 1, lowerLimitSymbolColumnNum);
                 }
             }
-            if (row != 0 && column == lowerLimitSymbolColumnNum)
-            {
-                if (currentState.equals ("("))
-                {
-                    valuesTable.setValueAt ("]", row - 1, upperLimitSymbolColumnNum);
-                }
-                else
-                {
-                    valuesTable.setValueAt (")", row - 1, upperLimitSymbolColumnNum);
+            if (row != 0 && column == lowerLimitSymbolColumnNum) {
+                if (currentState.equals("(")) {
+                    valuesTable.setValueAt("]", row - 1, upperLimitSymbolColumnNum);
+                } else {
+                    valuesTable.setValueAt(")", row - 1, upperLimitSymbolColumnNum);
                 }
             }
-        }
-        else
-        { // Down monotony
-            if (row != 0 && column == upperLimitSymbolColumnNum)
-            {
-                if (currentState.equals (")"))
-                {
-                    valuesTable.setValueAt ("[", row - 1, lowerLimitSymbolColumnNum);
-                }
-                else
-                {
-                    valuesTable.setValueAt ("(", row - 1, lowerLimitSymbolColumnNum);
+        } else { // Down monotony
+            if (row != 0 && column == upperLimitSymbolColumnNum) {
+                if (currentState.equals(")")) {
+                    valuesTable.setValueAt("[", row - 1, lowerLimitSymbolColumnNum);
+                } else {
+                    valuesTable.setValueAt("(", row - 1, lowerLimitSymbolColumnNum);
                 }
             }
-            if (row != valuesTable.getRowCount () - 1 && column == lowerLimitSymbolColumnNum)
-            {
-                if (currentState.equals ("("))
-                {
-                    valuesTable.setValueAt ("]", row + 1, upperLimitSymbolColumnNum);
-                }
-                else
-                {
-                    valuesTable.setValueAt (")", row + 1, upperLimitSymbolColumnNum);
+            if (row != valuesTable.getRowCount() - 1 && column == lowerLimitSymbolColumnNum) {
+                if (currentState.equals("(")) {
+                    valuesTable.setValueAt("]", row + 1, upperLimitSymbolColumnNum);
+                } else {
+                    valuesTable.setValueAt(")", row + 1, upperLimitSymbolColumnNum);
                 }
             }
         }
@@ -578,144 +531,133 @@ public class DiscretizeTablePanel extends KeyTablePanel
 
     /**
      * This method initializes buttonPanel.
+     * 
      * @return a new button panel.
      */
     @Override
-    protected JPanel getButtonPanel ()
-    {
-        if (buttonPanel == null)
-        {
-            buttonPanel = new JPanel ();
-            buttonPanel.setName ("DiscretizeTablePanel.buttonPanel");
-            final GroupLayout groupLayout = new GroupLayout ((JComponent) buttonPanel);
-            groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.TRAILING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.TRAILING).addComponent (getStandarDomainButton (),
-                                                                                                                                                                                                                                                     GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                     55,
-                                                                                                                                                                                                                                                     Short.MAX_VALUE).addComponent (getAddValueButton (),
-                                                                                                                                                                                                                                                                                    GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                    55,
-                                                                                                                                                                                                                                                                                    Short.MAX_VALUE).addComponent (getDownValueButton (),
-                                                                                                                                                                                                                                                                                                                   GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                   GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                   55,
-                                                                                                                                                                                                                                                                                                                   Short.MAX_VALUE).addComponent (getUpValueButton (),
-                                                                                                                                                                                                                                                                                                                                                  GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                  55,
-                                                                                                                                                                                                                                                                                                                                                  Short.MAX_VALUE).addComponent (getRemoveValueButton (),
-                                                                                                                                                                                                                                                                                                                                                                                 GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                 GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                 55,
-                                                                                                                                                                                                                                                                                                                                                                                 Short.MAX_VALUE).addComponent (getInfinitePositiveDoubleButton (),
-                                                                                                                                                                                                                                                                                                                                                                                                                GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                55,
-                                                                                                                                                                                                                                                                                                                                                                                                                Short.MAX_VALUE).addComponent (getInfiniteNegativeDoubleButton (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                               GroupLayout.Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                                                                                                                                               GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                               55,
-                                                                                                                                                                                                                                                                                                                                                                                                                                               Short.MAX_VALUE)).addContainerGap ()));
-            groupLayout.setVerticalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addComponent (getStandarDomainButton ()).addGap (5,
-                                                                                                                                                                                                          5,
-                                                                                                                                                                                                          5).addComponent (getAddValueButton ()).addGap (5,
-                                                                                                                                                                                                                                                         5,
-                                                                                                                                                                                                                                                         5).addComponent (getRemoveValueButton ()).addGap (5,
-                                                                                                                                                                                                                                                                                                           5,
-                                                                                                                                                                                                                                                                                                           5).addComponent (getUpValueButton ()).addGap (5,
-                                                                                                                                                                                                                                                                                                                                                         5,
-                                                                                                                                                                                                                                                                                                                                                         5).addComponent (getDownValueButton ()).addGap (5,
-                                                                                                                                                                                                                                                                                                                                                                                                         5,
-                                                                                                                                                                                                                                                                                                                                                                                                         5).addComponent (getInfinitePositiveDoubleButton ()).addGap (5,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      5,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      5).addComponent (getInfiniteNegativeDoubleButton ()).addGap (48,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   48,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   48)));
-            buttonPanel.setLayout (groupLayout);
+    protected JPanel getButtonPanel() {
+        if (buttonPanel == null) {
+            buttonPanel = new JPanel();
+            buttonPanel.setName("DiscretizeTablePanel.buttonPanel");
+            final GroupLayout groupLayout = new GroupLayout((JComponent) buttonPanel);
+            groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addComponent(getStandardDomainButton(),
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getAddValueButton(),
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getDownValueButton(),
+                    GroupLayout.Alignment.LEADING,
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getUpValueButton(),
+                    GroupLayout.Alignment.LEADING,
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getRemoveValueButton(),
+                    GroupLayout.Alignment.LEADING,
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getInfinitePositiveDoubleButton(),
+                    GroupLayout.Alignment.LEADING,
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE).addComponent(getInfiniteNegativeDoubleButton(),
+                    GroupLayout.Alignment.LEADING,
+                    GroupLayout.DEFAULT_SIZE,
+                    55,
+                    Short.MAX_VALUE)).addContainerGap()));
+            groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addComponent(getStandardDomainButton()).addGap(5,
+                    5,
+                    5).addComponent(getAddValueButton()).addGap(5, 5, 5).addComponent(getRemoveValueButton()).addGap(5,
+                    5,
+                    5).addComponent(getUpValueButton()).addGap(5, 5, 5).addComponent(getDownValueButton()).addGap(5,
+                    5,
+                    5).addComponent(getInfinitePositiveDoubleButton()).addGap(5, 5, 5).addComponent(getInfiniteNegativeDoubleButton()).addGap(48,
+                    48,
+                    48)));
+            buttonPanel.setLayout(groupLayout);
         }
         return buttonPanel;
     }
 
     /**
      * This method initializes upValueButton.
+     * 
      * @return a new up value button.
      */
-    public JButton getStandarDomainButton ()
-    {
-        if (standarDomainButton == null)
-        {
-            standarDomainButton = new JButton ();
-            standarDomainButton.setName ("KeyTablePanel.standarDomainButton");
-            standarDomainButton.setText (stringDatabase.getString ("StandarDomain.Text.Label"));
-            standarDomainButton.setVisible (true);
-            standarDomainButton.setEnabled (true);
-            standarDomainButton.setActionCommand ("StandarDomain");
-            // standarDomainButton.addActionListener( this );
+    public JButton getStandardDomainButton() {
+        if (standardDomainButton == null) {
+            standardDomainButton = new JButton();
+            standardDomainButton.setName("KeyTablePanel.standardDomainButton");
+            standardDomainButton.setText(stringDatabase.getString("StandardDomain.Text.Label"));
+            standardDomainButton.setVisible(true);
+            standardDomainButton.setEnabled(true);
+            standardDomainButton.setActionCommand("StandardDomain");
+            // standardDomainButton.addActionListener( this );
         }
-        return standarDomainButton;
+        return standardDomainButton;
     }
 
     /**
      * This method initializes infinitePositiveDoubleButton.
+     * 
      * @return a new positive infinite value button.
      */
-    public JButton getInfinitePositiveDoubleButton ()
-    {
-        if (jButtonPositiveInfinityDouble == null)
-        {
-            jButtonPositiveInfinityDouble = new JButton ();
-            jButtonPositiveInfinityDouble.setName ("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
-            jButtonPositiveInfinityDouble.setText (stringDatabase.getString ("InfinitePositive.Text.Label"));
-            jButtonPositiveInfinityDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
+    public JButton getInfinitePositiveDoubleButton() {
+        if (jButtonPositiveInfinity == null) {
+            jButtonPositiveInfinity = new JButton();
+            jButtonPositiveInfinity.setName("DiscretizeTablePanel.jButtonInfinitePositiveDouble");
+            jButtonPositiveInfinity.setText(stringDatabase.getString("InfinitePositive.Text.Label"));
+            jButtonPositiveInfinity.setIcon(iconLoader.load(IconLoader.ICON_INFINITE_POSITIVE_ENABLED));
             // jButtonInfinitePositiveDouble.setVisible(reorderEnabled);
-            jButtonPositiveInfinityDouble.setEnabled (false);
-            jButtonPositiveInfinityDouble.addActionListener (this);
-            jButtonPositiveInfinityDouble.setVisible (false);
+            jButtonPositiveInfinity.setEnabled(false);
+            jButtonPositiveInfinity.addActionListener(this);
+            jButtonPositiveInfinity.setVisible(false);
         }
-        return jButtonPositiveInfinityDouble;
+        return jButtonPositiveInfinity;
     }
 
     /**
      * This method initializes infiniteNegativeDoubleButton.
+     * 
      * @return a new negative infinite value button.
      */
-    public JButton getInfiniteNegativeDoubleButton ()
-    {
-        if (jButtonNegativeInfinityDouble == null)
-        {
-            jButtonNegativeInfinityDouble = new JButton ();
-            jButtonNegativeInfinityDouble.setName ("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
-            jButtonNegativeInfinityDouble.setText (stringDatabase.getString ("InfiniteNegative.Text.Label"));
-            jButtonNegativeInfinityDouble.setIcon (iconLoader.load (IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
+    public JButton getInfiniteNegativeDoubleButton() {
+        if (jButtonNegativeInfinity == null) {
+            jButtonNegativeInfinity = new JButton();
+            jButtonNegativeInfinity.setName("DiscretizeTablePanel.jButtonInfiniteNegativeDouble");
+            jButtonNegativeInfinity.setText(stringDatabase.getString("InfiniteNegative.Text.Label"));
+            jButtonNegativeInfinity.setIcon(iconLoader.load(IconLoader.ICON_INFINITE_NEGATIVE_ENABLED));
             // jButtonInfiniteNegativeDouble.setVisible(reorderEnabled);
-            jButtonNegativeInfinityDouble.setEnabled (false);
-            jButtonNegativeInfinityDouble.addActionListener (this);
-            jButtonNegativeInfinityDouble.setVisible (false);
+            jButtonNegativeInfinity.setEnabled(false);
+            jButtonNegativeInfinity.addActionListener(this);
+            jButtonNegativeInfinity.setVisible(false);
         }
-        return jButtonNegativeInfinityDouble;
+        return jButtonNegativeInfinity;
     }
 
     /**
 	 * 
 	 */
-    public int getLowerLimitSymbolColumnNum ()
-    {
+    public int getLowerLimitSymbolColumnNum() {
         return lowerLimitSymbolColumnNum;
     }
 
     /**
      * Sets a new table model with new data.
-     * @param newData new data for the table without the key column.
+     * 
+     * @param newData
+     *            new data for the table without the key column.
      */
     @Override
-    public void setData (Object[][] newData)
-    {
-        if (newData != null)
-        {
-            data = fillDataKeys (newData);
-            discretizeTableModel = new DiscretizeTableModel (data, columns);
-            valuesTable.setModel (discretizeTableModel);
-            valuesTable.getModel ().addTableModelListener (this);
-            this.defineTableLookAndFeel ();
+    public void setData(Object[][] newData) {
+        if (newData != null) {
+            data = fillDataKeys(newData);
+            discretizeTableModel = new DiscretizeTableModel(data, columns);
+            valuesTable.setModel(discretizeTableModel);
+            valuesTable.getModel().addTableModelListener(this);
+            this.defineTableLookAndFeel();
         }
     }
 
@@ -729,16 +671,15 @@ public class DiscretizeTablePanel extends KeyTablePanel
     /**
      * @return the upMonotony
      */
-    public boolean isUpMonotony ()
-    {
+    public boolean isUpMonotony() {
         return upMonotony;
     }
 
     /**
-     * @param upMonotony the upMonotony to set
+     * @param upMonotony
+     *            the upMonotony to set
      */
-    public void setUpMonotony (boolean upMonotony)
-    {
+    public void setUpMonotony(boolean upMonotony) {
         this.upMonotony = upMonotony;
     }
 
@@ -746,208 +687,171 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * execute the change in the table when a set of default states have been
      * selected in the combo box
      */
-    public void setNewDataInTable (int selectedIndex)
-    {
+    public void setNewDataInTable(int selectedIndex) {
         Object[][] newData = null;
-        switch (selectedIndex)
-        {
-            case 0 : // present-absent
-                if (upMonotony)
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("absent"), "[", 0.0, ",", 2.0, "]"},
-                            {GUIDefaultStates.getString ("present"), "(", 2.0, ",", 4.0, "]"}};
-                    newData = auxData;
-                }
-                else
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("present"), "[", 2.0, ",", 4.0, ")"},
-                            {GUIDefaultStates.getString ("absent"), "[", 0.0, ",", 2.0, ")"}};
-                    newData = auxData;
-                }
-                break;
-            case 1 : // yes-no
-                if (upMonotony)
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("yes"), "[", 0.0, ",", 2.0, "]"},
-                            {GUIDefaultStates.getString ("no"), "(", 2.0, ",", 4.0, "]"}};
-                    newData = auxData;
-                }
-                else
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("yes"), "[", 2.0, ",", 4.0, ")"},
-                            {GUIDefaultStates.getString ("no"), "[", 0.0, ",", 2.0, ")"}};
-                    newData = auxData;
-                }
-                break;
-            case 2 : // positive-negative
-                if (upMonotony)
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("positive"), "[", 0.0, ",", 2.0, "]"},
-                            {GUIDefaultStates.getString ("negative"), "(", 2.0, ",", 4.0, "]"}};
-                    newData = auxData;
-                }
-                else
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("positive"), "[", 2.0, ",", 4.0, ")"},
-                            {GUIDefaultStates.getString ("negative"), "[", 0.0, ",", 2.0, ")"}};
-                    newData = auxData;
-                }
-                break;
-            case 3 : // severe-moderate-mild-absent
-                if (upMonotony)
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("severe"), "[", 0.0, ",", 2.0, "]"},
-                            {GUIDefaultStates.getString ("moderate"), "(", 2.0, ",", 4.0, "]"},
-                            {GUIDefaultStates.getString ("mild"), "(", 4.0, ",", 6.0, "]"},
-                            {GUIDefaultStates.getString ("absent"), "(", 6.0, ",", 8.0, "]"}};
-                    newData = auxData;
-                }
-                else
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("severe"), "[", 6.0, ",", 8.0, ")"},
-                            {GUIDefaultStates.getString ("moderate"), "[", 4.0, ",", 6.0, ")"},
-                            {GUIDefaultStates.getString ("mild"), "[", 2.0, ",", 4.0, ")"},
-                            {GUIDefaultStates.getString ("absent"), "[", 0.0, ",", 2.0, ")"}};
-                    newData = auxData;
-                }
-                break;
-            case 4 : // high-medium-low
-                if (upMonotony)
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("high"), "[", 0.0, ",", 2.0, "]"},
-                            {GUIDefaultStates.getString ("medium"), "(", 2.0, ",", 4.0, "]"},
-                            {GUIDefaultStates.getString ("low"), "(", 4.0, ",", 6.0, "]"}};
-                    newData = auxData;
-                }
-                else
-                {
-                    Object[][] auxData = {
-                            {GUIDefaultStates.getString ("high"), "[", 4.0, ",", 6.0, ")"},
-                            {GUIDefaultStates.getString ("medium"), "[", 2.0, ",", 4.0, ")"},
-                            {GUIDefaultStates.getString ("low"), "[", 0.0, ",", 2.0, ")"}};
-                    newData = auxData;
-                }
-                break;
-            default : // nonamed
-                Object[][] auxData = {{GUIDefaultStates.getString ("nonamed"), "(",
-                        Double.NEGATIVE_INFINITY, ",", Double.POSITIVE_INFINITY, ")"}};
+        switch (selectedIndex) {
+        case 0: // present-absent
+            if (upMonotony) {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("absent"), "[", 0.0, ",", 2.0, "]" },
+                        { GUIDefaultStates.getString("present"), "(", 2.0, ",", 4.0, "]" } };
                 newData = auxData;
-                break;
+            } else {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("present"), "[", 2.0, ",", 4.0, ")" },
+                        { GUIDefaultStates.getString("absent"), "[", 0.0, ",", 2.0, ")" } };
+                newData = auxData;
+            }
+            break;
+        case 1: // yes-no
+            if (upMonotony) {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("yes"), "[", 0.0, ",", 2.0, "]" },
+                        { GUIDefaultStates.getString("no"), "(", 2.0, ",", 4.0, "]" } };
+                newData = auxData;
+            } else {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("yes"), "[", 2.0, ",", 4.0, ")" },
+                        { GUIDefaultStates.getString("no"), "[", 0.0, ",", 2.0, ")" } };
+                newData = auxData;
+            }
+            break;
+        case 2: // positive-negative
+            if (upMonotony) {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("positive"), "[", 0.0, ",", 2.0, "]" },
+                        { GUIDefaultStates.getString("negative"), "(", 2.0, ",", 4.0, "]" } };
+                newData = auxData;
+            } else {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("positive"), "[", 2.0, ",", 4.0, ")" },
+                        { GUIDefaultStates.getString("negative"), "[", 0.0, ",", 2.0, ")" } };
+                newData = auxData;
+            }
+            break;
+        case 3: // severe-moderate-mild-absent
+            if (upMonotony) {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("severe"), "[", 0.0, ",", 2.0, "]" },
+                        { GUIDefaultStates.getString("moderate"), "(", 2.0, ",", 4.0, "]" },
+                        { GUIDefaultStates.getString("mild"), "(", 4.0, ",", 6.0, "]" },
+                        { GUIDefaultStates.getString("absent"), "(", 6.0, ",", 8.0, "]" } };
+                newData = auxData;
+            } else {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("severe"), "[", 6.0, ",", 8.0, ")" },
+                        { GUIDefaultStates.getString("moderate"), "[", 4.0, ",", 6.0, ")" },
+                        { GUIDefaultStates.getString("mild"), "[", 2.0, ",", 4.0, ")" },
+                        { GUIDefaultStates.getString("absent"), "[", 0.0, ",", 2.0, ")" } };
+                newData = auxData;
+            }
+            break;
+        case 4: // high-medium-low
+            if (upMonotony) {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("high"), "[", 0.0, ",", 2.0, "]" },
+                        { GUIDefaultStates.getString("medium"), "(", 2.0, ",", 4.0, "]" },
+                        { GUIDefaultStates.getString("low"), "(", 4.0, ",", 6.0, "]" } };
+                newData = auxData;
+            } else {
+                Object[][] auxData = {
+                        { GUIDefaultStates.getString("high"), "[", 4.0, ",", 6.0, ")" },
+                        { GUIDefaultStates.getString("medium"), "[", 2.0, ",", 4.0, ")" },
+                        { GUIDefaultStates.getString("low"), "[", 0.0, ",", 2.0, ")" } };
+                newData = auxData;
+            }
+            break;
+        default: // nonamed
+            Object[][] auxData = { { GUIDefaultStates.getString("nonamed"), "(",
+                    Double.NEGATIVE_INFINITY, ",", Double.POSITIVE_INFINITY, ")" } };
+            newData = auxData;
+            break;
         }
-        setData (newData);
+        setData(newData);
     }
 
     /**
      * execute the change in the table when a set of default states have been
      * selected in the combo box
      */
-    public void setPartitionedInterval ()
-    {
-        PartitionedInterval partitionInterval = probNode.getVariable ().getPartitionedInterval ();
-        Object[][] intervalTable = partitionInterval.convertToTableFormat ();
-        State states[] = probNode.getVariable ().getStates ();
+    public void setPartitionedInterval() {
+        PartitionedInterval partitionInterval = probNode.getVariable().getPartitionedInterval();
+        Object[][] intervalTable = partitionInterval.convertToTableFormat();
+        State states[] = probNode.getVariable().getStates();
         int rows = intervalTable.length;
         // TODO six is the number of columns of this particular table
         // int col = 6;
         // invert states to display in the correct order
-        State reorderedStates[] = states.clone ();
-        Collections.reverse (Arrays.asList (reorderedStates));
-        for (int i = 0; i < rows; i++)
-        {
-            intervalTable[i][0] = GUIDefaultStates.getString (reorderedStates[i].getName ());
+        State reorderedStates[] = states.clone();
+        Collections.reverse(Arrays.asList(reorderedStates));
+        for (int i = 0; i < rows; i++) {
+            intervalTable[i][0] = GUIDefaultStates.getString(reorderedStates[i].getName());
         }
-        setData (intervalTable);
+        setData(intervalTable);
     }
 
-    public void setDataFromPartitionedInterval (PartitionedInterval partitionInterval, State[] states)
-    {
+    public void setDataFromPartitionedInterval(PartitionedInterval partitionInterval, State[] states) {
         Object[][] data;
         int i = 0;
         int numIntervals = 0;
         int numColumns = 6; // name-symbol-value-separator-value-symbol
         String[] limits;
         boolean[] belongsToLeftSide;
-        numIntervals = partitionInterval.getNumSubintervals ();
-        double values[] = partitionInterval.getLimits ();
-        limits = convertToStringLimitValues (values,
-                                             Double.toString (probNode.getVariable ().getPrecision ()));
-        belongsToLeftSide = partitionInterval.getBelongsToLeftSide ();
+        numIntervals = partitionInterval.getNumSubintervals();
+        double values[] = partitionInterval.getLimits();
+        limits = convertToStringLimitValues(values,
+                Double.toString(probNode.getVariable().getPrecision()));
+        belongsToLeftSide = partitionInterval.getBelongsToLeftSide();
         data = new Object[numIntervals][numColumns];
-        for (i = 0; i < numIntervals; i++)
-        {
+        for (i = 0; i < numIntervals; i++) {
             int row = numIntervals - i - 1;
-            data[row][0] = GUIDefaultStates.getString (states[i].getName ()); // name
+            data[row][0] = GUIDefaultStates.getString(states[i].getName()); // name
             data[row][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
-                                                             // symbol
+                                                               // symbol
             data[row][2] = limits[i]; // low interval value
             data[row][3] = ","; // separator ","
             data[row][4] = limits[i + 1]; // high interval value
-            data[row][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high interval symbol
+            data[row][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high
+                                                                   // interval
+                                                                   // symbol
         }
-        setData (data);
+        setData(data);
     }
 
-    public String[] convertToStringLimitValues (double[] limits, String precision)
-    {
+    public String[] convertToStringLimitValues(double[] limits, String precision) {
         String[] tableLimits = new String[limits.length];
         String rounded = "";
         int numDecimals;
-        int indexE = precision.indexOf ('E');
-        if (indexE != -1)
-        {
-            numDecimals = Integer.parseInt (precision.substring (indexE + 2, indexE + 3));
-        }
-        else
-        {
-            int decimalPoint = precision.indexOf ('.');
-            int one = precision.indexOf ('1');
-            if (decimalPoint != -1 && one != -1)
-            {
+        int indexE = precision.indexOf('E');
+        if (indexE != -1) {
+            numDecimals = Integer.parseInt(precision.substring(indexE + 2, indexE + 3));
+        } else {
+            int decimalPoint = precision.indexOf('.');
+            int one = precision.indexOf('1');
+            if (decimalPoint != -1 && one != -1) {
                 numDecimals = one - decimalPoint;
-            }
-            else
-            {
+            } else {
                 numDecimals = 0;
             }
         }
-        for (int i = 0; i < limits.length; i++)
-        {
-            if (limits[i] == Double.POSITIVE_INFINITY)
-            {
-                tableLimits[i] = infinity;
-            }
-            else if (limits[i] == Double.NEGATIVE_INFINITY)
-            {
-                tableLimits[i] = minusInfinity;
-            }
-            else
-            {
-                rounded = Double.toString (limits[i]);
+        for (int i = 0; i < limits.length; i++) {
+            if (limits[i] == Double.POSITIVE_INFINITY) {
+                tableLimits[i] = INFINITY;
+            } else if (limits[i] == Double.NEGATIVE_INFINITY) {
+                tableLimits[i] = NEGATIVE_INFINITY;
+            } else {
+                rounded = Double.toString(limits[i]);
                 // adding final zeros
-                int roundedStringDecimalPlace = rounded.indexOf ('.');
-                if (roundedStringDecimalPlace == -1)
-                {
+                int roundedStringDecimalPlace = rounded.indexOf('.');
+                if (roundedStringDecimalPlace == -1) {
                     rounded += ".0";
                 }
-                roundedStringDecimalPlace = rounded.indexOf ('.');
+                roundedStringDecimalPlace = rounded.indexOf('.');
                 int finalLength = roundedStringDecimalPlace + numDecimals + 1;
-                if (finalLength <= rounded.length ())
-                {
-                    rounded = rounded.substring (0, finalLength);
-                }
-                else
-                {
-                    while (finalLength > rounded.length ())
-                    {
+                if (finalLength <= rounded.length()) {
+                    rounded = rounded.substring(0, finalLength);
+                } else {
+                    while (finalLength > rounded.length()) {
                         rounded += "0";
                     }
                 }
@@ -960,25 +864,23 @@ public class DiscretizeTablePanel extends KeyTablePanel
 
     /**
      * Returns the content of the table.
+     * 
      * @return the content of the table.
      */
     @Override
-    public Object[][] getData ()
-    {
-        DiscretizeTableModel model = (DiscretizeTableModel) valuesTable.getModel ();
-        int columnCount = model.getColumnCount ();
-        int rowCount = model.getRowCount ();
+    public Object[][] getData() {
+        DiscretizeTableModel model = (DiscretizeTableModel) valuesTable.getModel();
+        int columnCount = model.getColumnCount();
+        int rowCount = model.getRowCount();
         int i = 0;
         int j = 0;
         Object[][] datatmp = new Object[rowCount][columnCount];
-        Vector vectorData = model.getDataVector ();
+        Vector vectorData = model.getDataVector();
         Vector vectorRow = null;
-        for (i = 0; i < rowCount; i++)
-        {
-            vectorRow = (Vector) vectorData.get (i);
-            for (j = 0; j < columnCount; j++)
-            {
-                datatmp[i][j] = vectorRow.get (j);
+        for (i = 0; i < rowCount; i++) {
+            vectorRow = (Vector) vectorData.get(i);
+            for (j = 0; j < columnCount; j++) {
+                datatmp[i][j] = vectorRow.get(j);
             }
         }
         return datatmp;
@@ -988,26 +890,24 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * This method takes a data object and creates a new column that content a
      * row key. This key begins with the key prefix following a number that
      * starts at 0.
-     * @param oldData data to add a key column.
+     * 
+     * @param oldData
+     *            data to add a key column.
      * @return a data object with one more column that contains the keys.
      */
-    private Object[][] fillDataKeys (Object[][] oldData)
-    {
+    private Object[][] fillDataKeys(Object[][] oldData) {
         Object[][] newData = null;
         int i1 = 0; // aux int
         int i2 = 0; // aux int
         int l1 = 0; // num of rows
         int l2 = 0; // num of columns
         l1 = oldData.length;
-        if (l1 > 0)
-        {
+        if (l1 > 0) {
             l2 = oldData[0].length + 1;
             newData = new Object[l1][l2];
-            for (i1 = 0; i1 < l1; i1++)
-            {
-                newData[i1][0] = getKeyString (i1);
-                for (i2 = 1; i2 < l2; i2++)
-                {
+            for (i1 = 0; i1 < l1; i1++) {
+                newData[i1][0] = getKeyString(i1);
+                for (i2 = 1; i2 < l2; i2++) {
                     newData[i1][i2] = oldData[i1][i2 - 1];
                 }
             }
@@ -1018,22 +918,20 @@ public class DiscretizeTablePanel extends KeyTablePanel
 
     /**
      * Invoked when an action occurs.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
     @Override
-    public void actionPerformed (ActionEvent e)
-    {
-        super.actionPerformed (e);
-        if (e.getSource ().equals (this.jButtonPositiveInfinityDouble))
-        {
-            actionPerformedPositiveInfinityValue ();
-        }
-        else if (e.getSource ().equals (this.jButtonNegativeInfinityDouble))
-        {
-            actionPerformedNegativeInfinityValue ();
+    public void actionPerformed(ActionEvent e) {
+        super.actionPerformed(e);
+        if (e.getSource().equals(this.jButtonPositiveInfinity)) {
+            actionPerformedPositiveInfinityValue();
+        } else if (e.getSource().equals(this.jButtonNegativeInfinity)) {
+            actionPerformedNegativeInfinityValue();
         }/*
-          * else if (e.getSource().equals(this.standarDomainButton)) {
-          * actionPerformedStandarDomain(); }
+          * else if (e.getSource().equals(this.standardDomainButton)) {
+          * actionPerformedStandardDomain(); }
           */
     }
 
@@ -1041,80 +939,77 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Invoked when the button 'add' is pressed.
      */
     @Override
-    protected void actionPerformedAddValue ()
-    {
+    protected void actionPerformedAddValue() {
         int rowCount = 0;
-        rowCount = valuesTable.getRowCount ();
-        String option = JOptionPane.showInputDialog (this, "Proporcione el nuevo estado",
-                                                     "Agregar estado", JOptionPane.QUESTION_MESSAGE);
-        if (option != null)
-        {
+        rowCount = valuesTable.getRowCount();
+        String option = JOptionPane.showInputDialog(this,
+                "Proporcione el nuevo estado",
+                "Agregar estado",
+                JOptionPane.QUESTION_MESSAGE);
+        if (option != null) {
             int newIndex = 0;
-            newIndex = valuesTable.getRowCount ();
-            NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, StateAction.ADD, newIndex,
-                                                             option);
-            try
-            {
-                probNode.getProbNet ().doEdit (nodeStateEdit);
-                if (probNode.getVariable ().getVariableType () == VariableType.DISCRETIZED)
-                {
-                    PartitionedInterval newPartitionedInterval = probNode.getVariable ().getPartitionedInterval ();
-                    setDataFromPartitionedInterval (newPartitionedInterval, probNode.getVariable ().getStates ());
-                    valuesTable.getSelectionModel ().setSelectionInterval (newIndex, newIndex);
-                }
-                else
-                {
+            newIndex = valuesTable.getRowCount();
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+                    StateAction.ADD,
+                    newIndex,
+                    option);
+            try {
+                probNode.getProbNet().doEdit(nodeStateEdit);
+                if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+                    PartitionedInterval newPartitionedInterval = probNode.getVariable().getPartitionedInterval();
+                    setDataFromPartitionedInterval(newPartitionedInterval,
+                            probNode.getVariable().getStates());
+                    valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+                } else {
                     // Object newRow [] = nodeStateEdit.getNewRowOfData();
                     // newRow [0] = getKeyString(newIndex);
                     // getTableModel().insertRow(newIndex, newRow);
-                    getTableModel ().insertRow (newIndex,
-                                                new Object[] {getKeyString (newIndex), option});
-                    valuesTable.getSelectionModel ().setSelectionInterval (newIndex, newIndex);
+                    getTableModel().insertRow(newIndex,
+                            new Object[] { getKeyString(newIndex), option });
+                    valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
                 }
-            }
-            catch (ConstraintViolationException | CanNotDoEditException
-                    | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-            {
-                JOptionPane.showMessageDialog (this,
-                                               stringDatabase.getString (e.getMessage ()),
-                                               stringDatabase.getString (e.getMessage ()),
-                                               JOptionPane.ERROR_MESSAGE);
+            } catch (ConstraintViolationException
+                    | CanNotDoEditException
+                    | NonProjectablePotentialException
+                    | WrongCriterionException
+                    | DoEditException e) {
+                JOptionPane.showMessageDialog(this,
+                        stringDatabase.getString(e.getMessage()),
+                        stringDatabase.getString(e.getMessage()),
+                        JOptionPane.ERROR_MESSAGE);
                 // jTextFieldNodeName.setText( this.nodeProperties.getName() );
                 // jTextFieldNodeName.requestFocus();
             }
         }
-        valuesTable.getSelectionModel ().setSelectionInterval (rowCount, rowCount);
+        valuesTable.getSelectionModel().setSelectionInterval(rowCount, rowCount);
     }
 
     /**
      * Invoked when the button 'remove' is pressed.
      */
     @Override
-    protected void actionPerformedRemoveValue ()
-    {
-        int selectedRow = valuesTable.getSelectedRow ();
-        removeState (selectedRow);
+    protected void actionPerformedRemoveValue() {
+        int selectedRow = valuesTable.getSelectedRow();
+        removeState(selectedRow);
     }
 
     /**
      * @param selectedRow
      */
-    protected void removeState (int selectedRow)
-    {
+    protected void removeState(int selectedRow) {
         int rowCount = 0;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, StateAction.REMOVE, selectedRow,
-                                                         "");
-        try
-        {
-            probNode.getProbNet ().doEdit (nodeStateEdit);
-            cancelCellEditing ();
-            getTableModel ().removeRow (selectedRow);
-            rowCount = valuesTable.getRowCount ();
-            if (rowCount > 0)
-            {
-                if (selectedRow < rowCount)
-                {
-                    valuesTable.getSelectionModel ().setSelectionInterval (selectedRow, selectedRow);
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+                StateAction.REMOVE,
+                selectedRow,
+                "");
+        try {
+            probNode.getProbNet().doEdit(nodeStateEdit);
+            cancelCellEditing();
+            getTableModel().removeRow(selectedRow);
+            rowCount = valuesTable.getRowCount();
+            if (rowCount > 0) {
+                if (selectedRow < rowCount) {
+                    valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
                     // Object newRow [] = nodeStateEdit.getNewRowOfData();
                     /*
                      * Object newRow [] = {"",
@@ -1125,10 +1020,8 @@ public class DiscretizeTablePanel extends KeyTablePanel
                      */
                     // update key column
                     int auxSelectedRow = selectedRow;
-                    while (auxSelectedRow < rowCount)
-                    {
-                        getTableModel ().setValueAt (getKeyString (auxSelectedRow), auxSelectedRow,
-                                                     0);
+                    while (auxSelectedRow < rowCount) {
+                        getTableModel().setValueAt(getKeyString(auxSelectedRow), auxSelectedRow, 0);
                         auxSelectedRow++;
                     }
                     // update values of the table
@@ -1136,36 +1029,31 @@ public class DiscretizeTablePanel extends KeyTablePanel
                      * for (int i=1; i<getTableModel().getColumnCount(); i++){
                      * getTableModel().setValueAt(newRow[i], selectedRow, i); }
                      */
-                }
-                else
-                {
-                    valuesTable.getSelectionModel ().setSelectionInterval (selectedRow - 1,
-                                                                           selectedRow - 1);
+                } else {
+                    valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1,
+                            selectedRow - 1);
                 }
                 // after eliminate row check the lower limit
-                if (selectedRow > 0)
-                {
-                    if (valuesTable.getValueAt (selectedRow - 1, upperLimitSymbolColumnNum) == "]")
-                    {
-                        valuesTable.setValueAt ("(", selectedRow, lowerLimitSymbolColumnNum);
+                if (selectedRow > 0) {
+                    if (valuesTable.getValueAt(selectedRow - 1, upperLimitSymbolColumnNum) == "]") {
+                        valuesTable.setValueAt("(", selectedRow, lowerLimitSymbolColumnNum);
+                    } else {
+                        valuesTable.setValueAt("[", selectedRow, lowerLimitSymbolColumnNum);
                     }
-                    else
-                    {
-                        valuesTable.setValueAt ("[", selectedRow, lowerLimitSymbolColumnNum);
-                    }
-                    valuesTable.setValueAt (valuesTable.getValueAt (selectedRow - 1,
-                                                                    upperLimitValueColumnNum),
-                                            selectedRow, lowLimitValueColumnNum);
+                    valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1,
+                            upperLimitValueColumnNum), selectedRow, lowLimitValueColumnNum);
                 }
             }
-        }
-        catch (ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-        {
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
-                                           stringDatabase.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
+        } catch (ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException
+                | DoEditException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
             // jTextFieldNodeName.setText( this.nodeProperties.getName() );
             // jTextFieldNodeName.requestFocus();
         }
@@ -1177,27 +1065,27 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Invoked when the button 'up' is pressed.
      */
     @Override
-    protected void actionPerformedUpValue ()
-    {
-        int selectedRow = valuesTable.getSelectedRow ();
+    protected void actionPerformedUpValue() {
+        int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, StateAction.UP, selectedRow, "");
-        try
-        {
-            probNode.getProbNet ().doEdit (nodeStateEdit);
-            stopCellEditing ();
-            cancelCellEditing ();
-            swap = valuesTable.getValueAt (selectedRow, 1);
-            valuesTable.setValueAt (valuesTable.getValueAt (selectedRow - 1, 1), selectedRow, 1);
-            valuesTable.setValueAt (swap, selectedRow - 1, 1);
-            valuesTable.getSelectionModel ().setSelectionInterval (selectedRow - 1, selectedRow - 1);
-        }
-        catch (ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-        {
-            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
-                                           stringDatabase.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.UP, selectedRow, "");
+        try {
+            probNode.getProbNet().doEdit(nodeStateEdit);
+            stopCellEditing();
+            cancelCellEditing();
+            swap = valuesTable.getValueAt(selectedRow, 1);
+            valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
+            valuesTable.setValueAt(swap, selectedRow - 1, 1);
+            valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
+        } catch (ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException
+                | DoEditException e) {
+            JOptionPane.showMessageDialog(this,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1205,367 +1093,264 @@ public class DiscretizeTablePanel extends KeyTablePanel
      * Invoked when the button 'down' is pressed.
      */
     @Override
-    protected void actionPerformedDownValue ()
-    {
-        int selectedRow = valuesTable.getSelectedRow ();
+    protected void actionPerformedDownValue() {
+        int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, StateAction.DOWN, selectedRow,
-                                                         "");
-        try
-        {
-            probNode.getProbNet ().doEdit (nodeStateEdit);
-            stopCellEditing ();
-            cancelCellEditing ();
-            swap = valuesTable.getValueAt (selectedRow, 1);
-            valuesTable.setValueAt (valuesTable.getValueAt (selectedRow + 1, 1), selectedRow, 1);
-            valuesTable.setValueAt (swap, selectedRow + 1, 1);
-            valuesTable.getSelectionModel ().setSelectionInterval (selectedRow + 1, selectedRow + 1);
-        }
-        catch (ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-        {
-            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
-                                           stringDatabase.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.DOWN, selectedRow, "");
+        try {
+            probNode.getProbNet().doEdit(nodeStateEdit);
+            stopCellEditing();
+            cancelCellEditing();
+            swap = valuesTable.getValueAt(selectedRow, 1);
+            valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
+            valuesTable.setValueAt(swap, selectedRow + 1, 1);
+            valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
+        } catch (ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException
+                | DoEditException e) {
+            JOptionPane.showMessageDialog(this,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
      * Invoked when the button 'InfinitePositive' is pressed.
      */
-    protected void actionPerformedPositiveInfinityValue ()
-    {
-        int selectedRow = valuesTable.getSelectedRow ();
-        int selectedColumn = valuesTable.getSelectedColumn ();
-        cancelCellEditing ();
-        double[] limits = probNode.getVariable ().getPartitionedInterval ().getLimits ();
-        boolean[] belongs = probNode.getVariable ().getPartitionedInterval ().getBelongsToLeftSide ();
+    protected void actionPerformedPositiveInfinityValue() {
+        int selectedRow = valuesTable.getSelectedRow();
+        int selectedColumn = valuesTable.getSelectedColumn();
+        cancelCellEditing();
+        double[] limits = probNode.getVariable().getPartitionedInterval().getLimits();
+        boolean[] belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
         limits[limits.length - 1] = Double.POSITIVE_INFINITY;
         belongs[limits.length - 1] = false;
-        PartitionedInterval newPartitionedInterval = new PartitionedInterval (limits, belongs);
-        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (probNode,
-                                                                                       newPartitionedInterval);
-        try
-        {
-            probNode.getProbNet ().doEdit (partitionedIntervalEdit);
+        PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+                newPartitionedInterval);
+        try {
+            probNode.getProbNet().doEdit(partitionedIntervalEdit);
+        } catch (DoEditException
+                | ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException e) {
+            e.printStackTrace();
         }
-        catch (DoEditException | ConstraintViolationException
-                | CanNotDoEditException | NonProjectablePotentialException
-                | WrongCriterionException e)
-        {
-            e.printStackTrace ();
-        }
-        valuesTable.setValueAt (infinity, selectedRow, selectedColumn);
+        valuesTable.setValueAt(INFINITY, selectedRow, selectedColumn);
     }
 
     /**
      * Invoked when the button 'InfiniteNegative' is pressed.
      */
-    protected void actionPerformedNegativeInfinityValue ()
-    {
-        int selectedRow = valuesTable.getSelectedRow ();
-        int selectedColumn = valuesTable.getSelectedColumn ();
-        cancelCellEditing ();
-        double[] limits = probNode.getVariable ().getPartitionedInterval ().getLimits ();
-        boolean[] belongs = probNode.getVariable ().getPartitionedInterval ().getBelongsToLeftSide ();
+    protected void actionPerformedNegativeInfinityValue() {
+        int selectedRow = valuesTable.getSelectedRow();
+        int selectedColumn = valuesTable.getSelectedColumn();
+        cancelCellEditing();
+        double[] limits = probNode.getVariable().getPartitionedInterval().getLimits();
+        boolean[] belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
         limits[0] = Double.NEGATIVE_INFINITY;
         belongs[0] = true;
-        PartitionedInterval newPartitionedInterval = new PartitionedInterval (limits, belongs);
-        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (probNode,
-                                                                                       newPartitionedInterval);
-        try
-        {
-            probNode.getProbNet ().doEdit (partitionedIntervalEdit);
+        PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
+        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+                newPartitionedInterval);
+        try {
+            probNode.getProbNet().doEdit(partitionedIntervalEdit);
+        } catch (DoEditException
+                | ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException e) {
+            e.printStackTrace();
         }
-        catch (DoEditException | ConstraintViolationException
-                | CanNotDoEditException | NonProjectablePotentialException
-                | WrongCriterionException e)
-        {
-            e.printStackTrace ();
-        }
-        valuesTable.setValueAt (minusInfinity, selectedRow, selectedColumn);
+        valuesTable.setValueAt(NEGATIVE_INFINITY, selectedRow, selectedColumn);
     }
 
     /**
      * Returns a key represented by an index.
-     * @param index index of the key which will be returned
+     * 
+     * @param index
+     *            index of the key which will be returned
      * @return the string that content the key.
      */
-    private String getKeyString (int index)
-    {
+    private String getKeyString(int index) {
         return keyPrefix + index;
     }
-    /**
-     * Class to manage Discretize Render Table in columns "()" and "[]"
-     * @author Alberto Ruiz
-     */
-    public class DiscretizeComboBoxRenderer extends JComboBox<String>
-        implements
-            TableCellRenderer
-    {
-        /**
-		 * 
-		 */
-        private static final long serialVersionUID = 1L;
 
-        public DiscretizeComboBoxRenderer (String[] items)
-        {
-            super (items);
-        }
-
-        public Component getTableCellRendererComponent (JTable table,
-                                                        Object value,
-                                                        boolean isSelected,
-                                                        boolean hasFocus,
-                                                        int row,
-                                                        int column)
-        {
-            if (isSelected)
-            {
-                setForeground (table.getSelectionForeground ());
-                super.setBackground (table.getSelectionBackground ());
-            }
-            else
-            {
-                setForeground (table.getForeground ());
-                setBackground (table.getBackground ());
-            }
-            // Select the current value
-            setSelectedItem (value);
-            return this;
-        }
-    }
-
-    public void tableChanged (TableModelEvent tableEvent)
-    {
-        int column = tableEvent.getColumn ();
-        int row = tableEvent.getLastRow ();
-        // Object aux = tableEvent.getSource();
-        // if (probNode.getVariable().getVariableType() ==
-        // VariableType.DISCRETIZED) {
+    public void tableChanged(TableModelEvent tableEvent) {
+        int column = tableEvent.getColumn();
+        int row = tableEvent.getLastRow();
+        Object value = ((DiscretizeTableModel) tableEvent.getSource()).getValueAt(row, column);
         boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true : false);
-        if (tableEvent.getType () == TableModelEvent.UPDATE
-            && ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row, column) instanceof String
-            && column == 1)
-        {
-            String newName = (String) ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row,
-                                                                                                   column);
-            NodeStateEdit nodeStateEdit = new NodeStateEdit (probNode, StateAction.RENAME, row,
-                                                             newName);
-            try
-            {
-                probNode.getProbNet ().doEdit (nodeStateEdit);
-            }
-            catch (ConstraintViolationException | CanNotDoEditException
-                    | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-            {
-                e.printStackTrace ();
+        if (tableEvent.getType() == TableModelEvent.UPDATE
+                && value instanceof String
+                && column == 1) {
+            String newName = value.toString();
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+                    StateAction.RENAME,
+                    row,
+                    newName);
+            try {
+                probNode.getProbNet().doEdit(nodeStateEdit);
+            } catch (ConstraintViolationException
+                    | CanNotDoEditException
+                    | NonProjectablePotentialException
+                    | WrongCriterionException
+                    | DoEditException e) {
+                e.printStackTrace();
             }
         }
-        if (tableEvent.getType () == TableModelEvent.UPDATE
-            && ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row, column) == infinity
-            && column == upperLimitValueColumnNum)
-        {
+        if (tableEvent.getType() == TableModelEvent.UPDATE
+                && value == INFINITY
+                && column == upperLimitValueColumnNum) {
             // valuesTable.setValueAt(Double.POSITIVE_INFINITY, row, column);
-            valuesTable.setValueAt (infinity, row, column);
-        }
-        else if (tableEvent.getType () == TableModelEvent.UPDATE
-                 && ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row, column) == minusInfinity
-                 && column == lowLimitValueColumnNum)
-        {
-            valuesTable.setValueAt (minusInfinity, row, column);
-        }
-        else if (tableEvent.getType () == TableModelEvent.UPDATE
-                 && ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row, column) instanceof Double)
-        {
-            double newValue = (Double) ((DiscretizeTableModel) tableEvent.getSource ()).getValueAt (row,
-                                                                                                    column);
+            valuesTable.setValueAt(INFINITY, row, column);
+        } else if (tableEvent.getType() == TableModelEvent.UPDATE
+                && value == NEGATIVE_INFINITY
+                && column == lowLimitValueColumnNum) {
+            valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
+        } else if (tableEvent.getType() == TableModelEvent.UPDATE && value instanceof Double) {
+            double newValue = (Double) value;
             // setting precision to the new value according with the precision
             // value introduced by the user
-            double precision = probNode.getVariable ().getPrecision ();
-            double roundedValue = UtilStrings.roundWithPrecision (newValue,
-                                                                  Double.toString (precision));
-            double[] currentLimits = probNode.getVariable ().getPartitionedInterval ().getLimits ();
-            boolean[] currentBelongs = probNode.getVariable ().getPartitionedInterval ().getBelongsToLeftSide ();
-            int limitsIndex;
-            if (lower)
-            {
-                limitsIndex = row;
-            }
-            else
-            {
-                limitsIndex = row + 1;
-            }
+            double precision = probNode.getVariable().getPrecision();
+            double roundedValue = UtilStrings.roundWithPrecision(newValue,
+                    Double.toString(precision));
+            double[] currentLimits = probNode.getVariable().getPartitionedInterval().getLimits();
+            boolean[] currentBelongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+            int limitsIndex = (lower) ? row : row + 1;
             // posterious limits
             int i = limitsIndex;
             currentLimits[i] = roundedValue;
-            while (i + 1 <= currentLimits.length - 1 && currentLimits[i] >= currentLimits[i + 1])
-            {
-                if (currentBelongs[i] == false && currentBelongs[i + 1] == true)
-                {
+            while (i + 1 <= currentLimits.length - 1 && currentLimits[i] >= currentLimits[i + 1]) {
+                if (currentBelongs[i] == false && currentBelongs[i + 1] == true) {
                     currentLimits[i + 1] = currentLimits[i];
-                }
-                else
-                {
-                    if (i + 1 == currentLimits.length - 1)
-                    {
+                } else {
+                    if (i + 1 == currentLimits.length - 1) {
                         currentLimits[i + 1] = Double.POSITIVE_INFINITY;
                         break;
-                    }
-                    else currentLimits[i + 1] = currentLimits[i] + precision;
+                    } else
+                        currentLimits[i + 1] = currentLimits[i] + precision;
                 }
                 i++;
             }
             // previous limits
             int k = limitsIndex;
-            while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1])
-            {
-                if (currentBelongs[k] == true && currentBelongs[k - 1] == false)
-                {
+            while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1]) {
+                if (currentBelongs[k] == true && currentBelongs[k - 1] == false) {
                     currentLimits[k - 1] = currentLimits[k];
-                }
-                else
-                {
-                    if (k - 1 == 0)
-                    {
+                } else {
+                    if (k - 1 == 0) {
                         currentLimits[k - 1] = Double.NEGATIVE_INFINITY;
                         break;
-                    }
-                    else currentLimits[k - 1] = currentLimits[k] - precision;
+                    } else
+                        currentLimits[k - 1] = currentLimits[k] - precision;
                 }
                 k--;
             }
-            for (int m = 0; m < currentLimits.length; m++)
-            {
+            for (int m = 0; m < currentLimits.length; m++) {
                 if (currentLimits[m] != Double.POSITIVE_INFINITY
-                    && currentLimits[m] != Double.NEGATIVE_INFINITY)
-                {
-                    currentLimits[m] = UtilStrings.roundWithPrecision (currentLimits[m],
-                                                                       Double.toString (precision));
+                        && currentLimits[m] != Double.NEGATIVE_INFINITY) {
+                    currentLimits[m] = UtilStrings.roundWithPrecision(currentLimits[m],
+                            Double.toString(precision));
                 }
             }
-            PartitionedInterval newPartitionedInterval = new PartitionedInterval (currentLimits,
-                                                                                  currentBelongs);
-            PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (
-                                                                                           probNode,
-                                                                                           newPartitionedInterval);
-            try
-            {
-                probNode.getProbNet ().doEdit (partitionedIntervalEdit);
+            PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits,
+                    currentBelongs);
+            PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+                    newPartitionedInterval);
+            try {
+                probNode.getProbNet().doEdit(partitionedIntervalEdit);
+            } catch (DoEditException
+                    | ConstraintViolationException
+                    | CanNotDoEditException
+                    | NonProjectablePotentialException
+                    | WrongCriterionException e) {
+                e.printStackTrace();
             }
-            catch (DoEditException | ConstraintViolationException
-                    | CanNotDoEditException | NonProjectablePotentialException
-                    | WrongCriterionException e)
-            {
-                e.printStackTrace ();
-            }
-            setDataFromPartitionedInterval (probNode.getVariable ().getPartitionedInterval (), 
-                                            probNode.getVariable ().getStates ());
+            setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval(),
+                    probNode.getVariable().getStates());
         }
     }
 
-    public void setEnablePanelButton (boolean b)
-    {
-        if (b)
-        {
-            addValueButton.setEnabled (b);
-        }
-        else
-        {
-            addValueButton.setEnabled (b);
-            upValueButton.setEnabled (b);
-            downValueButton.setEnabled (b);
-            removeValueButton.setEnabled (b);
+    public void setEnablePanelButton(boolean b) {
+        if (b) {
+            addValueButton.setEnabled(b);
+        } else {
+            addValueButton.setEnabled(b);
+            upValueButton.setEnabled(b);
+            downValueButton.setEnabled(b);
+            removeValueButton.setEnabled(b);
         }
     }
 
-    public void setVisibleButtonPanel (boolean b)
-    {
-        getButtonPanel ().setVisible (b);
+    public void setVisibleButtonPanel(boolean b) {
+        getButtonPanel().setVisible(b);
     }
 
-    public void mouseClicked (MouseEvent e)
-    {
-        int row = valuesTable.rowAtPoint (e.getPoint ());
-        int column = valuesTable.columnAtPoint (e.getPoint ());
+    public void mouseClicked(MouseEvent e) {
+        int row = valuesTable.rowAtPoint(e.getPoint());
+        int column = valuesTable.columnAtPoint(e.getPoint());
         // if ((row > -1) && (column > -1)) {
-        if (probNode.getVariable ().getVariableType () == VariableType.NUMERIC
-            || probNode.getVariable ().getVariableType () == VariableType.DISCRETIZED)
-        {
-            if (column == lowerLimitSymbolColumnNum || column == upperLimitSymbolColumnNum)
-            {
-                changeLimitIntervalDiscretize (row, column);
-            }
-            else if (column == lowLimitValueColumnNum || column == upperLimitValueColumnNum)
-            {
+        if (probNode.getVariable().getVariableType() == VariableType.NUMERIC
+                || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+            if (column == lowerLimitSymbolColumnNum || column == upperLimitSymbolColumnNum) {
+                changeLimitIntervalDiscretize(row, column);
+            } else if (column == lowLimitValueColumnNum || column == upperLimitValueColumnNum) {
                 // infinity buttons management
-                PartitionedInterval interval = probNode.getVariable ().getPartitionedInterval ();
-                int numIntervals = interval.getNumSubintervals ();
-                if (!isUpMonotony ())
-                {
-                    if (row == 0 && column == 3)
-                    {
-                        getInfiniteNegativeDoubleButton ().setVisible (true);
-                        getInfiniteNegativeDoubleButton ().setEnabled (true);
-                        getInfinitePositiveDoubleButton ().setVisible (false);
-                        getInfinitePositiveDoubleButton ().setEnabled (false);
+                PartitionedInterval interval = probNode.getVariable().getPartitionedInterval();
+                int numIntervals = interval.getNumSubintervals();
+                if (!isUpMonotony()) {
+                    if (row == 0 && column == 3) {
+                        getInfiniteNegativeDoubleButton().setVisible(true);
+                        getInfiniteNegativeDoubleButton().setEnabled(true);
+                        getInfinitePositiveDoubleButton().setVisible(false);
+                        getInfinitePositiveDoubleButton().setEnabled(false);
+                    } else if (row == numIntervals - 1 && column == 5) {
+                        getInfinitePositiveDoubleButton().setVisible(true);
+                        getInfinitePositiveDoubleButton().setEnabled(true);
+                        getInfiniteNegativeDoubleButton().setVisible(false);
+                        getInfiniteNegativeDoubleButton().setEnabled(false);
+                    } else {
+                        getInfiniteNegativeDoubleButton().setVisible(false);
+                        getInfinitePositiveDoubleButton().setVisible(false);
+                        getInfiniteNegativeDoubleButton().setEnabled(false);
+                        getInfinitePositiveDoubleButton().setEnabled(false);
                     }
-                    else if (row == numIntervals - 1 && column == 5)
-                    {
-                        getInfinitePositiveDoubleButton ().setVisible (true);
-                        getInfinitePositiveDoubleButton ().setEnabled (true);
-                        getInfiniteNegativeDoubleButton ().setVisible (false);
-                        getInfiniteNegativeDoubleButton ().setEnabled (false);
-                    }
-                    else
-                    {
-                        getInfiniteNegativeDoubleButton ().setVisible (false);
-                        getInfinitePositiveDoubleButton ().setVisible (false);
-                        getInfiniteNegativeDoubleButton ().setEnabled (false);
-                        getInfinitePositiveDoubleButton ().setEnabled (false);
-                    }
-                }
-                else if (isUpMonotony ())
-                {
-                    if (row == 0 && column == 5)
-                    {
-                        getInfinitePositiveDoubleButton ().setVisible (true);
-                        getInfinitePositiveDoubleButton ().setEnabled (true);
-                        getInfiniteNegativeDoubleButton ().setVisible (false);
-                        getInfiniteNegativeDoubleButton ().setEnabled (false);
-                    }
-                    else if (row == numIntervals - 1 && column == 3)
-                    {
-                        getInfiniteNegativeDoubleButton ().setVisible (true);
-                        getInfiniteNegativeDoubleButton ().setEnabled (true);
-                        getInfinitePositiveDoubleButton ().setVisible (false);
-                        getInfinitePositiveDoubleButton ().setEnabled (false);
-                    }
-                    else
-                    {
-                        getInfiniteNegativeDoubleButton ().setVisible (false);
-                        getInfinitePositiveDoubleButton ().setVisible (false);
-                        getInfiniteNegativeDoubleButton ().setEnabled (false);
-                        getInfinitePositiveDoubleButton ().setEnabled (false);
+                } else if (isUpMonotony()) {
+                    if (row == 0 && column == 5) {
+                        getInfinitePositiveDoubleButton().setVisible(true);
+                        getInfinitePositiveDoubleButton().setEnabled(true);
+                        getInfiniteNegativeDoubleButton().setVisible(false);
+                        getInfiniteNegativeDoubleButton().setEnabled(false);
+                    } else if (row == numIntervals - 1 && column == 3) {
+                        getInfiniteNegativeDoubleButton().setVisible(true);
+                        getInfiniteNegativeDoubleButton().setEnabled(true);
+                        getInfinitePositiveDoubleButton().setVisible(false);
+                        getInfinitePositiveDoubleButton().setEnabled(false);
+                    } else {
+                        getInfiniteNegativeDoubleButton().setVisible(false);
+                        getInfinitePositiveDoubleButton().setVisible(false);
+                        getInfiniteNegativeDoubleButton().setEnabled(false);
+                        getInfinitePositiveDoubleButton().setEnabled(false);
                     }
                 }
             }
         }
     }
 
-    public void mouseEntered (MouseEvent e)
-    {
+    public void mouseEntered(MouseEvent e) {
     }
 
-    public void mouseExited (MouseEvent e)
-    {
+    public void mouseExited(MouseEvent e) {
     }
 
-    public void mousePressed (MouseEvent e)
-    {
+    public void mousePressed(MouseEvent e) {
     }
 
-    public void mouseReleased (MouseEvent e)
-    {
+    public void mouseReleased(MouseEvent e) {
     }
 }

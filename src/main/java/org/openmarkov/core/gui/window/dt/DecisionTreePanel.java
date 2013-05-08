@@ -34,12 +34,6 @@ public class DecisionTreePanel extends JScrollPane
         setViewportView (jTree);
         setBackground (Color.white);
     }
-    
-    private DecisionTreeElementPanel buildPanelTree (DecisionTreeElement root)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     /**
      * Returns the zoom.

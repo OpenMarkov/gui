@@ -399,11 +399,6 @@
     <Mnemonic value="o" />
     <Label value="Options" />
   </Options>
-  <Temporal>
-  	<Evolution>
-  		<Label value = "Temporal Evolution" />>
-  	</Evolution> 
-  </Temporal>
   <CostEffectiveness>
       <Cycles value="cycles"/>
       <NumberOfCycles value = "Number of cycles"/>
@@ -416,8 +411,6 @@
       <ZeroCycle value = "Zero Cycle"/>
       <Cost value = "Cost"/>
       <Effectiveness value = "Effectiveness"/>
-      <InstantValues value = "Instant values"/>
-      <CumulativeValues value = "Cumulative values"/>
       <BeginningOfCycle value = "Beginning of cycle"/>
       <HalfCycle value = "Half cycle"/>
       <EndOfCycle value = "End of cycle"/>
@@ -432,6 +425,9 @@
 	  </Analysis>
       <TemporalEvolution>
         <Label value = "Temporal Evolution" />
+        <InstantValues value = "Instant values"/>
+        <CumulativeValues value = "Cumulative values"/>
+        <ValueType value = "Value type" />
       </TemporalEvolution>
   </CostEffectiveness>
   <TreeADD>
@@ -465,12 +461,18 @@
   	<ChangeInterval>
   		<Label value="Change interval"/>
   	</ChangeInterval>
-  	<SetLabel >
+  	<SetLabel>
   		<Label value="Set label"/>
   	</SetLabel>
   	<SetReference>
   		<Label value="Set reference"/>
   	</SetReference>
+  	<RemoveLabel>
+  		<Label value="Remove label"/>
+  	</RemoveLabel>
+  	<RemoveReference>
+  		<Label value="Remove reference"/>
+  	</RemoveReference>
   	<DomainChangeWarning value="Be careful, you are trying to change variable domain"/>
   </TreeADD>
   <BUNDLEFILE>

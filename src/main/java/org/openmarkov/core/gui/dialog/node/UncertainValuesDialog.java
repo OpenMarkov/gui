@@ -34,7 +34,6 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringBundle;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
@@ -43,8 +42,8 @@ import org.openmarkov.core.model.network.modelUncertainty.ComplementFamily;
 import org.openmarkov.core.model.network.modelUncertainty.DirichletFamily;
 import org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensityFunctionType;
+import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -292,7 +291,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         State[] states = variable.getStates ();
         int numStates = states.length;
         Object[][] initialData = new Object[numStates][numColumnsTable];
-        JComboBox auxCombo = new JComboBox (allowedStringsDistributions);
+        JComboBox<String> auxCombo = new JComboBox<String> (allowedStringsDistributions);
         int lastPosStates = numStates - 1;
         for (int i = 0; i < numStates; i++)
         {
@@ -725,6 +724,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
         return getUncertainValuesOfTypes (arrayUncertain, types);
     }
 
+    @SuppressWarnings("unused")
     private boolean doVerifyRule4 (FamilyDistribution family)
     {
         boolean verify;

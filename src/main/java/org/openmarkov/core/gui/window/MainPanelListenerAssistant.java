@@ -851,8 +851,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             int numSlices;
 
             numSlices = costEffectivenessDialog.getNumSlices();
-            if (probNet.getSpecialTimeDependentNodes().size() >= 0) {
-                for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
+            List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+            if (!temporalNodes.isEmpty()) {
+                for (ProbNode timeDependentNode : temporalNodes) {
                     Variable timeDependentVariable = timeDependentNode.getVariable();
                     Finding finding = new Finding(timeDependentVariable,
                             costEffectivenessDialog.getInitialValues().get(timeDependentVariable));

@@ -63,13 +63,6 @@ public class Segment {
 	private double b;
 
 	/**
-	 * Default constructor is hidden.
-	 */
-	private Segment() {
-
-	}
-
-	/**
 	 * Allowed constructor. It calculates the ecuation of the line that contains
 	 * both points.
 	 * 

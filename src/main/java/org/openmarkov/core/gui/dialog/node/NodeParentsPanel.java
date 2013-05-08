@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
 import org.openmarkov.core.gui.dialog.common.PrefixedDataTablePanel;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.ProbNode;

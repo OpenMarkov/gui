@@ -46,7 +46,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		super.getUpValueButton().setVisible(false);
 		super.getInfiniteNegativeDoubleButton().setVisible(false);
 		super.getInfinitePositiveDoubleButton().setVisible(false);
-		super.getStandarDomainButton().setVisible(false);
+		super.getStandardDomainButton().setVisible(false);
 	}
 
 	/**

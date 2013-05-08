@@ -13,6 +13,7 @@ import javax.swing.JRadioButton;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 
+@SuppressWarnings("serial")
 public class VariablesCombinationPanel extends JPanel{
 	
 private  ButtonGroup buttonGroup = new ButtonGroup();

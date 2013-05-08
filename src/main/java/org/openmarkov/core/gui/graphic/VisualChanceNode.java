@@ -17,7 +17,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.network.ProbNode;
 

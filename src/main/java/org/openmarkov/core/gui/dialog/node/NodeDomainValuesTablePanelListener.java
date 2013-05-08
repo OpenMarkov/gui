@@ -42,7 +42,7 @@ import org.openmarkov.core.model.network.VariableType;
  * @author jlgozalo
  * @version 1.0 5 Feb 2010
  */
-public class NodeDiscretizeValuesTablePanelListener
+public class NodeDomainValuesTablePanelListener
     implements
         ActionListener,
         ItemListener,
@@ -61,7 +61,7 @@ public class NodeDiscretizeValuesTablePanelListener
      * Constructor
      * @param panel - the panel to handle the events
      */
-    public NodeDiscretizeValuesTablePanelListener (NodeDomainValuesTablePanel panel)
+    public NodeDomainValuesTablePanelListener (NodeDomainValuesTablePanel panel)
     {
         this.panel = panel;
     }
@@ -82,10 +82,10 @@ public class NodeDiscretizeValuesTablePanelListener
     // button initially selected down
     public void itemStateChanged (ItemEvent e)
     {
-        getPanel ().getNodeDiscretizedStatesTablePanel ().getInfiniteNegativeDoubleButton ().setVisible (false);
-        getPanel ().getNodeDiscretizedStatesTablePanel ().getInfinitePositiveDoubleButton ().setVisible (false);
-        getPanel ().getNodeDiscretizedStatesTablePanel ().getInfiniteNegativeDoubleButton ().setEnabled (false);
-        getPanel ().getNodeDiscretizedStatesTablePanel ().getInfinitePositiveDoubleButton ().setEnabled (false);
+        getPanel ().getDiscretizedStatesPanel ().getInfiniteNegativeDoubleButton ().setVisible (false);
+        getPanel ().getDiscretizedStatesPanel ().getInfinitePositiveDoubleButton ().setVisible (false);
+        getPanel ().getDiscretizedStatesPanel ().getInfiniteNegativeDoubleButton ().setEnabled (false);
+        getPanel ().getDiscretizedStatesPanel ().getInfinitePositiveDoubleButton ().setEnabled (false);
         if (e.getItem ().equals (getPanel ().getJRadioButtonMonotonyUp ()))
         {
             itemStateChangedUp (e);
@@ -101,18 +101,18 @@ public class NodeDiscretizeValuesTablePanelListener
         if (e.getStateChange () == ItemEvent.DESELECTED)
         {
             previousMonotony = UP; // deselected up
-            getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (false);
+            getPanel ().getDiscretizedStatesPanel ().setUpMonotony (false);
         }
         else if (e.getStateChange () == ItemEvent.SELECTED)
         {
             if (previousMonotony == UP)
             { // UP --> UP
               // do nothing
-                getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (true);
+                getPanel ().getDiscretizedStatesPanel ().setUpMonotony (true);
             }
             else if (previousMonotony == DOWN)
             { // DOWN --> UP
-                DiscretizeTablePanel panel = getPanel ().getNodeDiscretizedStatesTablePanel ();
+                DiscretizeTablePanel panel = getPanel ().getDiscretizedStatesPanel ();
                 panel.setUpMonotony (true);
                 Object[][] data = panel.getData ();
                 Object[][] intermediateRows = new Object[data.length][data[0].length - 2];
@@ -148,13 +148,13 @@ public class NodeDiscretizeValuesTablePanelListener
         if (e.getStateChange () == ItemEvent.DESELECTED)
         {
             previousMonotony = DOWN;// deselected down
-            getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (true);
+            getPanel ().getDiscretizedStatesPanel ().setUpMonotony (true);
         }
         else if (e.getStateChange () == ItemEvent.SELECTED)
         {
             if (previousMonotony == UP)
             { // UP --> DOWN
-                DiscretizeTablePanel panel = getPanel ().getNodeDiscretizedStatesTablePanel ();
+                DiscretizeTablePanel panel = getPanel ().getDiscretizedStatesPanel ();
                 panel.setUpMonotony (false);
                 Object[][] data = panel.getData ();
                 Object[][] intermediateRows = new Object[data.length][data[0].length - 2];
@@ -185,7 +185,7 @@ public class NodeDiscretizeValuesTablePanelListener
             else if (previousMonotony == DOWN)
             { // DOWN --> DOWN
               // do nothing
-                getPanel ().getNodeDiscretizedStatesTablePanel ().setUpMonotony (false);
+                getPanel ().getDiscretizedStatesPanel ().setUpMonotony (false);
             }
         }
     }
@@ -366,7 +366,7 @@ public class NodeDiscretizeValuesTablePanelListener
                 }
                 PartitionedInterval newPartitionInterval = getPanel ().getProbNode ().getVariable ().getPartitionedInterval ();
                 State[] states = getPanel ().getProbNode ().getVariable ().getStates ();
-                getPanel ().getNodeDiscretizedStatesTablePanel ().setDataFromPartitionedInterval (newPartitionInterval,
+                getPanel ().getDiscretizedStatesPanel ().setDataFromPartitionedInterval (newPartitionInterval,
                                                                                                   states);
             }
         }

@@ -29,7 +29,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.AddProbNodeEdit;
-import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -586,18 +585,6 @@ public class EditorPanel extends JPanel
     public double getZoom ()
     {
         return zoom.getZoom ();
-    }
-
-    /**
-     * Returns a limited in functionality UndoManager object. The original
-     * UndoManager object is not returned in order to avoid its methods aren't
-     * invoked by another object.
-     * @return a limited in functionality UndoManager object.
-     */
-    public UndoManagerSupport getUndoManager ()
-    {
-        return probNet.getPNESupport ().getUndoManager ();
-        // undoManager.getUndoManagerInfo();
     }
 
     /**

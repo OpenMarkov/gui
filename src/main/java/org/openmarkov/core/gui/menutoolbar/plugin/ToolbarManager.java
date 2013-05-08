@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openmarkov.core.gui.menutoolbar.toolbar.ToolBarBasic;
 import org.openmarkov.core.gui.window.MainPanel;
@@ -49,7 +48,7 @@ public class ToolbarManager
             {
                 try
                 {
-                    Constructor constructor = toolbarClasses.get (name).getConstructor (ActionListener.class);
+                    Constructor<?> constructor = toolbarClasses.get (name).getConstructor (ActionListener.class);
                     instance = (ToolBarBasic) constructor.newInstance (mainPanel.getMainPanelListenerAssistant ());
                 }
                 catch (NoSuchMethodException | SecurityException | InstantiationException

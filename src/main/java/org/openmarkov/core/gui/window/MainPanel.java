@@ -18,12 +18,11 @@ import java.awt.FlowLayout;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
-import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
 import org.openmarkov.core.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.core.gui.menutoolbar.menu.MainMenu;
 import org.openmarkov.core.gui.menutoolbar.plugin.ToolbarManager;
 import org.openmarkov.core.gui.menutoolbar.toolbar.EditionToolBar;
 import org.openmarkov.core.gui.menutoolbar.toolbar.InferenceToolBar;
@@ -109,8 +108,6 @@ public class MainPanel extends JPanel {
 	 */
 	private JFrame mainFrame = null;
 
-	private JScrollPane propertiesScrollPanel;
-	
 	private ToolbarManager toolbarManager;
 
 	/**

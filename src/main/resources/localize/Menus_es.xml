@@ -412,9 +412,6 @@
       <ZeroCycle value = "Ciclo cero"/>
       <Cost value = "Coste"/>
       <Effectiveness value = "Efectividad"/>
-      <InstantValues value = "Valores instantáneo"/>
-      <CumulativeValues value = "Valores acumulados"/>
-      <TemporalDisplay value = "Vista temporal"/>  
       <BeginningOfCycle value = "Inicio del ciclo"/>
       <HalfCycle value = "Mitad de ciclo"/>
       <EndOfCycle value = "Final de ciclo"/>
@@ -426,6 +423,9 @@
       </ExpandNetworkCE>
       <TemporalEvolution>
         <Label value = "Evolución temporal" />
+        <InstantValues value = "Valores instantáneos"/>
+        <CumulativeValues value = "Valores acumulados"/>
+        <ValueType value = "Tipo de valor" />
       </TemporalEvolution>      
   </CostEffectiveness> 
   <TreeADD>
@@ -465,6 +465,13 @@
   	<SetReference>
   		<Label value="Establecer referencia"/>
   	</SetReference>
+  	<RemoveLabel>
+  		<Label value="Quitar etiqueta"/>
+  	</RemoveLabel>
+  	<RemoveReference>
+  		<Label value="Quitar referencia"/>
+  	</RemoveReference>
+  	
   	<DomainChangeWarning value="Está tratando de modificar el dominio de la variable"/>
   </TreeADD>  
   <BUNDLEFILE>

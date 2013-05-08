@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.BasicOperations;
@@ -29,8 +30,10 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -76,7 +79,7 @@ public class CostEffectivenessAnalysis {
         this.numSlices = numSlices;
         this.evidence = getEvidenceFromNetwork(probNet, evidence, initialValues);
         this.transitionTime = transitionTime;
-        this.expandedNetwork = buildExpandedNetwork();  
+        this.expandedNetwork = buildExpandedNetwork();
         this.globalUtility = runAnalysis(expandedNetwork, this.evidence);
         this.interventions = createInterventions(globalUtility);
         this.frontierInterventions = calculateFrontierInterventions(interventions);
@@ -101,7 +104,7 @@ public class CostEffectivenessAnalysis {
                 numSlices,
                 evidence,
                 transitionTime);
-        applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);    
+        applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
         String baseName = variableOfInterest.getBaseName();
         List<Variable> variablesOfInterest = new ArrayList<>();
         List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
@@ -196,16 +199,17 @@ public class CostEffectivenessAnalysis {
 
     /**
      * Build expanded network, adapt for CE and apply discount
+     * 
      * @return
      */
     private ProbNet buildExpandedNetwork() {
         MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
         ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
         expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, evidence, transitionTime);
-        applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);  
+        applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
         return expandedNetwork;
     }
-    
+
     /**
      * If there are temporal nodes within the network that requires evidence
      * must be retrieved from CostEffectivenessDialog
@@ -217,7 +221,7 @@ public class CostEffectivenessAnalysis {
             Map<Variable, Double> initialValues) {
         EvidenceCase evidenceCase = new EvidenceCase(evidence);
 
-        for (ProbNode timeDependentNode : probNet.getSpecialTimeDependentNodes()) {
+        for (ProbNode timeDependentNode : getShiftingTemporalNodes(probNet)) {
             Variable timeDependentVariable = timeDependentNode.getVariable();
             Finding finding = new Finding(timeDependentVariable,
                     initialValues.get(timeDependentVariable));
@@ -474,7 +478,9 @@ public class CostEffectivenessAnalysis {
      * @throws NotEnoughMemoryException
      *             It applies the discount to each utility potential
      */
-    public static void applyDiscountToUtilityNodes(ProbNet probNet, double costDiscount, double effectivenessDiscount) {
+    public static void applyDiscountToUtilityNodes(ProbNet probNet,
+            double costDiscount,
+            double effectivenessDiscount) {
 
         // apply discount rate for all temporal utility nodes in the expanded
         // network
@@ -492,26 +498,64 @@ public class CostEffectivenessAnalysis {
             }
         }
     }
-    
-    public static void applyDiscountToUtilityPotential(Potential potential, int timeSlice, double discount) {
+
+    public static void applyDiscountToUtilityPotential(Potential potential,
+            int timeSlice,
+            double discount) {
         double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
-        if(potential instanceof TablePotential)
-        {
-            double[] potentialValues = ((TablePotential)potential).getValues();
+        if (potential instanceof TablePotential) {
+            double[] potentialValues = ((TablePotential) potential).getValues();
             for (int j = 0; j < potentialValues.length; j++) {
                 potentialValues[j] = potentialValues[j] * discountRate;
             }
-        }else if (potential instanceof TreeADDPotential)
-        {
-            TreeADDPotential treeADD = (TreeADDPotential)potential; 
-            for(TreeADDBranch branch : treeADD.getBranches())
-            {
+        } else if (potential instanceof TreeADDPotential) {
+            TreeADDPotential treeADD = (TreeADDPotential) potential;
+            for (TreeADDBranch branch : treeADD.getBranches()) {
                 applyDiscountToUtilityPotential(branch.getPotential(), timeSlice, discount);
             }
         }
     }
-    
-    
+
+    /**
+     * Within a Markov process for CE purposes it is important to detect whether
+     * there are or not numerical temporal variables with a CycleLengthShift
+     * potential in their second slice. These special nodes represent a temporal
+     * dependency that might be a relaxation of Markov assumption for SemiMarkov
+     * models or just a time dependence to introduce time varying transition
+     * from a life table.
+     * 
+     * @return a List with these special nodes in first slice of the compact
+     *         network
+     */
+    public static List<ProbNode> getShiftingTemporalNodes(ProbNet probNet) {
+        // this array includes also Age node if exists
+        List<ProbNode> numericTemporalNodes = new ArrayList<>();
+        List<ProbNode> probNodes = probNet.getProbNodes();
+        // looking for temporal numerical variables in the first slice
+        for (ProbNode firstSliceNode : probNodes) {
+            Variable firstSliceVariable = firstSliceNode.getVariable();
+            if (firstSliceVariable.isTemporal()
+                    && firstSliceVariable.getVariableType() == VariableType.NUMERIC
+                    && firstSliceVariable.getTimeSlice() == 0) {
+                // look for the second slice to check if it has a
+                // CycleLengthShift potential
+                for (ProbNode secondSliceNode : probNodes) {
+                    Variable secondSliceVariable = secondSliceNode.getVariable();
+                    if (secondSliceVariable.isTemporal()
+                            && secondSliceVariable.getVariableType() == VariableType.NUMERIC
+                            && secondSliceVariable.getTimeSlice() == 1
+                            && secondSliceVariable.getBaseName().equals(firstSliceVariable.getBaseName())) {
+                        if (secondSliceNode.getPotentials().get(0).getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+                            numericTemporalNodes.add(firstSliceNode);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return numericTemporalNodes;
+    }
+
     /**
      * @param decisionCriteria
      * @param treeVariables
@@ -523,8 +567,7 @@ public class CostEffectivenessAnalysis {
      *         criteria of the node is the old utility table, and the branch of
      *         the other criteria is 0.
      */
-    private static TreeADDPotential constructTreeADDForCE(
-            ProbNet probNet,
+    private static TreeADDPotential constructTreeADDForCE(ProbNet probNet,
             List<Variable> treeVariables,
             Potential utility,
             ProbNode utilProbNode,
@@ -599,20 +642,25 @@ public class CostEffectivenessAnalysis {
             if (utilityVariable.isTemporal() && utilityVariable.getTimeSlice() > 0) {
                 StringWithProperties decisionCriteria = utilityVariable.getDecisionCriteria();
                 if (decisionCriteria.getString().equalsIgnoreCase("effectiveness")) {
-                    Variable previousSliceVariable = probNet.getShiftedVariable(utilityVariable, -1);
-                    ProbNode previousSliceNode = probNet.getProbNode(previousSliceVariable);
-                    // Calculate half cycle potentials adding the potentials of
-                    // current and previous time slices and dividing the result
-                    // by two
-                    List<TablePotential> potentialsToSum = Arrays.asList((TablePotential) utilityProbNode.getPotentials().get(0),
-                            (TablePotential) previousSliceNode.getPotentials().get(0));
-                    TablePotential sumPotential = DiscretePotentialOperations.sum(potentialsToSum);
-                    sumPotential.setUtilityVariable(utilityVariable);
-                    double[] values = sumPotential.values;
-                    for (int j = 0; j < values.length; ++j) {
-                        values[j] /= 2;
+                    try {
+                        Variable previousSliceVariable = probNet.getShiftedVariable(utilityVariable, -1);
+                        ProbNode previousSliceNode = probNet.getProbNode(previousSliceVariable);
+                        // Calculate half cycle potentials adding the potentials
+                        // of current and previous time slices and dividing the
+                        // result by two
+                        List<TablePotential> potentialsToSum = Arrays.asList((TablePotential) utilityProbNode.getPotentials().get(0),
+                                (TablePotential) previousSliceNode.getPotentials().get(0));
+                        TablePotential sumPotential = DiscretePotentialOperations.sum(potentialsToSum);
+                        sumPotential.setUtilityVariable(utilityVariable);
+                        double[] values = sumPotential.values;
+                        for (int j = 0; j < values.length; ++j) {
+                            values[j] /= 2;
+                        }
+                        halfCyclePotentials.put(utilityProbNode, sumPotential);
+                    } catch (ProbNodeNotFoundException e) {
+                        e.printStackTrace();
                     }
-                    halfCyclePotentials.put(utilityProbNode, sumPotential);
+
                 }
             }
         }
@@ -644,7 +692,9 @@ public class CostEffectivenessAnalysis {
      * @param inferenceOptions
      * @param evidence
      */
-    private static void projectTemporalEvidence(ProbNet probNet, InferenceOptions inferenceOptions, EvidenceCase evidence) {
+    private static void projectTemporalEvidence(ProbNet probNet,
+            InferenceOptions inferenceOptions,
+            EvidenceCase evidence) {
         List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
         for (ProbNode utilityProbNode : utilityExpandedNodes) {
             Variable utilityVariable = utilityProbNode.getVariable();

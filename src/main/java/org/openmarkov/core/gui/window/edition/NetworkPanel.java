@@ -15,7 +15,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.UndoManagerSupport;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.graphic.SelectionListener;
@@ -662,17 +661,6 @@ public class NetworkPanel extends FrameContentPanel
     public void setSelectedAllObjects (boolean selected)
     {
         editorPanel.setSelectedAllObjects (selected);
-    }
-
-    /**
-     * Returns a limited in functionality UndoManager object. The original
-     * UndoManager object is not returned in order to avoid its methods aren't
-     * invoked by another object.
-     * @return a limited in functionality UndoManager object.
-     */
-    public UndoManagerSupport getUndoManager ()
-    {
-        return editorPanel.getUndoManager ();
     }
 
     public void undoableEditHappened (UndoableEditEvent arg0)

@@ -59,7 +59,7 @@ public class DiscreteValuesTablePanel extends JPanel
     /**
      * combo box to select the values for the states of the node
      */
-    private JComboBox             jComboBoxStatesValues;
+    private JComboBox<String>             jComboBoxStatesValues;
     /**
      * label for the table to show the values of the node
      */
@@ -249,11 +249,11 @@ public class DiscreteValuesTablePanel extends JPanel
     /**
      * @return JComboBox for the set of values a state can take
      */
-    protected JComboBox getJComboBoxStatesValues ()
+    protected JComboBox<String> getJComboBoxStatesValues ()
     {
         if (jComboBoxStatesValues == null)
         {
-            jComboBoxStatesValues = new JComboBox (GUIDefaultStates.getListStrings ());
+            jComboBoxStatesValues = new JComboBox<String> (GUIDefaultStates.getListStrings ());
             jComboBoxStatesValues.setName ("jComboBoxStatesValues");
             jComboBoxStatesValues.addItemListener (this);
         }

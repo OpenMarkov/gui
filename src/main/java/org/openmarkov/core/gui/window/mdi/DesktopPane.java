@@ -36,10 +36,6 @@ public class DesktopPane extends JDesktopPane
      */
     private static final int  Y_VARIATION      = 20;
     /**
-     * This index is incremented each time a new internal frame is created.
-     */
-    private static int        internalIndex    = 0;
-    /**
      * String database
      */
     protected StringDatabase  stringDatabase   = StringDatabase.getUniqueInstance ();
@@ -73,7 +69,6 @@ public class DesktopPane extends JDesktopPane
         // newContentPanel.add(splitPane);
         frame = new InternalFrame (newContentPanel);
         frame.setBounds (posX, posY, getWidth () / 2, getHeight () / 2);
-        internalIndex++;
         add (frame);
         return frame;
     }

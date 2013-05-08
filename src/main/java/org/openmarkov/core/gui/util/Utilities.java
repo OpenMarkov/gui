@@ -13,15 +13,8 @@ package org.openmarkov.core.gui.util;
 import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
-import java.util.HashSet;
 
 import javax.swing.JComponent;
-
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
 
 
 

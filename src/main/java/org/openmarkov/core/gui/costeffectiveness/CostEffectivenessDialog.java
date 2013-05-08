@@ -16,6 +16,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -104,7 +105,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         super(owner);
         setLocationRelativeTo(owner);
         this.initialValues = new HashMap<>();
-        for (ProbNode numericalTemporalNode : probNet.getSpecialTimeDependentNodes()) {
+        List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+        for (ProbNode numericalTemporalNode : temporalNodes) {
             initialValues.put(numericalTemporalNode.getVariable(), numericalTemporalNode
                     .getVariable().getPartitionedInterval().getMin());
         }
@@ -255,7 +257,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JRadioButton getInstantValuesButton() {
         if (instantButton == null) {
             instantButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.InstantValues"), true);
+                    stringDatabase.getString("CostEffectiveness.TemporalEvolution.InstantValues"), true);
             instantButton.addItemListener(this);
         }
         return instantButton;
@@ -264,7 +266,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JRadioButton getCumulativeValuesButton() {
         if (cumulativeButton == null) {
             cumulativeButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.CumulativeValues"), false);
+                    stringDatabase.getString("CostEffectiveness.TemporalEvolution.CumulativeValues"), false);
             cumulativeButton.addItemListener(this);
         }
         return cumulativeButton;
@@ -285,7 +287,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             instantOrCumulativePanel.setLayout(new GridLayout(2, 1));
             instantOrCumulativePanel.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEtchedBorder(),
-                    stringDatabase.getString("CostEffectiveness.TemporalDisplay")));
+                    stringDatabase.getString("CostEffectiveness.TemporalEvolution.ValueType")));
             instantOrCumulativePanel.setName("instantOrAccumulativePanel");
             initInstantOrCumulativeButtonGroup();
             instantOrCumulativePanel.add(getInstantValuesButton());

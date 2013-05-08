@@ -314,15 +314,16 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         if (potential.isUtility()) {
             variables.add(potential.getUtilityVariable());
         }
-        List<Variable> possibleVariables = possibleTopVariables(branch, branchPath);
-        possibleVariables.addAll(branch.getAddableVariables());
+        List<Variable> possibleTopVariables = possibleTopVariables(branch, branchPath);
+        List<Variable> addableVariables = branch.getAddableVariables();
+        possibleTopVariables.addAll(addableVariables);
         
         // Potential Edition, any case it is possible to edit branch's potential
         if (!(potential instanceof TreeADDPotential)) {
             contextualMenu.add(editPotential);
             contextualMenu.add(new JSeparator());
             // Adding Variables to potential
-            if (!possibleVariables.isEmpty()) {
+            if (!addableVariables.isEmpty()) {
                 contextualMenu.add(addVariables);
             }
             // remove potential variables

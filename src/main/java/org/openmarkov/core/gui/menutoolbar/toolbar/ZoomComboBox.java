@@ -24,13 +24,10 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 /**
  * This class fills its combobox and listen to it to send action commands
  * defined in the class ActionCommands.
+ * 
  * @author jmendoza
  */
-public class ZoomComboBox extends JComboBox
-    implements
-        ItemListener,
-        KeyListener
-{
+public class ZoomComboBox extends JComboBox<String> implements ItemListener, KeyListener {
     /**
      * Static field for serializable class.
      */
@@ -38,8 +35,8 @@ public class ZoomComboBox extends JComboBox
     /**
      * Prefixed elements of the combobox.
      */
-    private static String[]   ZOOM_VALUES      = {"500%", "200%", "150%", "100%", "75%", "50%",
-            "25%", "10%"                       };
+    private static String[]   ZOOM_VALUES      = { "500%", "200%", "150%", "100%", "75%", "50%",
+            "25%", "10%"                      };
     /**
      * Old value of the combobox
      */
@@ -51,84 +48,75 @@ public class ZoomComboBox extends JComboBox
 
     /**
      * Constructor that fills and initialize the combobox.
-     * @param newListener object that listens to the zoom values.
+     * 
+     * @param newListener
+     *            object that listens to the zoom values.
      */
-    public ZoomComboBox (ActionListener newListener)
-    {
-        super (ZOOM_VALUES);
+    public ZoomComboBox(ActionListener newListener) {
+        super(ZOOM_VALUES);
         listener = newListener;
-        initialize ();
+        initialize();
     }
 
     /**
      * This method initialises this instance.
      */
-    private void initialize ()
-    {
-        setEditable (true);
-        setPreferredSize (new Dimension (70, 25));
-        setMaximumSize (getPreferredSize ());
-        setMinimumSize (getPreferredSize ());
-        setSelectedIndex (3); // 100% item
-        oldValue = (String) getSelectedItem ();
-        addItemListener (this);
-        addComponentKeyListener (this);
+    private void initialize() {
+        setEditable(true);
+        setPreferredSize(new Dimension(70, 25));
+        setMaximumSize(getPreferredSize());
+        setMinimumSize(getPreferredSize());
+        setSelectedIndex(3); // 100% item
+        oldValue = (String) getSelectedItem();
+        addItemListener(this);
+        addComponentKeyListener(this);
     }
 
     /**
      * Adds a new key listener to the component where edition is performed.
-     * @param newListener new key listener.
+     * 
+     * @param newListener
+     *            new key listener.
      */
-    private void addComponentKeyListener (KeyListener newListener)
-    {
-        Component componentEditor = getEditor ().getEditorComponent ();
-        if (componentEditor != null)
-        {
-            componentEditor.addKeyListener (newListener);
+    private void addComponentKeyListener(KeyListener newListener) {
+        Component componentEditor = getEditor().getEditorComponent();
+        if (componentEditor != null) {
+            componentEditor.addKeyListener(newListener);
         }
     }
 
     /**
      * Returns an integer that contains the value of the string. The string can
      * contain the symbol '%' at the end.
-     * @param zoomString string that contains a zoom value.
+     * 
+     * @param zoomString
+     *            string that contains a zoom value.
      * @return the integer zoom value or null if the string has not a correct
      *         value.
      */
-    private Integer getZoomValue (String zoomString)
-    {
+    private Integer getZoomValue(String zoomString) {
         Integer result;
         int length;
         String substring;
-        String zString = zoomString.trim ();
+        String zString = zoomString.trim();
         int percentajePosition;
-        length = zString.length ();
-        if (length == 0)
-        {
+        length = zString.length();
+        if (length == 0) {
             return null;
         }
-        percentajePosition = zString.indexOf ("%");
-        if (percentajePosition >= 0)
-        {
-            if (percentajePosition == (length - 1))
-            {
-                substring = zString.substring (0, percentajePosition);
-            }
-            else
-            {
+        percentajePosition = zString.indexOf("%");
+        if (percentajePosition >= 0) {
+            if (percentajePosition == (length - 1)) {
+                substring = zString.substring(0, percentajePosition);
+            } else {
                 substring = "";
             }
-        }
-        else
-        {
+        } else {
             substring = zString;
         }
-        try
-        {
-            result = new Integer (substring);
-        }
-        catch (NumberFormatException e)
-        {
+        try {
+            result = new Integer(substring);
+        } catch (NumberFormatException e) {
             result = null;
         }
         return result;
@@ -136,89 +124,89 @@ public class ZoomComboBox extends JComboBox
 
     /**
      * Invoked when an item has been selected.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
-    public void itemStateChanged (ItemEvent e)
-    {
+    public void itemStateChanged(ItemEvent e) {
         String newActionCommand;
         Integer zoomValue;
-        if (e.getStateChange () == ItemEvent.SELECTED)
-        {
-            if (!e.getItem ().equals (oldValue))
-            {
-                zoomValue = getZoomValue ((String) e.getItem ());
-                if ((zoomValue == null) || (zoomValue.intValue () < 10)
-                    || (zoomValue.intValue () > 500))
-                {
-                    JOptionPane.showMessageDialog (getRootPane (),
-                                                   StringDatabase.getUniqueInstance ().getString ("WrongZoomValue.Text.Label"),
-                                                   StringDatabase.getUniqueInstance ().getString ("ErrorWindow.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    setSelectedItem (oldValue);
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (!e.getItem().equals(oldValue)) {
+                zoomValue = getZoomValue((String) e.getItem());
+                if ((zoomValue == null)
+                        || (zoomValue.intValue() < 10)
+                        || (zoomValue.intValue() > 500)) {
+                    JOptionPane.showMessageDialog(getRootPane(),
+                            StringDatabase.getUniqueInstance().getString("WrongZoomValue.Text.Label"),
+                            StringDatabase.getUniqueInstance().getString("ErrorWindow.Title.Label"),
+                            JOptionPane.ERROR_MESSAGE);
+                    setSelectedItem(oldValue);
+                } else {
+                    newActionCommand = ActionCommands.getZoomActionCommandValue(zoomValue.doubleValue() / 100);
+                    setSelectedItem(zoomValue + "%");
+                    oldValue = (String) getSelectedItem();
+                    listener.actionPerformed(new ActionEvent(this, 0, newActionCommand));
                 }
-                else
-                {
-                    newActionCommand = ActionCommands.getZoomActionCommandValue (zoomValue.doubleValue () / 100);
-                    setSelectedItem (zoomValue + "%");
-                    oldValue = (String) getSelectedItem ();
-                    listener.actionPerformed (new ActionEvent (this, 0, newActionCommand));
-                }
-                getRootPane ().requestFocusInWindow ();
+                getRootPane().requestFocusInWindow();
             }
         }
     }
 
     /**
      * This method sets the value of the combobox.
-     * @param value new value of zoom.
+     * 
+     * @param value
+     *            new value of zoom.
      */
-    public void setZoom (double value)
-    {
-        setSelectedItem ((int) Math.round (value * 100) + "%");
+    public void setZoom(double value) {
+        setSelectedItem((int) Math.round(value * 100) + "%");
     }
 
     /**
      * Invoked when a key has been pressed.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
-    public void keyPressed (KeyEvent e)
-    {
-        if (e.getKeyCode () == KeyEvent.VK_ESCAPE)
-        {
-            getEditor ().setItem (oldValue);
-            getRootPane ().requestFocusInWindow ();
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            getEditor().setItem(oldValue);
+            getRootPane().requestFocusInWindow();
         }
     }
 
     /**
      * Invoked when a key has been released. This method does nothing.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
-    public void keyReleased (KeyEvent e)
-    {
+    public void keyReleased(KeyEvent e) {
     }
 
     /**
      * Invoked when a key has been typed. This method does nothing.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
-    public void keyTyped (KeyEvent e)
-    {
+    public void keyTyped(KeyEvent e) {
     }
 
     /**
      * Enables the combo box so that items can be selected. When the combo box
      * is disabled, items cannot be selected, values cannot be typed into its
      * field and no elements are selected.
-     * @param b true enables the combobox and false disables it.
+     * 
+     * @param b
+     *            true enables the combobox and false disables it.
      */
     @Override
-    public void setEnabled (boolean b)
-    {
-        if (!b)
-        {
-            setSelectedIndex (-1);
+    public void setEnabled(boolean b) {
+        if (!b) {
+            setSelectedIndex(-1);
         }
-        super.setEnabled (b);
+        super.setEnabled(b);
     }
 }

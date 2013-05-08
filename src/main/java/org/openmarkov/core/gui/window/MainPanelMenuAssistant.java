@@ -36,7 +36,6 @@ import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MPADType;
-import org.openmarkov.core.model.network.type.SimpleMarkovModelType;
 import org.openmarkov.core.oopn.OOPNet;
 
 /**
