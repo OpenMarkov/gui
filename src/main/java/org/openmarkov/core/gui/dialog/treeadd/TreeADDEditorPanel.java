@@ -99,6 +99,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     protected List<Variable>   treeVariables;
     // Mouse event detection
     private int                xx, yy;
+    private ProbNode           probNode;
 
     /**
      * Shows the tree in read only mode
@@ -106,9 +107,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param probNet
      * @param treeADDPotential
      */
-    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, TreeADDPotential treeADDPotential) {
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, ProbNode probNode) {
         // A copy of the potential
-        this.rootTreeADDPotential = new TreeADDPotential(treeADDPotential);
+        this.probNode = probNode;
+        this.rootTreeADDPotential = new TreeADDPotential((TreeADDPotential) probNode.getPotentials().get(0));
         readOnlyMode = false;
         setupUserInterface(cellRenderer);
     }
@@ -269,13 +271,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 contextualMenu.add(changeInterval);
             }
         }
-        if(!branch.isReference() && !branch.isLabeled())
-        {
+        if (!branch.isReference() && !branch.isLabeled()) {
             contextualMenu.add(new JSeparator());
             contextualMenu.add(setLabel);
         }
-        if(branch.isLabeled())
-        {
+        if (branch.isLabeled()) {
             contextualMenu.add(new JSeparator());
             contextualMenu.add(removeLabel);
         }
@@ -290,11 +290,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             contextualMenu.add(new JSeparator());
             contextualMenu.add(setReference);
         }
-        if(branch.isReference())
-        {
+        if (branch.isReference()) {
             contextualMenu.add(new JSeparator());
             contextualMenu.add(removeReference);
-        }        
+        }
     }
 
     /**
@@ -317,7 +316,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         List<Variable> possibleTopVariables = possibleTopVariables(branch, branchPath);
         List<Variable> addableVariables = branch.getAddableVariables();
         possibleTopVariables.addAll(addableVariables);
-        
+
         // Potential Edition, any case it is possible to edit branch's potential
         if (!(potential instanceof TreeADDPotential)) {
             contextualMenu.add(editPotential);
@@ -342,7 +341,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      */
     private List<Variable> possibleTopVariables(TreeADDBranch branch, TreePath branchPath) {
         List<Variable> possibleTopVariables = new ArrayList<>(branch.getParentVariables());
-        
+
         possibleTopVariables.remove(branch.getRootVariable());
         possibleTopVariables.remove(branch.getPotential().getConditionedVariable());
 
@@ -468,7 +467,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         }
     }
 
-     private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
+    private void changeInterval(ActionEvent ae, TreeADDBranch branch, TreePath path) {
 
         TreePath parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
@@ -1236,6 +1235,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         Object parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
         Potential potential = branch.getPotential();
+        ProbNet probNet = probNode.getProbNet();
         ProbNet dummyProbNet = new ProbNet();
         dummyProbNet.addPotential(potential);
         ProbNode dummy = null;
@@ -1246,6 +1246,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 continue;
             }
             try {
+                List<Potential> originalPotentials = probNet.getProbNode(variable).getPotentials();
+                dummyProbNet.getProbNode(variable).setPotentials(originalPotentials);
                 dummyProbNet.addLink(variable, conditionedVariable, true);
             } catch (NodeNotFoundException e) {
                 throw new RuntimeException("Node not found: " + e.getMessage());
@@ -1289,6 +1291,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
     /**
      * Removes the label from a branch
+     * 
      * @param ae
      * @param node
      * @param path
@@ -1297,7 +1300,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         branch.setLabel(null);
         TreeADDModel model = (TreeADDModel) jTree.getModel();
         model.notifyTreeStructureChanged(path);
-    }    
+    }
 
     /**
      * Sets a reference to another branch
@@ -1315,9 +1318,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             model.notifyTreeStructureChanged(path);
         }
     }
-    
+
     /**
      * Remove reference from a branch
+     * 
      * @param ae
      * @param node
      * @param path

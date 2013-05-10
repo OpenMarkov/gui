@@ -17,7 +17,6 @@ import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelPlugin;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "Tree/ADD")
@@ -65,9 +64,8 @@ public class TreeADDPanel extends PotentialPanel
     {
         setLayout (new BorderLayout ());
         this.probNode = probNode;
-        treeADDController = new TreeADDEditorPanel (
-                                                    new TreeADDCellRenderer (probNode.getProbNet ()),
-                                                    (TreeADDPotential) probNode.getPotentials ().get (0));
+        treeADDController = new TreeADDEditorPanel (new TreeADDCellRenderer (probNode.getProbNet ()),
+                                                    probNode);
         removeAll ();
         // treeADDController.setMaximumSize(new Dimension(10, 10));
         // treeADDController.setPreferredSize(new Dimension(10, 10));
