@@ -149,13 +149,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      */
     private JLabel                                jLabelUnit;
     /**
-     * Observable notifier
-     */
-    // private ElementObservable notifier = null;
-    /**
      * TODO listener for actions -
      */
-    public NodeDomainValuesTablePanelListener listener                               = null;
+    private NodeDomainValuesTablePanelListener listener                               = null;
     private JComboBox<String>                     jComboBoxNodeVariableType;
     private boolean                               uploadingData                          = false;
     /**
@@ -475,24 +471,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         return discretizedStatesPanel;
     }
 
-    /**
-     * This method initializes NodeValuesTable.
-     * 
-     * @return the PrefixedKeyTablePanel for the Node Values
-     */
-    /*
-     * protected PrefixedKeyTablePanel getNodeDiscreteStatesTablePanel() { if
-     * (nodeDiscreteStatesTablePanel == null) { String[] columnNames = {
-     * dialogStringResource.getString( "DiscreteValuesTablePanel.ValuesTable." +
-     * "Columns.Name.Text"), dialogStringResource.getString(
-     * "DiscreteValuesTablePanel.ValuesTable." + "Columns.Value.Text") };
-     * nodeDiscreteStatesTablePanel = new PrefixedKeyTablePanel(columnNames, new
-     * Object[][] {}, dialogStringResource.getString(
-     * "DiscreteValuesTablePanel.ValuesTable." + "Columns.Id.Prefix"),true,
-     * probNode); } nodeDiscreteStatesTablePanel.setBorder(new
-     * EmptyBorder(0,0,0,0)); return nodeDiscreteStatesTablePanel; }
-     */
-    /**
+     /**
      * @return
      */
     protected JLabel getJLabelDomainValues() {
@@ -1105,7 +1084,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         }
     }
 
-    void actionPerformedStandardDomain(ActionEvent arg0) {
+    private void actionPerformedStandardDomain(ActionEvent arg0) {
         StandardDomainsDialog standardDomainDialog = new StandardDomainsDialog(Utilities.getOwner(this));
         if (standardDomainDialog.requestValues() == StandardDomainsDialog.OK_BUTTON) {
             List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains())).getRadioButtons();
