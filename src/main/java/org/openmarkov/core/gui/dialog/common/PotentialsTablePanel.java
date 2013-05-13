@@ -47,12 +47,11 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /**
  * This class implements a potentials table with the following features:
@@ -904,33 +903,7 @@ public class PotentialsTablePanel extends JPanel
         int position = 0;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         TablePotential tablePotential = getThisPotential (properties.getPotentials ());
-        List<Variable> newOrderVariables = new ArrayList<Variable> ();
-        List<Variable> variables = probNode.getPotentials ().get (0).getVariables ();
-        // Collections.reverse(variables); // reorder the variables
-        int end = -1;
-        if (variables.size () > 0)
-        {
-            if (!(probNode.getNodeType () == NodeType.UTILITY))
-            {
-                newOrderVariables.add (variables.get (0));
-                end = 0;
-            }
-            for (int i = variables.size () - 1; i > end; i--)
-            {
-                newOrderVariables.add (variables.get (i));
-            }
-        }
-        tablePotential = DiscretePotentialOperations.reorder (tablePotential, newOrderVariables);
-        /*
-         * for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-         * for (int j = numColumns - 1; j >= 1; j--, position++) { double value
-         * = tablePotential.getTable()[position]; values[i][j] = value; } }
-         */
         int cont = getLastEditableRow ();
-        /*
-         * if (probNode.getNodeType() == NodeType.UTILITY ) cont =
-         * getLastEditableRow()-1; else cont = getLastEditableRow();
-         */
         for (int j = 1; j <= numColumns - 1; j++)
         {
             for (int i = cont; i >= getFirstEditableRow (); i--, position++)
@@ -1112,24 +1085,12 @@ public class PotentialsTablePanel extends JPanel
         }
         int[] parentsConfiguration = new int[variables.size ()];
         // Gets the start position of a reordered potential
-		int startPosition = UtilStrings.toPositionOnPotentialReordered(
+		int startPosition = Util.toPositionOnPotentialReordered(
 				variable.getNumStates() + variables.size() - 1, col,
 				variable.getNumStates(), variables.size());
         // the source variables are reordered
-        ArrayList<Variable> reorderedVariables = new ArrayList<Variable> ();
-        if (!(tablePotential.getPotentialRole () == PotentialRole.UTILITY))
-        {
-            reorderedVariables.add (variable);
-        }
-        for (int i = variables.size () - 1; i >= 0; i--)
-        {
-            reorderedVariables.add (variables.get (i));
-        }
-        // gets the potential with variables and values table reordered
-        TablePotential reorderedTablePotential = DiscretePotentialOperations.reorder (tablePotential,
-                                                                                      reorderedVariables);
         // gets the configuration selected
-        int[] configuration = reorderedTablePotential.getConfiguration (startPosition);
+        int[] configuration = tablePotential.getConfiguration (startPosition);
         // back to the original order of variables configuration
         // first value of configuration matches the value of the first variable
         // in inverse order because the potential visualization is in inverse

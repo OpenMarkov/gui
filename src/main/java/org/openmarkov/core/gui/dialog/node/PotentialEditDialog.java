@@ -43,7 +43,7 @@ import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -305,7 +305,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         updatePotentialPanel ();
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
         // so here we will see if there are intervals in the states
-        if (UtilStrings.hasLimitBracketSymbols (probNode.getVariable ().getStates ())
+        if (Util.hasLimitBracketSymbols (probNode.getVariable ().getStates ())
             && (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES))
         {
             // really DISCRETIZED, so change the value of the VariableType
@@ -516,25 +516,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog (this, probNode);
         if (reorderVariablesDialog.requestValues () == NodePropertiesDialog.OK_BUTTON)
         {
-            ArrayList<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel ().getVariables ();
-            /*
-             * ArrayList<JRadioButton> buttons =
-             * ((VariablesCombinationPanel)reorderVariablesDialog
-             * .getVariablesCombinationPanel()).getRadioButtons();
-             * ArrayList<Variable> currentVariables =
-             * probNode.getPotentials().get(0).getVariables();
-             * ArrayList<Variable> reorderedVariables = new
-             * ArrayList<Variable>();
-             * reorderedVariables.add(probNode.getPotentials
-             * ().get(0).getVariables().get(0)); for (JRadioButton button :
-             * buttons) { if (button.isSelected()){ String buttonName =
-             * button.getText(); String subString = buttonName.substring(1,
-             * buttonName.length()-1); String []coma = subString.split(","); for
-             * (int i = 0; i < coma.length; i++) { if (coma[i].startsWith(" "))
-             * { coma[i] = coma[i].substring(1); } for (Variable variable :
-             * currentVariables) { if (variable.getName().equals(coma[i])) {
-             * reorderedVariables.add(variable); } } } } }
-             */
+            List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel ().getVariables ();
+            
             if (getPotentialPanel () instanceof TablePotentialPanel)
             {
                 // if (probNode.getPotentials().get(0) instanceof

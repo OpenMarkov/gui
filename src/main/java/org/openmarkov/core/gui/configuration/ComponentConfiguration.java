@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 
 
 
@@ -62,11 +62,11 @@ public class ComponentConfiguration
     	String ioTest = "tests\\openmarkov\\nets\\";
 
     	if ((Boolean)componentVariables.get("unix") == true) {
-    		netsPath = UtilStrings.windows2unixPath(netsPath);
-    		localizePath = UtilStrings.windows2unixPath(localizePath);
-    		ceNetTest = UtilStrings.windows2unixPath(ceNetTest);
-    		netTest = UtilStrings.windows2unixPath(netTest);
-    		ioTest = UtilStrings.windows2unixPath(ioTest);
+    		netsPath = Util.windows2unixPath(netsPath);
+    		localizePath = Util.windows2unixPath(localizePath);
+    		ceNetTest = Util.windows2unixPath(ceNetTest);
+    		netTest = Util.windows2unixPath(netTest);
+    		ioTest = Util.windows2unixPath(ioTest);
     	}
     	
     	componentVariables.put("netsDirectory", netsPath);

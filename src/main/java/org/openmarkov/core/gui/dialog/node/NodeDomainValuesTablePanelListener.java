@@ -33,7 +33,7 @@ import org.openmarkov.core.gui.component.DiscretizeTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
@@ -292,7 +292,7 @@ public class NodeDomainValuesTablePanelListener
                     if (limits[i] != Double.POSITIVE_INFINITY
                         && limits[i] != Double.NEGATIVE_INFINITY)
                     {
-                        double newLimit = UtilStrings.roundWithPrecision (limits[i],
+                        double newLimit = Util.roundWithPrecision (limits[i],
                                                                           Double.toString (precision));
                         if (limits[i] != newLimit)
                         {
@@ -346,7 +346,7 @@ public class NodeDomainValuesTablePanelListener
                     if (limits[m] != Double.POSITIVE_INFINITY
                         && limits[m] != Double.NEGATIVE_INFINITY)
                     {
-                        limits[m] = UtilStrings.roundWithPrecision (limits[m],
+                        limits[m] = Util.roundWithPrecision (limits[m],
                                                                     Double.toString (precision));
                     }
                 }

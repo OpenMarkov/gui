@@ -22,7 +22,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 
 /**
  * This class implements a key table with the following features:
@@ -386,7 +386,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
                         JOptionPane.ERROR_MESSAGE);
                 // valuesTable.getSelectionModel().setSelectionInterval(row,
                 // e.getColumn());
-                int i = UtilStrings.toPositionOnPotentialReordered(row,
+                int i = Util.toPositionOnPotentialReordered(row,
                         e.getColumn(),
                         probNode.getVariable().getNumStates(),
                         probNode.getNode().getNumParents());

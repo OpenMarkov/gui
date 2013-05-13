@@ -43,12 +43,11 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 
 /**
@@ -521,36 +520,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel
         epsilon = Math.pow (10, -(maxDecimals + 2));
         for (int i = 0; i < initialValues.length; i++)
         {
-            roundedValues[i] = UtilStrings.roundAndReduce (initialValues[i], epsilon, maxDecimals);
+            roundedValues[i] = Util.roundAndReduce (initialValues[i], epsilon, maxDecimals);
         }
         tablePotential.setValues (roundedValues);
-        List<Variable> newOrderVariables = new ArrayList<Variable> ();
-        List<Variable> variables = probNode.getPotentials ().get (0).getVariables ();
-        // Collections.reverse(variables); // reorder the variables
-        int end = -1;
-        if (variables.size () > 0)
-        {
-            if (!(probNode.getNodeType () == NodeType.UTILITY))
-            {
-                newOrderVariables.add (variables.get (0));
-                end = 0;
-            }
-            for (int i = variables.size () - 1; i > end; i--)
-            {
-                newOrderVariables.add (variables.get (i));
-            }
-        }
-        tablePotential = DiscretePotentialOperations.reorder (tablePotential, newOrderVariables);
-        /*
-         * for (int i = getLastEditableRow(); i >= getFirstEditableRow(); i--) {
-         * for (int j = numColumns - 1; j >= 1; j--, position++) { double value
-         * = tablePotential.getTable()[position]; values[i][j] = value; } }
-         */
         int cont = getLastEditableRow ();
-        /*
-         * if (probNode.getNodeType() == NodeType.UTILITY ) cont =
-         * getLastEditableRow()-1; else cont = getLastEditableRow();
-         */
         for (int j = 1; j <= numColumns - 1; j++)
         {
             for (int i = cont; i >= getFirstEditableRow (); i--, position++)
@@ -590,19 +563,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel
         notEditablePositions = setValuesTableSize (notEditablePositions, probNode);
         List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations.getStateCombinationsWithLinkRestriction (probNode);
         TablePotential potential = (TablePotential) probNode.getPotentials ().get (0);
-        List<Variable> newOrderVariables = new ArrayList<Variable> ();
-        List<Variable> variables = probNode.getPotentials ().get (0).getVariables ();
-        int end = -1;
-        if (variables.size () > 0)
-        {
-            newOrderVariables.add (variables.get (0));
-            end = 0;
-            for (int i = variables.size () - 1; i > end; i--)
-            {
-                newOrderVariables.add (variables.get (i));
-            }
-        }
-        potential = DiscretePotentialOperations.reorder (potential, newOrderVariables);
         for (int[] state : statesWithRestriction)
         {
             // reorder the variables
@@ -715,40 +675,21 @@ public class TablePotentialPanel extends ProbabilityTablePanel
         }
         else if (tablePotential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY
                  || tablePotential.getPotentialRole () == PotentialRole.JOINT_PROBABILITY)
-        { // JoinProbability
-          // when
-          // is
-          // getted
-          // from
-          // a
-          // iciPotential
+        { // JoinProbability when is gotten from an iciPotential
             variable = tablePotential.getVariable (0);
             variables = tablePotential.getVariables ();
             variables.remove (0);
         }
         int[] parentsConfiguration = new int[variables.size ()];
         // Gets the start position of a reordered potential
-        int startPosition = UtilStrings.toPositionOnPotentialReordered (variable.getNumStates ()
+        int startPosition = Util.toPositionOnPotentialReordered (variable.getNumStates ()
                                                                                 + variables.size ()
                                                                                 - 1,
                                                                         col,
                                                                         variable.getNumStates (),
                                                                         variables.size ());
-        // the source variables are reordered
-        List<Variable> reorderedVariables = new ArrayList<Variable> ();
-        if (!(tablePotential.getPotentialRole () == PotentialRole.UTILITY))
-        {
-            reorderedVariables.add (variable);
-        }
-        for (int i = variables.size () - 1; i >= 0; i--)
-        {
-            reorderedVariables.add (variables.get (i));
-        }
-        // gets the potential with variables and values table reordered
-        TablePotential reorderedTablePotential = DiscretePotentialOperations.reorder (tablePotential,
-                                                                                      reorderedVariables);
         // gets the configuration selected
-        int[] configuration = reorderedTablePotential.getConfiguration (startPosition);
+        int[] configuration = tablePotential.getConfiguration (startPosition);
         // back to the original order of variables configuration
         // first value of configuration matches the value of the first variable
         // in inverse order because the potential visualization is in inverse

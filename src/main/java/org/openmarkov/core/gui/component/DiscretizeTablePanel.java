@@ -50,7 +50,7 @@ import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
@@ -867,6 +867,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * 
      * @return the content of the table.
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public Object[][] getData() {
         DiscretizeTableModel model = (DiscretizeTableModel) valuesTable.getModel();
@@ -1217,7 +1218,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             // setting precision to the new value according with the precision
             // value introduced by the user
             double precision = probNode.getVariable().getPrecision();
-            double roundedValue = UtilStrings.roundWithPrecision(newValue,
+            double roundedValue = Util.roundWithPrecision(newValue,
                     Double.toString(precision));
             double[] currentLimits = probNode.getVariable().getPartitionedInterval().getLimits();
             boolean[] currentBelongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
@@ -1254,7 +1255,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             for (int m = 0; m < currentLimits.length; m++) {
                 if (currentLimits[m] != Double.POSITIVE_INFINITY
                         && currentLimits[m] != Double.NEGATIVE_INFINITY) {
-                    currentLimits[m] = UtilStrings.roundWithPrecision(currentLimits[m],
+                    currentLimits[m] = Util.roundWithPrecision(currentLimits[m],
                             Double.toString(precision));
                 }
             }

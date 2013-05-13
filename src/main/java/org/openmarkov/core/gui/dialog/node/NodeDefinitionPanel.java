@@ -53,7 +53,7 @@ import org.openmarkov.core.gui.util.Purpose;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
@@ -1314,7 +1314,7 @@ public class NodeDefinitionPanel extends JPanel
             result = false;
         }
         else if (!probNode.getName ().equals (name)
-                 && UtilStrings.existNode (probNode.getProbNet (), name))
+                 && Util.existNode (probNode.getProbNet (), name))
         {
             result = false;
         }

@@ -60,7 +60,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.UtilStrings;
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 
 /**
@@ -1006,7 +1006,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 for (int i = 0; i < limits.length; i++) {
                     if (limits[i] != Double.POSITIVE_INFINITY
                             && limits[i] != Double.NEGATIVE_INFINITY) {
-                        double newLimit = UtilStrings.roundWithPrecision(limits[i], itemSelected);
+                        double newLimit = Util.roundWithPrecision(limits[i], itemSelected);
                         if (limits[i] != newLimit) {
                             limits[i] = newLimit;
                             int j = i;
@@ -1044,7 +1044,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 for (int m = 0; m < limits.length; m++) {
                     if (limits[m] != Double.POSITIVE_INFINITY
                             && limits[m] != Double.NEGATIVE_INFINITY) {
-                        limits[m] = UtilStrings.roundWithPrecision(limits[m], itemSelected);
+                        limits[m] = Util.roundWithPrecision(limits[m], itemSelected);
                     }
                 }
                 PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits,

@@ -14,7 +14,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +52,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 /**
  * This table implementation is responsible for the graphical and data model
@@ -1309,16 +1307,7 @@ public class ValuesTable extends KeyTable
         {
             priorityList = edit.getPriorityList ();
             ListIterator<Integer> listIterator = priorityList.listIterator ();
-            List<Variable> newOrderVariables = new ArrayList<Variable> ();
-            List<Variable> orderVariables = probNode.getPotentials().get(0).getVariables ();
-            newOrderVariables.add (orderVariables.get (0));
-            for (int i = orderVariables.size () - 1; i > 0; i--)
-            {
-                newOrderVariables.add (orderVariables.get (i));
-            }
-            TablePotential auxPotential = DiscretePotentialOperations.reorder (editPotential,
-                                                                               newOrderVariables);
-            double[] values = auxPotential.getValues ();
+            double[] values = editPotential.getValues ();
             while (listIterator.hasNext () == true)
             {
                 position = (Integer) listIterator.next ();
