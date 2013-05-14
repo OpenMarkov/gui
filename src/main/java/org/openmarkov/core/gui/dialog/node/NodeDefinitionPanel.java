@@ -58,17 +58,13 @@ import org.openmarkov.core.model.network.VariableType;
 
 /**
  * Panel to set the definition of a node.
+ * 
  * @author jlgozalo
  * @version 1.0 jlgozalo
  * @versión 1.5 mpalacios
  */
-public class NodeDefinitionPanel extends JPanel
-    implements
-        FocusListener,
-        ItemListener,
-        CommentListener,
-        ActionListener
-{
+public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemListener,
+        CommentListener, ActionListener {
     private JComboBox<String> jComboBoxNetworkAgents;
     private JLabel            jLabelTimeSlice;
     private JComboBox<String> jComboBoxTimeSlice;
@@ -77,125 +73,115 @@ public class NodeDefinitionPanel extends JPanel
     /**
      * String database
      */
-    protected StringDatabase  stringDatabase = StringDatabase.getUniqueInstance ();
+    protected StringDatabase  stringDatabase = StringDatabase.getUniqueInstance();
 
     /**
      * constructor without construction parameters
      */
-    public NodeDefinitionPanel ()
-    {
-        this (true);// , new ElementObservable() );
+    public NodeDefinitionPanel() {
+        this(true);// , new ElementObservable() );
     }
 
     /**
      * constructor
-     * @param notifier - the element that will sent events to this class
+     * 
+     * @param notifier
+     *            - the element that will sent events to this class
      */
-    public NodeDefinitionPanel (ProbNode probNode)
-    {
-        this (true);// , notifier );
+    public NodeDefinitionPanel(ProbNode probNode) {
+        this(true);// , notifier );
         this.probNode = probNode;
-        try
-        {
-            initialize ();
+        try {
+            initialize();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
         }
-        catch (Throwable e)
-        {
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (this, stringDatabase.getString (e.getMessage ()),
-                                           stringDatabase.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
-        if (probNode.getProbNet ().getAgents () != null)
-        {
-            getJComboBoxNetworkAgents ().setEnabled (true);
-            getJComboBoxNetworkAgents ().setVisible (true);
-            getJLabelNetworkAgents ().setVisible (true);
-        }
-        else if (probNode.getProbNet ().getAgents () == null )
-        {
-            getJComboBoxNetworkAgents ().setEnabled (false);
-            getJComboBoxNetworkAgents ().setVisible (false);
-            getJLabelNetworkAgents ().setVisible (false);
+        if (probNode.getProbNet().getAgents() != null) {
+            getJComboBoxNetworkAgents().setEnabled(true);
+            getJComboBoxNetworkAgents().setVisible(true);
+            getJLabelNetworkAgents().setVisible(true);
+        } else if (probNode.getProbNet().getAgents() == null) {
+            getJComboBoxNetworkAgents().setEnabled(false);
+            getJComboBoxNetworkAgents().setVisible(false);
+            getJLabelNetworkAgents().setVisible(false);
         }
         // Check if the network has associated Only
         // AtemporalVariablesConstranint
-        if (probNode.getProbNet ().variablesCouldBeTemporal ())
-        {
-            getJComboBoxTimeSlice ().setEnabled (true);
-            getJComboBoxTimeSlice ().setVisible (true);
-            getJLabelTimeSlice ().setVisible (true);
+        if (probNode.getProbNet().variablesCouldBeTemporal()) {
+            getJComboBoxTimeSlice().setEnabled(true);
+            getJComboBoxTimeSlice().setVisible(true);
+            getJLabelTimeSlice().setVisible(true);
+        } else {
+            getJComboBoxTimeSlice().setEnabled(false);
+            getJComboBoxTimeSlice().setVisible(false);
+            getJLabelTimeSlice().setVisible(false);
         }
-        else
-        {
-            getJComboBoxTimeSlice ().setEnabled (false);
-            getJComboBoxTimeSlice ().setVisible (false);
-            getJLabelTimeSlice ().setVisible (false);
+        if (probNode.getNodeType() == NodeType.UTILITY) {
+            getJComboBoxDecisionCriteria().setEnabled(true);
+            getJComboBoxDecisionCriteria().setVisible(true);
+            getJLabelDecisionCriteria().setVisible(true);
+        } else {
+            getJComboBoxDecisionCriteria().setEnabled(false);
+            getJComboBoxDecisionCriteria().setVisible(false);
+            getJLabelDecisionCriteria().setVisible(false);
         }
-        if (probNode.getNodeType () == NodeType.UTILITY)
-        {
-            getJComboBoxDecisionCriteria ().setEnabled (true);
-            getJComboBoxDecisionCriteria ().setVisible (true);
-            getJLabelDecisionCriteria ().setVisible (true);
-        }
-        else
-        {
-            getJComboBoxDecisionCriteria ().setEnabled (false);
-            getJComboBoxDecisionCriteria ().setVisible (false);
-            getJLabelDecisionCriteria ().setVisible (false);
-        }
-        getJComboBoxNodePurpose ().setEnabled (true);
-        getJComboBoxNodeRelevance ().setEnabled (true);
-        if (!AlwaysObservedPropertyValidator.validate (probNode))
-        {
-            getJLabelAlwaysObserved ().setVisible (false);
-            getJCheckBoxAlwaysObserved ().setVisible (false);
+        getJComboBoxNodePurpose().setEnabled(true);
+        getJComboBoxNodeRelevance().setEnabled(true);
+        if (!AlwaysObservedPropertyValidator.validate(probNode)) {
+            getJLabelAlwaysObserved().setVisible(false);
+            getJCheckBoxAlwaysObserved().setVisible(false);
         }
     }
 
     /**
      * This method initialises this instance.
-     * @param newNode - true if the node is a new node; otherwise false
-     * @param notifier - the element that will sent events to this class
+     * 
+     * @param newNode
+     *            - true if the node is a new node; otherwise false
+     * @param notifier
+     *            - the element that will sent events to this class
      */
-    public NodeDefinitionPanel (final boolean newNode)
-    {// , ElementObservable
-     // notifier) {
+    public NodeDefinitionPanel(final boolean newNode) {// , ElementObservable
+                                                       // notifier) {
         this.newNode = newNode;
         // this.notifier = notifier;
     }
 
     /**
      * Get the node Properties in this panel
+     * 
      * @return the nodeProperties
      */
-    public ProbNode getNodeProperties ()
-    {
+    public ProbNode getNodeProperties() {
         return probNode;
     }
 
     /**
      * Set the node additionalProperties in this panel with the provided ones
-     * @param nodeProperties the nodeProperties to set
+     * 
+     * @param nodeProperties
+     *            the nodeProperties to set
      */
-    public void setNodeProperties (final ProbNode nodeProperties)
-    {
+    public void setNodeProperties(final ProbNode nodeProperties) {
         this.probNode = nodeProperties;
     }
 
     /**
      * @return the newNode
      */
-    public boolean isNewNode ()
-    {
+    public boolean isNewNode() {
         return newNode;
     }
 
     /**
-     * @param newNode the newNode to set
+     * @param newNode
+     *            the newNode to set
      */
-    public void setNewNode (boolean newNode)
-    {
+    public void setNewNode(boolean newNode) {
         this.newNode = newNode;
     }
 
@@ -205,181 +191,97 @@ public class NodeDefinitionPanel extends JPanel
      * <p>
      * initialize the layout for this panel
      */
-    private void initialize ()
-        throws Exception
-    {
-        this.getCommentHTMLScrollPaneNodeDefinitionComment ();
-        setName ("NodeDefinitionPanel");
-        setFocusable (false);
-        setDoubleBuffered (false);
-        setMinimumSize (new Dimension (500, 245));
-        setMaximumSize (new Dimension (500, 245));
-        setPreferredSize (new Dimension (500, 245));
-        setFocusCycleRoot (true);
-        GroupLayout groupLayout = new GroupLayout (this);
-        groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGroup (groupLayout.createParallelGroup (Alignment.LEADING,
-                                                                                                                                                                                                                                                                                                                      false).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNodeName ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJTextFieldNodeName (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       203,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE).addGap (18).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJLabelTimeSlice ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJComboBoxTimeSlice (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    75,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    GroupLayout.PREFERRED_SIZE)).addGroup (groupLayout.createSequentialGroup ().addComponent (getJLabelNodePurpose ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJComboBoxNodePurpose (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              203,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              GroupLayout.PREFERRED_SIZE/*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * 0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * ,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * GroupLayout
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * .
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * DEFAULT_SIZE
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * ,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * Short
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * .
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         * MAX_VALUE
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         */).addGap (18) /***/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJLabelNodeRelevance ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getJComboBoxNodeRelevance (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     75,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     GroupLayout.PREFERRED_SIZE)).addGroup (groupLayout.createSequentialGroup ().addComponent (getAgentsOrDecisionCriteriaOrObservedLabel ()).addPreferredGap (LayoutStyle.ComponentPlacement.RELATED).addComponent (getAgentsOrDecisionCriteriaOrObserved (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     203,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     GroupLayout.PREFERRED_SIZE)
-                                                                                                                                                                                                                                                                                     /*
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * addGap
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * 18
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * addPreferredGap
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * LayoutStyle
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * ComponentPlacement
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * RELATED
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * addComponent
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * getJLabelAlwaysObserved
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * addPreferredGap
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * LayoutStyle
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * ComponentPlacement
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * RELATED
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * addComponent
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * getJCheckBoxAlwaysObserved
-                                                                                                                                                                                                                                                                                      * (
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      * ,
-                                                                                                                                                                                                                                                                                      * GroupLayout
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * PREFERRED_SIZE
-                                                                                                                                                                                                                                                                                      * ,
-                                                                                                                                                                                                                                                                                      * 70
-                                                                                                                                                                                                                                                                                      * ,
-                                                                                                                                                                                                                                                                                      * GroupLayout
-                                                                                                                                                                                                                                                                                      * .
-                                                                                                                                                                                                                                                                                      * PREFERRED_SIZE
-                                                                                                                                                                                                                                                                                      * )
-                                                                                                                                                                                                                                                                                      */
-                                                                                                                                                                                                                                                                                     ).addGroup (groupLayout.createSequentialGroup ().addComponent (getJTextAreaLabelNodeDefinitionComment ()).addComponent (getCommentHTMLScrollPaneNodeDefinitionComment (),
-                                                                                                                                                                                                                                                                                                                                                                                                             30,
-                                                                                                                                                                                                                                                                                                                                                                                                             560,
-                                                                                                                                                                                                                                                                                                                                                                                                             Short.MAX_VALUE))).addContainerGap ()))));
-        groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addContainerGap ().addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJLabelNodeName ()).addComponent (getJTextFieldNodeName (),
-                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE, /* 20 */
-                                                                                                                                                                                                                                                                             GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                             GroupLayout.PREFERRED_SIZE).addComponent (getJLabelTimeSlice ()).addComponent (getJComboBoxTimeSlice ())).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJComboBoxNodePurpose (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GroupLayout.PREFERRED_SIZE).addComponent (getJLabelNodePurpose ()).addComponent (getJLabelNodeRelevance (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  GroupLayout.PREFERRED_SIZE, /* 25 */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Short.MAX_VALUE).addComponent (getJComboBoxNodeRelevance ())).addPreferredGap (ComponentPlacement.RELATED).addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getAgentsOrDecisionCriteriaOrObservedLabel ()).addComponent (getAgentsOrDecisionCriteriaOrObserved (),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       GroupLayout.PREFERRED_SIZE)
-                                                                                                    /*
-                                                                                                     * .
-                                                                                                     * addComponent
-                                                                                                     * (
-                                                                                                     * getJLabelAlwaysObserved
-                                                                                                     * (
-                                                                                                     * )
-                                                                                                     * )
-                                                                                                     * .
-                                                                                                     * addComponent
-                                                                                                     * (
-                                                                                                     * getJCheckBoxAlwaysObserved
-                                                                                                     * (
-                                                                                                     * )
-                                                                                                     * ,
-                                                                                                     * GroupLayout
-                                                                                                     * .
-                                                                                                     * PREFERRED_SIZE
-                                                                                                     * ,
-                                                                                                     * GroupLayout
-                                                                                                     * .
-                                                                                                     * DEFAULT_SIZE
-                                                                                                     * ,
-                                                                                                     * GroupLayout
-                                                                                                     * .
-                                                                                                     * PREFERRED_SIZE
-                                                                                                     * )
-                                                                                                     */
-                                                                                                    ).addGap (21)
-                                                                                                    // .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-                                                                                                    .addGroup (groupLayout.createParallelGroup (Alignment.BASELINE).addComponent (getJTextAreaLabelNodeDefinitionComment ()).addComponent (getCommentHTMLScrollPaneNodeDefinitionComment (),
-                                                                                                                                                                                                                                           GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                           62,
-                                                                                                                                                                                                                                           150)).addContainerGap (77,
-                                                                                                                                                                                                                                                                  Short.MAX_VALUE)));
+    private void initialize()
+            throws Exception {
+        this.getCommentHTMLScrollPaneNodeDefinitionComment();
+        setName("NodeDefinitionPanel");
+        setFocusable(false);
+        setDoubleBuffered(false);
+        setMinimumSize(new Dimension(500, 245));
+        setMaximumSize(new Dimension(500, 245));
+        setPreferredSize(new Dimension(500, 245));
+        setFocusCycleRoot(true);
+        GroupLayout groupLayout = new GroupLayout(this);
+        groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addGroup(groupLayout.createParallelGroup(Alignment.LEADING,
+                false).addGroup(groupLayout.createSequentialGroup().addComponent(getJLabelNodeName()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJTextFieldNodeName(),
+                GroupLayout.PREFERRED_SIZE,
+                203,
+                GroupLayout.PREFERRED_SIZE).addGap(18).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJLabelTimeSlice()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJComboBoxTimeSlice(),
+                GroupLayout.PREFERRED_SIZE,
+                85,
+                GroupLayout.PREFERRED_SIZE)).addGroup(groupLayout.createSequentialGroup().addComponent(getJLabelNodePurpose()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJComboBoxNodePurpose(),
+                GroupLayout.PREFERRED_SIZE,
+                203,
+                GroupLayout.PREFERRED_SIZE).addGap(18) /***/
+        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJLabelNodeRelevance()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJComboBoxNodeRelevance(),
+                GroupLayout.PREFERRED_SIZE,
+                85,
+                GroupLayout.PREFERRED_SIZE)).addGroup(groupLayout.createSequentialGroup().addComponent(getAgentsOrDecisionCriteriaOrObservedLabel()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getAgentsOrDecisionCriteriaOrObserved(),
+                GroupLayout.PREFERRED_SIZE,
+                203,
+                GroupLayout.PREFERRED_SIZE)
+
+        ).addGroup(groupLayout.createSequentialGroup().addComponent(getJTextAreaLabelNodeDefinitionComment()).addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(),
+                30,
+                560,
+                Short.MAX_VALUE))).addContainerGap()))));
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(getJLabelNodeName()).addComponent(getJTextFieldNodeName(),
+                GroupLayout.PREFERRED_SIZE, /* 20 */
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE).addComponent(getJLabelTimeSlice()).addComponent(getJComboBoxTimeSlice())).addPreferredGap(ComponentPlacement.RELATED).addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(getJComboBoxNodePurpose(),
+                GroupLayout.PREFERRED_SIZE,
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE).addComponent(getJLabelNodePurpose()).addComponent(getJLabelNodeRelevance(),
+                GroupLayout.PREFERRED_SIZE, /* 25 */
+                GroupLayout.DEFAULT_SIZE,
+                Short.MAX_VALUE).addComponent(getJComboBoxNodeRelevance())).addPreferredGap(ComponentPlacement.RELATED).addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(getAgentsOrDecisionCriteriaOrObservedLabel()).addComponent(getAgentsOrDecisionCriteriaOrObserved(),
+                GroupLayout.PREFERRED_SIZE,
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE)
+        /*
+         * . addComponent ( getJLabelAlwaysObserved ( ) ) . addComponent (
+         * getJCheckBoxAlwaysObserved ( ) , GroupLayout . PREFERRED_SIZE ,
+         * GroupLayout . DEFAULT_SIZE , GroupLayout . PREFERRED_SIZE )
+         */
+        ).addGap(21)
+        // .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+        .addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(getJTextAreaLabelNodeDefinitionComment()).addComponent(getCommentHTMLScrollPaneNodeDefinitionComment(),
+                GroupLayout.DEFAULT_SIZE,
+                62,
+                150)).addContainerGap(77, Short.MAX_VALUE)));
         Component[] components = new Component[3];
-        components[0] = getJComboBoxNodePurpose ();
-        components[1] = getJTextFieldNodeName ();
-        components[2] = getAgentsOrDecisionCriteriaOrObserved ();
-        groupLayout.linkSize (components);
+        components[0] = getJComboBoxNodePurpose();
+        components[1] = getJTextFieldNodeName();
+        components[2] = getAgentsOrDecisionCriteriaOrObserved();
+        groupLayout.linkSize(components);
         Component[] components2 = new Component[5];
-        components2[0] = getAgentsOrDecisionCriteriaOrObservedLabel ();
-        components2[1] = getJLabelNodeName ();
-        components2[2] = getJLabelNodePurpose ();
-        components2[3] = getJLabelNodeRelevance ();
-        components2[4] = getJLabelTimeSlice ();
-        groupLayout.linkSize (components2);
+        components2[0] = getAgentsOrDecisionCriteriaOrObservedLabel();
+        components2[1] = getJLabelNodeName();
+        components2[2] = getJLabelNodePurpose();
+        components2[3] = getJLabelNodeRelevance();
+        components2[4] = getJLabelTimeSlice();
+        groupLayout.linkSize(components2);
         Component[] components3 = new Component[2];
-        components3[0] = getJComboBoxNodeRelevance ();
-        components3[1] = getJComboBoxTimeSlice ();
-        groupLayout.linkSize (components3);
-        setLayout (groupLayout);
+        components3[0] = getJComboBoxNodeRelevance();
+        components3[1] = getJComboBoxTimeSlice();
+        groupLayout.linkSize(components3);
+        setLayout(groupLayout);
     }
 
     /**
      * This method initialises jLabelTimeSlice
+     * 
      * @return a new name label.
      */
-    private JLabel getJLabelTimeSlice ()
-    {
-        if (jLabelTimeSlice == null)
-        {
-            jLabelTimeSlice = new JLabel ();
-            jLabelTimeSlice.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelTimeSlice.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelTimeSlice.setName ("jLabelTimeSlice");
-            jLabelTimeSlice.setText ("a Label");
-            jLabelTimeSlice.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelTimeSlice.Text"));
-            jLabelTimeSlice.setLabelFor (getJComboBoxTimeSlice ());
+    private JLabel getJLabelTimeSlice() {
+        if (jLabelTimeSlice == null) {
+            jLabelTimeSlice = new JLabel();
+            jLabelTimeSlice.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelTimeSlice.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelTimeSlice.setName("jLabelTimeSlice");
+            jLabelTimeSlice.setText("a Label");
+            jLabelTimeSlice.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelTimeSlice.Text"));
+            jLabelTimeSlice.setLabelFor(getJComboBoxTimeSlice());
         }
         return jLabelTimeSlice;
     }
@@ -387,52 +289,38 @@ public class NodeDefinitionPanel extends JPanel
     /**
      * initialize the content of the Combo box for the tme slice for temporal
      * variables
+     * 
      * @return the JComboBoxNodeRelevance
      */
-    private JComboBox<String> getJComboBoxTimeSlice ()
-    {
-        if (jComboBoxTimeSlice == null)
-        {
-            jComboBoxTimeSlice = new JComboBox<> ();
-            jComboBoxTimeSlice.setName ("jComboBoxTimeSlice");
-            jComboBoxTimeSlice.setEditable (true);
-            jComboBoxTimeSlice.setSize (60, 40);
-            if (!probNode.getProbNet ().onlyTemporal ())
-            {
+    private JComboBox<String> getJComboBoxTimeSlice() {
+        if (jComboBoxTimeSlice == null) {
+            jComboBoxTimeSlice = new JComboBox<>();
+            jComboBoxTimeSlice.setName("jComboBoxTimeSlice");
+            jComboBoxTimeSlice.setEditable(false);
+            jComboBoxTimeSlice.setSize(60, 40);
+            if (!probNode.getProbNet().onlyTemporal()) {
                 // It corresponds with no time slice, atemporal selection
                 // timeSlice = Integer.MIN
-                jComboBoxTimeSlice.addItem (stringDatabase.getString ("NodeDefinitionPanel.Atemporal.Text"));
+                jComboBoxTimeSlice.addItem(stringDatabase.getString("NodeDefinitionPanel.Atemporal.Text"));
             }
-            jComboBoxTimeSlice.addItem ("0");
-            jComboBoxTimeSlice.addItem ("1");
-            String timeSlice = String.valueOf (probNode.getVariable ().getTimeSlice ());
-            if (timeSlice.equals ("0"))
+            
+            // Get max time slice in the network
+            int maxTimeSlice = 0;
+            for(ProbNode node : probNode.getProbNet().getProbNodes())
             {
-                if (probNode.getProbNet ().onlyTemporal ())
+                if(node.getVariable().isTemporal() &&
+                        node.getVariable().getTimeSlice() > maxTimeSlice)
                 {
-                    jComboBoxTimeSlice.setSelectedIndex (0);
-                }
-                else
-                {
-                    jComboBoxTimeSlice.setSelectedIndex (1);
+                    maxTimeSlice = node.getVariable().getTimeSlice();
                 }
             }
-            else if (timeSlice.equals ("1"))
+            for(int i=0; i <= maxTimeSlice +1; ++i)
             {
-                if (probNode.getProbNet ().onlyTemporal ())
-                {
-                    jComboBoxTimeSlice.setSelectedIndex (1);
-                }
-                else
-                {
-                    jComboBoxTimeSlice.setSelectedIndex (2);
-                }
+                jComboBoxTimeSlice.addItem(String.valueOf(i));
             }
-            else
-            {
-                jComboBoxTimeSlice.setSelectedIndex (0);
-            }
-            jComboBoxTimeSlice.addItemListener (this);
+            String timeSlice = String.valueOf(probNode.getVariable().getTimeSlice());
+            jComboBoxTimeSlice.setSelectedItem(timeSlice);
+            jComboBoxTimeSlice.addItemListener(this);
             // jComboBoxTimeSlice.setEnabled(false);
         }
         return jComboBoxTimeSlice;
@@ -440,307 +328,131 @@ public class NodeDefinitionPanel extends JPanel
 
     /**
      * This method initialises jLabelNodeName
+     * 
      * @return a new name label.
      */
-    private JLabel getJLabelNodeName ()
-    {
-        if (jLabelNodeName == null)
-        {
-            jLabelNodeName = new JLabel ();
-            jLabelNodeName.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelNodeName.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelNodeName.setName ("jLabelNodeName");
-            jLabelNodeName.setText ("a Label");
-            jLabelNodeName.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodeName.Text"));
-            jLabelNodeName.setDisplayedMnemonic (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodeName.Mnemonic").charAt (0));
-            jLabelNodeName.setLabelFor (getJTextFieldNodeName ());
+    private JLabel getJLabelNodeName() {
+        if (jLabelNodeName == null) {
+            jLabelNodeName = new JLabel();
+            jLabelNodeName.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelNodeName.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelNodeName.setName("jLabelNodeName");
+            jLabelNodeName.setText("a Label");
+            jLabelNodeName.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelNodeName.Text"));
+            jLabelNodeName.setDisplayedMnemonic(stringDatabase.getString("NodeDefinitionPanel.jLabelNodeName.Mnemonic").charAt(0));
+            jLabelNodeName.setLabelFor(getJTextFieldNodeName());
         }
         return jLabelNodeName;
     }
 
     /**
      * This method initialises jTextFieldNodeName
+     * 
      * @return a new name field.
      */
-    public JTextField getJTextFieldNodeName ()
-    {
+    public JTextField getJTextFieldNodeName() {
         int dis = 15;
-        if (jTextFieldNodeName == null)
-        {
-            jTextFieldNodeName = new JTextField ();
-            jTextFieldNodeName.setName ("jTextFieldNodeName");
-            jTextFieldNodeName.setPreferredSize (new Dimension (50, dis));
+        if (jTextFieldNodeName == null) {
+            jTextFieldNodeName = new JTextField();
+            jTextFieldNodeName.setName("jTextFieldNodeName");
+            jTextFieldNodeName.setPreferredSize(new Dimension(50, dis));
             // jTextFieldNodeName.addActionListener( this );
-            jTextFieldNodeName.addFocusListener (this);
+            jTextFieldNodeName.addFocusListener(this);
         }
         return jTextFieldNodeName;
     }
 
     /**
      * This method initialises jLabelAlwaysObserved
+     * 
      * @return a new label for the always observed property.
      */
-    private JLabel getJLabelAlwaysObserved ()
-    {
-        if (jLabelAlwaysObserved == null)
-        {
-            jLabelAlwaysObserved = new JLabel ();
-            jLabelAlwaysObserved.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelAlwaysObserved.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelAlwaysObserved.setVerticalAlignment (SwingConstants.CENTER);
-            jLabelAlwaysObserved.setVerticalTextPosition (SwingConstants.CENTER);
-            jLabelAlwaysObserved.setName ("jLabelAlwaysObserved");
-            jLabelAlwaysObserved.setText ("a Label");
-            jLabelAlwaysObserved.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelAlwaysObserved.Text"));
-            jLabelAlwaysObserved.setDisplayedMnemonic (stringDatabase.getString ("NodeDefinitionPanel.jLabelAlwaysObserved.Mnemonic").charAt (0));
-            jLabelAlwaysObserved.setLabelFor (getJTextFieldNodeName ());
+    private JLabel getJLabelAlwaysObserved() {
+        if (jLabelAlwaysObserved == null) {
+            jLabelAlwaysObserved = new JLabel();
+            jLabelAlwaysObserved.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelAlwaysObserved.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelAlwaysObserved.setVerticalAlignment(SwingConstants.CENTER);
+            jLabelAlwaysObserved.setVerticalTextPosition(SwingConstants.CENTER);
+            jLabelAlwaysObserved.setName("jLabelAlwaysObserved");
+            jLabelAlwaysObserved.setText("a Label");
+            jLabelAlwaysObserved.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelAlwaysObserved.Text"));
+            jLabelAlwaysObserved.setDisplayedMnemonic(stringDatabase.getString("NodeDefinitionPanel.jLabelAlwaysObserved.Mnemonic").charAt(0));
+            jLabelAlwaysObserved.setLabelFor(getJTextFieldNodeName());
         }
         return jLabelAlwaysObserved;
     }
 
     /**
      * This method initialises jCheckBoxAlwaysObserved
+     * 
      * @return a new checkbox
      */
-    public JCheckBox getJCheckBoxAlwaysObserved ()
-    {
-        if (jCheckboxAlwaysObserved == null)
-        {
-            jCheckboxAlwaysObserved = new JCheckBox ();
-            jCheckboxAlwaysObserved.setName ("jCheckboxAlwaysObserved");
-            jCheckboxAlwaysObserved.setVerticalAlignment (SwingConstants.CENTER);
-            jCheckboxAlwaysObserved.addActionListener (this);
-            jCheckboxAlwaysObserved.addFocusListener (this);
+    public JCheckBox getJCheckBoxAlwaysObserved() {
+        if (jCheckboxAlwaysObserved == null) {
+            jCheckboxAlwaysObserved = new JCheckBox();
+            jCheckboxAlwaysObserved.setName("jCheckboxAlwaysObserved");
+            jCheckboxAlwaysObserved.setVerticalAlignment(SwingConstants.CENTER);
+            jCheckboxAlwaysObserved.addActionListener(this);
+            jCheckboxAlwaysObserved.addFocusListener(this);
         }
         return jCheckboxAlwaysObserved;
     }
-
-    /**
-     * This method initialises jRadioButtonChanceNodeType.
-     * @return a new chance type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonChanceNodeType() { if
-     * (jRadioButtonChanceNodeType == null) { jRadioButtonChanceNodeType = new
-     * JRadioButton(); jRadioButtonChanceNodeType .setHorizontalTextPosition(
-     * SwingConstants.RIGHT ); jRadioButtonChanceNodeType
-     * .setHorizontalAlignment( SwingConstants.LEFT );
-     * jRadioButtonChanceNodeType.setName( "jRadioButtonChanceNodeType" );
-     * jRadioButtonChanceNodeType.setText( "an option" );
-     * jRadioButtonChanceNodeType .setText( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonChanceNodeType.Text" ) );
-     * jRadioButtonChanceNodeType.setMnemonic( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonChanceNodeType.Mnemonic" ) .charAt( 0 )
-     * ); jRadioButtonChanceNodeType.setSelected( true ); //
-     * jRadioButtonChanceNodeType.setEnabled(newNode); } return
-     * jRadioButtonChanceNodeType; }
-     */
-    /**
-     * This method initialises jRadioButtonDecisionNodeType.
-     * @return a new decision type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonDecisionNodeType() { if
-     * (jRadioButtonDecisionNodeType == null) { jRadioButtonDecisionNodeType =
-     * new JRadioButton(); jRadioButtonDecisionNodeType
-     * .setHorizontalTextPosition( SwingConstants.RIGHT );
-     * jRadioButtonDecisionNodeType .setHorizontalAlignment( SwingConstants.LEFT
-     * ); jRadioButtonDecisionNodeType .setName( "jRadioButtonDecisionNodeType"
-     * ); jRadioButtonDecisionNodeType.setText( "an option" );
-     * jRadioButtonDecisionNodeType .setText( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonDecisionNodeType.Text" ) );
-     * jRadioButtonDecisionNodeType .setMnemonic( dialogStringResource
-     * .getString( "NodeDefinitionPanel.jRadioButtonDecisionNodeType.Mnemonic" )
-     * .charAt( 0 ) ); // jRadioButtonDecisionNodeType.setEnabled(newNode); }
-     * return jRadioButtonDecisionNodeType; }
-     */
-    /**
-     * This method initialises jRadioButtonUtilityNodeType.
-     * @return a new utility type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonUtilityNodeType() { if
-     * (jRadioButtonUtilityNodeType == null) { jRadioButtonUtilityNodeType = new
-     * JRadioButton(); jRadioButtonUtilityNodeType .setHorizontalTextPosition(
-     * SwingConstants.RIGHT ); jRadioButtonUtilityNodeType
-     * .setHorizontalAlignment( SwingConstants.LEFT );
-     * jRadioButtonUtilityNodeType.setName( "jRadioButtonUtilityNodeType" );
-     * jRadioButtonUtilityNodeType.setText( "an option" );
-     * jRadioButtonUtilityNodeType .setText( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonUtilityNodeType.Text" ) );
-     * jRadioButtonUtilityNodeType.setMnemonic( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonUtilityNodeType.Mnemonic" ) .charAt( 0 )
-     * ); // jRadioButtonUtilityNodeType.setEnabled(newNode); } return
-     * jRadioButtonUtilityNodeType; }
-     */
-    /**
-     * This method initialises jLabelNodeType
-     * @return a new name label.
-     */
-    /*
-     * private JLabel getJLabelNodeVariableType() { if (jLabelNodeVariableType
-     * == null) { jLabelNodeVariableType = new JLabel();
-     * jLabelNodeVariableType.setName( "jLabelNodeVariableType" );
-     * jLabelNodeVariableType .setHorizontalAlignment( SwingConstants.RIGHT );
-     * jLabelNodeVariableType .setHorizontalTextPosition( SwingConstants.LEFT );
-     * jLabelNodeVariableType.setText( "a Label" ); jLabelNodeVariableType
-     * .setText( dialogStringResource .getString(
-     * "NodeDefinitionPanel.jLabelNodeVariableType.Text" ) );
-     * jLabelNodeVariableType.setDisplayedMnemonic( dialogStringResource
-     * .getString( "NodeDefinitionPanel.jLabelNodeVariableType.Mnemonic" )
-     * .charAt( 0 ) ); jLabelNodeVariableType.setLabelFor( getJPanelNodeType()
-     * ); } return jLabelNodeVariableType; }
-     */
-    /**
-     * This method initialises jPanelNodeVariableType
-     * @return a panel for the variable types of the node
-     */
-    /*
-     * private JPanel getJPanelNodeType() { if (jPanelNodeVariableType == null)
-     * { jPanelNodeVariableType = new JPanel(); jPanelNodeVariableType.setName(
-     * "jPanelNodeVariableType" ); jPanelNodeVariableType.setBorder( new
-     * LineBorder( Color.BLUE, 1, false ) ); jPanelNodeVariableType.setLayout(
-     * new GridLayout( 3, 1 ) ); jPanelNodeVariableType .add(
-     * getJRadioButtonDiscreteNodeVariableType() ); jPanelNodeVariableType .add(
-     * getJRadioButtonDiscretizedNodeVariableType() ); jPanelNodeVariableType
-     * .add( getJRadioButtonContinuousNodeVariableType() );
-     * initButtonGroupNodeVariableType(); } return jPanelNodeVariableType; }
-     */
-    /**
-     * iniatilize the button group Node Variable Type with the three buttons
-     */
-    /*
-     * private void initButtonGroupNodeVariableType() {
-     * jButtonGroupNodeVariableType = new ButtonGroup();
-     * jButtonGroupNodeVariableType .add(
-     * getJRadioButtonDiscreteNodeVariableType() ); jButtonGroupNodeVariableType
-     * .add( getJRadioButtonDiscretizedNodeVariableType() );
-     * jButtonGroupNodeVariableType .add(
-     * getJRadioButtonContinuousNodeVariableType() ); }
-     */
-    /**
-     * This method initialises jRadioButtonDiscreteNodeVariableType.
-     * @return a new discrete variables type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonDiscreteNodeVariableType() { if
-     * (jRadioButtonDiscreteNodeVariableType == null) {
-     * jRadioButtonDiscreteNodeVariableType = new JRadioButton();
-     * jRadioButtonDiscreteNodeVariableType .setName(
-     * "jRadioButtonDiscreteNodeVariableType" );
-     * jRadioButtonDiscreteNodeVariableType.setText( "an option" );
-     * jRadioButtonDiscreteNodeVariableType .setText( dialogStringResource
-     * .getString(
-     * "NodeDefinitionPanel.jRadioButtonDiscreteNodeVariableType.Text" ) );
-     * jRadioButtonDiscreteNodeVariableType .setMnemonic( dialogStringResource
-     * .getString(
-     * "NodeDefinitionPanel.jRadioButtonDiscreteNodeVariableType.Mnemonic" )
-     * .charAt( 0 ) ); jRadioButtonDiscreteNodeVariableType.setSelected( true );
-     * // jRadioButtonDiscreteNodeVariableType.setEnabled(newNode);
-     * jRadioButtonDiscreteNodeVariableType.addItemListener( this ); } return
-     * jRadioButtonDiscreteNodeVariableType; }
-     */
-    /**
-     * This method initialises jRadioButtonContinuousNodeVariableType.
-     * @return a new continuous variables type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonContinuousNodeVariableType() { if
-     * (jRadioButtonContinuousNodeVariableType == null) {
-     * jRadioButtonContinuousNodeVariableType = new JRadioButton();
-     * jRadioButtonContinuousNodeVariableType .setName(
-     * "jRadioButtonContinuousNodeVariableType" );
-     * jRadioButtonContinuousNodeVariableType.setText( "an option" );
-     * jRadioButtonContinuousNodeVariableType .setText( dialogStringResource
-     * .getString(
-     * "NodeDefinitionPanel.jRadioButtonContinuousNodeVariableType.Text" ) );
-     * jRadioButtonContinuousNodeVariableType .setMnemonic( dialogStringResource
-     * .getString(
-     * "NodeDefinitionPanel.jRadioButtonContinuousNodeVariableType.Mnemonic" )
-     * .charAt( 0 ) ); // this button is disabled until the management of the
-     * continuous // variable is set in the source code
-     * jRadioButtonContinuousNodeVariableType.setEnabled( false );
-     * jRadioButtonContinuousNodeVariableType.addItemListener( this ); } return
-     * jRadioButtonContinuousNodeVariableType; }
-     */
-    /**
-     * This method initialises jRadioButtonDiscretizedNodeVariableType.
-     * @return a new discretized variables type radio button.
-     */
-    /*
-     * private JRadioButton getJRadioButtonDiscretizedNodeVariableType() { if
-     * (jRadioButtonDiscretizedNodeVariableType == null) {
-     * jRadioButtonDiscretizedNodeVariableType = new JRadioButton();
-     * jRadioButtonDiscretizedNodeVariableType .setName(
-     * "jRadioButtonDiscretizedNodeVariableType" );
-     * jRadioButtonDiscretizedNodeVariableType.setText( "an option" );
-     * jRadioButtonDiscretizedNodeVariableType .setText( dialogStringResource
-     * .getString(
-     * "NodeDefinitionPanel.jRadioButtonDiscretizedNodeVariableType.Text" ) );
-     * jRadioButtonDiscretizedNodeVariableType .setMnemonic(
-     * dialogStringResource .getString(
-     * "NodeDefinitionPanel.jRadioButtonDiscretizedNodeVariableType.Mnemonic" )
-     * .charAt( 0 ) ); jRadioButtonDiscretizedNodeVariableType.addItemListener(
-     * this ); } return jRadioButtonDiscretizedNodeVariableType; }
-     */
     /**
      * This method initialises jLabelNodeName
+     * 
      * @return a new name label.
      */
-    private JLabel getJLabelNodeRelevance ()
-    {
-        if (jLabelNodeRelevance == null)
-        {
-            jLabelNodeRelevance = new JLabel ();
-            jLabelNodeRelevance.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelNodeRelevance.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelNodeRelevance.setName ("jLabelNodeRelevance");
-            jLabelNodeRelevance.setText ("a Label");
-            jLabelNodeRelevance.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodeRelevance.Text"));
-            jLabelNodeRelevance.setDisplayedMnemonic (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic").charAt (0));
-            jLabelNodeRelevance.setLabelFor (getJComboBoxNodeRelevance ());
+    private JLabel getJLabelNodeRelevance() {
+        if (jLabelNodeRelevance == null) {
+            jLabelNodeRelevance = new JLabel();
+            jLabelNodeRelevance.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelNodeRelevance.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelNodeRelevance.setName("jLabelNodeRelevance");
+            jLabelNodeRelevance.setText("a Label");
+            jLabelNodeRelevance.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelNodeRelevance.Text"));
+            jLabelNodeRelevance.setDisplayedMnemonic(stringDatabase.getString("NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic").charAt(0));
+            jLabelNodeRelevance.setLabelFor(getJComboBoxNodeRelevance());
         }
         return jLabelNodeRelevance;
     }
 
     /**
      * This method initialises jLabelNodeName
+     * 
      * @return a new name label.
      */
-    private JLabel getJLabelNetworkAgents ()
-    {
-        if (jLabelNetworkAgents == null)
-        {
-            jLabelNetworkAgents = new JLabel ();
-            jLabelNetworkAgents.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelNetworkAgents.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelNetworkAgents.setName ("jLabelNetworkAgent");
-            jLabelNetworkAgents.setText ("a Label");
-            jLabelNetworkAgents.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelNetworkAgents.Text"));
+    private JLabel getJLabelNetworkAgents() {
+        if (jLabelNetworkAgents == null) {
+            jLabelNetworkAgents = new JLabel();
+            jLabelNetworkAgents.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelNetworkAgents.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelNetworkAgents.setName("jLabelNetworkAgent");
+            jLabelNetworkAgents.setText("a Label");
+            jLabelNetworkAgents.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelNetworkAgents.Text"));
             /*
              * jLabelNetworkAgents.setDisplayedMnemonic(dialogStringResource
              * .getString( "NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic")
              * .charAt(0));
              */
-            jLabelNetworkAgents.setLabelFor (getJComboBoxNetworkAgents ());
+            jLabelNetworkAgents.setLabelFor(getJComboBoxNetworkAgents());
         }
         return jLabelNetworkAgents;
     }
 
     /**
      * initialize the content of the Combo box for the Node Relevance
+     * 
      * @return the JComboBoxNodeRelevance
      */
-    private JComboBox<Double> getJComboBoxNodeRelevance ()
-    {
-        if (jComboBoxNodeRelevance == null)
-        {
-            jComboBoxNodeRelevance = new JComboBox<> ();
-            jComboBoxNodeRelevance.setName ("jComboBoxNodeRelevance");
-            jComboBoxNodeRelevance.setEditable (true);
-            jComboBoxNodeRelevance.setSize (60, 40);
-            fillJComboBoxNodeRelevanceWithoutDecimals ();
-            jComboBoxNodeRelevance.setEnabled (false);
+    private JComboBox<Double> getJComboBoxNodeRelevance() {
+        if (jComboBoxNodeRelevance == null) {
+            jComboBoxNodeRelevance = new JComboBox<>();
+            jComboBoxNodeRelevance.setName("jComboBoxNodeRelevance");
+            jComboBoxNodeRelevance.setEditable(true);
+            jComboBoxNodeRelevance.setSize(60, 40);
+            fillJComboBoxNodeRelevanceWithoutDecimals();
+            jComboBoxNodeRelevance.setEnabled(false);
         }
         return jComboBoxNodeRelevance;
     }
@@ -752,17 +464,13 @@ public class NodeDefinitionPanel extends JPanel
      * concatenation with integers and then a conversion to doubles
      */
     @SuppressWarnings("unused")
-    private void fillJComboBoxNodeRelevance ()
-    {
+    private void fillJComboBoxNodeRelevance() {
         String number = "0.0";
-        if (jComboBoxNodeRelevance != null)
-        {
-            for (int realPart = 0; realPart < 10; realPart++)
-            {
-                for (int decimalPart = 0; decimalPart < 10; decimalPart++)
-                {
-                    number = Integer.toString (realPart) + "." + Integer.toString (decimalPart);
-                    jComboBoxNodeRelevance.addItem (Double.valueOf (number));
+        if (jComboBoxNodeRelevance != null) {
+            for (int realPart = 0; realPart < 10; realPart++) {
+                for (int decimalPart = 0; decimalPart < 10; decimalPart++) {
+                    number = Integer.toString(realPart) + "." + Integer.toString(decimalPart);
+                    jComboBoxNodeRelevance.addItem(Double.valueOf(number));
                 }
             }
         }
@@ -772,86 +480,76 @@ public class NodeDefinitionPanel extends JPanel
      * fill the jComboBoxNodeRelevance with the appropriate values with an
      * increment of 1.0. The values appear in reverse order.
      */
-    private void fillJComboBoxNodeRelevanceWithoutDecimals ()
-    {
-        if (jComboBoxNodeRelevance != null)
-        {
-            for (int value = 10; value >= 0; value--)
-            {
-                jComboBoxNodeRelevance.addItem (Double.valueOf (value));
+    private void fillJComboBoxNodeRelevanceWithoutDecimals() {
+        if (jComboBoxNodeRelevance != null) {
+            for (int value = 10; value >= 0; value--) {
+                jComboBoxNodeRelevance.addItem(Double.valueOf(value));
             }
         }
     }
 
     /**
      * This method initialises jLabelNodeName
+     * 
      * @return a new name label.
      */
-    private JLabel getJLabelNodePurpose ()
-    {
-        if (jLabelNodePurpose == null)
-        {
-            jLabelNodePurpose = new JLabel ();
-            jLabelNodePurpose.setName ("jLabelNodePurpose");
-            jLabelNodePurpose.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelNodePurpose.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelNodePurpose.setText ("a Label");
-            jLabelNodePurpose.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodePurpose.Text"));
-            jLabelNodePurpose.setDisplayedMnemonic (stringDatabase.getString ("NodeDefinitionPanel.jLabelNodePurpose.Mnemonic").charAt (0));
-            jLabelNodePurpose.setLabelFor (getJTextFieldNodeName ());
+    private JLabel getJLabelNodePurpose() {
+        if (jLabelNodePurpose == null) {
+            jLabelNodePurpose = new JLabel();
+            jLabelNodePurpose.setName("jLabelNodePurpose");
+            jLabelNodePurpose.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelNodePurpose.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelNodePurpose.setText("a Label");
+            jLabelNodePurpose.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelNodePurpose.Text"));
+            jLabelNodePurpose.setDisplayedMnemonic(stringDatabase.getString("NodeDefinitionPanel.jLabelNodePurpose.Mnemonic").charAt(0));
+            jLabelNodePurpose.setLabelFor(getJTextFieldNodeName());
         }
         return jLabelNodePurpose;
     }
 
     /**
      * initialize the content of the Combo box for the Node Purpose
+     * 
      * @return the JComboBoxNodePurpose
      */
-    private JComboBox<String> getJComboBoxNodePurpose ()
-    {
-        if (jComboBoxNodePurpose == null)
-        {
-            jComboBoxNodePurpose = new JComboBox<> (Purpose.getListStrings (false));
-            jComboBoxNodePurpose.setName ("jComboBoxNodePurpose");
-            jComboBoxNodePurpose.setSelectedIndex (0);
-            jComboBoxNodePurpose.setMaximumRowCount (9);
+    private JComboBox<String> getJComboBoxNodePurpose() {
+        if (jComboBoxNodePurpose == null) {
+            jComboBoxNodePurpose = new JComboBox<>(Purpose.getListStrings(false));
+            jComboBoxNodePurpose.setName("jComboBoxNodePurpose");
+            jComboBoxNodePurpose.setSelectedIndex(0);
+            jComboBoxNodePurpose.setMaximumRowCount(9);
             // jComboBoxNodePurpose.addItemListener( this );
-            jComboBoxNodePurpose.setEditable (true);
+            jComboBoxNodePurpose.setEditable(true);
         }
         return jComboBoxNodePurpose;
     }
 
     /**
      * initialize the content of the Combo box for the Node Purpose
+     * 
      * @return the JComboBoxNodePurpose
      */
-    private JComboBox<String> getJComboBoxNetworkAgents ()
-    {
-        if (jComboBoxNetworkAgents == null)
-        {
+    private JComboBox<String> getJComboBoxNetworkAgents() {
+        if (jComboBoxNetworkAgents == null) {
             // StringsWithProperties agents = probNode.getProbNet().getAgents();
-            List<StringWithProperties> agents = probNode.getProbNet ().getAgents ();
+            List<StringWithProperties> agents = probNode.getProbNet().getAgents();
             String[] agentNames = null;
-            if (agents != null)
-            {
+            if (agents != null) {
                 // Set<String> names = agents.getNames();
                 // agentNames = names.toArray(new String[names.size()]);
                 // String []auxAgentNames = names.toArray(new
                 // String[names.size()]);
                 // agentNames = new String [names.size()+1];
-                agentNames = new String[agents.size () + 1];
+                agentNames = new String[agents.size() + 1];
                 agentNames[0] = "";
-                for (int i = 1; i < agents.size () + 1; i++)
-                {
+                for (int i = 1; i < agents.size() + 1; i++) {
                     // agentNames[i] = auxAgentNames[i-1];
-                    agentNames[i] = agents.get (i - 1).getString ();
+                    agentNames[i] = agents.get(i - 1).getString();
                 }
-            }
-            else if (agents == null /*
-                                     * && probNode.getVariable().getAgent() ==
-                                     * null
-                                     */)
-            {
+            } else if (agents == null /*
+                                       * && probNode.getVariable().getAgent() ==
+                                       * null
+                                       */) {
                 agentNames = new String[1];
                 agentNames[0] = "";
             }/*
@@ -861,170 +559,137 @@ public class NodeDefinitionPanel extends JPanel
               * agentNames[0] = ""; agentNames[1] =
               * probNode.getVariable().getAgent().getString(); }
               */
-            jComboBoxNetworkAgents = new JComboBox<> (agentNames);
-            jComboBoxNetworkAgents.setName ("jComboBoxAgents");
-            jComboBoxNetworkAgents.setPreferredSize (new Dimension (50, 15));
-            if (probNode.getVariable ().getAgent () != null && agents != null)
-            {
-                String name = probNode.getVariable ().getAgent ().getString ();
+            jComboBoxNetworkAgents = new JComboBox<>(agentNames);
+            jComboBoxNetworkAgents.setName("jComboBoxAgents");
+            jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
+            if (probNode.getVariable().getAgent() != null && agents != null) {
+                String name = probNode.getVariable().getAgent().getString();
                 int i;
-                for (i = 0; i < agentNames.length; i++)
-                {
-                    if (name == agentNames[i])
-                    {
+                for (i = 0; i < agentNames.length; i++) {
+                    if (name == agentNames[i]) {
                         break;
                     }
                 }
-                jComboBoxNetworkAgents.setSelectedIndex (i);
+                jComboBoxNetworkAgents.setSelectedIndex(i);
+            } else {
+                jComboBoxNetworkAgents.setSelectedIndex(0);
             }
-            else
-            {
-                jComboBoxNetworkAgents.setSelectedIndex (0);
-            }
-            jComboBoxNetworkAgents.setEditable (false);
-            jComboBoxNetworkAgents.addItemListener (this);
+            jComboBoxNetworkAgents.setEditable(false);
+            jComboBoxNetworkAgents.addItemListener(this);
         }
         return jComboBoxNetworkAgents;
     }
 
     // TODO decision criteria comboBox getter
-    private JComponent getAgentsOrDecisionCriteriaOrObserved ()
-    {
-        if (probNode.getNodeType () == NodeType.DECISION)
-        {
-            return getJComboBoxNetworkAgents ();
-        }
-        else if (probNode.getNodeType () == NodeType.UTILITY)
-        {
-            return getJComboBoxDecisionCriteria ();
-        }
-        else if (probNode.getNodeType () == NodeType.CHANCE)
-        {
-            return getJCheckBoxAlwaysObserved ();
+    private JComponent getAgentsOrDecisionCriteriaOrObserved() {
+        if (probNode.getNodeType() == NodeType.DECISION) {
+            return getJComboBoxNetworkAgents();
+        } else if (probNode.getNodeType() == NodeType.UTILITY) {
+            return getJComboBoxDecisionCriteria();
+        } else if (probNode.getNodeType() == NodeType.CHANCE) {
+            return getJCheckBoxAlwaysObserved();
         }
         // default
-        return getJComboBoxNetworkAgents ();
+        return getJComboBoxNetworkAgents();
     }
 
-    private JLabel getAgentsOrDecisionCriteriaOrObservedLabel ()
-    {
-        if (probNode.getNodeType () == NodeType.DECISION)
-        {
-            return getJLabelNetworkAgents ();
-        }
-        else if (probNode.getNodeType () == NodeType.UTILITY)
-        {
-            return getJLabelDecisionCriteria ();
-        }
-        else if (probNode.getNodeType () == NodeType.CHANCE)
-        {
-            return getJLabelAlwaysObserved ();
+    private JLabel getAgentsOrDecisionCriteriaOrObservedLabel() {
+        if (probNode.getNodeType() == NodeType.DECISION) {
+            return getJLabelNetworkAgents();
+        } else if (probNode.getNodeType() == NodeType.UTILITY) {
+            return getJLabelDecisionCriteria();
+        } else if (probNode.getNodeType() == NodeType.CHANCE) {
+            return getJLabelAlwaysObserved();
         }
         // default
-        return getJLabelNetworkAgents ();
+        return getJLabelNetworkAgents();
     }
 
-    private JLabel getJLabelDecisionCriteria ()
-    {
-        if (jLabelDecisionCriteria == null)
-        {
-            jLabelDecisionCriteria = new JLabel ();
-            jLabelDecisionCriteria.setName ("jLabelDecisionDriteria");
-            jLabelDecisionCriteria.setHorizontalTextPosition (SwingConstants.LEFT);
-            jLabelDecisionCriteria.setHorizontalAlignment (SwingConstants.LEFT);
-            jLabelDecisionCriteria.setText ("a Label");
-            jLabelDecisionCriteria.setText (stringDatabase.getString ("NodeDefinitionPanel.jLabelDecisionDriteria.Text"));
+    private JLabel getJLabelDecisionCriteria() {
+        if (jLabelDecisionCriteria == null) {
+            jLabelDecisionCriteria = new JLabel();
+            jLabelDecisionCriteria.setName("jLabelDecisionDriteria");
+            jLabelDecisionCriteria.setHorizontalTextPosition(SwingConstants.LEFT);
+            jLabelDecisionCriteria.setHorizontalAlignment(SwingConstants.LEFT);
+            jLabelDecisionCriteria.setText("a Label");
+            jLabelDecisionCriteria.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelDecisionDriteria.Text"));
             /*
              * jLabelDecisionCriteria
              * .setDisplayedMnemonic(dialogStringResource.getString(
              * "NodeDefinitionPanel.jLabelNodePurpose.Mnemonic") .charAt(0));
              */
-            jLabelDecisionCriteria.setLabelFor (getJComboBoxDecisionCriteria ());
+            jLabelDecisionCriteria.setLabelFor(getJComboBoxDecisionCriteria());
         }
         return jLabelDecisionCriteria;
     }
 
-    private JComboBox<String> getJComboBoxDecisionCriteria ()
-    {
-        if (jComboBoxDecisionCriteria == null)
-        {
-            List<StringWithProperties> decisionCriteria = probNode.getProbNet ().getDecisionCriteria ();
+    private JComboBox<String> getJComboBoxDecisionCriteria() {
+        if (jComboBoxDecisionCriteria == null) {
+            List<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
             String[] criteriaNames = null;
-            if (decisionCriteria != null)
-            {
-                criteriaNames = new String[decisionCriteria.size () + 1];
+            if (decisionCriteria != null) {
+                criteriaNames = new String[decisionCriteria.size() + 1];
                 criteriaNames[0] = "";
-                for (int i = 1; i < decisionCriteria.size () + 1; i++)
-                {
-                    criteriaNames[i] = decisionCriteria.get (i - 1).getString ();
+                for (int i = 1; i < decisionCriteria.size() + 1; i++) {
+                    criteriaNames[i] = decisionCriteria.get(i - 1).getString();
                 }
-            }
-            else if (decisionCriteria == null)
-            {
+            } else if (decisionCriteria == null) {
                 criteriaNames = new String[1];
                 criteriaNames[0] = "";
             }
-            jComboBoxDecisionCriteria = new JComboBox<> (criteriaNames);
-            jComboBoxDecisionCriteria.setName ("jComboBoxDecisionCriteria");
-            jComboBoxDecisionCriteria.setPreferredSize (new Dimension (50, 15));
-            if (probNode.getVariable ().getDecisionCriteria () != null && decisionCriteria != null)
-            {
-                String name = probNode.getVariable ().getDecisionCriteria ().getString ();
+            jComboBoxDecisionCriteria = new JComboBox<>(criteriaNames);
+            jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
+            jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
+            if (probNode.getVariable().getDecisionCriteria() != null && decisionCriteria != null) {
+                String name = probNode.getVariable().getDecisionCriteria().getString();
                 int i;
-                for (i = 0; i < criteriaNames.length; i++)
-                {
-                    if (name == criteriaNames[i])
-                    {
+                for (i = 0; i < criteriaNames.length; i++) {
+                    if (name == criteriaNames[i]) {
                         break;
                     }
                 }
-                jComboBoxDecisionCriteria.setSelectedIndex (i);
+                jComboBoxDecisionCriteria.setSelectedIndex(i);
+            } else {
+                jComboBoxDecisionCriteria.setSelectedIndex(0);
             }
-            else
-            {
-                jComboBoxDecisionCriteria.setSelectedIndex (0);
-            }
-            jComboBoxDecisionCriteria.setEditable (true);
-            jComboBoxDecisionCriteria.addItemListener (this);
+            jComboBoxDecisionCriteria.setEditable(true);
+            jComboBoxDecisionCriteria.addItemListener(this);
         }
         return jComboBoxDecisionCriteria;
     }
 
     /**
      * This method initialises jLabelNodeDefinitionComment
+     * 
      * @return a new label for the comment
      */
-    protected JTextArea getJTextAreaLabelNodeDefinitionComment ()
-    {
-        if (jTextAreaLabelNodeDefinitionComment == null)
-        {
-            jTextAreaLabelNodeDefinitionComment = new JTextArea ();
-            jTextAreaLabelNodeDefinitionComment.setLineWrap (true);
-            jTextAreaLabelNodeDefinitionComment.setOpaque (false);
-            jTextAreaLabelNodeDefinitionComment.setName ("jTextAreaLabelNodeDefinitionComment");
-            jTextAreaLabelNodeDefinitionComment.setFocusable (false);
-            jTextAreaLabelNodeDefinitionComment.setEditable (false);
-            jTextAreaLabelNodeDefinitionComment.setFont (getJLabelNodeName ().getFont ());
-            jTextAreaLabelNodeDefinitionComment.setText ("an Extended Label");
-            MessageFormat messageForm = new MessageFormat (
-                                                           stringDatabase.getString ("NodeDefinitionPanel.jTextAreaLabelNodeDefinitionComment.Text"));
-            Object[] labelArgs = new Object[] {getJTextFieldNodeName ().getText ()};
-            jTextAreaLabelNodeDefinitionComment.setText (messageForm.format (labelArgs));
+    protected JTextArea getJTextAreaLabelNodeDefinitionComment() {
+        if (jTextAreaLabelNodeDefinitionComment == null) {
+            jTextAreaLabelNodeDefinitionComment = new JTextArea();
+            jTextAreaLabelNodeDefinitionComment.setLineWrap(true);
+            jTextAreaLabelNodeDefinitionComment.setOpaque(false);
+            jTextAreaLabelNodeDefinitionComment.setName("jTextAreaLabelNodeDefinitionComment");
+            jTextAreaLabelNodeDefinitionComment.setFocusable(false);
+            jTextAreaLabelNodeDefinitionComment.setEditable(false);
+            jTextAreaLabelNodeDefinitionComment.setFont(getJLabelNodeName().getFont());
+            jTextAreaLabelNodeDefinitionComment.setText("an Extended Label");
+            MessageFormat messageForm = new MessageFormat(stringDatabase.getString("NodeDefinitionPanel.jTextAreaLabelNodeDefinitionComment.Text"));
+            Object[] labelArgs = new Object[] { getJTextFieldNodeName().getText() };
+            jTextAreaLabelNodeDefinitionComment.setText(messageForm.format(labelArgs));
         }
         return jTextAreaLabelNodeDefinitionComment;
     }
 
     /**
      * This method initialises commentHTMLScrollPaneNodeDefinitionComment
+     * 
      * @return a new comment HTML scroll pane.
      */
-    private CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment ()
-    {
-        if (commentHTMLScrollPaneNodeDefinitionComment == null)
-        {
-            commentHTMLScrollPaneNodeDefinitionComment = new CommentHTMLScrollPane ();
-            commentHTMLScrollPaneNodeDefinitionComment.setName ("commentHTMLScrollPaneNodeDefinitionComment");
-            commentHTMLScrollPaneNodeDefinitionComment.addCommentListener (this);
+    private CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
+        if (commentHTMLScrollPaneNodeDefinitionComment == null) {
+            commentHTMLScrollPaneNodeDefinitionComment = new CommentHTMLScrollPane();
+            commentHTMLScrollPaneNodeDefinitionComment.setName("commentHTMLScrollPaneNodeDefinitionComment");
+            commentHTMLScrollPaneNodeDefinitionComment.addCommentListener(this);
         }
         return commentHTMLScrollPaneNodeDefinitionComment;
     }
@@ -1032,155 +697,134 @@ public class NodeDefinitionPanel extends JPanel
     /**
      * @return the variableType
      */
-    public VariableType getVariableType ()
-    {
+    public VariableType getVariableType() {
         return variableType;
     }
 
     /**
      * Invoked when an item has been selected.
-     * @param e event information.
+     * 
+     * @param e
+     *            event information.
      */
     @SuppressWarnings("unchecked")
-    public void itemStateChanged (ItemEvent e)
-    {
+    public void itemStateChanged(ItemEvent e) {
         int optionDeselected = 0;
-        ItemSelectable itemSelectable = e.getItemSelectable ();
-        Object selected[] = itemSelectable.getSelectedObjects ();
-        String itemSelected = selected.length == 0 ? "null" : selected[0].toString ();
-        JComboBox<String> comboBox = (JComboBox<String>) e.getSource ();
-        if (e.getStateChange () == ItemEvent.DESELECTED)
-        {
-            optionDeselected = comboBox.getSelectedIndex ();
+        ItemSelectable itemSelectable = e.getItemSelectable();
+        Object selected[] = itemSelectable.getSelectedObjects();
+        String itemSelected = selected.length == 0 ? "null" : selected[0].toString();
+        JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
+            optionDeselected = comboBox.getSelectedIndex();
         }
-        if (comboBox.getName ().equals ("jComboBoxNodePurpose"))
-        {
-            if (!(itemSelected == null) && e.getStateChange () == ItemEvent.SELECTED)
-            {
+        if (comboBox.equals(jComboBoxNodePurpose)) {
+            if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
                 PurposeEdit purposeEdit = null;
-                for (String purposeString : Purpose.getListStrings (true))
-                {
-                    if (itemSelected.equals (Purpose.getString (purposeString)))
-                    {
-                        purposeEdit = new PurposeEdit (probNode, purposeString);
+                for (String purposeString : Purpose.getListStrings(true)) {
+                    if (itemSelected.equals(Purpose.getString(purposeString))) {
+                        purposeEdit = new PurposeEdit(probNode, purposeString);
                         break;
                     }
                 }
-                try
-                {
-                    probNode.getProbNet ().doEdit (purposeEdit);
-                }
-                catch (ConstraintViolationException e1)
-                {
-                    JOptionPane.showMessageDialog (this,
-                                                   e1.getMessage (),
-                                                   stringDatabase.getString ("ConstraintViolationException"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    comboBox.setSelectedIndex (optionDeselected);
-                    comboBox.requestFocus ();
-                }
-                catch (NonProjectablePotentialException | WrongCriterionException | DoEditException
-                        | CanNotDoEditException e1)
-                {
+                try {
+                    probNode.getProbNet().doEdit(purposeEdit);
+                } catch (ConstraintViolationException e1) {
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            stringDatabase.getString("ConstraintViolationException"),
+                            JOptionPane.ERROR_MESSAGE);
+                    comboBox.setSelectedIndex(optionDeselected);
+                    comboBox.requestFocus();
+                } catch (NonProjectablePotentialException
+                        | WrongCriterionException
+                        | DoEditException
+                        | CanNotDoEditException e1) {
                     // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                    JOptionPane.showMessageDialog (this, e1.getMessage (), e1.getMessage (),
-                                                   JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            e1.getMessage(),
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
-        }
-        else if (comboBox.getName ().equals ("jComboBoxNodeRelevance"))
-        {
-            if (!(itemSelected == null) && e.getStateChange () == ItemEvent.SELECTED)
-            {
+        } else if (comboBox.equals(jComboBoxNodeRelevance)) {
+            if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
                 RelevanceEdit relevanceEdit = null;
-                relevanceEdit = new RelevanceEdit (probNode, Double.valueOf (itemSelected));
-                try
-                {
-                    probNode.getProbNet ().doEdit (relevanceEdit);
-                }
-                catch (ConstraintViolationException e1)
-                {
-                    JOptionPane.showMessageDialog (this,
-                                                   e1.getMessage (),
-                                                   stringDatabase.getString ("ConstraintViolationException"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    comboBox.setSelectedIndex (optionDeselected);
-                    comboBox.requestFocus ();
-                }
-                catch (NonProjectablePotentialException | WrongCriterionException | DoEditException
-                        | CanNotDoEditException e1)
-                {
+                relevanceEdit = new RelevanceEdit(probNode, Double.valueOf(itemSelected));
+                try {
+                    probNode.getProbNet().doEdit(relevanceEdit);
+                } catch (ConstraintViolationException e1) {
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            stringDatabase.getString("ConstraintViolationException"),
+                            JOptionPane.ERROR_MESSAGE);
+                    comboBox.setSelectedIndex(optionDeselected);
+                    comboBox.requestFocus();
+                } catch (NonProjectablePotentialException
+                        | WrongCriterionException
+                        | DoEditException
+                        | CanNotDoEditException e1) {
                     // TODO Auto-generated catch block
-                    JOptionPane.showMessageDialog (this, e1.getMessage (), e1.getMessage (),
-                                                   JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            e1.getMessage(),
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
-        }
-        else if (comboBox.getName ().equals ("jComboBoxTimeSlice"))
-        {
-            if (!(itemSelected == null) && e.getStateChange () == ItemEvent.SELECTED)
-            {
+        } else if (comboBox.equals(jComboBoxTimeSlice)) {
+            if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
                 TimeSliceEdit timeSliceEdit = null;
-                if (itemSelected.equals (stringDatabase.getString ("NodeDefinitionPanel.Atemporal.Text")))
-                {
-                    timeSliceEdit = new TimeSliceEdit (probNode, Integer.MIN_VALUE);
+                if (itemSelected.equals(stringDatabase.getString("NodeDefinitionPanel.Atemporal.Text"))) {
+                    timeSliceEdit = new TimeSliceEdit(probNode, Integer.MIN_VALUE);
+                } else {
+                    timeSliceEdit = new TimeSliceEdit(probNode, Integer.valueOf(itemSelected));
                 }
-                else
-                {
-                    timeSliceEdit = new TimeSliceEdit (probNode, Integer.valueOf (itemSelected));
-                }
-                try
-                {
-                    probNode.getProbNet ().doEdit (timeSliceEdit);
+                try {
+                    probNode.getProbNet().doEdit(timeSliceEdit);
                     // comboBox.setSelectedIndex(optionSelected);
-                }
-                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-                        | NonProjectablePotentialException | WrongCriterionException e1)
-                {
-                    e1.printStackTrace ();
-                    JOptionPane.showMessageDialog (this, e1.getMessage (), e1.getMessage (),
-                                                   JOptionPane.ERROR_MESSAGE);
+                } catch (DoEditException
+                        | ConstraintViolationException
+                        | CanNotDoEditException
+                        | NonProjectablePotentialException
+                        | WrongCriterionException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            e1.getMessage(),
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
-        }
-        else if (comboBox.getName ().equals ("jComboBoxAgents"))
-        {
+        } else if (comboBox.equals(jComboBoxNetworkAgents)) {
             if (!(itemSelected == null)
-            /* && e.getStateChange() == ItemEvent.SELECTED */)
-            {
-                StringWithProperties agent = new StringWithProperties (itemSelected);
-                NodeAgentEdit nodeAgentEdit = new NodeAgentEdit (probNode, agent);
-                try
-                {
-                    probNode.getProbNet ().doEdit (nodeAgentEdit);
+            /* && e.getStateChange() == ItemEvent.SELECTED */) {
+                StringWithProperties agent = new StringWithProperties(itemSelected);
+                NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(probNode, agent);
+                try {
+                    probNode.getProbNet().doEdit(nodeAgentEdit);
                     // comboBox.setSelectedIndex(optionSelected);
-                }
-                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-                        | NonProjectablePotentialException | WrongCriterionException e1)
-                {
+                } catch (DoEditException
+                        | ConstraintViolationException
+                        | CanNotDoEditException
+                        | NonProjectablePotentialException
+                        | WrongCriterionException e1) {
                     // TODO Auto-generated catch block
-                    e1.printStackTrace ();
+                    e1.printStackTrace();
                 }
             }
-        }
-        else if (comboBox.getName ().equals ("jComboBoxDecisionCriteria"))
-        {
-            if (!(itemSelected == null))
-            {
-                StringWithProperties decisionCriteria = new StringWithProperties (itemSelected);
-                NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit (
-                                                                                                  probNode,
-                                                                                                  decisionCriteria);
-                try
-                {
-                    probNode.getProbNet ().doEdit (nodeDecisionCriteriaEdit);
-                }
-                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-                        | NonProjectablePotentialException | WrongCriterionException e1)
-                {
+        } else if (comboBox.equals(jComboBoxDecisionCriteria)) {
+            if (!(itemSelected == null)) {
+                StringWithProperties decisionCriteria = new StringWithProperties(itemSelected);
+                NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(probNode,
+                        decisionCriteria);
+                try {
+                    probNode.getProbNet().doEdit(nodeDecisionCriteriaEdit);
+                } catch (DoEditException
+                        | ConstraintViolationException
+                        | CanNotDoEditException
+                        | NonProjectablePotentialException
+                        | WrongCriterionException e1) {
                     // TODO Auto-generated catch block
-                    e1.printStackTrace ();
+                    e1.printStackTrace();
                 }
             }
         }
@@ -1188,39 +832,37 @@ public class NodeDefinitionPanel extends JPanel
 
     /**
      * Invoked when a focus lost action occurs.
-     * @param e - event information
+     * 
+     * @param e
+     *            - event information
      */
-    public void focusLost (FocusEvent e)
-    {
-        if (e.getSource ().equals (this.jTextFieldNodeName))
-        {
+    public void focusLost(FocusEvent e) {
+        if (e.getSource().equals(this.jTextFieldNodeName)) {
             // actionPerformedNodeNameChangeValue();
-            if (!probNode.getName ().equals (this.jTextFieldNodeName.getText ()))
-            {
-                NodeNameEdit nodeNameEdit = new NodeNameEdit (probNode,
-                                                              this.jTextFieldNodeName.getText ());
-                try
-                {
-                    probNode.getProbNet ().doEdit (nodeNameEdit);
-                }
-                catch (ConstraintViolationException e1)
-                {
+            if (!probNode.getName().equals(this.jTextFieldNodeName.getText())) {
+                NodeNameEdit nodeNameEdit = new NodeNameEdit(probNode,
+                        this.jTextFieldNodeName.getText());
+                try {
+                    probNode.getProbNet().doEdit(nodeNameEdit);
+                } catch (ConstraintViolationException e1) {
                     // TODO Auto-generated catch block
                     // e1.printStackTrace();
-                    JOptionPane.showMessageDialog (this,
-                                                   e1.getMessage (),
-                                                   stringDatabase.getString ("ConstraintViolationException"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    jTextFieldNodeName.setText (probNode.getName ());
-                    jTextFieldNodeName.requestFocus ();
-                }
-                catch (CanNotDoEditException | DoEditException | NonProjectablePotentialException
-                        | WrongCriterionException e1)
-                {
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            stringDatabase.getString("ConstraintViolationException"),
+                            JOptionPane.ERROR_MESSAGE);
+                    jTextFieldNodeName.setText(probNode.getName());
+                    jTextFieldNodeName.requestFocus();
+                } catch (CanNotDoEditException
+                        | DoEditException
+                        | NonProjectablePotentialException
+                        | WrongCriterionException e1) {
                     // TODO Auto-generated catch block
-                    e1.printStackTrace ();
-                    JOptionPane.showMessageDialog (this, e1.getMessage (), e1.getMessage (),
-                                                   JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            e1.getMessage(),
+                            e1.getMessage(),
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -1228,99 +870,65 @@ public class NodeDefinitionPanel extends JPanel
 
     /**
      * Invoked when a focus gained action occurs.
-     * @param e - event information
+     * 
+     * @param e
+     *            - event information
      */
-    public void focusGained (FocusEvent e)
-    {
-        if (e.getSource ().equals (this.jTextFieldNodeName))
-        {
-            this.getJTextFieldNodeName ().selectAll ();
+    public void focusGained(FocusEvent e) {
+        if (e.getSource().equals(this.jTextFieldNodeName)) {
+            this.getJTextFieldNodeName().selectAll();
         }
     }
 
     /**
      * This method fills the content of the fields from a NodeProperties object.
-     * @param additionalProperties object from where load the information.
+     * 
+     * @param additionalProperties
+     *            object from where load the information.
      */
-    public void setFieldsFromProperties (ProbNode probNode)
-    {
-        jTextFieldNodeName.setText (probNode.getVariable().getBaseName());
-        // node type elements in the panel depending network type
-        /*
-         * NetworkType netType =
-         * additionalProperties.getNetwork().getNetworkType(); if
-         * (NetworkType.BAYESIAN_NET == netType) {
-         * jRadioButtonChanceNodeType.setEnabled( true );
-         * jRadioButtonDecisionNodeType.setEnabled( false );
-         * jRadioButtonUtilityNodeType.setEnabled( false ); } else if
-         * (NetworkType.INFLUENCE_DIAGRAM == netType) {
-         * jRadioButtonChanceNodeType.setEnabled( false );
-         * jRadioButtonDecisionNodeType.setEnabled( false );
-         * jRadioButtonUtilityNodeType.setEnabled( false ); } else if
-         * (NetworkType.CHAIN_GRAPH == netType) { // future extension } else if
-         * (NetworkType.MARKOV_NET == netType) { // future extension }
-         */
-        // node type
-        /*
-         * switch (additionalProperties.getNodeType()) { case CHANCE: {
-         * jRadioButtonChanceNodeType.setEnabled( true );
-         * jRadioButtonChanceNodeType.setSelected( true ); break; } case
-         * DECISION: { jRadioButtonDecisionNodeType.setEnabled( true );
-         * jRadioButtonDecisionNodeType.setSelected( true ); break; } case
-         * UTILITY: { jRadioButtonUtilityNodeType.setEnabled( true );
-         * jRadioButtonUtilityNodeType.setSelected( true ); break; } default:
-         * break; } if (additionalProperties.getNodeType() == NodeType.UTILITY)
-         * { jRadioButtonDiscreteNodeVariableType.setEnabled( false );
-         * jRadioButtonDiscretizedNodeVariableType.setEnabled( false );
-         * jRadioButtonContinuousNodeVariableType.setEnabled( false ); }
-         */
+    public void setFieldsFromProperties(ProbNode probNode) {
+        jTextFieldNodeName.setText(probNode.getVariable().getBaseName());
         // node variable type
         // relevance
         // if (properties.getVariable().getVariableType() ==
         // VariableType.FINITE_STATES){
-        jComboBoxNodeRelevance.removeItemListener (this);
-        jComboBoxNodePurpose.removeItemListener (this);
-        jComboBoxNodeRelevance.setSelectedItem (probNode.getRelevance ());
-        jComboBoxNodeRelevance.setEnabled (true);
+        jComboBoxNodeRelevance.removeItemListener(this);
+        jComboBoxNodePurpose.removeItemListener(this);
+        jComboBoxNodeRelevance.setSelectedItem(probNode.getRelevance());
+        jComboBoxNodeRelevance.setEnabled(true);
         // purpose
-        jComboBoxNodePurpose.setSelectedIndex (Purpose.getIndex (probNode.getPurpose ()));
-        jComboBoxNodePurpose.setEnabled (true);
-        jComboBoxNodeRelevance.addItemListener (this);
-        jComboBoxNodePurpose.addItemListener (this);
+        jComboBoxNodePurpose.setSelectedIndex(Purpose.getIndex(probNode.getPurpose()));
+        jComboBoxNodePurpose.setEnabled(true);
+        jComboBoxNodeRelevance.addItemListener(this);
+        jComboBoxNodePurpose.addItemListener(this);
         // }
         // node comment title
-        MessageFormat messageForm = new MessageFormat (
-                                                       stringDatabase.getString ("NodeDefinitionPanel.commentHTMLScrollPaneNodeDefinitionComment.Text"));
-        String shortNodeName = getJTextFieldNodeName ().getText ();
-        Object[] labelArgs = new Object[] {shortNodeName};
-        commentHTMLScrollPaneNodeDefinitionComment.setTitle (messageForm.format (labelArgs));
+        MessageFormat messageForm = new MessageFormat(stringDatabase.getString("NodeDefinitionPanel.commentHTMLScrollPaneNodeDefinitionComment.Text"));
+        String shortNodeName = getJTextFieldNodeName().getText();
+        Object[] labelArgs = new Object[] { shortNodeName };
+        commentHTMLScrollPaneNodeDefinitionComment.setTitle(messageForm.format(labelArgs));
         // node def comment
-        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText (probNode.getComment ());
-        jCheckboxAlwaysObserved.setSelected (probNode.isAlwaysObserved ());
+        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText(probNode.getComment());
+        jCheckboxAlwaysObserved.setSelected(probNode.isAlwaysObserved());
     }
 
     /**
      * This method checks that the name field is filled and there isn't any node
      * with the same name.
+     * 
      * @return true, if the name field isn't empty and there isn't any node with
      *         this name; otherwise, false.
      */
-    public boolean checkName ()
-    {
-        String name = jTextFieldNodeName.getText ();
+    public boolean checkName() {
+        String name = jTextFieldNodeName.getText();
         boolean result = true;
-        if ((name == null) || name.equals (""))
-        {
+        if ((name == null) || name.equals("")) {
+            result = false;
+        } else if (!probNode.getName().equals(name) && Util.existNode(probNode.getProbNet(), name)) {
             result = false;
         }
-        else if (!probNode.getName ().equals (name)
-                 && Util.existNode (probNode.getProbNet (), name))
-        {
-            result = false;
-        }
-        if (!result)
-        {
-            jTextFieldNodeName.requestFocus ();
+        if (!result) {
+            jTextFieldNodeName.requestFocus();
             return false;
         }
         return true;
@@ -1329,12 +937,13 @@ public class NodeDefinitionPanel extends JPanel
     /**
      * This method checks that the purpose field is filled if this field is
      * enabled.
+     * 
      * @return true, if the purpose field isn't empty; otherwise, false.
      */
-    public boolean checkPurpose ()
-    {
+    public boolean checkPurpose() {
         return true;
     }
+
     /**
      * serial uid
      */
@@ -1396,53 +1005,51 @@ public class NodeDefinitionPanel extends JPanel
      */
     private boolean               newNode                                    = false;
 
-    public void commentHasChanged ()
-    {
-        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit (
-                                                               probNode,
-                                                               getCommentHTMLScrollPaneNodeDefinitionComment ().getCommentText (),
-                                                               "DefinitionComment");
-        try
-        {
-            probNode.getProbNet ().doEdit (nodeCommentEdit);
-        }
-        catch (ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
-        {
+    public void commentHasChanged() {
+        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(probNode,
+                getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText(),
+                "DefinitionComment");
+        try {
+            probNode.getProbNet().doEdit(nodeCommentEdit);
+        } catch (ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException
+                | DoEditException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (this, e.getMessage (), e.getMessage (),
-                                           JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    e.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /****
      * Starts the edit event to change the alwaysObserved property
      */
-    public void alwaysObservedPropertyHasChanged ()
-    {
-        NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit (
-                                                                  this.probNode,
-                                                                  this.jCheckboxAlwaysObserved.isSelected ());
-        try
-        {
-            probNode.getProbNet ().doEdit (edit);
-        }
-        catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException e)
-        {
+    public void alwaysObservedPropertyHasChanged() {
+        NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.probNode,
+                this.jCheckboxAlwaysObserved.isSelected());
+        try {
+            probNode.getProbNet().doEdit(edit);
+        } catch (DoEditException
+                | ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (this, e.getMessage (), e.getMessage (),
-                                           JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    e.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void actionPerformed (ActionEvent e)
-    {
-        if (e.getSource ().equals (this.jCheckboxAlwaysObserved))
-        {
-            alwaysObservedPropertyHasChanged ();
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
+            alwaysObservedPropertyHasChanged();
         }
     }
 }
