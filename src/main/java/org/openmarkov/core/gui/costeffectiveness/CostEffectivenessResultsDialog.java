@@ -148,10 +148,10 @@ public class CostEffectivenessResultsDialog extends JDialog
         {
             tabbedPane = new JTabbedPane ();
             tabbedPane.setName ("CostEffectivenessResultTabbedPane");
-            tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.Plane.Tab"),
-                               null, getCEPlanePanel (), null);
             tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.Analysis.Tab"),
                                null, getAnalysisPane (), null);
+            tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.Plane.Tab"),
+                    null, getCEPlanePanel (), null);
             tabbedPane.addTab (stringDatabase.getString ("CostEffectivenessResults.FrontierInterventions.Tab"),
                                null, getFrontierInterventionsPanel (), null);
             if(costEffectivenessAnalysis instanceof ProbabilisticCEA)
