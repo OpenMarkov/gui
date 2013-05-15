@@ -633,27 +633,17 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                 for (int i = 1; i < decisionCriteria.size() + 1; i++) {
                     criteriaNames[i] = decisionCriteria.get(i - 1).getString();
                 }
-            } else if (decisionCriteria == null) {
-                criteriaNames = new String[1];
-                criteriaNames[0] = "";
-            }
-            jComboBoxDecisionCriteria = new JComboBox<>(criteriaNames);
+            } 
+            jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
             jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
             jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
             if (probNode.getVariable().getDecisionCriteria() != null && decisionCriteria != null) {
-                String name = probNode.getVariable().getDecisionCriteria().getString();
-                int i;
-                for (i = 0; i < criteriaNames.length; i++) {
-                    if (name == criteriaNames[i]) {
-                        break;
-                    }
-                }
-                jComboBoxDecisionCriteria.setSelectedIndex(i);
+                String decisionCriterion = probNode.getVariable().getDecisionCriteria().getString();
+                jComboBoxDecisionCriteria.setSelectedItem(decisionCriterion);
+                jComboBoxDecisionCriteria.addItemListener(this);
             } else {
-                jComboBoxDecisionCriteria.setSelectedIndex(0);
+                jComboBoxDecisionCriteria.setEnabled(false);
             }
-            jComboBoxDecisionCriteria.setEditable(true);
-            jComboBoxDecisionCriteria.addItemListener(this);
         }
         return jComboBoxDecisionCriteria;
     }

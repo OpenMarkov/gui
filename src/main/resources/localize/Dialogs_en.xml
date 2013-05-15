@@ -573,7 +573,7 @@
 			<Mnemonic value="u" />
 		</jRadioButtonUtilityNodeType>
 		<jLabelDecisionDriteria>
-			<Text value="Decision criteria:" />
+			<Text value="Decision criterion:" />
 		</jLabelDecisionDriteria>
 		<commentHTMLScrollPaneNodeDefinitionComment>
 			<Text value="Comment for node {0}" />

@@ -2695,7 +2695,7 @@ public class EditorPanel extends JPanel
         Variable selectedVariable = selectedNode.getVariable();
         Variable newVariable = new Variable(selectedVariable);
         newVariable.setTimeSlice(selectedVariable.getTimeSlice() + 1);
-        Point2D.Double position = new Point2D.Double(selectedNode.getNode().getCoordinateX() + 100,
+        Point2D.Double position = new Point2D.Double(selectedNode.getNode().getCoordinateX() + 200,
                 selectedNode.getNode().getCoordinateY());
         AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (probNet, newVariable,
                 selectedNode.getNodeType(), position);
