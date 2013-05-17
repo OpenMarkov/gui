@@ -13,12 +13,10 @@ import javax.swing.JTable;
 @SuppressWarnings("serial")
 public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRenderer
 {
-    private int          firstEditableRow;
 
-    public ValuesTableOptimalPolicyCellRenderer (int firstEditableRow, boolean[] editableColumns)
+    public ValuesTableOptimalPolicyCellRenderer (int firstEditableRow, boolean[] uncertaintyInColumns)
     {
-        super (firstEditableRow, editableColumns);
-        this.firstEditableRow = firstEditableRow;
+        super (firstEditableRow, uncertaintyInColumns);
     }
 
     @Override

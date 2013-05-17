@@ -271,19 +271,6 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
      *            the variables to set
      */
 
-    /*
-     * protected void setVariables(ArrayList<Variable> variables) { //TODO
-     * update this statement, when constructor of this class with //potential as
-     * parameter is implemented if (probNode != null && probNode.getNodeType()
-     * == NodeType.UTILITY){ this.variables = new ArrayList<Variable>();
-     * this.variables.add(probNode.getVariable()); for (Variable variable:
-     * variables) this.variables.add(variable); }else
-     * 
-     * this.variables = variables;
-     * 
-     * }
-     */
-
     /**
      * @param listPotentials
      *            the listPotentials to set

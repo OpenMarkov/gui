@@ -15,8 +15,8 @@ public class LinkRestrictionCellRenderer extends ValuesTableCellRenderer {
 	private final String COMPATIBILITY_VALUE = "1";
 
 	public LinkRestrictionCellRenderer(int firstEditableRow,
-			boolean[] editableColumns, TablePotential potential) {
-		super(firstEditableRow, editableColumns);
+			boolean[] uncertaintyInColumns, TablePotential potential) {
+		super(firstEditableRow, uncertaintyInColumns);
 
 	}
 

@@ -256,7 +256,7 @@ public class ValuesTable extends KeyTable
     @Override
     protected void defaultConfiguration ()
     {
-        boolean[] aux = {false, false};
+        boolean[] uncertaintyInColumns = {false, false};
         super.defaultConfiguration ();
         setFirstColumnHidden (false); // key prefix column is hidden
         setShowColumnHeader (false); // no column header here
@@ -264,8 +264,8 @@ public class ValuesTable extends KeyTable
         setRowSelectionAllowed (false);
         setColumnSelectionAllowed (false);
         setGridColor (Color.DARK_GRAY);
-        setDefaultRenderer (Double.class, new ValuesTableCellRenderer (0, aux));
-        setDefaultRenderer (String.class, new ValuesTableCellRenderer (0, aux));
+        setDefaultRenderer (Double.class, new ValuesTableCellRenderer (0, uncertaintyInColumns));
+        setDefaultRenderer (String.class, new ValuesTableCellRenderer (0, uncertaintyInColumns));
         // next two lines is a cool trick to enhance table performance
         ToolTipManager.sharedInstance ().unregisterComponent (this);
         ToolTipManager.sharedInstance ().unregisterComponent (getTableHeader ());

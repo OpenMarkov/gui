@@ -141,20 +141,20 @@ public class PotentialsTablePanelOperations {
 	 * <li>type of the node (utility or other)</li>
 	 * </ul>
 	 * 
-	 * @param listPotentials -
+	 * @param potentials -
 	 *            potentials for the variable
 	 * @param additionalProperties -
 	 *            additionalProperties for this variable
 	 */
 	public static int calculateFirstEditableRow(
-			List<Potential> listPotentials,
+			List<Potential> potentials,
 			ProbNode properties) {
 		int row = 0;
-		if (listPotentials != null) {
+		if (potentials != null) {
 			if (properties.getNodeType() == NodeType.UTILITY) {
-				row = listPotentials.get( 0 ).getNumVariables() ;
+				row = potentials.get( 0 ).getNumVariables() ;
 			} else {
-				row = listPotentials.get( 0 ).getNumVariables() - 1;
+				row = potentials.get( 0 ).getNumVariables() - 1;
 			}
 		} else {
 			row = 0;

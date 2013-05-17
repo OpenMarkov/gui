@@ -12,19 +12,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.gui.dialog.common.PotentialsTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.potential.PotentialType;
 
 /**
  * Panel for the relation/probabilities tables (if chance node), utility values
@@ -48,9 +43,6 @@ public class ICIOptionsPanel extends JPanel
      * ICIPotentialsTablePanel
      */
     private int                        prevModelPolicySelected                          = -1;
-    private static int                 PROBABILISTIC_SELECTED                           = 0;
-    private static int                 DETERMINISTIC_SELECTED                           = 1;
-    private static int                 OPTIMAL_SELECTED                                 = 2;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -80,16 +72,10 @@ public class ICIOptionsPanel extends JPanel
     private JLabel                     jLabelNodeRelationComment;
     private CommentHTMLScrollPane      commentHTMLScrollPaneNodeProbsComment            = null;
     /**
-     * the probability table panel
-     */
-    private PotentialsTablePanel       nodePotentialsTablePanel;
-    /**
      * object to manage the ItemChange events of the panel
      */
     // private TablePotentialPanelListenerAssistant listener = null;
     private ICIOptionListenerAssistant listener                                         = null;
-    private ProbNode                   probNode;
-    private JPopupMenu                 uncertaintyContextualMenu;
 
     /**
      * constructor without construction parameters
@@ -105,7 +91,6 @@ public class ICIOptionsPanel extends JPanel
     public ICIOptionsPanel (ProbNode probNode)
     {
         this (true);// , notifier );
-        this.probNode = probNode;
         this.listener = new ICIOptionListenerAssistant (this);
         try
         {
@@ -446,19 +431,6 @@ public class ICIOptionsPanel extends JPanel
     }
 
     /**
-     * @return panel with the table of probabilistic values
-     */
-    public PotentialsTablePanel getNodePotentialsTablePanel ()
-    {
-        if (nodePotentialsTablePanel == null)
-        {
-            nodePotentialsTablePanel = new PotentialsTablePanel (probNode);// default
-            nodePotentialsTablePanel.setName ("nodePotentialsTablePanel");
-        }
-        return nodePotentialsTablePanel;
-    }
-
-    /**
      * @return label for the node relation comment
      */
     protected JLabel getJLabelNodeRelationComment ()
@@ -504,15 +476,6 @@ public class ICIOptionsPanel extends JPanel
     }
 
     /**
-     * this method hides all non required graphical components when a decision
-     * node is selected
-     */
-    protected void hideElementsWhenIsDecisionNodeOrUniformPotential ()
-    {
-        this.nodePotentialsTablePanel.showValuesTable (false);
-    }
-
-    /**
      * this method hides all non required graphical components when a utility
      * node is selected
      */
@@ -534,8 +497,6 @@ public class ICIOptionsPanel extends JPanel
         // this.jLabelRelationType.setEnabled( false );
         // this.jRadioButtonProbabilisticType.setEnabled( false );
         // this.jRadioButtonDeterministicType.setEnabled( false );
-        this.nodePotentialsTablePanel.showValuesTable (false);
-        this.nodePotentialsTablePanel.setEnabled (true);
         hideAllOptionsPanels ();
     }
 
@@ -564,17 +525,6 @@ public class ICIOptionsPanel extends JPanel
     }
 
     /**
-     * this methods shows all required graphical components when Optimal is
-     * deselected
-     */
-    protected void showElementsWhenOptimalDeselected ()
-    {
-        // this.jLabelRelationType.setEnabled( true );
-        this.nodePotentialsTablePanel.showValuesTable (true);
-        this.nodePotentialsTablePanel.setEnabled (true);
-    }
-
-    /**
      * @return the newNode
      */
     public boolean isNewNode ()
@@ -588,46 +538,5 @@ public class ICIOptionsPanel extends JPanel
     public void setNewNode (boolean newNode)
     {
         this.newNode = newNode;
-    }
-
-    /**
-     * This method fills the content of the fields from a ProbNode object.
-     * @param node object from where load the information.
-     */
-    public void setFieldsFromNode (ProbNode node)
-    {
-        if ((node.getNodeType () == NodeType.DECISION)
-            && (node.getPolicyType () == PolicyType.OPTIMAL))
-        {
-            hideElementsWhenIsDecisionNodeOrUniformPotential ();
-            // this.getJRadioButtonOptimal().setEnabled( true );
-            // this.getJRadioButtonOptimal().setSelected( true );
-            this.setPrevModelPolicySelected (OPTIMAL_SELECTED);
-        }
-        else
-        {
-            if (probNode.getPotentials ().get (0).getPotentialType () == PotentialType.TABLE)
-            {
-                getNodePotentialsTablePanel ().setData (node);
-            }
-            else
-            {
-                hideElementsWhenIsDecisionNodeOrUniformPotential ();
-            }
-            if (node.getNodeType () == NodeType.UTILITY)
-            {
-                hideElementsWhenIsUtilityNode ();
-                if (probNode.getPotentials ().get (0).getPotentialType () == PotentialType.PRODUCT)
-                {
-                    hideElementsWhenIsDecisionNodeOrUniformPotential ();
-                }
-            }
-            else if (node.getNodeType () == NodeType.CHANCE)
-            {
-                // TODO activar la opción correspondiente
-                // this.jRadioButtonProbabilisticType.setSelected( true );
-                this.prevModelPolicySelected = PROBABILISTIC_SELECTED;
-            }
-        }
     }
 }

@@ -26,10 +26,10 @@ public class ICIValuesTableCellRenderer extends ValuesTableCellRenderer
     private int            acummulativeColumns[];
 
     public ICIValuesTableCellRenderer (int firstEditableRow,
-                                       boolean[] editableColumns,
+                                       boolean[] uncertaintyInColumns,
                                        ICIPotential iciPotential)
     {
-        super (firstEditableRow, editableColumns);
+        super (firstEditableRow, uncertaintyInColumns);
         this.variables = iciPotential.getVariables ();
         this.numColumnsParents = new int[variables.size ()];
         for (int i = 1; i < variables.size (); ++i)
@@ -133,8 +133,6 @@ public class ICIValuesTableCellRenderer extends ValuesTableCellRenderer
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && firstEditableRow >= 0
             && (row >= firstEditableRow))
         {
-            if (table.getValueAt (row, column) != null) getJLabelIcon ().setText (table.getValueAt (row,
-                                                                                                    column).toString ());
             setBackground (Color.WHITE);
             setForeground (Color.BLACK);
             if (hasFocus)

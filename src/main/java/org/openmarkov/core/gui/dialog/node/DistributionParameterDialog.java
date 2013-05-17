@@ -10,8 +10,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.TextComponent;
 import java.awt.TextField;
 import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,22 @@ import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManage
 
 @SuppressWarnings("serial")
 public class DistributionParameterDialog extends OkCancelHorizontalDialog {
+    
+    private class TextFieldFocusListener implements FocusListener
+    {
+        @Override
+        public void focusGained(FocusEvent e) {
+            ((TextComponent)e.getSource()).selectAll();
+            
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            // ignore
+            
+        }
+        
+    }
 
     private double[]        parameters          = null;
     private List<TextField> parameterTextFields = null;
@@ -49,6 +68,7 @@ public class DistributionParameterDialog extends OkCancelHorizontalDialog {
             if (parameters != null) {
                 parameterTextField.setText(String.valueOf(parameters[i]));
             }
+            parameterTextField.addFocusListener(new TextFieldFocusListener());
             parametersPanel.add(parameterLabel);
             parametersPanel.add(parameterTextField);
             parameterTextFields.add(parameterTextField);
@@ -62,7 +82,7 @@ public class DistributionParameterDialog extends OkCancelHorizontalDialog {
         int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
         setLocation(new Point(x, y));
         
-        if(parameterNames.length == 0)
+        if(parameterTextFields.isEmpty())
         {
             this.setVisible(false);
         }
