@@ -6,22 +6,24 @@
 
 package org.openmarkov.core.gui.dialog.node;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -33,116 +35,121 @@ import org.openmarkov.core.exception.ExceptionUncertainValuesDialogEdition;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
-import org.openmarkov.core.gui.localize.StringBundle;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.modelUncertainty.BetaFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ComplementFamily;
+import org.openmarkov.core.model.network.modelUncertainty.ComplementFunction;
 import org.openmarkov.core.model.network.modelUncertainty.DirichletFamily;
+import org.openmarkov.core.model.network.modelUncertainty.DirichletFunction;
+import org.openmarkov.core.model.network.modelUncertainty.ExactFunction;
 import org.openmarkov.core.model.network.modelUncertainty.FamilyDistribution;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensityFunctionType;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
+import org.openmarkov.core.model.network.modelUncertainty.RangeFunction;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
+import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-public class UncertainValuesDialog extends OkCancelHorizontalDialog
-{
-    public class DistributionsTableListener
-        implements
-            TableModelListener
-    {
-        public void tableChanged (TableModelEvent e)
-        {
+public class UncertainValuesDialog extends OkCancelHorizontalDialog {
+
+    private static final int STATE_COLUMN_INDEX        = 0;
+    private static final int DISTRIBUTION_COLUMN_INDEX = 1;
+    private static final int PARAMETERS_COLUMN_INDEX   = 2;
+    private static final int NAME_COLUMN_INDEX         = 3;
+
+    public class DistributionsTableListener implements TableModelListener {
+        public void tableChanged(TableModelEvent e) {
+            if (e.getColumn() == DISTRIBUTION_COLUMN_INDEX) {
+                int selectedRow = distributionTable.getSelectedRow();
+                String distributionType = distributionTableModel.getValueAt(selectedRow,
+                        DISTRIBUTION_COLUMN_INDEX).toString();
+                DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
+                        distributionType);
+                parameterDialog.setVisible(true);
+                StringBuilder parameterString = new StringBuilder();
+                for (double parameter : parameterDialog.getParameters()) {
+                    parameterString.append(parameter);
+                    parameterString.append(" ");
+                }
+                distributionTableModel.setValueAt(parameterString.toString(),
+                        selectedRow,
+                        PARAMETERS_COLUMN_INDEX);
+            }
         }
     }
-    public class ConfigurationTableModel extends DefaultTableModel
-    {
-        /**
-		 * 
-		 */
-        private static final long serialVersionUID = 1L;
 
-        public ConfigurationTableModel (String[][] initialData,
-                                        String[] namesColumnsConfigurationTable)
-        {
-            super (initialData, namesColumnsConfigurationTable);
-        }
+    public class DistributionsTableMouseListener extends MouseAdapter {
 
-        public boolean isCellEditable (int arg0, int arg1)
-        {
-            return false;
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2
+                    && distributionTable.getSelectedColumn() == PARAMETERS_COLUMN_INDEX) {
+                int selectedRow = distributionTable.getSelectedRow();
+                String distributionType = distributionTableModel.getValueAt(selectedRow,
+                        DISTRIBUTION_COLUMN_INDEX).toString();
+                String currentParameters = distributionTableModel.getValueAt(selectedRow,
+                        PARAMETERS_COLUMN_INDEX).toString();
+                double[] parameters = null;
+                if (!currentParameters.isEmpty()) {
+                    String[] parameterArray = currentParameters.split(" ");
+                    parameters = new double[parameterArray.length];
+                    for (int i = 0; i < parameters.length; ++i) {
+                        parameters[i] = Double.parseDouble(parameterArray[i]);
+                    }
+                }
+                DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
+                        distributionType,
+                        parameters);
+                parameterDialog.setVisible(true);
+                if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+                    StringBuilder parameterString = new StringBuilder();
+                    for (double parameter : parameterDialog.getParameters()) {
+                        parameterString.append(parameter);
+                        parameterString.append(" ");
+                    }
+                    distributionTableModel.setValueAt(parameterString.toString(),
+                            selectedRow,
+                            PARAMETERS_COLUMN_INDEX);
+                }
+            }
         }
     }
-    public class DistributionsTableModel extends DefaultTableModel
-    {
-        /**
-		 * 
-		 */
+
+    public class DistributionTableModel extends DefaultTableModel {
+
         private static final long serialVersionUID = 1L;
 
-        public DistributionsTableModel (Object[][] initialData,
-                                        String[] namesColumnsDistributionsTable)
-        {
-            super (initialData, namesColumnsDistributionsTable);
+        public DistributionTableModel(Object[][] initialData, String[] columnNames) {
+            super(initialData, columnNames);
         }
 
         @Override
-        public boolean isCellEditable (int row, int col)
-        {
-            return (col > 0);
+        public boolean isCellEditable(int row, int col) {
+            return (col == DISTRIBUTION_COLUMN_INDEX) || (col == NAME_COLUMN_INDEX);
         }
     }
-    /**
-	 * 
-	 */
-    private static final long serialVersionUID     = 1L;
-    /**
-     * Remove button.
-     */
-    // private JButton jButtonRemove = null;
-    // Components related to the configuration box
-    ConfigurationTableModel   configurationTableModel;
-    JTable                    configurationTable;
-    private JScrollPane       configurationScrollPane;
-    private Container         configurationPanel;
-    private JLabel            labelConfiguration;
+
+    private static final long      serialVersionUID = 1L;
     // Components related to the distributions box
-    DistributionsTableModel   distributionsTableModel;
-    JTable                    distributionsTable;
-    private JScrollPane       distributionsScrollPane;
-    private JLabel            labelDistributions;
-    private JPanel            distributionsPanel;
-    Variable                  variable;
-    String[]                  allowedStringsDistributions;
-    boolean                   isChanceVariable;
-    /**
-     * Dialogs string resource.
-     */
-    protected StringBundle    dialogStringResource = null;
+    private DistributionTableModel distributionTableModel;
+    private JTable                 distributionTable;
+    private JPanel                 distributionsPanel;
+    private Variable               variable;
+    private List<String>           allowedDistributionTypes;
+    private boolean                isChanceVariable;
+
     // List of uncertain values
-    List<UncertainValue>      uncertainColumn;
+    private List<UncertainValue>   uncertainColumn;
     // List of doubles calculated from uncertainColum by taking the mean value
-    List<Double>              valuesColumn;
-
-    public List<Double> getValuesColumn ()
-    {
-        return valuesColumn;
-    }
-
-    public List<UncertainValue> getUncertainColumn ()
-    {
-        return uncertainColumn;
-    }
+    private List<Double>           valuesColumn;
     // Base position for storing the array of uncertain values in the table
     // potential
-    private int posBase;
-
-    public int getPosBase ()
-    {
-        return posBase;
-    }
+    private int                    posBase;
 
     /**
      * @param owner
@@ -153,414 +160,308 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
      * @throws WrongCriterionException
      * @wbp.parser.constructor
      */
-    public UncertainValuesDialog (Window owner, EvidenceCase configuration, TablePotential potential)
-        throws WrongCriterionException
-    {
-        super (owner);
-        isChanceVariable = !(potential.isUtility ());
-        variable = isChanceVariable ? potential.getVariable (0) : potential.getUtilityVariable ();
-        posBase = getPositionBaseUncertainValue (potential, configuration);
-        setResizable (true);
-        // getComponentsPanel().setLayout(new
-        // BorderLayoutxLayout(getComponentsPanel(), BoxLayout.X_AXIS));
-        JPanel componentsPanel = getComponentsPanel ();
-        // Panel of Configuration
-        configurationPanel = new JPanel ();
-        configurationPanel.setLayout (new BorderLayout ());
-        componentsPanel.add (configurationPanel, BorderLayout.NORTH);
-        labelConfiguration = new JLabel ("Configuration");
-        configurationPanel.add (labelConfiguration, BorderLayout.NORTH);
-        configurationScrollPane = new JScrollPane ();
-        configurationPanel.add (configurationScrollPane, BorderLayout.CENTER);
-        fillConfigurationTableModel (configuration);
-        configurationTable = new JTable (configurationTableModel);
-        configurationTable.setAutoResizeMode (javax.swing.JTable.AUTO_RESIZE_OFF);
-        configurationScrollPane.getViewport ().add (configurationTable);
-        int width = 100;
-        int height = 50;
-        // configurationPanel.setSize(width, 100);
-        configurationTable.setSize (width, height);
-        // configurationTable.setBounds(0, 0, width, 100);
-        configurationTable.setSize (width, height);
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
+            throws WrongCriterionException {
+        super(owner);
+        isChanceVariable = !(potential.isUtility());
+        variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
+        setTitle(getConfigurationDescription(variable, isChanceVariable, configuration));
+        posBase = getPositionBaseUncertainValue(potential, configuration);
+        setResizable(true);
+        JPanel componentsPanel = getComponentsPanel();
         // Panel of distributions
-        distributionsPanel = new JPanel ();
-        distributionsPanel.setLayout (new BorderLayout ());
-        componentsPanel.add (distributionsPanel, BorderLayout.CENTER);
-        labelDistributions = new JLabel ("Distributions");
-        distributionsPanel.add (labelDistributions, BorderLayout.NORTH);
-        distributionsScrollPane = new JScrollPane ();
-        distributionsPanel.add (distributionsScrollPane, BorderLayout.CENTER);
-        /*
-         * updateUncertainValuesCheckBox = new
-         * JCheckBox("Update reference values");
-         * distributionsAndUpdatePanel.add(
-         * updateUncertainValuesCheckBox,BorderLayout.SOUTH);
-         */
-        fillDistributionsTableModel (variable, configuration, potential);
-        distributionsTable.setAutoResizeMode (javax.swing.JTable.AUTO_RESIZE_OFF);
-        // distributionsTable.setAutoResizeMode(javax.swing.JTable.HEIGHT);
-        distributionsScrollPane.getViewport ().add (distributionsTable);
-        // distributionsPanel.setSize(width, 50);
-        distributionsPanel.setSize (width, height);
-        // distributionsTable.setBounds(0, 0, width, 150);
-        distributionsTable.setSize (width, height);
-        // distributionsTable.setSize(width, height);
-        distributionsTable.getModel ().addTableModelListener (new DistributionsTableListener ());
-        try
-        {
-            initialize ();
+        distributionsPanel = new JPanel();
+        fillDistributionsTableModel(variable, configuration, potential);
+        distributionTable.getModel().addTableModelListener(new DistributionsTableListener());
+        distributionTable.addMouseListener(new DistributionsTableMouseListener());
+        distributionsPanel.setBorder(new TitledBorder("Distributions"));
+        JScrollPane distributionsTablePane = new JScrollPane(distributionTable);
+        distributionsPanel.add(distributionsTablePane);
+        distributionsTablePane.setPreferredSize(new Dimension(300, 100));
+        distributionsPanel.setPreferredSize(new Dimension(350, 150));
+        componentsPanel.add(distributionsPanel);
+        try {
+            initialize();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
         }
-        catch (Throwable e)
-        {
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (null, stringDatabase.getString (e.getMessage ()),
-                                           stringDatabase.getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
+
+        Point parentLocation = owner.getLocation();
+        Dimension parentSize = owner.getSize();
+        int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+        int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+        setLocation(new Point(x, y));
     }
 
-    public int requestUncertainValues ()
-    {
-        setVisible (true);
+    public int requestUncertainValues() {
+        setVisible(true);
         return this.selectedButton;
     }
 
-    private int getPositionBaseUncertainValue (TablePotential potential, EvidenceCase configuration)
-    {
+    public List<Double> getValuesColumn() {
+        return valuesColumn;
+    }
+
+    public List<UncertainValue> getUncertainColumn() {
+        return uncertainColumn;
+    }
+
+    public int getPosBase() {
+        return posBase;
+    }
+
+    private int getPositionBaseUncertainValue(TablePotential potential, EvidenceCase configuration) {
         int[] coordinates;
         int sizeCoordinates;
         int pos;
-        int sizeEvi = configuration.getFindings ().size ();
+        int sizeEvi = configuration.getFindings().size();
         sizeCoordinates = sizeEvi + (isChanceVariable ? 1 : 0);
         coordinates = new int[sizeCoordinates];
-        List<Variable> varsTable = potential.getVariables ();
+        List<Variable> varsTable = potential.getVariables();
         int startLoop;
-        if (isChanceVariable)
-        {
+        if (isChanceVariable) {
             coordinates[0] = 0;
             startLoop = 1;
-        }
-        else
-        {
+        } else {
             startLoop = 0;
         }
-        for (int i = startLoop; i < sizeCoordinates; i++)
-        {
-            coordinates[i] = configuration.getFinding (varsTable.get (i)).getStateIndex ();
+        for (int i = startLoop; i < sizeCoordinates; i++) {
+            coordinates[i] = configuration.getFinding(varsTable.get(i)).getStateIndex();
         }
-        pos = potential.getPosition (coordinates);
+        pos = potential.getPosition(coordinates);
         return pos;
     }
 
-    private void fillDistributionsTableModel (Variable variable,
-                                              EvidenceCase configuration,
-                                              TablePotential potential)
-        throws WrongCriterionException
-    {
-        UncertainValue[] uncertainTable = potential.getUncertaintyTable ();
-        TablePotential auxProjected = potential.tableProject (configuration, null).get (0);
-        UncertainValue[] auxUncertainTable = auxProjected.getUncertaintyTable ();
-        // GEt the table of uncertain values
-        if (!hasUncertainValues (auxUncertainTable))
-        {
+    private void fillDistributionsTableModel(Variable variable,
+            EvidenceCase configuration,
+            TablePotential potential)
+            throws WrongCriterionException {
+        UncertainValue[] uncertainTable = potential.getUncertaintyTable();
+        TablePotential projectedPotential = potential.tableProject(configuration, null).get(0);
+        UncertainValue[] projectedUncertainTable = projectedPotential.getUncertaintyTable();
+        // Get the table of uncertain values
+        if (!hasUncertainValues(projectedUncertainTable)) {
             // Case assign
-            uncertainTable = createExactUncertainValuesFrom (auxProjected);
-        }
-        else
-        {
+            uncertainTable = createExactUncertainValuesFromDouble(projectedPotential);
+        } else {
             // Case edit
-            uncertainTable = auxProjected.getUncertaintyTable ();
+            uncertainTable = projectedPotential.getUncertaintyTable();
         }
         // Fill the table for the dialog
-        int numColumnsTable = 4;
-        int indexTypePDF = 1;
-        String[] namesColumnsDistributionsTable = new String[numColumnsTable];
-        // String colPrefix =
-        // "UncertainValuesDialog.DistributionsTable.Columns.";
-        // namesColumnsDistributionsTable[0]=dialogStringResource.getString(colPrefix+"State.Label");
-        // namesColumnsDistributionsTable[1]=dialogStringResource.getString(colPrefix+"Distribution.Label");
-        // namesColumnsDistributionsTable[2]=dialogStringResource.getString(colPrefix+"Parameters.Label");
-        // namesColumnsDistributionsTable[3]=dialogStringResource.getString(colPrefix+"Name.Label");
-        namesColumnsDistributionsTable[0] = "State";
-        namesColumnsDistributionsTable[1] = "Distribution";
-        namesColumnsDistributionsTable[2] = "Parameters";
-        namesColumnsDistributionsTable[3] = "Name";
-        // String[] stringsDistributions =
-        // TypeProbDensityFunction.getStringsValues();
-        allowedStringsDistributions = ProbDensityFunctionType.getAllowedStringsValues (isChanceVariable);
-        State[] states = variable.getStates ();
+        String[] columnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
+        allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance().getValidProbDensFunctions(isChanceVariable);
+        State[] states = variable.getStates();
         int numStates = states.length;
-        Object[][] initialData = new Object[numStates][numColumnsTable];
-        JComboBox<String> auxCombo = new JComboBox<String> (allowedStringsDistributions);
-        int lastPosStates = numStates - 1;
-        for (int i = 0; i < numStates; i++)
-        {
-            UncertainValue uncertainValue = uncertainTable[i];
-            int iPosInitialData = lastPosStates - i;
-            initialData[iPosInitialData][0] = states[i].getName ();
-            // int ordinal =
-            // uncertainValue.getProbDensityFunction().getType().ordinal();
-            initialData[iPosInitialData][indexTypePDF] = uncertainValue.getProbDensityFunction ().getType ().toString ();
-            initialData[iPosInitialData][2] = uncertainValue.getArguments ();
-            initialData[iPosInitialData][3] = uncertainValue.getName ();
+        Object[][] initialData = new Object[numStates][columnNames.length];
+        JComboBox<String> distributionTypesCombo = new JComboBox<String>();
+        for (String allowedDistributionType : allowedDistributionTypes) {
+            distributionTypesCombo.addItem(allowedDistributionType);
         }
-        distributionsTableModel = new DistributionsTableModel (initialData,
-                                                               namesColumnsDistributionsTable);
-        distributionsTable = new JTable (distributionsTableModel);
+        int lastPosStates = numStates - 1;
+        for (int i = 0; i < numStates; i++) {
+            UncertainValue uncertainValue = uncertainTable[i];
+            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
+            int iPosInitialData = lastPosStates - i;
+            initialData[iPosInitialData][STATE_COLUMN_INDEX] = states[i].getName();
+            initialData[iPosInitialData][DISTRIBUTION_COLUMN_INDEX] = probDensFunction.getClass().getAnnotation(ProbDensFunctionType.class).name();
+            initialData[iPosInitialData][PARAMETERS_COLUMN_INDEX] = getString(probDensFunction.getParameters());
+            initialData[iPosInitialData][NAME_COLUMN_INDEX] = uncertainValue.getName();
+        }
+        distributionTableModel = new DistributionTableModel(initialData, columnNames);
+        distributionTable = new JTable(distributionTableModel);
         // Model for the column "Distribution"
-        TableColumnModel columnModel = distributionsTable.getColumnModel ();
-        TableColumn column = columnModel.getColumn (indexTypePDF);
-        column.setCellEditor (new DefaultCellEditor (auxCombo));
-        columnModel.getColumn (0).setCellEditor (null);
+        TableColumnModel columnModel = distributionTable.getColumnModel();
+        TableColumn column = columnModel.getColumn(DISTRIBUTION_COLUMN_INDEX);
+        column.setCellEditor(new DefaultCellEditor(distributionTypesCombo));
+        columnModel.getColumn(0).setCellEditor(null);
+    }
+
+    private String getString(double[] parameters) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<parameters.length; ++i)
+        {
+            sb.append(parameters[i]);
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
     /**
-     * @param auxProjected Table potential which has no uncertain values. Its
-     *            values are used for creating the uncertain values
+     * @param projectedPotential
+     *            Table potential which has no uncertain values. Its values are
+     *            used for creating the uncertain values
      * @return An array of uncertain values
      */
-    private UncertainValue[] createExactUncertainValuesFrom (TablePotential auxProjected)
-    {
-        UncertainValue[] uncertainTable;
-        double[] tableProjected = auxProjected.getValues ();
-        uncertainTable = new UncertainValue[tableProjected.length];
-        for (int i = 0; i < tableProjected.length; i++)
-        {
-            uncertainTable[i] = new UncertainValue (tableProjected[i]);
+    private UncertainValue[] createExactUncertainValuesFromDouble(TablePotential projectedPotential) {
+        double[] tableProjected = projectedPotential.getValues();
+        UncertainValue[] uncertainTable = new UncertainValue[tableProjected.length];
+        for (int i = 0; i < tableProjected.length; i++) {
+            uncertainTable[i] = new UncertainValue(tableProjected[i]);
         }
         return uncertainTable;
     }
 
-    public static boolean hasUncertainValues (UncertainValue[] auxUncertainTable)
-    {
+    public static boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {
         boolean hasUncertainValues;
-        if ((auxUncertainTable == null) || (auxUncertainTable.length == 0))
-        {
+        if ((auxUncertainTable == null) || (auxUncertainTable.length == 0)) {
             hasUncertainValues = false;
-        }
-        else
-        {
+        } else {
             hasUncertainValues = false;
-            for (int i = 0; (i < auxUncertainTable.length) && !hasUncertainValues; i++)
-            {
+            for (int i = 0; (i < auxUncertainTable.length) && !hasUncertainValues; i++) {
                 hasUncertainValues = (auxUncertainTable[i] != null);
             }
         }
         return hasUncertainValues;
     }
 
-    private void fillConfigurationTableModel (EvidenceCase configuration)
-    {
-        int numFindings;
-        String[] namesColumnsConfigurationTable = new String[2];
-        // String colPrefix =
-        // "UncertainValuesDialog.ConfigurationTable.Columns.";
-        // namesColumnsConfigurationTable[0]=dialogStringResource.getString(colPrefix+"Variable.Label");
-        // namesColumnsConfigurationTable[1]=dialogStringResource.getString(colPrefix+"State.Label");
-        namesColumnsConfigurationTable[0] = "Variable";
-        namesColumnsConfigurationTable[1] = "State";
-        numFindings = configuration.getNumberOfFindings ();
-        String[][] initialData = new String[numFindings][2];
-        List<Finding> findings = configuration.getFindings ();
-        int lastIndexFindings;
-        lastIndexFindings = numFindings - 1;
-        for (int i = 0; i < numFindings; i++)
-        {
-            int positionInInitialData = lastIndexFindings - i;
-            Finding auxFinding = findings.get (i);
-            Variable variable = auxFinding.getVariable ();
-            initialData[positionInInitialData][0] = variable.getName ();
-            initialData[positionInInitialData][1] = variable.getStateName (auxFinding.getStateIndex ());
+    private String getConfigurationDescription(Variable variable,
+            boolean isChanceVariable,
+            EvidenceCase configuration) {
+        StringBuilder sb = new StringBuilder();
+        sb.append((isChanceVariable) ? "P" : "U");
+        sb.append("(");
+        sb.append(variable.getName());
+        sb.append(" | ");
+        List<Finding> findings = configuration.getFindings();
+        for (Finding finding : findings) {
+            sb.append(finding.getVariable().getName());
+            sb.append(" = '");
+            sb.append(finding.getState());
+            sb.append("', ");
         }
-        configurationTableModel = new ConfigurationTableModel (initialData,
-                                                               namesColumnsConfigurationTable);
+        if (sb.charAt(sb.length() - 2) == ',') {
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     /**
      * This method initializes this instance.
      */
-    private void initialize ()
-    {
-        // setSize(550, 310);
-        setName ("UncertainValuesDialog");
-        // setTitle(dialogStringResource.getString("UncertainValuesDialog.Title.Label")+variable);
-        setTitle ("Title" + variable);
-        iconLoader = new IconLoader ();
-        configureButtonsPanel ();
-        setDefaultButton (getJButtonOK ());
-        quitIconsOfButtons ();
-        this.getJButtonOK ().setText ("Accept");
-        this.getJButtonCancel ().setText ("Cancel");
-        // this.jButtonRemove.setText("Remove");
-        pack ();
+    private void initialize() {
+        setName("UncertainValuesDialog");
+        iconLoader = new IconLoader();
+        configureButtonsPanel();
+        setDefaultButton(getJButtonOK());
+        quitIconsOfButtons();
+        pack();
     }
 
     /**
      * This method carries out the actions when the user press the Ok button
      * before hide the dialog.
+     * 
      * @return true if the dialog box can be closed.
      */
-    protected boolean doOkClickBeforeHide ()
-    {
-        ArrayList<UncertainValue> arrayUncertain = readDataFromDistributionModel ();
-        boolean verify;
-        verify = doesVerifyLocalConstraintsUncertainty (arrayUncertain);
-        if (verify)
-        {
-            if (isChanceVariable)
-            {
-                if (!doVerifyGlobalConstraintUncertainty (arrayUncertain))
-                {
+    protected boolean doOkClickBeforeHide() {
+        List<UncertainValue> uncertainValues = readDataFromTable();
+        boolean verify = verifyLocalConstraintsUncertainty(uncertainValues);
+        if (verify) {
+            if (isChanceVariable) {
+                if (!verifyGlobalConstraintUncertainty(uncertainValues)) {
                     // System.out.println("Distribution "+typeDistrib+" does not verify the constraints associated to its domain.");
                     verify = false;
                 }
             }
         }
-        if (verify)
-        {
-            uncertainColumn = reverse (arrayUncertain);
-            valuesColumn = calculateReferenceValues ();
+        if (verify) {
+            uncertainColumn = reverse(uncertainValues);
+            valuesColumn = calculateReferenceValues();
         }
         return verify;
     };
 
-    private List<UncertainValue> reverse (List<UncertainValue> array)
-    {
-        List<UncertainValue> rev;
-        rev = new ArrayList<UncertainValue> ();
-        for (int i = array.size () - 1; i >= 0; i--)
-        {
-            rev.add (array.get (i));
+    private List<UncertainValue> reverse(List<UncertainValue> list) {
+        List<UncertainValue> rev = new ArrayList<UncertainValue>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            rev.add(list.get(i));
         }
         return rev;
     }
 
-    private List<Double> calculateReferenceValues ()
-    {
-        double[] refValues;
-        List<UncertainValue> otherUncertain;
-        List<Integer> indexComp, indexDir, indexOther;
-        indexComp = new ArrayList<Integer> ();
-        indexDir = new ArrayList<Integer> ();
-        indexOther = new ArrayList<Integer> ();
-        refValues = new double[uncertainColumn.size ()];
-        ComplementFamily comp = (ComplementFamily) extractFamilyDistribution (uncertainColumn,
-                                                                              ProbDensityFunctionType.COMPLEMENT);
-        DirichletFamily dir = (DirichletFamily) extractFamilyDistribution (uncertainColumn,
-                                                                           ProbDensityFunctionType.DIRICHLET);
-        int sizeUncertain = uncertainColumn.size ();
-        otherUncertain = new ArrayList<UncertainValue> ();
-        for (int i = 0; i < sizeUncertain; i++)
-        {
-            UncertainValue aux = uncertainColumn.get (i);
-            ProbDensityFunctionType type = aux.getProbDensityFunction ().getType ();
-            switch (type)
-            {
-                case COMPLEMENT :
-                    indexComp.add (i);
-                    break;
-                case DIRICHLET :
-                    indexDir.add (i);
-                    break;
-                default :
-                    indexOther.add (i);
+    private List<Double> calculateReferenceValues() {
+        List<Integer> complementIndexes = new ArrayList<Integer>();
+        List<Integer> dirichletIndexes = new ArrayList<Integer>();
+        List<Integer> otherIndexes = new ArrayList<Integer>();
+        double[] refValues = new double[uncertainColumn.size()];
+        ComplementFamily comp = new ComplementFamily(uncertainColumn);
+        DirichletFamily dir = new DirichletFamily(uncertainColumn);
+        List<UncertainValue> otherUncertain = new ArrayList<UncertainValue>();
+        for (int i = 0; i < uncertainColumn.size(); i++) {
+            UncertainValue uncertainValue = uncertainColumn.get(i);
+            if (uncertainValue.getProbDensFunction() instanceof ComplementFunction) {
+                complementIndexes.add(i);
+            } else if (uncertainValue.getProbDensFunction() instanceof DirichletFunction) {
+                dirichletIndexes.add(i);
+            } else {
+                otherIndexes.add(i);
             }
         }
-        otherUncertain = getElementsFromIndexes (uncertainColumn, indexOther);
+        otherUncertain = getElementsFromIndexes(uncertainColumn, otherIndexes);
         // Process other
-        FamilyDistribution other = new FamilyDistribution (otherUncertain);
-        double[] meanOther = other.getMean ();
-        placeInArray (refValues, indexOther, meanOther);
+        FamilyDistribution other = new FamilyDistribution(otherUncertain);
+        double[] meanOther = other.getMean();
+        placeInArray(refValues, otherIndexes, meanOther);
         // Process Dirichlet
-        double[] meanDir = dir.getMean ();
-        placeInArray (refValues, indexDir, meanDir);
+        double[] meanDir = dir.getMean();
+        placeInArray(refValues, dirichletIndexes, meanDir);
         // Process complements
-        double massForComp = 1.0 - (Tools.sum (meanOther) + Tools.sum (meanDir));
-        comp.setProbMass (massForComp);
-        double[] meanComp = comp.getMean ();
-        placeInArray (refValues, indexComp, meanComp);
-        ArrayList<Double> ref;
-        ref = new ArrayList<Double> ();
-        for (int i = 0; i < refValues.length; i++)
-        {
-            ref.add (refValues[i]);
+        double massForComp = 1.0 - (Tools.sum(meanOther) + Tools.sum(meanDir));
+        comp.setProbMass(massForComp);
+        double[] meanComp = comp.getMean();
+        placeInArray(refValues, complementIndexes, meanComp);
+        List<Double> ref = new ArrayList<Double>();
+        for (int i = 0; i < refValues.length; i++) {
+            ref.add(refValues[i]);
         }
         return ref;
     }
 
-    private static void placeInArray (double[] refValue, List<Integer> indexes, double[] x)
-    {
-        for (int i = 0; i < indexes.size (); i++)
-        {
-            refValue[indexes.get (i)] = x[i];
+    private static void placeInArray(double[] refValue, List<Integer> indexes, double[] x) {
+        for (int i = 0; i < indexes.size(); i++) {
+            refValue[indexes.get(i)] = x[i];
         }
     }
 
-    private static List<UncertainValue> getElementsFromIndexes (List<UncertainValue> column,
-                                                                List<Integer> index)
-    {
-        List<UncertainValue> array;
-        array = new ArrayList<UncertainValue> ();
-        for (Integer aux : index)
-        {
-            array.add (column.get (aux));
+    private static List<UncertainValue> getElementsFromIndexes(List<UncertainValue> column,
+            List<Integer> index) {
+        List<UncertainValue> list = new ArrayList<UncertainValue>();
+        for (Integer aux : index) {
+            list.add(column.get(aux));
         }
-        return array;
+        return list;
     }
 
-    private FamilyDistribution extractFamilyDistribution (List<UncertainValue> uncertainColumn,
-                                                          ProbDensityFunctionType type)
-    {
-        List<UncertainValue> siblings = getUncertainValuesOfType (uncertainColumn, type);
-        return FamilyDistribution.constructNewFamilyDistributions (siblings, type);
-    }
-
-    private boolean doesVerifyLocalConstraintsUncertainty (List<UncertainValue> arrayUncertain)
-    {
-        boolean verify = true;
+    private boolean verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) {
+        boolean comply = true;
         // Verify individual constraints for each Uncertain Value
-        for (int i = 0; i < arrayUncertain.size () && verify; i++)
-        {
-            UncertainValue auxUncertain = arrayUncertain.get (i);
-            String typeDistrib = auxUncertain.getProbDensityFunction ().getType ().toString ();
-            if (!auxUncertain.isCorrectArgumentsInProbDensFunction ())
-            {
-                try
-                {
-                    String message = "Incorrect number of parameters in distribution "
-                                     + typeDistrib.toString ();
-                    throw new ExceptionUncertainValuesDialogEdition (message);
+        for (int i = 0; i < uncertainvalues.size() && comply; i++) {
+            UncertainValue uncertainValue = uncertainvalues.get(i);
+            String distributionName = uncertainValue.getProbDensFunction().getClass().getAnnotation(ProbDensFunctionType.class).name();
+
+            if (!uncertainValue.verifyParametersDomain(isChanceVariable)) {
+                try {
+                    String message = "Distribution "
+                            + distributionName
+                            + " does not comply with the constraints associated to its domain.";
+                    throw new ExceptionUncertainValuesDialogEdition(message);
+                } catch (ExceptionUncertainValuesDialogEdition e) {
                 }
-                catch (ExceptionUncertainValuesDialogEdition e)
-                {
-                }
-                verify = false;
+                comply = false;
             }
-            else
-            {
-                if (!auxUncertain.verifyParametersDomain (isChanceVariable))
-                {
-                    try
-                    {
-                        String message = "Distribution "
-                                         + typeDistrib
-                                         + " does not verify the constraints associated to its domain.";
-                        throw new ExceptionUncertainValuesDialogEdition (message);
-                    }
-                    catch (ExceptionUncertainValuesDialogEdition e)
-                    {
-                    }
-                    verify = false;
-                }
-            }
+
         }
-        return verify;
+        return comply;
     }
 
-    private boolean doVerifyGlobalConstraintUncertainty (ArrayList<UncertainValue> arrayUncertain)
-    {
-        FamilyDistribution family = new FamilyDistribution (arrayUncertain);
-        return (doVerifyRule1 (family) && doVerifyRule2 (family) && doVerifyRule3 (family));
+    private boolean verifyGlobalConstraintUncertainty(List<UncertainValue> uncertainValues) {
+        FamilyDistribution family = new FamilyDistribution(uncertainValues);
+        return (doVerifyRule1(family) && doVerifyRule2(family) && doVerifyRule3(family));
     }
 
     /*
@@ -570,80 +471,61 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
      * of all the distributions (different from Complement) cannot be greater
      * than 1.
      */
-    private boolean doVerifyRule1 (FamilyDistribution family)
-    {
-        int totalSizeFamily;
-        boolean verify;
-        int sizeExact;
-        List<UncertainValue> exactRangeOrUncertain;
-        List<ProbDensityFunctionType> rangeOrTriangTypes;
-        rangeOrTriangTypes = new ArrayList<ProbDensityFunctionType> ();
-        rangeOrTriangTypes.add (ProbDensityFunctionType.RANGE);
-        rangeOrTriangTypes.add (ProbDensityFunctionType.TRIANGULAR);
-        List<UncertainValue> uncertainFamily = family.getFamily ();
-        List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                        ProbDensityFunctionType.EXACT);
-        totalSizeFamily = uncertainFamily.size ();
-        List<UncertainValue> rangeOrTriangUncertain = getUncertainValuesOfTypes (uncertainFamily,
-                                                                                 rangeOrTriangTypes);
-        int sizeRangeOrTriang = rangeOrTriangUncertain.size ();
-        sizeExact = exactUncertain.size ();
-        if ((sizeRangeOrTriang > 0) && thereAreExactValuesGreaterThanZero (exactUncertain))
-        {
-            int numComplement = getUncertainValuesOfType (uncertainFamily,
-                                                          ProbDensityFunctionType.COMPLEMENT).size ();
-            exactRangeOrUncertain = new ArrayList<UncertainValue> (rangeOrTriangUncertain);
-            exactRangeOrUncertain.addAll (exactUncertain);
+    private boolean doVerifyRule1(FamilyDistribution family) {
+        boolean verify = false;
+        List<UncertainValue> exactRangeOrUncertain = null;
+        List<Class<? extends ProbDensFunction>> rangeOrTriangTypes = new ArrayList<>();
+        rangeOrTriangTypes.add(RangeFunction.class);
+        rangeOrTriangTypes.add(TriangularFunction.class);
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily,
+                ExactFunction.class);
+        int totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> rangeOrTriangUncertain = getUncertainValuesOfClasses(uncertainFamily,
+                rangeOrTriangTypes);
+        int sizeRangeOrTriang = rangeOrTriangUncertain.size();
+        int sizeExact = exactUncertain.size();
+        if ((sizeRangeOrTriang > 0) && thereAreExactValuesGreaterThanZero(exactUncertain)) {
+            int numComplement = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class).size();
+            exactRangeOrUncertain = new ArrayList<UncertainValue>(rangeOrTriangUncertain);
+            exactRangeOrUncertain.addAll(exactUncertain);
             verify = ((numComplement > 0) && (sizeExact + sizeRangeOrTriang + numComplement == totalSizeFamily))
-                     && (Tools.sum (new FamilyDistribution (exactRangeOrUncertain).getMaximum ()) <= 1.0);
-        }
-        else
-        {
+                    && (Tools.sum(new FamilyDistribution(exactRangeOrUncertain).getMaximum()) <= 1.0);
+        } else {
             verify = true;
         }
-        if (!verify)
-        {
-            try
-            {
+        if (!verify) {
+            try {
                 String message = "Rule 1 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameteres.";
-                throw new ExceptionUncertainValuesDialogEdition (message);
-            }
-            catch (ExceptionUncertainValuesDialogEdition e)
-            {
+                throw new ExceptionUncertainValuesDialogEdition(message);
+            } catch (ExceptionUncertainValuesDialogEdition e) {
             }
         }
         return verify;
     }
 
-    private static List<UncertainValue> getUncertainValuesOfTypes (List<UncertainValue> arrayUncertain,
-                                                                   List<ProbDensityFunctionType> types)
-    {
-        List<UncertainValue> selected = new ArrayList<UncertainValue> ();
-        for (UncertainValue aux : arrayUncertain)
-        {
-            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
-            boolean isInTypes = false;
-            for (int i = 0; (i < types.size ()) && !isInTypes; i++)
-            {
-                isInTypes = (auxType == types.get (i));
+    private static List<UncertainValue> getUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
+            List<Class<? extends ProbDensFunction>> classes) {
+        List<UncertainValue> filtered = new ArrayList<UncertainValue>();
+        for (UncertainValue aux : uncertainValues) {
+            boolean isInClasses = false;
+            for (int i = 0; (i < classes.size()) && !isInClasses; i++) {
+                isInClasses = classes.get(i).isAssignableFrom(aux.getProbDensFunction().getClass());
             }
-            if (isInTypes)
-            {
-                selected.add (aux);
+            if (isInClasses) {
+                filtered.add(aux);
             }
         }
-        return selected;
+        return filtered;
     }
 
-    private static boolean thereAreExactValuesGreaterThanZero (List<UncertainValue> arrayUncertain)
-    {
+    private static boolean thereAreExactValuesGreaterThanZero(List<UncertainValue> arrayUncertain) {
         boolean thereAre = false;
-        for (int i = 0; (i < arrayUncertain.size ()) && !thereAre; i++)
-        {
-            UncertainValue aux = arrayUncertain.get (i);
-            ProbDensFunction probDensityFunction = aux.getProbDensityFunction ();
-            thereAre = (probDensityFunction.getType () == ProbDensityFunctionType.EXACT)
-                       && probDensityFunction.getMean () > 0;
+        for (int i = 0; (i < arrayUncertain.size()) && !thereAre; i++) {
+            UncertainValue aux = arrayUncertain.get(i);
+            ProbDensFunction probDensityFunction = aux.getProbDensFunction();
+            thereAre = (probDensityFunction instanceof ExactFunction)
+                    && probDensityFunction.getMean() > 0;
         }
         return thereAre;
     }
@@ -653,137 +535,85 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
      * @param types
      * @return
      */
-    private static int[] getIndexesUncertainValuesOfTypes (List<UncertainValue> uncertainValues,
-                                                           List<ProbDensityFunctionType> types)
-    {
-        List<Integer> indexes = new ArrayList<Integer> ();
-        for (int i = 0; i < uncertainValues.size (); i++)
-        {
-            UncertainValue aux = uncertainValues.get (i);
-            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
+    private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
+            List<Class<? extends ProbDensFunction>> types) {
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (int i = 0; i < uncertainValues.size(); i++) {
+            UncertainValue uncertainValue = uncertainValues.get(i);
+            ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
             boolean isInTypes = false;
-            for (int j = 0; (j < types.size ()) && !isInTypes; j++)
-            {
-                isInTypes = (auxType == types.get (j));
+            for (int j = 0; (j < types.size()) && !isInTypes; j++) {
+                isInTypes = types.get(j).isAssignableFrom(probDensFunction.getClass());
             }
-            if (isInTypes)
-            {
-                indexes.add (i);
+            if (isInTypes) {
+                indexes.add(i);
             }
         }
-        int numIndexesOfTypes = indexes.size ();
+        int numIndexesOfTypes = indexes.size();
         int[] intIndexes = new int[numIndexesOfTypes];
-        for (int i = 0; i < numIndexesOfTypes; i++)
-        {
-            intIndexes[i] = indexes.get (i);
+        for (int i = 0; i < numIndexesOfTypes; i++) {
+            intIndexes[i] = indexes.get(i);
         }
         return intIndexes;
     }
 
-    public static int[] getIndexesUncertainValuesNotInTypes (List<UncertainValue> arrayUncertain,
-                                                             List<ProbDensityFunctionType> types)
-    {
-        List<Integer> indexes = new ArrayList<Integer> ();
-        for (int i = 0; i < arrayUncertain.size (); i++)
-        {
-            UncertainValue aux = arrayUncertain.get (i);
-            ProbDensityFunctionType auxType = aux.getProbDensityFunction ().getType ();
-            boolean notInTypes = true;
-            for (int j = 0; (j < types.size ()) && notInTypes; j++)
-            {
-                notInTypes = !(auxType == types.get (j));
-            }
-            if (notInTypes)
-            {
-                indexes.add (i);
-            }
-        }
-        int numIndexesOfTypes = indexes.size ();
-        int[] intIndexes = new int[numIndexesOfTypes];
-        for (int i = 0; i < numIndexesOfTypes; i++)
-        {
-            intIndexes[i] = indexes.get (i);
-        }
-        return intIndexes;
+    public static int[] getIndexesUncertainValuesOfClass(List<UncertainValue> uncertainValues,
+            Class<? extends ProbDensFunction> functionClass) {
+        List<Class<? extends ProbDensFunction>> classes = new ArrayList<>();
+        classes.add(functionClass);
+        return getIndexesUncertainValuesOfClasses(uncertainValues, classes);
     }
 
-    public static int[] getIndexesUncertainValuesOfType (List<UncertainValue> uncertainValues,
-                                                         ProbDensityFunctionType type)
-    {
-        List<ProbDensityFunctionType> aux = new ArrayList<ProbDensityFunctionType> ();
-        aux.add (type);
-        return getIndexesUncertainValuesOfTypes (uncertainValues, aux);
-    }
-
-    private static List<UncertainValue> getUncertainValuesOfType (List<UncertainValue> arrayUncertain,
-                                                                  ProbDensityFunctionType type)
-    {
-        ArrayList<ProbDensityFunctionType> types;
-        types = new ArrayList<ProbDensityFunctionType> ();
-        types.add (type);
-        return getUncertainValuesOfTypes (arrayUncertain, types);
+    private static List<UncertainValue> getUncertainValuesOfClass(List<UncertainValue> arrayUncertain,
+            Class<? extends ProbDensFunction> type) {
+        List<Class<? extends ProbDensFunction>> types = new ArrayList<>();
+        types.add(type);
+        return getUncertainValuesOfClasses(arrayUncertain, types);
     }
 
     @SuppressWarnings("unused")
-    private boolean doVerifyRule4 (FamilyDistribution family)
-    {
+    private boolean doVerifyRule4(FamilyDistribution family) {
         boolean verify;
-        List<UncertainValue> uncertainFamily = family.getFamily ();
-        int totalSizeFamily = uncertainFamily.size ();
-        List<UncertainValue> compUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                       ProbDensityFunctionType.COMPLEMENT);
-        verify = (totalSizeFamily != compUncertain.size ());
-        if (!verify)
-        {
-            try
-            {
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        int totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily,
+                ComplementFunction.class);
+        verify = (totalSizeFamily != compUncertain.size());
+        if (!verify) {
+            try {
                 String message = "Rule 4 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
-                throw new ExceptionUncertainValuesDialogEdition (message);
-            }
-            catch (ExceptionUncertainValuesDialogEdition e)
-            {
+                throw new ExceptionUncertainValuesDialogEdition(message);
+            } catch (ExceptionUncertainValuesDialogEdition e) {
             }
         }
         return verify;
     }
 
-    private boolean doVerifyRule3 (FamilyDistribution family)
-    {
+    private boolean doVerifyRule3(FamilyDistribution family) {
         int totalSizeFamily;
         boolean verify;
-        List<UncertainValue> uncertainFamily = family.getFamily ();
-        totalSizeFamily = uncertainFamily.size ();
-        List<UncertainValue> dirUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                      ProbDensityFunctionType.DIRICHLET);
-        int numDirichlet = dirUncertain.size ();
-        if (numDirichlet > 0)
-        {
-            if (numDirichlet > 1)
-            {
-                List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                                ProbDensityFunctionType.EXACT);
-                int numExact = exactUncertain.size ();
-                verify = ((numExact + numDirichlet == totalSizeFamily) && areAllZero (new FamilyDistribution (
-                                                                                                              exactUncertain).getMean ()));
-            }
-            else
-            {
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> dirUncertain = getUncertainValuesOfClass(uncertainFamily,
+                DirichletFunction.class);
+        int numDirichlet = dirUncertain.size();
+        if (numDirichlet > 0) {
+            if (numDirichlet > 1) {
+                List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily,
+                        ExactFunction.class);
+                int numExact = exactUncertain.size();
+                verify = ((numExact + numDirichlet == totalSizeFamily) && areAllZero(new FamilyDistribution(exactUncertain).getMean()));
+            } else {
                 verify = false;
             }
-        }
-        else
-        {
+        } else {
             verify = true;
         }
-        if (!verify)
-        {
-            try
-            {
+        if (!verify) {
+            try {
                 String message = "Rule 3 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
-                throw new ExceptionUncertainValuesDialogEdition (message);
-            }
-            catch (ExceptionUncertainValuesDialogEdition e)
-            {
+                throw new ExceptionUncertainValuesDialogEdition(message);
+            } catch (ExceptionUncertainValuesDialogEdition e) {
             }
         }
         return verify;
@@ -794,145 +624,110 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog
      * Exact, with v = 0, or Complement; • at least one of the others must be
      * Complement.
      */
-    private boolean doVerifyRule2 (FamilyDistribution family)
-    {
+    private boolean doVerifyRule2(FamilyDistribution family) {
         int totalSizeFamily;
         boolean verify;
-        List<UncertainValue> uncertainFamily = family.getFamily ();
-        totalSizeFamily = uncertainFamily.size ();
-        List<UncertainValue> betaUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                       ProbDensityFunctionType.BETA);
-        int numBeta = betaUncertain.size ();
-        if (numBeta > 0)
-        {
-            if (numBeta == 1)
-            {
-                List<UncertainValue> exactUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                                ProbDensityFunctionType.EXACT);
-                List<UncertainValue> compUncertain = getUncertainValuesOfType (uncertainFamily,
-                                                                               ProbDensityFunctionType.COMPLEMENT);
-                int numExact = exactUncertain.size ();
-                int numComp = compUncertain.size ();
+        List<UncertainValue> uncertainFamily = family.getFamily();
+        totalSizeFamily = uncertainFamily.size();
+        List<UncertainValue> betaUncertain = getUncertainValuesOfClass(uncertainFamily,
+                BetaFunction.class);
+        int numBeta = betaUncertain.size();
+        if (numBeta > 0) {
+            if (numBeta == 1) {
+                List<UncertainValue> exactUncertain = getUncertainValuesOfClass(uncertainFamily,
+                        ExactFunction.class);
+                List<UncertainValue> compUncertain = getUncertainValuesOfClass(uncertainFamily,
+                        ComplementFunction.class);
+                int numExact = exactUncertain.size();
+                int numComp = compUncertain.size();
                 verify = ((numExact + numComp + 1 == totalSizeFamily)
-                          && areAllZero (new FamilyDistribution (exactUncertain).getMean ()) && (numComp >= 1));
-            }
-            else
-            {
+                        && areAllZero(new FamilyDistribution(exactUncertain).getMean()) && (numComp >= 1));
+            } else {
                 verify = false;
             }
-        }
-        else
-        {
+        } else {
             verify = true;
         }
-        if (!verify)
-        {
-            try
-            {
+        if (!verify) {
+            try {
                 String message = "Rule 2 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
-                throw new ExceptionUncertainValuesDialogEdition (message);
-            }
-            catch (ExceptionUncertainValuesDialogEdition e)
-            {
+                throw new ExceptionUncertainValuesDialogEdition(message);
+            } catch (ExceptionUncertainValuesDialogEdition e) {
             }
         }
         return verify;
     }
 
-    private boolean areAllZero (double[] x)
-    {
+    private boolean areAllZero(double[] x) {
         boolean allZero;
         allZero = true;
-        for (int i = 0; (i < x.length) && allZero; i++)
-        {
+        for (int i = 0; (i < x.length) && allZero; i++) {
             allZero = x[i] == 0.0;
         }
         return allZero;
     }
 
-    public boolean isChanceVariable ()
-    {
+    public boolean isChanceVariable() {
         return isChanceVariable;
     }
 
-    private ArrayList<UncertainValue> readDataFromDistributionModel ()
-    {
-        Vector<?> data = distributionsTableModel.getDataVector ();
-        int numRows = data.size ();
-        ArrayList<UncertainValue> dataUncertain = new ArrayList<UncertainValue> ();
-        for (int i = 0; i < numRows; i++)
-        {
-            Vector<?> row = (Vector<?>) data.get (i);
-            String strType = (String) row.get (1);
-            ProbDensityFunctionType auxType = ProbDensityFunctionType.valueEnumOf (strType);
-            UncertainValue aux = new UncertainValue (auxType, (String) (row.get (2)),
-                                                     (String) (row.get (3)));
-            dataUncertain.add (aux);
+    private List<UncertainValue> readDataFromTable() {
+        Vector<?> data = distributionTableModel.getDataVector();
+        int numRows = data.size();
+        List<UncertainValue> uncertainValues = new ArrayList<UncertainValue>();
+        ProbDensFunctionManager distributionManager = ProbDensFunctionManager.getUniqueInstance();
+        for (int i = 0; i < numRows; i++) {
+            Vector<?> row = (Vector<?>) data.get(i);
+            String distributionType = row.get(DISTRIBUTION_COLUMN_INDEX).toString();
+            String[] parameters = row.get(PARAMETERS_COLUMN_INDEX).toString().split(" ");
+            double[] parameterArray = new double[parameters.length];
+            for (int j = 0; j < parameters.length; ++j) {
+                parameterArray[j] = Double.parseDouble(parameters[j]);
+            }
+            String name = (String) row.get(NAME_COLUMN_INDEX);
+            ProbDensFunction probDensFunction = distributionManager.newInstance(distributionType,
+                    parameterArray);
+            UncertainValue uncertainValue = new UncertainValue(probDensFunction, name);
+            uncertainValues.add(uncertainValue);
         }
-        return dataUncertain;
+        return uncertainValues;
     }
 
-    private void quitIconsOfButtons ()
-    {
-        this.getJButtonOK ().setIcon (null);
-        this.getJButtonCancel ().setIcon (null);
+    private void quitIconsOfButtons() {
+        this.getJButtonOK().setIcon(null);
+        this.getJButtonCancel().setIcon(null);
     }
 
     /**
      * Sets up the panel where the buttons of the buttons panel will be appear.
      */
-    private void configureButtonsPanel ()
-    {
-        addButtonToButtonsPanel (getJButtonOK ());
+    private void configureButtonsPanel() {
+        addButtonToButtonsPanel(getJButtonOK());
         // addButtonToButtonsPanel(getJButtonRemove());
-        addButtonToButtonsPanel (getJButtonCancel ());
+        addButtonToButtonsPanel(getJButtonCancel());
     }
+
     /**
-     * This method initializes jButtonRemove.
-     * @return a new Cancel button.
+     * This class is used for painting and coloring the table and the headers
      */
-    /*
-     * private JButton getJButtonRemove() { if (jButtonRemove == null) {
-     * jButtonRemove = new JButton(); jButtonRemove.setName("jButtonCancel");
-     * jButtonRemove.setText(stringResource
-     * .getString("OKCancelHorizontalDialog.jButtonCancel.Text"));
-     * jButtonRemove.setMnemonic(stringResource.getString(
-     * "OKCancelHorizontalDialog.jButtonCancel.Mnemonic").charAt(0));
-     * setCancelButton(jButtonRemove); jButtonRemove.addActionListener(new
-     * ActionListener() { public void actionPerformed(ActionEvent e) {
-     * doCancelClickBeforeHide(); selectedButton = CANCEL_BUTTON;
-     * setVisible(false); dispose(); } }); } return jButtonRemove; }
-     */
-    /*
-     * public readDataFromDistributionsTable(){ }
-     */
-    /**
-     * This class is used for painting and colouring the table and the headers
-     */
-    class RendererConfigurationTable extends DefaultTableCellRenderer
-    {
-        /**
-			 * 
-			 */
+    @SuppressWarnings("unused")
+    private class RendererConfigurationTable extends DefaultTableCellRenderer {
+
         private static final long serialVersionUID = 1L;
 
-        public Component getTableCellRendererComponent (JTable table,
-                                                        Object value,
-                                                        boolean isSelected,
-                                                        boolean hasFocus,
-                                                        int row,
-                                                        int column)
-        {
-            if (row == 1)
-            {
-                setBackground (Color.gray);
-            }
-            else
-            {
-                setBackground (Color.white);
-            }
-            return super.getTableCellRendererComponent (table, value, isSelected, hasFocus, row,
-                                                        column);
+        public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            setBackground((row == 1)? Color.gray : Color.white);
+            return super.getTableCellRendererComponent(table,
+                    value,
+                    isSelected,
+                    hasFocus,
+                    row,
+                    column);
         }
     }
 }

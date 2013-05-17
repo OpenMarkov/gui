@@ -11,7 +11,6 @@ package org.openmarkov.core.gui.dialog.common;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import org.openmarkov.core.model.network.ProbNode;
 
@@ -23,7 +22,6 @@ public abstract class PotentialPanel extends JPanel
 	 */
 	private boolean readOnly;
 	private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment;
-	private JTextArea jTextAreaLabelNodeDefinitionComment;
 
     /**
      * Fill the panel with the data from the node

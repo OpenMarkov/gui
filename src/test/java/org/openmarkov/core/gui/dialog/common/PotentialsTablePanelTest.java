@@ -31,14 +31,11 @@ import org.openmarkov.core.model.network.Variable;
  */
 public class PotentialsTablePanelTest {
 
-	PotentialsTablePanel panel = null;
-
-
 	@Before
 	public void setUp() throws Exception {
 		ProbNet probNet = new ProbNet();
 		
-		panel = new PotentialsTablePanel(probNet.addVariable(
+		PotentialsTablePanel panel = new PotentialsTablePanel(probNet.addVariable(
 				new Variable("A", 2), NodeType.CHANCE));
 		
 	}

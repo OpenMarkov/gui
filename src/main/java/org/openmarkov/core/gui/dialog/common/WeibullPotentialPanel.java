@@ -85,6 +85,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         add(northPanel, BorderLayout.NORTH);
         coefficientTable = new JTable();
         JScrollPane tablePanel = new JScrollPane(coefficientTable);
+        coefficientTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         add(tablePanel, BorderLayout.CENTER);
     }
 

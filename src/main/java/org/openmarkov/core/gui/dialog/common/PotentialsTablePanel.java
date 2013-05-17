@@ -1223,21 +1223,8 @@ public class PotentialsTablePanel extends JPanel
     public void actionPerformed (ActionEvent e)
     {
         String actionCommand = e.getActionCommand ();
-        if (actionCommand.equals (ActionCommands.UNCERTAINTY_ASSIGN))
-        {
-            try
-            {
-                showUncertaintyDialog ();
-            }
-            catch (WrongCriterionException e1)
-            {
-                e1.printStackTrace ();
-                JOptionPane.showMessageDialog (this, stringDatabase.getString (e1.getMessage ()),
-                                               stringDatabase.getString (e1.getMessage ()),
-                                               JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        else if (actionCommand.equals (ActionCommands.UNCERTAINTY_EDIT))
+        if (actionCommand.equals (ActionCommands.UNCERTAINTY_ASSIGN)||
+                actionCommand.equals (ActionCommands.UNCERTAINTY_EDIT))
         {
             try
             {

@@ -158,13 +158,13 @@
   </Window>
   <Uncertainty>
     <Remove>
-      <Label value="Remove" />
+      <Label value="Remove uncertainty" />
     </Remove>
     <Edit>
-      <Label value="Edit" />
+      <Label value="Edit uncertainty" />
     </Edit>
     <Assign>
-      <Label value="Asign" />
+      <Label value="Assign uncertainty" />
     </Assign>
   </Uncertainty>
   <Inference>
