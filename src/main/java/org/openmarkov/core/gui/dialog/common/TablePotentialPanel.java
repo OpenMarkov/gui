@@ -172,7 +172,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(probNode);
         valuesTable.setData(probNode);
         Object[][] tableData = null;
-        boolean[] uncertaintyInColumns = getUncertaintyInColumns(probNode);
+        boolean[] uncertaintyInColumns = null;
         String[] newColumns = null;
         if (probNode.getPotentials() != null) {
             tableData = convertListPotentialsToTableFormat(probNode);
@@ -186,6 +186,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                     firstEditableRow,
                     lastEditableRow,
                     probNode.getNodeType());
+            uncertaintyInColumns = getUncertaintyInColumns(probNode);
             setCellRenderers(uncertaintyInColumns);
             this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));
         } else {

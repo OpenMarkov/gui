@@ -79,7 +79,7 @@ public class NodePartitionedIntervalEditTest {
 
 		NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
 			new NodePartitionedIntervalEdit(node1, 
-					StateAction.MODIFYDELIMITERINTERVAL, 0, true);
+					StateAction.MODIFY_DELIMITER_INTERVAL, 0, true);
 		
         probNet.doEdit (nodePartitionedIntervalEdit);
 	}

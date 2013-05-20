@@ -44,8 +44,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		super(newColumns, noKeyData, newKeyPrefix, probNode);
 		super.getDownValueButton().setVisible(false);
 		super.getUpValueButton().setVisible(false);
-		super.getInfiniteNegativeDoubleButton().setVisible(false);
-		super.getInfinitePositiveDoubleButton().setVisible(false);
+		super.getNegativeInfinityButton().setVisible(false);
+		super.getPositiveInfinityButton().setVisible(false);
 		super.getStandardDomainButton().setVisible(false);
 	}
 
@@ -142,7 +142,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();
 		int numRows = ((DiscretizeTableModel) arg0.getSource()).getRowCount();
-		boolean lower = (column - 1 == lowerLimitSymbolColumnNum ? true : false);
+		boolean lower = (column - 1 == LOWER_BOUND_SYMBOL_COLUMN_INDEX ? true : false);
 		if (arg0.getType() == TableModelEvent.UPDATE
 				&& ((DiscretizeTableModel) arg0.getSource()).getValueAt(row,
 						column) instanceof Double) {
@@ -150,7 +150,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					.getValueAt(row, column);
 			if (lower) {
 				double upperLimit = (Double) ((DiscretizeTableModel) arg0
-						.getSource()).getValueAt(row, upperLimitValueColumnNum);
+						.getSource()).getValueAt(row, UPPER_BOUND_VALUE_COLUMN_INDEX);
 				if (upperLimit < newValue) {
 					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalInconsistent.Text.Label"),
@@ -161,7 +161,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 
 			} else {
 				double lowerLimit = (Double) ((DiscretizeTableModel) arg0
-						.getSource()).getValueAt(row, lowLimitValueColumnNum);
+						.getSource()).getValueAt(row, LOWER_BOUND_VALUE_COLUMN_INDEX);
 				if (lowerLimit > newValue) {
 					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalInconsistent.Text.Label"),
@@ -175,7 +175,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			if (lower && row > 0) {
 				double previousLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row - 1,
-						upperLimitValueColumnNum);
+						        UPPER_BOUND_VALUE_COLUMN_INDEX);
 				if (previousLimit > newValue)
 					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalOverlap.Text.Label"),
@@ -187,7 +187,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			if (!lower && row < numRows) {
 				double nextLimit = (Double) ((DiscretizeTableModel) arg0
 						.getSource()).getValueAt(row + 1,
-						lowLimitValueColumnNum);
+						LOWER_BOUND_VALUE_COLUMN_INDEX);
 				if (nextLimit < newValue)
 					JOptionPane.showMessageDialog(this, stringDatabase
 							.getString("IntervalOverlap.Text.Label"),
@@ -198,7 +198,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			}
 
 			RevelationIntervalEdit nodePartitionedIntervalEdit = new RevelationIntervalEdit(
-					link, StateAction.MODIFYVALUEINTERVAL, row, newValue, lower);
+					link, StateAction.MODIFY_VALUE_INTERVAL, row, newValue, lower);
 			try {
 				probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
 				setPartitionedInterval();
@@ -231,26 +231,26 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	 * @param column
 	 */
 	private void changeIntervalDiscretize(int fila, int column) {
-		if (column == lowerLimitSymbolColumnNum
-				|| column == upperLimitSymbolColumnNum) {
+		if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX
+				|| column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
 			boolean lower = false;
 			String aux = (String) valuesTable.getValueAt(fila, column);
 			RevelationIntervalEdit relatedIntervalEdit = null;
-			if (column == lowerLimitSymbolColumnNum) {
+			if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX) {
 				lower = true;
 				if (aux.equals("(")) {
 					valuesTable.setValueAt("[", fila, column);
 
 					if (fila > 0) {
 						Double lowerLimit = (Double) valuesTable.getValueAt(
-								fila, lowLimitValueColumnNum);
+								fila, LOWER_BOUND_VALUE_COLUMN_INDEX);
 						Double upperLimit = (Double) valuesTable.getValueAt(
-								fila - 1, upperLimitValueColumnNum);
+								fila - 1, UPPER_BOUND_VALUE_COLUMN_INDEX);
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt(")", fila - 1,
-									upperLimitSymbolColumnNum);
+									UPPER_BOUND_SYMBOL_COLUMN_INDEX);
 						relatedIntervalEdit = new RevelationIntervalEdit(link,
-								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
+								StateAction.MODIFY_DELIMITER_INTERVAL, fila - 1,
 								0, false);
 					}
 					// checkIntervalDiscretize("[", fila, columna,upMonotony);
@@ -258,32 +258,32 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					valuesTable.setValueAt("(", fila, column);
 					if (fila > 0) {
 						Double lowerLimit = (Double) valuesTable.getValueAt(
-								fila, lowLimitValueColumnNum);
+								fila, LOWER_BOUND_VALUE_COLUMN_INDEX);
 						Double upperLimit = (Double) valuesTable.getValueAt(
-								fila - 1, upperLimitValueColumnNum);
+								fila - 1, UPPER_BOUND_VALUE_COLUMN_INDEX);
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("]", fila - 1,
-									upperLimitSymbolColumnNum);
+									UPPER_BOUND_SYMBOL_COLUMN_INDEX);
 						relatedIntervalEdit = new RevelationIntervalEdit(link,
-								StateAction.MODIFYDELIMITERINTERVAL, fila - 1,
+								StateAction.MODIFY_DELIMITER_INTERVAL, fila - 1,
 								0, false);
 					}
 					// checkIntervalDiscretize("(", fila, columna,upMonotony);
 				}
 			}
-			if (column == upperLimitSymbolColumnNum) {
+			if (column == UPPER_BOUND_SYMBOL_COLUMN_INDEX) {
 				if (aux.equals(")")) {
 					valuesTable.setValueAt("]", fila, column);
 					if (fila < valuesTable.getRowCount() - 1) {
 						Double lowerLimit = (Double) valuesTable.getValueAt(
-								fila, upperLimitValueColumnNum);
+								fila, UPPER_BOUND_VALUE_COLUMN_INDEX);
 						Double upperLimit = (Double) valuesTable.getValueAt(
-								fila + 1, lowLimitValueColumnNum);
+								fila + 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("(", fila + 1,
-									lowerLimitSymbolColumnNum);
+									LOWER_BOUND_SYMBOL_COLUMN_INDEX);
 						relatedIntervalEdit = new RevelationIntervalEdit(link,
-								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
+								StateAction.MODIFY_DELIMITER_INTERVAL, fila + 1,
 								0, true);
 					}
 					// checkIntervalDiscretize("]", fila, columna,upMonotony);
@@ -291,14 +291,14 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 					valuesTable.setValueAt(")", fila, column);
 					if (fila < valuesTable.getRowCount() - 1) {
 						Double lowerLimit = (Double) valuesTable.getValueAt(
-								fila, upperLimitValueColumnNum);
+								fila, UPPER_BOUND_VALUE_COLUMN_INDEX);
 						Double upperLimit = (Double) valuesTable.getValueAt(
-								fila + 1, lowLimitValueColumnNum);
+								fila + 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
 						if (lowerLimit.equals(upperLimit))
 							valuesTable.setValueAt("[", fila + 1,
-									lowerLimitSymbolColumnNum);
+									LOWER_BOUND_SYMBOL_COLUMN_INDEX);
 						relatedIntervalEdit = new RevelationIntervalEdit(link,
-								StateAction.MODIFYDELIMITERINTERVAL, fila + 1,
+								StateAction.MODIFY_DELIMITER_INTERVAL, fila + 1,
 								0, true);
 					}
 					// checkIntervalDiscretize(")", fila, columna,upMonotony);
@@ -306,7 +306,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			}
 
 			RevelationIntervalEdit intervalEdit = new RevelationIntervalEdit(
-					link, StateAction.MODIFYDELIMITERINTERVAL, fila, 0, lower);
+					link, StateAction.MODIFY_DELIMITER_INTERVAL, fila, 0, lower);
 			try {
 				probNode.getProbNet().doEdit(intervalEdit);
 				if (relatedIntervalEdit != null) {
@@ -323,8 +323,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 						JOptionPane.ERROR_MESSAGE);
 
 			}
-		} else if (column == lowLimitValueColumnNum
-				|| column == upperLimitValueColumnNum) {
+		} else if (column == LOWER_BOUND_VALUE_COLUMN_INDEX
+				|| column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
 			double j = (Double) valuesTable.getValueAt(fila, column);
 			System.out.println(j);
 			System.out.println("DiscretizeTablePanel.changeIntervalDiscretize");

@@ -126,7 +126,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		public void doEdit() throws DoEditException {
 						
 			switch (stateAction){
-			case MODIFYDELIMITERINTERVAL:
+			case MODIFY_DELIMITER_INTERVAL:
 				if (lower){
 					currentPartitionedInterval.changeLimit(	indexState, 
 							currentPartitionedInterval.getLimit( indexState ), 
@@ -141,7 +141,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 				/*probNode.getVariable().setPartitionedInterval(
 						newPartitionedInterval );*/
 				break;
-			case MODIFYVALUEINTERVAL:
+			case MODIFY_VALUE_INTERVAL:
 				if (lower)
 					currentPartitionedInterval.changeLimit(indexState, newValue, 
 					currentPartitionedInterval.getBelongsToLeftSide(
@@ -164,7 +164,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		public void undo() {
 			super.undo();
 			switch (stateAction){
-			case MODIFYDELIMITERINTERVAL:
+			case MODIFY_DELIMITER_INTERVAL:
 				if (lower){
 					currentPartitionedInterval.changeLimit(	indexState, 
 							currentPartitionedInterval.getLimit( indexState ), 
@@ -179,7 +179,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 				/*probNode.getVariable().setPartitionedInterval(
 						newPartitionedInterval );*/
 				break;
-			case MODIFYVALUEINTERVAL:
+			case MODIFY_VALUE_INTERVAL:
 				if (lower)
 					currentPartitionedInterval.changeLimit(indexState, lastValue, 
 						currentPartitionedInterval.getBelongsToLeftSide(

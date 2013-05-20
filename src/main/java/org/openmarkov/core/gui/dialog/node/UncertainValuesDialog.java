@@ -70,15 +70,26 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
                         DISTRIBUTION_COLUMN_INDEX).toString();
                 DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
                         distributionType);
-                parameterDialog.setVisible(true);
-                StringBuilder parameterString = new StringBuilder();
-                for (double parameter : parameterDialog.getParameters()) {
-                    parameterString.append(parameter);
-                    parameterString.append(" ");
+                if(!distributionTypes.get(selectedRow).equals(distributionType))
+                {
+                    parameterDialog.setVisible(true);
+                    if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+                        StringBuilder parameterString = new StringBuilder();
+                        for (double parameter : parameterDialog.getParameters()) {
+                            parameterString.append(parameter);
+                            parameterString.append(" ");
+                        }
+                        distributionTableModel.setValueAt(parameterString.toString(),
+                                selectedRow,
+                                PARAMETERS_COLUMN_INDEX);
+                        distributionTypes.set(selectedRow, distributionType);
+                    }else
+                    {
+                        distributionTableModel.setValueAt(distributionTypes.get(selectedRow),
+                                selectedRow,
+                                DISTRIBUTION_COLUMN_INDEX);
+                    }
                 }
-                distributionTableModel.setValueAt(parameterString.toString(),
-                        selectedRow,
-                        PARAMETERS_COLUMN_INDEX);
             }
         }
     }
@@ -140,7 +151,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     private JTable                 distributionTable;
     private JPanel                 distributionsPanel;
     private Variable               variable;
-    private List<String>           allowedDistributionTypes;
+    private List<String>           distributionTypes;
     private boolean                isChanceVariable;
 
     // List of uncertain values
@@ -164,6 +175,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             throws WrongCriterionException {
         super(owner);
         isChanceVariable = !(potential.isUtility());
+        distributionTypes = new ArrayList<>();
         variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
         setTitle(getConfigurationDescription(variable, isChanceVariable, configuration));
         posBase = getPositionBaseUncertainValue(potential, configuration);
@@ -253,7 +265,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         // Fill the table for the dialog
         String[] columnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
-        allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance().getValidProbDensFunctions(isChanceVariable);
+        List<String> allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance().getValidProbDensFunctions(isChanceVariable);
         State[] states = variable.getStates();
         int numStates = states.length;
         Object[][] initialData = new Object[numStates][columnNames.length];
@@ -265,9 +277,11 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         for (int i = 0; i < numStates; i++) {
             UncertainValue uncertainValue = uncertainTable[i];
             ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
+            String distribution = probDensFunction.getClass().getAnnotation(ProbDensFunctionType.class).name();
+            distributionTypes.add(distribution);
             int iPosInitialData = lastPosStates - i;
             initialData[iPosInitialData][STATE_COLUMN_INDEX] = states[i].getName();
-            initialData[iPosInitialData][DISTRIBUTION_COLUMN_INDEX] = probDensFunction.getClass().getAnnotation(ProbDensFunctionType.class).name();
+            initialData[iPosInitialData][DISTRIBUTION_COLUMN_INDEX] = distribution;
             initialData[iPosInitialData][PARAMETERS_COLUMN_INDEX] = getString(probDensFunction.getParameters());
             initialData[iPosInitialData][NAME_COLUMN_INDEX] = uncertainValue.getName();
         }
@@ -465,11 +479,11 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
 
     /*
-     * If one of the distributions is Exact, Range, or Triangular, then: • all
-     * the others must be either exact, or range, or triangular, or complement;
-     * • at least one of the others must be Complement; • the sum of the maxima
-     * of all the distributions (different from Complement) cannot be greater
-     * than 1.
+     * If one of the distributions is Exact, Range, or Triangular, then: 
+     * • all of the others must be either exact, or range, or triangular, or complement;
+     * • at least one of the others must be Complement; 
+     * • the sum of the maxima of all the distributions (different from Complement) 
+     * cannot be greater than 1.
      */
     private boolean doVerifyRule1(FamilyDistribution family) {
         boolean verify = false;
@@ -485,7 +499,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
                 rangeOrTriangTypes);
         int sizeRangeOrTriang = rangeOrTriangUncertain.size();
         int sizeExact = exactUncertain.size();
-        if ((sizeRangeOrTriang > 0) && thereAreExactValuesGreaterThanZero(exactUncertain)) {
+        if (sizeRangeOrTriang > 0 || thereAreExactValuesGreaterThanZero(exactUncertain)) {
             int numComplement = getUncertainValuesOfClass(uncertainFamily, ComplementFunction.class).size();
             exactRangeOrUncertain = new ArrayList<UncertainValue>(rangeOrTriangUncertain);
             exactRangeOrUncertain.addAll(exactUncertain);
@@ -496,7 +510,11 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         if (!verify) {
             try {
-                String message = "Rule 1 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameteres.";
+                String message = "Following rule has been broken. \n";
+                message += "  If one of the distributions is Exact with v != 0, Range, or Triangular, then:\n";
+                message += "    · all the others must be either Exact, Range, Triangular, or Complement;\n";
+                message += "    · at least one of the others must be Complement;\n";
+                message += "    · the sum of the maxima of all the distributions (different from Complement) cannot be greater than 1;";
                 throw new ExceptionUncertainValuesDialogEdition(message);
             } catch (ExceptionUncertainValuesDialogEdition e) {
             }
@@ -611,7 +629,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         if (!verify) {
             try {
-                String message = "Rule 3 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
+                String message = "Following rule has been broken. \n";
+                message += "  If one of the distributions is a Dirichlet, then:\n";
+                message += "    · all the others must be Exact with v = 0 or Dirichlet\n";
+                message += "    · at least one of the others must also be a Dirichlet.";
                 throw new ExceptionUncertainValuesDialogEdition(message);
             } catch (ExceptionUncertainValuesDialogEdition e) {
             }
@@ -620,9 +641,9 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
 
     /*
-     * If one of the distributions is a Beta, then: • all the others must be
-     * Exact, with v = 0, or Complement; • at least one of the others must be
-     * Complement.
+     * If one of the distributions is a Beta, then: 
+     * • all the others must be Exact, with v = 0, or Complement; 
+     * • at least one of the others must be Complement.
      */
     private boolean doVerifyRule2(FamilyDistribution family) {
         int totalSizeFamily;
@@ -650,7 +671,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         if (!verify) {
             try {
-                String message = "Rule 2 of the specification of sensitivity analysis in ProbModelXML has been violated. Please, check the distributions and its parameters.";
+                String message = "Following rule has been broken.\n";
+                message += "  If one of the distributions is a Beta, then:\n";
+                message += "    · all the others must be Exact with v = 0 or Complement\n";
+                message += "    · at least one of the others must be Complement.";
                 throw new ExceptionUncertainValuesDialogEdition(message);
             } catch (ExceptionUncertainValuesDialogEdition e) {
             }

@@ -59,7 +59,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     private static final DecimalFormat formatter                 = new DecimalFormat("0.###",
                                                                          new DecimalFormatSymbols(Locale.US));
 
-    private boolean[]                  uncertaintyInColumns;
+    private boolean[]                  uncertaintyInColumns = null;
     /**
      * to define the first editable row of the table
      */
@@ -80,6 +80,11 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         this.uncertaintyInColumns = uncertaintyInColumns;
         this.firstEditableRow = firstEditableRow;
     }
+    
+    public ValuesTableCellRenderer(int firstEditableRow) {
+        this(firstEditableRow, null);
+    }
+    
 
     /**
      * headers rows are displayed in a gray background color with red and blue
@@ -93,9 +98,6 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
             boolean hasFocus,
             int row,
             int column) {
-        if (uncertaintyInColumns == null) {
-            uncertaintyInColumns = new boolean[table.getColumnCount() - 2];
-        }
         setHorizontalAlignment(SwingConstants.CENTER);
         setCellFonts(table, value, isSelected, hasFocus, row, column);
         setCellColors(table, value, isSelected, hasFocus, row, column);
@@ -106,6 +108,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN)
                 && (row >= firstEditableRow)
+                && uncertaintyInColumns != null 
                 && uncertaintyInColumns[column - 1]) {
             getUncertaintyIcon().setText(value.toString());
             return getUncertaintyIcon();

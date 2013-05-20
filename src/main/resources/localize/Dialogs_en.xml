@@ -366,31 +366,24 @@
 		<Columns>
 			<ValuesSeparator>
 				<Text value="," />
-				<Order value="4" />
 			</ValuesSeparator>
 			<LowLimitValue>
 				<Text value="Lower limit" />
-				<Order value="3" />
 			</LowLimitValue>
 			<UpperLimitValue>
-				<Order value="5" />
 				<Text value="Upper limit" />
 			</UpperLimitValue>
 			<IntervalId>
 				<Text value="Id" />
-				<Order value="0" />
 			</IntervalId>
 			<IntervalName>
 				<Text value="Interval name" />
-				<Order value="1" />
 			</IntervalName>
 			<UpperLimitSymbol>
 				<Text value=" " />
-				<Order value="6" />
 			</UpperLimitSymbol>
 			<LowLimitSymbol>
 				<Text value=" " />
-				<Order value="2" />
 			</LowLimitSymbol>
 		</Columns>
 	</DiscretizeTableModel>

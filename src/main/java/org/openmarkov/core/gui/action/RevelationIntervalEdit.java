@@ -85,7 +85,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 			link.getRevealingIntervals().remove(rowSelected);
 		}
 			break;
-		case MODIFYVALUEINTERVAL: {
+		case MODIFY_VALUE_INTERVAL: {
 			PartitionedInterval currentPartitionedInterval = link
 					.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
@@ -95,7 +95,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 		}
 			break;
 
-		case MODIFYDELIMITERINTERVAL: {
+		case MODIFY_DELIMITER_INTERVAL: {
 			PartitionedInterval currentPartitionedInterval = link
 					.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
@@ -117,14 +117,14 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 		case REMOVE:
 			link.getRevealingIntervals().add(rowSelected, lastInterval);
 			break;
-		case MODIFYVALUEINTERVAL: {
+		case MODIFY_VALUE_INTERVAL: {
 			PartitionedInterval interval = link.getRevealingIntervals().get(
 					rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
 			interval.getLimits()[intervalIndex] = oldValue;
 		}
 			break;
-		case MODIFYDELIMITERINTERVAL: {
+		case MODIFY_DELIMITER_INTERVAL: {
 			PartitionedInterval interval = link.getRevealingIntervals().get(
 					rowSelected);
 			int intervalIndex = isLower ? 0 : 1;

@@ -108,7 +108,7 @@ public class NodeStateEdit extends SimplePNEdit {
         this.selectedStateIndex = probNode.getVariable().getNumStates() - (stateIndex + 1);
         this.stateAction = stateAction;
         this.currentPartitionedInterval = probNode.getVariable().getPartitionedInterval();
-        this.oldStates = probNode.getVariable().getStates().clone();
+        this.oldStates = probNode.getVariable().getStates();
         this.linkRestrictionMap = new HashMap<Link, double[]>();
         this.revelationConditionMap = new HashMap<>();
     }
@@ -116,7 +116,7 @@ public class NodeStateEdit extends SimplePNEdit {
     @Override
     public void doEdit()
             throws DoEditException {
-        State[] newObjectState = null;
+        State[] newStates = null;
         Variable variable = probNode.getVariable();
         List<Node> children = probNode.getNode().getChildren();
         Potential uniformPotential;
@@ -124,13 +124,13 @@ public class NodeStateEdit extends SimplePNEdit {
         switch (stateAction) {
         case ADD:
             // assume that the new state is added in last position
-            newObjectState = new State[variable.getNumStates() + 1];
-            newObjectState[0] = newState;
-            for (int i = 1; i < newObjectState.length; i++) {
-                newObjectState[i] = variable.getStates()[i - 1];
+            newStates = new State[variable.getNumStates() + 1];
+            newStates[variable.getNumStates()] = newState;
+            for (int i = 0; i < oldStates.length; i++) {
+                newStates[i] = oldStates[i];
             }
 
-            variable.setStates(newObjectState);
+            variable.setStates(newStates);
 
             // set uniform potential for the edited node and children
             uniformPotential = PotentialOperations.getUniformPotential(probNet,
@@ -160,17 +160,17 @@ public class NodeStateEdit extends SimplePNEdit {
             resetLink(probNode.getNode());
             break;
         case REMOVE:
-            newObjectState = new State[variable.getNumStates() - 1];
+            newStates = new State[variable.getNumStates() - 1];
             int i1 = 0;
             boolean found = false;
             for (State states : variable.getStates()) {
                 if (i1 != selectedStateIndex || found == true) {
-                    newObjectState[i1] = states;
+                    newStates[i1] = states;
                     i1++;
                 } else
                     found = true;
             }
-            variable.setStates(newObjectState);
+            variable.setStates(newStates);
 
             // set uniform potential for the edited node and children
             uniformPotential = PotentialOperations.getUniformPotential(probNet,
@@ -223,7 +223,7 @@ public class NodeStateEdit extends SimplePNEdit {
             break;
         case DOWN:
             if (selectedStateIndex > 0) {
-                State newStates[] = new State[variable.getStates().length];
+                newStates = new State[variable.getStates().length];
                 State state = variable.getStates()[selectedStateIndex - 1];
                 State swapState = variable.getStates()[selectedStateIndex];
                 for (int i = 0; i < oldStates.length; i++) {
@@ -264,7 +264,7 @@ public class NodeStateEdit extends SimplePNEdit {
             break;
         case UP:
             if (selectedStateIndex < variable.getNumStates()) {
-                State newStates[] = new State[variable.getStates().length];
+                newStates = new State[variable.getStates().length];
                 State state = variable.getStates()[selectedStateIndex + 1];
                 State swapState = variable.getStates()[selectedStateIndex];
                 for (int i = 0; i < oldStates.length; i++) {
@@ -307,7 +307,7 @@ public class NodeStateEdit extends SimplePNEdit {
         case RENAME:
             if (selectedStateIndex >= 0 && selectedStateIndex < variable.getNumStates()) {
 
-                State newStates[] = new State[variable.getStates().length];
+                newStates = new State[variable.getStates().length];
                 for (int i = 0; i < variable.getStates().length; i++) {
                     if (i == selectedStateIndex) {
                         newStates[i] = newState;

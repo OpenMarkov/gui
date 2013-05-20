@@ -105,8 +105,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     private JLabel                                jLabelNodeVariableType;
     // private PrefixedKeyTablePanel nodeDiscreteStatesTablePanel;
     private ButtonGroup                           buttonGroup                            = new ButtonGroup();
-    private JRadioButton                          jRadioButtonMonotonyDown;
-    private JRadioButton                          jRadioButtonMonotonyUp;
+    private JRadioButton                          jRadioButtonDecreasing;
+    private JRadioButton                          jRadioButtonIncreasing;
     private JPanel                                jPanelMonotonyUpDown;
     /**
      * label for the table to show the values of the node
@@ -349,10 +349,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 getJLabelPrecision().setVisible(false);
                 // getJFormattedTextFieldPrecision().setVisible(false);
                 getJPanelMonotonyUpDown().setVisible(false);
-                jRadioButtonMonotonyUp.setEnabled(false);
-                jRadioButtonMonotonyDown.setEnabled(false);
-                jRadioButtonMonotonyUp.setSelected(false);
-                jRadioButtonMonotonyDown.setSelected(true);
+                jRadioButtonIncreasing.setEnabled(false);
+                jRadioButtonDecreasing.setEnabled(false);
+                jRadioButtonIncreasing.setSelected(true);
                 getDiscretizedStatesPanel().setEnablePanelButton(true);
                 getDiscretizedStatesPanel().setVisibleButtonPanel(true);
                 getJLabelDomainValues().setVisible(false);
@@ -387,10 +386,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 getJLabelPrecision().setVisible(true);
                 getJFormattedTextFieldPrecision().setVisible(true);
                 getJPanelMonotonyUpDown().setVisible(false);
-                jRadioButtonMonotonyUp.setEnabled(false);
-                jRadioButtonMonotonyDown.setEnabled(false);
-                jRadioButtonMonotonyUp.setSelected(false);
-                jRadioButtonMonotonyDown.setSelected(false);
+                jRadioButtonIncreasing.setEnabled(false);
+                jRadioButtonDecreasing.setEnabled(false);
+                jRadioButtonIncreasing.setSelected(false);
+                jRadioButtonDecreasing.setSelected(false);
                 getDiscretizedStatesPanel().setEnablePanelButton(true);
                 getDiscretizedStatesPanel().setVisibleButtonPanel(true);
                 getDiscretizedStatesPanel().setEnabledAddValue(false);
@@ -422,13 +421,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 getJLabelPrecision().setVisible(true);
                 // getJFormattedTextFieldPrecision().setVisible(true);
                 getJPanelMonotonyUpDown().setVisible(true);
-                jRadioButtonMonotonyUp.setEnabled(true);
-                jRadioButtonMonotonyDown.setEnabled(true);
-                jRadioButtonMonotonyUp.setSelected(false);
-                jRadioButtonMonotonyDown.setSelected(true);
-                getDiscretizedStatesPanel().setUpMonotony(false);
+                jRadioButtonIncreasing.setEnabled(true);
+                jRadioButtonDecreasing.setEnabled(true);
+                jRadioButtonIncreasing.setSelected(true);
                 getDiscretizedStatesPanel().setEnablePanelButton(true);
                 getDiscretizedStatesPanel().setVisibleButtonPanel(true);
+                getDiscretizedStatesPanel().setVisibleUpValue(false);
+                getDiscretizedStatesPanel().setVisibleDownValue(false);
                 getJLabelDomainValues().setVisible(false);
                 getJComboBoxStatesValues().setVisible(false);
                 getDiscretizedStatesPanel().getStandardDomainButton().setVisible(true);
@@ -527,10 +526,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             jPanelMonotonyUpDown.setSize(329, 24);
             jPanelMonotonyUpDown.setName("jPanelMonotonyUpDown");
             jPanelMonotonyUpDown.setLayout(new GridLayout(0, 2, 0, 0));
-            getJRadioButtonMonotonyUp().setEnabled(false);
-            getJRadioButtonMonotonyDown().setEnabled(false);
-            jPanelMonotonyUpDown.add(getJRadioButtonMonotonyUp());
-            jPanelMonotonyUpDown.add(getJRadioButtonMonotonyDown());
+            getJRadioButtonIncreasing().setEnabled(false);
+            getJRadioButtonDecreasing().setEnabled(false);
+            jPanelMonotonyUpDown.add(getJRadioButtonIncreasing());
+            jPanelMonotonyUpDown.add(getJRadioButtonDecreasing());
             initButtonGroupMonotonyUpDown();
         }
         return jPanelMonotonyUpDown;
@@ -539,38 +538,36 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * @return
      */
-    protected JRadioButton getJRadioButtonMonotonyUp() {
-        if (jRadioButtonMonotonyUp == null) {
-            jRadioButtonMonotonyUp = new JRadioButton();
-            jRadioButtonMonotonyUp.setName("jRadioButtonMonotonyUp");
-            jRadioButtonMonotonyUp.setText("New JRadioButton");
-            jRadioButtonMonotonyUp.setText(stringDatabase.getString("NodeDomainValuesTablePanel."
+    protected JRadioButton getJRadioButtonIncreasing() {
+        if (jRadioButtonIncreasing == null) {
+            jRadioButtonIncreasing = new JRadioButton();
+            jRadioButtonIncreasing.setName("jRadioButtonMonotonyUp");
+            jRadioButtonIncreasing.setText(stringDatabase.getString("NodeDomainValuesTablePanel."
                     + "jRadioButtonMonotonyUp.Text"));
-            jRadioButtonMonotonyUp.addItemListener(listener);
+            jRadioButtonIncreasing.addItemListener(listener);
         }
-        return jRadioButtonMonotonyUp;
+        return jRadioButtonIncreasing;
     }
 
     /**
      * @return
      */
-    protected JRadioButton getJRadioButtonMonotonyDown() {
-        if (jRadioButtonMonotonyDown == null) {
-            jRadioButtonMonotonyDown = new JRadioButton();
-            jRadioButtonMonotonyDown.setName("jRadioButtonMonotonyDown");
-            jRadioButtonMonotonyDown.setText("New JRadioButton");
-            jRadioButtonMonotonyDown.setText(stringDatabase.getString("NodeDomainValuesTablePanel.jRadioButtonMonotonyDown.Text"));
-            jRadioButtonMonotonyDown.addItemListener(listener);
+    protected JRadioButton getJRadioButtonDecreasing() {
+        if (jRadioButtonDecreasing == null) {
+            jRadioButtonDecreasing = new JRadioButton();
+            jRadioButtonDecreasing.setName("jRadioButtonMonotonyDown");
+            jRadioButtonDecreasing.setText(stringDatabase.getString("NodeDomainValuesTablePanel.jRadioButtonMonotonyDown.Text"));
+            jRadioButtonDecreasing.addItemListener(listener);
         }
-        return jRadioButtonMonotonyDown;
+        return jRadioButtonDecreasing;
     }
 
     /**
 	 * 
 	 */
     protected void initButtonGroupMonotonyUpDown() {
-        buttonGroup.add(jRadioButtonMonotonyUp);
-        buttonGroup.add(jRadioButtonMonotonyDown);
+        buttonGroup.add(jRadioButtonIncreasing);
+        buttonGroup.add(jRadioButtonDecreasing);
     }
 
     /**
