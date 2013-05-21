@@ -9,17 +9,10 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 import org.openmarkov.core.exception.NullListPotentialsException;
@@ -171,7 +164,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
                     properties.getNodeType());
 
             setCellRenderers();
-            calcColumnWidths(getICIValuesTable());
+            getICIValuesTable().fitColumnsWidthToContent();
 
         } else {
             tableData = new Object[0][0];
@@ -456,12 +449,6 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
                                            // canonical models
         }
 
-        /*
-         * iciValuesTable.setDefaultRenderer( Double.class, new
-         * ValuesTableCellRenderer( getFirstEditableRow(), editableColumns) );
-         * iciValuesTable.setDefaultRenderer( String.class, new
-         * ValuesTableCellRenderer( getFirstEditableRow(), editableColumns ) );
-         */
         iciValuesTable.setDefaultRenderer(Double.class,
                 new ICIValuesTableCellRenderer(getFirstEditableRow(),
                         editableColumns,
@@ -523,81 +510,6 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
             iciValuesTable.setName("PotentialsTablePanel.valuesTable");
         }
         return iciValuesTable;
-    }
-
-    /**
-     * Adjusts columns width to its content
-     * 
-     * @param table
-     */
-    public static void calcColumnWidths(JTable table) {
-        JTableHeader head = table.getTableHeader();
-
-        TableCellRenderer headerRenderer = null;
-
-        if (head != null)
-            headerRenderer = head.getDefaultRenderer();
-
-        TableColumnModel columns = table.getColumnModel();
-        TableModel tableModel = table.getModel();
-
-        int margin = columns.getColumnMargin();
-
-        int rowCount = tableModel.getRowCount();
-
-        for (int i = columns.getColumnCount() - 1; i >= 0; --i) {
-            TableColumn column = columns.getColumn(i);
-            column.setMinWidth(60);
-            int columnIndex = column.getModelIndex();
-
-            int width = -1;
-
-            TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
-
-            if (tableCellRenderer == null)
-                tableCellRenderer = headerRenderer;
-
-            if (tableCellRenderer != null && i != 0 && columnIndex != 0) {
-                Component component = tableCellRenderer.getTableCellRendererComponent(table,
-                        column.getHeaderValue(),
-                        false,
-                        false,
-                        -1,
-                        i);
-
-                width = component.getPreferredSize().width;
-            } else if (tableCellRenderer != null && i == 0 && columnIndex == 0) {
-
-                Component component = tableCellRenderer.getTableCellRendererComponent(table,
-                        column.getHeaderValue(),
-                        false,
-                        false,
-                        1,
-                        i);
-
-                width = component.getPreferredSize().width;
-
-            }
-
-            for (int row = rowCount - 1; row >= 0; --row) {
-                TableCellRenderer cellRenderer = table.getCellRenderer(row, i);
-
-                Component c = cellRenderer.getTableCellRendererComponent(table,
-                        tableModel.getValueAt(row, columnIndex),
-                        false,
-                        false,
-                        row,
-                        i);
-
-                width = Math.max(width, c.getPreferredSize().width);
-            }
-
-            if (width >= 0)
-                column.setPreferredWidth(width + margin);
-            else
-                ;
-        }
-
     }
 
     /**

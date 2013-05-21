@@ -25,8 +25,11 @@ import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.UndoableEditEvent;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.JTextComponent;
@@ -1403,7 +1406,7 @@ public class ValuesTable extends KeyTable
                 });
         }
     }
-
+    
     /**
      * Sets probNode
      * @param probNode
@@ -1425,4 +1428,68 @@ public class ValuesTable extends KeyTable
     {
         probNet.getPNESupport ().removeUndoableEditListener (this);
     }
+    
+    /**
+     * Adjusts columns width to its content
+     * 
+     * @param table
+     */
+    public void fitColumnsWidthToContent() {
+        JTableHeader header = getTableHeader();
+
+        TableCellRenderer headerRenderer = null;
+
+        if (header != null)
+        {
+            headerRenderer = header.getDefaultRenderer();
+        }
+
+        TableColumnModel columns = getColumnModel();
+        TableModel tableModel = getModel();
+        int margin = columns.getColumnMargin();
+        int rowCount = tableModel.getRowCount();
+        int columnCount = tableModel.getColumnCount();
+
+        for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+            TableColumn column = columns.getColumn(columnIndex);
+            column.setMinWidth(60);
+            int width = -1;
+
+            TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
+
+            if (tableCellRenderer == null)
+            {
+                tableCellRenderer = headerRenderer;
+            }
+
+            if (tableCellRenderer != null) {
+                Component component = tableCellRenderer.getTableCellRendererComponent(this,
+                        column.getHeaderValue(),
+                        false,
+                        false,
+                        -1,
+                        columnIndex);
+
+                width = component.getPreferredSize().width;
+            } 
+
+            for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                TableCellRenderer cellRenderer = getCellRenderer(rowIndex, columnIndex);
+
+                Component c = cellRenderer.getTableCellRendererComponent(this,
+                        tableModel.getValueAt(rowIndex, columnIndex),
+                        false,
+                        false,
+                        rowIndex,
+                        columnIndex);
+
+                width = Math.max(width, c.getPreferredSize().width);
+            }
+
+            if (width >= 0)
+            {
+                column.setMinWidth(width + margin);
+            }
+        }
+    }    
 }

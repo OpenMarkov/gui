@@ -6,12 +6,18 @@
 package org.openmarkov.core.gui.costeffectiveness;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.util.List;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  * Table to show frontiers interventions and ICER
@@ -57,7 +63,72 @@ public class FrontierInterventionsPanel extends JScrollPane {
 		// table.setBackground(Color.pink);
 		setViewportView(table);
 		setAutoscrolls(true);
+		fitColumnsWidthToContent(table);
 	}
+	
+	  /**
+     * Adjusts columns width to its content
+     * 
+     * @param table
+     */
+    public void fitColumnsWidthToContent(JTable table) {
+        JTableHeader header = table.getTableHeader();
+
+        TableCellRenderer headerRenderer = null;
+
+        if (header != null)
+        {
+            headerRenderer = header.getDefaultRenderer();
+        }
+
+        TableColumnModel columns = table.getColumnModel();
+        TableModel tableModel = table.getModel();
+        int margin = columns.getColumnMargin();
+        int rowCount = tableModel.getRowCount();
+        int columnCount = tableModel.getColumnCount();
+
+        for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+            TableColumn column = columns.getColumn(columnIndex);
+            column.setMinWidth(60);
+            int width = -1;
+
+            TableCellRenderer tableCellRenderer = column.getHeaderRenderer();
+
+            if (tableCellRenderer == null)
+            {
+                tableCellRenderer = headerRenderer;
+            }
+
+            if (tableCellRenderer != null) {
+                Component component = tableCellRenderer.getTableCellRendererComponent(table,
+                        column.getHeaderValue(),
+                        false,
+                        false,
+                        -1,
+                        columnIndex);
+
+                width = component.getPreferredSize().width;
+            } 
+
+            for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                TableCellRenderer cellRenderer = table.getCellRenderer(rowIndex, columnIndex);
+
+                Component c = cellRenderer.getTableCellRendererComponent(table,
+                        tableModel.getValueAt(rowIndex, columnIndex),
+                        false,
+                        false,
+                        rowIndex,
+                        columnIndex);
+
+                width = Math.max(width, c.getPreferredSize().width);
+            }
+
+            if (width >= 0)
+            {
+                column.setMinWidth(width + margin);
+            }
+        }
+    }    	
 
 	public class NonEditableModel extends DefaultTableModel {
 		public boolean isCellEditable(int row, int column) {

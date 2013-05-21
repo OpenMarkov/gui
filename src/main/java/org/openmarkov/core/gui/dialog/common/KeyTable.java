@@ -263,12 +263,6 @@ public class KeyTable extends JTable {
                 header.setPreferredSize(new Dimension(20, 0));
             }
             column = getColumnModel().getColumn(0);
-            if (column != null) {
-                column.setPreferredWidth(KEY_COLUMN_WIDTH);
-                column.setMaxWidth(KEY_COLUMN_WIDTH);
-                column.setMinWidth(0); // jlgozalo 15/08 - previously
-                                       // KEY_COLUMN_WIDTH
-            }
             if (firstColumnHidden && (column != null)) {
                 column.setMaxWidth(0);
                 column.setMinWidth(0);

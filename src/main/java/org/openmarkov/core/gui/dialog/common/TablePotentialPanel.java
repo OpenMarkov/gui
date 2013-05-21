@@ -189,6 +189,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             uncertaintyInColumns = getUncertaintyInColumns(probNode);
             setCellRenderers(uncertaintyInColumns);
             this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));
+            valuesTable.fitColumnsWidthToContent();
         } else {
             tableData = new Object[0][0];
             setFirstEditableRow(0);
