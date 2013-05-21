@@ -990,15 +990,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 }
                 // after eliminating row check the lower limit
                 if (selectedRow > 0) {
-                    if (valuesTable.getValueAt(selectedRow - 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX) == "]") {
-                        valuesTable.setValueAt("(", selectedRow, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                    } else {
-                        valuesTable.setValueAt("[", selectedRow, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                    }
-                    valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1,
-                            UPPER_BOUND_VALUE_COLUMN_INDEX),
-                            selectedRow,
-                            LOWER_BOUND_VALUE_COLUMN_INDEX);
+                    Object lowerBoundSymbol = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+                    Object nextUpperBoundSymbol = (lowerBoundSymbol.equals("["))? ")" : "]";
+                    valuesTable.setValueAt(nextUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                    Object nextLowerBound = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+                    valuesTable.setValueAt(nextLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
                 }
             }
         } catch (ConstraintViolationException

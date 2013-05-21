@@ -27,12 +27,10 @@ import javax.swing.table.TableModel;
 @SuppressWarnings("serial")
 public class FrontierInterventionsPanel extends JScrollPane {
 	private List<Intervention> frontierInterventions;
-	CostEffectivenessAnalysis costEffectivenessAnalysis;
 
 	public FrontierInterventionsPanel(
 			CostEffectivenessAnalysis costEffectivenessAnalysis) {
 		super();
-		this.costEffectivenessAnalysis = costEffectivenessAnalysis;
 		this.frontierInterventions = costEffectivenessAnalysis
 				.getFrontierInterventions();
 		NonEditableModel model = new NonEditableModel();

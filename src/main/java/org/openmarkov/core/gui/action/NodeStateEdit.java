@@ -198,7 +198,7 @@ public class NodeStateEdit extends SimplePNEdit {
                 double[] oldLimits = currentPartitionedInterval.getLimits();
                 boolean[] oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
 
-                int positionToRemove = (oldLimits.length - 1) - selectedStateIndex;
+                int positionToRemove = selectedStateIndex;
 
                 List<Double> newLimits = new ArrayList<Double>(oldLimits.length - 1);
                 List<Boolean> newBelongs = new ArrayList<Boolean>(oldLimits.length - 1);
