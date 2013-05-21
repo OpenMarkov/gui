@@ -267,10 +267,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 Short.MAX_VALUE)).addContainerGap(77, Short.MAX_VALUE)));
         Component[] components = new Component[2];
         components[0] = getJTextFieldUnit();
-        components[1] = getJComboBoxPrecision() /*
-                                                 * getJFormattedTextFieldPrecision(
-                                                 * )
-                                                 */;
+        components[1] = getJComboBoxPrecision();
         groupLayout.linkSize(components);
         Component[] labelComponents = new Component[2];
         labelComponents[0] = getJLabelNodeVariableType();
@@ -324,13 +321,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             }
                         }
                     }
-                    // }
                 }
             }
-            /*
-             * jFormattedTextFieldPrecision.addPropertyChangeListener("value",
-             * listener);
-             */
             switch (properties.getVariable().getVariableType()) {
             case FINITE_STATES: {
                 getJComboBoxNodeVariableType().setSelectedItem(stringDatabase.getString("NodeDomainValuesTablePanel."
@@ -426,8 +418,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 jRadioButtonIncreasing.setSelected(true);
                 getDiscretizedStatesPanel().setEnablePanelButton(true);
                 getDiscretizedStatesPanel().setVisibleButtonPanel(true);
-                getDiscretizedStatesPanel().setVisibleUpValue(false);
-                getDiscretizedStatesPanel().setVisibleDownValue(false);
+                getDiscretizedStatesPanel().setVisibleUpValue(true);
+                getDiscretizedStatesPanel().setVisibleDownValue(true);
                 getJLabelDomainValues().setVisible(false);
                 getJComboBoxStatesValues().setVisible(false);
                 getDiscretizedStatesPanel().getStandardDomainButton().setVisible(true);
