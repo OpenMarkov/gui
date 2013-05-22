@@ -91,6 +91,10 @@ public class StringDatabase
         setLocale (new Locale (language));
         bundles = getAllBundles ();
         listenerList = new EventListenerList ();
+        if(bundles.isEmpty())
+        {
+            setLanguage("en");
+        }
     }
 
     /**
