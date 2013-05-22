@@ -418,8 +418,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 jRadioButtonIncreasing.setSelected(true);
                 getDiscretizedStatesPanel().setEnablePanelButton(true);
                 getDiscretizedStatesPanel().setVisibleButtonPanel(true);
-                getDiscretizedStatesPanel().setVisibleUpValue(true);
-                getDiscretizedStatesPanel().setVisibleDownValue(true);
+                getDiscretizedStatesPanel().setVisibleUpValue(false);
+                getDiscretizedStatesPanel().setVisibleDownValue(false);
                 getJLabelDomainValues().setVisible(false);
                 getJComboBoxStatesValues().setVisible(false);
                 getDiscretizedStatesPanel().getStandardDomainButton().setVisible(true);
