@@ -6,7 +6,10 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -14,13 +17,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.WeibullPotentialEdit;
@@ -44,11 +54,13 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private ProbNode probNode = null;
     private WeibullPotential potential = null;
     private JTextField constantText;
-    private JPanel northPanel;
     private JTextField shapeText;
     private JTextField relativeRiskText;
     private JTable coefficientTable;
+    private JTable covarianceTable;
     private JComboBox<String> timeVariableComboBox;
+    private JCheckBox uncertaintyCheckBox;
+    private JPanel covariancePanel;
     
     public WeibullPotentialPanel(ProbNode probNode) {
         super();
@@ -57,36 +69,65 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
     private void initComponents() {
         setLayout(new BorderLayout());
+        JPanel deterministicPanel = new JPanel();
+        deterministicPanel.setLayout(new GridLayout(1, 2));
         JLabel timeVariableLabel = new JLabel();
-        timeVariableLabel.setText("Time variable: ");
+        timeVariableLabel.setText("Time variable:");
         timeVariableComboBox = new JComboBox<String>();
         timeVariableComboBox.addItemListener(this);
+        timeVariableComboBox.setMinimumSize(new Dimension(100, 20));
         JLabel constantLabel = new JLabel();
-        constantLabel.setText("Constant: ");
+        constantLabel.setText("Constant:");
         constantText = new JTextField();
-        constantText.setPreferredSize(new Dimension(50, 20));
-        northPanel = new JPanel();
-        northPanel.add(timeVariableLabel);
-        northPanel.add(timeVariableComboBox);
-        northPanel.add(constantLabel);
-        northPanel.add(constantText);
+        constantText.setPreferredSize(new Dimension(75, 20));
+        JPanel westPanel = new JPanel();
+        westPanel.setLayout(new GridLayout(5, 2, 5, 5));
+        westPanel.add(timeVariableLabel);
+        westPanel.add(timeVariableComboBox);
+        westPanel.add(constantLabel);
+        westPanel.add(constantText);
         JLabel shapeLabel = new JLabel();
-        shapeLabel.setText("Shape: ");
+        shapeLabel.setText("Shape:");
         shapeText = new JTextField();
-        shapeText.setPreferredSize(new Dimension(50, 20));
-        northPanel.add(shapeLabel);
-        northPanel.add(shapeText);
+        shapeText.setPreferredSize(new Dimension(75, 20));
+        westPanel.add(shapeLabel);
+        westPanel.add(shapeText);
         JLabel relativeRiskLabel = new JLabel();
-        relativeRiskLabel.setText("Relative Risk: ");
+        relativeRiskLabel.setText("Relative Risk:");
         relativeRiskText = new JTextField();
-        relativeRiskText.setPreferredSize(new Dimension(50, 20));
-        northPanel.add(relativeRiskLabel);
-        northPanel.add(relativeRiskText);
-        add(northPanel, BorderLayout.NORTH);
+        relativeRiskText.setPreferredSize(new Dimension(75, 20));
+        westPanel.add(relativeRiskLabel);
+        westPanel.add(relativeRiskText);
+        uncertaintyCheckBox = new JCheckBox("Uncertainty");
+        uncertaintyCheckBox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                covariancePanel.setVisible(uncertaintyCheckBox.isSelected());
+            }
+        });
+        westPanel.add(uncertaintyCheckBox);
+        westPanel.setBorder(new EmptyBorder(10, 25, 10, 25));
+        deterministicPanel.add(westPanel);
+        JPanel eastPanel = new JPanel();
+        eastPanel.setBorder(new TitledBorder("Coefficients"));
         coefficientTable = new JTable();
-        JScrollPane tablePanel = new JScrollPane(coefficientTable);
+        JScrollPane coefficientPanel = new JScrollPane(coefficientTable);
+        coefficientPanel.setPreferredSize(new Dimension(250, 100));
         coefficientTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        add(tablePanel, BorderLayout.CENTER);
+        eastPanel.add(coefficientPanel);    
+        deterministicPanel.add(eastPanel);
+        covarianceTable = new  JTable();
+        JScrollPane covarianceTablePanel = new JScrollPane(covarianceTable);
+        covarianceTablePanel.setPreferredSize(new Dimension(500, 100));
+        covariancePanel = new JPanel();
+        covarianceTable.setTableHeader(null);
+        TableCellRenderer cellRenderer = new CovarianceTableCellRenderer();
+        covarianceTable.setDefaultRenderer(String.class, cellRenderer);
+        covarianceTable.setDefaultRenderer(Double.class, cellRenderer);
+        covarianceTablePanel.setColumnHeaderView(null);
+        covariancePanel.setBorder(new TitledBorder("Covariance matrix"));
+        covariancePanel.add(covarianceTablePanel);
+        add(deterministicPanel, BorderLayout.NORTH);
+        add(covariancePanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -127,6 +168,33 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         {
             timeVariableComboBox.setSelectedItem(timeVariable.getName());
         }
+        
+        DefaultTableModel covarianceTableModel = new CovarianceTableModel();
+        List<Double> coefficients = potential.getCoefficients();
+        int columnCount = 3 + coefficients.size();
+        int rowCount = 3 + coefficients.size();
+        covarianceTableModel.setColumnCount(columnCount);
+        covarianceTableModel.setRowCount(rowCount);
+        covarianceTableModel.setValueAt("log(shape)", 1, 0);
+        covarianceTableModel.setValueAt("cons", 2, 0);
+        covarianceTableModel.setValueAt("log(shape)", 0, 1);
+        covarianceTableModel.setValueAt("cons", 0, 2);
+        
+        List<Double> covarianceMatrix = potential.getCovarianceMatrix();
+        int index = 0;
+        for(int rowIndex = 1; rowIndex < rowCount; ++rowIndex)
+        {
+            for(int columnIndex = 1; columnIndex <= rowIndex; ++columnIndex)
+            {
+                double value = (covarianceMatrix != null)? covarianceMatrix.get(index) : 0.0; 
+                covarianceTableModel.setValueAt(value, rowIndex, columnIndex);
+                ++index;
+            }
+            ++index;
+        }
+        covarianceTable.setModel(covarianceTableModel);
+        uncertaintyCheckBox.setSelected(covarianceMatrix != null);
+        covariancePanel.setVisible(uncertaintyCheckBox.isSelected());
     }
     
     private boolean isValidTimeVariable(Variable variable) {
@@ -208,6 +276,51 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         public boolean isCellEditable(int row, int column) {
             return column > 0;
         }
+
+    }
+    
+    private class CovarianceTableModel extends DefaultTableModel
+    {
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return row > 0 && column > 0 && row >= column;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return (columnIndex == 0) ? String.class : Double.class;
+        }
+        
+    }    
+    
+    private class CovarianceTableCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            Color backgroundColor = Color.WHITE;
+            if(row == 0 || column == 0)
+            {
+                backgroundColor = new Color(207, 227, 253);
+            }else if(column > row)
+            {
+                backgroundColor = new Color(220, 220, 220);
+            }
+            setBackground(backgroundColor);
+            
+            return super.getTableCellRendererComponent(table,
+                    value,
+                    isSelected,
+                    hasFocus,
+                    row,
+                    column);
+        }
+        
     }
 
     @Override
@@ -221,7 +334,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
             for(int i=0; i < dtm.getRowCount(); ++i)
             {
                 String variable = coefficientTable.getModel().getValueAt(i, 0).toString();
-                Double coefficient = (Double)coefficientTable.getModel().getValueAt(i, 1);
+                Double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
                 coefficients.put(variable, coefficient);
             }
 

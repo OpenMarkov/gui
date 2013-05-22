@@ -59,7 +59,7 @@ public class DistributionParameterDialog extends OkCancelHorizontalDialog {
         BorderLayout layout = new BorderLayout(5, 5);
         getComponentsPanel().setLayout(layout);
 
-        JPanel parametersPanel = new JPanel(new GridLayout(parameterNames.length, 1));
+        JPanel parametersPanel = new JPanel(new GridLayout(parameterNames.length, 1, 5, 3));
         parametersPanel.setBorder(new TitledBorder("Parameters"));
 
         for (int i = 0; i < parameterNames.length; ++i) {

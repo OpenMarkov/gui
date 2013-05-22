@@ -55,7 +55,11 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
     protected static final Color       TABLE_HEADER_TEXT_COLOR_3 = OpenMarkovPreferences.getColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_3,
                                                                          OpenMarkovPreferences.OPENMARKOV_COLORS,
                                                                          Color.BLACK);
-
+    /**
+     * color to use in the background of header rows
+     */
+    protected static final Color       TABLE_HEADER_BACKGROUND_COLOR = new Color(220, 220, 220);
+    
     private static final DecimalFormat formatter                 = new DecimalFormat("0.###",
                                                                          new DecimalFormatSymbols(Locale.US));
 
@@ -198,15 +202,15 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
             // PARENTS CELLS set alternate colors
             switch (row % 3) {
             case 0:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 setForeground(TABLE_HEADER_TEXT_COLOR_1);
                 break;
             case 1:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 setForeground(TABLE_HEADER_TEXT_COLOR_2);
                 break;
             case 2:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 setForeground(TABLE_HEADER_TEXT_COLOR_3);
                 break;
             default:
@@ -215,20 +219,20 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
         }
         if ((column < ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
             // NODE STATES CELLS
-            setBackground(new Color(220, 220, 220));
+            setBackground(TABLE_HEADER_BACKGROUND_COLOR);
             setForeground(Color.BLACK);
         }
         if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row < firstEditableRow)) {
             // HEADER CELLS
             switch (row % 3) {
             case 0:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 break;
             case 1:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 break;
             case 2:
-                setBackground(new Color(220, 220, 220));
+                setBackground(TABLE_HEADER_BACKGROUND_COLOR);
                 break;
             default:
                 break;
