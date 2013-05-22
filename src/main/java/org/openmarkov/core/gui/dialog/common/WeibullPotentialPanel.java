@@ -49,19 +49,18 @@ import org.openmarkov.core.model.network.potential.WeibullPotential;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "WeibullDistribution")
-public class WeibullPotentialPanel extends PotentialPanel implements ItemListener{
+public class WeibullPotentialPanel extends PotentialPanel implements ItemListener {
 
-    private ProbNode probNode = null;
-    private WeibullPotential potential = null;
-    private JTextField constantText;
-    private JTextField shapeText;
-    private JTextField relativeRiskText;
-    private JTable coefficientTable;
-    private JTable covarianceTable;
+    private ProbNode          probNode  = null;
+    private WeibullPotential  potential = null;
+    private JTextField        constantText;
+    private JTextField        shapeText;
+    private JTable            coefficientTable;
+    private JTable            covarianceTable;
     private JComboBox<String> timeVariableComboBox;
-    private JCheckBox uncertaintyCheckBox;
-    private JPanel covariancePanel;
-    
+    private JCheckBox         uncertaintyCheckBox;
+    private JPanel            covariancePanel;
+
     public WeibullPotentialPanel(ProbNode probNode) {
         super();
         initComponents();
@@ -94,10 +93,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         westPanel.add(shapeText);
         JLabel relativeRiskLabel = new JLabel();
         relativeRiskLabel.setText("Relative Risk:");
-        relativeRiskText = new JTextField();
-        relativeRiskText.setPreferredSize(new Dimension(75, 20));
         westPanel.add(relativeRiskLabel);
-        westPanel.add(relativeRiskText);
         uncertaintyCheckBox = new JCheckBox("Uncertainty");
         uncertaintyCheckBox.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -113,9 +109,10 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         JScrollPane coefficientPanel = new JScrollPane(coefficientTable);
         coefficientPanel.setPreferredSize(new Dimension(250, 100));
         coefficientTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        eastPanel.add(coefficientPanel);    
+        coefficientTable.setDefaultRenderer(String.class, new CoefficientTableCellRenderer());
+        eastPanel.add(coefficientPanel);
         deterministicPanel.add(eastPanel);
-        covarianceTable = new  JTable();
+        covarianceTable = new JTable();
         JScrollPane covarianceTablePanel = new JScrollPane(covarianceTable);
         covarianceTablePanel.setPreferredSize(new Dimension(500, 100));
         covariancePanel = new JPanel();
@@ -133,79 +130,74 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     @Override
     public void setData(ProbNode probNode) {
         this.probNode = probNode;
-        this.potential = (WeibullPotential)this.probNode.getPotentials().get(0);
+        this.potential = (WeibullPotential) this.probNode.getPotentials().get(0);
         List<Variable> variables = potential.getVariables();
-        constantText.setText(potential.getConstant()+"");
-        shapeText.setText(potential.getShape()+"");
-        relativeRiskText.setText(potential.getRelativeRisk()+"");
+        constantText.setText(potential.getConstant() + "");
+        shapeText.setText(potential.getShape() + "");
         Variable timeVariable = potential.getTimeVariable();
-        DefaultTableModel dtm = new CoefficientTableModel(new Object[] {"Variable", "Coefficients"}, 0);
-        for(int i=1; i<variables.size(); ++i)
-        {
-            Variable potentialVariable = potential.getVariable(i); 
-            if(!potentialVariable.equals(timeVariable))
-            {
-                Double coefficient = 0.0;
-                if(potential.getCoefficients().size() > i-1)
-                {
-                    coefficient = potential.getCoefficients().get(i - 1);
+        DefaultTableModel dtm = new CoefficientTableModel(new Object[] { "Variable", "Coefficients" },
+                0);
+        for (int i = 1; i < variables.size(); ++i) {
+            Variable potentialVariable = potential.getVariable(i);
+            if (!potentialVariable.equals(timeVariable)) {
+                double coefficient = 0.0;
+                double[] coefficients = potential.getCoefficients();
+                if (coefficients.length > i - 1) {
+                    coefficient = coefficients[i - 1];
                 }
-                dtm.addRow(new Object[]{potentialVariable, coefficient});
+                dtm.addRow(new Object[] { potentialVariable, coefficient });
             }
         }
         coefficientTable.setModel(dtm);
-        
+
         timeVariableComboBox.removeAllItems();
         timeVariableComboBox.addItem("-- No time variable");
-        for(int i=1; i<variables.size(); ++i)
-        {
-            if(isValidTimeVariable(potential.getVariable(i)))
-            {
+        for (int i = 1; i < variables.size(); ++i) {
+            if (isValidTimeVariable(potential.getVariable(i))) {
                 timeVariableComboBox.addItem(potential.getVariable(i).getName());
             }
         }
-        if(timeVariable!=null)
-        {
+        if (timeVariable != null) {
             timeVariableComboBox.setSelectedItem(timeVariable.getName());
         }
-        
+
         DefaultTableModel covarianceTableModel = new CovarianceTableModel();
-        List<Double> coefficients = potential.getCoefficients();
-        int columnCount = 3 + coefficients.size();
-        int rowCount = 3 + coefficients.size();
+        double[] coefficients = potential.getCoefficients();
+        int columnCount = 3 + coefficients.length;
+        int rowCount = 3 + coefficients.length;
         covarianceTableModel.setColumnCount(columnCount);
         covarianceTableModel.setRowCount(rowCount);
         covarianceTableModel.setValueAt("log(shape)", 1, 0);
-        covarianceTableModel.setValueAt("cons", 2, 0);
+        covarianceTableModel.setValueAt("constant", 2, 0);
         covarianceTableModel.setValueAt("log(shape)", 0, 1);
         covarianceTableModel.setValueAt("cons", 0, 2);
-        
-        List<Double> covarianceMatrix = potential.getCovarianceMatrix();
+
+        for (int i = 3; i < rowCount; ++i) {
+            covarianceTableModel.setValueAt(variables.get(i - 2).getName(), i, 0);
+            covarianceTableModel.setValueAt(variables.get(i - 2).getName(), 0, i);
+        }
+
         int index = 0;
-        for(int rowIndex = 1; rowIndex < rowCount; ++rowIndex)
-        {
-            for(int columnIndex = 1; columnIndex <= rowIndex; ++columnIndex)
-            {
-                double value = (covarianceMatrix != null)? covarianceMatrix.get(index) : 0.0; 
+        double[] covarianceMatrix = potential.getCovarianceMatrix();
+        for (int rowIndex = 1; rowIndex < rowCount; ++rowIndex) {
+            for (int columnIndex = 1; columnIndex <= rowIndex; ++columnIndex) {
+                double value = (covarianceMatrix != null) ? covarianceMatrix[index] : 0.0;
                 covarianceTableModel.setValueAt(value, rowIndex, columnIndex);
                 ++index;
             }
-            ++index;
         }
         covarianceTable.setModel(covarianceTableModel);
         uncertaintyCheckBox.setSelected(covarianceMatrix != null);
         covariancePanel.setVisible(uncertaintyCheckBox.isSelected());
     }
-    
+
     private boolean isValidTimeVariable(Variable variable) {
         boolean isValid = false;
-        if(variable.isTemporal())
-        {
+        if (variable.isTemporal()) {
             ProbNet probNet = probNode.getProbNet();
             Potential potential = probNet.getProbNode(variable).getPotentials().get(0);
             isValid = potential instanceof CycleLengthShift;
-            if(!isValid && probNet.containsShiftedVariable(variable, 1))
-            {
+            if (!isValid && probNet.containsShiftedVariable(variable, 1)) {
                 try {
                     Variable shiftedVariable = probNet.getShiftedVariable(variable, 1);
                     Potential shiftedPotential = probNet.getProbNode(shiftedVariable).getPotentials().get(0);
@@ -218,19 +210,16 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         return isValid;
     }
 
-    public void saveChanges()
-    {
-        WeibullPotential potential = (WeibullPotential)this.probNode.getPotentials().get(0);
+    public void saveChanges() {
+        WeibullPotential potential = (WeibullPotential) this.probNode.getPotentials().get(0);
         double constant = Double.parseDouble(constantText.getText());
         double shape = Double.parseDouble(shapeText.getText());
-        double relativeRisk = Double.parseDouble(relativeRiskText.getText());
-        List<Double> coefficients = new ArrayList<>();
+        double[] coefficients = new double[coefficientTable.getModel().getRowCount()];
         List<Variable> variables = new ArrayList<>();
         variables.add(potential.getConditionedVariable());
-        for(int i=0; i < coefficientTable.getModel().getRowCount(); ++i)
-        {
+        for (int i = 0; i < coefficients.length; ++i) {
             double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
-            coefficients.add(coefficient);
+            coefficients[i] = coefficient;
             String variableName = coefficientTable.getModel().getValueAt(i, 0).toString();
             try {
                 variables.add(probNode.getProbNet().getVariable(variableName));
@@ -245,29 +234,52 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         } catch (ProbNodeNotFoundException e1) {
             // Ignore
         }
-        if(timeVariable != null)
-        {
+        if (timeVariable != null) {
             variables.add(timeVariable);
         }
-        
-        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(), potential, variables, constant, shape,
-                coefficients, relativeRisk, timeVariable);
-        
+
+        double[] covarianceMatrix = null;
+        if (uncertaintyCheckBox.isSelected()) {
+            CovarianceTableModel tableModel = (CovarianceTableModel) covarianceTable.getModel();
+            int rowCount = tableModel.getRowCount();
+            int n = rowCount-1;
+            int index = 0;
+            covarianceMatrix = new double[(n+1)*n/2];
+            for (int rowIndex = 1; rowIndex < rowCount; ++rowIndex) {
+                for (int columnIndex = 1; columnIndex <= rowIndex; ++columnIndex) {
+                    double value = (Double) tableModel.getValueAt(rowIndex, columnIndex);
+                    covarianceMatrix[index] = value;
+                    ++index;
+                }
+            }
+        }
+
+        PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(),
+                potential,
+                variables,
+                constant,
+                shape,
+                coefficients,
+                timeVariable,
+                covarianceMatrix);
+
         try {
             probNode.getProbNet().doEdit(edit);
-        } catch (ConstraintViolationException | CanNotDoEditException
-                | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+        } catch (ConstraintViolationException
+                | CanNotDoEditException
+                | NonProjectablePotentialException
+                | WrongCriterionException
+                | DoEditException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void close() {
-        
+
     }
-    
-    private class CoefficientTableModel extends DefaultTableModel
-    {
+
+    private class CoefficientTableModel extends DefaultTableModel {
         public CoefficientTableModel(Object[] columnNames, int rowCount) {
             super(columnNames, rowCount);
         }
@@ -277,10 +289,38 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
             return column > 0;
         }
 
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return (columnIndex == 0) ? String.class : Double.class;
+        }
+
     }
-    
-    private class CovarianceTableModel extends DefaultTableModel
-    {
+
+    private class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            Color backgroundColor = Color.WHITE;
+            if (column == 0) {
+                backgroundColor = new Color(207, 227, 253);
+            }
+            setBackground(backgroundColor);
+
+            return super.getTableCellRendererComponent(table,
+                    value,
+                    isSelected,
+                    hasFocus,
+                    row,
+                    column);
+        }
+
+    }
+
+    private class CovarianceTableModel extends DefaultTableModel {
 
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -291,11 +331,10 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         public Class<?> getColumnClass(int columnIndex) {
             return (columnIndex == 0) ? String.class : Double.class;
         }
-        
-    }    
-    
-    private class CovarianceTableCellRenderer extends DefaultTableCellRenderer
-    {
+
+    }
+
+    private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value,
@@ -304,15 +343,13 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 int row,
                 int column) {
             Color backgroundColor = Color.WHITE;
-            if(row == 0 || column == 0)
-            {
+            if (row == 0 || column == 0) {
                 backgroundColor = new Color(207, 227, 253);
-            }else if(column > row)
-            {
+            } else if (column > row) {
                 backgroundColor = new Color(220, 220, 220);
             }
             setBackground(backgroundColor);
-            
+
             return super.getTableCellRendererComponent(table,
                     value,
                     isSelected,
@@ -320,19 +357,17 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                     row,
                     column);
         }
-        
+
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if(e.getSource().equals(timeVariableComboBox))
-        {
+        if (e.getSource().equals(timeVariableComboBox)) {
             String selected = timeVariableComboBox.getSelectedItem().toString();
             Map<String, Double> coefficients = new LinkedHashMap<>();
-            DefaultTableModel dtm = (DefaultTableModel)coefficientTable.getModel();
-            
-            for(int i=0; i < dtm.getRowCount(); ++i)
-            {
+            DefaultTableModel dtm = (DefaultTableModel) coefficientTable.getModel();
+
+            for (int i = 0; i < dtm.getRowCount(); ++i) {
                 String variable = coefficientTable.getModel().getValueAt(i, 0).toString();
                 Double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
                 coefficients.put(variable, coefficient);
@@ -340,27 +375,22 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
             // Clear table
             dtm.setRowCount(0);
-            for(String variableName : coefficients.keySet())
-            {
-                if(!selected.equals(variableName))
-                {
-                    dtm.addRow(new Object[] {variableName, coefficients.get(variableName)});
+            for (String variableName : coefficients.keySet()) {
+                if (!selected.equals(variableName)) {
+                    dtm.addRow(new Object[] { variableName, coefficients.get(variableName) });
                 }
             }
 
             List<Variable> potentialVariables = potential.getVariables();
-            for(Variable potentialVariable : potentialVariables)
-            {
+            for (Variable potentialVariable : potentialVariables) {
                 String variableName = potentialVariable.getName();
-                if(!potential.getConditionedVariable().equals(potentialVariable) && 
-                        !coefficients.containsKey(variableName) &&
-                        !selected.equals(variableName))
-                {
-                    dtm.addRow(new Object[] {variableName, 0.0});                    
+                if (!potential.getConditionedVariable().equals(potentialVariable)
+                        && !coefficients.containsKey(variableName)
+                        && !selected.equals(variableName)) {
+                    dtm.addRow(new Object[] { variableName, 0.0 });
                 }
             }
         }
     }
-    
 
 }
