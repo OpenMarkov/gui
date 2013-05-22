@@ -275,12 +275,11 @@
 		<NetworkTypes>
 			<Items>
 				<InfluenceDiagram value="Influence diagram" />
-				<SMM value="Markov process" />
 				<POMDP value="POMDP" />
 				<TuningNetwork value="Tuning network" />
-				<MarkovNetwork value="Markov Net" />
-				<DAN value="Decision Analysis Network" />
-				<DBN value="Dynamic Bayesian Network" />
+				<MarkovNetwork value="Markov network" />
+				<DAN value="Decision analysis network" />
+				<DBN value="Dynamic Bayesian network" />
 				<DynamicLIMID value="Dynamic LIMID" />
 				<LIMID value="LIMID" />
 				<OOBN value="OOBN" />
