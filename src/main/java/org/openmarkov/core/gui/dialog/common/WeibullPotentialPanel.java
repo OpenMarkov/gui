@@ -135,15 +135,15 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         constantText.setText(potential.getConstant() + "");
         shapeText.setText(potential.getShape() + "");
         Variable timeVariable = potential.getTimeVariable();
-        DefaultTableModel dtm = new CoefficientTableModel(new Object[] { "Variable", "Coefficients" },
-                0);
+        Object[] headers = new Object[] { "Variable", "Coefficients" };
+        DefaultTableModel dtm = new CoefficientTableModel(headers, 0);
+        double[] coefficients = potential.getCoefficients();
         for (int i = 1; i < variables.size(); ++i) {
             Variable potentialVariable = potential.getVariable(i);
             if (!potentialVariable.equals(timeVariable)) {
                 double coefficient = 0.0;
-                double[] coefficients = potential.getCoefficients();
-                if (coefficients.length > i - 1) {
-                    coefficient = coefficients[i - 1];
+                if (coefficients.length > i + 1) {
+                    coefficient = coefficients[i + 1];
                 }
                 dtm.addRow(new Object[] { potentialVariable, coefficient });
             }
@@ -162,15 +162,14 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         }
 
         DefaultTableModel covarianceTableModel = new CovarianceTableModel();
-        double[] coefficients = potential.getCoefficients();
-        int columnCount = 3 + coefficients.length;
-        int rowCount = 3 + coefficients.length;
+        int columnCount = coefficients.length + 1;
+        int rowCount = coefficients.length + 1;
         covarianceTableModel.setColumnCount(columnCount);
         covarianceTableModel.setRowCount(rowCount);
         covarianceTableModel.setValueAt("log(shape)", 1, 0);
-        covarianceTableModel.setValueAt("constant", 2, 0);
+        covarianceTableModel.setValueAt("Constant", 2, 0);
         covarianceTableModel.setValueAt("log(shape)", 0, 1);
-        covarianceTableModel.setValueAt("cons", 0, 2);
+        covarianceTableModel.setValueAt("Constant", 0, 2);
 
         for (int i = 3; i < rowCount; ++i) {
             covarianceTableModel.setValueAt(variables.get(i - 2).getName(), i, 0);
@@ -212,14 +211,15 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
     public void saveChanges() {
         WeibullPotential potential = (WeibullPotential) this.probNode.getPotentials().get(0);
-        double constant = Double.parseDouble(constantText.getText());
-        double shape = Double.parseDouble(shapeText.getText());
-        double[] coefficients = new double[coefficientTable.getModel().getRowCount()];
+        int coeffRowCount = coefficientTable.getModel().getRowCount();
+        double[] coefficients = new double[coeffRowCount+2];
+        coefficients[0] = Double.parseDouble(shapeText.getText()); 
+        coefficients[1] = Double.parseDouble(constantText.getText()); 
         List<Variable> variables = new ArrayList<>();
         variables.add(potential.getConditionedVariable());
-        for (int i = 0; i < coefficients.length; ++i) {
+        for (int i = 0; i < coeffRowCount; ++i) {
             double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
-            coefficients[i] = coefficient;
+            coefficients[i+2] = coefficient;
             String variableName = coefficientTable.getModel().getValueAt(i, 0).toString();
             try {
                 variables.add(probNode.getProbNet().getVariable(variableName));
@@ -257,8 +257,6 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         PNEdit edit = new WeibullPotentialEdit(probNode.getProbNet(),
                 potential,
                 variables,
-                constant,
-                shape,
                 coefficients,
                 timeVariable,
                 covarianceMatrix);
@@ -317,7 +315,6 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                     row,
                     column);
         }
-
     }
 
     private class CovarianceTableModel extends DefaultTableModel {
@@ -331,7 +328,6 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         public Class<?> getColumnClass(int columnIndex) {
             return (columnIndex == 0) ? String.class : Double.class;
         }
-
     }
 
     private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
