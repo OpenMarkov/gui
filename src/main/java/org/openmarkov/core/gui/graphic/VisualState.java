@@ -62,6 +62,12 @@ public class VisualState extends VisualElement
      * ,...]).
      */
     public static final Color   EVIDENCE_CASE_4_COLOR = Color.YELLOW;
+
+    /**
+     * Number of decimals
+     */
+    public static final int   NUMBER_OF_DECIMALS = 5;
+    
     /**
      * The VisualNode this State is associated to.
      */
@@ -91,23 +97,9 @@ public class VisualState extends VisualElement
     private List<Boolean>       evidence              = new ArrayList<> ();
 
     /**
-     * Creates a new State.
-     * @param visualNode visualNode to which this State is associated.
-     * @param number order number to be assigned to this State inside the inner
-     *            box.
-     * @param name name of this state.
+     * Formatting string for values shown in the visual state
      */
-    public VisualState (VisualNode visualNode, int number, String name)
-    {
-        this.visualNode = visualNode;
-        this.stateNumber = number;
-        this.stateName = name;
-        stateValues = new ArrayList<Double> (1);
-        stateValues.add (0, 0.0);
-        evidence = new ArrayList<> ();
-        evidence.add (false);
-        currentStateValue = 0;
-    }
+    private String formattingString = "0.";
 
     /**
      * Creates a new State.
@@ -122,13 +114,33 @@ public class VisualState extends VisualElement
         this.visualNode = visualNode;
         this.stateNumber = number;
         this.stateName = name;
-        stateValues = new ArrayList<Double> (1);
+        stateValues = new ArrayList<Double> (numValues);
         for (int i = 0; i < numValues; i++)
         {
-            stateValues.add (i, 0.0);
+            stateValues.add (0.0);
         }
+        evidence = new ArrayList<> ();
+        evidence.add (false);
         currentStateValue = 0;
+        StringBuilder sb = new StringBuilder(formattingString);
+        for(int i=0; i < NUMBER_OF_DECIMALS;++i)
+        {
+            sb.append("0");
+        }
+        formattingString = sb.toString();
     }
+    
+    /**
+     * Creates a new State.
+     * @param visualNode visualNode to which this State is associated.
+     * @param number order number to be assigned to this State inside the inner
+     *            box.
+     * @param name name of this state.
+     */
+    public VisualState (VisualNode visualNode, int number, String name)
+    {
+        this(visualNode, number, name, 1);
+    }    
 
     /**
      * Returns the visualNode to which this sate is associated.
@@ -218,7 +230,7 @@ public class VisualState extends VisualElement
     /**
      * Sets the value of this state for the given position of the array (this
      * position matches the evidence case number). The value is truncated so it
-     * only has four decimals
+     * only has NUMBER_OF_DECIMALS decimals
      * @param caseNumber the position in the array to be established
      * @param value the value to be set
      */
@@ -227,7 +239,8 @@ public class VisualState extends VisualElement
         try
         {
             // Value is currently formatted fixely with 4 decimals
-            double truncatedValue = (Math.rint (value * 10000)) / 10000;
+            double truncatedValue = (Math.rint(value * Math.pow(10, NUMBER_OF_DECIMALS)))
+                    / Math.pow(10, NUMBER_OF_DECIMALS);
             stateValues.set (caseNumber, truncatedValue);
         }
         catch (Exception exc)
@@ -438,9 +451,10 @@ public class VisualState extends VisualElement
                 g.fill (new Rectangle2D.Double (xBar, yFirstBar + (i * InnerBox.BAR_HEIGHT),
                                                 barLength, InnerBox.BAR_HEIGHT));
                 setColorCaseDependent (currentStateValue, g);
+                
                 // Value is currently formatted fixely with 4 decimals
                 DecimalFormat decimalFormat = new DecimalFormat (
-                                                                 "0.0000",
+                                                                 formattingString,
                                                                  new DecimalFormatSymbols (
                                                                                            Locale.US));
                 String formattedValue = String.valueOf (decimalFormat.format (stateValues.get (currentStateValue)));
