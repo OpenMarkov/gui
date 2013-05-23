@@ -692,14 +692,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         if (tablePotential.getPotentialRole() == PotentialRole.UTILITY) {
             variable = tablePotential.getUtilityVariable();
             variables = tablePotential.getVariables();
-        } else if (tablePotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY
-                || tablePotential.getPotentialRole() == PotentialRole.JOINT_PROBABILITY) { // JoinProbability
-                                                                                           // when
-                                                                                           // is
-                                                                                           // gotten
-                                                                                           // from
-                                                                                           // an
-                                                                                           // iciPotential
+        } else { 
             variable = tablePotential.getVariable(0);
             variables = tablePotential.getVariables();
             variables.remove(0);
