@@ -989,12 +989,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                             selectedRow - 1);
                 }
                 // after eliminating row check the lower limit
-                if (selectedRow > 0) {
+                if (selectedRow > 0 && selectedRow < rowCount) {
                     Object lowerBoundSymbol = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                    Object nextUpperBoundSymbol = (lowerBoundSymbol.equals("["))? ")" : "]";
-                    valuesTable.setValueAt(nextUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                    Object nextLowerBound = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                    valuesTable.setValueAt(nextLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
+                    Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("["))? ")" : "]";
+                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+                    Object nextRowLowerBound = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
                 }
             }
         } catch (ConstraintViolationException
