@@ -29,31 +29,21 @@ public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRendere
     {
         super.setCellColors (table, value, isSelected, hasFocus, row, column);
         Color color = new java.awt.Color (255, 72, 72);
-        if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && ValuesTable.FIRST_EDITABLE_COLUMN >= 0
-            && (row >= firstEditableRow))
+        if (column >= ValuesTable.FIRST_EDITABLE_COLUMN && ValuesTable.FIRST_EDITABLE_COLUMN >= 0
+            && row >= firstEditableRow
+            && value instanceof Double)
         {
-            boolean changeColor = true;
+            boolean isMax = true;
+            double doubleValue = (double)value;
+            // Change color if this cell contains optimal policy, i.e. max value
             for (int i = firstEditableRow; i < table.getRowCount (); i++)
             {
                 if (i != row)
                 {
-                    if ((double) table.getValueAt (row, column) > (double) table.getValueAt (i,
-                                                                                             column))
-                    {
-                        changeColor = true;
-                    }
-                    else
-                    {
-                        changeColor = false;
-                        break;
-                    }
-                }
-                else
-                {
-                    continue;
+                    isMax &= doubleValue > (double) table.getValueAt (i, column);
                 }
             }
-            if (changeColor)
+            if (isMax)
             {
                 setBackground (color);
             }

@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -303,23 +302,23 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - <code>NodeWrapper</code> list of the parents
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat(ProbNode properties) {
+    protected Object[][] convertListPotentialsToTableFormat(ProbNode probNode) {
         Object[][] values = null;
         try {
             // mpal
-            PotentialsTablePanelOperations.checkIfNoPotential(properties.getPotentials());
-            values = setValuesTableSize(values, properties);
-            values = setParentsNameInUpperLeftCornerArea(values, properties);
-            values = setParentsStatesInTopArea(values, properties);
-            values = setNodeStatesInLeftArea(values, properties);
-            values = setPotentialDataInCentreArea(values, properties);
+            PotentialsTablePanelOperations.checkIfNoPotential(probNode.getPotentials());
+            values = setValuesTableSize(values, probNode);
+            values = setParentsNameInUpperLeftCornerArea(values, probNode);
+            values = setParentsStatesInTopArea(values, probNode);
+            values = setNodeStatesInLeftArea(values, probNode);
+            values = setPotentialDataInCentreArea(values, probNode);
             if (probNode.getNodeType() != NodeType.UTILITY) {
-                values = setVariableNameInLowerLeftCornerArea(values, properties);
-                values = setVariableStatesInBottomArea(values, properties);
+                values = setVariableNameInLowerLeftCornerArea(values, probNode);
+                values = setVariableStatesInBottomArea(values, probNode);
             }
-            setPosition(setNumberOfPostions(properties.getPotentials()));
+            setPosition(setNumberOfPostions(probNode.getPotentials()));
         } catch (NullListPotentialsException ex) {
-            values = setBlankTable(properties);
+            values = setBlankTable(probNode);
         }
         return values;
     }
@@ -334,18 +333,18 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setValuesTableSize(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setValuesTableSize(Object[][] oldValues, ProbNode probNode) {
         Object[][] values = oldValues;
         int numRows = 0;
         int numColumns = 1; // at least, there is one column for the node names
-        int row = PotentialsTablePanelOperations.calculateFirstEditableRow(properties.getPotentials(),
-                properties);
+        int row = PotentialsTablePanelOperations.calculateFirstEditableRow(probNode.getPotentials(),
+                probNode);
         setBaseIndexForCoordinates(row);
         setFirstEditableRow(row);
-        TablePotential tablePotential = getThisPotential(properties.getPotentials());
+        TablePotential tablePotential = getThisPotential(probNode.getPotentials());
         List<Variable> variablesBeforeReorder = tablePotential.getVariables();
         setVariables(variablesBeforeReorder);
-        if (properties.getNodeType() == NodeType.UTILITY) {
+        if (probNode.getNodeType() == NodeType.UTILITY) {
             setBaseIndexForCoordinates(row - 1);
             numRows = getVariables().size();
             setLastEditableRow(numRows - 1);
@@ -394,17 +393,17 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, ProbNode probNode) {
         Object[][] values = oldValues;
-        ArrayList<Variable> listParents = new ArrayList<Variable>();
+        List<Variable> parents = new ArrayList<Variable>();
         for (Variable variable : getVariables()) {
-            if (!variable.getName().equals(properties.getName())) {
-                listParents.add(variable);
+            if (!variable.getName().equals(probNode.getName())) {
+                parents.add(variable);
             }
         }
-        if ((listParents != null) && (listParents.size() > 0)) {
-            for (int i = 0; i < listParents.size(); i++) {
-                values[i][0] = listParents.get(i);
+        if ((parents != null) && (parents.size() > 0)) {
+            for (int i = 0; i < parents.size(); i++) {
+                values[i][0] = parents.get(parents.size()-i-1);
             }
         }
         return values;
@@ -418,33 +417,27 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, ProbNode probNode) {
         Object[][] values = oldValues;
-        List<Variable> variablesReordered = new ArrayList<Variable>();
-        ListIterator<Variable> it = getVariables().listIterator(getVariables().size());
-        while (it.hasPrevious()) {
-            variablesReordered.add((Variable) it.previous());
-        }
+        List<Variable> variables = getVariables();
         int numColumns = (values.length == 0 ? 0 : values[0].length);
-        State[] states;
-        // 07/07/2010 mpalacios
-        int accumulateStates = 1;
-        int numStates;
-        int numberOfVariables = variablesReordered.size();
-        for (int row = 0; row < numberOfVariables - 1; row++) {
-            numStates = variablesReordered.get(row).getNumStates();
-            states = variablesReordered.get(row).getStates();
-            // states = tablePotential.getVariable(row).getStates();
-            int col = 1;
-            while (col < numColumns) {
+        TablePotential tablePotential = getThisPotential(probNode.getPotentials());
+        int[] offsets = tablePotential.getOffsets();
+        int numStates = probNode.getVariable().getNumStates();
+        int numVariables = getVariables().size();
+        for (int row = 0; row < numVariables - 1; row++) {
+            int variableIndex = numVariables - row - 1;
+            int numRepetitions = offsets[variableIndex] / numStates;
+            State[] states = variables.get(variableIndex).getStates();
+            int column = 1;
+            while (column < numColumns) {
                 for (State state : states) {
-                    for (int i = 1; i <= accumulateStates; i++) {
-                        values[numberOfVariables - row - 2][col] = state.getName();
-                        col++;
+                    for (int i = 0; i < numRepetitions; i++) {
+                        values[row][column] = state.getName();
+                        column++;
                     }
                 }
             }
-            accumulateStates *= numStates;
         }
         return values;
     }
@@ -465,9 +458,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
         } catch (NullPointerException exception) {
             numPositions = 0;
-            // ExceptionsHandler.handleException(
-            // exception, "not enougth memory", false );
-            logger.error("not enougth memory");
+            logger.error("not enough memory");
         }
         setPosition(numPositions);
         return numPositions;
@@ -689,7 +680,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         Variable variable = null;
         EvidenceCase evidence = new EvidenceCase();
         // configuration of all variables
-        if (tablePotential.getPotentialRole() == PotentialRole.UTILITY) {
+        if (tablePotential.getPotentialRole() == PotentialRole.UTILITY 
+                && tablePotential.getUtilityVariable() != null) {
             variable = tablePotential.getUtilityVariable();
             variables = tablePotential.getVariables();
         } else { 
@@ -713,7 +705,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         // order
         int j = 0;
         int end = 0;
-        if (tablePotential.getPotentialRole() == PotentialRole.UTILITY) {
+        if (variable == tablePotential.getUtilityVariable()) {
             end = -1;
         }
         for (int i = configuration.length - 1; i > end; i--) {
