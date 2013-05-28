@@ -419,13 +419,15 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      */
     private Object[][] setParentsStatesInTopArea(Object[][] oldValues, ProbNode probNode) {
         Object[][] values = oldValues;
-        List<Variable> variables = getVariables();
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         TablePotential tablePotential = getThisPotential(probNode.getPotentials());
+        List<Variable> variables = tablePotential.getVariables();
         int[] offsets = tablePotential.getOffsets();
         int numStates = probNode.getVariable().getNumStates();
-        int numVariables = getVariables().size();
-        for (int row = 0; row < numVariables - 1; row++) {
+        int numVariables = tablePotential.getNumVariables();
+        int numParentVariables = (tablePotential.getUtilityVariable() != null) ? tablePotential.getNumVariables()
+                : tablePotential.getNumVariables() - 1;
+        for (int row = 0; row < numParentVariables; row++) {
             int variableIndex = numVariables - row - 1;
             int numRepetitions = offsets[variableIndex] / numStates;
             State[] states = variables.get(variableIndex).getStates();
