@@ -123,9 +123,7 @@ public class NetsIO {
              * network); } else { throw new
              * NotRecognisedNetworkFileExtensionException(fileName); } } catch
              * (IOException ex) { throw new
-             * CanNotWriteNetworkToFileException(fileName); } catch
-             * (NotEnoughMemoryException ex) { throw new
-             * CanNotWriteNetworkToFileException(fileName);
+             * CanNotWriteNetworkToFileException(fileName); } 
              */
         }
         catch (WriterException ex)

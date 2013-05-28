@@ -932,7 +932,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * Method for removing the uncertain values for a certain configuration
      * 
      * @throws WrongCriterionException
-     * @throws NotEnoughMemoryException
      */
     public void removeUncertainty()
             throws WrongCriterionException {

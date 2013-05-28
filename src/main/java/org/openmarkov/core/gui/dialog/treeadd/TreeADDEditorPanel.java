@@ -1229,7 +1229,6 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param ae
      * @param branch
      * @param path
-     * @throws NotEnoughMemoryException
      */
     private void editPotential(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         Object parentPath = path.getParentPath();

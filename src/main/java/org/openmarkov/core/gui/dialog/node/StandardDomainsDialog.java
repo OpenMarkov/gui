@@ -62,7 +62,6 @@ public int requestValues() {
  * before hide the dialog.
  * 
  * @return true if the dialog box can be closed.
- * @throws NotEnoughMemoryException 
  */
 protected boolean doOkClickBeforeHide() {
 	

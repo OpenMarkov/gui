@@ -167,7 +167,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * @param variable
      * @param configuration
      * @param uncertainValues
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @wbp.parser.constructor
      */

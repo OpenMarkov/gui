@@ -100,8 +100,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
 		 * before hide the dialog.
 		 * 
 		 * @return true if the dialog box can be closed.
-		 * @throws NotEnoughMemoryException 
-		 */
+			 */
 		protected boolean doOkClickBeforeHide() {
 			probNet.getPNESupport().closeParenthesis();
 			return true;

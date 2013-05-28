@@ -2081,7 +2081,6 @@ public class EditorPanel extends JPanel
      * approximate implementation. The correct computation is given by a method
      * with the same name, but commented above.
      * @throws NonProjectablePotentialException
-     * @throws NotEnoughMemoryException
      */
     private void calculateMinAndMaxUtilityRanges ()
         throws NonProjectablePotentialException

@@ -87,7 +87,6 @@ public class RevelationArcEditDialog extends OkCancelApplyUndoRedoHorizontalDial
      * This method carries out the actions when the user presses the OK button
      * before hiding the dialog.
      * @return true if all the fields are correct.
-     * @throws NotEnoughMemoryException
      */
     @Override
     protected boolean doOkClickBeforeHide ()

@@ -155,7 +155,6 @@ public class TreeADDCellRenderer extends JPanel
      * @param row
      * @param hasFocus
      * @return
-     * @throws NotEnoughMemoryException
      */
     public Component getTreeCellRendererPotential (JTree tree,
                                                    Potential potential,

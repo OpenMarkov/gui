@@ -94,8 +94,7 @@ public class LinkRestrictionEditDialog extends
 	 * This method carries out the actions when the user presses the OK button
 	 * before hiding the dialog.
 	 * 
-	 * @return true if all the fields are correct.
-	 * @throws NotEnoughMemoryException
+	 * @return true if all the fields are correct.
 	 */
 	@Override
 	protected boolean doOkClickBeforeHide() {

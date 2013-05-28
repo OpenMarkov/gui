@@ -157,7 +157,6 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
      * before hiding the dialog.
      * 
      * @return true if all the fields are correct.
-     * @throws NotEnoughMemoryException
      */
     @Override
     protected boolean doOkClickBeforeHide() {

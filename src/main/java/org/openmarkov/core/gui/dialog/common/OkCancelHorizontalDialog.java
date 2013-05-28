@@ -182,7 +182,6 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
      * before hiding the dialog.
      * 
      * @return true if the dialog box can be closed.
-     * @throws NotEnoughMemoryException
      */
     protected boolean doOkClickBeforeHide() {
 

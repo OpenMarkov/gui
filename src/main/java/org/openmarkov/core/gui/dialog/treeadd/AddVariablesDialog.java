@@ -83,7 +83,6 @@ public class AddVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	 * before hide the dialog.
 	 * 
 	 * @return true if the dialog box can be closed.
-	 * @throws NotEnoughMemoryException 
 	 */
 	protected boolean doOkClickBeforeHide() {
 		

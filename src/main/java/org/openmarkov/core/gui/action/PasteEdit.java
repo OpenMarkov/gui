@@ -50,7 +50,6 @@ public class PasteEdit extends CompoundEdit
     /**
      * Generate edits and does them
      * @throws DoEditException
-     * @throws NotEnoughMemoryException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
      */

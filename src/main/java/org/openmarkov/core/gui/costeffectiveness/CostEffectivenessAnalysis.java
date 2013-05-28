@@ -475,7 +475,6 @@ public class CostEffectivenessAnalysis {
     /**
      * @param costDiscount
      * @param inferenceOptions
-     * @throws NotEnoughMemoryException
      *             It applies the discount to each utility potential
      */
     public static void applyDiscountToUtilityNodes(ProbNet probNet,

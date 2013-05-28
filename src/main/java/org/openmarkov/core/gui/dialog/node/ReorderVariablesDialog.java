@@ -109,7 +109,6 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
      * This method carries out the actions when the user press the Ok button
      * before hide the dialog.
      * @return true if the dialog box can be closed.
-     * @throws NotEnoughMemoryException
      */
     protected boolean doOkClickBeforeHide ()
     {
