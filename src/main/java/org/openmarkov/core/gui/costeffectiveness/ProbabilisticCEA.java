@@ -24,10 +24,11 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
-public class ProbabilisticCEA extends CostEffectivenessAnalysis {
+public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runnable{
 
     private int numSimulations;
     private List<TablePotential> ceaResults;
+    private volatile int progress;
 
     public ProbabilisticCEA(ProbNet probNet, EvidenceCase evidence, double costDiscountRate,
             double effectivenessDiscountRate, int numSlices, int numSimulations,
@@ -35,13 +36,17 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         super(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numSlices,
                 initialValues, transitionTime);
         this.numSimulations = numSimulations;
+    }
+    
+    public void run()
+    {
         MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
         extendEvidence(expandedNetFactory.getExtendedNetwork());
-        this.ceaResults = runProbabilisticAnalysis(expandedNetwork, this.evidence, numSimulations);
+        this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence, numSimulations);
         this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
-        this.frontierInterventions = calculateFrontierInterventions(interventions);
-    }
+        this.frontierInterventions = calculateFrontierInterventions(interventions);        
+    }    
 
     private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
         TablePotential globalUtility = new TablePotential(this.globalUtility.getVariables(), PotentialRole.UTILITY);
@@ -108,8 +113,13 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
         return numSimulations;
     }    
     
+    public int getProgress() {
+        return progress;
+    }
+
     private List<TablePotential> runProbabilisticAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, int numSimulations)
     {
+        progress = 0;
         List<TablePotential> results = new ArrayList<>(numSimulations);
         for (int i = 0; i < numSimulations; ++i)
         {
@@ -117,7 +127,9 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
             applyDiscountToUncertainValues(expandedNetwork, costDiscount, effectivenessDiscount);
             TablePotential simulationResult = runAnalysis(expandedNetwork, evidence);
             results.add(simulationResult);
+            progress = i * 100/numSimulations;
         }
+        progress = 100;
         return results;
     }
     
@@ -169,6 +181,11 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
     }
     public Map<Integer, double[]> calculateCEAC(int maxRatio)
     {
+        if(ceaResults == null)
+        {
+            run();
+        }
+        
         Map<Integer, double[]> results = new LinkedHashMap<>();
         int numInterventions = interventions.size();
         int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
@@ -213,6 +230,11 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
     public Map<Integer, Double> calculateEVPI(int maxRatio,
             int patientsPerAnnum, int lifetime, double discountRate)    {
         Map<Integer, Double> results = new LinkedHashMap<>();
+        
+        if(ceaResults == null)
+        {
+            run();
+        }
         
         // Calculate effective population
         int effectivePopulation = 0;
@@ -281,7 +303,6 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis {
     /**
      * @param simulationIndexVariable
      *            . <code>Variable</code>
-     * @throws NotEnoughMemoryException
      */
     private void sampleProbNet(ProbNet probNet) {
         for (ProbNode probNode : probNet.getProbNodes()) {

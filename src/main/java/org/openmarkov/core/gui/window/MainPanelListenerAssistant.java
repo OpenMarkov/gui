@@ -34,8 +34,8 @@ import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessProgressBar;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
-import org.openmarkov.core.gui.costeffectiveness.ProbabilisticCEA;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
@@ -1283,21 +1283,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
             CostEffectivenessAnalysis costEffectivenessAnalysis = null;
             if (sensitivityAnalysis) {
-                long start = System.currentTimeMillis();
-                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
-                        evidence,
-                        costEffectivenessDialog.getCostDiscount(),
-                        costEffectivenessDialog.getEffectivenessDiscount(),
-                        costEffectivenessDialog.getNumSlices(),
-                        costEffectivenessDialog.getNumSimulations(),
-                        costEffectivenessDialog.getInitialValues(),
-                        costEffectivenessDialog.getTransitionTime());
-
-                long elapsedTimeMillis = System.currentTimeMillis() - start;
-                JOptionPane.showMessageDialog(null, "PSA took "
-                        + (elapsedTimeMillis / 1000)
-                        + " seconds.");
-
+                CostEffectivenessProgressBar ceProgressBar = new CostEffectivenessProgressBar(Utilities.getOwner(mainPanel), probNet, evidence, costEffectivenessDialog);
+                ceProgressBar.setVisible(true);
             } else {
                 costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
                         evidence,
@@ -1306,11 +1293,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                         costEffectivenessDialog.getNumSlices(),
                         costEffectivenessDialog.getInitialValues(),
                         costEffectivenessDialog.getTransitionTime());
+                    JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
+                            costEffectivenessAnalysis);
+                    ceaResultsDialog.setVisible(true);
             }
-            JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
-                    costEffectivenessAnalysis);
-            ceaResultsDialog.setVisible(true);
-
         }
     }
 
