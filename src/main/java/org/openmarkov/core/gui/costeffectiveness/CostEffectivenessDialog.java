@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -83,13 +84,17 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
      */
     public CostEffectivenessDialog(Window owner) {
         super(owner);
-        setLocationRelativeTo(owner);
         // setMinimumSize(new Dimension(250 , 150));
         BorderLayout layout = new BorderLayout(5, 5);
         getComponentsPanel().setLayout(layout);
         getComponentsPanel().add(getNumSlicesPanel(), BorderLayout.NORTH);
         setResizable(false);
         pack();
+        Point parentLocation = owner.getLocation();
+        Dimension parentSize = owner.getSize();
+        int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+        int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+        setLocation(new Point(x, y));
         repaint();
     }
 
@@ -103,7 +108,6 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     public CostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
             boolean isTemporalEvolution) {
         super(owner);
-        setLocationRelativeTo(owner);
         this.initialValues = new HashMap<>();
         List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
         for (ProbNode numericalTemporalNode : temporalNodes) {
@@ -114,6 +118,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         setResizable(false);
         setTitle(probNet.getName(), isTemporalEvolution);
         pack();
+        Point parentLocation = owner.getLocation();
+        Dimension parentSize = owner.getSize();
+        int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+        int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+        setLocation(new Point(x, y));
         repaint();
     }
 
