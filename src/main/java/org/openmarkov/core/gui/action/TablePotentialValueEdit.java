@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openmarkov.core.action.ChangePotentialEdit;
+import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -209,7 +209,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         } else {
             newTable[potentialSelected] = newValue;
         }
-        ChangePotentialEdit changePotentialEdit = new ChangePotentialEdit(probNet,
+        PotentialChangeEdit changePotentialEdit = new PotentialChangeEdit(probNet,
                 oldTablePotential,
                 tablePotential);
         try {

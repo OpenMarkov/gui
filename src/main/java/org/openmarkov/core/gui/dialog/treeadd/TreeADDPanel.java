@@ -37,7 +37,7 @@ public class TreeADDPanel extends PotentialPanel
         setData (probNode);
     }
 
-    public void saveChanges ()
+    public boolean saveChanges ()
     {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit (
                                                                   probNode,
@@ -57,6 +57,7 @@ public class TreeADDPanel extends PotentialPanel
         {
             e.printStackTrace ();
         }
+        return true;
     }
 
     @Override

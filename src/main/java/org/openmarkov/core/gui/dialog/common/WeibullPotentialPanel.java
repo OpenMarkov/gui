@@ -209,7 +209,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         return isValid;
     }
 
-    public void saveChanges() {
+    public boolean saveChanges() {
         WeibullPotential potential = (WeibullPotential) this.probNode.getPotentials().get(0);
         int coeffRowCount = coefficientTable.getModel().getRowCount();
         double[] coefficients = new double[coeffRowCount+2];
@@ -270,6 +270,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 | DoEditException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     @Override
