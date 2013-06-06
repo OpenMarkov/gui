@@ -90,6 +90,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
 
         panel.add(progressBar);
         setTitle("Running PSA...");
+        setIconImage(null);
         add(panel, BorderLayout.PAGE_START);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel);
