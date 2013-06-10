@@ -9,6 +9,8 @@
 package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -17,11 +19,17 @@ import org.openmarkov.core.model.network.ProbNode;
 @SuppressWarnings("serial")
 public abstract class PotentialPanel extends JPanel
 {
+    private List<PanelResizeEventListener> listeners;
 	/**
 	 * If true, values inside the panel will not be editable
 	 */
 	private boolean readOnly;
 	private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment;
+	
+	public PotentialPanel()
+	{
+	    listeners = new ArrayList<>();
+	}
 
     /**
      * Fill the panel with the data from the node
@@ -77,5 +85,24 @@ public abstract class PotentialPanel extends JPanel
 		return commentHTMLScrollPaneNodeProbsComment;
 	}
 	
+	public void suscribePanelResizeEventListener(PanelResizeEventListener listener)
+	{
+	    listeners.add(listener);
+	}
+	
+    public boolean unsuscribePanelResizeEventListener(PanelResizeEventListener listener)
+    {
+        return listeners.remove(listener);
+    }
+    
+    public void notifyPanelResizeEventListeners()
+    {
+        PanelResizeEvent event  = new PanelResizeEvent(this, getSize());
+        for(PanelResizeEventListener listener : listeners)
+        {
+            listener.panelSizeChanged(event);
+        }
+    }
+
     
 }

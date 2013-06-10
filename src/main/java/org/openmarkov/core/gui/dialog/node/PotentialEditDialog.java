@@ -34,6 +34,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.core.gui.dialog.common.PanelResizeEvent;
+import org.openmarkov.core.gui.dialog.common.PanelResizeEventListener;
 import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
@@ -65,7 +67,7 @@ import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeM
  */
 public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     implements
-        ActionListener
+        ActionListener, PanelResizeEventListener
 {
     /**
      * 
@@ -255,6 +257,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                                                                                      potentialFamily,
                                                                                      probNode);
             potentialPanel.setReadOnly (readOnly);
+            potentialPanel.suscribePanelResizeEventListener(this);
         }
         return potentialPanel;
     }
@@ -553,5 +556,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 updatePotentialPanel ();
             }
         }
+    }
+
+    @Override
+    public void panelSizeChanged(PanelResizeEvent event) {
+        pack();
+        repaint();
     }
 }
