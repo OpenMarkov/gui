@@ -76,7 +76,6 @@ public class ExponentialPotentialPanel extends PotentialPanel {
         coefficientTable = new JTable();
         JScrollPane coefficientPanel = new JScrollPane(coefficientTable);
         coefficientPanel.setPreferredSize(new Dimension(250, 100));
-        coefficientTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         coefficientTable.setDefaultRenderer(String.class, new CoefficientTableCellRenderer());
         centerPanel.add(coefficientPanel);
         deterministicPanel.add(centerPanel, BorderLayout.CENTER);
@@ -149,19 +148,13 @@ public class ExponentialPotentialPanel extends PotentialPanel {
         ExponentialHazardPotential oldPotential = (ExponentialHazardPotential) this.probNode.getPotentials().get(0);
         ProbNet probNet = probNode.getProbNet();
         int coeffRowCount = coefficientTable.getModel().getRowCount();
+        String[] covariates = new String[coeffRowCount];
         double[] coefficients = new double[coeffRowCount + 1];
         coefficients[0] = Double.parseDouble(constantText.getText());
-        List<Variable> variables = new ArrayList<>();
-        variables.add(oldPotential.getConditionedVariable());
         for (int i = 0; i < coeffRowCount; ++i) {
             double coefficient = Double.parseDouble(coefficientTable.getModel().getValueAt(i, 1).toString());
-            coefficients[i + 1] = coefficient;
-            String variableName = coefficientTable.getModel().getValueAt(i, 0).toString();
-            try {
-                variables.add(probNet.getVariable(variableName));
-            } catch (ProbNodeNotFoundException e) {
-                e.printStackTrace();
-            }
+            covariates[i] = coefficientTable.getModel().getValueAt(i, 0).toString(); 
+            coefficients[i] = coefficient;
         }
 
         double[] covarianceMatrix = null;
@@ -182,6 +175,7 @@ public class ExponentialPotentialPanel extends PotentialPanel {
 
         ExponentialHazardPotential newPotential = new ExponentialHazardPotential(oldPotential.getVariables(),
                 oldPotential.getPotentialRole(),
+                covariates,
                 coefficients,
                 covarianceMatrix);
         PNEdit edit = new PotentialChangeEdit(probNode.getProbNet(), oldPotential, newPotential);

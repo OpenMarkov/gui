@@ -77,12 +77,18 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     /**
      * This variable enables the buttons to reorder the elements of the table.
      */
-    protected boolean           reorderEnabled;
+    protected boolean           reorderable;
 
     /**
      * Indicates if the data of the table is modifiable.
      */
     private boolean             modifiable;
+    
+    /**
+     * Indicates if the header is shown
+     */
+    private boolean             showHeader;
+    
 
     /**
      * Button to bring one value up.
@@ -120,34 +126,40 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     public KeyTablePanel() {
 
         iconLoader = new IconLoader();
-        reorderEnabled = false;
+        reorderable = false;
         modifiable = false;
+        showHeader = false;
     }
 
     /**
      * This is the default constructor
      * 
-     * @param newColumns
+     * @param columns
      *            array of texts that appear in the header of the columns.
-     * @param newData
+     * @param data
      *            content of the cells.
-     * @param newReorderEnabled
-     *            if true, the elements of the table can be reorder.
-     * @param newModifiable
+     * @param reorderable
+     *            if true, the elements of the table can be reordered.
+     * @param modifiable
      *            if true, the cells of the table (except the first) are
      *            modifiable.
      * @param notifier
      *            - ElementObservable notifier
      */
-    public KeyTablePanel(String[] newColumns, Object[][] newData, boolean newReorderEnabled,
-            boolean newModifiable) {
+    public KeyTablePanel(String[] columns, Object[][] data, boolean reorderable,
+            boolean modifiable, boolean showHeader) {
 
         iconLoader = new IconLoader();
-        columns = newColumns.clone();
-        data = newData.clone();
-        reorderEnabled = newReorderEnabled;
-        modifiable = newModifiable;
-
+        this.columns = columns.clone();
+        this.data = data.clone();
+        this.reorderable = reorderable;
+        this.modifiable = modifiable;
+        this.showHeader = showHeader;
+    }
+    
+    public KeyTablePanel(String[] columns, Object[][] data, boolean reorderable,
+            boolean modifiable) {
+        this(columns, data, reorderable, modifiable, false);
     }
 
     /**
@@ -165,7 +177,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
                 GroupLayout.DEFAULT_SIZE,
                 74,
                 Short.MAX_VALUE)));
-        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(groupLayout.createSequentialGroup().addComponent(getValuesTableScrollPane(),
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addComponent(getValuesTableScrollPane(),
                 GroupLayout.DEFAULT_SIZE, /* 274 */
                 280,
                 Short.MAX_VALUE).addGap(24, 24, 24)).addGroup(GroupLayout.Alignment.LEADING,
@@ -184,9 +196,8 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     protected JScrollPane getValuesTableScrollPane() {
 
         if (valuesTableScrollPane == null) {
-            valuesTableScrollPane = new JScrollPane();
+            valuesTableScrollPane = new JScrollPane(getValuesTable());
             valuesTableScrollPane.setName("KeyTablePanel.valuesTableScrollPane");
-            valuesTableScrollPane.setViewportView(getValuesTable());
         }
         return valuesTableScrollPane;
     }
@@ -199,7 +210,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     public KeyTable getValuesTable() {
 
         if (valuesTable == null) {
-            valuesTable = new KeyTable(getTableModel(), modifiable, true, false);
+            valuesTable = new KeyTable(getTableModel(), modifiable, true, showHeader);
             valuesTable.setName("KeyTablePanel.valuesTable");
             valuesTable.setListSelectionListener(this);
         }
@@ -270,7 +281,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             upValueButton.setText(stringDatabase.getString("Up.Text.Label"));
             upValueButton.setMnemonic(stringDatabase.getString("Up.Text.Mnemonic").charAt(0));
             upValueButton.setIcon(iconLoader.load(IconLoader.ICON_ARROW_UP_ENABLED));
-            upValueButton.setVisible(reorderEnabled);
+            upValueButton.setVisible(reorderable);
             upValueButton.setEnabled(false);
             upValueButton.addActionListener(this);
         }
@@ -290,7 +301,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
             downValueButton.setText(stringDatabase.getString("Down.Text.Label"));
             downValueButton.setMnemonic(stringDatabase.getString("Down.Text.Mnemonic").charAt(0));
             downValueButton.setIcon(iconLoader.load(IconLoader.ICON_ARROW_DOWN_ENABLED));
-            downValueButton.setVisible(reorderEnabled);
+            downValueButton.setVisible(reorderable);
             downValueButton.setEnabled(false);
             downValueButton.addActionListener(this);
         }
@@ -402,21 +413,26 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * Invoked when the button 'remove' is pressed.
      */
     protected void actionPerformedRemoveValue() {
-
+        int selectedRowIndex = valuesTable.getSelectedRow();
+        tableModel.removeRow(selectedRowIndex);
     };
 
     /**
      * Invoked when the button 'up' is pressed.
      */
     protected void actionPerformedUpValue() {
-
+        int selectedRowIndex = valuesTable.getSelectedRow();
+        tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex-1);
+        valuesTable.setRowSelectionInterval(selectedRowIndex-1, selectedRowIndex-1);
     };
 
     /**
      * Invoked when the button 'down' is pressed.
      */
     protected void actionPerformedDownValue() {
-
+        int selectedRowIndex = valuesTable.getSelectedRow();
+        tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex+1);
+        valuesTable.setRowSelectionInterval(selectedRowIndex+1, selectedRowIndex+1);
     };
 
     /**
@@ -463,15 +479,15 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
     }
 
     /**
-     * Cancels the editing in any cell of the table, avoiding its new value is
-     * recorded.
+     * Cancels the editing in any cell of the table, avoiding its new value to
+     * be recorded.
      */
     public void cancelCellEditing() {
 
-        TableCellEditor actualEditor = valuesTable.getCellEditor();
+        TableCellEditor currentEditor = valuesTable.getCellEditor();
 
-        if (actualEditor != null) {
-            actualEditor.cancelCellEditing();
+        if (currentEditor != null) {
+            currentEditor.cancelCellEditing();
         }
     }
 
@@ -480,10 +496,10 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      */
     public void stopCellEditing() {
 
-        TableCellEditor actualEditor = valuesTable.getCellEditor();
+        TableCellEditor currentEditor = valuesTable.getCellEditor();
 
-        if (actualEditor != null) {
-            actualEditor.stopCellEditing();
+        if (currentEditor != null) {
+            currentEditor.stopCellEditing();
         }
     }
 
@@ -492,6 +508,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * 
      * @return the content of the table.
      */
+    @SuppressWarnings("rawtypes")
     public Object[][] getData() {
 
         DefaultTableModel model = (DefaultTableModel) valuesTable.getModel();
@@ -520,7 +537,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      *            new data for the table.
      */
     public void setData(Object[][] newData) {
-
+        tableModel.setDataVector(newData, columns);
     }
 
 }
