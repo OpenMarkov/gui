@@ -14,6 +14,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -27,8 +28,11 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
 
     private Window parent;
     private JProgressBar progressBar;
+    private JLabel elapsedTimeLabel;
+    private JLabel remainingTimeLabel;
     private PSATask         task;
     private ProbabilisticCEA costEffectivenessAnalysis;
+    private long startTime;
 
     class PSATask extends SwingWorker<Void, Void> {
         
@@ -85,10 +89,16 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
         
         JPanel panel = new JPanel(new BorderLayout());
         progressBar = new JProgressBar(0, 100);
+        progressBar.setPreferredSize(new Dimension(200, 20));
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
+        
+        elapsedTimeLabel = new JLabel("Time elapsed: 0 seconds.");
+        remainingTimeLabel = new JLabel("Estimated remaining time: --.");
 
-        panel.add(progressBar);
+        panel.add(elapsedTimeLabel, BorderLayout.NORTH);
+        panel.add(remainingTimeLabel, BorderLayout.CENTER);
+        panel.add(progressBar, BorderLayout.SOUTH);
         setTitle("Running PSA...");
         setIconImage(null);
         add(panel, BorderLayout.PAGE_START);
@@ -140,6 +150,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     {
         task = new PSATask(parent, costEffectivenessAnalysis);
         task.addPropertyChangeListener(this);
+        startTime = System.currentTimeMillis();
         task.execute();
     }
 
@@ -154,6 +165,10 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
             {
                 setVisible(false);
             }
+            long elapsedTime = (System.currentTimeMillis() - startTime)/1000;
+            long remainingTime = (elapsedTime * 100 / progress) - elapsedTime;
+            elapsedTimeLabel.setText("Time elapsed: " + elapsedTime + " seconds.");
+            remainingTimeLabel.setText("Estimated remaining time: " + remainingTime + " seconds.");
         }
     }
 }
