@@ -328,7 +328,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
             // Fill the empty cells with zeros
             for (int i = 1; i < uncertaintyTableModel.getRowCount(); ++i) {
-                for (int j = 1; j < uncertaintyTableModel.getColumnCount(); ++j) {
+                for (int j = 1; j <= i; ++j) {
                     if (uncertaintyTableModel.getValueAt(i, j) == null) {
                         uncertaintyTableModel.setValueAt(0.0, i, j);
                     }
@@ -357,7 +357,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
             
             // Fill the empty cells with zeros
             for (int i = 1; i < uncertaintyTableModel.getRowCount(); ++i) {
-                for (int j = 1; j < uncertaintyTableModel.getColumnCount(); ++j) {
+                for (int j = 1; j <= i; ++j) {
                     if(uncertaintyTableModel.getValueAt(i, j)==null)
                     {
                         uncertaintyTableModel.setValueAt(0.0, i, j);
