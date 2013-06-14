@@ -31,7 +31,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
@@ -142,12 +141,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         Variable timeVariable = potential.getTimeVariable();
         double[] coefficients = potential.getCoefficients();
         String[] covariates = potential.getCovariates();
-        Object[][] data = new Object[covariates.length][2]; 
-        for (int i = 0; i < covariates.length; ++i) {
-            data[i][0] = covariates[i];
-            data[i][1] = coefficients[i];
-        }
-        regressionPanel.setData(data);
+        regressionPanel.setData(potential);
 
         timeVariableComboBox.removeAllItems();
         timeVariableComboBox.addItem("-- No time variable");
@@ -197,15 +191,8 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
     public boolean saveChanges() {
         WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.probNode.getPotentials().get(0);
-        TableModel coefficientTableModel = regressionPanel.getValuesTable().getModel();
-        int coeffRowCount = coefficientTableModel.getRowCount();
-        String[] covariates = new String[coeffRowCount];
-        double[] coefficients = new double[coeffRowCount];
-        for (int i = 0; i < coeffRowCount; ++i) {
-            double coefficient = Double.parseDouble(coefficientTableModel.getValueAt(i, 1).toString());
-            covariates[i] = coefficientTableModel.getValueAt(i, 0).toString();
-            coefficients[i] = coefficient;
-        }
+        String[] covariates = regressionPanel.getCovariates();
+        double[] coefficients = regressionPanel.getCoefficients();
         Variable timeVariable = null;
         String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
         try {
@@ -303,11 +290,9 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 && timeVariableComboBox.getSelectedItem() != null
                 && !timeVariableComboBox.getSelectedItem().equals(selectedTimeVariable)) {
             String oldTimeVariable = selectedTimeVariable;
-            if(timeVariableComboBox.getSelectedIndex() > 0)
-            {
+            if (timeVariableComboBox.getSelectedIndex() > 0) {
                 selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
-            }else
-            {
+            } else {
                 selectedTimeVariable = null;
             }
             Map<String, Double> coefficients = new LinkedHashMap<>();
@@ -332,14 +317,24 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 covariates.add(oldTimeVariable);
             }
 
-            DefaultTableModel uncetaintyTableModel = (DefaultTableModel) uncertaintyTable.getModel();
+            DefaultTableModel uncertaintyTableModel = (DefaultTableModel) uncertaintyTable.getModel();
 
-            uncetaintyTableModel.setRowCount(covariates.size() + 1);
-            uncetaintyTableModel.setColumnCount(covariates.size() + 1);
+            uncertaintyTableModel.setRowCount(covariates.size() + 1);
+            uncertaintyTableModel.setColumnCount(covariates.size() + 1);
             for (int i = 0; i < covariates.size(); ++i) {
-                uncetaintyTableModel.setValueAt(covariates.get(i), i + 1, 0);
-                uncetaintyTableModel.setValueAt(covariates.get(i), 0, i + 1);
+                uncertaintyTableModel.setValueAt(covariates.get(i), i + 1, 0);
+                uncertaintyTableModel.setValueAt(covariates.get(i), 0, i + 1);
             }
+
+            // Fill the empty cells with zeros
+            for (int i = 1; i < uncertaintyTableModel.getRowCount(); ++i) {
+                for (int j = 1; j < uncertaintyTableModel.getColumnCount(); ++j) {
+                    if (uncertaintyTableModel.getValueAt(i, j) == null) {
+                        uncertaintyTableModel.setValueAt(0.0, i, j);
+                    }
+                }
+            }
+
         }
     }
 
@@ -359,6 +354,16 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 uncertaintyTableModel.setValueAt(covariate, i + 1, 0);
                 uncertaintyTableModel.setValueAt(covariate, 0, i + 1);
             }
+            
+            // Fill the empty cells with zeros
+            for (int i = 1; i < uncertaintyTableModel.getRowCount(); ++i) {
+                for (int j = 1; j < uncertaintyTableModel.getColumnCount(); ++j) {
+                    if(uncertaintyTableModel.getValueAt(i, j)==null)
+                    {
+                        uncertaintyTableModel.setValueAt(0.0, i, j);
+                    }
+                }
+            }            
         }
     }
 

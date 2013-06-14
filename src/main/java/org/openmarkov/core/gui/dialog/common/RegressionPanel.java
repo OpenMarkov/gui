@@ -9,24 +9,29 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.openmarkov.core.model.network.potential.RegressionPotential;
+
 
 @SuppressWarnings("serial")
 public class RegressionPanel extends KeyTablePanel {
 
     private List<ActionListener> listeners; 
+    private RegressionPotential potential = null;
     
     public RegressionPanel()
     {
-        
         super(new String[]{"Covariate", "Coefficient"}, new Object[0][2], true, true, true);
         getValuesTable().setDefaultRenderer(String.class, new CoefficientTableCellRenderer());
         listeners = new ArrayList<>();
+        valuesTable.addMouseListener(new CovariatesTableMouseListener());
         initialize();
     }
     
@@ -35,6 +40,15 @@ public class RegressionPanel extends KeyTablePanel {
      */
     @Override
     protected void actionPerformedAddValue() {
+        ExpressionDialog expressionDialog = new ExpressionDialog(null, potential.getVariables());
+        expressionDialog.setVisible(true);
+        if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+            int selectedRow = valuesTable.getSelectedRow();
+            int rowCount = valuesTable.getRowCount();
+            tableModel.addRow(new Object[]{expressionDialog.getExpression(), 0.0});
+            tableModel.moveRow(rowCount, rowCount, selectedRow+1);
+            valuesTable.setRowSelectionInterval(selectedRow+1, selectedRow+1);            
+        }        
         notifyActionListeners(new ActionEvent(this, 1, "Add"));
     };
     
@@ -62,6 +76,55 @@ public class RegressionPanel extends KeyTablePanel {
         notifyActionListeners(new ActionEvent(this, 4, "Down"));
     };    
 
+    public void addActionListener(ActionListener listener)
+    {
+        listeners.add(listener);
+    }
+    
+    public boolean removeActionListener(ActionListener listener)
+    {
+        return listeners.remove(listener);
+    }
+    
+    private void notifyActionListeners(ActionEvent event)
+    {
+        for(ActionListener listener : listeners)
+        {
+            listener.actionPerformed(event);
+        }
+    }
+    
+    public void setData(RegressionPotential potential) {
+        this.potential = potential;
+        double[] coefficients = potential.getCoefficients();
+        String[] covariates = potential.getCovariates();
+        Object[][] data = new Object[covariates.length][2]; 
+        for (int i = 0; i < covariates.length; ++i) {
+            data[i][0] = covariates[i];
+            data[i][1] = coefficients[i];
+        }
+        setData(data);
+    }    
+    
+    public double[] getCoefficients()
+    {
+        int rowCount = tableModel.getRowCount();
+        double[] coefficients = new double[rowCount];
+        for (int i = 0; i < rowCount; ++i) {
+            coefficients[i] = Double.parseDouble(tableModel.getValueAt(i, 1).toString());
+        }
+        return coefficients;
+    }
+    
+    public String[] getCovariates() {
+        int rowCount = tableModel.getRowCount();
+        String[] covariates = new String[rowCount];
+        for (int i = 0; i < rowCount; ++i) {
+            covariates[i] = tableModel.getValueAt(i, 0).toString();
+        }
+        return covariates;
+    }    
+    
     private class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table,
@@ -85,22 +148,19 @@ public class RegressionPanel extends KeyTablePanel {
         }
     }
     
-    public void addActionListener(ActionListener listener)
-    {
-        listeners.add(listener);
-    }
-    
-    public boolean removeActionListener(ActionListener listener)
-    {
-        return listeners.remove(listener);
-    }
-    
-    private void notifyActionListeners(ActionEvent event)
-    {
-        for(ActionListener listener : listeners)
-        {
-            listener.actionPerformed(event);
+    private class CovariatesTableMouseListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2 && valuesTable.getSelectedColumn() == 0) {
+                int selectedRow = valuesTable.getSelectedRow();
+                String covariate = tableModel.getValueAt(selectedRow, 0).toString();
+                ExpressionDialog expressionDialog = new ExpressionDialog(null, potential.getVariables(), covariate);
+                expressionDialog.setVisible(true);
+                if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+                    tableModel.setValueAt(expressionDialog.getExpression(), selectedRow, 0);
+                }
+            }
         }
     }
-    
+
 }
