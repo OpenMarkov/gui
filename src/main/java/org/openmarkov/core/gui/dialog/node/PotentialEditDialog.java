@@ -32,6 +32,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.dialog.common.PanelResizeEvent;
@@ -112,6 +113,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      */
     private boolean              readOnly;
     private JButton              reorderVariablesButton;
+    
+    private CommentHTMLScrollPane commentPane;
+    
 
     /**
      * Creates the dialog.
@@ -127,6 +131,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         // TODO create PNESupport
         probNode.getProbNet ().getPNESupport ().openParenthesis ();
         initialize ();
+        List<Potential> potentials = probNode.getPotentials();
+        if (!potentials.isEmpty()
+                && potentials.get(0).getComment() != null
+                && !potentials.get(0).getComment().isEmpty())        {
+            commentPane.setCommentHTMLTextPaneText(potentials.get(0).getComment());
+        }
         Toolkit toolkit = Toolkit.getDefaultToolkit ();
         Dimension screenSize = toolkit.getScreenSize ();
         Rectangle bounds = owner.getBounds ();
@@ -135,14 +145,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         // center point of the owner window
         int x = bounds.x / 2 - width / 2;
         int y = bounds.y / 2 - height / 2;
-        /*
-         * int x = bounds.x/2 - 750/2; int y = bounds.y/2 - 450/2;
-         */
         this.setBounds (x, y, width, height);
-        // this.setBounds(x, y, 750, 450);
-        setLocationRelativeTo (owner);
+        setLocationRelativeTo (null);
         setMinimumSize (new Dimension (width, height / 2));
-        // setMaximumSize(new Dimension( 180,40));
         setResizable (true);
         pack ();
     }
@@ -189,6 +194,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             getReorderVariablesButton ().setVisible (false);
             getReorderVariablesButton ().setEnabled (false);
         }
+        getComponentsPanel ().add(getCommentPane(),BorderLayout.SOUTH);
+
     }
 
     /**
@@ -226,7 +233,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 {
                     public void actionPerformed (java.awt.event.ActionEvent evt)
                     {
-                        potentialTypeComboBoxActionPerformed (evt);
+                        potentialTypeChanged (evt);
                     }
                 });
             potentialTypeComboBox.setEnabled (!readOnly);
@@ -359,6 +366,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         }
         return reorderVariablesButton;
     }
+    
+    /**
+     * This method initializes getCommentPane
+     * 
+     * @return a new comment HTML scroll pane.
+     */
+    private CommentHTMLScrollPane getCommentPane() {
+
+        if (commentPane == null) {
+            commentPane = new CommentHTMLScrollPane();
+            commentPane.setName("commentPane");
+            commentPane.setPreferredSize(new Dimension(10, 30));
+        }
+        return commentPane;
+    }  
 
     /**
      * @return PolicyTypePanel with three radio buttons with the types of
@@ -373,7 +395,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         return pnlPolicyType;
     }
 
-    protected void potentialTypeComboBoxActionPerformed (ActionEvent evt)
+    protected void potentialTypeChanged (ActionEvent evt)
     {
         String potentialType = (String) potentialTypeComboBox.getSelectedItem ();
         if (!previouslySelectedPotentialType.equals (potentialType))
@@ -419,6 +441,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             ((ICIPotentialsTablePanel) getPotentialPanel ()).getICIValuesTable ().stopCellEditing ();
         }
         getPotentialPanel ().saveChanges ();
+        if(commentPane.isChanged())
+        {
+            probNode.getPotentials().get(0).setComment(commentPane.getCommentText());
+        }
         probNode.getProbNet ().getPNESupport ().closeParenthesis ();
         return true;
     }
@@ -557,10 +583,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             }
         }
     }
-
+    
     @Override
     public void panelSizeChanged(PanelResizeEvent event) {
         pack();
         repaint();
     }
+
 }

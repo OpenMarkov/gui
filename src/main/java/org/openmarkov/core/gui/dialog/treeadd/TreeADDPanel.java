@@ -71,7 +71,6 @@ public class TreeADDPanel extends PotentialPanel
         // treeADDController.setMaximumSize(new Dimension(10, 10));
         // treeADDController.setPreferredSize(new Dimension(10, 10));
         add (treeADDController, BorderLayout.CENTER);
-        add (getCommentHTMLScrollPaneNodeDefinitionComment (), BorderLayout.SOUTH);
         setName ("nodeTreeADDPotentialPanel");
         setBackground (Color.blue);
         // nodeADDPotentialPanel.setNewNode(newNode);

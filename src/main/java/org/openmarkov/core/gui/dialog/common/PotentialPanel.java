@@ -8,7 +8,6 @@
 */
 package org.openmarkov.core.gui.dialog.common;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ public abstract class PotentialPanel extends JPanel
 	 * If true, values inside the panel will not be editable
 	 */
 	private boolean readOnly;
-	private CommentHTMLScrollPane commentHTMLScrollPaneNodeProbsComment;
 	
 	public PotentialPanel()
 	{
@@ -65,24 +63,6 @@ public abstract class PotentialPanel extends JPanel
 	 */
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
-	}
-	
-	
-	/**
-	 * This method initializes commentHTMLScrollPaneNodeDefinitionComment
-	 * 
-	 * @return a new comment HTML scroll pane.
-	 */
-	public CommentHTMLScrollPane getCommentHTMLScrollPaneNodeDefinitionComment() {
-
-		if (commentHTMLScrollPaneNodeProbsComment == null) {
-			commentHTMLScrollPaneNodeProbsComment = new CommentHTMLScrollPane();
-			commentHTMLScrollPaneNodeProbsComment.setName( 
-					"commentHTMLScrollPaneNodeProbsComment" );
-			commentHTMLScrollPaneNodeProbsComment.setPreferredSize(new Dimension(10, 30));
-			
-		}
-		return commentHTMLScrollPaneNodeProbsComment;
 	}
 	
 	public void suscribePanelResizeEventListener(PanelResizeEventListener listener)

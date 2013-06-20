@@ -134,6 +134,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
             State state = probNode.getVariable().getStates()[selectedIndex];
             newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), state);
         }
+        newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
         try {
             probNet.doEdit(edit);

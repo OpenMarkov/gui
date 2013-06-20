@@ -101,7 +101,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         setData(probNode);
         setLayout(new BorderLayout());
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
-        add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
         repaint();
         // add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
     }

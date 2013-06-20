@@ -68,7 +68,6 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         setLayout(new BorderLayout());
         add(getICIOptionPanel(), BorderLayout.NORTH);
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
-        add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
         showValuesTable(true);
         setData(probNode);
         repaint();

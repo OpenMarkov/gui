@@ -57,7 +57,6 @@ public class CostEffectivenessAnalysisPane extends JScrollPane
         dummyNode.setPotentials (potentials);
         
         CPTablePanel cpTablePanel = new CPTablePanel (dummyNode);
-        cpTablePanel.getCommentHTMLScrollPaneNodeDefinitionComment ().setVisible (false);
         JTable table = cpTablePanel.getValuesTable ();
 
         // Adjust column sizes

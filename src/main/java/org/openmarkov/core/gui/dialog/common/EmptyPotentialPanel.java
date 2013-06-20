@@ -16,8 +16,6 @@ public class EmptyPotentialPanel extends PotentialPanel
     public EmptyPotentialPanel(ProbNode probNode)
     {
     	setLayout(new BorderLayout());
-    	//add( new JPanel(), BorderLayout.CENTER );
-    	add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
     }
 
     @Override

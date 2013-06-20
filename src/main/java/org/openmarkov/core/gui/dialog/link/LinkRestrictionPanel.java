@@ -64,7 +64,6 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		setData(probNode1, probNode2);
 		setLayout(new BorderLayout());
 		add(this.getValuesTableScrollPane(), BorderLayout.CENTER);
-		add(getCommentHTMLScrollPaneNodeDefinitionComment(), BorderLayout.SOUTH);
 	}
 
 	/**
