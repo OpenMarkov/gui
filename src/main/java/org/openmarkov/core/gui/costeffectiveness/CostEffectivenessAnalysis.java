@@ -34,7 +34,6 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.PotentialType;
-import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -701,20 +700,10 @@ public class CostEffectivenessAnalysis {
             if (utilityVariable.isTemporal()) {
                 try {
                     List<Potential> projectedPotentials = new ArrayList<>();
-                    Potential potentialToBeProjected = null;
                     List<Potential> potentials = utilityProbNode.getPotentials();
                     for (Potential potential : potentials) {
-                        if (potential instanceof SameAsPrevious) {
-                            List<Variable> variables = potential.getVariables();
-                            potentialToBeProjected = (((SameAsPrevious) potential).getOriginalPotential()).copy();
-                            potentialToBeProjected.setVariables(variables);
-                            potentialToBeProjected.setUtilityVariable(potential.getUtilityVariable());
-                        } else {
-                            potentialToBeProjected = potential;
-                        }
-                        List<TablePotential> projectedTablePotentials = potentialToBeProjected.tableProject(evidence,
-                                inferenceOptions);
-                        projectedPotentials.addAll(projectedTablePotentials);
+                        projectedPotentials.addAll(potential.tableProject(evidence,
+                                inferenceOptions));
                     }
                     utilityProbNode.setPotentials(projectedPotentials);
 
