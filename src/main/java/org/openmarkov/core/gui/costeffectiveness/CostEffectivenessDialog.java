@@ -48,32 +48,32 @@ import org.openmarkov.core.model.network.Variable;
  */
 public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener,
         FocusListener {
-    private static final long serialVersionUID = 1L;
-    private JLabel costDiscountLabel;
-    private JLabel effectivenessDiscountLabel;
-    private JTextField costDiscountTextField;
-    private JTextField effectivenessDiscountTextField;
-    private Double costDiscount;
-    private Double effectivenessDiscount;
-    private Integer simulationsNumber;
-    private JLabel numSlicesLabel;
-    private JTextField numSlicesTextField;
-    private Integer numSlices;
-    private JRadioButton beginningOfCycleButton;
-    private JRadioButton endOfCycleButton;
-    private JRadioButton halfCycleButton;
-    private ButtonGroup transitionsButtonGroup;
-    private JPanel transitionsPanel;
-    private JRadioButton instantButton;
-    private JRadioButton cumulativeButton;
-    private ButtonGroup instantOrCumulativeButtonGroup;
-    private JPanel instantOrCumulativePanel;
-    private boolean isCumulative = false;
-    private JPanel numSlicesPanel;
-    private JLabel numSimulationsLabel;
-    private Integer numSimulations;
-    private JTextField numSimulationsTextField;
-    private Map<Variable, Double> initialValues;
+    private static final long       serialVersionUID       = 1L;
+    private JLabel                  costDiscountLabel;
+    private JLabel                  effectivenessDiscountLabel;
+    private JTextField              costDiscountTextField;
+    private JTextField              effectivenessDiscountTextField;
+    private Double                  costDiscount;
+    private Double                  effectivenessDiscount;
+    private Integer                 simulationsNumber;
+    private JLabel                  numSlicesLabel;
+    private JTextField              numSlicesTextField;
+    private Integer                 numSlices;
+    private JRadioButton            beginningOfCycleButton;
+    private JRadioButton            endOfCycleButton;
+    private JRadioButton            halfCycleButton;
+    private ButtonGroup             transitionsButtonGroup;
+    private JPanel                  transitionsPanel;
+    private JRadioButton            instantButton;
+    private JRadioButton            cumulativeButton;
+    private ButtonGroup             instantOrCumulativeButtonGroup;
+    private JPanel                  instantOrCumulativePanel;
+    private boolean                 isCumulative           = false;
+    private JPanel                  numSlicesPanel;
+    private JLabel                  numSimulationsLabel;
+    private Integer                 numSimulations;
+    private JTextField              numSimulationsTextField;
+    private Map<Variable, Double>   initialValues;
     private Map<String, JTextField> initialValueComponents = new HashMap<>();
 
     /**
@@ -111,8 +111,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         this.initialValues = new HashMap<>();
         List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
         for (ProbNode numericalTemporalNode : temporalNodes) {
-            initialValues.put(numericalTemporalNode.getVariable(), numericalTemporalNode
-                    .getVariable().getPartitionedInterval().getMin());
+            initialValues.put(numericalTemporalNode.getVariable(),
+                    numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
         }
         initialize(sensitivityAnalysis, isTemporalEvolution);
         setResizable(false);
@@ -207,8 +207,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JLabel getJLabelNumSlices() {
         if (numSlicesLabel == null) {
-            numSlicesLabel = new JLabel(
-                    stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
+            numSlicesLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
         }
         return numSlicesLabel;
     }
@@ -241,8 +240,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JLabel getEffectivenessDiscountLabel() {
         if (effectivenessDiscountLabel == null) {
-            effectivenessDiscountLabel = new JLabel(
-                    stringDatabase.getString("CostEffectiveness.Effectiveness"));
+            effectivenessDiscountLabel = new JLabel(stringDatabase.getString("CostEffectiveness.Effectiveness"));
         }
         return effectivenessDiscountLabel;
     }
@@ -265,8 +263,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JRadioButton getInstantValuesButton() {
         if (instantButton == null) {
-            instantButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.TemporalEvolution.InstantValues"), true);
+            instantButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.TemporalEvolution.InstantValues"),
+                    true);
             instantButton.addItemListener(this);
         }
         return instantButton;
@@ -274,8 +272,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JRadioButton getCumulativeValuesButton() {
         if (cumulativeButton == null) {
-            cumulativeButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.TemporalEvolution.CumulativeValues"), false);
+            cumulativeButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.TemporalEvolution.CumulativeValues"),
+                    false);
             cumulativeButton.addItemListener(this);
         }
         return cumulativeButton;
@@ -294,8 +292,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         if (instantOrCumulativePanel == null) {
             instantOrCumulativePanel = new JPanel();
             instantOrCumulativePanel.setLayout(new GridLayout(2, 1));
-            instantOrCumulativePanel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEtchedBorder(),
+            instantOrCumulativePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                     stringDatabase.getString("CostEffectiveness.TemporalEvolution.ValueType")));
             instantOrCumulativePanel.setName("instantOrAccumulativePanel");
             initInstantOrCumulativeButtonGroup();
@@ -307,8 +304,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JRadioButton getBeginningOfCycleButton() {
         if (beginningOfCycleButton == null) {
-            beginningOfCycleButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.BeginningOfCycle"), true);
+            beginningOfCycleButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.BeginningOfCycle"),
+                    true);
             beginningOfCycleButton.addItemListener(this);
         }
         return beginningOfCycleButton;
@@ -316,8 +313,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JRadioButton getEndOfCycleButton() {
         if (endOfCycleButton == null) {
-            endOfCycleButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.EndOfCycle"), true);
+            endOfCycleButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.EndOfCycle"),
+                    true);
             endOfCycleButton.addItemListener(this);
         }
         return endOfCycleButton;
@@ -325,8 +322,8 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     private JRadioButton getHalfCycleButton() {
         if (halfCycleButton == null) {
-            halfCycleButton = new JRadioButton(
-                    stringDatabase.getString("CostEffectiveness.HalfCycle"), true);
+            halfCycleButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.HalfCycle"),
+                    true);
             halfCycleButton.addItemListener(this);
         }
         return halfCycleButton;
@@ -363,13 +360,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
 
     @Override
     protected boolean doOkClickBeforeHide() {
-        boolean allValid = checkTextFieldsValidity();
+        boolean allValid = checkTextFieldValidity(getNumSlicesTextField());
+        numSlices = Integer.valueOf(getNumSlicesTextField().getText());
+        allValid &= checkInitialValuesValidity();
         if (allValid) {
             numSlices = Integer.valueOf(getNumSlicesTextField().getText());
-            costDiscount = Double.valueOf(getCostDiscountTextField().getText());
-            effectivenessDiscount = Double.valueOf(getEffectivenessDiscountTextField().getText());
-            if(numSimulationsTextField != null)
-            {
+            if (getCostDiscountTextField() != null) {
+                costDiscount = Double.valueOf(getCostDiscountTextField().getText());
+            }
+            if (getEffectivenessDiscountTextField() != null) {
+                effectivenessDiscount = Double.valueOf(getEffectivenessDiscountTextField().getText());
+            }
+            if (numSimulationsTextField != null) {
                 simulationsNumber = Integer.valueOf(numSimulationsTextField.getText());
             }
         }
@@ -422,16 +424,18 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     }
 
     private void setTitle(String netName, boolean isTemporalEvolution) {
-        String title = stringDatabase
-                .getString(((isTemporalEvolution) ? "CostEffectiveness.TemporalEvolution"
-                        : "CostEffectiveness.Analysis") + ".Label");
+        String title = stringDatabase.getString(((isTemporalEvolution) ? "CostEffectiveness.TemporalEvolution"
+                : "CostEffectiveness.Analysis")
+                + ".Label");
         super.setTitle(title + " - " + FilenameUtils.getBaseName(netName));
     }
 
-    private boolean checkTextFieldsValidity() {
+    private boolean checkInitialValuesValidity() {
         boolean allValid = true;
-        for (JTextField numericTemporalField : initialValueComponents.values()) {
-            allValid &= checkTextFieldValidity(numericTemporalField);
+        if (initialValueComponents != null) {
+            for (JTextField numericTemporalField : initialValueComponents.values()) {
+                allValid &= checkTextFieldValidity(numericTemporalField);
+            }
         }
         return allValid;
     }
@@ -443,50 +447,46 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             boolean numSlicesDefined = getNumSlicesTextField().getText() != null;
             int numSlices = (numSlicesDefined) ? Integer.valueOf(getNumSlicesTextField().getText())
                     : -1;
-            for (Variable numericTemporalVariable : initialValues.keySet()) {
-                PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
-                double numericValue = Double.parseDouble(initialValueComponents.get(
-                        numericTemporalVariable.getName()).getText());
-                double timeHorizon = numericValue + numSlices;
-                if (numSlicesDefined) {
-                    if ((!interval.isRightClosed() && timeHorizon >= interval.getMax())
-                            || timeHorizon > interval.getMax()) {
-                        JOptionPane.showMessageDialog(
-                                this.getParent(),
+            if (initialValues != null) {
+                for (Variable numericTemporalVariable : initialValues.keySet()) {
+                    PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
+                    double numericValue = Double.parseDouble(initialValueComponents.get(numericTemporalVariable.getName()).getText());
+                    double timeHorizon = numericValue + numSlices;
+                    if (numSlicesDefined) {
+                        if ((!interval.isRightClosed() && timeHorizon >= interval.getMax())
+                                || timeHorizon > interval.getMax()) {
+                            JOptionPane.showMessageDialog(this.getParent(),
+                                    numericTemporalVariable.getBaseName()
+                                            + " "
+                                            + stringDatabase.getString("CostEffectiveness.ExceedsTimeHorizon"));
+                            valid = false;
+                        }
+                    }
+                    if ((!interval.isLeftClosed() && numericValue <= interval.getMin())
+                            || numericValue < interval.getMin()) {
+                        JOptionPane.showMessageDialog(this.getParent(),
                                 numericTemporalVariable.getBaseName()
                                         + " "
-                                        + stringDatabase
-                                                .getString("CostEffectiveness.ExceedsTimeHorizon"));
+                                        + stringDatabase.getString("CostEffectiveness.VariableTooLow"));
                         valid = false;
                     }
+                    if (valid) {
+                        initialValues.put(numericTemporalVariable, numericValue);
+                    }
+                    initialValueComponents.get(numericTemporalVariable.getName()).setText(""
+                            + numericValue);
                 }
-                if ((!interval.isLeftClosed() && numericValue <= interval.getMin())
-                        || numericValue < interval.getMin()) {
-                    JOptionPane.showMessageDialog(
-                            this.getParent(),
-                            numericTemporalVariable.getBaseName() + " "
-                                    + stringDatabase.getString("CostEffectiveness.VariableTooLow"));
-                    valid = false;
-                }
-                if (valid) {
-                    initialValues.put(numericTemporalVariable, numericValue);
-                }
-                initialValueComponents.get(numericTemporalVariable.getName()).setText(
-                        "" + numericValue);
             }
             if (valid) {
                 this.numSlices = numSlices;
             }
             getNumSlicesTextField().setText("" + this.numSlices);
         }
-        if(sourceTextField.equals(numSimulationsTextField))
-        {
-            try
-            {
+        if (sourceTextField.equals(numSimulationsTextField)) {
+            try {
                 int newValue = Integer.parseInt(numSimulationsTextField.getText());
                 this.numSimulations = newValue;
-            }catch(NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 valid = false;
             }
         }
