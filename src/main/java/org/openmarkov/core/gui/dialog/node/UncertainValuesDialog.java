@@ -32,6 +32,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.openmarkov.core.exception.ExceptionUncertainValuesDialogEdition;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
@@ -252,7 +253,12 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             TablePotential potential)
             throws WrongCriterionException {
         UncertainValue[] uncertainTable = potential.getUncertaintyTable();
-        TablePotential projectedPotential = potential.tableProject(configuration, null).get(0);
+        TablePotential projectedPotential = null;
+        try {
+            projectedPotential = potential.tableProject(configuration, null).get(0);
+        } catch (NonProjectablePotentialException e) {
+            e.printStackTrace();
+        }
         UncertainValue[] projectedUncertainTable = projectedPotential.getUncertaintyTable();
         // Get the table of uncertain values
         if (!hasUncertainValues(projectedUncertainTable)) {
