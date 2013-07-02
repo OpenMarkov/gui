@@ -121,7 +121,7 @@ public class ICIOptionsPanelTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addVariable(D, NodeType.DECISION);
+		simpleProbNet.addProbNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);

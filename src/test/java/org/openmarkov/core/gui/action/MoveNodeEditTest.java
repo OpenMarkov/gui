@@ -65,11 +65,11 @@ public class MoveNodeEditTest {
 		variableA = new Variable("A");
 		variableB = new Variable("B");
 		
-		node1 = probNet.addVariable(variableA, NodeType.CHANCE);
+		node1 = probNet.addProbNode(variableA, NodeType.CHANCE);
 	
 		node1.getNode().setCoordinateX(100.0);
 		node1.getNode().setCoordinateY(150.0);
-		node2 = probNet.addVariable(variableB, NodeType.DECISION);
+		node2 = probNet.addProbNode(variableB, NodeType.DECISION);
 		node2.getNode().setCoordinateX(57.0);
 		node2.getNode().setCoordinateY(49.0);
 		
