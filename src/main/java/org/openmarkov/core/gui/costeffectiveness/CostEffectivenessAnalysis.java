@@ -27,6 +27,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
@@ -405,6 +406,9 @@ public class CostEffectivenessAnalysis {
         // Extend evidence
         extendEvidence(expandedNetwork, evidence);
 
+        // Convert numeric variables 
+        expandedNetwork = ProbNetOperations.convertNumericalVariablesToFS(expandedNetwork, evidence);
+        
         // Remove super value nodes
         expandedNetwork = BasicOperations.removeSuperValueNodes(expandedNetwork, evidence);
 
@@ -534,7 +538,8 @@ public class CostEffectivenessAnalysis {
             Variable firstSliceVariable = firstSliceNode.getVariable();
             if (firstSliceVariable.isTemporal()
                     && firstSliceVariable.getVariableType() == VariableType.NUMERIC
-                    && firstSliceVariable.getTimeSlice() == 0) {
+                    && firstSliceVariable.getTimeSlice() == 0
+                    && (firstSliceNode.getPotentials().isEmpty() || firstSliceNode.getPotentials().get(0) instanceof UniformPotential)) {
                 // look for the second slice to check if it has a
                 // CycleLengthShift potential
                 for (ProbNode secondSliceNode : probNodes) {
