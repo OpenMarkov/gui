@@ -153,23 +153,26 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         discountTitlePanel.add(discountsPanel);
         otherPanel.add(discountTitlePanel, BorderLayout.SOUTH);
         panel.add(otherPanel, BorderLayout.NORTH);
-        JPanel initialValuesPanel = new JPanel();
-        initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
-        initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        for (Variable numericTemporalVariable : initialValues.keySet()) {
-            JPanel initialValuePanel = new JPanel();
-            JLabel label = new JLabel(numericTemporalVariable.getName());
-            JTextField textField = new JTextField(10);
-            textField.setName(numericTemporalVariable.getName());
-            textField.setText("" + initialValues.get(numericTemporalVariable));
-            textField.addFocusListener(this);
-            initialValuePanel.add(label);
-            initialValuePanel.add(textField);
-            initialValueComponents.put(numericTemporalVariable.getName(), textField);
-            initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
-            initialValuesPanel.add(initialValuePanel);
+        if(!initialValues.isEmpty())
+        {
+	        JPanel initialValuesPanel = new JPanel();
+	        initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
+	        initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+	        for (Variable numericTemporalVariable : initialValues.keySet()) {
+	            JPanel initialValuePanel = new JPanel();
+	            JLabel label = new JLabel(numericTemporalVariable.getName());
+	            JTextField textField = new JTextField(10);
+	            textField.setName(numericTemporalVariable.getName());
+	            textField.setText("" + initialValues.get(numericTemporalVariable));
+	            textField.addFocusListener(this);
+	            initialValuePanel.add(label);
+	            initialValuePanel.add(textField);
+	            initialValueComponents.put(numericTemporalVariable.getName(), textField);
+	            initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
+	            initialValuesPanel.add(initialValuePanel);
+	        }
+	        panel.add(initialValuesPanel, BorderLayout.CENTER);
         }
-        panel.add(initialValuesPanel, BorderLayout.CENTER);
         getComponentsPanel().setLayout(new BorderLayout(20, 0));
         getComponentsPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         getComponentsPanel().add(panel, BorderLayout.NORTH);
