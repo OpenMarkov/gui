@@ -43,12 +43,21 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
         extendEvidence(expandedNetFactory.getExtendedNetwork());
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence, numSimulations);
+        reorderVariablesInPotentials(ceaResults);
         this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
         this.frontierInterventions = calculateFrontierInterventions(interventions);        
     }    
 
-    private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
+    private void reorderVariablesInPotentials(List<TablePotential> ceaResults) {
+		for(int i=0; i<ceaResults.size(); ++i)
+		{
+            TablePotential reorderedPotential = reorderVariables(ceaResults.get(i));
+            ceaResults.set(i, reorderedPotential);
+		}
+	}
+
+	private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
         TablePotential globalUtility = new TablePotential(this.globalUtility.getVariables(), PotentialRole.UTILITY);
         double[] values = globalUtility.values;
         for(TablePotential simulationResult : ceaResults)
@@ -91,8 +100,6 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         // Gather data
         for(TablePotential simulationResult : results)
         {
-            simulationResult = reorderVariables(simulationResult);
- 
             // Gather cost-effectiveness data
             double[] values = simulationResult.values;
             for (int i = 0; i*2 < values.length; i++) {

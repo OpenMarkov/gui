@@ -257,13 +257,12 @@ public class CostEffectivenessAnalysis {
         } catch (NotEvaluableNetworkException e1) {
             e1.printStackTrace();
         }
-        return globalUtility;
+        return reorderVariables(globalUtility);
     }
 
     private List<Intervention> createInterventions(TablePotential globalUtility) {
         // Reorder variables to force decision criteria to be the conditioned
         // variable
-        globalUtility = reorderVariables(globalUtility);
         List<Intervention> interventions = new ArrayList<>();
         int[] dimensions = TablePotential.calculateDimensions(globalUtility.getVariables());
         List<Variable> decisions = globalUtility.getVariables();
