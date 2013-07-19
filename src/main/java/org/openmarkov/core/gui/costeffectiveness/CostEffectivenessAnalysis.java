@@ -86,7 +86,7 @@ public class CostEffectivenessAnalysis {
         this.frontierInterventions = calculateICERsOfFrontier(this.frontierInterventions);
     }
 
-    public HashMap<Variable, TablePotential> traceTemporalEvolution(Variable variableOfInterest)
+    public Map<Variable, TablePotential> traceTemporalEvolution(Variable variableOfInterest)
             throws ImposedPoliciesException {
         List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
         // check if all decision nodes have an imposed policy,
@@ -104,6 +104,7 @@ public class CostEffectivenessAnalysis {
                 numSlices,
                 evidence,
                 transitionTime);
+        translateMonthlyUtilities(expandedNetwork);
         applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
         String baseName = variableOfInterest.getBaseName();
         List<Variable> variablesOfInterest = new ArrayList<>();
@@ -206,6 +207,7 @@ public class CostEffectivenessAnalysis {
         MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
         ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
         expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, evidence, transitionTime);
+        translateMonthlyUtilities(expandedNetwork);
         applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
         return expandedNetwork;
     }
@@ -474,6 +476,34 @@ public class CostEffectivenessAnalysis {
         return expandedNetwork;
     }
 
+
+    public static void translateMonthlyUtilities(ProbNet probNet) {
+
+        // apply discount rate for all temporal utility nodes in the expanded
+        // network
+        List<ProbNode> utilityExpandedNodes = probNet.getProbNodes(NodeType.UTILITY);
+        for (ProbNode utilityProbNode : utilityExpandedNodes) {
+        	if(utilityProbNode.getVariable().getUnit().string.equals("months"))
+        	{
+        		translateMonthlyUtilityPotential(utilityProbNode.getPotentials().get(0));
+        	}
+        }
+    }
+
+    public static void translateMonthlyUtilityPotential(Potential potential) {
+        if (potential instanceof TablePotential) {
+            double[] potentialValues = ((TablePotential) potential).getValues();
+            for (int j = 0; j < potentialValues.length; j++) {
+                potentialValues[j] = potentialValues[j] * 12;
+            }
+        } else if (potential instanceof TreeADDPotential) {
+            TreeADDPotential treeADD = (TreeADDPotential) potential;
+            for (TreeADDBranch branch : treeADD.getBranches()) {
+            	translateMonthlyUtilityPotential(branch.getPotential());
+            }
+        }
+    }    
+    
     /**
      * @param costDiscount
      * @param inferenceOptions
