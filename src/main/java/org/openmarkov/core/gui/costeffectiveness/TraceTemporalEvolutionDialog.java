@@ -17,8 +17,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -55,7 +55,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class TraceTemporalEvolutionDialog extends JDialog
 {
-    private HashMap<Variable, TablePotential> temporalEvolution;
+    private Map<Variable, TablePotential> temporalEvolution;
     private ChartPanel                        chartPanel;
     private JScrollPane                       tablePane;
     private JTabbedPane                       tabbedPane;

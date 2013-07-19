@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -63,7 +63,7 @@ public class ExcelReport
      * @throws IOException 
      */
     public void createTemporalEvolutionReport (String filename,
-                                                    HashMap<Variable, TablePotential> temporalEvolution,
+                                                    Map<Variable, TablePotential> temporalEvolution,
                                                     ProbNet expandedNetwork,
                                                     int numSlices,
                                                     Variable variableOfInterest) throws IOException
