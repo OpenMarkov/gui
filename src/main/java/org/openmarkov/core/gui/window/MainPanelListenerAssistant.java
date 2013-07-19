@@ -879,12 +879,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     numSlices,
                     evidence,
                     costEffectivenessDialog.getTransitionTime());
+            CostEffectivenessAnalysis.translateMonthlyUtilities(expandedNetwork);
             CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
                     costDiscountRate,
                     effectivenessDiscountRate);
-            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
-                probNode.samplePotentials();
-            }
+//            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
+//                probNode.samplePotentials();
+//            }
             String fileName = probNet.getName() + "_expandedCE";
             expandedNetwork.setName(fileName);
             NetworkPanel networkPanel = createNewFrame(expandedNetwork);
