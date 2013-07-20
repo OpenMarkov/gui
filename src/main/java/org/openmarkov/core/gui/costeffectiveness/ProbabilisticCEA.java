@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
@@ -40,8 +39,6 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     
     public void run()
     {
-        MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-        extendEvidence(expandedNetFactory.getExtendedNetwork());
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence, numSimulations);
         reorderVariablesInPotentials(ceaResults);
         this.globalUtility = calculateMeanUtility(ceaResults);
@@ -124,7 +121,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         return progress;
     }
 
-    private List<TablePotential> runProbabilisticAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, int numSimulations)
+	private List<TablePotential> runProbabilisticAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, int numSimulations)
     {
         progress = 0;
         List<TablePotential> results = new ArrayList<>(numSimulations);
