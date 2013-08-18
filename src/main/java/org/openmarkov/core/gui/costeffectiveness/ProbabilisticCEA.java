@@ -6,6 +6,7 @@
 package org.openmarkov.core.gui.costeffectiveness;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,16 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         this.numSimulations = numSimulations;
     }
     
+    public ProbabilisticCEA(ProbNet probNet, EvidenceCase evidence, double costDiscountRate,
+            double effectivenessDiscountRate, int numSlices, int numSimulations,
+            TransitionTime transitionTime) {
+        this(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numSlices, numSimulations, 
+                new HashMap<Variable, Double>(), transitionTime);
+    }    
+    
     public void run()
     {
-        this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence, numSimulations);
+        this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence,  transitionTime, numSimulations);
         reorderVariablesInPotentials(ceaResults);
         this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
@@ -121,15 +129,15 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         return progress;
     }
 
-	private List<TablePotential> runProbabilisticAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, int numSimulations)
+	private List<TablePotential> runProbabilisticAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime, int numSimulations)
     {
         progress = 0;
         List<TablePotential> results = new ArrayList<>(numSimulations);
         for (int i = 0; i < numSimulations; ++i)
         {
             sampleProbNet(expandedNetwork);
-            applyDiscountToUncertainValues(expandedNetwork, costDiscount, effectivenessDiscount);
-            TablePotential simulationResult = runAnalysis(expandedNetwork, evidence);
+            //applyDiscountToUncertainValues(expandedNetwork, costDiscount, effectivenessDiscount);
+            TablePotential simulationResult = runAnalysis(expandedNetwork, evidence, transitionTime);
             results.add(simulationResult);
             progress = i * 100/numSimulations;
         }

@@ -877,9 +877,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
             expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
                     numSlices,
-                    evidence,
-                    costEffectivenessDialog.getTransitionTime());
+                    evidence);
             CostEffectivenessAnalysis.translateMonthlyUtilities(expandedNetwork);
+            // TODO apply changes for transitions at cycle start, end or half cycle
             CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
                     costDiscountRate,
                     effectivenessDiscountRate);
