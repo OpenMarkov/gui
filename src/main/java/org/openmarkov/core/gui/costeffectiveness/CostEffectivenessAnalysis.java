@@ -18,6 +18,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.BasicOperations;
+import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -239,10 +240,14 @@ public class CostEffectivenessAnalysis {
 	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence,
 			TransitionTime transitionTime) {
 		TablePotential globalUtility = null;
-		VariableElimination variableElimination;
+		InferenceAlgorithm inferenceAlgorithm;
 		try {
-			variableElimination = new VariableElimination(expandedNetwork);
-			variableElimination.setPreResolutionEvidence(evidence);
+			inferenceAlgorithm = new VariableElimination(expandedNetwork);
+			
+			// set evidence
+			inferenceAlgorithm.setPreResolutionEvidence(evidence);
+			
+			// set decisions and decision criteria as conditioning variables
 			List<Variable> conditioningVariables = new ArrayList<>();
 			conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
 			List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
@@ -251,13 +256,13 @@ public class CostEffectivenessAnalysis {
 					conditioningVariables.add(decisionNode.getVariable());
 				}
 			}
-			variableElimination.setConditioningVariables(conditioningVariables);
-			List<Variable> utilityVariables = BasicOperations
-					.getTerminalUtilityVariables(expandedNetwork);
+			inferenceAlgorithm.setConditioningVariables(conditioningVariables);
+			
+			List<Variable> utilityVariables = BasicOperations.getTerminalUtilityVariables(expandedNetwork);
 			List<TablePotential> utilityPotentials = null;
 			try {
 //				globalUtility = variableElimination.getGlobalUtility();
-				utilityPotentials = new ArrayList<>(variableElimination.getProbsAndUtilities(
+				utilityPotentials = new ArrayList<>(inferenceAlgorithm.getProbsAndUtilities(
 						utilityVariables).values());
 			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
 				e.printStackTrace();
