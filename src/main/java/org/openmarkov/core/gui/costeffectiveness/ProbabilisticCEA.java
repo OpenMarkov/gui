@@ -11,10 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
@@ -48,19 +52,10 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     public void run()
     {
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence,  transitionTime, numSimulations);
-        reorderVariablesInPotentials(ceaResults);
         this.globalUtility = calculateMeanUtility(ceaResults);
         this.interventions = buildProbabilisticInterventions(ceaResults);
         this.frontierInterventions = calculateFrontierInterventions(interventions);        
     }    
-
-    private void reorderVariablesInPotentials(List<TablePotential> ceaResults) {
-		for(int i=0; i<ceaResults.size(); ++i)
-		{
-            TablePotential reorderedPotential = reorderVariables(ceaResults.get(i));
-            ceaResults.set(i, reorderedPotential);
-		}
-	}
 
 	private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
         TablePotential globalUtility = new TablePotential(this.globalUtility.getVariables(), PotentialRole.UTILITY);
@@ -133,18 +128,47 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     {
         progress = 0;
         List<TablePotential> results = new ArrayList<>(numSimulations);
+        Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
+        for(ProbNode node : expandedNetwork.getProbNodes())
+        {
+        	networkPotentials.put(node.getVariable(), node.getPotentials());
+        }
+        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
+        removeIntermediateUtilityNodes(expandedNetwork);
+        applyTransitionTime(expandedNetwork, transitionTime, numSlices);
         for (int i = 0; i < numSimulations; ++i)
         {
-            sampleProbNet(expandedNetwork);
-            //applyDiscountToUncertainValues(expandedNetwork, costDiscount, effectivenessDiscount);
-            TablePotential simulationResult = runAnalysis(expandedNetwork, evidence, transitionTime);
-            results.add(simulationResult);
-            progress = i * 100/numSimulations;
+            try {
+            	// Sample and project to table
+            	sampleAndTableProject(sortedNodes, networkPotentials, evidence);
+	            results.add(runAnalysis(expandedNetwork, evidence, transitionTime));
+	            progress = i * 100/numSimulations;
+			} catch (NonProjectablePotentialException | WrongCriterionException e) {
+				e.printStackTrace();
+			}
         }
         progress = 100;
         return results;
     }
-    
+	
+	public static void sampleAndTableProject(List<ProbNode> sortedNodes,
+			Map<Variable, List<Potential>> networkPotentials, EvidenceCase evidence)
+			throws NonProjectablePotentialException, WrongCriterionException {
+		List<TablePotential> projectedPotentials = new ArrayList<>();
+		for (ProbNode node : sortedNodes) {
+			List<Potential> sampledProjectedPotentials = new ArrayList<>();
+			for (Potential originalPotential : networkPotentials.get(node.getVariable())) {
+				List<TablePotential> newProjectedPotentials = originalPotential
+						.sample()
+						.tableProject(evidence,
+						null, projectedPotentials);
+				sampledProjectedPotentials.addAll(newProjectedPotentials);
+				projectedPotentials.addAll(newProjectedPotentials);
+			}
+			node.setPotentials(sampledProjectedPotentials);
+		}
+	}	
+	
     private void applyDiscountToUncertainValues(ProbNet expandedNetwork,
             double costDiscount, double effectivenessDiscount) {
         

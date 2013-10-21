@@ -14,6 +14,7 @@ import java.util.Map;
 import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -21,6 +22,7 @@ import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.model.graph.Node;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -77,7 +79,7 @@ public class CostEffectivenessAnalysis {
 		this.evidence = getEvidenceFromNetwork(probNet, evidence, initialValues);
 		this.transitionTime = transitionTime;
 		this.expandedNetwork = buildExpandedNetwork();
-		this.globalUtility = runAnalysis(expandedNetwork, this.evidence, transitionTime);
+		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence, transitionTime);
 		this.interventions = createInterventions(globalUtility);
 		this.frontierInterventions = calculateFrontierInterventions(interventions);
 		this.frontierInterventions = calculateICERsOfFrontier(this.frontierInterventions);
@@ -237,114 +239,233 @@ public class CostEffectivenessAnalysis {
 		return evidenceCase;
 	}
 
-	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence,
-			TransitionTime transitionTime) {
+	protected TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime) {
+		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
+		ProbNet copyNetwork = expandedNetwork.copy();
+        for(ProbNode node : copyNetwork.getProbNodes())
+        {
+        	networkPotentials.put(node.getVariable(), node.getPotentials());
+        }
+        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(copyNetwork);
+        removeIntermediateUtilityNodes(copyNetwork);
+        try {
+			tableProjectInNetwork(sortedNodes, networkPotentials, evidence);
+		} catch (NonProjectablePotentialException | WrongCriterionException e) {
+			e.printStackTrace();
+		}
+        
+        applyTransitionTime(copyNetwork, transitionTime, numSlices);
+		return runAnalysis(copyNetwork, evidence, transitionTime);
+	}
+	
+	public static void tableProjectInNetwork(List<ProbNode> sortedNodes,
+			Map<Variable, List<Potential>> networkPotentials, EvidenceCase evidence)
+			throws NonProjectablePotentialException, WrongCriterionException {
+		List<TablePotential> projectedPotentials = new ArrayList<>();
+		for (ProbNode node : sortedNodes) {
+			List<Potential> sampledProjectedPotentials = new ArrayList<>();
+			for (Potential originalPotential : networkPotentials.get(node.getVariable())) {
+				List<TablePotential> newProjectedPotentials = originalPotential.tableProject(evidence,
+						null, projectedPotentials);
+				sampledProjectedPotentials.addAll(newProjectedPotentials);
+				projectedPotentials.addAll(newProjectedPotentials);
+			}
+			node.setPotentials(sampledProjectedPotentials);
+		}
+	}	
+
+	protected void removeIntermediateUtilityNodes(ProbNet network)
+	{
+		List<ProbNode> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+        List<ProbNode> nodesToDelete = new ArrayList<>();
+        for (ProbNode utilityNode : utilityNodes) {
+            Variable utilityVariable = utilityNode.getVariable();
+            if(BasicOperations.isSuperValueNode(utilityNode)) {
+                List<Node> parents = utilityNode.getNode().getParents();
+                List<Node> grandparents = new ArrayList<>();
+                // remove links between supervalue nodes and their utility
+                // parents
+                for (Node parent : parents) {
+                    ProbNode probNode = ((ProbNode) parent.getObject());
+                    if (probNode.getNodeType() == NodeType.UTILITY) {
+                    	network.removeLink(probNode.getVariable(), utilityVariable, true);
+                    	grandparents.addAll(parent.getParents());
+                    	nodesToDelete.add(probNode);
+                    }
+                }
+                // add links between of new potential of supervalue nodes
+                for (Node grandparent : grandparents) {
+                	network.addLink(((ProbNode)grandparent.getObject()), utilityNode, true);
+                }
+            }
+        }
+        for(ProbNode nodeToDelete : nodesToDelete)
+        {
+        	network.removeProbNode(nodeToDelete);
+        }		
+	}
+	
+
+	
+	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime) {
 		TablePotential globalUtility = null;
-		InferenceAlgorithm inferenceAlgorithm;
 		try {
-			inferenceAlgorithm = new VariableElimination(expandedNetwork);
+			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
 			
 			// set evidence
 			inferenceAlgorithm.setPreResolutionEvidence(evidence);
 			
 			// set decisions and decision criteria as conditioning variables
-			List<Variable> conditioningVariables = new ArrayList<>();
-			conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
-			List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
-			for (ProbNode decisionNode : decisionNodes) {
-				if (!decisionNode.hasPolicy()) {
-					conditioningVariables.add(decisionNode.getVariable());
-				}
-			}
-			inferenceAlgorithm.setConditioningVariables(conditioningVariables);
+			inferenceAlgorithm.setConditioningVariables(getConditioningVariables(probNet));
+
+			// Run inference
+			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
 			
-			List<Variable> utilityVariables = BasicOperations.getTerminalUtilityVariables(expandedNetwork);
-			List<TablePotential> utilityPotentials = null;
-			try {
-//				globalUtility = variableElimination.getGlobalUtility();
-				utilityPotentials = new ArrayList<>(inferenceAlgorithm.getProbsAndUtilities(
-						utilityVariables).values());
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-				e.printStackTrace();
-			}
-
-			if (transitionTime == TransitionTime.HALF) {
-				// apply halfcycle correction
-				// Half cycle correction
-				Map<String, TablePotential[]> potentialsPerVariable = new HashMap<>();
-				List<TablePotential> potentialsToRemove = new ArrayList<>();
-				for (TablePotential utilityPotential : utilityPotentials) {
-					Variable utilityVariable = utilityPotential.getUtilityVariable();
-					if (utilityVariable != null
-							&& utilityVariable.isTemporal()
-							&& utilityVariable.getDecisionCriteria().getString()
-									.equalsIgnoreCase("effectiveness")) {
-						if (!potentialsPerVariable.containsKey(utilityVariable.getBaseName())) {
-							potentialsPerVariable.put(utilityVariable.getBaseName(),
-									new TablePotential[numSlices + 1]);
-						}
-						potentialsPerVariable.get(utilityVariable.getBaseName())[utilityVariable
-								.getTimeSlice()] = utilityPotential;
-						potentialsToRemove.add(utilityPotential);
-					}
-				}
-				utilityPotentials.removeAll(potentialsToRemove);
-
-				for (TablePotential[] potentials : potentialsPerVariable.values()) {
-					for (int i = 1; i < potentials.length; ++i) {
-						TablePotential halfCyclePotential = (TablePotential) potentials[i].copy();
-						for (int j = 0; j < halfCyclePotential.values.length; ++j) {
-							halfCyclePotential.values[j] = (potentials[i].values[j] + potentials[i - 1].values[j]) / 2;
-						}
-						utilityPotentials.add(halfCyclePotential);
-					}
-				}
-			}
-			if (transitionTime == TransitionTime.BEGINNING || transitionTime == TransitionTime.HALF) {
-				// prune zero cycle utilities
-				List<TablePotential> potentialsToRemove = new ArrayList<>();
-				for (TablePotential utilityPotential : utilityPotentials) {
-					if (utilityPotential.getUtilityVariable().getTimeSlice() == 0) {
-						potentialsToRemove.add(utilityPotential);
-					}
-				}
-				utilityPotentials.removeAll(potentialsToRemove);
-			} else if (transitionTime == TransitionTime.END) {
-				// Prune last cycle utilities
-				List<TablePotential> potentialsToRemove = new ArrayList<>();
-				for (TablePotential utilityPotential : utilityPotentials) {
-					if (utilityPotential.getUtilityVariable().getTimeSlice() == numSlices) {
-						potentialsToRemove.add(utilityPotential);
-					}
-				}
-			}
-			// apply discount
-			for (TablePotential utilityPotential : utilityPotentials) {
-				Variable utilityVariable = utilityPotential.getUtilityVariable();
-				if (utilityVariable.isTemporal()) {
-					boolean isCost = utilityVariable.getDecisionCriteria().getString()
-							.equalsIgnoreCase("cost");
-					double discount = isCost ? costDiscount : effectivenessDiscount;
-					discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
-					for (int i = 0; i < utilityPotential.values.length; ++i) {
-						utilityPotential.values[i] /= discount;
-					}
-				}
-			}
-			// Hack translate monthly utilities to yearly utilities
-			for (TablePotential utilityPotential : utilityPotentials) {
-				Variable utilityVariable = utilityPotential.getUtilityVariable();
-				if (utilityVariable.getUnit().string.equals("months")) {
-					translateMonthlyUtilityPotential(utilityPotential);
-				}
-			}
-			globalUtility = DiscretePotentialOperations.sum(utilityPotentials);
-		} catch (NotEvaluableNetworkException e1) {
+		} catch (NotEvaluableNetworkException | IncompatibleEvidenceException | UnexpectedInferenceException  e1) {
 			e1.printStackTrace();
 		}
 		return reorderVariables(globalUtility);
 	}
+	
+	/**
+	 * Get global utility of probNet
+	 * @param expandedNetwork
+	 * @param inferenceAlgorithm
+	 * @return
+	 * @throws IncompatibleEvidenceException
+	 * @throws UnexpectedInferenceException
+	 */
+	private TablePotential getGlobalUtility(ProbNet expandedNetwork, InferenceAlgorithm inferenceAlgorithm)
+			throws IncompatibleEvidenceException, UnexpectedInferenceException	{
+		
+		List<ProbNode> utilityNodes = expandedNetwork.getProbNodes(NodeType.UTILITY);
+		List<TablePotential> utilityPotentials = new ArrayList<>();
+		for(ProbNode node : utilityNodes)
+		{
+			for(Potential potential : node.getPotentials())
+			{
+				utilityPotentials.add((TablePotential)potential);
+			}
+		}
+		
+		applyCEProcessing(utilityPotentials);
+		
+		return inferenceAlgorithm.getGlobalUtility();		
+	}	
 
+	protected void applyCEProcessing(List<TablePotential> utilityPotentials)
+	{
+		// apply discount
+		applyDiscount(utilityPotentials, costDiscount, effectivenessDiscount);
+		
+		// Hack translate monthly utilities to yearly utilities
+		translateMonthlyUtilityPotentials(utilityPotentials);
+
+	}
+	
+	private List<Variable> getConditioningVariables(ProbNet probNet)
+	{
+		List<Variable> conditioningVariables = new ArrayList<>();
+		conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
+		List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
+		for (ProbNode decisionNode : decisionNodes) {
+			if (!decisionNode.hasPolicy()) {
+				conditioningVariables.add(decisionNode.getVariable());
+			}
+		}
+		return conditioningVariables;
+	}
+	
+	public static void applyTransitionTime(ProbNet network, TransitionTime transitionTime, int numSlices)
+	{
+		List<ProbNode> utilityNodes = network.getProbNodes(NodeType.UTILITY);
+		List<ProbNode> nodesToRemove = new ArrayList<>();
+		if (transitionTime == TransitionTime.HALF) {
+			// Half cycle correction
+			Map<String, ProbNode[]> temporalNodes = new HashMap<>(); 
+			for(ProbNode utilityNode : utilityNodes)
+			{
+				Variable utilityVariable = utilityNode.getVariable();
+				if(utilityVariable.isTemporal() && 
+						utilityVariable.getTimeSlice() > 0 &&
+						utilityVariable.getDecisionCriteria().getString()
+						.equalsIgnoreCase("effectiveness"))
+				{
+					if(!temporalNodes.containsKey(utilityVariable.getBaseName()))
+						temporalNodes.put(utilityVariable.getBaseName(), new ProbNode[numSlices + 1]);
+					temporalNodes.get(utilityVariable.getBaseName())[utilityVariable.getTimeSlice()] = utilityNode; 
+				}
+			}
+			for(ProbNode[] tempNodes : temporalNodes.values())
+			{
+				for(int k = tempNodes.length - 1; k > 0; --k)
+				{
+					if(tempNodes[k] != null && tempNodes[k-1] != null)
+					{
+						ProbNode utilityNode = tempNodes[k]; 
+						ProbNode previousCycleNode = tempNodes[k-1];
+						List<Potential> currentCyclePotentials = utilityNode.getPotentials();
+						List<Potential> previousCyclePotentials = previousCycleNode.getPotentials();
+						List<Potential> newPotentials = new ArrayList<>();
+						for(int i=0; i < utilityNode.getNumPotentials();++i)
+						{
+							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
+							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
+							TablePotential sumPotential = DiscretePotentialOperations.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
+							sumPotential.setUtilityVariable(utilityNode.getVariable());
+							for(int j=0; j<sumPotential.values.length;++j)
+								sumPotential.values[j] /= 2;
+							newPotentials.add(sumPotential);
+						}
+						
+						utilityNode.setPotentials(newPotentials);
+						for(Node parent : previousCycleNode.getNode().getParents())
+						{
+							network.addLink(((ProbNode)parent.getObject()), utilityNode, true);
+						}
+						
+					}
+				}
+			}
+			
+		}
+		if (transitionTime == TransitionTime.BEGINNING || transitionTime == TransitionTime.HALF) {
+			// prune zero cycle utilities
+			for (ProbNode utilityNode : utilityNodes) {
+				if (utilityNode.getVariable().getTimeSlice() == 0) {
+					nodesToRemove.add(utilityNode);
+				}
+			}
+		} else if (transitionTime == TransitionTime.END) {
+			// Prune last cycle utilities
+			for (ProbNode utilityNode : utilityNodes) {
+				if (utilityNode.getVariable().getTimeSlice() == numSlices) {
+					nodesToRemove.add(utilityNode);
+				}
+			}
+		}
+		for(ProbNode nodeToRemove : nodesToRemove)
+		{
+			network.removeProbNode(nodeToRemove);
+		}
+	}	
+	
+	private void applyDiscount(List<TablePotential> utilityPotentials, double costDiscount, double effectivenessDiscount)
+	{
+		for (TablePotential utilityPotential : utilityPotentials) {
+			Variable utilityVariable = utilityPotential.getUtilityVariable();
+			if (utilityVariable.isTemporal()) {
+				boolean isCost = utilityVariable.getDecisionCriteria().getString()
+						.equalsIgnoreCase("cost");
+				double discount = isCost ? costDiscount : effectivenessDiscount;
+				discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
+				for (int i = 0; i < utilityPotential.values.length; ++i) {
+					utilityPotential.values[i] /= discount;
+				}
+			}
+		}
+	}
+	
 	private List<Intervention> createInterventions(TablePotential globalUtility) {
 		// Reorder variables to force decision criteria to be the conditioned
 		// variable
@@ -535,6 +656,15 @@ public class CostEffectivenessAnalysis {
 		}
 	}
 
+	private static void translateMonthlyUtilityPotentials(List<TablePotential> utilityPotentials) {
+		for (TablePotential utilityPotential : utilityPotentials) {
+			Variable utilityVariable = utilityPotential.getUtilityVariable();
+			if (utilityVariable.getUnit().string.equals("months")) {
+				translateMonthlyUtilityPotential(utilityPotential);
+			}
+		}
+	}
+	
 	private static void translateMonthlyUtilityPotential(Potential potential) {
 		if (potential instanceof TablePotential) {
 			double[] potentialValues = ((TablePotential) potential).getValues();
