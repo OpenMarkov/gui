@@ -187,7 +187,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             uncertaintyInColumns = getUncertaintyInColumns(probNode);
             setCellRenderers(uncertaintyInColumns);
             this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));
-            valuesTable.fitColumnsWidthToContent();
+        	valuesTable.fitColumnsWidthToContent();
         } else {
             tableData = new Object[0][0];
             setFirstEditableRow(0);
@@ -306,7 +306,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         try {
             // mpal
             PotentialsTablePanelOperations.checkIfNoPotential(probNode.getPotentials());
-            values = setValuesTableSize(values, probNode);
+            values = createEmptyTable(probNode);
             values = setParentsNameInUpperLeftCornerArea(values, probNode);
             values = setParentsStatesInTopArea(values, probNode);
             values = setNodeStatesInLeftArea(values, probNode);
@@ -332,8 +332,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setValuesTableSize(Object[][] oldValues, ProbNode probNode) {
-        Object[][] values = oldValues;
+    private Object[][] createEmptyTable(ProbNode probNode) {
+         
         int numRows = 0;
         int numColumns = 1; // at least, there is one column for the node names
         int row = PotentialsTablePanelOperations.calculateFirstEditableRow(probNode.getPotentials(),
@@ -367,8 +367,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
         }
         // create the array of arrays
-        values = new Object[numRows][numColumns];
-        return values;
+        return new Object[numRows][numColumns];
     }
 
     private void setVariables(List<Variable> variables) {
@@ -559,19 +558,12 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *         information about the editable positions.
      */
     private Object[][] getNotEditablePositions(ProbNode probNode) {
-        Object[][] notEditablePositions = null;
-        notEditablePositions = setValuesTableSize(notEditablePositions, probNode);
+        Object[][] notEditablePositions = createEmptyTable(probNode);
         if (probNode.getNodeType() == NodeType.CHANCE && hasLinkRestriction) {
             List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations.getStateCombinationsWithLinkRestriction(probNode);
             TablePotential potential = (TablePotential) probNode.getPotentials().get(0);
             for (int[] state : statesWithRestriction) {
-                // reorder the variables
-                int[] reorderedState = new int[state.length];
-                reorderedState[0] = state[0];
-                for (int i = 1; i < state.length; i++) {
-                    reorderedState[state.length - i] = state[i];
-                }
-                int[] position = getRowAndColumnForStateCombination(reorderedState, potential);
+                int[] position = getRowAndColumnForStateCombination(state, potential);
                 int row = position[0];
                 int column = position[1];
                 notEditablePositions[row][column] = 1;

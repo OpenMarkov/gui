@@ -27,9 +27,13 @@ public class ValuesTableWithLinkRestrictionCellRenderer extends
 		super.setCellColors(table, value, isSelected, hasFocus, row, column);
 		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN)
 				&& firstEditableRow >= 0 && (row >= firstEditableRow)) {
-			if (!table.isCellEditable(row, column)) {
-				setBackground(INCOMPATIBILITY_COLOR);
-			}
+			try
+			{
+				if (!table.isCellEditable(row, column)) {
+					setBackground(INCOMPATIBILITY_COLOR);
+				}
+			}catch(ArrayIndexOutOfBoundsException e)
+			{}
 		}
 	}
 
