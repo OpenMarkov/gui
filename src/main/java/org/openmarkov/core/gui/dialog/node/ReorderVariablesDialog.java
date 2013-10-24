@@ -2,16 +2,12 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 
 @SuppressWarnings("serial")
 public class ReorderVariablesDialog extends OkCancelHorizontalDialog
@@ -60,47 +56,20 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
         return variablesCombinationPanel;
     }
 
-    ReorderVariablesPanel getReorderVariablesPanel ()
+    public ReorderVariablesPanel getReorderVariablesPanel ()
     {
         if (reorderVariablesPanel == null)
         {
-            String[] columnNames = {"Key", "Names"};
-            reorderVariablesPanel = new ReorderVariablesPanel (columnNames, probNode);
+            reorderVariablesPanel = new ReorderVariablesPanel (probNode);
             reorderVariablesPanel.setName ("networkAgentsPanel");
             reorderVariablesPanel.setBorder (new EmptyBorder (0, 0, 0, 0));
         }
         return reorderVariablesPanel;
     }
 
-    public void setFieldFromProperties (ProbNode probNode)
-    {
-        List<Variable> variables = new ArrayList<Variable> ();
-        if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
-        {
-            variables = new ArrayList<Variable> (probNode.getPotentials ().get (0).getVariables ());
-            variables.remove (0);
-        }
-        else if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY)
-        {
-            variables = new ArrayList<Variable> (probNode.getPotentials ().get (0).getVariables ());
-        }
-        if (variables != null)
-        {
-            Object[][] data = new Object[variables.size ()][1];
-            for (int i = 0; i < variables.size (); i++)
-            {
-                data[i][0] = variables.get (i).getName ();
-            }
-            // initializing data structure for the table model
-            getReorderVariablesPanel ().setData (data);
-            // initializing data structure for supervising data order in GUI
-            getReorderVariablesPanel ().setDataTable (data);
-        }
-    }
-
     public int requestValues ()
     {
-        setFieldFromProperties (probNode);
+    	getReorderVariablesPanel ();
         setVisible (true);
         return selectedButton;
     }

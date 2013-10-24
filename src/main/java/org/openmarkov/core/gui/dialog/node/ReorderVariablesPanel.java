@@ -2,12 +2,15 @@
 package org.openmarkov.core.gui.dialog.node;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import org.openmarkov.core.action.PNEdit;
@@ -17,9 +20,9 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.gui.dialog.network.AdvancedPropertiesTableModel;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 
 @SuppressWarnings("serial")
@@ -29,27 +32,24 @@ public class ReorderVariablesPanel extends KeyTablePanel
         PNUndoableEditListener
 {
     private ProbNode                     probNode;
-    private String                       keyPrefix;
-    private AdvancedPropertiesTableModel netWorkAgentstableModel;
-    private Object                       dataTable[][];
-    private ArrayList<Variable>          newVariables;
-    private ArrayList<PNEdit>            edits = new ArrayList<PNEdit> ();
+    private List<PNEdit>            edits = new ArrayList<PNEdit> ();
 
-    public ReorderVariablesPanel (String[] newColumns, ProbNode probNode)
+    public ReorderVariablesPanel (ProbNode probNode)
     {
-        this (newColumns, new Object[0][0], "a");
-        this.probNode = probNode;
-    }
-
-    public ReorderVariablesPanel (String[] newColumns, Object[][] noKeyData, String newKeyPrefix)
-    {
-        super (newColumns, new Object[0][0], true, true);
-        keyPrefix = newKeyPrefix;
+        super (new String[] {"Variable name"}, getData (probNode), true, false);
         initialize ();
         getAddValueButton ().setVisible (false);
         getRemoveValueButton ().setVisible (false);
-        setData (noKeyData);
-        defineTableLookAndFeel (); // define specific listeners
+        this.probNode = probNode;
+        // dataTable = newData;
+        tableModel = new DefaultTableModel(data, columns);
+        // valuesTable.setModel(tableModel);
+        valuesTable.setModifiable (false);
+        valuesTable.setModel (tableModel);
+        tableModel.addTableModelListener (this);
+        defineTableLookAndFeel ();
+        setData(data);
+        // define specific listeners
         // defineTableSpecificListeners();
         // getTableModel().addTableModelListener(this);
     }
@@ -58,21 +58,20 @@ public class ReorderVariablesPanel extends KeyTablePanel
      * Sets a new table model with new data.
      * @param newData new data for the table without the key column.
      */
-    @Override
-    public void setData (Object[][] newData)
+    private static Object[][] getData (ProbNode probNode)
     {
-        if (newData != null)
+    	Potential potential = probNode.getPotentials ().get (0);
+        List<Variable> variables = potential.getVariables();
+        if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY)
         {
-            // dataTable = newData;
-            data = fillDataKeys (newData);
-            // tableModel = new DefaultTableModel(data, columns);
-            netWorkAgentstableModel = new AdvancedPropertiesTableModel (data, columns);
-            // valuesTable.setModel(tableModel);
-            valuesTable.setModifiable (false);
-            valuesTable.setModel (netWorkAgentstableModel);
-            valuesTable.getModel ().addTableModelListener (this);
-            this.defineTableLookAndFeel ();
-        }
+            variables.remove (0);
+        }        	
+        Object[][] data = new Object[variables.size ()][1];
+        for (int i = 0; i < variables.size (); i++)
+        {
+        	data[variables.size () - i - 1][0] = variables.get (i).getName ();
+        }        	
+        return data;
     }
 
     protected void defineTableLookAndFeel ()
@@ -91,135 +90,55 @@ public class ReorderVariablesPanel extends KeyTablePanel
         }
     }
 
-    /**
-     * This method takes a data object and creates a new column that content a
-     * row key. This key begins with the key prefix following a number that
-     * starts at 0.
-     * @param oldData data to add a key column.
-     * @return a data object with one more column that contains the keys.
-     */
-    private Object[][] fillDataKeys (Object[][] oldData)
-    {
-        Object[][] newData = null;
-        int i1 = 0; // aux int
-        int i2 = 0; // aux int
-        int l1 = 0; // num of rows
-        int l2 = 0; // num of columns
-        l1 = oldData.length;
-        if (l1 > 0)
-        {
-            l2 = oldData[0].length + 1;
-            newData = new Object[l1][l2];
-            for (i1 = 0; i1 < l1; i1++)
-            {
-                newData[i1][0] = getKeyString (i1);
-                for (i2 = 1; i2 < l2; i2++)
-                {
-                    newData[i1][i2] = oldData[i1][i2 - 1];
-                }
-            }
-            return newData;
-        }
-        return new Object[0][0];
-    }
-
-    /**
-     * Returns a key represented by an index.
-     * @param index index of the key which will be returned
-     * @return the string that content the key.
-     */
-    private String getKeyString (int index)
-    {
-        return keyPrefix + index;
-    }
-
-    public void setDataTable (Object[][] dataTable)
-    {
-        this.dataTable = dataTable;
-    }
-
     @Override
     protected void actionPerformedUpValue ()
     {
         int selectedRow = valuesTable.getSelectedRow ();
-        Object swap = null;
-        swap = dataTable[selectedRow][0];
-        dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
-        dataTable[selectedRow - 1][0] = swap;
-        setData (dataTable);
+        Object swap = data[selectedRow][0];
+        data[selectedRow][0] = data[selectedRow - 1][0];
+        data[selectedRow - 1][0] = swap;
+        setData (data);
         valuesTable.getSelectionModel ().setSelectionInterval (selectedRow - 1, selectedRow - 1);
-        for (int i = 0; i < valuesTable.getRowCount (); i++)
-        {
-            dataTable[i][0] = valuesTable.getValueAt (i, 1);
-        }
-        ArrayList<Variable> newVariablesDown = new ArrayList<Variable> ();
-        for (int i = 0; i < dataTable.length; i++)
-        {
-            for (int j = 0; j < probNode.getPotentials ().get (0).getVariables ().size (); j++)
-            {
-                if ((String) dataTable[i][0] == probNode.getPotentials ().get (0).getVariables ().get (j).getName ())
-                {
-                    newVariablesDown.add (probNode.getPotentials ().get (0).getVariables ().get (j));
-                }
-            }
-        }
-        newVariables = new ArrayList<> ();
-        if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
-        {
-            newVariables.add (probNode.getPotentials ().get (0).getVariables ().get (0));
-            newVariables.addAll (newVariablesDown);
-        }
-        else if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY)
-        {
-            newVariables.addAll (newVariablesDown);
-        }
     }
 
     @Override
     protected void actionPerformedDownValue ()
     {
         int selectedRow = valuesTable.getSelectedRow ();
-        Object swap = null;
-        swap = dataTable[selectedRow][0];
-        dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
-        dataTable[selectedRow + 1][0] = swap;
-        setData (dataTable);
+        Object swap = data[selectedRow][0];
+        data[selectedRow][0] = data[selectedRow + 1][0];
+        data[selectedRow + 1][0] = swap;
+        setData (data);
         valuesTable.getSelectionModel ().setSelectionInterval (selectedRow + 1, selectedRow + 1);
-        for (int i = 0; i < valuesTable.getRowCount (); i++)
+    }
+
+    public List<Variable> getVariables ()
+    {
+    	Potential potential = probNode.getPotentials ().get (0);
+    	List<Variable> potentialVariables = potential.getVariables();
+        List<Variable> newVariables = new ArrayList<Variable> ();
+        for (int i = 0; i < data.length; i++)
         {
-            dataTable[i][0] = valuesTable.getValueAt (i, 1);
-        }
-        ArrayList<Variable> newVariablesDown = new ArrayList<Variable> ();
-        for (int i = 0; i < dataTable.length; i++)
-        {
-            for (int j = 0; j < probNode.getPotentials ().get (0).getVariables ().size (); j++)
+            for (int j = 0; j < potentialVariables.size (); j++)
             {
-                if ((String) dataTable[i][0] == probNode.getPotentials ().get (0).getVariables ().get (j).getName ())
+                if (((String) data[i][0]).equals(potentialVariables.get (j).getName ()))
                 {
-                    newVariablesDown.add (probNode.getPotentials ().get (0).getVariables ().get (j));
+                    newVariables.add (potentialVariables.get (j));
                 }
             }
         }
-        if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
+        Collections.reverse(newVariables);
+        if (potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
         {
-            newVariables.add (probNode.getPotentials ().get (0).getVariables ().get (0));
-            newVariables.addAll (newVariablesDown);
+            newVariables.add (0, potential.getVariables ().get (0));
         }
-        else if (probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY)
-        {
-            newVariables.addAll (newVariablesDown);
-        }
-    }
-
-    public ArrayList<Variable> getVariables ()
-    {
-        return this.newVariables;
+        return newVariables;
     }
 
     /**
      * @return
      */
-    public ArrayList<PNEdit> getEdits ()
+    public List<PNEdit> getEdits ()
     {
         return edits;
     }
