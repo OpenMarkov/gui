@@ -12,8 +12,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.CodeSource;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -246,35 +248,31 @@ public class StringDatabase
                     }
                 }
             }else{ // it is a jar file
-                if(classpathElement.getName ().startsWith ("org.openmarkov."))
+                ZipFile zipFile;
+                try
                 {
-                    ZipFile zipFile;
-                    try
+                    zipFile = new ZipFile (classpathElement.getAbsolutePath ());
+                    Enumeration<? extends ZipEntry> zipEntryEn = (Enumeration<? extends ZipEntry>) zipFile.entries ();
+                    while (zipEntryEn.hasMoreElements ())
                     {
-                        zipFile = new ZipFile (classpathElement.getAbsolutePath ());
-                        Enumeration<? extends ZipEntry> zipEntryEn = (Enumeration<? extends ZipEntry>) zipFile.entries ();
-                        while (zipEntryEn.hasMoreElements ())
+                        ZipEntry aZipEntry = (ZipEntry) zipEntryEn.nextElement ();
+                        if (aZipEntry.getName ().startsWith ("localize/") && aZipEntry.getName ().endsWith (".xml"))
                         {
-                            ZipEntry aZipEntry = (ZipEntry) zipEntryEn.nextElement ();
-                            if (aZipEntry.getName ().startsWith ("localize/") && aZipEntry.getName ().endsWith (".xml"))
+                            String baseName = FilenameUtils.getBaseName (aZipEntry.getName ());
+                            if (baseName.endsWith (localeSuffix))
                             {
-                                String baseName = FilenameUtils.getBaseName (aZipEntry.getName ());
-                                if (baseName.endsWith (localeSuffix))
-                                {
-                                    baseName = baseName.substring (0,
-                                                                   baseName.length ()
-                                                                           - localeSuffix.length ());
-                                    bundleMap.put (baseName, getBundle (baseName));
-                                }
+                            	int endPosition = baseName.length ()- localeSuffix.length ();
+                                baseName = baseName.substring (0, endPosition);
+                                bundleMap.put (baseName, getBundle (baseName));
                             }
                         }
-                        zipFile.close ();
                     }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace ();
-                    }   
+                    zipFile.close ();
                 }
+                catch (IOException e)
+                {
+                    e.printStackTrace ();
+                }   
             }            
         }
         return bundleMap;
