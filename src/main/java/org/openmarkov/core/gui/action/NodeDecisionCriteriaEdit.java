@@ -23,18 +23,18 @@ public class NodeDecisionCriteriaEdit extends SimplePNEdit{
 	public NodeDecisionCriteriaEdit (ProbNode probNode, StringWithProperties decisionCriteria) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
-		this.currentDecisionCriteria = probNode.getVariable().getDecisionCriteria();
+		this.currentDecisionCriteria = probNode.getVariable().getDecisionCriterion();
 		this.newDecisionCriteria = decisionCriteria;
 	}
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setDecisionCriteria(newDecisionCriteria);
+		probNode.getVariable().setDecisionCriterion(newDecisionCriteria);
 	}
 	
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setDecisionCriteria(currentDecisionCriteria);
+		probNode.getVariable().setDecisionCriterion(currentDecisionCriteria);
 	}
 
 }

@@ -637,8 +637,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
             jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
             jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
-            if (probNode.getVariable().getDecisionCriteria() != null && decisionCriteria != null) {
-                String decisionCriterion = probNode.getVariable().getDecisionCriteria().getString();
+            if (probNode.getVariable().getDecisionCriterion() != null && decisionCriteria != null) {
+                String decisionCriterion = probNode.getVariable().getDecisionCriterion().getString();
                 jComboBoxDecisionCriteria.setSelectedItem(decisionCriterion);
                 jComboBoxDecisionCriteria.addItemListener(this);
             } else {

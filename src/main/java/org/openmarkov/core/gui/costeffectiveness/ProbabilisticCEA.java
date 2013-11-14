@@ -10,10 +10,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
@@ -128,46 +132,72 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     {
         progress = 0;
         List<TablePotential> results = new ArrayList<>(numSimulations);
-        Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
-        for(ProbNode node : expandedNetwork.getProbNodes())
-        {
-        	networkPotentials.put(node.getVariable(), node.getPotentials());
-        }
-        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
-        removeIntermediateUtilityNodes(expandedNetwork);
-        applyTransitionTime(expandedNetwork, transitionTime, numSlices);
-        for (int i = 0; i < numSimulations; ++i)
-        {
-            try {
-            	// Sample and project to table
-            	sampleAndTableProject(sortedNodes, networkPotentials, evidence);
-	            results.add(runAnalysis(expandedNetwork, evidence, transitionTime));
-	            progress = i * 100/numSimulations;
-			} catch (NonProjectablePotentialException | WrongCriterionException e) {
-				e.printStackTrace();
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        boolean success = false;
+		while (!success && numThreads > 0) {
+			ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+			List<Future<TablePotential>> list = new ArrayList<Future<TablePotential>>();
+			for (int i = 0; i < numSimulations; ++i) {
+				Simulation simulation = new Simulation(expandedNetwork);
+				list.add(executor.submit(simulation));
 			}
-        }
+			int simulationIndex = 0;
+			try {
+				for (Future<TablePotential> result : list) {
+					results.add(result.get());
+					progress = simulationIndex * 100 / numSimulations;
+					simulationIndex++;
+				}
+				success = true;
+			} catch (InterruptedException | ExecutionException e) {
+				System.out.println("WARNING: PSA failed with " + numThreads + " threads.");
+				numThreads /= 2;
+			}
+		}        
         progress = 100;
         return results;
     }
 	
-	public static void sampleAndTableProject(List<ProbNode> sortedNodes,
+	private void sampleAndTableProject(List<ProbNode> sortedNodes,
 			Map<Variable, List<Potential>> networkPotentials, EvidenceCase evidence)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<TablePotential> projectedPotentials = new ArrayList<>();
 		for (ProbNode node : sortedNodes) {
 			List<Potential> sampledProjectedPotentials = new ArrayList<>();
 			for (Potential originalPotential : networkPotentials.get(node.getVariable())) {
-				List<TablePotential> newProjectedPotentials = originalPotential
-						.sample()
-						.tableProject(evidence,
-						null, projectedPotentials);
+				List<TablePotential> newProjectedPotentials = originalPotential.sample()
+						.tableProject(evidence, null, projectedPotentials);
 				sampledProjectedPotentials.addAll(newProjectedPotentials);
 				projectedPotentials.addAll(newProjectedPotentials);
 			}
 			node.setPotentials(sampledProjectedPotentials);
 		}
-	}	
+	}
+	
+	private class Simulation implements Callable<TablePotential> {
+
+		ProbNet expandedNetwork;
+
+		public Simulation(ProbNet expandedNetwork) {
+			super();
+			this.expandedNetwork = expandedNetwork;
+		}
+
+		@Override
+		public TablePotential call() throws Exception {
+			ProbNet sampledNetwork = expandedNetwork.copy();
+			Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
+	        for(ProbNode node : sampledNetwork.getProbNodes())
+	        {
+	        	networkPotentials.put(node.getVariable(), node.getPotentials());
+	        }
+	        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(sampledNetwork);
+			removeIntermediateUtilityNodes(sampledNetwork);
+	        applyTransitionTime(sampledNetwork, transitionTime, numSlices);
+	        sampleAndTableProject(sortedNodes, networkPotentials, evidence);
+			return runAnalysis(sampledNetwork, evidence);
+		}
+	}
 	
     private void applyDiscountToUncertainValues(ProbNet expandedNetwork,
             double costDiscount, double effectivenessDiscount) {
@@ -181,7 +211,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
             if (utilityVariable.isTemporal()) {
                 Potential potential = utilityProbNode.getPotentials().get(0);
                 int timeSlice = utilityVariable.getTimeSlice();
-                String decisionCriterion = utilityVariable.getDecisionCriteria().getString();
+                String decisionCriterion = utilityVariable.getDecisionCriterion().getString();
                 double discount = decisionCriterion.equalsIgnoreCase("cost") ? costDiscount
                         : effectivenessDiscount;
                 applyDiscountToUncertainPotential(potential, timeSlice, discount);
@@ -345,4 +375,5 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
             probNode.samplePotentials();
         }
     }
+
 }

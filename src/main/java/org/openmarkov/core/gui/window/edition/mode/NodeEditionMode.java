@@ -81,7 +81,7 @@ public abstract class NodeEditionMode extends EditionMode
                     List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
                     if (nodeType == NodeType.UTILITY && decisionCriteria != null)
                     {
-                        variable.setDecisionCriteria (decisionCriteria.get (0));
+                        variable.setDecisionCriterion (decisionCriteria.get (0));
                     }
                     AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (probNet, variable,
                                                                            nodeType, position);

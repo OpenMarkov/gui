@@ -119,11 +119,11 @@ public class CostEffectivenessAnalysis {
 			}
 		}
 		// Impose policy according to interest variable's decision criterion
-		if (variableOfInterest.getDecisionCriteria() != null) {
-			String decisionCriterion = variableOfInterest.getDecisionCriteria().getString();
-			Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriteriaVariable();
+		if (variableOfInterest.getDecisionCriterion() != null) {
+			String decisionCriterion = variableOfInterest.getDecisionCriterion().getString();
+			Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriterionVariable();
 			ProbNode decisionCriteriaNode = expandedNetwork.getProbNode(expandedNetwork
-					.getDecisionCriteriaVariable());
+					.getDecisionCriterionVariable());
 			TablePotential decisionCriterionPolicy = new TablePotential(
 					Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
 			for (int i = 0; i < decisionCriterionPolicy.values.length; ++i) {
@@ -255,7 +255,7 @@ public class CostEffectivenessAnalysis {
 		}
         
         applyTransitionTime(copyNetwork, transitionTime, numSlices);
-		return runAnalysis(copyNetwork, evidence, transitionTime);
+		return runAnalysis(copyNetwork, evidence);
 	}
 	
 	public static void tableProjectInNetwork(List<ProbNode> sortedNodes,
@@ -307,7 +307,7 @@ public class CostEffectivenessAnalysis {
 	
 
 	
-	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime) {
+	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
 		TablePotential globalUtility = null;
 		try {
 			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
@@ -366,7 +366,7 @@ public class CostEffectivenessAnalysis {
 	private List<Variable> getConditioningVariables(ProbNet probNet)
 	{
 		List<Variable> conditioningVariables = new ArrayList<>();
-		conditioningVariables.add(expandedNetwork.getDecisionCriteriaVariable());
+		conditioningVariables.add(expandedNetwork.getDecisionCriterionVariable());
 		List<ProbNode> decisionNodes = probNet.getProbNodes(NodeType.DECISION);
 		for (ProbNode decisionNode : decisionNodes) {
 			if (!decisionNode.hasPolicy()) {
@@ -388,7 +388,7 @@ public class CostEffectivenessAnalysis {
 				Variable utilityVariable = utilityNode.getVariable();
 				if(utilityVariable.isTemporal() && 
 						utilityVariable.getTimeSlice() > 0 &&
-						utilityVariable.getDecisionCriteria().getString()
+						utilityVariable.getDecisionCriterion().getString()
 						.equalsIgnoreCase("effectiveness"))
 				{
 					if(!temporalNodes.containsKey(utilityVariable.getBaseName()))
@@ -455,7 +455,7 @@ public class CostEffectivenessAnalysis {
 		for (TablePotential utilityPotential : utilityPotentials) {
 			Variable utilityVariable = utilityPotential.getUtilityVariable();
 			if (utilityVariable.isTemporal()) {
-				boolean isCost = utilityVariable.getDecisionCriteria().getString()
+				boolean isCost = utilityVariable.getDecisionCriterion().getString()
 						.equalsIgnoreCase("cost");
 				double discount = isCost ? costDiscount : effectivenessDiscount;
 				discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
@@ -629,11 +629,11 @@ public class CostEffectivenessAnalysis {
 		// make all utility nodes of the expanded probNet children of the
 		// decision criteria node
 		ProbNode decisionCriteriaNode = new ProbNode(expandedNetwork,
-				expandedNetwork.getDecisionCriteriaVariable(), NodeType.DECISION);
+				expandedNetwork.getDecisionCriterionVariable(), NodeType.DECISION);
 		expandedNetwork.addProbNode(decisionCriteriaNode);
 		for (ProbNode utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
 			expandedNetwork.addLink(decisionCriteriaNode, utilityNode, true);
-			String decisionCriterion = utilityNode.getVariable().getDecisionCriteria().getString();
+			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getString();
 			if (decisionCriterion.equalsIgnoreCase("cost")
 					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
 				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
@@ -696,7 +696,7 @@ public class CostEffectivenessAnalysis {
 			if (utilityVariable.isTemporal()) {
 				Potential potential = utilityProbNode.getPotentials().get(0);
 				int timeSlice = utilityVariable.getTimeSlice();
-				String decisionCriterion = utilityVariable.getDecisionCriteria().getString();
+				String decisionCriterion = utilityVariable.getDecisionCriterion().getString();
 				double discount = decisionCriterion.equalsIgnoreCase("cost") ? costDiscount
 						: effectivenessDiscount;
 				applyDiscountToUtilityPotential(potential, timeSlice, discount);
@@ -779,15 +779,15 @@ public class CostEffectivenessAnalysis {
 		Potential utilityPotential = utilProbNode.getPotentials().get(0);
 		List<Variable> treeVariables = utilityPotential.getVariables();
 		treeVariables.add(decisionCriteriaVariable);
-		String decisionCriterion = utilProbNode.getVariable().getDecisionCriteria().getString();
+		String decisionCriterion = utilProbNode.getVariable().getDecisionCriterion().getString();
 		String otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
 				: "cost";
 
 		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables,
-				probNet.getDecisionCriteriaVariable(), utilityPotential.getPotentialRole(),
+				probNet.getDecisionCriterionVariable(), utilityPotential.getPotentialRole(),
 				utilityPotential.getUtilityVariable());
 		List<Variable> variables = new ArrayList<>();
-		variables.add(probNet.getDecisionCriteriaVariable());
+		variables.add(probNet.getDecisionCriterionVariable());
 		for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
 			TreeADDBranch branch = treeADDPotential.getBranches().get(j);
 			String branchName = branch.getBranchStates().get(0).getName();
