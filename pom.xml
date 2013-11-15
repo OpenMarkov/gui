@@ -62,13 +62,13 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.variableElimination</artifactId>
-			<version>0.1.3</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.huginPropagation</artifactId>
-			<version>0.1.3</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -122,14 +122,14 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.elvira</artifactId>
-			<version>0.1.2</version>
+			<version>0.1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
-			<version>0.1.3</version>
+			<version>0.1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
