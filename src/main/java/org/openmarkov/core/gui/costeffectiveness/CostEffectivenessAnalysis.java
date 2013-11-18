@@ -505,7 +505,7 @@ public class CostEffectivenessAnalysis {
 	protected TablePotential reorderVariables(TablePotential analysisResult) {
 		List<Variable> newOrderVariables = new ArrayList<>();
 		for (Variable variable : analysisResult.getVariables()) {
-			if (variable.getName().equals("Decision Criteria")) {
+			if (variable.getName().equals("Decision Criterion")) {
 				newOrderVariables.add(0, variable);
 			} else {
 				newOrderVariables.add(variable);

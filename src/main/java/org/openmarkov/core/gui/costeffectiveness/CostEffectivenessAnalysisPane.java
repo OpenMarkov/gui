@@ -35,7 +35,7 @@ public class CostEffectivenessAnalysisPane extends JScrollPane
         List<Variable> correctOrder = new ArrayList<> (globalUtility.getVariables ());
         for (int i = 0; i < correctOrder.size (); i++)
         {
-            if (correctOrder.get (i).getName ().equalsIgnoreCase ("Decision Criteria"))
+            if (correctOrder.get (i).getName ().equalsIgnoreCase ("Decision Criterion"))
             {
                 Variable decisionCriteriaVariable = correctOrder.remove (i);
                 correctOrder.add (0, decisionCriteriaVariable);
