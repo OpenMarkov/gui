@@ -60,7 +60,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      */
     protected static final Color       TABLE_HEADER_BACKGROUND_COLOR = new Color(220, 220, 220);
     
-    private static final DecimalFormat formatter                 = new DecimalFormat("0.###",
+    private static final DecimalFormat formatter                 = new DecimalFormat("0.######",
                                                                          new DecimalFormatSymbols(Locale.US));
 
     private boolean[]                  uncertaintyInColumns = null;
