@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -73,6 +74,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     private JLabel                  numSimulationsLabel;
     private Integer                 numSimulations;
     private JTextField              numSimulationsTextField;
+    private JCheckBox               chkUseMultiThreading;
     private Map<Variable, Double>   initialValues;
     private Map<String, JTextField> initialValueComponents = new HashMap<>();
 
@@ -182,8 +184,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
         }
         if (sensitivityAnalysis) {
             numSimulations = 1000;
+            JPanel simulationsPanel = new JPanel();
+            simulationsPanel.setBorder(new TitledBorder("Simulation"));
+            simulationsPanel.setLayout(new BorderLayout());
             JPanel numSimulationsPanel = new JPanel();
-            numSimulationsPanel.setBorder(new TitledBorder("Simulation"));
             numSimulationsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             numSimulationsTextField = new JTextField(10);
             numSimulationsTextField.addFocusListener(this);
@@ -191,7 +195,11 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
             numSimulationsTextField.setText(numSimulations + "");
             numSimulationsPanel.add(getSimulationsNumberLabel());
             numSimulationsPanel.add(numSimulationsTextField);
-            panel.add(numSimulationsPanel, BorderLayout.SOUTH);
+            simulationsPanel.add(numSimulationsPanel, BorderLayout.NORTH);
+            chkUseMultiThreading = new JCheckBox("Use multithreading");
+            chkUseMultiThreading.setSelected(true);
+            simulationsPanel.add(chkUseMultiThreading, BorderLayout.CENTER);
+            panel.add(simulationsPanel, BorderLayout.SOUTH);
         }
         pack();
         repaint();
@@ -392,6 +400,10 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog implements
     public int getNumSlices() {
         return numSlices;
     }
+    
+    public boolean getUseMultithreading() {
+        return chkUseMultiThreading != null && chkUseMultiThreading.isSelected();
+    }    
 
     public TransitionTime getTransitionTime() {
         TransitionTime transitionTime = TransitionTime.BEGINNING;
