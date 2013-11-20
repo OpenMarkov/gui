@@ -32,6 +32,9 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     private JLabel remainingTimeLabel;
     private PSATask         task;
     private ProbabilisticCEA costEffectivenessAnalysis;
+    private final ProbNet probNet;
+    private final CostEffectivenessDialog costEffectivenessDialog; 
+    private final EvidenceCase evidence; 
     private long startTime;
 
     class PSATask extends SwingWorker<Void, Void> {
@@ -83,9 +86,12 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
         }
     }
 
-    public CostEffectivenessProgressBar(Window window, ProbNet probNet, EvidenceCase evidence,
-            CostEffectivenessDialog costEffectivenessDialog) {
+    public CostEffectivenessProgressBar(Window window, ProbNet net, EvidenceCase e,
+            CostEffectivenessDialog ceDialog) {
         this.parent = window;
+        this.probNet = net;
+        this.evidence = e;
+        this.costEffectivenessDialog = ceDialog;
         
         JPanel panel = new JPanel(new BorderLayout());
         progressBar = new JProgressBar(0, 100);
@@ -94,7 +100,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
         progressBar.setStringPainted(true);
         
         elapsedTimeLabel = new JLabel("Time elapsed: 0 seconds.");
-        remainingTimeLabel = new JLabel("Estimated remaining time: --.");
+        remainingTimeLabel = new JLabel("Initializing...");
 
         panel.add(elapsedTimeLabel, BorderLayout.NORTH);
         panel.add(remainingTimeLabel, BorderLayout.CENTER);
@@ -106,25 +112,27 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
         add(panel);
         pack();
         
-        setResizable(false);
+        
         
         Toolkit toolkit = Toolkit.getDefaultToolkit ();
         Dimension screenSize = toolkit.getScreenSize ();
         int x = (int) (screenSize.getWidth() - getSize().getWidth()) / 2;
         int y = (int) (screenSize.getHeight() - getSize().getHeight()) / 2;
         setLocation(new Point(x, y));
-        
-        costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
-                evidence,
-                costEffectivenessDialog.getCostDiscount(),
-                costEffectivenessDialog.getEffectivenessDiscount(),
-                costEffectivenessDialog.getNumSlices(),
-                costEffectivenessDialog.getNumSimulations(),
-                costEffectivenessDialog.getInitialValues(),
-                costEffectivenessDialog.getTransitionTime());
-        
+
+        setResizable(false);
+
         addComponentListener(new ComponentAdapter() {
             public void componentShown(ComponentEvent e) {
+                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
+                        evidence,
+                        costEffectivenessDialog.getCostDiscount(),
+                        costEffectivenessDialog.getEffectivenessDiscount(),
+                        costEffectivenessDialog.getNumSlices(),
+                        costEffectivenessDialog.getNumSimulations(),
+                        costEffectivenessDialog.getInitialValues(),
+                        costEffectivenessDialog.getTransitionTime(),
+                        costEffectivenessDialog.getUseMultithreading());            	
                 /* code run when component shown */
                 runAnalysis();
             }
@@ -144,6 +152,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
                 }
             }
         });
+        
     }
     
     private void runAnalysis()
