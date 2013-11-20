@@ -1,0 +1,165 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openmarkov</groupId>
+	<artifactId>org.openmarkov.core.gui</artifactId>
+	<version>0.1.4-SNAPSHOT</version>
+	<name>org.openmarkov.core.gui</name>
+	<url>http://openmarkov.org/core/gui</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.core</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.variableElimination</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.huginPropagation</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.woodstock.dependlibs</groupId>
+			<artifactId>jh</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.jeval</groupId>
+			<artifactId>jeval</artifactId>
+			<version>0.9.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.16</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.io.elvira</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>release</id>
+			<name>OpenMarkov</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<name>OpenMarkov Snapshots</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>releases</id>
+			<name>Releases</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>snapshots</id>
+			<name>Snapshots</name>
+			<url>http://openmarkov.org:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+</project>
