@@ -150,7 +150,6 @@ public class NodeContextualMenu extends ContextualMenu
     {
         add (getCutMenuItem ());
         add (getCopyMenuItem ());
-        addSeparator ();
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getPropertiesMenuItem ());
@@ -179,7 +178,6 @@ public class NodeContextualMenu extends ContextualMenu
         removeAll ();
         add (getCutMenuItem ());
         add (getCopyMenuItem ());
-        addSeparator ();
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
@@ -211,7 +209,6 @@ public class NodeContextualMenu extends ContextualMenu
         removeAll ();
         add (getCutMenuItem ());
         add (getCopyMenuItem ());
-        addSeparator ();
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
@@ -247,7 +244,6 @@ public class NodeContextualMenu extends ContextualMenu
         removeAll ();
         add (getCutMenuItem ());
         add (getCopyMenuItem ());
-        addSeparator ();
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
@@ -277,7 +273,6 @@ public class NodeContextualMenu extends ContextualMenu
         removeAll ();
         add (getCutMenuItem ());
         add (getCopyMenuItem ());
-        addSeparator ();
         add (getRemoveMenuItem ());
         addSeparator ();
         add (getTemporalEvolutionMenuItem ());
