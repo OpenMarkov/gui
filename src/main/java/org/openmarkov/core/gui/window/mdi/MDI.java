@@ -14,6 +14,7 @@ import java.beans.PropertyVetoException;
 import java.util.HashSet;
 
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -103,12 +104,13 @@ public class MDI extends JPanel
         frame = (InternalFrame) desktopPane.createNewInternalFrame (newContentPanel);
         frame.addInternalFrameListener (this);
         frame.addFrameTitleListener (this);
-        frame.setTitle (newContentPanel.getTitle ());
+        frame.setTitle (newContentPanel.getTitle ()); 
         frame.setBounds ((maximized) ? desktopPane.getBounds () : newContentPanel.getBounds ());
         frame.setVisible (true);
         try
         {
             frame.setSelected (true);
+            frame.setMaximum(maximized);
         }
         catch (PropertyVetoException e)
         {
