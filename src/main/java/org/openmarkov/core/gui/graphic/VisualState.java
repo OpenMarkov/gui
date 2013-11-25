@@ -66,7 +66,7 @@ public class VisualState extends VisualElement
     /**
      * Number of decimals
      */
-    public static final int   NUMBER_OF_DECIMALS = 5;
+    public static final int   NUMBER_OF_DECIMALS = 4;
     
     /**
      * The VisualNode this State is associated to.
