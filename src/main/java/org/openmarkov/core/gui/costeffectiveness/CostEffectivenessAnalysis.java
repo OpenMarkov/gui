@@ -140,6 +140,7 @@ public class CostEffectivenessAnalysis {
 			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 
 			variableElimination.setPreResolutionEvidence(evidence);
+			variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 			try {
 				probsAndUtilities = variableElimination.getProbsAndUtilities(variablesOfInterest);
 			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
@@ -317,6 +318,9 @@ public class CostEffectivenessAnalysis {
 			
 			// set decisions and decision criteria as conditioning variables
 			inferenceAlgorithm.setConditioningVariables(getConditioningVariables(probNet));
+
+			// set heuristic for variable elimination
+			inferenceAlgorithm.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
 			// Run inference
 			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
