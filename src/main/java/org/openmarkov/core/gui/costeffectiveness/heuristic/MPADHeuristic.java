@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.VariableType;
 
 public class MPADHeuristic extends EliminationHeuristic {
 
-    List<Variable> eliminationOrder;
+    private List<Variable> eliminationOrder;
 
     public MPADHeuristic(ProbNet probNet, List<List<Variable>> variablesToEliminate) {
         super(probNet, variablesToEliminate);
@@ -32,11 +32,12 @@ public class MPADHeuristic extends EliminationHeuristic {
      */
     private List<Variable> getEliminationOrder(ProbNet probNet,
             List<List<Variable>> variablesToEliminate) {
-        int numVariablesToEliminate = variablesToEliminate.size();
+    	ProbNet probNetCopy = probNet.copy();
         List<Variable> plainVariableList = new ArrayList<>();
         for (List<Variable> variables : variablesToEliminate) {
             plainVariableList.addAll(variables);
         }
+        int numVariablesToEliminate = plainVariableList.size();
 
         List<Variable> eliminationOrder = new ArrayList<Variable>(numVariablesToEliminate);
 
@@ -46,7 +47,7 @@ public class MPADHeuristic extends EliminationHeuristic {
             int minClusterSize = Integer.MAX_VALUE;
             Variable candidateToRemove = plainVariableList.get(0);
             for (Variable variable : plainVariableList) {
-                ProbNode probNode = probNet.getProbNode(variable);
+                ProbNode probNode = probNetCopy.getProbNode(variable);
                 List<Node> neighbors = probNode.getNode().getNeighbors();
                 int clusterSize = 1;
                 for (Node node : neighbors) {
@@ -62,8 +63,8 @@ public class MPADHeuristic extends EliminationHeuristic {
                 }
             }
             eliminationOrder.add(candidateToRemove);
-            variablesToEliminate.remove(candidateToRemove);
-            probNet.removeProbNode(probNet.getProbNode(candidateToRemove));
+            plainVariableList.remove(candidateToRemove);
+            probNetCopy.removeProbNode(probNetCopy.getProbNode(candidateToRemove));
         }
         return eliminationOrder;
     }
@@ -74,10 +75,7 @@ public class MPADHeuristic extends EliminationHeuristic {
         if (removedVariable != null) {
             eliminationOrder.remove(removedVariable);
             // Eliminate node from variablesToEliminate
-            ProbNode toEliminateNode = probNet.getProbNode(removedVariable);
             variablesToEliminate.remove(removedVariable);
-            probNet.removePotentials(toEliminateNode);
-            probNet.removeProbNode(toEliminateNode);
         }
     }
 
