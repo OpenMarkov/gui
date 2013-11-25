@@ -67,6 +67,12 @@
 
 		<dependency>
 			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.heuristic.simpleElimination</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.huginPropagation</artifactId>
 			<version>0.1.4-SNAPSHOT</version>
 		</dependency>

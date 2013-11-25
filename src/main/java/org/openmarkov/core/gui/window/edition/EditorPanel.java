@@ -66,6 +66,8 @@ import org.openmarkov.core.gui.window.edition.mode.EditionMode;
 import org.openmarkov.core.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
+import org.openmarkov.core.inference.heuristic.EliminationHeuristic;
+import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -80,6 +82,7 @@ import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
+import org.openmarkov.inference.heuristic.simpleElimination.SimpleElimination;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -2005,6 +2008,12 @@ public class EditorPanel extends JPanel
                 {
                     throw new UnsupportedOperationException ();
                 }
+                inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
+					@Override
+					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
+						return new SimpleElimination(probNet, variables);
+					}
+				});
                 inferenceAlgorithm.setPreResolutionEvidence (preResolutionEvidence);
                 inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
                 calculateMinAndMaxUtilityRanges ();
