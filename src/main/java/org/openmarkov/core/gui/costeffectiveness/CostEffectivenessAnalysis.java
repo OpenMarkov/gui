@@ -799,8 +799,7 @@ public class CostEffectivenessAnalysis {
 				branch.setPotential(utilityPotential);
 			} else if (branchName.equalsIgnoreCase(otherDecisionCriterion)) {
 				// zero potential
-				branch.setPotential(new TablePotential(new ArrayList<Variable>(),
-						PotentialRole.UTILITY, utilProbNode.getVariable()));
+				branch.setPotential(new TablePotential(utilProbNode.getVariable(), new ArrayList<Variable>()));
 			}
 		}
 		return treeADDPotential;
