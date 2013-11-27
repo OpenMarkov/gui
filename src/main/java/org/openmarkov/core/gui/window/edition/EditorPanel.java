@@ -905,12 +905,12 @@ public class EditorPanel extends JPanel
         }
         else
         {
-            ArrayList<ProbNode> selectedNodes = new ArrayList<ProbNode> ();
+            List<ProbNode> selectedNodes = new ArrayList<ProbNode> ();
             for (VisualNode visualNode : visualNetwork.getSelectedNodes ())
             {
                 selectedNodes.add (visualNode.getProbNode ());
             }
-            ArrayList<Link> selectedLinks = new ArrayList<Link> ();
+            List<Link> selectedLinks = new ArrayList<Link> ();
             for (VisualLink visualLink : visualNetwork.getSelectedLinks ())
             {
                 selectedLinks.add (visualLink.getLink ());
@@ -1082,7 +1082,7 @@ public class EditorPanel extends JPanel
             if (node.getProbNode ().getNodeType () == NodeType.DECISION)
             {
                 ProbNode probNode = node.getProbNode ();
-                ArrayList<Potential> noPolicy = new ArrayList<> ();
+                List<Potential> noPolicy = new ArrayList<> ();
                 probNode.setPotentials (noPolicy);
                 ((VisualDecisionNode) node).setHasPolicy (false);
             }
@@ -1348,9 +1348,9 @@ public class EditorPanel extends JPanel
      * This method returns list of evidence cases
      * @return the list of Evidence Cases.
      */
-    public ArrayList<EvidenceCase> getEvidence ()
+    public List<EvidenceCase> getEvidence ()
     {
-        ArrayList<EvidenceCase> evidence = new ArrayList<EvidenceCase> ();
+        List<EvidenceCase> evidence = new ArrayList<EvidenceCase> ();
         for (EvidenceCase postResolutionEvidenceCase : postResolutionEvidence)
         {
             if (!postResolutionEvidenceCase.isEmpty ())

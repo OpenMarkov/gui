@@ -9,6 +9,7 @@
 package org.openmarkov.core.gui.window.edition;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNode;
@@ -23,12 +24,12 @@ public class SelectedContent
     /**
      * Copied nodes
      */
-    private ArrayList<ProbNode> nodes;
+    private List<ProbNode> nodes;
     
     /**
      * Copied links
      */
-    private ArrayList<Link> links;
+    private List<Link> links;
     
     /**
      * 
@@ -37,7 +38,7 @@ public class SelectedContent
      * @param links
      */
     
-    public SelectedContent(ArrayList<ProbNode> nodes, ArrayList<Link> links)
+    public SelectedContent(List<ProbNode> nodes, List<Link> links)
     {
         this.nodes = nodes;
         this.links = links;
@@ -59,7 +60,7 @@ public class SelectedContent
      * Returns nodes in the clipboard
      * @return nodes in the clipboard
      */
-    public ArrayList<ProbNode> getNodes()
+    public List<ProbNode> getNodes()
     {
         return this.nodes;
     }
@@ -68,7 +69,7 @@ public class SelectedContent
      * Returns links in the clipboard
      * @return links in the clipboard
      */
-    public ArrayList<Link> getLinks()
+    public List<Link> getLinks()
     {
         return this.links;
     }

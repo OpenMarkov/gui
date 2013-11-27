@@ -11,6 +11,7 @@ package org.openmarkov.core.gui.dialog.io;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
@@ -100,7 +101,7 @@ public class NetsIO {
      * @throws CanNotWriteNetworkToFileException - if an I/O error has happened
      */
     public static void saveNetworkFile (ProbNet network,
-                                        ArrayList<EvidenceCase> evidence,
+                                        List<EvidenceCase> evidence,
                                         String fileName)
         throws NotRecognisedNetworkFileExtensionException,
         CanNotWriteNetworkToFileException
