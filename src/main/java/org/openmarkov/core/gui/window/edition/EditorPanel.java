@@ -1043,7 +1043,6 @@ public class EditorPanel extends JPanel
      */
     public void editNodePolicy ()
     {
-        System.out.println ("Pulsada la opción 'Editar Política'"); // ...Borrar
         VisualNode node = null;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
@@ -1075,7 +1074,6 @@ public class EditorPanel extends JPanel
      */
     public void removePolicyFromNode ()
     {
-        System.out.println ("Pulsada la opción 'Eliminar Política'"); // ...Borrar
         VisualNode node = null;
         List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
         if (selectedNode.size () == 1)
