@@ -113,11 +113,21 @@ public class EditorPanel extends JPanel
     /**
      * Maximum width of the panel.
      */
-    private double                           maxWidth                         = Toolkit.getDefaultToolkit ().getScreenSize ().getWidth () * 20;
+    private static final double                           MAX_WIDTH                         = Toolkit.getDefaultToolkit ().getScreenSize ().getWidth () * 20;
     /**
      * Maximum height of the panel.
      */
-    private double                           maxHeight                        = Toolkit.getDefaultToolkit ().getScreenSize ().getHeight () * 20;
+    private static final double                           MAX_HEIGHT                        = Toolkit.getDefaultToolkit ().getScreenSize ().getHeight () * 20;
+   
+    /**
+     * Maximum width of the panel.
+     */
+    private double currentWidth = Toolkit.getDefaultToolkit ().getScreenSize ().getWidth () * 20;
+    /**
+     * Maximum height of the panel.
+     */
+    private double currentHeight = Toolkit.getDefaultToolkit ().getScreenSize ().getHeight () * 20;
+    
     /**
      * Constant that indicates the value of the Expansion Threshold by default.
      */
@@ -260,7 +270,8 @@ public class EditorPanel extends JPanel
         addMouseListener (this);
         addMouseMotionListener (this);
         this.setBackground (Color.white);
-        adjustPanelDimension ();
+        //adjustPanelDimension ();
+        setZoomToFitNetwork();
         clipboardAssistant = new EditorPanelClipboardAssistant ();
     }
 
@@ -542,21 +553,21 @@ public class EditorPanel extends JPanel
     }
 
     /**
-     * Return the maximum height of the panel till now.
-     * @return maximum height of the panel till now.
+     * Return the height of the panel after applying the zoom.
+     * @return height of the panel after applying the zoom.
      */
-    double getMaxHeight ()
+    double getNewHeight ()
     {
-        return zoom.panelToScreen (maxHeight);
+        return zoom.panelToScreen (currentHeight);
     }
 
     /**
-     * Return the maximum width of the panel till now.
-     * @return maximum width of the panel till now.
+     * Return the width of the panel after applying the zoom.
+     * @return width of the panel after applying the zoom.
      */
-    double getMaxWidth ()
+    double getNewWidth ()
     {
-        return zoom.panelToScreen (maxWidth);
+        return zoom.panelToScreen (currentWidth);
     }
 
     /**
@@ -571,8 +582,8 @@ public class EditorPanel extends JPanel
         if (dd.compareTo (dd1) != 0)
         { // jlgozalo. 24/08 fix condition to !=
             zoom.setZoom (value);
-            newDimension = new Dimension ((int) Math.round (getMaxWidth ()),
-                                          (int) Math.round (getMaxHeight ()));
+            newDimension = new Dimension ((int) Math.round (getNewWidth ()),
+                                          (int) Math.round (getNewHeight ()));
             setPreferredSize (newDimension);
             setSize (newDimension);
             adjustPanelDimension ();
@@ -2687,12 +2698,30 @@ public class EditorPanel extends JPanel
     {
         double[] bounds = getBounds ((Graphics2D) getGraphics ());
         Dimension newDimension = null;
-        maxWidth = Math.min (maxWidth, bounds[1]);
-        maxHeight = Math.min (maxHeight, bounds[3]);
-        newDimension = new Dimension ((int) Math.round (getMaxWidth ()),
-                                      (int) Math.round (getMaxHeight ()));
+        currentWidth = Math.min (MAX_WIDTH, bounds[1]);
+        currentHeight = Math.min (MAX_HEIGHT, bounds[3]);
+        newDimension = new Dimension ((int) Math.round (getNewWidth ()),
+                                      (int) Math.round (getNewHeight ()));
         setPreferredSize (newDimension);
         setSize (newDimension);
+    }
+    
+    /**
+     * Sets the zoom so the displayed network fits in the panel.
+     */
+    public void setZoomToFitNetwork()
+    {
+    	double[] networkBounds = getBounds ((Graphics2D) getGraphics ());
+    	Dimension panelBounds = networkPanel.getMainPanel().getMdi().getSize();
+    	double zoom = 1;
+    	
+    	while (((networkBounds[1] * zoom) > panelBounds.getWidth()) ||
+    				((networkBounds[3] * zoom) > panelBounds.getHeight()) && 
+    				zoom > 0.1)
+    	{
+    		zoom -= 0.1;
+    	}
+    	setZoom(zoom);
     }
 
     public void createNextSliceNode() {
