@@ -31,9 +31,9 @@ import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -756,7 +756,7 @@ public class CostEffectivenessAnalysis {
 							&& secondSliceVariable.getTimeSlice() == 1
 							&& secondSliceVariable.getBaseName().equals(
 									firstSliceVariable.getBaseName())) {
-						if (secondSliceNode.getPotentials().get(0).getPotentialType() == PotentialType.CYCLE_LENGTH_SHIFT) {
+						if (secondSliceNode.getPotentials().get(0) instanceof CycleLengthShift) {
 							numericTemporalNodes.add(firstSliceNode);
 							break;
 						}

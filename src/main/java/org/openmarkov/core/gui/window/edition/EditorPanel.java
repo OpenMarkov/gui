@@ -78,7 +78,6 @@ import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
@@ -2171,7 +2170,7 @@ public class EditorPanel extends JPanel
                                                             VisualNode visualNode)
     {
         Potential potential = individualProbabilities.get (variable);
-        if (potential.getPotentialType () == PotentialType.TABLE)
+        if (potential instanceof TablePotential)
         {
             TablePotential tablePotential = (TablePotential) potential;
             if (tablePotential.getNumVariables () == 1)

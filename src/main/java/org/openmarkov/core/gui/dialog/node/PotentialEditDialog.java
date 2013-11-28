@@ -51,9 +51,10 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialTypeManager;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 
 /**
  * Dialog box to edit all type of potentials ( TablePotential and TreeADDs ). If
@@ -94,7 +95,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Relation Type Manager
      */
-    private RelationPotentialTypeManager relationTypeManager;
+    private PotentialManager relationTypeManager;
     /**
      * Panel of the graphic editor
      */
@@ -165,7 +166,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      */
     private void initialize ()
     {
-        relationTypeManager = new RelationPotentialTypeManager ();
+        relationTypeManager = new PotentialManager ();
         // Set default title
         setTitle ("NodePotentialDialog.Title.Label");
         configureComponentsPanel ();
@@ -224,7 +225,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             Collections.sort (filteredPotentialNames);
             potentialTypeComboBox = new JComboBox<> (
                                                      (String[]) filteredPotentialNames.toArray (new String[0]));
-            potentialTypeComboBox.setSelectedItem (probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ());
+            potentialTypeComboBox.setSelectedItem (probNode.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ());
             potentialTypeComboBox.setBorder (new LineBorder (
                                                              UIManager.getColor ("List.dropLineColor"),
                                                              1, false));
@@ -309,7 +310,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
-        previouslySelectedPotentialType = probNode.getPotentials ().get (0).getClass ().getAnnotation (RelationPotentialType.class).name ();
+        previouslySelectedPotentialType = probNode.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ();
         getPotentialTypeJCombobox ().setSelectedItem (previouslySelectedPotentialType);
         updatePotentialPanel ();
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
@@ -500,15 +501,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                     break;
                 case PROBABILISTIC :
                     Potential potential = probNode.getPotentials ().get (0);
-                    switch (potential.getPotentialType ())
-                    {
-                        case UNIFORM :
-                        case TABLE :
-                            getPotentialTypeJCombobox ().setSelectedIndex (potential.getPotentialType ().getType ());
-                            // getJComboBoxRelationType().setEnabled(false);
-                            break;
                     // TODO definir el comportamiento para los demás tipos de
                     // potenciales
+                    if(potential instanceof UniformPotential || potential instanceof TablePotential )
+                    {
+                        getPotentialTypeJCombobox ().setSelectedItem (potential.getClass().getAnnotation(PotentialType.class).name());
+                        // getJComboBoxRelationType().setEnabled(false);
                     }
                     break;
             }

@@ -19,7 +19,6 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 
@@ -110,7 +109,7 @@ public class LinkRestrictionValuesTable extends ValuesTable
                 if ((Integer) newValue == 0)
                 {
                     if (!node2.getPotentials ().isEmpty ()
-                        && node2.getPotentials ().get (0).getPotentialType () == PotentialType.TABLE)
+                        && node2.getPotentials ().get (0) instanceof TablePotential)
                     {
                         Potential potential = LinkRestrictionPotentialOperations.updatePotentialByAddLinkRestriction (node2,
                                                                                                                       (TablePotential) link.getRestrictionsPotential (),

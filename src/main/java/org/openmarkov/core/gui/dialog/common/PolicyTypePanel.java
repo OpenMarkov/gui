@@ -26,7 +26,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.plugin.RelationPotentialType;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 @SuppressWarnings("serial")
 public class PolicyTypePanel extends JPanel
@@ -230,7 +230,7 @@ public class PolicyTypePanel extends JPanel
                 SetPotentialEdit setPotentialEdit = null;
                 setPotentialEdit = new SetPotentialEdit (
                                                          probNode,
-                                                         TablePotential.class.getAnnotation (RelationPotentialType.class).name ());
+                                                         TablePotential.class.getAnnotation (PotentialType.class).name ());
                 try
                 {
                     probNode.getProbNet ().doEdit (setPotentialEdit);
