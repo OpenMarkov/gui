@@ -787,9 +787,8 @@ public class CostEffectivenessAnalysis {
 		String otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
 				: "cost";
 
-		TreeADDPotential treeADDPotential = new TreeADDPotential(treeVariables,
-				probNet.getDecisionCriterionVariable(), utilityPotential.getPotentialRole(),
-				utilityPotential.getUtilityVariable());
+		TreeADDPotential treeADDPotential = new TreeADDPotential(utilityPotential.getUtilityVariable(), treeVariables,
+				probNet.getDecisionCriterionVariable());
 		List<Variable> variables = new ArrayList<>();
 		variables.add(probNet.getDecisionCriterionVariable());
 		for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {

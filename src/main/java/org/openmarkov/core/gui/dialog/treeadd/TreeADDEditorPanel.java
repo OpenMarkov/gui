@@ -1198,10 +1198,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     newRootVariable,
                     rootTreeADDPotential.getPotentialRole());
         } else if (rootTreeADDPotential.getPotentialRole() == PotentialRole.UTILITY) {
-            newTreeADD = new TreeADDPotential(newTreeVariables,
-                    newRootVariable,
-                    rootTreeADDPotential.getPotentialRole(),
-                    rootTreeADDPotential.getUtilityVariable());
+            newTreeADD = new TreeADDPotential(rootTreeADDPotential.getUtilityVariable(),
+            		newTreeVariables,
+                    newRootVariable);
         }
         // set the new tree to its owner branch
         branch.setPotential(newTreeADD);
