@@ -48,6 +48,7 @@ public class CommentHTMLScrollPane extends JScrollPane
     private HashSet<CommentListener> commentListeners     = new HashSet<CommentListener>();
     private String                   title                = "";
     private boolean                  isChanged            = false;
+    private boolean					 isEmpty			  = true;
 
     /**
      * This method initialises this instance.
@@ -208,6 +209,7 @@ public class CommentHTMLScrollPane extends JScrollPane
                     jTextPaneCommentHTML.setDocument (hTMLTextEditor.getEextendedHTMLDocument ());
                     jTextPaneCommentHTML.setText (hTMLTextEditor.getCommentText ());
                     isChanged = true;
+                    isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("\r|\n", "").equals("") ? true : false;
                     notifyCommentChanged ();
                 }
             }
@@ -252,5 +254,9 @@ public class CommentHTMLScrollPane extends JScrollPane
 
     public boolean isChanged() {
         return isChanged;
+    }
+    
+    public boolean isEmpty() {
+    	return isEmpty;
     }
 }

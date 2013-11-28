@@ -996,9 +996,14 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     private boolean               newNode                                    = false;
 
     public void commentHasChanged() {
+    	
+    	// check if the comment is empty
+    	String comment = getCommentHTMLScrollPaneNodeDefinitionComment().isEmpty() 
+    			? ""
+    			: getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText();
+    	
         NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(probNode,
-                getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText(),
-                "DefinitionComment");
+                comment, "DefinitionComment");
         try {
             probNode.getProbNet().doEdit(nodeCommentEdit);
         } catch (ConstraintViolationException

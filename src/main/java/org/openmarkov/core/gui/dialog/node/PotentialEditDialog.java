@@ -444,7 +444,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getPotentialPanel ().saveChanges ();
         if(commentPane.isChanged())
         {
-            probNode.getPotentials().get(0).setComment(commentPane.getCommentText());
+        	// check if the comment is empty
+        	String comment = commentPane.isEmpty() 
+        			? "" 
+        			: commentPane.getCommentText();
+            probNode.getPotentials().get(0).setComment(comment);
         }
         probNode.getProbNet ().getPNESupport ().closeParenthesis ();
         return true;

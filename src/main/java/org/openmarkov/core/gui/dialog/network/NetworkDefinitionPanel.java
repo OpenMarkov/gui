@@ -305,9 +305,13 @@ public class NetworkDefinitionPanel extends JPanel
 
     public void commentHasChanged ()
     {
+    	// check if the comment is empty
+    	String comment = getCommentHTMLScrollPaneNetworkDefinition().isEmpty() 
+    			? "" 
+    			: getCommentHTMLScrollPaneNetworkDefinition().getCommentText();
         NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit (
                                                                         probNet,
-                                                                        getCommentHTMLScrollPaneNetworkDefinition ().getCommentText ());
+                                                                        comment);
         try
         {
             probNet.doEdit (networkCommentEdit);
