@@ -801,7 +801,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                     e1.printStackTrace();
                 }
             }
-        } else if (comboBox.equals(jComboBoxDecisionCriteria)) {
+        } else if (comboBox.toString().toLowerCase().equals(jComboBoxDecisionCriteria.toString().toLowerCase())) {
             if (!(itemSelected == null)) {
                 StringWithProperties decisionCriteria = new StringWithProperties(itemSelected);
                 NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(probNode,
