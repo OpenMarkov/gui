@@ -6,9 +6,6 @@
 
 package org.openmarkov.core.gui.window;
 
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.TextArea;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -29,14 +25,11 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
@@ -74,13 +67,9 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
-import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.costeffectiveness.id.PartitionLCE;
-import org.openmarkov.costeffectiveness.id.inference.VarEliminationCE;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -286,7 +275,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (actionCommand.equals(ActionCommands.MESSAGE_WINDOW)) {
             showMessageWindow();
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
-        	deterministicCostEffectiveness();
+            // Deterministic
+            showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
+                    false);
         } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
             showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
@@ -330,63 +322,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
-    private void deterministicCostEffectiveness() {
-        // Deterministic
-    	System.err.println("Deterministic analysis.");
-    	ProbNet probNet = getCurrentNetworkPanel().getProbNet();
-    	List<StringWithProperties> decisionCriterion = probNet.getDecisionCriteria();
-    	if (decisionCriterion == null || decisionCriterion.size() < 2 || 
-    			!contains(decisionCriterion, "cost") || !contains(decisionCriterion, "effectiveness")) {
-    		showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
-    				getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
-    				false);
-    	} else {
-        	System.err.println("Var elimination CE.");
-    		PNESupport pNESupport = probNet.getPNESupport();
-    		pNESupport.setWithUndo(false);   // TODO Cambiar a true cuando se depure el algoritmo.
-    		VarEliminationCE algorithm = new VarEliminationCE(probNet, pNESupport);
-    		try {
-    			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = 
-    					 algorithm.getOptimalStrategy();
-    			StringBuffer buffer = new StringBuffer();
-    			for (Variable decision : strategy.keySet()) {
-    				buffer.append("Variable: " ); 
-    				buffer.append(decision); 
-    				buffer.append("\n\n");
-    				buffer.append(strategy.get(decision).toShortString());
-    				buffer.append("\n\n");
-    			}
-         		Frame frame=new Frame("Last variable.");
-        		TextArea textArea=new TextArea(buffer.toString(),10,20);
-        		frame.add(textArea);
-        		frame.setLayout(new FlowLayout());
-        		frame.setSize(250,250);
-        		frame.setVisible(true);
-//        		frame.addWindowListener(new WindowAdapter(){
-//        		public void windowClosing(WindowEvent e){
-//        		System.exit(0);
-//        		}
-//        		});
-			} catch (NotEvaluableNetworkException e1) {
-				e1.printStackTrace();
-			} catch (UnexpectedInferenceException e1) {
-				e1.printStackTrace();
-			}
-    	}
-
-    }
-    
-    private boolean contains(List<StringWithProperties> decisionCriterion,
-			String string) {
-    	for (StringWithProperties decisionCriteria : decisionCriterion) {
-    		if (string.toLowerCase().contentEquals(decisionCriteria.string.toLowerCase())) {
-    			return true;
-    		}
-    	}
-		return false;
-	}
-
-	/**
+    /**
      * Create a Java Help viewer
      * 
      * @return helpViewer a window to display help
@@ -1364,5 +1300,5 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             }
         }
     }
-    
+
 }
