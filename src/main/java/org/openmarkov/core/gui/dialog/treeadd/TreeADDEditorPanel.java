@@ -1381,6 +1381,14 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         TreeADDMouseAdapter(TreeADDEditorPanel adaptee) {
             this.treeADDEditorPanel = adaptee;
         }
+        
+        public void mouseClicked(MouseEvent e){
+            if(e.getClickCount()==2){
+            	treeADDEditorPanel.xx = e.getX();
+                treeADDEditorPanel.yy = e.getY();
+                actionPerformed(new ActionEvent(this, 0, ActionCommands.EDIT_POTENTIAL));
+            }
+        }
 
         public void mouseReleased(MouseEvent e) {
             if (e.isPopupTrigger()) {
