@@ -33,7 +33,7 @@ import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessProgressBar;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.dialog.AboutBox;
@@ -276,11 +276,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             showMessageWindow();
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
             // Deterministic
-            showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
+            showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
                     false);
         } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
-            showCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
+            showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
                     true);
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
@@ -822,8 +822,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates an expanded network from current network
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel));
-        if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
+        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel));
+        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             int numSlices = costEffectivenessDialog.getNumSlices();
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
@@ -842,11 +842,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * GUI
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel),
+        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
                 probNet,
                 false,
                 false);
-        if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
+        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
             int numSlices;
 
@@ -1273,27 +1273,27 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
-    private void showCostEffectivenessDialog(ProbNet probNet,
+    private void showTemporalCostEffectivenessDialog(ProbNet probNet,
             EvidenceCase evidence,
             boolean sensitivityAnalysis) {
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel),
+        TemporalCostEffectivenessDialog temporalCostEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
                 probNet,
                 sensitivityAnalysis,
                 false);
 
-        if (costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) {
+        if (temporalCostEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             CostEffectivenessAnalysis costEffectivenessAnalysis = null;
             if (sensitivityAnalysis) {
-                CostEffectivenessProgressBar ceProgressBar = new CostEffectivenessProgressBar(Utilities.getOwner(mainPanel), probNet, evidence, costEffectivenessDialog);
+                CostEffectivenessProgressBar ceProgressBar = new CostEffectivenessProgressBar(Utilities.getOwner(mainPanel), probNet, evidence, temporalCostEffectivenessDialog);
                 ceProgressBar.setVisible(true);
             } else {
                 costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
                         evidence,
-                        costEffectivenessDialog.getCostDiscount(),
-                        costEffectivenessDialog.getEffectivenessDiscount(),
-                        costEffectivenessDialog.getNumSlices(),
-                        costEffectivenessDialog.getInitialValues(),
-                        costEffectivenessDialog.getTransitionTime());
+                        temporalCostEffectivenessDialog.getCostDiscount(),
+                        temporalCostEffectivenessDialog.getEffectivenessDiscount(),
+                        temporalCostEffectivenessDialog.getNumSlices(),
+                        temporalCostEffectivenessDialog.getInitialValues(),
+                        temporalCostEffectivenessDialog.getTransitionTime());
                     JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
                             costEffectivenessAnalysis);
                     ceaResultsDialog.setVisible(true);

@@ -71,11 +71,11 @@ public class TraceTemporalEvolutionDialog extends JDialog
         super (owner);
         ProbNet probNet = node.getProbNet ();
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
-        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog (owner,
+        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog (owner,
                                                                                        probNet,
                                                                                        false,
                                                                                        true);
-        if (costEffectivenessDialog.requestData () == CostEffectivenessDialog.OK_BUTTON)
+        if (costEffectivenessDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
         {
             // evidenceCase and cycleLegth null by the moment
             costEffectivenessAnalysis = new CostEffectivenessAnalysis (

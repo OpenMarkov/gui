@@ -33,7 +33,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     private PSATask         task;
     private ProbabilisticCEA costEffectivenessAnalysis;
     private final ProbNet probNet;
-    private final CostEffectivenessDialog costEffectivenessDialog; 
+    private final TemporalCostEffectivenessDialog costEffectivenessDialog; 
     private final EvidenceCase evidence; 
     private long startTime;
 
@@ -87,7 +87,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     }
 
     public CostEffectivenessProgressBar(Window window, ProbNet net, EvidenceCase e,
-            CostEffectivenessDialog ceDialog) {
+            TemporalCostEffectivenessDialog ceDialog) {
         this.parent = window;
         this.probNet = net;
         this.evidence = e;
