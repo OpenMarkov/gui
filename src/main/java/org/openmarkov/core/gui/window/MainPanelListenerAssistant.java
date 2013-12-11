@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -25,11 +26,14 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
@@ -58,6 +62,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
+import org.openmarkov.core.gui.window.message.NonEditableTextArea;
 import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -68,8 +73,13 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.costeffectiveness.id.PartitionLCE;
+import org.openmarkov.costeffectiveness.id.inference.VarEliminationCE;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -276,9 +286,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             showMessageWindow();
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
             // Deterministic
-            showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
+        	ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+        	if (probNet.getNetworkType() == InfluenceDiagramType.getUniqueInstance()) {
+        		showATemporalCostEffectivenessResults(probNet);
+        	} else {
+        		showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
                     false);
+        	}
         } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
             showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
@@ -1300,5 +1315,37 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             }
         }
     }
+    
+    private void showATemporalCostEffectivenessResults(ProbNet probNet) {
+ 		PNESupport pNESupport = probNet.getPNESupport();
+ 		if (pNESupport != null) {
+ 			boolean withUndo = pNESupport.isWithUndo();
+ 			pNESupport.setWithUndo(false);   // TODO Cambiar a true cuando se depure el algoritmo.
+ 		}
+ 		try {
+ 			VarEliminationCE algorithm = new VarEliminationCE(probNet, pNESupport);
+ 			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = algorithm.getOptimalStrategy();
+ 			StringBuffer buffer = new StringBuffer();
+ 			for (Variable decision : strategy.keySet()) {
+ 				buffer.append("Variable: " ); 
+ 				buffer.append(decision); 
+ 				buffer.append("----------");
+ 				for (int i = 0; i < decision.getName().length(); i++) {buffer.append("-");}
+ 				buffer.append("\n");
+ 				buffer.append(strategy.get(decision).toShortString());
+ 				buffer.append("\n\n");
+ 			}
+ 			NonEditableTextArea textArea = new NonEditableTextArea();
+ 			textArea.writeInformationMessage(buffer.toString());
+ 		} catch (NotEvaluableNetworkException e1) {
+ 			// Unreachable code without bugs
+ 			e1.printStackTrace();
+ 		} catch (UnexpectedInferenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+     }
+
+ 
 }
