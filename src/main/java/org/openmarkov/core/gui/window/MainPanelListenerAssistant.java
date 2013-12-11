@@ -6,6 +6,10 @@
 
 package org.openmarkov.core.gui.window;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +25,10 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
@@ -1327,16 +1334,22 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = algorithm.getOptimalStrategy();
  			StringBuffer buffer = new StringBuffer();
  			for (Variable decision : strategy.keySet()) {
- 				buffer.append("Variable: " ); 
- 				buffer.append(decision); 
+ 				buffer.append("Variable: " );
+ 				buffer.append(decision); buffer.append("\n"); 
  				buffer.append("----------");
- 				for (int i = 0; i < decision.getName().length(); i++) {buffer.append("-");}
+ 				for (int i = 0; i < decision.getName().length(); i++) {
+ 					buffer.append("-");
+ 				}
  				buffer.append("\n");
- 				buffer.append(strategy.get(decision).toShortString());
+ 				GTablePotential<PartitionLCE> potential = strategy.get(decision);
+ 				if (potential.getNumVariables() > 0) {
+ 					buffer.append(potential.toString());
+ 				} else {
+ 					buffer.append(potential.elementTable.get(0).toString());
+ 				}
  				buffer.append("\n\n");
  			}
- 			NonEditableTextArea textArea = new NonEditableTextArea();
- 			textArea.writeInformationMessage(buffer.toString());
+ 			showTextWindow(buffer);
  		} catch (NotEvaluableNetworkException e1) {
  			// Unreachable code without bugs
  			e1.printStackTrace();
@@ -1347,5 +1360,19 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
      }
 
+	private void showTextWindow(StringBuffer buffer) {
+		JFrame frame = new JFrame("Cost-Effectiveness");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JTextArea textArea = new JTextArea(buffer.toString());
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+		frame.getContentPane().add(textArea, BorderLayout.CENTER);
+		frame.setSize(800, 500);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation(dim.width/2-frame.getSize().width/2, 
+				dim.height/2-frame.getSize().height/2);
+		frame.pack();
+		frame.setVisible(true);	
+	}
  
 }
