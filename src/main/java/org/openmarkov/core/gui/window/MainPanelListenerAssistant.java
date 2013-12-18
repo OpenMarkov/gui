@@ -1330,26 +1330,43 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  			pNESupport.setWithUndo(false);   // TODO Cambiar a true cuando se depure el algoritmo.
  		}
  		try {
- 			VarEliminationCE algorithm = new VarEliminationCE(probNet, pNESupport);
+ 			VarEliminationCE algorithm = new VarEliminationCE(probNet, null);
  			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = algorithm.getOptimalStrategy();
- 			StringBuffer buffer = new StringBuffer();
+ 			String lastDecisionVariableName = null;
+ 			StringBuffer buffer1 = new StringBuffer();
+ 			PartitionLCE resultingCEP = algorithm.getResultingCEP();
+ 			buffer1.append("Policies for other decision variables:\n\n");
  			for (Variable decision : strategy.keySet()) {
- 				buffer.append("Variable: " );
- 				buffer.append(decision); buffer.append("\n"); 
- 				buffer.append("----------");
- 				for (int i = 0; i < decision.getName().length(); i++) {
- 					buffer.append("-");
- 				}
- 				buffer.append("\n");
  				GTablePotential<PartitionLCE> potential = strategy.get(decision);
- 				if (potential.getNumVariables() > 0) {
- 					buffer.append(potential.toString());
+ 				if (potential.elementTable.get(0) != resultingCEP) {
+ 					buffer1.append("Variable: " );
+ 					buffer1.append(decision); buffer1.append("\n"); 
+ 					buffer1.append("---------------");
+ 					for (int i = 0; i < decision.getName().length(); i++) {
+ 						buffer1.append("--");
+ 					}
+ 					buffer1.append("\n");
+ 					if (potential.getNumVariables() > 0) {
+ 						buffer1.append(potential.toString());
+ 					} else {
+ 						buffer1.append(potential.elementTable.get(0).toString());
+ 					}
+ 					buffer1.append("\n\n");
  				} else {
- 					buffer.append(potential.elementTable.get(0).toString());
+ 					lastDecisionVariableName = decision.getName();
  				}
- 				buffer.append("\n\n");
  			}
- 			showTextWindow(buffer);
+ 			
+ 			StringBuffer buffer2 = new StringBuffer();
+ 			buffer2.append("Final Cost-Effectiveness partition corresponding to decision variable: ");
+ 			buffer2.append(lastDecisionVariableName); 
+ 			buffer2.append("\n");
+ 			buffer2.append("----------------------------------------------------------------------------------------------------------\n");
+ 			buffer2.append(resultingCEP.toString());
+ 			buffer2.append("----------------------------------------------------------------------------------------------------------\n\n");
+
+ 			buffer2.append(buffer1);
+ 			showTextWindow(buffer2);
  		} catch (NotEvaluableNetworkException e1) {
  			// Unreachable code without bugs
  			e1.printStackTrace();
