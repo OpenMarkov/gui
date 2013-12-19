@@ -1372,9 +1372,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 	    textArea.setPreferredSize(new Dimension(500, 800));
         textArea.setLineWrap(false);
         textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane();
         NonEditableTextArea nonEditableTextArea = new NonEditableTextArea();
         scrollPane.setViewportView(nonEditableTextArea);
         nonEditableTextArea.writeInformationMessage(buffer.toString());
