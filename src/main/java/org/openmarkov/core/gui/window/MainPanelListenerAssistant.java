@@ -9,6 +9,10 @@ package org.openmarkov.core.gui.window;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -27,8 +31,11 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
@@ -1324,49 +1331,25 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     }
     
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
- 		PNESupport pNESupport = probNet.getPNESupport();
- 		if (pNESupport != null) {
- 			boolean withUndo = pNESupport.isWithUndo();
- 			pNESupport.setWithUndo(false);   // TODO Cambiar a true cuando se depure el algoritmo.
- 		}
  		try {
  			VarEliminationCE algorithm = new VarEliminationCE(probNet, null);
  			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = algorithm.getOptimalStrategy();
- 			String lastDecisionVariableName = null;
- 			StringBuffer buffer1 = new StringBuffer();
- 			PartitionLCE resultingCEP = algorithm.getResultingCEP();
- 			buffer1.append("Policies for other decision variables:\n\n");
+ 			// Get last variable
+ 			StringBuffer buffer = new StringBuffer();
+ 			setVariableNameText(buffer, algorithm.getLastDecision().getName());
+ 			buffer.append(algorithm.getResultingCEP().toString());
+ 			buffer.append("\n");
+ 			
  			for (Variable decision : strategy.keySet()) {
  				GTablePotential<PartitionLCE> potential = strategy.get(decision);
- 				if (potential.elementTable.get(0) != resultingCEP) {
- 					buffer1.append("Variable: " );
- 					buffer1.append(decision); buffer1.append("\n"); 
- 					buffer1.append("---------------");
- 					for (int i = 0; i < decision.getName().length(); i++) {
- 						buffer1.append("--");
- 					}
- 					buffer1.append("\n");
- 					if (potential.getNumVariables() > 0) {
- 						buffer1.append(potential.toString());
- 					} else {
- 						buffer1.append(potential.elementTable.get(0).toString());
- 					}
- 					buffer1.append("\n\n");
- 				} else {
- 					lastDecisionVariableName = decision.getName();
+ 	 			if (potential.getNumVariables() > 0) {
+ 	 	 			setVariableNameText(buffer, decision.getName());
+ 					buffer.append(potential.toString());
  				}
+ 				buffer.append("\n");
  			}
- 			
- 			StringBuffer buffer2 = new StringBuffer();
- 			buffer2.append("Final Cost-Effectiveness partition corresponding to decision variable: ");
- 			buffer2.append(lastDecisionVariableName); 
- 			buffer2.append("\n");
- 			buffer2.append("----------------------------------------------------------------------------------------------------------\n");
- 			buffer2.append(resultingCEP.toString());
- 			buffer2.append("----------------------------------------------------------------------------------------------------------\n\n");
 
- 			buffer2.append(buffer1);
- 			showTextWindow(buffer2);
+ 			showTextWindow(buffer);
  		} catch (NotEvaluableNetworkException e1) {
  			// Unreachable code without bugs
  			e1.printStackTrace();
@@ -1378,13 +1361,24 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      }
 
 	private void showTextWindow(StringBuffer buffer) {
-		JFrame frame = new JFrame("Cost-Effectiveness");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JTextArea textArea = new JTextArea(buffer.toString());
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-		frame.getContentPane().add(textArea, BorderLayout.CENTER);
-		frame.setSize(800, 500);
+		JFrame frame = new JFrame("Cost-Effectiveness analysis");
+        frame.setLayout(new BorderLayout());
+		frame.setSize(100,100);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		JPanel panel = new JPanel();
+		frame.getContentPane().add(panel);
+		JTextArea textArea = new JTextArea(80, 80);
+		textArea.setText(buffer.toString());
+	    textArea.setPreferredSize(new Dimension(500, 800));
+        textArea.setLineWrap(false);
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        NonEditableTextArea nonEditableTextArea = new NonEditableTextArea();
+        scrollPane.setViewportView(nonEditableTextArea);
+        nonEditableTextArea.writeInformationMessage(buffer.toString());
+	    panel.add(scrollPane);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setLocation(dim.width/2-frame.getSize().width/2, 
 				dim.height/2-frame.getSize().height/2);
@@ -1392,4 +1386,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 		frame.setVisible(true);	
 	}
  
+    private Object setVariableNameText(StringBuffer buffer, String name) {
+    	buffer.append("--------------------------\n");
+    	buffer.append("    ");
+    	buffer.append(name); 
+    	buffer.append("\n");
+    	buffer.append("--------------------------\n");
+    	return buffer;
+    }
+
 }
