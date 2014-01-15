@@ -19,9 +19,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1348,8 +1350,30 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  				}
  				buffer.append("\n");
  			}
-
+ 			
+ 			
+ 			BufferedWriter writer = null;
+ 	        try {
+ 	            //create a temporary file
+ 	            File logFile = new File("CEAnalysis.txt");
+ 	            writer = new BufferedWriter(new FileWriter(logFile));
+ 	            writer.write(buffer.toString());
+ 	        } catch (Exception e) {
+ 	            e.printStackTrace();
+ 	        } finally {
+ 	            try {
+ 	                // Close the writer regardless of what happens...
+ 	                writer.close();
+ 	            } catch (Exception e) {
+ 	            }
+ 	        }
+ 			
+ 			
+ 			
+ 			
+ 			
  			showTextWindow(buffer);
+ 			
  		} catch (NotEvaluableNetworkException e1) {
  			// Unreachable code without bugs
  			e1.printStackTrace();
