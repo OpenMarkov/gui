@@ -60,6 +60,7 @@ import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
+import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
@@ -785,6 +786,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 }
                 mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkLoaded.Text.Label"));
                 mainPanel.getMainMenu().rechargeLastOpenFiles();
+                
+                EkitCore ekitCoreEditorHTML = new EkitCore (null, null, netReadFromFile.getComment(), null, null, true, false,
+                        true, true, null, null, false, false, true,
+                        false, EkitCore.TOOLBAR_DEFAULT_SINGLE); 
+                if (netReadFromFile.getShowCommentWhenOpening()) {
+                	JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                            ekitCoreEditorHTML.getDocumentBody(),
+                            stringDatabase.getString("NetworkCommentWindow.Title.Label"),
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             } catch (Exception e) {
                 mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),

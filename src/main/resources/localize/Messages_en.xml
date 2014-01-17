@@ -118,6 +118,11 @@
       <Label value="Error" />
     </Title>
   </ErrorWindow>
+  <NetworkCommentWindow>
+    <Title>
+      <Label value="Network comment" />
+    </Title>
+  </NetworkCommentWindow>
   <MissingStringResource>
     <Text>
       <Label value="The string resource '~' doesn't exist" />

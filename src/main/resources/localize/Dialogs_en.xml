@@ -301,6 +301,12 @@
 		<NetworkName>
 			<Text value="Network Name: " />
 		</NetworkName>
+		<IsObjectOriented>
+			<Text value="Is Object Oriented" />
+		</IsObjectOriented>
+		<ShowComment>
+			<Text value="Show Comment when opening the network" />
+		</ShowComment>
 	</NetworkDefinitionPanel>
 	<NodePropertiesDialog>
 		<DiscreteValuesTab>

@@ -300,6 +300,12 @@
 		<NetworkName>
 			<Text value="Nombre de la red:" />
 		</NetworkName>
+		<IsObjectOriented>
+			<Text value="Orientada a objetos" />
+		</IsObjectOriented>
+		<ShowComment>
+			<Text value="Mostrar el comentario al abrir la red" />
+		</ShowComment>
 	</NetworkDefinitionPanel>
 	<NodePropertiesDialog>
 		<DiscreteValuesTab>

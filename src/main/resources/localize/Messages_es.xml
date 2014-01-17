@@ -113,6 +113,11 @@
       <Label value="Error" />
     </Title>
   </ErrorWindow>
+  <NetworkCommentWindow>
+    <Title>
+      <Label value="Comentario de la red" />
+    </Title>
+  </NetworkCommentWindow>
   <MissingStringResource>
     <Text>
       <Label value="No existe el recurso de texto '~'" />

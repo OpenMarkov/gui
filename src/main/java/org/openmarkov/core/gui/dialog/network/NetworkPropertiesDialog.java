@@ -250,10 +250,12 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
             probNet = (getNetworkDefinitionPanel ().isObjectOriented ()) ? new OOPNet (networkType)
                                                                         : new ProbNet (networkType);
             probNet.setComment (getNetworkDefinitionPanel ().getNetworkComment ());
+            probNet.setShowCommentWhenOpening (getNetworkDefinitionPanel ().getShowComment ());
             probNet.setDefaultStates (getNetworkVariablesPanel ().getDefaultStates ());
         }
         else
         {
+        	probNet.setShowCommentWhenOpening (getNetworkDefinitionPanel ().getShowComment ());
             probNet.getPNESupport ().closeParenthesis ();
         }
         return getNetworkDefinitionPanel ().checkName ();
