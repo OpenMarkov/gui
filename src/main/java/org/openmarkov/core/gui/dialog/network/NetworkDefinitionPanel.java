@@ -281,6 +281,7 @@ public class NetworkDefinitionPanel extends JPanel
         {
             jcheckBoxShowCommentOnOpening = new JCheckBox (stringDatabase.getString ("NetworkDefinitionPanel.ShowComment.Text"), false);
             jcheckBoxShowCommentOnOpening.setEnabled (true);
+            jcheckBoxShowCommentOnOpening.setSelected(probNet.getShowCommentWhenOpening());
         }
         return jcheckBoxShowCommentOnOpening;
     }
