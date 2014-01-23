@@ -49,6 +49,7 @@ public class CommentHTMLScrollPane extends JScrollPane
     private String                   title                = "";
     private boolean                  isChanged            = false;
     private boolean					 isEmpty			  = true;
+    private boolean					 isEditable			  = true;
 
     /**
      * This method initialises this instance.
@@ -194,7 +195,7 @@ public class CommentHTMLScrollPane extends JScrollPane
     public void mouseClicked (MouseEvent e)
     {
         // TODO Auto-generated method stub
-        if (e.getClickCount () == 2)
+        if ((e.getClickCount () == 2) && (isEditable))
         {
             try
             {
@@ -259,4 +260,8 @@ public class CommentHTMLScrollPane extends JScrollPane
     public boolean isEmpty() {
     	return isEmpty;
     }
+
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
+	}
 }

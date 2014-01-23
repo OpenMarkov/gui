@@ -60,6 +60,7 @@ import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
+import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
@@ -754,6 +755,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      *            - for the network
      */
     public void openNetwork(String fileName) {
+    	CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane ();
+    	commentHTMLScrollPaneNetworkComment.setEditable(false);
+    	
         if (fileName.equals("")) {
             fileName = requestNetworkFileToOpen();
         }
@@ -791,8 +795,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                         true, true, null, null, false, false, true,
                         false, EkitCore.TOOLBAR_DEFAULT_SINGLE); 
                 if (netReadFromFile.getShowCommentWhenOpening()) {
+                	commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(ekitCoreEditorHTML.getDocumentBody());
                 	JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                            ekitCoreEditorHTML.getDocumentBody(),
+                            commentHTMLScrollPaneNetworkComment,
                             stringDatabase.getString("NetworkCommentWindow.Title.Label"),
                             JOptionPane.INFORMATION_MESSAGE);
                 }
