@@ -124,17 +124,27 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
 
         addComponentListener(new ComponentAdapter() {
             public void componentShown(ComponentEvent e) {
-                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
-                        evidence,
-                        costEffectivenessDialog.getCostDiscount(),
-                        costEffectivenessDialog.getEffectivenessDiscount(),
-                        costEffectivenessDialog.getNumSlices(),
-                        costEffectivenessDialog.getNumSimulations(),
-                        costEffectivenessDialog.getInitialValues(),
-                        costEffectivenessDialog.getTransitionTime(),
-                        costEffectivenessDialog.getUseMultithreading());            	
-                /* code run when component shown */
-                runAnalysis();
+            	try
+            	{
+	                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
+	                        evidence,
+	                        costEffectivenessDialog.getCostDiscount(),
+	                        costEffectivenessDialog.getEffectivenessDiscount(),
+	                        costEffectivenessDialog.getNumSlices(),
+	                        costEffectivenessDialog.getNumSimulations(),
+	                        costEffectivenessDialog.getInitialValues(),
+	                        costEffectivenessDialog.getTransitionTime(),
+	                        costEffectivenessDialog.getUseMultithreading());            	
+	                /* code run when component shown */
+	                runAnalysis();
+            	}catch(Exception ex)
+            	{
+            		JOptionPane.showMessageDialog(null, "Error while trying to perform sensitivity analysis.\n" +
+            				ex.getMessage() +
+            				"\nCheck the message window for further details.");
+            		ex.printStackTrace();
+            		setVisible(false);
+            	}
             }
         });
         

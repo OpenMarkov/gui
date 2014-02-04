@@ -68,10 +68,11 @@ public class CostEffectivenessAnalysis {
 	 * @param numCycles
 	 * @param initialValues
 	 * @param transitionTime
+	 * @throws NotEvaluableNetworkException 
 	 */
 	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
 			double costDiscountRate, double effectivenessDiscountRate, int numCycles,
-			Map<Variable, Double> initialValues, TransitionTime transitionTime) {
+			Map<Variable, Double> initialValues, TransitionTime transitionTime) throws NotEvaluableNetworkException {
 		this.probNet = probNet;
 		this.costDiscount = costDiscountRate;
 		this.effectivenessDiscount = effectivenessDiscountRate;
@@ -87,7 +88,7 @@ public class CostEffectivenessAnalysis {
 	
 	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
 			double costDiscountRate, double effectivenessDiscountRate, int numCycles,
-			TransitionTime transitionTime) {
+			TransitionTime transitionTime) throws NotEvaluableNetworkException {
 		this(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numCycles, new HashMap<Variable, Double>(), transitionTime);
 	}
 
@@ -102,41 +103,41 @@ public class CostEffectivenessAnalysis {
 			}
 		}
 		Map<Variable, TablePotential> probsAndUtilities = null;
-		MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-		extendEvidence(expandedNetFactory.getExtendedNetwork());
-		this.expandedNetwork = expandedNetFactory.getExtendedNetwork();
-		this.expandedNetwork = adaptMPADforCE(expandedNetFactory.getExtendedNetwork(), numSlices,
-				evidence);
-		// TODO apply changes for transitions at cycle start, end or half cycle
-		translateMonthlyUtilities(expandedNetwork);
-		applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
-		String baseName = variableOfInterest.getBaseName();
-		List<Variable> variablesOfInterest = new ArrayList<>();
-		List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
-		for (ProbNode node : expandedProbNetProbNodes) {
-			if (node.getVariable().getBaseName().equals(baseName)) {
-				variablesOfInterest.add(node.getVariable());
-			}
-		}
-		// Impose policy according to interest variable's decision criterion
-		if (variableOfInterest.getDecisionCriterion() != null) {
-			String decisionCriterion = variableOfInterest.getDecisionCriterion().getString();
-			Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriterionVariable();
-			ProbNode decisionCriteriaNode = expandedNetwork.getProbNode(expandedNetwork
-					.getDecisionCriterionVariable());
-			TablePotential decisionCriterionPolicy = new TablePotential(
-					Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
-			for (int i = 0; i < decisionCriterionPolicy.values.length; ++i) {
-				try {
-					decisionCriterionPolicy.values[i] = (decisionCriteriaVariable
-							.getStateIndex(decisionCriterion) == i) ? 1 : 0;
-				} catch (InvalidStateException e) {
-					e.printStackTrace();
+		try {
+			MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
+			extendEvidence(expandedNetFactory.getExtendedNetwork());
+			this.expandedNetwork = expandedNetFactory.getExtendedNetwork();
+			this.expandedNetwork = adaptMPADforCE(expandedNetFactory.getExtendedNetwork(), numSlices,
+					evidence);
+			// TODO apply changes for transitions at cycle start, end or half cycle
+			translateMonthlyUtilities(expandedNetwork);
+			applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
+			String baseName = variableOfInterest.getBaseName();
+			List<Variable> variablesOfInterest = new ArrayList<>();
+			List<ProbNode> expandedProbNetProbNodes = expandedNetwork.getProbNodes();
+			for (ProbNode node : expandedProbNetProbNodes) {
+				if (node.getVariable().getBaseName().equals(baseName)) {
+					variablesOfInterest.add(node.getVariable());
 				}
 			}
-			decisionCriteriaNode.setPotential(decisionCriterionPolicy);
-		}
-		try {
+			// Impose policy according to interest variable's decision criterion
+			if (variableOfInterest.getDecisionCriterion() != null) {
+				String decisionCriterion = variableOfInterest.getDecisionCriterion().getString();
+				Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriterionVariable();
+				ProbNode decisionCriteriaNode = expandedNetwork.getProbNode(expandedNetwork
+						.getDecisionCriterionVariable());
+				TablePotential decisionCriterionPolicy = new TablePotential(
+						Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
+				for (int i = 0; i < decisionCriterionPolicy.values.length; ++i) {
+					try {
+						decisionCriterionPolicy.values[i] = (decisionCriteriaVariable
+								.getStateIndex(decisionCriterion) == i) ? 1 : 0;
+					} catch (InvalidStateException e) {
+						e.printStackTrace();
+					}
+				}
+				decisionCriteriaNode.setPotential(decisionCriterionPolicy);
+			}
 			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 
 			variableElimination.setPreResolutionEvidence(evidence);
@@ -208,8 +209,9 @@ public class CostEffectivenessAnalysis {
 	 * Build expanded network, adapt for CE and apply discount
 	 * 
 	 * @return
+	 * @throws NotEvaluableNetworkException 
 	 */
-	private ProbNet buildExpandedNetwork() {
+	private ProbNet buildExpandedNetwork() throws NotEvaluableNetworkException {
 		MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
 		ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
 		expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, evidence);
@@ -606,9 +608,10 @@ public class CostEffectivenessAnalysis {
 	 * children of it
 	 * 
 	 * @param expandedNetwork
+	 * @throws Exception 
 	 */
 	public static ProbNet adaptMPADforCE(ProbNet expandedNetwork, int numSlices,
-			EvidenceCase evidence) {
+			EvidenceCase evidence) throws NotEvaluableNetworkException {
 		// Extend evidence
 		extendEvidence(expandedNetwork, evidence);
 
@@ -637,6 +640,10 @@ public class CostEffectivenessAnalysis {
 		expandedNetwork.addProbNode(decisionCriteriaNode);
 		for (ProbNode utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
 			expandedNetwork.addLink(decisionCriteriaNode, utilityNode, true);
+			if(utilityNode.getVariable().getDecisionCriterion() == null)
+			{
+				throw new NotEvaluableNetworkException("Utility node " + utilityNode.getName() + " does not have a decision criterion");
+			}
 			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getString();
 			if (decisionCriterion.equalsIgnoreCase("cost")
 					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {

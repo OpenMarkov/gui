@@ -40,6 +40,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.exception.ImposedPoliciesException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
@@ -77,19 +78,19 @@ public class TraceTemporalEvolutionDialog extends JDialog
                                                                                        true);
         if (costEffectivenessDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
         {
-            // evidenceCase and cycleLegth null by the moment
-            costEffectivenessAnalysis = new CostEffectivenessAnalysis (
-                                                                       probNet,
-                                                                       evidence,
-                                                                       costEffectivenessDialog.getCostDiscount (),
-                                                                       costEffectivenessDialog.getEffectivenessDiscount (),
-                                                                       costEffectivenessDialog.getNumSlices (),
-                                                                       costEffectivenessDialog.getInitialValues (),
-                                                                       costEffectivenessDialog.getTransitionTime ());
-            this.isCumulative = costEffectivenessDialog.isCumulative ();
-            this.variableOfInterest = node.getVariable ();
             try
             {
+	            // evidenceCase and cycleLegth null by the moment
+	            costEffectivenessAnalysis = new CostEffectivenessAnalysis (
+	                                                                       probNet,
+	                                                                       evidence,
+	                                                                       costEffectivenessDialog.getCostDiscount (),
+	                                                                       costEffectivenessDialog.getEffectivenessDiscount (),
+	                                                                       costEffectivenessDialog.getNumSlices (),
+	                                                                       costEffectivenessDialog.getInitialValues (),
+	                                                                       costEffectivenessDialog.getTransitionTime ());
+	            this.isCumulative = costEffectivenessDialog.isCumulative ();
+	            this.variableOfInterest = node.getVariable ();
                 this.temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);
                 this.expandedNetwork = costEffectivenessAnalysis.getExpandedNetwork ();
                 initialize ();
@@ -109,7 +110,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
                 pack ();
                 setVisible (true);
             }
-            catch (ImposedPoliciesException e)
+            catch (ImposedPoliciesException | NotEvaluableNetworkException e)
             {
                 JOptionPane.showMessageDialog (owner, e.getMessage (), "Error",
                                                JOptionPane.ERROR_MESSAGE);

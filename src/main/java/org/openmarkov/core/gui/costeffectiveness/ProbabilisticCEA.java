@@ -17,10 +17,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.ProbNode;
@@ -41,7 +41,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 
     public ProbabilisticCEA(ProbNet probNet, EvidenceCase evidence, double costDiscountRate,
             double effectivenessDiscountRate, int numSlices, int numSimulations,
-            Map<Variable, Double> initialValues, TransitionTime transitionTime, boolean useMultithreading) {
+            Map<Variable, Double> initialValues, TransitionTime transitionTime, boolean useMultithreading) throws NotEvaluableNetworkException {
         super(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numSlices,
                 initialValues, transitionTime);
         this.numSimulations = numSimulations;
@@ -50,7 +50,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     
     public ProbabilisticCEA(ProbNet probNet, EvidenceCase evidence, double costDiscountRate,
             double effectivenessDiscountRate, int numSlices, int numSimulations,
-            TransitionTime transitionTime, boolean useMultithreading) {
+            TransitionTime transitionTime, boolean useMultithreading) throws NotEvaluableNetworkException {
         this(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numSlices, numSimulations, 
                 new HashMap<Variable, Double>(), transitionTime, useMultithreading);
     }    

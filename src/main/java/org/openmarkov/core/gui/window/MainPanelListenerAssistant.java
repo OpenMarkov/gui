@@ -922,23 +922,29 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             }
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
             ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
-            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
-                    numSlices,
-                    evidence);
-            CostEffectivenessAnalysis.translateMonthlyUtilities(expandedNetwork);
-            // TODO apply changes for transitions at cycle start, end or half cycle
-            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
-                    costDiscountRate,
-                    effectivenessDiscountRate);
-//            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
-//                probNode.samplePotentials();
-//            }
-            String fileName = probNet.getName() + "_expandedCE";
-            expandedNetwork.setName(fileName);
-            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-            networkPanel.setNetworkFile(fileName);
-            networkPanel.getEditorPanel().setEvidence(evidence, new ArrayList<EvidenceCase>());
-            networkPanels.add(networkPanel);
+            try
+            {
+	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
+	                    numSlices,
+	                    evidence);
+	            CostEffectivenessAnalysis.translateMonthlyUtilities(expandedNetwork);
+	            // TODO apply changes for transitions at cycle start, end or half cycle
+	            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
+	                    costDiscountRate,
+	                    effectivenessDiscountRate);
+	//            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
+	//                probNode.samplePotentials();
+	//            }
+	            String fileName = probNet.getName() + "_expandedCE";
+	            expandedNetwork.setName(fileName);
+	            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+	            networkPanel.setNetworkFile(fileName);
+	            networkPanel.getEditorPanel().setEvidence(evidence, new ArrayList<EvidenceCase>());
+	            networkPanels.add(networkPanel);
+            }catch(NotEvaluableNetworkException e)
+            {
+            	
+            }
         }
     }
 
@@ -1334,16 +1340,25 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 CostEffectivenessProgressBar ceProgressBar = new CostEffectivenessProgressBar(Utilities.getOwner(mainPanel), probNet, evidence, temporalCostEffectivenessDialog);
                 ceProgressBar.setVisible(true);
             } else {
-                costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
-                        evidence,
-                        temporalCostEffectivenessDialog.getCostDiscount(),
-                        temporalCostEffectivenessDialog.getEffectivenessDiscount(),
-                        temporalCostEffectivenessDialog.getNumSlices(),
-                        temporalCostEffectivenessDialog.getInitialValues(),
-                        temporalCostEffectivenessDialog.getTransitionTime());
+                try {
+					costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
+					        evidence,
+					        temporalCostEffectivenessDialog.getCostDiscount(),
+					        temporalCostEffectivenessDialog.getEffectivenessDiscount(),
+					        temporalCostEffectivenessDialog.getNumSlices(),
+					        temporalCostEffectivenessDialog.getInitialValues(),
+					        temporalCostEffectivenessDialog.getTransitionTime());
                     JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
                             costEffectivenessAnalysis);
                     ceaResultsDialog.setVisible(true);
+				} catch (NotEvaluableNetworkException e) {
+					JOptionPane.showMessageDialog(
+							null,
+							"Error while trying to perform cost-effectiveness analysis.\n"
+									+ e.getMessage()
+									+ "\nCheck the message window for further details.");
+            		e.printStackTrace();
+				}
             }
         }
     }
