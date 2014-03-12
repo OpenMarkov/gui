@@ -756,6 +756,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     public void openNetwork(String fileName) {
     	CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane ();
+    	JOptionPane networkMessagePane;
+    	JDialog networkMessageDialog;
+    	
     	commentHTMLScrollPaneNetworkComment.setEditable(false);
     	
         if (fileName.equals("")) {
@@ -796,10 +799,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                         false, EkitCore.TOOLBAR_DEFAULT_SINGLE); 
                 if (netReadFromFile.getShowCommentWhenOpening()) {
                 	commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(ekitCoreEditorHTML.getDocumentBody());
-                	JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                	commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension (500, 300));
+                	networkMessagePane = new JOptionPane(
                             commentHTMLScrollPaneNetworkComment,
-                            stringDatabase.getString("NetworkCommentWindow.Title.Label"),
                             JOptionPane.INFORMATION_MESSAGE);
+                	networkMessageDialog = networkMessagePane.createDialog(
+                			Utilities.getOwner(mainPanel), 
+                			stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+                	networkMessageDialog.setResizable(true);
+                	networkMessageDialog.setMinimumSize(new Dimension (500, 300));
+                	networkMessageDialog.setVisible(true);
                 }
             } catch (Exception e) {
                 mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
