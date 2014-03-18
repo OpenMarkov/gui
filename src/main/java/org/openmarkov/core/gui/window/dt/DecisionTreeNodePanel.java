@@ -9,7 +9,7 @@ import javax.swing.Icon;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.gui.dialog.treeadd.IconFactory;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
 public class DecisionTreeNodePanel extends DecisionTreeElementPanel
@@ -27,26 +27,26 @@ public class DecisionTreeNodePanel extends DecisionTreeElementPanel
     public DecisionTreeNodePanel (DecisionTreeNode treeNode)
     {
         this.treeNode = treeNode;
-        leftLabel.setIcon (createNodeIcon (treeNode.getProbNode ()));
+        leftLabel.setIcon (createNodeIcon (treeNode.getVariable(), treeNode.getNodeType()));
     }
 
     /**
      * Create a new icon for a node of the ADD/Tree
      * @return
      */
-    protected Icon createNodeIcon (ProbNode node)
+    protected Icon createNodeIcon (Variable variable, NodeType nodeType)
     {
         Font textIconFont = new Font ("Helvetica", Font.BOLD, 15);
         Icon icon = null;
-        switch (node.getNodeType ())
+        switch (nodeType)
         {
             case CHANCE :
             {
-                icon = chanceNodeIconPool.get (node.getName ());
+                icon = chanceNodeIconPool.get (variable.getName ());
                 if(icon == null)
                 {
-                    icon = IconFactory.createChanceIcon (node.getName (), textIconFont);
-                    chanceNodeIconPool.put (node.getName (), icon);
+                    icon = IconFactory.createChanceIcon (variable.getName (), textIconFont);
+                    chanceNodeIconPool.put (variable.getName (), icon);
                 }
                 break;
             }
@@ -54,8 +54,8 @@ public class DecisionTreeNodePanel extends DecisionTreeElementPanel
             {
                 if(icon == null)
                 {
-                    icon = IconFactory.createDecisionIcon (node.getName (), textIconFont);
-                    decisionNodeIconPool.put (node.getName (), icon);
+                    icon = IconFactory.createDecisionIcon (variable.getName (), textIconFont);
+                    decisionNodeIconPool.put (variable.getName (), icon);
                 }
                 break;
             }
@@ -63,8 +63,8 @@ public class DecisionTreeNodePanel extends DecisionTreeElementPanel
             {
                 if(icon == null)
                 {
-                    icon = IconFactory.createUtilityIcon (node.getName (), textIconFont);
-                    utilityNodeIconPool.put (node.getName (), icon);
+                    icon = IconFactory.createUtilityIcon (variable.getName (), textIconFont);
+                    utilityNodeIconPool.put (variable.getName (), icon);
                 }
                 break;
             }
@@ -76,7 +76,7 @@ public class DecisionTreeNodePanel extends DecisionTreeElementPanel
     @Override
     public void update (boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
     {
-        if(treeNode.getProbNode ().getNodeType () == NodeType.UTILITY)
+        if(treeNode.getNodeType () == NodeType.UTILITY)
         {
             rightLabel.setText (" U ="+ treeNode.getUtility ());
         }

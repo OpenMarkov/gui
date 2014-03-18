@@ -27,7 +27,7 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel
         DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));        
         StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
         DecisionTreeNode parent = treeBranch.getParent();
-        if(parent != null && parent.getProbNode ().getNodeType () == NodeType.DECISION)
+        if(parent != null && parent.getNodeType () == NodeType.DECISION)
         {
             if(parent.isBestDecision(treeBranch)) {
                 txtLeft.append ("<td width=10px bgcolor=red border=0></td>");
@@ -43,7 +43,7 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel
             txtLeft.append (treeBranch.getBranchState().getName ());
             txtLeft.append (" / ");
         }
-        if(parent != null && parent.getProbNode ().getNodeType () == NodeType.CHANCE)
+        if(parent != null && parent.getNodeType () == NodeType.CHANCE)
         {
             txtLeft.append (" P=" + df.format (treeBranch.getBranchProbability()));
             txtLeft.append (" / ");
