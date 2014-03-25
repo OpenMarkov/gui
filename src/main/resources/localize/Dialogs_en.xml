@@ -246,7 +246,10 @@
 		<Elvira>
 			<Description value="Elvira file" />
 		</Elvira>
-		<OpenMarkov>
+		<XMLBIF>
+			<Description value="XMLBIF file" />
+		</XMLBIF>
+		<OpenMarkov>		
 			<Description value="OpenMarkov file" />
 		</OpenMarkov>
 	</FileExtension>

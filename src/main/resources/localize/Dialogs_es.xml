@@ -244,6 +244,9 @@
 		<Elvira>
 			<Description value="Fichero Elvira" />
 		</Elvira>
+		<XMLBIF>
+			<Description value="Fichero XMLBIF" />
+		</XMLBIF>
 		<OpenMarkov>
 			<Description value="Fichero de OpenMarkov" />
 		</OpenMarkov>
