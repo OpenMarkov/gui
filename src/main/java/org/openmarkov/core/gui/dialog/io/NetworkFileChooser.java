@@ -26,15 +26,16 @@ public class NetworkFileChooser extends FileChooser
     /**
      * Creates a new file chooser that starts in the current directory,
      * filtering the files with the file filters.
+     * @param isOpening Indicates if the file chooser is for opening a file (isOpening=true) or for saving (isOpening=false)
      */
-    public NetworkFileChooser (boolean acceptAllfile)
+    public NetworkFileChooser (boolean acceptAllfile, boolean isOpening)
     {
         super (acceptAllfile);
         FormatManager formatManager = FormatManager.getInstance ();
-        HashMap<String, String> writers = formatManager.getWriters ();
-        for (String item : writers.keySet ())
+        HashMap<String, String> parsersListForFilters = isOpening?formatManager.getReaders():formatManager.getWriters();
+        for (String item : parsersListForFilters.keySet ())
         {
-            addChoosableFileFilter (new FileFilterAll (writers.get (item), item));
+            addChoosableFileFilter (new FileFilterAll (parsersListForFilters.get (item), item));
         }
         File currentDirectory = new File (
                                           OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
@@ -47,7 +48,7 @@ public class NetworkFileChooser extends FileChooser
 
     public NetworkFileChooser ()
     {
-        this (false);
+        this (false,true);
     }
 
     @Override

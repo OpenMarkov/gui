@@ -670,7 +670,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @return complete path of the file, or null if the user selects cancel.
      */
     private String requestNetworkFileToSave(String suggestedFileName) {
-        NetworkFileChooser fileChooser = new NetworkFileChooser(false);
+        NetworkFileChooser fileChooser = new NetworkFileChooser(false,false);
         String title = stringDatabase.getString("SaveNetwork.Title.Label");
         fileChooser.setDialogTitle(title);
         fileChooser.setSelectedFile(new File(suggestedFileName));

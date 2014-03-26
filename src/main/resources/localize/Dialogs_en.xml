@@ -246,9 +246,9 @@
 		<Elvira>
 			<Description value="Elvira file" />
 		</Elvira>
-		<XMLBIF>
-			<Description value="XMLBIF file" />
-		</XMLBIF>
+		<Weka>
+			<Description value="Weka file" />
+		</Weka>
 		<OpenMarkov>		
 			<Description value="OpenMarkov file" />
 		</OpenMarkov>
