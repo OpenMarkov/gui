@@ -644,6 +644,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             } else {
                 jComboBoxDecisionCriteria.setEnabled(false);
             }
+            jComboBoxDecisionCriteria.addItemListener(this);
         }
         return jComboBoxDecisionCriteria;
     }
