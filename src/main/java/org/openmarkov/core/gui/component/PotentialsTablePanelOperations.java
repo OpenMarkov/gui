@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.exception.NullListPotentialsException;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -42,13 +41,13 @@ public class PotentialsTablePanelOperations {
 	 */
 	public static List<Potential> checkIfPotentialsMustBeChanged (
 			List<Potential> listPotentials,
-			ProbNode properties)  {
+			Node properties)  {
 	    List<Potential> newListPotentials = listPotentials;
 		if (listPotentials != null) {
 			if (listPotentials.get( 0 ) != null) {
 			    List<Variable> variablesPotential = 
 					listPotentials.get(0).getVariables();
-			    List<Node> parents = properties.getNode().getParents();
+			    List<Node> parents = properties.getParents();
 				if ((variablesPotential.size()-1) > parents.size()) {
 					newListPotentials = 
 						doDeleteParent (listPotentials, properties);		
@@ -69,7 +68,7 @@ public class PotentialsTablePanelOperations {
 	 * @return new list of Potentials with the new parent add */
 	private static List<Potential> doAddParent (
 			List<Potential> listPotentials,
-			ProbNode properties)  {
+			Node properties)  {
 	    List<Potential> newListPotentials = new ArrayList<Potential> ();
 	    List<Variable> variables = new ArrayList<Variable> ();
         // first, this variable. The potentials is not null
@@ -81,10 +80,9 @@ public class PotentialsTablePanelOperations {
 			initialValue = 0;
 		}
 		    // add now all the parents 
-		for (Node node: properties.getNode().getParents()) {
-			variables.add( ((ProbNode)node.getObject()).getVariable());
-			numOfCellsInTable *= ((ProbNode)node.getObject()).getVariable().
-			getNumStates();
+		for (Node node: properties.getParents()) {
+			variables.add( node.getVariable());
+			numOfCellsInTable *= node.getVariable().getNumStates();
 		}
 		// sets a new table with new columns and with all the same values
 		double[] table = new double[numOfCellsInTable] ;
@@ -107,7 +105,7 @@ public class PotentialsTablePanelOperations {
 	 * @return new list of Potentials with the parent removed */
 	private static List<Potential> doDeleteParent (
 			List<Potential> listPotentials,
-			ProbNode properties)  {
+			Node properties)  {
 	    List<Potential> newListPotentials = new ArrayList<Potential> ();
 	    List<Variable> variables = new ArrayList<Variable> ();
         // first, this variable. The potentials is not null
@@ -116,10 +114,9 @@ public class PotentialsTablePanelOperations {
 		int numOfCellsInTable = thisVariable.getNumStates();
 		double initialValue = 1 / (new Double(numOfCellsInTable));
 		    // add now all the parents 
-		for (Node node: properties.getNode().getParents()) {
-			variables.add( ((ProbNode)node.getObject()).getVariable());
-			numOfCellsInTable *= ((ProbNode)node.getObject()).getVariable().
-			getNumStates();
+		for (Node node: properties.getParents()) {
+			variables.add(node.getVariable());
+			numOfCellsInTable *= node.getVariable().getNumStates();
 		}
 		// sets a new table with new columns and with all the same values
 		double[] table = new double[numOfCellsInTable] ;
@@ -148,7 +145,7 @@ public class PotentialsTablePanelOperations {
 	 */
 	public static int calculateFirstEditableRow(
 			List<Potential> potentials,
-			ProbNode properties) {
+			Node properties) {
 		int row = 0;
 		if (potentials != null) {
 			if (properties.getNodeType() == NodeType.UTILITY) {
@@ -178,7 +175,7 @@ public class PotentialsTablePanelOperations {
 	 */
 	public static int calculateLastEditableRow(
 			List<Potential> listPotentials,
-			ProbNode properties) {
+			Node properties) {
 		int row = 0;
 		if (listPotentials != null) {
 			row = listPotentials.get( 0 ).getNumVariables() - 1;

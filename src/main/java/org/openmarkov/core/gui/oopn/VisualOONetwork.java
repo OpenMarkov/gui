@@ -40,7 +40,7 @@ import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.window.MainPanel;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.oopn.Instance;
@@ -179,7 +179,7 @@ public class VisualOONetwork extends VisualNetwork
         return contractedNodes;
     }
 
-    private VisualNode getVisualNode(ProbNode sourceNode) {
+    private VisualNode getVisualNode(Node sourceNode) {
 		VisualNode visualNode = null;
     	int i = 0;
 		while (visualNode == null && i < visualNodes.size())

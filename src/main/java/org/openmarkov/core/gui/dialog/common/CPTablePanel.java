@@ -9,7 +9,7 @@ package org.openmarkov.core.gui.dialog.common;
 import javax.swing.JScrollPane;
 
 import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class extends from <code>TablePotentialPanel</code>, is a panel used by
@@ -26,7 +26,7 @@ public class CPTablePanel extends TablePotentialPanel
      */
     private boolean modifiable;
 
-    public CPTablePanel (ProbNode probNode)
+    public CPTablePanel (Node probNode)
     {
         super (probNode);
         modifiable = false;

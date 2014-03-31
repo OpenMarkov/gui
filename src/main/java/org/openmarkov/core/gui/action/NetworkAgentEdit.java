@@ -7,7 +7,7 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 /**
  * <code>NetworkAgentEdit</code> is a simple edit that allow modify
@@ -25,7 +25,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	//private StringsWithProperties lastAgents;
 	private List<StringWithProperties> lastAgents;
 	private Object [][]dataTable;
-	private List<ProbNode> oldNodes;
+	private List<Node> oldNodes;
 
 	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
 		super(probnet);
@@ -42,7 +42,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			this.lastAgents = probnet.getAgents();
 		}
 		this.dataTable = dataTable;
-		this.oldNodes = new ArrayList<ProbNode>(probNet.getProbNodes());
+		this.oldNodes = new ArrayList<Node>(probNet.getNodes());
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			agents.remove(agent);
 			//it is also necessary to delete this agent from the node it was assigned to
 			if (agent != null) {
-				for (ProbNode node : probNet.getProbNodes()) {
+				for (Node node : probNet.getNodes()) {
 					if (node.getVariable().getAgent().getString().equals(agentName)) {
 						node.getVariable().setAgent(null);
 					} 

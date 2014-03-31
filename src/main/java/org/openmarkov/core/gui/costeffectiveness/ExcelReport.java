@@ -27,7 +27,7 @@ import org.apache.poi.ss.usermodel.charts.ScatterChartData;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -76,8 +76,8 @@ public class ExcelReport
         HSSFRow rowIndexes = sheetTable.createRow (0);
         rowIndexes.createCell (0).setCellValue ("");
         String basename = variableOfInterest.getBaseName ();
-        List<ProbNode> probNodes = expandedNetwork.getProbNodes ();
-        List<ProbNode> interestProbNodes = new ArrayList<> ();
+        List<Node> probNodes = expandedNetwork.getNodes ();
+        List<Node> interestProbNodes = new ArrayList<> ();
         for (int i = 0; i < probNodes.size (); i++)
         {
             if (probNodes.get (i).getVariable ().getBaseName ().equals (basename))
@@ -100,7 +100,7 @@ public class ExcelReport
             for (int j = 0; j <= numSlices; j++)
             {
                 String basenameInterest = variableOfInterest.getBaseName ();
-                List<ProbNode> expandedProbNodes = expandedNetwork.getProbNodes ();
+                List<Node> expandedProbNodes = expandedNetwork.getNodes ();
                 for (int k = 0; k < expandedProbNodes.size (); k++)
                 {
                     if (expandedProbNodes.get (k).getVariable ().getBaseName ().equals (basenameInterest)

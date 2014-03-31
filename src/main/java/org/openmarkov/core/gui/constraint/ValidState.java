@@ -14,7 +14,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodeStateEdit;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -38,7 +38,7 @@ public class ValidState extends PNConstraint
         {
             State state = ((NodeStateEdit) simpleEdit).getNewState ();
             State currentState = ((NodeStateEdit) simpleEdit).getLastState ();
-            ProbNode probNode = ((NodeStateEdit) simpleEdit).getProbNode ();
+            Node probNode = ((NodeStateEdit) simpleEdit).getProbNode ();
             StateAction stateAction = ((NodeStateEdit) simpleEdit).getStateAction ();
             // if ((name == null) || (name.contentEquals(""))) {
             if (!checkState (state.getName (), currentState.getName (), probNode, stateAction))
@@ -57,7 +57,7 @@ public class ValidState extends PNConstraint
      */
     public boolean checkState (String newState,
                                String currentState,
-                               ProbNode probNode,
+                               Node probNode,
                                StateAction stateAction)
     {
         switch (stateAction)
@@ -85,7 +85,7 @@ public class ValidState extends PNConstraint
      * @param name name of the node to search.
      * @return true if the state exists; otherwise, false.
      */
-    public boolean existState (String state, ProbNode probNode)
+    public boolean existState (String state, Node probNode)
     {
         for (State states : probNode.getVariable ().getStates ())
         {

@@ -5,7 +5,7 @@ import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /*****
  * A simple edit which allows to add and modify intervals and modify them.
@@ -19,7 +19,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 	/***
 	 * Object which stores the revelation conditions
 	 */
-	private Link link;
+	private Link<Node> link;
 
 	/**
 	 * The action to carry out
@@ -59,9 +59,9 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 	 * @param isLower
 	 */
 
-	public RevelationIntervalEdit(Link link, StateAction stateAction, int row,
+	public RevelationIntervalEdit(Link<Node> link, StateAction stateAction, int row,
 			double newValue, boolean isLower) {
-		super(((ProbNode) link.getNode1().getObject()).getProbNet());
+		super(link.getNode1().getProbNet());
 		this.link = link;
 		this.stateAction = stateAction;
 		this.rowSelected = row;

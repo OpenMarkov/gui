@@ -16,6 +16,7 @@ import java.awt.geom.Point2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class is the visual representation of a link.
@@ -47,7 +48,7 @@ public class VisualLink extends VisualArrow {
     /**
      * Object that has the link information.
      */
-    private Link               link                 = null;
+    private Link<Node>               link                 = null;
 
     /**
      * Creates a new visual link from a link.
@@ -59,7 +60,7 @@ public class VisualLink extends VisualArrow {
      * @param newDestination
      *            destination node.
      */
-    public VisualLink(Link newLink, VisualNode newSource, VisualNode newDestination) {
+    public VisualLink(Link<Node> newLink, VisualNode newSource, VisualNode newDestination) {
         super(newSource.getPosition(), newDestination.getPosition(), newLink.isDirected());
 
         link = newLink;
@@ -104,7 +105,7 @@ public class VisualLink extends VisualArrow {
      * 
      * @return information of the link.
      */
-    public Link getLink() {
+    public Link<Node> getLink() {
 
         return link;
 

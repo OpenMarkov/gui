@@ -16,7 +16,7 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * <code>MoveNodeEdi</code> is a simple edit that allows to modify the position
@@ -63,15 +63,15 @@ public class MoveNodeEdit extends SimplePNEdit
     @Override
     public void doEdit ()
     {
-        ProbNode probNode = null;
+        Node node = null;
         int i = 0;
         for (String name : namesNode)
         {
             try
             {
-                probNode = probNet.getProbNode (name);
-                probNode.getNode ().setCoordinateX (newPositions.get (i).getX ());
-                probNode.getNode ().setCoordinateY (newPositions.get (i).getY ());
+                node = probNet.getNode (name);
+                node.setCoordinateX (newPositions.get (i).getX ());
+                node.setCoordinateY (newPositions.get (i).getY ());
             }
             catch (ProbNodeNotFoundException e)
             {
@@ -90,14 +90,14 @@ public class MoveNodeEdit extends SimplePNEdit
     {
         super.undo ();
         int i = 0;
-        ProbNode probNode = null;
+        Node probNode = null;
         for (String name : namesNode)
         {
             try
             {
-                probNode = probNet.getProbNode (name);
-                probNode.getNode ().setCoordinateX (lastPositions.get (i).getX ());
-                probNode.getNode ().setCoordinateY (lastPositions.get (i).getY ());
+                probNode = probNet.getNode (name);
+                probNode.setCoordinateX (lastPositions.get (i).getX ());
+                probNode.setCoordinateY (lastPositions.get (i).getY ());
             }
             catch (ProbNodeNotFoundException e)
             {

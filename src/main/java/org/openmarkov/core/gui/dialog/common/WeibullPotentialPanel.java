@@ -40,7 +40,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.RegressionPotential.MatrixType;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
@@ -52,7 +52,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
 
-    private ProbNode               probNode               = null;
+    private Node               probNode               = null;
     private WeibullHazardPotential potential              = null;
     private RegressionPanel        regressionPanel;
     private JTable                 uncertaintyTable;
@@ -63,7 +63,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private String                 currentMatrixType;
     private String                 selectedTimeVariable;
 
-    public WeibullPotentialPanel(ProbNode probNode) {
+    public WeibullPotentialPanel(Node probNode) {
         super();
         initComponents();
         setData(probNode);
@@ -134,7 +134,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     }
 
     @Override
-    public void setData(ProbNode probNode) {
+    public void setData(Node probNode) {
         this.probNode = probNode;
         this.potential = (WeibullHazardPotential) this.probNode.getPotentials().get(0);
         List<Variable> variables = potential.getVariables();

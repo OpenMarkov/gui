@@ -19,7 +19,7 @@ import org.openmarkov.core.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -27,13 +27,13 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
-    private ProbNode        probNode;
+    private Node        probNode;
     private PolicyTypePanel pnlPolicyType;
     private PotentialPanel  potentialPanel;
     private boolean         readOnly;
-    private ProbNode        dummyProbNode;
+    private Node        dummyProbNode;
 
-    public ImposePolicyDialog(Window owner, ProbNode probNode) {
+    public ImposePolicyDialog(Window owner, Node probNode) {
         super(owner);
         this.probNode = probNode;
         this.readOnly = false;
@@ -110,15 +110,15 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             // conditiones variable
             variables.add(probNode.getVariable());
             // adding variable parents
-            List<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
-            for (ProbNode probNode : probNodes) {
+            List<Node> probNodes = probNode.getProbNet().getNodes();
+            for (Node probNode : probNodes) {
                 if (probNode.isParent(this.probNode)) {
                     variables.add(probNode.getVariable());
                 }
             }
             try {
                 // copy of the probNode
-                this.dummyProbNode = new ProbNode(probNode);
+                this.dummyProbNode = new Node(probNode);
                 TablePotential policy = new TablePotential(variables, PotentialRole.POLICY);
                 SetPotentialEdit setPotentialEdit = new SetPotentialEdit(dummyProbNode, policy);
 
@@ -148,7 +148,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         return selectedButton;
     }
 
-    public ProbNode getDummyProbNode() {
+    public Node getDummyProbNode() {
         return dummyProbNode;
     }
 

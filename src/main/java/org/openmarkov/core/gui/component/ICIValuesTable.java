@@ -15,9 +15,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.ICITablePotentialValueEdit;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 
 @SuppressWarnings("serial")
@@ -30,7 +29,7 @@ public class ICIValuesTable extends ValuesTable
      */
     private int lastCol = -1;
 
-    public ICIValuesTable (ProbNode probNode, ValuesTableModel tableModel, final boolean modifiable)
+    public ICIValuesTable (Node probNode, ValuesTableModel tableModel, final boolean modifiable)
     {
         super (probNode, tableModel, modifiable);
     }
@@ -94,15 +93,15 @@ public class ICIValuesTable extends ValuesTable
      * @param parents - parents of the variable
      * @return the number of columns in the table
      */
-    public static int howManyCanonicalColumns (ProbNode properties)
+    public static int howManyCanonicalColumns (Node properties)
     {
         int numColumns = 0;
-        if (properties.getNode ().getParents () != null)
+        if (properties.getParents () != null)
         {
             int aux = 1;// first column for child states
-            for (Node parent : properties.getNode ().getParents ())
+            for (Node parent : properties.getParents ())
             {
-                State[] parentStates = ((ProbNode) parent.getObject ()).getVariable ().getStates ();
+                State[] parentStates = parent.getVariable ().getStates ();
                 aux += parentStates.length;
             }
             numColumns = aux + 1; // last column for the leak potential

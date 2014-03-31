@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 
 /**
@@ -52,7 +52,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
      */
     private String            keyPrefix        = null;
 
-    private ProbNode          probNode;
+    private Node          probNode;
 
     private boolean           renameAction     = true;
 
@@ -88,7 +88,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     }
 
     public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-            boolean firstColumnHidden, ProbNode probNode) {
+            boolean firstColumnHidden, Node probNode) {
         super(newColumns, new Object[0][0], true, true);// , notifier);
         this.probNode = probNode;
         keyPrefix = newKeyPrefix;
@@ -389,7 +389,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
                 int i = Util.toPositionOnPotentialReordered(row,
                         e.getColumn(),
                         probNode.getVariable().getNumStates(),
-                        probNode.getNode().getNumParents());
+                        probNode.getNumParents());
                 valuesTable.setValueAt(probNode.getVariable().getStates()[i].getName(),
                         row,
                         e.getColumn());

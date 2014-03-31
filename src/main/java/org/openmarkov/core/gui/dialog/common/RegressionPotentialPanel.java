@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.RegressionPotential;
 
 @SuppressWarnings("serial")
@@ -34,7 +34,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
 
-    private ProbNode               probNode               = null;
+    private Node               probNode               = null;
     private RegressionPotential    potential              = null;
     private RegressionPanel        regressionPanel;
     private JTable                 uncertaintyTable;
@@ -43,7 +43,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     private JPanel                 uncertaintyPanel;
     private String                 currentMatrixType;
 
-    public RegressionPotentialPanel(ProbNode probNode) {
+    public RegressionPotentialPanel(Node probNode) {
         super();
         initComponents();
         setData(probNode);
@@ -104,7 +104,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     }
 
     @Override
-    public void setData(ProbNode probNode) {
+    public void setData(Node probNode) {
         this.probNode = probNode;
         this.potential = (RegressionPotential) this.probNode.getPotentials().get(0);
         double[] coefficients = potential.getCoefficients();

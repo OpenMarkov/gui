@@ -18,7 +18,7 @@ import java.awt.geom.RoundRectangle2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class is the visual representation of a chance node.
@@ -96,13 +96,12 @@ public class VisualChanceNode extends VisualNode {
 	 * @param visualNetwork
 	 *            editor panel to which this visual node is associated.
 	 */
-	public VisualChanceNode(ProbNode node, VisualNetwork visualNetwork) {
+	public VisualChanceNode(Node node, VisualNetwork visualNetwork) {
 		super(node, visualNetwork);
 		expanded = false;
 		preResolutionFinding = false;
 		postResolutionFinding = false;
-		setTemporalPosition(new Point2D.Double(probNode.getNode()
-				.getCoordinateX(), probNode.getNode().getCoordinateY()));
+		setTemporalPosition(new Point2D.Double(probNode.getCoordinateX(), probNode.getCoordinateY()));
 		innerBox = new FSVariableBox(this);
 	}
 

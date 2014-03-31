@@ -36,7 +36,7 @@ import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 /**
@@ -111,8 +111,8 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
             boolean isTemporalEvolution) {
         super(owner);
         this.initialValues = new HashMap<>();
-        List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
-        for (ProbNode numericalTemporalNode : temporalNodes) {
+        List<Node> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+        for (Node numericalTemporalNode : temporalNodes) {
             initialValues.put(numericalTemporalNode.getVariable(),
                     numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
         }

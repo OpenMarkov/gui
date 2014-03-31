@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -74,7 +74,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -767,7 +767,7 @@ public class EditorPanel extends JPanel
     public void showPotentialDialog (boolean readOnly)
     {
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
-        ProbNode probNode = selectedNodes.get (0).getProbNode ();
+        Node probNode = selectedNodes.get (0).getProbNode ();
         /*
          * Potential oldPotential = probNode.getPotentials().get(0);
          * PotentialEditDialog dialog = new PotentialEditDialog(owner,
@@ -801,7 +801,7 @@ public class EditorPanel extends JPanel
      *            to be edited is new.
      * @return true, if the user save the changes on probNode; otherwise, false.
      */
-    private boolean requestNodePropertiesToUser2 (Window owner, ProbNode probNode, boolean newNode)
+    private boolean requestNodePropertiesToUser2 (Window owner, Node probNode, boolean newNode)
     {
         NodePropertiesDialog nodePropertiesDialog = new CommonNodePropertiesDialog (owner,
                                                                                     probNode,
@@ -810,7 +810,7 @@ public class EditorPanel extends JPanel
     }
 
     private boolean requestPotentialValues (Window owner,
-                                            ProbNode probNode,
+                                            Node probNode,
                                             boolean newNode,
                                             boolean readOnly)
     {
@@ -829,7 +829,7 @@ public class EditorPanel extends JPanel
      *            link and where changes will be saved.
      * @return true, if the user save the changes on probNode; otherwise, false.
      */
-    private boolean requestLinkRestrictionValues (Window owner, Link link)
+    private boolean requestLinkRestrictionValues (Window owner, Link<Node> link)
     {
         linkRestrictionDialog = new LinkRestrictionEditDialog (owner, link);
         return (linkRestrictionDialog.requestValues () == NodePropertiesDialog.OK_BUTTON);
@@ -842,7 +842,7 @@ public class EditorPanel extends JPanel
      *            link and where changes will be saved.
      * @return true, if the user save the changes on probNode; otherwise, false.
      */
-    private boolean requestRevelationArcValues (Window owner, Link link)
+    private boolean requestRevelationArcValues (Window owner, Link<Node> link)
     {
         revelationArcDialog = new RevelationArcEditDialog (owner, link);
         return (revelationArcDialog.requestValues () == NodePropertiesDialog.OK_BUTTON);
@@ -915,12 +915,12 @@ public class EditorPanel extends JPanel
         }
         else
         {
-            List<ProbNode> selectedNodes = new ArrayList<ProbNode> ();
+            List<Node> selectedNodes = new ArrayList<Node> ();
             for (VisualNode visualNode : visualNetwork.getSelectedNodes ())
             {
                 selectedNodes.add (visualNode.getProbNode ());
             }
-            List<Link> selectedLinks = new ArrayList<Link> ();
+            List<Link<Node>> selectedLinks = new ArrayList<> ();
             for (VisualLink visualLink : visualNetwork.getSelectedLinks ())
             {
                 selectedLinks.add (visualLink.getLink ());
@@ -962,11 +962,11 @@ public class EditorPanel extends JPanel
                     probNet.doEdit (pasteEdit);
                     // Set the nodes and links we just pasted as selected
                     SelectedContent pastedContent = pasteEdit.getPastedContent ();
-                    for (ProbNode node : pastedContent.getNodes ())
+                    for (Node node : pastedContent.getNodes ())
                     {
                         visualNetwork.setSelectedNode (node.getName (), true);
                     }
-                    for (Link link : pastedContent.getLinks ())
+                    for (Link<Node> link : pastedContent.getLinks ())
                     {
                         visualNetwork.setSelectedLink (link, true);
                     }
@@ -1006,14 +1006,14 @@ public class EditorPanel extends JPanel
             node = selectedNode.get (0);
             if (node.getProbNode ().getNodeType () == NodeType.DECISION)
             {
-                ProbNode probNode = node.getProbNode ();
+                Node probNode = node.getProbNode ();
                 // TODO manage other kind of policy types from the interface
                 probNode.setPolicyType (PolicyType.OPTIMAL);
                 List<Variable> variables = new ArrayList<Variable> ();
                 // it is added first conditioned variable
                 variables.add (node.getProbNode ().getVariable ());
-                List<ProbNode> probNodes = probNode.getProbNet ().getProbNodes ();
-                for (ProbNode possibleParent : probNodes)
+                List<Node> probNodes = probNode.getProbNet ().getNodes ();
+                for (Node possibleParent : probNodes)
                 {
                     if (probNode.isParent (possibleParent))
                     {
@@ -1060,7 +1060,7 @@ public class EditorPanel extends JPanel
             node = selectedNode.get (0);
             if (node.getProbNode ().getNodeType () == NodeType.DECISION)
             {
-                ProbNode probNode = node.getProbNode ();
+                Node probNode = node.getProbNode ();
                 // TODO manage other kind of policy types from the interface
                 // probNode.setPolicyType(PolicyType.OPTIMAL);
                 // Potential imposedPolicy = probNode.getPotentials ().get (0);
@@ -1091,7 +1091,7 @@ public class EditorPanel extends JPanel
             node = selectedNode.get (0);
             if (node.getProbNode ().getNodeType () == NodeType.DECISION)
             {
-                ProbNode probNode = node.getProbNode ();
+                Node probNode = node.getProbNode ();
                 List<Potential> noPolicy = new ArrayList<> ();
                 probNode.setPotentials (noPolicy);
                 ((VisualDecisionNode) node).setHasPolicy (false);
@@ -1112,14 +1112,14 @@ public class EditorPanel extends JPanel
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
-            ProbNode probNode = node.getProbNode ();
+            Node probNode = node.getProbNode ();
             try
             {
                 // Potential expectedUtility = null;// =
                 // inferenceAlgorithm.getExpectedtedUtility(node.getProbNode().getVariable());
                 Potential expectedUtility;
                 expectedUtility = inferenceAlgorithm.getExpectedUtilities (probNode.getVariable ());
-                ProbNode dummyNode = new ProbNode (new ProbNet (), probNode.getVariable (),
+                Node dummyNode = new Node (new ProbNet (), probNode.getVariable (),
                                                    probNode.getNodeType ());
                 dummyNode.setPotential (expectedUtility);
                 PotentialEditDialog expectedUtilityDialog = new PotentialEditDialog (
@@ -1155,7 +1155,7 @@ public class EditorPanel extends JPanel
         {
             node = selectedNode.get (0);
             ProbNet dummyProbNet = new ProbNet ();
-            ProbNode dummy = null;
+            Node dummy = null;
             try
             {
                 // Potential optimalPolicy =
@@ -1163,7 +1163,7 @@ public class EditorPanel extends JPanel
                 Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicy (node.getProbNode ().getVariable ());
                 dummyProbNet.addPotential (optimalPolicy);
                 Variable conditionedVariable = optimalPolicy.getVariable (0);
-                dummy = dummyProbNet.getProbNode (conditionedVariable);
+                dummy = dummyProbNet.getNode (conditionedVariable);
                 dummy.setNodeType (NodeType.DECISION);
                 dummy.setPolicyType (PolicyType.OPTIMAL);
                 for (Variable variable : optimalPolicy.getVariables ())
@@ -1714,7 +1714,7 @@ public class EditorPanel extends JPanel
      * properties or probabilities of a the node
      * @param node the node in which to remove the findings.
      */
-    public void removeNodeEvidenceInAllCases (ProbNode node)
+    public void removeNodeEvidenceInAllCases (Node node)
     {
         for (int i = 0; i < postResolutionEvidence.size (); i++)
         {
@@ -2105,7 +2105,7 @@ public class EditorPanel extends JPanel
         List<Variable> utilityVariables = probNet.getVariables (NodeType.UTILITY);
         for (Variable utility : utilityVariables)
         {
-            ProbNode probNode = probNet.getProbNode (utility);
+            Node probNode = probNet.getNode (utility);
             minUtilityRange.put (utility, probNode.getApproximateMinimumUtilityFunction ());
             maxUtilityRange.put (utility, probNode.getApproximateMaximumUtilityFunction ());
         }
@@ -2123,7 +2123,7 @@ public class EditorPanel extends JPanel
     {
         for (VisualNode visualNode : visualNetwork.getAllNodes ())
         {
-            ProbNode probNode = visualNode.getProbNode ();
+            Node probNode = visualNode.getProbNode ();
             Variable variable = probNode.getVariable ();
             switch (probNode.getNodeType ())
             {
@@ -2571,7 +2571,7 @@ public class EditorPanel extends JPanel
         List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
-            Link link = links.get (0).getLink ();
+            Link<Node> link = links.get (0).getLink ();
             if (!link.hasRestrictions ())
             {
                 link.initializesRestrictionsPotential ();
@@ -2593,7 +2593,7 @@ public class EditorPanel extends JPanel
         List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
-            Link link = links.get (0).getLink ();
+            Link<Node> link = links.get (0).getLink ();
             link.setRestrictionsPotential (null);
             repaint ();
         }
@@ -2607,7 +2607,7 @@ public class EditorPanel extends JPanel
         List<VisualLink> links = visualNetwork.getSelectedLinks ();
         if (!links.isEmpty ())
         {
-            Link link = links.get (0).getLink ();
+            Link<Node> link = links.get (0).getLink ();
             try
             {
                 if (!requestRevelationArcValues (Utilities.getOwner (this), link))
@@ -2725,17 +2725,17 @@ public class EditorPanel extends JPanel
     }
 
     public void createNextSliceNode() {
-        ProbNode selectedNode = visualNetwork.getSelectedNodes().get(0).getProbNode();
+        Node selectedNode = visualNetwork.getSelectedNodes().get(0).getProbNode();
         Variable selectedVariable = selectedNode.getVariable();
         Variable newVariable = new Variable(selectedVariable);
         newVariable.setTimeSlice(selectedVariable.getTimeSlice() + 1);
-        Point2D.Double position = new Point2D.Double(selectedNode.getNode().getCoordinateX() + 200,
-                selectedNode.getNode().getCoordinateY());
-        AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (probNet, newVariable,
+        Point2D.Double position = new Point2D.Double(selectedNode.getCoordinateX() + 200,
+                selectedNode.getCoordinateY());
+        AddNodeEdit addNodeEdit = new AddNodeEdit (probNet, newVariable,
                 selectedNode.getNodeType(), position);
         try
         {
-            probNet.doEdit (addProbNodeEdit);
+            probNet.doEdit (addNodeEdit);
         }
         catch (Exception e1)
         {

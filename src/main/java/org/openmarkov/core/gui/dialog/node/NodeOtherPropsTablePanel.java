@@ -20,7 +20,7 @@ import javax.swing.SwingConstants;
 
 import org.openmarkov.core.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * Panel to set other additionalProperties in the node not managed by OpenMarkov
@@ -50,7 +50,7 @@ public class NodeOtherPropsTablePanel extends JPanel
     /**
      * Object where all information will be saved.
      */
-    private ProbNode                          nodeProperties             = null;
+    private Node                          nodeProperties             = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -93,7 +93,7 @@ public class NodeOtherPropsTablePanel extends JPanel
      * Get the node Properties in this panel
      * @return the nodeProperties
      */
-    public ProbNode getNodeProperties ()
+    public Node getNodeProperties ()
     {
         return nodeProperties;
     }
@@ -102,7 +102,7 @@ public class NodeOtherPropsTablePanel extends JPanel
      * Set the node additionalProperties in this panel with the provided ones
      * @param nodeProperties the nodeProperties to set
      */
-    public void setNodeProperties (final ProbNode nodeProperties)
+    public void setNodeProperties (final Node nodeProperties)
     {
         this.nodeProperties = nodeProperties;
     }
@@ -211,7 +211,7 @@ public class NodeOtherPropsTablePanel extends JPanel
      * This method fills the content of the fields from a NodeProperties object.
      * @param additionalProperties object from where load the information.
      */
-    public void setFieldsFromProperties (ProbNode properties)
+    public void setFieldsFromProperties (Node properties)
     {
         // getOtherPropertiesTablePanel()
         // .setData( additionalProperties.getOtherProperties() );

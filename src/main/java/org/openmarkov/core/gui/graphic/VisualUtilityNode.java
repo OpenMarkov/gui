@@ -16,7 +16,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class is the visual representation of a utility node.
@@ -57,13 +57,13 @@ public class VisualUtilityNode extends VisualNode {
      * @param panel
      *            editor panel to which this visual node is associated.
      */
-    public VisualUtilityNode(ProbNode node, VisualNetwork visualNetwork) {
+    public VisualUtilityNode(Node node, VisualNetwork visualNetwork) {
         super(node, visualNetwork);
         expanded = false;
         preResolutionFinding = false;
         postResolutionFinding = false;
-        setTemporalPosition(new Point2D.Double(probNode.getNode().getCoordinateX(),
-                probNode.getNode().getCoordinateY()));
+        setTemporalPosition(new Point2D.Double(probNode.getCoordinateX(),
+                probNode.getCoordinateY()));
         innerBox = new ExpectedValueBox(this);
     }
 

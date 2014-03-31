@@ -45,7 +45,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -67,7 +67,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private CostEffectivenessAnalysis         costEffectivenessAnalysis;
     private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
-    public TraceTemporalEvolutionDialog (Window owner, ProbNode node, EvidenceCase evidence)
+    public TraceTemporalEvolutionDialog (Window owner, Node node, EvidenceCase evidence)
     {
         super (owner);
         ProbNet probNet = node.getProbNet ();
@@ -250,7 +250,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             for (int j = 0; j <= costEffectivenessAnalysis.getNumSlices (); j++)
             {
                 String basename = variableOfInterest.getBaseName ();
-                List<ProbNode> probNodes = expandedNetwork.getProbNodes ();
+                List<Node> probNodes = expandedNetwork.getNodes ();
                 for (int k = 0; k < probNodes.size (); k++)
                 {
                     if (probNodes.get (k).getVariable ().getBaseName ().equals (basename)

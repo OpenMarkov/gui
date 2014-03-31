@@ -1,14 +1,13 @@
 package org.openmarkov.core.gui.dialog.link;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
-import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
@@ -21,20 +20,19 @@ public class LinkRestrictionPanelTest {
 	@Before
 	public void setUp() throws Exception {
 
-		Graph graph = new Graph();
 		stateA = new State[] { new State("A1"), new State("A2"),
 				new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
 		varA = new Variable("A", stateA);
 		varB = new Variable("B", stateB);
-		ArrayList<Variable> variables = new ArrayList<Variable>();
+		List<Variable> variables = new ArrayList<Variable>();
 		variables.add(varA);
 		variables.add(varB);
 		ProbNet net = new ProbNet();
-		Node nodeA = new Node(graph, new ProbNode(net, varA, NodeType.CHANCE));
-		ProbNode node = new ProbNode(net, varB, NodeType.CHANCE);
-		Node nodeB = new Node(graph, node);
-		Link link = new Link(nodeA, nodeB, true);
+		Node nodeA = new Node(net, varA, NodeType.CHANCE);
+		Node nodeB = new Node(net, varB, NodeType.CHANCE);
+		Link<Node> link = new Link<Node>(nodeA, nodeB, true);
+		net.addLink(nodeA, nodeB, true);
 		link.initializesRestrictionsPotential();
 		link.setCompatibilityValue(stateA[1], stateB[0], 0);
 		link.setCompatibilityValue(stateA[0], stateB[1], 0);

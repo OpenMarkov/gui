@@ -9,7 +9,7 @@ import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDial
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class implements the link restriction dialog box for the edition of link
@@ -24,18 +24,17 @@ public class LinkRestrictionEditDialog extends
 	/****
 	 * The link containing the link restrictions
 	 */
-	private Link link;
+	private Link<Node> link;
 
 	/**
 	 * Panel of the graphic editor
 	 */
 	private LinkRestrictionPanel linkRestrictionPanel;
 
-	public LinkRestrictionEditDialog(Window owner, Link link) {
+	public LinkRestrictionEditDialog(Window owner, Link<Node> link) {
 		super(owner);
 		this.link = link;
-		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
-				.openParenthesis();
+		link.getNode1().getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		setLocationRelativeTo(owner);
 		setMinimumSize(new Dimension(750, 450));
@@ -47,8 +46,8 @@ public class LinkRestrictionEditDialog extends
 	 */
 	private void initialize() {
 
-		ProbNode node1 = (ProbNode) link.getNode1().getObject();
-		ProbNode node2 = (ProbNode) link.getNode2().getObject();
+		Node node1 = link.getNode1();
+		Node node2 = link.getNode2();
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
@@ -100,16 +99,14 @@ public class LinkRestrictionEditDialog extends
 	protected boolean doOkClickBeforeHide() {
 	
 		getLinkRestrictionPanel().close();
-		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
-				.closeParenthesis();
+		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}
 
 	@Override
 	protected void doCancelClickBeforeHide() {
 	
-		((ProbNode) link.getNode1().getObject()).getProbNet().getPNESupport()
-				.closeParenthesis();
+		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
 
 	}
 

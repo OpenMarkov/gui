@@ -24,9 +24,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.ProbNodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.Utilities;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 
 /**
  * This class implements a key table with the following features:
@@ -68,7 +67,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 */
 	private String titleToSelectRows;
 
-	private ProbNode probNode;
+	private Node probNode;
 	
 	
 	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
@@ -85,7 +84,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @param newTitleToSelectRows
 	 *            title of the window where the user can select new rows.
 	 */
-	public PrefixedDataTablePanel(ProbNode probNode, String[] newColumns, Object[][] newData,
+	public PrefixedDataTablePanel(Node probNode, String[] newColumns, Object[][] newData,
 									Object[][] newPrefixedData,
 									String newTitleToSelectRows,
 									boolean firstColumnHidden){
@@ -123,7 +122,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		result = new Object[l][2];
 		for (i = 0; i < l; i++) {
 			result[i][0] = "p_"+i; //internal name for the parent
-			result[i][1] = ((ProbNode)nodes.get(i).getObject()).getName();
+			result[i][1] = nodes.get(i).getName();
 		}
 
 		return result;
@@ -213,13 +212,12 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @return the prefixed data that aren't in the array 'data'.
 	 */
 	private Object[][] absentPrefixedData() {
-	    List<ProbNode> probNodes = probNode.getProbNet().getProbNodes();
+	    List<Node> probNodes = probNode.getProbNet().getNodes();
 	    List<Node> nodes = new ArrayList<Node>();
 		edits.clear();
 		
-		for (ProbNode pProbNode:probNodes){
-			if (!probNode.getNode().getParents().contains(pProbNode.getNode()) && 
-					pProbNode != probNode){
+		for (Node pProbNode:probNodes){
+			if (!probNode.getParents().contains(pProbNode) &&  pProbNode != probNode){
 				
 				//LinkEdit linkEdit = new LinkEdit(probNode.getProbNet(),pProbNode.getName(), probNode.getName(), true, true);
 				AddLinkEdit linkEdit = new AddLinkEdit(probNode.getProbNet(),
@@ -228,7 +226,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 				try {
 					probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
-					nodes.add(pProbNode.getNode());
+					nodes.add(pProbNode);
 				} catch(ConstraintViolationException ignore){
 				} catch (CanNotDoEditException
 						| NonProjectablePotentialException

@@ -58,7 +58,7 @@ import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
@@ -81,7 +81,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * Object where all information will be saved.
      */
-    private ProbNode                              probNode                               = null;
+    private Node                              probNode                               = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -169,7 +169,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * constructor without construction parameters
      */
-    public NodeDomainValuesTablePanel(ProbNode probNode) {
+    public NodeDomainValuesTablePanel(Node probNode) {
         this(true);// , notifier);
         this.probNode = probNode;
         try {
@@ -284,7 +284,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         this.newNode = newNode;
     }
 
-    public ProbNode getProbNode() {
+    public Node getProbNode() {
         return probNode;
     }
 
@@ -294,7 +294,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      * @param additionalProperties
      *            object from where load the information.
      */
-    public void setFieldsFromProperties(ProbNode properties) {
+    public void setFieldsFromProperties(Node properties) {
         setUploadingData(true);
         // jComboBoxStatesValues.removeItemListener(this);
         (((DiscretizeTablePanel) getDiscretizedStatesPanel()).getStandardDomainButton()).removeActionListener(this);

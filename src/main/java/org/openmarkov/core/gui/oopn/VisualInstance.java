@@ -30,7 +30,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.graphic.Segment;
 import org.openmarkov.core.gui.graphic.VisualElement;
 import org.openmarkov.core.gui.graphic.VisualNode;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.oopn.Instance;
 
 /**
@@ -121,13 +121,13 @@ public class VisualInstance extends VisualElement {
         }
         setExpanded (isExpanded);		
 		
-		List<ProbNode> instanceNodes = new ArrayList<> (instance.getNodes());
+		List<Node> instanceNodes = new ArrayList<> (instance.getNodes());
         for(Instance subInstance : instance.getSubInstances().values())
         {
             instanceNodes.removeAll (subInstance.getNodes ());
         }
 		
-        for(ProbNode probNode: instanceNodes)
+        for(Node probNode: instanceNodes)
         {
             for(VisualNode visualNode: allVisualNodes)
             {

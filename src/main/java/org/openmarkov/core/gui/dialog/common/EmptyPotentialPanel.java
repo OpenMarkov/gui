@@ -7,19 +7,19 @@ package org.openmarkov.core.gui.dialog.common;
 
 import java.awt.BorderLayout;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType="Uniform")
 public class EmptyPotentialPanel extends PotentialPanel 
 {
-    public EmptyPotentialPanel(ProbNode probNode)
+    public EmptyPotentialPanel(Node probNode)
     {
     	setLayout(new BorderLayout());
     }
 
     @Override
-    public void setData (ProbNode probNode)
+    public void setData (Node probNode)
     {
         // TODO Auto-generated method stub
         

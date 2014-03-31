@@ -25,7 +25,7 @@ import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.DefaultStates;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * Panel to set the values of a node.
@@ -47,7 +47,7 @@ public class DiscreteValuesTablePanel extends JPanel
     /**
      * Object where all information will be saved.
      */
-    private ProbNode              nodeProperties                        = null;
+    private Node              nodeProperties                        = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -139,7 +139,7 @@ public class DiscreteValuesTablePanel extends JPanel
      * Get the node Properties in this panel
      * @return the nodeProperties
      */
-    public ProbNode getNodeProperties ()
+    public Node getNodeProperties ()
     {
         return nodeProperties;
     }
@@ -148,7 +148,7 @@ public class DiscreteValuesTablePanel extends JPanel
      * Set the node additionalProperties in this panel with the provided ones
      * @param nodeProperties the nodeProperties to set
      */
-    public void setNodeProperties (final ProbNode nodeProperties)
+    public void setNodeProperties (final Node nodeProperties)
     {
         this.nodeProperties = nodeProperties;
     }

@@ -24,7 +24,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
@@ -49,7 +49,7 @@ public class PolicyTypePanel extends JPanel
     /**
      * The node edited
      */
-    private ProbNode            probNode;
+    private Node            probNode;
     /**
      * The previous policy
      */
@@ -69,7 +69,7 @@ public class PolicyTypePanel extends JPanel
      * @param probNode
      */
     // TODO Reduce two only two types: optimal and imposed
-    public PolicyTypePanel (PotentialEditDialog parent, ProbNode probNode)
+    public PolicyTypePanel (PotentialEditDialog parent, Node probNode)
     {
         this.parent = parent;
         this.probNode = probNode;

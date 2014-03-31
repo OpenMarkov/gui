@@ -10,7 +10,7 @@ package org.openmarkov.core.gui.action;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 
 @SuppressWarnings("serial")
@@ -18,9 +18,9 @@ public class NodeDecisionCriteriaEdit extends SimplePNEdit{
 	
 	private StringWithProperties  currentDecisionCriteria;
 	private StringWithProperties newDecisionCriteria;
-	private ProbNode probNode;
+	private Node probNode;
 
-	public NodeDecisionCriteriaEdit (ProbNode probNode, StringWithProperties decisionCriteria) {
+	public NodeDecisionCriteriaEdit (Node probNode, StringWithProperties decisionCriteria) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.currentDecisionCriteria = probNode.getVariable().getDecisionCriterion();

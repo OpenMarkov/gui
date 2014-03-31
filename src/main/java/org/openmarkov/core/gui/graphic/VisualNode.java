@@ -18,7 +18,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JPanel;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 
 
@@ -83,7 +83,7 @@ public abstract class VisualNode extends VisualElement {
 	/**
 	 * Object that has the node information.
 	 */
-	protected ProbNode probNode;
+	protected Node probNode;
 
 	/**
 	 * Object that manages the internal representation of the node when
@@ -126,7 +126,7 @@ public abstract class VisualNode extends VisualElement {
 	 */
 	protected int temporalCoordinateY;
 	
-	public VisualNode(ProbNode node, VisualNetwork visualNetwork)
+	public VisualNode(Node node, VisualNetwork visualNetwork)
 	{
 	    this.probNode = node;
 	    this.visualNetwork = visualNetwork;
@@ -170,8 +170,8 @@ public abstract class VisualNode extends VisualElement {
 	@Override
 	public Point2D.Double getPosition() {
 
-		return new Point2D.Double(probNode.getNode().getCoordinateX(),
-				probNode.getNode().getCoordinateY());
+		return new Point2D.Double(probNode.getCoordinateX(),
+				probNode.getCoordinateY());
 	}
 
 	/**
@@ -182,8 +182,8 @@ public abstract class VisualNode extends VisualElement {
 	 */
 	public void setPosition(Point2D.Double value) {
 
-		probNode.getNode().setCoordinateX((int) value.getX());
-		probNode.getNode().setCoordinateY((int) value.getY());
+		probNode.setCoordinateX((int) value.getX());
+		probNode.setCoordinateY((int) value.getY());
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return information of the node.
 	 */
-	public ProbNode getProbNode() {
+	public Node getProbNode() {
 		return probNode;
 	}
 

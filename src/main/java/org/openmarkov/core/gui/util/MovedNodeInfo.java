@@ -12,7 +12,7 @@ package org.openmarkov.core.gui.util;
 
 import java.awt.geom.Point2D;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 
 
@@ -27,7 +27,7 @@ public class MovedNodeInfo {
 	/**
 	 * Node whose position must be undone and redone.
 	 */
-	private ProbNode nodeWrapper = null;
+	private Node nodeWrapper = null;
 
 	/**
 	 * Original position of the node before it has been moved.
@@ -42,7 +42,7 @@ public class MovedNodeInfo {
 	 * @param newDiffPosition
 	 *            difference with the original position.
 	 */
-	public MovedNodeInfo(ProbNode newNodeWrapper,
+	public MovedNodeInfo(Node newNodeWrapper,
 							Point2D.Double newDiffPosition) {
 
 		nodeWrapper = newNodeWrapper;
@@ -54,7 +54,7 @@ public class MovedNodeInfo {
 	 * 
 	 * @return the node that has been moved.
 	 */
-	public ProbNode getProbNode() {
+	public Node getProbNode() {
 
 		return nodeWrapper;
 	}

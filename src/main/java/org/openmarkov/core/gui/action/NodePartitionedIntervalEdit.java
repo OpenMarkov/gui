@@ -15,7 +15,7 @@ import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * <code>NodePartitionedIntervalEdit</code> is a simple edit that allows to modify
@@ -41,7 +41,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 	/**
 	 * The node edited
 	 */
-	private ProbNode probNode = null;
+	private Node probNode = null;
 	/**
 	 * Action to do with the partitioned interval 
 	 */
@@ -78,7 +78,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 	 * @param lower
 	 * 	A boolean that specify if the edition is in the lower symbol 
 	 */	
-	public NodePartitionedIntervalEdit ( ProbNode probNode,
+	public NodePartitionedIntervalEdit ( Node probNode,
 				StateAction stateAction, int indexState, boolean lower){
 			super(probNode.getProbNet());
 			this.probNode = probNode;
@@ -105,7 +105,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * @param lower
 		 * 	A boolean that specify if the edition is in the lower value 
 		 */	
-		public NodePartitionedIntervalEdit ( ProbNode probNode,
+		public NodePartitionedIntervalEdit ( Node probNode,
 				StateAction stateAction, int indexState, double newValue,
 				boolean lower){
 			
@@ -199,7 +199,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * Gets the node edited
 		 * @return the node edited
 		 */		
-		public ProbNode getProbNode(){
+		public Node getProbNode(){
 			return probNode;
 		}
 		/**

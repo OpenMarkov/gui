@@ -13,8 +13,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.RevelationIntervalEdit;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
 /******
  * This class implements a Discretize table for the edition of intervals. The intervals can be continuous or discontinuous.
  * @author caroline
@@ -25,22 +25,21 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	/****
 	 * Link for which the revelation conditions are stores.
 	 */
-	private Link link;
+	private Link<Node> link;
 
 	/**
 	 * default constructor
 	 * 
 	 * @wbp.parser.constructor
 	 */
-	public RevelationArcDiscretizeTablePanel(String[] newColumns, Link link) {
-		this(newColumns, new Object[0][0], "s", (ProbNode) link.getNode1()
-				.getObject());
+	public RevelationArcDiscretizeTablePanel(String[] newColumns, Link<Node> link) {
+		this(newColumns, new Object[0][0], "s", link.getNode1());
 		this.link = link;
 
 	}
 
 	public RevelationArcDiscretizeTablePanel(String[] newColumns,
-			Object[][] noKeyData, String newKeyPrefix, ProbNode probNode) {
+			Object[][] noKeyData, String newKeyPrefix, Node probNode) {
 		super(newColumns, noKeyData, newKeyPrefix, probNode);
 		super.getDownValueButton().setVisible(false);
 		super.getUpValueButton().setVisible(false);
@@ -61,15 +60,13 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	public void setPartitionedInterval() {
 
 		int subIntervals = 0;
-		for (PartitionedInterval partitionInterval : link
-				.getRevealingIntervals()) {
+		for (PartitionedInterval partitionInterval : link.getRevealingIntervals()) {
 			subIntervals += partitionInterval.getNumSubintervals();
 		}
 
 		Object[][] allIntervalTable = new Object[subIntervals][6];
 		int accumulatedIndex = 0;
-		for (PartitionedInterval partitionInterval : link
-				.getRevealingIntervals()) {
+		for (PartitionedInterval partitionInterval : link.getRevealingIntervals()) {
 			Object[][] intervalTable = partitionInterval.convertToTableFormat();
 			for (int i = 0; i < intervalTable.length; i++) {
 				System.arraycopy(intervalTable[i], 0, allIntervalTable[i

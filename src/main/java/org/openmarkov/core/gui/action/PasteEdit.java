@@ -9,12 +9,13 @@ package org.openmarkov.core.gui.action;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.undo.CompoundEdit;
 import javax.swing.undo.UndoableEdit;
 
 import org.openmarkov.core.action.AddLinkEdit;
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -25,8 +26,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.window.edition.SelectedContent;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
@@ -61,7 +62,7 @@ public class PasteEdit extends CompoundEdit
         HashMap<String, String> newVariables = new HashMap<String, String> ();
         ProbNet probNet = visualNetwork.getNetwork ();
         // Gather new node creation edits
-        for (ProbNode probNode : clipboardContent.getNodes ())
+        for (Node probNode : clipboardContent.getNodes ())
         {
             String oldName = probNode.getName ();
             String newName = oldName;
@@ -73,31 +74,31 @@ public class PasteEdit extends CompoundEdit
             variable.setName (newName);
             newVariables.put (oldName, newName);
             
-            Point2D.Double position = new Point2D.Double (probNode.getNode ().getCoordinateX () + 3.0,
-                                                          probNode.getNode ().getCoordinateY ());
-            edits.add (new AddProbNodeEdit (probNet, variable, probNode.getNodeType (), position));
+            Point2D.Double position = new Point2D.Double (probNode.getCoordinateX () + 3.0,
+                                                          probNode.getCoordinateY ());
+            edits.add (new AddNodeEdit (probNet, variable, probNode.getNodeType (), position));
             
         }
         
         // Apply node generation edits
-        ArrayList<ProbNode> pastedNodes = new ArrayList<ProbNode> ();
+        ArrayList<Node> pastedNodes = new ArrayList<Node> ();
         for (UndoableEdit edit : edits)
         {
         	try {
 				probNet.doEdit(((PNEdit) edit));
-				pastedNodes.add (((AddProbNodeEdit) edit).getProbNode ());
+				pastedNodes.add (((AddNodeEdit) edit).getProbNode ());
 			} catch (ConstraintViolationException | CanNotDoEditException e) {
 				e.printStackTrace();
 			}
         }
         
         //Gather link creation edits
-        for (Link link : clipboardContent.getLinks ())
+        for (Link<Node> link : clipboardContent.getLinks ())
         {
             try
             {
-                String originalSourceNodeName = probNet.getProbNode (link.getNode1 ()).getName ();
-                String originalDestinationNodeName = probNet.getProbNode (link.getNode2 ()).getName ();
+                String originalSourceNodeName = link.getNode1 ().getName ();
+                String originalDestinationNodeName = link.getNode2 ().getName ();
                 /**edits.add (new LinkEdit (probNet,
                                          newVariables.get (originalSourceNodeName),
                                          newVariables.get (originalDestinationNodeName),
@@ -113,7 +114,7 @@ public class PasteEdit extends CompoundEdit
         }
         
         //Apply link creation edits
-        ArrayList<Link> pastedLinks = new ArrayList<Link> ();
+        List<Link<Node>> pastedLinks = new ArrayList<> ();
         for (UndoableEdit edit : edits)
         {
             if (edit instanceof AddLinkEdit)
@@ -131,12 +132,12 @@ public class PasteEdit extends CompoundEdit
         pastedContent = new SelectedContent (pastedNodes, pastedLinks);
         
         //Replace potentials to already created nodes with copies of copied nodes
-        for (ProbNode originalNode : clipboardContent.getNodes ())
+        for (Node originalNode : clipboardContent.getNodes ())
         {
             ArrayList<Potential> newPotentials = new ArrayList<Potential>();
             try
             {
-                ProbNode newNode = probNet.getProbNode (newVariables.get (originalNode.getName ()));
+                Node newNode = probNet.getNode (newVariables.get (originalNode.getName ()));
                 for(Potential originalPotential: originalNode.getPotentials ())
                 {
                     Potential potential = originalPotential.copy ();

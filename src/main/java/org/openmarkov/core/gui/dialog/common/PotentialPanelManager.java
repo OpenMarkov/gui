@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -65,14 +65,14 @@ public class PotentialPanelManager
      * @param potentialType the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final PotentialPanel getPotentialPanel (String potentialType, ProbNode probNode)
+    public final PotentialPanel getPotentialPanel (String potentialType, Node probNode)
     {
         PotentialPanel instance = null;
         if (potentialPanelClasses.get (potentialType) != null)
         {
             try
             {
-                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (Node.class);
                 instance = constructor.newInstance (probNode);
             }
             catch (Exception e)
@@ -95,14 +95,14 @@ public class PotentialPanelManager
      */
     public final PotentialPanel getPotentialPanel (String potentialType,
                                                    String potentialFamily,
-                                                   ProbNode probNode)
+                                                   Node probNode)
     {
         PotentialPanel instance = null;
         if (potentialPanelClasses.get (potentialFamily) != null)
         {
             try
             {
-                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (ProbNode.class);
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (Node.class);
                 instance = constructor.newInstance (probNode);
             }
             catch (Exception e)
@@ -114,7 +114,7 @@ public class PotentialPanelManager
         {
             try
             {
-                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (ProbNode.class);
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (Node.class);
                 instance = constructor.newInstance (probNode);
             }
             catch (Exception e)

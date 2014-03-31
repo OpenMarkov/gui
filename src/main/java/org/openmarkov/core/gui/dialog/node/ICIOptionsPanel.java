@@ -19,7 +19,7 @@ import javax.swing.border.LineBorder;
 
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * Panel for the relation/probabilities tables (if chance node), utility values
@@ -88,7 +88,7 @@ public class ICIOptionsPanel extends JPanel
     /**
      * constructor without construction parameters
      */
-    public ICIOptionsPanel (ProbNode probNode)
+    public ICIOptionsPanel (Node probNode)
     {
         this (true);// , notifier );
         this.listener = new ICIOptionListenerAssistant (this);

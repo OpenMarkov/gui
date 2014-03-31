@@ -17,7 +17,7 @@ import javax.swing.table.TableCellRenderer;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -42,11 +42,11 @@ public class CostEffectivenessAnalysisPane extends JScrollPane
             }
         }
         globalUtility = DiscretePotentialOperations.reorder (globalUtility, correctOrder);
-        ProbNode dummyNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (0),
+        Node dummyNode = new Node (dummyProbNet, globalUtility.getVariables ().get (0),
                                        NodeType.CHANCE);
         for (int i = 1; i < globalUtility.getVariables ().size (); i++)
         {
-            ProbNode newProbNode = new ProbNode (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
+            Node newProbNode = new Node (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
             dummyProbNet.addLink (newProbNode, dummyNode, true);
         }
         List<Potential> potentials = new ArrayList<> ();

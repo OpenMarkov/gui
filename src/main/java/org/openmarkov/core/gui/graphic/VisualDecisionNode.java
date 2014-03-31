@@ -18,7 +18,7 @@ import java.awt.geom.Rectangle2D;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class is the visual representation of a decision node.
@@ -82,7 +82,7 @@ public class VisualDecisionNode extends VisualNode {
      * @param visualNetwork
      *            editor panel to which this visual node is associated.
      */
-    public VisualDecisionNode(ProbNode node, VisualNetwork visualNetwork) {
+    public VisualDecisionNode(Node node, VisualNetwork visualNetwork) {
         super(node, visualNetwork);
         expanded = false;
         if (probNode.getPolicyType() != PolicyType.OPTIMAL) {
@@ -90,8 +90,7 @@ public class VisualDecisionNode extends VisualNode {
         }
         preResolutionFinding = false;
         postResolutionFinding = false;
-        setTemporalPosition(new Point2D.Double(probNode.getNode().getCoordinateX(),
-                probNode.getNode().getCoordinateY()));
+        setTemporalPosition(new Point2D.Double(probNode.getCoordinateX(), probNode.getCoordinateY()));
         innerBox = new FSVariableBox(this);
         setHasPolicy(node.getPotentials().size() != 0);
     }

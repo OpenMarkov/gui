@@ -10,10 +10,9 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.heuristic.EliminationHeuristic;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -47,13 +46,12 @@ public class MPADHeuristic extends EliminationHeuristic {
             int minClusterSize = Integer.MAX_VALUE;
             Variable candidateToRemove = plainVariableList.get(0);
             for (Variable variable : plainVariableList) {
-                ProbNode probNode = probNetCopy.getProbNode(variable);
-                List<Node> neighbors = probNode.getNode().getNeighbors();
+                Node probNode = probNetCopy.getNode(variable);
+                List<Node> neighbors = probNode.getNeighbors();
                 int clusterSize = 1;
-                for (Node node : neighbors) {
+                for (Node neighbor : neighbors) {
                     // Calculates clique size created removing a variable
-                    ProbNode neighborProbNode = (ProbNode) node.getObject();
-                    Variable neighborVariable = neighborProbNode.getVariable();
+                    Variable neighborVariable = neighbor.getVariable();
                     if (neighborVariable.getVariableType() != VariableType.NUMERIC) {
                         clusterSize *= neighborVariable.getNumStates();
                     }
@@ -64,7 +62,7 @@ public class MPADHeuristic extends EliminationHeuristic {
             }
             eliminationOrder.add(candidateToRemove);
             plainVariableList.remove(candidateToRemove);
-            probNetCopy.removeProbNode(probNetCopy.getProbNode(candidateToRemove));
+            probNetCopy.removeNode(probNetCopy.getNode(candidateToRemove));
         }
         return eliminationOrder;
     }

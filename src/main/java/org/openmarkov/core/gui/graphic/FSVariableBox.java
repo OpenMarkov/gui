@@ -15,7 +15,7 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
@@ -51,7 +51,7 @@ public class FSVariableBox extends InnerBox {
 	 * Each visual state will have only a value
 	 */
 	protected void createVisualStates() {
-		ProbNode probNode = visualNode.getProbNode();
+		Node probNode = visualNode.getProbNode();
 		Variable variable = probNode.getVariable();
 		State[] states = variable.getStates();
 		for (int i=0; i<states.length; i++) {
@@ -67,7 +67,7 @@ public class FSVariableBox extends InnerBox {
 	 *            Number of values that has to be each visual state.
 	 */
 	private void createVisualStates(int numValues) {
-		ProbNode probNode = visualNode.getProbNode();
+		Node probNode = visualNode.getProbNode();
 		Variable variable = probNode.getVariable();
 		State[] states = variable.getStates();
 		for (int i=0; i<states.length; i++) {

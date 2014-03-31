@@ -19,7 +19,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 
 /**
@@ -31,11 +31,11 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 	/***
 	 * Link containing the revelation conditions
 	 */
-	private Link link;
+	private Link<Node> link;
 	/****
 	 * Node whose values are revealing
 	 */
-	private ProbNode node;
+	private Node node;
 	/***
 	 * Preferred column width
 	 */
@@ -43,10 +43,10 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 	private static final int STATENAME_COLUMN_WIDTH = 440;
 
 	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData,
-			String newKeyPrefix, boolean firstColumnHidden, Link link) {
+			String newKeyPrefix, boolean firstColumnHidden, Link<Node> link) {
 		super(newColumns, new Object[0][0], newKeyPrefix, true);
 		this.link = link;
-		this.node = (ProbNode) link.getNode1().getObject();
+		this.node = link.getNode1();
 		super.getAddValueButton().setVisible(false);
 		super.getRemoveValueButton().setVisible(false);
 		super.getDownValueButton().setVisible(false);

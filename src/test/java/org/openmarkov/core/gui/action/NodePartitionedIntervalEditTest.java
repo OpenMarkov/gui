@@ -17,7 +17,7 @@ import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -38,12 +38,12 @@ public class NodePartitionedIntervalEditTest {
 	/**
 	 * A whose position will be undone and redone.
 	 */
-	private ProbNode node1 = null;
+	private Node node1 = null;
 
 	/**
 	 * A whose position will be undone and redone.
 	 */
-	private ProbNode node2 = null;
+	private Node node2 = null;
 
 	private Variable variableA;
 	private Variable variableB;
@@ -62,13 +62,13 @@ public class NodePartitionedIntervalEditTest {
 		variableA = new Variable("A",states );
 		variableB = new Variable("B");
 
-		node1 = probNet.addProbNode(variableA, NodeType.CHANCE);
+		node1 = probNet.addNode(variableA, NodeType.CHANCE);
 
-		node1.getNode().setCoordinateX(100.0);
-		node1.getNode().setCoordinateY(150.0);
-		node2 = probNet.addProbNode(variableB, NodeType.DECISION);
-		node2.getNode().setCoordinateX(57.0);
-		node2.getNode().setCoordinateY(49.0);
+		node1.setCoordinateX(100.0);
+		node1.setCoordinateY(150.0);
+		node2 = probNet.addNode(variableB, NodeType.DECISION);
+		node2.setCoordinateX(57.0);
+		node2.setCoordinateY(49.0);
 
 		probNet.getPNESupport().setWithUndo(true);
 		

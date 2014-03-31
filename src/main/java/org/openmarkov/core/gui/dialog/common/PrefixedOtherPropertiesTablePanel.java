@@ -6,7 +6,7 @@
 
 package org.openmarkov.core.gui.dialog.common;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class implements a key table with the following features:
@@ -32,7 +32,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel
      * Key prefix.
      */
     private String            keyPrefix        = null;
-    private ProbNode          probNode;
+    private Node          probNode;
 
     /*
      * this a default constructor with no construction parameters
@@ -73,7 +73,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel
                                                                          * notifier
                                                                          * ,
                                                                          */
-                                              ProbNode probNode)
+                                              Node probNode)
     {
         // llamada a super clase con modifiable = true para que no pueda ser
         // modificada la tabla de manera directa, sino a través de los botones

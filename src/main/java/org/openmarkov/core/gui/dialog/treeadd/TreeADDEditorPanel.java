@@ -39,7 +39,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -99,7 +99,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     protected List<Variable>   treeVariables;
     // Mouse event detection
     private int                xx, yy;
-    private ProbNode           probNode;
+    private Node           probNode;
 
     /**
      * Shows the tree in read only mode
@@ -107,7 +107,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * @param probNet
      * @param treeADDPotential
      */
-    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, ProbNode probNode) {
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node probNode) {
         // A copy of the potential
         this.probNode = probNode;
         this.rootTreeADDPotential = new TreeADDPotential((TreeADDPotential) probNode.getPotentials().get(0));
@@ -1236,16 +1236,16 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         ProbNet probNet = probNode.getProbNet();
         ProbNet dummyProbNet = new ProbNet();
         dummyProbNet.addPotential(potential);
-        ProbNode dummy = null;
+        Node dummy = null;
         Variable conditionedVariable = parentTreeADD.getConditionedVariable();
-        dummy = dummyProbNet.getProbNode(conditionedVariable);
+        dummy = dummyProbNet.getNode(conditionedVariable);
         for (Variable variable : potential.getVariables()) {
             if (variable.equals(conditionedVariable)) {
                 continue;
             }
             try {
-                List<Potential> originalPotentials = probNet.getProbNode(variable).getPotentials();
-                dummyProbNet.getProbNode(variable).setPotentials(originalPotentials);
+                List<Potential> originalPotentials = probNet.getNode(variable).getPotentials();
+                dummyProbNet.getNode(variable).setPotentials(originalPotentials);
                 dummyProbNet.addLink(variable, conditionedVariable, true);
             } catch (NodeNotFoundException e) {
                 throw new RuntimeException("Node not found: " + e.getMessage());

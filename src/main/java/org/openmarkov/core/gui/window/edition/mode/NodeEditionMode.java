@@ -18,14 +18,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.openmarkov.core.action.AddProbNodeEdit;
+import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Util;
@@ -52,7 +52,7 @@ public abstract class NodeEditionMode extends EditionMode
                 {
                     probNet.getPNESupport ().setWithUndo (true);
                     HashSet<String> existingNames = new HashSet<String> ();
-                    for (ProbNode node : probNet.getProbNodes ())
+                    for (Node node : probNet.getNodes ())
                     {
                         String name = node.getName ();
                         if (name.contains ("["))
@@ -83,7 +83,7 @@ public abstract class NodeEditionMode extends EditionMode
                     {
                         variable.setDecisionCriterion (decisionCriteria.get (0));
                     }
-                    AddProbNodeEdit addProbNodeEdit = new AddProbNodeEdit (probNet, variable,
+                    AddNodeEdit addProbNodeEdit = new AddNodeEdit (probNet, variable,
                                                                            nodeType, position);
                     try
                     {

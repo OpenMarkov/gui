@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -80,7 +80,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     /**
      * Object where all information will be saved.
      */
-    protected ProbNode                 probNode                   = null;
+    protected Node                 probNode                   = null;
     /**
      * v
      */
@@ -94,7 +94,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      * @param readOnly if true, values inside the dialog will not be editable
      */
     public NodePropertiesDialog (Window owner,
-                                 ProbNode probNode,
+                                 Node probNode,
                                  boolean newElement,
                                  boolean readOnly)
     {
@@ -113,7 +113,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      * discrete and discretized variables must be eliminated
      * @param probNode object from where load the information.
      */
-    private void setFieldsFromProperties (ProbNode probNode)
+    private void setFieldsFromProperties (Node probNode)
     {
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
         // so here we will see if there are intervals in the states
@@ -263,7 +263,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     /**
      * @return the nodeProperties
      */
-    public ProbNode getNodeProperties ()
+    public Node getNodeProperties ()
     {
         return probNode;
     }

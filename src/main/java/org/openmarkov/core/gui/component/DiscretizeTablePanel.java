@@ -48,7 +48,7 @@ import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
@@ -171,14 +171,14 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * discretize table model
      */
     private DiscretizeTableModel  discretizeTableModel            = null;
-    protected ProbNode            probNode;
+    protected Node            probNode;
 
     /**
      * default constructor
      * 
      * @wbp.parser.constructor
      */
-    public DiscretizeTablePanel(String[] newColumns, ProbNode probNode) {
+    public DiscretizeTablePanel(String[] newColumns, Node probNode) {
         this(newColumns, new Object[0][0], "s", probNode);
         // s = keyPrefix for id column; not shown to user
     }
@@ -187,7 +187,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * constructor with parameters
      */
     public DiscretizeTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-            ProbNode probNode) {
+            Node probNode) {
         super(newColumns, new Object[0][0], true, true);// , notifier);
         this.probNode = probNode;
         keyPrefix = newKeyPrefix;

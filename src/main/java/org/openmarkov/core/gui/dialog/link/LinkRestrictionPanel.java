@@ -13,7 +13,7 @@ import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -45,21 +45,21 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	/***
 	 * ProbNode of the parent node of the link
 	 */
-	protected ProbNode probNode1;
+	protected Node probNode1;
 	/****
 	 * ProbNode of the child node of the link
 	 */
-	protected ProbNode probNode2;
+	protected Node probNode2;
 	/***
 	 * The link which has the link restriction
 	 */
-	protected Link link;
+	protected Link<Node> link;
 
-	public LinkRestrictionPanel(Link link) {
+	public LinkRestrictionPanel(Link<Node> link) {
 
 		this.link = link;
-		probNode1 = (ProbNode) link.getNode1().getObject();
-		probNode2 = (ProbNode) link.getNode2().getObject();
+		probNode1 = link.getNode1();
+		probNode2 = link.getNode2();
 		modifiable = true;
 		setData(probNode1, probNode2);
 		setLayout(new BorderLayout());
@@ -139,7 +139,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	 * @param probNode2
 	 *            Child node of the link.
 	 */
-	public void setData(ProbNode probNode1, ProbNode probNode2) {
+	public void setData(Node probNode1, Node probNode2) {
 
 		Object[][] tableData = null;
 		String[] newColumns = null;
@@ -196,8 +196,8 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	 *            Child node of the link
 	 * @return he table data to be set
 	 */
-	protected Object[][] convertListPotentialsToTableFormat(ProbNode node1,
-			ProbNode node2) {
+	protected Object[][] convertListPotentialsToTableFormat(Node node1,
+			Node node2) {
 		Object[][] values = null;
 		values = setValuesTableSize(values);
 		values = setParentsNameInUpperLeftCornerArea(values);
@@ -378,7 +378,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void setData(ProbNode probNode) {
+	public void setData(Node probNode) {
 		// TODO Auto-generated method stub
 
 	}

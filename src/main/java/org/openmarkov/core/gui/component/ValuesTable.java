@@ -47,10 +47,9 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.TablePotentialValueEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTable;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.graph.Node;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -148,7 +147,7 @@ public class ValuesTable extends KeyTable
      * String database
      */
     protected StringDatabase                   stringDatabase             = StringDatabase.getUniqueInstance ();
-    protected ProbNode                         probNode;
+    protected Node                         probNode;
     protected ProbNet                          probNet;
     /**
      * Define the last column of the table that was modified
@@ -165,7 +164,7 @@ public class ValuesTable extends KeyTable
     /**
      * default constructor with parameters
      */
-    public ValuesTable (ProbNode probNode, ValuesTableModel tableModel, final boolean modifiable)
+    public ValuesTable (Node probNode, ValuesTableModel tableModel, final boolean modifiable)
     {
         super (tableModel, modifiable, true, true);
         probNode.getProbNet ().getPNESupport ().addUndoableEditListener (this);
@@ -1115,15 +1114,15 @@ public class ValuesTable extends KeyTable
      * @param parents - parents of the variable
      * @return the number of columns in the table
      */
-    public static int howManyColumns (ProbNode properties)
+    public static int howManyColumns (Node properties)
     {
         int numColumns = 0;
-        if (properties.getNode ().getParents () != null)
+        if (properties.getParents () != null)
         {
             int aux = 1;
-            for (Node parent : properties.getNode ().getParents ())
+            for (Node parent : properties.getParents ())
             {
-                State[] parentStates = ((ProbNode) parent.getObject ()).getVariable ().getStates ();
+                State[] parentStates = parent.getVariable ().getStates ();
                 aux = aux * parentStates.length;
             }
             numColumns = aux;
@@ -1411,7 +1410,7 @@ public class ValuesTable extends KeyTable
      * Sets probNode
      * @param probNode
      */
-    public void setData (ProbNode probNode)
+    public void setData (Node probNode)
     {
         if (this.probNet.getPNESupport () != probNode.getProbNet ().getPNESupport ())
         {

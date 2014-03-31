@@ -34,7 +34,7 @@ import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 
@@ -176,26 +176,25 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	protected void constructVisualInfo() {
 
-		List<ProbNode> nodes = null;
+		List<Node> nodes = null;
 		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
 		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
-		List<Link> links = null;
-		ProbNode nodeToCheck = null;
-		Link linkToCheck = null;
+		List<Link<Node>> links = null;
+		Node nodeToCheck = null;
+		Link<Node> linkToCheck = null;
 		VisualNode vNode1 = null;
 		VisualNode vNode2 = null;
 		int i = -1;
 		int visualNodesCount = -1;
 
 		
-		nodes = probNet.getProbNodes();
+		nodes = probNet.getNodes();
 		for (VisualNode vNode : visualNodes) {
 			nodeToCheck = vNode.getProbNode();
 			int index = nodes.indexOf(nodeToCheck);
-			if ( index >=0 && vNode.getTemporalPosition().getX() == nodes.get(
-					index).getNode().getCoordinateX() && vNode.
-					getTemporalPosition().getX() == nodes.get( index ).getNode().
-					getCoordinateX() ){
+			if ( index >=0 && 
+					vNode.getTemporalPosition().getX() == nodes.get(index).getCoordinateX() && 
+					vNode.getTemporalPosition().getX() == nodes.get( index ).getCoordinateX() ){
 			//if (nodes.contains(nodeToCheck)  ) {
 				//nodes.indexOf(o)
 				nodes.remove(nodeToCheck);
@@ -208,7 +207,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 		
 		visualNodes.removeAll(vNodesToDelete);
-		for (ProbNode node : nodes) {
+		for (Node node : nodes) {
 			vNode1 = createVisualNode(node);
 			visualNodes.add(vNode1);
 			vNode1.setByTitle(byTitle);
@@ -216,7 +215,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		}
 		
 		//links = probNet.backupProbNet.getLinks();
-		links = probNet.getGraph().getLinks();
+		links = probNet.getLinks();
 		
 		for (VisualLink vLink : visualLinks) {
 			linkToCheck = vLink.getLink();
@@ -228,20 +227,20 @@ public class VisualNetwork implements PNUndoableEditListener {
 		}
 		visualLinks.removeAll(vLinksToDelete);
 		visualNodesCount = visualNodes.size();
-		for (Link link : links) {
+		for (Link<Node> link : links) {
 			i = 0;
 			vNode1 = null;
 			vNode2 = null;
 			while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
 				if (vNode1 == null) {
 					if (link.getNode1().equals(
-						visualNodes.get(i).getProbNode().getNode())) {
+						visualNodes.get(i).getProbNode())) {
 						vNode1 = visualNodes.get(i);
 					}
 				}
 				if (vNode2 == null) {
 					if (link.getNode2().equals(
-						visualNodes.get(i).getProbNode().getNode())) {
+						visualNodes.get(i).getProbNode())) {
 						vNode2 = visualNodes.get(i);
 					}
 				}
@@ -260,10 +259,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * @param vNodesToDelete
 	 * @return
 	 */
-	protected boolean containsNodeToDelete(Link linkToCheck, List<VisualNode> vNodesToDelete) {
+	protected boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
 		
 		for (VisualNode vNode: vNodesToDelete)
-		if (linkToCheck.contains(vNode.getProbNode().getNode()))
+		if (linkToCheck.contains(vNode.getProbNode()))
 			return true;
 		
 			return false;
@@ -649,7 +648,7 @@ public class VisualNetwork implements PNUndoableEditListener {
      * @param selected
      *            new selection state.
      */
-    public void setSelectedLink(Link link, boolean selected) {
+    public void setSelectedLink(Link<Node> link, boolean selected) {
         int i=0;
         VisualLink visualLink = null;
         while(visualLink == null && i<visualLinks.size ())
@@ -866,14 +865,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
     public void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
 
-		ProbNode probNodeAux = null;
+		Node probNodeAux = null;
 
 		for (MovedNodeInfo movedNode : movedNodes) {
 			probNodeAux = movedNode.getProbNode();
 			movedNode.setDiffPosition(new Point2D.Double(
-					probNodeAux.getNode().getCoordinateX()
+					probNodeAux.getCoordinateX()
 				- movedNode.getDiffPosition().getX(), 
-				probNodeAux.getNode().getCoordinateY() 
+				probNodeAux.getCoordinateY() 
 				- movedNode.getDiffPosition().getY()));
 		}
 
@@ -1148,7 +1147,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 *            node whose visual representation is going to be returned.
 	 * @return the visual representation of the node.
 	 */
-	protected VisualNode createVisualNode(ProbNode node) {
+	protected VisualNode createVisualNode(Node node) {
 
 		switch (node.getNodeType()) {
 			case CHANCE: {

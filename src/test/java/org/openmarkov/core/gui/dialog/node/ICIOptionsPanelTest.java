@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -38,7 +38,7 @@ public class ICIOptionsPanelTest {
 	ICIOptionsPanel panel = null;
 
 	private  ProbNet probNet = null;
-	private  ProbNode probNode = null;
+	private  Node probNode = null;
 	private Variable A;
 	private Variable B;
 	private Variable U;
@@ -52,7 +52,7 @@ public class ICIOptionsPanelTest {
 		panel = new ICIOptionsPanel(false);
 		
 		probNet = createSimpleProbNet();
-		probNode = probNet.getProbNodes().get(0);
+		probNode = probNet.getNodes().get(0);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class ICIOptionsPanelTest {
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
-		simpleProbNet.addProbNode(D, NodeType.DECISION);
+		simpleProbNet.addNode(D, NodeType.DECISION);
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);

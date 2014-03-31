@@ -79,7 +79,7 @@ public class ValidName extends PNConstraint
     {
         try
         {
-            probNet.getProbNode (name);
+            probNet.getNode (name);
             return true;
         }
         catch (ProbNodeNotFoundException e)

@@ -22,7 +22,7 @@ import org.openmarkov.core.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.core.gui.dialog.common.SelectableKeyTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -39,7 +39,7 @@ public class RevelationArcPanel extends JPanel
     /***
      * Object where all the information will be saved
      */
-    private Link                              link;
+    private Link<Node>                              link;
     /****
      * Variable Type of the revelation conditions
      */
@@ -66,10 +66,10 @@ public class RevelationArcPanel extends JPanel
      * conditions of a link
      * @param link
      */
-    public RevelationArcPanel (Link link)
+    public RevelationArcPanel (Link<Node> link)
     {
         this.link = link;
-        this.variableType = ((ProbNode) link.getNode1 ().getObject ()).getVariable ().getVariableType ();
+        this.variableType = link.getNode1 ().getVariable ().getVariableType ();
         try
         {
             initialize ();
@@ -109,8 +109,8 @@ public class RevelationArcPanel extends JPanel
             jLabelValuesPanel = new JLabel ();
             jLabelValuesPanel.setName ("jLabelValuesPanel");
             jLabelValuesPanel.setText ("a Label");
-            ProbNode node1 = (ProbNode) link.getNode1 ().getObject ();
-            ProbNode node2 = (ProbNode) link.getNode2 ().getObject ();
+            Node node1 = link.getNode1 ();
+            Node node2 = link.getNode2 ();
             MessageFormat messageForm = new MessageFormat (
                                                            stringDatabase.getString ("RevelationArcPanel.jLabelValuesPanel.Text"));
             Object[] labelArgs = new Object[] {node1.getName (), node2.getName ()};
@@ -189,7 +189,7 @@ public class RevelationArcPanel extends JPanel
         return discretizedNodeStatesTablePanel;
     }
 
-    public void setFieldsFromProperties (Link link)
+    public void setFieldsFromProperties (Link<Node> link)
     {
         if (link != null)
         {
@@ -211,9 +211,9 @@ public class RevelationArcPanel extends JPanel
      * @param values array of strings.
      * @return an array of arrays of objects that has the same elements.
      */
-    protected Object[][] convertStringsToTableDiscreteFormat (Link link)
+    protected Object[][] convertStringsToTableDiscreteFormat (Link<Node> link)
     {
-        ProbNode node = (ProbNode) link.getNode1 ().getObject ();
+        Node node = link.getNode1 ();
         State[] values = node.getVariable ().getStates ();
         List<State> revealingStates = link.getRevealingStates ();
         Object[][] data;

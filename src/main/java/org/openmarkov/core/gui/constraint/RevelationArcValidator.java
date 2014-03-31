@@ -3,7 +3,7 @@ package org.openmarkov.core.gui.constraint;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 
 /*****
@@ -22,10 +22,10 @@ public class RevelationArcValidator {
 	 * @return <code>true</code> if a link restriction can be applied to the
 	 *         link.
 	 */
-	public static boolean validate(Link link) {
+	public static boolean validate(Link<Node> link) {
 
-		ProbNode node1 = ((ProbNode) link.getNode1().getObject());
-		ProbNode node2 = ((ProbNode) link.getNode2().getObject());
+		Node node1 = link.getNode1();
+		Node node2 = link.getNode2();
 		ProbNet net = node1.getProbNet();
 		if (!net.hasConstraint(NoRevelationArc.class)) {
 

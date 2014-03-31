@@ -16,7 +16,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelPlugin;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "Tree/ADD")
@@ -29,9 +29,9 @@ public class TreeADDPanel extends PotentialPanel
     /**
      * The node edited
      */
-    private ProbNode           probNode;
+    private Node           probNode;
 
-    public TreeADDPanel (ProbNode probNode)
+    public TreeADDPanel (Node probNode)
     {
         super ();
         setData (probNode);
@@ -61,7 +61,7 @@ public class TreeADDPanel extends PotentialPanel
     }
 
     @Override
-    public void setData (ProbNode probNode)
+    public void setData (Node probNode)
     {
         setLayout (new BorderLayout ());
         this.probNode = probNode;

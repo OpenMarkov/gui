@@ -14,7 +14,7 @@ import java.awt.event.ItemListener;
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 
 public class NodePropertiesDialogListenerAssistant
@@ -24,7 +24,7 @@ public class NodePropertiesDialogListenerAssistant
 {
     private NodePropertiesDialog dialog          = null;
     private NodeDefinitionPanel  definitionPanel = null;
-    private ProbNode             properties      = null;
+    private Node             properties      = null;
 
     /**
      * constructor

@@ -43,7 +43,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
@@ -84,7 +84,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * Panel to scroll the table.
      */
     protected JScrollPane valuesTableScrollPane = null;
-    protected ProbNode    probNode;
+    protected Node    probNode;
     protected boolean     hasLinkRestriction;
 
     /**
@@ -92,7 +92,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * 
      * @param probNode
      */
-    public TablePotentialPanel(ProbNode probNode) {
+    public TablePotentialPanel(Node probNode) {
         super();
         this.probNode = probNode;
         modifiable = true;
@@ -165,7 +165,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param parents
      *            - parents of the variable
      */
-    public void setData(ProbNode probNode) {
+    public void setData(Node probNode) {
         this.probNode = probNode;
         hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(probNode);
         valuesTable.setData(probNode);
@@ -196,7 +196,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
     }
 
-    private boolean[] getUncertaintyInColumns(ProbNode probNode) {
+    private boolean[] getUncertaintyInColumns(Node probNode) {
         int size = valuesTable.getColumnCount();
         boolean[] uncertaintyInColumns = new boolean[size - 1];
 
@@ -229,10 +229,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - node additionalProperties
      * @return the number of rows of this Potentials Table
      */
-    protected int howManyRows(ProbNode properties) {
+    protected int howManyRows(Node properties) {
         int numRows = 0;
-        if (properties.getNode().getParents() != null) {
-            numRows = properties.getNode().getParents().size();
+        if (properties.getParents() != null) {
+            numRows = properties.getParents().size();
         }
         if (properties.getNodeType() == NodeType.UTILITY) {
             numRows += 1;
@@ -251,7 +251,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - to obtain the required number of rows and columns
      * @return the blank data table
      */
-    private Object[][] setBlankTable(ProbNode properties) {
+    private Object[][] setBlankTable(Node properties) {
         Object[][] blankTable = null;
         int numRows = howManyRows(properties);
         int numColumns = ValuesTable.howManyColumns(properties);
@@ -301,7 +301,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - <code>NodeWrapper</code> list of the parents
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat(ProbNode probNode) {
+    protected Object[][] convertListPotentialsToTableFormat(Node probNode) {
         Object[][] values = null;
         try {
             // mpal
@@ -332,7 +332,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] createEmptyTable(ProbNode probNode) {
+    private Object[][] createEmptyTable(Node probNode) {
          
         int numRows = 0;
         int numColumns = 1; // at least, there is one column for the node names
@@ -391,7 +391,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, ProbNode probNode) {
+    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, Node probNode) {
         Object[][] values = oldValues;
         List<Variable> parents = new ArrayList<Variable>();
         for (Variable variable : getVariables()) {
@@ -415,7 +415,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, ProbNode probNode) {
+    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, Node probNode) {
         Object[][] values = oldValues;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         TablePotential tablePotential = getThisPotential(probNode.getPotentials());
@@ -476,7 +476,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setNodeStatesInLeftArea(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setNodeStatesInLeftArea(Object[][] oldValues, Node properties) {
         Object[][] values = oldValues;
         TablePotential tablePotential = (TablePotential) getThisPotential(properties.getPotentials());
         int row = getFirstEditableRow();
@@ -507,7 +507,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setPotentialDataInCentreArea(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setPotentialDataInCentreArea(Object[][] oldValues, Node properties) {
         Object[][] values = oldValues;
         int position = 0;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
@@ -557,7 +557,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @return a two dimensional array with the size of the table containing the
      *         information about the editable positions.
      */
-    private Object[][] getNotEditablePositions(ProbNode probNode) {
+    private Object[][] getNotEditablePositions(Node probNode) {
         Object[][] notEditablePositions = createEmptyTable(probNode);
         if (probNode.getNodeType() == NodeType.CHANCE && hasLinkRestriction) {
             List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations.getStateCombinationsWithLinkRestriction(probNode);
@@ -595,7 +595,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - the additionalProperties of the node
      */
     private Object[][] setVariableNameInLowerLeftCornerArea(Object[][] oldValues,
-            ProbNode properties) {
+            Node properties) {
         Object[][] values = oldValues;
         values[getLastEditableRow() + 1][0] = properties.getName();
         return values;
@@ -610,7 +610,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setVariableStatesInBottomArea(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setVariableStatesInBottomArea(Object[][] oldValues, Node properties) {
         Object[][] values = oldValues;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
         TablePotential tablePotential = (TablePotential) getThisPotential(properties.getPotentials());

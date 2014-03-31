@@ -7,12 +7,7 @@
 package org.openmarkov.core.gui.window;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -36,13 +31,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.ScrollPaneLayout;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -53,9 +45,9 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessProgressBar;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
+import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
@@ -88,12 +80,11 @@ import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.costeffectiveness.id.PartitionLCE;
@@ -907,9 +898,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             int numSlices;
 
             numSlices = costEffectivenessDialog.getNumSlices();
-            List<ProbNode> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+            List<Node> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
             if (!temporalNodes.isEmpty()) {
-                for (ProbNode timeDependentNode : temporalNodes) {
+                for (Node timeDependentNode : temporalNodes) {
                     Variable timeDependentVariable = timeDependentNode.getVariable();
                     Finding finding = new Finding(timeDependentVariable,
                             costEffectivenessDialog.getInitialValues().get(timeDependentVariable));
@@ -924,9 +915,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             double costDiscountRate = costEffectivenessDialog.getCostDiscount();
             double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
             double maxX = 0.0;
-            for (ProbNode probNode : probNet.getProbNodes()) {
-                if (probNode.getNode().getCoordinateX() > maxX) {
-                    maxX = probNode.getNode().getCoordinateX();
+            for (Node probNode : probNet.getNodes()) {
+                if (probNode.getCoordinateX() > maxX) {
+                    maxX = probNode.getCoordinateX();
                 }
             }
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);

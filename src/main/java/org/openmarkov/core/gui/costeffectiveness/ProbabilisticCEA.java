@@ -23,7 +23,7 @@ import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -164,11 +164,11 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         {
     		try {
     			Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
-    	        for(ProbNode node : expandedNetwork.getProbNodes())
+    	        for(Node node : expandedNetwork.getNodes())
     	        {
     	        	networkPotentials.put(node.getVariable(), node.getPotentials());
     	        }
-    	        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
+    	        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
     			removeIntermediateUtilityNodes(expandedNetwork);
     	        applyTransitionTime(expandedNetwork, transitionTime, numSlices);
 	        	for(int i=0; i < numSimulations; ++i)
@@ -186,11 +186,11 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         return results;
     }
 	
-	private void sampleAndTableProject(List<ProbNode> sortedNodes,
+	private void sampleAndTableProject(List<Node> sortedNodes,
 			Map<Variable, List<Potential>> networkPotentials, EvidenceCase evidence)
 			throws NonProjectablePotentialException, WrongCriterionException {
 		List<TablePotential> projectedPotentials = new ArrayList<>();
-		for (ProbNode node : sortedNodes) {
+		for (Node node : sortedNodes) {
 			List<Potential> sampledProjectedPotentials = new ArrayList<>();
 			for (Potential originalPotential : networkPotentials.get(node.getVariable())) {
 				List<TablePotential> newProjectedPotentials = originalPotential.sample()
@@ -205,11 +205,11 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 	private TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime, int numSlices)
 			throws NonProjectablePotentialException, WrongCriterionException	{
 		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
-        for(ProbNode node : expandedNetwork.getProbNodes())
+        for(Node node : expandedNetwork.getNodes())
         {
         	networkPotentials.put(node.getVariable(), node.getPotentials());
         }
-        List<ProbNode> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
+        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
 		removeIntermediateUtilityNodes(expandedNetwork);
         applyTransitionTime(expandedNetwork, transitionTime, numSlices);
         sampleAndTableProject(sortedNodes, networkPotentials, evidence);

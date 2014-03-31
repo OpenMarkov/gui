@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 public abstract class PotentialPanel extends JPanel
@@ -33,7 +33,7 @@ public abstract class PotentialPanel extends JPanel
      * Fill the panel with the data from the node
      * @param probNode
      */
-    public abstract void setData (ProbNode probNode);
+    public abstract void setData (Node probNode);
     
     /**
      * Modify the node according to the changes entered by the user in the panel

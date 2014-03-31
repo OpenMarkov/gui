@@ -44,7 +44,7 @@ import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -82,7 +82,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * The node edited
      */
-    private ProbNode             probNode;
+    private Node             probNode;
     /**
      * The panel that contains all the common option to potentials
      */
@@ -122,7 +122,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * Creates the dialog.
      */
     public PotentialEditDialog (Window owner,
-                                ProbNode probNode,
+                                Node probNode,
                                 boolean newElement,
                                 boolean readOnly)
     {
@@ -156,7 +156,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Constructor
      */
-    public PotentialEditDialog (Window owner, ProbNode probNode, boolean newElement)
+    public PotentialEditDialog (Window owner, Node probNode, boolean newElement)
     {
         this (owner, probNode, newElement, false);
     }
@@ -306,7 +306,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * @param probNode object from where load the information.
      */
     // TODO Remove all this
-    private void showFields (ProbNode probNode)
+    private void showFields (Node probNode)
     {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType

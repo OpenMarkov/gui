@@ -15,7 +15,7 @@ import java.awt.Window;
 import javax.swing.event.ChangeEvent;
 
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.VariableType;
 
 
@@ -45,7 +45,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	 * @param readOnly
 	 * 			  if true, values inside the dialog will not be editable
 	 */
-	public CommonNodePropertiesDialog(Window owner, ProbNode probNode, boolean newNode, boolean readOnly) {
+	public CommonNodePropertiesDialog(Window owner, Node probNode, boolean newNode, boolean readOnly) {
 
 		super(owner, probNode, newNode, readOnly);
 		probNode.getProbNet().getPNESupport().openParenthesis();
@@ -64,7 +64,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	 *            if true, it indicates that a new network is being created; if
 	 *            false, an existing network is being modified.
 	 */
-	public CommonNodePropertiesDialog(Window owner, ProbNode probNode, boolean newNode) {
+	public CommonNodePropertiesDialog(Window owner, Node probNode, boolean newNode) {
 
 		this(owner, probNode, newNode, false);
 	}	

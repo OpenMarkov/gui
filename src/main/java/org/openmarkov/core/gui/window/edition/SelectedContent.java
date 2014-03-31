@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * 
@@ -24,12 +24,12 @@ public class SelectedContent
     /**
      * Copied nodes
      */
-    private List<ProbNode> nodes;
+    private List<Node> nodes;
     
     /**
      * Copied links
      */
-    private List<Link> links;
+    private List<Link<Node>> links;
     
     /**
      * 
@@ -38,7 +38,7 @@ public class SelectedContent
      * @param links
      */
     
-    public SelectedContent(List<ProbNode> nodes, List<Link> links)
+    public SelectedContent(List<Node> nodes, List<Link<Node>> links)
     {
         this.nodes = nodes;
         this.links = links;
@@ -52,15 +52,15 @@ public class SelectedContent
      */
     public SelectedContent(SelectedContent content) 
     {
-        this.nodes = new ArrayList<ProbNode> (content.getNodes ());
-        this.links = new ArrayList<Link> (content.getLinks ());
+        this.nodes = new ArrayList<Node> (content.getNodes ());
+        this.links = new ArrayList<Link<Node>> (content.getLinks ());
     }    
     
     /**
      * Returns nodes in the clipboard
      * @return nodes in the clipboard
      */
-    public List<ProbNode> getNodes()
+    public List<Node> getNodes()
     {
         return this.nodes;
     }
@@ -69,7 +69,7 @@ public class SelectedContent
      * Returns links in the clipboard
      * @return links in the clipboard
      */
-    public List<Link> getLinks()
+    public List<Link<Node>> getLinks()
     {
         return this.links;
     }

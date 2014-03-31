@@ -20,7 +20,7 @@ import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -197,7 +197,7 @@ public class TreeADDCellRenderer extends JPanel
      */
 	protected Icon createNodeIcon(Variable variable) {
 		Icon icon = null;
-		ProbNode node = probNet.getProbNode(variable);
+		Node node = probNet.getNode(variable);
 		switch (node.getNodeType()) {
 		case CHANCE: {
 			icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);

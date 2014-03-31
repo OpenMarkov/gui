@@ -10,7 +10,7 @@ package org.openmarkov.core.gui.action;
 
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 /**
  * 
@@ -22,9 +22,9 @@ public class NodeAgentEdit extends SimplePNEdit{
 	
 	private StringWithProperties  currentAgent;
 	private StringWithProperties newAgent;
-	private ProbNode probNode;
+	private Node probNode;
 
-	public NodeAgentEdit (ProbNode probNode, StringWithProperties agent) {
+	public NodeAgentEdit (Node probNode, StringWithProperties agent) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.currentAgent = probNode.getVariable().getAgent();

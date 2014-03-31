@@ -18,7 +18,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -78,7 +78,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
     private List<Variable> orderVariables        = new ArrayList<Variable>();
     private List<Variable> newOrderVariables     = new ArrayList<Variable>();
     private Object[][]     notEditablePostitions = new Object[0][0];
-    private ProbNode       probNode;
+    private Node       probNode;
 
     // Constructor
     /**
@@ -100,7 +100,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
      *            two dimensional array with the information about editable
      *            positions.
      */
-    public TablePotentialValueEdit(ProbNode probNode, ProbNet probNet,
+    public TablePotentialValueEdit(Node probNode, ProbNet probNet,
             TablePotential tablePotential, Double newValue, int row, int col,
             List<Integer> priorityList, Object[][] notEditablePositions) {
         super(probNet);
@@ -111,7 +111,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         this.priorityList = priorityList;
         this.notEditablePostitions = notEditablePositions;
         this.indexSelected = probNode.getVariable().getNumStates()
-                - (row - probNode.getNode().getNumParents() + 1);
+                - (row - probNode.getNumParents() + 1);
         this.oldTablePotential = tablePotential;
         orderVariables = oldTablePotential.getVariables();
         // reorder the variables like appear in PotentialEditDialog
@@ -139,7 +139,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         this.potentialSelected = Util.toPositionOnPotentialReordered(row,
                 col,
                 probNode.getVariable().getNumStates(),
-                probNode.getNode().getNumParents());
+                probNode.getNumParents());
 
     }
 
@@ -272,7 +272,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         return Util.toPositionOnJtable(position,
                 col,
                 probNode.getVariable().getNumStates(),
-                probNode.getNode().getNumParents());
+                probNode.getNumParents());
     }
 
     /**

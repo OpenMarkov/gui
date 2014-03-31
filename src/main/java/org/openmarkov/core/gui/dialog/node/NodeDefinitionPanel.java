@@ -51,7 +51,7 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Purpose;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
@@ -88,7 +88,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @param notifier
      *            - the element that will sent events to this class
      */
-    public NodeDefinitionPanel(ProbNode probNode) {
+    public NodeDefinitionPanel(Node probNode) {
         this(true);// , notifier );
         this.probNode = probNode;
         try {
@@ -156,7 +156,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * 
      * @return the nodeProperties
      */
-    public ProbNode getNodeProperties() {
+    public Node getNodeProperties() {
         return probNode;
     }
 
@@ -166,7 +166,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @param nodeProperties
      *            the nodeProperties to set
      */
-    public void setNodeProperties(final ProbNode nodeProperties) {
+    public void setNodeProperties(final Node nodeProperties) {
         this.probNode = nodeProperties;
     }
 
@@ -306,7 +306,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             
             // Get max time slice in the network
             int maxTimeSlice = 0;
-            for(ProbNode node : probNode.getProbNet().getProbNodes())
+            for(Node node : probNode.getProbNet().getNodes())
             {
                 if(node.getVariable().isTemporal() &&
                         node.getVariable().getTimeSlice() > maxTimeSlice)
@@ -877,7 +877,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @param additionalProperties
      *            object from where load the information.
      */
-    public void setFieldsFromProperties(ProbNode probNode) {
+    public void setFieldsFromProperties(Node probNode) {
         jTextFieldNodeName.setText(probNode.getVariable().getBaseName());
         // node variable type
         // relevance
@@ -990,7 +990,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     /**
      * Object where all information will be saved.
      */
-    private ProbNode              probNode                                   = null;
+    private Node              probNode                                   = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */

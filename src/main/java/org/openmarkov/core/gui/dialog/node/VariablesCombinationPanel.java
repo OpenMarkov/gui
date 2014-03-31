@@ -10,7 +10,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
@@ -20,9 +20,9 @@ private  ButtonGroup buttonGroup = new ButtonGroup();
 	
 private ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
 
-private ProbNode probNode; 
+private Node probNode; 
 
-	public VariablesCombinationPanel(ProbNode probNode) {
+	public VariablesCombinationPanel(Node probNode) {
 		this.probNode = probNode;
 		initialize();
 		repaint();

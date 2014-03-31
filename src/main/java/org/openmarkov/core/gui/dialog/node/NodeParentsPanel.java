@@ -20,8 +20,7 @@ import javax.swing.LayoutStyle;
 
 import org.openmarkov.core.gui.dialog.common.PrefixedDataTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.graph.Node;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * Panel to set the parents of a node.
@@ -47,7 +46,7 @@ public class NodeParentsPanel extends JPanel
     /**
      * Object where all information will be saved.
      */
-    private ProbNode               probNode         = null;
+    private Node               probNode         = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -64,7 +63,7 @@ public class NodeParentsPanel extends JPanel
     /**
      * constructor
      */
-    public NodeParentsPanel (ProbNode probNode)
+    public NodeParentsPanel (Node probNode)
     {// , ElementObservable notifier) {
         this (false);// , notifier);
         this.probNode = probNode;
@@ -160,7 +159,7 @@ public class NodeParentsPanel extends JPanel
      * Get the node additionalProperties in this panel
      * @return the nodeProperties
      */
-    public ProbNode getNetworkProperties ()
+    public Node getNetworkProperties ()
     {
         return probNode;
     }
@@ -169,7 +168,7 @@ public class NodeParentsPanel extends JPanel
      * Set the node additionalProperties in this panel with the provided ones
      * @param nodeProperties the nodeProperties to set
      */
-    public void setNodeProperties (final ProbNode nodeProperties)
+    public void setNodeProperties (final Node nodeProperties)
     {
         this.probNode = nodeProperties;
     }
@@ -223,9 +222,9 @@ public class NodeParentsPanel extends JPanel
      * This method fills the content of the fields from a NodeProperties object.
      * @param additionalProperties object from where load the information.
      */
-    public void setFieldsFromProperties (ProbNode node)
+    public void setFieldsFromProperties (Node node)
     {
-        getPrefixedDataTablePanelParentsTable ().setData (fillArrayWithNodes (node.getNode ().getParents ()));
+        getPrefixedDataTablePanelParentsTable ().setData (fillArrayWithNodes (node.getParents ()));
         // getPrefixedDataTablePanelParentsTable().setPrefixedData(
         // fillArrayWithNodeWrapper(node.getPossibleParents()));
     }
@@ -246,7 +245,7 @@ public class NodeParentsPanel extends JPanel
         for (i = 0; i < l; i++)
         {
             result[i][0] = "p_" + i; // internal name for the parent
-            result[i][1] = ((ProbNode) nodes.get (i).getObject ()).getName ();
+            result[i][1] = nodes.get (i).getName ();
         }
         return result;
     }

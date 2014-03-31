@@ -3,7 +3,7 @@ package org.openmarkov.core.gui.action;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -26,15 +26,15 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	/***
 	 * The link with the link restriction potential.
 	 */
-	private Link link;
+	private Link<Node> link;
 	/****
 	 * The parent node of the link.
 	 */
-	private ProbNode node1;
+	private Node node1;
 	/****
 	 * The child node of the link.
 	 */
-	private ProbNode node2;
+	private Node node2;
 
 	/**
 	 * the table potential before the edit
@@ -51,12 +51,12 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	 */
 	private TablePotential tablePotential;
 
-	public LinkRestrictionPotentialValueEdit(Link link, Integer newValue,
+	public LinkRestrictionPotentialValueEdit(Link<Node> link, Integer newValue,
 			int row, int col) {
-		super(((ProbNode) link.getNode1().getObject()).getProbNet());
+		super(link.getNode1().getProbNet());
 		this.link = link;
-		this.node1 = (ProbNode) link.getNode1().getObject();
-		this.node2 = (ProbNode) link.getNode2().getObject();
+		this.node1 = link.getNode1();
+		this.node2 = link.getNode2();
 		this.col = col;
 		this.row = row;
 		this.tablePotential = (TablePotential) link

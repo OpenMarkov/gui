@@ -20,7 +20,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -31,10 +31,10 @@ public class ReorderVariablesPanel extends KeyTablePanel
         TableModelListener,
         PNUndoableEditListener
 {
-    private ProbNode                     probNode;
+    private Node                     probNode;
     private List<PNEdit>            edits = new ArrayList<PNEdit> ();
 
-    public ReorderVariablesPanel (ProbNode probNode)
+    public ReorderVariablesPanel (Node probNode)
     {
         super (new String[] {"Variable name"}, getData (probNode), true, false);
         initialize ();
@@ -58,7 +58,7 @@ public class ReorderVariablesPanel extends KeyTablePanel
      * Sets a new table model with new data.
      * @param newData new data for the table without the key column.
      */
-    private static Object[][] getData (ProbNode probNode)
+    private static Object[][] getData (Node probNode)
     {
     	Potential potential = probNode.getPotentials ().get (0);
         List<Variable> variables = potential.getVariables();

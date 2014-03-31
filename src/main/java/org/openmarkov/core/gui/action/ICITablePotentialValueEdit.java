@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -34,7 +34,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	/**
 	 * The node
 	 */
-	private ProbNode probNode;
+	private Node probNode;
 	/*
 	 * 
 	 */
@@ -100,7 +100,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * @param col the column in the edited table
 	 * @param row the row in the edited table
 	 * */
-	public ICITablePotentialValueEdit(ProbNode probNode, Double 
+	public ICITablePotentialValueEdit(Node probNode, Double 
 			newValue, int row, int col, List<Integer> priorityList) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;

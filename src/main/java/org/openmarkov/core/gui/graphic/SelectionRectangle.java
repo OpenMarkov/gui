@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 
 
@@ -198,10 +198,10 @@ public class SelectionRectangle {
 	 */
 	public boolean containsNode(VisualNode node) {
 
-		ProbNode probNode = node.getProbNode();
+		Node probNode = node.getProbNode();
 
-		return rectangleSelection.contains(probNode.getNode().getCoordinateX(), 
-				probNode.getNode().getCoordinateY());
+		return rectangleSelection.contains(probNode.getCoordinateX(), 
+				probNode.getCoordinateY());
 
 	}
 

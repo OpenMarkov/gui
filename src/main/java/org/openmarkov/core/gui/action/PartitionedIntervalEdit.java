@@ -3,7 +3,7 @@ package org.openmarkov.core.gui.action;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 public class PartitionedIntervalEdit extends SimplePNEdit{
@@ -12,9 +12,9 @@ public class PartitionedIntervalEdit extends SimplePNEdit{
 	
 	private PartitionedInterval newPartitionedInterval;
 	
-	private ProbNode probNode = null;
+	private Node probNode = null;
 		
-	public PartitionedIntervalEdit(ProbNode probNode, PartitionedInterval newPartitionedInterval) {
+	public PartitionedIntervalEdit(Node probNode, PartitionedInterval newPartitionedInterval) {
 		super(probNode.getProbNet());
 		this.probNode = probNode;
 		this.newPartitionedInterval = newPartitionedInterval;

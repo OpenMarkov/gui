@@ -25,7 +25,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.DeltaPotential;
@@ -37,9 +37,9 @@ public class DeltaPotentialPanel extends PotentialPanel {
 
     private JComboBox<String> stateComboBox;
     private JSpinner valueSpinner;
-    private ProbNode probNode;
+    private Node probNode;
     
-    public DeltaPotentialPanel(ProbNode probNode)
+    public DeltaPotentialPanel(Node probNode)
     {
         super();
         this.probNode = probNode;
@@ -76,7 +76,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
     }
     
     @Override
-    public void setData(ProbNode probNode) {
+    public void setData(Node probNode) {
         this.probNode = probNode;
         DeltaPotential oldPotential = null;
         if (!probNode.getPotentials().isEmpty()

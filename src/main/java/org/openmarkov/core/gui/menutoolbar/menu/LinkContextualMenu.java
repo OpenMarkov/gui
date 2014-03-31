@@ -22,6 +22,7 @@ import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class implements a contextual menu that is displayes when the user clicks on
@@ -82,7 +83,7 @@ class LinkContextualMenu extends ContextualMenu {
 		super(newListener);
 
 		initialize();
-		Link link = selectedLink.getLink ();
+		Link<Node> link = selectedLink.getLink ();
         boolean linkRestrictionEnabled = false;
         if (LinkRestrictionValidator.validate(link)) {
             linkRestrictionEnabled = true;

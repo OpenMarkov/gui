@@ -8,7 +8,7 @@ import java.text.MessageFormat;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 /**
  * This class implements the revelation arc dialog box for the edition of the
@@ -17,17 +17,17 @@ import org.openmarkov.core.model.network.ProbNode;
 @SuppressWarnings("serial")
 public class RevelationArcEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 {
-    private Link               link;
+    private Link<Node>               link;
     /***
      * Jpanel showing the values table of the first node
      */
     private RevelationArcPanel revelationArcPanel;
 
-    public RevelationArcEditDialog (Window owner, Link link)
+    public RevelationArcEditDialog (Window owner, Link<Node> link)
     {
         super (owner);
         this.link = link;
-        ((ProbNode) link.getNode1 ().getObject ()).getProbNet ().getPNESupport ().openParenthesis ();
+        link.getNode1 ().getProbNet ().getPNESupport ().openParenthesis ();
         initialize ();
         setLocationRelativeTo (owner);
         setMinimumSize (new Dimension (750, 450));
@@ -39,7 +39,7 @@ public class RevelationArcEditDialog extends OkCancelApplyUndoRedoHorizontalDial
      */
     private void initialize ()
     {
-        ProbNode node2 = (ProbNode) link.getNode2 ().getObject ();
+        Node node2 = link.getNode2 ();
         String title = "";
         if (link != null)
         {
@@ -92,13 +92,13 @@ public class RevelationArcEditDialog extends OkCancelApplyUndoRedoHorizontalDial
     protected boolean doOkClickBeforeHide ()
     {
         getRevelationArcPanel ().saveChanges ();
-        ((ProbNode) link.getNode1 ().getObject ()).getProbNet ().getPNESupport ().closeParenthesis ();
+        link.getNode1 ().getProbNet ().getPNESupport ().closeParenthesis ();
         return true;
     }
 
     @Override
     protected void doCancelClickBeforeHide ()
     {
-        ((ProbNode) link.getNode1 ().getObject ()).getProbNet ().getPNESupport ().closeParenthesis ();
+        link.getNode1 ().getProbNet ().getPNESupport ().closeParenthesis ();
     }
 }

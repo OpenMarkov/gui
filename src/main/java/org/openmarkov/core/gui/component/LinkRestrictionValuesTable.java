@@ -16,8 +16,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.LinkRestrictionPotentialValueEdit;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.ProbNode;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
@@ -34,15 +34,15 @@ public class LinkRestrictionValuesTable extends ValuesTable
     /****
      * The link with the link restriction.
      **/
-    private Link         link;
+    private Link<Node>         link;
     /****
      * The parent node of the link
      */
-    private ProbNode     node1;
+    private Node     node1;
     /****
      * The child node of the link
      */
-    private ProbNode     node2;
+    private Node     node2;
     /***
      * The ProbNet containing the link.
      */
@@ -58,14 +58,14 @@ public class LinkRestrictionValuesTable extends ValuesTable
      */
     private final String INCOMPATIBILITY_VALUE = "0";
 
-    public LinkRestrictionValuesTable (Link link,
+    public LinkRestrictionValuesTable (Link<Node> link,
                                        ValuesTableModel tableModel,
                                        final boolean modifiable)
     {
         super (tableModel, modifiable);
         this.link = link;
-        node1 = (ProbNode) link.getNode1 ().getObject ();
-        node2 = (ProbNode) link.getNode2 ().getObject ();
+        node1 = link.getNode1 ();
+        node2 = link.getNode2 ();
         net = node1.getProbNet ();
     }
 

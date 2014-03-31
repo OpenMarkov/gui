@@ -7,16 +7,16 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 
 @SuppressWarnings("serial")
 public class ReorderVariablesDialog extends OkCancelHorizontalDialog
 {
     private JPanel                variablesCombinationPanel;
-    private ProbNode              probNode;
+    private Node              probNode;
     private ReorderVariablesPanel reorderVariablesPanel;
 
-    public ReorderVariablesDialog (Window owner, ProbNode probNode)
+    public ReorderVariablesDialog (Window owner, Node probNode)
     {
         super (owner);
         this.probNode = probNode;

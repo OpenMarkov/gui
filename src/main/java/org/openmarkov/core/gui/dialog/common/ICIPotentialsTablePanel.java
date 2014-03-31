@@ -22,7 +22,7 @@ import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.component.ValuesTableModel;
 import org.openmarkov.core.gui.dialog.node.ICIOptionsPanel;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -49,7 +49,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      */
     private ICIValuesTable  iciValuesTable;
 
-    private ProbNode        probNode;
+    private Node        probNode;
     /**
      * Indicates if the data of the table is modifiable.
      */
@@ -60,7 +60,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      */
     private JScrollPane     valuesTableScrollPane = null;
 
-    public ICIPotentialsTablePanel(ProbNode probNode) {
+    public ICIPotentialsTablePanel(Node probNode) {
         super();
         removeAll();
         this.probNode = probNode;
@@ -84,7 +84,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         return iciOptionPanel;
     }
 
-    public ProbNode getProbNode() {
+    public Node getProbNode() {
         return probNode;
     }
 
@@ -146,7 +146,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * @param parents
      *            - parents of the variable
      */
-    public void setData(ProbNode properties) {
+    public void setData(Node properties) {
         this.probNode = properties;
         iciValuesTable.setData(probNode);
         Object[][] tableData = null;
@@ -222,7 +222,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      *            - node additionalProperties
      * @return the number of rows of this Potentials Table
      */
-    protected int howManyCanonicalRows(ProbNode properties) {
+    protected int howManyCanonicalRows(Node properties) {
 
         int numRows = 2;// The first two rows are first for parent´s name and
                         // second one for parent´s states
@@ -242,7 +242,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      *            - to obtain the required number of rows and columns
      * @return the blank data table
      */
-    private Object[][] setBlankCanonicalTable(ProbNode properties) {
+    private Object[][] setBlankCanonicalTable(Node properties) {
 
         Object[][] blankTable = null;
         int numRows = howManyCanonicalRows(properties);
@@ -321,7 +321,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      *            - <code>NodeWrapper</code> list of the parents
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToCanonicalTableFormat(ProbNode properties) {
+    protected Object[][] convertListPotentialsToCanonicalTableFormat(Node properties) {
         Object[][] values = null;
         try {
 
@@ -347,7 +347,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      *            - the additionalProperties of the node
      */
 
-    private Object[][] setCanonicalTableSize(Object[][] oldValues, ProbNode properties) {
+    private Object[][] setCanonicalTableSize(Object[][] oldValues, Node properties) {
         Object[][] values = oldValues;
         int numRows = 0;
         int numColumns = 2; // at least, there is one column for leak potential
@@ -383,7 +383,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * @param probNode
      * @return
      */
-    private Object[][] setCanonicalTable(Object[][] oldValues, ProbNode probNode) {
+    private Object[][] setCanonicalTable(Object[][] oldValues, Node probNode) {
 
         Object[][] values = oldValues;
         ICIPotential iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());

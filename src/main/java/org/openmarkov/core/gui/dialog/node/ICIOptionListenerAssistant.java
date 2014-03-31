@@ -16,7 +16,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNode;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
@@ -53,7 +53,7 @@ public class ICIOptionListenerAssistant
         this.iciOptionPanel = iciOptionPanel;
     }
 
-    public ProbNode getProbNodeParentPanel ()
+    public Node getProbNodeParentPanel ()
     {
         return ((ICIPotentialsTablePanel) parentPanel).getProbNode ();
     }
@@ -120,7 +120,7 @@ public class ICIOptionListenerAssistant
         { // Canonical --> tpc
             // show TPC do not allow edit
             // Copy of the parents panel node
-            ProbNode iciProbnode = new ProbNode (
+            Node iciProbnode = new Node (
                                                  ((ICIPotentialsTablePanel) parentPanel).getProbNode ());
             ICIPotential iciPotential = (ICIPotential) iciProbnode.getPotentials ().get (0);
             TablePotential tablePotential;
