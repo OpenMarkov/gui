@@ -87,8 +87,8 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.costeffectiveness.id.PartitionLCE;
-import org.openmarkov.costeffectiveness.id.inference.VarEliminationCE;
+import org.openmarkov.costeffectiveness.id.temporary.CEPartition;
+import org.openmarkov.costeffectiveness.id.temporary.VarEliminationCE;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -1365,24 +1365,23 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
  		try {
- 			VarEliminationCE algorithm = new VarEliminationCE(probNet, null);
- 			HashMap<Variable,GTablePotential<PartitionLCE>> strategy = algorithm.getOptimalStrategy();
+ 			VarEliminationCE algorithm = new VarEliminationCE(probNet, 0, Double.POSITIVE_INFINITY, null);
+ 			HashMap<Variable,GTablePotential<CEPartition>> strategy = algorithm.getOptimalStrategy();
  			// Get last variable
  			StringBuffer buffer = new StringBuffer();
- 			setVariableNameText(buffer, algorithm.getLastDecision().getName());
+ 			Variable lastDecision = algorithm.getLastDecision();
+ 			setVariableNameText(buffer, lastDecision.getName());
  			buffer.append(algorithm.getResultingCEP().toString());
  			buffer.append("\n");
  			
  			for (Variable decision : strategy.keySet()) {
- 				GTablePotential<PartitionLCE> potential = strategy.get(decision);
+ 				GTablePotential<CEPartition> potential = strategy.get(lastDecision);
  	 			if (potential.getNumVariables() > 0) {
  	 	 			setVariableNameText(buffer, decision.getName());
  					buffer.append(potential.toString());
  				}
  				buffer.append("\n");
  			}
- 			
- 			
  			BufferedWriter writer = null;
  	        try {
  	            //create a temporary file
@@ -1398,13 +1397,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  	            } catch (Exception e) {
  	            }
  	        }
- 			
- 			
- 			
- 			
- 			
  			showTextWindow(buffer);
- 			
  		} catch (NotEvaluableNetworkException e1) {
  			// Unreachable code without bugs
  			e1.printStackTrace();
