@@ -28,7 +28,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * This class tests the TablePotentialPanelTest class (not the visual
- * behaviour).
+ * behavior).
  * 
  * @author jlgozalo
  * @version 1.0
@@ -38,7 +38,7 @@ public class ICIOptionsPanelTest {
 	ICIOptionsPanel panel = null;
 
 	private  ProbNet probNet = null;
-	private  Node probNode = null;
+	private  Node node = null;
 	private Variable A;
 	private Variable B;
 	private Variable U;
@@ -52,7 +52,7 @@ public class ICIOptionsPanelTest {
 		panel = new ICIOptionsPanel(false);
 		
 		probNet = createSimpleProbNet();
-		probNode = probNet.getNodes().get(0);
+		node = probNet.getNodes().get(0);
 	}
 
 	/**

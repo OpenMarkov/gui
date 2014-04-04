@@ -28,7 +28,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
@@ -190,7 +190,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 		nodes = probNet.getNodes();
 		for (VisualNode vNode : visualNodes) {
-			nodeToCheck = vNode.getProbNode();
+			nodeToCheck = vNode.getNode();
 			int index = nodes.indexOf(nodeToCheck);
 			if ( index >=0 && 
 					vNode.getTemporalPosition().getX() == nodes.get(index).getCoordinateX() && 
@@ -234,13 +234,13 @@ public class VisualNetwork implements PNUndoableEditListener {
 			while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
 				if (vNode1 == null) {
 					if (link.getNode1().equals(
-						visualNodes.get(i).getProbNode())) {
+						visualNodes.get(i).getNode())) {
 						vNode1 = visualNodes.get(i);
 					}
 				}
 				if (vNode2 == null) {
 					if (link.getNode2().equals(
-						visualNodes.get(i).getProbNode())) {
+						visualNodes.get(i).getNode())) {
 						vNode2 = visualNodes.get(i);
 					}
 				}
@@ -262,7 +262,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	protected boolean containsNodeToDelete(Link<Node> linkToCheck, List<VisualNode> vNodesToDelete) {
 		
 		for (VisualNode vNode: vNodesToDelete)
-		if (linkToCheck.contains(vNode.getProbNode()))
+		if (linkToCheck.contains(vNode.getNode()))
 			return true;
 		
 			return false;
@@ -329,7 +329,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 			VisualNode candidate = null;
 			double highestRelevance = -1;
 			for (int i=0; i<nodesSelected.size(); i++) {
-				double relevance = nodesSelected.get(i).getProbNode().getRelevance();
+				double relevance = nodesSelected.get(i).getNode().getRelevance();
 				if (relevance > highestRelevance) {
 					highestRelevance = relevance;
 					candidate = nodesSelected.get(i);
@@ -347,7 +347,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 			VisualNode candidate = null;
 			double highestRelevance = -1;
 			for (int i=0; i<nodesUnselected.size(); i++) {
-				double relevance = nodesUnselected.get(i).getProbNode().getRelevance();
+				double relevance = nodesUnselected.get(i).getNode().getRelevance();
 				if (relevance > highestRelevance) {
 					highestRelevance = relevance;
 					candidate = nodesUnselected.get(i);
@@ -616,7 +616,7 @@ public class VisualNetwork implements PNUndoableEditListener {
         int i = 0, l = visualNodes.size();
 
         while (!found && (i < l)) {
-            if (visualNodes.get(i).getProbNode().getName().equals(name)) {
+            if (visualNodes.get(i).getNode().getName().equals(name)) {
                 setSelectedElement(visualNodes.get(i), selected);
                 found = true;
             } else {
@@ -729,16 +729,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	private void moveNodes(double diffX, double diffY, boolean selected) {
 
-		//ProbNode nodeWrapper = null;
+		//Node nodeWrapper = null;
 
 		for (VisualNode node : visualNodes) {
-			//nodeWrapper = node.getProbNode();
+			//nodeWrapper = node.getNode();
 			if (!selected || (node.isSelected())) {
 				
 				
-				/*MoveNodeEdit moveNodeEdit = new MoveNodeEdit(node.getProbNode(), 
-						node.getProbNode().getNode().getCoordinateX() + 
-						diffX, node.getProbNode().getNode().getCoordinateY() + diffY);
+				/*MoveNodeEdit moveNodeEdit = new MoveNodeEdit(node, 
+						node.getCoordinateX() + 
+						diffX, node.getCoordinateY() + diffY);
 				
 				try {
 					probNet.getPNESupport().announceEdit(moveNodeEdit);
@@ -847,7 +847,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		for (VisualNode node : visualNodes) {
 			if (node.isSelected()) {
-				movedNodes.add(new MovedNodeInfo(node.getProbNode(), node
+				movedNodes.add(new MovedNodeInfo(node.getNode(), node
 					.getPosition()));
 			}
 		}
@@ -865,14 +865,14 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
     public void fillDifferencesNodesMovedInfo(List<MovedNodeInfo> movedNodes) {
 
-		Node probNodeAux = null;
+		Node node = null;
 
 		for (MovedNodeInfo movedNode : movedNodes) {
-			probNodeAux = movedNode.getProbNode();
+			node = movedNode.getNode();
 			movedNode.setDiffPosition(new Point2D.Double(
-					probNodeAux.getCoordinateX()
+					node.getCoordinateX()
 				- movedNode.getDiffPosition().getX(), 
-				probNodeAux.getCoordinateY() 
+				node.getCoordinateY() 
 				- movedNode.getDiffPosition().getY()));
 		}
 
@@ -1048,16 +1048,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 			
 		
 		//if (edit instanceof AddVariableEdit){
-		/*if (edit instanceof AddProbNodeEdit){
+		/*if (edit instanceof AddNodeEdit){
 			
 			
 			String name=((AddVariableEdit)edit).getVariable().getName();
-			ProbNode newProbNode;
+			Node newNode;
 			try {
-				newProbNode = pNESupport.getProbNet().getProbNode(name);
+				newNode = pNESupport.getProbNet().getNode(name);
 				nodeWrapper =
-				createNewNonamedNode(newProbNode, cursorPosition);
-			} catch (ProbNodeNotFoundException e2) {
+				createNewNonamedNode(newNode, cursorPosition);
+			} catch (NodeNotFoundException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 				//JOptionPane.showMessageDialog(
@@ -1080,64 +1080,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 		// TODO Auto-generated method stub
 		
 	}
-
-	/*public void setLinkWrapper(ProbNode sourceNode,
-		ProbNode destinationNode) {
-		//LinkWrapper link = null;
-		NodeType sourceNodeType = null;
-		NodeType destinationNodeType = null;
-		ProbNode sourceProbNode = null;
-		ProbNode destinationProbNode = null;
-		ArrayList<ProbNode> probNodes = probNet.getProbNodes();
-
-		sourceNodeType = sourceNode.getNodeType();
-		destinationNodeType = destinationNode.getNodeType();
-		sourceProbNode = sourceNode;
-		destinationProbNode = destinationNode;
-		//nodes exists
-		if (!probNodes.contains(sourceProbNode)
-			|| !probNodes.contains(destinationProbNode)) {
-			//throw new Exception(stringResource
-				//.getString("LinkedNodesNotExist.Text.Label"));
-			//nodes different
-		} else if (sourceProbNode.equals(destinationProbNode)) {
-			//throw new Exception(stringResource
-				//.getString("LinkNotAllowed.Text.Label"));
-			//node utility partner
-		} else if ((sourceNodeType == NodeType.UTILITY)
-			&& (destinationNodeType != NodeType.UTILITY)) {
-			//throw new Exception(stringResource
-				//.getString("LinkNotAllowed.Text.Label"));
-		}
-		//link don´t exists
-		if (probNet.getGraph().getLink(
-			sourceProbNode.getNode(), destinationProbNode.getNode(), true) != null) {
-			//throw new Exception(stringResource.getString(
-				//"LinkExists.Text.Label", sourceNode.getName(), destinationNode
-					//.getName()));
-		}
-		//inverse link exists
-		if (probNet.getGraph().getLink(
-			destinationProbNode.getNode(), sourceProbNode.getNode(), true) != null) {
-			//throw new Exception(stringResource.getString(
-				//"InverseLinkExists.Text.Label", sourceNode.getName(),
-				//destinationNode.getName()));
-		}
-		
-		/*try {
-			this.getGraph().addLink(
-				sourceProbNode.getNode(), destinationProbNode.getNode(), true);
-		} catch (Exception e) {
-			throw new Exception(stringResource.getString(
-				"LinkMakesCycle.Text.Label", sourceNode.getName(),
-				destinationNode.getName()));
-		}*/
-		/*linkWrapper =
-			new LinkWrapper(probNet.getGraph().getLink(
-				sourceProbNode.getNode(), destinationProbNode.getNode(), true),
-				sourceNode, destinationNode);
-	
-	}*/
 	
 		
 	/**
@@ -1171,16 +1113,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 		//Object p=event.getSource();
 		//ProbNet p2=(ProbNet)p;
 		//if (edit instanceof AddVariableEdit){
-		/*if (edit instanceof AddProbNodeEdit){
+		/*if (edit instanceof AddNodeEdit){
 			
 			
 			String name=((AddVariableEdit)edit).getVariable().getName();
-			ProbNode newProbNode;
+			Node newNode;
 			try {
-				newProbNode = pNESupport.getProbNet().getProbNode(name);
+				newNode = pNESupport.getProbNet().getNode(name);
 				nodeWrapper =
-				createNewNonamedNode(newProbNode, cursorPosition);
-			} catch (ProbNodeNotFoundException e2) {
+				createNewNonamedNode(newNode, cursorPosition);
+			} catch (NodeNotFoundException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 				//JOptionPane.showMessageDialog(
@@ -1319,10 +1261,10 @@ public class VisualNetwork implements PNUndoableEditListener {
                         try {
                             linkEdit = new AddLinkEdit(probNet,
                                     probNet.getVariable(newLinkSource
-                                            .getProbNode().getName()),
+                                            .getNode().getName()),
                                     probNet.getVariable(newLinkDestination
-                                            .getProbNode().getName()), true);
-                        } catch (ProbNodeNotFoundException e1) {/* Cannot happen */
+                                            .getNode().getName()), true);
+                        } catch (NodeNotFoundException e1) {/* Cannot happen */
                         }
                     }
                 }
@@ -1382,7 +1324,7 @@ public class VisualNetwork implements PNUndoableEditListener {
     {
         for(VisualNode visualNode : getSelectedNodes ())
         {
-        	MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getProbNode ().isInput (), visualNode.getProbNode ());
+        	MarkAsInputEdit markAsInputEdit = new MarkAsInputEdit(probNet, !visualNode.getNode ().isInput (), visualNode.getNode ());
         	try {
 				probNet.doEdit(markAsInputEdit);
 			} catch (ConstraintViolationException

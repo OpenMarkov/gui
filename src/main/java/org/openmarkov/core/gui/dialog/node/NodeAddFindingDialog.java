@@ -80,7 +80,7 @@ public class NodeAddFindingDialog extends JDialog
             principalPanel.setLayout (new BorderLayout ());
             textPanel.setLayout (new GridLayout (3, 1));
             textPanel.add (new JLabel (""));
-            textPanel.add (new JLabel (visualNode.getProbNode ().getName (), SwingConstants.CENTER));
+            textPanel.add (new JLabel (visualNode.getNode ().getName (), SwingConstants.CENTER));
             textPanel.add (new JLabel (""));
             principalPanel.add (textPanel, BorderLayout.NORTH);
             FSVariableBox innerBox = (FSVariableBox) visualNode.getInnerBox ();

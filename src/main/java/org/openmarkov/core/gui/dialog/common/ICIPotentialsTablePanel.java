@@ -49,7 +49,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      */
     private ICIValuesTable  iciValuesTable;
 
-    private Node        probNode;
+    private Node        node;
     /**
      * Indicates if the data of the table is modifiable.
      */
@@ -60,23 +60,23 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      */
     private JScrollPane     valuesTableScrollPane = null;
 
-    public ICIPotentialsTablePanel(Node probNode) {
+    public ICIPotentialsTablePanel(Node node) {
         super();
         removeAll();
-        this.probNode = probNode;
+        this.node = node;
         modifiable = true;
         setLayout(new BorderLayout());
         add(getICIOptionPanel(), BorderLayout.NORTH);
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
         showValuesTable(true);
-        setData(probNode);
+        setData(node);
         repaint();
     }
 
     private ICIOptionsPanel getICIOptionPanel() {
 
         if (iciOptionPanel == null) {
-            iciOptionPanel = new ICIOptionsPanel(probNode);
+            iciOptionPanel = new ICIOptionsPanel(node);
             boolean newNode = true;
             iciOptionPanel.setNewNode(newNode);
         }
@@ -84,8 +84,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         return iciOptionPanel;
     }
 
-    public Node getProbNode() {
-        return probNode;
+    public Node getNode() {
+        return node;
     }
 
     /**
@@ -120,7 +120,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         this.lastEditableRow = lastEditableRow;
         iciValuesTable.resetModel();
 
-        // valuesTable.setVariable(probNode.getPotentials().get( 0
+        // valuesTable.setVariable(node.getPotentials().get( 0
         // ).getVariable( 0 ));
 
         iciValuesTable.setModel(getTableModel());
@@ -147,15 +147,15 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      *            - parents of the variable
      */
     public void setData(Node properties) {
-        this.probNode = properties;
-        iciValuesTable.setData(probNode);
+        this.node = properties;
+        iciValuesTable.setData(node);
         Object[][] tableData = null;
         String[] newColumns = null;
         if (properties.getPotentials() != null) {
             tableData = convertListPotentialsToCanonicalTableFormat(properties);
             newColumns = ICIValuesTable.getColumnsIdsSpreadSheetStyle(ICIValuesTable.howManyCanonicalColumns(properties));
-            setFirstEditableRow(calculateFirstEditableRow(probNode.getPotentials()));
-            setLastEditableRow(calculateLastEditableRow(probNode.getPotentials()));
+            setFirstEditableRow(calculateFirstEditableRow(node.getPotentials()));
+            setLastEditableRow(calculateLastEditableRow(node.getPotentials()));
             setData(tableData,
                     newColumns,
                     firstEditableRow,
@@ -380,13 +380,13 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
     /**
      * 
      * @param oldValues
-     * @param probNode
+     * @param node
      * @return
      */
-    private Object[][] setCanonicalTable(Object[][] oldValues, Node probNode) {
+    private Object[][] setCanonicalTable(Object[][] oldValues, Node node) {
 
         Object[][] values = oldValues;
-        ICIPotential iciPotential = (ICIPotential) getThisICIPotential(probNode.getPotentials());
+        ICIPotential iciPotential = (ICIPotential) getThisICIPotential(node.getPotentials());
         List<Variable> variables = iciPotential.getVariables();
         int lastRow = values.length - 1;
         int lastColumn = values[0].length - 1;
@@ -451,11 +451,11 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         iciValuesTable.setDefaultRenderer(Double.class,
                 new ICIValuesTableCellRenderer(getFirstEditableRow(),
                         editableColumns,
-                        (ICIPotential) getThisICIPotential(probNode.getPotentials())));
+                        (ICIPotential) getThisICIPotential(node.getPotentials())));
         iciValuesTable.setDefaultRenderer(String.class,
                 new ICIValuesTableCellRenderer(getFirstEditableRow(),
                         editableColumns,
-                        (ICIPotential) getThisICIPotential(probNode.getPotentials())));
+                        (ICIPotential) getThisICIPotential(node.getPotentials())));
 
     }
 
@@ -467,9 +467,9 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
     private void setVariables(List<Variable> variables) {
         // TODO update this statement, when constructor of this class with
         // potential as parameter is implemented
-        if (probNode != null && probNode.getNodeType() == NodeType.UTILITY) {
+        if (node != null && node.getNodeType() == NodeType.UTILITY) {
             this.variables = new ArrayList<Variable>();
-            this.variables.add(probNode.getVariable());
+            this.variables.add(node.getVariable());
             for (Variable variable : variables)
                 this.variables.add(variable);
         } else
@@ -503,7 +503,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
     public ICIValuesTable getICIValuesTable() {
 
         if (iciValuesTable == null) {
-            iciValuesTable = new ICIValuesTable(probNode, getTableModel(), modifiable);
+            iciValuesTable = new ICIValuesTable(node, getTableModel(), modifiable);
             // iciValuesTable.setAutoResizeMode(JTable.);
             // calcColumnWidths(iciValuesTable);
             iciValuesTable.setName("PotentialsTablePanel.valuesTable");

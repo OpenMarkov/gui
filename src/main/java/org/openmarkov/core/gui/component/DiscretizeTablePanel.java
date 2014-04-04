@@ -171,15 +171,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * discretize table model
      */
     private DiscretizeTableModel  discretizeTableModel            = null;
-    protected Node            probNode;
+    protected Node            node;
 
     /**
      * default constructor
      * 
      * @wbp.parser.constructor
      */
-    public DiscretizeTablePanel(String[] newColumns, Node probNode) {
-        this(newColumns, new Object[0][0], "s", probNode);
+    public DiscretizeTablePanel(String[] newColumns, Node node) {
+        this(newColumns, new Object[0][0], "s", node);
         // s = keyPrefix for id column; not shown to user
     }
 
@@ -187,9 +187,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * constructor with parameters
      */
     public DiscretizeTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-            Node probNode) {
+            Node node) {
         super(newColumns, new Object[0][0], true, true);// , notifier);
-        this.probNode = probNode;
+        this.node = node;
         keyPrefix = newKeyPrefix;
         initialize();
         setData(noKeyData); // also it is setting the model for the table
@@ -256,7 +256,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
         }
         // set special columns
-        if (probNode.getVariable().getVariableType() == VariableType.NUMERIC) {
+        if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
             TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
             aColumn.setCellRenderer(tcr);
             aColumn.setPreferredWidth(0);
@@ -266,11 +266,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             valuesTable.getTableHeader().getColumnModel().getColumn(1).setMinWidth(0);
             valuesTable.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(0);
         }
-        if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES
-                || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+        if (node.getVariable().getVariableType() == VariableType.FINITE_STATES
+                || node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
             TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
             aColumn.setCellRenderer(statesRender);
-            if (probNode.getVariable().getVariableType() == VariableType.FINITE_STATES) {
+            if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
                 valuesTable.getColumnModel().getColumn(1).setPreferredWidth(406);
                 valuesTable.getColumnModel().getColumn(1).setMaxWidth(406);
                 valuesTable.getColumnModel().getColumn(1).setMinWidth(406);
@@ -285,8 +285,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             }
         }
         // set Columns = Up and Low limits
-        if (probNode.getVariable().getVariableType() == VariableType.NUMERIC
-                || probNode.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+        if (node.getVariable().getVariableType() == VariableType.NUMERIC
+                || node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
             lowerSymbolComboBox = getLowerSymbolComboBox();
             upperSymbolComboBox = getUpperSymbolComboBox();
             TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel().getColumn(LOWER_BOUND_SYMBOL_COLUMN_INDEX);
@@ -357,12 +357,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                         if (row + 1 < valuesTable.getRowCount()) {
                             valuesTable.setValueAt(")", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
                                 StateAction.MODIFY_DELIMITER_INTERVAL,
                                 row,
                                 lower);
                         try {
-                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            node.getProbNet().doEdit(nodePartitionedIntervalEdit);
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -385,12 +385,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                         if (row + 1 < valuesTable.getRowCount()) {
                             valuesTable.setValueAt("]", row + 1, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
                                 StateAction.MODIFY_DELIMITER_INTERVAL,
                                 row,
                                 lower);
                         try {
-                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            node.getProbNet().doEdit(nodePartitionedIntervalEdit);
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -421,12 +421,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                         if (row > 0) {
                             valuesTable.setValueAt("(", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
                                 StateAction.MODIFY_DELIMITER_INTERVAL,
                                 row,
                                 lower);
                         try {
-                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            node.getProbNet().doEdit(nodePartitionedIntervalEdit);
                         } catch (ConstraintViolationException
                                 | DoEditException
                                 | NonProjectablePotentialException
@@ -449,12 +449,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                         if (row > 0) {
                             valuesTable.setValueAt("[", row - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
                         }
-                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(probNode,
+                        NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node,
                                 StateAction.MODIFY_DELIMITER_INTERVAL,
                                 row,
                                 lower);
                         try {
-                            probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            node.getProbNet().doEdit(nodePartitionedIntervalEdit);
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -752,9 +752,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      * selected in the combo box
      */
     public void setPartitionedInterval() {
-        PartitionedInterval partitionInterval = probNode.getVariable().getPartitionedInterval();
+        PartitionedInterval partitionInterval = node.getVariable().getPartitionedInterval();
         Object[][] intervalTable = partitionInterval.convertToTableFormat();
-        State states[] = probNode.getVariable().getStates();
+        State states[] = node.getVariable().getStates();
         int rows = intervalTable.length;
         // TODO six is the number of columns of this particular table
         // int col = 6;
@@ -777,7 +777,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         numIntervals = partitionInterval.getNumSubintervals();
         double values[] = partitionInterval.getLimits();
         limits = convertToStringLimitValues(values,
-                Double.toString(probNode.getVariable().getPrecision()));
+                Double.toString(node.getVariable().getPrecision()));
         belongsToLeftSide = partitionInterval.getBelongsToLeftSide();
         data = new Object[numIntervals][numColumns];
         for (i = 0; i < numIntervals; i++) {
@@ -923,15 +923,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 "Agregar estado",
                 JOptionPane.QUESTION_MESSAGE);
         if (option != null) {
-            Variable variable = probNode.getVariable();
+            Variable variable = node.getVariable();
             int newIndex = 0;
             int newStateIndex =  variable.getNumStates();
-            NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                     StateAction.ADD,
                     newStateIndex,
                     option);
             try {
-                probNode.getProbNet().doEdit(nodeStateEdit);
+                node.getProbNet().doEdit(nodeStateEdit);
                 if (variable.getVariableType() == VariableType.DISCRETIZED) {
                     PartitionedInterval newPartitionedInterval = variable.getPartitionedInterval();
                     setDataFromPartitionedInterval(newPartitionedInterval, variable.getStates());
@@ -966,12 +966,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      */
     protected void removeState(int selectedRow) {
         int rowCount = 0;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                 StateAction.REMOVE,
                 selectedRow,
                 "");
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
             cancelCellEditing();
             getTableModel().removeRow(selectedRow);
             rowCount = valuesTable.getRowCount();
@@ -1021,9 +1021,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     protected void actionPerformedUpValue() {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.UP, selectedRow, "");
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
             stopCellEditing();
             cancelCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -1049,9 +1049,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     protected void actionPerformedDownValue() {
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.DOWN, selectedRow, "");
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
             stopCellEditing();
             cancelCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -1077,15 +1077,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
-        double[] limits = probNode.getVariable().getPartitionedInterval().getLimits();
-        boolean[] belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+        double[] limits = node.getVariable().getPartitionedInterval().getLimits();
+        boolean[] belongs = node.getVariable().getPartitionedInterval().getBelongsToLeftSide();
         limits[limits.length - 1] = Double.POSITIVE_INFINITY;
         belongs[limits.length - 1] = false;
         PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
-        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                 newPartitionedInterval);
         try {
-            probNode.getProbNet().doEdit(partitionedIntervalEdit);
+            node.getProbNet().doEdit(partitionedIntervalEdit);
         } catch (DoEditException
                 | ConstraintViolationException
                 | CanNotDoEditException
@@ -1103,15 +1103,15 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         int selectedRow = valuesTable.getSelectedRow();
         int selectedColumn = valuesTable.getSelectedColumn();
         cancelCellEditing();
-        double[] limits = probNode.getVariable().getPartitionedInterval().getLimits();
-        boolean[] belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+        double[] limits = node.getVariable().getPartitionedInterval().getLimits();
+        boolean[] belongs = node.getVariable().getPartitionedInterval().getBelongsToLeftSide();
         limits[0] = Double.NEGATIVE_INFINITY;
         belongs[0] = true;
         PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits, belongs);
-        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+        PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                 newPartitionedInterval);
         try {
-            probNode.getProbNet().doEdit(partitionedIntervalEdit);
+            node.getProbNet().doEdit(partitionedIntervalEdit);
         } catch (DoEditException
                 | ConstraintViolationException
                 | CanNotDoEditException
@@ -1141,12 +1141,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             boolean lower = column == LOWER_BOUND_VALUE_COLUMN_INDEX;
             if (value instanceof String && column == INTERVAL_NAME_COLUMN_INDEX) {
                 String newName = value.toString();
-                NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+                NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                         StateAction.RENAME,
                         row,
                         newName);
                 try {
-                    probNode.getProbNet().doEdit(nodeStateEdit);
+                    node.getProbNet().doEdit(nodeStateEdit);
                 } catch (ConstraintViolationException
                         | CanNotDoEditException
                         | NonProjectablePotentialException
@@ -1160,7 +1160,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             } else if (value == NEGATIVE_INFINITY && column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
                 valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
             } else if (value instanceof Double) {
-                Variable variable = probNode.getVariable();
+                Variable variable = node.getVariable();
                 double newValue = (Double) value;
                 // setting precision to the new value according with the
                 // precision value introduced by the user
@@ -1209,10 +1209,10 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 }
                 PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits,
                         currentBelongsToLeft);
-                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                         newPartitionedInterval);
                 try {
-                    probNode.getProbNet().doEdit(partitionedIntervalEdit);
+                    node.getProbNet().doEdit(partitionedIntervalEdit);
                 } catch (DoEditException
                         | ConstraintViolationException
                         | CanNotDoEditException
@@ -1244,7 +1244,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     public void mouseClicked(MouseEvent e) {
         int row = valuesTable.rowAtPoint(e.getPoint());
         int column = valuesTable.columnAtPoint(e.getPoint());
-        Variable variable = probNode.getVariable();
+        Variable variable = node.getVariable();
         if (variable.getVariableType() == VariableType.NUMERIC
                 || variable.getVariableType() == VariableType.DISCRETIZED) {
             if (column == LOWER_BOUND_SYMBOL_COLUMN_INDEX

@@ -13,7 +13,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.gui.graphic.VisualNode;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Node;
@@ -51,12 +51,12 @@ public class MoveNodeEdit extends SimplePNEdit
      */
     public MoveNodeEdit (List<VisualNode> movedNodes)
     {
-        super (movedNodes.get (0).getProbNode ().getProbNet ());
+        super (movedNodes.get (0).getNode ().getProbNet ());
         for (VisualNode visualNode : movedNodes)
         {
             lastPositions.add ((Point2D.Double) visualNode.getPosition ().clone ());
             newPositions.add ((Point2D.Double) visualNode.getTemporalPosition ().clone ());
-            namesNode.add (visualNode.getProbNode ().getName ());
+            namesNode.add (visualNode.getNode ().getName ());
         }
     }
 
@@ -73,7 +73,7 @@ public class MoveNodeEdit extends SimplePNEdit
                 node.setCoordinateX (newPositions.get (i).getX ());
                 node.setCoordinateY (newPositions.get (i).getY ());
             }
-            catch (ProbNodeNotFoundException e)
+            catch (NodeNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace ();
@@ -90,16 +90,16 @@ public class MoveNodeEdit extends SimplePNEdit
     {
         super.undo ();
         int i = 0;
-        Node probNode = null;
+        Node node = null;
         for (String name : namesNode)
         {
             try
             {
-                probNode = probNet.getNode (name);
-                probNode.setCoordinateX (lastPositions.get (i).getX ());
-                probNode.setCoordinateY (lastPositions.get (i).getY ());
+                node = probNet.getNode (name);
+                node.setCoordinateX (lastPositions.get (i).getX ());
+                node.setCoordinateY (lastPositions.get (i).getY ());
             }
-            catch (ProbNodeNotFoundException e)
+            catch (NodeNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace ();

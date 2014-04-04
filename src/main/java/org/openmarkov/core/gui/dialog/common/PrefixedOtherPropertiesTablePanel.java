@@ -32,7 +32,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel
      * Key prefix.
      */
     private String            keyPrefix        = null;
-    private Node          probNode;
+    private Node          node;
 
     /*
      * this a default constructor with no construction parameters
@@ -73,13 +73,13 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel
                                                                          * notifier
                                                                          * ,
                                                                          */
-                                              Node probNode)
+                                              Node node)
     {
         // llamada a super clase con modifiable = true para que no pueda ser
         // modificada la tabla de manera directa, sino a través de los botones
         // mpalacios
         super (newColumns, new Object[0][0], true, false);// , notifier);
-        this.probNode = probNode;
+        this.node = node;
         keyPrefix = newKeyPrefix;
         initialize ();
         valuesTable.setFirstColumnHidden (firstColumnHidden);

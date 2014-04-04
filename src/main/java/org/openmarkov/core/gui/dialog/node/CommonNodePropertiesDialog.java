@@ -45,10 +45,10 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	 * @param readOnly
 	 * 			  if true, values inside the dialog will not be editable
 	 */
-	public CommonNodePropertiesDialog(Window owner, Node probNode, boolean newNode, boolean readOnly) {
+	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode, boolean readOnly) {
 
-		super(owner, probNode, newNode, readOnly);
-		probNode.getProbNet().getPNESupport().openParenthesis();
+		super(owner, node, newNode, readOnly);
+		node.getProbNet().getPNESupport().openParenthesis();
 		initialize();
 		getTabbedPane().addChangeListener(this);
 		setLocationRelativeTo(owner);
@@ -64,9 +64,9 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 	 *            if true, it indicates that a new network is being created; if
 	 *            false, an existing network is being modified.
 	 */
-	public CommonNodePropertiesDialog(Window owner, Node probNode, boolean newNode) {
+	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode) {
 
-		this(owner, probNode, newNode, false);
+		this(owner, node, newNode, false);
 	}	
 
 	/**
@@ -116,7 +116,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 		
 		if (sourceTabbedPane.getSelectedComponent() instanceof NodeProbsValuesTablePanel ){
 		
-			nodeProbsValuesTablePanel.setFieldsFromProperties(probNode);
+			nodeProbsValuesTablePanel.setFieldsFromProperties(node);
 		}*/
 	}
 

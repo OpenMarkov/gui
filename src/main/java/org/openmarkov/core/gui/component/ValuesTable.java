@@ -147,7 +147,7 @@ public class ValuesTable extends KeyTable
      * String database
      */
     protected StringDatabase                   stringDatabase             = StringDatabase.getUniqueInstance ();
-    protected Node                         probNode;
+    protected Node                         node;
     protected ProbNet                          probNet;
     /**
      * Define the last column of the table that was modified
@@ -164,13 +164,13 @@ public class ValuesTable extends KeyTable
     /**
      * default constructor with parameters
      */
-    public ValuesTable (Node probNode, ValuesTableModel tableModel, final boolean modifiable)
+    public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifiable)
     {
         super (tableModel, modifiable, true, true);
-        probNode.getProbNet ().getPNESupport ().addUndoableEditListener (this);
+        node.getProbNet ().getPNESupport ().addUndoableEditListener (this);
         this.tableModel = tableModel;
-        this.probNode = probNode;
-        this.probNet = probNode.getProbNet ();
+        this.node = node;
+        this.probNet = node.getProbNet ();
         if (modifiable)
         {
             int numRowsModel = tableModel.getRowCount ();
@@ -350,14 +350,14 @@ public class ValuesTable extends KeyTable
     public void setValueAt (Object newValue, int row, int col)
     {
         Object oldValue = getValueAt (row, col);
-        if (((Double) newValue) < 0 && probNode.getNodeType () != NodeType.UTILITY)
+        if (((Double) newValue) < 0 && node.getNodeType () != NodeType.UTILITY)
         {
             newValue = oldValue;
             JOptionPane.showMessageDialog (this.getParent (), "Introduced value cannot be negative");
         }
         if (!oldValue.equals (newValue))
         {
-        	TablePotential tablePotential = (TablePotential)probNode.getPotentials().get(0);
+        	TablePotential tablePotential = (TablePotential)node.getPotentials().get(0);
             if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
             {
                 if (deterministic)
@@ -372,7 +372,7 @@ public class ValuesTable extends KeyTable
                         lastCol = col;
                     }
                     TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
-                                                                                             probNode,
+                                                                                             node,
                                                                                              probNet,
                                                                                              tablePotential,
                                                                                              (Double) newValue,
@@ -399,7 +399,7 @@ public class ValuesTable extends KeyTable
             else if (nodeType == NodeType.UTILITY)
             {
                 TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
-                                                                                         probNode,
+                                                                                         node,
                                                                                          probNet,
                                                                                          tablePotential,
                                                                                          (Double) newValue,
@@ -735,7 +735,7 @@ public class ValuesTable extends KeyTable
      */
     public Variable getVariable ()
     {
-        return probNode.getVariable();
+        return node.getVariable();
     }
 
     /**
@@ -918,7 +918,7 @@ public class ValuesTable extends KeyTable
         if (isShowingAllParameters ())
         {
             if ((getVariable () != null) && (getVariable ().getName () != null)
-                && probNode.getNodeType () != NodeType.UTILITY)
+                && node.getNodeType () != NodeType.UTILITY)
             {
                 String name = getVariable ().getName ();
                 if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
@@ -1273,7 +1273,7 @@ public class ValuesTable extends KeyTable
         int row;
         int positionInValues;
         isChance = edit.isChanceVariable ();
-        TablePotential tablePotential = (TablePotential) edit.getProbNode ().getPotentials ().get (0);
+        TablePotential tablePotential = (TablePotential) edit.getNode ().getPotentials ().get (0);
         List<Variable> varsPotential = tablePotential.getVariables ();
         int numVarsPotential = varsPotential.size ();
         int numParents = (isChance) ? numVarsPotential - 1 : numVarsPotential;
@@ -1407,17 +1407,17 @@ public class ValuesTable extends KeyTable
     }
     
     /**
-     * Sets probNode
-     * @param probNode
+     * Sets node
+     * @param node
      */
-    public void setData (Node probNode)
+    public void setData (Node node)
     {
-        if (this.probNet.getPNESupport () != probNode.getProbNet ().getPNESupport ())
+        if (this.probNet.getPNESupport () != node.getProbNet ().getPNESupport ())
         {
             this.probNet.getPNESupport ().removeUndoableEditListener (this);
-            probNode.getProbNet ().getPNESupport ().addUndoableEditListener (this);
+            node.getProbNet ().getPNESupport ().addUndoableEditListener (this);
         }
-        this.probNet = probNode.getProbNet ();
+        this.probNet = node.getProbNet ();
     }
 
     /**

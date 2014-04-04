@@ -26,9 +26,9 @@ public class CPTablePanel extends TablePotentialPanel
      */
     private boolean modifiable;
 
-    public CPTablePanel (Node probNode)
+    public CPTablePanel (Node node)
     {
-        super (probNode);
+        super (node);
         modifiable = false;
     }
 
@@ -42,7 +42,7 @@ public class CPTablePanel extends TablePotentialPanel
     {
         if (valuesTable == null)
         {
-            valuesTable = new ValuesTable (probNode, getTableModel (), modifiable);
+            valuesTable = new ValuesTable (node, getTableModel (), modifiable);
             valuesTable.setName ("PotentialsTablePanel.valuesTable");
         }
         return valuesTable;

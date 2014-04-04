@@ -76,18 +76,18 @@ public class ExcelReport
         HSSFRow rowIndexes = sheetTable.createRow (0);
         rowIndexes.createCell (0).setCellValue ("");
         String basename = variableOfInterest.getBaseName ();
-        List<Node> probNodes = expandedNetwork.getNodes ();
-        List<Node> interestProbNodes = new ArrayList<> ();
-        for (int i = 0; i < probNodes.size (); i++)
+        List<Node> nodes = expandedNetwork.getNodes ();
+        List<Node> interestNodes = new ArrayList<> ();
+        for (int i = 0; i < nodes.size (); i++)
         {
-            if (probNodes.get (i).getVariable ().getBaseName ().equals (basename))
+            if (nodes.get (i).getVariable ().getBaseName ().equals (basename))
             {
-                interestProbNodes.add (probNodes.get (i));
+                interestNodes.add (nodes.get (i));
             }
         }
-        for (int i = 0; i < interestProbNodes.size (); i++)
+        for (int i = 0; i < interestNodes.size (); i++)
         {
-            rowIndexes.createCell (i + 1).setCellValue (interestProbNodes.get (i).getVariable ().getName ());
+            rowIndexes.createCell (i + 1).setCellValue (interestNodes.get (i).getVariable ().getName ());
         }
         // first column
         for (int i = 0; i < variableOfInterest.getNumStates (); i++)
@@ -100,13 +100,13 @@ public class ExcelReport
             for (int j = 0; j <= numSlices; j++)
             {
                 String basenameInterest = variableOfInterest.getBaseName ();
-                List<Node> expandedProbNodes = expandedNetwork.getNodes ();
-                for (int k = 0; k < expandedProbNodes.size (); k++)
+                List<Node> expandedNodes = expandedNetwork.getNodes ();
+                for (int k = 0; k < expandedNodes.size (); k++)
                 {
-                    if (expandedProbNodes.get (k).getVariable ().getBaseName ().equals (basenameInterest)
-                        && expandedProbNodes.get (k).getVariable ().getTimeSlice () == j)
+                    if (expandedNodes.get (k).getVariable ().getBaseName ().equals (basenameInterest)
+                        && expandedNodes.get (k).getVariable ().getTimeSlice () == j)
                     {
-                        double value = temporalEvolution.get (expandedProbNodes.get (k).getVariable ()).getValues ()[i];
+                        double value = temporalEvolution.get (expandedNodes.get (k).getVariable ()).getValues ()[i];
                         // cell(row, column) = cell(i+1, j+1)
                         sheetTable.getRow (i + 1).createCell (j + 1).setCellValue (value);
                     }

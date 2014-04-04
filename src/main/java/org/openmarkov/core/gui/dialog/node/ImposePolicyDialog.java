@@ -27,17 +27,17 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 @SuppressWarnings("serial")
 public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
-    private Node        probNode;
+    private Node        node;
     private PolicyTypePanel pnlPolicyType;
     private PotentialPanel  potentialPanel;
     private boolean         readOnly;
-    private Node        dummyProbNode;
+    private Node        dummyNode;
 
-    public ImposePolicyDialog(Window owner, Node probNode) {
+    public ImposePolicyDialog(Window owner, Node node) {
         super(owner);
-        this.probNode = probNode;
+        this.node = node;
         this.readOnly = false;
-        probNode.getProbNet().getPNESupport().openParenthesis();
+        node.getProbNet().getPNESupport().openParenthesis();
         initialize();
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -65,7 +65,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
         setTitle(StringDatabase.getUniqueInstance().getString("ImposePolicydialog.Title.Label")
                 + ": "
-                + (probNode == null ? "" : probNode.getName()));
+                + (node == null ? "" : node.getName()));
 
         configureComponentsPanel();
         pack();
@@ -91,7 +91,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     protected PolicyTypePanel getPoliticyTypePanel() {
 
         if (pnlPolicyType == null) {
-            // pnlPolicyType = new PolicyTypePanel(this, probNode);
+            // pnlPolicyType = new PolicyTypePanel(this, node);
         }
         return pnlPolicyType;
     }
@@ -108,21 +108,21 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
             // tablePotential to the decision node
             List<Variable> variables = new ArrayList<Variable>();
             // conditiones variable
-            variables.add(probNode.getVariable());
+            variables.add(node.getVariable());
             // adding variable parents
-            List<Node> probNodes = probNode.getProbNet().getNodes();
-            for (Node probNode : probNodes) {
-                if (probNode.isParent(this.probNode)) {
-                    variables.add(probNode.getVariable());
+            List<Node> nodes = node.getProbNet().getNodes();
+            for (Node node : nodes) {
+                if (node.isParent(this.node)) {
+                    variables.add(node.getVariable());
                 }
             }
             try {
-                // copy of the probNode
-                this.dummyProbNode = new Node(probNode);
+                // copy of the node
+                this.dummyNode = new Node(node);
                 TablePotential policy = new TablePotential(variables, PotentialRole.POLICY);
-                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(dummyProbNode, policy);
+                SetPotentialEdit setPotentialEdit = new SetPotentialEdit(dummyNode, policy);
 
-                probNode.getProbNet().doEdit(setPotentialEdit);
+                node.getProbNet().doEdit(setPotentialEdit);
 
             } catch (WrongCriterionException
                     | ConstraintViolationException
@@ -132,7 +132,7 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            potentialPanel = new TablePotentialPanel(probNode);
+            potentialPanel = new TablePotentialPanel(node);
             potentialPanel.setReadOnly(readOnly);
         }
         return potentialPanel;
@@ -148,8 +148,8 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
         return selectedButton;
     }
 
-    public Node getDummyProbNode() {
-        return dummyProbNode;
+    public Node getDummyNode() {
+        return dummyNode;
     }
 
     /**
@@ -161,13 +161,13 @@ public class ImposePolicyDialog extends OkCancelApplyUndoRedoHorizontalDialog {
     @Override
     protected boolean doOkClickBeforeHide() {
         getPotentialPanel().close();
-        probNode.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
 
     @Override
     protected void doCancelClickBeforeHide() {
-        probNode.getProbNet().getPNESupport().closeParenthesis();
+        node.getProbNet().getPNESupport().closeParenthesis();
     }
 
 }

@@ -78,7 +78,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
     private List<Variable> orderVariables        = new ArrayList<Variable>();
     private List<Variable> newOrderVariables     = new ArrayList<Variable>();
     private Object[][]     notEditablePostitions = new Object[0][0];
-    private Node       probNode;
+    private Node       node;
 
     // Constructor
     /**
@@ -86,7 +86,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
      * edited, the new value of the potential, the row and column where is the
      * value to be modified and a priority list for potentials updating.
      * 
-     * @param probNode
+     * @param node
      *            the node to be edited
      * @param newValue
      *            the new value
@@ -100,18 +100,18 @@ public class TablePotentialValueEdit extends SimplePNEdit {
      *            two dimensional array with the information about editable
      *            positions.
      */
-    public TablePotentialValueEdit(Node probNode, ProbNet probNet,
+    public TablePotentialValueEdit(Node node, ProbNet probNet,
             TablePotential tablePotential, Double newValue, int row, int col,
             List<Integer> priorityList, Object[][] notEditablePositions) {
         super(probNet);
-        this.probNode = probNode;
+        this.node = node;
         this.row = row;
         this.col = col;
         this.newValue = newValue;
         this.priorityList = priorityList;
         this.notEditablePostitions = notEditablePositions;
-        this.indexSelected = probNode.getVariable().getNumStates()
-                - (row - probNode.getNumParents() + 1);
+        this.indexSelected = node.getVariable().getNumStates()
+                - (row - node.getNumParents() + 1);
         this.oldTablePotential = tablePotential;
         orderVariables = oldTablePotential.getVariables();
         // reorder the variables like appear in PotentialEditDialog
@@ -138,8 +138,8 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         // the value edited
         this.potentialSelected = Util.toPositionOnPotentialReordered(row,
                 col,
-                probNode.getVariable().getNumStates(),
-                probNode.getNumParents());
+                node.getVariable().getNumStates(),
+                node.getNumParents());
 
     }
 
@@ -239,7 +239,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
      *         last place of the list
      */
     private List<Integer> getPriorityListInitialization() {
-        for (int i = 0; i < probNode.getVariable().getNumStates(); i++) {
+        for (int i = 0; i < node.getVariable().getNumStates(); i++) {
             if (i != indexSelected)
                 priorityList.add(i + increment);
         }
@@ -271,8 +271,8 @@ public class TablePotentialValueEdit extends SimplePNEdit {
     public int getRowPosition(int position) {
         return Util.toPositionOnJtable(position,
                 col,
-                probNode.getVariable().getNumStates(),
-                probNode.getNumParents());
+                node.getVariable().getNumStates(),
+                node.getNumParents());
     }
 
     /**

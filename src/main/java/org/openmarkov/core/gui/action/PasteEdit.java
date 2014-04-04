@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
 import org.openmarkov.core.gui.window.edition.SelectedContent;
@@ -62,21 +62,21 @@ public class PasteEdit extends CompoundEdit
         HashMap<String, String> newVariables = new HashMap<String, String> ();
         ProbNet probNet = visualNetwork.getNetwork ();
         // Gather new node creation edits
-        for (Node probNode : clipboardContent.getNodes ())
+        for (Node node : clipboardContent.getNodes ())
         {
-            String oldName = probNode.getName ();
+            String oldName = node.getName ();
             String newName = oldName;
             while (probNet.containsVariable (newName))
             {
                 newName += "'";
             }
-            Variable variable = new Variable (probNode.getVariable ());
+            Variable variable = new Variable (node.getVariable ());
             variable.setName (newName);
             newVariables.put (oldName, newName);
             
-            Point2D.Double position = new Point2D.Double (probNode.getCoordinateX () + 3.0,
-                                                          probNode.getCoordinateY ());
-            edits.add (new AddNodeEdit (probNet, variable, probNode.getNodeType (), position));
+            Point2D.Double position = new Point2D.Double (node.getCoordinateX () + 3.0,
+                                                          node.getCoordinateY ());
+            edits.add (new AddNodeEdit (probNet, variable, node.getNodeType (), position));
             
         }
         
@@ -86,7 +86,7 @@ public class PasteEdit extends CompoundEdit
         {
         	try {
 				probNet.doEdit(((PNEdit) edit));
-				pastedNodes.add (((AddNodeEdit) edit).getProbNode ());
+				pastedNodes.add (((AddNodeEdit) edit).getNode ());
 			} catch (ConstraintViolationException | CanNotDoEditException e) {
 				e.printStackTrace();
 			}
@@ -108,7 +108,7 @@ public class PasteEdit extends CompoundEdit
                         probNet.getVariable(newVariables.get (originalDestinationNodeName)),
                         link.isDirected ()));
             }
-            catch (ProbNodeNotFoundException e)
+            catch (NodeNotFoundException e)
             {/* Can not possibly happen */
             }
         }

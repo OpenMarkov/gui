@@ -84,21 +84,21 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * Panel to scroll the table.
      */
     protected JScrollPane valuesTableScrollPane = null;
-    protected Node    probNode;
+    protected Node    node;
     protected boolean     hasLinkRestriction;
 
     /**
      * Constructor use by CPTablePanel
      * 
-     * @param probNode
+     * @param node
      */
-    public TablePotentialPanel(Node probNode) {
+    public TablePotentialPanel(Node node) {
         super();
-        this.probNode = probNode;
+        this.node = node;
         modifiable = true;
         showValuesTable(true);
         setTableSpecificListeners();
-        setData(probNode);
+        setData(node);
         setLayout(new BorderLayout());
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
         repaint();
@@ -141,7 +141,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         this.firstEditableRow = firstEditableRow;
         this.lastEditableRow = lastEditableRow;
         valuesTable.resetModel();
-        // valuesTable.setVariable(probNode.getPotentials().get( 0
+        // valuesTable.setVariable(node.getPotentials().get( 0
         // ).getVariable( 0 ));
         valuesTable.setModel(getTableModel());
         valuesTable.initializeDataModified(false);
@@ -165,28 +165,28 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param parents
      *            - parents of the variable
      */
-    public void setData(Node probNode) {
-        this.probNode = probNode;
-        hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(probNode);
-        valuesTable.setData(probNode);
+    public void setData(Node node) {
+        this.node = node;
+        hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
+        valuesTable.setData(node);
         Object[][] tableData = null;
         boolean[] uncertaintyInColumns = null;
         String[] newColumns = null;
-        if (probNode.getPotentials() != null) {
-            tableData = convertListPotentialsToTableFormat(probNode);
+        if (node.getPotentials() != null) {
+            tableData = convertListPotentialsToTableFormat(node);
             newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
-            setFirstEditableRow(PotentialsTablePanelOperations.calculateFirstEditableRow(probNode.getPotentials(),
-                    probNode));
-            setLastEditableRow(PotentialsTablePanelOperations.calculateLastEditableRow(probNode.getPotentials(),
-                    probNode));
+            setFirstEditableRow(PotentialsTablePanelOperations.calculateFirstEditableRow(node.getPotentials(),
+                    node));
+            setLastEditableRow(PotentialsTablePanelOperations.calculateLastEditableRow(node.getPotentials(),
+                    node));
             setData(tableData,
                     newColumns,
                     firstEditableRow,
                     lastEditableRow,
-                    probNode.getNodeType());
-            uncertaintyInColumns = getUncertaintyInColumns(probNode);
+                    node.getNodeType());
+            uncertaintyInColumns = getUncertaintyInColumns(node);
             setCellRenderers(uncertaintyInColumns);
-            this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));
+            this.getTableModel().setNotEditablePositions(getNotEditablePositions(node));
         	valuesTable.fitColumnsWidthToContent();
         } else {
             tableData = new Object[0][0];
@@ -196,13 +196,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
     }
 
-    private boolean[] getUncertaintyInColumns(Node probNode) {
+    private boolean[] getUncertaintyInColumns(Node node) {
         int size = valuesTable.getColumnCount();
         boolean[] uncertaintyInColumns = new boolean[size - 1];
 
-        if (probNode.getPotentials().size() > 0) {
+        if (node.getPotentials().size() > 0) {
 
-            TablePotential tablePotential = (TablePotential) probNode.getPotentials().get(0);
+            TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
             for (int i = 1; i < size; i++) {
                 boolean hasUncertainty = false;
                 try {
@@ -301,23 +301,23 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *            - <code>NodeWrapper</code> list of the parents
      * @return the table data to be set
      */
-    protected Object[][] convertListPotentialsToTableFormat(Node probNode) {
+    protected Object[][] convertListPotentialsToTableFormat(Node node) {
         Object[][] values = null;
         try {
             // mpal
-            PotentialsTablePanelOperations.checkIfNoPotential(probNode.getPotentials());
-            values = createEmptyTable(probNode);
-            values = setParentsNameInUpperLeftCornerArea(values, probNode);
-            values = setParentsStatesInTopArea(values, probNode);
-            values = setNodeStatesInLeftArea(values, probNode);
-            values = setPotentialDataInCentreArea(values, probNode);
-            if (probNode.getNodeType() != NodeType.UTILITY) {
-                values = setVariableNameInLowerLeftCornerArea(values, probNode);
-                values = setVariableStatesInBottomArea(values, probNode);
+            PotentialsTablePanelOperations.checkIfNoPotential(node.getPotentials());
+            values = createEmptyTable(node);
+            values = setParentsNameInUpperLeftCornerArea(values, node);
+            values = setParentsStatesInTopArea(values, node);
+            values = setNodeStatesInLeftArea(values, node);
+            values = setPotentialDataInCentreArea(values, node);
+            if (node.getNodeType() != NodeType.UTILITY) {
+                values = setVariableNameInLowerLeftCornerArea(values, node);
+                values = setVariableStatesInBottomArea(values, node);
             }
-            setPosition(setNumberOfPostions(probNode.getPotentials()));
+            setPosition(setNumberOfPostions(node.getPotentials()));
         } catch (NullListPotentialsException ex) {
-            values = setBlankTable(probNode);
+            values = setBlankTable(node);
         }
         return values;
     }
@@ -332,18 +332,18 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] createEmptyTable(Node probNode) {
+    private Object[][] createEmptyTable(Node node) {
          
         int numRows = 0;
         int numColumns = 1; // at least, there is one column for the node names
-        int row = PotentialsTablePanelOperations.calculateFirstEditableRow(probNode.getPotentials(),
-                probNode);
+        int row = PotentialsTablePanelOperations.calculateFirstEditableRow(node.getPotentials(),
+                node);
         setBaseIndexForCoordinates(row);
         setFirstEditableRow(row);
-        TablePotential tablePotential = getThisPotential(probNode.getPotentials());
+        TablePotential tablePotential = getThisPotential(node.getPotentials());
         List<Variable> variablesBeforeReorder = tablePotential.getVariables();
         setVariables(variablesBeforeReorder);
-        if (probNode.getNodeType() == NodeType.UTILITY) {
+        if (node.getNodeType() == NodeType.UTILITY) {
             setBaseIndexForCoordinates(row - 1);
             numRows = getVariables().size();
             setLastEditableRow(numRows - 1);
@@ -373,9 +373,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     private void setVariables(List<Variable> variables) {
         // TODO update this statement, when constructor of this class with
         // potential as parameter is implemented
-        if (probNode != null && probNode.getNodeType() == NodeType.UTILITY) {
+        if (node != null && node.getNodeType() == NodeType.UTILITY) {
             this.variables = new ArrayList<Variable>();
-            this.variables.add(probNode.getVariable());
+            this.variables.add(node.getVariable());
             for (Variable variable : variables)
                 this.variables.add(variable);
         } else
@@ -391,11 +391,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, Node probNode) {
+    private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues, Node node) {
         Object[][] values = oldValues;
         List<Variable> parents = new ArrayList<Variable>();
         for (Variable variable : getVariables()) {
-            if (!variable.getName().equals(probNode.getName())) {
+            if (!variable.getName().equals(node.getName())) {
                 parents.add(variable);
             }
         }
@@ -415,13 +415,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * @param additionalProperties
      *            - the additionalProperties of the node
      */
-    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, Node probNode) {
+    private Object[][] setParentsStatesInTopArea(Object[][] oldValues, Node node) {
         Object[][] values = oldValues;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
-        TablePotential tablePotential = getThisPotential(probNode.getPotentials());
+        TablePotential tablePotential = getThisPotential(node.getPotentials());
         List<Variable> variables = tablePotential.getVariables();
         int[] offsets = tablePotential.getOffsets();
-        int numStates = probNode.getVariable().getNumStates();
+        int numStates = node.getVariable().getNumStates();
         int numVariables = tablePotential.getNumVariables();
         int numParentVariables = (tablePotential.getUtilityVariable() != null) ? tablePotential.getNumVariables()
                 : tablePotential.getNumVariables() - 1;
@@ -541,7 +541,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      *         at the second position.
      */
     private int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
-        int numStates = probNode.getVariable().getNumStates();
+        int numStates = node.getVariable().getNumStates();
         int position = potential.getPosition(stateIndices);
         int column = (position / numStates) + 1;
         int row = getLastEditableRow() - (position % numStates);
@@ -552,16 +552,16 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      * Calculates the positions of the table which are not editable due to a
      * link restriction. If the position is not editable it contains the value
      * 1, otherwise it contains a null value.
-     * @param probNode 
+     * @param node 
      * 
      * @return a two dimensional array with the size of the table containing the
      *         information about the editable positions.
      */
-    private Object[][] getNotEditablePositions(Node probNode) {
-        Object[][] notEditablePositions = createEmptyTable(probNode);
-        if (probNode.getNodeType() == NodeType.CHANCE && hasLinkRestriction) {
-            List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations.getStateCombinationsWithLinkRestriction(probNode);
-            TablePotential potential = (TablePotential) probNode.getPotentials().get(0);
+    private Object[][] getNotEditablePositions(Node node) {
+        Object[][] notEditablePositions = createEmptyTable(node);
+        if (node.getNodeType() == NodeType.CHANCE && hasLinkRestriction) {
+            List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations.getStateCombinationsWithLinkRestriction(node);
+            TablePotential potential = (TablePotential) node.getPotentials().get(0);
             for (int[] state : statesWithRestriction) {
                 int[] position = getRowAndColumnForStateCombination(state, potential);
                 int row = position[0];
@@ -570,7 +570,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
         }
         
-        boolean[] uncertaintyInColumns = getUncertaintyInColumns(probNode);
+        boolean[] uncertaintyInColumns = getUncertaintyInColumns(node);
         for(int row=firstEditableRow; row< notEditablePositions.length; ++row)
         {
             for (int column = 1; column < notEditablePositions[0].length; ++column) {
@@ -718,7 +718,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     public EvidenceCase getEvidenceCaseFromSelectedColumn() {
         EvidenceCase evi = null;
         try {
-            evi = getConfiguration((TablePotential) probNode.getPotentials().get(0), selectedColumn);
+            evi = getConfiguration((TablePotential) node.getPotentials().get(0), selectedColumn);
         } catch (InvalidStateException | IncompatibleEvidenceException e) {
             e.printStackTrace();
         }
@@ -737,21 +737,21 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
         UncertainValuesDialog uncertDialog = new UncertainValuesDialog(Utilities.getOwner(this),
                 evidenceCase,
-                (TablePotential) probNode.getPotentials().get(0));
+                (TablePotential) node.getPotentials().get(0));
         int button = uncertDialog.requestUncertainValues();
         if (button == UncertainValuesDialog.OK_BUTTON) {
-            UncertainValuesEdit uncertEdit = new UncertainValuesEdit(probNode,
+            UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node,
                     uncertDialog.getUncertainColumn(),
                     uncertDialog.getValuesColumn(),
                     uncertDialog.getPosBase(),
                     selectedColumn,
                     uncertDialog.isChanceVariable());
             try {
-                probNode.getProbNet().doEdit(uncertEdit);
+                node.getProbNet().doEdit(uncertEdit);
                 if (selectedColumn > 0) {
                     ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).setMark(selectedColumn - 1);
                     getValuesTable().repaint();
-                    this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));
+                    this.getTableModel().setNotEditablePositions(getNotEditablePositions(node));
                 }
             } catch (ConstraintViolationException
                     | CanNotDoEditException
@@ -774,7 +774,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
      */
     public ValuesTable getValuesTable() {
         if (valuesTable == null) {
-            valuesTable = new ValuesTable(probNode, getTableModel(), modifiable);
+            valuesTable = new ValuesTable(node, getTableModel(), modifiable);
             valuesTable.setName("PotentialsTablePanel.valuesTable");
         }
         return valuesTable;
@@ -921,13 +921,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     public void removeUncertainty()
             throws WrongCriterionException {
         evidenceCase = getEvidenceCaseFromSelectedColumn();
-        UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(probNode, evidenceCase);
+        UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
         try {
-            probNode.getProbNet().doEdit(uncertEdit);
+            node.getProbNet().doEdit(uncertEdit);
             if (selectedColumn > 0) {
                 ((ValuesTableCellRenderer) getValuesTable().getDefaultRenderer(Double.class)).unMark(selectedColumn - 1);
                 getValuesTable().repaint();
-                this.getTableModel().setNotEditablePositions(getNotEditablePositions(probNode));                
+                this.getTableModel().setNotEditablePositions(getNotEditablePositions(node));                
             }
         } catch (ConstraintViolationException
                 | CanNotDoEditException
@@ -942,9 +942,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     }
 
     private void updateContextualMenuOptions() {
-        if (probNode.getPotentials().size() > 0
-                && probNode.getPotentials().get(0) instanceof TablePotential) {
-            TablePotential tablePotential = (TablePotential) probNode.getPotentials().get(0);
+        if (node.getPotentials().size() > 0
+                && node.getPotentials().get(0) instanceof TablePotential) {
+            TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
             boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
             if (hasUncertainty) {
                 getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString()).setEnabled(false);
@@ -960,14 +960,14 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     
     private void doubleClickEvent(MouseEvent evt)
     {
-        if (probNode.getPotentials().size() > 0
-                && probNode.getPotentials().get(0) instanceof TablePotential) {
-            TablePotential tablePotential = (TablePotential) probNode.getPotentials().get(0);
+        if (node.getPotentials().size() > 0
+                && node.getPotentials().get(0) instanceof TablePotential) {
+            TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
             
             EvidenceCase configuration = null;
             int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
             try {
-                configuration = getConfiguration((TablePotential) probNode.getPotentials().get(0), selectedColumn);
+                configuration = getConfiguration((TablePotential) node.getPotentials().get(0), selectedColumn);
             } catch (InvalidStateException | IncompatibleEvidenceException e) {
                 e.printStackTrace();
             }
@@ -1010,17 +1010,17 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     protected void setCellRenderers(boolean[] uncertaintyInColumns) {
         int firstEditableRow = getFirstEditableRow();
         TableCellRenderer cellRenderer = null;
-        if (probNode.getPotentials().size() > 0) {
-            if (probNode.getNodeType() != NodeType.DECISION) {
+        if (node.getPotentials().size() > 0) {
+            if (node.getNodeType() != NodeType.DECISION) {
                 if (!hasLinkRestriction) {
                     cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
                 } else {
                     cellRenderer = new ValuesTableWithLinkRestrictionCellRenderer(firstEditableRow,
                             uncertaintyInColumns);
                 }
-            } else { // probNode.getNodeType() == NodeType.DECISION)
-                if (probNode.getPolicyType() == PolicyType.OPTIMAL
-                        && (probNode.getPotentials().isEmpty() || !probNode.getPotentials().get(0).isUtility())) {
+            } else { // node.getNodeType() == NodeType.DECISION)
+                if (node.getPolicyType() == PolicyType.OPTIMAL
+                        && (node.getPotentials().isEmpty() || !node.getPotentials().get(0).isUtility())) {
                     cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow,
                             uncertaintyInColumns);
                 } else {

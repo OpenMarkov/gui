@@ -43,7 +43,7 @@ public class ICIOptionListenerAssistant
     private ICIOptionsPanel iciOptionPanel;
     private Container       parentPanel;
     /**
-     * original probNode of the ICIOptionPanel
+     * original node of the ICIOptionPanel
      */
     private CPTablePanel    cpTablePanel;
     private JScrollPane     iciValuesTablePanel = null;
@@ -53,9 +53,9 @@ public class ICIOptionListenerAssistant
         this.iciOptionPanel = iciOptionPanel;
     }
 
-    public Node getProbNodeParentPanel ()
+    public Node getNodeParentPanel ()
     {
-        return ((ICIPotentialsTablePanel) parentPanel).getProbNode ();
+        return ((ICIPotentialsTablePanel) parentPanel).getNode ();
     }
 
     public void itemStateChanged (ItemEvent e)
@@ -120,16 +120,16 @@ public class ICIOptionListenerAssistant
         { // Canonical --> tpc
             // show TPC do not allow edit
             // Copy of the parents panel node
-            Node iciProbnode = new Node (
-                                                 ((ICIPotentialsTablePanel) parentPanel).getProbNode ());
-            ICIPotential iciPotential = (ICIPotential) iciProbnode.getPotentials ().get (0);
+            Node iciNode = new Node (
+                                                 ((ICIPotentialsTablePanel) parentPanel).getNode ());
+            ICIPotential iciPotential = (ICIPotential) iciNode.getPotentials ().get (0);
             TablePotential tablePotential;
             try
             {
                 tablePotential = (TablePotential) iciPotential.getCPT ();
                 ArrayList<Potential> potentials = new ArrayList<Potential> ();
                 potentials.add (tablePotential);
-                iciProbnode.setPotentials (potentials);
+                iciNode.setPotentials (potentials);
             }
             catch (NonProjectablePotentialException | WrongCriterionException e1)
             {
@@ -140,7 +140,7 @@ public class ICIOptionListenerAssistant
                                                StringDatabase.getUniqueInstance ().getString (e1.getMessage ()),
                                                JOptionPane.ERROR_MESSAGE);
             }
-            this.cpTablePanel = new CPTablePanel (iciProbnode);
+            this.cpTablePanel = new CPTablePanel (iciNode);
             JScrollPane cptValuesTablePanel = cpTablePanel.getValuesTableScrollPane ();
             ICIPotentialsTablePanel iciPotentialTablePanel = (ICIPotentialsTablePanel) parentPanel;
             this.iciValuesTablePanel = iciPotentialTablePanel.getValuesTableScrollPane ();

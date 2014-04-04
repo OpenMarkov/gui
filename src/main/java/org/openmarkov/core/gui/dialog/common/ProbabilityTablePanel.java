@@ -98,7 +98,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
     protected boolean               showTPCvalues                         = true;
     protected boolean               showNetValues                         = true;
 
-    // private ProbNode probNode;
+    // private Node node;
     /**
      * The contextualMenu that appears when there is a click on the valuesTable
      * Object

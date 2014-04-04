@@ -83,11 +83,11 @@ public abstract class NodeEditionMode extends EditionMode
                     {
                         variable.setDecisionCriterion (decisionCriteria.get (0));
                     }
-                    AddNodeEdit addProbNodeEdit = new AddNodeEdit (probNet, variable,
+                    AddNodeEdit addNodeEdit = new AddNodeEdit (probNet, variable,
                                                                            nodeType, position);
                     try
                     {
-                        probNet.doEdit (addProbNodeEdit);
+                        probNet.doEdit (addNodeEdit);
                     }
                     catch (Exception e1)
                     {

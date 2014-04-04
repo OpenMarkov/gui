@@ -11,11 +11,11 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.openmarkov.core.action.CRemoveProbNodeEdit;
+import org.openmarkov.core.action.CRemoveNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.graphic.VisualLink;
 import org.openmarkov.core.gui.graphic.VisualNetwork;
@@ -72,11 +72,11 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             {
                 edits.add (new RemoveLinkEdit (
                                                probNet,
-                                               probNet.getVariable (link.getSourceNode ().getProbNode ().getName ()),
-                                               probNet.getVariable (link.getDestinationNode ().getProbNode ().getName ()),
+                                               probNet.getVariable (link.getSourceNode ().getNode ().getName ()),
+                                               probNet.getVariable (link.getDestinationNode ().getNode ().getName ()),
                                                link.getLink ().isDirected ()));
             }
-            catch (ProbNodeNotFoundException e)
+            catch (NodeNotFoundException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace ();
@@ -88,7 +88,7 @@ public class RemoveSelectedEdit extends CompoundPNEdit
         }
         for (VisualNode node : nodesToRemove)
         {
-            edits.add (new CRemoveProbNodeEdit (probNet, node.getProbNode ()));
+            edits.add (new CRemoveNodeEdit (probNet, node.getNode ()));
         }
         // TODO OOPN start
         if (instancesToRemove != null)

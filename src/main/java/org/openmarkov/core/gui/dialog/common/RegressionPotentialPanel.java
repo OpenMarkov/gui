@@ -34,7 +34,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
 
-    private Node               probNode               = null;
+    private Node               node               = null;
     private RegressionPotential    potential              = null;
     private RegressionPanel        regressionPanel;
     private JTable                 uncertaintyTable;
@@ -43,10 +43,10 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     private JPanel                 uncertaintyPanel;
     private String                 currentMatrixType;
 
-    public RegressionPotentialPanel(Node probNode) {
+    public RegressionPotentialPanel(Node node) {
         super();
         initComponents();
-        setData(probNode);
+        setData(node);
     }
 
     private void initComponents() {
@@ -104,9 +104,9 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     }
 
     @Override
-    public void setData(Node probNode) {
-        this.probNode = probNode;
-        this.potential = (RegressionPotential) this.probNode.getPotentials().get(0);
+    public void setData(Node node) {
+        this.node = node;
+        this.potential = (RegressionPotential) this.node.getPotentials().get(0);
         double[] coefficients = potential.getCoefficients();
         String[] covariates = potential.getCovariates();
         regressionPanel.setData(potential);
@@ -142,7 +142,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     }
 
     public boolean saveChanges() {
-        RegressionPotential potential = (RegressionPotential) this.probNode.getPotentials().get(0);
+        RegressionPotential potential = (RegressionPotential) this.node.getPotentials().get(0);
         String[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
 

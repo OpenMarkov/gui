@@ -119,7 +119,7 @@ public class NodeContextualMenu extends ContextualMenu
     {
         super (newListener);
         initialize ();
-        if (selectedNode.getProbNode ().getNodeType ().equals (NodeType.DECISION))
+        if (selectedNode.getNode ().getNodeType ().equals (NodeType.DECISION))
         {
             if (panel.getNetworkPanel ().getWorkingMode () == NetworkPanel.EDITION_WORKING_MODE)
             {

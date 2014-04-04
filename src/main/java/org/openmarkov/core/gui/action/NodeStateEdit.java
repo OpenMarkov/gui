@@ -88,7 +88,7 @@ public class NodeStateEdit extends SimplePNEdit {
      * Creates a new <code>NodeStateEdit</code> to carry out the specified
      * action on the specified state.
      * 
-     * @param probNode
+     * @param node
      *            the node that will be edited.
      * @param stateAction
      *            the action to carry out
@@ -97,17 +97,17 @@ public class NodeStateEdit extends SimplePNEdit {
      * @param newName
      *            a new string for the state edited if the action is ADD.
      */
-    public NodeStateEdit(Node probNode, StateAction stateAction, int stateIndex, String newName) {
-        super(probNode.getProbNet());
-        this.node = probNode;
+    public NodeStateEdit(Node node, StateAction stateAction, int stateIndex, String newName) {
+        super(node.getProbNet());
+        this.node = node;
         this.newState = new State(newName);
         if (stateAction != StateAction.ADD) {
-            this.oldName = probNode.getVariable().getStateName(stateIndex);
+            this.oldName = node.getVariable().getStateName(stateIndex);
         }
-        this.selectedStateIndex = probNode.getVariable().getNumStates() - (stateIndex + 1);
+        this.selectedStateIndex = node.getVariable().getNumStates() - (stateIndex + 1);
         this.stateAction = stateAction;
-        this.currentPartitionedInterval = probNode.getVariable().getPartitionedInterval();
-        this.oldStates = probNode.getVariable().getStates();
+        this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
+        this.oldStates = node.getVariable().getStates();
         this.linkRestrictionMap = new HashMap<Link<Node>, double[]>();
         this.revelationConditionMap = new HashMap<>();
     }
@@ -426,7 +426,7 @@ public class NodeStateEdit extends SimplePNEdit {
         return oldState;
     }
 
-    public Node getProbNode() {
+    public Node getNode() {
         return node;
     }
 

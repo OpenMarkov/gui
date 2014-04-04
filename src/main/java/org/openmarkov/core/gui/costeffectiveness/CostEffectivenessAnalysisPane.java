@@ -46,8 +46,8 @@ public class CostEffectivenessAnalysisPane extends JScrollPane
                                        NodeType.CHANCE);
         for (int i = 1; i < globalUtility.getVariables ().size (); i++)
         {
-            Node newProbNode = new Node (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
-            dummyProbNet.addLink (newProbNode, dummyNode, true);
+            Node newNode = new Node (dummyProbNet, globalUtility.getVariables ().get (i), NodeType.CHANCE);
+            dummyProbNet.addLink (newNode, dummyNode, true);
         }
         List<Potential> potentials = new ArrayList<> ();
         TablePotential potentialCopy = new TablePotential (globalUtility.getVariables (),

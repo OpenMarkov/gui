@@ -34,7 +34,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	/**
 	 * The node
 	 */
-	private Node probNode;
+	private Node node;
 	/*
 	 * 
 	 */
@@ -95,23 +95,23 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	 * edited, the new value of the potential, the row and column where is the
 	 * value to be modified and a priority list for potentials updating.   
 	 * 
-	 * @param probNode the node to be edited
+	 * @param node the node to be edited
 	 * @param newValue the new value
 	 * @param col the column in the edited table
 	 * @param row the row in the edited table
 	 * */
-	public ICITablePotentialValueEdit(Node probNode, Double 
+	public ICITablePotentialValueEdit(Node node, Double 
 			newValue, int row, int col, List<Integer> priorityList) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
+		super(node.getProbNet());
+		this.node = node;
 		this.row = row;
 		this.col = col;
 		this.newValue = newValue;
 		this.priorityList = priorityList;
-		this.indexSelected = probNode.getVariable().getNumStates()- ( 
+		this.indexSelected = node.getVariable().getNumStates()- ( 
 				row - 2 + 1 );
 		
-		this.iciPotential = getThisICIPotential(probNode.getPotentials());
+		this.iciPotential = getThisICIPotential(node.getPotentials());
 		this.variables = iciPotential.getVariables();
 		
 		this.conditionedStates = variables.get(0).getNumStates();
@@ -384,7 +384,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 	
 	public int getRowPosition(int position) {
 		
-		return toPositionOnJtable(position, columnGroup, probNode.getVariable().
+		return toPositionOnJtable(position, columnGroup, node.getVariable().
 				getNumStates());
 			
 		

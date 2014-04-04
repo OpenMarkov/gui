@@ -20,10 +20,10 @@ private  ButtonGroup buttonGroup = new ButtonGroup();
 	
 private ArrayList<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
 
-private Node probNode; 
+private Node node; 
 
-	public VariablesCombinationPanel(Node probNode) {
-		this.probNode = probNode;
+	public VariablesCombinationPanel(Node node) {
+		this.node = node;
 		initialize();
 		repaint();
 	}
@@ -31,7 +31,7 @@ private Node probNode;
 	public void initialize() {
 		 setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		// ButtonGroup buttonGroup = new ButtonGroup();
-		List<Variable> variables =  probNode.getPotentials().get(0).getVariables();
+		List<Variable> variables =  node.getPotentials().get(0).getVariables();
 		List<Variable> possibleVariables = new ArrayList<Variable>();
 		for (int i = 1; i < variables.size(); i++) {
 			possibleVariables.add(variables.get(i));

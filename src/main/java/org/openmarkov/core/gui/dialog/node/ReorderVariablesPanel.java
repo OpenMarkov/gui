@@ -31,16 +31,16 @@ public class ReorderVariablesPanel extends KeyTablePanel
         TableModelListener,
         PNUndoableEditListener
 {
-    private Node                     probNode;
+    private Node                     node;
     private List<PNEdit>            edits = new ArrayList<PNEdit> ();
 
-    public ReorderVariablesPanel (Node probNode)
+    public ReorderVariablesPanel (Node node)
     {
-        super (new String[] {"Variable name"}, getData (probNode), true, false);
+        super (new String[] {"Variable name"}, getData (node), true, false);
         initialize ();
         getAddValueButton ().setVisible (false);
         getRemoveValueButton ().setVisible (false);
-        this.probNode = probNode;
+        this.node = node;
         // dataTable = newData;
         tableModel = new DefaultTableModel(data, columns);
         // valuesTable.setModel(tableModel);
@@ -58,9 +58,9 @@ public class ReorderVariablesPanel extends KeyTablePanel
      * Sets a new table model with new data.
      * @param newData new data for the table without the key column.
      */
-    private static Object[][] getData (Node probNode)
+    private static Object[][] getData (Node node)
     {
-    	Potential potential = probNode.getPotentials ().get (0);
+    	Potential potential = node.getPotentials ().get (0);
         List<Variable> variables = potential.getVariables();
         if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY)
         {
@@ -114,7 +114,7 @@ public class ReorderVariablesPanel extends KeyTablePanel
 
     public List<Variable> getVariables ()
     {
-    	Potential potential = probNode.getPotentials ().get (0);
+    	Potential potential = node.getPotentials ().get (0);
     	List<Variable> potentialVariables = potential.getVariables();
         List<Variable> newVariables = new ArrayList<Variable> ();
         for (int i = 0; i < data.length; i++)

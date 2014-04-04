@@ -101,7 +101,7 @@ public class VisualChanceNode extends VisualNode {
 		expanded = false;
 		preResolutionFinding = false;
 		postResolutionFinding = false;
-		setTemporalPosition(new Point2D.Double(probNode.getCoordinateX(), probNode.getCoordinateY()));
+		setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
 		innerBox = new FSVariableBox(this);
 	}
 
@@ -322,10 +322,10 @@ public class VisualChanceNode extends VisualNode {
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
 
-		if (probNode.isAlwaysObserved()) {
+		if (node.isAlwaysObserved()) {
 			g.setPaint(ALWAYS_OBSERVED_COLOR);
 			g.setStroke((isSelected())? OBSERVED_WIDE_STROKE : OBSERVED_NORMAL_STROKE);
-		} else if (probNode.isInput ()) {
+		} else if (node.isInput ()) {
 		    g.setStroke((isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE);
 		} else {
             g.setStroke((isSelected())? WIDE_STROKE : NORMAL_STROKE);

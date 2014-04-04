@@ -127,11 +127,11 @@ public class VisualInstance extends VisualElement {
             instanceNodes.removeAll (subInstance.getNodes ());
         }
 		
-        for(Node probNode: instanceNodes)
+        for(Node node: instanceNodes)
         {
             for(VisualNode visualNode: allVisualNodes)
             {
-                if(probNode.equals(visualNode.getProbNode()))
+                if(node.equals(visualNode.getNode()))
                 {
                     visualNodes.add(visualNode);
                 }

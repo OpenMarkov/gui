@@ -13,15 +13,15 @@ import org.openmarkov.core.model.network.Node;
 public class ReorderVariablesDialog extends OkCancelHorizontalDialog
 {
     private JPanel                variablesCombinationPanel;
-    private Node              probNode;
+    private Node              node;
     private ReorderVariablesPanel reorderVariablesPanel;
 
-    public ReorderVariablesDialog (Window owner, Node probNode)
+    public ReorderVariablesDialog (Window owner, Node node)
     {
         super (owner);
-        this.probNode = probNode;
-        probNode.getProbNet ().getPNESupport ().setWithUndo (true);
-        probNode.getProbNet ().getPNESupport ().openParenthesis ();
+        this.node = node;
+        node.getProbNet ().getPNESupport ().setWithUndo (true);
+        node.getProbNet ().getPNESupport ().openParenthesis ();
         initialize ();
         setLocationRelativeTo (owner);
         setName ("ReorderVariablesDialog");
@@ -49,7 +49,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
     {
         if (variablesCombinationPanel == null)
         {
-            variablesCombinationPanel = new VariablesCombinationPanel (probNode);
+            variablesCombinationPanel = new VariablesCombinationPanel (node);
             // dissociateStatesCheckBoxPanel.setLayout( new FlowLayout() );
             variablesCombinationPanel.setName ("variablesCombinationPanel");
         }
@@ -60,7 +60,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
     {
         if (reorderVariablesPanel == null)
         {
-            reorderVariablesPanel = new ReorderVariablesPanel (probNode);
+            reorderVariablesPanel = new ReorderVariablesPanel (node);
             reorderVariablesPanel.setName ("networkAgentsPanel");
             reorderVariablesPanel.setBorder (new EmptyBorder (0, 0, 0, 0));
         }
@@ -81,7 +81,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
      */
     protected boolean doOkClickBeforeHide ()
     {
-        probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet ().getPNESupport ().closeParenthesis ();
         return true;
     }
 
@@ -91,7 +91,7 @@ public class ReorderVariablesDialog extends OkCancelHorizontalDialog
      */
     protected void doCancelClickBeforeHide ()
     {
-        probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet ().getPNESupport ().closeParenthesis ();
         // TODO PNESupport must support more depth levels parenthesis
         // As current performance edits from ReorderVariablesPanel only be
         // undone when cancel

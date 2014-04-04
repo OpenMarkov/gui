@@ -12,24 +12,24 @@ public class PartitionedIntervalEdit extends SimplePNEdit{
 	
 	private PartitionedInterval newPartitionedInterval;
 	
-	private Node probNode = null;
+	private Node node = null;
 		
-	public PartitionedIntervalEdit(Node probNode, PartitionedInterval newPartitionedInterval) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
+	public PartitionedIntervalEdit(Node node, PartitionedInterval newPartitionedInterval) {
+		super(node.getProbNet());
+		this.node = node;
 		this.newPartitionedInterval = newPartitionedInterval;
-		this.currentPartitionedInterval = probNode.getVariable().getPartitionedInterval();
+		this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
 	}
 
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setPartitionedInterval(newPartitionedInterval);
+		node.getVariable().setPartitionedInterval(newPartitionedInterval);
 		
 	}
 	@Override
 	public void undo(){
 		super.undo();
-		probNode.getVariable().setPartitionedInterval(currentPartitionedInterval);
+		node.getVariable().setPartitionedInterval(currentPartitionedInterval);
 	}
 
 }

@@ -39,8 +39,8 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 	}
 
 	public RevelationArcDiscretizeTablePanel(String[] newColumns,
-			Object[][] noKeyData, String newKeyPrefix, Node probNode) {
-		super(newColumns, noKeyData, newKeyPrefix, probNode);
+			Object[][] noKeyData, String newKeyPrefix, Node node) {
+		super(newColumns, noKeyData, newKeyPrefix, node);
 		super.getDownValueButton().setVisible(false);
 		super.getUpValueButton().setVisible(false);
 		super.getNegativeInfinityButton().setVisible(false);
@@ -90,7 +90,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(
 				link, StateAction.ADD, newIndex, 0, false);
 		try {
-			probNode.getProbNet().doEdit(revelationArcStateEdit);
+			node.getProbNet().doEdit(revelationArcStateEdit);
 			setPartitionedInterval();
 		} catch (ConstraintViolationException | CanNotDoEditException
 				| NonProjectablePotentialException | WrongCriterionException
@@ -118,7 +118,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 		RevelationIntervalEdit revelationArcStateEdit = new RevelationIntervalEdit(
 				link, StateAction.REMOVE, selectedRow, 0, false);
 		try {
-			probNode.getProbNet().doEdit(revelationArcStateEdit);
+			node.getProbNet().doEdit(revelationArcStateEdit);
 			cancelCellEditing();
 			setPartitionedInterval();
 		} catch (ConstraintViolationException | CanNotDoEditException
@@ -197,7 +197,7 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			RevelationIntervalEdit nodePartitionedIntervalEdit = new RevelationIntervalEdit(
 					link, StateAction.MODIFY_VALUE_INTERVAL, row, newValue, lower);
 			try {
-				probNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+				node.getProbNet().doEdit(nodePartitionedIntervalEdit);
 				setPartitionedInterval();
 			} catch (ConstraintViolationException | CanNotDoEditException
 					| NonProjectablePotentialException
@@ -305,9 +305,9 @@ public class RevelationArcDiscretizeTablePanel extends DiscretizeTablePanel {
 			RevelationIntervalEdit intervalEdit = new RevelationIntervalEdit(
 					link, StateAction.MODIFY_DELIMITER_INTERVAL, fila, 0, lower);
 			try {
-				probNode.getProbNet().doEdit(intervalEdit);
+				node.getProbNet().doEdit(intervalEdit);
 				if (relatedIntervalEdit != null) {
-					probNode.getProbNet().doEdit(relatedIntervalEdit);
+					node.getProbNet().doEdit(relatedIntervalEdit);
 				}
 
 			} catch (ConstraintViolationException | CanNotDoEditException

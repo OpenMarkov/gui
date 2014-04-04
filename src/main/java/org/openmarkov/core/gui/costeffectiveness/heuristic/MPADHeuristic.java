@@ -46,8 +46,8 @@ public class MPADHeuristic extends EliminationHeuristic {
             int minClusterSize = Integer.MAX_VALUE;
             Variable candidateToRemove = plainVariableList.get(0);
             for (Variable variable : plainVariableList) {
-                Node probNode = probNetCopy.getNode(variable);
-                List<Node> neighbors = probNode.getNeighbors();
+                Node node = probNetCopy.getNode(variable);
+                List<Node> neighbors = node.getNeighbors();
                 int clusterSize = 1;
                 for (Node neighbor : neighbors) {
                     // Calculates clique size created removing a variable
@@ -56,7 +56,7 @@ public class MPADHeuristic extends EliminationHeuristic {
                         clusterSize *= neighborVariable.getNumStates();
                     }
                 }
-                if ((clusterSize < minClusterSize) && (probNode.getNodeType() == NodeType.UTILITY)) {
+                if ((clusterSize < minClusterSize) && (node.getNodeType() == NodeType.UTILITY)) {
                     candidateToRemove = variable;
                 }
             }

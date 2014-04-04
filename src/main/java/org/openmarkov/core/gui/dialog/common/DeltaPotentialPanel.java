@@ -37,15 +37,15 @@ public class DeltaPotentialPanel extends PotentialPanel {
 
     private JComboBox<String> stateComboBox;
     private JSpinner valueSpinner;
-    private Node probNode;
+    private Node node;
     
-    public DeltaPotentialPanel(Node probNode)
+    public DeltaPotentialPanel(Node node)
     {
         super();
-        this.probNode = probNode;
+        this.node = node;
         initComponents();
         
-        setData(probNode);
+        setData(node);
     }
 
     private void initComponents() {
@@ -53,7 +53,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
         JPanel namelessPanel = new JPanel();
         namelessPanel.setBorder(new EtchedBorder());
         
-        if(probNode.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
         {
             SpinnerNumberModel model = new SpinnerNumberModel(0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0.001); 
             valueSpinner = new JSpinner(model);
@@ -76,15 +76,15 @@ public class DeltaPotentialPanel extends PotentialPanel {
     }
     
     @Override
-    public void setData(Node probNode) {
-        this.probNode = probNode;
+    public void setData(Node node) {
+        this.node = node;
         DeltaPotential oldPotential = null;
-        if (!probNode.getPotentials().isEmpty()
-                && probNode.getPotentials().get(0) instanceof DeltaPotential)
+        if (!node.getPotentials().isEmpty()
+                && node.getPotentials().get(0) instanceof DeltaPotential)
         {
-            oldPotential = (DeltaPotential) probNode.getPotentials().get(0);
+            oldPotential = (DeltaPotential) node.getPotentials().get(0);
         }
-        if(probNode.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
         {
             double value = Double.NEGATIVE_INFINITY; 
             if(oldPotential != null)
@@ -92,13 +92,13 @@ public class DeltaPotentialPanel extends PotentialPanel {
                 value = oldPotential.getNumericValue();
             }else
             {
-                value = probNode.getVariable().getPartitionedInterval().getMin();
+                value = node.getVariable().getPartitionedInterval().getMin();
             }
             valueSpinner.setValue(value);
         }else
         {
             stateComboBox.removeAllItems();
-            for(State state : probNode.getVariable().getStates())
+            for(State state : node.getVariable().getStates())
             {
                 stateComboBox.addItem(state.getName());
             }
@@ -113,13 +113,13 @@ public class DeltaPotentialPanel extends PotentialPanel {
     @Override
     public boolean saveChanges() {
         boolean result = super.saveChanges();
-        ProbNet probNet = probNode.getProbNet();
-        Potential oldPotential = probNode.getPotentials().get(0);
+        ProbNet probNet = node.getProbNet();
+        Potential oldPotential = node.getPotentials().get(0);
         Potential newPotential = null;
-        if(probNode.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
         {
             double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
-            PartitionedInterval domain = probNode.getVariable().getPartitionedInterval();
+            PartitionedInterval domain = node.getVariable().getPartitionedInterval();
             if(numericValue <= domain.getMax() && numericValue >= domain.getMin())
             {
                 newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), numericValue);
@@ -131,7 +131,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
         }else
         {
             int selectedIndex = stateComboBox.getSelectedIndex();
-            State state = probNode.getVariable().getStates()[selectedIndex];
+            State state = node.getVariable().getStates()[selectedIndex];
             newPotential = new DeltaPotential(oldPotential.getVariables(), oldPotential.getPotentialRole(), state);
         }
         newPotential.setComment(oldPotential.getComment());

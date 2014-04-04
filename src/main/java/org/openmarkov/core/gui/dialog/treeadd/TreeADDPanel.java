@@ -29,22 +29,22 @@ public class TreeADDPanel extends PotentialPanel
     /**
      * The node edited
      */
-    private Node           probNode;
+    private Node           node;
 
-    public TreeADDPanel (Node probNode)
+    public TreeADDPanel (Node node)
     {
         super ();
-        setData (probNode);
+        setData (node);
     }
 
     public boolean saveChanges ()
     {
         SetPotentialEdit setPotentialEdit = new SetPotentialEdit (
-                                                                  probNode,
+                                                                  node,
                                                                   treeADDController.getTreePotential ());
         try
         {
-            probNode.getProbNet ().doEdit (setPotentialEdit);
+            node.getProbNet ().doEdit (setPotentialEdit);
         }
         catch (ConstraintViolationException e1)
         {
@@ -61,12 +61,12 @@ public class TreeADDPanel extends PotentialPanel
     }
 
     @Override
-    public void setData (Node probNode)
+    public void setData (Node node)
     {
         setLayout (new BorderLayout ());
-        this.probNode = probNode;
-        treeADDController = new TreeADDEditorPanel (new TreeADDCellRenderer (probNode.getProbNet ()),
-                                                    probNode);
+        this.node = node;
+        treeADDController = new TreeADDEditorPanel (new TreeADDCellRenderer (node.getProbNet ()),
+                                                    node);
         removeAll ();
         // treeADDController.setMaximumSize(new Dimension(10, 10));
         // treeADDController.setPreferredSize(new Dimension(10, 10));
@@ -74,7 +74,7 @@ public class TreeADDPanel extends PotentialPanel
         setName ("nodeTreeADDPotentialPanel");
         setBackground (Color.blue);
         // nodeADDPotentialPanel.setNewNode(newNode);
-        // nodeADDPotentialPanel.setNodeProperties(probNode);
+        // nodeADDPotentialPanel.setNodeProperties(node);
     }
 
     @Override

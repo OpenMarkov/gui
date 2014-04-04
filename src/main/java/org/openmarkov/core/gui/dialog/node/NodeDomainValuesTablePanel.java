@@ -56,9 +56,9 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.DefaultStates;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
@@ -81,7 +81,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * Object where all information will be saved.
      */
-    private Node                              probNode                               = null;
+    private Node                              node                               = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -169,9 +169,9 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * constructor without construction parameters
      */
-    public NodeDomainValuesTablePanel(Node probNode) {
+    public NodeDomainValuesTablePanel(Node node) {
         this(true);// , notifier);
-        this.probNode = probNode;
+        this.node = node;
         try {
             initialize();
         } catch (Throwable e) {
@@ -205,7 +205,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
      */
     private void initialize()
             throws Exception {
-        if (probNode.getNodeType() == NodeType.UTILITY) {
+        if (node.getNodeType() == NodeType.UTILITY) {
             getJComboBoxNodeVariableType().setSelectedItem(stringDatabase.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
                     + "Items.Continuous"));
             getDiscretizedStatesPanel().setEnabled(false);
@@ -214,7 +214,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             getJPanelMonotonyUpDown().setVisible(false);
             getJLabelValuesPanel().setEnabled(false);
             getJLabelValuesPanel().setVisible(false);
-            getJFormattedTextFieldPrecision().setValue(Double.valueOf(probNode.getVariable().getPrecision()));
+            getJFormattedTextFieldPrecision().setValue(Double.valueOf(node.getVariable().getPrecision()));
             // getJFormattedTextFieldUnit().setValue(value);
         }
         setPreferredSize(new Dimension(600, 375));
@@ -284,8 +284,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         this.newNode = newNode;
     }
 
-    public Node getProbNode() {
-        return probNode;
+    public Node getNode() {
+        return node;
     }
 
     /**
@@ -308,8 +308,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             if (properties.getVariable().getVariableType() == VariableType.DISCRETIZED
                     || properties.getVariable().getVariableType() == VariableType.NUMERIC) {
                 Object[][] tableData = null;
-                getDiscretizedStatesPanel().setDataFromPartitionedInterval(probNode.getVariable().getPartitionedInterval(),
-                        probNode.getVariable().getStates());
+                getDiscretizedStatesPanel().setDataFromPartitionedInterval(node.getVariable().getPartitionedInterval(),
+                        node.getVariable().getStates());
                 tableData = getDiscretizedStatesPanel().getData();
                 for (int i = 0; i < tableData.length; i++) {
                     for (int j = 3; j < tableData[0].length; j++) {
@@ -456,7 +456,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             + "UpperLimitValue.Text"),
                     stringDatabase.getString("DiscretizeTableModel.Columns."
                             + "UpperLimitSymbol.Text") };
-            discretizedStatesPanel = new DiscretizeTablePanel(columnNames, probNode);
+            discretizedStatesPanel = new DiscretizeTablePanel(columnNames, node);
             discretizedStatesPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         }
         return discretizedStatesPanel;
@@ -583,7 +583,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     protected JTextField getJTextFieldUnit() {
         if (jFieldUnit == null) {
             jFieldUnit = new JTextField();
-            jFieldUnit.setText(probNode.getVariable().getUnit().getString());
+            jFieldUnit.setText(node.getVariable().getUnit().getString());
             jFieldUnit.setName("jFormattedTextFieldPrecision");
             jFieldUnit.addFocusListener(listener);
         }
@@ -859,7 +859,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         if (jComboBoxNodeVariableType == null) {
             jComboBoxNodeVariableType = new JComboBox<>();
             jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
-            if (probNode.getNodeType() == NodeType.UTILITY) {
+            if (node.getNodeType() == NodeType.UTILITY) {
                 jComboBoxNodeVariableType.addItem(stringDatabase.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType."
                         + "Items.Continuous"));
             } else {
@@ -894,19 +894,19 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 VariableTypeEdit variableTypeEdit = null;
                 if (itemSelected.equals(stringDatabase.getString("NodeDomainValuesTablePanel."
                         + "jComboBoxNodeVariableType.Items.Discrete"))) {
-                    variableTypeEdit = new VariableTypeEdit(probNode, VariableType.FINITE_STATES);
+                    variableTypeEdit = new VariableTypeEdit(node, VariableType.FINITE_STATES);
                 } else if (itemSelected.equals(stringDatabase.getString("NodeDomainValuesTablePanel."
                         + "jComboBoxNodeVariableType.Items.Discretized"))) {
-                    variableTypeEdit = new VariableTypeEdit(probNode, VariableType.DISCRETIZED);
+                    variableTypeEdit = new VariableTypeEdit(node, VariableType.DISCRETIZED);
                 } else {
-                    variableTypeEdit = new VariableTypeEdit(probNode, VariableType.NUMERIC);
+                    variableTypeEdit = new VariableTypeEdit(node, VariableType.NUMERIC);
                 }
                 try {
-                    probNode.getProbNet().doEdit(variableTypeEdit);
+                    node.getProbNet().doEdit(variableTypeEdit);
                     this.removeAll();
                     try {
                         initialize();
-                        setFieldsFromProperties(probNode);
+                        setFieldsFromProperties(node);
                     } catch (Exception e) {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(null,
@@ -937,14 +937,14 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     newStates[i] = new State(str);
                     i++;
                 }
-                NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(probNode,
+                NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node,
                         newStates);
                 try {
-                    probNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                    node.getProbNet().doEdit(nodeReplaceStatesEdit);
                     this.removeAll();
                     try {
                         initialize();
-                        setFieldsFromProperties(probNode);
+                        setFieldsFromProperties(node);
                     } catch (Exception e) {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(null,
@@ -969,10 +969,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             // PRECISION
         } else if (comboBox.getName().equals("jComboBoxPrecision")) {
             if (!(itemSelected == null) && itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                PrecisionEdit precisionEdit = new PrecisionEdit(probNode,
+                PrecisionEdit precisionEdit = new PrecisionEdit(node,
                         Double.parseDouble(itemSelected));
                 try {
-                    probNode.getProbNet().doEdit(precisionEdit);
+                    node.getProbNet().doEdit(precisionEdit);
                 } catch (ConstraintViolationException
                         | CanNotDoEditException
                         | NonProjectablePotentialException
@@ -985,13 +985,13 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-            if (probNode.getVariable().getVariableType() == VariableType.DISCRETIZED
-                    || probNode.getVariable().getVariableType() == VariableType.NUMERIC) {
+            if (node.getVariable().getVariableType() == VariableType.DISCRETIZED
+                    || node.getVariable().getVariableType() == VariableType.NUMERIC) {
                 // double precision = (Double)
                 // getPanel().getJFormattedTextFieldPrecision().getValue();
                 double precision = Double.parseDouble(itemSelected);
-                double[] limits = probNode.getVariable().getPartitionedInterval().getLimits();
-                boolean[] belongs = probNode.getVariable().getPartitionedInterval().getBelongsToLeftSide();
+                double[] limits = node.getVariable().getPartitionedInterval().getLimits();
+                boolean[] belongs = node.getVariable().getPartitionedInterval().getBelongsToLeftSide();
                 for (int i = 0; i < limits.length; i++) {
                     if (limits[i] != Double.POSITIVE_INFINITY
                             && limits[i] != Double.NEGATIVE_INFINITY) {
@@ -1038,10 +1038,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 }
                 PartitionedInterval newPartitionedInterval = new PartitionedInterval(limits,
                         belongs);
-                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(probNode,
+                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
                         newPartitionedInterval);
                 try {
-                    probNode.getProbNet().doEdit(partitionedIntervalEdit);
+                    node.getProbNet().doEdit(partitionedIntervalEdit);
                 } catch (DoEditException
                         | ConstraintViolationException
                         | CanNotDoEditException
@@ -1049,8 +1049,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         | WrongCriterionException e) {
                     e.printStackTrace();
                 }
-                PartitionedInterval newPartitionInterval = probNode.getVariable().getPartitionedInterval();
-                State[] states = probNode.getVariable().getStates();
+                PartitionedInterval newPartitionInterval = node.getVariable().getPartitionedInterval();
+                State[] states = node.getVariable().getStates();
                 getDiscretizedStatesPanel().setDataFromPartitionedInterval(newPartitionInterval,
                         states);
             }
@@ -1089,14 +1089,14 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                 newStates[i] = new State(GUIDefaultStates.getString(str));
                 i++;
             }
-            NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(probNode,
+            NodeReplaceStatesEdit nodeReplaceStatesEdit = new NodeReplaceStatesEdit(node,
                     newStates);
             try {
-                probNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                node.getProbNet().doEdit(nodeReplaceStatesEdit);
                 this.removeAll();
                 try {
                     initialize();
-                    setFieldsFromProperties(probNode);
+                    setFieldsFromProperties(node);
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(null,

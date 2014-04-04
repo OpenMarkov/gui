@@ -11,7 +11,7 @@ import java.util.List;
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -82,7 +82,7 @@ public class ValidName extends PNConstraint
             probNet.getNode (name);
             return true;
         }
-        catch (ProbNodeNotFoundException e)
+        catch (NodeNotFoundException e)
         {
             return false;
         }

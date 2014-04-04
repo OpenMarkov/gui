@@ -88,7 +88,7 @@ public class ICIOptionsPanel extends JPanel
     /**
      * constructor without construction parameters
      */
-    public ICIOptionsPanel (Node probNode)
+    public ICIOptionsPanel (Node node)
     {
         this (true);// , notifier );
         this.listener = new ICIOptionListenerAssistant (this);

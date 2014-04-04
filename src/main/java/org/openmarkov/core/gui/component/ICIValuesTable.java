@@ -29,9 +29,9 @@ public class ICIValuesTable extends ValuesTable
      */
     private int lastCol = -1;
 
-    public ICIValuesTable (Node probNode, ValuesTableModel tableModel, final boolean modifiable)
+    public ICIValuesTable (Node node, ValuesTableModel tableModel, final boolean modifiable)
     {
-        super (probNode, tableModel, modifiable);
+        super (node, tableModel, modifiable);
     }
 
     /**
@@ -63,14 +63,14 @@ public class ICIValuesTable extends ValuesTable
                     lastCol = col;
                 }
                 ICITablePotentialValueEdit nodePotentialEdit = new ICITablePotentialValueEdit (
-                                                                                               probNode,
+                                                                                               node,
                                                                                                (Double) newValue,
                                                                                                row,
                                                                                                col,
                                                                                                priorityList);
                 try
                 {
-                    probNode.getProbNet ().doEdit (nodePotentialEdit);
+                    node.getProbNet ().doEdit (nodePotentialEdit);
                 }
                 catch (ConstraintViolationException | CanNotDoEditException
                         | NonProjectablePotentialException | WrongCriterionException

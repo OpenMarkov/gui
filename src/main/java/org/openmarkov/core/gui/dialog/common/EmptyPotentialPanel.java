@@ -13,13 +13,13 @@ import org.openmarkov.core.model.network.Node;
 @PotentialPanelPlugin(potentialType="Uniform")
 public class EmptyPotentialPanel extends PotentialPanel 
 {
-    public EmptyPotentialPanel(Node probNode)
+    public EmptyPotentialPanel(Node node)
     {
     	setLayout(new BorderLayout());
     }
 
     @Override
-    public void setData (Node probNode)
+    public void setData (Node node)
     {
         // TODO Auto-generated method stub
         

@@ -288,9 +288,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
         } /*
            * else if (!currentNetworkPanel.getProbNet().isMultiagent()) { if
            * (currentNetworkPanel.getProbNet().getAgents() != null) {
-           * currentNetworkPanel.getProbNet().setAgents(null); } for (ProbNode
-           * probNode : currentNetworkPanel.getProbNet().getProbNodes()) {
-           * probNode.getVariable().setAgent(null); } }
+           * currentNetworkPanel.getProbNet().setAgents(null); } for (Node
+           * node : currentNetworkPanel.getProbNet().getNodes()) {
+           * node.getVariable().setAgent(null); } }
            */
     }
 
@@ -678,14 +678,14 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 {
                     canNodeProperties = true;
                     VisualNode visualNode = selectedNodes.get (0);
-                    if (visualNode.getProbNode ().getVariable ().isTemporal ())
+                    if (visualNode.getNode ().getVariable ().isTemporal ())
                     {
                         canLog = true;
                         canTemporalEvolution = true;
-                        canCreateNextSliceNode = !visualNode.getProbNode ().getProbNet().containsShiftedVariable(visualNode.getProbNode ().getVariable (), 1);
+                        canCreateNextSliceNode = !visualNode.getNode ().getProbNet().containsShiftedVariable(visualNode.getNode ().getVariable (), 1);
                     }
                     String label = null;
-                    switch (visualNode.getProbNode ().getNodeType ())
+                    switch (visualNode.getNode ().getNodeType ())
                     {
                         case CHANCE :
                             canNodeTable = true;
@@ -907,14 +907,14 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 {
                     canNodeProperties = true;
                     VisualNode visualNode = selectedNodes.get (0);
-                    if (visualNode.getProbNode ().getVariable ().isTemporal ())
+                    if (visualNode.getNode ().getVariable ().isTemporal ())
                     {
                         canLog = true;
                         canTemporalEvolution = true;
-                        canCreateNextSliceNode = !visualNode.getProbNode ().getProbNet().containsShiftedVariable(visualNode.getProbNode ().getVariable (), 1);
+                        canCreateNextSliceNode = !visualNode.getNode ().getProbNet().containsShiftedVariable(visualNode.getNode ().getVariable (), 1);
                     }
                     String label = null;
-                    switch (visualNode.getProbNode ().getNodeType ())
+                    switch (visualNode.getNode ().getNodeType ())
                     {
                         case CHANCE :
                             canNodeTable = true;

@@ -49,7 +49,7 @@ public class PolicyTypePanel extends JPanel
     /**
      * The node edited
      */
-    private Node            probNode;
+    private Node            node;
     /**
      * The previous policy
      */
@@ -66,13 +66,13 @@ public class PolicyTypePanel extends JPanel
     /**
      * Constructor for PolicyTypePanel.
      * @param parent
-     * @param probNode
+     * @param node
      */
     // TODO Reduce two only two types: optimal and imposed
-    public PolicyTypePanel (PotentialEditDialog parent, Node probNode)
+    public PolicyTypePanel (PotentialEditDialog parent, Node node)
     {
         this.parent = parent;
-        this.probNode = probNode;
+        this.node = node;
         setBorder (new LineBorder (UIManager.getColor ("List.dropLineColor"), 1, false));
         setLayout (new FlowLayout ());
         // jPanelRelationTableType.setSize( 294, 29 );
@@ -193,10 +193,10 @@ public class PolicyTypePanel extends JPanel
             if (previousPolicy == PolicyType.PROBABILISTIC)
             {
                 RemovePolicyEdit removePolicyEdit = null;
-                removePolicyEdit = new RemovePolicyEdit (probNode);
+                removePolicyEdit = new RemovePolicyEdit (node);
                 try
                 {
-                    probNode.getProbNet ().doEdit (removePolicyEdit);
+                    node.getProbNet ().doEdit (removePolicyEdit);
                 }
                 catch (ConstraintViolationException e1)
                 {
@@ -229,11 +229,11 @@ public class PolicyTypePanel extends JPanel
             {
                 SetPotentialEdit setPotentialEdit = null;
                 setPotentialEdit = new SetPotentialEdit (
-                                                         probNode,
+                                                         node,
                                                          TablePotential.class.getAnnotation (PotentialType.class).name ());
                 try
                 {
-                    probNode.getProbNet ().doEdit (setPotentialEdit);
+                    node.getProbNet ().doEdit (setPotentialEdit);
                 }
                 catch (ConstraintViolationException e1)
                 {
@@ -267,7 +267,7 @@ public class PolicyTypePanel extends JPanel
              * getJRadioButtonDeterministicType().setSelected(false);
              * getJRadioButtonProbabilisticType().setSelected(false);
              */
-            switch (probNode.getPolicyType ())
+            switch (node.getPolicyType ())
             {
                 case OPTIMAL :
                     getJRadioButtonOptimalType ().setSelected (true);

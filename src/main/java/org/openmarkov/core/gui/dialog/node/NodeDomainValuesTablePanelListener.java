@@ -224,11 +224,11 @@ public class NodeDomainValuesTablePanelListener
         if (evt.getSource ().equals (getPanel ().getJFormattedTextFieldPrecision ()))
         {
             PrecisionEdit precisionEdit = new PrecisionEdit (
-                                                             getPanel ().getProbNode (),
+                                                             getPanel ().getNode (),
                                                              ((Double) getPanel ().getJFormattedTextFieldPrecision ().getValue ()).doubleValue ());
             try
             {
-                getPanel ().getProbNode ().getProbNet ().doEdit (precisionEdit);
+                getPanel ().getNode ().getProbNet ().doEdit (precisionEdit);
             }
             catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
@@ -244,11 +244,11 @@ public class NodeDomainValuesTablePanelListener
         }
         else if (evt.getSource ().equals (getPanel ().getJTextFieldUnit ()))
         {
-            UnitEdit unitEdit = new UnitEdit (getPanel ().getProbNode (),
+            UnitEdit unitEdit = new UnitEdit (getPanel ().getNode (),
                                               getPanel ().getJTextFieldUnit ().getText ());
             try
             {
-                getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
+                getPanel ().getNode ().getProbNet ().doEdit (unitEdit);
                 getPanel ().getJTextFieldUnit ().setText (getPanel ().getJTextFieldUnit ().getText ());
             }
             catch (DoEditException | ConstraintViolationException | CanNotDoEditException
@@ -264,11 +264,11 @@ public class NodeDomainValuesTablePanelListener
         if (evt.getSource ().equals (getPanel ().getJFormattedTextFieldPrecision ()))
         {
             PrecisionEdit precisionEdit = new PrecisionEdit (
-                                                             panel.getProbNode (),
+                                                             panel.getNode (),
                                                              (Double) getPanel ().getJFormattedTextFieldPrecision ().getValue ());
             try
             {
-                getPanel ().getProbNode ().getProbNet ().doEdit (precisionEdit);
+                getPanel ().getNode ().getProbNet ().doEdit (precisionEdit);
             }
             catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
@@ -281,12 +281,12 @@ public class NodeDomainValuesTablePanelListener
             }
             NumberFormat nf = NumberFormat.getNumberInstance ();
             nf.setGroupingUsed (false); // don't group by threes
-            if (getPanel ().getProbNode ().getVariable ().getVariableType () == VariableType.DISCRETIZED
-                || getPanel ().getProbNode ().getVariable ().getVariableType () == VariableType.NUMERIC)
+            if (getPanel ().getNode ().getVariable ().getVariableType () == VariableType.DISCRETIZED
+                || getPanel ().getNode ().getVariable ().getVariableType () == VariableType.NUMERIC)
             {
                 double precision = (Double) getPanel ().getJFormattedTextFieldPrecision ().getValue ();
-                double[] limits = getPanel ().getProbNode ().getVariable ().getPartitionedInterval ().getLimits ();
-                boolean[] belongs = getPanel ().getProbNode ().getVariable ().getPartitionedInterval ().getBelongsToLeftSide ();
+                double[] limits = getPanel ().getNode ().getVariable ().getPartitionedInterval ().getLimits ();
+                boolean[] belongs = getPanel ().getNode ().getVariable ().getPartitionedInterval ().getBelongsToLeftSide ();
                 for (int i = 0; i < limits.length; i++)
                 {
                     if (limits[i] != Double.POSITIVE_INFINITY
@@ -353,30 +353,30 @@ public class NodeDomainValuesTablePanelListener
                 PartitionedInterval newPartitionedInterval = new PartitionedInterval (limits,
                                                                                       belongs);
                 PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit (
-                                                                                               getPanel ().getProbNode (),
+                                                                                               getPanel ().getNode (),
                                                                                                newPartitionedInterval);
                 try
                 {
-                    getPanel ().getProbNode ().getProbNet ().doEdit (partitionedIntervalEdit);
+                    getPanel ().getNode ().getProbNet ().doEdit (partitionedIntervalEdit);
                 }
                 catch (DoEditException | ConstraintViolationException | CanNotDoEditException
                         | NonProjectablePotentialException | WrongCriterionException e)
                 {
                     e.printStackTrace ();
                 }
-                PartitionedInterval newPartitionInterval = getPanel ().getProbNode ().getVariable ().getPartitionedInterval ();
-                State[] states = getPanel ().getProbNode ().getVariable ().getStates ();
+                PartitionedInterval newPartitionInterval = getPanel ().getNode ().getVariable ().getPartitionedInterval ();
+                State[] states = getPanel ().getNode ().getVariable ().getStates ();
                 getPanel ().getDiscretizedStatesPanel ().setDataFromPartitionedInterval (newPartitionInterval,
                                                                                                   states);
             }
         }
         else if (evt.getSource ().equals (getPanel ().getJTextFieldUnit ()))
         {
-            UnitEdit unitEdit = new UnitEdit (getPanel ().getProbNode (),
+            UnitEdit unitEdit = new UnitEdit (getPanel ().getNode (),
                                               getPanel ().getJTextFieldUnit ().getText ());
             try
             {
-                getPanel ().getProbNode ().getProbNet ().doEdit (unitEdit);
+                getPanel ().getNode ().getProbNet ().doEdit (unitEdit);
             }
             catch (DoEditException | ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException e)

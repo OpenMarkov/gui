@@ -41,7 +41,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 	/**
 	 * The node edited
 	 */
-	private Node probNode = null;
+	private Node node = null;
 	/**
 	 * Action to do with the partitioned interval 
 	 */
@@ -69,7 +69,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 	/**
 	 * Creates a new <code>PartiTionedIntervalEdit</code> to edit the limit 
 	 * symbol of the interval
-	 * @param probNode
+	 * @param node
 	 * 	The node that contain the partionInterval object to be edited.
 	 * @param stateAction
 	 * 	The action to do in this edit.
@@ -78,14 +78,14 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 	 * @param lower
 	 * 	A boolean that specify if the edition is in the lower symbol 
 	 */	
-	public NodePartitionedIntervalEdit ( Node probNode,
+	public NodePartitionedIntervalEdit ( Node node,
 				StateAction stateAction, int indexState, boolean lower){
-			super(probNode.getProbNet());
-			this.probNode = probNode;
+			super(node.getProbNet());
+			this.node = node;
 			this.indexState = indexState;
 			this.stateAction = stateAction;
 			this.lower = lower;
-			this.currentPartitionedInterval = probNode.getVariable().
+			this.currentPartitionedInterval = node.getVariable().
 				getPartitionedInterval();
 			
 			
@@ -94,7 +94,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		/**
 		 * Creates a new <code>NodePartiTionedIntervalEdit</code> to edit the 
 		 * limit value of the interval
-		 * @param probNode
+		 * @param node
 		 * 	The node that contains the partionInterval object to be edited.
 		 * @param stateAction
 		 * 	The action to do in this edit.
@@ -105,17 +105,17 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * @param lower
 		 * 	A boolean that specify if the edition is in the lower value 
 		 */	
-		public NodePartitionedIntervalEdit ( Node probNode,
+		public NodePartitionedIntervalEdit ( Node node,
 				StateAction stateAction, int indexState, double newValue,
 				boolean lower){
 			
-			this (probNode,stateAction, indexState, lower);
+			this (node,stateAction, indexState, lower);
 			this.newValue = newValue;
 			if ( lower ){
-				this.lastValue = probNode.getVariable().getPartitionedInterval().
+				this.lastValue = node.getVariable().getPartitionedInterval().
 				getLimit(indexState);
 			}else{
-				this.lastValue = probNode.getVariable().getPartitionedInterval().
+				this.lastValue = node.getVariable().getPartitionedInterval().
 				getLimit( indexState + 1 );
 			}
 			
@@ -138,7 +138,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 							!currentPartitionedInterval.getBelongsToLeftSide(
 									indexState + 1));
 				}
-				/*probNode.getVariable().setPartitionedInterval(
+				/*node.getVariable().setPartitionedInterval(
 						newPartitionedInterval );*/
 				break;
 			case MODIFY_VALUE_INTERVAL:
@@ -176,7 +176,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 							!currentPartitionedInterval.getBelongsToLeftSide(
 									indexState + 1));
 				}
-				/*probNode.getVariable().setPartitionedInterval(
+				/*node.getVariable().setPartitionedInterval(
 						newPartitionedInterval );*/
 				break;
 			case MODIFY_VALUE_INTERVAL:
@@ -199,8 +199,8 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * Gets the node edited
 		 * @return the node edited
 		 */		
-		public Node getProbNode(){
-			return probNode;
+		public Node getNode(){
+			return node;
 		}
 		/**
 		 * Gets the action realized.
@@ -246,24 +246,24 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 			double limits [] = null;
 			boolean belongsToLeftSide [];
 			if (stateAction == StateAction.ADD){
-				limits = probNode.getVariable().getPartitionedInterval().
+				limits = node.getVariable().getPartitionedInterval().
 					getLimits();
-				belongsToLeftSide = probNode.getVariable().
+				belongsToLeftSide = node.getVariable().
 					getPartitionedInterval().getBelongsToLeftSide();
 			
 				firstSymbol = (belongsToLeftSide[limits.length-2]? "(" : "[");
 				secondSymbol = (belongsToLeftSide[limits.length-1]? "]" : ")");
 			} else if (stateAction == StateAction.REMOVE){
-				limits = probNode.getVariable().getPartitionedInterval().
+				limits = node.getVariable().getPartitionedInterval().
 					getLimits();
-				belongsToLeftSide = probNode.getVariable().
+				belongsToLeftSide = node.getVariable().
 					getPartitionedInterval().getBelongsToLeftSide();
 		
 				firstSymbol = (belongsToLeftSide[indexState]? "(" : "[");
 				secondSymbol = (belongsToLeftSide[indexState + 1]? "]" : ")");
 						
 			}
-			return new Object[] {"", GUIDefaultStates.getString(probNode.getVariable().
+			return new Object[] {"", GUIDefaultStates.getString(node.getVariable().
 	 				getStates()[indexState].toString()) , firstSymbol, 
 	 				limits[ indexState], "," , limits[ indexState + 1], 
 	 				secondSymbol };

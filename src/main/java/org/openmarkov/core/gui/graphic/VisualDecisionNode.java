@@ -85,12 +85,12 @@ public class VisualDecisionNode extends VisualNode {
     public VisualDecisionNode(Node node, VisualNetwork visualNetwork) {
         super(node, visualNetwork);
         expanded = false;
-        if (probNode.getPolicyType() != PolicyType.OPTIMAL) {
+        if (node.getPolicyType() != PolicyType.OPTIMAL) {
             hasPolicy = true;
         }
         preResolutionFinding = false;
         postResolutionFinding = false;
-        setTemporalPosition(new Point2D.Double(probNode.getCoordinateX(), probNode.getCoordinateY()));
+        setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
         innerBox = new FSVariableBox(this);
         setHasPolicy(node.getPotentials().size() != 0);
     }

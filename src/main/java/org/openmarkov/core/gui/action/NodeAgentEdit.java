@@ -22,23 +22,23 @@ public class NodeAgentEdit extends SimplePNEdit{
 	
 	private StringWithProperties  currentAgent;
 	private StringWithProperties newAgent;
-	private Node probNode;
+	private Node node;
 
-	public NodeAgentEdit (Node probNode, StringWithProperties agent) {
-		super(probNode.getProbNet());
-		this.probNode = probNode;
-		this.currentAgent = probNode.getVariable().getAgent();
+	public NodeAgentEdit (Node node, StringWithProperties agent) {
+		super(node.getProbNet());
+		this.node = node;
+		this.currentAgent = node.getVariable().getAgent();
 		this.newAgent = agent;
 	}
 	@Override
 	public void doEdit() throws DoEditException {
-		probNode.getVariable().setAgent(newAgent);
+		node.getVariable().setAgent(newAgent);
 	}
 	
 	@Override
 	public void undo() {
 		super.undo();
-		probNode.getVariable().setAgent(currentAgent);
+		node.getVariable().setAgent(currentAgent);
 	}
 
 }

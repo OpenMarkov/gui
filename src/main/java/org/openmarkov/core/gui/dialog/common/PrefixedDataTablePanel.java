@@ -21,7 +21,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.Node;
@@ -67,7 +67,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 */
 	private String titleToSelectRows;
 
-	private Node probNode;
+	private Node node;
 	
 	
 	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
@@ -84,13 +84,13 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @param newTitleToSelectRows
 	 *            title of the window where the user can select new rows.
 	 */
-	public PrefixedDataTablePanel(Node probNode, String[] newColumns, Object[][] newData,
+	public PrefixedDataTablePanel(Node node, String[] newColumns, Object[][] newData,
 									Object[][] newPrefixedData,
 									String newTitleToSelectRows,
 									boolean firstColumnHidden){
 
 		super(newColumns, new Object[0][0], false, false);
-		this.probNode = probNode; 
+		this.node = node; 
 		prefixedData = newPrefixedData.clone();
 		titleToSelectRows = newTitleToSelectRows;
 		initialize();
@@ -152,10 +152,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 				for (i = 0; i < l; i++) {
 					String name =  (String) newData[i][1];
 					for (PNEdit edit:edits){
-						if (((AddLinkEdit)edit).getProbNode1().getName().equals(
+						if (((AddLinkEdit)edit).getNode1().getName().equals(
 								name)){
 							try {
-								probNode.getProbNet().getPNESupport().doEdit(
+								node.getProbNet().getPNESupport().doEdit(
 										(AddLinkEdit)edit);
 								tableModel.insertRow(newIndex + i, newData[i]);
 								edits.remove(edit);
@@ -212,21 +212,21 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * @return the prefixed data that aren't in the array 'data'.
 	 */
 	private Object[][] absentPrefixedData() {
-	    List<Node> probNodes = probNode.getProbNet().getNodes();
+	    List<Node> allNodes = node.getProbNet().getNodes();
 	    List<Node> nodes = new ArrayList<Node>();
 		edits.clear();
 		
-		for (Node pProbNode:probNodes){
-			if (!probNode.getParents().contains(pProbNode) &&  pProbNode != probNode){
+		for (Node otherNode:allNodes){
+			if (!node.getParents().contains(otherNode) &&  otherNode != node){
 				
-				//LinkEdit linkEdit = new LinkEdit(probNode.getProbNet(),pProbNode.getName(), probNode.getName(), true, true);
-				AddLinkEdit linkEdit = new AddLinkEdit(probNode.getProbNet(),
-						pProbNode.getVariable(), probNode.getVariable(), true);
+				//LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
+				AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(),
+						otherNode.getVariable(), node.getVariable(), true);
 				
 				try {
-					probNode.getProbNet().getPNESupport().announceEdit(linkEdit);
+					node.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
-					nodes.add(pProbNode);
+					nodes.add(otherNode);
 				} catch(ConstraintViolationException ignore){
 				} catch (CanNotDoEditException
 						| NonProjectablePotentialException
@@ -257,15 +257,15 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		
 		/*LinkEdit linkEdit;
-		linkEdit = new LinkEdit(probNode.getProbNet(), name,
-				probNode.getName(), true, 
+		linkEdit = new LinkEdit(node.getProbNet(), name,
+				node.getName(), true, 
 				false);*/
-		ProbNet probNet = probNode.getProbNet();
+		ProbNet probNet = node.getProbNet();
 		RemoveLinkEdit linkEdit;
 		try {
 			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name),
-					probNode.getVariable(), true);
-			probNode.getProbNet().doEdit(linkEdit);
+					node.getVariable(), true);
+			node.getProbNet().doEdit(linkEdit);
 				
 			tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
@@ -305,7 +305,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					.getString( e.getMessage() ),
 					stringDatabase.getString( e.getMessage() ),
 				JOptionPane.ERROR_MESSAGE );
-		} catch (ProbNodeNotFoundException e1) {
+		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase

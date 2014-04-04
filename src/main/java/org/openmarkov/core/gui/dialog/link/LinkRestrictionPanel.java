@@ -43,13 +43,13 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	 */
 	protected JScrollPane valuesTableScrollPane = null;
 	/***
-	 * ProbNode of the parent node of the link
+	 * Node of the parent node of the link
 	 */
-	protected Node probNode1;
+	protected Node node1;
 	/****
-	 * ProbNode of the child node of the link
+	 * Node of the child node of the link
 	 */
-	protected Node probNode2;
+	protected Node node2;
 	/***
 	 * The link which has the link restriction
 	 */
@@ -58,10 +58,10 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	public LinkRestrictionPanel(Link<Node> link) {
 
 		this.link = link;
-		probNode1 = link.getNode1();
-		probNode2 = link.getNode2();
+		node1 = link.getNode1();
+		node2 = link.getNode2();
 		modifiable = true;
-		setData(probNode1, probNode2);
+		setData(node1, node2);
 		setLayout(new BorderLayout());
 		add(this.getValuesTableScrollPane(), BorderLayout.CENTER);
 	}
@@ -134,25 +134,25 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	 * of the link and transforms the tablePotential of the link restriction to
 	 * a format, which can be displayed in a table.
 	 * 
-	 * @param probNode1
+	 * @param node1
 	 *            Parent node of the link.
-	 * @param probNode2
+	 * @param node2
 	 *            Child node of the link.
 	 */
-	public void setData(Node probNode1, Node probNode2) {
+	public void setData(Node node1, Node node2) {
 
 		Object[][] tableData = null;
 		String[] newColumns = null;
-		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(this.probNode1
+		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(this.node1
 				.getVariable().getNumStates() + 1);
 		setFirstEditableRow(1);
-		setLastEditableRow(probNode2.getVariable().getNumStates());
-		tableData = convertListPotentialsToTableFormat(probNode1, probNode2);
+		setLastEditableRow(node2.getVariable().getNumStates());
+		tableData = convertListPotentialsToTableFormat(node1, node2);
 		this.data = tableData;
 		this.columns = newColumns;
 
 		setData(tableData, newColumns, firstEditableRow, lastEditableRow,
-				probNode2.getNodeType());
+				node2.getNodeType());
 		setCellRenderers();
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
 
@@ -224,8 +224,8 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 		TablePotential tablePotential = (TablePotential) link
 				.getRestrictionsPotential();
 
-		int numStates2 = probNode2.getVariable().getNumStates();
-		int numStates1 = probNode1.getVariable().getNumStates();
+		int numStates2 = node2.getVariable().getNumStates();
+		int numStates1 = node1.getVariable().getNumStates();
 		for (int i = 0; i < numStates2; i++) {
 			for (int j = 1; j <= numStates1; j++) {
 				int[] statesIndices = new int[] { j - 1, i };
@@ -249,8 +249,8 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 
 		Object[][] values = oldValues;
-		NodeType type = probNode2.getNodeType();
-		Variable var = probNode2.getVariable();
+		NodeType type = node2.getNodeType();
+		Variable var = node2.getVariable();
 		State[] states = var.getStates();
 		for (int i = var.getNumStates(); i > 0; i--) {
 			if (type != NodeType.UTILITY) {
@@ -275,9 +275,9 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		Object[][] values = oldValues;
 
-		Variable var = probNode1.getVariable();
+		Variable var = node1.getVariable();
 		State[] states = var.getStates();
-		for (int i = 1; i <= probNode1.getVariable().getNumStates(); i++) {
+		for (int i = 1; i <= node1.getVariable().getNumStates(); i++) {
 			values[0][i] = states[i - 1].getName();
 		}
 		return values;
@@ -297,7 +297,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		Object[][] values = oldValues;
 
-		values[0][0] = probNode1.getVariable();
+		values[0][0] = node1.getVariable();
 		return values;
 	}
 
@@ -317,7 +317,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 		setVariables(link.getRestrictionsPotential().getVariables());
 		// create the array of arrays
-		values = new Object[probNode2.getVariable().getNumStates() + 1][probNode1
+		values = new Object[node2.getVariable().getNumStates() + 1][node1
 				.getVariable().getNumStates() + 1];
 		return values;
 	}
@@ -378,7 +378,7 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 	}
 
 	@Override
-	public void setData(Node probNode) {
+	public void setData(Node node) {
 		// TODO Auto-generated method stub
 
 	}

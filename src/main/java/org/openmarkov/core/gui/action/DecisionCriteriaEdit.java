@@ -73,8 +73,8 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 // it is also necessary to delete this criteria from the node it
                 // was assigned to
                 /*
-                 * if (criteria != null) { for (ProbNode node :
-                 * probNet.getProbNodes()) { if
+                 * if (criteria != null) { for (Node node :
+                 * probNet.getNodes()) { if
                  * (node.getVariable().getDecisionCriteria
                  * ().getString().equals(criteriaName)) {
                  * node.getVariable().setDecisionCriteria(null); } } }

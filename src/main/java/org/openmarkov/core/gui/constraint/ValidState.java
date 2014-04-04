@@ -38,10 +38,10 @@ public class ValidState extends PNConstraint
         {
             State state = ((NodeStateEdit) simpleEdit).getNewState ();
             State currentState = ((NodeStateEdit) simpleEdit).getLastState ();
-            Node probNode = ((NodeStateEdit) simpleEdit).getProbNode ();
+            Node node = ((NodeStateEdit) simpleEdit).getNode ();
             StateAction stateAction = ((NodeStateEdit) simpleEdit).getStateAction ();
             // if ((name == null) || (name.contentEquals(""))) {
-            if (!checkState (state.getName (), currentState.getName (), probNode, stateAction))
+            if (!checkState (state.getName (), currentState.getName (), node, stateAction))
             {
                 return false;
             }
@@ -57,7 +57,7 @@ public class ValidState extends PNConstraint
      */
     public boolean checkState (String newState,
                                String currentState,
-                               Node probNode,
+                               Node node,
                                StateAction stateAction)
     {
         switch (stateAction)
@@ -69,7 +69,7 @@ public class ValidState extends PNConstraint
                     message = "NodeStateEmpty.Text.Label";
                     return false;
                 }
-                else if (existState (newState, probNode))
+                else if (existState (newState, node))
                 {
                     message = "DuplicatedState.Text.Label";
                     return false;
@@ -85,9 +85,9 @@ public class ValidState extends PNConstraint
      * @param name name of the node to search.
      * @return true if the state exists; otherwise, false.
      */
-    public boolean existState (String state, Node probNode)
+    public boolean existState (String state, Node node)
     {
-        for (State states : probNode.getVariable ().getStates ())
+        for (State states : node.getVariable ().getStates ())
         {
             if (states.getName ().toUpperCase ().equals (state.toUpperCase ()))
             {

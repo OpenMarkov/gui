@@ -80,7 +80,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     /**
      * Object where all information will be saved.
      */
-    protected Node                 probNode                   = null;
+    protected Node                 node                   = null;
     /**
      * v
      */
@@ -94,12 +94,12 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      * @param readOnly if true, values inside the dialog will not be editable
      */
     public NodePropertiesDialog (Window owner,
-                                 Node probNode,
+                                 Node node,
                                  boolean newElement,
                                  boolean readOnly)
     {
         super (owner);
-        this.probNode = probNode;
+        this.node = node;
         this.readOnly = readOnly;
         this.newNode = newElement;
         // setResizable(true);
@@ -108,33 +108,33 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     }
 
     /**
-     * This method fills the content of the fields from a ProbNode object. In
+     * This method fills the content of the fields from a Node object. In
      * this method, when Elvira will be discontinued, the code for discriminate
      * discrete and discretized variables must be eliminated
-     * @param probNode object from where load the information.
+     * @param node object from where load the information.
      */
-    private void setFieldsFromProperties (Node probNode)
+    private void setFieldsFromProperties (Node node)
     {
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
         // so here we will see if there are intervals in the states
-        if (Util.hasLimitBracketSymbols (probNode.getVariable ().getStates ())
-            && (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES))
+        if (Util.hasLimitBracketSymbols (node.getVariable ().getStates ())
+            && (node.getVariable ().getVariableType () == VariableType.FINITE_STATES))
         {
             // really DISCRETIZED, so change the value of the VariableType
-            probNode.getVariable ().setVariableType (VariableType.DISCRETIZED);
+            node.getVariable ().setVariableType (VariableType.DISCRETIZED);
         }
         // set the nodeProperties variable in this dialog and panels
-        this.probNode = probNode;
+        this.node = node;
         // *******
         setTitle (stringDatabase.getString ("NodePropertiesDialog.Title.Label") + ": "
-                  + probNode.getName ());
-        nodeDefinitionPanel.setNodeProperties (probNode);
+                  + node.getName ());
+        nodeDefinitionPanel.setNodeProperties (node);
         // *******
-        if (probNode.getNodeType () == NodeType.CHANCE
-            || probNode.getNodeType () == NodeType.DECISION)
+        if (node.getNodeType () == NodeType.CHANCE
+            || node.getNodeType () == NodeType.DECISION)
         {
-            nodeDomainValuesTablePanel.setFieldsFromProperties (probNode);
-            if (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES)
+            nodeDomainValuesTablePanel.setFieldsFromProperties (node);
+            if (node.getVariable ().getVariableType () == VariableType.FINITE_STATES)
             {
                 // tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
                 // .getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
@@ -144,7 +144,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
                                          true); // set disable the
                                                 // DiscreteValuesPanel
             }
-            else if (probNode.getVariable ().getVariableType () == VariableType.DISCRETIZED)
+            else if (node.getVariable ().getVariableType () == VariableType.DISCRETIZED)
             {
                 // tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
                 // .getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
@@ -176,33 +176,33 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
              */// set disable the DiscreteValuesPanel
         }
         // *******
-        nodeParentsPanel.setNodeProperties (probNode);
+        nodeParentsPanel.setNodeProperties (node);
         // *******
         /*
-         * nodeProbsValuesTablePanel.setNodeProperties(probNode); String
+         * nodeProbsValuesTablePanel.setNodeProperties(node); String
          * auxTitle = dialogStringResource .getString(
          * "NodePropertiesDialog.ProbTablesTab.Title.Label"); int auxTabPosition
-         * = tabbedPane.indexOfTab(auxTitle); if (probNode.getNodeType() ==
+         * = tabbedPane.indexOfTab(auxTitle); if (node.getNodeType() ==
          * NodeType.CHANCE ) { auxTitle = dialogStringResource .getString(
          * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeChance"); } else
-         * if (probNode.getNodeType() == NodeType.DECISION ) { auxTitle =
+         * if (node.getNodeType() == NodeType.DECISION ) { auxTitle =
          * dialogStringResource .getString(
          * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeDecision"); }
-         * else if (probNode.getNodeType() == NodeType.UTILITY ) { auxTitle =
+         * else if (node.getNodeType() == NodeType.UTILITY ) { auxTitle =
          * dialogStringResource .getString(
          * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeUtility"); }
          * tabbedPane.setTitleAt(auxTabPosition,auxTitle);
          */
         // *******
-        nodeOtherPropsTablePanel.setNodeProperties (probNode);
+        nodeOtherPropsTablePanel.setNodeProperties (node);
         // set the NodeDefinitionPanel fields
-        nodeDefinitionPanel.setFieldsFromProperties (probNode);
+        nodeDefinitionPanel.setFieldsFromProperties (node);
         // set the NodeParentsPanel fields
-        nodeParentsPanel.setFieldsFromProperties (probNode);
+        nodeParentsPanel.setFieldsFromProperties (node);
         // set the NodeProbsValuesTablePanel fields
-        // nodeProbsValuesTablePanel.setFieldsFromProperties(probNode);
+        // nodeProbsValuesTablePanel.setFieldsFromProperties(node);
         // set the NodeOtherPropsTablePanel fields //Disable by mpalacios
-        nodeOtherPropsTablePanel.setFieldsFromProperties (probNode);
+        nodeOtherPropsTablePanel.setFieldsFromProperties (node);
         // setSpecificFieldsFromProperties(additionalProperties);
     }
 
@@ -212,7 +212,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     protected void initialize ()
     {
         setTitle (stringDatabase.getString ("NodePropertiesDialog.Title.Label") + ": "
-                  + (probNode == null ? "" : probNode.getName ()));
+                  + (node == null ? "" : node.getName ()));
         getComponentsPanel ().setName ("NodePropertiesDialogComponentPane");
         configureComponentsPanel ();
         pack ();
@@ -265,7 +265,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      */
     public Node getNodeProperties ()
     {
-        return probNode;
+        return node;
     }
 
     /**
@@ -276,10 +276,10 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     {
         if (nodeDefinitionPanel == null)
         {
-            nodeDefinitionPanel = new NodeDefinitionPanel (probNode);
+            nodeDefinitionPanel = new NodeDefinitionPanel (node);
             nodeDefinitionPanel.setName ("nodeDefinitionPanel");
             nodeDefinitionPanel.setNewNode (newNode);
-            nodeDefinitionPanel.setNodeProperties (probNode);
+            nodeDefinitionPanel.setNodeProperties (node);
         }
         return nodeDefinitionPanel;
     }
@@ -295,7 +295,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
             discreteValuesTablePanel = new DiscreteValuesTablePanel ();
             discreteValuesTablePanel.setName ("discreteValuesTablePanel");
             discreteValuesTablePanel.setNewNode (newNode);
-            discreteValuesTablePanel.setNodeProperties (probNode);
+            discreteValuesTablePanel.setNodeProperties (node);
         }
         return discreteValuesTablePanel;
     }
@@ -308,7 +308,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     {
         if (nodeDomainValuesTablePanel == null)
         {
-            nodeDomainValuesTablePanel = new NodeDomainValuesTablePanel (probNode);
+            nodeDomainValuesTablePanel = new NodeDomainValuesTablePanel (node);
             nodeDomainValuesTablePanel.getJLabelPrecision ().setHorizontalAlignment (SwingConstants.LEFT);
             nodeDomainValuesTablePanel.setName ("nodeDiscretizeValuesTablePanel");
             nodeDomainValuesTablePanel.setNewNode (newNode);
@@ -324,10 +324,10 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     {
         if (nodeParentsPanel == null)
         {
-            nodeParentsPanel = new NodeParentsPanel (probNode);
+            nodeParentsPanel = new NodeParentsPanel (node);
             nodeParentsPanel.setName ("nodeParentsPanel");
             nodeParentsPanel.setNewNode (newNode);
-            // nodeParentsPanel.setNodeProperties(probNode);
+            // nodeParentsPanel.setNodeProperties(node);
         }
         return nodeParentsPanel;
     }
@@ -343,7 +343,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
             nodeOtherPropsTablePanel = new NodeOtherPropsTablePanel ();
             nodeOtherPropsTablePanel.setName ("nodeOtherPropsTablePanel");
             nodeOtherPropsTablePanel.setNewNode (newNode);
-            nodeOtherPropsTablePanel.setNodeProperties (probNode);
+            nodeOtherPropsTablePanel.setNodeProperties (node);
         }
         return nodeOtherPropsTablePanel;
     }
@@ -355,7 +355,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     @Override
     protected void doCancelClickBeforeHide ()
     {
-        probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet ().getPNESupport ().closeParenthesis ();
     }
 
     /**
@@ -368,16 +368,16 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      */
     public int requestProperties ()
     {
-        setFieldsFromProperties (probNode);
+        setFieldsFromProperties (node);
         setVisible (true);
         // TODO revisar el acceso a los componentes en la siguiente línea
         /*
-         * probNode.getProbNet().getPNESupport().removeUndoableEditListener(
+         * node.getProbNet().getPNESupport().removeUndoableEditListener(
          * ((NodeProbsValuesTablePanel)getNodeProbsTablePanel()).
          * getNodePotentialsTablePanel().getValuesTable());
          */
         /*
-         * probNode.getProbNet().getPNESupport().removeUndoableEditListener(
+         * node.getProbNet().getPNESupport().removeUndoableEditListener(
          * (getNodeDomainValuesTablePanel().get);
          */
         return selectedButton;
@@ -393,7 +393,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     {
         if (generalChecks () /* && specificChecks() */)
         {
-            probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+            node.getProbNet ().getPNESupport ().closeParenthesis ();
             return true;
         }
         return false;

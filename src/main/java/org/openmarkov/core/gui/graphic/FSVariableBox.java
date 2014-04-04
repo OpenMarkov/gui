@@ -51,8 +51,8 @@ public class FSVariableBox extends InnerBox {
 	 * Each visual state will have only a value
 	 */
 	protected void createVisualStates() {
-		Node probNode = visualNode.getProbNode();
-		Variable variable = probNode.getVariable();
+		Node node = visualNode.getNode();
+		Variable variable = node.getVariable();
 		State[] states = variable.getStates();
 		for (int i=0; i<states.length; i++) {
 			VisualState visualState = new VisualState(visualNode, i, states[i].getName());
@@ -67,8 +67,8 @@ public class FSVariableBox extends InnerBox {
 	 *            Number of values that has to be each visual state.
 	 */
 	private void createVisualStates(int numValues) {
-		Node probNode = visualNode.getProbNode();
-		Variable variable = probNode.getVariable();
+		Node node = visualNode.getNode();
+		Variable variable = node.getVariable();
 		State[] states = variable.getStates();
 		for (int i=0; i<states.length; i++) {
 			VisualState visualState =

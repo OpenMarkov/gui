@@ -65,7 +65,7 @@ public class PotentialPanelManager
      * @param potentialType the potential's name.
      * @return a new Potential instance given the parameters.
      */
-    public final PotentialPanel getPotentialPanel (String potentialType, Node probNode)
+    public final PotentialPanel getPotentialPanel (String potentialType, Node node)
     {
         PotentialPanel instance = null;
         if (potentialPanelClasses.get (potentialType) != null)
@@ -73,7 +73,7 @@ public class PotentialPanelManager
             try
             {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (Node.class);
-                instance = constructor.newInstance (probNode);
+                instance = constructor.newInstance (node);
             }
             catch (Exception e)
             {
@@ -82,7 +82,7 @@ public class PotentialPanelManager
         }
         if (instance == null)
         {
-            instance = new EmptyPotentialPanel (probNode);
+            instance = new EmptyPotentialPanel (node);
         }
         return instance;
     }
@@ -95,7 +95,7 @@ public class PotentialPanelManager
      */
     public final PotentialPanel getPotentialPanel (String potentialType,
                                                    String potentialFamily,
-                                                   Node probNode)
+                                                   Node node)
     {
         PotentialPanel instance = null;
         if (potentialPanelClasses.get (potentialFamily) != null)
@@ -103,7 +103,7 @@ public class PotentialPanelManager
             try
             {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialFamily).getConstructor (Node.class);
-                instance = constructor.newInstance (probNode);
+                instance = constructor.newInstance (node);
             }
             catch (Exception e)
             {
@@ -115,7 +115,7 @@ public class PotentialPanelManager
             try
             {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get (potentialType).getConstructor (Node.class);
-                instance = constructor.newInstance (probNode);
+                instance = constructor.newInstance (node);
             }
             catch (Exception e)
             {
@@ -124,7 +124,7 @@ public class PotentialPanelManager
         }
         if (instance == null)
         {
-            instance = new EmptyPotentialPanel (probNode);
+            instance = new EmptyPotentialPanel (node);
         }
         return instance;
     }

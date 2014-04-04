@@ -83,7 +83,7 @@ public abstract class VisualNode extends VisualElement {
 	/**
 	 * Object that has the node information.
 	 */
-	protected Node probNode;
+	protected Node node;
 
 	/**
 	 * Object that manages the internal representation of the node when
@@ -128,7 +128,7 @@ public abstract class VisualNode extends VisualElement {
 	
 	public VisualNode(Node node, VisualNetwork visualNetwork)
 	{
-	    this.probNode = node;
+	    this.node = node;
 	    this.visualNetwork = visualNetwork;
 	}
 
@@ -170,8 +170,8 @@ public abstract class VisualNode extends VisualElement {
 	@Override
 	public Point2D.Double getPosition() {
 
-		return new Point2D.Double(probNode.getCoordinateX(),
-				probNode.getCoordinateY());
+		return new Point2D.Double(node.getCoordinateX(),
+				node.getCoordinateY());
 	}
 
 	/**
@@ -182,8 +182,8 @@ public abstract class VisualNode extends VisualElement {
 	 */
 	public void setPosition(Point2D.Double value) {
 
-		probNode.setCoordinateX((int) value.getX());
-		probNode.setCoordinateY((int) value.getY());
+		node.setCoordinateX((int) value.getX());
+		node.setCoordinateY((int) value.getY());
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public abstract class VisualNode extends VisualElement {
 	 */
 	protected String getNodeString() {
 
-		return probNode.getName();
+		return node.getName();
 	}
 
 
@@ -227,8 +227,8 @@ public abstract class VisualNode extends VisualElement {
 	 * 
 	 * @return information of the node.
 	 */
-	public Node getProbNode() {
-		return probNode;
+	public Node getNode() {
+		return node;
 	}
 
 	/**
@@ -394,7 +394,7 @@ public abstract class VisualNode extends VisualElement {
     protected Stroke getContourStroke()
     {
     	Stroke s = null;
-    	if (probNode.isInput ()) {
+    	if (node.isInput ()) {
 		    s = (isSelected())? WIDE_DASHED_STROKE : NORMAL_DASHED_STROKE;
 		} else {
             s = (isSelected())? WIDE_STROKE : NORMAL_STROKE;
@@ -412,7 +412,7 @@ public abstract class VisualNode extends VisualElement {
     public String toString()
     {
     	StringBuilder sb = new StringBuilder();
-    	sb.append(probNode.getName());
+    	sb.append(node.getName());
     	sb.append(" - ");
     	sb.append(getPosition());
     	return sb.toString();

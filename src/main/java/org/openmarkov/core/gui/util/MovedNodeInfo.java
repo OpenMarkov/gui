@@ -54,7 +54,7 @@ public class MovedNodeInfo {
 	 * 
 	 * @return the node that has been moved.
 	 */
-	public Node getProbNode() {
+	public Node getNode() {
 
 		return nodeWrapper;
 	}

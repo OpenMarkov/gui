@@ -40,7 +40,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
@@ -915,9 +915,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             double costDiscountRate = costEffectivenessDialog.getCostDiscount();
             double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
             double maxX = 0.0;
-            for (Node probNode : probNet.getNodes()) {
-                if (probNode.getCoordinateX() > maxX) {
-                    maxX = probNode.getCoordinateX();
+            for (Node node : probNet.getNodes()) {
+                if (node.getCoordinateX() > maxX) {
+                    maxX = node.getCoordinateX();
                 }
             }
             MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
@@ -932,8 +932,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 	            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
 	                    costDiscountRate,
 	                    effectivenessDiscountRate);
-	//            for (ProbNode probNode : expandedNetwork.getProbNodes()) {
-	//                probNode.samplePotentials();
+	//            for (Node node : expandedNetwork.getNodes()) {
+	//                node.samplePotentials();
 	//            }
 	            String fileName = probNet.getName() + "_expandedCE";
 	            expandedNetwork.setName(fileName);
@@ -1016,7 +1016,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                                             JOptionPane.ERROR_MESSAGE);
                                 }
                             }
-                        } catch (ProbNodeNotFoundException e) {
+                        } catch (NodeNotFoundException e) {
                             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                                     stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text")
                                             + ": "

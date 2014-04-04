@@ -46,7 +46,7 @@ public class NodeParentsPanel extends JPanel
     /**
      * Object where all information will be saved.
      */
-    private Node               probNode         = null;
+    private Node               node         = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -63,10 +63,10 @@ public class NodeParentsPanel extends JPanel
     /**
      * constructor
      */
-    public NodeParentsPanel (Node probNode)
+    public NodeParentsPanel (Node node)
     {// , ElementObservable notifier) {
         this (false);// , notifier);
-        this.probNode = probNode;
+        this.node = node;
         try
         {
             initialize ();
@@ -141,7 +141,7 @@ public class NodeParentsPanel extends JPanel
         if (prefixedDataTablePanelParentsTable == null)
         {
             prefixedDataTablePanelParentsTable = new PrefixedDataTablePanel (
-                                                                             probNode,
+                                                                             node,
                                                                              new String[] {
                                                                                      "",
                                                                                      StringDatabase.getUniqueInstance ().getString ("NodeParentsPanel.prefixedDataTablePanelParentsTable.Columns.Name.Text")},
@@ -161,7 +161,7 @@ public class NodeParentsPanel extends JPanel
      */
     public Node getNetworkProperties ()
     {
-        return probNode;
+        return node;
     }
 
     /**
@@ -170,7 +170,7 @@ public class NodeParentsPanel extends JPanel
      */
     public void setNodeProperties (final Node nodeProperties)
     {
-        this.probNode = nodeProperties;
+        this.node = nodeProperties;
     }
 
     /**

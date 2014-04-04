@@ -191,17 +191,17 @@ public class SelectionRectangle {
 	 * Tests if the center point of the node is inside the boundary of the
 	 * rectangle selection.
 	 * 
-	 * @param node
+	 * @param visualNode
 	 *            node to be tested.
 	 * @return true if the center of the node is contained into the rectangle;
 	 *         otherwise, false.
 	 */
-	public boolean containsNode(VisualNode node) {
+	public boolean containsNode(VisualNode visualNode) {
 
-		Node probNode = node.getProbNode();
+		Node node = visualNode.getNode();
 
-		return rectangleSelection.contains(probNode.getCoordinateX(), 
-				probNode.getCoordinateY());
+		return rectangleSelection.contains(node.getCoordinateX(), 
+				node.getCoordinateY());
 
 	}
 

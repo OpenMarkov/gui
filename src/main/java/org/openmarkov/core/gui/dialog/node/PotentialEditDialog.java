@@ -82,7 +82,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * The node edited
      */
-    private Node             probNode;
+    private Node             node;
     /**
      * The panel that contains all the common option to potentials
      */
@@ -122,17 +122,17 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * Creates the dialog.
      */
     public PotentialEditDialog (Window owner,
-                                Node probNode,
+                                Node node,
                                 boolean newElement,
                                 boolean readOnly)
     {
         super (owner);
-        this.probNode = probNode;
+        this.node = node;
         this.readOnly = readOnly;
         // TODO create PNESupport
-        probNode.getProbNet ().getPNESupport ().openParenthesis ();
+        node.getProbNet ().getPNESupport ().openParenthesis ();
         initialize ();
-        List<Potential> potentials = probNode.getPotentials();
+        List<Potential> potentials = node.getPotentials();
         if (!potentials.isEmpty()
                 && potentials.get(0).getComment() != null
                 && !potentials.get(0).getComment().isEmpty())        {
@@ -156,9 +156,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Constructor
      */
-    public PotentialEditDialog (Window owner, Node probNode, boolean newElement)
+    public PotentialEditDialog (Window owner, Node node, boolean newElement)
     {
-        this (owner, probNode, newElement, false);
+        this (owner, node, newElement, false);
     }
 
     /**
@@ -184,7 +184,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().setMaximumSize (new Dimension (180, 40));
         getComponentsPanel ().add (getPotentialTypePanel (), BorderLayout.NORTH);
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
-        if (((probNode.getPotentials ().get (0).getVariables ().size () > 1 && probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (probNode.getPotentials ().get (0).getVariables ().size () - 1 > 1 && probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
+        if (((node.getPotentials ().get (0).getVariables ().size () > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (node.getPotentials ().get (0).getVariables ().size () - 1 > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
             && getPotentialPanel () instanceof ProbabilityTablePanel)
         {
             getReorderVariablesButton ().setVisible (true);
@@ -221,11 +221,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         if (potentialTypeComboBox == null)
         {
-            List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (probNode);
+            List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (node);
             Collections.sort (filteredPotentialNames);
             potentialTypeComboBox = new JComboBox<> (
                                                      (String[]) filteredPotentialNames.toArray (new String[0]));
-            potentialTypeComboBox.setSelectedItem (probNode.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ());
+            potentialTypeComboBox.setSelectedItem (node.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ());
             potentialTypeComboBox.setBorder (new LineBorder (
                                                              UIManager.getColor ("List.dropLineColor"),
                                                              1, false));
@@ -263,7 +263,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             String potentialFamily = relationTypeManager.getPotentialsFamily (potentialName);
             potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel (potentialName,
                                                                                      potentialFamily,
-                                                                                     probNode);
+                                                                                     node);
             potentialPanel.setReadOnly (readOnly);
             potentialPanel.suscribePanelResizeEventListener(this);
         }
@@ -273,7 +273,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     @Override
     public void setTitle (String title)
     {
-        String nodeName = (probNode == null) ? "" : probNode.getName ();
+        String nodeName = (node == null) ? "" : node.getName ();
         super.setTitle (stringDatabase.getString (title) + ": " + nodeName);
     }
 
@@ -284,47 +284,47 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     public int requestValues ()
     {
         // Shows the potentials' options table
-        if (probNode.getNodeType () == NodeType.DECISION
-              && probNode.getPolicyType () == PolicyType.OPTIMAL 
-              && (probNode.getPotentials ().isEmpty () || !probNode.getPotentials ().get (0).isUtility ())  
+        if (node.getNodeType () == NodeType.DECISION
+              && node.getPolicyType () == PolicyType.OPTIMAL 
+              && (node.getPotentials ().isEmpty () || !node.getPotentials ().get (0).isUtility ())  
               && readOnly)
         {
             setEnabledDecisionOptions (true);
         }
         else
         {
-            showFields (probNode);
+            showFields (node);
         }
         setVisible (true);
         return selectedButton;
     }
 
     /**
-     * This method fills the content of the fields from a ProbNode object. In
+     * This method fills the content of the fields from a Node object. In
      * this method, when Elvira will be discontinued, the code for
      * discriminating discrete and discretized variables must be eliminated
-     * @param probNode object from where load the information.
+     * @param node object from where load the information.
      */
     // TODO Remove all this
-    private void showFields (Node probNode)
+    private void showFields (Node node)
     {
         // The element order in PotentialType object are same that
         // JComboBoxRelationType
-        previouslySelectedPotentialType = probNode.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ();
+        previouslySelectedPotentialType = node.getPotentials ().get (0).getClass ().getAnnotation (PotentialType.class).name ();
         getPotentialTypeJCombobox ().setSelectedItem (previouslySelectedPotentialType);
         updatePotentialPanel ();
         // Elvira do not distinguish between DISCRETE and DISCRETIZED
         // so here we will see if there are intervals in the states
-        if (Util.hasLimitBracketSymbols (probNode.getVariable ().getStates ())
-            && (probNode.getVariable ().getVariableType () == VariableType.FINITE_STATES))
+        if (Util.hasLimitBracketSymbols (node.getVariable ().getStates ())
+            && (node.getVariable ().getVariableType () == VariableType.FINITE_STATES))
         {
             // really DISCRETIZED, so change the value of the VariableType
-            probNode.getVariable ().setVariableType (VariableType.DISCRETIZED);
+            node.getVariable ().setVariableType (VariableType.DISCRETIZED);
         }
         // set the nodeProperties variable in this dialog and panels
-        this.probNode = probNode;
+        this.node = node;
         // *******
-        getPotentialPanel ().setData (probNode);
+        getPotentialPanel ().setData (node);
     }
 
     /**
@@ -391,7 +391,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         if (pnlPolicyType == null)
         {
-            pnlPolicyType = new PolicyTypePanel (this, probNode);
+            pnlPolicyType = new PolicyTypePanel (this, node);
         }
         return pnlPolicyType;
     }
@@ -401,10 +401,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         String potentialType = (String) potentialTypeComboBox.getSelectedItem ();
         if (!previouslySelectedPotentialType.equals (potentialType))
         {
-            SetPotentialEdit setPotentialEdit = new SetPotentialEdit (probNode, potentialType);
+            SetPotentialEdit setPotentialEdit = new SetPotentialEdit (node, potentialType);
             try
             {
-                probNode.getProbNet ().doEdit (setPotentialEdit);
+                node.getProbNet ().doEdit (setPotentialEdit);
             }
             catch (ConstraintViolationException e1)
             {
@@ -448,9 +448,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         	String comment = commentPane.isEmpty() 
         			? "" 
         			: commentPane.getCommentText();
-            probNode.getPotentials().get(0).setComment(comment);
+            node.getPotentials().get(0).setComment(comment);
         }
-        probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet ().getPNESupport ().closeParenthesis ();
         return true;
     }
 
@@ -458,7 +458,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     protected void doCancelClickBeforeHide ()
     {
         getPotentialPanel ().close ();
-        probNode.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet ().getPNESupport ().closeParenthesis ();
     }
 
     /**
@@ -469,7 +469,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel.close ();
         potentialPanel = null;
-        if (((probNode.getPotentials ().get (0).getVariables ().size () > 1 && probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (probNode.getPotentials ().get (0).getVariables ().size () - 1 > 1 && probNode.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
+        if (((node.getPotentials ().get (0).getVariables ().size () > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (node.getPotentials ().get (0).getVariables ().size () - 1 > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
             && getPotentialPanel () instanceof ProbabilityTablePanel)
         {
             getReorderVariablesButton ().setVisible (true);
@@ -495,7 +495,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         if (show)
         {
-            switch (probNode.getPolicyType ())
+            switch (node.getPolicyType ())
             {
                 case OPTIMAL :
                     getPotentialTypeJCombobox ().setEnabled (false);
@@ -504,7 +504,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                     getPotentialTypeJCombobox ().setEnabled (false);
                     break;
                 case PROBABILISTIC :
-                    Potential potential = probNode.getPotentials ().get (0);
+                    Potential potential = node.getPotentials ().get (0);
                     // TODO definir el comportamiento para los demás tipos de
                     // potenciales
                     if(potential instanceof UniformPotential || potential instanceof TablePotential )
@@ -542,21 +542,21 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
     protected void actionPerformedReorderVariables ()
     {
-        ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog (this, probNode);
+        ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog (this, node);
         if (reorderVariablesDialog.requestValues () == NodePropertiesDialog.OK_BUTTON)
         {
             List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel ().getVariables ();
             
             if (getPotentialPanel () instanceof TablePotentialPanel)
             {
-                // if (probNode.getPotentials().get(0) instanceof
+                // if (node.getPotentials().get(0) instanceof
                 // TablePotential) {
-                Potential potential = DiscretePotentialOperations.reorder ((TablePotential) probNode.getPotentials ().get (0),
+                Potential potential = DiscretePotentialOperations.reorder ((TablePotential) node.getPotentials ().get (0),
                                                                            newVariables);
-                SetPotentialEdit potentialEdit = new SetPotentialEdit (probNode, potential);
+                SetPotentialEdit potentialEdit = new SetPotentialEdit (node, potential);
                 try
                 {
-                    probNode.getProbNet ().doEdit (potentialEdit);
+                    node.getProbNet ().doEdit (potentialEdit);
                 }
                 catch (DoEditException | ConstraintViolationException | CanNotDoEditException
                         | NonProjectablePotentialException | WrongCriterionException e)
@@ -569,11 +569,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             else if (getPotentialPanel () instanceof ICIPotentialsTablePanel)
             {
                 SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit (
-                                                                                                 probNode,
+                                                                                                 node,
                                                                                                  newVariables);
                 try
                 {
-                    probNode.getProbNet ().doEdit (setPotentialVariables);
+                    node.getProbNet ().doEdit (setPotentialVariables);
                 }
                 catch (DoEditException | ConstraintViolationException | CanNotDoEditException
                         | NonProjectablePotentialException | WrongCriterionException e)

@@ -250,21 +250,21 @@ public class TraceTemporalEvolutionDialog extends JDialog
             for (int j = 0; j <= costEffectivenessAnalysis.getNumSlices (); j++)
             {
                 String basename = variableOfInterest.getBaseName ();
-                List<Node> probNodes = expandedNetwork.getNodes ();
-                for (int k = 0; k < probNodes.size (); k++)
+                List<Node> nodes = expandedNetwork.getNodes ();
+                for (int k = 0; k < nodes.size (); k++)
                 {
-                    if (probNodes.get (k).getVariable ().getBaseName ().equals (basename)
-                        && probNodes.get (k).getVariable ().getTimeSlice () == j)
+                    if (nodes.get (k).getVariable ().getBaseName ().equals (basename)
+                        && nodes.get (k).getVariable ().getTimeSlice () == j)
                     {
                         if (isUtility && isCumulative)
                         {
-                            value += temporalEvolution.get (probNodes.get (k).getVariable ()).getValues ()[i];
+                            value += temporalEvolution.get (nodes.get (k).getVariable ()).getValues ()[i];
                             int time = j;
                             series.add (time, value);
                         }
                         else
                         {
-                            value = temporalEvolution.get (probNodes.get (k).getVariable ()).getValues ()[i];
+                            value = temporalEvolution.get (nodes.get (k).getVariable ()).getValues ()[i];
                             int time = j;
                             series.add (time, value);
                         }

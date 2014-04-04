@@ -38,7 +38,7 @@ import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.ProbNodeNotFoundException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -52,7 +52,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
 
-    private Node               probNode               = null;
+    private Node               node               = null;
     private WeibullHazardPotential potential              = null;
     private RegressionPanel        regressionPanel;
     private JTable                 uncertaintyTable;
@@ -63,10 +63,10 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     private String                 currentMatrixType;
     private String                 selectedTimeVariable;
 
-    public WeibullPotentialPanel(Node probNode) {
+    public WeibullPotentialPanel(Node node) {
         super();
         initComponents();
-        setData(probNode);
+        setData(node);
     }
 
     private void initComponents() {
@@ -134,9 +134,9 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     }
 
     @Override
-    public void setData(Node probNode) {
-        this.probNode = probNode;
-        this.potential = (WeibullHazardPotential) this.probNode.getPotentials().get(0);
+    public void setData(Node node) {
+        this.node = node;
+        this.potential = (WeibullHazardPotential) this.node.getPotentials().get(0);
         List<Variable> variables = potential.getVariables();
         Variable timeVariable = potential.getTimeVariable();
         double[] coefficients = potential.getCoefficients();
@@ -190,14 +190,14 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
     }
 
     public boolean saveChanges() {
-        WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.probNode.getPotentials().get(0);
+        WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.node.getPotentials().get(0);
         String[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
         Variable timeVariable = null;
         String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
         try {
-            timeVariable = probNode.getProbNet().getVariable(selectedTimeVariable);
-        } catch (ProbNodeNotFoundException e1) {
+            timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
+        } catch (NodeNotFoundException e1) {
             // Ignore
         }
 
@@ -227,10 +227,10 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
                 uncertaintyMatrix,
                 matrixType);
         newPotential.setTimeVariable(timeVariable);
-        PNEdit edit = new PotentialChangeEdit(probNode.getProbNet(), oldPotential, newPotential);
+        PNEdit edit = new PotentialChangeEdit(node.getProbNet(), oldPotential, newPotential);
 
         try {
-            probNode.getProbNet().doEdit(edit);
+            node.getProbNet().doEdit(edit);
         } catch (ConstraintViolationException
                 | CanNotDoEditException
                 | NonProjectablePotentialException

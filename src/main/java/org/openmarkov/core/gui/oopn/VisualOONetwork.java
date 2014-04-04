@@ -184,7 +184,7 @@ public class VisualOONetwork extends VisualNetwork
     	int i = 0;
 		while (visualNode == null && i < visualNodes.size())
 		{
-			if(sourceNode.equals(visualNodes.get(i).getProbNode()))
+			if(sourceNode.equals(visualNodes.get(i).getNode()))
 			{
 				visualNode = visualNodes.get(i);
 			}
@@ -701,11 +701,11 @@ public class VisualOONetwork extends VisualNetwork
         } else if((newLinkDestination = whatNodeInPosition (point, g)) != null
                 && newLinkSource != null)
         {
-        	if(newLinkDestination.getProbNode().isInput() &&
-        			isEquivalentVariable(newLinkDestination.getProbNode().getVariable(), newLinkSource.getProbNode().getVariable()))
+        	if(newLinkDestination.getNode().isInput() &&
+        			isEquivalentVariable(newLinkDestination.getNode().getVariable(), newLinkSource.getNode().getVariable()))
         	{
         		newLink = null;
-        		linkEdit = new AddReferenceLinkEdit(probNet, newLinkSource.getProbNode(), newLinkDestination.getProbNode());
+        		linkEdit = new AddReferenceLinkEdit(probNet, newLinkSource.getNode(), newLinkDestination.getNode());
         	}else
         	{
         		linkEdit = super.finishLinkCreation (point, g);

@@ -31,9 +31,9 @@ public abstract class PotentialPanel extends JPanel
 
     /**
      * Fill the panel with the data from the node
-     * @param probNode
+     * @param node
      */
-    public abstract void setData (Node probNode);
+    public abstract void setData (Node node);
     
     /**
      * Modify the node according to the changes entered by the user in the panel

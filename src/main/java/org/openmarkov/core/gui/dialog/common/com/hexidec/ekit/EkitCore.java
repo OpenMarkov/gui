@@ -273,7 +273,7 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener,
 	// "NW|OP|SV|PR|SP|CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|FN|SP|UC|SP|LK|SP|SR|SP|ST";
 	public static final String TOOLBAR_DEFAULT_SINGLE =
 		"CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|FN|SP|UC|SP|LK|SP|SR|FO";
-	// public static final String TOOLBAR_CARMEN_SINGLE =
+	// public static final String TOOLBAR_OPENMARKOV_SINGLE =
 	// "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
 
 	public static final int TOOLBAR_SINGLE = 0;

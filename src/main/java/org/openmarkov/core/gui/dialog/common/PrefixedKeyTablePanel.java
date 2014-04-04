@@ -52,7 +52,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
      */
     private String            keyPrefix        = null;
 
-    private Node          probNode;
+    private Node          node;
 
     private boolean           renameAction     = true;
 
@@ -88,9 +88,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
     }
 
     public PrefixedKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
-            boolean firstColumnHidden, Node probNode) {
+            boolean firstColumnHidden, Node node) {
         super(newColumns, new Object[0][0], true, true);// , notifier);
-        this.probNode = probNode;
+        this.node = node;
         keyPrefix = newKeyPrefix;
         initialize();
         getValuesTable().setFirstColumnHidden(firstColumnHidden);
@@ -177,13 +177,13 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
             newIndex = valuesTable.getRowCount();
 
-            NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                     StateAction.ADD,
                     newIndex,
                     option);
 
             try {
-                probNode.getProbNet().doEdit(nodeStateEdit);
+                node.getProbNet().doEdit(nodeStateEdit);
                 renameAction = false;
                 tableModel.insertRow(0, new Object[] { getKeyString(newIndex), option });
                 valuesTable.getSelectionModel().setSelectionInterval(0, 0);
@@ -216,13 +216,13 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         int selectedRow = valuesTable.getSelectedRow();
         int rowCount = 0;
 
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                 StateAction.REMOVE,
                 selectedRow,
                 "");
 
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
 
             cancelCellEditing();
             renameAction = false;
@@ -268,10 +268,10 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
 
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.UP, selectedRow, "");
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
 
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
 
             stopCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -304,10 +304,10 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         int selectedRow = valuesTable.getSelectedRow();
         Object swap = null;
 
-        NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode, StateAction.DOWN, selectedRow, "");
+        NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
 
         try {
-            probNode.getProbNet().doEdit(nodeStateEdit);
+            node.getProbNet().doEdit(nodeStateEdit);
 
             stopCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -373,12 +373,12 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
             Object value = ((DefaultTableModel) e.getSource()).getValueAt(row,e.getColumn());
             String newName = value.toString() ;
 
-            NodeStateEdit nodeStateEdit = new NodeStateEdit(probNode,
+            NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
                     StateAction.RENAME,
                     row,
                     newName);
             try {
-                probNode.getProbNet().doEdit(nodeStateEdit);
+                node.getProbNet().doEdit(nodeStateEdit);
             } catch (ConstraintViolationException e1) {
                 JOptionPane.showMessageDialog(this,
                         stringDatabase.getString(e1.getMessage()),
@@ -388,9 +388,9 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
                 // e.getColumn());
                 int i = Util.toPositionOnPotentialReordered(row,
                         e.getColumn(),
-                        probNode.getVariable().getNumStates(),
-                        probNode.getNumParents());
-                valuesTable.setValueAt(probNode.getVariable().getStates()[i].getName(),
+                        node.getVariable().getNumStates(),
+                        node.getNumParents());
+                valuesTable.setValueAt(node.getVariable().getStates()[i].getName(),
                         row,
                         e.getColumn());
 

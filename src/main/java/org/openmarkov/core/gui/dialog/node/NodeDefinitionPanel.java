@@ -88,9 +88,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @param notifier
      *            - the element that will sent events to this class
      */
-    public NodeDefinitionPanel(Node probNode) {
+    public NodeDefinitionPanel(Node node) {
         this(true);// , notifier );
-        this.probNode = probNode;
+        this.node = node;
         try {
             initialize();
         } catch (Throwable e) {
@@ -100,18 +100,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                     stringDatabase.getString(e.getMessage()),
                     JOptionPane.ERROR_MESSAGE);
         }
-        if (probNode.getProbNet().getAgents() != null) {
+        if (node.getProbNet().getAgents() != null) {
             getJComboBoxNetworkAgents().setEnabled(true);
             getJComboBoxNetworkAgents().setVisible(true);
             getJLabelNetworkAgents().setVisible(true);
-        } else if (probNode.getProbNet().getAgents() == null) {
+        } else if (node.getProbNet().getAgents() == null) {
             getJComboBoxNetworkAgents().setEnabled(false);
             getJComboBoxNetworkAgents().setVisible(false);
             getJLabelNetworkAgents().setVisible(false);
         }
         // Check if the network has associated Only
         // AtemporalVariablesConstranint
-        if (probNode.getProbNet().variablesCouldBeTemporal()) {
+        if (node.getProbNet().variablesCouldBeTemporal()) {
             getJComboBoxTimeSlice().setEnabled(true);
             getJComboBoxTimeSlice().setVisible(true);
             getJLabelTimeSlice().setVisible(true);
@@ -120,7 +120,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             getJComboBoxTimeSlice().setVisible(false);
             getJLabelTimeSlice().setVisible(false);
         }
-        if (probNode.getNodeType() == NodeType.UTILITY) {
+        if (node.getNodeType() == NodeType.UTILITY) {
             getJComboBoxDecisionCriteria().setEnabled(true);
             getJComboBoxDecisionCriteria().setVisible(true);
             getJLabelDecisionCriteria().setVisible(true);
@@ -131,7 +131,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         }
         getJComboBoxNodePurpose().setEnabled(true);
         getJComboBoxNodeRelevance().setEnabled(true);
-        if (!AlwaysObservedPropertyValidator.validate(probNode)) {
+        if (!AlwaysObservedPropertyValidator.validate(node)) {
             getJLabelAlwaysObserved().setVisible(false);
             getJCheckBoxAlwaysObserved().setVisible(false);
         }
@@ -157,7 +157,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @return the nodeProperties
      */
     public Node getNodeProperties() {
-        return probNode;
+        return node;
     }
 
     /**
@@ -167,7 +167,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      *            the nodeProperties to set
      */
     public void setNodeProperties(final Node nodeProperties) {
-        this.probNode = nodeProperties;
+        this.node = nodeProperties;
     }
 
     /**
@@ -298,7 +298,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             jComboBoxTimeSlice.setName("jComboBoxTimeSlice");
             jComboBoxTimeSlice.setEditable(false);
             jComboBoxTimeSlice.setSize(60, 40);
-            if (!probNode.getProbNet().onlyTemporal()) {
+            if (!node.getProbNet().onlyTemporal()) {
                 // It corresponds with no time slice, atemporal selection
                 // timeSlice = Integer.MIN
                 jComboBoxTimeSlice.addItem(stringDatabase.getString("NodeDefinitionPanel.Atemporal.Text"));
@@ -306,19 +306,19 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             
             // Get max time slice in the network
             int maxTimeSlice = 0;
-            for(Node node : probNode.getProbNet().getNodes())
+            for(Node otherNode : node.getProbNet().getNodes())
             {
-                if(node.getVariable().isTemporal() &&
-                        node.getVariable().getTimeSlice() > maxTimeSlice)
+                if(otherNode.getVariable().isTemporal() &&
+                        otherNode.getVariable().getTimeSlice() > maxTimeSlice)
                 {
-                    maxTimeSlice = node.getVariable().getTimeSlice();
+                    maxTimeSlice = otherNode.getVariable().getTimeSlice();
                 }
             }
             for(int i=0; i <= maxTimeSlice +1; ++i)
             {
                 jComboBoxTimeSlice.addItem(String.valueOf(i));
             }
-            String timeSlice = String.valueOf(probNode.getVariable().getTimeSlice());
+            String timeSlice = String.valueOf(node.getVariable().getTimeSlice());
             jComboBoxTimeSlice.setSelectedItem(timeSlice);
             jComboBoxTimeSlice.addItemListener(this);
             // jComboBoxTimeSlice.setEnabled(false);
@@ -531,8 +531,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      */
     private JComboBox<String> getJComboBoxNetworkAgents() {
         if (jComboBoxNetworkAgents == null) {
-            // StringsWithProperties agents = probNode.getProbNet().getAgents();
-            List<StringWithProperties> agents = probNode.getProbNet().getAgents();
+            // StringsWithProperties agents = node.getProbNet().getAgents();
+            List<StringWithProperties> agents = node.getProbNet().getAgents();
             String[] agentNames = null;
             if (agents != null) {
                 // Set<String> names = agents.getNames();
@@ -547,23 +547,23 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                     agentNames[i] = agents.get(i - 1).getString();
                 }
             } else if (agents == null /*
-                                       * && probNode.getVariable().getAgent() ==
+                                       * && node.getVariable().getAgent() ==
                                        * null
                                        */) {
                 agentNames = new String[1];
                 agentNames[0] = "";
             }/*
-              * else if (agents == null && probNode.getVariable().getAgent() !=
+              * else if (agents == null && node.getVariable().getAgent() !=
               * null) { // Dec-POMDP --> POMDP an agent has been already
               * assigned to current variable agentNames = new String[2];
               * agentNames[0] = ""; agentNames[1] =
-              * probNode.getVariable().getAgent().getString(); }
+              * node.getVariable().getAgent().getString(); }
               */
             jComboBoxNetworkAgents = new JComboBox<>(agentNames);
             jComboBoxNetworkAgents.setName("jComboBoxAgents");
             jComboBoxNetworkAgents.setPreferredSize(new Dimension(50, 15));
-            if (probNode.getVariable().getAgent() != null && agents != null) {
-                String name = probNode.getVariable().getAgent().getString();
+            if (node.getVariable().getAgent() != null && agents != null) {
+                String name = node.getVariable().getAgent().getString();
                 int i;
                 for (i = 0; i < agentNames.length; i++) {
                     if (name == agentNames[i]) {
@@ -582,11 +582,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
 
     // TODO decision criteria comboBox getter
     private JComponent getAgentsOrDecisionCriteriaOrObserved() {
-        if (probNode.getNodeType() == NodeType.DECISION) {
+        if (node.getNodeType() == NodeType.DECISION) {
             return getJComboBoxNetworkAgents();
-        } else if (probNode.getNodeType() == NodeType.UTILITY) {
+        } else if (node.getNodeType() == NodeType.UTILITY) {
             return getJComboBoxDecisionCriteria();
-        } else if (probNode.getNodeType() == NodeType.CHANCE) {
+        } else if (node.getNodeType() == NodeType.CHANCE) {
             return getJCheckBoxAlwaysObserved();
         }
         // default
@@ -594,11 +594,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     }
 
     private JLabel getAgentsOrDecisionCriteriaOrObservedLabel() {
-        if (probNode.getNodeType() == NodeType.DECISION) {
+        if (node.getNodeType() == NodeType.DECISION) {
             return getJLabelNetworkAgents();
-        } else if (probNode.getNodeType() == NodeType.UTILITY) {
+        } else if (node.getNodeType() == NodeType.UTILITY) {
             return getJLabelDecisionCriteria();
-        } else if (probNode.getNodeType() == NodeType.CHANCE) {
+        } else if (node.getNodeType() == NodeType.CHANCE) {
             return getJLabelAlwaysObserved();
         }
         // default
@@ -625,7 +625,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
 
     private JComboBox<String> getJComboBoxDecisionCriteria() {
         if (jComboBoxDecisionCriteria == null) {
-            List<StringWithProperties> decisionCriteria = probNode.getProbNet().getDecisionCriteria();
+            List<StringWithProperties> decisionCriteria = node.getProbNet().getDecisionCriteria();
             String[] criteriaNames = null;
             if (decisionCriteria != null) {
                 criteriaNames = new String[decisionCriteria.size() + 1];
@@ -637,8 +637,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
             jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
             jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
-            if (probNode.getVariable().getDecisionCriterion() != null && decisionCriteria != null) {
-                String decisionCriterion = probNode.getVariable().getDecisionCriterion().getString();
+            if (node.getVariable().getDecisionCriterion() != null && decisionCriteria != null) {
+                String decisionCriterion = node.getVariable().getDecisionCriterion().getString();
                 jComboBoxDecisionCriteria.setSelectedItem(decisionCriterion);
                 jComboBoxDecisionCriteria.addItemListener(this);
             } else {
@@ -713,12 +713,12 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                 PurposeEdit purposeEdit = null;
                 for (String purposeString : Purpose.getListStrings(true)) {
                     if (itemSelected.equals(Purpose.getString(purposeString))) {
-                        purposeEdit = new PurposeEdit(probNode, purposeString);
+                        purposeEdit = new PurposeEdit(node, purposeString);
                         break;
                     }
                 }
                 try {
-                    probNode.getProbNet().doEdit(purposeEdit);
+                    node.getProbNet().doEdit(purposeEdit);
                 } catch (ConstraintViolationException e1) {
                     JOptionPane.showMessageDialog(this,
                             e1.getMessage(),
@@ -741,9 +741,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         } else if (comboBox.equals(jComboBoxNodeRelevance)) {
             if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
                 RelevanceEdit relevanceEdit = null;
-                relevanceEdit = new RelevanceEdit(probNode, Double.valueOf(itemSelected));
+                relevanceEdit = new RelevanceEdit(node, Double.valueOf(itemSelected));
                 try {
-                    probNode.getProbNet().doEdit(relevanceEdit);
+                    node.getProbNet().doEdit(relevanceEdit);
                 } catch (ConstraintViolationException e1) {
                     JOptionPane.showMessageDialog(this,
                             e1.getMessage(),
@@ -766,12 +766,12 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
                 TimeSliceEdit timeSliceEdit = null;
                 if (itemSelected.equals(stringDatabase.getString("NodeDefinitionPanel.Atemporal.Text"))) {
-                    timeSliceEdit = new TimeSliceEdit(probNode, Integer.MIN_VALUE);
+                    timeSliceEdit = new TimeSliceEdit(node, Integer.MIN_VALUE);
                 } else {
-                    timeSliceEdit = new TimeSliceEdit(probNode, Integer.valueOf(itemSelected));
+                    timeSliceEdit = new TimeSliceEdit(node, Integer.valueOf(itemSelected));
                 }
                 try {
-                    probNode.getProbNet().doEdit(timeSliceEdit);
+                    node.getProbNet().doEdit(timeSliceEdit);
                     // comboBox.setSelectedIndex(optionSelected);
                 } catch (DoEditException
                         | ConstraintViolationException
@@ -789,9 +789,9 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             if (!(itemSelected == null)
             /* && e.getStateChange() == ItemEvent.SELECTED */) {
                 StringWithProperties agent = new StringWithProperties(itemSelected);
-                NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(probNode, agent);
+                NodeAgentEdit nodeAgentEdit = new NodeAgentEdit(node, agent);
                 try {
-                    probNode.getProbNet().doEdit(nodeAgentEdit);
+                    node.getProbNet().doEdit(nodeAgentEdit);
                     // comboBox.setSelectedIndex(optionSelected);
                 } catch (DoEditException
                         | ConstraintViolationException
@@ -805,10 +805,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         } else if (comboBox.toString().toLowerCase().equals(jComboBoxDecisionCriteria.toString().toLowerCase())) {
             if (!(itemSelected == null)) {
                 StringWithProperties decisionCriteria = new StringWithProperties(itemSelected);
-                NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(probNode,
+                NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(node,
                         decisionCriteria);
                 try {
-                    probNode.getProbNet().doEdit(nodeDecisionCriteriaEdit);
+                    node.getProbNet().doEdit(nodeDecisionCriteriaEdit);
                 } catch (DoEditException
                         | ConstraintViolationException
                         | CanNotDoEditException
@@ -830,11 +830,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     public void focusLost(FocusEvent e) {
         if (e.getSource().equals(this.jTextFieldNodeName)) {
             // actionPerformedNodeNameChangeValue();
-            if (!probNode.getName().equals(this.jTextFieldNodeName.getText())) {
-                NodeNameEdit nodeNameEdit = new NodeNameEdit(probNode,
+            if (!node.getName().equals(this.jTextFieldNodeName.getText())) {
+                NodeNameEdit nodeNameEdit = new NodeNameEdit(node,
                         this.jTextFieldNodeName.getText());
                 try {
-                    probNode.getProbNet().doEdit(nodeNameEdit);
+                    node.getProbNet().doEdit(nodeNameEdit);
                 } catch (ConstraintViolationException e1) {
                     // TODO Auto-generated catch block
                     // e1.printStackTrace();
@@ -842,7 +842,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                             e1.getMessage(),
                             stringDatabase.getString("ConstraintViolationException"),
                             JOptionPane.ERROR_MESSAGE);
-                    jTextFieldNodeName.setText(probNode.getName());
+                    jTextFieldNodeName.setText(node.getName());
                     jTextFieldNodeName.requestFocus();
                 } catch (CanNotDoEditException
                         | DoEditException
@@ -877,18 +877,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * @param additionalProperties
      *            object from where load the information.
      */
-    public void setFieldsFromProperties(Node probNode) {
-        jTextFieldNodeName.setText(probNode.getVariable().getBaseName());
+    public void setFieldsFromProperties(Node node) {
+        jTextFieldNodeName.setText(node.getVariable().getBaseName());
         // node variable type
         // relevance
         // if (properties.getVariable().getVariableType() ==
         // VariableType.FINITE_STATES){
         jComboBoxNodeRelevance.removeItemListener(this);
         jComboBoxNodePurpose.removeItemListener(this);
-        jComboBoxNodeRelevance.setSelectedItem(probNode.getRelevance());
+        jComboBoxNodeRelevance.setSelectedItem(node.getRelevance());
         jComboBoxNodeRelevance.setEnabled(true);
         // purpose
-        jComboBoxNodePurpose.setSelectedIndex(Purpose.getIndex(probNode.getPurpose()));
+        jComboBoxNodePurpose.setSelectedIndex(Purpose.getIndex(node.getPurpose()));
         jComboBoxNodePurpose.setEnabled(true);
         jComboBoxNodeRelevance.addItemListener(this);
         jComboBoxNodePurpose.addItemListener(this);
@@ -899,8 +899,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         Object[] labelArgs = new Object[] { shortNodeName };
         commentHTMLScrollPaneNodeDefinitionComment.setTitle(messageForm.format(labelArgs));
         // node def comment
-        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText(probNode.getComment());
-        jCheckboxAlwaysObserved.setSelected(probNode.isAlwaysObserved());
+        commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText(node.getComment());
+        jCheckboxAlwaysObserved.setSelected(node.isAlwaysObserved());
     }
 
     /**
@@ -915,7 +915,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         boolean result = true;
         if ((name == null) || name.equals("")) {
             result = false;
-        } else if (!probNode.getName().equals(name) && Util.existNode(probNode.getProbNet(), name)) {
+        } else if (!node.getName().equals(name) && Util.existNode(node.getProbNet(), name)) {
             result = false;
         }
         if (!result) {
@@ -990,7 +990,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     /**
      * Object where all information will be saved.
      */
-    private Node              probNode                                   = null;
+    private Node              node                                   = null;
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */
@@ -1003,10 +1003,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     			? ""
     			: getCommentHTMLScrollPaneNodeDefinitionComment().getCommentText();
     	
-        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(probNode,
+        NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node,
                 comment, "DefinitionComment");
         try {
-            probNode.getProbNet().doEdit(nodeCommentEdit);
+            node.getProbNet().doEdit(nodeCommentEdit);
         } catch (ConstraintViolationException
                 | CanNotDoEditException
                 | NonProjectablePotentialException
@@ -1025,10 +1025,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * Starts the edit event to change the alwaysObserved property
      */
     public void alwaysObservedPropertyHasChanged() {
-        NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.probNode,
+        NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node,
                 this.jCheckboxAlwaysObserved.isSelected());
         try {
-            probNode.getProbNet().doEdit(edit);
+            node.getProbNet().doEdit(edit);
         } catch (DoEditException
                 | ConstraintViolationException
                 | CanNotDoEditException
