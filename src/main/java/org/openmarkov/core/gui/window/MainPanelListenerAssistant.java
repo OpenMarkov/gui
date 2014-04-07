@@ -1370,7 +1370,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  			// Get last variable
  			StringBuffer buffer = new StringBuffer();
  			setVariableNameText(buffer, algorithm.getLastDecision().getName());
- 			buffer.append(algorithm.getResultingCEP().toString());
+ 			CEPartition resultingCEP = algorithm.getResultingCEP();
+ 			buffer.append(resultingCEP.toString());
  			buffer.append("\n");
  			
  			for (Variable decision : strategy.keySet()) {
@@ -1381,7 +1382,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  				}
  				buffer.append("\n");
  			}
- 			
  			
  			BufferedWriter writer = null;
  	        try {
@@ -1398,11 +1398,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  	            } catch (Exception e) {
  	            }
  	        }
- 			
- 			
- 			
- 			
- 			
  			showTextWindow(buffer);
  			
  		} catch (NotEvaluableNetworkException e1) {
