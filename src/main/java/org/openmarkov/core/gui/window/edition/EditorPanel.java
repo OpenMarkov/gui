@@ -1618,26 +1618,12 @@ public class EditorPanel extends JPanel
             if (innerBox instanceof FSVariableBox)
             {
                 visualState = ((FSVariableBox) innerBox).getVisualState (0);
+                updateVisualStateAndEvidence(innerBox, visualState);
             }
             else if (innerBox instanceof ExpectedValueBox)
             {
                 visualState = ((ExpectedValueBox) innerBox).getVisualState ();
-            }
-            if (visualState.getNumberOfValues () != postResolutionEvidence.size ())
-            {
-                if (innerBox instanceof FSVariableBox)
-                {
-                    ((FSVariableBox) innerBox).recreateVisualStates (postResolutionEvidence.size ());
-                }
-                else if (innerBox instanceof ExpectedValueBox)
-                {
-                    ((ExpectedValueBox) innerBox).recreateVisualState (postResolutionEvidence.size ());
-                }
-                networkChanged = true;
-                for (int i = 0; i < postResolutionEvidence.size (); i++)
-                {
-                    evidenceCasesCompilationState.set (i, false);
-                }
+                updateVisualStateAndEvidence(innerBox, visualState);
             }
         }
         if ((propagationActive)
@@ -1672,6 +1658,30 @@ public class EditorPanel extends JPanel
         updateAllVisualStates ("", currentCase);
         repaint ();
     }
+
+	/**
+	 * @param innerBox
+	 * @param visualState
+	 */
+	private void updateVisualStateAndEvidence(InnerBox innerBox,
+			VisualState visualState) {
+		if (visualState.getNumberOfValues () != postResolutionEvidence.size ())
+		{
+		    if (innerBox instanceof FSVariableBox)
+		    {
+		        ((FSVariableBox) innerBox).recreateVisualStates (postResolutionEvidence.size ());
+		    }
+		    else if (innerBox instanceof ExpectedValueBox)
+		    {
+		        ((ExpectedValueBox) innerBox).recreateVisualState (postResolutionEvidence.size ());
+		    }
+		    networkChanged = true;
+		    for (int i = 0; i < postResolutionEvidence.size (); i++)
+		    {
+		        evidenceCasesCompilationState.set (i, false);
+		    }
+		}
+	}
 
     /**
      * This method removes all the findings established in the current evidence

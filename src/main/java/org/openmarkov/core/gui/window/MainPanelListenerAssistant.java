@@ -35,6 +35,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
@@ -1390,11 +1391,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  			showTextWindow(buffer);
  			
  		} catch (NotEvaluableNetworkException e1) {
- 			// Unreachable code without bugs
- 			e1.printStackTrace();
+ 			System.err.println(e1.getMessage());
+ 			System.err.println(Arrays.toString(e1.getStackTrace()));
  		} catch (UnexpectedInferenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+ 			System.err.println(e.getMessage());
+ 			System.err.println(Arrays.toString(e.getStackTrace()));
 		}
 
      }
