@@ -1366,22 +1366,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
  		try {
  			VarEliminationCE algorithm = new VarEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
- 			HashMap<Variable,GTablePotential<CEPartition>> strategy = algorithm.getOptimalStrategy();
  			// Get last variable
  			StringBuffer buffer = new StringBuffer();
- 			setVariableNameText(buffer, algorithm.getLastDecision().getName());
  			CEPartition resultingCEP = algorithm.getResultingCEP();
  			buffer.append(resultingCEP.toString());
  			buffer.append("\n");
- 			
- 			for (Variable decision : strategy.keySet()) {
- 				GTablePotential<CEPartition> potential = strategy.get(decision);
- 	 			if (potential.getNumVariables() > 0) {
- 	 	 			setVariableNameText(buffer, decision.getName());
- 					buffer.append(potential.toString());
- 				}
- 				buffer.append("\n");
- 			}
  			
  			BufferedWriter writer = null;
  	        try {
@@ -1434,13 +1423,4 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 		frame.setVisible(true);	
 	}
  
-    private Object setVariableNameText(StringBuffer buffer, String name) {
-    	buffer.append("--------------------------\n");
-    	buffer.append("    ");
-    	buffer.append(name); 
-    	buffer.append("\n");
-    	buffer.append("--------------------------\n");
-    	return buffer;
-    }
-
 }
