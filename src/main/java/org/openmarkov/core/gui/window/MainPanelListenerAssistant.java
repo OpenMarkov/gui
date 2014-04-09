@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -84,7 +83,6 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
@@ -1402,26 +1400,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
 	private void showTextWindow(StringBuffer buffer) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");
-        frame.setLayout(new BorderLayout());
-		frame.setSize(100,100);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel);
-		JTextArea textArea = new JTextArea(80, 80);
+		JTextArea textArea = new JTextArea(25, 80);
+		frame.getContentPane().add(textArea, BorderLayout.CENTER);
+		JScrollPane scroll = new JScrollPane(textArea);
+		frame.getContentPane().add(scroll, BorderLayout.CENTER);
 		textArea.setText(buffer.toString());
-	    textArea.setPreferredSize(new Dimension(500, 800));
-        textArea.setLineWrap(false);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane();
-        NonEditableTextArea nonEditableTextArea = new NonEditableTextArea();
-        scrollPane.setViewportView(nonEditableTextArea);
-        nonEditableTextArea.writeInformationMessage(buffer.toString());
-	    panel.add(scrollPane);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setLocation(dim.width/2-frame.getSize().width/2, 
 				dim.height/2-frame.getSize().height/2);
 		frame.pack();
-		frame.setVisible(true);	
+		frame.setVisible(true);
 	}
- 
+
 }
