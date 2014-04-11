@@ -27,7 +27,6 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.undo.CannotRedoException;
@@ -1386,7 +1385,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  	            } catch (Exception e) {
  	            }
  	        }
- 			showTextWindow(buffer);
+ 			showTextWindow(buffer, this.mainPanel);
  			
  		} catch (NotEvaluableNetworkException e1) {
  			System.err.println(e1.getMessage());
@@ -1398,18 +1397,37 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
      }
 
-	private void showTextWindow(StringBuffer buffer) {
+	private void showTextWindow(StringBuffer buffer, MainPanel mainPanel) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");
-		JTextArea textArea = new JTextArea(25, 80);
+		String text = buffer.toString();
+		JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
 		frame.getContentPane().add(textArea, BorderLayout.CENTER);
 		JScrollPane scroll = new JScrollPane(textArea);
 		frame.getContentPane().add(scroll, BorderLayout.CENTER);
-		textArea.setText(buffer.toString());
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setLocation(dim.width/2-frame.getSize().width/2, 
-				dim.height/2-frame.getSize().height/2);
+		textArea.setText(text);
+		frame.setLocationRelativeTo(mainPanel);
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	private int getMaxCharsInALine(String text) {
+		int maxLengthLine = 0;
+		if (text != null) {
+			int position = 0;
+			int nextEndLine;
+			int textLength = text.length();
+			do {
+				nextEndLine = text.indexOf('\n', position);
+				if (nextEndLine > 0) {
+					int lengthLine = nextEndLine - position;
+					if (lengthLine > maxLengthLine) {
+						maxLengthLine = lengthLine;
+					}
+					position = nextEndLine + 1;
+				}
+			} while (nextEndLine != -1 && position < textLength);
+		}
+		return maxLengthLine;
 	}
 
 }
