@@ -118,25 +118,19 @@ public class CommentHTMLScrollPane extends JScrollPane
      */
     public void setCommentHTMLTextPaneText (String text)
     {
-        if (jTextPaneCommentHTML == null)
+        // creates the HTML object
+        EkitCore ekitCoreEditorHTML = new EkitCore (null, null, text, null, null, true, false,
+                                                    true, true, null, null, false, false, true,
+                                                    false, EkitCore.TOOLBAR_DEFAULT_SINGLE);
+        try
         {
-            // do nothing
+        	getJTextPaneCommentHTML ().setEditorKit ((StyledEditorKit) ekitCoreEditorHTML.gethtmlKit ());
+        	getJTextPaneCommentHTML ().setDocument (ekitCoreEditorHTML.getExtendedHtmlDoc ());
+        	getJTextPaneCommentHTML ().setText (text);
+        	getJTextPaneCommentHTML ().setCaretPosition(0);
         }
-        else
+        catch (IllegalArgumentException ex)
         {
-            // creates the HTML object
-            EkitCore ekitCoreEditorHTML = new EkitCore (null, null, text, null, null, true, false,
-                                                        true, true, null, null, false, false, true,
-                                                        false, EkitCore.TOOLBAR_DEFAULT_SINGLE);
-            try
-            {
-                jTextPaneCommentHTML.setEditorKit ((StyledEditorKit) ekitCoreEditorHTML.gethtmlKit ());
-                jTextPaneCommentHTML.setDocument (ekitCoreEditorHTML.getExtendedHtmlDoc ());
-                jTextPaneCommentHTML.setText (text);
-            }
-            catch (IllegalArgumentException ex)
-            {
-            }
         }
     }
 

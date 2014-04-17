@@ -8,7 +8,6 @@ package org.openmarkov.core.gui.window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,9 +36,9 @@ import org.apache.mahout.math.Arrays;
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
@@ -52,7 +51,6 @@ import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
@@ -71,7 +69,6 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-import org.openmarkov.core.gui.window.message.NonEditableTextArea;
 import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -744,12 +741,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      *            - for the network
      */
     public void openNetwork(String fileName) {
-    	CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane ();
-    	JOptionPane networkMessagePane;
-    	JDialog networkMessageDialog;
-    	
-    	commentHTMLScrollPaneNetworkComment.setEditable(false);
-    	
         if (fileName.equals("")) {
             fileName = requestNetworkFileToOpen();
         }
@@ -783,16 +774,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkLoaded.Text.Label"));
                 mainPanel.getMainMenu().rechargeLastOpenFiles();
                 
-                EkitCore ekitCoreEditorHTML = new EkitCore (null, null, netReadFromFile.getComment(), null, null, true, false,
-                        true, true, null, null, false, false, true,
-                        false, EkitCore.TOOLBAR_DEFAULT_SINGLE); 
                 if (netReadFromFile.getShowCommentWhenOpening()) {
-                	commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(ekitCoreEditorHTML.getDocumentBody());
+                	CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane ();
+
+                	commentHTMLScrollPaneNetworkComment.setEditable(false);
+                	commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromFile.getComment());
                 	commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension (500, 300));
-                	networkMessagePane = new JOptionPane(
+                	JOptionPane networkMessagePane = new JOptionPane(
                             commentHTMLScrollPaneNetworkComment,
                             JOptionPane.INFORMATION_MESSAGE);
-                	networkMessageDialog = networkMessagePane.createDialog(
+                	JDialog networkMessageDialog = networkMessagePane.createDialog(
                 			Utilities.getOwner(mainPanel), 
                 			stringDatabase.getString("NetworkCommentWindow.Title.Label"));
                 	networkMessageDialog.setResizable(true);
