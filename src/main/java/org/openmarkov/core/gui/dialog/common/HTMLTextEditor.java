@@ -21,10 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLDocument;
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
+import org.openmarkov.core.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.core.gui.localize.StringDatabase;
+
+import com.hexidec.ekit.EkitCore;
+import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
+import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
 
 
 
@@ -98,7 +100,7 @@ public class HTMLTextEditor extends JDialog {
 	 */
 	private void initialize() {
 
-		this.setSize(626, 321);
+		this.setSize(636, 321);
 		this.setLocation(new Point(240, 250));
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setModal(true);
@@ -106,6 +108,9 @@ public class HTMLTextEditor extends JDialog {
 		this.setTitle(StringDatabase.getUniqueInstance ()
 			.getString("HTMLTextEditor.Title.Text"));
 		this.setContentPane(getJContentPane());
+		this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().
+        		getOpenMarkovLogoIconImage16());
+
 
 	}
 
@@ -119,7 +124,7 @@ public class HTMLTextEditor extends JDialog {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
-			jContentPane.setSize(new Dimension(600, 320));
+			jContentPane.setSize(new Dimension(600, 300));
 			jContentPane.add(getEkitCoreEditorHTMLPanel(), null);
 			jContentPane.add(getJToolBarEditorHTML(), null);
 			jContentPane.add(getJButtonAcceptHTML(), null);
@@ -141,7 +146,7 @@ public class HTMLTextEditor extends JDialog {
 				new EkitCore(null, null, updateComment, null, null, true,
 					false, true, true, null, null, false, false, true, false,
 					toolbar);
-			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 189));
+			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
 			ekitCoreEditorHTMLPanel.setVisible(true);
 		}
 		return ekitCoreEditorHTMLPanel;
@@ -182,7 +187,7 @@ public class HTMLTextEditor extends JDialog {
 						extendedHTMLEditorKit =
 							ekitCoreEditorHTMLPanel.gethtmlKit();
 						extendedHTMLDocument =
-							ekitCoreEditorHTMLPanel.gethtmlDoc();
+							ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
 						setVisible(false);
 						okButton = true;
 					}
@@ -212,7 +217,7 @@ public class HTMLTextEditor extends JDialog {
 						extendedHTMLEditorKit =
 							ekitCoreEditorHTMLPanel.gethtmlKit();
 						extendedHTMLDocument =
-							ekitCoreEditorHTMLPanel.gethtmlDoc();
+							ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
 						setVisible(false);
 					}
 				});

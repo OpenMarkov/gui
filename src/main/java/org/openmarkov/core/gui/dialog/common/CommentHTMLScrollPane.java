@@ -19,8 +19,8 @@ import javax.swing.JTextPane;
 import javax.swing.text.StyledEditorKit;
 
 import org.openmarkov.core.gui.dialog.CommentListener;
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.EkitCore;
-import org.openmarkov.core.gui.dialog.common.com.hexidec.ekit.compoment.ExtendedHTMLDocument;
+import com.hexidec.ekit.EkitCore;
+import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
 import org.openmarkov.core.gui.localize.StringDatabase;
 
 /**
