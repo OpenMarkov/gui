@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  <CheckMessageWindow>
+    <Text>
+      <Label value="Si quiere más información, mire en la ventana de mensajes." />
+    </Text>
+  </CheckMessageWindow>
+  <ErrorSavingNetwork>
+    <Text>
+      <Label value="Se encontró un error al tratar de guardar la red" />
+    </Text>
+  </ErrorSavingNetwork>
   <ConstraintViolationException value="Violación de restricción">
     <OnlyDiscreteVariables value="Sólo son permitidas variables discretas " />
     <NoCycles value="Los ciclos no son permitidos en Redes Bayesianas." />
@@ -201,7 +211,7 @@
   </LinkExists>
   <ErrorLoadingNetwork>
     <Text>
-      <Label value="Esta red no se puede abrir. Compruebe la ventana de mensajes." />
+      <Label value="Se encontró un error tratando de abrir la red." />
     </Text>
   </ErrorLoadingNetwork>
   <Edit>

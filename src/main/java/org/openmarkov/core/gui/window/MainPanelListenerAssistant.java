@@ -544,7 +544,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     JOptionPane.ERROR_MESSAGE);
         } catch (CanNotWriteNetworkToFileException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                    stringDatabase.getString("ErrorSavingNetwork.Text.Label"),
+                    stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
                     stringDatabase.getString("ErrorWindow.Title.Label"),
                     JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
@@ -793,7 +793,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             } catch (Exception e) {
                 mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                        stringDatabase.getString("ErrorLoadingNetwork.Text.Label"),
+                        stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage(),
                         stringDatabase.getString("ErrorWindow.Title.Label"),
                         JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();

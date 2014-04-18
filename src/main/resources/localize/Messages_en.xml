@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  <CheckMessageWindow>
+    <Text>
+      <Label value="For more information, check the message window." />
+    </Text>
+  </CheckMessageWindow>
   <ErrorSavingNetwork>
     <Text>
-      <Label value="This network cannot be saved. Check the message window." />
+      <Label value="Network could not be saved." />
     </Text>
   </ErrorSavingNetwork>
   <ConstraintViolationException value="Constraint Violation Exception">
@@ -71,7 +76,7 @@
       <IncompatibleEvidence>
         <Text value="Incompatible evidence." />
       </IncompatibleEvidence>
-      <Text value="Evidence can not be loaded. Check the message window for details." />
+      <Text value="Evidence can not be loaded." />
     </Error>
     <Title>
         <Label value="Load evidence"/>
@@ -206,7 +211,7 @@
   </LinkExists>
   <ErrorLoadingNetwork>
     <Text>
-      <Label value="This network cannot be loaded. Check the message window." />
+      <Label value="Network could not be loaded" />
     </Text>
   </ErrorLoadingNetwork>
   <Edit>
