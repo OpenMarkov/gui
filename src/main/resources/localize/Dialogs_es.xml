@@ -638,13 +638,13 @@
 				value="Una herramienta gráfica de software libre para redes probabilistas" />
 		</Product>
 		<Title>
-			<Text value="Acerca de ... OpenMarkov v.0.0.1" />
+			<Text value="Acerca de ... OpenMarkov" />
 		</Title>
 		<Trademark>
 			<Text value="OpenMarkov es un producto registrado" />
 		</Trademark>
 		<Version>
-			<Text value="Versión 0.0.1" />
+			<Text value="Versión" />
 		</Version>
 	</AboutBox>
 	<OKCancelApplyHorizontalDialog>

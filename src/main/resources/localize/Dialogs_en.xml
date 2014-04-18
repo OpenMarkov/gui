@@ -633,13 +633,13 @@
 			<Text value="An open source tool for Probabilistic Graphical Models" />
 		</Product>
 		<Title>
-			<Text value="About ... OpenMarkov v.0.0.1" />
+			<Text value="About ... OpenMarkov" />
 		</Title>
 		<Trademark>
 			<Text value="OpenMarkov is a registered product" />
 		</Trademark>
 		<Version>
-			<Text value="Version 0.0.1" />
+			<Text value="Version" />
 		</Version>
 	</AboutBox>
 	<OKCancelApplyHorizontalDialog>
@@ -840,7 +840,7 @@
 	</NodeRelation>
 	<NetworkPropertiesDialog>
 		<OtherPropertiesTab>
-			<Label value="Others prop." />
+			<Label value="Other properties" />
 		</OtherPropertiesTab>
 		<VariablesTab>
 			<Label value="Variables" />

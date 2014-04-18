@@ -56,7 +56,7 @@ public class AboutBox extends JDialog
      */
     private AboutBox          anAboutBox           = null;
     String                    product              = "";
-    String                    version              = "";
+    String                    version              = "0.1.5-SNAPSHOT";
     String                    copyright            = "";
     String                    copyright2           = "";
     String                    authors              = "";
@@ -156,7 +156,7 @@ public class AboutBox extends JDialog
         throws Exception
     {
         product = stringDatabase.getString ("AboutBox.Product.Text");
-        version = stringDatabase.getString ("AboutBox.Version.Text");
+        version = stringDatabase.getString ("AboutBox.Version.Text") + " " + version;
         copyright = stringDatabase.getString ("AboutBox.Copyright.Text");
         copyright2 = stringDatabase.getString ("AboutBox.Copyright.AllRightsReserved.Text");
         authors = stringDatabase.getString ("AboutBox.Authors.Text");
