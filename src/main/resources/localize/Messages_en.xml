@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+ <AddAgent>
+  	<Title value = "Add agent"/>
+  	<Text value = "Input name for new agent"/>
+  </AddAgent>
   <AddState>
   	<Title value = "Add state"/>
   	<Text value = "Input name for new state"/>

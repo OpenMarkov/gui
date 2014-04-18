@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<properties>  
-<AddState>
+<properties>
+ <AddAgent>
+  	<Title value = "Añadir agente"/>
+  	<Text value = "Proporcione el nuevo agente"/>
+  </AddAgent> 
+  <AddState>
   	<Title value = "Agregar estado"/>
   	<Text value = "Proporcione el nuevo estado"/>
   </AddState>

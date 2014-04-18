@@ -66,12 +66,10 @@ public class NetworkAgentsTablePanel extends AdvancedPropertiesTablePanel{
 	}
 	@Override
 	protected void actionPerformedAddValue() {
-		int rowCount = 0;
-		rowCount = valuesTable.getRowCount();
-		
 		
 		String option= JOptionPane.showInputDialog(this, 
-				"Proporcione el nuevo agente", "Agregar agente", 
+				stringDatabase.getString("AddAgent.Text"), 
+				stringDatabase.getString("AddAgent.Title"), 
 				JOptionPane.QUESTION_MESSAGE);
 				
 		if (option != null){
