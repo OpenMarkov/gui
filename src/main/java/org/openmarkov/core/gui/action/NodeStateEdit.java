@@ -29,7 +29,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 /**
  * <code>NodeStateEdit</code> is a simple edit that allow modify the states of
@@ -82,6 +81,7 @@ public class NodeStateEdit extends SimplePNEdit {
      */
     private Map<Link<Node>, List>     revelationConditionMap;
 
+    private String              newName;
     private String              oldName;
 
     /**
@@ -100,11 +100,13 @@ public class NodeStateEdit extends SimplePNEdit {
     public NodeStateEdit(Node node, StateAction stateAction, int stateIndex, String newName) {
         super(node.getProbNet());
         this.node = node;
+        this.newName = newName;
         this.newState = new State(newName);
-        if (stateAction != StateAction.ADD) {
-            this.oldName = node.getVariable().getStateName(stateIndex);
-        }
         this.selectedStateIndex = node.getVariable().getNumStates() - (stateIndex + 1);
+        if (stateAction != StateAction.ADD) {
+        	this.oldState = node.getVariable().getStates()[selectedStateIndex];
+            this.oldName = node.getVariable().getStateName(selectedStateIndex);
+        }
         this.stateAction = stateAction;
         this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
         this.oldStates = node.getVariable().getStates();
@@ -302,68 +304,12 @@ public class NodeStateEdit extends SimplePNEdit {
         case RENAME:
             if (selectedStateIndex >= 0 && selectedStateIndex < variable.getNumStates()) {
 
-                newStates = new State[variable.getStates().length];
-                for (int i = 0; i < variable.getStates().length; i++) {
-                    if (i == selectedStateIndex) {
-                        newStates[i] = newState;
-                    } else {
-                        newStates[i] = variable.getStates()[i];
-                    }
-
-                }
-
-                // if there is any child with a tree potential the correspondent
-                // branch must change
-                String oldName = variable.getStates()[selectedStateIndex].getName();
-                for (Node child : children) {
-                    for (Potential childPotential : child.getPotentials()) {
-                        if (childPotential instanceof TreeADDPotential) {
-                            renameBranchesStates((TreeADDPotential) child.getPotentials().get(0),
-                                    oldName,
-                                    newState.getName());
-                        }
-                    }
-                }
-
-                variable.setStates(newStates);
+            	newState = oldState;
+            	oldState.setName(newName); 
             }
             break;
         }
 
-    }
-
-    public void renameBranchesStates(TreeADDPotential tree, String oldName, String newName) {
-        if (tree.getRootVariable().equals(node.getVariable())) {
-            for (int i = 0; i < tree.getBranches().size(); i++) {
-                ArrayList<State> newBranchStates = new ArrayList<>();
-                for (int j = 0; j < tree.getBranches().get(i).getBranchStates().size(); j++) {
-                    if (tree.getBranches().get(i).getBranchStates().get(j).getName().equals(oldName)) {
-                        newBranchStates.add(new State(newName));
-                        // tree.getBranches().get(i).getBranchStates().get(j).setName(newName);
-                    } else {
-                        newBranchStates.add(tree.getBranches().get(i).getBranchStates().get(j));
-                    }
-                }
-                tree.getBranches().get(i).setStates(newBranchStates);
-                if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
-                    renameBranchesStates((TreeADDPotential) tree.getBranches().get(i).getPotential(),
-                            oldName,
-                            newName);
-                }
-
-            }
-
-        } else {// look if there are more subtrees within the tree
-            for (int i = 0; i < tree.getBranches().size(); i++) {
-
-                if (tree.getBranches().get(i).getPotential() instanceof TreeADDPotential) {
-                    renameBranchesStates((TreeADDPotential) tree.getBranches().get(i).getPotential(),
-                            oldName,
-                            newName);
-                }
-
-            }
-        }
     }
 
     @Override
@@ -512,8 +458,7 @@ public class NodeStateEdit extends SimplePNEdit {
             }
         }
 
-        List<Node> children = node.getChildren();
-        for (Node child : children) {
+        for (Node child : node.getChildren()) {
             Link<Node> link = probNet.getLink(node, child, true);
             if (link.hasRevealingConditions()) {
                 VariableType varType = link.getNode1().getVariable().getVariableType();
