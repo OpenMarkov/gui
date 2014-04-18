@@ -919,8 +919,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     @Override
     protected void actionPerformedAddValue() {
         String option = JOptionPane.showInputDialog(this,
-                "Proporcione el nuevo estado",
-                "Agregar estado",
+                stringDatabase.getString("AddState.Text"),
+                stringDatabase.getString("AddState.Title"),
                 JOptionPane.QUESTION_MESSAGE);
         if (option != null) {
             Variable variable = node.getVariable();

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<properties>
+<properties>  
+<AddState>
+  	<Title value = "Agregar estado"/>
+  	<Text value = "Proporcione el nuevo estado"/>
+  </AddState>
   <CheckMessageWindow>
     <Text>
       <Label value="Si quiere más información, mire en la ventana de mensajes." />

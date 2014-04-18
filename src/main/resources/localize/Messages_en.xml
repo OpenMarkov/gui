@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+  <AddState>
+  	<Title value = "Add state"/>
+  	<Text value = "Input name for new state"/>
+  </AddState>
   <CheckMessageWindow>
     <Text>
       <Label value="For more information, check the message window." />
