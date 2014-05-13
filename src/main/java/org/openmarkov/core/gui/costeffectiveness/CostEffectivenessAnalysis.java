@@ -103,13 +103,6 @@ public class CostEffectivenessAnalysis {
 		}
 		Map<Variable, TablePotential> probsAndUtilities = null;
 		try {
-			MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-			extendEvidence(expandedNetFactory.getExtendedNetwork());
-			this.expandedNetwork = expandedNetFactory.getExtendedNetwork();
-			this.expandedNetwork = adaptMPADforCE(expandedNetFactory.getExtendedNetwork(), numSlices,
-					evidence);
-			// TODO apply changes for transitions at cycle start, end or half cycle
-			translateMonthlyUtilities(expandedNetwork);
 			applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
 			String baseName = variableOfInterest.getBaseName();
 			List<Variable> variablesOfInterest = new ArrayList<>();
