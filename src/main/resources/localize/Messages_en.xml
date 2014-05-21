@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+ <GenericError>
+ 	<Text value = "An error occurred. Check the Message Window for further details."/>
+ </GenericError>
  <AddAgent>
   	<Title value = "Add agent"/>
   	<Text value = "Input name for new agent"/>

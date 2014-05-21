@@ -110,9 +110,9 @@ public class TraceTemporalEvolutionDialog extends JDialog
                 pack ();
                 setVisible (true);
             }
-            catch (ImposedPoliciesException | NotEvaluableNetworkException e)
+            catch (Exception e)
             {
-                JOptionPane.showMessageDialog (owner, e.getMessage (), "Error",
+                JOptionPane.showMessageDialog (owner, stringDatabase.getString ("GenericError.Text"), "Error",
                                                JOptionPane.ERROR_MESSAGE);
             }
         }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
- <AddAgent>
+ <GenericError>
+ 	<Text value = "Ha ocurrido un error. Lea la Ventana de Mensajes para obtener más información."/>
+ </GenericError>
+  <AddAgent>
   	<Title value = "Añadir agente"/>
   	<Text value = "Proporcione el nuevo agente"/>
   </AddAgent> 
