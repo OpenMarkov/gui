@@ -207,7 +207,6 @@ public class CostEffectivenessAnalysis {
 		MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
 		ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
 		expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, evidence);
-		translateMonthlyUtilities(expandedNetwork);
 		return expandedNetwork;
 	}
 
@@ -644,18 +643,6 @@ public class CostEffectivenessAnalysis {
 			}
 		}
 		return expandedNetwork;
-	}
-
-	public static void translateMonthlyUtilities(ProbNet probNet) {
-
-		// apply discount rate for all temporal utility nodes in the expanded
-		// network
-		List<Node> utilityExpandedNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityExpandedNodes) {
-			if (utilityNode.getVariable().getUnit().string.equals("months")) {
-				translateMonthlyUtilityPotential(utilityNode.getPotentials().get(0));
-			}
-		}
 	}
 
 	private static void translateMonthlyUtilityPotentials(List<TablePotential> utilityPotentials) {

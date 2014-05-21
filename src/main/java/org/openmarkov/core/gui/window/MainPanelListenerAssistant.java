@@ -916,7 +916,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
 	                    numSlices,
 	                    evidence);
-	            CostEffectivenessAnalysis.translateMonthlyUtilities(expandedNetwork);
 	            // TODO apply changes for transitions at cycle start, end or half cycle
 	            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
 	                    costDiscountRate,
