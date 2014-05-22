@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.openmarkov.core.model.network.potential.RegressionPotential;
+import org.openmarkov.core.model.network.potential.GLMPotential;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
 
@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 public class RegressionPanel extends KeyTablePanel {
 
     private List<ActionListener> listeners; 
-    private RegressionPotential potential = null;
+    private GLMPotential potential = null;
     
     public RegressionPanel()
     {
@@ -96,7 +96,7 @@ public class RegressionPanel extends KeyTablePanel {
         }
     }
     
-    public void setData(RegressionPotential potential) {
+    public void setData(GLMPotential potential) {
         this.potential = potential;
         double[] coefficients = potential.getCoefficients();
         String[] covariates = potential.getCovariates();
@@ -133,7 +133,7 @@ public class RegressionPanel extends KeyTablePanel {
         String covariate = tableModel.getValueAt(row, 0).toString();
         boolean isMandatory = false;
         String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ? WeibullHazardPotential.getMandatoryCovariates()
-                : RegressionPotential.getMandatoryCovariates();
+                : GLMPotential.getMandatoryCovariates();
         for(String mandatoryCovariate : mandatoryCovariates)
         {
             isMandatory |= mandatoryCovariate.equals(covariate);
@@ -173,7 +173,7 @@ public class RegressionPanel extends KeyTablePanel {
                 String covariate = tableModel.getValueAt(selectedRow, 0).toString();
                 boolean isMandatory = false;
                 String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ? WeibullHazardPotential.getMandatoryCovariates()
-                        : RegressionPotential.getMandatoryCovariates();
+                        : GLMPotential.getMandatoryCovariates();
                 for(String mandatoryCovariate : mandatoryCovariates)
                 {
                     isMandatory |= mandatoryCovariate.equals(covariate);

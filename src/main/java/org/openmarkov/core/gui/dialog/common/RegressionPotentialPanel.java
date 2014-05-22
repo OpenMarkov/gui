@@ -25,17 +25,17 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.potential.RegressionPotential;
+import org.openmarkov.core.model.network.potential.GLMPotential;
 
 @SuppressWarnings("serial")
-@PotentialPanelPlugin(potentialType = "Regression")
+@PotentialPanelPlugin(potentialType = "GLM")
 public class RegressionPotentialPanel extends PotentialPanel implements ActionListener {
 
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
 
     private Node               node               = null;
-    private RegressionPotential    potential              = null;
+    private GLMPotential    potential              = null;
     private RegressionPanel        regressionPanel;
     private JTable                 uncertaintyTable;
     private JCheckBox              uncertaintyCheckBox;
@@ -106,7 +106,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     @Override
     public void setData(Node node) {
         this.node = node;
-        this.potential = (RegressionPotential) this.node.getPotentials().get(0);
+        this.potential = (GLMPotential) this.node.getPotentials().get(0);
         double[] coefficients = potential.getCoefficients();
         String[] covariates = potential.getCovariates();
         regressionPanel.setData(potential);
@@ -142,7 +142,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     }
 
     public boolean saveChanges() {
-        RegressionPotential potential = (RegressionPotential) this.node.getPotentials().get(0);
+        GLMPotential potential = (GLMPotential) this.node.getPotentials().get(0);
         String[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
 

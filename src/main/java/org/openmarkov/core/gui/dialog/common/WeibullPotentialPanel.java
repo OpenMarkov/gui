@@ -42,7 +42,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.RegressionPotential.MatrixType;
+import org.openmarkov.core.model.network.potential.GLMPotential.MatrixType;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
 @SuppressWarnings("serial")
