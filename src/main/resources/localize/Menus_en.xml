@@ -385,6 +385,9 @@
     <ShowOptimalPolicy>
       <Label value="Show optimal policy" />
     </ShowOptimalPolicy>
+    <ShowOptimalStrategy>
+      <Title value="Optimal strategy" />
+    </ShowOptimalStrategy>
     <EditPolicy>
       <Label value="Edit policy" />
     </EditPolicy>

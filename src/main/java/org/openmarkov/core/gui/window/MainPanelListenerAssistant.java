@@ -59,6 +59,7 @@ import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.dialog.io.NetworkFileChooser;
 import org.openmarkov.core.gui.dialog.io.SaveOptions;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
+import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
@@ -69,6 +70,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
+import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -333,8 +335,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);
             // TODO OOPN end
         } else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
-            toggleDecisionTree(this.getCurrentNetworkPanel().getProbNet());
-        } else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
+            showDecisionTree(this.getCurrentNetworkPanel().getProbNet());
+        } else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY)) {
+            showOptimalStrategy(this.getCurrentNetworkPanel());
+        }else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
             this.getCurrentNetworkPanel().createNextSliceNode();
         } else {
             ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
@@ -1296,23 +1300,33 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         // TODO Auto-generated method stub
     }
 
-    private void toggleDecisionTree(ProbNet probNet) {
-        if (mainPanel.getStandardToolBar().getDecisionTreeButton().isSelected()) {
-            try {
-                DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
-                mainPanel.getMdi().createNewFrame(decisionTree);
-                mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
-            } catch (OutOfMemoryError e) {
-                mainPanel.getStandardToolBar().getDecisionTreeButton().setSelected(false);
-                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                        stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label"),
-                        stringDatabase.getString("ExceptionNotEnoughMemory.Title.Label"),
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            mainPanel.getMdi().closeCurrentFrame();
+    private void showDecisionTree(ProbNet probNet) {
+        try {
+            DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
+            mainPanel.getMdi().createNewFrame(decisionTree);
+            mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+        } catch (OutOfMemoryError e) {
+            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                    stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label"),
+                    stringDatabase.getString("ExceptionNotEnoughMemory.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void showOptimalStrategy(NetworkPanel networkPanel) {
+        InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
+        ProbNet probNet = networkPanel.getProbNet();
+        try {
+			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+			optimalStrategyDialog.setVisible(true);
+		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                    "An error occurred when trying to show the optimal strategy",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+    }    
 
     private void showTemporalCostEffectivenessDialog(ProbNet probNet,
             EvidenceCase evidence,

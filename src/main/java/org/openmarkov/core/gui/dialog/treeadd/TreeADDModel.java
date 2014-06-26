@@ -60,8 +60,8 @@ public class TreeADDModel implements TreeModel {
 		} else if (node instanceof TreeADDPotential) {
 			return ((TreeADDPotential)node).getBranches().size();
 		} else if (node instanceof TreeADDBranch) {
-			return 1;
-			
+			TreeADDBranch parentBranch = (TreeADDBranch)node;
+			return parentBranch.getPotential() !=null ? 1 : 0;
 		}
 		return 0;
 	}
@@ -97,6 +97,9 @@ public class TreeADDModel implements TreeModel {
 		} 
 		if (parent instanceof TreeADDBranch) {
 		    TreeADDBranch parentBranch = (TreeADDBranch)parent;
+		    // HACK for interventions
+		    if(parentBranch.getPotential() == null)
+		    	return null;
 			return (!parentBranch.isReference())? parentBranch.getPotential() : parentBranch.getReference();
 		} 
 		if (parent instanceof TreeADDPotential) {

@@ -2081,7 +2081,7 @@ public class EditorPanel extends JPanel
         }
         catch (Exception e)
         {
-            JOptionPane.showMessageDialog (Utilities.getOwner (this), "Error during inference " + e.getMessage(),
+            JOptionPane.showMessageDialog (Utilities.getOwner (this), "Error during inference: " + e.getMessage(),
                                            "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace ();
         }

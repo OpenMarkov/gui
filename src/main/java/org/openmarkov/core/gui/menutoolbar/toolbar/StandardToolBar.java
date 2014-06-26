@@ -69,9 +69,13 @@ public class StandardToolBar extends ToolBarBasic
      */
     private JToggleButton     workingModeButton  = null;
     /**
+     * Button to show optimal strategy.
+     */
+    private JButton     showOptimalStrategyButton  = null;
+    /**
      * Button to open a decision tree panel.
      */
-    private JToggleButton     decisionTreeButton = null;
+    private JButton     decisionTreeButton = null;
     /**
      * Icon loader.
      */
@@ -103,6 +107,7 @@ public class StandardToolBar extends ToolBarBasic
         add (getZoomInButton ());
         addSeparator ();
         add (getWorkingModeButton ());
+        add (getShowOptimalStrategyButton());
         add (getDecisionTreeButton ());
         add (Box.createHorizontalGlue ());
     }
@@ -270,14 +275,34 @@ public class StandardToolBar extends ToolBarBasic
     }
 
     /**
+     * This method initialises showOptimalStrategyButton.
+     * @return a new button.
+     */
+    public JButton getShowOptimalStrategyButton ()
+    {
+        if (showOptimalStrategyButton == null)
+        {
+        	showOptimalStrategyButton = new JButton ();
+        	showOptimalStrategyButton.setIcon (iconLoader.load (IconLoader.ICON_OPTIMAL_STRATEGY));
+        	showOptimalStrategyButton.setActionCommand (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY);
+        	showOptimalStrategyButton.setFocusable (false);
+        	showOptimalStrategyButton.setToolTipText (stringDatabase.getString (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY
+                                                                         + STRING_TOOLTIP_SUFFIX));
+        	showOptimalStrategyButton.addActionListener (listener);
+        	showOptimalStrategyButton.addMouseMotionListener (this);
+        }
+        return showOptimalStrategyButton;
+    }
+    
+    /**
      * This method initialises decisionTreeButton.
      * @return a new button.
      */
-    public JToggleButton getDecisionTreeButton ()
+    public JButton getDecisionTreeButton ()
     {
         if (decisionTreeButton == null)
         {
-            decisionTreeButton = new JToggleButton ();
+            decisionTreeButton = new JButton ();
             decisionTreeButton.setIcon (iconLoader.load (IconLoader.ICON_DECISION_TREE));
             decisionTreeButton.setActionCommand (ActionCommands.DECISION_TREE);
             decisionTreeButton.setFocusable (false);
@@ -348,6 +373,9 @@ public class StandardToolBar extends ToolBarBasic
         else if (actionCommand.equals (ActionCommands.DECISION_TREE))
         {
             component = decisionTreeButton;
+        }else if (actionCommand.equals (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY))
+        {
+            component = showOptimalStrategyButton;
         }
         return component;
     }

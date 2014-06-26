@@ -183,6 +183,10 @@ public class IconLoader
      * Name of the 'decision tree' enabled icon.
      */
     public static final String  ICON_DECISION_TREE                        = "dectree.gif";
+    /**
+     * Name of the 'show optimal strategy' enabled icon.
+     */
+    public static final String  ICON_OPTIMAL_STRATEGY                     = "optimalStrategy.gif";
 
     /**
      * This method loads an icon resource.

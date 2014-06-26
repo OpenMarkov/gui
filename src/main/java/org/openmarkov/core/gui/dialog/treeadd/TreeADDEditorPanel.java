@@ -94,7 +94,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
     protected TreeADDPotential rootTreeADDPotential;
     protected JTree            jTree;
-    protected boolean          readOnlyMode;
+    protected boolean          readOnlyMode = true;
     // Variables of the treeADDPotential root of the tree
     protected List<Variable>   treeVariables;
     // Mouse event detection
@@ -104,15 +104,21 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Shows the tree in read only mode
      * 
-     * @param probNet
+     * @param node
      * @param treeADDPotential
+     * @param readOnly
      */
-    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node) {
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, boolean readOnly) {
         // A copy of the potential
         this.node = node;
         this.rootTreeADDPotential = new TreeADDPotential((TreeADDPotential) node.getPotentials().get(0));
-        readOnlyMode = false;
         setupUserInterface(cellRenderer);
+        
+        setReadOnly(readOnly);
+    }
+    
+    public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node) {
+        this(cellRenderer, node, false);
     }
 
     private void setupUserInterface(TreeADDCellRenderer cellRenderer) {
@@ -130,26 +136,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             jTree.expandRow(i);
         }
         setViewportView(jTree);
-        // Menu text initialization
-        if (!readOnlyMode) {
-            jTree.addMouseListener(new TreeADDMouseAdapter(this));
-            contextualMenu.setInvoker(jTree);
-            // menu to create the root treeADD start painting the tree
-            submenuAddStartTree.setText(stringDatabase.getString("TreeADD.StartNode"));
-            // menu to add a subtree to a branch
-            addVariables.addActionListener(this);
-            editPotential.addActionListener(this);
-            associateStates.addActionListener(this);
-            dissociateStates.addActionListener(this);
-            removeVariables.addActionListener(this);
-            removeSubtree.addActionListener(this);
-            splitInterval.addActionListener(this);
-            changeInterval.addActionListener(this);
-            setLabel.addActionListener(this);
-            setReference.addActionListener(this);
-            removeLabel.addActionListener(this);
-            removeReference.addActionListener(this);
-        }
+        jTree.addMouseListener(new TreeADDMouseAdapter(this));
+        contextualMenu.setInvoker(jTree);
+        // menu to create the root treeADD start painting the tree
+        submenuAddStartTree.setText(stringDatabase.getString("TreeADD.StartNode"));
     }
 
     public TreeADDPotential getTreePotential() {
@@ -1278,7 +1268,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Sets label for branch
      * 
-     * @param node
+     * @param ae
+     * @param branch
      * @param path
      */
     private void setLabel(ActionEvent ae, TreeADDBranch branch, TreePath path) {
@@ -1292,9 +1283,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
     /**
      * Removes the label from a branch
-     * 
      * @param ae
-     * @param node
+     * @param branch
      * @param path
      */
     private void removeLabel(ActionEvent ae, TreeADDBranch branch, TreePath path) {
@@ -1306,7 +1296,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     /**
      * Sets a reference to another branch
      * 
-     * @param node
+     * @param ae
+     * @param branch
      * @param path
      */
     private void setReference(ActionEvent ae, TreeADDBranch branch, TreePath path) {
@@ -1324,7 +1315,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * Remove reference from a branch
      * 
      * @param ae
-     * @param node
+     * @param branch
      * @param path
      */
     private void removeReference(ActionEvent ae, TreeADDBranch branch, TreePath path) {
@@ -1436,4 +1427,40 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
         }
     }
+
+	public void setReadOnly(boolean readOnly) {
+
+		if(!readOnlyMode && readOnly)
+		{
+			// menu to add a subtree to a branch
+            addVariables.removeActionListener(this);
+            editPotential.removeActionListener(this);
+            associateStates.removeActionListener(this);
+            dissociateStates.removeActionListener(this);
+            removeVariables.removeActionListener(this);
+            removeSubtree.removeActionListener(this);
+            splitInterval.removeActionListener(this);
+            changeInterval.removeActionListener(this);
+            setLabel.removeActionListener(this);
+            setReference.removeActionListener(this);
+            removeLabel.removeActionListener(this);
+            removeReference.removeActionListener(this);
+		}else if(readOnlyMode && !readOnly)
+		{
+            // menu to add a subtree to a branch
+            addVariables.addActionListener(this);
+            editPotential.addActionListener(this);
+            associateStates.addActionListener(this);
+            dissociateStates.addActionListener(this);
+            removeVariables.addActionListener(this);
+            removeSubtree.addActionListener(this);
+            splitInterval.addActionListener(this);
+            changeInterval.addActionListener(this);
+            setLabel.addActionListener(this);
+            setReference.addActionListener(this);
+            removeLabel.addActionListener(this);
+            removeReference.addActionListener(this);
+		}
+		readOnlyMode = readOnly;
+	}
 }

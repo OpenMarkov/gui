@@ -146,5 +146,10 @@
       <Label value="Arbol de decisiones" />
     </ToolTip>
   </DecisionTree>
+    <ShowOptimalStrategy>
+    <ToolTip>
+      <Label value="Mostrar estrategia óptima" />
+    </ToolTip>
+  </ShowOptimalStrategy>
 </properties>
 

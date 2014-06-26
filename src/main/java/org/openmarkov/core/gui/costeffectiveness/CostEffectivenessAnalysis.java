@@ -139,6 +139,18 @@ public class CostEffectivenessAnalysis {
 			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
 				e.printStackTrace();
 			}
+//			// Replace constant potentials of variables with evidence with proper potentials
+//			for(Variable variable : probsAndUtilities.keySet())
+//			{
+//				if(evidence.contains(variable))
+//				{
+//					TablePotential newPotential = new TablePotential(Arrays.asList(variable), PotentialRole.JOINT_PROBABILITY);
+//					int state = evidence.getFinding(variable).getStateIndex();
+//					for(int i=0; i<newPotential.values.length;++i)
+//						newPotential.values[i] = (i==state)? 1 : 0;
+//					probsAndUtilities.put(variable, newPotential);
+//				}
+//			}
 		} catch (NotEvaluableNetworkException e) {
 			e.printStackTrace();
 		}

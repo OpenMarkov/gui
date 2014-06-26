@@ -97,7 +97,7 @@ public class TreeADDCellRenderer extends JPanel
 		} else if (value instanceof String) {
 		    leftLabel.setText ("@"+value.toString());
 		    retCode = this;
-		}else {
+		}else if (value != null){ // HACK for interventions
 			throw new RuntimeException("Class not allowed: " + value.getClass().getName());
 		}
         return retCode;

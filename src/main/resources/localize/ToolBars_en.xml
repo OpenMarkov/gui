@@ -143,6 +143,11 @@
       <Label value="Decision tree" />
     </ToolTip>
   </DecisionTree>
+  <ShowOptimalStrategy>
+    <ToolTip>
+      <Label value="Show optimal strategy" />
+    </ToolTip>
+  </ShowOptimalStrategy>
 	<BUNDLEFILE>
     <Text value="Default (english)" />
   </BUNDLEFILE>

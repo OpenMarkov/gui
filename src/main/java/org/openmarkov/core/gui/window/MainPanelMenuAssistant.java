@@ -194,6 +194,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.DECISION_TREE, false);
+        setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
     }
 
@@ -328,6 +329,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);
         setOptionEnabled (ActionCommands.DECISION_TREE, false);
+        setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         if (workingMode == NetworkPanel.EDITION_WORKING_MODE)
         {
             setOptionEnabled (ActionCommands.OBJECT_SELECTION, true);
@@ -367,6 +369,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
             if (!networkPanel.getProbNet ().hasConstraint (OnlyChanceNodes.class))
             {
                 setOptionEnabled (ActionCommands.DECISION_TREE, true);
+                setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
         }
         updateOptionsFindingsDependent (networkPanel);

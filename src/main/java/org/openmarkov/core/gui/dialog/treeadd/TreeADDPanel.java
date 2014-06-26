@@ -76,6 +76,14 @@ public class TreeADDPanel extends PotentialPanel
         // nodeADDPotentialPanel.setNewNode(newNode);
         // nodeADDPotentialPanel.setNodeProperties(node);
     }
+    
+	/**
+	 * @param readOnly the readOnly to set
+	 */
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		treeADDController.setReadOnly(readOnly);
+	}
 
     @Override
     public void close ()
