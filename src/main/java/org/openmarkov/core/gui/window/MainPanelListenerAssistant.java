@@ -71,7 +71,6 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -80,6 +79,7 @@ import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
@@ -865,8 +865,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel));
         if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             int numSlices = costEffectivenessDialog.getNumSlices();
-            MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-            ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
             String fileName = probNet.getName() + "_expanded";
             expandedNetwork.setName(fileName);
             NetworkPanel networkPanel = createNewFrame(expandedNetwork);
@@ -891,7 +890,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             int numSlices;
 
             numSlices = costEffectivenessDialog.getNumSlices();
-            List<Node> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
             if (!temporalNodes.isEmpty()) {
                 for (Node timeDependentNode : temporalNodes) {
                     Variable timeDependentVariable = timeDependentNode.getVariable();
@@ -913,8 +912,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     maxX = node.getCoordinateX();
                 }
             }
-            MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-            ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
             try
             {
 	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,

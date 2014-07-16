@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmarkov.core.exception.ImposedPoliciesException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -20,7 +19,6 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.MPADFactory;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -28,11 +26,11 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -76,9 +74,10 @@ public class CostEffectivenessAnalysis {
 		this.costDiscount = costDiscountRate;
 		this.effectivenessDiscount = effectivenessDiscountRate;
 		this.numSlices = numCycles;
-		this.evidence = getEvidenceFromNetwork(probNet, evidence, initialValues);
 		this.transitionTime = transitionTime;
-		this.expandedNetwork = buildExpandedNetwork();
+		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
+		this.evidence = expandEvidence(expandedNetwork, evidence, initialValues);
+		this.expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, this.evidence);
 		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence, transitionTime);
 		this.interventions = createInterventions(globalUtility);
 		this.frontierInterventions = calculateFrontierInterventions(interventions);
@@ -89,72 +88,6 @@ public class CostEffectivenessAnalysis {
 			double costDiscountRate, double effectivenessDiscountRate, int numCycles,
 			TransitionTime transitionTime) throws NotEvaluableNetworkException {
 		this(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numCycles, new HashMap<Variable, Double>(), transitionTime);
-	}
-
-	public Map<Variable, TablePotential> traceTemporalEvolution(Variable variableOfInterest)
-			throws ImposedPoliciesException {
-		List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
-		// check if all decision nodes have an imposed policy,
-		// potential set in node
-		for (Node node : decisionNodes) {
-			if (node.getPotentials().size() == 0) {
-				throw new ImposedPoliciesException("All decision nodes must have an imposed policy");
-			}
-		}
-		Map<Variable, TablePotential> probsAndUtilities = null;
-		try {
-			applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
-			String baseName = variableOfInterest.getBaseName();
-			List<Variable> variablesOfInterest = new ArrayList<>();
-			List<Node> expandedProbNetNodes = expandedNetwork.getNodes();
-			for (Node node : expandedProbNetNodes) {
-				if (node.getVariable().getBaseName().equals(baseName)) {
-					variablesOfInterest.add(node.getVariable());
-				}
-			}
-			// Impose policy according to interest variable's decision criterion
-			if (variableOfInterest.getDecisionCriterion() != null) {
-				String decisionCriterion = variableOfInterest.getDecisionCriterion().getString();
-				Variable decisionCriteriaVariable = expandedNetwork.getDecisionCriterionVariable();
-				Node decisionCriteriaNode = expandedNetwork.getNode(expandedNetwork
-						.getDecisionCriterionVariable());
-				TablePotential decisionCriterionPolicy = new TablePotential(
-						Arrays.asList(decisionCriteriaVariable), PotentialRole.POLICY);
-				for (int i = 0; i < decisionCriterionPolicy.values.length; ++i) {
-					try {
-						decisionCriterionPolicy.values[i] = (decisionCriteriaVariable
-								.getStateIndex(decisionCriterion) == i) ? 1 : 0;
-					} catch (InvalidStateException e) {
-						e.printStackTrace();
-					}
-				}
-				decisionCriteriaNode.setPotential(decisionCriterionPolicy);
-			}
-			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
-
-			variableElimination.setPreResolutionEvidence(evidence);
-			variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
-			try {
-				probsAndUtilities = variableElimination.getProbsAndUtilities(variablesOfInterest);
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-				e.printStackTrace();
-			}
-//			// Replace constant potentials of variables with evidence with proper potentials
-//			for(Variable variable : probsAndUtilities.keySet())
-//			{
-//				if(evidence.contains(variable))
-//				{
-//					TablePotential newPotential = new TablePotential(Arrays.asList(variable), PotentialRole.JOINT_PROBABILITY);
-//					int state = evidence.getFinding(variable).getStateIndex();
-//					for(int i=0; i<newPotential.values.length;++i)
-//						newPotential.values[i] = (i==state)? 1 : 0;
-//					probsAndUtilities.put(variable, newPotential);
-//				}
-//			}
-		} catch (NotEvaluableNetworkException e) {
-			e.printStackTrace();
-		}
-		return probsAndUtilities;
 	}
 
 	public List<Intervention> getInterventions() {
@@ -210,29 +143,14 @@ public class CostEffectivenessAnalysis {
 	}
 
 	/**
-	 * Build expanded network, adapt for CE and apply discount
-	 * 
-	 * @return
-	 * @throws NotEvaluableNetworkException 
-	 */
-	private ProbNet buildExpandedNetwork() throws NotEvaluableNetworkException {
-		MPADFactory expandedNetFactory = new MPADFactory(probNet, numSlices);
-		ProbNet expandedNetwork = expandedNetFactory.getExtendedNetwork();
-		expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, evidence);
-		return expandedNetwork;
-	}
-
-	/**
 	 * If there are temporal nodes within the network that requires evidence
 	 * must be retrieved from CostEffectivenessDialog
 	 * 
 	 * @return EvidenceCase
 	 */
-	private EvidenceCase getEvidenceFromNetwork(ProbNet probNet, EvidenceCase evidence,
-			Map<Variable, Double> initialValues) {
+	public static EvidenceCase expandEvidence(ProbNet probNet, EvidenceCase evidence, Map<Variable, Double> initialValues) {
 		EvidenceCase evidenceCase = new EvidenceCase(evidence);
-
-		for (Node timeDependentNode : getShiftingTemporalNodes(probNet)) {
+		for (Node timeDependentNode : getInitialTemporalNodesWithUniformPotentials(probNet)) {
 			Variable timeDependentVariable = timeDependentNode.getVariable();
 			Finding finding = new Finding(timeDependentVariable,
 					initialValues.get(timeDependentVariable));
@@ -241,6 +159,12 @@ public class CostEffectivenessAnalysis {
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
 				e.printStackTrace();
 			}
+		}
+		// Extend evidence
+		try {
+			evidenceCase.extendEvidence(probNet, 1);
+		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
+			e.printStackTrace();
 		}
 		return evidenceCase;
 	}
@@ -259,7 +183,6 @@ public class CostEffectivenessAnalysis {
 		} catch (NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
-        
         applyTransitionTime(copyNetwork, transitionTime, numSlices);
 		return runAnalysis(copyNetwork, evidence);
 	}
@@ -614,8 +537,6 @@ public class CostEffectivenessAnalysis {
 	 */
 	public static ProbNet adaptMPADforCE(ProbNet expandedNetwork, int numSlices,
 			EvidenceCase evidence) throws NotEvaluableNetworkException {
-		// Extend evidence
-		extendEvidence(expandedNetwork, evidence);
 
 		// Convert numeric variables
 		expandedNetwork = ProbNetOperations
@@ -654,6 +575,7 @@ public class CostEffectivenessAnalysis {
 				utilityNode.setPotential(treeADDPotential);
 			}
 		}
+		
 		return expandedNetwork;
 	}
 
@@ -732,7 +654,7 @@ public class CostEffectivenessAnalysis {
 	 * @return a List with these special nodes in first slice of the compact
 	 *         network
 	 */
-	public static List<Node> getShiftingTemporalNodes(ProbNet probNet) {
+	public static List<Node> getInitialTemporalNodesWithUniformPotentials(ProbNet probNet) {
 		// this array includes also Age node if exists
 		List<Node> numericTemporalNodes = new ArrayList<>();
 		List<Node> nodes = probNet.getNodes();
@@ -801,11 +723,4 @@ public class CostEffectivenessAnalysis {
 		return treeADDPotential;
 	}
 
-	private static void extendEvidence(ProbNet extendedNetwork, EvidenceCase evidence) {
-		try {
-			evidence.extendEvidence(extendedNetwork, 1);
-		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
-			e.printStackTrace();
-		}
-	}
 }

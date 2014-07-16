@@ -40,14 +40,17 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openmarkov.core.exception.ImposedPoliciesException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNetOperations;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
  * Plot of temporal evolution of variables in CEA
@@ -64,64 +67,89 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private ProbNet                           expandedNetwork;
     private boolean                           isUtility;
     private boolean                           isCumulative;
-    private CostEffectivenessAnalysis         costEffectivenessAnalysis;
+    private int                               numSlices;
     private StringDatabase                    stringDatabase = StringDatabase.getUniqueInstance ();
 
     public TraceTemporalEvolutionDialog (Window owner, Node node, EvidenceCase evidence)
     {
         super (owner);
         ProbNet probNet = node.getProbNet ();
-        this.isUtility = node.getNodeType () == NodeType.UTILITY;
-        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog (owner,
-                                                                                       probNet,
-                                                                                       false,
-                                                                                       true);
-        if (costEffectivenessDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
+        try
         {
-            try
-            {
-	            // evidenceCase and cycleLegth null by the moment
-	            costEffectivenessAnalysis = new CostEffectivenessAnalysis (
-	                                                                       probNet,
-	                                                                       evidence,
-	                                                                       costEffectivenessDialog.getCostDiscount (),
-	                                                                       costEffectivenessDialog.getEffectivenessDiscount (),
-	                                                                       costEffectivenessDialog.getNumSlices (),
-	                                                                       costEffectivenessDialog.getInitialValues (),
-	                                                                       costEffectivenessDialog.getTransitionTime ());
-	            this.isCumulative = costEffectivenessDialog.isCumulative ();
-	            this.variableOfInterest = node.getVariable ();
-                this.temporalEvolution = costEffectivenessAnalysis.traceTemporalEvolution (variableOfInterest);
-                this.expandedNetwork = costEffectivenessAnalysis.getExpandedNetwork ();
-                initialize ();
-                Toolkit toolkit = Toolkit.getDefaultToolkit ();
-                Dimension screenSize = toolkit.getScreenSize ();
-                Rectangle bounds = owner.getBounds ();
-                int width = screenSize.width / 2;
-                int height = screenSize.height / 2;
-                // center point of the owner window
-                int x = bounds.x / 2 - width / 2;
-                int y = bounds.y / 2 - height / 2;
-                this.setBounds (x, y, width, height);
-                setMinimumSize (new Dimension (width, height / 2));
-                setLocationRelativeTo (owner);
-                setResizable (true);
-                repaint ();
-                pack ();
-                setVisible (true);
-            }
-            catch (ImposedPoliciesException | NotEvaluableNetworkException e)
-            {
-                JOptionPane.showMessageDialog (owner, e.getMessage (), "Error",
-                                               JOptionPane.ERROR_MESSAGE);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog (owner, stringDatabase.getString ("GenericError.Text"), "Error",
-                                               JOptionPane.ERROR_MESSAGE);
-            }
+			List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
+			// check if all decision nodes have an imposed policy,
+			// potential set in node
+			for (Node decisionNode : decisionNodes) {
+				if (decisionNode.getPotentials().isEmpty()) {
+					throw new ImposedPoliciesException("All decision nodes must have an imposed policy");
+				}
+			}
+	        this.isUtility = node.getNodeType () == NodeType.UTILITY;
+	        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog (owner,
+	                                                                                       probNet,
+	                                                                                       false,
+	                                                                                       true);
+	        if (costEffectivenessDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
+	        {
+	            try
+	            {
+		            numSlices = costEffectivenessDialog.getNumSlices ();
+		            Map<Variable, Double> initialValues = costEffectivenessDialog.getInitialValues ();
+		            this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
+		            evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence, initialValues);
+
+		    		// Convert numeric variables
+		    		expandedNetwork = ProbNetOperations
+		    				.convertNumericalVariablesToFS(expandedNetwork, evidence);
+		            // evidenceCase and cycleLegth null by the moment
+		            if(node.getNodeType() == NodeType.UTILITY)
+		            {
+			            double costDiscount = costEffectivenessDialog.getCostDiscount ();
+			            double effectivenessDiscount = costEffectivenessDialog.getCostDiscount ();
+			            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
+			            TransitionTime transitionTime = costEffectivenessDialog.getTransitionTime ();
+			            CostEffectivenessAnalysis.applyTransitionTime(expandedNetwork, transitionTime, numSlices);
+		            }
+		            this.isCumulative = costEffectivenessDialog.isCumulative ();
+		            this.variableOfInterest = node.getVariable ();
+		            
+	    			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+	            	
+	            	variableElimination.setPreResolutionEvidence(evidence);
+	            	variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
+		            
+	                this.temporalEvolution = TemporalNetOperations.traceTemporalEvolution (expandedNetwork, variableElimination, variableOfInterest);
+	                initialize ();
+	                Toolkit toolkit = Toolkit.getDefaultToolkit ();
+	                Dimension screenSize = toolkit.getScreenSize ();
+	                Rectangle bounds = owner.getBounds ();
+	                int width = screenSize.width / 2;
+	                int height = screenSize.height / 2;
+	                // center point of the owner window
+	                int x = bounds.x / 2 - width / 2;
+	                int y = bounds.y / 2 - height / 2;
+	                this.setBounds (x, y, width, height);
+	                setMinimumSize (new Dimension (width, height / 2));
+	                setLocationRelativeTo (owner);
+	                setResizable (true);
+	                repaint ();
+	                pack ();
+	                setVisible (true);
+	            }
+	            catch (Exception e)
+	            {
+	                e.printStackTrace();
+	                JOptionPane.showMessageDialog (owner, stringDatabase.getString ("GenericError.Text"), "Error",
+	                                               JOptionPane.ERROR_MESSAGE);
+	            }
+	        }
         }
+        catch (ImposedPoliciesException e1)
+        {
+            JOptionPane.showMessageDialog (owner, e1.getMessage (), "Error",
+                                           JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void initialize ()
@@ -253,7 +281,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             {
                 series = new XYSeries (variableOfInterest.getStateName (i));
             }
-            for (int j = 0; j <= costEffectivenessAnalysis.getNumSlices (); j++)
+            for (int j = 0; j <= numSlices; j++)
             {
                 String basename = variableOfInterest.getBaseName ();
                 List<Node> nodes = expandedNetwork.getNodes ();
@@ -288,7 +316,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         {
             tablePane = new TemporalEvolutionTablePane (temporalEvolution, expandedNetwork,
                                                         variableOfInterest,
-                                                        costEffectivenessAnalysis.getNumSlices (),
+                                                        numSlices,
                                                         isUtility, isCumulative);
         }
         return tablePane;
@@ -318,9 +346,9 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private void createExcel (String filename)
         throws IOException
     {
-        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
-        excel.createTemporalEvolutionReport (filename, temporalEvolution, expandedNetwork,
-                                             costEffectivenessAnalysis.getNumSlices (),
-                                             variableOfInterest);
+//        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
+//        excel.createTemporalEvolutionReport (filename, temporalEvolution, expandedNetwork,
+//        		numSlices,
+//                                             variableOfInterest);
     }
 }

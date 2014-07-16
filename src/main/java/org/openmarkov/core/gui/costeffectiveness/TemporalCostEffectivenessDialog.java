@@ -111,7 +111,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
             boolean isTemporalEvolution) {
         super(owner);
         this.initialValues = new HashMap<>();
-        List<Node> temporalNodes = CostEffectivenessAnalysis.getShiftingTemporalNodes(probNet);
+        List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
         for (Node numericalTemporalNode : temporalNodes) {
             initialValues.put(numericalTemporalNode.getVariable(),
                     numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
