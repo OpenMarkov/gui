@@ -52,6 +52,7 @@ public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
         int y = (int) (screenSize.getHeight() - getSize().getHeight()) / 2;
         setLocation(new Point(x, y));
         setTitle(stringDatabase.getString("Decision.ShowOptimalStrategy.Title"));
+        setResizable(true);
 	}
 
 }
