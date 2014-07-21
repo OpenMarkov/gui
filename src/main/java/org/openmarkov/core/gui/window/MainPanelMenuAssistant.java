@@ -344,6 +344,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
                 setOptionEnabled (ActionCommands.SENSITIVITY_ANALYSIS, false);
                 setOptionEnabled (ActionCommands.DECISION_TREE, true);
+                setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
             if (networkPanel.getProbNet ().getNetworkType () instanceof MPADType
                 || networkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType)

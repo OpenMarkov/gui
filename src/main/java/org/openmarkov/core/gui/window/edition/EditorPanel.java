@@ -1993,6 +1993,27 @@ public class EditorPanel extends JPanel
      */
     public InferenceAlgorithm getInferenceAlgorithm ()
     {
+    	try
+    	{
+	    	if(inferenceAlgorithm == null)
+	    	{
+	    		inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
+	            if (inferenceAlgorithm == null)
+	            {
+	                throw new UnsupportedOperationException ();
+	            }
+	            inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
+					@Override
+					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
+						return new SimpleElimination(probNet, variables);
+					}
+				});
+	    	}
+    	}
+    	catch (NotEvaluableNetworkException e)
+        {
+            JOptionPane.showMessageDialog (Utilities.getOwner (this), e.getMessage ());
+        }
         return inferenceAlgorithm;
     }
 
@@ -2021,17 +2042,7 @@ public class EditorPanel extends JPanel
             long start = System.currentTimeMillis ();
             try
             {
-                inferenceAlgorithm = inferenceManager.getDefaultInferenceAlgorithm (probNet);
-                if (inferenceAlgorithm == null)
-                {
-                    throw new UnsupportedOperationException ();
-                }
-                inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
-					@Override
-					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
-						return new SimpleElimination(probNet, variables);
-					}
-				});
+                inferenceAlgorithm = getInferenceAlgorithm();
                 inferenceAlgorithm.setPreResolutionEvidence (preResolutionEvidence);
                 inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
                 calculateMinAndMaxUtilityRanges ();
@@ -2050,11 +2061,6 @@ public class EditorPanel extends JPanel
                 inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm (probNet);
                 inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
                 individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
-            }
-            catch (NotEvaluableNetworkException e)
-            {
-                JOptionPane.showMessageDialog (Utilities.getOwner (this), e.getMessage ());
-                return false;
             }
             long elapsedTimeMillis = System.currentTimeMillis () - start;
             System.out.println ("Inference took " + elapsedTimeMillis + " milliseconds.");

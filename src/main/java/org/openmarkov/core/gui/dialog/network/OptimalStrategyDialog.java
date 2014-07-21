@@ -54,5 +54,7 @@ public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
         setTitle(stringDatabase.getString("Decision.ShowOptimalStrategy.Title"));
         setResizable(true);
 	}
+	
+	
 
 }
