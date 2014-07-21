@@ -185,7 +185,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
      */
     protected boolean doOkClickBeforeHide() {
 
-        return false;
+        return true;
     }
 
     /**
