@@ -179,6 +179,11 @@ public class ActionCommands {
     public static final String EDIT_CLASS = "EditClass";       
 
     /**
+     * Action invoked when the user wants to edit the name of an instance
+     */
+    public static final String EDIT_INSTANCE_NAME = "EditInstanceName";       
+    
+    /**
      * Action invoked when the user wants to set the arity of the selected parameter
      */
     public static final String SET_ARITY = "Arity";       

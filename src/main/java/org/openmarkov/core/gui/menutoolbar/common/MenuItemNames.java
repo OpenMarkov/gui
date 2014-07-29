@@ -159,6 +159,11 @@ public class MenuItemNames
     public static final String EDIT_CLASS_MENUITEM = EDIT_MENU + ".EditClass";
         
     /**
+     * Constant that defines the item 'Edit - Instance Name'.
+     */
+    public static final String EDIT_INSTANCE_NAME_MENUITEM = EDIT_MENU + ".EditInstanceName";
+        
+    /**
      * Constant that defines the item 'Arity'.
      */
     public static final String ARITY_MENUITEM = EDIT_MENU + ".Arity";

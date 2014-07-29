@@ -329,7 +329,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             this.getCurrentNetworkPanel().markSelectedAsInput();
         } else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
             this.getCurrentNetworkPanel().editClass();
-        } else if (actionCommand.equals(ActionCommands.SET_ARITY_ONE)) {
+        } else if (actionCommand.equals(ActionCommands.EDIT_INSTANCE_NAME)) {
+            this.getCurrentNetworkPanel().editInstanceName();
+        }else if (actionCommand.equals(ActionCommands.SET_ARITY_ONE)) {
             this.getCurrentNetworkPanel().setParameterArity(ParameterArity.ONE);
         } else if (actionCommand.equals(ActionCommands.SET_ARITY_MANY)) {
             this.getCurrentNetworkPanel().setParameterArity(ParameterArity.MANY);

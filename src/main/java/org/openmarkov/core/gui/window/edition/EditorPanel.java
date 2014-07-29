@@ -2698,7 +2698,10 @@ public class EditorPanel extends JPanel
     {
         visualNetwork.setParameterArity (arity);
     }
-
+    
+	public void editInstanceName() {
+		visualNetwork.editInstanceName ();
+	}
     // TODO OOPN end
     protected double[] getBounds (Graphics2D graphics)
     {

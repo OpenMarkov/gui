@@ -843,8 +843,12 @@ public class NetworkPanel extends FrameContentPanel
     {
         editorPanel.editClass ();
     }
-
+    
+	public void editInstanceName() {
+		editorPanel.editInstanceName();
+	}
     // TODO OOPN end
+    
     public void setParameterArity (ParameterArity arity)
     {
         editorPanel.setParameterArity (arity);
@@ -863,4 +867,5 @@ public class NetworkPanel extends FrameContentPanel
     public void createNextSliceNode() {
         editorPanel.createNextSliceNode();
     }
+
 }

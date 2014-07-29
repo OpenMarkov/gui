@@ -49,6 +49,11 @@ public class InstanceContextualMenu extends ContextualMenu {
     private JMenuItem editClassMenuItem = null;	
     
     /**
+     * Object that represents the item 'Edit Instance Name'.
+     */
+    private JMenuItem editInstanceNameItem = null;	    
+    
+    /**
      * Object that represents the item 'Arity'
      */
     private JMenu arityMenuItem = null;
@@ -77,6 +82,7 @@ public class InstanceContextualMenu extends ContextualMenu {
 	 */
 	private void initialize() {
 
+		add(getEditInstanceNameMenuItem());
         add(getEditClassMenuItem ());
 		add(getRemoveMenuItem());
 		// addSeparator();
@@ -137,6 +143,22 @@ public class InstanceContextualMenu extends ContextualMenu {
     }	
     
     /**
+     * This method initialises inputMenuItem.
+     * 
+     * @return a new 'Edit Instance name' menu item.
+     */
+    private JMenuItem getEditInstanceNameMenuItem() {
+
+        if (editInstanceNameItem == null) {
+        	editInstanceNameItem = new LocalizedMenuItem (MenuItemNames.EDIT_INSTANCE_NAME_MENUITEM,
+                                                       ActionCommands.EDIT_INSTANCE_NAME);
+        	editInstanceNameItem .addActionListener(listener);
+        }
+
+        return editInstanceNameItem ;
+    }	    
+    
+    /**
      * This method initialises arityMenuItem.
      * 
      * @return a new 'Arity' menu item.
@@ -187,6 +209,8 @@ public class InstanceContextualMenu extends ContextualMenu {
             component = inputMenuItem;
         }else if (actionCommand.equals(ActionCommands.EDIT_CLASS)) {
             component = editClassMenuItem;
+        }else if (actionCommand.equals(ActionCommands.EDIT_INSTANCE_NAME)) {
+            component = editInstanceNameItem;
         }
 
 		return component;

@@ -8,6 +8,9 @@
     <EditClass>
         <Label value="Editar clase"/>
     </EditClass>    
+        <EditInstanceName>
+        <Label value="Editar el nombre de la instancia"/>
+    </EditInstanceName>
     <!-- TODO OOBN end -->
     <Mode>
         <Link>

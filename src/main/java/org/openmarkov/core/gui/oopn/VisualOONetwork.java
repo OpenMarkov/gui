@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.UndoableEditEvent;
 
@@ -49,8 +50,10 @@ import org.openmarkov.core.oopn.InstanceReferenceLink;
 import org.openmarkov.core.oopn.NodeReferenceLink;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.core.oopn.ReferenceLink;
+import org.openmarkov.core.oopn.action.AddInstanceEdit;
 import org.openmarkov.core.oopn.action.AddReferenceLinkEdit;
 import org.openmarkov.core.oopn.action.ChangeParameterArityEdit;
+import org.openmarkov.core.oopn.action.InstanceNameEdit;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 
 public class VisualOONetwork extends VisualNetwork
@@ -780,8 +783,28 @@ public class VisualOONetwork extends VisualNetwork
         {
             MainPanel.getUniqueInstance ().getMainPanelListenerAssistant ().openNetwork (selectedInstance.getClassNet ());
         }
-        
     }
+    
+	public void editInstanceName() {
+		Instance selectedInstance = ((VisualInstance)selectedInstances.toArray ()[0]).getInstance ();
+		String newInstanceName = JOptionPane.showInputDialog(null,"Instance Name:", selectedInstance.getName());
+	    
+        if (newInstanceName != null) {
+        	InstanceNameEdit instanceNameEdit = new InstanceNameEdit(probNet, selectedInstance, newInstanceName);
+            try {
+                probNet.doEdit(instanceNameEdit);
+            } catch (Exception e1) {
+                // TODO Localize
+                JOptionPane
+                        .showMessageDialog(
+                                null,
+                                "Error while generating instance node.\n"
+                                        + "Look in the message window for more details",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            }
+        }
+	}
 
     @Override
     public void setWorkingMode (int workingMode)

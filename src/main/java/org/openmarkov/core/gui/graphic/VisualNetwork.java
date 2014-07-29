@@ -1343,6 +1343,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void setParameterArity(ParameterArity arity) {
 		// TODO Auto-generated method stub
 	}
+	public void editInstanceName() {
+		// TODO Auto-generated method stub
+	}
     //TODO OOPN end
     
     public void selectElement (VisualElement selectedElement)

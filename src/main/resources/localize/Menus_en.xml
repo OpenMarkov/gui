@@ -8,6 +8,9 @@
     <EditClass>
         <Label value="Edit class"/>
     </EditClass>
+    <EditInstanceName>
+        <Label value="Edit instance name"/>
+    </EditInstanceName>
     <Arity>
         <Label value="Arity"/>
     </Arity>    
