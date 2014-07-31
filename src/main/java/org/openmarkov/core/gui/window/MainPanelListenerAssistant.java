@@ -1366,8 +1366,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     }
     
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
+//        try {
+//        	InferenceAlgorithm algorithm = new VariableEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
+//			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, algorithm);
+//			optimalStrategyDialog.setVisible(true);
+//		} catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
+//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//                    "An error occurred when trying to show the optimal strategy",
+//                    "Error",
+//                    JOptionPane.ERROR_MESSAGE);
+//			e.printStackTrace();
+//		}
+    	
  		try {
- 			VariableEliminationCE algorithm = new VariableEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
+ 			VariableEliminationCE algorithm = new VariableEliminationCE(
+ 					probNet, 0.0, Double.POSITIVE_INFINITY, null);
  			// Get last variable
  			StringBuffer buffer = new StringBuffer();
  			Intervention intervention = algorithm.getOptimalStrategy();
