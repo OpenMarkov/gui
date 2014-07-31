@@ -81,11 +81,11 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.costeffectiveness.id.CEPartition;
-import org.openmarkov.costeffectiveness.id.inference.VarEliminationCE;
+import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -1367,11 +1367,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
  		try {
- 			VarEliminationCE algorithm = new VarEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
+ 			VariableEliminationCE algorithm = new VariableEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
  			// Get last variable
  			StringBuffer buffer = new StringBuffer();
- 			CEPartition resultingCEP = algorithm.getResultingCEP();
- 			buffer.append(resultingCEP.toString());
+ 			Intervention intervention = algorithm.getOptimalStrategy();
+ 			buffer.append(intervention.toString());
  			buffer.append("\n");
  			
  			BufferedWriter writer = null;
