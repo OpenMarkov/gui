@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeCellRenderer;
 
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
@@ -198,6 +199,14 @@ public class TreeADDCellRenderer extends JPanel
 	protected Icon createNodeIcon(Variable variable) {
 		Icon icon = null;
 		Node node = probNet.getNode(variable);
+		if(node==null)
+		{
+			try {
+				node = probNet.getNode(variable.getName());
+			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		switch (node.getNodeType()) {
 		case CHANCE: {
 			icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);
