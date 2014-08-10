@@ -199,27 +199,33 @@ public class TreeADDCellRenderer extends JPanel
 	protected Icon createNodeIcon(Variable variable) {
 		Icon icon = null;
 		Node node = probNet.getNode(variable);
+		boolean isDummyVariable = false;
 		if(node==null)
 		{
 			try {
 				node = probNet.getNode(variable.getName());
 			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				isDummyVariable = true;
 			}
 		}
-		switch (node.getNodeType()) {
-		case CHANCE: {
-			icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);
-			break;
-		}
-		case DECISION: {
+		if (!isDummyVariable) {
+			switch (node.getNodeType()) {
+			case CHANCE: {
+				icon = IconFactory.createChanceIcon(variable.getName(), textIconFont);
+				break;
+			}
+			case DECISION: {
+				icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);
+				break;
+			}
+			case UTILITY: {
+				icon = IconFactory.createUtilityIcon(variable.getName(), textIconFont);
+				break;
+			}
+			}
+		} else {
 			icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);
-			break;
-		}
-		case UTILITY: {
-			icon = IconFactory.createUtilityIcon(variable.getName(), textIconFont);
-			break;
-		}
 		}
 		return icon;
 	}
