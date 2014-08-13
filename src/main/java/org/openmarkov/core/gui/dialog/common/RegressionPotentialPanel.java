@@ -24,7 +24,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.openmarkov.core.action.PotentialChangeEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.GLMPotential;
 
 @SuppressWarnings("serial")
@@ -142,7 +149,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     }
 
     public boolean saveChanges() {
-        GLMPotential potential = (GLMPotential) this.node.getPotentials().get(0);
+        GLMPotential newPotential = (GLMPotential) this.potential.copy();
         String[] covariates = regressionPanel.getCovariates();
         double[] coefficients = regressionPanel.getCoefficients();
 
@@ -162,15 +169,24 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
             }
         }
         String matrixTypeName = matrixTypeComboBox.getSelectedItem().toString();
-        potential.setCovariates(covariates);
-        potential.setCoefficients(coefficients);
+        newPotential.setCovariates(covariates);
+        newPotential.setCoefficients(coefficients);
         if(matrixTypeName.equals(MATRIX_TYPE_COVARIANCE))
         {
-            potential.setCovarianceMatrix(uncertaintyMatrix);
+            newPotential.setCovarianceMatrix(uncertaintyMatrix);
         }else
         {
-            potential.setCholeskyDecomposition(uncertaintyMatrix);
+            newPotential.setCholeskyDecomposition(uncertaintyMatrix);
         }
+        
+        PotentialChangeEdit potentialChangeEdit = new PotentialChangeEdit(node.getProbNet(), this.potential, newPotential);
+        try {
+			node.getProbNet().doEdit(potentialChangeEdit);
+		} catch (ConstraintViolationException | CanNotDoEditException
+				| NonProjectablePotentialException | WrongCriterionException
+				| DoEditException e) {
+			e.printStackTrace();
+		}
         return true;
     }
 
