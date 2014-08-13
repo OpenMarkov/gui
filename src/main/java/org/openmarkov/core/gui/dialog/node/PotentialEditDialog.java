@@ -95,7 +95,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Relation Type Manager
      */
-    private PotentialManager relationTypeManager;
+    private PotentialManager potentialManager;
     /**
      * Panel of the graphic editor
      */
@@ -166,7 +166,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      */
     private void initialize ()
     {
-        relationTypeManager = new PotentialManager ();
+        potentialManager = new PotentialManager ();
         // Set default title
         setTitle ("NodePotentialDialog.Title.Label");
         configureComponentsPanel ();
@@ -184,7 +184,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().setMaximumSize (new Dimension (180, 40));
         getComponentsPanel ().add (getPotentialTypePanel (), BorderLayout.NORTH);
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
-        if (((node.getPotentials ().get (0).getVariables ().size () > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (node.getPotentials ().get (0).getVariables ().size () - 1 > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
+        Potential potential = node.getPotentials ().get (0);
+        if (((potential.getNumVariables () > 1 && potential.isUtility()) || 
+        		(potential.getNumVariables () > 2 && potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
             && getPotentialPanel () instanceof ProbabilityTablePanel)
         {
             getReorderVariablesButton ().setVisible (true);
@@ -221,7 +223,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         if (potentialTypeComboBox == null)
         {
-            List<String> filteredPotentialNames = relationTypeManager.getFilteredPotentials (node);
+            List<String> filteredPotentialNames = potentialManager.getFilteredPotentials (node);
             Collections.sort (filteredPotentialNames);
             potentialTypeComboBox = new JComboBox<> (
                                                      (String[]) filteredPotentialNames.toArray (new String[0]));
@@ -260,7 +262,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         if (potentialPanel == null)
         {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
-            String potentialFamily = relationTypeManager.getPotentialsFamily (potentialName);
+            String potentialFamily = potentialManager.getPotentialsFamily (potentialName);
             potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel (potentialName,
                                                                                      potentialFamily,
                                                                                      node);
@@ -469,7 +471,10 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel.close ();
         potentialPanel = null;
-        if (((node.getPotentials ().get (0).getVariables ().size () > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.UTILITY) || (node.getPotentials ().get (0).getVariables ().size () - 1 > 1 && node.getPotentials ().get (0).getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
+        Potential potential = node.getPotentials ().get (0);
+        int numPotentialVariables = potential.getNumVariables();
+        PotentialRole role = potential.getPotentialRole ();
+        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) || (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY))
             && getPotentialPanel () instanceof ProbabilityTablePanel)
         {
             getReorderVariablesButton ().setVisible (true);
