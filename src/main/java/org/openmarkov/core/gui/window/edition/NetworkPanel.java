@@ -168,7 +168,7 @@ public class NetworkPanel extends FrameContentPanel
      * Returns the application main panel.
      * @return the application main panel.
      */
-    protected MainPanel getMainPanel ()
+    public MainPanel getMainPanel ()
     {
         return mainPanel;
     }
