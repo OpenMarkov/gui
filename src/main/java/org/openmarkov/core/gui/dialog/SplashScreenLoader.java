@@ -29,7 +29,7 @@ public class SplashScreenLoader {
 	/**
 	 * the logo file
 	 */
-	private final String logoFile =	"images/OpenMarkovSplash2.jpg" ;
+	private final String logoFile =	"images/OpenMarkovSplash.jpg" ;
 	
 	/**
 	 * start the splash screen, do work and destroy
