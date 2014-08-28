@@ -47,7 +47,6 @@ import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessProgressBar;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.AboutBox;
-import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
@@ -310,8 +309,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             setInferenceOptions();
         } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
             showLanguageChangeDialog();
-        } else if (actionCommand.equals(ActionCommands.HELP_HELP)) {
-            showHelp();
         } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
             showAbout();
         } else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
@@ -345,15 +342,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else {
             ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
         }
-    }
-
-    /**
-     * Create a Java Help viewer
-     * 
-     * @return helpViewer a window to display help
-     */
-    private static HelpViewer showHelp() {
-        return HelpViewer.getUniqueInstance();
     }
 
     /**

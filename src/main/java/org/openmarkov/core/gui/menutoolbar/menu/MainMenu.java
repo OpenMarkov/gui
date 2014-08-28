@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Set;
 
-import javax.help.CSH;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -26,7 +25,6 @@ import javax.swing.KeyStroke;
 
 import org.openmarkov.core.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
-import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.loader.element.IconLoader;
 import org.openmarkov.core.gui.localize.LocalizedCheckBoxMenuItem;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
@@ -1856,28 +1854,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         }
 
         return helpMenu;
-
-    }
-
-    /**
-     * This methods initializes openHelpMenuItem
-     * 
-     * @return a new item 'Help - Help'
-     */
-    private JMenuItem getHelpOpenHelpItem() {
-
-        if (helpOpenHelpMenuItem == null) {
-            helpOpenHelpMenuItem = new LocalizedMenuItem(MenuItemNames.HELP_HELP_MENUITEM,
-                    ActionCommands.HELP_HELP);
-            HelpViewer helpVw = HelpViewer.getUniqueInstance();
-            ActionListener helper = new CSH.DisplayHelpFromSource(helpVw.getHb());
-            helpOpenHelpMenuItem.addActionListener(helper);
-
-            helpOpenHelpMenuItem.addActionListener(listener);
-
-        }
-
-        return helpOpenHelpMenuItem;
 
     }
 

@@ -452,10 +452,6 @@ public class ActionCommands {
 	 * Action invoked when the user wants to change the language
 	 */
 	public static final String HELP_CHANGE_LANGUAGE = "Help.ChangeLanguage";
-	/**
-	 * Action invoked when the user wants to open the help.
-	 */
-	public static final String HELP_HELP = "Help.Help";
 
 	/**
 	 * Action invoked when the user wants to open the "About..."

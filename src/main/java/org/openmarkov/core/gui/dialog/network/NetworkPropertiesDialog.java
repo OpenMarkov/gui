@@ -8,10 +8,8 @@ package org.openmarkov.core.gui.dialog.network;
 
 import java.awt.Window;
 
-import javax.help.BadIDException;
 import javax.swing.JTabbedPane;
 
-import org.openmarkov.core.gui.dialog.HelpViewer;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.PropertyNames;
@@ -205,34 +203,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
             networkOtherPropertiesPanel.setName ("networkOtherPropertiesPanel");
         }
         return networkOtherPropertiesPanel;
-    }
-
-    /**
-     * online help convenience method
-     */
-    @SuppressWarnings("unused")
-    private void setOnlineHelp (String onlineSection)
-    {
-        /**
-         * auxiliar help Viewer
-         */
-        HelpViewer helpViewer = null;
-        helpViewer = HelpViewer.getUniqueInstance ();
-        try
-        {
-            helpViewer.getHb ().enableHelpKey (this.getContentPane (), onlineSection,
-                                               helpViewer.getHs ());
-        }
-        catch (BadIDException ex)
-        {
-            System.out.println ("WARNING >> " + ex.getMessage ());
-            System.out.println (ex.getStackTrace ());
-        }
-        catch (Exception ex)
-        {
-            System.out.println ("WARNING >> " + ex.getMessage ());
-            System.out.println (ex.getStackTrace ());
-        }
     }
 
     /**
