@@ -31,12 +31,11 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.GLMPotential;
 
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "GLM")
-public class RegressionPotentialPanel extends PotentialPanel implements ActionListener {
+public class GLMPotentialPanel extends PotentialPanel implements ActionListener {
 
     private static final String    MATRIX_TYPE_COVARIANCE = "Covariance matrix";
     private static final String    MATRIX_TYPE_CHOLESKY   = "Cholesky decomposition";
@@ -50,7 +49,7 @@ public class RegressionPotentialPanel extends PotentialPanel implements ActionLi
     private JPanel                 uncertaintyPanel;
     private String                 currentMatrixType;
 
-    public RegressionPotentialPanel(Node node) {
+    public GLMPotentialPanel(Node node) {
         super();
         initComponents();
         setData(node);
