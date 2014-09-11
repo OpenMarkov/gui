@@ -15,14 +15,12 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.openmarkov.core.gui.dialog.common.CPTablePanel;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 @SuppressWarnings("serial")
 public class CostEffectivenessAnalysisPane extends JScrollPane
@@ -31,17 +29,6 @@ public class CostEffectivenessAnalysisPane extends JScrollPane
     {
         // create a dummy ProbNet
         ProbNet dummyProbNet = new ProbNet ();
-        // make sure first variable in globalUtility is decisionCriteria one
-        List<Variable> correctOrder = new ArrayList<> (globalUtility.getVariables ());
-        for (int i = 0; i < correctOrder.size (); i++)
-        {
-            if (correctOrder.get (i).getName ().equalsIgnoreCase ("Decision Criterion"))
-            {
-                Variable decisionCriteriaVariable = correctOrder.remove (i);
-                correctOrder.add (0, decisionCriteriaVariable);
-            }
-        }
-        globalUtility = DiscretePotentialOperations.reorder (globalUtility, correctOrder);
         Node dummyNode = new Node (dummyProbNet, globalUtility.getVariables ().get (0),
                                        NodeType.CHANCE);
         for (int i = 1; i < globalUtility.getVariables ().size (); i++)

@@ -532,6 +532,7 @@
     <VariableTooLow value ="es más bajo que el mínimo del dominio de la variable"/>
     <VariableTooHigh value ="es más alto que el máximo del dominio de la variable"/>
     <ExceedsTimeHorizon value ="excede el límite temporal"/>
+    <Error value ="Se produjo un error durante el análisis de coste-efectividad"/>
   </CostEffectiveness>
 </properties>
 

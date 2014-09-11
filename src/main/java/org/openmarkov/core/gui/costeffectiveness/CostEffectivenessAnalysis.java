@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.TransitionTime;
@@ -252,10 +255,16 @@ public class CostEffectivenessAnalysis {
 			// Run inference
 			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
 			
-		} catch (NotEvaluableNetworkException | IncompatibleEvidenceException | UnexpectedInferenceException  e1) {
+			globalUtility = reorderVariables(globalUtility);
+			
+		} catch (Exception e1) {
 			e1.printStackTrace();
-		}
-		return reorderVariables(globalUtility);
+			JOptionPane.showMessageDialog (null,
+					e1.getMessage (),
+					StringDatabase.getUniqueInstance().getString ("CostEffectiveness.Error"),
+                    JOptionPane.ERROR_MESSAGE);
+		}  
+		return globalUtility;
 	}
 	
 	/**
@@ -435,13 +444,23 @@ public class CostEffectivenessAnalysis {
 	 */
 	protected TablePotential reorderVariables(TablePotential analysisResult) {
 		List<Variable> newOrderVariables = new ArrayList<>();
+		List<Variable> chanceVariables = new ArrayList<>();
+		List<Variable> decisionVariables = new ArrayList<>();
+		Variable decisionCriteriaVariable = null;
 		for (Variable variable : analysisResult.getVariables()) {
 			if (variable.getName().equals("Decision Criterion")) {
-				newOrderVariables.add(0, variable);
+				decisionCriteriaVariable = variable;
 			} else {
-				newOrderVariables.add(variable);
+				NodeType nodeType = expandedNetwork.getNode(variable).getNodeType();
+				if(nodeType == NodeType.CHANCE)
+					chanceVariables.add(variable);
+				else if (nodeType == NodeType.DECISION)
+					decisionVariables.add(variable);
 			}
 		}
+		newOrderVariables.add(decisionCriteriaVariable);
+		newOrderVariables.addAll(decisionVariables);
+		newOrderVariables.addAll(chanceVariables);
 		return DiscretePotentialOperations.reorder(analysisResult, newOrderVariables);
 	}
 
