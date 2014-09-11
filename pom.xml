@@ -71,6 +71,12 @@
 			<artifactId>org.openmarkov.inference.heuristic.simpleElimination</artifactId>
 			<version>0.1.5-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.heuristic.timeSliceElimination</artifactId>
+			<version>0.1.5-SNAPSHOT</version>
+		</dependency>		
 
 		<dependency>
 			<groupId>org.openmarkov</groupId>
