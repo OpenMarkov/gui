@@ -4,27 +4,27 @@
     <Mode>
         <Link>
             <ToolTip>
-              <Label value="Insert links" />
+              <Label value="Añadir enlaces" />
             </ToolTip>
         </Link>
         <Selection>
             <ToolTip>
-              <Label value="Object selection" />
+              <Label value="Seleción de objetos" />
             </ToolTip>
         </Selection>        
         <Decision>
             <ToolTip>
-              <Label value="Insert decision nodes" />
+              <Label value="Añadir nodos de decisión" />
             </ToolTip>
         </Decision>
         <Utility>
             <ToolTip>
-              <Label value="Insert utility nodes" />
+              <Label value="Añadir nodos de utilidad" />
             </ToolTip>
         </Utility>
         <Chance>
             <ToolTip>
-              <Label value="Insert chance nodes" />
+              <Label value="Añadir nodos de probabilidad" />
             </ToolTip>
         </Chance>       
     </Mode>  

@@ -1209,10 +1209,18 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         for (int i = 0; i < jTree.getRowCount(); i++) {
             jTree.expandRow(i);
         }
-        jTree.expandPath((TreePath) parentPath);
-        model.notifyTreeInsert(path, newTreeADD);
-        jTree.expandPath(path);
-        jTree.expandPath(path.pathByAddingChild(newTreeADD));
+        
+        // parenthPath is always null
+        //jTree.expandPath((TreePath) parentPath);
+        
+        // The notification is already done with the notifyTreeStructureChanged method
+        //model.notifyTreeInsert(path, newTreeADD);
+        
+        // The tree is already expanded in the for clause
+        //jTree.expandPath(path);
+        
+        // Same as above
+        //jTree.expandPath(path.pathByAddingChild(newTreeADD));
     }
 
     /**

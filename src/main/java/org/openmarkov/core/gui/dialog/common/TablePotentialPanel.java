@@ -423,7 +423,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         int[] offsets = tablePotential.getOffsets();
         int numStates = node.getVariable().getNumStates();
         int numVariables = tablePotential.getNumVariables();
-        int numParentVariables = (tablePotential.getUtilityVariable() != null) ? tablePotential.getNumVariables()
+        // When clicking "show expected utility", the window was not appearing.
+        // In this case, the decision node has a utility variable, but the node is not utility, and thus
+        // the value of numParentVariables should not be decreased in one unit.
+        int numParentVariables = (tablePotential.getUtilityVariable() != null) && (node.getNodeType() == NodeType.UTILITY)
+                ? tablePotential.getNumVariables()
                 : tablePotential.getNumVariables() - 1;
         for (int row = 0; row < numParentVariables; row++) {
             int variableIndex = numVariables - row - 1;
