@@ -172,7 +172,21 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      */
     private DiscretizeTableModel  discretizeTableModel            = null;
     protected Node            node;
-
+    /**
+     * Size of the states table
+     */
+    private final int STATES_TABLE_WIDTH = 406;
+    /**
+     * Width of the parenthesis and brackets in the state's table
+     */
+    private final int LIMITS_WIDTH = 40; 
+    
+    /**
+     * Width of the separator used in intervals 
+     */
+    private final int SEPARATOR_WIDTH = 10;
+    
+    private final int DISCRETIZED_STATES_WIDTH = 120;
     /**
      * default constructor
      * 
@@ -210,7 +224,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         final GroupLayout groupLayout = new GroupLayout((JComponent) this);
         groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(getValuesTableScrollPane(),
                 GroupLayout.PREFERRED_SIZE,
-                406,
+                STATES_TABLE_WIDTH,
                 GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getButtonPanel(),
                 GroupLayout.DEFAULT_SIZE,
                 67,
@@ -247,42 +261,55 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         DefaultTableCellRenderer statesRender = new DefaultTableCellRenderer();
         statesRender.setHorizontalAlignment(SwingConstants.LEFT);
         int maxColumn = valuesTable.getColumnModel().getColumnCount();
+ 
         for (int i = 1; i < maxColumn; i++) {
             TableColumn aColumn = valuesTable.getColumnModel().getColumn(i);
             aColumn.setCellRenderer(tcr);
-            aColumn.setPreferredWidth(110);
-            aColumn.setMaxWidth(110);
-            aColumn.setMinWidth(110);
             valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
         }
-        // set special columns
+        
+        // set special columns for each variable type
         if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
-            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
-            aColumn.setCellRenderer(tcr);
-            aColumn.setPreferredWidth(0);
-            aColumn.setMaxWidth(0);
-            aColumn.setMinWidth(0);
+
+            //In Numeric cases we must hide the two first columns
+            valuesTable.getTableHeader().getColumnModel().getColumn(0).setPreferredWidth(0);
+            valuesTable.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
+            valuesTable.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
+            
             valuesTable.getTableHeader().getColumnModel().getColumn(1).setPreferredWidth(0);
             valuesTable.getTableHeader().getColumnModel().getColumn(1).setMinWidth(0);
             valuesTable.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(0);
-        }
-        if (node.getVariable().getVariableType() == VariableType.FINITE_STATES
-                || node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-            TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            
+            
+            
+        }else if (node.getVariable().getVariableType() == VariableType.FINITE_STATES){
+        	//In Finite States we set all the width of the table
+        	TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
             aColumn.setCellRenderer(statesRender);
-            if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
-                valuesTable.getColumnModel().getColumn(1).setPreferredWidth(406);
-                valuesTable.getColumnModel().getColumn(1).setMaxWidth(406);
-                valuesTable.getColumnModel().getColumn(1).setMinWidth(406);
-                for (int i = 2; i < maxColumn; i++) {
-                    TableColumn columni = valuesTable.getColumnModel().getColumn(i);
-                    columni.setCellRenderer(tcr);
-                    columni.setPreferredWidth(0);
-                    columni.setMaxWidth(0);
-                    columni.setMinWidth(0);
-                    valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
-                }
+            valuesTable.getColumnModel().getColumn(1).setPreferredWidth(STATES_TABLE_WIDTH);
+            valuesTable.getColumnModel().getColumn(1).setMaxWidth(STATES_TABLE_WIDTH);
+            valuesTable.getColumnModel().getColumn(1).setMinWidth(STATES_TABLE_WIDTH);
+            // The rest of the columns will be hided
+            for (int i = 2; i < maxColumn; i++) {
+                TableColumn columni = valuesTable.getColumnModel().getColumn(i);
+                columni.setCellRenderer(tcr);
+                columni.setPreferredWidth(0);
+                columni.setMaxWidth(0);
+                columni.setMinWidth(0);
+                valuesTable.getTableHeader().getColumnModel().getColumn(i).setCellRenderer(tcr);
             }
+        }else if(node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+        	TableColumn aColumn = valuesTable.getColumnModel().getColumn(1);
+            aColumn.setCellRenderer(statesRender);
+            
+        	//If the variable type is discrete, we hide the first column and fix the width of the state name column
+        	valuesTable.getColumnModel().getColumn(0).setPreferredWidth(0);
+            valuesTable.getColumnModel().getColumn(0).setMaxWidth(0);
+            valuesTable.getColumnModel().getColumn(0).setMinWidth(0);
+            
+        	valuesTable.getColumnModel().getColumn(1).setPreferredWidth(DISCRETIZED_STATES_WIDTH);
+            valuesTable.getColumnModel().getColumn(1).setMaxWidth(DISCRETIZED_STATES_WIDTH);
+            valuesTable.getColumnModel().getColumn(1).setMinWidth(DISCRETIZED_STATES_WIDTH);
         }
         // set Columns = Up and Low limits
         if (node.getVariable().getVariableType() == VariableType.NUMERIC
@@ -292,20 +319,20 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
             TableColumn lowLimitSymbolColumn = valuesTable.getColumnModel().getColumn(LOWER_BOUND_SYMBOL_COLUMN_INDEX);
             lowLimitSymbolColumn.setCellEditor(new DefaultCellEditor(lowerSymbolComboBox));
             lowLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalLowerSymbols));
-            lowLimitSymbolColumn.setMinWidth(32);
-            lowLimitSymbolColumn.setPreferredWidth(32);
-            lowLimitSymbolColumn.setMaxWidth(32);
+            lowLimitSymbolColumn.setMinWidth(LIMITS_WIDTH);
+            lowLimitSymbolColumn.setPreferredWidth(LIMITS_WIDTH);
+            lowLimitSymbolColumn.setMaxWidth(LIMITS_WIDTH);
             TableColumn upperLimitSymbolColumn = valuesTable.getColumnModel().getColumn(UPPER_BOUND_SYMBOL_COLUMN_INDEX);
             upperLimitSymbolColumn.setCellEditor(new DefaultCellEditor(upperSymbolComboBox));
             upperLimitSymbolColumn.setCellRenderer(new DiscretizeComboBoxRenderer(intervalUpperSymbols));
-            upperLimitSymbolColumn.setMinWidth(32);
-            upperLimitSymbolColumn.setPreferredWidth(32);
-            upperLimitSymbolColumn.setMaxWidth(32);
+            upperLimitSymbolColumn.setMinWidth(LIMITS_WIDTH);
+            upperLimitSymbolColumn.setPreferredWidth(40);
+            upperLimitSymbolColumn.setMaxWidth(LIMITS_WIDTH);
             // set Column = valuesSeparator = ","
             TableColumn valuesSeparatorColumn = valuesTable.getColumnModel().getColumn(VALUES_SEPARATOR_COLUMN_INDEX);
-            valuesSeparatorColumn.setMinWidth(10);
-            valuesSeparatorColumn.setPreferredWidth(10);
-            valuesSeparatorColumn.setMaxWidth(10);
+            valuesSeparatorColumn.setMinWidth(SEPARATOR_WIDTH);
+            valuesSeparatorColumn.setPreferredWidth(SEPARATOR_WIDTH);
+            valuesSeparatorColumn.setMaxWidth(SEPARATOR_WIDTH);
         }
     }
 
