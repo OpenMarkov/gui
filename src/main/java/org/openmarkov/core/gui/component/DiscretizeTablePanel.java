@@ -41,7 +41,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.NodePartitionedIntervalEdit;
-import org.openmarkov.core.gui.action.NodeStateEdit;
+import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.gui.loader.element.IconLoader;
