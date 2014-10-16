@@ -1015,13 +1015,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                     valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1,
                             selectedRow - 1);
                 }
-                // after eliminating row check the lower limit
-                if (selectedRow > 0 && selectedRow < rowCount) {
-                    Object lowerBoundSymbol = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
-                    Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("["))? ")" : "]";
-                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
-                    Object nextRowLowerBound = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
-                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
+             // after eliminating row check the lower limit, only if the variable type is discretized of numeric
+                if(node.getVariable().getVariableType() == VariableType.DISCRETIZED
+                		|| node.getVariable().getVariableType() == VariableType.NUMERIC){
+	                if (selectedRow > 0 && selectedRow < rowCount) {
+	                    Object lowerBoundSymbol = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_SYMBOL_COLUMN_INDEX);
+	                    Object nextRowUpperBoundSymbol = (lowerBoundSymbol.equals("["))? ")" : "]";
+	                    valuesTable.setValueAt(nextRowUpperBoundSymbol, selectedRow, UPPER_BOUND_SYMBOL_COLUMN_INDEX);
+	                    Object nextRowLowerBound = valuesTable.getValueAt(selectedRow - 1, LOWER_BOUND_VALUE_COLUMN_INDEX);
+	                    valuesTable.setValueAt(nextRowLowerBound, selectedRow, UPPER_BOUND_VALUE_COLUMN_INDEX);
+	                }
                 }
             }
         } catch (ConstraintViolationException
