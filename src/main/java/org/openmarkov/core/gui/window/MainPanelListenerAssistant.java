@@ -1306,6 +1306,18 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     }
     
     private void showOptimalStrategy(NetworkPanel networkPanel) {
+        /*
+        22/10/2014
+        Solving issue 195
+        https://bitbucket.org/cisiad/org.openmarkov.issues/issue/195/exception-after-deleting-dan-node-and
+        When the strategy was calculated for a network, then, if the network was modified, the strategy was not updated.
+        The reason is that the algorithm, VariableEliminationDAN, was in 'postresolution' mode. Thus, the new strategy
+        was not being calculated. Now, if the network is modified, we set the algorithm to null, as when
+        the mode is changed from inference to edition.
+         */
+        if (networkPanel.getModified()) {
+            networkPanel.setInferenceAlgorithm(null);
+        }
         InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
         ProbNet probNet = networkPanel.getProbNet();
         try {

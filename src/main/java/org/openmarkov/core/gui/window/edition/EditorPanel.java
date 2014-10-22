@@ -1010,7 +1010,8 @@ public class EditorPanel extends JPanel
                 node.setPolicyType (PolicyType.OPTIMAL);
                 List<Variable> variables = new ArrayList<Variable> ();
                 // it is added first conditioned variable
-                variables.add (visualNode.getNode ().getVariable ());
+                variables.add (node.getVariable ());
+                /*
                 List<Node> nodes = node.getProbNet ().getNodes ();
                 for (Node possibleParent : nodes)
                 {
@@ -1018,6 +1019,10 @@ public class EditorPanel extends JPanel
                     {
                         variables.add (possibleParent.getVariable ());
                     }
+                }
+                */
+                for (Node parent : node.getParents()) {
+                    variables.add(parent.getVariable());
                 }
                 UniformPotential policy = new UniformPotential (
                                                                 variables,
