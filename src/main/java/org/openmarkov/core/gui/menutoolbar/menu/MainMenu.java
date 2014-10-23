@@ -1856,7 +1856,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         	toolsSensitivityAnalysisMenuItem = new JMenu();
         	toolsSensitivityAnalysisMenuItem.setName(MenuItemNames.SENSITIVITYANALYSIS_SUBMENU);
         	toolsSensitivityAnalysisMenuItem.setText(MenuLocalizer.getLabel(MenuItemNames.SENSITIVITYANALYSIS_SUBMENU));
-        	toolsSensitivityAnalysisMenuItem.add(getToolsSensitivityAnalysisDeterministicMenuItem());
+        	//toolsSensitivityAnalysisMenuItem.add(getToolsSensitivityAnalysisDeterministicMenuItem());
         	toolsSensitivityAnalysisMenuItem.add(getToolsSensitivityAnalysisProbabilisticMenuItem());
         }
         return toolsSensitivityAnalysisMenuItem;
