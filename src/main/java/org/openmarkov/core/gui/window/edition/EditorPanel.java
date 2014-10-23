@@ -1335,14 +1335,12 @@ public class EditorPanel extends JPanel
             23/10/2014
             Solving issue 226
             https://bitbucket.org/cisiad/org.openmarkov.issues/issue/226/remove-finding-in-inference-mode-displays
-            Previously, the code was
-
-            if (doPropagation (postResolutionEvidence.get (currentCase), currentCase)) {
-                setPropagationActive (false);
-
+            The previously code was setting the propagation active to false when the propagation was actually success,
             and thus the propagation was not being performed
             */
-            doPropagation (postResolutionEvidence.get (currentCase), currentCase);
+            if (!doPropagation(postResolutionEvidence.get(currentCase), currentCase)) {
+                setPropagationActive(false);
+            }
         }
         networkPanel.getMainPanel ().getInferenceToolBar ().setCurrentEvidenceCaseName (currentCase);
         networkPanel.getMainPanel ().getMainPanelMenuAssistant ().updateOptionsFindingsDependent (networkPanel);
