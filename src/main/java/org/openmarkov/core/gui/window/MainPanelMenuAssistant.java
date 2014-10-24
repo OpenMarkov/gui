@@ -730,7 +730,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                             else
                             {
                                 label = stringDatabase.getString ("Edit.ViewNodePotential.Label");
-                                if (true)
+                                if (!((VisualDecisionNode) visualNode).isHasPolicy ())
                                 { // ...asaez...if network compiled...currently
                                   // not needed
                                   // ...because if not compiled, those options
