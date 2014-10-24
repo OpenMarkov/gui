@@ -100,7 +100,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         setTableSpecificListeners();
         setData(node);
         setLayout(new BorderLayout());
+        
+        // If the ScrollPane is not created, initialize it and set the Viewport. Then add the element to the Layout.
         add(getValuesTableScrollPane(), BorderLayout.CENTER);
+        
         repaint();
         // add(getCommentHTMLScrollPaneNodeDefinitionComment(),BorderLayout.SOUTH);
     }
@@ -196,6 +199,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
     }
 
+    /**
+     * Sets the columns that have uncertainty a true in a boolean array
+     * @param node
+     * @return Boolean array that represents the columns (true = the column has an uncertainty, false = the column has not an uncertainty)
+     */
     private boolean[] getUncertaintyInColumns(Node node) {
         int size = valuesTable.getColumnCount();
         boolean[] uncertaintyInColumns = new boolean[size - 1];
@@ -244,48 +252,52 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         return numRows;
     }
 
-    /**
+	/**
      * Set a blank data table
      * 
      * @param additionalProperties
      *            - to obtain the required number of rows and columns
      * @return the blank data table
      */
+	 /* UNUSED METHOD
     private Object[][] setBlankTable(Node properties) {
         Object[][] blankTable = null;
         int numRows = howManyRows(properties);
         int numColumns = ValuesTable.howManyColumns(properties);
         blankTable = new Object[numRows][numColumns];
-        // TODO seria mas practico hacer un potential y luego ejecutar
-        // el resto del metodo pero esto funciona
         for (int i = 0; i < properties.getVariable().getStates().length; i++) {
         }
         return blankTable;
-    }
+    }/*
 
     /**
      * to retrieve the ListPotentials corresponding to the data in the table
      * 
      * @return
      */
+    /* Unused method
     public ArrayList<Potential> getListPotentialsFromData() {
         ArrayList<Potential> result = null;
         result = convertTableFormatToListPotentials(valuesTable);
         // setListPotentials(result);
         return result;
     }
+     */
+    /* Unused method
 
     private TablePotential getThisPotential(List<Potential> listPotentials) {
         TablePotential aPotential = null;
+
         try {
-            aPotential = ((TablePotential) listPotentials.get(0));
+            aPotential = (TablePotential)listPotentials.get(0);
         } catch (Exception ex) {
             // ExceptionsHandler.handleException(
             // ex, "no Potential.get(0) !!!", false );
             logger.error("no Potential.get(0) !!!");
         }
         return aPotential;
-    }
+    }*/
+
 
     /**
      * Prepare the table data from the <code>Potential</code>s and States.
@@ -317,7 +329,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
             setPosition(setNumberOfPostions(node.getPotentials()));
         } catch (NullListPotentialsException ex) {
-            values = setBlankTable(node);
+        	// If the conversion fails, we decided to clear the table values with null Objects
+            values = new Object[howManyRows(node)][ValuesTable.howManyColumns(node)];
+
         }
         return values;
     }
@@ -340,7 +354,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 node);
         setBaseIndexForCoordinates(row);
         setFirstEditableRow(row);
-        TablePotential tablePotential = getThisPotential(node.getPotentials());
+        TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
         List<Variable> variablesBeforeReorder = tablePotential.getVariables();
         setVariables(variablesBeforeReorder);
         if (node.getNodeType() == NodeType.UTILITY) {
@@ -370,18 +384,6 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         return new Object[numRows][numColumns];
     }
 
-    private void setVariables(List<Variable> variables) {
-        // TODO update this statement, when constructor of this class with
-        // potential as parameter is implemented
-        if (node != null && node.getNodeType() == NodeType.UTILITY) {
-            this.variables = new ArrayList<Variable>();
-            this.variables.add(node.getVariable());
-            for (Variable variable : variables)
-                this.variables.add(variable);
-        } else
-            this.variables = variables;
-    }
-
     /**
      * This methods fills the Upper Left corner of the table with the name of
      * the parents of the node
@@ -401,12 +403,12 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
         if ((parents != null) && (parents.size() > 0)) {
             for (int i = 0; i < parents.size(); i++) {
-                values[i][0] = parents.get(parents.size()-i-1);
+                values[i][0] = parents.get(i);
             }
         }
         return values;
     }
-
+    
     /**
      * @param values
      *            - the table that is being modified
@@ -418,11 +420,12 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     private Object[][] setParentsStatesInTopArea(Object[][] oldValues, Node node) {
         Object[][] values = oldValues;
         int numColumns = (values.length == 0 ? 0 : values[0].length);
-        TablePotential tablePotential = getThisPotential(node.getPotentials());
+        TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
         List<Variable> variables = tablePotential.getVariables();
-        int[] offsets = tablePotential.getOffsets();
-        int numStates = node.getVariable().getNumStates();
-        int numVariables = tablePotential.getNumVariables();
+
+        // Initialize the variable with the number of data columns
+        int numRepetitions = numColumns - 1;
+
         // When clicking "show expected utility", the window was not appearing.
         // In this case, the decision node has a utility variable, but the node is not utility, and thus
         // the value of numParentVariables should not be decreased in one unit.
@@ -430,22 +433,151 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                 ? tablePotential.getNumVariables()
                 : tablePotential.getNumVariables() - 1;
         for (int row = 0; row < numParentVariables; row++) {
-            int variableIndex = numVariables - row - 1;
-            int numRepetitions = offsets[variableIndex] / numStates;
-            State[] states = variables.get(variableIndex).getStates();
-            int column = 1;
-            while (column < numColumns) {
-                for (State state : states) {
-                    for (int i = 0; i < numRepetitions; i++) {
-                        values[row][column] = state.getName();
-                        column++;
-                    }
+        	// Row + 1 jumps above the node variable
+            State[] states = variables.get(row+1).getStates();
+            // Number of repetitions is equals to the ratio of the 
+            // last variable number of states and the number of states
+            // of the actual variable.
+            numRepetitions = numRepetitions/states.length;
+            
+            for(int column = 1; column < numColumns; column++){
+            	// Find the index of the state. We start in zero position of the 
+            	// array of states, and thus we need to substract a unit to column
+            	// The ratio divides the table in sections and the module 
+            	// get the position relative to the section.
+            	int stateIndex = ((column-1)/numRepetitions) % states.length;
+            	State state = states[stateIndex];
+            	values[row][column] = state.getName();
+            }
+            
+        }
+        return values;
+    }
+
+    /**
+     * this method sets the first row with the values of the states of the node
+     * (if it is a node chance) or the name of the variable of the node (if it
+     * is a utility node)
+     * 
+     * @param values
+     *            - the table that is being modified
+     * @param listPotentials
+     *            - the list of potentials of the node
+     * @param additionalProperties
+     *            - the additionalProperties of the node
+     */
+    private Object[][] setNodeStatesInLeftArea(Object[][] oldValues, Node properties) {
+        Object[][] values = oldValues;
+        TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+        int row = getFirstEditableRow();
+        
+        if (properties.getNodeType() == NodeType.UTILITY) {
+            values[row][0] = properties.getName();
+        } else
+        /* if (properties.getNodeType() == NodeType.CHANCE) */{
+            // set first column values with the state names
+            if (0 < tablePotential.getDimensions()[0]) {
+                // int numOfTheState =
+                // tablePotential.getVariable( 0 ).getNumStates() - 1;
+                int length = values.length - 2;
+                for (State state : tablePotential.getVariable(0).getStates()) {
+                    values[length--][0] = state.getName();
+                    // row++;
+                    // numOfTheState--;
                 }
             }
         }
         return values;
     }
+   
 
+    /**
+     * @param values
+     *            - the table that is being modified
+     * @param listPotentials
+     *            - the list of potentials of the node
+     * @param additionalProperties
+     *            - the additionalProperties of the node
+     */
+    private Object[][] setPotentialDataInCentreArea(Object[][] oldValues, Node node) {
+        Object[][] values = oldValues;
+        int position = 0;
+        int numColumns = (values.length == 0 ? 0 : values[0].length);
+        TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+        
+        // rounding initial values
+        double[] initialValues = tablePotential.getValues();
+        double[] roundedValues = new double[initialValues.length];
+        int maxDecimals = 10;
+        double epsilon;
+        epsilon = Math.pow(10, -(maxDecimals + 2));
+        for (int i = 0; i < initialValues.length; i++) {
+            roundedValues[i] = Util.roundAndReduce(initialValues[i], epsilon, maxDecimals);
+        }
+        tablePotential.setValues(roundedValues);
+
+
+        for (int j = 1; j <= numColumns - 1; j++) {
+        	// Get the index of the first element in the column (the bottom one)
+        	position = getPotentialStartIndexOfColumn(j);
+        	
+        	int cont = getLastEditableRow();
+
+        	// put the values on the table
+            for (int i = cont; i >= getFirstEditableRow(); i--, position++) {
+            	double value = tablePotential.getValues()[position];
+                values[i][j] = value;
+            }
+        }
+        return values;
+    }
+
+    /**
+     * In the lower left corner area, the last row is reserved in the model for
+     * displaying the name of the variable
+     * 
+     * @param values
+     *            - the table that is being modified
+     * @param listPotentials
+     *            - the list of potentials of the node
+     * @param additionalProperties
+     *            - the additionalProperties of the node
+     */
+    private Object[][] setVariableNameInLowerLeftCornerArea(Object[][] oldValues,
+            Node properties) {
+        Object[][] values = oldValues;
+        values[getLastEditableRow() + 1][0] = properties.getName();
+        return values;
+    }
+    
+    /**
+     * In a discretize table model that shows only values (not probabilities),
+     * this area will store the name of the state that is required to display
+     * 
+     * @param values
+     *            - the table that is being modified
+     * @param additionalProperties
+     *            - the additionalProperties of the node
+     */
+    private Object[][] setVariableStatesInBottomArea(Object[][] oldValues, Node node) {
+        Object[][] values = oldValues;
+        int numColumns = (values.length == 0 ? 0 : values[0].length);
+        TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+        State[] states = tablePotential.getVariable(0).getStates();
+        double max;
+        for (int j = numColumns - 1; j >= 1; j--) {
+            max = (Double) values[getFirstEditableRow()][j];
+            values[getLastEditableRow() + 1][j] = states[0].getName();
+            for (int i = getFirstEditableRow() + 1; i <= getLastEditableRow(); i++) {
+                if (((Double) values[i][j]) > max) {
+                    max = (Double) values[i][j];
+                    values[getLastEditableRow() + 1][j] = states[i - getFirstEditableRow()].getName();
+                }
+            }
+        }
+        return values;
+    }
+    
     /**
      * @param values
      *            - the table that is being modified
@@ -467,74 +599,23 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         setPosition(numPositions);
         return numPositions;
     }
-
+   
     /**
-     * this method sets the first row with the values of the states of the node
-     * (if it is a node chance) or the name of the variable of the node (if it
-     * is a utility node)
-     * 
-     * @param values
-     *            - the table that is being modified
-     * @param listPotentials
-     *            - the list of potentials of the node
-     * @param additionalProperties
-     *            - the additionalProperties of the node
+     * Set the variables of the global attribute
+     * @param variables
      */
-    private Object[][] setNodeStatesInLeftArea(Object[][] oldValues, Node properties) {
-        Object[][] values = oldValues;
-        TablePotential tablePotential = (TablePotential) getThisPotential(properties.getPotentials());
-        int row = getFirstEditableRow();
-        if (properties.getNodeType() == NodeType.UTILITY) {
-            values[row][0] = properties.getName();
+    private void setVariables(List<Variable> variables) {
+        // TODO update this statement, when constructor of this class with
+        // potential as parameter is implemented
+        if (node != null && node.getNodeType() == NodeType.UTILITY) {
+            this.variables = new ArrayList<Variable>();
+            this.variables.add(node.getVariable());
+            for (Variable variable : variables)
+                this.variables.add(variable);
         } else
-        /* if (properties.getNodeType() == NodeType.CHANCE) */{
-            // set first column values with the state names
-            if (0 < tablePotential.getDimensions()[0]) {
-                // int numOfTheState =
-                // tablePotential.getVariable( 0 ).getNumStates() - 1;
-                int length = values.length - 2;
-                for (State state : tablePotential.getVariable(0).getStates()) {
-                    values[length--][0] = state.getName();
-                    // row++;
-                    // numOfTheState--;
-                }
-            }
-        }
-        return values;
+            this.variables = variables;
     }
 
-    /**
-     * @param values
-     *            - the table that is being modified
-     * @param listPotentials
-     *            - the list of potentials of the node
-     * @param additionalProperties
-     *            - the additionalProperties of the node
-     */
-    private Object[][] setPotentialDataInCentreArea(Object[][] oldValues, Node properties) {
-        Object[][] values = oldValues;
-        int position = 0;
-        int numColumns = (values.length == 0 ? 0 : values[0].length);
-        TablePotential tablePotential = (TablePotential) getThisPotential(properties.getPotentials());
-        // rounding initial values
-        double[] initialValues = tablePotential.getValues();
-        double[] roundedValues = new double[initialValues.length];
-        int maxDecimals = 10;
-        double epsilon;
-        epsilon = Math.pow(10, -(maxDecimals + 2));
-        for (int i = 0; i < initialValues.length; i++) {
-            roundedValues[i] = Util.roundAndReduce(initialValues[i], epsilon, maxDecimals);
-        }
-        tablePotential.setValues(roundedValues);
-        int cont = getLastEditableRow();
-        for (int j = 1; j <= numColumns - 1; j++) {
-            for (int i = cont; i >= getFirstEditableRow(); i--, position++) {
-                double value = tablePotential.getValues()[position];
-                values[i][j] = value;
-            }
-        }
-        return values;
-    }
 
     /****
      * Calculates the position on the dataTable for a state combination
@@ -547,10 +628,25 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     private int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
         int numStates = node.getVariable().getNumStates();
         int position = potential.getPosition(stateIndices);
-        int column = (position / numStates) + 1;
+
+        int tempMultiplier = ValuesTable.howManyColumns(node) - 1;
+        int tempColumnPosition = 0;
+        
+        // We start at index 1 because the state of the node is irrelevant for obtain the column (only is relevant for the row)
+        // We multiply the number of columns above each state and the index of this variable (in wich state is)
+        for(int i = 1; i < potential.getVariables().size(); i++){
+        	Variable var = potential.getVariables().get(i);
+        	tempMultiplier = tempMultiplier/var.getNumStates();
+        	tempColumnPosition += stateIndices[i]*tempMultiplier;
+        }
+
+        // The column will be the column in the data structure plus one row at the beginning 
+        int column = tempColumnPosition+1;
+        // The row will be the last row in the table minus the relative position in the node state
         int row = getLastEditableRow() - (position % numStates);
         return new int[] { row, column };
     }
+
 
     /****
      * Calculates the positions of the table which are not editable due to a
@@ -588,58 +684,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     }
 
     /**
-     * In the lower left corner area, the last row is reserved in the model for
-     * displaying the name of the variable
-     * 
-     * @param values
-     *            - the table that is being modified
-     * @param listPotentials
-     *            - the list of potentials of the node
-     * @param additionalProperties
-     *            - the additionalProperties of the node
-     */
-    private Object[][] setVariableNameInLowerLeftCornerArea(Object[][] oldValues,
-            Node properties) {
-        Object[][] values = oldValues;
-        values[getLastEditableRow() + 1][0] = properties.getName();
-        return values;
-    }
-
-    /**
-     * In a discretize table model that shows only values (not probabilities),
-     * this area will store the name of the state that is required to display
-     * 
-     * @param values
-     *            - the table that is being modified
-     * @param additionalProperties
-     *            - the additionalProperties of the node
-     */
-    private Object[][] setVariableStatesInBottomArea(Object[][] oldValues, Node properties) {
-        Object[][] values = oldValues;
-        int numColumns = (values.length == 0 ? 0 : values[0].length);
-        TablePotential tablePotential = (TablePotential) getThisPotential(properties.getPotentials());
-        State[] states = tablePotential.getVariable(0).getStates();
-        double max;
-        for (int j = numColumns - 1; j >= 1; j--) {
-            max = (Double) values[getFirstEditableRow()][j];
-            values[getLastEditableRow() + 1][j] = states[0].getName();
-            for (int i = getFirstEditableRow() + 1; i <= getLastEditableRow(); i++) {
-                if (((Double) values[i][j]) > max) {
-                    max = (Double) values[i][j];
-                    values[getLastEditableRow() + 1][j] = states[i - getFirstEditableRow()].getName();
-                }
-            }
-        }
-        return values;
-    }
-
-    /**
      * Convert the table with the data in a List of Potentials to be saved
      * 
      * @param valuesTable
      *            - the table with the data
      * @return a list of Potentials
      */
+    /* Unused method
     private ArrayList<Potential> convertTableFormatToListPotentials(ValuesTable valuesTable) {
         ArrayList<Potential> listPotentials = new ArrayList<Potential>();
         if (getPosition() >= 0) { // it is not a Decision node
@@ -657,6 +708,35 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             listPotentials.add(tablePotential);
         }
         return listPotentials;
+    }
+    */
+
+    /**
+     * Gets the index of the first potential of a column
+     * @param column 
+     * @return index of the potential
+     */
+    private int getPotentialStartIndexOfColumn(int column){
+    	TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+    	int position = 0;
+    	
+    	// We use a temporal value to make the column 1 as the first (column 0)
+    	int temp = column-1;
+    	
+    	// In this code we get the coordinates (states index) of the variable and
+    	// we calculate the position in the list of potentials. The position
+    	// is the product of each state index and the respective offset
+    	// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
+    	for(int i = tablePotential.getDimensions().length - 1; i > 0;i--){
+    		// Dimension of the first parent
+    		int dimension = tablePotential.getDimensions()[i];
+
+    		// In each iteration this code add the s[i]*offset[i] to the
+    		// position
+    		position += (temp%dimension)*tablePotential.getOffsets()[i]; 
+    		temp = temp/dimension;    
+    	}
+    	return position;
     }
 
     /**
@@ -688,28 +768,23 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
         int[] parentsConfiguration = new int[variables.size()];
         // Gets the start position of a reordered potential
-        int startPosition = Util.toPositionOnPotentialReordered(variable.getNumStates()
-                + variables.size()
-                - 1,
-                col,
-                variable.getNumStates(),
-                variables.size());
+        int startPosition = getPotentialStartIndexOfColumn(col);
+
         // gets the configuration selected
         int[] configuration = tablePotential.getConfiguration(startPosition);
-        // back to the original order of variables configuration
-        // first value of configuration matches the value of the first variable
-        // in inverse order because the potential visualization is in inverse
-        // order
-        int j = 0;
+        
+        // Gets the parents configuration
         int end = 0;
         if (variable == tablePotential.getUtilityVariable()) {
             end = -1;
         }
         for (int i = configuration.length - 1; i > end; i--) {
-            parentsConfiguration[j++] = configuration[i];
+            parentsConfiguration[i-1] = configuration[i];
         }
+
         // Gets the evidence
-        j = 0;
+        int j = 0;
+
         Finding finding;
         for (Variable var : variables) {
             finding = new Finding(var, parentsConfiguration[j]);
@@ -719,6 +794,11 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         return evidence;
     }
 
+
+    /** 
+     * This method gets the Evidence Case from the selected column
+     * @return Evidence case 
+     */
     public EvidenceCase getEvidenceCaseFromSelectedColumn() {
         EvidenceCase evi = null;
         try {
@@ -797,6 +877,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
         return valuesTableScrollPane;
     }
+    
 
     /**
      * special method to show/hide the values table
@@ -804,6 +885,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     public void showValuesTable(final boolean visible) {
         getValuesTable().setVisible(visible);
     }
+
 
     /**
      * This method initializes tableModel.
@@ -821,6 +903,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
         return tableModel;
     }
+
 
     /**
      * This method handles the type of potential to be used for the model to be
@@ -840,14 +923,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         setShowAllParameters(true);
     }
 
-    /**
-     * This method handles the type of potential to be used for the model to be
-     * optimal (decision node)
-     */
-    public void setOptimalModel() {
-        valuesTable.setShowingOptimal(true);
-    }
-
+	/**
+	 * This method handles the type of potential to be used for the model to be
+	 * optimal (decision node)
+	 */
+	public void setOptimalModel() {
+		valuesTable.setShowingOptimal(true);
+	}
     /**
      * This method handles the type of potential to be used for the model to be
      * general (TablePotential)
@@ -864,7 +946,8 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         valuesTable.setUsingGeneralPotential(familyIndex);
     }
 
-    /**
+    /** 
+     * Show/Hide all the parameters
      * @param showAllParameters
      *            the showAllParameters to set
      */
@@ -874,6 +957,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     }
 
     /**
+     * Show/Hide the probabilities values
      * @param showProbabilitiesValues
      *            the showProbabilitiesValues to set
      */
@@ -883,6 +967,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     }
 
     /**
+     * Show/Hide the TPC values
      * @param showTPCvalues
      *            the showTPCvalues to set
      */
@@ -891,6 +976,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         valuesTable.setShowingTPCvalues(showTPCvalues);
     }
 
+    /**
+     * Handles an action performed
+     */
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN)
@@ -945,6 +1033,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
     }
 
+    /**
+     * Method for update the options showed in the contextual menu
+     */
     private void updateContextualMenuOptions() {
         if (node.getPotentials().size() > 0
                 && node.getPotentials().get(0) instanceof TablePotential) {
@@ -962,6 +1053,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         }
     }
     
+    /**
+     * Handles the double click in a cell
+     * @param evt
+     */
     private void doubleClickEvent(MouseEvent evt)
     {
         if (node.getPotentials().size() > 0
@@ -1062,10 +1157,16 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
                     }
                 }  
             }
+
         });
         valuesTable.addMouseListener(new DoubleClickListener());
     }
     
+    /**
+     * This class overrides the double click listener calling the 
+     * @see doubleClickEvent
+     *
+     */
     public class DoubleClickListener extends MouseAdapter {
 
         @Override
@@ -1076,13 +1177,18 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
             }
         }
     }
-                    
-
+    
+    /**
+     * Close the table                
+     */
     @Override
     public void close() {
         getValuesTable().close();
     }
 
+    /**
+     * Set all the cells to not modifiable
+     */
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
