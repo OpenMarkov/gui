@@ -432,9 +432,16 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         int numParentVariables = (tablePotential.getUtilityVariable() != null) && (node.getNodeType() == NodeType.UTILITY)
                 ? tablePotential.getNumVariables()
                 : tablePotential.getNumVariables() - 1;
+        
         for (int row = 0; row < numParentVariables; row++) {
-        	// Row + 1 jumps above the node variable
-            State[] states = variables.get(row+1).getStates();
+        	State[] states;
+        	if ((tablePotential.getUtilityVariable() != null) && (node.getNodeType() == NodeType.UTILITY)){
+                states = variables.get(row).getStates();
+        	}else{
+            	// Row + 1 jumps above the node variable
+                states = variables.get(row+1).getStates();
+
+        	}
             // Number of repetitions is equals to the ratio of the 
             // last variable number of states and the number of states
             // of the actual variable.
@@ -778,10 +785,15 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
         if (variable == tablePotential.getUtilityVariable()) {
             end = -1;
         }
-        for (int i = configuration.length - 1; i > end; i--) {
-            parentsConfiguration[i-1] = configuration[i];
+        // The nodes with utility values have one less variable 
+        int parentsDifferenceChanceNodes = 1;
+        if(tablePotential.getPotentialRole() == PotentialRole.UTILITY 
+                && tablePotential.getUtilityVariable() != null){
+        	parentsDifferenceChanceNodes = 0;
         }
-
+        for (int i = configuration.length - 1; i > end; i--) {
+            parentsConfiguration[i-parentsDifferenceChanceNodes] = configuration[i];
+        }
         // Gets the evidence
         int j = 0;
 
