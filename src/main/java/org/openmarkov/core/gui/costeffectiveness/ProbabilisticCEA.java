@@ -91,7 +91,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         List<Variable> decisions = exampleResult.getVariables();
         int[] offsets = exampleResult.getOffsets();
         for (int i = 0; i < exampleResult.values.length; i += 2) {
-            StringBuffer description = new StringBuffer();
+            StringBuilder description = new StringBuilder();
             for (int j = 1; j < decisions.size(); ++j) {
                 String decisionName = decisions.get(j).getName();
                 String stateName = decisions.get(j).getStateName(

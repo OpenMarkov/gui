@@ -87,7 +87,7 @@ public class MPADHeuristic extends EliminationHeuristic {
     }
 
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int size = eliminationOrder.size();
         for (int i = 0; i < size; i++) {
             buffer.append(eliminationOrder.get(i).getName());

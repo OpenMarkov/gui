@@ -120,7 +120,7 @@ public class MenuNodeLinkedList {
 	 */
 	public String toString() {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("[MenuNodeLinkedList ->");
 		buf.append(" size= " + getSize());
 		buf.append(" ,elements= [");

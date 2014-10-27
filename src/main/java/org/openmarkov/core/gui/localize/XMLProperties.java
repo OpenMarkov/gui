@@ -57,7 +57,7 @@ class XMLProperties extends Properties {
             
             // Turn into properties objects
             loadFromElements(doc.getRootElement().getChildren(), 
-                new StringBuffer(""));
+                new StringBuilder(""));
             
         } catch (JDOMException e) {
             throw new IOException(e.getMessage());
@@ -97,7 +97,7 @@ class XMLProperties extends Properties {
      * @param elements <code>List</code> of elements to load from.
      * @param baseName the base name of this property.
      */
-    private void loadFromElements(List<Element> elements, StringBuffer baseName) {
+    private void loadFromElements(List<Element> elements, StringBuilder baseName) {
         // Iterate through each element
         for (Element current : elements ) {
             String name = current.getName();

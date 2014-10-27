@@ -1386,7 +1386,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  			VariableEliminationCE algorithm = new VariableEliminationCE(
  					probNet, 0.0, Double.POSITIVE_INFINITY, null);
  			// Get last variable
- 			StringBuffer buffer = new StringBuffer();
+ 			StringBuilder buffer = new StringBuilder();
  			Intervention intervention = algorithm.getOptimalStrategy();
  			buffer.append(intervention.toString());
  			buffer.append("\n");
@@ -1431,7 +1431,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  */
     }
 
-	private void showTextWindow(StringBuffer buffer, MainPanel mainPanel) {
+	private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");
 		String text = buffer.toString();
 		JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));

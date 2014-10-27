@@ -123,7 +123,7 @@ public class MenuNode {
 	 */
 	public String toString() {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("[MenuNode ->");
 		buf.append(" name= " + this.name);
 		buf.append(" ,object=" + this.getObject().getName());

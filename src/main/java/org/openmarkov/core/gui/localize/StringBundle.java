@@ -73,7 +73,7 @@ public class StringBundle {
 	@Override
 	public String toString() {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append( "[" + this.getClass().getName() + ":" + "\n" );
 		buf.append( "Resourcebundle =" + resourceBundle.toString() );
 		buf.append( "]" );
