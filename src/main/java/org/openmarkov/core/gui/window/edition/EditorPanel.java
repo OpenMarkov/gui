@@ -2624,6 +2624,15 @@ public class EditorPanel extends JPanel
         {
             Link<Node> link = links.get (0).getLink ();
             link.setRestrictionsPotential (null);
+            /*
+            27/10/2014
+            Solving issue #165
+            https://bitbucket.org/cisiad/org.openmarkov.issues/issue/165/when-a-restriction-is-removed-the-network
+            The next three lines mark the network as changed and modify the network panel status
+             */
+            networkChanged = true;
+            networkPanel.setModified(true);
+            networkPanel.getMainPanel ().getMainPanelMenuAssistant ().updateOptionsNetworkModified(false, false);
             repaint ();
         }
     }
