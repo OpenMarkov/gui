@@ -969,20 +969,22 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
             // PRECISION
         } else if (comboBox.getName().equals("jComboBoxPrecision")) {
             if (!(itemSelected == null) && itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                PrecisionEdit precisionEdit = new PrecisionEdit(node,
-                        Double.parseDouble(itemSelected));
-                try {
-                    node.getProbNet().doEdit(precisionEdit);
-                } catch (ConstraintViolationException
-                        | CanNotDoEditException
-                        | NonProjectablePotentialException
-                        | WrongCriterionException
-                        | DoEditException e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(null,
-                            stringDatabase.getString(e1.getMessage()),
-                            stringDatabase.getString(e1.getMessage()),
-                            JOptionPane.ERROR_MESSAGE);
+                if(node.getVariable().getPrecision() != Double.parseDouble(itemSelected)){
+	            	PrecisionEdit precisionEdit = new PrecisionEdit(node,
+	                        Double.parseDouble(itemSelected));
+	                try {
+	                    node.getProbNet().doEdit(precisionEdit);
+	                } catch (ConstraintViolationException
+	                        | CanNotDoEditException
+	                        | NonProjectablePotentialException
+	                        | WrongCriterionException
+	                        | DoEditException e1) {
+	                    e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null,
+	                            stringDatabase.getString(e1.getMessage()),
+	                            stringDatabase.getString(e1.getMessage()),
+	                            JOptionPane.ERROR_MESSAGE);
+	                }
                 }
             }
             if (node.getVariable().getVariableType() == VariableType.DISCRETIZED
