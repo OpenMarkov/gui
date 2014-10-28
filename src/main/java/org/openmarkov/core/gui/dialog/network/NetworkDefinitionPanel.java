@@ -360,34 +360,36 @@ public class NetworkDefinitionPanel extends JPanel
             }
             if (selectedNetworkType != null)
             {
-                ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit (probNet,
-                                                                                     selectedNetworkType);
-                try
-                {
-                    probNet.doEdit (changeNetworkType);
-                    parent.getNetworkAdvancedPanel ().update (probNet);
-                }
-                catch (ConstraintViolationException | CanNotDoEditException
-                        | NonProjectablePotentialException | WrongCriterionException e)
-                {
-                    e.printStackTrace ();
-                    JOptionPane.showMessageDialog (this,
-                                                   StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                                   StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-                catch (DoEditException e)
-                {
-                    // TODO maintain comboBox with the current probNet
-                    e.printStackTrace ();
-                    // if (!newNetwork){
-                    JOptionPane.showMessageDialog (this, e.getMessage (), e.getMessage (),
-                                                   JOptionPane.ERROR_MESSAGE);
-                    // It cannot be done the change selected so combobox
-                    // selection must be same
-                    jComboBoxNetworkTypes.setSelectedItem (stringDatabase.getString ("NetworkDefinitionPanel.NetworkTypes.Items."
-                                                                                     + probNet.getNetworkType ().toString ().toString ()));
-                    // }
+                if (probNet.getNetworkType().toString().compareTo(selectedNetworkType.toString()) != 0) {
+                    ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit (probNet,
+                                                                                         selectedNetworkType);
+                    try
+                    {
+                        probNet.doEdit (changeNetworkType);
+                        parent.getNetworkAdvancedPanel ().update (probNet);
+                    }
+                    catch (ConstraintViolationException | CanNotDoEditException
+                            | NonProjectablePotentialException | WrongCriterionException e)
+                    {
+                        e.printStackTrace ();
+                        JOptionPane.showMessageDialog (this,
+                                                       StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                                       StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
+                                                       JOptionPane.ERROR_MESSAGE);
+                    }
+                    catch (DoEditException e)
+                    {
+                        // TODO maintain comboBox with the current probNet
+                        e.printStackTrace ();
+                        // if (!newNetwork){
+                        JOptionPane.showMessageDialog (this, e.getMessage (), e.getMessage (),
+                                                       JOptionPane.ERROR_MESSAGE);
+                        // It cannot be done the change selected so combobox
+                        // selection must be same
+                        jComboBoxNetworkTypes.setSelectedItem (stringDatabase.getString ("NetworkDefinitionPanel.NetworkTypes.Items."
+                                                                                         + probNet.getNetworkType ().toString ().toString ()));
+                        // }
+                    }
                 }
             }
         }
