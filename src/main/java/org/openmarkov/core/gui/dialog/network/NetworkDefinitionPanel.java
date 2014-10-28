@@ -360,6 +360,12 @@ public class NetworkDefinitionPanel extends JPanel
             }
             if (selectedNetworkType != null)
             {
+                /*
+                28/10/2014
+                Fixing issue 169
+                https://bitbucket.org/cisiad/org.openmarkov.issues/issue/169/opening-the-network-properties-dialog
+                The ChangeNetworkTypeEdit should only be invoked if the network type has actually changed
+                 */
                 if (probNet.getNetworkType().toString().compareTo(selectedNetworkType.toString()) != 0) {
                     ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit (probNet,
                                                                                          selectedNetworkType);
