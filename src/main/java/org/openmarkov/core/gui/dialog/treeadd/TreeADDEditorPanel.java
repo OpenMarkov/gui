@@ -37,6 +37,7 @@ import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
@@ -304,9 +305,21 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             variables.add(potential.getUtilityVariable());
         }
         List<Variable> possibleTopVariables = possibleTopVariables(branch, branchPath);
+        for (Variable var : possibleTopVariables){
+        	
+        	// If the node has Utility type, the variable will not be added
+        	try {
+				if(node.getProbNet().getNode(var.getName()).getNodeType() != NodeType.UTILITY){
+					possibleTopVariables.add(var);
+				}
+			} catch (NodeNotFoundException e1) {
+				e1.printStackTrace();
+			}
+        }
+        
         List<Variable> addableVariables = branch.getAddableVariables();
         possibleTopVariables.addAll(addableVariables);
-
+        
         // Potential Edition, any case it is possible to edit branch's potential
         if (!(potential instanceof TreeADDPotential)) {
             contextualMenu.add(editPotential);
