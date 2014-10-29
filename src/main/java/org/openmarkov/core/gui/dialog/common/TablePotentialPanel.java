@@ -730,18 +730,25 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
     	// We use a temporal value to make the column 1 as the first (column 0)
     	int temp = column-1;
     	
-    	// In this code we get the coordinates (states index) of the variable and
-    	// we calculate the position in the list of potentials. The position
-    	// is the product of each state index and the respective offset
-    	// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
-    	for(int i = tablePotential.getDimensions().length - 1; i > 0;i--){
-    		// Dimension of the first parent
-    		int dimension = tablePotential.getDimensions()[i];
+    	// If TablePotential.dimensions  is equals null, the node does not have parents
+    	// and only has one state (we have a utility node without parents)
+    	if(tablePotential.getDimensions() != null){
+        	// In this code we get the coordinates (states index) of the variable and
+        	// we calculate the position in the list of potentials. The position
+        	// is the product of each state index and the respective offset
+        	// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
+        	for(int i = tablePotential.getDimensions().length - 1; i > 0;i--){
+        		// Dimension of the first parent
+        		int dimension = tablePotential.getDimensions()[i];
 
-    		// In each iteration this code add the s[i]*offset[i] to the
-    		// position
-    		position += (temp%dimension)*tablePotential.getOffsets()[i]; 
-    		temp = temp/dimension;    
+        		// In each iteration this code add the s[i]*offset[i] to the
+        		// position
+        		position += (temp%dimension)*tablePotential.getOffsets()[i]; 
+        		temp = temp/dimension;    
+        	}
+
+    	}else{
+    		position = 0;
     	}
     	return position;
     }
