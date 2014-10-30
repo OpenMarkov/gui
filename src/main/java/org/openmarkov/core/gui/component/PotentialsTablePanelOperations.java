@@ -178,12 +178,20 @@ public class PotentialsTablePanelOperations {
 			Node properties) {
 		int row = 0;
 		if (listPotentials != null) {
+			// Get the number of parents
 			row = listPotentials.get( 0 ).getNumVariables() - 1;
+			if (properties.getNodeType() == NodeType.UTILITY) {
+				row += 1;
+			}else{
+				row += properties.getVariable().getStates().length - 1;
+			}
+			/*
 			if (properties.getNodeType() == NodeType.UTILITY) {
 				row += 1;
 			} else {
 				row += properties.getVariable().getStates().length;
 			}
+			*/
 		} else {
 			row = 0;
 		}
