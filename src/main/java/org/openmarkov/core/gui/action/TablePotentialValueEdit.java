@@ -7,6 +7,7 @@
 package org.openmarkov.core.gui.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,10 +18,13 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -136,9 +140,12 @@ public class TablePotentialValueEdit extends SimplePNEdit {
         } else {
             increment = 0;
         }
-        // The potentialSelected is the index in the values table reordered of
-        // the value edited
-        int lastRow = (tablePotential.getNumVariables()-1)+(node.getVariable().getNumStates()-1);
+        
+        // We get the last editable row in the JTable
+        int lastRow = PotentialsTablePanelOperations.
+        		calculateLastEditableRow(Arrays.asList((Potential)tablePotential), node);
+        
+        // The potentialSelected is the index in the values table reordered of the value edited
         this.potentialSelected = increment + (lastRow-row);
 
     }
