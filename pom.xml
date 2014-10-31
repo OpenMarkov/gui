@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openmarkov</groupId>
 	<artifactId>org.openmarkov.core.gui</artifactId>
-	<version>0.1.5-SNAPSHOT</version>
+	<version>0.1.5</version>
 	<name>org.openmarkov.core.gui</name>
 	<url>http://openmarkov.org/core/gui</url>
 
@@ -57,19 +57,19 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.core</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.1.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.variableElimination</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.1.5</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.heuristic.timeSliceElimination</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.1.5</version>
 		</dependency>		
 
 		<dependency>
@@ -117,13 +117,13 @@
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.costeffectiveness.id</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.1.5</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.sensitivityanalysis.gui</artifactId>
-			<version>0.1.5-SNAPSHOT</version>
+			<version>0.1.5</version>
 		</dependency>
 				
 	</dependencies>
