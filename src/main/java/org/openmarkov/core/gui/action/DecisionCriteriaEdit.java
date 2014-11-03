@@ -4,9 +4,12 @@ package org.openmarkov.core.gui.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.jmx.Agent;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -18,6 +21,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
     // private StringsWithProperties lastAgents;
     private List<StringWithProperties> lastCriteria;
     private Object[][]                 dataTable;
+    private String 	                   newName;
 
     public DecisionCriteriaEdit (ProbNet probnet,
                                  StateAction stateAction,
@@ -29,6 +33,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
         // probNet.getPNESupport().setWithUndo(true);
         this.criterionName = agentName;
         this.stateAction = stateAction;
+        this.newName = newName;
         if (probnet.getAgents () != null)
         {
             this.lastCriteria = new ArrayList<StringWithProperties> (probnet.getDecisionCriteria ());
@@ -116,7 +121,23 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 {
                     // newAgentsRename.put((String)dataTable[i][0]);
                     newCriteriasRename.add (new StringWithProperties ((String) dataTable[i][0]));
+
                 }
+                // We substitute the new name in the nodes they had that criterion
+                for(Node node : probNet.getNodes()){
+                	// Only Utility nodes have criterion
+                	if(node.getNodeType() == NodeType.UTILITY &&
+                			// we get the utility nodes with no empty criterion
+                			node.getVariable().getDecisionCriterion()!= null && 
+                			// we get the nodes with the same criterion as criterionName
+                			node.getVariable().getDecisionCriterion().string.equals(criterionName)){
+                			// We change the name of the criterion in those nodes
+                			node.getVariable().getDecisionCriterion().string = newName;
+                		
+                	}
+                }
+
+                
                 probNet.setDecisionCriteria2 (newCriteriasRename);
                 break;
         }
