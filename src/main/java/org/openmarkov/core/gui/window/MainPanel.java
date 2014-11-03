@@ -240,7 +240,7 @@ public class MainPanel extends JPanel {
 	 */
 	public GoGui getGoGuiWindow() {
 		if (GoGuiWindow == null) {
-			GoGuiWindow = new GoGui(SensitivityAnalysis.class);
+			GoGuiWindow = new GoGui(SensitivityAnalysis.class, null);
 		}
 		return GoGuiWindow;
 	}

@@ -306,7 +306,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
                     true);
         } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC)) {
-        	new GoGui(SensitivityAnalysis.class);
+        	new GoGui(SensitivityAnalysis.class, null);
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
@@ -1421,7 +1421,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void showSensitivityAnalysisDialog() {
 // TODO: Add parameters showSensitivityAnalysisDialog(ProbNet probNet, ...) 
     	
-    	SensitivityAnalysis sensitivityAnalysisDialog = new SensitivityAnalysis();
+    	SensitivityAnalysis sensitivityAnalysisDialog = new SensitivityAnalysis(null);
 /*
 	TODO: Add parameters
     	TemporalCostEffectivenessDialog temporalCostEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
