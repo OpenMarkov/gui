@@ -945,10 +945,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
      */
     @Override
     protected void actionPerformedAddValue() {
-        String option = JOptionPane.showInputDialog(this,
-                stringDatabase.getString("AddState.Text"),
-                stringDatabase.getString("AddState.Title"),
-                JOptionPane.QUESTION_MESSAGE);
+
+		String option = (String) JOptionPane.showInputDialog(
+				this,
+				stringDatabase.getString("AddState.Text"),
+				stringDatabase.getString("AddState.Text"),
+				JOptionPane.QUESTION_MESSAGE,
+				null, //no icon
+				null, //no predefined values
+				node.getVariable().getNewValidName()); // preset value in field
+        
         if (option != null) {
             Variable variable = node.getVariable();
             int newIndex = 0;
@@ -1164,97 +1170,123 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
     }
 
     public void tableChanged(TableModelEvent tableEvent) {
-        int column = tableEvent.getColumn();
-        int row = tableEvent.getLastRow();
-        if (tableEvent.getType() == TableModelEvent.UPDATE) {
-            Object value = ((DiscretizeTableModel) tableEvent.getSource()).getValueAt(row, column);
-            boolean lower = column == LOWER_BOUND_VALUE_COLUMN_INDEX;
-            if (value instanceof String && column == INTERVAL_NAME_COLUMN_INDEX) {
-                String newName = value.toString();
-                NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
-                        StateAction.RENAME,
-                        row,
-                        newName);
-                try {
-                    node.getProbNet().doEdit(nodeStateEdit);
-                } catch (ConstraintViolationException
-                        | CanNotDoEditException
-                        | NonProjectablePotentialException
-                        | WrongCriterionException
-                        | DoEditException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (value == INFINITY && column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
-                valuesTable.setValueAt(INFINITY, row, column);
-            } else if (value == NEGATIVE_INFINITY && column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
-                valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
-            } else if (value instanceof Double) {
-                Variable variable = node.getVariable();
-                double newValue = (Double) value;
-                // setting precision to the new value according with the
-                // precision value introduced by the user
-                double precision = variable.getPrecision();
-                double roundedValue = Util.roundWithPrecision(newValue, Double.toString(precision));
-                double[] currentLimits = variable.getPartitionedInterval().getLimits();
-                int numLimits = currentLimits.length;
-                boolean[] currentBelongsToLeft = variable.getPartitionedInterval().getBelongsToLeftSide();
-                int limitsIndex = (lower) ? numLimits - row - 2 : numLimits - row - 1;
-                // posterior limits
-                int i = limitsIndex;
-                currentLimits[i] = roundedValue;
-                while (i + 1 < currentLimits.length
-                        && currentLimits[i] >= currentLimits[i + 1]) {
-                    if (!currentBelongsToLeft[i] && currentBelongsToLeft[i + 1]) {
-                        currentLimits[i + 1] = currentLimits[i];
-                    } else {
-                        if (i + 1 == currentLimits.length - 1) {
-                            currentLimits[i + 1] = Double.POSITIVE_INFINITY;
-                            break;
-                        } else
-                            currentLimits[i + 1] = currentLimits[i] + precision;
-                    }
-                    i++;
-                }
-                // previous limits
-                int k = limitsIndex;
-                while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1]) {
-                    if (currentBelongsToLeft[k] && !currentBelongsToLeft[k - 1]) {
-                        currentLimits[k - 1] = currentLimits[k];
-                    } else {
-                        if (k - 1 == 0) {
-                            currentLimits[k - 1] = Double.NEGATIVE_INFINITY;
-                            break;
-                        } else
-                            currentLimits[k - 1] = currentLimits[k] - precision;
-                    }
-                    k--;
-                }
-                for (int m = 0; m < currentLimits.length; m++) {
-                    if (currentLimits[m] != Double.POSITIVE_INFINITY
-                            && currentLimits[m] != Double.NEGATIVE_INFINITY) {
-                        currentLimits[m] = Util.roundWithPrecision(currentLimits[m],
-                                Double.toString(precision));
-                    }
-                }
-                PartitionedInterval newPartitionedInterval = new PartitionedInterval(currentLimits,
-                        currentBelongsToLeft);
-                PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node,
-                        newPartitionedInterval);
-                try {
-                    node.getProbNet().doEdit(partitionedIntervalEdit);
-                } catch (DoEditException
-                        | ConstraintViolationException
-                        | CanNotDoEditException
-                        | NonProjectablePotentialException
-                        | WrongCriterionException e) {
-                    e.printStackTrace();
-                }
-                setDataFromPartitionedInterval(variable.getPartitionedInterval(),
-                        variable.getStates());
-            }
-        }
-    }
+		int column = tableEvent.getColumn();
+		int row = tableEvent.getLastRow();
+		// We save the index of the modified state
+		int indexState = node.getVariable().getNumStates() - row - 1;
+		tableEvent.getSource();
+
+		if (tableEvent.getType() == TableModelEvent.UPDATE) {
+			Object value = ((DiscretizeTableModel) tableEvent.getSource())
+					.getValueAt(row, column);
+			boolean lower = column == LOWER_BOUND_VALUE_COLUMN_INDEX;
+			if (value instanceof String && column == INTERVAL_NAME_COLUMN_INDEX) {
+				String newName = value.toString();
+				// We only execute the Edit if the name really changed
+				if (!newName.equals(node.getVariable().getStateName(indexState))) {
+					NodeStateEdit nodeStateEdit = new NodeStateEdit(node,
+							StateAction.RENAME, row, newName);
+					try {
+						node.getProbNet().doEdit(nodeStateEdit);
+					} catch (ConstraintViolationException
+							| CanNotDoEditException
+							| NonProjectablePotentialException
+							| WrongCriterionException | DoEditException e) {
+						JOptionPane.showMessageDialog(this,
+								stringDatabase.getString(e.getMessage()),
+								stringDatabase.getString(e.getMessage()),
+								JOptionPane.ERROR_MESSAGE);
+						// If an error occurred or a constraint is broken
+						// we restore the old name of the edited state
+						String oldState = node.getVariable().getStateName(
+								indexState);
+						valuesTable.setValueAt(oldState, row, column);
+
+					}
+				}
+			}
+			if (value == INFINITY && column == UPPER_BOUND_VALUE_COLUMN_INDEX) {
+				valuesTable.setValueAt(INFINITY, row, column);
+				String upperBound = (String) valuesTable.getValueAt(row, column+1);
+				if(upperBound.equals("]")){
+					valuesTable.setValueAt(")", row, column+1);
+				}
+			} else if (value == NEGATIVE_INFINITY
+					&& column == LOWER_BOUND_VALUE_COLUMN_INDEX) {
+				valuesTable.setValueAt(NEGATIVE_INFINITY, row, column);
+				String lowerBound = (String) valuesTable.getValueAt(row, column-1);
+				if(lowerBound.equals("[")){
+					valuesTable.setValueAt("(", row, column-1);
+				}
+			} else if (value instanceof Double) {
+				Variable variable = node.getVariable();
+				double newValue = (Double) value;
+				// setting precision to the new value according with the
+				// precision value introduced by the user
+				double precision = variable.getPrecision();
+				double roundedValue = Util.roundWithPrecision(newValue,
+						Double.toString(precision));
+				double[] currentLimits = variable.getPartitionedInterval()
+						.getLimits();
+				int numLimits = currentLimits.length;
+				boolean[] currentBelongsToLeft = variable
+						.getPartitionedInterval().getBelongsToLeftSide();
+				int limitsIndex = (lower) ? numLimits - row - 2 : numLimits
+						- row - 1;
+				// posterior limits
+				int i = limitsIndex;
+				currentLimits[i] = roundedValue;
+				while (i + 1 < currentLimits.length
+						&& currentLimits[i] >= currentLimits[i + 1]) {
+					if (!currentBelongsToLeft[i] && currentBelongsToLeft[i + 1]) {
+						currentLimits[i + 1] = currentLimits[i];
+					} else {
+						if (i + 1 == currentLimits.length - 1) {
+							currentLimits[i + 1] = Double.POSITIVE_INFINITY;
+							break;
+						} else
+							currentLimits[i + 1] = currentLimits[i] + precision;
+					}
+					i++;
+				}
+				// previous limits
+				int k = limitsIndex;
+				while (k - 1 >= 0 && currentLimits[k] <= currentLimits[k - 1]) {
+					if (currentBelongsToLeft[k] && !currentBelongsToLeft[k - 1]) {
+						currentLimits[k - 1] = currentLimits[k];
+					} else {
+						if (k - 1 == 0) {
+							currentLimits[k - 1] = Double.NEGATIVE_INFINITY;
+							break;
+						} else
+							currentLimits[k - 1] = currentLimits[k] - precision;
+					}
+					k--;
+				}
+				for (int m = 0; m < currentLimits.length; m++) {
+					if (currentLimits[m] != Double.POSITIVE_INFINITY
+							&& currentLimits[m] != Double.NEGATIVE_INFINITY) {
+						currentLimits[m] = Util.roundWithPrecision(
+								currentLimits[m], Double.toString(precision));
+					}
+				}
+				PartitionedInterval newPartitionedInterval = new PartitionedInterval(
+						currentLimits, currentBelongsToLeft);
+				PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(
+						node, newPartitionedInterval);
+				try {
+					node.getProbNet().doEdit(partitionedIntervalEdit);
+				} catch (DoEditException | ConstraintViolationException
+						| CanNotDoEditException
+						| NonProjectablePotentialException
+						| WrongCriterionException e) {
+					e.printStackTrace();
+				}
+				setDataFromPartitionedInterval(
+						variable.getPartitionedInterval(), variable.getStates());
+			}
+		}
+	}
 
     public void setEnablePanelButton(boolean b) {
         if (b) {
