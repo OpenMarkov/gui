@@ -731,6 +731,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 		//Node nodeWrapper = null;
 
+		
 		for (VisualNode node : visualNodes) {
 			//nodeWrapper = node.getNode();
 			if (!selected || (node.isSelected())) {
@@ -757,13 +758,20 @@ public class VisualNetwork implements PNUndoableEditListener {
 				//nodeWrapper.getNode().coordinateX =+ diffX;
 				//nodeWrapper.getNode().coordinateY =+ diffY;
 				//node.setTemporalPosition(diffX, diffY);
-				node.setTemporalPosition(new Point2D.Double(node.
-						getTemporalPosition().getX() + diffX,
-						node.getTemporalPosition().getY() + diffY ));
-				if(g2!=null)
-				{
-				    node.paint((Graphics2D) g2);
-				}
+			    
+				// Check if the node is out of the screen (only by the left or up bounds)
+				if((node.getTemporalPosition().getX() + diffX) >= 0 &&
+    					(node.getTemporalPosition().getY() + diffY) >= 0){
+					
+					node.setTemporalPosition(new Point2D.Double(node.
+							getTemporalPosition().getX() + diffX,
+							node.getTemporalPosition().getY() + diffY ));
+					if(g2!=null)
+					{
+						node.paint((Graphics2D) g2);
+					}
+
+			    }
 				
 				//constructVisualInfo();
 			}
