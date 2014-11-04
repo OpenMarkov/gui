@@ -59,11 +59,18 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * Panel to scroll the table.
      */
     private JScrollPane     valuesTableScrollPane = null;
+    
+	/**
+	 * Pseudo-util class with common operations used  in potential tables
+	 */
+	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
+
 
     public ICIPotentialsTablePanel(Node node) {
         super();
         removeAll();
         this.node = node;
+		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
         modifiable = true;
         setLayout(new BorderLayout());
         add(getICIOptionPanel(), BorderLayout.NORTH);
@@ -325,7 +332,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
         Object[][] values = null;
         try {
 
-            PotentialsTablePanelOperations.checkIfNoPotential(properties.getPotentials());
+        	tablePotentialsPanelOperations.checkIfNoPotential(properties.getPotentials());
             values = setCanonicalTableSize(values, properties);
             values = setCanonicalTable(values, properties);
 

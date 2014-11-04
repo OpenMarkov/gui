@@ -1,11 +1,11 @@
 /*
-* Copyright 2011 CISIAD, UNED, Spain
-*
-* Licensed under the European Union Public Licence, version 1.1 (EUPL)
-*
-* Unless required by applicable law, this code is distributed
-* on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
-*/
+ * Copyright 2011 CISIAD, UNED, Spain
+ *
+ * Licensed under the European Union Public Licence, version 1.1 (EUPL)
+ *
+ * Unless required by applicable law, this code is distributed
+ * on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
+ */
 
 /**
  * OpenMarkov - PotentialsTablePanelOperations.java
@@ -23,110 +23,118 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-
-
-/** Auxiliar methods for PotentialsTablePanel class
+/**
+ * Auxiliar methods for PotentialsTablePanel class
+ * 
  * @author jlgozalo
  * @author marias
- * @version 1.0 */
-public class PotentialsTablePanelOperations {
+ * @version 1.0
+ */
+public class PotentialsTablePanelOperations implements TableMethods {
 
-
-	/** To check if the list of <code>Potential</code>s must be changed when
-	 *  parents or states have been changed
-	 * @param listPotentials - current list of potentials
-	 * @param additionalProperties - additionalProperties related to this
-	 *  variable
+	/**
+	 * To check if the list of <code>Potential</code>s must be changed when
+	 * parents or states have been changed
+	 * 
+	 * @param listPotentials
+	 *            - current list of potentials
+	 * @param additionalProperties
+	 *            - additionalProperties related to this variable
 	 * @return new list of potentials for the variable with the changes applied
 	 */
-	public static List<Potential> checkIfPotentialsMustBeChanged (
-			List<Potential> listPotentials,
-			Node properties)  {
-	    List<Potential> newListPotentials = listPotentials;
+	public List<Potential> checkIfPotentialsMustBeChanged(
+			List<Potential> listPotentials, Node properties) {
+		List<Potential> newListPotentials = listPotentials;
 		if (listPotentials != null) {
-			if (listPotentials.get( 0 ) != null) {
-			    List<Variable> variablesPotential = 
-					listPotentials.get(0).getVariables();
-			    List<Node> parents = properties.getParents();
-				if ((variablesPotential.size()-1) > parents.size()) {
-					newListPotentials = 
-						doDeleteParent (listPotentials, properties);		
-				} else if ((variablesPotential.size()-1) < parents.size()) {
-					newListPotentials = 
-						doAddParent (listPotentials, properties);		
-				} 
+			if (listPotentials.get(0) != null) {
+				List<Variable> variablesPotential = listPotentials.get(0)
+						.getVariables();
+				List<Node> parents = properties.getParents();
+				if ((variablesPotential.size() - 1) > parents.size()) {
+					newListPotentials = doDeleteParent(listPotentials,
+							properties);
+				} else if ((variablesPotential.size() - 1) < parents.size()) {
+					newListPotentials = doAddParent(listPotentials, properties);
+				}
 			}
 		}
 		return newListPotentials;
 	}
 
-	/** Method to generate a new ArrayList of <code>Potential</code> by adding 
-	 * a new parent to the previous ones
-	 * @param listPotentials - previous list of potentials
-	 * @param additionalProperties - additionalProperties related to the
-	 * variable in use that contains a new parent
-	 * @return new list of Potentials with the new parent add */
-	private static List<Potential> doAddParent (
-			List<Potential> listPotentials,
-			Node properties)  {
-	    List<Potential> newListPotentials = new ArrayList<Potential> ();
-	    List<Variable> variables = new ArrayList<Variable> ();
-        // first, this variable. The potentials is not null
-		Variable thisVariable =listPotentials.get( 0 ).getVariable( 0 ); 
-		variables.add(thisVariable ); //this variable
+	/**
+	 * Method to generate a new ArrayList of <code>Potential</code> by adding a
+	 * new parent to the previous ones
+	 * 
+	 * @param listPotentials
+	 *            - previous list of potentials
+	 * @param additionalProperties
+	 *            - additionalProperties related to the variable in use that
+	 *            contains a new parent
+	 * @return new list of Potentials with the new parent add
+	 */
+	private List<Potential> doAddParent(List<Potential> listPotentials,
+			Node properties) {
+		List<Potential> newListPotentials = new ArrayList<Potential>();
+		List<Variable> variables = new ArrayList<Variable>();
+		// first, this variable. The potentials is not null
+		Variable thisVariable = listPotentials.get(0).getVariable(0);
+		variables.add(thisVariable); // this variable
 		int numOfCellsInTable = thisVariable.getNumStates();
 		double initialValue = 1 / (new Double(numOfCellsInTable));
-		if (properties.getNodeType()==NodeType.UTILITY) {
+		if (properties.getNodeType() == NodeType.UTILITY) {
 			initialValue = 0;
 		}
-		    // add now all the parents 
-		for (Node node: properties.getParents()) {
-			variables.add( node.getVariable());
-			numOfCellsInTable *= node.getVariable().getNumStates();
-		}
-		// sets a new table with new columns and with all the same values
-		double[] table = new double[numOfCellsInTable] ;
-		for (int i=0; i<numOfCellsInTable; i++) {
-			table[i] = initialValue;
-		}
-		// and finally, create the potential and the list of potentials
-		TablePotential tablePotential = new TablePotential(
-				variables, PotentialRole.CONDITIONAL_PROBABILITY,table);
-		newListPotentials.add( tablePotential );
-		return newListPotentials;
-	}
-	
-
-	/** Method to generate a new ArrayList of <code>Potential</code> by removing
-	 * a parent from the previous ones
-	 * @param listPotentials - previous list of potentials
-	 * @param additionalProperties - additionalProperties related to the 
-	 * variable in use that contains the parent
-	 * @return new list of Potentials with the parent removed */
-	private static List<Potential> doDeleteParent (
-			List<Potential> listPotentials,
-			Node properties)  {
-	    List<Potential> newListPotentials = new ArrayList<Potential> ();
-	    List<Variable> variables = new ArrayList<Variable> ();
-        // first, this variable. The potentials is not null
-		Variable thisVariable =listPotentials.get( 0 ).getVariable( 0 ); 
-		variables.add(thisVariable ); //this variable
-		int numOfCellsInTable = thisVariable.getNumStates();
-		double initialValue = 1 / (new Double(numOfCellsInTable));
-		    // add now all the parents 
-		for (Node node: properties.getParents()) {
+		// add now all the parents
+		for (Node node : properties.getParents()) {
 			variables.add(node.getVariable());
 			numOfCellsInTable *= node.getVariable().getNumStates();
 		}
 		// sets a new table with new columns and with all the same values
-		double[] table = new double[numOfCellsInTable] ;
-		for (int i=0; i<numOfCellsInTable; i++) {
+		double[] table = new double[numOfCellsInTable];
+		for (int i = 0; i < numOfCellsInTable; i++) {
 			table[i] = initialValue;
 		}
 		// and finally, create the potential and the list of potentials
-		TablePotential tablePotential = new TablePotential(
-				variables, PotentialRole.CONDITIONAL_PROBABILITY,table);
-		newListPotentials.add( tablePotential );
+		TablePotential tablePotential = new TablePotential(variables,
+				PotentialRole.CONDITIONAL_PROBABILITY, table);
+		newListPotentials.add(tablePotential);
+		return newListPotentials;
+	}
+
+	/**
+	 * Method to generate a new ArrayList of <code>Potential</code> by removing
+	 * a parent from the previous ones
+	 * 
+	 * @param listPotentials
+	 *            - previous list of potentials
+	 * @param additionalProperties
+	 *            - additionalProperties related to the variable in use that
+	 *            contains the parent
+	 * @return new list of Potentials with the parent removed
+	 */
+	private List<Potential> doDeleteParent(List<Potential> listPotentials,
+			Node properties) {
+		List<Potential> newListPotentials = new ArrayList<Potential>();
+		List<Variable> variables = new ArrayList<Variable>();
+		// first, this variable. The potentials is not null
+		Variable thisVariable = listPotentials.get(0).getVariable(0);
+		variables.add(thisVariable); // this variable
+		int numOfCellsInTable = thisVariable.getNumStates();
+		double initialValue = 1 / (new Double(numOfCellsInTable));
+		// add now all the parents
+		for (Node node : properties.getParents()) {
+			variables.add(node.getVariable());
+			numOfCellsInTable *= node.getVariable().getNumStates();
+		}
+		// sets a new table with new columns and with all the same values
+		double[] table = new double[numOfCellsInTable];
+		for (int i = 0; i < numOfCellsInTable; i++) {
+			table[i] = initialValue;
+		}
+		// and finally, create the potential and the list of potentials
+		TablePotential tablePotential = new TablePotential(variables,
+				PotentialRole.CONDITIONAL_PROBABILITY, table);
+		newListPotentials.add(tablePotential);
 		return newListPotentials;
 	}
 
@@ -138,20 +146,19 @@ public class PotentialsTablePanelOperations {
 	 * <li>type of the node (utility or other)</li>
 	 * </ul>
 	 * 
-	 * @param potentials -
-	 *            potentials for the variable
-	 * @param additionalProperties -
-	 *            additionalProperties for this variable
+	 * @param potentials
+	 *            - potentials for the variable
+	 * @param additionalProperties
+	 *            - additionalProperties for this variable
 	 */
-	public static int calculateFirstEditableRow(
-			List<Potential> potentials,
-			Node properties) {
+	@Override
+	public int calculateFirstEditableRow(Node node) {
 		int row = 0;
-		if (potentials != null) {
-			if (properties.getNodeType() == NodeType.UTILITY) {
-				row = potentials.get( 0 ).getNumVariables() ;
+		if (node.getPotentials() != null) {
+			if (node.getNodeType() == NodeType.UTILITY) {
+				row = node.getPotentials().get(0).getNumVariables();
 			} else {
-				row = potentials.get( 0 ).getNumVariables() - 1;
+				row = node.getPotentials().get(0).getNumVariables() - 1;
 			}
 		} else {
 			row = 0;
@@ -168,30 +175,26 @@ public class PotentialsTablePanelOperations {
 	 * <li>type of the node (utility or other)</li>
 	 * </ul>
 	 * 
-	 * @param listPotentials -
-	 *            potentials for the variable
-	 * @param additionalProperties -
-	 *            additionalProperties for this variable
+	 * @param listPotentials
+	 *            - potentials for the variable
+	 * @param additionalProperties
+	 *            - additionalProperties for this variable
 	 */
-	public static int calculateLastEditableRow(
-			List<Potential> listPotentials,
-			Node properties) {
+	@Override
+	public int calculateLastEditableRow(Node node) {
 		int row = 0;
-		if (listPotentials != null) {
+		if (node.getPotentials() != null) {
 			// Get the number of parents
-			row = listPotentials.get( 0 ).getNumVariables() - 1;
-			if (properties.getNodeType() == NodeType.UTILITY) {
-				row += 1;
-			}else{
-				row += properties.getVariable().getStates().length - 1;
-			}
-			/*
-			if (properties.getNodeType() == NodeType.UTILITY) {
+			row = node.getPotentials().get(0).getNumVariables() - 1;
+			if (node.getNodeType() == NodeType.UTILITY) {
 				row += 1;
 			} else {
-				row += properties.getVariable().getStates().length;
+				row += node.getVariable().getStates().length - 1;
 			}
-			*/
+			/*
+			 * if (properties.getNodeType() == NodeType.UTILITY) { row += 1; }
+			 * else { row += properties.getVariable().getStates().length; }
+			 */
 		} else {
 			row = 0;
 		}
@@ -201,20 +204,84 @@ public class PotentialsTablePanelOperations {
 
 	/**
 	 * determine if a list of potentials is empty or not
-	 * @param listPotentials - the list of potentials to check
+	 * 
+	 * @param listPotentials
+	 *            - the list of potentials to check
 	 */
-	public static void checkIfNoPotential(List<Potential> listPotentials)
-					throws NullListPotentialsException{
+	public void checkIfNoPotential(List<Potential> listPotentials)
+			throws NullListPotentialsException {
 
 		if (listPotentials == null) {
-			throw new NullListPotentialsException( "" );
+			throw new NullListPotentialsException("");
 		} else {
 			try {
-				listPotentials.get( 0 );
+				listPotentials.get(0);
 			} catch (IndexOutOfBoundsException ex) {
-				throw new NullListPotentialsException( "" );
+				throw new NullListPotentialsException("");
 			}
 		}
+	}
+
+	@Override
+	public int[] getRowAndColumn(int potentialPosition, Node node) {
+
+		return null;
+	}
+
+	@Override
+	public int getPotentialIndex(int row, int column, Node node) {
+
+		// First of all we get the start index of the column
+		int potentialIndex = getPotentialStartIndexOfColumn(column, node);
+
+		// We get the last editable row in the JTable
+		int lastRow = calculateLastEditableRow(node);
+
+		// Then we move a number of positions equals to the row (without the
+		// headers)
+		potentialIndex += (lastRow - row);
+		return potentialIndex;
+	}
+
+	/**
+	 * Gets the index of the first potential of a column
+	 * 
+	 * @param column
+	 * @return index of the potential
+	 */
+	public int getPotentialStartIndexOfColumn(int column, Node node) {
+		TablePotential tablePotential = (TablePotential) node.getPotentials()
+				.get(0);
+		int position = 0;
+
+		// We use a temporal value to make the column 1 as the first (column 0)
+		int temp = column - 1;
+		if (tablePotential.getDimensions() != null) {
+			// In this code we get the coordinates (states index) of the
+			// variable and
+			// we calculate the position in the list of potentials. The position
+			// is the product of each state index and the respective offset
+			// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
+			int numberOfDimensions = tablePotential.getDimensions().length - 1;
+			int lowerBound = 0;
+			if (node.getNodeType() == NodeType.UTILITY) {
+				// numberOfDimensions += 1;
+				lowerBound = -1;
+			}
+			for (int i = numberOfDimensions; i > lowerBound; i--) {
+				// Dimension of the first parent
+				int dimension = tablePotential.getDimensions()[i];
+
+				// In each iteration this code add the s[i]*offset[i] to the
+				// position
+				position += (temp % dimension) * tablePotential.getOffsets()[i];
+				temp = temp / dimension;
+			}
+
+		} else {
+			position = 0;
+		}
+		return position;
 	}
 
 }

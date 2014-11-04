@@ -74,6 +74,11 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * the increment to get the real position of the value modified
 	 */
 	private int increment;
+	
+	/**
+	 * Pseudo-util class with common operations used  in potential tables
+	 */
+	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
 
 	/**
 	 * the table potential
@@ -111,11 +116,13 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		this.node = node;
 		this.row = row;
 		this.col = col;
+		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 		this.newValue = newValue;
 		this.priorityList = priorityList;
 		this.notEditablePostitions = notEditablePositions;
-		this.indexSelected = node.getVariable().getNumStates()
-				- (row - node.getNumParents() + 1);
+		this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(node) - row;
+		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
+
 		this.oldTablePotential = tablePotential;
 
 		/*
@@ -131,19 +138,10 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		this.tablePotential = (TablePotential) tablePotential.copy();
 		// values table reordered
 		this.newTable = this.tablePotential.getValues();
-		if (!(tablePotential.getDimensions() == null)) {
-			this.increment = getPotentialStartIndexOfColumn(col);
-		} else {
-			increment = 0;
-		}
+		
 
-		// We get the last editable row in the JTable
-		int lastRow = PotentialsTablePanelOperations.calculateLastEditableRow(
-				Arrays.asList((Potential) tablePotential), node);
-
-		// The potentialSelected is the index in the values table reordered of
-		// the value edited
-		this.potentialSelected = increment + (lastRow - row);
+		// Get the potential index
+		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, node);
 
 	}
 
@@ -271,8 +269,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * @return the position in the table
 	 */
 	public int getRowPosition(int position) {
-		int lastRow = (tablePotential.getNumVariables() - 1)
-				+ (node.getVariable().getNumStates() - 1);
+		int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
 		return lastRow - position % tablePotential.getDimensions()[0];
 	}
 
@@ -317,44 +314,4 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		return editable;
 	}
 
-	/**
-	 * Gets the index of the first potential of a column
-	 * 
-	 * @param column
-	 * @return index of the potential
-	 */
-	private int getPotentialStartIndexOfColumn(int column) {
-		TablePotential tablePotential = (TablePotential) node.getPotentials()
-				.get(0);
-		int position = 0;
-
-		// We use a temporal value to make the column 1 as the first (column 0)
-		int temp = col - 1;
-		if (tablePotential.getDimensions() != null) {
-			// In this code we get the coordinates (states index) of the
-			// variable and
-			// we calculate the position in the list of potentials. The position
-			// is the product of each state index and the respective offset
-			// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
-			int numberOfDimensions = tablePotential.getDimensions().length - 1;
-			int lowerBound = 0;
-			if(node.getNodeType() == NodeType.UTILITY){
-				//numberOfDimensions += 1;
-				lowerBound = -1;
-			}
-			for (int i = numberOfDimensions; i > lowerBound; i--) {
-				// Dimension of the first parent
-				int dimension = tablePotential.getDimensions()[i];
-
-				// In each iteration this code add the s[i]*offset[i] to the
-				// position
-				position += (temp % dimension) * tablePotential.getOffsets()[i];
-				temp = temp / dimension;
-			}
-
-		} else {
-			position = 0;
-		}
-		return position;
-	}
 }
