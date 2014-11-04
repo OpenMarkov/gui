@@ -69,7 +69,8 @@ public class ReorderVariablesPanel extends KeyTablePanel
         Object[][] data = new Object[variables.size ()][1];
         for (int i = 0; i < variables.size (); i++)
         {
-        	data[variables.size () - i - 1][0] = variables.get (i).getName ();
+        	//data[variables.size () - i - 1][0] = variables.get (i).getName ();
+        	data[i][0] = variables.get (i).getName ();
         }        	
         return data;
     }
@@ -127,7 +128,7 @@ public class ReorderVariablesPanel extends KeyTablePanel
                 }
             }
         }
-        Collections.reverse(newVariables);
+        //Collections.reverse(newVariables);
         if (potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
         {
             newVariables.add (0, potential.getVariables ().get (0));
