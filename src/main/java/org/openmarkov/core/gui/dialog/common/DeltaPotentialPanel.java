@@ -38,6 +38,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
     private JComboBox<String> stateComboBox;
     private JSpinner valueSpinner;
     private Node node;
+    private double defaultSpinnerValue;
     
     public DeltaPotentialPanel(Node node)
     {
@@ -55,7 +56,28 @@ public class DeltaPotentialPanel extends PotentialPanel {
         
         if(node.getVariable().getVariableType() == VariableType.NUMERIC)
         {
-            SpinnerNumberModel model = new SpinnerNumberModel(0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0.001); 
+        	// Get the min and max values for the interval
+        	double minValue = 0;
+            double maxValue = node.getVariable().getPartitionedInterval().getMax();
+
+            // If is left closed, we get the nearest number
+            if(node.getVariable().getPartitionedInterval().isLeftClosed()){
+            	minValue = node.getVariable().getPartitionedInterval().getMin();
+            }else{
+            	minValue = node.getVariable().getPartitionedInterval().getMin() + node.getVariable().getPrecision();
+            }
+            // If is right closed, we get the nearest number            
+            if(node.getVariable().getPartitionedInterval().isRightClosed()){
+            	maxValue = node.getVariable().getPartitionedInterval().getMax();
+            }else{
+            	maxValue = node.getVariable().getPartitionedInterval().getMax() - node.getVariable().getPrecision();
+            }
+            // Calculate the mean value
+            defaultSpinnerValue = minValue + Math.abs(maxValue-minValue)/2;
+            
+            //Create the model with the defaultValue, the min and max values and the precision
+            SpinnerNumberModel model = new SpinnerNumberModel(defaultSpinnerValue, minValue, maxValue, node.getVariable().getPrecision()); 
+            
             valueSpinner = new JSpinner(model);
             valueSpinner.setPreferredSize(new Dimension(100, 20));
             JLabel valueLabel = new JLabel("Numeric value:");
@@ -84,8 +106,11 @@ public class DeltaPotentialPanel extends PotentialPanel {
         {
             oldPotential = (DeltaPotential) node.getPotentials().get(0);
         }
-        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() != VariableType.NUMERIC)
         {
+    	/* The model inits the valid range and the mean value
+        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
+            {	
             double value = Double.NEGATIVE_INFINITY; 
             if(oldPotential != null)
             {
@@ -94,9 +119,11 @@ public class DeltaPotentialPanel extends PotentialPanel {
             {
                 value = node.getVariable().getPartitionedInterval().getMin();
             }
-            valueSpinner.setValue(value);
+            valueSpinner.setValue(defaultSpinnerValue);
+            
         }else
         {
+           */
             stateComboBox.removeAllItems();
             for(State state : node.getVariable().getStates())
             {
