@@ -1295,7 +1295,8 @@ public class ValuesTable extends KeyTable
         else
         {
             row = numParents;
-            positionInValues = col - 1;
+            //positionInValues = col - 1;
+            positionInValues = basePosition;
             superModel.setValueAt (values[positionInValues], row, col);
         }
     }
