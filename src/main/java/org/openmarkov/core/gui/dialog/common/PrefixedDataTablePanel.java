@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
 
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
@@ -23,6 +24,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -275,6 +277,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			}
 			absentData = absentPrefixedData();
 			setEnabledAddValue(true);
+            // After deleting an item from the list,
+            // the remove value button is disabled
+            // till a new element is selected from the list
+            setEnabledRemoveValue(false);
 			
 		} catch (DoEditException e) {
 		// TODO Auto-generated catch block
@@ -335,4 +341,63 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	protected void actionPerformedDownValue() {
 
 	}
+
+
+    /**
+     * Invoked when the row selection changes.
+     *
+     * @param e
+     *            selection event information.
+     */
+    /*
+    Fixing issue https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
+    The remove button was always set to disabled, unless more than two parents were present
+    We need to override the method from KeyTablePanel
+    as in it we are not able to determine in which panel we are located and thus
+    if the button needs to be enabled or not.
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        int index = valuesTable.getSelectedRow();
+        int rowCount = valuesTable.getRowCount();
+        if ((rowCount == 0) || (index == -1)) {
+            removeValueButton.setEnabled(false);
+            upValueButton.setEnabled(false);
+            downValueButton.setEnabled(false);
+        } else {
+            removeValueButton.setEnabled(true);
+            if (index == 0) {
+                upValueButton.setEnabled(false);
+                if (index == (rowCount - 1)) {
+                    downValueButton.setEnabled(false);
+                } else {
+                    downValueButton.setEnabled(true);
+                }
+            } else if (index == (valuesTable.getRowCount() - 1)) {
+                downValueButton.setEnabled(false);
+                if (index == 0) {
+                    upValueButton.setEnabled(false);
+                } else {
+                    upValueButton.setEnabled(true);
+                }
+                upValueButton.setEnabled(true);
+            } else {
+                upValueButton.setEnabled(true);
+                downValueButton.setEnabled(true);
+            }
+        }
+
+        boolean removeValueButtonEnabled = true;
+        // If there are less than two rows
+        if (rowCount <= 2) {
+                // But at least there is one, it has not to be the nodes parent table, as
+                // one parent may be removable
+                if (rowCount >= 1 &&
+                        this.titleToSelectRows != StringDatabase.getUniqueInstance().getString ("NodeParentsPanel.prefixedDataTablePanelParentsTable.Title")) {
+                removeValueButtonEnabled = false;
+            }
+        }
+        // The button is enabled or disabled accordingly
+        removeValueButton.setEnabled(removeValueButtonEnabled);
+    }
 }

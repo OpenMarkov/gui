@@ -267,6 +267,10 @@ public class KeyTable extends JTable {
                 column.setMaxWidth(0);
                 column.setMinWidth(0);
                 column.setWidth(0);
+                // Fixing issue 221
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
+                // Without the following line, the column actually showed three dot
+                column.setPreferredWidth(0);
             }
         }
     }
