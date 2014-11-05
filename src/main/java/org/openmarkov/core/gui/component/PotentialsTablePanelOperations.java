@@ -221,13 +221,13 @@ public class PotentialsTablePanelOperations implements TableMethods {
 			}
 		}
 	}
-
+/*  TODO - Implement this method
 	@Override
 	public int[] getRowAndColumn(int potentialPosition, Node node) {
 
 		return null;
 	}
-
+*/
 	@Override
 	public int getPotentialIndex(int row, int column, Node node) {
 
