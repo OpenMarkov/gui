@@ -1038,7 +1038,8 @@ public class EditorPanel extends JPanel
                 {
                     // change its color
                     ((VisualDecisionNode) visualNode).setHasPolicy (true);
-                    networkChanged = true;
+                    //networkChanged = true;
+                    setNetworkChangedWithOutEdit();
                 }
                 else
                 { // if user cancels policy imposition then no potential is
@@ -1101,7 +1102,13 @@ public class EditorPanel extends JPanel
                 ((VisualDecisionNode) visualNode).setHasPolicy (false);
             }
         }
-        networkChanged = true;
+        /*
+        05/11/2014
+        Solving issue #2112
+        https://bitbucket.org/cisiad/org.openmarkov.issues/issue/212/when-a-policy-imposed-is-removed-the-gui
+        */
+        //networkChanged = true;
+        setNetworkChangedWithOutEdit();
         setSelectedAllNodes (false);
         repaint ();
     }
@@ -2630,10 +2637,8 @@ public class EditorPanel extends JPanel
             https://bitbucket.org/cisiad/org.openmarkov.issues/issue/165/when-a-restriction-is-removed-the-network
             The next three lines mark the network as changed and modify the network panel status
              */
-            networkChanged = true;
-            networkPanel.setModified(true);
-            networkPanel.getMainPanel ().getMainPanelMenuAssistant ().updateOptionsNetworkModified(false, false);
-            repaint ();
+            setNetworkChangedWithOutEdit();
+            repaint();
         }
     }
 
@@ -2790,4 +2795,16 @@ public class EditorPanel extends JPanel
         adjustPanelDimension ();
         repaint ();
     }
+
+    /**
+     * This method sets the network as changed but also modifies the menu so the save button is enabled
+     * This is usually done through edit, but some actions in this class do not use edits
+     * TODO: check whether some actions like removePolicyFromNode should be refactored as edits or not
+     */
+    private void setNetworkChangedWithOutEdit() {
+        networkChanged = true;
+        networkPanel.setModified(true);
+        networkPanel.getMainPanel ().getMainPanelMenuAssistant ().updateOptionsNetworkModified(false, false);
+    }
+
 }
