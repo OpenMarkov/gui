@@ -76,6 +76,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     protected StringDatabase  stringDatabase = StringDatabase.getUniqueInstance();
 
     /**
+     * Variable to store the previous selectd item in the combobox
+     */
+    private Object comboBoxPreviousSelectedItem = null;
+    /**
      * constructor without construction parameters
      */
     public NodeDefinitionPanel() {
@@ -707,6 +711,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
         if (e.getStateChange() == ItemEvent.DESELECTED) {
             optionDeselected = comboBox.getSelectedIndex();
+            comboBoxPreviousSelectedItem = e.getItem();
         }
         if (comboBox.equals(jComboBoxNodePurpose)) {
             if (!(itemSelected == null) && e.getStateChange() == ItemEvent.SELECTED) {
@@ -778,6 +783,14 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                         | CanNotDoEditException
                         | NonProjectablePotentialException
                         | WrongCriterionException e1) {
+                    /*
+                    Fixing issue 203
+                    https://bitbucket.org/cisiad/org.openmarkov.issues/issue/203/two-time-related-variables-with-identical
+                    If the selected time slice already exists in the network, the previous selected item
+                    is re-selected and an error is displayed
+                     */
+                    jComboBoxTimeSlice.setSelectedItem(comboBoxPreviousSelectedItem);
+                    jComboBoxTimeSlice.hidePopup();
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(this,
                             e1.getMessage(),
