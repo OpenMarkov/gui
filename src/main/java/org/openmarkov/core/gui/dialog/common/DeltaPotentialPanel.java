@@ -39,6 +39,9 @@ public class DeltaPotentialPanel extends PotentialPanel {
     private JSpinner valueSpinner;
     private Node node;
     private double defaultSpinnerValue;
+    // Allowed range for the delta potential
+    private double minValue;
+    private double maxValue;
     
     public DeltaPotentialPanel(Node node)
     {
@@ -57,8 +60,6 @@ public class DeltaPotentialPanel extends PotentialPanel {
         if(node.getVariable().getVariableType() == VariableType.NUMERIC)
         {
         	// Get the min and max values for the interval
-        	double minValue = 0;
-            double maxValue = node.getVariable().getPartitionedInterval().getMax();
 
             // If is left closed, we get the nearest number
             if(node.getVariable().getPartitionedInterval().isLeftClosed()){
@@ -72,6 +73,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
             }else{
             	maxValue = node.getVariable().getPartitionedInterval().getMax() - node.getVariable().getPrecision();
             }
+            
             // Calculate the mean value
             defaultSpinnerValue = minValue + Math.abs(maxValue-minValue)/2;
             
@@ -106,24 +108,16 @@ public class DeltaPotentialPanel extends PotentialPanel {
         {
             oldPotential = (DeltaPotential) node.getPotentials().get(0);
         }
-        if(node.getVariable().getVariableType() != VariableType.NUMERIC)
-        {
-    	/* The model inits the valid range and the mean value
-        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
-            {	
-            double value = Double.NEGATIVE_INFINITY; 
-            if(oldPotential != null)
-            {
-                value = oldPotential.getNumericValue();
-            }else
-            {
-                value = node.getVariable().getPartitionedInterval().getMin();
+    	// The model inits the valid range and the mean value
+        if(node.getVariable().getVariableType() == VariableType.NUMERIC){
+        	if (oldPotential != null){
+        		double value = oldPotential.getNumericValue();
+                if (value >= minValue && value <= maxValue ){
+                	valueSpinner.setValue(value);;
+                }
             }
-            valueSpinner.setValue(defaultSpinnerValue);
-            
         }else
         {
-           */
             stateComboBox.removeAllItems();
             for(State state : node.getVariable().getStates())
             {
