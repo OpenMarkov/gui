@@ -303,11 +303,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
     public void updateOptionsNetworkDependent (NetworkPanel networkPanel)
     {
         currentNetworkPanel = networkPanel;
-        int workingMode = NetworkPanel.EDITION_WORKING_MODE;
-        if (!(currentNetworkPanel == null))
-        {
-            workingMode = currentNetworkPanel.getWorkingMode ();
-        }
+        ProbNet currentProbNet = currentNetworkPanel.getProbNet(); 
+        int workingMode = currentNetworkPanel.getWorkingMode ();
         if (networkPanel.getByTitle ())
         {
             setOptionSelected (ActionCommands.BYTITLE_NODES, true);
@@ -337,7 +334,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
             setOptionEnabled (ActionCommands.LINK_CREATION, true);
             setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
             setOptionEnabled (INFERENCE_ACTION_COMMANDS, false);
-            if (!networkPanel.getProbNet ().hasConstraint (OnlyChanceNodes.class))
+            if (!currentProbNet.hasConstraint (OnlyChanceNodes.class))
             {
                 setOptionEnabled (ActionCommands.DECISION_CREATION, true);
                 setOptionEnabled (ActionCommands.UTILITY_CREATION, true);
@@ -346,10 +343,11 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.DECISION_TREE, true);
                 setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
-            if (networkPanel.getProbNet ().getNetworkType () instanceof MPADType
-                || networkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType)
+            if ((currentProbNet.getNetworkType () instanceof MPADType
+                || currentProbNet.getNetworkType () instanceof InfluenceDiagramType)
+                && currentProbNet.getDecisionCriteria() != null
+                && currentProbNet.getDecisionCriteria().size() > 1)
             {
-                setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, true);
             }
