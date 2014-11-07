@@ -195,8 +195,8 @@ public class NodeContextualMenu extends ContextualMenu
          * addSeparator(); add(getLogMenuItem());
          */
         // TODO OOPN start
-        addSeparator ();
-        add (getInputMenuItem ());
+        //addSeparator ();
+        //add (getInputMenuItem ());
         // TODO OOPN start
         pack ();
     }
@@ -229,8 +229,8 @@ public class NodeContextualMenu extends ContextualMenu
          * addSeparator(); add(getLogMenuItem());
          */
         // TODO OOPN start
-        addSeparator ();
-        add (getInputMenuItem ());
+        //addSeparator ();
+        //add (getInputMenuItem ());
         // TODO OOPN start
         pack ();
     }
