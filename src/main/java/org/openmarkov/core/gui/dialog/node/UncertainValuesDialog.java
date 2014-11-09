@@ -402,8 +402,12 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         return rev;
     }
-
+    
     private List<Double> calculateReferenceValues() {
+    	return calculateReferenceValues(uncertainColumn);
+    }
+
+    public static List<Double> calculateReferenceValues(List<UncertainValue> uncertainColumn) {
         List<Integer> complementIndexes = new ArrayList<Integer>();
         List<Integer> dirichletIndexes = new ArrayList<Integer>();
         List<Integer> otherIndexes = new ArrayList<Integer>();
