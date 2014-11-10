@@ -10,13 +10,16 @@
 package org.openmarkov.core.gui.plugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.localize.LocalizedMenuItem;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;
@@ -25,7 +28,7 @@ public class ToolPluginManager
 {
     private static ToolPluginManager instance = null;
     private PluginLoaderIF pluginsLoader; 
-    private List<Class<?>> plugins;
+    private Map<String , Class<?>> plugins;
     
 
     /**
@@ -35,7 +38,11 @@ public class ToolPluginManager
     {
         super ();
         this.pluginsLoader = new PluginLoader ();
-        this.plugins = findAllToolPlugins ();
+        this.plugins = new HashMap<String , Class<?>>();
+        for(Class<?> plugin : findAllToolPlugins ())
+        {
+        	this.plugins.put(plugin.getAnnotation (ToolPlugin.class).command(), plugin);
+        }
     }    
     
     
@@ -64,12 +71,12 @@ public class ToolPluginManager
         return null;
     }
 
-    public ArrayList<JMenuItem> getMenuItems ()
+    public List<JMenuItem> getMenuItems ()
     {
-        ArrayList<JMenuItem> menuItems = new ArrayList<JMenuItem> ();
+        List<JMenuItem> menuItems = new ArrayList<> ();
         try
         {
-            for (Class<?> plugin : plugins) {
+            for (Class<?> plugin : plugins.values()) {
                 ToolPlugin lAnnotation = plugin.getAnnotation (ToolPlugin.class);
                 JMenuItem menuItem = new LocalizedMenuItem (lAnnotation.name (),
                                                             lAnnotation.command ());
@@ -83,23 +90,25 @@ public class ToolPluginManager
     
     public void processCommand(String command, JFrame parent) 
     {
-        for(Class<?> plugin : plugins)
+        try
         {
-            ToolPlugin lAnnotation = plugin.getAnnotation (ToolPlugin.class);
-            if(lAnnotation.command ().equals (command))
+            Class<?> plugin =  plugins.get(command);
+        	try
             {
-                JDialog dialog = null;
-                try
-                {
-                    dialog = (JDialog) plugin.getConstructor (JFrame.class).newInstance (parent);
-                    dialog.setEnabled (true);
-                }
-                catch (Exception e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace ();
-                }
+        		plugin.getConstructor ().newInstance ();
             }
+        	catch (NoSuchMethodException e2)
+        	{
+        		plugin.getConstructor (JFrame.class).newInstance (parent);
+        	}
+        }
+        catch (Exception e1)
+        {
+        	JOptionPane.showMessageDialog(
+					null, StringDatabase.getUniqueInstance().getString("Tools.Plugin.Error") + command, 
+					StringDatabase.getUniqueInstance().getString("ErrorWindow.Title.Label"), 
+					JOptionPane.ERROR_MESSAGE);
+        	e1.printStackTrace ();
         }
     }
 }

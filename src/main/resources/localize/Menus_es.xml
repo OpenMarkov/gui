@@ -341,6 +341,9 @@
       <Label value="Configuración OpenMarkov" />
       <Mnemonic value="c" />
     </Configuration>
+    <Plugin>
+    	<Error value="Error tratando de procesar el comando: " />
+    </Plugin>
     <Label value="Herramientas" />
   </Tools>
   <File>

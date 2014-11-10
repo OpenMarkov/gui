@@ -340,6 +340,9 @@
       <Label value="OpenMarkov configuration" />
       <Mnemonic value="c" />
     </Configuration>
+    <Plugin>
+    	<Error value="An error ocurred while trying to process command:" />
+    </Plugin>
     <Label value="Tools" />
   </Tools>
   <File>
