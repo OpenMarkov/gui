@@ -322,12 +322,6 @@
     <CostEffectiveness>
       <Label value="Análisis de coste-efectividad" />
     </CostEffectiveness>
-	<SensitivityAnalysisDeterministic>
-		<Label value="Análisis determinista" />
-	</SensitivityAnalysisDeterministic>
-	<SensitivityAnalysisProbabilistic>
-		<Label value="Análisis probabilista" />
-	</SensitivityAnalysisProbabilistic>
 	<SensitivityAnalysis>
 		<Label value="Análisis de sensibilidad" />
 	</SensitivityAnalysis>
@@ -436,6 +430,9 @@
       <ExpandNetworkCE>
         <Label value = "Expandir red CE" />
       </ExpandNetworkCE>
+      <Analysis>
+	    <Label value = "Análisis de coste-efectividad" />
+	  </Analysis>
       <TemporalEvolution>
         <Label value = "Evolución temporal" />
         <InstantValues value = "Valores instantáneos"/>

@@ -400,21 +400,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private JMenuItem           toolsCostEffectivenessSensitivityMenuItem              = null;
 
     /**
-     * Object that represents the item 'Tools - Sensitivity Analysis'.
-     */
-    private JMenu				toolsSensitivityAnalysisMenuItem;
-
-    /**
-     * Object that represents the item 'Tools - Deterministic Sensitivity analysis'.
-     */
-    private JMenuItem           toolsSensitivityAnalysisDeterministicMenuItem              = null;
-
-    /**
-     * Object that represents the item 'Tools - Probabilistic Sensitivity analysis'.
-     */
-    private JMenuItem           toolsSensitivityAnalysisProbabilisticMenuItem              = null;
-
-    /**
      * Object that represents the menu 'Options'.
      */
     // private JMenu optionsMenu = null; //FOR FUTURE USE
@@ -1777,8 +1762,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             toolsMenu.addSeparator();
             toolsMenu.add(getToolsCostEffectivenessMenuItem());
             toolsMenu.addSeparator();
-            toolsMenu.add(getToolsSensitivityAnalysisMenuItem());
-            toolsMenu.addSeparator();
             toolsMenu.add(getToolsConfigurationMenuItem());
         }
 
@@ -1823,43 +1806,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         }
 
         return toolsCostEffectivenessMenuItem;
-    }
-
-    private JMenuItem getToolsSensitivityAnalysisDeterministicMenuItem() {
-    	if (toolsSensitivityAnalysisDeterministicMenuItem == null) {
-    		toolsSensitivityAnalysisDeterministicMenuItem = new LocalizedMenuItem(
-    			MenuItemNames.SENSITIVITYANALYSISDETERMINISTIC_MENUITEM,
-    			ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC);
-    		toolsSensitivityAnalysisDeterministicMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-    			KeyEvent.VK_D,
-    			InputEvent.CTRL_DOWN_MASK));
-    		toolsSensitivityAnalysisDeterministicMenuItem.addActionListener(listener);
-// TODO: SetEnabled(false) if the network has 'OnlyChanceNodes' constraint
-    		toolsSensitivityAnalysisDeterministicMenuItem.setEnabled(true);
-        }
-        return toolsSensitivityAnalysisDeterministicMenuItem;
-    }
-
-    private JMenuItem getToolsSensitivityAnalysisProbabilisticMenuItem() {
-    	if (toolsSensitivityAnalysisProbabilisticMenuItem == null) {
-    		toolsSensitivityAnalysisProbabilisticMenuItem = new LocalizedMenuItem(
-    			MenuItemNames.SENSITIVITYANALYSISPROBABILISTIC_MENUITEM,
-    			ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC);
-    		toolsSensitivityAnalysisProbabilisticMenuItem.addActionListener(listener);
-    		toolsSensitivityAnalysisProbabilisticMenuItem.setEnabled(false);
-        }
-        return toolsSensitivityAnalysisProbabilisticMenuItem;
-    }
-
-    private JMenuItem getToolsSensitivityAnalysisMenuItem() {
-        if (toolsSensitivityAnalysisMenuItem == null) {
-        	toolsSensitivityAnalysisMenuItem = new JMenu();
-        	toolsSensitivityAnalysisMenuItem.setName(MenuItemNames.SENSITIVITYANALYSIS_SUBMENU);
-        	toolsSensitivityAnalysisMenuItem.setText(MenuLocalizer.getLabel(MenuItemNames.SENSITIVITYANALYSIS_SUBMENU));
-        	//toolsSensitivityAnalysisMenuItem.add(getToolsSensitivityAnalysisDeterministicMenuItem());
-        	toolsSensitivityAnalysisMenuItem.add(getToolsSensitivityAnalysisProbabilisticMenuItem());
-        }
-        return toolsSensitivityAnalysisMenuItem;
     }
 
     /**
@@ -2106,10 +2052,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             component = toolsCostEffectivenessDeterministicMenuItem;
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY)) {
             component = toolsCostEffectivenessSensitivityMenuItem;
-        } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC)) {
-        	component = toolsSensitivityAnalysisDeterministicMenuItem;
-        } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS_PROBABILISTIC)) {
-        	component = toolsSensitivityAnalysisProbabilisticMenuItem;
         }
 
         return component;

@@ -85,8 +85,6 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
-import org.openmarkov.sensitivityanalysis.gui.GoGui;
-import org.openmarkov.sensitivityanalysis.gui.view.SensitivityAnalysis;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -305,8 +303,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
                     getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
                     true);
-        } else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS_DETERMINISTIC)) {
-        	new GoGui(SensitivityAnalysis.class, null);
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
@@ -1417,19 +1413,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 		}
 
      }
-
-    private void showSensitivityAnalysisDialog() {
-// TODO: Add parameters showSensitivityAnalysisDialog(ProbNet probNet, ...) 
-    	
-    	SensitivityAnalysis sensitivityAnalysisDialog = new SensitivityAnalysis(null);
-/*
-	TODO: Add parameters
-    	TemporalCostEffectivenessDialog temporalCostEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
-    			probNet,
-    			sensitivityAnalysis,
-    			false);
- */
-    }
 
 	private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");

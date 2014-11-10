@@ -119,12 +119,6 @@
 			<artifactId>org.openmarkov.costeffectiveness.id</artifactId>
 			<version>0.1.6-SNAPSHOT</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.openmarkov</groupId>
-			<artifactId>org.openmarkov.sensitivityanalysis.gui</artifactId>
-			<version>0.1.6-SNAPSHOT</version>
-		</dependency>
 				
 	</dependencies>
 	<repositories>

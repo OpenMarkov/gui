@@ -329,12 +329,6 @@
     <CostEffectiveness>
       <Label value="Cost effectiveness analysis" />
     </CostEffectiveness>
-	<SensitivityAnalysisDeterministic>
-		<Label value="Deterministic analysis" />
-	</SensitivityAnalysisDeterministic>
-	<SensitivityAnalysisProbabilistic>
-		<Label value="Probabilistic analysis" />
-	</SensitivityAnalysisProbabilistic>
 	<SensitivityAnalysis>
 		<Label value="Sensitivity analysis" />
 	</SensitivityAnalysis>

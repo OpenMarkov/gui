@@ -30,8 +30,6 @@ import org.openmarkov.core.gui.menutoolbar.toolbar.StandardToolBar;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.MDI;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-import org.openmarkov.sensitivityanalysis.gui.GoGui;
-import org.openmarkov.sensitivityanalysis.gui.view.SensitivityAnalysis;
 
 
 /**
@@ -63,11 +61,6 @@ public class MainPanel extends JPanel {
 	 * Message window.
 	 */
 	private MessageWindow messageWindow = null;
-
-	/**
-	 * SensitivityAnalysis window.
-	 */
-	private GoGui GoGuiWindow = null;
 
 	/**
 	 * Panel that contains the toolbars.
@@ -230,19 +223,6 @@ public class MainPanel extends JPanel {
 
 		return messageWindow;
 
-	}
-
-	/**
-	 * author @gobispo
-	 * This method initializes GoGuiWindow.
-	 * 
-	 * @return a new GoGui window.
-	 */
-	public GoGui getGoGuiWindow() {
-		if (GoGuiWindow == null) {
-			GoGuiWindow = new GoGui(SensitivityAnalysis.class, null);
-		}
-		return GoGuiWindow;
 	}
 
 	/**
