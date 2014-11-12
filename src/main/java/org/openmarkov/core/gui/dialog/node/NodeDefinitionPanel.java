@@ -632,10 +632,10 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             List<StringWithProperties> decisionCriteria = node.getProbNet().getDecisionCriteria();
             String[] criteriaNames = null;
             if (decisionCriteria != null) {
-                criteriaNames = new String[decisionCriteria.size() + 1];
-                criteriaNames[0] = "";
-                for (int i = 1; i < decisionCriteria.size() + 1; i++) {
-                    criteriaNames[i] = decisionCriteria.get(i - 1).getString();
+                criteriaNames = new String[decisionCriteria.size()/* + 1*/];
+                //criteriaNames[0] = "";
+                for (int i = 0 /*1*/; i < decisionCriteria.size() /*+ 1*/; i++) {
+                    criteriaNames[i] = decisionCriteria.get(i/* - 1*/).getString();
                 }
             } 
             jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
