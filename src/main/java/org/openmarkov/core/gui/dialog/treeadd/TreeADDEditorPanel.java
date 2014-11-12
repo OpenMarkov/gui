@@ -305,12 +305,16 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             variables.add(potential.getUtilityVariable());
         }
         List<Variable> possibleTopVariables = possibleTopVariables(branch, branchPath);
+        List<Variable> allowedTopVariables = new ArrayList<Variable>();
+       
         for (Variable var : possibleTopVariables){
         	
         	// If the node has Utility type, the variable will not be added
         	try {
 				if(node.getProbNet().getNode(var.getName()).getNodeType() != NodeType.UTILITY){
-					possibleTopVariables.add(var);
+					//possibleTopVariables.add(var);
+					allowedTopVariables.add(var);
+					//possibleTopVariables.remove(arg0)
 				}
 			} catch (NodeNotFoundException e1) {
 				e1.printStackTrace();
@@ -318,7 +322,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         }
         
         List<Variable> addableVariables = branch.getAddableVariables();
-        possibleTopVariables.addAll(addableVariables);
+        //possibleTopVariables.addAll(addableVariables);
+        allowedTopVariables.addAll(addableVariables);
         
         // Potential Edition, any case it is possible to edit branch's potential
         if (!(potential instanceof TreeADDPotential)) {
