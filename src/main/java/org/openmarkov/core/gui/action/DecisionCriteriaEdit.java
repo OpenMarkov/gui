@@ -63,7 +63,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 criterion = new StringWithProperties (criterionName);
                 // agents.put(agentName);
                 criteria.add (criterion);
-                probNet.setDecisionCriteria2 (criteria);
+                probNet.setDecisionCriteria (criteria);
                 break;
             case REMOVE :
                 for (StringWithProperties criterio : criteria)
@@ -88,7 +88,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 {
                     criteria = null;
                 }
-                probNet.setDecisionCriteria2 (criteria);
+                probNet.setDecisionCriteria (criteria);
                 break;
             case DOWN :
                 // StringsWithProperties newAgentsDown = new
@@ -99,7 +99,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                     // newAgentsDown.put((String)dataTable[i][0]);
                     newCriteriasDown.add (new StringWithProperties ((String) dataTable[i][0]));
                 }
-                probNet.setDecisionCriteria2 (newCriteriasDown);
+                probNet.setDecisionCriteria (newCriteriasDown);
                 break;
             case UP :
                 // StringsWithProperties newAgentsUp = new
@@ -110,7 +110,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                     // newAgentsUp.put((String)dataTable[i][0]);
                     newCriteriasUp.add (new StringWithProperties ((String) dataTable[i][0]));
                 }
-                probNet.setDecisionCriteria2 (newCriteriasUp);
+                probNet.setDecisionCriteria (newCriteriasUp);
                 break;
             case RENAME :
                 // agents.rename(agentName, newName);
@@ -138,7 +138,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 }
 
                 
-                probNet.setDecisionCriteria2 (newCriteriasRename);
+                probNet.setDecisionCriteria (newCriteriasRename);
                 break;
         }
     }
@@ -147,7 +147,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
     public void undo ()
     {
         super.undo ();
-        probNet.setDecisionCriteria2 (lastCriteria);
+        probNet.setDecisionCriteria (lastCriteria);
         // TODO restore criteria in nodes
     }
 }

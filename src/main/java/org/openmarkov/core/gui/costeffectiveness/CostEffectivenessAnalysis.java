@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
@@ -29,6 +30,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
@@ -47,6 +49,9 @@ import org.openmarkov.inference.variableElimination.VariableElimination;
  * @author myebra
  */
 public class CostEffectivenessAnalysis {
+	
+	public static String DECISION_CRITERIA_VARIABLE = "Decision criteria";
+	
 	protected ProbNet probNet;
 	protected double costDiscount;
 	protected double effectivenessDiscount;
@@ -306,7 +311,11 @@ public class CostEffectivenessAnalysis {
 	private List<Variable> getConditioningVariables(ProbNet probNet)
 	{
 		List<Variable> conditioningVariables = new ArrayList<>();
-		conditioningVariables.add(expandedNetwork.getDecisionCriterionVariable());
+		try {
+			conditioningVariables.add(expandedNetwork.getVariable(DECISION_CRITERIA_VARIABLE));
+		} catch (NodeNotFoundException e) {
+			e.printStackTrace();
+		}
 		List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
 		for (Node decisionNode : decisionNodes) {
 			if (!decisionNode.hasPolicy()) {
@@ -448,7 +457,7 @@ public class CostEffectivenessAnalysis {
 		List<Variable> decisionVariables = new ArrayList<>();
 		Variable decisionCriteriaVariable = null;
 		for (Variable variable : analysisResult.getVariables()) {
-			if (variable.getName().equals("Decision Criterion")) {
+			if (variable.getName().equals(DECISION_CRITERIA_VARIABLE)) {
 				decisionCriteriaVariable = variable;
 			} else {
 				NodeType nodeType = expandedNetwork.getNode(variable).getNodeType();
@@ -574,12 +583,11 @@ public class CostEffectivenessAnalysis {
 			// throw new
 			// Exception("For cost effectiveness analysis performance network's decision criteria must be cost and effectiveness");
 		}
-		expandedNetwork.setDecisionCriteria(decisionCriteriaNames);
+		
 		// make all utility nodes of the expanded probNet children of the
 		// decision criteria node
-		Node decisionCriteriaNode = new Node(expandedNetwork,
-				expandedNetwork.getDecisionCriterionVariable(), NodeType.DECISION);
-		expandedNetwork.addNode(decisionCriteriaNode);
+		Variable decisionCriteriaVariable = getDecisionCriteriaVariable(decisionCriteriaNames);
+		Node decisionCriteriaNode = expandedNetwork.addNode(decisionCriteriaVariable, NodeType.DECISION);
 		for (Node utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
 			expandedNetwork.addLink(decisionCriteriaNode, utilityNode, true);
 			if(utilityNode.getVariable().getDecisionCriterion() == null)
@@ -597,6 +605,14 @@ public class CostEffectivenessAnalysis {
 		
 		return expandedNetwork;
 	}
+	
+    private static Variable getDecisionCriteriaVariable(List<String> criteriaNames) {
+        State[] states = new State[criteriaNames.size()];
+        for (int i = 0; i < criteriaNames.size(); i++) {
+            states[i] = new State(criteriaNames.get(i));
+        }
+        return new Variable(DECISION_CRITERIA_VARIABLE, states);
+    }
 
 	private static void translateMonthlyUtilityPotentials(List<TablePotential> utilityPotentials) {
 		for (TablePotential utilityPotential : utilityPotentials) {
@@ -726,9 +742,9 @@ public class CostEffectivenessAnalysis {
 				: "cost";
 
 		TreeADDPotential treeADDPotential = new TreeADDPotential(utilityPotential.getUtilityVariable(), treeVariables,
-				probNet.getDecisionCriterionVariable());
+				decisionCriteriaVariable);
 		List<Variable> variables = new ArrayList<>();
-		variables.add(probNet.getDecisionCriterionVariable());
+		variables.add(decisionCriteriaVariable);
 		for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
 			TreeADDBranch branch = treeADDPotential.getBranches().get(j);
 			String branchName = branch.getBranchStates().get(0).getName();
@@ -741,5 +757,4 @@ public class CostEffectivenessAnalysis {
 		}
 		return treeADDPotential;
 	}
-
 }
