@@ -7,6 +7,10 @@
   	<Title value = "Add agent"/>
   	<Text value = "Input name for new agent"/>
   </AddAgent>
+  <AddCriterion>
+   	<Title value = "Add criterion"/>
+  	<Text value = "Input name for new criterion"/>
+  </AddCriterion> 
   <AddState>
   	<Title value = "Add state"/>
   	<Text value = "Input name for new state"/>

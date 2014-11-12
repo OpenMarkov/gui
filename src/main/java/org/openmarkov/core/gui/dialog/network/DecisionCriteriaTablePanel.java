@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
-
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -14,6 +13,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -26,10 +26,10 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 	 */
 	private List<PNEdit> edits = new ArrayList<PNEdit>();
 
+	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	public DecisionCriteriaTablePanel(String[] newColumns, ProbNet probNet) {
 		super(newColumns, new Object[0][0], "a");
 		this.probNet = probNet;
-
 	}
 
 	@Override
@@ -62,7 +62,8 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 	protected void actionPerformedAddValue() {
 
 		String option = JOptionPane.showInputDialog(this,
-				"Proporcione el nuevo criterio de decision", "Agregar criterio de decision",
+				stringDatabase.getString("AddCriterion.Text"),
+				stringDatabase.getString("AddCriterion.Title"),
 				JOptionPane.QUESTION_MESSAGE);
 
 		if (option != null) {

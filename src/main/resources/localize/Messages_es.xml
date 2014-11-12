@@ -6,7 +6,11 @@
   <AddAgent>
   	<Title value = "Añadir agente"/>
   	<Text value = "Proporcione el nuevo agente"/>
-  </AddAgent> 
+  </AddAgent>
+  <AddCriterion>
+   	<Title value = "Añadir criterio"/>
+  	<Text value = "Proporcione el nuevo criterio de decision"/>
+  </AddCriterion> 
   <AddState>
   	<Title value = "Agregar estado"/>
   	<Text value = "Proporcione el nuevo estado"/>
