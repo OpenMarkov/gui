@@ -8,6 +8,7 @@ import org.apache.log4j.jmx.Agent;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -19,7 +20,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
     private String                     criterionName;
     private StateAction                stateAction;
     // private StringsWithProperties lastAgents;
-    private List<StringWithProperties> lastCriteria;
+    private List<Criterion> lastCriteria;
     private Object[][]                 dataTable;
     private String 	                   newName;
 
@@ -36,7 +37,7 @@ public class DecisionCriteriaEdit extends SimplePNEdit
         this.newName = newName;
         if (probnet.getAgents () != null)
         {
-            this.lastCriteria = new ArrayList<StringWithProperties> (probnet.getDecisionCriteria ());
+            this.lastCriteria = new ArrayList<Criterion> (probnet.getDecisionCriteria ());
         }
         else
         {
@@ -50,25 +51,25 @@ public class DecisionCriteriaEdit extends SimplePNEdit
         throws DoEditException
     {
         // StringsWithProperties agents = probNet.getAgents();
-        List<StringWithProperties> criteria = probNet.getDecisionCriteria ();
-        StringWithProperties criterion = null;
+        List<Criterion> criteria = probNet.getDecisionCriteria ();
+        Criterion criterion = null;
         switch (stateAction)
         {
             case ADD :
                 if (criteria == null)
                 {
                     // agents = new StringsWithProperties();
-                    criteria = new ArrayList<StringWithProperties> ();
+                    criteria = new ArrayList<Criterion> ();
                 }
-                criterion = new StringWithProperties (criterionName);
+                criterion = new Criterion (criterionName);
                 // agents.put(agentName);
                 criteria.add (criterion);
                 probNet.setDecisionCriteria (criteria);
                 break;
             case REMOVE :
-                for (StringWithProperties criterio : criteria)
+                for (Criterion criterio : criteria)
                 {
-                    if (criterio.getString ().equals (criterionName))
+                    if (criterio.getCriterionName().equals (criterionName))
                     {
                         criterion = criterio;
                     }
@@ -93,22 +94,22 @@ public class DecisionCriteriaEdit extends SimplePNEdit
             case DOWN :
                 // StringsWithProperties newAgentsDown = new
                 // StringsWithProperties();
-                ArrayList<StringWithProperties> newCriteriasDown = new ArrayList<StringWithProperties> ();
+                ArrayList<Criterion> newCriteriasDown = new ArrayList<Criterion> ();
                 for (int i = 0; i < dataTable.length; i++)
                 {
                     // newAgentsDown.put((String)dataTable[i][0]);
-                    newCriteriasDown.add (new StringWithProperties ((String) dataTable[i][0]));
+                    newCriteriasDown.add (new Criterion ((String) dataTable[i][0]));
                 }
                 probNet.setDecisionCriteria (newCriteriasDown);
                 break;
             case UP :
                 // StringsWithProperties newAgentsUp = new
                 // StringsWithProperties();
-                ArrayList<StringWithProperties> newCriteriasUp = new ArrayList<StringWithProperties> ();
+                ArrayList<Criterion> newCriteriasUp = new ArrayList<Criterion> ();
                 for (int i = 0; i < dataTable.length; i++)
                 {
                     // newAgentsUp.put((String)dataTable[i][0]);
-                    newCriteriasUp.add (new StringWithProperties ((String) dataTable[i][0]));
+                    newCriteriasUp.add (new Criterion ((String) dataTable[i][0]));
                 }
                 probNet.setDecisionCriteria (newCriteriasUp);
                 break;
@@ -116,11 +117,11 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 // agents.rename(agentName, newName);
                 // StringsWithProperties newAgentsRename = new
                 // StringsWithProperties();
-                ArrayList<StringWithProperties> newCriteriasRename = new ArrayList<StringWithProperties> ();
+                ArrayList<Criterion> newCriteriasRename = new ArrayList<Criterion> ();
                 for (int i = 0; i < dataTable.length; i++)
                 {
                     // newAgentsRename.put((String)dataTable[i][0]);
-                    newCriteriasRename.add (new StringWithProperties ((String) dataTable[i][0]));
+                    newCriteriasRename.add (new Criterion ((String) dataTable[i][0]));
 
                 }
                 // We substitute the new name in the nodes they had that criterion
@@ -130,9 +131,9 @@ public class DecisionCriteriaEdit extends SimplePNEdit
                 			// we get the utility nodes with no empty criterion
                 			node.getVariable().getDecisionCriterion()!= null && 
                 			// we get the nodes with the same criterion as criterionName
-                			node.getVariable().getDecisionCriterion().string.equals(criterionName)){
+                			node.getVariable().getDecisionCriterion().getCriterionName().equals(criterionName)){
                 			// We change the name of the criterion in those nodes
-                			node.getVariable().getDecisionCriterion().string = newName;
+                			node.getVariable().getDecisionCriterion().setCriterionName(newName);
                 		
                 	}
                 }

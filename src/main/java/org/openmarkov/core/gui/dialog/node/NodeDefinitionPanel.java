@@ -50,6 +50,7 @@ import org.openmarkov.core.gui.dialog.CommentListener;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Purpose;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.StringWithProperties;
@@ -629,20 +630,20 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
 
     private JComboBox<String> getJComboBoxDecisionCriteria() {
         if (jComboBoxDecisionCriteria == null) {
-            List<StringWithProperties> decisionCriteria = node.getProbNet().getDecisionCriteria();
+            List<Criterion> decisionCriteria = node.getProbNet().getDecisionCriteria();
             String[] criteriaNames = null;
             if (decisionCriteria != null) {
                 criteriaNames = new String[decisionCriteria.size()/* + 1*/];
                 //criteriaNames[0] = "";
                 for (int i = 0 /*1*/; i < decisionCriteria.size() /*+ 1*/; i++) {
-                    criteriaNames[i] = decisionCriteria.get(i/* - 1*/).getString();
+                    criteriaNames[i] = decisionCriteria.get(i/* - 1*/).getCriterionName();
                 }
             } 
             jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
             jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
             jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
             if (node.getVariable().getDecisionCriterion() != null && decisionCriteria != null) {
-                String decisionCriterion = node.getVariable().getDecisionCriterion().getString();
+                String decisionCriterion = node.getVariable().getDecisionCriterion().getCriterionName();
                 jComboBoxDecisionCriteria.setSelectedItem(decisionCriterion);
                 jComboBoxDecisionCriteria.addItemListener(this);
             } else {
@@ -817,7 +818,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
             }
         } else if (comboBox.toString().toLowerCase().equals(jComboBoxDecisionCriteria.toString().toLowerCase())) {
             if (!(itemSelected == null)) {
-                StringWithProperties decisionCriteria = new StringWithProperties(itemSelected);
+                Criterion decisionCriteria = new Criterion(itemSelected);
                 NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(node,
                         decisionCriteria);
                 try {

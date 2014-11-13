@@ -17,6 +17,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -130,8 +131,8 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 
 	}
 		
-	protected void setDataFromAdvancedProperties( List<StringWithProperties> advancedProperties) {
-		 if (advancedProperties != null) {
+	protected void setDataFromAdvancedProperties(List<StringWithProperties> advancedProperties) {
+		if (advancedProperties != null) {
 			 Object [][] tableData =new Object [advancedProperties.size()][1];
 				
 			  for (int i = 0; i < advancedProperties.size(); i++) {
@@ -142,7 +143,44 @@ public class AdvancedPropertiesTablePanel extends KeyTablePanel implements Table
 			 Object [][] tableData =new Object [0][0];
 			 setData(tableData);
 		 }
+		//setData(advancedProperties);
 	 }
+	
+	protected void setDataFromCriteria(List<Criterion> criteria){
+		if (criteria != null) {
+			 Object [][] tableData =new Object [criteria.size()][1];
+				
+			  for (int i = 0; i < criteria.size(); i++) {
+				  tableData[i][0] = criteria.get(i).getCriterionName();
+			  }
+				setData(tableData);
+		 } else if (criteria == null) {
+			 Object [][] tableData =new Object [0][0];
+			 setData(tableData);
+		 }
+		// setData(criteria);
+
+	}
+	/*
+	protected void setData(List<Object> data){
+		 if (data != null) {
+			 
+			 Object [][] tableData =new Object [data.size()][1];
+			 if(data.get(0) instanceof Criterion){
+				 for (int i = 0; i < data.size(); i++) {
+					  tableData[i][0] = ((Criterion) data.get(i)).getCriterionName();
+				  } 
+			 }else if(data.get(0) instanceof StringWithProperties){
+				  for (int i = 0; i < data.size(); i++) {
+					  tableData[i][0] = ((StringWithProperties) data.get(i)).getString();
+				  }
+			 }
+			 setData(tableData);
+		 } else if (data == null) {
+			 Object [][] tableData =new Object [0][0];
+			 setData(tableData);
+		 }
+	}*/
 	
 	@Override
 	public void undoableEditHappened(UndoableEditEvent arg0) {

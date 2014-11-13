@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
+
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -14,6 +15,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -92,8 +94,8 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 
 			// StringsWithProperties agents = probNet.getAgents();
 			// setDataFromNetworkAgents(agents);
-			List<StringWithProperties> criterias = probNet.getDecisionCriteria();
-			setDataFromAdvancedProperties(criterias);
+			List<Criterion> criteria = probNet.getDecisionCriteria();
+			setDataFromCriteria(criteria);
 			// getTableModel().insertRow(newIndex, new Object[]
 			// {getKeyString(newIndex), option });
 			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
@@ -128,8 +130,8 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 			e.printStackTrace();
 		}
 		// StringsWithProperties agents = probNet.getAgents();
-		List<StringWithProperties> criterias = probNet.getDecisionCriteria();
-		setDataFromAdvancedProperties(criterias);
+		List<Criterion> criterias = probNet.getDecisionCriteria();
+		setDataFromCriteria(criterias);
 		valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
 		// dataTable = new Object [agents.getNames().size()][1];
 		if (criterias != null) {

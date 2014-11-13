@@ -337,7 +337,7 @@ public class CostEffectivenessAnalysis {
 				Variable utilityVariable = utilityNode.getVariable();
 				if(utilityVariable.isTemporal() && 
 						utilityVariable.getTimeSlice() > 0 &&
-						utilityVariable.getDecisionCriterion().getString()
+						utilityVariable.getDecisionCriterion().getCriterionName()
 						.equalsIgnoreCase("effectiveness"))
 				{
 					if(!temporalNodes.containsKey(utilityVariable.getBaseName()))
@@ -404,7 +404,7 @@ public class CostEffectivenessAnalysis {
 		for (TablePotential utilityPotential : utilityPotentials) {
 			Variable utilityVariable = utilityPotential.getUtilityVariable();
 			if (utilityVariable.isTemporal()) {
-				boolean isCost = utilityVariable.getDecisionCriterion().getString()
+				boolean isCost = utilityVariable.getDecisionCriterion().getCriterionName()
 						.equalsIgnoreCase("cost");
 				double discount = isCost ? costDiscount : effectivenessDiscount;
 				discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
@@ -572,7 +572,7 @@ public class CostEffectivenessAnalysis {
 
 		List<String> decisionCriteriaNames = new ArrayList<>();
 		for (int i = 0; i < expandedNetwork.getDecisionCriteria().size(); i++) {
-			String decisionCriterion = expandedNetwork.getDecisionCriteria().get(i).getString();
+			String decisionCriterion = expandedNetwork.getDecisionCriteria().get(i).getCriterionName();
 			if (decisionCriterion.equalsIgnoreCase("cost")
 					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
 				decisionCriteriaNames.add(decisionCriterion);
@@ -594,7 +594,7 @@ public class CostEffectivenessAnalysis {
 			{
 				throw new NotEvaluableNetworkException("Utility node " + utilityNode.getName() + " does not have a decision criterion");
 			}
-			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getString();
+			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
 			if (decisionCriterion.equalsIgnoreCase("cost")
 					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
 				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
@@ -654,7 +654,7 @@ public class CostEffectivenessAnalysis {
 			if (utilityVariable.isTemporal()) {
 				Potential potential = utilityNode.getPotentials().get(0);
 				int timeSlice = utilityVariable.getTimeSlice();
-				String decisionCriterion = utilityVariable.getDecisionCriterion().getString();
+				String decisionCriterion = utilityVariable.getDecisionCriterion().getCriterionName();
 				double discount = decisionCriterion.equalsIgnoreCase("cost") ? costDiscount
 						: effectivenessDiscount;
 				applyDiscountToUtilityPotential(potential, timeSlice, discount);
@@ -737,7 +737,7 @@ public class CostEffectivenessAnalysis {
 		Potential utilityPotential = utilNode.getPotentials().get(0);
 		List<Variable> treeVariables = utilityPotential.getVariables();
 		treeVariables.add(decisionCriteriaVariable);
-		String decisionCriterion = utilNode.getVariable().getDecisionCriterion().getString();
+		String decisionCriterion = utilNode.getVariable().getDecisionCriterion().getCriterionName();
 		String otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
 				: "cost";
 

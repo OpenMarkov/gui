@@ -22,6 +22,7 @@ import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.gui.util.GUIDefaultStates;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.gui.window.edition.EditorPanel;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -78,7 +79,7 @@ public abstract class NodeEditionMode extends EditionMode
                         variable.setBaseName (nodeName);
                         variable.setTimeSlice (0);
                     }
-                    List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria ();
+                    List<Criterion> decisionCriteria = probNet.getDecisionCriteria ();
                     if (nodeType == NodeType.UTILITY && decisionCriteria != null)
                     {
                         variable.setDecisionCriterion (decisionCriteria.get (0));

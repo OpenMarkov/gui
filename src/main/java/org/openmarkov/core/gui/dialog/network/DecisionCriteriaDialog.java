@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 
@@ -77,11 +78,11 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog{
 	public void setFieldFromProperties (ProbNet probNet) {
 		 
 		// StringsWithProperties agents = probNet.getAgents();
-		 List<StringWithProperties> decisionCriteria = probNet.getDecisionCriteria();
+		 List<Criterion> decisionCriteria = probNet.getDecisionCriteria();
 		if (decisionCriteria != null) {
 			Object [][] data = new Object [decisionCriteria.size()][1];
 			for (int i = 0; i < decisionCriteria.size(); i++) {
-				data[i][0] = decisionCriteria.get(i).getString();
+				data[i][0] = decisionCriteria.get(i).getCriterionName();
 			}
 			 //initializing data structure for the table model
 			getDecisionCriteriaPanel().setData(data);
