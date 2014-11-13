@@ -358,36 +358,11 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
      */
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        int index = valuesTable.getSelectedRow();
-        int rowCount = valuesTable.getRowCount();
-        if ((rowCount == 0) || (index == -1)) {
-            removeValueButton.setEnabled(false);
-            upValueButton.setEnabled(false);
-            downValueButton.setEnabled(false);
-        } else {
-            removeValueButton.setEnabled(true);
-            if (index == 0) {
-                upValueButton.setEnabled(false);
-                if (index == (rowCount - 1)) {
-                    downValueButton.setEnabled(false);
-                } else {
-                    downValueButton.setEnabled(true);
-                }
-            } else if (index == (valuesTable.getRowCount() - 1)) {
-                downValueButton.setEnabled(false);
-                if (index == 0) {
-                    upValueButton.setEnabled(false);
-                } else {
-                    upValueButton.setEnabled(true);
-                }
-                upValueButton.setEnabled(true);
-            } else {
-                upValueButton.setEnabled(true);
-                downValueButton.setEnabled(true);
-            }
-        }
+        super.valueChanged(e);
 
         boolean removeValueButtonEnabled = true;
+        int rowCount = valuesTable.getRowCount();
+        
         // If there are less than two rows
         if (rowCount <= 2) {
                 // But at least there is one, it has not to be the nodes parent table, as
