@@ -118,10 +118,19 @@ public class CommentHTMLScrollPane extends JScrollPane
      */
     public void setCommentHTMLTextPaneText (String text)
     {
+        String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
+        /*
+        Country is used in Locale.java just to set the LocaleExtensions as
+        LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
+        But it cannot be set up as null or empty. So we will not use the "real country"
+        but just the same string as the language.
+         */
+        String sCountry = StringDatabase.getUniqueInstance().getLanguage();
+
         // creates the HTML object
         EkitCore ekitCoreEditorHTML = new EkitCore (null, null, text, null, null, true, false,
-                                                    true, true, null, null, false, false, true,
-                                                    false, EkitCore.TOOLBAR_DEFAULT_SINGLE);
+                true, true, sLanguage, sCountry, false, false, true,
+                false, EkitCore.TOOLBAR_DEFAULT_SINGLE);
         try
         {
         	getJTextPaneCommentHTML ().setEditorKit ((StyledEditorKit) ekitCoreEditorHTML.gethtmlKit ());

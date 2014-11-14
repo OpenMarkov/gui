@@ -139,13 +139,21 @@ public class HTMLTextEditor extends JDialog {
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getEkitCoreEditorHTMLPanel() {
+		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
+        /*
+        Country is used in Locale.java just to set the LocaleExtensions as
+        LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
+        But it cannot be set up as null or empty. So we will not use the "real country"
+        but just the same string as the language.
+         */
+		String sCountry = StringDatabase.getUniqueInstance().getLanguage();
 
 		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
 		if (ekitCoreEditorHTMLPanel == null) {
 			ekitCoreEditorHTMLPanel =
-				new EkitCore(null, null, updateComment, null, null, true,
-					false, true, true, null, null, false, false, true, false,
-					toolbar);
+					new EkitCore(null, null, updateComment, null, null, true,
+							false, true, true, sLanguage, sCountry, false, false, true, false,
+							toolbar);
 			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
 			ekitCoreEditorHTMLPanel.setVisible(true);
 		}
