@@ -222,6 +222,20 @@
 	<NetworkAdvancedPanel>
 		<DecisionCriteria>
 			<Text value="Decision criteria" />
+			<ValuesTable>
+				<Columns>
+					<Id>
+						<Prefix value="a" />
+						<Text value="Id" />
+					</Id>
+					<Name>
+						<Text value="Criterion" />
+					</Name>
+					<Unit>
+						<Text value="Unit" />
+					</Unit>
+				</Columns>
+			</ValuesTable>
 		</DecisionCriteria>
 		<Agents>
 			<Text value="Agents" />

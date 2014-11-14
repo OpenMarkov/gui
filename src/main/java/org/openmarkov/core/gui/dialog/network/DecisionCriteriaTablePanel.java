@@ -1,23 +1,22 @@
 package org.openmarkov.core.gui.dialog.network;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 
-import org.openmarkov.core.action.PNEdit;
+import org.openmarkov.core.action.DecisionCriteriaEdit;
+import org.openmarkov.core.action.DecisionCriterionUnitEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.gui.action.DecisionCriteriaEdit;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.StringWithProperties;
 
 @SuppressWarnings("serial")
 public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
@@ -26,11 +25,14 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 	/**
 	 * Each time an agent has been edited the corresponding edit would be stored
 	 */
-	private List<PNEdit> edits = new ArrayList<PNEdit>();
+	//private List<PNEdit> edits = new ArrayList<PNEdit>();
 
 	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	public DecisionCriteriaTablePanel(String[] newColumns, ProbNet probNet) {
-		super(newColumns, new Object[0][0], "a");
+		super(newColumns,
+				new Object[0][0],
+				StringDatabase.getUniqueInstance().
+					getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Id.Prefix"));
 		this.probNet = probNet;
 	}
 
@@ -39,24 +41,51 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 		int column = tableEvent.getColumn();
 		int row = tableEvent.getLastRow();
 		if (tableEvent.getType() == TableModelEvent.UPDATE) {
-			String criteriaName = (String) dataTable[row][0];
-			String newName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
-					.getValueAt(row, column);
-			dataTable[row][0] = newName;
-			if (criteriaName != newName) {
-				DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet,
-						StateAction.RENAME, newName, criteriaName, dataTable);
-				try {
-					probNet.doEdit(criteriaEdit);
-					edits.add(criteriaEdit);
-				} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-						| NonProjectablePotentialException | WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			
+			switch(column){
+			case 1:
+				String criteriaName = (String) dataTable[row][column-1];
+				String newName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
+						.getValueAt(row, column);
+				dataTable[row][column-1] = newName;
+				if (criteriaName != newName) {
+					DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet,
+							StateAction.RENAME, newName, criteriaName, row);
+					try {
+						probNet.doEdit(criteriaEdit);
+						//edits.add(criteriaEdit);
+					} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+							| NonProjectablePotentialException | WrongCriterionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				setData(dataTable);
-				valuesTable.getSelectionModel().setSelectionInterval(row, row);
+				
+				break;
+			case 2:
+				String criterionName = (String) dataTable[row][column-2];
+				String unitName = (String) dataTable[row][column-1];
+				String newUnitName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
+						.getValueAt(row, column);
+				dataTable[row][column-1] = newUnitName;
+				if (unitName != newUnitName) {
+					DecisionCriterionUnitEdit criterionUnitEdit = 
+							new DecisionCriterionUnitEdit(probNet,criterionName,newUnitName);
+					try {
+						probNet.doEdit(criterionUnitEdit);
+						//edits.add(criterionUnitEdit);
+					} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+							| NonProjectablePotentialException | WrongCriterionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				break;
+				
 			}
+			
+			setData(dataTable);
+			valuesTable.getSelectionModel().setSelectionInterval(row, row);
 		}
 	}
 
@@ -69,16 +98,15 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 				JOptionPane.QUESTION_MESSAGE);
 
 		if (option != null) {
-			int newIndex = 0;
-			newIndex = valuesTable.getRowCount();
+			int newIndex = valuesTable.getRowCount();
 
 			DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.ADD,
-					"", option, null);
+					"", option, 0);
 
 			// doEdit
 			try {
 				probNet.doEdit(criteriaEdit);
-				edits.add(criteriaEdit);
+				//edits.add(criteriaEdit);
 
 			} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
 					| NonProjectablePotentialException | WrongCriterionException e) {
@@ -100,9 +128,10 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 			// {getKeyString(newIndex), option });
 			valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 
-			dataTable = new Object[valuesTable.getRowCount()][1];
+			dataTable = new Object[valuesTable.getRowCount()][2];
 			for (int i = 0; i < valuesTable.getRowCount(); i++) {
 				dataTable[i][0] = valuesTable.getValueAt(i, 1);
+				dataTable[i][1] = valuesTable.getValueAt(i, 2);
 			}
 			/*
 			 * getTableModel().insertRow(newIndex, new Object[]
@@ -119,11 +148,11 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 		String criteriaName = (String) valuesTable.getValueAt(selectedRow, 1);
 
 		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.REMOVE,
-				"", criteriaName, null);
+				"", criteriaName, selectedRow);
 
 		try {
 			probNet.doEdit(criteriaEdit);
-			edits.add(criteriaEdit);
+			//edits.add(criteriaEdit);
 		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
 				| NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
@@ -135,9 +164,10 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 		valuesTable.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
 		// dataTable = new Object [agents.getNames().size()][1];
 		if (criterias != null) {
-			dataTable = new Object[criterias.size()][1];
+			dataTable = new Object[criterias.size()][2];
 			for (int i = 0; i < valuesTable.getRowCount(); i++) {
 				dataTable[i][0] = valuesTable.getValueAt(i, 1);
+				dataTable[i][1] = valuesTable.getValueAt(i, 2);
 			}
 		}
 	}
@@ -145,17 +175,22 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 	@Override
 	protected void actionPerformedUpValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
-		swap = dataTable[selectedRow][0];
+		Object swapName = null, swapUnit = null;
+		swapName = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow - 1][0];
-		dataTable[selectedRow - 1][0] = swap;
+		dataTable[selectedRow - 1][0] = swapName;
 
+		swapUnit = dataTable[selectedRow][1];
+		dataTable[selectedRow][1] = dataTable[selectedRow - 1][1];
+		dataTable[selectedRow - 1][1] = swapUnit;
+
+		
 		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.UP, "",
-				"", dataTable);
+				"", selectedRow);
 
 		try {
 			probNet.doEdit(criteriaEdit);
-			edits.add(criteriaEdit);
+			//edits.add(criteriaEdit);
 			setData(dataTable);
 			/*
 			 * swap = valuesTable.getValueAt(selectedRow, 1);
@@ -172,6 +207,7 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i, 1);
+			dataTable[i][1] = valuesTable.getValueAt(i, 2);
 		}
 
 	}
@@ -179,16 +215,20 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 	@Override
 	protected void actionPerformedDownValue() {
 		int selectedRow = valuesTable.getSelectedRow();
-		Object swap = null;
-		swap = dataTable[selectedRow][0];
+		Object swapName = null, swapUnit = null;
+		swapName = dataTable[selectedRow][0];
 		dataTable[selectedRow][0] = dataTable[selectedRow + 1][0];
-		dataTable[selectedRow + 1][0] = swap;
+		dataTable[selectedRow + 1][0] = swapName;
+		
+		swapUnit = dataTable[selectedRow][1];
+		dataTable[selectedRow][1] = dataTable[selectedRow + 1][1];
+		dataTable[selectedRow + 1][1] = swapUnit;
 
 		DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.DOWN, "",
-				"", dataTable);
+				"", selectedRow);
 		try {
 			probNet.doEdit(criteriaEdit);
-			edits.add(criteriaEdit);
+			//edits.add(criteriaEdit);
 			setData(dataTable);
 			/*
 			 * swap = valuesTable.getValueAt(selectedRow, 1);
@@ -205,7 +245,26 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 
 		for (int i = 0; i < valuesTable.getRowCount(); i++) {
 			dataTable[i][0] = valuesTable.getValueAt(i, 1);
+			dataTable[i][1] = valuesTable.getValueAt(i, 2);
 		}
 	}
+	
+	/*
+    Fixing issue https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
+    The remove button was always set to disabled, unless more than two parents were present
+    We need to override the method from KeyTablePanel
+    as in it we are not able to determine in which panel we are located and thus
+    if the button needs to be enabled or not.
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        super.valueChanged(e);
+
+        // If there are two criteria, one can be deleted
+        if (valuesTable.getRowCount() == 2) {
+        	 removeValueButton.setEnabled(true);
+        }
+       
+    }
 
 }

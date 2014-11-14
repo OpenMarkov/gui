@@ -74,12 +74,14 @@ import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
+import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
@@ -676,6 +678,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
         if (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON) {
             ProbNet probNet = dialogProperties.getProbNet();
+
+            // If the probNet has not the OnlyChanceNodes constraint and not has any criterion, we
+            // create the default criterion.
+            if(!probNet.hasConstraint(OnlyChanceNodes.class) && 
+            		(probNet.getDecisionCriteria() == null || probNet.getDecisionCriteria().isEmpty())){
+            	List<Criterion> criteria = new ArrayList<Criterion>();
+            	criteria.add(new Criterion());
+            	probNet.setDecisionCriteria(criteria);
+            }
             String networkName = new String(stringDatabase.getString("InternalFrame.Title.Label")
                     + " "
                     + frameIndex);
