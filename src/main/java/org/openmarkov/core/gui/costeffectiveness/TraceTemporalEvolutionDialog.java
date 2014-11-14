@@ -327,7 +327,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         JFileChooser fileChooser = new JFileChooser ();
         String netName = FilenameUtils.getBaseName (expandedNetwork.getName ());
         fileChooser.setSelectedFile (new File (netName + "-" + variableOfInterest.getBaseName ()
-                                               + "-temporalEvolution.xls"));
+                                               + "-temporal_evolution.xls"));
         if (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION)
         {
             String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
@@ -346,9 +346,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private void createExcel (String filename)
         throws IOException
     {
-//        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
-//        excel.createTemporalEvolutionReport (filename, temporalEvolution, expandedNetwork,
-//        		numSlices,
-//                                             variableOfInterest);
+        TemporalEvolutionReport report = new TemporalEvolutionReport();
+        report.write(filename, temporalEvolution, expandedNetwork, numSlices, variableOfInterest);
     }
 }

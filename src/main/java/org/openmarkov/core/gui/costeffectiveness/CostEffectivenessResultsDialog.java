@@ -308,7 +308,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     private void createExcel (String filename)
         throws IOException
     {
-        ExcelReport excel = new ExcelReport (costEffectivenessAnalysis);
-        excel.writeOptimalInterventionsReport (filename);
+        CEAExcelReport excel = new CEAExcelReport (costEffectivenessAnalysis);
+        excel.writeReport (filename);
     }
 }
