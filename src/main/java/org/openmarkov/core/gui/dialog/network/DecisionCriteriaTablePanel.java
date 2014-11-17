@@ -44,26 +44,32 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 			
 			switch(column){
 			case 1:
-				String criteriaName = (String) dataTable[row][column-1];
+				String criterionName = (String) dataTable[row][column-1];
 				String newName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
 						.getValueAt(row, column);
 				dataTable[row][column-1] = newName;
-				if (criteriaName != newName) {
+				if (criterionName != newName) {
 					DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet,
-							StateAction.RENAME, newName, criteriaName, row);
+							StateAction.RENAME, newName, criterionName, row);
 					try {
 						probNet.doEdit(criteriaEdit);
 						//edits.add(criteriaEdit);
-					} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-							| NonProjectablePotentialException | WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					}  catch (ConstraintViolationException
+	                        | CanNotDoEditException
+	                        | NonProjectablePotentialException
+	                        | WrongCriterionException
+	                        | DoEditException e1) {
+	                    JOptionPane.showMessageDialog(this,
+	                            stringDatabase.getString(e1.getMessage()),
+	                            stringDatabase.getString("ConstraintViolationException"),
+	                            JOptionPane.ERROR_MESSAGE);
+	                    dataTable[row][column-1] = criterionName;
+	                }
 				}
 				
 				break;
 			case 2:
-				String criterionName = (String) dataTable[row][column-2];
+				criterionName = (String) dataTable[row][column-2];
 				String unitName = (String) dataTable[row][column-1];
 				String newUnitName = (String) ((AdvancedPropertiesTableModel) tableEvent.getSource())
 						.getValueAt(row, column);
@@ -101,18 +107,24 @@ public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 			int newIndex = valuesTable.getRowCount();
 
 			DecisionCriteriaEdit criteriaEdit = new DecisionCriteriaEdit(probNet, StateAction.ADD,
-					"", option, 0);
+					option, option, 0);
 
 			// doEdit
 			try {
 				probNet.doEdit(criteriaEdit);
 				//edits.add(criteriaEdit);
 
-			} catch (DoEditException | ConstraintViolationException | CanNotDoEditException
-					| NonProjectablePotentialException | WrongCriterionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (ConstraintViolationException
+                    | CanNotDoEditException
+                    | NonProjectablePotentialException
+                    | WrongCriterionException
+                    | DoEditException e1) {
+                JOptionPane.showMessageDialog(this,
+                        stringDatabase.getString(e1.getMessage()),
+                        stringDatabase.getString("ConstraintViolationException"),
+                        JOptionPane.ERROR_MESSAGE);
+                
+            }
 			/*
 			 * getTableModel().insertRow(newIndex, new Object[]
 			 * {getKeyString(newIndex), option });
