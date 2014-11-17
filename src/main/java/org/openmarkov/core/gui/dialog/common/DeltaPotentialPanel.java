@@ -75,8 +75,21 @@ public class DeltaPotentialPanel extends PotentialPanel {
             }
             
             // Calculate the mean value
-            defaultSpinnerValue = minValue + Math.abs(maxValue-minValue)/2;
-            
+            if(minValue == Double.NEGATIVE_INFINITY){
+            	if(maxValue == Double.POSITIVE_INFINITY){
+            		defaultSpinnerValue = 0;
+            	}else{
+            		defaultSpinnerValue = maxValue / 2;
+            	}
+            }else if(maxValue == Double.POSITIVE_INFINITY){
+            	if(minValue == Double.NEGATIVE_INFINITY){
+            		defaultSpinnerValue = 0;
+            	}else{
+            		defaultSpinnerValue = minValue * 2;
+            	}
+            }else{
+            	defaultSpinnerValue = minValue + Math.abs(maxValue-minValue)/2;
+            }
             //Create the model with the defaultValue, the min and max values and the precision
             SpinnerNumberModel model = new SpinnerNumberModel(defaultSpinnerValue, minValue, maxValue, node.getVariable().getPrecision()); 
             
@@ -111,8 +124,12 @@ public class DeltaPotentialPanel extends PotentialPanel {
     	// The model inits the valid range and the mean value
         if(node.getVariable().getVariableType() == VariableType.NUMERIC){
         	if (oldPotential != null){
+        		
         		double value = oldPotential.getNumericValue();
-                if (value >= minValue && value <= maxValue ){
+        		// If the value is in the bounds and is not equal to any Infinity (positive or negative)
+        		// we put these value into the spinner
+        		if (value >= minValue && value <= maxValue &&
+        				(!(value == Double.POSITIVE_INFINITY || value == Double.NEGATIVE_INFINITY))){
                 	valueSpinner.setValue(value);;
                 }
             }
