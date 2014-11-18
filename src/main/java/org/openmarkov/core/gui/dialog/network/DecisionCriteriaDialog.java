@@ -125,11 +125,11 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
+	@Override
 	protected void doCancelClickBeforeHide() {
-		if (probNet.getPNESupport().isWithUndo()) {
-			probNet.getPNESupport().closeParenthesis();
-			probNet.getPNESupport().undo();
-		}
+		probNet.getPNESupport().closeParenthesis();
+		probNet.getPNESupport().undoAndDelete();
+		
 		// TODO PNESupport must support more depth levels parenthesis
 		// As current performance edits from NetworkAgentsPanel only be undone
 		// when cancel
