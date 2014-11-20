@@ -15,10 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -62,6 +59,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 
 /**
  * Panel to set the values of a node with discretized values
@@ -884,6 +882,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
         Object selected[] = itemSelectable.getSelectedObjects();
         String itemSelected = selected.length == 0 ? "null" : selected[0].toString();
         JComboBox<String> comboBox = (JComboBox<String>) itemEvent.getSource();
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        // @@@
         if (itemEvent.getStateChange() == ItemEvent.DESELECTED) {
             optionDeselected = comboBox.getSelectedIndex();
         }
@@ -892,17 +895,31 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     && itemEvent.getStateChange() == ItemEvent.SELECTED
                     && !isUploadingData()) {
                 VariableTypeEdit variableTypeEdit = null;
+                VariableType variableType;
                 if (itemSelected.equals(stringDatabase.getString("NodeDomainValuesTablePanel."
                         + "jComboBoxNodeVariableType.Items.Discrete"))) {
-                    variableTypeEdit = new VariableTypeEdit(node, VariableType.FINITE_STATES);
+                    variableType = VariableType.FINITE_STATES;
                 } else if (itemSelected.equals(stringDatabase.getString("NodeDomainValuesTablePanel."
                         + "jComboBoxNodeVariableType.Items.Discretized"))) {
-                    variableTypeEdit = new VariableTypeEdit(node, VariableType.DISCRETIZED);
+                    variableType = VariableType.DISCRETIZED;
                 } else {
-                    variableTypeEdit = new VariableTypeEdit(node, VariableType.NUMERIC);
+                    variableType = VariableType.NUMERIC;
                 }
                 try {
+                    variableTypeEdit = new VariableTypeEdit(node, variableType);
                     node.getProbNet().doEdit(variableTypeEdit);
+                    // @ 2014/11/18. Issue 145.
+                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                    // Propagation of the domain in related variables in temporal models
+                    if (nodeRelatedNodes != null) {
+                        if (nodeRelatedNodes.size() > 0) {
+                            for (Node relatedNode : nodeRelatedNodes) {
+                                variableTypeEdit = new VariableTypeEdit(relatedNode, variableType);
+                                relatedNode.getProbNet().doEdit(variableTypeEdit);
+                            }
+                        }
+                    }
+                    // @@@
                     this.removeAll();
                     try {
                         initialize();
@@ -941,6 +958,19 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         newStates);
                 try {
                     node.getProbNet().doEdit(nodeReplaceStatesEdit);
+                    // @ 2014/11/18. Issue 145.
+                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                    // Propagation of the domain in related variables in temporal models
+                    if (nodeRelatedNodes != null) {
+                        if (nodeRelatedNodes.size() > 0) {
+                            for (Node relatedNode : nodeRelatedNodes) {
+                                nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode,
+                                        newStates);
+                                relatedNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                            }
+                        }
+                    }
+                    // @@@
                     this.removeAll();
                     try {
                         initialize();
@@ -974,7 +1004,20 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	                        Double.parseDouble(itemSelected));
 	                try {
 	                    node.getProbNet().doEdit(precisionEdit);
-	                } catch (ConstraintViolationException
+                        // @ 2014/11/18. Issue 145.
+                        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                        // Propagation of the domain in related variables in temporal models
+                        if (nodeRelatedNodes != null) {
+                            if (nodeRelatedNodes.size() > 0) {
+                                for (Node relatedNode : nodeRelatedNodes) {
+                                    precisionEdit = new PrecisionEdit(relatedNode,
+                                            Double.parseDouble(itemSelected));
+                                    relatedNode.getProbNet().doEdit(precisionEdit);
+                                }
+                            }
+                        }
+                        // @@@
+                    } catch (ConstraintViolationException
 	                        | CanNotDoEditException
 	                        | NonProjectablePotentialException
 	                        | WrongCriterionException
@@ -1044,6 +1087,20 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                         newPartitionedInterval);
                 try {
                     node.getProbNet().doEdit(partitionedIntervalEdit);
+                    // @ 2014/11/18. Issue 145.
+                    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                    // Propagation of the domain in related variables in temporal models
+                    if (nodeRelatedNodes != null) {
+                        if (nodeRelatedNodes.size() > 0) {
+                            for (Node relatedNode : nodeRelatedNodes) {
+                                partitionedIntervalEdit = new PartitionedIntervalEdit(relatedNode,
+                                        newPartitionedInterval);
+                                relatedNode.getProbNet().doEdit(partitionedIntervalEdit);
+                            }
+                        }
+
+                    }
+                    // @@@
                 } catch (DoEditException
                         | ConstraintViolationException
                         | CanNotDoEditException
@@ -1077,6 +1134,11 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
     private void actionPerformedStandardDomain(ActionEvent arg0) {
         StandardDomainsDialog standardDomainDialog = new StandardDomainsDialog(Utilities.getOwner(this));
+        // @ 2014/11/18. Issue 145.
+        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+        // Propagation of the domain in related variables in temporal models
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        //
         if (standardDomainDialog.requestValues() == StandardDomainsDialog.OK_BUTTON) {
             List<JRadioButton> radioButtons = ((StandardDomainPanel) (standardDomainDialog.getJPanelStandardDomains())).getRadioButtons();
             int index = 0;
@@ -1095,6 +1157,19 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
                     newStates);
             try {
                 node.getProbNet().doEdit(nodeReplaceStatesEdit);
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                if (nodeRelatedNodes != null) {
+                    if (nodeRelatedNodes.size() > 0) {
+                        for (Node relatedNode : nodeRelatedNodes) {
+                            nodeReplaceStatesEdit = new NodeReplaceStatesEdit(relatedNode,
+                                    newStates);
+                            relatedNode.getProbNet().doEdit(nodeReplaceStatesEdit);
+                        }
+                    }
+                }
+                // @@@
                 this.removeAll();
                 try {
                     initialize();

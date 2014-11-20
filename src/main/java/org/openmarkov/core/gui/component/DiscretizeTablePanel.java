@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
@@ -53,6 +54,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 
 /**
  * This class implements a panel to encapsulate a Discretize Table with the
@@ -390,6 +392,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                                 lower);
                         try {
                             node.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            // @ 2014/11/18. Issue 145.
+                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                            // Propagation of the domain in related variables in temporal models
+                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
+                                    row, lower);
+                            //
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -418,6 +426,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                                 lower);
                         try {
                             node.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            // @ 2014/11/18. Issue 145.
+                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                            // Propagation of the domain in related variables in temporal models
+                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
+                                    row,lower);
+                            //
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -454,6 +468,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                                 lower);
                         try {
                             node.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            // @ 2014/11/18. Issue 145.
+                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                            // Propagation of the domain in related variables in temporal models
+                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
+                                    row,lower);
+                            //
                         } catch (ConstraintViolationException
                                 | DoEditException
                                 | NonProjectablePotentialException
@@ -482,6 +502,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                                 lower);
                         try {
                             node.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                            // @ 2014/11/18. Issue 145.
+                            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                            // Propagation of the domain in related variables in temporal models
+                            propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
+                                    row,lower);
+                            //
                         } catch (ConstraintViolationException
                                 | CanNotDoEditException
                                 | NonProjectablePotentialException
@@ -965,6 +991,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                     option);
             try {
                 node.getProbNet().doEdit(nodeStateEdit);
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
+                //
                 if (variable.getVariableType() == VariableType.DISCRETIZED) {
                     PartitionedInterval newPartitionedInterval = variable.getPartitionedInterval();
                     setDataFromPartitionedInterval(newPartitionedInterval, variable.getStates());
@@ -1005,6 +1036,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
                 "");
         try {
             node.getProbNet().doEdit(nodeStateEdit);
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow, "");
+            //
             cancelCellEditing();
             getTableModel().removeRow(selectedRow);
             rowCount = valuesTable.getRowCount();
@@ -1060,6 +1096,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.UP, selectedRow, "");
         try {
             node.getProbNet().doEdit(nodeStateEdit);
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow, "");
+            //
             stopCellEditing();
             cancelCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -1088,6 +1129,11 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         NodeStateEdit nodeStateEdit = new NodeStateEdit(node, StateAction.DOWN, selectedRow, "");
         try {
             node.getProbNet().doEdit(nodeStateEdit);
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow, "");
+            //
             stopCellEditing();
             cancelCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
@@ -1188,7 +1234,12 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 							StateAction.RENAME, row, newName);
 					try {
 						node.getProbNet().doEdit(nodeStateEdit);
-					} catch (ConstraintViolationException
+                        // @ 2014/11/18. Issue 145.
+                        // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                        // Propagation of the domain in related variables in temporal models
+                        propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
+                        //
+                    } catch (ConstraintViolationException
 							| CanNotDoEditException
 							| NonProjectablePotentialException
 							| WrongCriterionException | DoEditException e) {
@@ -1340,4 +1391,63 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 
     public void mouseReleased(MouseEvent e) {
     }
+
+    // @ 2014/11/18. Issue 145.
+    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+    // Propagation of the domain in related variables in temporal models
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
+        // First we get the nodes in the same time slide as the node currently being edited
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        // We create a variable to store the edit of the related node
+        NodeStateEdit nodeStateEdit;
+        try {
+            // We iterate the related nodes, if any
+            if (nodeRelatedNodes != null) {
+                if (nodeRelatedNodes.size() > 0) {
+                    for (Node relatedNode : nodeRelatedNodes) {
+                        // we create the edit for the realted node
+                        nodeStateEdit = new NodeStateEdit(relatedNode,
+                                stateAction,
+                                selectedRow,
+                                option);
+                        // and we perform the edit
+                        relatedNode.getProbNet().doEdit(nodeStateEdit);
+                    }
+                }
+            }
+        } catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException |
+                WrongCriterionException | DoEditException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // @ 2014/11/18. Issue 145.
+    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+    // Propagation of the domain in related variables in temporal models
+    private void propagateNodePartitionedIntervalEditRelatedVariables(StateAction stateAction, int selectedRow, boolean option) {
+        // First we get the nodes in the same time slide as the node currently being edited
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        // We create a variable to store the edit of the related node
+        NodePartitionedIntervalEdit nodePartitionedIntervalEdit;
+        try {
+            // We iterate the related nodes, if any
+            if (nodeRelatedNodes != null) {
+                if (nodeRelatedNodes.size() > 0) {
+                    for (Node relatedNode : nodeRelatedNodes) {
+                        // we create the edit for the realted node
+                        nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(relatedNode,
+                                stateAction,
+                                selectedRow,
+                                option);
+                        // and we perform the edit
+                        relatedNode.getProbNet().doEdit(nodePartitionedIntervalEdit);
+                    }
+                }
+            }
+        } catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException |
+                WrongCriterionException | DoEditException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

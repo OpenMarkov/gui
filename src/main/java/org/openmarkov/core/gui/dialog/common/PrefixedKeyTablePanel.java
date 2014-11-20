@@ -22,7 +22,9 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Util;
+import java.util.List;
 
 /**
  * This class implements a key table with the following features:
@@ -184,6 +186,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
             try {
                 node.getProbNet().doEdit(nodeStateEdit);
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                propagateNodeStateEditRelatedVariables(StateAction.ADD, newIndex, option);
+                //
                 renameAction = false;
                 tableModel.insertRow(0, new Object[] { getKeyString(newIndex), option });
                 valuesTable.getSelectionModel().setSelectionInterval(0, 0);
@@ -223,7 +230,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
         try {
             node.getProbNet().doEdit(nodeStateEdit);
-
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.REMOVE, selectedRow,"");
+            //
             cancelCellEditing();
             renameAction = false;
             tableModel.removeRow(selectedRow);
@@ -272,7 +283,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
         try {
             node.getProbNet().doEdit(nodeStateEdit);
-
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.UP, selectedRow,"");
+            //
             stopCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
             renameAction = false;
@@ -308,7 +323,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
         try {
             node.getProbNet().doEdit(nodeStateEdit);
-
+            // @ 2014/11/18. Issue 145.
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+            // Propagation of the domain in related variables in temporal models
+            propagateNodeStateEditRelatedVariables(StateAction.DOWN, selectedRow,"");
+            //
             stopCellEditing();
             swap = valuesTable.getValueAt(selectedRow, 1);
             renameAction = false;
@@ -379,6 +398,11 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
                     newName);
             try {
                 node.getProbNet().doEdit(nodeStateEdit);
+                // @ 2014/11/18. Issue 145.
+                // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+                // Propagation of the domain in related variables in temporal models
+                propagateNodeStateEditRelatedVariables(StateAction.RENAME, row,newName);
+                //
             } catch (ConstraintViolationException e1) {
                 JOptionPane.showMessageDialog(this,
                         stringDatabase.getString(e1.getMessage()),
@@ -407,4 +431,34 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
         }
         renameAction = true;
     }
+
+    // @ 2014/11/18. Issue 145.
+    // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/145/domains-in-mpads-related-variables
+    // Propagation of the domain in related variables in temporal models
+    private void propagateNodeStateEditRelatedVariables(StateAction stateAction, int selectedRow, String option) {
+        // First we get the nodes in the same time slide as the node currently being edited
+        List<Node> nodeRelatedNodes = TemporalNetOperations.getRelatedNodesOtherTimeSlices(node);
+        // We create a variable to store the edit of the related node
+        NodeStateEdit nodeStateEdit;
+        try {
+        // We iterate the related nodes, if any
+        if (nodeRelatedNodes != null) {
+            if (nodeRelatedNodes.size() > 0) {
+                for (Node relatedNode : nodeRelatedNodes) {
+                    // we create the edit for the realted node
+                    nodeStateEdit = new NodeStateEdit(relatedNode,
+                            stateAction,
+                            selectedRow,
+                            option);
+                    // and we perform the edit
+                    relatedNode.getProbNet().doEdit(nodeStateEdit);
+                }
+            }
+        }
+        } catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException |
+                WrongCriterionException | DoEditException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
