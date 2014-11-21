@@ -765,6 +765,8 @@ public class EditorPanel extends JPanel
      */
     public void showPotentialDialog (boolean readOnly)
     {
+        boolean alreadyModifiedNetwork =
+                networkPanel.getMainPanel().getMainPanelMenuAssistant().isSaveNetworkActionCommandEnabled();
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         Node node = selectedNodes.get (0).getNode ();
         /*
@@ -788,9 +790,11 @@ public class EditorPanel extends JPanel
         else
         {
             probNet.getPNESupport ().undoAndDelete ();
-            setNetworkChangedWithOutEdit(false);
-            setSelectedAllNodes (false);
-            repaint ();
+            if (!alreadyModifiedNetwork) {
+                setNetworkChangedWithOutEdit(false);
+                setSelectedAllNodes(false);
+                repaint();
+            }
         }
     }
 
