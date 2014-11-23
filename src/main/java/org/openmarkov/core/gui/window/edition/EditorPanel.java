@@ -765,10 +765,10 @@ public class EditorPanel extends JPanel
      */
     public void showPotentialDialog (boolean readOnly)
     {
-        boolean alreadyModifiedNetwork =
-                networkPanel.getMainPanel().getMainPanelMenuAssistant().isSaveNetworkActionCommandEnabled();
         List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
         Node node = selectedNodes.get (0).getNode ();
+        // Before showing the dialog, we check if the network was alreday modified
+        Boolean alreadyModifiedNetwork = networkPanel.getModified();
         /*
          * Potential oldPotential = node.getPotentials().get(0);
          * PotentialEditDialog dialog = new PotentialEditDialog(owner,
@@ -790,6 +790,7 @@ public class EditorPanel extends JPanel
         else
         {
             probNet.getPNESupport ().undoAndDelete ();
+            // We restore the network state to not modified, if it was not already modified
             if (!alreadyModifiedNetwork) {
                 setNetworkChangedWithOutEdit(false);
                 setSelectedAllNodes(false);

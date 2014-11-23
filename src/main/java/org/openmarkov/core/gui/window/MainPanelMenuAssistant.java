@@ -105,11 +105,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
      * String database
      */
     protected StringDatabase     stringDatabase            = StringDatabase.getUniqueInstance ();
-    /**
-     * boolean saveNetworkActionCommandEnabled
-     */
-    private boolean saveNetworkActionCommandEnabled = false;
-
 
     /**
      * Constructor that registers the arrays of menus.
@@ -167,7 +162,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
     {
         setOptionEnabled (FILING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
-        saveNetworkActionCommandEnabled = false;
         setOptionEnabled (EDITING_ACTION_COMMANDS, false);
         setOptionEnabled (INFERENCE_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SELECT_ALL, false);
@@ -251,7 +245,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
         // changed by mpalacios
         updateUndoRedo (canUndo, canRedo);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, true);
-        saveNetworkActionCommandEnabled = true;
     }
 
     /**
@@ -260,7 +253,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
     public void updateOptionsNetworkSaved ()
     {
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
-        saveNetworkActionCommandEnabled = false;
     }
 
     /**
@@ -394,7 +386,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
          * break; } } }
          */
         setOptionEnabled (ActionCommands.SAVE_NETWORK, networkPanel.getModified ());
-        saveNetworkActionCommandEnabled = networkPanel.getModified ();
         objectsSelected (networkPanel.getSelectedNodes (), networkPanel.getSelectedLinks ());
         setZoom (networkPanel.getZoom ());
         /*
@@ -1136,16 +1127,11 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (INFERENCE_ACTION_COMMANDS, false);
         // setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
-        saveNetworkActionCommandEnabled = false;
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);
         mainPanel.getStandardToolBar ().getDecisionTreeButton ().setSelected (true);
         setZoom (decisionTreeWindow.getZoom ());
-    }
-
-    public boolean isSaveNetworkActionCommandEnabled() {
-        return saveNetworkActionCommandEnabled;
     }
 }
