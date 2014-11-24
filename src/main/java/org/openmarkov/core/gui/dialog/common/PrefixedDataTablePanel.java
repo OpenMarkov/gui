@@ -271,10 +271,14 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 				
 			tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
-			if ((rowCount > 0) && (selectedRow >= rowCount)) {
+			// Fixing issue #249
+			// https://bitbucket.org/cisiad/org.openmarkov.issues/issue/249/removing-the-two-parents-of-a-node
+			// Removed the "if" clause
+			// No parent is selected after a removal
+			/* if ((rowCount > 0) && (selectedRow >= rowCount)) {
 				valuesTable.getSelectionModel().setSelectionInterval(
 					selectedRow - 1, selectedRow - 1);
-			}
+			}*/
 			absentData = absentPrefixedData();
 			setEnabledAddValue(true);
             // After deleting an item from the list,
