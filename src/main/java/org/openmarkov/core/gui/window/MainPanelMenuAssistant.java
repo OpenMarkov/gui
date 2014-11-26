@@ -34,6 +34,7 @@ import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MPADType;
 import org.openmarkov.core.oopn.OOPNet;
@@ -219,11 +220,17 @@ public class MainPanelMenuAssistant extends MenuAssistant
             setOptionEnabled (INFERENCE_ACTION_COMMANDS, false);
         }
         setOptionEnabled (VIEWING_ACTION_COMMANDS, true);
-        setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, true);
+        setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
         setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
+    }
+
+    private boolean getEnableWorkingModeButton() {
+        org.openmarkov.core.model.network.type.NetworkType networkType = currentNetworkPanel.getProbNet().getNetworkType();
+        return networkType instanceof InfluenceDiagramType
+                || networkType instanceof BayesianNetworkType;
     }
 
     /**
@@ -313,7 +320,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         {
             setOptionSelected (ActionCommands.BYNAME_NODES, true);
         }
-        setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, true);
+        setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, true);
         setOptionEnabled (ActionCommands.OBJECT_SELECTION, false);
