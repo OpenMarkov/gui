@@ -184,10 +184,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().setMaximumSize (new Dimension (180, 40));
         getComponentsPanel ().add (getPotentialTypePanel (), BorderLayout.NORTH);
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
-        Potential potential = node.getPotentials ().get (0);
-        if (((potential.getNumVariables () > 1 && potential.isUtility()) || 
-        		(potential.getNumVariables () > 2 && potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY))
-            && getPotentialPanel () instanceof ProbabilityTablePanel)
+
+        if (enableReorderVariableButton())
         {
             getReorderVariablesButton ().setVisible (true);
             getReorderVariablesButton ().setEnabled (true);
@@ -471,11 +469,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel.close ();
         potentialPanel = null;
-        Potential potential = node.getPotentials ().get (0);
-        int numPotentialVariables = potential.getNumVariables();
-        PotentialRole role = potential.getPotentialRole ();
-        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) || (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY))
-            && getPotentialPanel () instanceof ProbabilityTablePanel)
+
+        if (enableReorderVariableButton())
         {
             getReorderVariablesButton ().setVisible (true);
             getReorderVariablesButton ().setEnabled (true);
@@ -485,6 +480,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             getReorderVariablesButton ().setVisible (false);
             getReorderVariablesButton ().setEnabled (false);
         }
+
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
         getComponentsPanel ().updateUI ();
         getComponentsPanel ().repaint ();
@@ -595,6 +591,26 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     public void panelSizeChanged(PanelResizeEvent event) {
         pack();
         repaint();
+    }
+
+    private boolean enableReorderVariableButton () {
+        boolean enable = false;
+        // We retrieve the necessary data from the node
+        Potential potential = node.getPotentials ().get (0);
+        int numPotentialVariables = potential.getNumVariables();
+        PotentialRole role = potential.getPotentialRole ();
+        // And if it is a utility node with more than one variable,
+        // or chance or decision node with a policy and in both cases with more than two variables,
+        // and the potential panel is of probability type,
+        // the reorder variable button should be enabled
+        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) ||
+                (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY) ||
+                (potential.getNumVariables () > 2 && node.hasPolicy()))
+                && getPotentialPanel () instanceof ProbabilityTablePanel) {
+            enable = true;
+        }
+        // Finally, the value of enable is returned
+        return enable;
     }
 
 }

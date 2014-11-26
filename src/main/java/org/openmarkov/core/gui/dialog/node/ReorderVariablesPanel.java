@@ -56,13 +56,16 @@ public class ReorderVariablesPanel extends KeyTablePanel
 
     /**
      * Sets a new table model with new data.
-     * @param newData new data for the table without the key column.
+     * @param node The node to extract the data from.
      */
     private static Object[][] getData (Node node)
     {
     	Potential potential = node.getPotentials ().get (0);
         List<Variable> variables = potential.getVariables();
-        if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY)
+        // 26/11/2014
+        // Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
+        // when imposing a policy in a decision node
+        if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy())
         {
             variables.remove (0);
         }        	
@@ -129,7 +132,10 @@ public class ReorderVariablesPanel extends KeyTablePanel
             }
         }
         //Collections.reverse(newVariables);
-        if (potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
+        // 26/11/2014
+        // Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
+        // when imposing a policy in a decision node
+        if (potential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy())
         {
             newVariables.add (0, potential.getVariables ().get (0));
         }
