@@ -1137,11 +1137,19 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 				if (node.getPolicyType() == PolicyType.OPTIMAL
 						&& (node.getPotentials().isEmpty() || !node
 								.getPotentials().get(0).isUtility())) {
+					boolean imposingPolicyByUser = node.hasPolicy() && !isReadOnly();
 					cellRenderer = new ValuesTableOptimalPolicyCellRenderer(
-							firstEditableRow, uncertaintyInColumns);
+							firstEditableRow, uncertaintyInColumns, imposingPolicyByUser);
 				} else {
-					cellRenderer = new ValuesTableCellRenderer(
-							firstEditableRow, uncertaintyInColumns);
+					boolean showingOptimalPolicy = node.getPotentials().get(0).isUtility() && isReadOnly();
+					if (!showingOptimalPolicy) {
+						cellRenderer = new ValuesTableCellRenderer(
+								firstEditableRow, uncertaintyInColumns);
+					} else {
+						// When showing the expected utility we want the color of the cells to be green
+						cellRenderer = new ValuesTableOptimalPolicyCellRenderer(
+								firstEditableRow, uncertaintyInColumns, true);
+					}
 				}
 			}
 			valuesTable.setDefaultRenderer(Double.class, cellRenderer);
@@ -1210,7 +1218,22 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 */
 	@Override
 	public void setReadOnly(boolean readOnly) {
+		boolean wasReadOnly = super.isReadOnly();
 		super.setReadOnly(readOnly);
+		/*
+		The read only attribute is set after the constructor is invoked and then,
+		after the setData(node) method is called. Thus, the cell renderer may need to be changed.
+		This is the case if the new read only value is different from the previous one.
+		 */
+		if (wasReadOnly != readOnly) {
+			boolean[] uncertaintyInColumns = null;
+			if (node.getPotentials() != null) {
+				uncertaintyInColumns = getUncertaintyInColumns(node);
+				setCellRenderers(uncertaintyInColumns);
+			} else {
+				setCellRenderers(uncertaintyInColumns);
+			}
+		}
 		getValuesTable().setModifiable(!readOnly);
 	}
 }

@@ -14,9 +14,17 @@ import javax.swing.JTable;
 public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRenderer
 {
 
-    public ValuesTableOptimalPolicyCellRenderer (int firstEditableRow, boolean[] uncertaintyInColumns)
+    private Color cellColor;
+
+    public ValuesTableOptimalPolicyCellRenderer (int firstEditableRow, boolean[] uncertaintyInColumns,
+                                                 boolean colorGreen)
     {
         super (firstEditableRow, uncertaintyInColumns);
+        if (!colorGreen) {
+            cellColor = new java.awt.Color (255, 72, 72);
+        } else {
+            cellColor = new java.awt.Color (80, 220, 95);
+        }
     }
 
     @Override
@@ -28,7 +36,7 @@ public class ValuesTableOptimalPolicyCellRenderer extends ValuesTableCellRendere
                                   int column)
     {
         super.setCellColors (table, value, isSelected, hasFocus, row, column);
-        Color color = new java.awt.Color (255, 72, 72);
+        Color color = cellColor; //new java.awt.Color (255, 72, 72);
         if (column >= ValuesTable.FIRST_EDITABLE_COLUMN && ValuesTable.FIRST_EDITABLE_COLUMN >= 0
             && row >= firstEditableRow
             && value instanceof Double)

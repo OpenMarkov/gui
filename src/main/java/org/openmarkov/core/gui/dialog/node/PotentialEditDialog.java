@@ -244,7 +244,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
     /**
      * Enables or disables the potential type combo box
-     * @param enable
+     * @param enable To indicate if the Potential Type combobox should be enabled
      */
     public void setEnabledPotentialTypeCombobox (boolean enable)
     {
@@ -489,8 +489,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     }
 
     /**
-     * Shows and activated the options related to decision policy
-     * @param show
+     * Shows and activates the options related to decision policy
+     * @param show To indicate whether the options have to be shown and enabled or not
      */
     private void setEnabledDecisionOptions (boolean show)
     {
