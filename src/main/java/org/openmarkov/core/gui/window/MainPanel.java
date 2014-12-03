@@ -36,7 +36,7 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
  * This is the main panel of the OpenMarkov interface. It contains all the menu
  * items, toolbars, listeners, etc. and manages all the network frames of
  * OepnMarkov.
- * 
+ *
  * @author jmendoza
  * @version 1.0 jmendoza
  * @version 1.1 jlgozalo Add getMainFrame()
@@ -81,7 +81,7 @@ public class MainPanel extends JPanel {
 	 * Inference toolbar.
 	 */
 	private InferenceToolBar inferenceToolBar = null;
-	
+
 	/**
 	 * Object that supplies the contextual menus.
 	 */
@@ -102,7 +102,7 @@ public class MainPanel extends JPanel {
 	 * Object that allows to access some private methods for this.
 	 */
 	private static MainPanel mainPanel = null;
-	
+
 	/**
 	 * The frame where this panel belongs to.
 	 */
@@ -112,7 +112,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * Creates a new instance with a clear declared parent.
-	 * 
+	 *
 	 * @param parentFrame
 	 *            the parent Frame of the Main Panel
 	 */
@@ -129,7 +129,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * Singleton pattern
-	 * 
+	 *
 	 * @param parentFrame
 	 *            is the parent Frame for this Main Panel
 	 * @return mainPanel. <code>MainPanel</code>
@@ -146,7 +146,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * Singleton pattern
-	 * 
+	 *
 	 * @return mainPanel. <code>MainPanel</code>
 	 */
 	public static MainPanel getUniqueInstance() {
@@ -169,20 +169,20 @@ public class MainPanel extends JPanel {
 		add(getToolBarPanel(), BorderLayout.NORTH);
 		getMainPanelMenuAssistant();
 		/*JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		
+
 		splitPane.setDividerLocation(770);
 		splitPane.setTopComponent(getMdi());
 		splitPane.setBottomComponent(getPropertiesScrollPanel());
-		
+
 		splitPane.setOneTouchExpandable(true);*/
-		
+
 		add(getMdi(), BorderLayout.CENTER);
 		//add(splitPane);//, BorderLayout.CENTER);
 		//ClipboardManager.addClipboardListener(getMainPanelMenuAssistant());
 		//add(getMessageWindow(), BorderLayout.SOUTH);
 
 	}
-	
+
 
 	/**
 	 * When this panel is added to a container, it tries to set the menubar of
@@ -202,6 +202,7 @@ public class MainPanel extends JPanel {
 				frame = (JFrame) container;
 				frame.setJMenuBar(getMainMenu());
 				frame.addWindowListener(mainPanelListenerAssistant);
+				frame.addComponentListener(mainPanelListenerAssistant);
 			} else if (container instanceof JApplet) {
 				((JApplet) container).setJMenuBar(getMainMenu());
 			}
@@ -211,7 +212,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises messageWindow.
-	 * 
+	 *
 	 * @return a new message window.
 	 */
 	public MessageWindow getMessageWindow() {
@@ -227,7 +228,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises mainMenu.
-	 * 
+	 *
 	 * @return a new menubar.
 	 */
 	public MainMenu getMainMenu() {
@@ -242,7 +243,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises contextualMenuFactory.
-	 * 
+	 *
 	 * @return a new contextual menu factory.
 	 */
 	ContextualMenuFactory getContextualMenuFactory() {
@@ -257,14 +258,14 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises toolBarPanel.
-	 * 
+	 *
 	 * @return a new toolbar panel.
 	 */
 	public JPanel getToolBarPanel() {
 
 		if (toolBarPanel == null) {
 			toolBarPanel = new JPanel();
-				/* This way, the main toolbar and the secondary are in different lines 
+				/* This way, the main toolbar and the secondary are in different lines
 				toolBarPanel.setLayout(new BoxLayout(getToolBarPanel(),
 					BoxLayout.Y_AXIS));
 				toolBarPanel.add(getStandardToolBar());
@@ -276,14 +277,14 @@ public class MainPanel extends JPanel {
 			toolBarPanel.add(getEditionToolBar());
 		}
 
-		return toolBarPanel;	
+		return toolBarPanel;
 
 	}
-	
+
 	/**
 	 * This method establishes the type of tool bar (Edition or Inference) to be
 	 * set in the panel.
-	 * 
+	 *
 	 * @param barType
 	 *            new type of tool bar to be set in the panel
 	 */
@@ -298,24 +299,24 @@ public class MainPanel extends JPanel {
 			mainPanel.getToolBarPanel().add(mainPanel.getInferenceToolBar(), 1);
 		}
 		mainPanel.initialize();
-		
+
 	}
-	
+
 	/**
 	 * This method sets the button for switching between Edition/inference to
 	 * the pertinent value (pressed or not)
-	 * 
+	 *
 	 * @param workingMode
-	 *            the working mode of the currently selected NetworkPanel. 
+	 *            the working mode of the currently selected NetworkPanel.
 	 *            Depending on this value, the button will be set pressed or not.
 	 */
 	public void changeWorkingModeButton(int workingMode){
-		getStandardToolBar().changeWorkingModeButton(workingMode);		
+		getStandardToolBar().changeWorkingModeButton(workingMode);
 	}
 
 	/**
 	 * This method initialises mainMDI.
-	 * 
+	 *
 	 * @return a new MDI panel.
 	 */
 	public MDI getMdi() {
@@ -333,7 +334,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises standardToolBar.
-	 * 
+	 *
 	 * @return a new standard toolbar.
 	 */
 	public StandardToolBar getStandardToolBar() {
@@ -348,7 +349,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises editionToolBar.
-	 * 
+	 *
 	 * @return a new edition toolbar.
 	 */
 	public EditionToolBar getEditionToolBar() {
@@ -360,10 +361,10 @@ public class MainPanel extends JPanel {
 		return editionToolBar;
 
 	}
-	
+
 	/**
 	 * This method initialises and returns the inferenceToolBar.
-	 * 
+	 *
 	 * @return a new inference toolbar.
 	 */
 	public InferenceToolBar getInferenceToolBar() {
@@ -376,7 +377,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises menuAssistant.
-	 * 
+	 *
 	 * @return a new menu assistant.
 	 */
 	public MainPanelMenuAssistant getMainPanelMenuAssistant() {
@@ -395,7 +396,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * This method initialises mainPanelListenerAssistant.
-	 * 
+	 *
 	 * @return a new main panel listener assistant.
 	 */
 	public MainPanelListenerAssistant getMainPanelListenerAssistant() {
@@ -415,7 +416,7 @@ public class MainPanel extends JPanel {
 
 		return mainFrame;
 	}
-	
+
 	/**
 	 * Opens a prob net
 	 * @param fileName
@@ -432,5 +433,39 @@ public class MainPanel extends JPanel {
     public ToolbarManager getToolbarManager ()
     {
         return toolbarManager;
-    }
+	}
+
+	/**
+	 * This method checks the size of the components present in the toolbar panel and adapts its size if necessary
+	 */
+	public void adaptToolBarSize() {
+		// Variables to store different measures
+		int toolBarComponentsWidth = 0;
+		int toolBarComponentsHeight = 0;
+		int currentNetworkPanelMaxWidth = 600;
+		// Variables to adapt the size of the toolbar
+		int safetyWidth = 11;
+		int safetyHeight = 15;
+		// When changing the working mode, sometimes the values of the size of the window are not accurate
+		int currentNetworkPanelWidth = Integer.MAX_VALUE;
+		if (getMainPanelListenerAssistant().getCurrentNetworkPanel() != null) {
+			currentNetworkPanelWidth = getMainPanelListenerAssistant().getCurrentNetworkPanel().getWidth();
+		}
+		// We sum the width and height of every component present in the toolbar
+		for (Component toolBarComponent : getToolBarPanel().getComponents()) {
+			toolBarComponentsWidth += toolBarComponent.getWidth();
+			toolBarComponentsHeight += toolBarComponent.getHeight();
+		}
+		// If the toolbar cannot show them in one single line
+		if ((getWidth() < toolBarComponentsWidth + safetyWidth) ||
+		   (currentNetworkPanelWidth < currentNetworkPanelMaxWidth)) {
+			// we increase the height of the toolbar accordingly
+			getToolBarPanel().setPreferredSize(new Dimension(getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
+		}
+		// and if the toolbar can show them in one line
+		else {
+			// we request the Layout manager to choose the preferred size
+			getToolBarPanel().setPreferredSize(null);
+		}
+	}
 }

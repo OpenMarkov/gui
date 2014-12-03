@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -108,7 +110,7 @@ import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
  *          evidence cases.
  */
 public class MainPanelListenerAssistant extends WindowAdapter implements ActionListener,
-        MDIListener, PropertyNames {
+        MDIListener, PropertyNames, ComponentListener {
     /**
      * Main panel which this object helps.
      */
@@ -1137,6 +1139,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             }
         }
         getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
+        mainPanel.adaptToolBarSize();
     }
 
     /**
@@ -1453,8 +1456,28 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 					position = nextEndLine + 1;
 				}
 			} while (nextEndLine != -1 && position < textLength);
-		}
+        }
 		return maxLengthLine;
 	}
+
+    public void componentResized(ComponentEvent e) {
+        mainPanel.adaptToolBarSize();
+    }
+
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
+    }
 
 }
