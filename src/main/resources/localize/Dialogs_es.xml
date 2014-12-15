@@ -36,7 +36,23 @@
 	<TemporalEvolutionResultDialog>
 		<Title>
 			<Label value="Evolución temporal de:" />
+			<ConditioningVariables value="dadas las políticas impuestas" />
 		</Title>
+		<Legend>
+			<Title>
+				<Label value="Leyenda" />
+			</Title>
+		</Legend>
+		<States>
+			<Label value="Estados" />
+		</States>
+		<Display>
+			<Label value="Visualización" />
+			<Instantaneus value="Instantaneo" />
+			<Accumulate value="Acumulado" />
+			<Individual value="Individual" />
+			<Summatory value="Suma" />
+		</Display>
 	</TemporalEvolutionResultDialog>
 	<TemporalEvolutionTable>
 		<Title>

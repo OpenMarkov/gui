@@ -180,7 +180,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         getComponentsPanel().add(panel, BorderLayout.NORTH);
         if (isTemporalEvolution) {
             getComponentsPanel().add(new JPanel());
-            getComponentsPanel().add(getJPanelInstantOrAccumulative(), BorderLayout.SOUTH);
+            //getComponentsPanel().add(getJPanelInstantOrAccumulative(), BorderLayout.SOUTH);
         }
         if (sensitivityAnalysis) {
             numSimulations = 1000;
@@ -272,6 +272,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         return effectivenessDiscountTextField;
     }
 
+    /*
     private JRadioButton getInstantValuesButton() {
         if (instantButton == null) {
             instantButton = new JRadioButton(stringDatabase.getString("CostEffectiveness.TemporalEvolution.InstantValues"),
@@ -288,17 +289,18 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
             cumulativeButton.addItemListener(this);
         }
         return cumulativeButton;
-    }
-
+    }*/
+    /*
     private void initInstantOrCumulativeButtonGroup() {
         instantOrCumulativeButtonGroup = new ButtonGroup();
         instantOrCumulativeButtonGroup.add(getInstantValuesButton());
         instantOrCumulativeButtonGroup.add(getCumulativeValuesButton());
-    }
+    }*/
 
+    
     /**
      * @return the panel with the two buttons
-     */
+     *//*
     private JPanel getJPanelInstantOrAccumulative() {
         if (instantOrCumulativePanel == null) {
             instantOrCumulativePanel = new JPanel();
@@ -306,12 +308,12 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
             instantOrCumulativePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                     stringDatabase.getString("CostEffectiveness.TemporalEvolution.ValueType")));
             instantOrCumulativePanel.setName("instantOrAccumulativePanel");
-            initInstantOrCumulativeButtonGroup();
-            instantOrCumulativePanel.add(getInstantValuesButton());
-            instantOrCumulativePanel.add(getCumulativeValuesButton());
+            //initInstantOrCumulativeButtonGroup();
+            //instantOrCumulativePanel.add(getInstantValuesButton());
+            //instantOrCumulativePanel.add(getCumulativeValuesButton());
         }
         return instantOrCumulativePanel;
-    }
+    }*/
 
     private JRadioButton getBeginningOfCycleButton() {
         if (beginningOfCycleButton == null) {
@@ -427,15 +429,16 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     public Map<Variable, Double> getInitialValues() {
         return initialValues;
     }
-
+    
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getItem().equals(getInstantValuesButton())) {
+       /*
+    	if (e.getItem().equals(getInstantValuesButton())) {
             this.isCumulative = false;
         }
         if (e.getItem().equals(getCumulativeValuesButton())) {
             this.isCumulative = true;
-        }
+        }*/
     }
 
     private void setTitle(String netName, boolean isTemporalEvolution) {
