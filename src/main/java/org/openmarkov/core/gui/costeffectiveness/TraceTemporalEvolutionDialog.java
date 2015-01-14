@@ -327,14 +327,14 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	 */
     private ChartPanel getChartsPanel (XYDataset dataset)
     {
-    	String chartName = stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label")
-    			+ " " + variableOfInterest.getBaseName ();
+//    	String chartName = stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label")
+//    			+ " " + variableOfInterest.getBaseName ();
     	
     	// If there is at least one conditioning variable 
-    	if(node.getProbNet().getNodes(NodeType.DECISION).size() > conditioningVariables.size()){
-    		chartName += " " + stringDatabase.getString("TemporalEvolutionResultDialog.Title.ConditioningVariables");
-    	}
-	    chart = ChartFactory.createXYLineChart (chartName,"t", "value",
+//    	if(node.getProbNet().getNodes(NodeType.DECISION).size() > conditioningVariables.size()){
+//    		chartName += " " + stringDatabase.getString("TemporalEvolutionResultDialog.Title.ConditioningVariables");
+//    	}
+	    chart = ChartFactory.createXYLineChart ("","t", "value",
 	    		dataset, PlotOrientation.VERTICAL, true, true, true);
 
 	    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer ();

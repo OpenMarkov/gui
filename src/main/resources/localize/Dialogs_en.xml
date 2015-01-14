@@ -52,10 +52,10 @@
 		</States>
 		<Display>
 			<Label value="Display" />
-			<Instantaneus value="Instantaneus" />
-			<Accumulate value="Accumulate" />
+			<Instantaneus value="Instantaneous" />
+			<Accumulate value="Cumulative" />
 			<Individual value="Individual" />
-			<Summatory value="Summatory" />
+			<Summatory value="Sum" />
 		</Display>
 	</TemporalEvolutionResultDialog>
 	<TemporalEvolutionTable>
