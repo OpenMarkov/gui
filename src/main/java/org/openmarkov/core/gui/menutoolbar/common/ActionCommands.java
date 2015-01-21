@@ -459,6 +459,11 @@ public class ActionCommands {
 	public static final String INFERENCE_OPTIONS = "InferenceOptions";
 	
 	/**
+	 * TODO - Action invoked when the user wants to set the multicriteria options
+	 */
+	public static final String MULTICRITERIA_OPTIONS = "MultiCriteriaOptions";
+	
+	/**
 	 * Action invoked when the user wants to change the language
 	 */
 	public static final String HELP_CHANGE_LANGUAGE = "Help.ChangeLanguage";

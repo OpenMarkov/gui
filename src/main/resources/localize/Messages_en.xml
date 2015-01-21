@@ -533,4 +533,12 @@
     <ExceedsTimeHorizon value ="exceeds the time horizon"/>
     <Error value ="Cost effectiveness analysis found an error"/>
   </CostEffectiveness>
+  <NumberFormatException>
+  	<Title>
+  		<Label value="Error"/>
+  	</Title>
+  	<Text>
+  		<Label value="Invalid value."/>
+	</Text>
+  </NumberFormatException>
 </properties>

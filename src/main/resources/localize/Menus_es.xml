@@ -176,6 +176,9 @@
       <Label value="Opciones para la inferencia" />
       <Mnemonic value="i" />
     </Options>
+    <MultiCriteriaOptions>
+  		<Label value="Opciones de multicriterio" />
+  	</MultiCriteriaOptions>
     <PropagateEvidence>
       <Mnemonic value="e" />
       <Label value="Propagar Evidencia" />
@@ -488,7 +491,9 @@
   	</RemoveReference>
   	
   	<DomainChangeWarning value="Está tratando de modificar el dominio de la variable"/>
-  </TreeADD>  
+  </TreeADD>
+
+    
   <BUNDLEFILE>
     <Text value="Español" />
   </BUNDLEFILE>

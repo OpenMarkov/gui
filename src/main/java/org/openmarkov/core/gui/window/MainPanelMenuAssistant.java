@@ -187,6 +187,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.LINK_PROPERTIES, false);
         setOptionEnabled (VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
+        //TODO - Disable Multicriteria Options
+        setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
         setOptionEnabled (ActionCommands.DECISION_IMPOSE_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_EDIT_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_REMOVE_POLICY, false);
@@ -222,7 +224,14 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (VIEWING_ACTION_COMMANDS, true);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
-        setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
+        //TODO - Enable Multicriteria Options
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
+        	setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        }else{
+        	setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, true);
+        }
+        
+        //setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
     }
@@ -1135,6 +1144,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         // setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
+        // TODO - Disable Multicriteria Options
+        setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);

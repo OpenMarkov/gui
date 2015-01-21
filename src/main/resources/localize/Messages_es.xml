@@ -538,5 +538,13 @@
     <ExceedsTimeHorizon value ="excede el límite temporal"/>
     <Error value ="Se produjo un error durante el análisis de coste-efectividad"/>
   </CostEffectiveness>
+  <NumberFormatException>
+  	<Title>
+  		<Label value="Error"/>
+  	</Title>
+  	<Text>
+  		<Label value="El valor introducido no es válido."/>
+	</Text>
+  </NumberFormatException>
 </properties>
 

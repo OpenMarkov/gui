@@ -312,6 +312,12 @@ public class MenuItemNames
      */
     public static final String INFERENCE_REMOVE_ALL_FINDINGS_MENUITEM = 
         INFERENCE_MENU + ".RemoveAllFindings";
+    
+    /**
+     * TODO - Constant that defines the item "MultiCriteria Options"
+     */
+    public static final String MULTICRITERIA_OPTIONS_MENUITEM = 
+    		INFERENCE_MENU + ".MultiCriteriaOptions";
 
     /**
      * Constant that defines the menu 'View'.

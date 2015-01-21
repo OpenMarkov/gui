@@ -380,6 +380,26 @@
 			</Title>
 		</DefinitionTab>
 	</NodePropertiesDialog>
+	<MulticriteriaDialog>
+		<Title> 
+			<Label value="Mutlti criteria selection" />
+		</Title>
+		<Type>
+			<Title value="Analysis" />
+			<Unicriterion value="Unicriterion" />
+			<CostEffectiveness value="Cost Effectivenes" />
+		</Type>
+		<TableHeader>
+			<Criterion value="Criterion" />
+			<Scale value="Scale" />
+			<Use value="Use" />
+			<Discount value="Discount" />
+		</TableHeader>
+		<Unit>
+			<Title value="Unit" />
+			<Select value="Select unit" />
+		</Unit>
+	</MulticriteriaDialog>
 	<OptionsInferenceDialog>
 		<Text>
 			<Label value="Select the propagation type" />

@@ -379,6 +379,26 @@
 			</Title>
 		</DefinitionTab>
 	</NodePropertiesDialog>
+	<MulticriteriaDialog>
+		<Title> 
+			<Label value="Selección de multi criterio" />
+		</Title>
+		<Type>
+			<Title value="Análisis" />
+			<Unicriterion value="Unicriterio" />
+			<CostEffectiveness value="Coste Efectividad" />
+		</Type>
+		<TableHeader>
+			<Criterion value="Criterio" />
+			<Scale value="Escala" />
+			<Use value="Uso" />
+			<Discount value="Descuento" />
+		</TableHeader>
+		<Unit>
+			<Title value="Unidad" />
+			<Select value="Selección de unidad" />
+		</Unit>
+	</MulticriteriaDialog>
 	<OptionsInferenceDialog>
 		<Text>
 			<Label value="Seleccionar el tipo de propagación" />
@@ -386,6 +406,9 @@
 		<Title>
 			<Label value="Configurando opciones para la inferencia" />
 		</Title>
+		<optionAuto>
+			<Label value="Automatico" />
+		</optionAuto>
 		<optionManual>
 			<Label value="Manual" />
 		</optionManual>

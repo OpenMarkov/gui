@@ -37,6 +37,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
+import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.InferenceOptionsDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
@@ -2321,7 +2322,11 @@ public class EditorPanel extends JPanel
             new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getNode (), preResolutionEvidence);
             setSelectedAllNodes (false);
             repaint ();
-        }
+            // TODO - Change code
+        }/*
+        else if(selectedNode == null){
+        	new TemporalCostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
+        }*/
     }
 
     /**

@@ -62,6 +62,7 @@ import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
+import org.openmarkov.core.gui.multicriteria.MulticriteriaDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
@@ -310,6 +311,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
             setInferenceOptions();
+            // TODO - MultiCriteria Options
+        } else if (actionCommand.equals(ActionCommands.MULTICRITERIA_OPTIONS)) {
+            setMultiCriteriaOptions(getCurrentNetworkPanel());
         } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
             showLanguageChangeDialog();
         } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
@@ -347,7 +351,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
-    /**
+
+
+	/**
      * Create a Frame for a Change Language dialog
      * 
      * @return a change language dialog to allow language change
@@ -1188,6 +1194,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         getCurrentNetworkPanel().setInferenceOptions();
         mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
     }
+    
+    /**
+     * This method sets the multicriteria options
+     * @param networkPanel 
+     */
+    private void setMultiCriteriaOptions(NetworkPanel networkPanel) {
+        MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+        dialog.setVisible(true);
+	}
 
     /**
      * Sets the mode of painting the nodes.

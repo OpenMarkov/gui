@@ -9,10 +9,14 @@
 
 package org.openmarkov.core.gui.menutoolbar.menu;
 
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.ButtonGroup;
@@ -35,8 +39,11 @@ import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.core.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.core.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.core.gui.menutoolbar.plugin.ToolbarManager;
+import org.openmarkov.core.gui.multicriteria.MulticriteriaDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.window.MainPanel;
+import org.openmarkov.core.gui.window.mdi.DesktopPane;
+import org.openmarkov.core.model.network.Criterion;
 
 /**
  * Class that manages the main menubar. It configures the default main menubar
@@ -221,6 +228,18 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * Object that represents the item 'Inference - Inference Options'.
      */
     private JMenuItem           inferenceOptionsMenuItem                  = null;
+    
+    /**
+     * TODO - Temporal item
+     * Object that represents the item "Multicriteria Analysis Options".
+     */
+    private JMenuItem	        multiCriteriaAnalysisOptionsItem		  = null;
+    
+    /**
+     * TODO - Temporal item
+     * Object that represents the item "Temporal Analysis Options".
+     */
+    //private JMenuItem	        temporalAnalysisOptionsItem		  = null;
 
     /**
      * Object that represents the item 'Inference - Create New Evidence Case'.
@@ -1134,6 +1153,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceOptionsMenuItem());
+            // TODO - Temporal menu
+            inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
+            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
             inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
@@ -1151,7 +1174,28 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         return inferenceMenu;
     }
 
-    /**
+    /*
+    private JMenuItem getTemporalAnalysisOptionsItem() {
+    	if (temporalAnalysisOptionsItem == null) {
+    		// TODO - MultiCriteria
+    		temporalAnalysisOptionsItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_MENUITEM,
+    				ActionCommands.TEMPORAL_EVOLUTION_ACTION);
+    		temporalAnalysisOptionsItem.addActionListener(listener);
+        }
+        return temporalAnalysisOptionsItem;
+	}*/
+
+	private JMenuItem getMultiCriteriaAnalysisOptionsItem() {
+    	if (multiCriteriaAnalysisOptionsItem == null) {
+    		// TODO - Temporal Analysis
+    		multiCriteriaAnalysisOptionsItem = new LocalizedMenuItem(MenuItemNames.MULTICRITERIA_OPTIONS_MENUITEM,
+    				ActionCommands.MULTICRITERIA_OPTIONS);
+    		multiCriteriaAnalysisOptionsItem.addActionListener(listener);
+        }
+        return multiCriteriaAnalysisOptionsItem;
+	}
+
+	/**
      * This method adds the item 'Propagate Now' on the inference menu.
      */
     public void addPropagateNowItem() {
@@ -1160,6 +1204,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceOptionsMenuItem());
+            // TODO - Added multi criteria
+            inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
+            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
             inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
@@ -1187,6 +1235,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceSwitchToEditionModeMenuItem());
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceOptionsMenuItem());
+            // TODO - Added multi criteria
+            inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
+            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
             inferenceMenu.add(getInferenceClearOutAllEvidenceCasesMenuItem());
@@ -2012,7 +2064,12 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             component = editSwitchToInferenceModeMenuItem;
         } else if (actionCommand.equals(ActionCommands.CHANGE_TO_EDITION_MODE)) {
             component = inferenceSwitchToEditionModeMenuItem;
-        } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
+            // TODO - MultiCriteria Action Command
+        } else if (actionCommand.equals(ActionCommands.MULTICRITERIA_OPTIONS)) {
+            component = multiCriteriaAnalysisOptionsItem;
+        } /*else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
+            component = temporalAnalysisOptionsItem;
+        }*/ else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
             component = inferenceOptionsMenuItem;
         } else if (actionCommand.equals(ActionCommands.CREATE_NEW_EVIDENCE_CASE)) {
             component = inferenceCreateNewEvidenceCaseMenuItem;

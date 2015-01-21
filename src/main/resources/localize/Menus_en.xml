@@ -183,6 +183,9 @@
       <Label value="Inference Options" />
       <Mnemonic value="i" />
     </Options>
+    <MultiCriteriaOptions>
+  		<Label value="Multicriteria Options" />
+  	</MultiCriteriaOptions>
     <PropagateEvidence>
       <Mnemonic value="e" />
       <Label value="Propagate Evidence" />
