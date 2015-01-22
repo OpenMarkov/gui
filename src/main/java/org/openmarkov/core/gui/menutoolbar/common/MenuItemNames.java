@@ -318,6 +318,9 @@ public class MenuItemNames
      */
     public static final String MULTICRITERIA_OPTIONS_MENUITEM = 
     		INFERENCE_MENU + ".MultiCriteriaOptions";
+    
+    public static final String TEMPORAL_OPTIONS_MENUITEM = 
+    		INFERENCE_MENU + ".TemporalOptions";
 
     /**
      * Constant that defines the menu 'View'.

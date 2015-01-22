@@ -186,6 +186,9 @@
     <MultiCriteriaOptions>
   		<Label value="Multicriteria Options" />
   	</MultiCriteriaOptions>
+  	<TemporalOptions>
+  		<Label value="Temporal Options" />
+  	</TemporalOptions>
     <PropagateEvidence>
       <Mnemonic value="e" />
       <Label value="Propagate Evidence" />

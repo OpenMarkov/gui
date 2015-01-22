@@ -63,6 +63,7 @@ import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.core.gui.multicriteria.MulticriteriaDialog;
+import org.openmarkov.core.gui.multicriteria.TemporalOptionsDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
@@ -314,6 +315,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             // TODO - MultiCriteria Options
         } else if (actionCommand.equals(ActionCommands.MULTICRITERIA_OPTIONS)) {
             setMultiCriteriaOptions(getCurrentNetworkPanel());
+        } else if (actionCommand.equals(ActionCommands.TEMPORAL_OPTIONS)) {
+            setTemporalOptions(getCurrentNetworkPanel());
         } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
             showLanguageChangeDialog();
         } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
@@ -350,6 +353,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
         }
     }
+
+
 
 
 
@@ -1202,6 +1207,16 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void setMultiCriteriaOptions(NetworkPanel networkPanel) {
         MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
         dialog.setVisible(true);
+	}
+    
+    /**
+     * Sets Temporal Options
+     * @param currentNetworkPanel
+     */
+	private void setTemporalOptions(NetworkPanel currentNetworkPanel) {
+		TemporalOptionsDialog dialog = new TemporalOptionsDialog(currentNetworkPanel.getProbNet(),Utilities.getOwner(mainPanel));
+		dialog.setVisible(true);
+		
 	}
 
     /**

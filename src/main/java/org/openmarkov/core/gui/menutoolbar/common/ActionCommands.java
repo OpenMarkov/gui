@@ -462,6 +462,11 @@ public class ActionCommands {
 	 * TODO - Action invoked when the user wants to set the multicriteria options
 	 */
 	public static final String MULTICRITERIA_OPTIONS = "MultiCriteriaOptions";
+
+	/**
+	 * TODO - Action invoked when the user wants to set the temporal options
+	 */
+	public static final String TEMPORAL_OPTIONS = "TemporalOptions";
 	
 	/**
 	 * Action invoked when the user wants to change the language

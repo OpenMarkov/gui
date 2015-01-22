@@ -33,6 +33,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -189,6 +190,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         //TODO - Disable Multicriteria Options
         setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
+        
         setOptionEnabled (ActionCommands.DECISION_IMPOSE_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_EDIT_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_REMOVE_POLICY, false);
@@ -231,7 +234,12 @@ public class MainPanelMenuAssistant extends MenuAssistant
         	setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, true);
         }
         
-        //setOptionEnabled (ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
+        	setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
+        }else{
+        	setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, true);
+        }
+        
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
     }

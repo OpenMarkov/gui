@@ -239,7 +239,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
      * TODO - Temporal item
      * Object that represents the item "Temporal Analysis Options".
      */
-    //private JMenuItem	        temporalAnalysisOptionsItem		  = null;
+    private JMenuItem	        temporalAnalysisOptionsItem		  = null;
 
     /**
      * Object that represents the item 'Inference - Create New Evidence Case'.
@@ -1155,7 +1155,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceOptionsMenuItem());
             // TODO - Temporal menu
             inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
-            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            inferenceMenu.add(getTemporalAnalysisOptionsItem());
             
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
@@ -1174,16 +1174,16 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         return inferenceMenu;
     }
 
-    /*
+    
     private JMenuItem getTemporalAnalysisOptionsItem() {
     	if (temporalAnalysisOptionsItem == null) {
     		// TODO - MultiCriteria
-    		temporalAnalysisOptionsItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_MENUITEM,
-    				ActionCommands.TEMPORAL_EVOLUTION_ACTION);
+    		temporalAnalysisOptionsItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_OPTIONS_MENUITEM,
+    				ActionCommands.TEMPORAL_OPTIONS);
     		temporalAnalysisOptionsItem.addActionListener(listener);
         }
         return temporalAnalysisOptionsItem;
-	}*/
+	}
 
 	private JMenuItem getMultiCriteriaAnalysisOptionsItem() {
     	if (multiCriteriaAnalysisOptionsItem == null) {
@@ -1206,7 +1206,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceOptionsMenuItem());
             // TODO - Added multi criteria
             inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
-            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            inferenceMenu.add(getTemporalAnalysisOptionsItem());
             
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
@@ -1237,7 +1237,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             inferenceMenu.add(getInferenceOptionsMenuItem());
             // TODO - Added multi criteria
             inferenceMenu.add(getMultiCriteriaAnalysisOptionsItem());
-            //inferenceMenu.add(getTemporalAnalysisOptionsItem());
+            inferenceMenu.add(getTemporalAnalysisOptionsItem());
             
             inferenceMenu.addSeparator();
             inferenceMenu.add(getInferenceCreateNewEvidenceCaseMenuItem());
@@ -2067,9 +2067,9 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             // TODO - MultiCriteria Action Command
         } else if (actionCommand.equals(ActionCommands.MULTICRITERIA_OPTIONS)) {
             component = multiCriteriaAnalysisOptionsItem;
-        } /*else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
+        } else if (actionCommand.equals(ActionCommands.TEMPORAL_OPTIONS)) {
             component = temporalAnalysisOptionsItem;
-        }*/ else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
+        } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
             component = inferenceOptionsMenuItem;
         } else if (actionCommand.equals(ActionCommands.CREATE_NEW_EVIDENCE_CASE)) {
             component = inferenceCreateNewEvidenceCaseMenuItem;
