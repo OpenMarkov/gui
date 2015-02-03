@@ -254,6 +254,20 @@
 		<Agents>
 			<Text value="Agentes" />
 		</Agents>
+		<TemporalOptions>
+			<Title value="Opciones temporales" />
+			<Label value="Duración del ciclo" />
+			<Unit>
+				<DAY value="dias" />
+				<WEEK value="semanas" />
+				<MONTH value="meses" />
+				<YEAR value="años" />
+				<HOUR value="horas" />
+				<MINUTE value="minutos" />
+				<SECOND value="segundos" />
+				<MILISECOND value="milisegundos" />
+			</Unit>
+		</TemporalOptions>
 	</NetworkAdvancedPanel>
 	<FileExtension>
 		<CSV>
@@ -393,6 +407,7 @@
 			<Scale value="Escala" />
 			<Use value="Uso" />
 			<Discount value="Descuento" />
+			<Unit value="Unidades" />
 		</TableHeader>
 		<Unit>
 			<Title value="Unidad" />

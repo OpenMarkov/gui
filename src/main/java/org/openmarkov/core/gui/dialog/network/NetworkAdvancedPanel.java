@@ -4,8 +4,11 @@ package org.openmarkov.core.gui.dialog.network;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -14,6 +17,7 @@ import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.util.Utilities;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 
 @SuppressWarnings("serial")
 public class NetworkAdvancedPanel extends JPanel
@@ -24,6 +28,7 @@ public class NetworkAdvancedPanel extends JPanel
     private boolean newNetwork;
     private JButton agentsButton;
     private JButton decisionCriteriaButton;
+    private JButton temporalOptionsButton;
 
     /**
      * This method initialises this instance.
@@ -38,23 +43,42 @@ public class NetworkAdvancedPanel extends JPanel
         initialize ();
         getAgentsButton ().setEnabled (probNet.getAgents () != null);
         getDecisionCriteriaButton ().setEnabled (!probNet.onlyChanceNodes ());
+        getTemporalOptionsButton ().setEnabled (!probNet.hasConstraint(OnlyAtemporalVariables.class));
     }
 
-    private void initialize ()
+
+
+	private void initialize ()
     {
         GroupLayout groupLayout = new GroupLayout (this);
-        groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGap (173).addGroup (groupLayout.createParallelGroup (Alignment.TRAILING,
-                                                                                                                                                                                                   false).addComponent (getAgentsButton (),
-                                                                                                                                                                                                                        Alignment.LEADING,
-                                                                                                                                                                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                        Short.MAX_VALUE).addComponent (getDecisionCriteriaButton (),
-                                                                                                                                                                                                                                                       Alignment.LEADING,
-                                                                                                                                                                                                                                                       GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                                                                                                       268,
-                                                                                                                                                                                                                                                       Short.MAX_VALUE)).addContainerGap ()));
-        groupLayout.setVerticalGroup (groupLayout.createParallelGroup (Alignment.LEADING).addGroup (groupLayout.createSequentialGroup ().addGap (131).addComponent (getDecisionCriteriaButton ()).addPreferredGap (ComponentPlacement.UNRELATED).addComponent (getAgentsButton ()).addContainerGap (219,
-                                                                                                                                                                                                                                                                                                    Short.MAX_VALUE)));
+        ParallelGroup parallelGroup = groupLayout.createParallelGroup (Alignment.LEADING);
+        SequentialGroup sequentialGroup = groupLayout.createSequentialGroup ();
+        sequentialGroup.addGap (173);
+        sequentialGroup.addGroup (
+        		groupLayout.createParallelGroup(Alignment.TRAILING,false)
+        		.addComponent (getAgentsButton (),Alignment.LEADING,GroupLayout.DEFAULT_SIZE,GroupLayout.DEFAULT_SIZE,Short.MAX_VALUE)
+        		.addComponent (getDecisionCriteriaButton (), Alignment.LEADING, GroupLayout.DEFAULT_SIZE,268, Short.MAX_VALUE)
+        		.addComponent (getTemporalOptionsButton(), Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        		.addContainerGap ();
+        
+        parallelGroup.addGroup (sequentialGroup);
+        groupLayout.setHorizontalGroup(parallelGroup);
+        
+        SequentialGroup verticalSequentialGroup = groupLayout.createSequentialGroup ();
+        verticalSequentialGroup.addGap (131);
+        verticalSequentialGroup.addComponent (getDecisionCriteriaButton ());
+        verticalSequentialGroup.addPreferredGap (ComponentPlacement.UNRELATED);
+        verticalSequentialGroup.addComponent (getAgentsButton ());
+        verticalSequentialGroup.addPreferredGap (ComponentPlacement.UNRELATED);
+        //verticalSequentialGroup.addContainerGap (219, Short.MAX_VALUE);
+        verticalSequentialGroup.addComponent(getTemporalOptionsButton());
+        verticalSequentialGroup.addContainerGap (219, Short.MAX_VALUE);
+        
+        ParallelGroup verticalParallelGroup = groupLayout.createParallelGroup 
+        		(Alignment.LEADING)
+        		.addGroup(verticalSequentialGroup); 
+        
+        groupLayout.setVerticalGroup(verticalParallelGroup);
         setLayout (groupLayout);
     }
 
@@ -83,6 +107,15 @@ public class NetworkAdvancedPanel extends JPanel
         }
         return decisionCriteriaButton;
     }
+    
+    private JButton getTemporalOptionsButton() {
+		if(temporalOptionsButton == null){
+			String buttonCaption = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Title");
+			temporalOptionsButton = new JButton(buttonCaption);
+			temporalOptionsButton.addActionListener(this);
+		}
+		return temporalOptionsButton;
+	}
 
     @Override
     public void actionPerformed (ActionEvent e)
@@ -94,10 +127,14 @@ public class NetworkAdvancedPanel extends JPanel
         else if (e.getSource ().equals (decisionCriteriaButton))
         {
             actionPerformedDecisionCriteria ();
+        } else if(e.getSource().equals(temporalOptionsButton)){
+        	actionPerformedTemporalOptions();
         }
     }
 
-    protected void actionPerformedAgents ()
+
+
+	protected void actionPerformedAgents ()
     {
         NetworkAgentsDialog networkAgentsDialog = new NetworkAgentsDialog (
                                                                            Utilities.getOwner (this),
@@ -117,10 +154,18 @@ public class NetworkAdvancedPanel extends JPanel
         {
         }
     }
+    
+    private void actionPerformedTemporalOptions() {
+    	NetworkTemporalOptionsDialog networkTemporalOptionsDialog = new NetworkTemporalOptionsDialog (
+                Utilities.getOwner (this),
+                probNet);
+    	networkTemporalOptionsDialog.setVisible(true);
+	}
 
     public void update(ProbNet probNet) {
         this.probNet = probNet;
         getAgentsButton ().setEnabled (probNet.getAgents () != null);
-        getDecisionCriteriaButton ().setEnabled (!probNet.onlyChanceNodes ());        
+        getDecisionCriteriaButton ().setEnabled (!probNet.onlyChanceNodes ());
+        getTemporalOptionsButton ().setEnabled (!probNet.hasConstraint(OnlyAtemporalVariables.class));
     }
 }
