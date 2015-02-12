@@ -682,11 +682,6 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
                 potentialVariables.add(parentTreeADD.getVariables().get(0));
             }
-            UniformPotential potential = new UniformPotential(potentialVariables,
-                    branch.getPotential().getPotentialRole());
-            if (parentTreeADD.isUtility()) {
-                potential.setUtilityVariable(parentTreeADD.getUtilityVariable());
-            }
             List<TreeADDBranch> parentBranches = parentTreeADD.getBranches();
             List<TreeADDBranch> newBranches = new ArrayList<TreeADDBranch>();
             // Top variable domain
@@ -732,7 +727,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 TreeADDBranch newBranch = new TreeADDBranch(minFirstInterval,
                         new Threshold(minFirstInterval.getLimit(), true),
                         branch.getRootVariable(),
-                        potential,
+                        branch.getPotential().copy(),
                         branch.getParentVariables());
                 minFirstInterval.setBelongsToLeft(true);
                 for (TreeADDBranch parentBranch : parentBranches) {
@@ -753,7 +748,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                         false),
                         new Threshold(maxSecondInterval.getLimit(), true),
                         branch.getRootVariable(),
-                        potential,
+                        branch.getPotential().copy(),
                         branch.getParentVariables());
                 for (TreeADDBranch parentBranch : parentBranches) {
                     if (branch == parentBranch) {
@@ -772,12 +767,12 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 TreeADDBranch firstBranch = new TreeADDBranch(minFirstInterval,
                         maxFirstInterval,
                         branch.getRootVariable(),
-                        potential,
+                        branch.getPotential().copy(),
                         branch.getParentVariables());
                 TreeADDBranch secondBranch = new TreeADDBranch(minSecondInterval,
                         maxSecondInterval,
                         branch.getRootVariable(),
-                        potential,
+                        branch.getPotential().copy(),
                         branch.getParentVariables());
                 for (TreeADDBranch parentBranch : parentBranches) {
                     if (branch == parentBranch) {
