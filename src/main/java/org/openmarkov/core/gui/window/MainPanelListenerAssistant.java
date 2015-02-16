@@ -81,9 +81,11 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -1129,6 +1131,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         int newWorkingMode;
         if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
             newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
+            
+            // If the inference was never launched before in this execution, show the inference options dialogs
+            if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getLaunchedBefore()){
+            	if(!getCurrentNetworkPanel().getProbNet().getVariables(NodeType.UTILITY).isEmpty()){
+            		MulticriteriaDialog dialog = new MulticriteriaDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
+                    dialog.setVisible(true);
+            	}
+            	
+            	if(!getCurrentNetworkPanel().getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
+            		TemporalOptionsDialog dialog = new TemporalOptionsDialog(getCurrentNetworkPanel().getProbNet(),Utilities.getOwner(mainPanel));
+            		dialog.setVisible(true);
+            	}
+            	getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(true);
+            }
         } else {
             newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
         }
