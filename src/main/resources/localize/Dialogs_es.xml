@@ -267,6 +267,10 @@
 				<SECOND value="segundos" />
 				<MILISECOND value="milisegundos" />
 			</Unit>
+			<DiscountUnit>
+				<YEAR value="año" />
+				<CYCLE value="ciclo" />
+			</DiscountUnit>
 		</TemporalOptions>
 	</NetworkAdvancedPanel>
 	<FileExtension>

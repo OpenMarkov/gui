@@ -270,6 +270,10 @@
 				<SECOND value="seconds" />
 				<MILISECOND value="miliseconds" />
 			</Unit>
+			<DiscountUnit>
+				<YEAR value="year" />
+				<CYCLE value="cycle" />
+			</DiscountUnit>
 		</TemporalOptions>
 	</NetworkAdvancedPanel>
 	<FileExtension>

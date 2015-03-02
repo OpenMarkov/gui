@@ -61,8 +61,8 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}else{
 				JComboBox<String> comboBox = new JComboBox<String>();
-				for(TemporalUnit.Unit unit : TemporalUnit.Unit.values()){
-					String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+				for(TemporalUnit.DiscountUnit unit : TemporalUnit.DiscountUnit.values()){
+					String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 					comboBox.addItem(newUnit);
 				}
 				

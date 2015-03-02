@@ -48,7 +48,6 @@ import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalUnit;
-import org.openmarkov.core.model.network.TemporalUnit.Unit;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 
 public class MulticriteriaDialog extends OkCancelHorizontalDialog {
@@ -287,20 +286,19 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				
 				if(isTemporal){
 					comboBoxDiscountUnits = new JComboBox<String>();
-					
-					for(TemporalUnit.Unit unit: TemporalUnit.Unit.values()){
-						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
 					
 					if(criterion.getDiscountUnit() == null){
-						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit.YEAR"));
-						criterion.setDiscountUnit(Unit.YEAR);
+						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
+						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.Unit unit: TemporalUnit.Unit.values()){
+						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
-								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 								comboBoxDiscountUnits.setSelectedItem(newUnit);
 							}
 						}
@@ -328,19 +326,19 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				if(isTemporal){
 					comboBoxDiscountUnits = new JComboBox<String>();
 					
-					for(TemporalUnit.Unit unit: TemporalUnit.Unit.values()){
-						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
 					
 					if(criterion.getDiscountUnit() == null){
-						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit.YEAR"));
-						criterion.setDiscountUnit(Unit.YEAR);
+						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
+						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.Unit unit: TemporalUnit.Unit.values()){
+						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
-								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 								comboBoxDiscountUnits.setSelectedItem(newUnit);
 							}
 						}
@@ -430,7 +428,6 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							double value = Double.parseDouble((String) aValue);
 							super.setValueAt(value, row, column);
 						} catch(NumberFormatException e){
-							// TODO - Extend JOptionPane and translate
 							JOptionPane.showMessageDialog(
 								this,
 								stringDatabase.getString("NumberFormatException.Text.Label"),
@@ -485,9 +482,9 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				}
 				
 				if(isTemporal & column == DISCOUNT_UNIT__COLUMN){
-					TemporalUnit.Unit unitSelected = TemporalUnit.Unit.YEAR;
-					for(Unit unit: Unit.values()){
-						if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString())
+					TemporalUnit.DiscountUnit unitSelected = TemporalUnit.DiscountUnit.YEAR;
+					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
 								.equals(table.getValueAt(row, DISCOUNT_UNIT__COLUMN).toString())){
 							unitSelected = unit;
 							break;
