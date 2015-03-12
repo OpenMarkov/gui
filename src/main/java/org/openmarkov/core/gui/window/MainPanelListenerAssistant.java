@@ -880,7 +880,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel));
         if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             int numSlices = costEffectivenessDialog.getNumSlices();
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
             String fileName = probNet.getName() + "_expanded";
             expandedNetwork.setName(fileName);
             NetworkPanel networkPanel = createNewFrame(expandedNetwork);
@@ -905,38 +905,38 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             int numSlices;
 
             numSlices = costEffectivenessDialog.getNumSlices();
-            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
-            if (!temporalNodes.isEmpty()) {
-                for (Node timeDependentNode : temporalNodes) {
-                    Variable timeDependentVariable = timeDependentNode.getVariable();
-                    Finding finding = new Finding(timeDependentVariable,
-                            costEffectivenessDialog.getInitialValues().get(timeDependentVariable));
-                    try {
-                        evidence.addFinding(finding);
-                    } catch (InvalidStateException | IncompatibleEvidenceException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//            TODO - removed initial values
+//            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
+//            if (!temporalNodes.isEmpty()) {
+//                for (Node timeDependentNode : temporalNodes) {
+//                    Variable timeDependentVariable = timeDependentNode.getVariable();
+//                    Removed initial values?
+//                    Finding finding = new Finding(timeDependentVariable,
+//                            costEffectivenessDialog.getInitialValues().get(timeDependentVariable));
+//                    try {
+//                        evidence.addFinding(finding);
+//                    } catch (InvalidStateException | IncompatibleEvidenceException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
 
-            double costDiscountRate = costEffectivenessDialog.getCostDiscount();
-            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
             double maxX = 0.0;
             for (Node node : probNet.getNodes()) {
                 if (node.getCoordinateX() > maxX) {
                     maxX = node.getCoordinateX();
                 }
             }
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
             try
             {
-	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork,
-	                    numSlices,
-	                    evidence);
-	            // TODO apply changes for transitions at cycle start, end or half cycle
-	            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork,
-	                    costDiscountRate,
-	                    effectivenessDiscountRate);
+	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidence);
+// 				TODO - Remove unused code. Now TemporalNetOperations get the discount of its criterion
+//	            double costDiscountRate = costEffectivenessDialog.getCostDiscount();
+//	            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
+	            
+	            // TODO apply changes for transitions at cycle start, end or half cycle.
+	            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
 	//            for (Node node : expandedNetwork.getNodes()) {
 	//                node.samplePotentials();
 	//            }
@@ -1402,13 +1402,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 ceProgressBar.setVisible(true);
             } else {
                 try {
-					costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet,
-					        evidence,
-					        temporalCostEffectivenessDialog.getCostDiscount(),
-					        temporalCostEffectivenessDialog.getEffectivenessDiscount(),
-					        temporalCostEffectivenessDialog.getNumSlices(),
-					        temporalCostEffectivenessDialog.getInitialValues(),
-					        temporalCostEffectivenessDialog.getTransitionTime());
+					costEffectivenessAnalysis = new CostEffectivenessAnalysis(
+							probNet,
+					        evidence
+//					        TODO - Remove initial values
+//					        ,temporalCostEffectivenessDialog.getInitialValues()
+					        );
                     JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
                             costEffectivenessAnalysis);
                     ceaResultsDialog.setVisible(true);

@@ -50,9 +50,10 @@ public class CEAExcelReport
 
     public CEAExcelReport (CostEffectivenessAnalysis costEffectivenessAnalysis)
     {
-        this.numSlices = costEffectivenessAnalysis.getNumSlices ();
-        this.costDiscount = costEffectivenessAnalysis.getCostDiscountRate ();
-        this.effectivenessDiscount = costEffectivenessAnalysis.getEffectivenessDiscountRate ();
+        this.numSlices = costEffectivenessAnalysis.getProbNet().getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+        // TODO - Check this code
+        //this.costDiscount = costEffectivenessAnalysis.getCostDiscountRate ();
+        //this.effectivenessDiscount = costEffectivenessAnalysis.getEffectivenessDiscountRate ();
         this.interventions = costEffectivenessAnalysis.getInterventions();
         this.frontierInterventions = costEffectivenessAnalysis.getFrontierInterventions();
     }

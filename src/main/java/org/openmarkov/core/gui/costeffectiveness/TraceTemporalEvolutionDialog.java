@@ -133,9 +133,8 @@ public class TraceTemporalEvolutionDialog extends JDialog
             try
             {
 	            numSlices = costEffectivenessDialog.getNumSlices ();
-	            Map<Variable, Double> initialValues = costEffectivenessDialog.getInitialValues ();
-	            this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
-	            evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence, initialValues);
+	            this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+	            evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
 
 	    		// Convert numeric variables
 	    		expandedNetwork = ProbNetOperations
@@ -143,11 +142,13 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	            // evidenceCase and cycleLegth null by the moment
 	            if(node.getNodeType() == NodeType.UTILITY)
 	            {
-		            double costDiscount = costEffectivenessDialog.getCostDiscount ();
-		            double effectivenessDiscount = costEffectivenessDialog.getCostDiscount ();
-		            CostEffectivenessAnalysis.applyDiscountToUtilityNodes(expandedNetwork, costDiscount, effectivenessDiscount);
-		            TransitionTime transitionTime = costEffectivenessDialog.getTransitionTime ();
-		            CostEffectivenessAnalysis.applyTransitionTime(expandedNetwork, transitionTime, numSlices);
+	            	// TODO - Remove unused code
+//		            double costDiscount = costEffectivenessDialog.getCostDiscount ();
+//		            double effectivenessDiscount = costEffectivenessDialog.getCostDiscount ();
+	            	
+		            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+		            //TransitionTime transitionTime = costEffectivenessDialog.getTransitionTime ();
+		            TemporalNetOperations.applyTransitionTime(expandedNetwork);
 	            }
 	            this.isCumulative = costEffectivenessDialog.isCumulative ();
 	            this.variableOfInterest = node.getVariable ();

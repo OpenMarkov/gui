@@ -8,7 +8,7 @@ import javax.swing.JTable;
 import org.openmarkov.core.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.TemporalUnit;
+import org.openmarkov.core.model.network.CycleLength;
 
 /**
  * Renderer for the Multi criteria table
@@ -44,9 +44,9 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}else{
 				JComboBox<String> comboBox = new JComboBox<String>();
-				comboBox.addItem(Criterion.CostEffectivenessType.Null.toString());
-				comboBox.addItem(Criterion.CostEffectivenessType.Cost.toString());
-				comboBox.addItem(Criterion.CostEffectivenessType.Effectiveness.toString());
+				comboBox.addItem(Criterion.CECriterion.Null.toString());
+				comboBox.addItem(Criterion.CECriterion.Cost.toString());
+				comboBox.addItem(Criterion.CECriterion.Effectiveness.toString());
 				
 				if(value.getClass().equals(JComboBox.class)){
 					comboBox.setSelectedItem(((JComboBox<String>) value).getSelectedItem());
@@ -61,7 +61,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}else{
 				JComboBox<String> comboBox = new JComboBox<String>();
-				for(TemporalUnit.DiscountUnit unit : TemporalUnit.DiscountUnit.values()){
+				for(CycleLength.DiscountUnit unit : CycleLength.DiscountUnit.values()){
 					String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 					comboBox.addItem(newUnit);
 				}

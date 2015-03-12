@@ -128,12 +128,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
             	{
 	                costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
 	                        evidence,
-	                        costEffectivenessDialog.getCostDiscount(),
-	                        costEffectivenessDialog.getEffectivenessDiscount(),
-	                        costEffectivenessDialog.getNumSlices(),
 	                        costEffectivenessDialog.getNumSimulations(),
-	                        costEffectivenessDialog.getInitialValues(),
-	                        costEffectivenessDialog.getTransitionTime(),
 	                        costEffectivenessDialog.getUseMultithreading());            	
 	                /* code run when component shown */
 	                runAnalysis();

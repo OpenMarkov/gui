@@ -47,7 +47,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalUnit;
+import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 
 public class MulticriteriaDialog extends OkCancelHorizontalDialog {
@@ -271,31 +271,31 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 			
 			for (Criterion criterion : decisionCriteria) {
 				comboBoxUse = new JComboBox<String>();
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Null.toString());
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Cost.toString());
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Effectiveness.toString());
+				comboBoxUse.addItem(Criterion.CECriterion.Null.toString());
+				comboBoxUse.addItem(Criterion.CECriterion.Cost.toString());
+				comboBoxUse.addItem(Criterion.CECriterion.Effectiveness.toString());
 				
-				if(criterion.getCe_criterion().equals(Criterion.CostEffectivenessType.Cost)){
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Cost.toString());
-				} else if(criterion.getCe_criterion().equals(Criterion.CostEffectivenessType.Effectiveness)){
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Effectiveness.toString());
+				if(criterion.getCECriterion().equals(Criterion.CECriterion.Cost)){
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Cost.toString());
+				} else if(criterion.getCECriterion().equals(Criterion.CECriterion.Effectiveness)){
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Effectiveness.toString());
 				} else {
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Null.toString());
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Null.toString());
 				}
 				
 				
 				if(isTemporal){
 					comboBoxDiscountUnits = new JComboBox<String>();
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+					for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
 					
 					if(criterion.getDiscountUnit() == null){
 						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
-						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
+						criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
 								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
@@ -326,16 +326,16 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				if(isTemporal){
 					comboBoxDiscountUnits = new JComboBox<String>();
 					
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+					for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
 					
 					if(criterion.getDiscountUnit() == null){
 						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
-						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
+						criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
 								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
@@ -452,12 +452,12 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				
 				if(column == USE_COLUMN && costEffectiveness.isSelected()){
 					String use = table.getValueAt(row, USE_COLUMN).toString();
-					if(use.equals(Criterion.CostEffectivenessType.Null.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Null);
-					} else if(use.equals(Criterion.CostEffectivenessType.Cost.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Cost);
-					} else if(use.equals(Criterion.CostEffectivenessType.Effectiveness.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Effectiveness);
+					if(use.equals(Criterion.CECriterion.Null.toString())){
+						decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Null);
+					} else if(use.equals(Criterion.CECriterion.Cost.toString())){
+						decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Cost);
+					} else if(use.equals(Criterion.CECriterion.Effectiveness.toString())){
+						decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Effectiveness);
 					}
 				} else if(column == SCALE_COLUMN && unicriterion.isSelected()){
 					String scale = table.getValueAt(row, SCALE_COLUMN).toString();
@@ -482,8 +482,8 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				}
 				
 				if(isTemporal & column == DISCOUNT_UNIT__COLUMN){
-					TemporalUnit.DiscountUnit unitSelected = TemporalUnit.DiscountUnit.YEAR;
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+					CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
+					for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 						if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
 								.equals(table.getValueAt(row, DISCOUNT_UNIT__COLUMN).toString())){
 							unitSelected = unit;

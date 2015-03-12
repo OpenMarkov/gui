@@ -9,15 +9,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.openmarkov.core.action.TemporalUnitEdit;
+import org.openmarkov.core.action.CycleLengthEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalUnit;
-import org.openmarkov.core.model.network.TemporalUnit.Unit;
+import org.openmarkov.core.model.network.CycleLength;
+import org.openmarkov.core.model.network.CycleLength.Unit;
 
 public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 	
@@ -43,16 +43,16 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 		this.probNet = probNet;
 		initialize();
 		
-		TemporalUnit temporalUnit;
-		if(probNet.getTemporalUnit() != null){
-			temporalUnit = probNet.getTemporalUnit();
+		CycleLength temporalUnit;
+		if(probNet.getCycleLength() != null){
+			temporalUnit = probNet.getCycleLength();
 		}else{
-			temporalUnit = new TemporalUnit();
-			probNet.setTemporalUnit(temporalUnit);
+			temporalUnit = new CycleLength();
+			probNet.setCycleLength(temporalUnit);
 		}
 		
 		probNetUnit = temporalUnit.getUnit();
-		probNetScale = temporalUnit.getScale();
+		probNetScale = temporalUnit.getValue();
 		
 		
 		temporalUnits.setSelectedItem(stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + probNetUnit.toString()));
@@ -147,8 +147,8 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 					break;
 				}
 			}
-			TemporalUnit temporalUnit = new TemporalUnit(probNetUnit,newScale);
-			TemporalUnitEdit edit = new TemporalUnitEdit(probNet, temporalUnit);
+			CycleLength temporalUnit = new CycleLength(probNetUnit,newScale);
+			CycleLengthEdit edit = new CycleLengthEdit(probNet, temporalUnit);
 	    	try {
 				probNet.getPNESupport().doEdit(edit);
 			} catch (DoEditException | NonProjectablePotentialException

@@ -75,7 +75,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     private Integer                 numSimulations;
     private JTextField              numSimulationsTextField;
     private JCheckBox               chkUseMultiThreading;
-    private Map<Variable, Double>   initialValues;
+//    private Map<Variable, Double>   initialValues;
     private Map<String, JTextField> initialValueComponents = new HashMap<>();
 
     /**
@@ -110,12 +110,12 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     public TemporalCostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
             boolean isTemporalEvolution) {
         super(owner);
-        this.initialValues = new HashMap<>();
-        List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
-        for (Node numericalTemporalNode : temporalNodes) {
-            initialValues.put(numericalTemporalNode.getVariable(),
-                    numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
-        }
+//        this.initialValues = new HashMap<>();
+//        List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
+//        for (Node numericalTemporalNode : temporalNodes) {
+//            initialValues.put(numericalTemporalNode.getVariable(),
+//                    numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
+//        }
         initialize(sensitivityAnalysis, isTemporalEvolution);
         setResizable(false);
         setTitle(probNet.getName(), isTemporalEvolution);
@@ -155,26 +155,26 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         discountTitlePanel.add(discountsPanel);
         otherPanel.add(discountTitlePanel, BorderLayout.SOUTH);
         panel.add(otherPanel, BorderLayout.NORTH);
-        if(!initialValues.isEmpty())
-        {
-	        JPanel initialValuesPanel = new JPanel();
-	        initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
-	        initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-	        for (Variable numericTemporalVariable : initialValues.keySet()) {
-	            JPanel initialValuePanel = new JPanel();
-	            JLabel label = new JLabel(numericTemporalVariable.getName());
-	            JTextField textField = new JTextField(10);
-	            textField.setName(numericTemporalVariable.getName());
-	            textField.setText("" + initialValues.get(numericTemporalVariable));
-	            textField.addFocusListener(this);
-	            initialValuePanel.add(label);
-	            initialValuePanel.add(textField);
-	            initialValueComponents.put(numericTemporalVariable.getName(), textField);
-	            initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
-	            initialValuesPanel.add(initialValuePanel);
-	        }
-	        panel.add(initialValuesPanel, BorderLayout.CENTER);
-        }
+//        if(!initialValues.isEmpty())
+//        {
+//	        JPanel initialValuesPanel = new JPanel();
+//	        initialValuesPanel.setBorder(new TitledBorder("Initial Values"));
+//	        initialValuesPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+//	        for (Variable numericTemporalVariable : initialValues.keySet()) {
+//	            JPanel initialValuePanel = new JPanel();
+//	            JLabel label = new JLabel(numericTemporalVariable.getName());
+//	            JTextField textField = new JTextField(10);
+//	            textField.setName(numericTemporalVariable.getName());
+//	            textField.setText("" + initialValues.get(numericTemporalVariable));
+//	            textField.addFocusListener(this);
+//	            initialValuePanel.add(label);
+//	            initialValuePanel.add(textField);
+//	            initialValueComponents.put(numericTemporalVariable.getName(), textField);
+//	            initialValuePanel.add(new JLabel(stringDatabase.getString("CostEffectiveness.Cycles")));
+//	            initialValuesPanel.add(initialValuePanel);
+//	        }
+//	        panel.add(initialValuesPanel, BorderLayout.CENTER);
+//        }
         getComponentsPanel().setLayout(new BorderLayout(20, 0));
         getComponentsPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         getComponentsPanel().add(panel, BorderLayout.NORTH);
@@ -426,9 +426,9 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         return this.isCumulative;
     }
 
-    public Map<Variable, Double> getInitialValues() {
-        return initialValues;
-    }
+//    public Map<Variable, Double> getInitialValues() {
+//        return initialValues;
+//    }
     
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -465,36 +465,36 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
             boolean numSlicesDefined = getNumSlicesTextField().getText() != null;
             int numSlices = (numSlicesDefined) ? Integer.valueOf(getNumSlicesTextField().getText())
                     : -1;
-            if (initialValues != null) {
-                for (Variable numericTemporalVariable : initialValues.keySet()) {
-                    PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
-                    double numericValue = Double.parseDouble(initialValueComponents.get(numericTemporalVariable.getName()).getText());
-                    double timeHorizon = numericValue + numSlices;
-                    if (numSlicesDefined) {
-                        if ((!interval.isRightClosed() && timeHorizon >= interval.getMax())
-                                || timeHorizon > interval.getMax()) {
-                            JOptionPane.showMessageDialog(this.getParent(),
-                                    numericTemporalVariable.getBaseName()
-                                            + " "
-                                            + stringDatabase.getString("CostEffectiveness.ExceedsTimeHorizon"));
-                            valid = false;
-                        }
-                    }
-                    if ((!interval.isLeftClosed() && numericValue <= interval.getMin())
-                            || numericValue < interval.getMin()) {
-                        JOptionPane.showMessageDialog(this.getParent(),
-                                numericTemporalVariable.getBaseName()
-                                        + " "
-                                        + stringDatabase.getString("CostEffectiveness.VariableTooLow"));
-                        valid = false;
-                    }
-                    if (valid) {
-                        initialValues.put(numericTemporalVariable, numericValue);
-                    }
-                    initialValueComponents.get(numericTemporalVariable.getName()).setText(""
-                            + numericValue);
-                }
-            }
+//            if (initialValues != null) {
+//                for (Variable numericTemporalVariable : initialValues.keySet()) {
+//                    PartitionedInterval interval = numericTemporalVariable.getPartitionedInterval();
+//                    double numericValue = Double.parseDouble(initialValueComponents.get(numericTemporalVariable.getName()).getText());
+//                    double timeHorizon = numericValue + numSlices;
+//                    if (numSlicesDefined) {
+//                        if ((!interval.isRightClosed() && timeHorizon >= interval.getMax())
+//                                || timeHorizon > interval.getMax()) {
+//                            JOptionPane.showMessageDialog(this.getParent(),
+//                                    numericTemporalVariable.getBaseName()
+//                                            + " "
+//                                            + stringDatabase.getString("CostEffectiveness.ExceedsTimeHorizon"));
+//                            valid = false;
+//                        }
+//                    }
+//                    if ((!interval.isLeftClosed() && numericValue <= interval.getMin())
+//                            || numericValue < interval.getMin()) {
+//                        JOptionPane.showMessageDialog(this.getParent(),
+//                                numericTemporalVariable.getBaseName()
+//                                        + " "
+//                                        + stringDatabase.getString("CostEffectiveness.VariableTooLow"));
+//                        valid = false;
+//                    }
+//                    if (valid) {
+//                        initialValues.put(numericTemporalVariable, numericValue);
+//                    }
+//                    initialValueComponents.get(numericTemporalVariable.getName()).setText(""
+//                            + numericValue);
+//                }
+//            }
             if (valid) {
                 this.numSlices = numSlices;
             }
