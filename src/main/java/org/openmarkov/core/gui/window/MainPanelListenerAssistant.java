@@ -1134,7 +1134,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             
             // If the inference was never launched before in this execution, show the inference options dialogs
             if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getLaunchedBefore()){
-            	if(!getCurrentNetworkPanel().getProbNet().getVariables(NodeType.UTILITY).isEmpty()){
+            	if(!getCurrentNetworkPanel().getProbNet().getVariables(NodeType.UTILITY).isEmpty() 
+            			&& getCurrentNetworkPanel().getProbNet().getDecisionCriteria().size() > 1){
             		MulticriteriaDialog dialog = new MulticriteriaDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
                     dialog.setVisible(true);
             	}
