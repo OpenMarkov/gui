@@ -300,18 +300,18 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				// Prepare the Combobox for the CE_USE of the criterion
 				//Creates a new ComboBox object for each row (for each criterion)
 				comboBoxUse = new JComboBox<String>();
-				comboBoxUse.addItem(Criterion.CECriterion.Null.toString());
+//				comboBoxUse.addItem(Criterion.CECriterion.Null.toString());
 				comboBoxUse.addItem(Criterion.CECriterion.Cost.toString());
 				comboBoxUse.addItem(Criterion.CECriterion.Effectiveness.toString());
 				
 				// Set the selected item in the combobox with criterion data
 				if(criterion.getCECriterion().equals(Criterion.CECriterion.Cost)){
 					comboBoxUse.setSelectedItem(Criterion.CECriterion.Cost.toString());
-				} else if(criterion.getCECriterion().equals(Criterion.CECriterion.Effectiveness)){
+				} else {/*if(criterion.getCECriterion().equals(Criterion.CECriterion.Effectiveness)){*/
 					comboBoxUse.setSelectedItem(Criterion.CECriterion.Effectiveness.toString());
-				} else {
-					comboBoxUse.setSelectedItem(Criterion.CECriterion.Null.toString());
-				}
+				} /*else {
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Null.toString()); 
+				} */
 				
 				
 				if(isTemporal){
@@ -496,9 +496,10 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 					// If the edited cell is a cost effectiveness use
 					if(column == CE_USE_COLUMN){
 						String use = table.getValueAt(row, CE_USE_COLUMN).toString();
+						/*
 						if(use.equals(Criterion.CECriterion.Null.toString())){
 							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Null);
-						} else if(use.equals(Criterion.CECriterion.Cost.toString())){
+						} else */ if(use.equals(Criterion.CECriterion.Cost.toString())){
 							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Cost);
 						} else if(use.equals(Criterion.CECriterion.Effectiveness.toString())){
 							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Effectiveness);

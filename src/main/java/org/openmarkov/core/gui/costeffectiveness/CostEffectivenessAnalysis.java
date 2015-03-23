@@ -594,9 +594,9 @@ public class CostEffectivenessAnalysis {
 		
 		CECriterion ceCriterion = utilNode.getVariable().getDecisionCriterion().getCECriterion();
 		
-		if (ceCriterion != CECriterion.Null){
-			
-		}
+//		if (ceCriterion != CECriterion.Null){
+//			
+//		}
 		
 		Potential utilityPotential = utilNode.getPotentials().get(0);
 		List<Variable> treeVariables = utilityPotential.getVariables();

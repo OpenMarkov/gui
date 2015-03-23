@@ -44,7 +44,7 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			}else{
 				JComboBox<String> comboBox = new JComboBox<String>();
-				comboBox.addItem(Criterion.CECriterion.Null.toString());
+//				comboBox.addItem(Criterion.CECriterion.Null.toString());
 				comboBox.addItem(Criterion.CECriterion.Cost.toString());
 				comboBox.addItem(Criterion.CECriterion.Effectiveness.toString());
 				
