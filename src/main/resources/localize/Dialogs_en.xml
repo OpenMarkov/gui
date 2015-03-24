@@ -425,7 +425,7 @@
 			<Label value="Select the propagation type" />
 		</Text>
 		<Title>
-			<Label value="Setting inference options" />
+			<Label value="Setting propagation options" />
 		</Title>
 		<optionAuto>
 			<Label value="Automatic" />

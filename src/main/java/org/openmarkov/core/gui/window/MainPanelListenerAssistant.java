@@ -1134,16 +1134,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             
             // If the inference was never launched before in this execution, show the inference options dialogs
             if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getLaunchedBefore()){
+            	
+            	// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
             	if(!getCurrentNetworkPanel().getProbNet().getVariables(NodeType.UTILITY).isEmpty() 
             			&& getCurrentNetworkPanel().getProbNet().getDecisionCriteria().size() > 1){
             		MulticriteriaDialog dialog = new MulticriteriaDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
                     dialog.setVisible(true);
             	}
             	
+            	// Show temporal options dialog
             	if(!getCurrentNetworkPanel().getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
             		TemporalOptionsDialog dialog = new TemporalOptionsDialog(getCurrentNetworkPanel().getProbNet(),Utilities.getOwner(mainPanel));
             		dialog.setVisible(true);
             	}
+            	
+            	// Set as launched
             	getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(true);
             }
         } else {
@@ -1157,6 +1162,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         getCurrentNetworkPanel().setSelectedAllObjects(false);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
         if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+        	
             getCurrentNetworkPanel().updateIndividualProbabilities();
             mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
         } else {

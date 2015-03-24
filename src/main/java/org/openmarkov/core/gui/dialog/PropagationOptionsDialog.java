@@ -28,7 +28,7 @@ import org.openmarkov.core.gui.window.edition.EditorPanel;
  * @author asaez
  * @version 1.0
  */
-public class InferenceOptionsDialog extends JDialog
+public class PropagationOptionsDialog extends JDialog
 {
     /**
 	 * 
@@ -49,7 +49,7 @@ public class InferenceOptionsDialog extends JDialog
      * @param owner window that owns this dialog.
      * @param editorPanel the editor panel that called this dialog.
      */
-    public InferenceOptionsDialog (Window owner,
+    public PropagationOptionsDialog (Window owner,
                                    EditorPanel editorPanel,
                                    InferenceToolBar inferenceToolBar)
     {
@@ -81,14 +81,19 @@ public class InferenceOptionsDialog extends JDialog
         jRadioButton2.setActionCommand (stringDatabase.getString ("OptionsInferenceDialog.optionManual.Label"));
         radioButtonsPanel.add (jRadioButton1);
         radioButtonsPanel.add (jRadioButton2);
-        jRadioButton1.setSelected (true);
+        if(editorPanel.isAutomaticPropagation()){
+        	jRadioButton1.setSelected (true);
+        }else{
+        	jRadioButton2.setSelected (true);
+        }
+        
         buttonGroup.add (jRadioButton1);
         buttonGroup.add (jRadioButton2);
         principalPanel.add (radioButtonsPanel, BorderLayout.CENTER);
         buttonsPanel.add (okButton);
         buttonsPanel.add (cancelButton);
         principalPanel.add (buttonsPanel, BorderLayout.SOUTH);
-        InferenceOptionsDialogListener optionsInferenceDialogListener = new InferenceOptionsDialogListener (
+        PropagationOptionsDialogListener optionsInferenceDialogListener = new PropagationOptionsDialogListener (
                                                                                                             this,
                                                                                                             editorPanel,
                                                                                                             inferenceToolBar);
