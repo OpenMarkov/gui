@@ -3,6 +3,7 @@ package org.openmarkov.core.gui.dialog.network;
 import java.awt.Window;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -31,6 +32,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 		setName("DecisionCriteriaDialog");
 		setLocationRelativeTo(owner);
 		pack();
+		
 	}
 
 	/**
@@ -77,7 +79,9 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 							.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Unit.Text") };
 
 			decisionCriteriaTablePanel = new DecisionCriteriaTablePanel(
-					columnNames, probNet);
+					columnNames, probNet, this.getOwner());
+			
+			
 			decisionCriteriaTablePanel.setName("DecisionCriteriaPanel");
 			decisionCriteriaTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
