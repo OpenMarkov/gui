@@ -102,7 +102,18 @@ public class VisualChanceNode extends VisualNode {
 		preResolutionFinding = false;
 		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
-		innerBox = new FSVariableBox(this);
+		switch(node.getVariable().getVariableType())
+		{
+			case FINITE_STATES:
+				innerBox = new FSVariableBox(this);
+				break;
+			case DISCRETIZED:
+				innerBox = new DiscretizedVariableBox(this);
+				break;
+			case NUMERIC:
+				innerBox = new NumericVariableBox(this);
+				break;
+		}
 	}
 
 	/**
@@ -351,4 +362,20 @@ public class VisualChanceNode extends VisualNode {
 
 	}
 
+	@Override
+	public void update(int numCases) {
+		switch(node.getVariable().getVariableType())
+		{
+			case FINITE_STATES:
+				innerBox = new FSVariableBox(this);
+				break;
+			case DISCRETIZED:
+				innerBox = new DiscretizedVariableBox(this);
+				break;
+			case NUMERIC:
+				innerBox = new NumericVariableBox(this);
+				break;
+		}
+		super.update(numCases);
+	}
 }

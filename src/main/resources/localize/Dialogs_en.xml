@@ -881,17 +881,17 @@
 			<Text value="States:" />
 		</jLabelPanel>
 	</NodeDiscretizeTablePanel>
-	<NodeAddFindingDialog>
-		<jButtonCancel>
+	<AddFindingDialog>
+		<CancelButton>
 			<Label value="Cancel" />
-		</jButtonCancel>
+		</CancelButton>
 		<Title>
 			<Label value="Add finding" />
 		</Title>
-		<jButtonOK>
+		<OKButton>
 			<Label value="Add finding" />
-		</jButtonOK>
-	</NodeAddFindingDialog>
+		</OKButton>
+	</AddFindingDialog>
 	<CommentHTMLScrollPane>
 		<jTextPaneCommentHTML>
 			<Text value="&lt;&lt;Double click to add/modify comment&gt;&gt;" />

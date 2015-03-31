@@ -83,7 +83,7 @@ public class FSVariableBox extends InnerBox {
 	 * @param numCases
 	 *            Number of evidence cases in memory.
 	 */
-	public void recreateVisualStates(int numCases) {
+	public void update(int numCases) {
 		visualStates.clear();
 		createVisualStates(numCases);
 	}

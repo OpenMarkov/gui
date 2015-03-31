@@ -842,17 +842,17 @@
 			<Label value="Imponer política" />
 		</Title>
 	</ImposePolicydialog>
-	<NodeAddFindingDialog>
-		<jButtonCancel>
+	<AddFindingDialog>
+		<CancelButton>
 			<Label value="Cancelar" />
-		</jButtonCancel>
+		</CancelButton>
 		<Title>
 			<Label value="Añadir hallazgo" />
 		</Title>
-		<jButtonOK>
+		<OKButton>
 			<Label value="Añadir hallazgo" />
-		</jButtonOK>
-	</NodeAddFindingDialog>
+		</OKButton>
+	</AddFindingDialog>
 	<CommentHTMLScrollPane>
 		<jTextPaneCommentHTML>
 			<Text

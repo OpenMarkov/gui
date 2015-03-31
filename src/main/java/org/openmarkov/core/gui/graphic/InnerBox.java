@@ -163,5 +163,13 @@ public abstract class InnerBox extends VisualElement {
 	 * @return the number of visual states of this inner box.
 	 */
 	public abstract int getNumStates();
+	
+	/**
+	 * This method recreates the visual state of the inner box.
+	 *  
+	 * @param numCases
+	 *            Number of evidence cases in memory.
+	 */
+	public abstract void update(int numCases);
 
 }

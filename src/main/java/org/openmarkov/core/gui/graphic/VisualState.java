@@ -20,6 +20,7 @@ import java.util.Locale;
 import javax.swing.JOptionPane;
 
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.model.network.VariableType;
 
 /**
  * This class implements the graphic representation of each state that a node
@@ -76,7 +77,7 @@ public class VisualState extends VisualElement
      * The order number assigned to this State. Determines in which position
      * will be painted this state.
      */
-    private int                 stateNumber;
+    private int                 stateIndex;
     /**
      * The name assigned to this State.
      */
@@ -85,7 +86,7 @@ public class VisualState extends VisualElement
      * Array of values assigned to the state. There is one value for each
      * evidence case in memory.
      */
-    private ArrayList<Double>   stateValues;
+    private List<Double>   stateValues;
     /**
      * This variable indicates which is the position of the arrayList currently
      * selected (corresponding with the current evidence case).
@@ -112,7 +113,7 @@ public class VisualState extends VisualElement
     public VisualState (VisualNode visualNode, int number, String name, int numValues)
     {
         this.visualNode = visualNode;
-        this.stateNumber = number;
+        this.stateIndex = number;
         this.stateName = name;
         stateValues = new ArrayList<Double> (numValues);
         for (int i = 0; i < numValues; i++)
@@ -164,18 +165,18 @@ public class VisualState extends VisualElement
      * Returns the order number assigned to this state.
      * @return order number assigned to this state.
      */
-    public int getStateNumber ()
+    public int getStateIndex ()
     {
-        return stateNumber;
+        return stateIndex;
     }
 
     /**
      * Sets the order number of this state.
-     * @param stateNumber the order number of this state.
+     * @param stateIndex the order number of this state.
      */
-    public void setStateNumber (int stateNumber)
+    public void setStateIndex (int stateIndex)
     {
-        this.stateNumber = stateNumber;
+        this.stateIndex = stateIndex;
     }
 
     /**
@@ -273,7 +274,7 @@ public class VisualState extends VisualElement
         InnerBox innerBox = (InnerBox) visualNode.getInnerBox ();
         if (innerBox instanceof FSVariableBox)
         {
-            return (((FSVariableBox) innerBox).getNumStates () - stateNumber);
+            return (((FSVariableBox) innerBox).getNumStates () - stateIndex);
         }
         else
         {
@@ -382,7 +383,8 @@ public class VisualState extends VisualElement
         Double yFirstBar = 0.0;
         xName = visualNode.getUpperLeftCornerX (g) + InnerBox.INTERNAL_MARGIN
                 + InnerBox.STATES_INDENT;
-        if (visualNode instanceof VisualUtilityNode)
+        boolean isNumeric = visualNode.getNode().getVariable().getVariableType() == VariableType.NUMERIC;
+        if (isNumeric)
         {
             xBar = xName + InnerBox.BAR_HORIZONTAL_POSITION_UTILITY;
             xValue = xName + InnerBox.VALUE_HORIZONTAL_POSITION_UTILITY;
@@ -435,11 +437,11 @@ public class VisualState extends VisualElement
                             new Double (yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue ());
                 setColorCaseDependent (i, g);
                 double barLength = 0.0;
-                if (visualNode instanceof VisualUtilityNode)
+                if (isNumeric)
                 {
                     InnerBox innerBox = visualNode.getInnerBox ();
-                    Double minRange = ((ExpectedValueBox) innerBox).getMinUtilityRange ();
-                    Double maxRange = ((ExpectedValueBox) innerBox).getMaxUtilityRange ();
+                    Double minRange = ((NumericVariableBox) innerBox).getMinValue ();
+                    Double maxRange = ((NumericVariableBox) innerBox).getMaxValue ();
                     Double range = maxRange - minRange;
                     Double value = stateValues.get (i) - minRange;
                     barLength = (value * 100) / range;
@@ -452,13 +454,16 @@ public class VisualState extends VisualElement
                                                 barLength, InnerBox.BAR_HEIGHT));
                 setColorCaseDependent (currentStateValue, g);
                 
-                // Value is currently formatted fixely with 4 decimals
-                DecimalFormat decimalFormat = new DecimalFormat (
-                                                                 formattingString,
-                                                                 new DecimalFormatSymbols (
-                                                                                           Locale.US));
-                String formattedValue = String.valueOf (decimalFormat.format (stateValues.get (currentStateValue)));
-                g.drawString (formattedValue, (xValue.intValue ()), yText.intValue ());
+                if(!Double.isNaN(stateValues.get (currentStateValue)))
+                {
+	                // Value is currently formatted fixely with 4 decimals
+	                DecimalFormat decimalFormat = new DecimalFormat (
+	                                                                 formattingString,
+	                                                                 new DecimalFormatSymbols (
+	                                                                                           Locale.US));
+	                String formattedValue = String.valueOf (decimalFormat.format (stateValues.get (currentStateValue)));
+	                g.drawString (formattedValue, (xValue.intValue ()), yText.intValue ());
+                }
             }
         }
         else

@@ -37,19 +37,18 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
-import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.InferenceOptionsDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
+import org.openmarkov.core.gui.dialog.node.AddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.CommonNodePropertiesDialog;
-import org.openmarkov.core.gui.dialog.node.NodeAddFindingDialog;
 import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.core.gui.graphic.ExpectedValueBox;
 import org.openmarkov.core.gui.graphic.FSVariableBox;
 import org.openmarkov.core.gui.graphic.InnerBox;
+import org.openmarkov.core.gui.graphic.NumericVariableBox;
 import org.openmarkov.core.gui.graphic.SelectionListener;
 import org.openmarkov.core.gui.graphic.VisualDecisionNode;
 import org.openmarkov.core.gui.graphic.VisualElement;
@@ -76,6 +75,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -433,9 +433,8 @@ public class EditorPanel extends JPanel
                             }
                             else
                             {
-                                VisualState visualState = visualNetwork.whatStateInPosition (cursorPosition,
-                                                                                             g);
-                                setNewFinding (visualNode, visualState);
+                                VisualState visualState = visualNetwork.whatStateInPosition (cursorPosition, g);
+                                toggleFinding (visualNode, visualState);
                             }
                         }
                         else
@@ -741,11 +740,8 @@ public class EditorPanel extends JPanel
                                           false))
         {
             adjustPanelDimension ();
+            selectedNode.update(postResolutionEvidence.size ());
             repaint ();
-            if (selectedNode.getInnerBox () instanceof FSVariableBox)
-            {
-                ((FSVariableBox) selectedNode.getInnerBox ()).recreateVisualStates (postResolutionEvidence.size ());
-            }
             networkChanged = true;
             removeNodeEvidenceInAllCases (selectedNode.getNode ());
         }
@@ -1282,7 +1278,7 @@ public class EditorPanel extends JPanel
             EvidenceCase currentEvidence = (networkPanel.getWorkingMode () == NetworkPanel.INFERENCE_WORKING_MODE) ? getCurrentEvidenceCase ()
                                                                                                                   : preResolutionEvidence;
             Finding finding = currentEvidence.getFinding (node.getNode ().getVariable ());
-            NodeAddFindingDialog nodeAddFinding = new NodeAddFindingDialog (
+            AddFindingDialog nodeAddFinding = new AddFindingDialog (
                                                                             Utilities.getOwner (this),
                                                                             node, finding, g, this);
             nodeAddFinding.setVisible (true);
@@ -1649,9 +1645,9 @@ public class EditorPanel extends JPanel
                 visualState = ((FSVariableBox) innerBox).getVisualState (0);
                 updateVisualStateAndEvidence(innerBox, visualState);
             }
-            else if (innerBox instanceof ExpectedValueBox)
+            else if (innerBox instanceof NumericVariableBox)
             {
-                visualState = ((ExpectedValueBox) innerBox).getVisualState ();
+                visualState = ((NumericVariableBox) innerBox).getVisualState ();
                 updateVisualStateAndEvidence(innerBox, visualState);
             }
         }
@@ -1696,14 +1692,7 @@ public class EditorPanel extends JPanel
 			VisualState visualState) {
 		if (visualState.getNumberOfValues () != postResolutionEvidence.size ())
 		{
-		    if (innerBox instanceof FSVariableBox)
-		    {
-		        ((FSVariableBox) innerBox).recreateVisualStates (postResolutionEvidence.size ());
-		    }
-		    else if (innerBox instanceof ExpectedValueBox)
-		    {
-		        ((ExpectedValueBox) innerBox).recreateVisualState (postResolutionEvidence.size ());
-		    }
+			innerBox.update(postResolutionEvidence.size ());
 		    networkChanged = true;
 		    for (int i = 0; i < postResolutionEvidence.size (); i++)
 		    {
@@ -1816,6 +1805,18 @@ public class EditorPanel extends JPanel
         }
         return areFindings;
     }
+    
+    
+    /**
+     * This method returns the number of the Evidence Case that is currently
+     * selected
+     * @param visualState the visual state in which the finding is going to be
+     *            set.
+     */
+    public void toggleFinding (VisualNode visualNode, VisualState state)
+    {
+    	setNewFinding (visualNode, new Finding(visualNode.getNode().getVariable(), state.getStateIndex()), true);
+    }
 
     /**
      * This method returns the number of the Evidence Case that is currently
@@ -1823,96 +1824,31 @@ public class EditorPanel extends JPanel
      * @param visualState the visual state in which the finding is going to be
      *            set.
      */
-    public void setNewFinding (VisualNode visualNode, VisualState visualState)
+    public void setNewFinding (VisualNode visualNode, Finding finding, boolean toggle)
     {
+    	Variable variable = visualNode.getNode ().getVariable ();
+        
         boolean isInferenceMode = networkPanel.getWorkingMode () == NetworkPanel.INFERENCE_WORKING_MODE;
         EvidenceCase evidenceCase = (isInferenceMode) ? postResolutionEvidence.get (currentCase)
                                                      : preResolutionEvidence;
         setPropagationActive (isAutomaticPropagation ());
-        Variable variable = visualNode.getNode ().getVariable ();
-        boolean nodeAlreadyHasFinding = evidenceCase.getFinding (variable) != null;
-        int oldState = -1;
-        if (nodeAlreadyHasFinding)
+        boolean alreadyHasFinding = evidenceCase.contains(variable);
+        Finding oldFinding = null; 
+        if (alreadyHasFinding)
         {
-            // There is already a finding in the node
-            oldState = evidenceCase.getState (variable);
-            if (oldState == visualState.getStateNumber ())
-            {
-                // The finding is in the same state, therefore, remove evidence
-                try
-                {
-                    evidenceCase.removeFinding (variable);
-                    if (isInferenceMode)
-                    {
-                        visualNode.setPostResolutionFinding (false);
-                    }
-                }
-                catch (NoFindingException exc)
-                {
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   "ERROR\n"
-                                                           + stringDatabase.getString ("ExceptionNoFinding.Text.Label")
-                                                           + "\n\n" + exc.getMessage (),
-                                                   stringDatabase.getString ("ExceptionNoFinding.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            else
-            {
-                // There is a finding in another state. Remove old, add new
-                try
-                {
-                    evidenceCase.removeFinding (variable);
-                    Finding finding = new Finding (variable, visualState.getStateNumber ());
-                    evidenceCase.addFinding (finding);
-                    if (isInferenceMode)
-                    {
-                        visualNode.setPostResolutionFinding (true);
-                    }
-                    else
-                    {
-                        visualNode.setPreResolutionFinding (true);
-                    }
-                }
-                catch (NoFindingException exc)
-                {
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   "ERROR\n"
-                                                           + stringDatabase.getString ("ExceptionNoFinding.Text.Label")
-                                                           + "\n\n" + exc.getMessage (),
-                                                   stringDatabase.getString ("ExceptionNoFinding.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-                catch (InvalidStateException exc)
-                {
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   "ERROR\n"
-                                                           + stringDatabase.getString ("ExceptionInvalidState.Text.Label")
-                                                           + "\n\n" + exc.getMessage (),
-                                                   stringDatabase.getString ("ExceptionInvalidState.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-                catch (IncompatibleEvidenceException exc)
-                {
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   "ERROR\n"
-                                                           + stringDatabase.getString ("ExceptionIncompatibleEvidence.Text.Label")
-                                                           + "\n\n" + exc.getMessage (),
-                                                   stringDatabase.getString ("ExceptionIncompatibleEvidence.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-                catch (Exception exc)
-                {
-                    JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                                   "ERROR" + "\n\n" + exc.getMessage (),
-                                                   stringDatabase.getString ("ExceptionGeneric.Title.Label"),
-                                                   JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        	// There is already a finding. Remove it
+        	try
+        	{
+        		oldFinding = evidenceCase.removeFinding (variable);
+        	}
+        	catch (NoFindingException exc)
+        	{
+        		// 	Ignore. Not possible
+        	}
         }
-        else
-        { // No finding previously in node, add
-            Finding finding = new Finding (variable, visualState.getStateNumber ());
+    	// Add finding (unless we were toggling evidence)
+        if(!alreadyHasFinding || !toggle || oldFinding.getState() != finding.getState())
+        {
             try
             {
                 evidenceCase.addFinding (finding);
@@ -1951,6 +1887,7 @@ public class EditorPanel extends JPanel
                                                JOptionPane.ERROR_MESSAGE);
             }
         }
+        // Flag current case as not compiled 
         if (isInferenceMode)
         {
             evidenceCasesCompilationState.set (currentCase, false);
@@ -1964,13 +1901,15 @@ public class EditorPanel extends JPanel
         }
         setSelectedAllNodes (false);
         networkPanel.getMainPanel ().getInferenceToolBar ().setCurrentEvidenceCaseName (currentCase);
+        
+        // If propagation is active, do propagation
         if ((propagationActive) && (evidenceCasesCompilationState.get (currentCase) == false)
             && (isInferenceMode))
         {
             if (!doPropagation (evidenceCase, currentCase))
             // if propagation does not succeed, restore previous state
             {
-                if (nodeAlreadyHasFinding)
+                if (alreadyHasFinding)
                 {
                     try
                     {
@@ -1979,10 +1918,9 @@ public class EditorPanel extends JPanel
                     catch (NoFindingException e)
                     {/* Not possible */
                     }
-                    Finding finding = new Finding (variable, oldState);
                     try
                     {
-                        evidenceCase.addFinding (finding);
+                        evidenceCase.addFinding (oldFinding);
                     }
                     catch (InvalidStateException e)
                     {/* Not possible */
@@ -2003,11 +1941,11 @@ public class EditorPanel extends JPanel
                 }
                 if (isInferenceMode)
                 {
-                    visualNode.setPostResolutionFinding (nodeAlreadyHasFinding);
+                    visualNode.setPostResolutionFinding (alreadyHasFinding);
                 }
                 else
                 {
-                    visualNode.setPreResolutionFinding (nodeAlreadyHasFinding);
+                    visualNode.setPreResolutionFinding (alreadyHasFinding);
                 }
             }
         }
@@ -2094,7 +2032,7 @@ public class EditorPanel extends JPanel
             long elapsedTimeMillis = System.currentTimeMillis () - start;
             System.out.println ("Inference took " + elapsedTimeMillis + " milliseconds.");
             updateNodesFindingState (evidenceCase);
-            paintInferenceResults (caseNumber, individualProbabilities);
+            paintInferenceResults (caseNumber, individualProbabilities, evidenceCase);
             propagationSucceded = true;
         }
         catch (IncompatibleEvidenceException e)
@@ -2164,22 +2102,20 @@ public class EditorPanel extends JPanel
      *            variable.
      */
     private void paintInferenceResults (int caseNumber,
-                                        HashMap<Variable, TablePotential> individualProbabilities)
+                                        HashMap<Variable, TablePotential> individualProbabilities,
+                                        EvidenceCase evidence)
     {
         for (VisualNode visualNode : visualNetwork.getAllNodes ())
         {
             Node node = visualNode.getNode ();
-            Variable variable = node.getVariable ();
             switch (node.getNodeType ())
             {
                 case CHANCE :
                 case DECISION :
-                    paintInferenceResultsChanceOrDecisionNode (caseNumber, individualProbabilities,
-                                                               variable, visualNode);
+                    paintInferenceResultsChanceOrDecisionNode (caseNumber, individualProbabilities, evidence, visualNode);
                     break;
                 case UTILITY :
-                    paintInferenceResultsUtilityNode (caseNumber, individualProbabilities,
-                                                      variable, visualNode);
+                    paintInferenceResultsUtilityNode (caseNumber, individualProbabilities, visualNode);
                     break;
             }
         }
@@ -2197,18 +2133,15 @@ public class EditorPanel extends JPanel
      */
     private void paintInferenceResultsUtilityNode (int caseNumber,
                                                    HashMap<Variable, TablePotential> individualProbabilities,
-                                                   Variable variable,
                                                    VisualNode visualNode)
     {
-        if ((visualNode.getInnerBox ()) instanceof ExpectedValueBox)
-        {
-            // It is a utility node
-            ExpectedValueBox innerBox = (ExpectedValueBox) visualNode.getInnerBox ();
-            VisualState visualState = innerBox.getVisualState ();
-            visualState.setStateValue (caseNumber, individualProbabilities.get (variable).values[0]);
-            innerBox.setMinUtilityRange (minUtilityRange.get (variable));
-            innerBox.setMaxUtilityRange (maxUtilityRange.get (variable));
-        }
+        // It is a utility node
+        Variable variable = visualNode.getNode().getVariable ();
+        NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox ();
+        VisualState visualState = innerBox.getVisualState ();
+        visualState.setStateValue (caseNumber, individualProbabilities.get (variable).values[0]);
+        innerBox.setMinValue (minUtilityRange.get (variable));
+        innerBox.setMaxValue (maxUtilityRange.get (variable));
     }
 
     /**
@@ -2222,58 +2155,65 @@ public class EditorPanel extends JPanel
      */
     private void paintInferenceResultsChanceOrDecisionNode (int caseNumber,
                                                             HashMap<Variable, TablePotential> individualProbabilities,
-                                                            Variable variable,
+                                                            EvidenceCase evidence,
                                                             VisualNode visualNode)
     {
-        Potential potential = individualProbabilities.get (variable);
-        if (potential instanceof TablePotential)
+	    Variable variable = visualNode.getNode().getVariable ();
+	    Potential potential = individualProbabilities.get (variable);
+        TablePotential tablePotential = (TablePotential) potential;
+        if(variable.getVariableType() != VariableType.NUMERIC)
         {
-            TablePotential tablePotential = (TablePotential) potential;
-            if (tablePotential.getNumVariables () == 1)
-            {
-                double[] values = tablePotential.getValues ();
-                if ((visualNode.getInnerBox ()) instanceof FSVariableBox)
-                {
-                    FSVariableBox innerBox = (FSVariableBox) visualNode.getInnerBox ();
-                    for (int i = 0; i < innerBox.getNumStates (); i++)
-                    {
-                        VisualState visualState = innerBox.getVisualState (i);
-                        visualState.setStateValue (caseNumber, values[i]);
-                    }
-                }
-                // PROVISIONAL2: Currently the propagation
-                // algorithm is returning a TablePotential
-                // with 0 variables when the node has a Uniform
-                // relation
-            }
-            else if (tablePotential.getNumVariables () == 0)
-            {
-                if ((visualNode.getInnerBox ()) instanceof FSVariableBox)
-                {
-                    FSVariableBox innerBox = (FSVariableBox) visualNode.getInnerBox ();
-                    for (int i = 0; i < innerBox.getNumStates (); i++)
-                    {
-                        VisualState visualState = innerBox.getVisualState (i);
-                        visualState.setStateValue (caseNumber, (1.0 / innerBox.getNumStates ()));
-                    }
-                }
-                visualNode.setPostResolutionFinding (false);
-                // END OF
-                // PROVISIONAL2.............asaez...Comprobar si es innecesario
-                // este Provisional2............
-            }
-            else
-            {
-                JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                               "ERROR\n"
-                                                       + "Table Potential of "
-                                                       + variable.getName ()
-                                                       + " has "
-                                                       + tablePotential.getNumVariables ()
-                                                       + " variables.\n It cannot be treated by now",
-                                               "Error", JOptionPane.ERROR_MESSAGE);
-            }
+	        if (tablePotential.getNumVariables () == 1)
+	        {
+	            double[] values = tablePotential.getValues ();
+	            if ((visualNode.getInnerBox ()) instanceof FSVariableBox)
+	            {
+	                FSVariableBox innerBox = (FSVariableBox) visualNode.getInnerBox ();
+	                for (int i = 0; i < innerBox.getNumStates (); i++)
+	                {
+	                    VisualState visualState = innerBox.getVisualState (i);
+	                    visualState.setStateValue (caseNumber, values[i]);
+	                }
+	            }
+	            // PROVISIONAL2: Currently the propagation
+	            // algorithm is returning a TablePotential
+	            // with 0 variables when the node has a Uniform
+	            // relation
+	        }
+	        else if (tablePotential.getNumVariables () == 0)
+	        {
+	            if ((visualNode.getInnerBox ()) instanceof FSVariableBox)
+	            {
+	                FSVariableBox innerBox = (FSVariableBox) visualNode.getInnerBox ();
+	                for (int i = 0; i < innerBox.getNumStates (); i++)
+	                {
+	                    VisualState visualState = innerBox.getVisualState (i);
+	                    visualState.setStateValue (caseNumber, (1.0 / innerBox.getNumStates ()));
+	                }
+	            }
+	            visualNode.setPostResolutionFinding (false);
+	            // END OF
+	            // PROVISIONAL2.............asaez...Comprobar si es innecesario
+	            // este Provisional2............
+	        }
+	        else
+	        {
+	            JOptionPane.showMessageDialog (Utilities.getOwner (this),
+	                                           "ERROR\n"
+	                                                   + "Table Potential of "
+	                                                   + variable.getName ()
+	                                                   + " has "
+	                                                   + tablePotential.getNumVariables ()
+	                                                   + " variables.\n It cannot be treated by now",
+	                                           "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+        }else  // if numeric variable
+        {
+        	double value = (evidence.contains(variable))? evidence.getNumericalValue(variable) : Double.NaN;
+        	NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox ();
+        	innerBox.getVisualState().setStateValue(caseNumber, value);
         }
+	        
     }
 
     /**
@@ -2532,9 +2472,9 @@ public class EditorPanel extends JPanel
                 {
                     visualState = ((FSVariableBox) innerBox).getVisualState (i);
                 }
-                else if (innerBox instanceof ExpectedValueBox)
+                else if (innerBox instanceof NumericVariableBox)
                 {
-                    visualState = ((ExpectedValueBox) innerBox).getVisualState ();
+                    visualState = ((NumericVariableBox) innerBox).getVisualState ();
                 }
                 if (option.equals ("new"))
                 {
