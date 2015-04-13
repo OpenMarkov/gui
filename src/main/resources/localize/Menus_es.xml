@@ -173,7 +173,7 @@
       <Mnemonic value="d" />
     </RemoveAllFindings>
     <Options>
-      <Label value="Opciones para la inferencia" />
+      <Label value="Opciones de propagación" />
       <Mnemonic value="i" />
     </Options>
     <MultiCriteriaOptions>

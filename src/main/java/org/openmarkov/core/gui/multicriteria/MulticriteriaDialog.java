@@ -47,7 +47,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalUnit;
+import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 
 public class MulticriteriaDialog extends OkCancelHorizontalDialog {
@@ -118,22 +118,39 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 	public static final int CRITERION_COLUMN = 0;
 	
 	/**
-	 * Constant for Scales column 
+	 * Constant for Unicriterion scales column 
 	 */
-	public static final int SCALE_COLUMN = 1;
+	public static final int UNICRITERIA_SCALE_COLUMN = 1;
+
 	/**
-	 * Constant for Uses column 
+	 * Constant for Discounts column if unicriteria 
 	 */
-	public static final int USE_COLUMN = 1;
+	public static final int UNICRITERIA_DISCOUNT_COLUMN = 2;
+
 	/**
-	 * Constant for Discounts column 
+	 * Constant for Discounts column if Unicriteria
 	 */
-	public static final int DISCOUNT_COLUMN = 2;
+	public static final int UNICRITERIA_DISCOUNT_UNIT_COLUMN = 3;
+	
+	/**
+	 * Constant for Uses column if CE
+	 */
+	public static final int CE_USE_COLUMN = 1;
+
+	/**
+	 * Constant for Cost-Effectiveness scales column 
+	 */
+	public static final int CE_SCALE_COLUMN = 2;
 	
 	/**
 	 * Constant for Discounts column 
 	 */
-	public static final int DISCOUNT_UNIT__COLUMN = 3;
+	public static final int CE_DISCOUNT_COLUMN = 3;
+	
+	/**
+	 * Constant for Discounts column if CE
+	 */
+	public static final int CE_DISCOUNT_UNIT_COLUMN = 4;
 
 	/**
 	 * Serial UID
@@ -228,28 +245,35 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 
 
 		model = new MultiCriteriaTableModel();		
+
 		// Construction of the TableModel		
-		if (costEffectiveness.isSelected()) {
-			model.addColumn("criterion");
-			model.addColumn("use");
+		if (costEffectiveness.isSelected()) { 
 			if(isTemporal){
+				model.addColumn("criterion");
+				model.addColumn("use");
+				model.addColumn("ceScale");
 				model.addColumn("discount");
 				model.addColumn("discountUnit");
 				model.addRow(new Object[] { 
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Criterion"),
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Use"),
+						stringDatabase.getString("MulticriteriaDialog.TableHeader.Scale"),
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Discount"),
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Unit")
 						});
 			}else{
+				model.addColumn("criterion");
+				model.addColumn("use");
+				model.addColumn("ceScale");
 				model.addRow(new Object[] {
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Criterion"),
-						stringDatabase.getString("MulticriteriaDialog.TableHeader.Use")});
+						stringDatabase.getString("MulticriteriaDialog.TableHeader.Use"),
+						stringDatabase.getString("MulticriteriaDialog.TableHeader.Scale")});
 			}
-		} else {
-			model.addColumn("criterion");
-			model.addColumn("scale");
+		} else { // Unicriteria is selected
 			if(isTemporal){
+				model.addColumn("criterion");
+				model.addColumn("scale");
 				model.addColumn("discount");
 				model.addColumn("discountUnit");
 				model.addRow(new Object[] {
@@ -259,6 +283,8 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Unit")
 						});	
 			}else{
+				model.addColumn("criterion");
+				model.addColumn("scale");
 				model.addRow(new Object[] { 
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Criterion"),
 						stringDatabase.getString("MulticriteriaDialog.TableHeader.Scale")});
@@ -270,32 +296,37 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 		if (costEffectiveness.isSelected()) {
 			
 			for (Criterion criterion : decisionCriteria) {
-				comboBoxUse = new JComboBox<String>();
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Null.toString());
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Cost.toString());
-				comboBoxUse.addItem(Criterion.CostEffectivenessType.Effectiveness.toString());
 				
-				if(criterion.getCe_criterion().equals(Criterion.CostEffectivenessType.Cost)){
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Cost.toString());
-				} else if(criterion.getCe_criterion().equals(Criterion.CostEffectivenessType.Effectiveness)){
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Effectiveness.toString());
-				} else {
-					comboBoxUse.setSelectedItem(Criterion.CostEffectivenessType.Null.toString());
-				}
+				// Prepare the Combobox for the CE_USE of the criterion
+				//Creates a new ComboBox object for each row (for each criterion)
+				comboBoxUse = new JComboBox<String>();
+//				comboBoxUse.addItem(Criterion.CECriterion.Null.toString());
+				comboBoxUse.addItem(Criterion.CECriterion.Cost.toString());
+				comboBoxUse.addItem(Criterion.CECriterion.Effectiveness.toString());
+				
+				// Set the selected item in the combobox with criterion data
+				if(criterion.getCECriterion().equals(Criterion.CECriterion.Cost)){
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Cost.toString());
+				} else {/*if(criterion.getCECriterion().equals(Criterion.CECriterion.Effectiveness)){*/
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Effectiveness.toString());
+				} /*else {
+					comboBoxUse.setSelectedItem(Criterion.CECriterion.Null.toString()); 
+				} */
 				
 				
 				if(isTemporal){
+					// Prepare the ComboBox for the discount units and creates a new object for each criterion
 					comboBoxDiscountUnits = new JComboBox<String>();
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+					for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
-					
+					// Set the selected discount unit with criteron data
 					if(criterion.getDiscountUnit() == null){
 						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
-						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
+						criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
 								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
@@ -303,39 +334,47 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							}
 						}
 					}
+					
+					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
 							comboBoxUse,
+							criterion.getCeScale(),
 							criterion.getDiscount() + " %",
 							comboBoxDiscountUnits
 							});
 				}else{
+					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
-							comboBoxUse
+							comboBoxUse,
+							criterion.getCeScale()
 							});
 				}
 			}
-		} else {
+		} else { // If unicriteria is selected
 			for (Criterion criterion : decisionCriteria) {
-				String scale = String.valueOf(criterion.getScale());
+				
+				// Gets the string of the scale (with units)
+				String scale = String.valueOf(criterion.getUnicriteriaScale());
 				if(criterion.getCriterionUnit() != null && !criterion.getCriterionUnit().equals(multicriteriaOptions.getMainUnit())){
 					scale += " " + multicriteriaOptions.getMainUnit() + "/" + criterion.getCriterionUnit();
 				}
 				
 				if(isTemporal){
+					// Prepare the ComboBox for the discount units and creates a new object for each criterion
 					comboBoxDiscountUnits = new JComboBox<String>();
-					
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+					for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 						String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
 						comboBoxDiscountUnits.addItem(newUnit);
 					}
 					
+					// Set the selected discount unit with criteron data
 					if(criterion.getDiscountUnit() == null){
 						comboBoxDiscountUnits.setSelectedItem(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit.YEAR"));
-						criterion.setDiscountUnit(TemporalUnit.DiscountUnit.YEAR);
+						criterion.setDiscountUnit(CycleLength.DiscountUnit.YEAR);
 					}else{
-						for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
+						for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
 
 							if(criterion.getDiscountUnit().equals(unit)){
 								String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString());
@@ -344,6 +383,7 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 						}
 					}
 					
+					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
 							scale,
@@ -351,6 +391,7 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							comboBoxDiscountUnits
 							});
 				}else{
+					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
 							scale
@@ -360,6 +401,7 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 			}
 		}
 
+		// Creates table with the model
 		table = new JTable(model) {
 			/**
 			 * Serial UID
@@ -387,8 +429,8 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 		        boolean result = super.editCellAt(row, column, e);
 		        final Component editor = getEditorComponent();
 		        if (editor == null || !(editor instanceof JTextComponent) || 
-		        		(isTemporal && costEffectiveness.isSelected() && column == USE_COLUMN) ||
-		        		(isTemporal && column == DISCOUNT_UNIT__COLUMN)) {
+		        		(isTemporal && costEffectiveness.isSelected() && column == CE_USE_COLUMN) ||
+		        		(isTemporal && column == UNICRITERIA_DISCOUNT_UNIT_COLUMN)) {
 		            return result;
 		        }
 		        
@@ -421,8 +463,8 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 
 			@Override
 			public void setValueAt(Object aValue, int row, int column) {
-				if((unicriterion.isSelected() && (column == SCALE_COLUMN || column == DISCOUNT_COLUMN))
-						|| (costEffectiveness.isSelected() && column == DISCOUNT_COLUMN)){
+				if((unicriterion.isSelected() && (column == UNICRITERIA_SCALE_COLUMN || column == UNICRITERIA_DISCOUNT_COLUMN))
+						|| (costEffectiveness.isSelected() && (column == CE_DISCOUNT_COLUMN || column == CE_SCALE_COLUMN))){
 					if (aValue instanceof String) {
 						try{
 							double value = Double.parseDouble((String) aValue);
@@ -449,48 +491,93 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 				super.tableChanged(e);
 				int row = e.getFirstRow();
 				int column = e.getColumn();
-				
-				if(column == USE_COLUMN && costEffectiveness.isSelected()){
-					String use = table.getValueAt(row, USE_COLUMN).toString();
-					if(use.equals(Criterion.CostEffectivenessType.Null.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Null);
-					} else if(use.equals(Criterion.CostEffectivenessType.Cost.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Cost);
-					} else if(use.equals(Criterion.CostEffectivenessType.Effectiveness.toString())){
-						decisionCriteria.get(row - 1).setCe_criterion(Criterion.CostEffectivenessType.Effectiveness);
+
+				if(costEffectiveness.isSelected()){
+					// If the edited cell is a cost effectiveness use
+					if(column == CE_USE_COLUMN){
+						String use = table.getValueAt(row, CE_USE_COLUMN).toString();
+						/*
+						if(use.equals(Criterion.CECriterion.Null.toString())){
+							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Null);
+						} else */ if(use.equals(Criterion.CECriterion.Cost.toString())){
+							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Cost);
+						} else if(use.equals(Criterion.CECriterion.Effectiveness.toString())){
+							decisionCriteria.get(row - 1).setCECriterion(Criterion.CECriterion.Effectiveness);
+						}
+						// If the edited cell is a cost effectiveness scale
+					}else if(column == CE_SCALE_COLUMN){
+						String scale = table.getValueAt(row, CE_SCALE_COLUMN).toString();
+						if(scale.indexOf(" ") != -1){
+							scale = scale.substring(0, scale.indexOf(" "));
+						}
+						DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+						format.applyLocalizedPattern("#.###");
+						scale = format.format(Double.parseDouble(scale));
+						decisionCriteria.get(row - 1).setCeScale(Double.parseDouble(scale));
 					}
-				} else if(column == SCALE_COLUMN && unicriterion.isSelected()){
-					String scale = table.getValueAt(row, SCALE_COLUMN).toString();
-					if(scale.indexOf(" ") != -1){
-						scale = scale.substring(0, scale.indexOf(" "));
-					}
-					DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-					format.applyLocalizedPattern("#.###");
-					scale = format.format(Double.parseDouble(scale));
-					decisionCriteria.get(row - 1).setScale(Double.parseDouble(scale));
-				}
-				
-				if(isTemporal && column == DISCOUNT_COLUMN){
-					String discount = table.getValueAt(row, DISCOUNT_COLUMN).toString();
-					if(discount.indexOf(" ") != -1){
-						discount = discount.substring(0, discount.indexOf(" "));
-					}
-					DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-					format.applyLocalizedPattern("#.###");
-					discount = format.format(Double.parseDouble(discount));
-					decisionCriteria.get(row - 1).setDiscount(Double.parseDouble(discount));
-				}
-				
-				if(isTemporal & column == DISCOUNT_UNIT__COLUMN){
-					TemporalUnit.DiscountUnit unitSelected = TemporalUnit.DiscountUnit.YEAR;
-					for(TemporalUnit.DiscountUnit unit: TemporalUnit.DiscountUnit.values()){
-						if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
-								.equals(table.getValueAt(row, DISCOUNT_UNIT__COLUMN).toString())){
-							unitSelected = unit;
-							break;
+					
+					
+					if(isTemporal){
+						// If the edited cell is a discount
+						if(column == CE_DISCOUNT_COLUMN){
+							String discount = table.getValueAt(row, CE_DISCOUNT_COLUMN).toString();
+							if(discount.indexOf(" ") != -1){
+								discount = discount.substring(0, discount.indexOf(" "));
+							}
+							DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+							format.applyLocalizedPattern("#.###");
+							discount = format.format(Double.parseDouble(discount));
+							decisionCriteria.get(row - 1).setDiscount(Double.parseDouble(discount));
+							// If the edited cell is a discount unit
+						} else if(column == CE_DISCOUNT_UNIT_COLUMN){
+							CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
+							for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
+								if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
+										.equals(table.getValueAt(row, CE_DISCOUNT_UNIT_COLUMN).toString())){
+									unitSelected = unit;
+									break;
+								}
+							}
+							decisionCriteria.get(row - 1).setDiscountUnit(unitSelected);
 						}
 					}
-					decisionCriteria.get(row - 1).setDiscountUnit(unitSelected);
+				}else{ //If unicriteria is selected
+					// If the edited cell is a unicriterion scale
+					if(column == UNICRITERIA_SCALE_COLUMN){
+						String scale = table.getValueAt(row, UNICRITERIA_SCALE_COLUMN).toString();
+						if(scale.indexOf(" ") != -1){
+							scale = scale.substring(0, scale.indexOf(" "));
+						}
+						DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+						format.applyLocalizedPattern("#.###");
+						scale = format.format(Double.parseDouble(scale));
+						decisionCriteria.get(row - 1).setUnicriteriaScale(Double.parseDouble(scale));
+					}
+					
+					if(isTemporal){
+						// If the edited cell is a discount
+						if(column == UNICRITERIA_DISCOUNT_COLUMN){
+							String discount = table.getValueAt(row, UNICRITERIA_DISCOUNT_COLUMN).toString();
+							if(discount.indexOf(" ") != -1){
+								discount = discount.substring(0, discount.indexOf(" "));
+							}
+							DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+							format.applyLocalizedPattern("#.###");
+							discount = format.format(Double.parseDouble(discount));
+							decisionCriteria.get(row - 1).setDiscount(Double.parseDouble(discount));
+						} else if(column == UNICRITERIA_DISCOUNT_UNIT_COLUMN){
+							// If the edited cell is a discount unit
+							CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
+							for(CycleLength.DiscountUnit unit: CycleLength.DiscountUnit.values()){
+								if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.DiscountUnit." + unit.toString())
+										.equals(table.getValueAt(row, UNICRITERIA_DISCOUNT_UNIT_COLUMN).toString())){
+									unitSelected = unit;
+									break;
+								}
+							}
+							decisionCriteria.get(row - 1).setDiscountUnit(unitSelected);
+						}
+					}
 				}
 			}
 			
@@ -503,37 +590,47 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 	        }
 		};
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
 
 		// Set the model and renderer of columns
 		if (costEffectiveness.isSelected()) {
-			table.getColumnModel().getColumn(USE_COLUMN)
+			table.getColumnModel().getColumn(CE_USE_COLUMN)
 					.setCellRenderer(new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.USE_RENDERER));
 			table.getColumnModel()
-					.getColumn(USE_COLUMN)
+					.getColumn(CE_USE_COLUMN)
 					.setCellEditor(
 							new DefaultCellEditor(comboBoxUse));
+			table.getColumnModel().getColumn(CE_SCALE_COLUMN).setCellRenderer(renderer);
+			
+			if(isTemporal){
+				table.getColumnModel().getColumn(CE_DISCOUNT_COLUMN).setCellRenderer(renderer);		
+				
+				table.getColumnModel().getColumn(CE_DISCOUNT_UNIT_COLUMN).setCellRenderer(new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
+				table.getColumnModel().getColumn(CE_DISCOUNT_UNIT_COLUMN).setCellEditor(new DefaultCellEditor(comboBoxDiscountUnits));
+			}
+			
 		} else {
-			table.getColumnModel().getColumn(SCALE_COLUMN).setCellRenderer(renderer);
+			table.getColumnModel().getColumn(UNICRITERIA_SCALE_COLUMN).setCellRenderer(renderer);
+			
+			if(isTemporal){
+				table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_COLUMN).setCellRenderer(renderer);		
+				
+				table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_UNIT_COLUMN).setCellRenderer(new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
+				table.getColumnModel().getColumn(UNICRITERIA_DISCOUNT_UNIT_COLUMN).setCellEditor(new DefaultCellEditor(comboBoxDiscountUnits));
+			}
 		}
 
 		table.getColumnModel().getColumn(CRITERION_COLUMN).setCellRenderer(renderer);
 		
-		if(isTemporal){
-			table.getColumnModel().getColumn(DISCOUNT_COLUMN).setCellRenderer(renderer);		
-			
-			table.getColumnModel().getColumn(DISCOUNT_UNIT__COLUMN).setCellRenderer(new MultiCriteriaComboBoxRenderer(MultiCriteriaComboBoxRenderer.DISCOUNT_UNIT_RENDERER));
-			table.getColumnModel().getColumn(DISCOUNT_UNIT__COLUMN).setCellEditor(new DefaultCellEditor(comboBoxDiscountUnits));
-		}
+
 
 		// Put the table in a scroll pane
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel.add(table);
 		tableScrollPane = new JScrollPane(panel);
-		tableScrollPane.setPreferredSize(new Dimension(400, 100));
+		tableScrollPane.setPreferredSize(new Dimension(500, 100));
 		tableScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-
+		
 		return tableScrollPane;
 	}
 

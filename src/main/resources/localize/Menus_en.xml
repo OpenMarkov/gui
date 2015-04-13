@@ -180,7 +180,7 @@
       <Mnemonic value="d" />
     </RemoveAllFindings>
     <Options>
-      <Label value="Inference Options" />
+      <Label value="Propagation options" />
       <Mnemonic value="i" />
     </Options>
     <MultiCriteriaOptions>

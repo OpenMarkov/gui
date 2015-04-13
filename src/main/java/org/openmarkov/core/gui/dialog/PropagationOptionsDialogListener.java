@@ -19,14 +19,14 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
  * @author asaez
  * @version 1.0
  */
-public class InferenceOptionsDialogListener
+public class PropagationOptionsDialogListener
     implements
         ActionListener
 {
     /**
      * The Dialog to which this listener is associated
      */
-    InferenceOptionsDialog optionsInferenceDialog = null;
+    PropagationOptionsDialog automaticPropagationOptionsDialog = null;
     /**
      * The editor panel that called the associated dialog.
      */
@@ -39,11 +39,11 @@ public class InferenceOptionsDialogListener
     /**
      * constructor
      */
-    public InferenceOptionsDialogListener (InferenceOptionsDialog optionsInferenceDialog,
+    public PropagationOptionsDialogListener (PropagationOptionsDialog optionsInferenceDialog,
                                            EditorPanel editorPanel,
                                            InferenceToolBar inferenceToolBar)
     {
-        this.optionsInferenceDialog = optionsInferenceDialog;
+        this.automaticPropagationOptionsDialog = optionsInferenceDialog;
         this.editorPanel = editorPanel;
         this.inferenceToolBar = inferenceToolBar;
     }
@@ -55,7 +55,7 @@ public class InferenceOptionsDialogListener
     public void actionPerformed (ActionEvent actionEvent)
     {
         String command = actionEvent.getActionCommand ();
-        String inferenceType = optionsInferenceDialog.getButtonGroup ().getSelection ().getActionCommand ();
+        String inferenceType = automaticPropagationOptionsDialog.getButtonGroup ().getSelection ().getActionCommand ();
         StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
         if (command.equals (stringDatabase.getString ("OptionsInferenceDialog.jButtonOK.Label")))
         {
@@ -65,12 +65,13 @@ public class InferenceOptionsDialogListener
                 editorPanel.setPropagationActive (true);
                 if (editorPanel.getNetworkPanel ().getWorkingMode () == NetworkPanel.INFERENCE_WORKING_MODE)
                 {
-                    for (int i = 0; i < editorPanel.getNumberOfCases (); i++)
+                    for (int caseIndex = 0; caseIndex < editorPanel.getNumberOfCases (); caseIndex++)
                     {
-                        if (editorPanel.getEvidenceCasesCompilationState (i) == false)
+                        if (editorPanel.getEvidenceCasesCompilationState (caseIndex) == false)
                         {
-                            editorPanel.doPropagation (editorPanel.getEvidenceCase (i), i);
-                            editorPanel.updateAllVisualStates ("", i);
+                        	
+                            editorPanel.doPropagation (editorPanel.getEvidenceCase (caseIndex), caseIndex);
+                            editorPanel.updateAllVisualStates ("", caseIndex);
                         }
                     }
                     editorPanel.setSelectedAllNodes (false);
@@ -91,6 +92,6 @@ public class InferenceOptionsDialogListener
         {
             // do nothing
         }
-        optionsInferenceDialog.setVisible (false);
+        automaticPropagationOptionsDialog.setVisible (false);
     }
 }

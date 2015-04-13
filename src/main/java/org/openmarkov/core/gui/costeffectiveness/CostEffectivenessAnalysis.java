@@ -24,6 +24,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -50,13 +51,9 @@ import org.openmarkov.inference.variableElimination.VariableElimination;
  */
 public class CostEffectivenessAnalysis {
 	
-	public static String DECISION_CRITERIA_VARIABLE = "Decision criteria";
+	public static String DECISION_CRITERIA_VARIABLE = "CECriteria";
 	
 	protected ProbNet probNet;
-	protected double costDiscount;
-	protected double effectivenessDiscount;
-	protected TransitionTime transitionTime;
-	protected int numSlices;
 	protected ProbNet expandedNetwork;
 	protected TablePotential globalUtility;
 	protected List<Intervention> interventions;
@@ -75,27 +72,15 @@ public class CostEffectivenessAnalysis {
 	 * @param transitionTime
 	 * @throws NotEvaluableNetworkException 
 	 */
-	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
-			double costDiscountRate, double effectivenessDiscountRate, int numCycles,
-			Map<Variable, Double> initialValues, TransitionTime transitionTime) throws NotEvaluableNetworkException {
+	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence) throws NotEvaluableNetworkException {
 		this.probNet = probNet;
-		this.costDiscount = costDiscountRate;
-		this.effectivenessDiscount = effectivenessDiscountRate;
-		this.numSlices = numCycles;
-		this.transitionTime = transitionTime;
-		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet, numSlices);
-		this.evidence = expandEvidence(expandedNetwork, evidence, initialValues);
-		this.expandedNetwork = adaptMPADforCE(expandedNetwork, numSlices, this.evidence);
-		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence, transitionTime);
+		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+		this.evidence = expandEvidence(expandedNetwork, evidence);
+		this.expandedNetwork = adaptMPADforCE(expandedNetwork, this.evidence);
+		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence);
 		this.interventions = createInterventions(globalUtility);
 		this.frontierInterventions = calculateFrontierInterventions(interventions);
 		this.frontierInterventions = calculateICERsOfFrontier(this.frontierInterventions);
-	}
-	
-	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence,
-			double costDiscountRate, double effectivenessDiscountRate, int numCycles,
-			TransitionTime transitionTime) throws NotEvaluableNetworkException {
-		this(probNet, evidence, costDiscountRate, effectivenessDiscountRate, numCycles, new HashMap<Variable, Double>(), transitionTime);
 	}
 
 	public List<Intervention> getInterventions() {
@@ -115,32 +100,6 @@ public class CostEffectivenessAnalysis {
 		return probNet;
 	}
 
-	/**
-	 * Returns the costDiscountRate.
-	 * 
-	 * @return the costDiscountRate.
-	 */
-	public double getCostDiscountRate() {
-		return costDiscount;
-	}
-
-	/**
-	 * Returns the effectivenessDiscountRate.
-	 * 
-	 * @return the effectivenessDiscountRate.
-	 */
-	public double getEffectivenessDiscountRate() {
-		return effectivenessDiscount;
-	}
-
-	/**
-	 * Returns the numSlices.
-	 * 
-	 * @return the numSlices.
-	 */
-	public int getNumSlices() {
-		return numSlices;
-	}
 
 	public TablePotential getGlobalUtility() {
 		return globalUtility;
@@ -156,28 +115,29 @@ public class CostEffectivenessAnalysis {
 	 * 
 	 * @return EvidenceCase
 	 */
-	public static EvidenceCase expandEvidence(ProbNet probNet, EvidenceCase evidence, Map<Variable, Double> initialValues) {
+	public static EvidenceCase expandEvidence(ProbNet probNet, EvidenceCase evidence) {
 		EvidenceCase evidenceCase = new EvidenceCase(evidence);
-		for (Node timeDependentNode : getInitialTemporalNodesWithUniformPotentials(probNet)) {
-			Variable timeDependentVariable = timeDependentNode.getVariable();
-			Finding finding = new Finding(timeDependentVariable,
-					initialValues.get(timeDependentVariable));
-			try {
-				evidenceCase.addFinding(finding);
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
-				e.printStackTrace();
-			}
-		}
+		
+//		for (Node timeDependentNode : getInitialTemporalNodesWithUniformPotentials(probNet)) {
+//			Variable timeDependentVariable = timeDependentNode.getVariable();
+//			Finding finding = new Finding(timeDependentVariable,
+//					initialValues.get(timeDependentVariable));
+//			try {
+//				evidenceCase.addFinding(finding);
+//			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+//				e.printStackTrace();
+//			}
+//		}
 		// Extend evidence
 		try {
-			evidenceCase.extendEvidence(probNet, 1);
+			evidenceCase.extendEvidence(probNet);
 		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
 		return evidenceCase;
 	}
 
-	protected TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime) {
+	protected TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
 		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
 		ProbNet copyNetwork = expandedNetwork.copy();
         for(Node node : copyNetwork.getNodes())
@@ -191,7 +151,7 @@ public class CostEffectivenessAnalysis {
 		} catch (NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
-        applyTransitionTime(copyNetwork, transitionTime, numSlices);
+        TemporalNetOperations.applyTransitionTime(copyNetwork);
 		return runAnalysis(copyNetwork, evidence);
 	}
 	
@@ -241,8 +201,6 @@ public class CostEffectivenessAnalysis {
         }		
 	}
 	
-
-	
 	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
 		TablePotential globalUtility = null;
 		try {
@@ -282,31 +240,55 @@ public class CostEffectivenessAnalysis {
 	 */
 	private TablePotential getGlobalUtility(ProbNet expandedNetwork, InferenceAlgorithm inferenceAlgorithm)
 			throws IncompatibleEvidenceException, UnexpectedInferenceException	{
-		
-		List<Node> utilityNodes = expandedNetwork.getNodes(NodeType.UTILITY);
-		List<TablePotential> utilityPotentials = new ArrayList<>();
-		for(Node node : utilityNodes)
-		{
-			for(Potential potential : node.getPotentials())
-			{
-				utilityPotentials.add((TablePotential)potential);
-			}
-		}
-		
-		applyCEProcessing(utilityPotentials);
+
+		// Applies discounts
+		TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+		// TODO - Check the code and delete if not required
+//		List<Node> utilityNodes = expandedNetwork.getNodes(NodeType.UTILITY);
+//		List<TablePotential> utilityPotentials = new ArrayList<>();
+//		for(Node node : utilityNodes)
+//		{
+//			for(Potential potential : node.getPotentials())
+//			{
+//				utilityPotentials.add((TablePotential)potential);
+//			}
+//		}
+//		applyCEProcessing(utilityPotentials);
 		
 		return inferenceAlgorithm.getGlobalUtility();		
 	}	
 
-	protected void applyCEProcessing(List<TablePotential> utilityPotentials)
-	{
-		// apply discount
-		applyDiscount(utilityPotentials, costDiscount, effectivenessDiscount);
-		
-		// Hack translate monthly utilities to yearly utilities
-		translateMonthlyUtilityPotentials(utilityPotentials);
-
-	}
+	// TODO - Check this method. Change applyDiscount to TemporalNetOperations.applyDiscount. Remove translateMonthly (if this method
+	// musn't be removed, fix with (1+i) = (1+i_m)^m
+//	protected void applyCEProcessing(List<TablePotential> utilityPotentials)
+//	{
+//
+//		// apply discount 
+//		
+//		// View the T O D O with the old method 
+////		applyDiscount(utilityPotentials);
+//		
+//		// Hack translate monthly utilities to yearly utilities
+//		translateMonthlyUtilityPotentials(utilityPotentials);
+//
+//	}
+	
+	// TODO - Remove this method?
+//	private void applyDiscount(List<TablePotential> utilityPotentials)
+//	{
+//		for (TablePotential utilityPotential : utilityPotentials) {
+//			Variable utilityVariable = utilityPotential.getUtilityVariable();
+//			if (utilityVariable.isTemporal()) {
+//				boolean isCost = utilityVariable.getDecisionCriterion().getCriterionName()
+//						.equalsIgnoreCase("cost");
+//				double discount = isCost ? costDiscount : effectivenessDiscount;
+//				discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
+//				for (int i = 0; i < utilityPotential.values.length; ++i) {
+//					utilityPotential.values[i] /= discount;
+//				}
+//			}
+//		}
+//	}
 	
 	private List<Variable> getConditioningVariables(ProbNet probNet)
 	{
@@ -325,95 +307,8 @@ public class CostEffectivenessAnalysis {
 		return conditioningVariables;
 	}
 	
-	public static void applyTransitionTime(ProbNet network, TransitionTime transitionTime, int numSlices)
-	{
-		List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
-		List<Node> nodesToRemove = new ArrayList<>();
-		if (transitionTime == TransitionTime.HALF) {
-			// Half cycle correction
-			Map<String, Node[]> temporalNodes = new HashMap<>(); 
-			for(Node utilityNode : utilityNodes)
-			{
-				Variable utilityVariable = utilityNode.getVariable();
-				if(utilityVariable.isTemporal() && 
-						utilityVariable.getTimeSlice() > 0 &&
-						utilityVariable.getDecisionCriterion().getCriterionName()
-						.equalsIgnoreCase("effectiveness"))
-				{
-					if(!temporalNodes.containsKey(utilityVariable.getBaseName()))
-						temporalNodes.put(utilityVariable.getBaseName(), new Node[numSlices + 1]);
-					temporalNodes.get(utilityVariable.getBaseName())[utilityVariable.getTimeSlice()] = utilityNode; 
-				}
-			}
-			for(Node[] tempNodes : temporalNodes.values())
-			{
-				for(int k = tempNodes.length - 1; k > 0; --k)
-				{
-					if(tempNodes[k] != null && tempNodes[k-1] != null)
-					{
-						Node utilityNode = tempNodes[k]; 
-						Node previousCycleNode = tempNodes[k-1];
-						List<Potential> currentCyclePotentials = utilityNode.getPotentials();
-						List<Potential> previousCyclePotentials = previousCycleNode.getPotentials();
-						List<Potential> newPotentials = new ArrayList<>();
-						for(int i=0; i < utilityNode.getNumPotentials();++i)
-						{
-							TablePotential currentCyclePotential = (TablePotential) currentCyclePotentials.get(i);
-							TablePotential previousCyclePotential = (TablePotential) previousCyclePotentials.get(i);
-							TablePotential sumPotential = DiscretePotentialOperations.sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
-							sumPotential.setUtilityVariable(utilityNode.getVariable());
-							for(int j=0; j<sumPotential.values.length;++j)
-								sumPotential.values[j] /= 2;
-							newPotentials.add(sumPotential);
-						}
-						
-						utilityNode.setPotentials(newPotentials);
-						for(Node parent : previousCycleNode.getParents())
-						{
-							network.addLink(parent, utilityNode, true);
-						}
-						
-					}
-				}
-			}
-			
-		}
-		if (transitionTime == TransitionTime.BEGINNING || transitionTime == TransitionTime.HALF) {
-			// prune zero cycle utilities
-			for (Node utilityNode : utilityNodes) {
-				if (utilityNode.getVariable().getTimeSlice() == 0) {
-					nodesToRemove.add(utilityNode);
-				}
-			}
-		} else if (transitionTime == TransitionTime.END) {
-			// Prune last cycle utilities
-			for (Node utilityNode : utilityNodes) {
-				if (utilityNode.getVariable().getTimeSlice() == numSlices) {
-					nodesToRemove.add(utilityNode);
-				}
-			}
-		}
-		for(Node nodeToRemove : nodesToRemove)
-		{
-			network.removeNode(nodeToRemove);
-		}
-	}	
 	
-	private void applyDiscount(List<TablePotential> utilityPotentials, double costDiscount, double effectivenessDiscount)
-	{
-		for (TablePotential utilityPotential : utilityPotentials) {
-			Variable utilityVariable = utilityPotential.getUtilityVariable();
-			if (utilityVariable.isTemporal()) {
-				boolean isCost = utilityVariable.getDecisionCriterion().getCriterionName()
-						.equalsIgnoreCase("cost");
-				double discount = isCost ? costDiscount : effectivenessDiscount;
-				discount = Math.pow((1.0 + (discount / 100.0)), utilityVariable.getTimeSlice());
-				for (int i = 0; i < utilityPotential.values.length; ++i) {
-					utilityPotential.values[i] /= discount;
-				}
-			}
-		}
-	}
+
 	
 	private List<Intervention> createInterventions(TablePotential globalUtility) {
 		// Reorder variables to force decision criteria to be the conditioned
@@ -549,7 +444,7 @@ public class CostEffectivenessAnalysis {
 
 	protected void extendEvidence(ProbNet extendedNetwork) {
 		try {
-			evidence.extendEvidence(extendedNetwork, 1);
+			evidence.extendEvidence(extendedNetwork);
 		} catch (IncompatibleEvidenceException | InvalidStateException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
@@ -563,7 +458,7 @@ public class CostEffectivenessAnalysis {
 	 * @param expandedNetwork
 	 * @throws Exception 
 	 */
-	public static ProbNet adaptMPADforCE(ProbNet expandedNetwork, int numSlices,
+	public static ProbNet adaptMPADforCE(ProbNet expandedNetwork,
 			EvidenceCase evidence) throws NotEvaluableNetworkException {
 
 		// Convert numeric variables
@@ -586,7 +481,7 @@ public class CostEffectivenessAnalysis {
 		
 		// make all utility nodes of the expanded probNet children of the
 		// decision criteria node
-		Variable decisionCriteriaVariable = getDecisionCriteriaVariable(decisionCriteriaNames);
+		Variable decisionCriteriaVariable = getCECriteriaVariable();
 		Node decisionCriteriaNode = expandedNetwork.addNode(decisionCriteriaVariable, NodeType.DECISION);
 		for (Node utilityNode : BasicOperations.getTerminalUtilityNodes(expandedNetwork)) {
 			expandedNetwork.addLink(decisionCriteriaNode, utilityNode, true);
@@ -606,77 +501,39 @@ public class CostEffectivenessAnalysis {
 		return expandedNetwork;
 	}
 	
-    private static Variable getDecisionCriteriaVariable(List<String> criteriaNames) {
-        State[] states = new State[criteriaNames.size()];
-        for (int i = 0; i < criteriaNames.size(); i++) {
-            states[i] = new State(criteriaNames.get(i));
-        }
-        return new Variable(DECISION_CRITERIA_VARIABLE, states);
-    }
-
-	private static void translateMonthlyUtilityPotentials(List<TablePotential> utilityPotentials) {
-		for (TablePotential utilityPotential : utilityPotentials) {
-			Variable utilityVariable = utilityPotential.getUtilityVariable();
-			if (utilityVariable.getUnit().string.equals("months")) {
-				translateMonthlyUtilityPotential(utilityPotential);
-			}
-		}
-	}
-	
-	private static void translateMonthlyUtilityPotential(Potential potential) {
-		if (potential instanceof TablePotential) {
-			double[] potentialValues = ((TablePotential) potential).getValues();
-			for (int j = 0; j < potentialValues.length; j++) {
-				potentialValues[j] = potentialValues[j] * 12;
-			}
-		} else if (potential instanceof TreeADDPotential) {
-			TreeADDPotential treeADD = (TreeADDPotential) potential;
-			for (TreeADDBranch branch : treeADD.getBranches()) {
-				translateMonthlyUtilityPotential(branch.getPotential());
-			}
-		}
-	}
 
 	/**
-	 * @param costDiscount
-	 * @param inferenceOptions
-	 *            It applies the discount to each utility potential
+	 * Creates a variable with two states, "cost" and "effectiveness", to be used when performing CEA.
+	 * It will act as a conditioning variable in utility potentials
+	 * @return CE criteria variable
 	 */
-	public static void applyDiscountToUtilityNodes(ProbNet probNet, double costDiscount,
-			double effectivenessDiscount) {
-
-		// apply discount rate for all temporal utility nodes in the expanded
-		// network
-		List<Node> utilityExpandedNodes = probNet.getNodes(NodeType.UTILITY);
-		for (Node utilityNode : utilityExpandedNodes) {
-			Variable utilityVariable = utilityNode.getVariable();
-
-			if (utilityVariable.isTemporal()) {
-				Potential potential = utilityNode.getPotentials().get(0);
-				int timeSlice = utilityVariable.getTimeSlice();
-				String decisionCriterion = utilityVariable.getDecisionCriterion().getCriterionName();
-				double discount = decisionCriterion.equalsIgnoreCase("cost") ? costDiscount
-						: effectivenessDiscount;
-				applyDiscountToUtilityPotential(potential, timeSlice, discount);
-			}
-		}
-	}
-
-	public static void applyDiscountToUtilityPotential(Potential potential, int timeSlice,
-			double discount) {
-		double discountRate = 1.0 / (Math.pow((1.0 + (discount / 100.0)), timeSlice));
-		if (potential instanceof TablePotential) {
-			double[] potentialValues = ((TablePotential) potential).getValues();
-			for (int j = 0; j < potentialValues.length; j++) {
-				potentialValues[j] = potentialValues[j] * discountRate;
-			}
-		} else if (potential instanceof TreeADDPotential) {
-			TreeADDPotential treeADD = (TreeADDPotential) potential;
-			for (TreeADDBranch branch : treeADD.getBranches()) {
-				applyDiscountToUtilityPotential(branch.getPotential(), timeSlice, discount);
-			}
-		}
-	}
+	private static Variable getCECriteriaVariable() {
+		return new Variable(DECISION_CRITERIA_VARIABLE, CECriterion.Cost.toString(), CECriterion.Effectiveness.toString());
+    }
+//  TODO - Remove unused method
+	
+//	private static void translateMonthlyUtilityPotentials(List<TablePotential> utilityPotentials) {
+//		for (TablePotential utilityPotential : utilityPotentials) {
+//			Variable utilityVariable = utilityPotential.getUtilityVariable();
+//			if (utilityVariable.getUnit().string.equals("months")) {
+//				translateMonthlyUtilityPotential(utilityPotential);
+//			}
+//		}
+//	}
+//	
+//	private static void translateMonthlyUtilityPotential(Potential potential) {
+//		if (potential instanceof TablePotential) {
+//			double[] potentialValues = ((TablePotential) potential).getValues();
+//			for (int j = 0; j < potentialValues.length; j++) {
+//				potentialValues[j] = potentialValues[j] * 12;
+//			}
+//		} else if (potential instanceof TreeADDPotential) {
+//			TreeADDPotential treeADD = (TreeADDPotential) potential;
+//			for (TreeADDBranch branch : treeADD.getBranches()) {
+//				translateMonthlyUtilityPotential(branch.getPotential());
+//			}
+//		}
+//	}
 
 	/**
 	 * Within a Markov process for CE purposes it is important to detect whether
@@ -733,24 +590,31 @@ public class CostEffectivenessAnalysis {
 	 *         the other criteria is 0.
 	 */
 	private static TreeADDPotential buildCETree(ProbNet probNet, Node utilNode,
-			Variable decisionCriteriaVariable) {
+			Variable ceCriteriaVariable) {
+		
+		CECriterion ceCriterion = utilNode.getVariable().getDecisionCriterion().getCECriterion();
+		
+//		if (ceCriterion != CECriterion.Null){
+//			
+//		}
+		
 		Potential utilityPotential = utilNode.getPotentials().get(0);
 		List<Variable> treeVariables = utilityPotential.getVariables();
-		treeVariables.add(decisionCriteriaVariable);
+		treeVariables.add(ceCriteriaVariable);
 		String decisionCriterion = utilNode.getVariable().getDecisionCriterion().getCriterionName();
 		String otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
 				: "cost";
 
 		TreeADDPotential treeADDPotential = new TreeADDPotential(utilityPotential.getUtilityVariable(), treeVariables,
-				decisionCriteriaVariable);
+				ceCriteriaVariable);
 		List<Variable> variables = new ArrayList<>();
-		variables.add(decisionCriteriaVariable);
+		variables.add(ceCriteriaVariable);
 		for (int j = 0; j < treeADDPotential.getBranches().size(); j++) {
 			TreeADDBranch branch = treeADDPotential.getBranches().get(j);
-			String branchName = branch.getBranchStates().get(0).getName();
-			if (branchName.equalsIgnoreCase(decisionCriterion)) {
+			String branchStateName = branch.getBranchStates().get(0).getName();
+			if (branchStateName.equalsIgnoreCase(decisionCriterion)) {
 				branch.setPotential(utilityPotential);
-			} else if (branchName.equalsIgnoreCase(otherDecisionCriterion)) {
+			} else if (branchStateName.equalsIgnoreCase(otherDecisionCriterion)) {
 				// zero potential
 				branch.setPotential(new TablePotential(utilNode.getVariable(), new ArrayList<Variable>()));
 			}

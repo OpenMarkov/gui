@@ -106,6 +106,48 @@
   	<Text value="bajo - medio - alto" />
   </lowMediumhigh>
   </defaultStates>
+  
+  <defaultCriteria>
+  	<costBeneffitEuros>
+  		<Text value="Coste-beneficio (€)"/>
+  	</costBeneffitEuros>
+  	<costBeneffitPounds>
+  		<Text value="Coste-beneficio (£)"/>
+  	</costBeneffitPounds>
+  	<costBeneffitDollars>
+  		<Text value="Coste-beneficio ($)"/>
+  	</costBeneffitDollars>
+  	<costEffectivenessEurosQALY>
+  		<Text value="Coste-efectividad (€/QALY)" />
+  	</costEffectivenessEurosQALY>
+  	<costEffectivenessPoundsQALY>
+  		<Text value="Coste-efectividad (£/QALY)" />
+  	</costEffectivenessPoundsQALY>
+  	<costEffectivenessDollarsQALY>
+  		<Text value="Coste-efectividad ($/QALY)" />
+  	</costEffectivenessDollarsQALY>
+  	<cost>
+  		<Text value="Coste" />
+  	</cost>
+  	<beneffit>
+  		<Text value="Beneficio" />
+  	</beneffit>
+  	<effectiveness>
+  		<Text value="Efectividad"/>
+  	</effectiveness>
+    <euros>
+    	<Text value="€"/>
+    </euros>
+    <pounds>
+    	<Text value="£"/>
+    </pounds>
+    <dollars>
+    	<Text value="$"/>
+    </dollars>
+    <qaly>
+    	<Text value="QALY"/>
+    </qaly>
+  </defaultCriteria>
  
   <purpose>
     <effectiveness>

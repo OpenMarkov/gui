@@ -6,6 +6,9 @@
       <Label value="Dominios estándar" />
     </Text>
   </StandardDomain>
+  <StandardCriteria>
+  	<Text value="Criterios estándar" />
+  </StandardCriteria>
   <Apply>
     <Text>
       <Label value="Aplicar" />

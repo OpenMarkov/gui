@@ -423,7 +423,7 @@
 			<Label value="Seleccionar el tipo de propagación" />
 		</Text>
 		<Title>
-			<Label value="Configurando opciones para la inferencia" />
+			<Label value="Configurando opciones de propagación" />
 		</Title>
 		<optionAuto>
 			<Label value="Automatico" />

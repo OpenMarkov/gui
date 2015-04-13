@@ -38,7 +38,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
-import org.openmarkov.core.gui.dialog.InferenceOptionsDialog;
+import org.openmarkov.core.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
@@ -1969,12 +1969,13 @@ public class EditorPanel extends JPanel
 	            {
 	                throw new UnsupportedOperationException ();
 	            }
-	            inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
-					@Override
-					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
-						return new SimpleElimination(probNet, variables);
-					}
-				});
+	            // TODO - Delete this definition
+//	            inferenceAlgorithm.setHeuristicFactory(new HeuristicFactory() {
+//					@Override
+//					public EliminationHeuristic getHeuristic(ProbNet probNet, List<List<Variable>> variables) {
+//						return new SimpleElimination(probNet, variables);
+//					}
+//				});
 	    	}
     	}
     	catch (NotEvaluableNetworkException e)
@@ -2523,7 +2524,7 @@ public class EditorPanel extends JPanel
      */
     public void setInferenceOptions ()
     {
-        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog (
+        PropagationOptionsDialog inferenceOptionsDialog = new PropagationOptionsDialog (
                                                                                     Utilities.getOwner (this),
                                                                                     this,
                                                                                     networkPanel.getMainPanel ().getInferenceToolBar ());
