@@ -16,13 +16,15 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import org.openmarkov.core.model.network.PartitionedInterval;
+
 /**
  * This class is the visual representation of the inner box associated
- * to a VisualNode that represents an Expected Value variable
+ * to a VisualNode that represents a numeric variable
  * 
  * @author asaez 1.0
  */
-public class ExpectedValueBox extends InnerBox {
+public class NumericVariableBox extends InnerBox {
 
 	/**
 	 * Font type Helvetica, plain, size 9.
@@ -30,7 +32,7 @@ public class ExpectedValueBox extends InnerBox {
 	protected static final Font SCALE_FONT = new Font("Helvetica", Font.PLAIN, 9);
 	
 	/**
-	 * Vertical separation between the line for expected value and
+	 * Vertical separation between the line for value and
 	 * the line for the scale.
 	 */
 	private static final double SCALE_VERTICAL_SEPARATION = 12;	
@@ -48,70 +50,84 @@ public class ExpectedValueBox extends InnerBox {
 	private static final int SCALE_RANGE_VERTICAL_OFFSET = 4;
 	
 	/**
-	 * Minimum value that the expected value can take.
+	 * Minimum value that the numeric variable can take.
 	 */
-	private double minUtilityRange = Double.NEGATIVE_INFINITY;
+	private double minValue = Double.NEGATIVE_INFINITY;
 	
 	/**
-	 * Maximum value that the expected value can take.
+	 * Maximum value that the numeric variable can take.
 	 */
-	private double maxUtilityRange = Double.POSITIVE_INFINITY;	
+	private double maxValue = Double.POSITIVE_INFINITY;	
 	
 	/**
 	 * This variable contains the visual state that is part
 	 * of this inner box.
 	 */
-	VisualState visualState = null;
+	private VisualState visualState = null;
 
 	/**
-	 * Creates a new Expected Value Variable innerBox.
+	 * Creates a new numeric variable innerBox.
 	 * 
 	 * @param vNode
-	 *            visualNode to which this Expected Value Variable innerBox is associated.
+	 *            visualNode to which this numeric variable innerBox is associated.
 	 */
-	public ExpectedValueBox(VisualNode vNode) {
+	public NumericVariableBox(VisualNode vNode) {
+		this(vNode, "");
+	}
+	
+	/**
+	 * Creates a new numeric variable innerBox.
+	 * 
+	 * @param vNode
+	 *            visualNode to which this numeric variable innerBox is associated.
+	 */
+	public NumericVariableBox(VisualNode vNode, String stateName) {
 		visualNode = vNode;
-		visualState = new VisualState(visualNode, 0, "  EU");
+		visualState = new VisualState(visualNode, 0, stateName);
+		PartitionedInterval domain = vNode.getNode().getVariable().getPartitionedInterval();
+		setMinValue(domain.getMin());
+		setMaxValue(domain.getMax());
+	}
+	
+	
+	/**
+	 * Returns the minimum value that the numeric variable can take.
+	 * 
+	 * @return minimum value that the numeric variable can take.
+	 */
+	public double getMinValue() {
+		return minValue;
 	}
 	
 	/**
-	 * Returns the minimum value that the expected value can take.
+	 * Sets the minimum value that the numeric variable can take.
 	 * 
-	 * @return minimum value that the expected value can take.
+	 * @param minValue
+	 *            minimum value that the numeric variable can take.
 	 */
-	public double getMinUtilityRange() {
-		return minUtilityRange;
-	}
-	
-	/**
-	 * Sets the minimum value that the expected value can take.
-	 * 
-	 * @param minUtilityRange
-	 *            minimum value that the expected value can take.
-	 */
-	public void setMinUtilityRange(double minUtilityRange) {
+	public void setMinValue(double minValue) {
 		//minUtilityRange is currently formatted with 2 decimals
-		this.minUtilityRange = (Math.rint(minUtilityRange*100))/100;
+		this.minValue = (Math.rint(minValue*100))/100;
 	}
 	
 	/**
-	 * Returns the maximum value that the expected value can take.
+	 * Returns the maximum value that the numeric variable can take.
 	 * 
-	 * @return maximum value that the expected value can take.
+	 * @return maximum value that the numeric variable can take.
 	 */
-	public double getMaxUtilityRange() {
-		return maxUtilityRange;
+	public double getMaxValue() {
+		return maxValue;
 	}
 	
 	/**
-	 * Sets the maximum value that the expected value can take.
+	 * Sets the maximum value that the numeric variable can take.
 	 * 
-	 * @param maxUtilityRange
-	 *            maximum value that the expected value can take.
+	 * @param maxValue
+	 *            maximum value that the numeric variable can take.
 	 */
-	public void setMaxUtilityRange(double maxUtilityRange) {
+	public void setMaxValue(double maxValue) {
 		//maxUtilityRange is currently formatted with 2 decimals
-		this.maxUtilityRange = (Math.rint(maxUtilityRange*100))/100;
+		this.maxValue = (Math.rint(maxValue*100))/100;
 	}
 	
 	/**
@@ -120,8 +136,12 @@ public class ExpectedValueBox extends InnerBox {
 	 * @param numCases
 	 *            Number of evidence cases in memory.
 	 */
-	public void recreateVisualState(int numCases) {
-		visualState = new VisualState(visualNode, 0, "  EU", numCases);
+	public void update(int numCases) {
+		PartitionedInterval domain = visualNode.getNode().getVariable().getPartitionedInterval();
+		setMinValue(domain.getMin());
+		setMaxValue(domain.getMax());
+		String stateName = (visualState != null)? visualState.getStateName() : "";
+		visualState = new VisualState(visualNode, 0, stateName, numCases);
 	}
 
 	/**
@@ -225,12 +245,12 @@ public class ExpectedValueBox extends InnerBox {
 				);
 
 		g.setFont(SCALE_FONT);
-		g.drawString("" + minUtilityRange,
+		g.drawString("" + minValue,
 				scaleXPostion.intValue() - SCALE_RANGE_HORIZONTAL_OFFSET,
 				scaleYPostion.intValue() + g.getFont().getSize() + 
 						SCALE_RANGE_VERTICAL_OFFSET
 				);
-		g.drawString("" + maxUtilityRange,			
+		g.drawString("" + maxValue,			
 				(int) (scaleXPostion.intValue()+ BAR_FULL_LENGTH) - 
 						SCALE_RANGE_HORIZONTAL_OFFSET, 
 				scaleYPostion.intValue() + g.getFont().getSize() + 

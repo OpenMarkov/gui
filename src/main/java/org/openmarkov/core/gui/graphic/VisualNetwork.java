@@ -27,14 +27,14 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.util.MovedNodeInfo;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 
@@ -176,7 +176,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	protected void constructVisualInfo() {
 
-		List<Node> nodes = null;
+		List<Node> nodesToAdd = null;
 		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
 		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
 		List<Link<Node>> links = null;
@@ -188,16 +188,16 @@ public class VisualNetwork implements PNUndoableEditListener {
 		int visualNodesCount = -1;
 
 		
-		nodes = probNet.getNodes();
+		nodesToAdd = probNet.getNodes();
 		for (VisualNode vNode : visualNodes) {
 			nodeToCheck = vNode.getNode();
-			int index = nodes.indexOf(nodeToCheck);
+			int index = nodesToAdd.indexOf(nodeToCheck);
 			if ( index >=0 && 
-					vNode.getTemporalPosition().getX() == nodes.get(index).getCoordinateX() && 
-					vNode.getTemporalPosition().getX() == nodes.get( index ).getCoordinateX() ){
+					vNode.getTemporalPosition().getX() == nodesToAdd.get(index).getCoordinateX() && 
+					vNode.getTemporalPosition().getX() == nodesToAdd.get( index ).getCoordinateX()){
 			//if (nodes.contains(nodeToCheck)  ) {
 				//nodes.indexOf(o)
-				nodes.remove(nodeToCheck);
+				nodesToAdd.remove(nodeToCheck);
 			
 			} else {
 				vNodesToDelete.add(vNode);
@@ -207,7 +207,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		
 		
 		visualNodes.removeAll(vNodesToDelete);
-		for (Node node : nodes) {
+		for (Node node : nodesToAdd) {
 			vNode1 = createVisualNode(node);
 			visualNodes.add(vNode1);
 			vNode1.setByTitle(byTitle);
@@ -1051,35 +1051,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
-	
 	public void undoableEditHappened(UndoableEditEvent e) {
 			
-		
-		//if (edit instanceof AddVariableEdit){
-		/*if (edit instanceof AddNodeEdit){
-			
-			
-			String name=((AddVariableEdit)edit).getVariable().getName();
-			Node newNode;
-			try {
-				newNode = pNESupport.getProbNet().getNode(name);
-				nodeWrapper =
-				createNewNonamedNode(newNode, cursorPosition);
-			} catch (NodeNotFoundException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-				//JOptionPane.showMessageDialog(
-					//	Utilities.getOwner(this), e2.getMessage(), stringResource
-						//	.getString("ErrorWindow.Title.Label"),
-						//JOptionPane.ERROR_MESSAGE);
-					}
-			
-			}else if (edit instanceof AddLinkEdit){
-			
-				}*/
-	
-			constructVisualInfo();
-		
+		constructVisualInfo();
 	}
 
 		
@@ -1099,23 +1073,20 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 */
 	protected VisualNode createVisualNode(Node node) {
 
+		VisualNode visualNode = null;
 		switch (node.getNodeType()) {
-			case CHANCE: {
-				return new VisualChanceNode(node, this);
-			}
-			case DECISION: {
-			    return new VisualDecisionNode(node, this);
-			}
-			case UTILITY: {
-				return new VisualUtilityNode(node, this);
-			}
-			default: {
-				return null;
-			}
+		case CHANCE:
+			visualNode = new VisualChanceNode(node, this);
+			break;
+		case DECISION:
+			visualNode = new VisualDecisionNode(node, this);
+			break;
+		case UTILITY:
+			visualNode = new VisualUtilityNode(node, this);
+			break;
 		}
-
+		return visualNode;
 	}
-
 	
 	public void undoEditHappened(UndoableEditEvent event) {
 		//Object p=event.getSource();

@@ -57,7 +57,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
         JPanel namelessPanel = new JPanel();
         namelessPanel.setBorder(new EtchedBorder());
         
-        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() != VariableType.FINITE_STATES)
         {
         	// Get the min and max values for the interval
 
@@ -122,7 +122,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
             oldPotential = (DeltaPotential) node.getPotentials().get(0);
         }
     	// The model inits the valid range and the mean value
-        if(node.getVariable().getVariableType() == VariableType.NUMERIC){
+        if(node.getVariable().getVariableType() != VariableType.FINITE_STATES){
         	if (oldPotential != null){
         		
         		double value = oldPotential.getNumericValue();
@@ -154,7 +154,7 @@ public class DeltaPotentialPanel extends PotentialPanel {
         ProbNet probNet = node.getProbNet();
         Potential oldPotential = node.getPotentials().get(0);
         Potential newPotential = null;
-        if(node.getVariable().getVariableType() == VariableType.NUMERIC)
+        if(node.getVariable().getVariableType() != VariableType.FINITE_STATES)
         {
             double numericValue = Double.parseDouble(valueSpinner.getValue().toString());
             PartitionedInterval domain = node.getVariable().getPartitionedInterval();

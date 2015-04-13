@@ -64,7 +64,7 @@ public class VisualUtilityNode extends VisualNode {
         postResolutionFinding = false;
         setTemporalPosition(new Point2D.Double(node.getCoordinateX(),
                 node.getCoordinateY()));
-        innerBox = new ExpectedValueBox(this);
+        innerBox = new NumericVariableBox(this, "  EU");
     }
 
     /**

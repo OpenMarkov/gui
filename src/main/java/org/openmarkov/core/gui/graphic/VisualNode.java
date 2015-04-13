@@ -388,6 +388,15 @@ public abstract class VisualNode extends VisualElement {
     }
     
     /**
+     * Updates the visual node according to the changes in the node
+     * @param numEvidenceCases
+     */
+    public void update(int numCases)
+    {
+    	innerBox.update(numCases);
+    }
+    
+    /**
      * Returns stroke to be used for the contour
      * @return
      */
