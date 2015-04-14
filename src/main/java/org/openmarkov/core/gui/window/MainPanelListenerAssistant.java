@@ -1430,19 +1430,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
+    /**
+     * @param probNet
+     */
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
-//        try {
-//        	InferenceAlgorithm algorithm = new VariableEliminationCE(probNet, 0.0, Double.POSITIVE_INFINITY, null);
-//			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, algorithm);
-//			optimalStrategyDialog.setVisible(true);
-//		} catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
-//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-//                    "An error occurred when trying to show the optimal strategy",
-//                    "Error",
-//                    JOptionPane.ERROR_MESSAGE);
-//			e.printStackTrace();
-//		}
-    	
+
  		try {
  			VariableEliminationCE algorithm = new VariableEliminationCE(
  					probNet, 0.0, Double.POSITIVE_INFINITY, null);
@@ -1479,6 +1471,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
      }
 
+	/**
+	 * @param buffer. <code>StringBuffer</code>
+	 * @param mainPanel. <code>MainPanel</code>
+	 */
 	private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");
 		String text = buffer.toString();
@@ -1492,6 +1488,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 		frame.setVisible(true);
 	}
 
+	/**
+	 * @param text. <code>String</code>
+	 * @return <code>int</code>
+	 */
 	private int getMaxCharsInALine(String text) {
 		int maxLengthLine = 0;
 		if (text != null) {
