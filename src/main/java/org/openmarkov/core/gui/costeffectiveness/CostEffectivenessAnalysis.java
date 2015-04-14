@@ -489,14 +489,15 @@ public class CostEffectivenessAnalysis {
 			{
 				throw new NotEvaluableNetworkException("Utility node " + utilityNode.getName() + " does not have a decision criterion");
 			}
-			// TODO - Removed old method
-//			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
-//			if (decisionCriterion.equalsIgnoreCase("cost")
-//					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
-//				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
-//						decisionCriteriaNode.getVariable());
-//				utilityNode.setPotential(treeADDPotential);
-//			}
+			
+			// TODO - This is an old method used in old probNets for Cost-Effectiveness Analysis
+			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
+			if (decisionCriterion.equalsIgnoreCase("cost")
+					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
+				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
+						decisionCriteriaNode.getVariable());
+				utilityNode.setPotential(treeADDPotential);
+			}
 
 			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost) ||
 					utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
@@ -609,9 +610,24 @@ public class CostEffectivenessAnalysis {
 		Potential utilityPotential = utilNode.getPotentials().get(0);
 		List<Variable> treeVariables = utilityPotential.getVariables();
 		treeVariables.add(ceCriteriaVariable);
-		String decisionCriterion = utilNode.getVariable().getDecisionCriterion().getCriterionName();
-		String otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
-				: "cost";
+		String decisionCriterion = null;
+		String otherDecisionCriterion = null;
+		// TODO - Check old method used in cost-effectiveness analysis for old probNets
+		if(utilNode.getVariable().getDecisionCriterion().getCriterionName().equals("cost") ||
+				utilNode.getVariable().getDecisionCriterion().getCriterionName().equals("effectiveness")){
+			decisionCriterion = utilNode.getVariable().getDecisionCriterion().getCriterionName();
+			otherDecisionCriterion = decisionCriterion.equalsIgnoreCase("cost") ? "effectiveness"
+					: "cost";	
+		}else{
+			// New method used in cost-effectiveness analysis for new probNets
+			if(utilNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost)){
+				decisionCriterion =CECriterion.Cost.toString();
+				otherDecisionCriterion = CECriterion.Effectiveness.toString();
+			} else if(utilNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
+				decisionCriterion = CECriterion.Effectiveness.toString();
+				otherDecisionCriterion = CECriterion.Cost.toString();
+			}
+		}
 
 		TreeADDPotential treeADDPotential = new TreeADDPotential(utilityPotential.getUtilityVariable(), treeVariables,
 				ceCriteriaVariable);
