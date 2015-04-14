@@ -273,7 +273,7 @@ public class CostEffectivenessAnalysis {
 //
 //	}
 	
-	// TODO - Remove this method?
+	// TODO - Remove this method
 //	private void applyDiscount(List<TablePotential> utilityPotentials)
 //	{
 //		for (TablePotential utilityPotential : utilityPotentials) {
@@ -489,9 +489,17 @@ public class CostEffectivenessAnalysis {
 			{
 				throw new NotEvaluableNetworkException("Utility node " + utilityNode.getName() + " does not have a decision criterion");
 			}
-			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
-			if (decisionCriterion.equalsIgnoreCase("cost")
-					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
+			// TODO - Removed old method
+//			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
+//			if (decisionCriterion.equalsIgnoreCase("cost")
+//					|| decisionCriterion.equalsIgnoreCase("effectiveness")) {
+//				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
+//						decisionCriteriaNode.getVariable());
+//				utilityNode.setPotential(treeADDPotential);
+//			}
+
+			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Cost) ||
+					utilityNode.getVariable().getDecisionCriterion().getCECriterion().equals(CECriterion.Effectiveness)){
 				TreeADDPotential treeADDPotential = buildCETree(expandedNetwork, utilityNode,
 						decisionCriteriaNode.getVariable());
 				utilityNode.setPotential(treeADDPotential);
