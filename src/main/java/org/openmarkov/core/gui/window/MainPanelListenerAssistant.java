@@ -580,6 +580,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     private boolean saveNetwork(NetworkPanel networkPanel) {
         String fileName = networkPanel.getNetworkFile();
+        if (fileName != null) {
+            createBackUpNetworkFile(fileName,toBakExtension(networkPanel.getNetworkFile()));
+        }
         return (fileName != null) ? saveNetworkActions(networkPanel, fileName)
                 : saveNetworkAs(networkPanel);
     }
@@ -595,26 +598,29 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void saveOpenNetwork(NetworkPanel networkPanel) {
         String fileName = networkPanel.getNetworkFile();
         if (fileName != null) {
-            try {
-                File inFile = new File(fileName);
-                String newFileName = toBakExtension(networkPanel.getNetworkFile());
-                File outFile = new File(newFileName);
-                FileInputStream in = new FileInputStream(inFile);
-                FileOutputStream out = new FileOutputStream(outFile);
-                int c;
-                while ((c = in.read()) != -1)
-                    out.write(c);
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackupError.Text.Label"));
-            }
+            createBackUpNetworkFile(fileName,toBakExtension(networkPanel.getNetworkFile()));
         }
-        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackup.Text.Label"));
         saveNetwork(networkPanel);
         fileName = networkPanel.getNetworkFile();
         closeCurrentNetwork();
         openNetwork(fileName);
+    }
+
+    private void createBackUpNetworkFile(String fileName,String newFileName) {
+        try {
+            File inFile = new File(fileName);
+            File outFile = new File(newFileName);
+            FileInputStream in = new FileInputStream(inFile);
+            FileOutputStream out = new FileOutputStream(outFile);
+            int c;
+            while ((c = in.read()) != -1)
+                out.write(c);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+        }
+        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkBackup.Text.Label"));
     }
 
     private String toBakExtension(String nameFile) {
@@ -718,7 +724,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates a new frame in the workspace, suppling the network to be painted
      * into the frame.
      * 
-     * @param network
+     * @param probNet
      *            network to be painted into the frame
      * @return the network panel that is created.
      */
@@ -1109,8 +1115,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     /**
      * This method activates an edition option for the current network.
      * 
-     * @param newState
-     *            new edition state to set.
+     * @param newEditionMode
+     *            new edition mode to set.
      */
     private void activateEditionMode(String newEditionMode) {
         NetworkPanel networkPanel = null;
@@ -1121,10 +1127,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     }
 
     /**
-     * This method establishes the network working mode (edition or inference).
-     * 
-     * @param newWorkingMode
-     *            new working mode to set in the network.
+     * This method establishes the network working mode (edition or inference),
+     * by setting the opposite to the current one.
      */
     private void setNewWorkingMode() {
         int currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
@@ -1472,8 +1476,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      }
 
 	/**
-	 * @param buffer. <code>StringBuffer</code>
-	 * @param mainPanel. <code>MainPanel</code>
+	 * @param buffer <code>StringBuffer</code>
+	 * @param mainPanel <code>MainPanel</code>
 	 */
 	private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
 		JFrame frame = new JFrame("Cost-Effectiveness analysis");
@@ -1489,7 +1493,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 	}
 
 	/**
-	 * @param text. <code>String</code>
+	 * @param text <code>String</code>
 	 * @return <code>int</code>
 	 */
 	private int getMaxCharsInALine(String text) {
