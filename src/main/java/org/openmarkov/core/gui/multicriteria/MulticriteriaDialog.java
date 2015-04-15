@@ -10,6 +10,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -332,13 +333,18 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							}
 						}
 					}
+
+					// Used BigDecimal to avoid loosed precisin
+					BigDecimal discount = new BigDecimal(String.valueOf(criterion.getDiscount()));
+					discount = discount.multiply(new BigDecimal(100));
+
 					
 					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
 							comboBoxUse,
 							criterion.getCeScale(),
-							criterion.getDiscount() + " %",
+							discount + " %",
 							comboBoxDiscountUnits
 							});
 				}else{
@@ -380,12 +386,16 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							}
 						}
 					}
+
+					// Used BigDecimal to avoid loosed precisin
+					BigDecimal discount = new BigDecimal(String.valueOf(criterion.getDiscount()));
+					discount = discount.multiply(new BigDecimal(100));
 					
 					// Set the new row with criterion data
 					model.addRow(new Object[] {
 							criterion.getCriterionName(),
 							scale,
-							criterion.getDiscount() + " %",
+							discount + " %",
 							comboBoxDiscountUnits
 							});
 				}else{
@@ -525,7 +535,9 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
 							format.applyLocalizedPattern("#.###");
 							discount = format.format(Double.parseDouble(discount));
-							decisionCriteria.get(row - 1).setDiscount(Double.parseDouble(discount));
+							double discountDouble = Double.parseDouble(discount);
+							discountDouble /= 100;
+							decisionCriteria.get(row - 1).setDiscount(discountDouble);
 							// If the edited cell is a discount unit
 						} else if(column == CE_DISCOUNT_UNIT_COLUMN){
 							CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
@@ -562,7 +574,9 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 							DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
 							format.applyLocalizedPattern("#.###");
 							discount = format.format(Double.parseDouble(discount));
-							decisionCriteria.get(row - 1).setDiscount(Double.parseDouble(discount));
+							double discountDouble = Double.parseDouble(discount);
+							discountDouble /= 100;
+							decisionCriteria.get(row - 1).setDiscount(discountDouble);
 						} else if(column == UNICRITERIA_DISCOUNT_UNIT_COLUMN){
 							// If the edited cell is a discount unit
 							CycleLength.DiscountUnit unitSelected = CycleLength.DiscountUnit.YEAR;
