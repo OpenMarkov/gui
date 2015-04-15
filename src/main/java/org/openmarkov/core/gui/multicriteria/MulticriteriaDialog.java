@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -430,7 +428,7 @@ public class MulticriteriaDialog extends OkCancelHorizontalDialog {
 		        final Component editor = getEditorComponent();
 		        if (editor == null || !(editor instanceof JTextComponent) || 
 		        		(isTemporal && costEffectiveness.isSelected() && column == CE_USE_COLUMN) ||
-		        		(isTemporal && column == UNICRITERIA_DISCOUNT_UNIT_COLUMN)) {
+		        		(isTemporal && unicriterion.isSelected() && column == UNICRITERIA_DISCOUNT_UNIT_COLUMN)) {
 		            return result;
 		        }
 		        
