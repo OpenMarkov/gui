@@ -108,15 +108,15 @@
   </defaultStates>
   
   <defaultCriteria>
-  	<costBeneffitEuros>
+  	<costBenefitEuros>
   		<Text value="Coste-beneficio (€)"/>
-  	</costBeneffitEuros>
-  	<costBeneffitPounds>
+  	</costBenefitEuros>
+  	<costBenefitPounds>
   		<Text value="Coste-beneficio (£)"/>
-  	</costBeneffitPounds>
-  	<costBeneffitDollars>
+  	</costBenefitPounds>
+  	<costBenefitDollars>
   		<Text value="Coste-beneficio ($)"/>
-  	</costBeneffitDollars>
+  	</costBenefitDollars>
   	<costEffectivenessEurosQALY>
   		<Text value="Coste-efectividad (€/QALY)" />
   	</costEffectivenessEurosQALY>
@@ -129,9 +129,9 @@
   	<cost>
   		<Text value="Coste" />
   	</cost>
-  	<beneffit>
+  	<benefit>
   		<Text value="Beneficio" />
-  	</beneffit>
+  	</benefit>
   	<effectiveness>
   		<Text value="Efectividad"/>
   	</effectiveness>

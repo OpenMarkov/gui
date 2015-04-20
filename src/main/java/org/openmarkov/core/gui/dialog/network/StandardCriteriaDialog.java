@@ -133,27 +133,27 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 			}
 		}
 		
-		if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBeneffitEuros.Text"))){			
+		if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBenefitEuros.Text"))){			
 			Criterion costCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.cost.Text"), stringDatabase.getString ("defaultCriteria.euros.Text"));
-			Criterion beneffitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.beneffit.Text"), stringDatabase.getString ("defaultCriteria.euros.Text"));
+			Criterion benefitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.benefit.Text"), stringDatabase.getString ("defaultCriteria.euros.Text"));
 			costCriterion.setUnicriteriaScale(-1);
 		
 			defaultCriteria.add(costCriterion);
-			defaultCriteria.add(beneffitCriterion);
-		} else if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBeneffitPounds.Text"))){
+			defaultCriteria.add(benefitCriterion);
+		} else if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBenefitPounds.Text"))){
 			Criterion costCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.cost.Text"), stringDatabase.getString ("defaultCriteria.pounds.Text"));
-			Criterion beneffitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.beneffit.Text"), stringDatabase.getString ("defaultCriteria.pounds.Text"));
+			Criterion benefitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.benefit.Text"), stringDatabase.getString ("defaultCriteria.pounds.Text"));
 			costCriterion.setUnicriteriaScale(-1);
 		
 			defaultCriteria.add(costCriterion);
-			defaultCriteria.add(beneffitCriterion);
-		} else if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBeneffitDollars.Text"))){
+			defaultCriteria.add(benefitCriterion);
+		} else if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costBenefitDollars.Text"))){
 			Criterion costCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.cost.Text"), stringDatabase.getString ("defaultCriteria.dollars.Text"));
-			Criterion beneffitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.beneffit.Text"), stringDatabase.getString ("defaultCriteria.dollars.Text"));
+			Criterion benefitCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.benefit.Text"), stringDatabase.getString ("defaultCriteria.dollars.Text"));
 			costCriterion.setUnicriteriaScale(-1);
 		
 			defaultCriteria.add(costCriterion);
-			defaultCriteria.add(beneffitCriterion);			
+			defaultCriteria.add(benefitCriterion);			
 		} else if(selectedDefaultCriteria.equals(stringDatabase.getString ("defaultCriteria.costEffectivenessEurosQALY.Text"))){
 			Criterion costCriterion = new Criterion(stringDatabase.getString ("defaultCriteria.cost.Text"), stringDatabase.getString ("defaultCriteria.euros.Text"));
 			costCriterion.setCECriterion(CECriterion.Cost);

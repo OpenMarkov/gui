@@ -36,9 +36,9 @@ public class StandardCriteriaPanel extends JPanel {
         setLayout (new BoxLayout (this, BoxLayout.Y_AXIS));
         // ButtonGroup buttonGroup = new ButtonGroup();
         String[] defaultStates = {
-        		stringDatabase.getString ("defaultCriteria.costBeneffitEuros.Text"),
-        		stringDatabase.getString ("defaultCriteria.costBeneffitPounds.Text"),
-        		stringDatabase.getString ("defaultCriteria.costBeneffitDollars.Text"),
+        		stringDatabase.getString ("defaultCriteria.costBenefitEuros.Text"),
+        		stringDatabase.getString ("defaultCriteria.costBenefitPounds.Text"),
+        		stringDatabase.getString ("defaultCriteria.costBenefitDollars.Text"),
                 stringDatabase.getString ("defaultCriteria.costEffectivenessEurosQALY.Text"),
                 stringDatabase.getString ("defaultCriteria.costEffectivenessPoundsQALY.Text"),
                 stringDatabase.getString ("defaultCriteria.costEffectivenessDollarsQALY.Text")
