@@ -85,6 +85,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Intervention;
@@ -926,17 +927,45 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 //                    }
 //                }
 //            }
+            
+          ProbNet probNetCopy = probNet.deepCopy();
+          EvidenceCase evidenceCase = new EvidenceCase();
+          for(Finding finding : evidence.getFindings()){
 
+              String baseName = finding.getVariable().getBaseName();
+              int slice = finding.getVariable().getTimeSlice();
+              try {
+                  Variable variable = probNetCopy.getVariable(baseName, slice);
+                  if(variable.getVariableType().equals(VariableType.NUMERIC)){
+                      Finding findingCopy = new Finding(variable, finding.getNumericalValue());
+                      findingCopy.setStateIndex(finding.getStateIndex());
+                      evidenceCase.addFinding(findingCopy);
+
+                  } else if(variable.getVariableType().equals(VariableType.DISCRETIZED)
+                          || variable.getVariableType().equals(VariableType.FINITE_STATES)){
+                      Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
+                      evidenceCase.addFinding(findingCopy);
+                  }
+
+              } catch (NodeNotFoundException e) {
+                  e.printStackTrace();
+              } catch (IncompatibleEvidenceException e) {
+                  e.printStackTrace();
+              } catch (InvalidStateException e) {
+                  e.printStackTrace();
+              }
+
+          }
             double maxX = 0.0;
-            for (Node node : probNet.getNodes()) {
+            for (Node node : probNetCopy.getNodes()) {
                 if (node.getCoordinateX() > maxX) {
                     maxX = node.getCoordinateX();
                 }
             }
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
             try
             {
-	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidence);
+	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidenceCase);
 // 				TODO - Remove unused code. Now TemporalNetOperations get the discount of its criterion
 //	            double costDiscountRate = costEffectivenessDialog.getCostDiscount();
 //	            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
@@ -946,11 +975,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 	//            for (Node node : expandedNetwork.getNodes()) {
 	//                node.samplePotentials();
 	//            }
-	            String fileName = probNet.getName() + "_expandedCE";
+	            TemporalNetOperations.transformToID(expandedNetwork);
+	            
+	            
+	            String fileName = probNetCopy.getName() + "_expandedCE";
 	            expandedNetwork.setName(fileName);
 	            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
 	            networkPanel.setNetworkFile(fileName);
-	            networkPanel.getEditorPanel().setEvidence(evidence, new ArrayList<EvidenceCase>());
+	            networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
 	            networkPanels.add(networkPanel);
             }catch(NotEvaluableNetworkException e)
             {
