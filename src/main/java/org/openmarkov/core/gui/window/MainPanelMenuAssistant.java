@@ -424,6 +424,19 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.INSTANCE_CREATION,
                           networkPanel.getProbNet () instanceof OOPNet);
         // OOPN end
+
+        //TODO - Enable Multicriteria Options
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
+            setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        }else{
+            setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, true);
+        }
+
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
+            setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
+        }else{
+            setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, true);
+        }
     }
 
     /**
