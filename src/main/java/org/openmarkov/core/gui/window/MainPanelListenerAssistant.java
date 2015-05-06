@@ -909,9 +909,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 false);
         if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
-            int numSlices;
+            int numSlices = costEffectivenessDialog.getNumSlices();
 
-            numSlices = costEffectivenessDialog.getNumSlices();
 //            TODO - removed initial values
 //            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
 //            if (!temporalNodes.isEmpty()) {
@@ -927,19 +926,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 //                    }
 //                }
 //            }
-            
-          ProbNet probNetCopy = probNet.deepCopy();
-          EvidenceCase evidenceCase = new EvidenceCase();
-          for(Finding finding : evidence.getFindings()){
 
-              String baseName = finding.getVariable().getBaseName();
-              int slice = finding.getVariable().getTimeSlice();
-              try {
-                  Variable variable = probNetCopy.getVariable(baseName, slice);
-                  if(variable.getVariableType().equals(VariableType.NUMERIC)){
-                      Finding findingCopy = new Finding(variable, finding.getNumericalValue());
-                      findingCopy.setStateIndex(finding.getStateIndex());
-                      evidenceCase.addFinding(findingCopy);
+            ProbNet probNetCopy = probNet.deepCopy();
+//            ProbNet probNetCopy = probNet;
+            probNetCopy.getInferenceOptions().getTemporalOptions().setNumberOfSlices(numSlices);
+
+            EvidenceCase evidenceCase = new EvidenceCase();
+            for(Finding finding : evidence.getFindings()){
+                String baseName = finding.getVariable().getBaseName();
+                int slice = finding.getVariable().getTimeSlice();
+                try {
+                      Variable variable = probNetCopy.getVariable(baseName, slice);
+                    if(variable.getVariableType().equals(VariableType.NUMERIC)){
+                        Finding findingCopy = new Finding(variable, finding.getNumericalValue());
+                        findingCopy.setStateIndex(finding.getStateIndex());
+                        evidenceCase.addFinding(findingCopy);
 
                   } else if(variable.getVariableType().equals(VariableType.DISCRETIZED)
                           || variable.getVariableType().equals(VariableType.FINITE_STATES)){

@@ -77,6 +77,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     private JCheckBox               chkUseMultiThreading;
 //    private Map<Variable, Double>   initialValues;
     private Map<String, JTextField> initialValueComponents = new HashMap<>();
+    private ProbNet                 probNet;
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
@@ -110,6 +111,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     public TemporalCostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
             boolean isTemporalEvolution) {
         super(owner);
+        this.probNet = probNet;
 //        this.initialValues = new HashMap<>();
 //        List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
 //        for (Node numericalTemporalNode : temporalNodes) {
@@ -225,7 +227,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
 
     private JTextField getNumSlicesTextField() {
         if (numSlicesTextField == null) {
-            numSlices = 20;
+            numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
             numSlicesTextField = new JTextField();
             numSlicesTextField.setText("" + numSlices);
             numSlicesTextField.setColumns(10);
