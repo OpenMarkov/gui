@@ -884,9 +884,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates an expanded network from current network
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel));
-        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
-            int numSlices = costEffectivenessDialog.getNumSlices();
+        TemporalOptionsDialog costEffectivenessDialog = new TemporalOptionsDialog(probNet,Utilities.getOwner(mainPanel));
+        if (costEffectivenessDialog.requestData() == TemporalOptionsDialog.OK_BUTTON) {
             ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
             String fileName = probNet.getName() + "_expanded";
             expandedNetwork.setName(fileName);
@@ -903,13 +902,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * GUI
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
-                probNet,
-                false,
-                false);
+        TemporalOptionsDialog costEffectivenessDialog = new TemporalOptionsDialog(probNet,Utilities.getOwner(mainPanel));
         if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
-            int numSlices = costEffectivenessDialog.getNumSlices();
 
 //            TODO - removed initial values
 //            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
@@ -929,7 +924,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
             ProbNet probNetCopy = probNet.deepCopy();
 //            ProbNet probNetCopy = probNet;
-            probNetCopy.getInferenceOptions().getTemporalOptions().setNumberOfSlices(numSlices);
 
             EvidenceCase evidenceCase = new EvidenceCase();
             for(Finding finding : evidence.getFindings()){
