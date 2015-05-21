@@ -456,8 +456,9 @@ public class MainPanel extends JPanel {
 			toolBarComponentsWidth += toolBarComponent.getWidth();
 			toolBarComponentsHeight += toolBarComponent.getHeight();
 		}
+
 		// If the toolbar cannot show them in one single line
-		if ((getWidth() < toolBarComponentsWidth + safetyWidth) ||
+		if ((getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) ||
 		   (currentNetworkPanelWidth < currentNetworkPanelMaxWidth)) {
 			// we increase the height of the toolbar accordingly
 			getToolBarPanel().setPreferredSize(new Dimension(getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));

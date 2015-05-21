@@ -956,41 +956,45 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
         probNet.getPNESupport().openParenthesis();
 
-        MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
-        try {
-            probNet.getPNESupport().doEdit(editMulticriteria);
-        } catch (DoEditException | NonProjectablePotentialException
-                | WrongCriterionException e) {
-            e.printStackTrace();
+        if(isMulticriteria) {
+            MulticriteriaEdit editMulticriteria = new MulticriteriaEdit(probNet, decisionCriteria, multicriteriaOptions);
+            try {
+                probNet.getPNESupport().doEdit(editMulticriteria);
+            } catch (DoEditException | NonProjectablePotentialException
+                    | WrongCriterionException e) {
+                e.printStackTrace();
+            }
         }
 
-        int numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
-        try{
-            numSlices = Integer.parseInt(numSlicesTextField.getText());
-        } catch (NumberFormatException exception){
-            JOptionPane.showMessageDialog(
-                    null,
-                    stringDatabase.getString("NumberFormatException.Text.Label"),
-                    stringDatabase.getString("NumberFormatException.Title.Label"),
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+        if(isTemporal) {
+            int numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+            try {
+                numSlices = Integer.parseInt(numSlicesTextField.getText());
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        stringDatabase.getString("NumberFormatException.Text.Label"),
+                        stringDatabase.getString("NumberFormatException.Title.Label"),
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
 
-        this.temporalOptions.setNumberOfSlices(numSlices);
-        if(beginningOfCycleButton.isSelected()){
-            this.temporalOptions.setTransition(TransitionTime.BEGINNING);
-        }else if(halfCycleButton.isSelected()){
-            this.temporalOptions.setTransition(TransitionTime.HALF);
-        }else if(endOfCycleButton.isSelected()){
-            this.temporalOptions.setTransition(TransitionTime.END);
-        }
+            this.temporalOptions.setNumberOfSlices(numSlices);
+            if(beginningOfCycleButton.isSelected()){
+                this.temporalOptions.setTransition(TransitionTime.BEGINNING);
+            }else if(halfCycleButton.isSelected()){
+                this.temporalOptions.setTransition(TransitionTime.HALF);
+            }else if(endOfCycleButton.isSelected()){
+                this.temporalOptions.setTransition(TransitionTime.END);
+            }
 
-        TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
-        try {
-            probNet.getPNESupport().doEdit(editTemporal);
-        } catch (DoEditException | NonProjectablePotentialException
-                | WrongCriterionException e) {
-            e.printStackTrace();
+            TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
+            try {
+                probNet.getPNESupport().doEdit(editTemporal);
+            } catch (DoEditException | NonProjectablePotentialException
+                    | WrongCriterionException e) {
+                e.printStackTrace();
+            }
         }
 
         probNet.getPNESupport().closeParenthesis();

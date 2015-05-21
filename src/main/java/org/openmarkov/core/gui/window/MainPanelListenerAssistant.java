@@ -34,13 +34,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
@@ -72,6 +66,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -943,6 +938,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
         try
         {
+            try {
+                evidenceCase.extendEvidence(expandedNetwork);
+            } catch (IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            } catch (InvalidStateException e) {
+                e.printStackTrace();
+            } catch (WrongCriterionException e) {
+                e.printStackTrace();
+            }
             expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidenceCase);
 
             // TODO apply changes for transitions at cycle start, end or half cycle.
@@ -1135,6 +1139,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void setNewWorkingMode() {
         int currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
         int newWorkingMode;
+        boolean performInference = true;
         if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
             newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
             
@@ -1145,8 +1150,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
                 dialog.setVisible(true);
 
-            	// Set as launched
-            	getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(true);
+                if(dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+                    newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
+                    performInference = false;
+                }
+                // Set as launched
+                getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
+
             }
         } else {
             newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
@@ -1158,15 +1168,18 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
         getCurrentNetworkPanel().setSelectedAllObjects(false);
         mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
-        if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-        	
-            getCurrentNetworkPanel().updateIndividualProbabilities();
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
-        } else {
-            // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
-            // elimination of findings on returning to Edition Mode
-            if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
-                getCurrentNetworkPanel().setInferenceAlgorithm(null);
+
+        if(performInference) {
+            if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+
+                getCurrentNetworkPanel().updateIndividualProbabilities();
+                mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+            } else {
+                // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
+                // elimination of findings on returning to Edition Mode
+                if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
+                    getCurrentNetworkPanel().setInferenceAlgorithm(null);
+                }
             }
         }
         getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
