@@ -312,7 +312,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
             setPropagationOptions();
-            // TODO - MultiCriteria Options
         } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
             setInferenceOptions(getCurrentNetworkPanel());
         } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {

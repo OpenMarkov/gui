@@ -6,6 +6,7 @@
 
 package org.openmarkov.core.gui.menutoolbar.toolbar;
 
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -77,6 +78,14 @@ public class StandardToolBar extends ToolBarBasic
      */
     private JButton     decisionTreeButton = null;
     /**
+     * Button to perform a cost-effectiveness analysis.
+     */
+    private JButton costEffectivenessButton = null;
+    /**
+     * Button to perform a sensitivity analysis.
+     */
+    private JButton sensAnalysisButton = null;
+    /**
      * Icon loader.
      */
     private IconLoader        iconLoader         = null;
@@ -97,18 +106,20 @@ public class StandardToolBar extends ToolBarBasic
     private void initialize ()
     {
         iconLoader = new IconLoader ();
-        add (getNewNetworkButton ());
-        add (getOpenNetworkButton ());
-        add (getSaveNetworkButton ());
-        add (getCloseNetworkButton ());
-        addSeparator ();
-        add (getZoomOutButton ());
-        add (getZoomComboBox ());
-        add (getZoomInButton ());
-        addSeparator ();
-        add (getWorkingModeButton ());
+        add (getNewNetworkButton());
+        add (getOpenNetworkButton());
+        add (getSaveNetworkButton());
+        add(getCloseNetworkButton());
+        addSeparator();
+        add(getZoomOutButton());
+        add (getZoomComboBox());
+        add(getZoomInButton());
+        addSeparator();
+        add(getWorkingModeButton());
         add (getShowOptimalStrategyButton());
-        add (getDecisionTreeButton ());
+        add (getDecisionTreeButton());
+        add (getSensAnalysisButton());
+        add (getCostEffectivenessButton());
         add (Box.createHorizontalGlue ());
     }
 
@@ -284,8 +295,8 @@ public class StandardToolBar extends ToolBarBasic
         {
         	showOptimalStrategyButton = new JButton ();
         	showOptimalStrategyButton.setIcon (iconLoader.load (IconLoader.ICON_OPTIMAL_STRATEGY));
-        	showOptimalStrategyButton.setActionCommand (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY);
-        	showOptimalStrategyButton.setFocusable (false);
+        	showOptimalStrategyButton.setActionCommand(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY);
+        	showOptimalStrategyButton.setFocusable(false);
         	showOptimalStrategyButton.setToolTipText (stringDatabase.getString (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY
                                                                          + STRING_TOOLTIP_SUFFIX));
         	showOptimalStrategyButton.addActionListener (listener);
@@ -293,7 +304,7 @@ public class StandardToolBar extends ToolBarBasic
         }
         return showOptimalStrategyButton;
     }
-    
+
     /**
      * This method initialises decisionTreeButton.
      * @return a new button.
@@ -315,6 +326,49 @@ public class StandardToolBar extends ToolBarBasic
     }
 
     /**
+     * This method initialises costEffectivenessButton.
+     * @return a new button.
+     */
+    public JButton getCostEffectivenessButton() {
+        if (costEffectivenessButton == null)
+        {
+            costEffectivenessButton = new JButton ();
+            costEffectivenessButton.setIcon (iconLoader.load (IconLoader.ICON_COST_EFFECTIVENESS));
+            costEffectivenessButton.setActionCommand (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC);
+            costEffectivenessButton.setFocusable (false);
+            costEffectivenessButton.setToolTipText (stringDatabase.getString (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC
+                    + STRING_TOOLTIP_SUFFIX));
+            costEffectivenessButton.addActionListener (listener);
+            costEffectivenessButton.addMouseMotionListener (this);
+        }
+        costEffectivenessButton.setEnabled(false);
+        return costEffectivenessButton;
+    }
+
+    /**
+     * This method initialises costEffectivenessButton.
+     * @return a new button.
+     */
+    public JButton getSensAnalysisButton() {
+        if (sensAnalysisButton == null)
+        {
+            sensAnalysisButton = new JButton ();
+            sensAnalysisButton.setIcon (iconLoader.load (IconLoader.ICON_SENS_ANALYSIS));
+            //TODO - Check hardcoded string
+            sensAnalysisButton.setActionCommand ("Tools.SensitivityAnalysis");
+            sensAnalysisButton.setFocusable (false);
+            sensAnalysisButton.setToolTipText (stringDatabase.getString ("Tools.SensitivityAnalysis"
+                    + STRING_TOOLTIP_SUFFIX));
+            sensAnalysisButton.addActionListener (listener);
+            sensAnalysisButton.addMouseMotionListener (this);
+            sensAnalysisButton.setEnabled(false);
+        }
+        return sensAnalysisButton;
+    }
+
+
+
+    /**
      * This method sets the button for switching between Edition/inference to
      * the pertinent value (pressed or not)
      * @param workingMode the working mode of the currently selected
@@ -329,7 +383,7 @@ public class StandardToolBar extends ToolBarBasic
         }
         else
         {
-            workingModeButton.setSelected (false);
+            workingModeButton.setSelected(false);
         }
     }
 
@@ -373,7 +427,16 @@ public class StandardToolBar extends ToolBarBasic
         else if (actionCommand.equals (ActionCommands.DECISION_TREE))
         {
             component = decisionTreeButton;
-        }else if (actionCommand.equals (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY))
+        }
+        else if (actionCommand.equals (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC))
+        {
+            component = costEffectivenessButton;
+        }
+        else if (actionCommand.equals ("Tools.SensitivityAnalysis"))
+        {
+            component = sensAnalysisButton;
+        }
+        else if (actionCommand.equals (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY))
         {
             component = showOptimalStrategyButton;
         }
@@ -425,4 +488,6 @@ public class StandardToolBar extends ToolBarBasic
                                                                               + STRING_TOOLTIP_SUFFIX));
         }
     }
+
+
 }

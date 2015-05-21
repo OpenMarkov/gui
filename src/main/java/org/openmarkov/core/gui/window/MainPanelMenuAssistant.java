@@ -31,10 +31,12 @@ import org.openmarkov.core.gui.oopn.VisualReferenceLink;
 import org.openmarkov.core.gui.window.dt.DecisionTreeWindow;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MPADType;
@@ -170,6 +172,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);
+
         setOptionEnabled (ActionCommands.NODE_EXPANSION, false);
         setOptionEnabled (ActionCommands.NODE_CONTRACTION, false);
         setOptionEnabled (ActionCommands.NODE_ADD_FINDING, false);
@@ -188,10 +191,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.LINK_PROPERTIES, false);
         setOptionEnabled (VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, false);
-        //TODO - Disable Multicriteria Options
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
-        
+
         setOptionEnabled (ActionCommands.DECISION_IMPOSE_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_EDIT_POLICY, false);
         setOptionEnabled (ActionCommands.DECISION_REMOVE_POLICY, false);
@@ -202,6 +204,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.DECISION_TREE, false);
         setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
+
+        updateInferenceButtons();
     }
 
     /**
@@ -227,27 +231,57 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (VIEWING_ACTION_COMMANDS, true);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, true);
-        //TODO - Enable Multicriteria Options
-        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
+
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class) &&
+                currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class) ){
         	setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
-        }else{
-        	setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
+        }else {
+            setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
         }
-        
-        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
-        	setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
-        }else{
-        	setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, true);
-        }
-        
+
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
+
+        updateInferenceButtons();
     }
 
     private boolean getEnableWorkingModeButton() {
         org.openmarkov.core.model.network.type.NetworkType networkType = currentNetworkPanel.getProbNet().getNetworkType();
         return networkType instanceof InfluenceDiagramType
                 || networkType instanceof BayesianNetworkType;
+    }
+
+
+    // TODO - Check this method that enables/disables plugin Tools
+    public void updateInferenceButtons(){
+        if(getCurrentNetworkPanel() == null){
+            setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
+            setOptionEnabled("Tools.SensitivityAnalysis", false);
+
+            return;
+        }
+
+        if(getCurrentNetworkPanel().getProbNet().getDecisionCriteria() != null &&
+                getCurrentNetworkPanel().getProbNet().getDecisionCriteria().size() > 1){
+            setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
+        } else {
+            setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
+        }
+
+        boolean hasUncertainty = false;
+        for(Node node : getCurrentNetworkPanel().getProbNet().getNodes()){
+            for(Potential potential : node.getPotentials()){
+                if(potential.isUncertain()){
+                    hasUncertainty = true;
+                }
+            }
+        }
+
+        if(hasUncertainty){
+            setOptionEnabled("Tools.SensitivityAnalysis", true);
+        } else {
+            setOptionEnabled("Tools.SensitivityAnalysis", false);
+        }
     }
 
     /**
@@ -267,8 +301,10 @@ public class MainPanelMenuAssistant extends MenuAssistant
     {
         // updateUndoRedo(undoManager);
         // changed by mpalacios
+        updateInferenceButtons();
         updateUndoRedo (canUndo, canRedo);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, true);
+
     }
 
     /**
@@ -327,7 +363,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
     public void updateOptionsNetworkDependent (NetworkPanel networkPanel)
     {
         currentNetworkPanel = networkPanel;
-        ProbNet currentProbNet = currentNetworkPanel.getProbNet(); 
+        ProbNet currentProbNet = currentNetworkPanel.getProbNet();
         int workingMode = currentNetworkPanel.getWorkingMode ();
         if (networkPanel.getByTitle ())
         {
@@ -350,6 +386,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);
         setOptionEnabled (ActionCommands.DECISION_TREE, false);
+        updateInferenceButtons();
         setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         if (workingMode == NetworkPanel.EDITION_WORKING_MODE)
         {
@@ -425,7 +462,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                           networkPanel.getProbNet () instanceof OOPNet);
         // OOPN end
 
-        //TODO - Enable Multicriteria Options
+        //TODO - Enable Inference Options
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
             setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         }else{

@@ -189,6 +189,17 @@ public class IconLoader
     public static final String  ICON_OPTIMAL_STRATEGY                     = "optimalStrategy.gif";
 
     /**
+     * Name of the 'cost-effectiveness analysis" icon
+     */
+    public static final String ICON_COST_EFFECTIVENESS                    = "costEffectiveness.gif";
+
+    /**
+     * Name of the 'Sensitivity analysis" icon
+     */
+    public static final String ICON_SENS_ANALYSIS                    = "sensAnalysis.gif";
+
+
+    /**
      * This method loads an icon resource.
      * @param iconName name of the icon to load.
      * @return a reference to the icon resource.
