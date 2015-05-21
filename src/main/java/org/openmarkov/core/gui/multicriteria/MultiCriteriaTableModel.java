@@ -23,7 +23,7 @@ public class MultiCriteriaTableModel extends DefaultTableModel {
 	public boolean isCellEditable(int row, int column) {
 
 		// The user wouldn't be able to edit the criteria
-		if (column == MulticriteriaDialog.CRITERION_COLUMN || row == 0) {
+		if (column == InferenceOptionsDialog.CRITERION_COLUMN || row == 0) {
 			return false;
 		} else {
 			return true;
