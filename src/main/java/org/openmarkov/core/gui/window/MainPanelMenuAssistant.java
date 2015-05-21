@@ -187,9 +187,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
         setOptionEnabled (ActionCommands.LINK_PROPERTIES, false);
         setOptionEnabled (VIEWING_ACTION_COMMANDS, false);
-        setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
+        setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, false);
         //TODO - Disable Multicriteria Options
-        setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
         
         setOptionEnabled (ActionCommands.DECISION_IMPOSE_POLICY, false);
@@ -226,12 +226,12 @@ public class MainPanelMenuAssistant extends MenuAssistant
         }
         setOptionEnabled (VIEWING_ACTION_COMMANDS, true);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
-        setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
+        setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, true);
         //TODO - Enable Multicriteria Options
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
-        	setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        	setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         }else{
-        	setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, true);
+        	setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
         }
         
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
@@ -427,9 +427,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
 
         //TODO - Enable Multicriteria Options
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
-            setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+            setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         }else{
-            setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, true);
+            setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
         }
 
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
@@ -1164,9 +1164,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (INFERENCE_ACTION_COMMANDS, false);
         // setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
-        setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
+        setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, false);
         // TODO - Disable Multicriteria Options
-        setOptionEnabled (ActionCommands.MULTICRITERIA_OPTIONS, false);
+        setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_EDITION_MODE, false);

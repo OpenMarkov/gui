@@ -238,7 +238,7 @@ public class MenuItemNames
     /**
      * Constant that defines the item 'Inference - Inference Options '.
      */
-    public static final String INFERENCE_OPTIONS_MENUITEM = 
+    public static final String PROPAGATION_OPTIONS_MENUITEM =
         INFERENCE_MENU + ".Options";
     
     /**
@@ -312,15 +312,13 @@ public class MenuItemNames
      */
     public static final String INFERENCE_REMOVE_ALL_FINDINGS_MENUITEM = 
         INFERENCE_MENU + ".RemoveAllFindings";
-    
+
+
     /**
-     * TODO - Constant that defines the item "MultiCriteria Options"
+     * Constant tha defines the menu 'Inference - Inference Options"
      */
-    public static final String MULTICRITERIA_OPTIONS_MENUITEM = 
-    		INFERENCE_MENU + ".MultiCriteriaOptions";
-    
-    public static final String TEMPORAL_OPTIONS_MENUITEM = 
-    		INFERENCE_MENU + ".TemporalOptions";
+    public static final String INFERENCE_OPTIONS_MENUITEM =
+    		INFERENCE_MENU + ".InferenceOptions";
 
     /**
      * Constant that defines the menu 'View'.

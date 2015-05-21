@@ -62,8 +62,7 @@ import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.multicriteria.MulticriteriaDialog;
-import org.openmarkov.core.gui.multicriteria.TemporalOptionsDialog;
+import org.openmarkov.core.gui.multicriteria.InferenceOptionsDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
@@ -81,12 +80,10 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
@@ -313,13 +310,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     true);
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
-        } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
-            setInferenceOptions();
+        } else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
+            setPropagationOptions();
             // TODO - MultiCriteria Options
-        } else if (actionCommand.equals(ActionCommands.MULTICRITERIA_OPTIONS)) {
-            setMultiCriteriaOptions(getCurrentNetworkPanel());
-        } else if (actionCommand.equals(ActionCommands.TEMPORAL_OPTIONS)) {
-            setTemporalOptions(getCurrentNetworkPanel());
+        } else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
+            setInferenceOptions(getCurrentNetworkPanel());
         } else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
             showLanguageChangeDialog();
         } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
@@ -884,17 +879,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates an expanded network from current network
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        TemporalOptionsDialog costEffectivenessDialog = new TemporalOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-        if (costEffectivenessDialog.requestData() == TemporalOptionsDialog.OK_BUTTON) {
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
-            String fileName = probNet.getName() + "_expanded";
-            expandedNetwork.setName(fileName);
-            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-            networkPanel.setNetworkFile(fileName);
-            networkPanel.getEditorPanel().setEvidence(preResolutionEvidence,
-                    new ArrayList<EvidenceCase>());
-            networkPanels.add(networkPanel);
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
+        costEffectivenessDialog.setVisible(true);
+        if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+            return;
         }
+
+        ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+        String fileName = probNet.getName() + "_expanded";
+        expandedNetwork.setName(fileName);
+        NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+        networkPanel.setNetworkFile(fileName);
+        networkPanel.getEditorPanel().setEvidence(preResolutionEvidence,
+                new ArrayList<EvidenceCase>());
+        networkPanels.add(networkPanel);
     }
 
     /**
@@ -902,87 +900,65 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * GUI
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        TemporalOptionsDialog costEffectivenessDialog = new TemporalOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
-            EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
+        costEffectivenessDialog.setVisible(true);
 
-//            TODO - removed initial values
-//            List<Node> temporalNodes = CostEffectivenessAnalysis.getInitialTemporalNodesWithUniformPotentials(probNet);
-//            if (!temporalNodes.isEmpty()) {
-//                for (Node timeDependentNode : temporalNodes) {
-//                    Variable timeDependentVariable = timeDependentNode.getVariable();
-//                    Removed initial values?
-//                    Finding finding = new Finding(timeDependentVariable,
-//                            costEffectivenessDialog.getInitialValues().get(timeDependentVariable));
-//                    try {
-//                        evidence.addFinding(finding);
-//                    } catch (InvalidStateException | IncompatibleEvidenceException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
+        if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+            return;
+        }
 
-            ProbNet probNetCopy = probNet.deepCopy();
-//            ProbNet probNetCopy = probNet;
+        EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
 
-            EvidenceCase evidenceCase = new EvidenceCase();
-            for(Finding finding : evidence.getFindings()){
-                String baseName = finding.getVariable().getBaseName();
-                int slice = finding.getVariable().getTimeSlice();
-                try {
-                      Variable variable = probNetCopy.getVariable(baseName, slice);
-                    if(variable.getVariableType().equals(VariableType.NUMERIC)){
-                        Finding findingCopy = new Finding(variable, finding.getNumericalValue());
-                        findingCopy.setStateIndex(finding.getStateIndex());
-                        evidenceCase.addFinding(findingCopy);
+        ProbNet probNetCopy = probNet.deepCopy();
 
-                  } else if(variable.getVariableType().equals(VariableType.DISCRETIZED)
-                          || variable.getVariableType().equals(VariableType.FINITE_STATES)){
-                      Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
-                      evidenceCase.addFinding(findingCopy);
-                  }
+        EvidenceCase evidenceCase = new EvidenceCase();
+        for(Finding finding : evidence.getFindings()){
+            String baseName = finding.getVariable().getBaseName();
+            int slice = finding.getVariable().getTimeSlice();
+            try {
+                  Variable variable = probNetCopy.getVariable(baseName, slice);
+                if(variable.getVariableType().equals(VariableType.NUMERIC)){
+                    Finding findingCopy = new Finding(variable, finding.getNumericalValue());
+                    findingCopy.setStateIndex(finding.getStateIndex());
+                    evidenceCase.addFinding(findingCopy);
 
-              } catch (NodeNotFoundException e) {
-                  e.printStackTrace();
-              } catch (IncompatibleEvidenceException e) {
-                  e.printStackTrace();
-              } catch (InvalidStateException e) {
-                  e.printStackTrace();
-              }
-
-          }
-            double maxX = 0.0;
-            for (Node node : probNetCopy.getNodes()) {
-                if (node.getCoordinateX() > maxX) {
-                    maxX = node.getCoordinateX();
+                } else if(variable.getVariableType().equals(VariableType.DISCRETIZED)
+                      || variable.getVariableType().equals(VariableType.FINITE_STATES)){
+                  Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
+                  evidenceCase.addFinding(findingCopy);
                 }
+            } catch (NodeNotFoundException e) {
+                e.printStackTrace();
+            } catch (IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            } catch (InvalidStateException e) {
+                e.printStackTrace();
             }
-            ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
-            try
-            {
-	            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidenceCase);
-// 				TODO - Remove unused code. Now TemporalNetOperations get the discount of its criterion
-//	            double costDiscountRate = costEffectivenessDialog.getCostDiscount();
-//	            double effectivenessDiscountRate = costEffectivenessDialog.getEffectivenessDiscount();
-	            
-	            // TODO apply changes for transitions at cycle start, end or half cycle.
-	            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-	//            for (Node node : expandedNetwork.getNodes()) {
-	//                node.samplePotentials();
-	//            }
-	            TemporalNetOperations.transformToID(expandedNetwork);
-	            
-	            
-	            String fileName = probNetCopy.getName() + "_expandedCE";
-	            expandedNetwork.setName(fileName);
-	            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-	            networkPanel.setNetworkFile(fileName);
-	            networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
-	            networkPanels.add(networkPanel);
-            }catch(NotEvaluableNetworkException e)
-            {
-            	
+        }
+        double maxX = 0.0;
+        for (Node node : probNetCopy.getNodes()) {
+            if (node.getCoordinateX() > maxX) {
+                maxX = node.getCoordinateX();
             }
+        }
+        ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
+        try
+        {
+            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidenceCase);
+
+            // TODO apply changes for transitions at cycle start, end or half cycle.
+            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+            TemporalNetOperations.transformToID(expandedNetwork);
+
+
+            String fileName = probNetCopy.getName() + "_expandedCE";
+            expandedNetwork.setName(fileName);
+            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+            networkPanel.setNetworkFile(fileName);
+            networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
+            networkPanels.add(networkPanel);
+        }catch(NotEvaluableNetworkException e) {
+
         }
     }
 
@@ -1167,18 +1143,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getLaunchedBefore()){
             	
             	// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-            	if(!getCurrentNetworkPanel().getProbNet().getVariables(NodeType.UTILITY).isEmpty() 
-            			&& getCurrentNetworkPanel().getProbNet().getDecisionCriteria().size() > 1){
-            		MulticriteriaDialog dialog = new MulticriteriaDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
-                    dialog.setVisible(true);
-            	}
-            	
-            	// Show temporal options dialog
-            	if(!getCurrentNetworkPanel().getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
-            		TemporalOptionsDialog dialog = new TemporalOptionsDialog(getCurrentNetworkPanel().getProbNet(),Utilities.getOwner(mainPanel));
-            		dialog.setVisible(true);
-            	}
-            	
+                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
+                dialog.setVisible(true);
+
             	// Set as launched
             	getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(true);
             }
@@ -1249,7 +1216,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     /**
      * This method sets the inference options.
      */
-    private void setInferenceOptions() {
+    private void setPropagationOptions() {
         getCurrentNetworkPanel().setInferenceOptions();
         mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
     }
@@ -1258,19 +1225,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * This method sets the multicriteria options
      * @param networkPanel 
      */
-    private void setMultiCriteriaOptions(NetworkPanel networkPanel) {
-        MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+    private void setInferenceOptions(NetworkPanel networkPanel) {
+        InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+        //MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
         dialog.setVisible(true);
-	}
-    
-    /**
-     * Sets Temporal Options
-     * @param currentNetworkPanel
-     */
-	private void setTemporalOptions(NetworkPanel currentNetworkPanel) {
-		TemporalOptionsDialog dialog = new TemporalOptionsDialog(currentNetworkPanel.getProbNet(),Utilities.getOwner(mainPanel));
-		dialog.setVisible(true);
-		
 	}
 
     /**

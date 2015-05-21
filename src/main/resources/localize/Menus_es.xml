@@ -176,9 +176,9 @@
       <Label value="Opciones de propagación" />
       <Mnemonic value="i" />
     </Options>
-    <MultiCriteriaOptions>
-  		<Label value="Opciones de multicriterio" />
-  	</MultiCriteriaOptions>
+    <InferenceOptions>
+      <Label value="Opciones de inferencia" />
+    </InferenceOptions>
   	<TemporalOptions>
   		<Label value="Opciones temporales" />
   	</TemporalOptions>

@@ -456,12 +456,12 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to set the inference options.
 	 */
-	public static final String INFERENCE_OPTIONS = "InferenceOptions";
+	public static final String PROPAGATION_OPTIONS = "PropagationOptions";
 	
 	/**
 	 * TODO - Action invoked when the user wants to set the multicriteria options
 	 */
-	public static final String MULTICRITERIA_OPTIONS = "MultiCriteriaOptions";
+	public static final String INFERENCE_OPTIONS = "InferenceOptions";
 
 	/**
 	 * TODO - Action invoked when the user wants to set the temporal options
