@@ -268,8 +268,8 @@
 				<MILISECOND value="milisegundos" />
 			</Unit>
 			<DiscountUnit>
-				<YEAR value="año" />
-				<CYCLE value="ciclo" />
+				<YEAR value="por año" />
+				<CYCLE value="por ciclo" />
 			</DiscountUnit>
 		</TemporalOptions>
 	</NetworkAdvancedPanel>
@@ -409,7 +409,7 @@
 		<TableHeader>
 			<Criterion value="Criterio" />
 			<Scale value="Escala" />
-			<Use value="Uso" />
+			<Use value="Rol" />
 			<Discount value="Descuento" />
 			<Unit value="Unidades" />
 		</TableHeader>

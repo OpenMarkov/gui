@@ -271,8 +271,8 @@
 				<MILISECOND value="miliseconds" />
 			</Unit>
 			<DiscountUnit>
-				<YEAR value="year" />
-				<CYCLE value="cycle" />
+				<YEAR value="per year" />
+				<CYCLE value="per cycle" />
 			</DiscountUnit>
 		</TemporalOptions>
 	</NetworkAdvancedPanel>
@@ -411,7 +411,7 @@
 		<TableHeader>
 			<Criterion value="Criterion" />
 			<Scale value="Scale" />
-			<Use value="Use" />
+			<Use value="Role" />
 			<Discount value="Discount" />
 			<Unit value="Units" />
 		</TableHeader>
