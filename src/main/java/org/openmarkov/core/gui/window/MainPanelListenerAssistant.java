@@ -874,7 +874,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-        costEffectivenessDialog.setVisible(true);
         if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
             return;
         }
@@ -895,7 +894,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
         InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-        costEffectivenessDialog.setVisible(true);
 
         if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
             return;
@@ -1148,7 +1146,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             	
             	// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
                 InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
-                dialog.setVisible(true);
 
                 if(dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
                     newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
@@ -1240,7 +1237,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void setInferenceOptions(NetworkPanel networkPanel) {
         InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
         //MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
-        dialog.setVisible(true);
 	}
 
     /**

@@ -238,19 +238,28 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
+        boolean requiredInfereceOptions = false;
         if (isTemporal) {
             mainPanel.add(getTemporalPanel());
+            requiredInfereceOptions = true;
         }
 
         if(isMulticriteria) {
             mainPanel.add(getMulticriteriaPanel());
+            requiredInfereceOptions = true;
         }
+
+
 
         this.add(mainPanel);
         this.setIconImage(null);
         this.setResizable(false);
 
         this.pack();
+
+        if(!requiredInfereceOptions){
+            this.getJButtonOK().doClick();
+        }
     }
 
     /**
@@ -950,7 +959,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
     @Override
     protected boolean doOkClickBeforeHide() {
         // If the is user is editing a cell, stop the edition to save the data
-        if(table.getCellEditor() != null){
+        if(table != null && table.getCellEditor() != null){
             table.getCellEditor().stopCellEditing();
         }
 
