@@ -259,6 +259,9 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
         if(!requiredInfereceOptions){
             this.getJButtonOK().doClick();
+            this.dispose();
+        }else {
+            this.setVisible(true);
         }
     }
 
