@@ -945,7 +945,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             } catch (WrongCriterionException e) {
                 e.printStackTrace();
             }
-            expandedNetwork = CostEffectivenessAnalysis.adaptMPADforCE(expandedNetwork, evidenceCase);
+            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
 
             // TODO apply changes for transitions at cycle start, end or half cycle.
             TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);

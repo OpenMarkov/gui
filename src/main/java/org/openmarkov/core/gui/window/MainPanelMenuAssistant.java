@@ -39,7 +39,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.MPADType;
+import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.oopn.OOPNet;
 
 /**
@@ -218,7 +218,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         {
             workingMode = currentNetworkPanel.getWorkingMode ();
             boolean enable = currentNetworkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType
-                             || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MPADType;
+                             || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MIDType;
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, enable);
         }
@@ -404,7 +404,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.DECISION_TREE, true);
                 setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
-            if ((currentProbNet.getNetworkType () instanceof MPADType
+            if ((currentProbNet.getNetworkType () instanceof MIDType
                 || currentProbNet.getNetworkType () instanceof InfluenceDiagramType)
                 && currentProbNet.getDecisionCriteria() != null
                 && currentProbNet.getDecisionCriteria().size() > 1)

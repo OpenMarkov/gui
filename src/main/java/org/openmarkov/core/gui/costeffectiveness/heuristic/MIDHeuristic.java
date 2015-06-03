@@ -16,11 +16,11 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
-public class MPADHeuristic extends EliminationHeuristic {
+public class MIDHeuristic extends EliminationHeuristic {
 
     private List<Variable> eliminationOrder;
 
-    public MPADHeuristic(ProbNet probNet, List<List<Variable>> variablesToEliminate) {
+    public MIDHeuristic(ProbNet probNet, List<List<Variable>> variablesToEliminate) {
         super(probNet, variablesToEliminate);
         eliminationOrder = getEliminationOrder(probNet, variablesToEliminate);
     }

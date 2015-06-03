@@ -338,7 +338,7 @@
 				<BayesianNetwork value="Bayesian network" />
 				<DEC_POMDP value="Dec-POMDP" />
 				<MDP value="Markov Decision Process" />
-				<MPAD value="MPAD" />
+				<MID value="MID" />
 			</Items>
 			<Mnemonic value="t" />
 			<Text value="Network type:" />

@@ -76,7 +76,7 @@ public class CostEffectivenessAnalysis {
 		this.probNet = probNet;
 		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
 		this.evidence = expandEvidence(expandedNetwork, evidence);
-		this.expandedNetwork = adaptMPADforCE(expandedNetwork, this.evidence);
+		this.expandedNetwork = adaptMIDforCE(expandedNetwork, this.evidence);
 		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence);
 		this.interventions = createInterventions(globalUtility);
 		this.frontierInterventions = calculateFrontierInterventions(interventions);
@@ -458,7 +458,7 @@ public class CostEffectivenessAnalysis {
 	 * @param expandedNetwork
 	 * @throws Exception 
 	 */
-	public static ProbNet adaptMPADforCE(ProbNet expandedNetwork,
+	public static ProbNet adaptMIDforCE(ProbNet expandedNetwork,
 			EvidenceCase evidence) throws NotEvaluableNetworkException {
 
 		// Convert numeric variables
