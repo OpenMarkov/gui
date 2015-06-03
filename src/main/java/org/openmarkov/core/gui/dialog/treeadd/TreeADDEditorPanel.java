@@ -852,11 +852,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                     }
                 }
             }
-            branchPotentialVariables.addAll(newVariables);
-            UniformPotential potential = new UniformPotential(branchPotentialVariables,
-                    parentTreeADD.getPotentialRole());
-            if (parentTreeADD.isUtility()) {
-                potential.setUtilityVariable(parentTreeADD.getUtilityVariable());
+            Potential potential = branch.getPotential();
+            for(Variable newVariable : newVariables)
+            {
+            	potential = potential.addVariable(newVariable);
             }
             branch.setPotential(potential);
             model.notifyTreeInsert(path, potential);
