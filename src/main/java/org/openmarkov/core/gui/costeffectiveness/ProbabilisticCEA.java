@@ -194,7 +194,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 		}
 	}
 	
-	private TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence, TransitionTime transitionTime, int numSlices)
+	protected TablePotential runSimulationAnalysis(ProbNet expandedNetwork, EvidenceCase evidence)
 			throws NonProjectablePotentialException, WrongCriterionException	{
 		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
         for(Node node : expandedNetwork.getNodes())
@@ -219,7 +219,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 
 		@Override
 		public TablePotential call() throws Exception {
-			return runFullAnalysis(expandedNetwork.copy(), evidence);
+			return runSimulationAnalysis(expandedNetwork, evidence);
 		}
 	}
 
