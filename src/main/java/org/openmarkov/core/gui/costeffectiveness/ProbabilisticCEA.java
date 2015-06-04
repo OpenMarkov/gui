@@ -19,19 +19,15 @@ import java.util.concurrent.Future;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runnable{
 
@@ -149,6 +145,9 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 					success = true;
 				} catch (InterruptedException | ExecutionException e) {
 					System.out.println("WARNING: PSA failed with " + numThreads + " threads.");
+					e.printStackTrace();
+					System.out.println(e.getMessage());
+					results.clear();
 					numThreads /= 2;
 				}
 			}
@@ -201,9 +200,9 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         {
         	networkPotentials.put(node.getVariable(), node.getPotentials());
         }
-        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
 		removeIntermediateUtilityNodes(expandedNetwork);
         TemporalNetOperations.applyTransitionTime(expandedNetwork);
+        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
         sampleAndTableProject(sortedNodes, networkPotentials, evidence);
 		return runAnalysis(expandedNetwork, evidence);
 	}
@@ -219,7 +218,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 
 		@Override
 		public TablePotential call() throws Exception {
-			return runSimulationAnalysis(expandedNetwork, evidence);
+			return runSimulationAnalysis(expandedNetwork.copy(), evidence);
 		}
 	}
 
