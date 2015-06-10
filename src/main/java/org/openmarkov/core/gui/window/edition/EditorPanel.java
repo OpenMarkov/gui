@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -2003,7 +2004,7 @@ public class EditorPanel extends JPanel
      */
     public boolean doPropagation (EvidenceCase evidenceCase, int caseNumber)
     {
-        HashMap<Variable, TablePotential> individualProbabilities = null;
+        Map<Variable, TablePotential> individualProbabilities = null;
         boolean propagationSucceded = false;
         try
         {
@@ -2103,7 +2104,7 @@ public class EditorPanel extends JPanel
      *            variable.
      */
     private void paintInferenceResults (int caseNumber,
-                                        HashMap<Variable, TablePotential> individualProbabilities,
+                                        Map<Variable, TablePotential> individualProbabilities,
                                         EvidenceCase evidence)
     {
         for (VisualNode visualNode : visualNetwork.getAllNodes ())
@@ -2133,7 +2134,7 @@ public class EditorPanel extends JPanel
      * @param visualNode
      */
     private void paintInferenceResultsUtilityNode (int caseNumber,
-                                                   HashMap<Variable, TablePotential> individualProbabilities,
+                                                   Map<Variable, TablePotential> individualProbabilities,
                                                    VisualNode visualNode)
     {
         // It is a utility node
@@ -2155,7 +2156,7 @@ public class EditorPanel extends JPanel
      * @param visualNode
      */
     private void paintInferenceResultsChanceOrDecisionNode (int caseNumber,
-                                                            HashMap<Variable, TablePotential> individualProbabilities,
+                                                            Map<Variable, TablePotential> individualProbabilities,
                                                             EvidenceCase evidence,
                                                             VisualNode visualNode)
     {
