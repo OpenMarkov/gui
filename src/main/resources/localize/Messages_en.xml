@@ -229,6 +229,11 @@
       <Label value="Network could not be loaded" />
     </Text>
   </ErrorLoadingNetwork>
+    <ErrorLoadingNetworkURL>
+        <Text>
+            <Label value="Network from URL could not be loaded" />
+        </Text>
+    </ErrorLoadingNetworkURL>
   <Edit>
     <AddProbNodeEdit>
       <Undo value="Undo add node" />
@@ -442,6 +447,11 @@
       <Label value="Loading network" />
     </Text>
   </LoadingNetwork>
+    <LoadingNetworkURL>
+        <Text>
+            <Label value="Loading network from URL" />
+        </Text>
+    </LoadingNetworkURL>
   <ExceptionNotEnoughMemory>
     <Text>
       <Label value="System run out of memory. " />

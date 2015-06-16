@@ -36,6 +36,10 @@ public class IconLoader
      */
     public static final String  ICON_OPEN_ENABLED                         = "open.gif";
     /**
+     * Name of the 'open' enabled icon.
+     */
+    public static final String  ICON_OPEN_URL_ENABLED                     = "openURL.gif";
+    /**
      * Name of the 'save' enabled icon.
      */
     public static final String  ICON_SAVE_ENABLED                         = "save.gif";

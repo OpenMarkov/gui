@@ -235,6 +235,11 @@
 			<Label value="Zoom :" />
 		</Title>
 	</ZoomValues>
+	<NetworkURLValues>
+		<Title>
+			<Label value="URL. (Your home folder will be set as the last used directory)" />
+		</Title>
+	</NetworkURLValues>
 	<NetworkAdvancedPanel>
 		<DecisionCriteria>
 			<Text value="Decision criteria" />
@@ -930,6 +935,12 @@
 			<Label value="Select zoom" />
 		</Title>
 	</SelectZoom>
+	<SelectNetworkURL>
+		<Title>
+			<Label value="Network URL" />
+		</Title>
+	</SelectNetworkURL>
+
 	<NetworkAgentsDialog>
 		<Title>
 			<Label value="Agents" />

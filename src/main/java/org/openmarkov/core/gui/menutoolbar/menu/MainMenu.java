@@ -73,6 +73,11 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private JMenuItem           fileOpenMenuItem                          = null;
 
     /**
+     * Object that represents the item 'File - Open from URL'.
+     */
+    private JMenuItem           fileOpenURLMenuItem                          = null;
+
+    /**
      * Object that represents the item 'File - Save'.
      */
     private JMenuItem           fileSaveMenuItem                          = null;
@@ -513,6 +518,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private void getBasicFileMenu() {
         fileMenu.add(getFileNewMenuItem());
         fileMenu.add(getFileOpenMenuItem());
+        fileMenu.add(getFileOpenURLMenuItem());
         fileMenu.addSeparator();
         fileMenu.add(getFileSaveMenuItem());
         fileMenu.add(getFileSaveOpenMenuItem());
@@ -563,6 +569,25 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         }
 
         return fileOpenMenuItem;
+
+    }
+
+    /**
+     * This method initializes fileOpenURLMenuItem.
+     *
+     * @return a new item 'File - Open'.
+     */
+    private JMenuItem getFileOpenURLMenuItem() {
+
+        if (fileOpenURLMenuItem == null) {
+            fileOpenURLMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_OPEN_URL_MENUITEM,
+                    ActionCommands.OPEN_NETWORK_URL,
+                    IconLoader.ICON_OPEN_URL_ENABLED,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+            fileOpenURLMenuItem.addActionListener(listener);
+        }
+
+        return fileOpenURLMenuItem;
 
     }
 
@@ -1983,6 +2008,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             component = fileNewMenuItem;
         } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK)) {
             component = fileOpenMenuItem;
+        } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK_URL)) {
+            component = fileOpenURLMenuItem;
         } else if (actionCommand.equals(ActionCommands.SAVE_NETWORK)) {
             component = fileSaveMenuItem;
         } else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {

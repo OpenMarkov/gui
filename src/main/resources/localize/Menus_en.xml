@@ -388,6 +388,10 @@
       <Label value="Open..." />
       <Mnemonic value="o" />
     </Open>
+    <OpenURL>
+      <Label value="Open file from URL" />
+      <Mnemonic value="o" />
+    </OpenURL>
     <Mnemonic value="f" />
     <SaveEvidence>
       <Label value="Save Evidence..." />

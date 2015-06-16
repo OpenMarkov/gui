@@ -27,6 +27,11 @@ public class MenuItemNames
     public static final String FILE_OPEN_MENUITEM = FILE_MENU + ".Open";
 
     /**
+     * Constant that defines the item 'File - Open from URL'.
+     */
+    public static final String FILE_OPEN_URL_MENUITEM = FILE_MENU + ".OpenURL";
+
+    /**
      * 
      * Constant that defines the item 'File - Save'.
      */

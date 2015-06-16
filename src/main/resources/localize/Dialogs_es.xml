@@ -233,6 +233,11 @@
 			<Label value="Valores de zoom:" />
 		</Title>
 	</ZoomValues>
+	<NetworkURLValues>
+		<Title>
+			<Label value="URL. (Su directorio raíz será establecido como el último usado)" />
+		</Title>
+	</NetworkURLValues>
 	<NetworkAdvancedPanel>
 		<DecisionCriteria>
 			<Text value="Criterios de decisión" />
@@ -892,6 +897,11 @@
 			<Label value="Seleccionar zoom" />
 		</Title>
 	</SelectZoom>
+	<SelectNetworkURL>
+		<Title>
+			<Label value="URL de la red" />
+		</Title>
+	</SelectNetworkURL>
 	<NetworkAgentsDialog>
 		<Title>
 			<Label value="Agentes" />

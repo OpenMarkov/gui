@@ -33,7 +33,7 @@ public class NetworkAdvancedPanel extends JPanel
     /**
      * This method initialises this instance.
      * @param newNetwork to indicate if the panel is for new networks
-     * @param probNet2 manage the network access
+     * @param probNet manage the network access
      */
     public NetworkAdvancedPanel (final boolean newNetwork, ProbNet probNet)
     {

@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,7 @@ import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.dialog.io.NetworkFileChooser;
 import org.openmarkov.core.gui.dialog.io.SaveOptions;
+import org.openmarkov.core.gui.dialog.io.URLNetworkChooserDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
@@ -66,7 +68,6 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -171,6 +172,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             createNewNetwork();
         } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK)) {
             openNetwork();
+        } else if (actionCommand.equals(ActionCommands.OPEN_NETWORK_URL)) {
+            openNetworkURL();
         } else if (actionCommand.equals(ActionCommands.OPEN_LAST_1_FILE)) {
             openNetwork(lastOpenFiles.getFileNameAt(1));
         } else if (actionCommand.equals(ActionCommands.OPEN_LAST_2_FILE)) {
@@ -187,6 +190,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             saveOpenNetwork(getCurrentNetworkPanel());
         } else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {
             saveNetworkAs(getCurrentNetworkPanel());
+            // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
+            // but this is not longer the scenario
+            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
         } else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
             closeCurrentNetwork();
         } else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
@@ -275,7 +281,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             activateByTitle(false);
         } else if (actionCommand.startsWith(ActionCommands.VIEW_TOOLBARS)) {
             MainPanel.getUniqueInstance().getToolbarManager().addToolbar(actionCommand.replace(ActionCommands.VIEW_TOOLBARS
-                    + ".",
+                            + ".",
                     ""));
         } else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
             incrementZoom(getCurrentPanel());
@@ -697,9 +703,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             	criteria.add(new Criterion());
             	probNet.setDecisionCriteria(criteria);
             }
-            String networkName = new String(stringDatabase.getString("InternalFrame.Title.Label")
-                    + " "
-                    + frameIndex);
+            String networkName = stringDatabase.getString("InternalFrame.Title.Label") + " " + frameIndex;
             probNet.setName(networkName);
             probNet.getPNESupport().setWithUndo(true);
             networkPanels.add(createNewFrame(probNet));
@@ -785,6 +789,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                             getDirectoryFileName(fileName),
                             OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+                    // If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
+                    // but it is not longer the scenario
+                    mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
                 }
                 mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkLoaded.Text.Label"));
                 mainPanel.getMainMenu().rechargeLastOpenFiles();
@@ -821,6 +828,68 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         networkPanels.add(newNetworkPanel);
     }
 
+
+    /**
+     * Open a network from a URL.
+     */
+    //TODO: generalize... It's almost the same as openNetwork...
+    public void openNetworkURL() {
+        URL url = requestURLFileToOpen();
+        ProbNet netReadFromURL;
+        NetworkPanel networkPanel;
+        if (url != null) {
+            String urlFile = url.getFile();
+            try {
+                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("LoadingNetworkURL.Text.Label")
+                        + " "
+                        + url);
+                ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
+                netReadFromURL = probNetInfo.getProbNet();
+                netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+                netReadFromURL.getPNESupport().setWithUndo(true);
+                netReadFromURL.setName(new File(urlFile).getName());
+                networkPanel = createNewFrame(netReadFromURL);
+                networkPanel.setNetworkFile(urlFile);
+                List<EvidenceCase> evidence = probNetInfo.getEvidence();
+                if (evidence != null && !evidence.isEmpty()) {
+                    EvidenceCase preResolutionEvidence = evidence.get(0);
+                    evidence.remove(0);
+                    networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
+                }
+                networkPanels.add(networkPanel);
+                lastOpenFiles.setLastFileName(urlFile);
+                // If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
+                mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
+                mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+                mainPanel.getMainMenu().rechargeLastOpenFiles();
+
+                if (netReadFromURL.getShowCommentWhenOpening()) {
+                    CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane ();
+
+                    commentHTMLScrollPaneNetworkComment.setEditable(false);
+                    commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromURL.getComment());
+                    commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension (500, 300));
+                    JOptionPane networkMessagePane = new JOptionPane(
+                            commentHTMLScrollPaneNetworkComment,
+                            JOptionPane.INFORMATION_MESSAGE);
+                    JDialog networkMessageDialog = networkMessagePane.createDialog(
+                            Utilities.getOwner(mainPanel),
+                            stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+                    networkMessageDialog.setResizable(true);
+                    networkMessageDialog.setMinimumSize(new Dimension (500, 300));
+                    networkMessageDialog.setVisible(true);
+                }
+            } catch (Exception e) {
+                mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                        stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage(),
+                        stringDatabase.getString("ErrorWindow.Title.Label"),
+                        JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * It asks the user to choose a file by means of a open-file dialog box.
      * 
@@ -834,6 +903,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             fileName = fileChooser.getSelectedFile().getAbsolutePath();
         }
         return fileName;
+    }
+
+    /**
+     * It asks the user to choose a file by means of a open-file dialog box.
+     *
+     * @return complete path of the file, or null if the user selects cancel.
+     */
+    private URL requestURLFileToOpen() {
+        URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
+        if (urlNetworkChooserDialog.requestNetworkURL() == SelectZoomDialog.OK_BUTTON) {
+            return urlNetworkChooserDialog.getNetworkURL();
+        } else {
+            return  null;
+        }
+
     }
 
     /**

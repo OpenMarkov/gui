@@ -389,6 +389,10 @@
       <Label value="Abrir..." />
       <Mnemonic value="a" />
     </Open>
+    <OpenURL>
+      <Label value="Abrir red desde URL" />
+      <Mnemonic value="a" />
+    </OpenURL>
     <Mnemonic value="a" />
     <SaveEvidence>
       <Label value="Salvar evidencia.." />

@@ -111,6 +111,11 @@ public class MainPanelMenuAssistant extends MenuAssistant
     protected StringDatabase     stringDatabase            = StringDatabase.getUniqueInstance ();
 
     /**
+     * Variable to know if a network was opened from a URL
+     */
+    private boolean networkOpenedURL = false;
+
+    /**
      * Constructor that registers the arrays of menus.
      * @param newBasicMenus array of basic menus and toolbars.
      * @param newZoomMenus array of zoom menus and toolbars.
@@ -303,7 +308,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         // changed by mpalacios
         updateInferenceButtons();
         updateUndoRedo (canUndo, canRedo);
-        setOptionEnabled (ActionCommands.SAVE_NETWORK, true);
+        // If the network has been opened from a URL the save button has to remain disabled
+        setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
 
     }
 
@@ -1210,4 +1216,11 @@ public class MainPanelMenuAssistant extends MenuAssistant
         mainPanel.getStandardToolBar ().getDecisionTreeButton ().setSelected (true);
         setZoom (decisionTreeWindow.getZoom ());
     }
+
+    public void updateOptionsNetworkOpenedURL(boolean networkOpenedURL) {
+        this.networkOpenedURL = networkOpenedURL;
+        setOptionEnabled (ActionCommands.SAVE_NETWORK, !networkOpenedURL);
+        setOptionEnabled (ActionCommands.SAVE_OPEN_NETWORK, !networkOpenedURL);
+    }
+
 }

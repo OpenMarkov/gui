@@ -32,6 +32,11 @@ public class ActionCommands {
 	public static final String OPEN_NETWORK = "OpenNetwork";
 
 	/**
+	 * Action invoked when the user wants to open a network from URL.
+	 */
+	public static final String OPEN_NETWORK_URL = "OpenNetworkURL";
+
+	/**
 	 * Action invoked when the user wants to open a network.
 	 */
 	public static final String OPEN_LAST_1_FILE ="OpenLastRecentNetwork1";

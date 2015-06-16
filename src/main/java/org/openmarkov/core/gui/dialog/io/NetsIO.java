@@ -9,7 +9,7 @@
 
 package org.openmarkov.core.gui.dialog.io;
 
-
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +22,6 @@ import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
-
-
-
-
 
 /**
  * This class contains some routines to load and to save nets.
@@ -158,6 +154,32 @@ public class NetsIO {
 
 		return fileExtension;
 
+	}
+
+	/**
+	 * Opens a network from a URL.
+	 *
+	 * @param url The full url of the file to be opened
+	 *            file where the network is saved.
+	 * @return an ProbNetInfo object with the information of the network.
+	 * @throws Exception
+	 *             if the file doesn't exist or the file format isn't correct.
+	 */
+	public static ProbNetInfo openNetworkURL(URL url) throws Exception {
+		String networkName = url.getPath();
+		networkName = networkName.substring(networkName.lastIndexOf("/") + 1, networkName.length());
+
+		String fileExtension = getFileExtension(networkName);
+		FormatManager formatManager = FormatManager.getInstance();
+		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
+
+		ProbNetInfo probNetInfo = probNetReader.loadProbNet(url.openStream(), networkName);
+
+		if (probNetInfo == null) {
+			System.out.println("NetsIO.openNetworkFile from "
+					+ networkName + ": probNet null");
+		}
+		return probNetInfo;
 	}
 
 }
