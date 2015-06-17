@@ -836,14 +836,24 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         for (i = 0; i < numIntervals; i++) {
             int row = numIntervals - i - 1;
             data[row][0] = GUIDefaultStates.getString(states[i].getName()); // name
-            data[row][1] = (belongsToLeftSide[i] ? "(" : "["); // low interval
-                                                               // symbol
+            // 2015/06/17 - Issue #256
+            // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/256/numeric-variable-with-closed-interval
+            // low interval symbol
+            if (limits[i].equals(NEGATIVE_INFINITY)) {
+                data[row][1] = "(";
+            } else {
+                data[row][1] = (belongsToLeftSide[i] ? "(" : "[");
+                // symbol
+            }
             data[row][2] = limits[i]; // low interval value
             data[row][3] = ","; // separator ","
             data[row][4] = limits[i + 1]; // high interval value
-            data[row][5] = (belongsToLeftSide[i + 1] ? "]" : ")"); // high
-                                                                   // interval
-                                                                   // symbol
+            // high interval symbol
+            if (limits[i+1].equals(INFINITY)) {
+                data[row][5] = ")";
+            } else {
+                data[row][5] = (belongsToLeftSide[i + 1] ? "]" : ")");
+            }
         }
         setData(data);
     }
