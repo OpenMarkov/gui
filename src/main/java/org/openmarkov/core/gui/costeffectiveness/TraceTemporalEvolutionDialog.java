@@ -70,7 +70,8 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.inference.variableElimination.VariableElimination;
+import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
+//import org.openmarkov.inference.variableElimination.VariableElimination;
 
 /**
  * Plot of temporal evolution of variables in CEA
@@ -153,13 +154,14 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	            this.isCumulative = costEffectivenessDialog.isCumulative ();
 	            this.variableOfInterest = node.getVariable ();
 	            
-    			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+//    			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
+				VEResolution variableElimination = new VEResolution(expandedNetwork, evidence);
             	
-            	variableElimination.setPreResolutionEvidence(evidence);
+//            	variableElimination.setPreResolutionEvidence(evidence);
             	variableElimination.setConditioningVariables(conditioningVariables);
             	variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 	            
-                this.temporalEvolution = TemporalNetOperations.traceTemporalEvolution (expandedNetwork, variableElimination, variableOfInterest);
+//                this.temporalEvolution = TemporalNetOperations.traceTemporalEvolution (expandedNetwork, variableElimination, variableOfInterest);
                 
                 initialize ();
                 Toolkit toolkit = Toolkit.getDefaultToolkit ();

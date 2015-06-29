@@ -42,7 +42,8 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.inference.variableElimination.VariableElimination;
+import org.openmarkov.inference.tasks.*;
+import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 
 /**
  * Cost effectiveness and temporal evolution calculator
@@ -204,10 +205,11 @@ public class CostEffectivenessAnalysis {
 	protected TablePotential runAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
 		TablePotential globalUtility = null;
 		try {
-			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
-			
-			// set evidence
-			inferenceAlgorithm.setPreResolutionEvidence(evidence);
+//			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
+			VEResolution inferenceAlgorithm = new VEResolution(expandedNetwork, evidence);
+//
+//			// set evidence
+//			inferenceAlgorithm.setPreResolutionEvidence(evidence);
 			
 			// set decisions and decision criteria as conditioning variables
 			inferenceAlgorithm.setConditioningVariables(getConditioningVariables(probNet));
@@ -216,7 +218,8 @@ public class CostEffectivenessAnalysis {
 			inferenceAlgorithm.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
 			// Run inference
-			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
+//			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
+			globalUtility = inferenceAlgorithm.getGlobalUtility();		
 			
 			globalUtility = reorderVariables(globalUtility);
 			
