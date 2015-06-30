@@ -42,7 +42,7 @@ public class GLMPotentialPanel extends PotentialPanel implements ActionListener 
 
     private Node               node               = null;
     private GLMPotential    potential              = null;
-    private RegressionPanel        regressionPanel;
+    private GLMPanel        regressionPanel;
     private JTable                 uncertaintyTable;
     private JCheckBox              uncertaintyCheckBox;
     private JComboBox<String>      matrixTypeComboBox;
@@ -61,7 +61,7 @@ public class GLMPotentialPanel extends PotentialPanel implements ActionListener 
         deterministicPanel.setLayout(new BorderLayout());
         JPanel northPanel = new JPanel();
         northPanel.setBorder(new TitledBorder("Coefficients"));
-        regressionPanel = new RegressionPanel();
+        regressionPanel = new GLMPanel();
         regressionPanel.addActionListener(this);
         regressionPanel.setPreferredSize(new Dimension(600, 200));
         northPanel.add(regressionPanel);

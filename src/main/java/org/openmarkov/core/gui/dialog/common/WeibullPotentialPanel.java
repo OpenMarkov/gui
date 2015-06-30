@@ -54,7 +54,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
 
     private Node               node               = null;
     private WeibullHazardPotential potential              = null;
-    private RegressionPanel        regressionPanel;
+    private GLMPanel        regressionPanel;
     private JTable                 uncertaintyTable;
     private JComboBox<String>      timeVariableComboBox;
     private JCheckBox              uncertaintyCheckBox;
@@ -85,7 +85,7 @@ public class WeibullPotentialPanel extends PotentialPanel implements ItemListene
         deterministicPanel.add(northPanel, BorderLayout.NORTH);
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(new TitledBorder("Coefficients"));
-        regressionPanel = new RegressionPanel();
+        regressionPanel = new GLMPanel();
         regressionPanel.addActionListener(this);
         regressionPanel.setPreferredSize(new Dimension(600, 200));
         centerPanel.add(regressionPanel);

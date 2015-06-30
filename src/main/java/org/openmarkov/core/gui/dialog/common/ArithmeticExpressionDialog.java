@@ -12,8 +12,6 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
-public class ExpressionDialog extends OkCancelHorizontalDialog implements DocumentListener {
+public class ArithmeticExpressionDialog extends OkCancelHorizontalDialog implements DocumentListener {
 
     private static final Color VALID_EXPRESSION_COLOR   = new Color(180, 215, 170);
     private static final Color INVALID_EXPRESSION_COLOR = new Color(250, 170, 170);
@@ -43,21 +41,20 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
     private JList<String>      functionList;
     private String             expression;
     private Evaluator          evaluator;
-    private List<String>       variableNames;
+    private List<Variable> variables;
 
-    public ExpressionDialog(Window owner, List<Variable> variables, String expression) {
+    public ArithmeticExpressionDialog(Window owner, List<Variable> variables, String expression) {
         super(owner);
+        this.variables  = variables;
         setTitle("Enter an expression");
         setIconImage(null);
         this.expression = expression;
         evaluator = new Evaluator();
         Map<String, String> variableValues = new HashMap<>();
-        for (Variable variable : variables) {
-            variableValues.put(variable.getName(), "1.0");
+        for (int i =0; i< variables.size();i++) {
+            variableValues.put("v"+i, "1.0");
         }
         evaluator.setVariables(variableValues);
-        variableNames = new ArrayList<String>(variableValues.keySet());
-        Collections.sort(variableNames);
         initializeComponents();
         setLocationRelativeTo(null);
         expressionTextField.getDocument().addDocumentListener(this);
@@ -89,10 +86,12 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
                 }
             }
         });
+        
+        setIconImage(null);
 
     }
 
-    public ExpressionDialog(Window owner, List<Variable> variables) {
+    public ArithmeticExpressionDialog(Window owner, List<Variable> variables) {
         this(owner, variables, null);
     }
 
@@ -160,10 +159,11 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
 
     private String processExpression(String expression) {
         String processedExpression = expression;
-        for (String variableName : variableNames) {
-            processedExpression = processedExpression.replace(variableName, "#{"
-                    + variableName
-                    + "}");
+        for (int i =0; i< variables.size();i++) {
+            processedExpression = processedExpression.replace("{"+ variables.get(i).getName()+ "}", "#{v"+i+"}");
+        }
+        for (int i =0; i< variables.size();i++) {
+            processedExpression = processedExpression.replace(variables.get(i).getName(), "#{v"+i+"}");
         }
         return processedExpression;
     }
