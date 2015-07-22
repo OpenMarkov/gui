@@ -333,15 +333,16 @@ public class StandardToolBar extends ToolBarBasic
         if (costEffectivenessButton == null)
         {
             costEffectivenessButton = new JButton ();
-            costEffectivenessButton.setIcon (iconLoader.load (IconLoader.ICON_COST_EFFECTIVENESS));
-            costEffectivenessButton.setActionCommand (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC);
-            costEffectivenessButton.setFocusable (false);
-            costEffectivenessButton.setToolTipText (stringDatabase.getString (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC
-                    + STRING_TOOLTIP_SUFFIX));
+            costEffectivenessButton.setIcon(iconLoader.load(IconLoader.ICON_COST_EFFECTIVENESS));
+            costEffectivenessButton.setActionCommand(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC);
+            costEffectivenessButton.setFocusable(false);
+            costEffectivenessButton.setToolTipText(
+                    stringDatabase.getString("Tools.CostEffectiveness.Label") + ": " +
+                            stringDatabase.getString(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC + ".Label"));
             costEffectivenessButton.addActionListener (listener);
             costEffectivenessButton.addMouseMotionListener (this);
         }
-        costEffectivenessButton.setEnabled(false);
+        //costEffectivenessButton.setEnabled(false);
         return costEffectivenessButton;
     }
 
@@ -354,11 +355,9 @@ public class StandardToolBar extends ToolBarBasic
         {
             sensAnalysisButton = new JButton ();
             sensAnalysisButton.setIcon (iconLoader.load (IconLoader.ICON_SENS_ANALYSIS));
-            //TODO - Check hardcoded string
-            sensAnalysisButton.setActionCommand ("Tools.SensitivityAnalysis");
+            sensAnalysisButton.setActionCommand (ActionCommands.SENSITIVITY_ANALYSIS);
             sensAnalysisButton.setFocusable (false);
-            sensAnalysisButton.setToolTipText (stringDatabase.getString ("Tools.SensitivityAnalysis"
-                    + STRING_TOOLTIP_SUFFIX));
+            sensAnalysisButton.setToolTipText (stringDatabase.getString ("SensitivityAnalysis.Label"));
             sensAnalysisButton.addActionListener (listener);
             sensAnalysisButton.addMouseMotionListener (this);
             sensAnalysisButton.setEnabled(false);
@@ -432,7 +431,7 @@ public class StandardToolBar extends ToolBarBasic
         {
             component = costEffectivenessButton;
         }
-        else if (actionCommand.equals ("Tools.SensitivityAnalysis"))
+        else if (actionCommand.equals (ActionCommands.SENSITIVITY_ANALYSIS))
         {
             component = sensAnalysisButton;
         }

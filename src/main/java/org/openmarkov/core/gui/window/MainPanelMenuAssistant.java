@@ -193,6 +193,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.EDIT_POTENTIAL, false);
         setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
         setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
+        setOptionEnabled (ActionCommands.SENSITIVITY_ANALYSIS, false);
         setOptionEnabled (ActionCommands.LINK_PROPERTIES, false);
         setOptionEnabled (VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, false);
@@ -210,7 +211,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
 
-        updateInferenceButtons();
+        //updateInferenceButtons();
     }
 
     /**
@@ -257,11 +258,10 @@ public class MainPanelMenuAssistant extends MenuAssistant
     }
 
 
-    // TODO - Check this method that enables/disables plugin Tools
     public void updateInferenceButtons(){
         if(getCurrentNetworkPanel() == null){
             setOptionEnabled(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
-            setOptionEnabled("Tools.SensitivityAnalysis", false);
+            setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
 
             return;
         }
@@ -283,9 +283,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
         }
 
         if(hasUncertainty){
-            setOptionEnabled("Tools.SensitivityAnalysis", true);
+            setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, true);
         } else {
-            setOptionEnabled("Tools.SensitivityAnalysis", false);
+            setOptionEnabled(ActionCommands.SENSITIVITY_ANALYSIS, false);
         }
     }
 
@@ -468,7 +468,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
                           networkPanel.getProbNet () instanceof OOPNet);
         // OOPN end
 
-        //TODO - Enable Inference Options
         if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
             setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         }else{
@@ -1208,7 +1207,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
         // setOptionEnabled(VIEWING_ACTION_COMMANDS, false);
         setOptionEnabled (ActionCommands.SAVE_NETWORK, false);
         setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, false);
-        // TODO - Disable Multicriteria Options
         setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, false);
         setOptionEnabled (ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
