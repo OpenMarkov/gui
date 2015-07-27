@@ -425,6 +425,9 @@
 			<Select value="Select unit" />
 		</Unit>
 	</MulticriteriaDialog>
+	<InferenceOptionsDialog>
+		<Title value="Inference options" />
+	</InferenceOptionsDialog>
 	<OptionsInferenceDialog>
 		<Text>
 			<Label value="Select the propagation type" />

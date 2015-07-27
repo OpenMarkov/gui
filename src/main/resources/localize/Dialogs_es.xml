@@ -423,6 +423,9 @@
 			<Select value="Selección de unidad" />
 		</Unit>
 	</MulticriteriaDialog>
+	<InferenceOptionsDialog>
+		<Title value="Opciones de inferencia" />
+	</InferenceOptionsDialog>
 	<OptionsInferenceDialog>
 		<Text>
 			<Label value="Seleccionar el tipo de propagación" />
