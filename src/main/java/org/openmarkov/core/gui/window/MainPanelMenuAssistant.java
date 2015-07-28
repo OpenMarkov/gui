@@ -238,17 +238,28 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
         setOptionEnabled (ActionCommands.PROPAGATION_OPTIONS, true);
 
-        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class) &&
-                currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class) ){
-        	setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
-        }else {
-            setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
-        }
+        checkInferenceOptions();
 
         setOptionEnabled (ActionCommands.EXPAND_NETWORK, false);
         setOptionEnabled (ActionCommands.NEXT_SLICE_NODE, false);
 
         updateInferenceButtons();
+    }
+
+    private void checkInferenceOptions() {
+        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class) &&
+                currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class) ){
+            setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
+        }else {
+            if(!currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)
+                    || (currentNetworkPanel.getProbNet().getDecisionCriteria() != null &&
+                    currentNetworkPanel.getProbNet().getDecisionCriteria().size() > 1)
+                    ){
+                setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, true);
+            } else {
+                setOptionEnabled(ActionCommands.INFERENCE_OPTIONS, false);
+            }
+        }
     }
 
     private boolean getEnableWorkingModeButton() {
@@ -307,6 +318,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         // updateUndoRedo(undoManager);
         // changed by mpalacios
         updateInferenceButtons();
+        checkInferenceOptions();
         updateUndoRedo (canUndo, canRedo);
         // If the network has been opened from a URL the save button has to remain disabled
         setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
@@ -468,17 +480,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
                           networkPanel.getProbNet () instanceof OOPNet);
         // OOPN end
 
-        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyChanceNodes.class)){
-            setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, false);
-        }else{
-            setOptionEnabled (ActionCommands.INFERENCE_OPTIONS, true);
-        }
 
-        if(currentNetworkPanel.getProbNet().hasConstraint(OnlyAtemporalVariables.class)){
-            setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, false);
-        }else{
-            setOptionEnabled (ActionCommands.TEMPORAL_OPTIONS, true);
-        }
+        checkInferenceOptions();
     }
 
     /**
