@@ -1201,7 +1201,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         if (rootTreeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
             if(branchingStates != null && branchingStates.length != 0){
                 newTreeADD = new TreeADDPotential(newTreeVariables,
-                        newRootVariable, branchingStates,
+                        newRootVariable,
+                        branchingStates,
                         rootTreeADDPotential.getPotentialRole());
             } else {
                 newTreeADD = new TreeADDPotential(newTreeVariables,
@@ -1212,7 +1213,8 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             if(branchingStates != null && branchingStates.length != 0) {
                 newTreeADD = new TreeADDPotential(rootTreeADDPotential.getUtilityVariable(),
                         newTreeVariables,
-                        newRootVariable);
+                        newRootVariable,
+                        branchingStates);
             } else {
                 newTreeADD = new TreeADDPotential(rootTreeADDPotential.getUtilityVariable(),
                         newTreeVariables,
