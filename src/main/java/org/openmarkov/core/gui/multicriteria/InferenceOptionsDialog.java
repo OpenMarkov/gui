@@ -259,12 +259,23 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
         if(onlyShowThisType != null){
             if(onlyShowThisType.equals(MulticriteriaOptions.Type.UNICRITERION)){
-                unicriterion.doClick();
-                costEffectiveness.setEnabled(false);
+                if(unicriterion != null) {
+                    unicriterion.doClick();
+                }
+
+                if(costEffectiveness != null) {
+                    costEffectiveness.setEnabled(false);
+                }
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
             } else if(onlyShowThisType.equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)){
-                costEffectiveness.doClick();
-                unicriterion.setEnabled(false);
+                if(costEffectiveness != null) {
+                    costEffectiveness.doClick();
+                }
+
+                if(unicriterion != null) {
+                    unicriterion.setEnabled(false);
+                }
+
                 probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
             }
         } else {
