@@ -1,4 +1,6 @@
-package org.openmarkov.core.gui.multicriteria;
+package org.openmarkov.core.gui.dialog.inference;
+
+import org.openmarkov.core.gui.dialog.inference.InferenceOptionsDialog;
 
 import javax.swing.table.DefaultTableModel;
 
