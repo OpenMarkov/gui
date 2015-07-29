@@ -40,6 +40,7 @@ import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.PropagationOptionsDialog;
+import org.openmarkov.core.gui.dialog.inference.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
@@ -2261,7 +2262,7 @@ public class EditorPanel extends JPanel
         if (selectedNode.size () == 1)
         {
             node = selectedNode.get (0);
-            new TraceTemporalEvolutionDialog (Utilities.getOwner (this), node.getNode (), preResolutionEvidence);
+            new TemporalEvolutionDialog(Utilities.getOwner (this), node.getNode (), preResolutionEvidence);
             setSelectedAllNodes (false);
             repaint ();
             // TODO - Change code

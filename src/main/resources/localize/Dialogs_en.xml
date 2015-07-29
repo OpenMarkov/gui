@@ -976,5 +976,8 @@
 			<Label value="Conditions for the revelation of {0}" />
 		</Title>
 	</RevelationArcDialog>
+	<ScopeSelector>
+		<Title value="Scope selector " />
+	</ScopeSelector>
 </properties>
 
