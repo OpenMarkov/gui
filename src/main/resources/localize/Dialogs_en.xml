@@ -977,7 +977,13 @@
 		</Title>
 	</RevelationArcDialog>
 	<ScopeSelector>
-		<Title value="Scope selector " />
+		<Title value="Scope" />
+		<Type value="Type" />
+		<DecisionSelector value="Decision" />
+		<Scenario value="Scenario">
+			<Global value="Global" />
+			<Decision value="One decision" />
+		</Scenario>
 	</ScopeSelector>
 </properties>
 

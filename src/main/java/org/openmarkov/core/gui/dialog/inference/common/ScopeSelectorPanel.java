@@ -69,7 +69,7 @@ public class ScopeSelectorPanel extends JPanel {
         scopeTypePanel = new JPanel();
         scopeTypePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        JLabel scopeLabel = new JLabel(stringDatabase.getString("ComponentsAndGroups.SCOPE"));
+        JLabel scopeLabel = new JLabel(stringDatabase.getString("ScopeSelector.Type"));
         scopeTypePanel.add(scopeLabel);
 
         scopeTypeSelector = new JComboBox<>();
@@ -138,7 +138,7 @@ public class ScopeSelectorPanel extends JPanel {
         decisionSelectorPanel = new JPanel();
         decisionSelectorPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        decisionSelectorPanel.add(new JLabel(stringDatabase.getString("Options.SC_DECISION")));
+        decisionSelectorPanel.add(new JLabel(stringDatabase.getString("ScopeSelector.DecisionSelector")));
 
         decisionSelector = new JComboBox<>();
         for(Node node : probNet.getNodes(NodeType.DECISION)){
@@ -177,7 +177,7 @@ public class ScopeSelectorPanel extends JPanel {
     public JPanel getDecisionScenarioPanel(){
         decisionScenarioPanel = new JPanel();
         decisionScenarioPanel.setLayout(new BoxLayout(decisionScenarioPanel, BoxLayout.PAGE_AXIS));
-        decisionScenarioPanel.setBorder(new TitledBorder(stringDatabase.getString("General.SCENARIO")));
+        decisionScenarioPanel.setBorder(new TitledBorder(stringDatabase.getString("ScopeSelector.Scenario")));
 
         if(decisionSelected != null && scopeType == ScopeType.DECISION){
             selectedScenario = new HashMap<>();

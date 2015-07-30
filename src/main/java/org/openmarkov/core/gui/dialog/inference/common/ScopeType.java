@@ -5,8 +5,8 @@ package org.openmarkov.core.gui.dialog.inference.common;
  */
 public enum ScopeType {
     // Analysis type options
-    GLOBAL	        ("Options.SC_GLOBAL"),
-    DECISION        ("Options.SC_DECISION");
+    GLOBAL	        ("ScopeSelector.Scenario.Global"),
+    DECISION        ("ScopeSelector.Scenario.Decision");
 
     private final String display;
 

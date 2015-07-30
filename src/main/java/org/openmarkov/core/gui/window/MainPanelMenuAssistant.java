@@ -31,9 +31,7 @@ import org.openmarkov.core.gui.oopn.VisualReferenceLink;
 import org.openmarkov.core.gui.window.dt.DecisionTreeWindow;
 import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.edition.Zoom;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.StringWithProperties;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -577,7 +575,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
     {
         if (networkPanel.getNumberOfCases () > 1)
         {
-            setOptionEnabled (ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, true);
+            setOptionEnabled(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES, true);
             if (networkPanel.getCurrentCase () > 0)
             {
                 setOptionEnabled (ActionCommands.GO_TO_FIRST_EVIDENCE_CASE, true);
@@ -608,7 +606,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
             setOptionEnabled (ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES,
                               networkPanel.areThereFindingsInCase ());
         }
-        updateOptionsFindingsDependent (networkPanel);
+        updateOptionsFindingsDependent(networkPanel);
     }
 
     /**
@@ -762,7 +760,10 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 {
                     canNodeProperties = true;
                     VisualNode visualNode = selectedNodes.get (0);
-                    if (visualNode.getNode ().getVariable ().isTemporal ())
+                    if (visualNode.getNode ().getVariable ().isTemporal ()
+                            && !(visualNode.getNode().getNodeType().equals(NodeType.CHANCE) &&
+                            !visualNode.getNode().getVariable().getVariableType().equals(VariableType.FINITE_STATES))
+                            )
                     {
                         canLog = true;
                         canTemporalEvolution = true;
