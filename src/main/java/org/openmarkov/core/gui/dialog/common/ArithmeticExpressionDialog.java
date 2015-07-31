@@ -186,7 +186,7 @@ public class ArithmeticExpressionDialog extends OkCancelHorizontalDialog impleme
             evaluator.evaluate(processedExpression);
             result = true;
         } catch (EvaluationException e) {
-            e.printStackTrace();
+           // Ignore
         }
         return result;
     }
