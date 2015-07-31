@@ -42,7 +42,6 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
-import org.openmarkov.inference.tasks.*;
 import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 
 /**

@@ -74,7 +74,9 @@ public class ToolbarManager
             FilterIF filter = org.openmarkov.plugin.Filter.filter().toBeAnnotatedBy (Toolbar.class);
             return pluginsLoader.loadAllPlugins (filter);          
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            int i = 1;
+        }
         return null;
     }    
 }

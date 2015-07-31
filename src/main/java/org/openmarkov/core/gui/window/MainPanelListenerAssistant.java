@@ -85,7 +85,8 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
+//TODO: remove just because reference to cost-effectiveness was removed
+//import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
 /**
  * This class receives the main events of the application and helps the class
@@ -1514,9 +1515,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     /**
      * @param probNet
      */
+    //TODO: commented just because reference to cost-effectiveness was removed
     private void showATemporalCostEffectivenessResults(ProbNet probNet) {
 
- 		try {
+/* 		try {
  			VariableEliminationCE algorithm = new VariableEliminationCE(
  					probNet, 0.0, Double.POSITIVE_INFINITY, null);
  			// Get last variable
@@ -1548,7 +1550,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
  		} catch (UnexpectedInferenceException e) {
  			System.err.println(e.getMessage());
  			e.printStackTrace(System.err);
-		}
+		}*/
 
      }
 

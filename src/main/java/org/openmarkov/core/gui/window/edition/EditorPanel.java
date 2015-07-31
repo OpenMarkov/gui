@@ -66,8 +66,6 @@ import org.openmarkov.core.gui.window.edition.mode.EditionMode;
 import org.openmarkov.core.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
-import org.openmarkov.core.inference.heuristic.EliminationHeuristic;
-import org.openmarkov.core.inference.heuristic.HeuristicFactory;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -82,7 +80,8 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
-import org.openmarkov.inference.heuristic.simpleElimination.SimpleElimination;
+
+import org.openmarkov.inference.tasks.VariableElimination.VEPosteriorValues;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -322,7 +321,7 @@ public class EditorPanel extends JPanel
     /**
      * Changes the state of the edition and carries out the necessary actions in
      * each case.
-     * @param newState new edition state.
+     * @param newEditionModeName new edition mode state.
      */
     public void setEditionMode (String newEditionModeName)
     {
@@ -891,11 +890,7 @@ public class EditorPanel extends JPanel
     /**
      * This method requests to the user the additionalProperties of a network.
      * @param owner window that owns the dialog box.
-     * @param additionalProperties object that contains the additionalProperties
-     *            of the network and where changes will be saved, if the user
-     *            accepts the changes.
-     * @param newNetwork specifies if the network whose additionalProperties are
-     *            going to be edited is new.
+     * @param probNet the network from where the properties are retrieved
      * @return true, if the user has made changes on the additionalProperties;
      *         otherwise, false.
      */
@@ -1458,7 +1453,8 @@ public class EditorPanel extends JPanel
 
     /**
      * This method sets the list of evidence cases
-     * @param owner window that owns the dialog box.
+     * @param preResolutionEvidence pre-resolution evidence.
+     * @param postResolutionInference a list of evidence case.
      */
     public void setEvidence (EvidenceCase preResolutionEvidence,
                              List<EvidenceCase> postResolutionInference)
@@ -1811,7 +1807,8 @@ public class EditorPanel extends JPanel
     /**
      * This method returns the number of the Evidence Case that is currently
      * selected
-     * @param visualState the visual state in which the finding is going to be
+     * @param visualNode a node
+     * @param state the visual state in which the finding is going to be
      *            set.
      */
     public void toggleFinding (VisualNode visualNode, VisualState state)
@@ -1822,8 +1819,10 @@ public class EditorPanel extends JPanel
     /**
      * This method returns the number of the Evidence Case that is currently
      * selected
-     * @param visualState the visual state in which the finding is going to be
-     *            set.
+     * @param visualNode a node.
+     * @param finding a finding.
+     * @param toggle a boolean value.
+     *
      */
     public void setNewFinding (VisualNode visualNode, Finding finding, boolean toggle)
     {
@@ -2011,11 +2010,15 @@ public class EditorPanel extends JPanel
             long start = System.currentTimeMillis ();
             try
             {
-                inferenceAlgorithm = getInferenceAlgorithm();
-                inferenceAlgorithm.setPreResolutionEvidence (preResolutionEvidence);
-                inferenceAlgorithm.setPostResolutionEvidence (evidenceCase);
+                //inferenceAlgorithm = getInferenceAlgorithm();
+                //inferenceAlgorithm.setPreResolutionEvidence(preResolutionEvidence);
+                //inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
                 calculateMinAndMaxUtilityRanges ();
-                individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
+                //individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
+
+
+                VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
+                individualProbabilities = vePosteriorValues.getPosteriorValues();
             }
             catch (OutOfMemoryError e)
             {
@@ -2130,8 +2133,7 @@ public class EditorPanel extends JPanel
      * @param caseNumber number of this evidence case.
      * @param individualProbabilities the results of the evaluation for each
      *            variable.
-     * @param variable
-     * @param visualNode
+     * @param visualNode a node.
      */
     private void paintInferenceResultsUtilityNode (int caseNumber,
                                                    Map<Variable, TablePotential> individualProbabilities,
@@ -2150,10 +2152,9 @@ public class EditorPanel extends JPanel
      * This method fills the visualStates of a chance or decision node with the
      * proper values to be represented after the evaluation of the evidence case
      * @param caseNumber number of this evidence case.
-     * @param individualProbabilities the results of the evaluation for each
-     *            variable.
-     * @param variable
-     * @param visualNode
+     * @param individualProbabilities the results of the evaluation for each variable.
+     * @param evidence evidence.
+     * @param visualNode a node.
      */
     private void paintInferenceResultsChanceOrDecisionNode (int caseNumber,
                                                             Map<Variable, TablePotential> individualProbabilities,
