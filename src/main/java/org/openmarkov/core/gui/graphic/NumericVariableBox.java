@@ -180,7 +180,7 @@ public class NumericVariableBox extends InnerBox {
 	public Shape getShape(Graphics2D g) {
 		double innerNodeHeight = getInnerBoxHeight(g);
 		return new Rectangle2D.Double(
-				visualNode.getUpperLeftCornerX(g),
+				visualNode.getUpperLeftCornerX(g)+ INTERNAL_MARGIN,
 				visualNode.getUpperLeftCornerY(g) + 
 						visualNode.getTextHeight(g) + INTERNAL_MARGIN, 
 				BOX_WIDTH, 

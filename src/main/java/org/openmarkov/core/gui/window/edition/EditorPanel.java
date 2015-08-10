@@ -2213,6 +2213,7 @@ public class EditorPanel extends JPanel
         }else  // if numeric variable
         {
         	double value = (evidence.contains(variable))? evidence.getNumericalValue(variable) : Double.NaN;
+        	value = (preResolutionEvidence.contains(variable))? preResolutionEvidence.getNumericalValue(variable) : value;
         	NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox ();
         	innerBox.getVisualState().setStateValue(caseNumber, value);
         }
