@@ -300,7 +300,21 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         removeVariables.removeAll();
 
         Potential potential = branch.getPotential();
-         List<Variable> addableVariables = branch.getAddableVariables();
+        List<Variable> addableVariables = branch.getAddableVariables();
+     // Remove also those finite state variables that have a single state 
+        TreePath parentPath = branchPath.getParentPath(); // treeADD
+        while (parentPath.getLastPathComponent() != rootTreeADDPotential) {
+            TreePath grandParentPath = parentPath.getParentPath();// branch
+            if (grandParentPath.getLastPathComponent() instanceof TreeADDBranch) {
+                TreeADDBranch treeBranch = (TreeADDBranch) grandParentPath.getLastPathComponent();
+                if ((treeBranch.getRootVariable().getVariableType() == VariableType.FINITE_STATES ||
+                		treeBranch.getRootVariable().getVariableType() == VariableType.FINITE_STATES) &&
+                		treeBranch.getBranchStates().size() == 1) {
+                	addableVariables.remove(treeBranch.getRootVariable());
+                }
+            }
+            parentPath = grandParentPath;
+        }
 
         // Potential Edition, any case it is possible to edit branch's potential
         if (!(potential instanceof TreeADDPotential)) {
@@ -343,10 +357,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             TreePath grandParentPath = parentPath.getParentPath();// branch
             if (grandParentPath.getLastPathComponent() instanceof TreeADDBranch) {
                 TreeADDBranch treeBranch = (TreeADDBranch) grandParentPath.getLastPathComponent();
-                if (treeBranch.getRootVariable().getVariableType() == VariableType.FINITE_STATES) {
-                    if (treeBranch.getBranchStates().size() == 1) {
-                        possibleRootVariables.remove(treeBranch.getRootVariable());
-                    }
+                if ((treeBranch.getRootVariable().getVariableType() == VariableType.FINITE_STATES ||
+                		treeBranch.getRootVariable().getVariableType() == VariableType.FINITE_STATES) &&
+                		treeBranch.getBranchStates().size() == 1) {
+                	possibleRootVariables.remove(treeBranch.getRootVariable());
                 }
             }
             parentPath = grandParentPath;
