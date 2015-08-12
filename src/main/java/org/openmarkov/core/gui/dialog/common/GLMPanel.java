@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
@@ -183,7 +184,9 @@ public class GLMPanel extends KeyTablePanel {
                 }
                 if(!isMandatory)
                 {
-                    ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables(), covariate);
+                	List<Variable> variables = potential.getVariables();
+                	variables.remove(potential.getConditionedVariable());
+                    ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, variables, covariate);
                     expressionDialog.setVisible(true);
                     if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                         tableModel.setValueAt(expressionDialog.getExpression(), selectedRow, 0);

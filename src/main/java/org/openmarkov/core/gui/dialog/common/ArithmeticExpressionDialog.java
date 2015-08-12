@@ -70,8 +70,8 @@ public class ArithmeticExpressionDialog extends OkCancelHorizontalDialog impleme
         expressionTextField.setBackground((isValidExpression()) ? VALID_EXPRESSION_COLOR
                 : INVALID_EXPRESSION_COLOR);
         DefaultListModel<String> variableListModel = new DefaultListModel<>();
-        for (int i = 1; i < variables.size(); ++i) {
-            variableListModel.addElement(variables.get(i).getName());
+        for (Variable variable : variables) {
+            variableListModel.addElement(variable.getName());
         }
         variableList.setModel(variableListModel);
         variableList.addMouseListener(new MouseAdapter() {
