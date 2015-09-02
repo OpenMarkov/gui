@@ -125,15 +125,12 @@ public class TraceTemporalEvolutionDialog extends JDialog
 			}
 		}
         this.isUtility = node.getNodeType () == NodeType.UTILITY;
-        TemporalCostEffectivenessDialog costEffectivenessDialog = new TemporalCostEffectivenessDialog (owner,
-                                                                                       probNet,
-                                                                                       false,
-                                                                                       true);
-        if (costEffectivenessDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
+        TemporalEvolutionDialog temporalEvolutionDialog = new TemporalEvolutionDialog (owner, probNet);
+        if (temporalEvolutionDialog.requestData () == TemporalCostEffectivenessDialog.OK_BUTTON)
         {
             try
             {
-	            numSlices = costEffectivenessDialog.getNumSlices ();
+	            numSlices = temporalEvolutionDialog.getNumSlices();
 	            this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
 	            evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
 
@@ -143,26 +140,17 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	            // evidenceCase and cycleLegth null by the moment
 	            if(node.getNodeType() == NodeType.UTILITY)
 	            {
-	            	// TODO - Remove unused code
-//		            double costDiscount = costEffectivenessDialog.getCostDiscount ();
-//		            double effectivenessDiscount = costEffectivenessDialog.getCostDiscount ();
-	            	
 		            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
 		            //TransitionTime transitionTime = costEffectivenessDialog.getTransitionTime ();
 		            TemporalNetOperations.applyTransitionTime(expandedNetwork);
 	            }
-	            this.isCumulative = costEffectivenessDialog.isCumulative ();
 	            this.variableOfInterest = node.getVariable ();
 	            
-//    			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 				VEResolution variableElimination = new VEResolution(expandedNetwork, evidence);
             	
-//            	variableElimination.setPreResolutionEvidence(evidence);
             	variableElimination.setConditioningVariables(conditioningVariables);
             	variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
-	            
-//                this.temporalEvolution = TemporalNetOperations.traceTemporalEvolution (expandedNetwork, variableElimination, variableOfInterest);
-                
+
                 initialize ();
                 Toolkit toolkit = Toolkit.getDefaultToolkit ();
                 Dimension screenSize = toolkit.getScreenSize ();

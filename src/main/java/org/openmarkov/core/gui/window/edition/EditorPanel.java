@@ -2270,7 +2270,7 @@ public class EditorPanel extends JPanel
             // TODO - Change code
         }/*
         else if(selectedNode == null){
-        	new TemporalCostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
+        	new CostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
         }*/
     }
 

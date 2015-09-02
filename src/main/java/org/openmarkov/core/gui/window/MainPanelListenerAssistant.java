@@ -15,11 +15,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import org.openmarkov.core.exception.*;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessProgressBar;
 import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
 import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.AboutBox;
@@ -47,6 +44,9 @@ import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
+import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
@@ -82,10 +82,9 @@ import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
-import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.inference.tasks.VariableElimination.VECostEffectiveness;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
@@ -298,19 +297,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         } else if (actionCommand.equals(ActionCommands.MESSAGE_WINDOW)) {
             showMessageWindow();
         } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
-            // Deterministic
         	ProbNet probNet = getCurrentNetworkPanel().getProbNet();
-        	if (probNet.getNetworkType() == InfluenceDiagramType.getUniqueInstance()) {
-        		showATemporalCostEffectivenessResults(probNet);
-        	} else {
-        		showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
-                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
-                    false);
-        	}
-        } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY)) {
-            showTemporalCostEffectivenessDialog(getCurrentNetworkPanel().getProbNet(),
-                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence(),
-                    true);
+            showCostEffectivenessResults(probNet, getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
@@ -1480,83 +1469,33 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 		}
     }    
 
-    private void showTemporalCostEffectivenessDialog(ProbNet probNet,
-            EvidenceCase evidence,
-            boolean sensitivityAnalysis) {
-        TemporalCostEffectivenessDialog temporalCostEffectivenessDialog = new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel),
-                probNet,
-                sensitivityAnalysis,
-                false);
+    private void showCostEffectivenessResults(ProbNet probNet,
+            EvidenceCase evidence) {
+        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
 
-        if (temporalCostEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
+        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
             CostEffectivenessAnalysis costEffectivenessAnalysis = null;
-            if (sensitivityAnalysis) {
-                CostEffectivenessProgressBar ceProgressBar = new CostEffectivenessProgressBar(Utilities.getOwner(mainPanel), probNet, evidence, temporalCostEffectivenessDialog);
-                ceProgressBar.setVisible(true);
-            } else {
-                try {
-					costEffectivenessAnalysis = new CostEffectivenessAnalysis(
-							probNet,
-					        evidence
-//					        TODO - Remove initial values
-//					        ,temporalCostEffectivenessDialog.getInitialValues()
-					        );
+            ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
+            try {
+                if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
+                    //TODO - CAMBIAR POR TASK
+                    costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, evidence);
                     JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
                             costEffectivenessAnalysis);
                     ceaResultsDialog.setVisible(true);
-				} catch (NotEvaluableNetworkException e) {
-					JOptionPane.showMessageDialog(
-							null,
-							"Error while trying to perform cost-effectiveness analysis.\n"
-									+ e.getMessage()
-									+ "\nCheck the message window for further details.");
-            		e.printStackTrace();
-				}
+                } else {
+
+                }
+            } catch (NotEvaluableNetworkException e) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error while trying to perform cost-effectiveness analysis.\n"
+                                + e.getMessage()
+                                + "\nCheck the message window for further details.");
+                e.printStackTrace();
             }
         }
     }
-
-    /**
-     * @param probNet
-     */
-    //TODO: commented just because reference to cost-effectiveness was removed
-    private void showATemporalCostEffectivenessResults(ProbNet probNet) {
-
-/* 		try {
- 			VariableEliminationCE algorithm = new VariableEliminationCE(
- 					probNet, 0.0, Double.POSITIVE_INFINITY, null);
- 			// Get last variable
- 			StringBuilder buffer = new StringBuilder();
- 			Intervention intervention = algorithm.getOptimalStrategy();
- 			buffer.append(intervention.toString());
- 			buffer.append("\n");
- 			
- 			BufferedWriter writer = null;
- 	        try {
- 	            //create a temporary file
- 	            File logFile = new File("CEAnalysis.txt");
- 	            writer = new BufferedWriter(new FileWriter(logFile));
- 	            writer.write(buffer.toString());
- 	        } catch (Exception e) {
- 	            e.printStackTrace();
- 	        } finally {
- 	            try {
- 	                // Close the writer regardless of what happens...
- 	                writer.close();
- 	            } catch (Exception e) {
- 	            }
- 	        }
- 			showTextWindow(buffer, this.mainPanel);
- 			
- 		} catch (NotEvaluableNetworkException e1) {
- 			System.err.println(e1.getMessage());
- 			e1.printStackTrace(System.err);
- 		} catch (UnexpectedInferenceException e) {
- 			System.err.println(e.getMessage());
- 			e.printStackTrace(System.err);
-		}*/
-
-     }
 
 	/**
 	 * @param buffer <code>StringBuffer</code>

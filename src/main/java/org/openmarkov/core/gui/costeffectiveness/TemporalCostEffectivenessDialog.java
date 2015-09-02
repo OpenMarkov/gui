@@ -88,7 +88,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
      * @param owner
      *            The parent of the dialog
      */
-//    public TemporalCostEffectivenessDialog(Window owner) {
+//    public CostEffectivenessDialog(Window owner) {
 //        super(owner);
 //        // setMinimumSize(new Dimension(250 , 150));
 //        BorderLayout layout = new BorderLayout(5, 5);
