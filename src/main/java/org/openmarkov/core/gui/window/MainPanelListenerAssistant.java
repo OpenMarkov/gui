@@ -44,6 +44,7 @@ import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
+import org.openmarkov.core.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
@@ -82,9 +83,11 @@ import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
+import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.inference.tasks.VariableElimination.VECostEffectiveness;
+import org.openmarkov.inference.tasks.VariableElimination.VEGlobalCEA;
+import org.openmarkov.inference.variableElimination.model.CEP;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
@@ -1474,16 +1477,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
 
         if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
-            CostEffectivenessAnalysis costEffectivenessAnalysis = null;
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
             try {
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
-                    //TODO - CAMBIAR POR TASK
-                    costEffectivenessAnalysis = new CostEffectivenessAnalysis(probNet, evidence);
-                    JDialog ceaResultsDialog = new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel),
-                            costEffectivenessAnalysis);
-                    ceaResultsDialog.setVisible(true);
+                    VEGlobalCEA veGlobalCEA = new VEGlobalCEA(probNet, evidence);
+                    CEP cep = (CEP)((GTablePotential)veGlobalCEA.getUtility()).elementTable.get(0);
+                    CEPDialog cepDialog = new CEPDialog(cep);
+                    cepDialog.setVisible(true);
                 } else {
+                    // TODO - AÑADIR TASK PARA UNA DECISIÓN
 
                 }
             } catch (NotEvaluableNetworkException e) {
@@ -1492,6 +1494,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                         "Error while trying to perform cost-effectiveness analysis.\n"
                                 + e.getMessage()
                                 + "\nCheck the message window for further details.");
+                e.printStackTrace();
+            } catch (IncompatibleEvidenceException e) {
+                e.printStackTrace();
+            } catch (UnexpectedInferenceException e) {
                 e.printStackTrace();
             }
         }
