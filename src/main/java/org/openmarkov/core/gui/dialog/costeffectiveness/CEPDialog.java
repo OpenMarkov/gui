@@ -1,7 +1,5 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
-import org.openmarkov.core.gui.component.ValuesTable;
-import org.openmarkov.core.gui.dialog.treeadd.TreeADDEditorPanel;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
