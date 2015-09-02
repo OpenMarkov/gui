@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.multicriteria;
+package org.openmarkov.core.gui.dialog.inference;
 
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;
@@ -198,16 +198,19 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
     private JPanel                  temporalPanel;
 
+
     /**
-     * Constructor. initialises the instance.
-     *
-     * @param owner window that owns the dialog.
+     * Constructor of the dialog
+     * @param probNet
+     * @param owner
+     * @param onlyShowThisType The task must filter by multicriteria type. Null if not necessary
      */
-    public InferenceOptionsDialog(ProbNet probNet, Window owner) {
+    public InferenceOptionsDialog(ProbNet probNet, Window owner, MulticriteriaOptions.Type onlyShowThisType) {
         super(owner);
 
         this.probNet = probNet;
 
+        this.setTitle(stringDatabase.getString("InferenceOptionsDialog.Title"));
         // If the net has more than atemporal variables, the net would be temporal
         if (!probNet.hasConstraint(OnlyAtemporalVariables.class)) {
             isTemporal = true;
@@ -228,7 +231,6 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         for (Criterion criterion : probNet.getDecisionCriteria()) {
             this.decisionCriteria.add(criterion.clone());
         }
-        ;
 
         // Make a working copy of the temporal and multicriteria options
         this.multicriteriaOptions = probNet.getInferenceOptions().getMultiCriteriaOptions().clone();
@@ -249,13 +251,40 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             requiredInfereceOptions = true;
         }
 
-
-
         this.add(mainPanel);
         this.setIconImage(null);
         this.setResizable(false);
 
         this.pack();
+
+        if(onlyShowThisType != null){
+            if(onlyShowThisType.equals(MulticriteriaOptions.Type.UNICRITERION)){
+                if(unicriterion != null) {
+                    unicriterion.doClick();
+                }
+
+                if(costEffectiveness != null) {
+                    costEffectiveness.setEnabled(false);
+                }
+                probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
+            } else if(onlyShowThisType.equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)){
+                if(costEffectiveness != null) {
+                    costEffectiveness.doClick();
+                }
+
+                if(unicriterion != null) {
+                    unicriterion.setEnabled(false);
+                }
+
+                probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+            }
+        } else {
+            if(probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().equals(MulticriteriaOptions.Type.UNICRITERION)){
+                probNet.getInferenceOptions().getMultiCriteriaOptions().setUnicriterionOptionsShowed(true);
+            } else if(probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)){
+                probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+            }
+        }
 
         if(!requiredInfereceOptions){
             this.getJButtonOK().doClick();
@@ -272,7 +301,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
     public JPanel getMulticriteriaPanel() {
         if (multicriteriaPanel == null) {
             multicriteriaPanel = new JPanel();
-            multicriteriaPanel.setBorder(new TitledBorder("Multicriteria Options"));
+            multicriteriaPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Title.Label")));
             multicriteriaPanel.setLayout(new BoxLayout(multicriteriaPanel, BoxLayout.PAGE_AXIS));
 
 
@@ -862,7 +891,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         if(temporalPanel == null){
             temporalPanel = new JPanel();
             temporalPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            temporalPanel.setBorder(new TitledBorder("Temporal options"));
+            temporalPanel.setBorder(new TitledBorder(stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Title")));
             temporalPanel.add(getNumSlicesPanel());
             temporalPanel.add(getTransitionsPanel());
         }

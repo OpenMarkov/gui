@@ -445,6 +445,11 @@ public class ActionCommands {
 	public static final String SENSITIVITY_ANALYSIS_PROBABILISTIC = "Tools.SensitivityAnalysisProbabilistic";
 
 	/**
+	 * Action invoked for Sensitivity Analysis.
+	 */
+	public static final String SENSITIVITY_ANALYSIS = "Tools.SensitivityAnalysis";
+
+	/**
 	 * Action invoked when the user wants to expands the network.
 	 */
 	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";

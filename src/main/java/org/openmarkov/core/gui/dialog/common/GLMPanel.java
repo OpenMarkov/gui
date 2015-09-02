@@ -18,17 +18,18 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential;
 import org.openmarkov.core.model.network.potential.WeibullHazardPotential;
 
 
 @SuppressWarnings("serial")
-public class RegressionPanel extends KeyTablePanel {
+public class GLMPanel extends KeyTablePanel {
 
     private List<ActionListener> listeners; 
     private GLMPotential potential = null;
     
-    public RegressionPanel()
+    public GLMPanel()
     {
         super(new String[]{"Covariate", "Coefficient"}, new Object[0][2], true, true, true);
         getValuesTable().setDefaultRenderer(String.class, new CoefficientTableCellRenderer());
@@ -42,7 +43,7 @@ public class RegressionPanel extends KeyTablePanel {
      */
     @Override
     protected void actionPerformedAddValue() {
-        ExpressionDialog expressionDialog = new ExpressionDialog(null, potential.getVariables());
+        ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, potential.getVariables());
         expressionDialog.setVisible(true);
         if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
             int selectedRow = valuesTable.getSelectedRow();
@@ -130,16 +131,19 @@ public class RegressionPanel extends KeyTablePanel {
     public void valueChanged(ListSelectionEvent e) {
         super.valueChanged(e);
         int row = valuesTable.getSelectedRow();
-        String covariate = tableModel.getValueAt(row, 0).toString();
-        boolean isMandatory = false;
-        String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ? WeibullHazardPotential.getMandatoryCovariates()
-                : GLMPotential.getMandatoryCovariates();
-        for(String mandatoryCovariate : mandatoryCovariates)
+        if(row >=0 && row < tableModel.getRowCount())
         {
-            isMandatory |= mandatoryCovariate.equals(covariate);
+	        String covariate = tableModel.getValueAt(row, 0).toString();
+	        boolean isMandatory = false;
+	        String[] mandatoryCovariates = (potential instanceof WeibullHazardPotential) ? WeibullHazardPotential.getMandatoryCovariates()
+	                : GLMPotential.getMandatoryCovariates();
+	        for(String mandatoryCovariate : mandatoryCovariates)
+	        {
+	            isMandatory |= mandatoryCovariate.equals(covariate);
+	        }
+	        setEnabledRemoveValue(!isMandatory);
+	        setEnabledAddValue(!isMandatory);
         }
-        setEnabledRemoveValue(!isMandatory);
-        setEnabledAddValue(!isMandatory);
     }
     
     private class CoefficientTableCellRenderer extends DefaultTableCellRenderer {
@@ -180,7 +184,9 @@ public class RegressionPanel extends KeyTablePanel {
                 }
                 if(!isMandatory)
                 {
-                    ExpressionDialog expressionDialog = new ExpressionDialog(null, potential.getVariables(), covariate);
+                	List<Variable> variables = potential.getVariables();
+                	variables.remove(potential.getConditionedVariable());
+                    ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, variables, covariate);
                     expressionDialog.setVisible(true);
                     if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
                         tableModel.setValueAt(expressionDialog.getExpression(), selectedRow, 0);

@@ -423,6 +423,9 @@
 			<Select value="Selección de unidad" />
 		</Unit>
 	</MulticriteriaDialog>
+	<InferenceOptionsDialog>
+		<Title value="Opciones de inferencia" />
+	</InferenceOptionsDialog>
 	<OptionsInferenceDialog>
 		<Text>
 			<Label value="Seleccionar el tipo de propagación" />
@@ -934,5 +937,14 @@
 			<Label value="Condiciones de revelación para  {0}" />
 		</Title>
 	</RevelationArcDialog>
+	<ScopeSelector>
+		<Title value="Ámbito" />
+		<Type value="Tipo" />
+		<DecisionSelector value="Decisión" />
+		<Scenario value="Escenario">
+			<Global value="Global" />
+			<Decision value="Una decisión" />
+		</Scenario>
+	</ScopeSelector>
 </properties>
 

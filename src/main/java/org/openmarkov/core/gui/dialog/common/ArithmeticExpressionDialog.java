@@ -10,15 +10,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -34,52 +39,56 @@ import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
-public class ExpressionDialog extends OkCancelHorizontalDialog implements DocumentListener {
-
+public class ArithmeticExpressionDialog extends OkCancelHorizontalDialog implements DocumentListener {
+	
     private static final Color VALID_EXPRESSION_COLOR   = new Color(180, 215, 170);
     private static final Color INVALID_EXPRESSION_COLOR = new Color(250, 170, 170);
     private JTextField         expressionTextField;
     private JList<String>      variableList;
     private JList<String>      functionList;
+    private JButton helpButton;
     private String             expression;
     private Evaluator          evaluator;
-    private List<String>       variableNames;
+    private List<Variable> variables;
+    private List<String> functionNames = Arrays.asList("abs","acos","asin","atan","atan2","ceil","cos","exp","log","max","min","pow","round","sin","sqrt","tan","toDegrees","toRadians");
 
-    public ExpressionDialog(Window owner, List<Variable> variables, String expression) {
+    public ArithmeticExpressionDialog(Window owner, List<Variable> variables, String expression) {
         super(owner);
-        setTitle("Enter an expression");
+        this.variables  = variables;
+        setTitle(stringDatabase.getString("ArithmeticExpressionEvaluator.Title"));
         setIconImage(null);
         this.expression = expression;
         evaluator = new Evaluator();
         Map<String, String> variableValues = new HashMap<>();
-        for (Variable variable : variables) {
-            variableValues.put(variable.getName(), "1.0");
+        for (int i =0; i< variables.size();i++) {
+            variableValues.put("v"+i, "1.0");
         }
         evaluator.setVariables(variableValues);
-        variableNames = new ArrayList<String>(variableValues.keySet());
-        Collections.sort(variableNames);
         initializeComponents();
         setLocationRelativeTo(null);
         expressionTextField.getDocument().addDocumentListener(this);
         expressionTextField.setBackground((isValidExpression()) ? VALID_EXPRESSION_COLOR
                 : INVALID_EXPRESSION_COLOR);
         DefaultListModel<String> variableListModel = new DefaultListModel<>();
-        for (int i = 1; i < variables.size(); ++i) {
-            variableListModel.addElement(variables.get(i).getName());
+        for (Variable variable : variables) {
+            variableListModel.addElement(variable.getName());
         }
         variableList.setModel(variableListModel);
         variableList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getClickCount() > 1) {
-                    insertTextInExpression(variableList.getSelectedValue());
+                    insertTextInExpression("{"+variableList.getSelectedValue()+"}");
                 }
             }
         });
+        variableList.setToolTipText(stringDatabase.getString("ArithmeticExpressionEvaluator.Instructions.Variables"));
         DefaultListModel<String> functionListModel = new DefaultListModel<>();
-        for (Object functionName : evaluator.getFunctions().keySet()) {
-            functionListModel.addElement(functionName.toString());
+        Collections.sort(functionNames);
+        for (String functionName : functionNames) {
+            functionListModel.addElement(functionName);
         }
+        
         functionList.setModel(functionListModel);
         functionList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -89,27 +98,51 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
                 }
             }
         });
+        functionList.setToolTipText(stringDatabase.getString("ArithmeticExpressionEvaluator.Instructions.Functions"));
+        
+        helpButton.addActionListener(new ActionListener() {
+ 
+            public void actionPerformed(ActionEvent e)
+            {
+    			JEditorPane ed1=new JEditorPane("text/html",stringDatabase.getString("ArithmeticExpressionEvaluator.Help"));
+    			ed1.setCaretPosition(0);
+    			ed1.setEditable(false);
+            	JScrollPane scrollPane = new JScrollPane(ed1);
+                JDialog helpDialog = new JDialog(null, stringDatabase.getString("Help.Help.Label"), ModalityType.APPLICATION_MODAL);
+                helpDialog.add(scrollPane);
+                helpDialog.setSize(600,600);
+                helpDialog.setLocationRelativeTo(null);
+                helpDialog.setVisible(true);
+                helpDialog.setIconImage(null);
+            }
+        });     
 
     }
 
-    public ExpressionDialog(Window owner, List<Variable> variables) {
+    public ArithmeticExpressionDialog(Window owner, List<Variable> variables) {
         this(owner, variables, null);
     }
 
     private void initializeComponents() {
         JPanel expressionPanel = new JPanel();
         expressionPanel.setLayout(new BorderLayout());
+        JPanel helpPanel = new JPanel();
+        helpPanel.setLayout(new BorderLayout());
+        helpButton = new JButton(stringDatabase.getString("Help.Help.Label"));
+        helpButton.setMaximumSize(new Dimension(40, 20));
+        helpPanel.add(helpButton, BorderLayout.LINE_END);
+        expressionPanel.add(helpPanel, BorderLayout.NORTH);
         expressionTextField = new JTextField();
-        expressionTextField.setPreferredSize(new Dimension(250, 20));
+        expressionTextField.setPreferredSize(new Dimension(400, 20));
         if (expression != null) {
             expressionTextField.setText(expression);
         }
-        expressionPanel.add(expressionTextField, BorderLayout.NORTH);
+        expressionPanel.add(expressionTextField, BorderLayout.CENTER);
         JPanel listPanel = new JPanel();
         variableList = new JList<>();
         JScrollPane variableListScroller = new JScrollPane(variableList);
-        variableListScroller.setPreferredSize(new Dimension(100, 150));
-        JLabel variableListLabel = new JLabel("Variables");
+        variableListScroller.setPreferredSize(new Dimension(175, 150));
+        JLabel variableListLabel = new JLabel(stringDatabase.getString("ArithmeticExpressionEvaluator.Variables.Label"));
         JPanel variableListPanel = new JPanel();
         variableListPanel.setLayout(new BorderLayout());
         variableListPanel.add(variableListLabel, BorderLayout.NORTH);
@@ -117,8 +150,8 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
 
         functionList = new JList<>();
         JScrollPane functionListScroller = new JScrollPane(functionList);
-        functionListScroller.setPreferredSize(new Dimension(100, 150));
-        JLabel functionListLabel = new JLabel("Functions");
+        functionListScroller.setPreferredSize(new Dimension(175, 150));
+        JLabel functionListLabel = new JLabel(stringDatabase.getString("ArithmeticExpressionEvaluator.Functions.Label"));
         JPanel functionListPanel = new JPanel();
         functionListPanel.setLayout(new BorderLayout());
         functionListPanel.add(functionListLabel, BorderLayout.NORTH);
@@ -126,7 +159,7 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
 
         listPanel.add(variableListPanel);
         listPanel.add(functionListPanel);
-        expressionPanel.add(listPanel, BorderLayout.CENTER);
+        expressionPanel.add(listPanel, BorderLayout.SOUTH);
         getComponentsPanel().add(expressionPanel, BorderLayout.NORTH);
         pack();
     }
@@ -153,17 +186,18 @@ public class ExpressionDialog extends OkCancelHorizontalDialog implements Docume
             evaluator.evaluate(processedExpression);
             result = true;
         } catch (EvaluationException e) {
-            e.printStackTrace();
+           // Ignore
         }
         return result;
     }
 
     private String processExpression(String expression) {
         String processedExpression = expression;
-        for (String variableName : variableNames) {
-            processedExpression = processedExpression.replace(variableName, "#{"
-                    + variableName
-                    + "}");
+        for (int i =0; i< variables.size();i++) {
+            processedExpression = processedExpression.replace("{"+ variables.get(i).getName()+ "}", "#{v"+i+"}");
+        }
+        for (int i =0; i< variables.size();i++) {
+            processedExpression = processedExpression.replace(variables.get(i).getName(), "#{v"+i+"}");
         }
         return processedExpression;
     }

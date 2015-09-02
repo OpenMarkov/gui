@@ -1,0 +1,99 @@
+package org.openmarkov.core.gui.dialog.inference;
+
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+
+/**
+ * Created by Jorge on 29/07/2015.
+ */
+public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
+
+    private JLabel                  numSlicesLabel;
+    private JTextField              numSlicesTextField;
+    private Integer                 numSlices;
+    private ProbNet                 probNet;
+    private ScopeSelectorPanel      scopeSelectorPanel;
+    private Node                    selectedNode;
+    private EvidenceCase            evidenceCase;
+    /**
+     * Constructor. initialises the instance.
+     *
+     * @param owner window that owns the dialog.
+     */
+    public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase evidenceCase) {
+        super(owner);
+        this.probNet = selectedNode.getProbNet();
+        this.selectedNode = selectedNode;
+        this.evidenceCase = evidenceCase;
+        this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet().getName());
+        getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
+        getComponentsPanel().add(getSlicesPanel());
+        getComponentsPanel().add(getScopeSelectorPanel());
+        setLocationRelativeTo(owner);
+        this.pack();
+        this.setVisible(true);
+
+        setMinimumSize(new Dimension(250, 150));
+    }
+
+    public JPanel getSlicesPanel() {
+        JPanel slicesPanel = new JPanel();
+        slicesPanel.add(getJLabelNumSlices());
+        slicesPanel.add(getNumSlicesTextField());
+        slicesPanel.setBorder(new TitledBorder(stringDatabase.getString("Inference.TemporalOptions.Label")));
+        slicesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        return slicesPanel;
+    }
+
+    private JLabel getJLabelNumSlices() {
+        if (numSlicesLabel == null) {
+            numSlicesLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
+        }
+        return numSlicesLabel;
+    }
+
+    private JTextField getNumSlicesTextField() {
+        if (numSlicesTextField == null) {
+            numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+            numSlicesTextField = new JTextField();
+            numSlicesTextField.setText("" + numSlices);
+            numSlicesTextField.setColumns(10);
+            numSlicesTextField.setName("numSlicesTextField");
+        }
+        return numSlicesTextField;
+    }
+
+    public ScopeSelectorPanel getScopeSelectorPanel() {
+        if(scopeSelectorPanel == null){
+            scopeSelectorPanel = new ScopeSelectorPanel(probNet);
+        }
+        return scopeSelectorPanel;
+    }
+
+    @Override
+    protected boolean doOkClickBeforeHide() {
+        try {
+            evidenceCase.addFindings(scopeSelectorPanel.getSelectedFindings());
+        } catch (InvalidStateException e) {
+            e.printStackTrace();
+        } catch (IncompatibleEvidenceException e) {
+            e.printStackTrace();
+        }
+        TraceTemporalEvolutionDialogExtended dialog = new TraceTemporalEvolutionDialogExtended(
+                getOwner(),
+                selectedNode,
+                evidenceCase,
+                scopeSelectorPanel.getDecisionSelected());
+
+        return super.doOkClickBeforeHide();
+    }
+}

@@ -58,7 +58,7 @@ import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.multicriteria.InferenceOptionsDialog;
+import org.openmarkov.core.gui.dialog.inference.InferenceOptionsDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
@@ -68,6 +68,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -958,7 +959,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * Creates an expanded network from current network
      * */
     private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel), null);
         if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
             return;
         }
@@ -978,10 +979,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * GUI
      */
     private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel));
-
-        if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
-            return;
+        if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()){
+            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+            if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+                return;
+            }
         }
 
         EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
@@ -1227,17 +1229,19 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
             
             // If the inference was never launched before in this execution, show the inference options dialogs
-            if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getLaunchedBefore()){
+            if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions().isUnicriterionOptionsShowed()){
             	
             	// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(), Utilities.getOwner(mainPanel));
+                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+                        Utilities.getOwner(mainPanel),
+                        MulticriteriaOptions.Type.UNICRITERION);
 
                 if(dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
                     newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
                     performInference = false;
                 }
                 // Set as launched
-                getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
+                //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
 
             }
         } else {
@@ -1320,7 +1324,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @param networkPanel 
      */
     private void setInferenceOptions(NetworkPanel networkPanel) {
-        InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+        InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel), null);
         //MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
 	}
 

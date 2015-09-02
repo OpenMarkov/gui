@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.multicriteria;
+package org.openmarkov.core.gui.dialog.inference;
 
 import java.awt.Component;
 
