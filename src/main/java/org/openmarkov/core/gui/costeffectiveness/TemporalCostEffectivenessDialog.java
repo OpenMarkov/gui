@@ -33,6 +33,8 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
+import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.ProbNet;
@@ -78,6 +80,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
 //    private Map<Variable, Double>   initialValues;
     private Map<String, JTextField> initialValueComponents = new HashMap<>();
     private ProbNet                 probNet;
+    private ScopeSelectorPanel      scopeSelectorPanel;
 
     /**
      * Creates a CostEffectivenessDialog for expansion only
@@ -106,7 +109,6 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
      * 
      * @param owner
      *            The parent of the dialog
-     * @param b
      */
     public TemporalCostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
             boolean isTemporalEvolution) {
@@ -142,6 +144,15 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         slicesPanel.setBorder(new TitledBorder("Time horizon"));
         slicesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
         otherPanel.add(slicesPanel, BorderLayout.NORTH);
+
+        if(scopeSelectorPanel == null){
+            scopeSelectorPanel = new ScopeSelectorPanel(probNet);
+        }
+        otherPanel.add(scopeSelectorPanel);
+
+
+
+
 
 //        otherPanel.add(getTransitionsPanel(), BorderLayout.CENTER);
 //        JPanel discountTitlePanel = new JPanel();

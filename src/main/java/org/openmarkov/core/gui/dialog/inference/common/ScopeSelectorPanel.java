@@ -250,6 +250,10 @@ public class ScopeSelectorPanel extends JPanel {
         this.scopeType = scopeType;
     }
 
+    public ScopeType getScopeType() {
+        return scopeType;
+    }
+
     public void setDecisionSelected(Variable decisionSelected) {
         this.decisionSelected = decisionSelected;
         refreshScenario();

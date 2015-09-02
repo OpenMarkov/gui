@@ -44,6 +44,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -121,6 +122,30 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
     public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node) {
         this(cellRenderer, node, false);
     }
+
+    // TODO - Para mover a una nueva clase que muestre una intervención
+//    public TreeADDEditorPanel(Intervention intervention){
+//        TreeADDModel model = new TreeADDModel(intervention);
+//        jTree = new JTree(model);
+//        jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+//        jTree.addTreeExpansionListener(new TreeADDExpansionAdapter(this));
+//        jTree.addTreeWillExpandListener(new TreeADDWillExpandAdapter(this));
+//        // Allows JTree nodes to accept CR/LF codes
+//        jTree.setShowsRootHandles(true);
+//        jTree.setRowHeight(0);
+////        jTree.setCellRenderer(cellRenderer);
+//        jTree.setUI(new TreeADDUserInterface());
+//        for (int i = 0; i < jTree.getRowCount(); i++) {
+//            jTree.expandRow(i);
+//        }
+//        setViewportView(jTree);
+//        jTree.addMouseListener(new TreeADDMouseAdapter(this));
+//        contextualMenu.setInvoker(jTree);
+//        // menu to create the root treeADD start painting the tree
+//        submenuAddStartTree.setText(stringDatabase.getString("TreeADD.StartNode"));
+//
+//        setReadOnly(true);
+//    }
 
     private void setupUserInterface(TreeADDCellRenderer cellRenderer) {
         TreeADDModel model = new TreeADDModel(rootTreeADDPotential);
