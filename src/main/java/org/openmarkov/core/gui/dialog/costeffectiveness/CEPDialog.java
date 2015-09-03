@@ -4,34 +4,18 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** @author Manuel Arias */
 public class CEPDialog extends JDialog {
 
-    private JTable table;
-
-    public CEPDialog(CEP cep){
-        table = getJTableFromCEP(cep);
-        this.add(table);
-        this.pack();
-        this.setVisible(true);
-
-    }
-
-
-    // Public method
-    /**
-     * @param cep <code>CEP</code>
-     * @return <code>JTable</code>
-     */
-    public static JTable getJTableFromCEP(CEP cep) {
-        String[] columnNamesInJTable = {"Lambda inf.", "Lambda sup.", "Cost", "Effectiveness", "Intervention"};
-        JTable jTableCEP = new JTable(getDataFromCEP(cep), columnNamesInJTable);
-        return jTableCEP;
-    }
-
+	// Aux enum
     private enum CEPColumns {
         LAMBDA_INF,
         LAMBDA_SUP,
@@ -40,11 +24,37 @@ public class CEPDialog extends JDialog {
         INTERVENTION;
     }
 
+	// Constructor
+    /**
+     * @param cep <code>CEP</code>
+     */
+    public CEPDialog(CEP cep){
+        this.add(new JScrollPane(getJTableFromCEP(cep)));
+        this.pack();
+        this.setVisible(true);
+    }
+
+    // Public method
+    /**
+     * @param cep <code>CEP</code>
+     * @return <code>JTable</code>
+     */
+    public JTable getJTableFromCEP(CEP cep) {
+        String[] columnNamesInJTable = {"Lambda inf.", "Lambda sup.", "Cost", "Effectiveness", "Intervention"};
+        JTable jTableCEP = new JTable(getDataFromCEP(cep), columnNamesInJTable);
+        TableColumnModel columnModel = jTableCEP.getColumnModel();
+        setToolTipAndColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.INTERVENTION.ordinal()), 
+        		"Click to see intervention", Color.yellow);
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.cyan);
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.cyan);
+        return jTableCEP;
+    }
+
     /**
      * @param cep <code>CEP</code>
      * @return Rectangular matrix for a <code>JTable</code>.
      */
-    private static Object[][] getDataFromCEP(CEP cep) {
+    private Object[][] getDataFromCEP(CEP cep) {
         double[] costs = cep.getCosts();
         double[] effectiveness = cep.getEffectivities();
         int numRows = costs.length;
@@ -55,14 +65,13 @@ public class CEPDialog extends JDialog {
             data[i][CEPColumns.LAMBDA_SUP.ordinal()] = getLambdaRightEndPoint(cep, i, numRows);
             data[i][CEPColumns.COST.ordinal()] = Double.toString(costs[i]);
             data[i][CEPColumns.EFFECTIVENESS.ordinal()] = Double.toString(effectiveness[i]);
-            JTextField interventionButton = new JTextField("See Intervention");
-//            addInterventionTextToButton(interventionButton, interventions[i]);
-
-            final int finalI = i;
+            JButton interventionButton = new JButton("See Intervention");
+            final Intervention intervention = interventions[i];
+            addInterventionTextToButton(interventionButton, intervention);
             interventionButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    showIntervention(interventions[finalI]);
+                    showIntervention(intervention);
                 }
             });
             data[i][CEPColumns.INTERVENTION.ordinal()] = interventionButton;
@@ -70,8 +79,23 @@ public class CEPDialog extends JDialog {
 
         return data;
     }
+    
+	private void setToolTipAndColorColumn(JTable table, TableColumn column, String text, Color color) {
+    	//Set up tool tips.
+    	DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
+    	renderer.setToolTipText("Click to see intervention");
+    	renderer.setBackground(color);
+    	column.setCellRenderer(renderer);
+    }
 
-    private static void showIntervention(Intervention intervention) {
+	private void setColumnColorColumn(JTable table, TableColumn column, Color color) {
+    	//Set up tool tips.
+    	DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
+    	renderer.setBackground(color);
+    	column.setCellRenderer(renderer);
+    }
+
+    private void showIntervention(Intervention intervention) {
         JDialog interventionDialog = new JDialog();
         //TreeADDEditorPanel treeADDEditorPanel = new TreeADDEditorPanel(intervention);
         //interventionDialog.add(treeADDEditorPanel);
@@ -84,7 +108,7 @@ public class CEPDialog extends JDialog {
      * @param intervalIndex
      * @return Left end point. <code>String</code>
      */
-    private static String getLambdaLeftEndPoint(CEP cep, int intervalIndex) {
+    private String getLambdaLeftEndPoint(CEP cep, int intervalIndex) {
         Double threshold;
         if (intervalIndex == 0) {
             threshold = cep.getMinThreshold();
@@ -99,7 +123,7 @@ public class CEPDialog extends JDialog {
      * @param intervalIndex
      * @return Right end point. <code>String</code>
      */
-    private static String getLambdaRightEndPoint(CEP cep, int intervalIndex, int numIntervals) {
+    private String getLambdaRightEndPoint(CEP cep, int intervalIndex, int numIntervals) {
         Double threshold;
         if (intervalIndex == numIntervals - 1) {
             threshold = cep.getMaxThreshold();
@@ -113,7 +137,7 @@ public class CEPDialog extends JDialog {
      * @param interventionButton <code>JButton</code>
      * @param intervention <code>Intervention</code>
      */
-    private static void addInterventionTextToButton(
+    private void addInterventionTextToButton(
             JButton interventionButton,
             final Intervention intervention) {
         interventionButton.addActionListener(new ActionListener() {
@@ -127,7 +151,7 @@ public class CEPDialog extends JDialog {
     /**
      * @param buffer <code>StringBuffer</code>
      */
-    private static JFrame getTextWindow(StringBuilder buffer) {
+    private JFrame getTextWindow(StringBuilder buffer) {
         JFrame frame = new JFrame("Cost-Effectiveness Partition");
         String text = buffer.toString();
         JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
@@ -144,7 +168,7 @@ public class CEPDialog extends JDialog {
      * @param text <code>String</code>
      * @return <code>int</code>
      */
-    private static int getMaxCharsInALine(String text) {
+    private int getMaxCharsInALine(String text) {
         int maxLengthLine = 0;
         if (text != null) {
             int position = 0;
@@ -163,4 +187,5 @@ public class CEPDialog extends JDialog {
         }
         return maxLengthLine;
     }
+    
 }
