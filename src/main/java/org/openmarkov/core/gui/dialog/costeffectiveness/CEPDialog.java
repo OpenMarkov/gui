@@ -1,5 +1,6 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
@@ -15,14 +16,9 @@ import java.awt.event.ActionListener;
 /** @author Manuel Arias */
 public class CEPDialog extends JDialog {
 
-	// Aux enum
-    private enum CEPColumns {
-        LAMBDA_INF,
-        LAMBDA_SUP,
-        COST,
-        EFFECTIVENESS,
-        INTERVENTION;
-    }
+    private final int DEFAULT_NUM_DECIMALS = 6;
+    
+	private int numDecimals = DEFAULT_NUM_DECIMALS;
 
 	// Constructor
     /**
@@ -40,8 +36,7 @@ public class CEPDialog extends JDialog {
      * @return <code>JTable</code>
      */
     public JTable getJTableFromCEP(CEP cep) {
-        String[] columnNamesInJTable = {"Lambda inf.", "Lambda sup.", "Cost", "Effectiveness", "Intervention"};
-        JTable jTableCEP = new JTable(getDataFromCEP(cep), columnNamesInJTable);
+        JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
         TableColumnModel columnModel = jTableCEP.getColumnModel();
         setToolTipAndColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.INTERVENTION.ordinal()), 
         		"Click to see intervention", Color.yellow);
@@ -49,6 +44,35 @@ public class CEPDialog extends JDialog {
         setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.cyan);
         return jTableCEP;
     }
+
+	/** Enumerate columns */
+    private enum CEPColumns {
+        LAMBDA_INF(0, "Lambda inf."),
+        LAMBDA_SUP(1, "Lambda sup."),
+        COST(2, "Cost"),
+        EFFECTIVENESS(3, "Effectiveness"),
+        INTERVENTION(4, "Intervention");
+    	
+    	private String text;
+    	
+    	private CEPColumns(int index, String text) {
+    		this.text = text;
+    	}
+    	
+    	public String getText() {
+    		return text;
+    	}
+    	
+    }
+
+	private String[] getColumnsStrings() {
+		int numColumns = CEPColumns.values().length;
+		String[] columnsNames = new String[numColumns];
+		for (int i = 0; i < numColumns; i++) {
+			columnsNames[i] = CEPColumns.values()[i].getText();
+		}
+		return columnsNames;
+	}
 
     /**
      * @param cep <code>CEP</code>
@@ -63,23 +87,19 @@ public class CEPDialog extends JDialog {
         for (int i = 0; i < numRows; i++) {
             data[i][CEPColumns.LAMBDA_INF.ordinal()] = getLambdaLeftEndPoint(cep, i);
             data[i][CEPColumns.LAMBDA_SUP.ordinal()] = getLambdaRightEndPoint(cep, i, numRows);
-            data[i][CEPColumns.COST.ordinal()] = Double.toString(costs[i]);
-            data[i][CEPColumns.EFFECTIVENESS.ordinal()] = Double.toString(effectiveness[i]);
-            JButton interventionButton = new JButton("See Intervention");
-            final Intervention intervention = interventions[i];
-            addInterventionTextToButton(interventionButton, intervention);
-            interventionButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showIntervention(intervention);
-                }
-            });
-            data[i][CEPColumns.INTERVENTION.ordinal()] = interventionButton;
+            data[i][CEPColumns.COST.ordinal()] = new Double(Util.roundWithPrecision(costs[i], numDecimals)).toString();
+            data[i][CEPColumns.EFFECTIVENESS.ordinal()] = new Double(Util.roundWithPrecision(effectiveness[i], numDecimals)).toString();
+            data[i][CEPColumns.INTERVENTION.ordinal()] = getFirstLine(interventions[i].toString());
         }
 
         return data;
     }
     
+	private String getFirstLine(String string) {
+		int indexEOL = string.indexOf("\n");
+		return indexEOL == -1 ? string : string.substring(0, indexEOL); 
+	}
+
 	private void setToolTipAndColorColumn(JTable table, TableColumn column, String text, Color color) {
     	//Set up tool tips.
     	DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
@@ -115,7 +135,7 @@ public class CEPDialog extends JDialog {
         } else {
             threshold = cep.getThreshold(intervalIndex - 1);
         }
-        return threshold.toString();
+        return new Double(Util.roundWithPrecision(threshold, numDecimals)).toString();
     }
 
     /**
@@ -130,7 +150,7 @@ public class CEPDialog extends JDialog {
         } else {
             threshold = cep.getThreshold(intervalIndex);
         }
-        return threshold.toString();
+        return new Double(Util.roundWithPrecision(threshold, numDecimals)).toString();
     }
 
     /**
