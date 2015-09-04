@@ -69,6 +69,7 @@ import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
+import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -1474,9 +1475,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
     private void showCostEffectivenessResults(ProbNet probNet,
             EvidenceCase evidence) {
+
+        boolean showCEDialog = true;
+
+        if(!probNet.getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()) {
+            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+            if(inferenceOptionsDialog.requestData() == InferenceOptionsDialog.CANCEL_BUTTON){
+                showCEDialog = false;
+            }
+            probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+        }
+
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
 
-        if (costEffectivenessDialog.requestData() == TemporalCostEffectivenessDialog.OK_BUTTON) {
+        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
             try {
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {

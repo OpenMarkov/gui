@@ -1042,4 +1042,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
         return super.doOkClickBeforeHide();
     }
+
+    public int requestData() {
+        return selectedButton;
+    }
 }
