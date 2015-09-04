@@ -12,14 +12,23 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /** @author Manuel Arias */
+@SuppressWarnings("serial")
 public class CEPDialog extends JDialog {
 
+	// Constants
     private final int DEFAULT_NUM_DECIMALS = 6;
     
-	private int numDecimals = DEFAULT_NUM_DECIMALS;
+	private final String SEA_SHELL_COLOR = "#FFF5EE";
 
+	private final String LIGHT_SEA_GREEN_COLOR ="#20B2AA";
+
+	// Attributes
+	private int numDecimals = DEFAULT_NUM_DECIMALS;
+	
 	// Constructor
     /**
      * @param cep <code>CEP</code>
@@ -43,17 +52,37 @@ public class CEPDialog extends JDialog {
      * @param cep <code>CEP</code>
      * @return <code>JTable</code>
      */
-    public JTable getJTableFromCEP(CEP cep) {
-        JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
+    public JTable getJTableFromCEP(final CEP cep) {
+    	// Set data in jTable
+        final JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
+        
+        // Set colors in jTable
         TableColumnModel columnModel = jTableCEP.getColumnModel();
         setToolTipAndColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.INTERVENTION.ordinal()), 
-        		"Click to see intervention", Color.decode("#FFF5EE"));
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.decode("#ADD8E6"));
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.decode("#ADD8E6"));
+        		"Click to see intervention", Color.decode(SEA_SHELL_COLOR));
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.decode(LIGHT_SEA_GREEN_COLOR));
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.decode(LIGHT_SEA_GREEN_COLOR));
+        
+        jTableCEP.addMouseListener(new MouseAdapter() 
+        {
+           public void mouseClicked(MouseEvent event) 
+           {
+              int row = jTableCEP.rowAtPoint(event.getPoint());
+              int column = jTableCEP.columnAtPoint(event.getPoint());
+              if (column == CEPColumns.INTERVENTION.ordinal()) {
+            	  JFrame interventionFrame = new JFrame();
+            	  interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
+            	  interventionFrame.pack();
+            	  interventionFrame.setVisible(true);
+              }
+           }
+        });
+
+
         return jTableCEP;
     }
 
-	/** Enumerate columns */
+	/** Enumerate to use in JTable columns */
     private enum CEPColumns {
         LAMBDA_INF(0, "Lambda inf."),
         LAMBDA_SUP(1, "Lambda sup."),
@@ -62,17 +91,23 @@ public class CEPDialog extends JDialog {
         INTERVENTION(4, "Intervention");
     	
     	private String text;
+    	private int index;
     	
     	private CEPColumns(int index, String text) {
+    		this.index = index;
     		this.text = text;
     	}
-    	
+    	private int getIndex() {
+    		return index;
+    	}
     	public String getText() {
     		return text;
     	}
-    	
     }
-
+    
+	/**
+	 * @return Array of <code>String</code>s with the columns headings
+	 */
 	private String[] getColumnsStrings() {
 		int numColumns = CEPColumns.values().length;
 		String[] columnsNames = new String[numColumns];
@@ -93,11 +128,11 @@ public class CEPDialog extends JDialog {
         final Intervention[] interventions = cep.getInterventions();
         Object[][] data = new Object[numRows][CEPColumns.values().length];
         for (int i = 0; i < numRows; i++) {
-            data[i][CEPColumns.LAMBDA_INF.ordinal()] = getLambdaLeftEndPoint(cep, i);
-            data[i][CEPColumns.LAMBDA_SUP.ordinal()] = getLambdaRightEndPoint(cep, i, numRows);
-            data[i][CEPColumns.COST.ordinal()] = new Double(Util.roundWithSignificantFigures(costs[i], numDecimals)).toString();
-            data[i][CEPColumns.EFFECTIVENESS.ordinal()] = new Double(Util.roundWithSignificantFigures(effectiveness[i], numDecimals)).toString();
-            data[i][CEPColumns.INTERVENTION.ordinal()] = getFirstLine(interventions[i].toString());
+            data[i][CEPColumns.LAMBDA_INF.getIndex()] = getLambdaLeftEndPoint(cep, i);
+            data[i][CEPColumns.LAMBDA_SUP.getIndex()] = getLambdaRightEndPoint(cep, i, numRows);
+            data[i][CEPColumns.COST.getIndex()] = new Double(Util.roundWithSignificantFigures(costs[i], numDecimals)).toString();
+            data[i][CEPColumns.EFFECTIVENESS.getIndex()] = new Double(Util.roundWithSignificantFigures(effectiveness[i], numDecimals)).toString();
+            data[i][CEPColumns.INTERVENTION.getIndex()] = getFirstLine(interventions[i].toString());
         }
 
         return data;
