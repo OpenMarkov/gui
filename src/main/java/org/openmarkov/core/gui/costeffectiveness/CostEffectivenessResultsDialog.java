@@ -169,7 +169,7 @@ public class CostEffectivenessResultsDialog extends JDialog
     {
         if (analysisPane == null)
         {
-            analysisPane = new CostEffectivenessAnalysisPane (this.costEffectivenessAnalysis.getGlobalUtility ());
+            analysisPane = new CostEffectivenessAnalysisPane (this.costEffectivenessAnalysis.getCostEffectivenessTable());
         }
         return analysisPane;
     }
@@ -202,13 +202,13 @@ public class CostEffectivenessResultsDialog extends JDialog
     private XYDataset createCEPlaneDataset ()
     {
         XYSeriesCollection result = new XYSeriesCollection ();
-        for (Intervention intervention : costEffectivenessAnalysis.getInterventions())
+        for (GUIIntervention guiIntervention : costEffectivenessAnalysis.getGuiIntervention())
         {
-            XYSeries series = new XYSeries (intervention.getName ());
-            series.add (intervention.getEffectiveness (), intervention.getCost ());
-            if(intervention instanceof ProbabilisticIntervention)
+            XYSeries series = new XYSeries (guiIntervention.getName ());
+            series.add (guiIntervention.getEffectiveness (), guiIntervention.getCost ());
+            if(guiIntervention instanceof ProbabilisticGUIIntervention)
             {
-                ProbabilisticIntervention pIntervention = (ProbabilisticIntervention)intervention;  
+                ProbabilisticGUIIntervention pIntervention = (ProbabilisticGUIIntervention) guiIntervention;
                 for(int i=0; i < pIntervention.getNumSimulations(); ++i)
                 {
                     series.add(pIntervention.getEffectivenesses().get(i), pIntervention.getCosts()
@@ -258,13 +258,13 @@ public class CostEffectivenessResultsDialog extends JDialog
         XYSeriesCollection result = new XYSeriesCollection ();
         ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
         Map<Integer, double[]> ceacData = pCEA.calculateCEAC(10000);
-        List<Intervention> interventions = costEffectivenessAnalysis.getInterventions();
+        List<GUIIntervention> guiIntervention = costEffectivenessAnalysis.getGuiIntervention();
         List<Integer> ratios = new ArrayList<>(ceacData.keySet());
-        for (int i=0; i <interventions.size(); ++i)
+        for (int i=0; i < guiIntervention.size(); ++i)
         {
-            Intervention intervention = interventions.get(i);
-            XYSeries series = new XYSeries (intervention.getName ());
-            if(intervention instanceof ProbabilisticIntervention)
+            GUIIntervention guiIntervention2 = guiIntervention.get(i);
+            XYSeries series = new XYSeries (guiIntervention2.getName ());
+            if(guiIntervention instanceof ProbabilisticGUIIntervention)
             {
                 for(int k=0; k < ratios.size(); ++k)
                 {

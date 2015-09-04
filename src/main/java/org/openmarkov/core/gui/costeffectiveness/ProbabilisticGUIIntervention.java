@@ -2,13 +2,13 @@ package org.openmarkov.core.gui.costeffectiveness;
 
 import java.util.List;
 
-public class ProbabilisticIntervention extends Intervention {
+public class ProbabilisticGUIIntervention extends GUIIntervention {
 
     private int numSimulations;
     private List<Double> costs;
     private List<Double> effectivenesses;
     
-    public ProbabilisticIntervention(String name, List<Double> costs, List<Double> effectivenesses) {
+    public ProbabilisticGUIIntervention(String name, List<Double> costs, List<Double> effectivenesses) {
         super(name, calculateMeanCost(costs), calculateMeanEffectiveness(effectivenesses));
         this.costs = costs;
         this.effectivenesses = effectivenesses;

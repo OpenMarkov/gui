@@ -13,7 +13,7 @@ package org.openmarkov.core.gui.costeffectiveness;
  * @author myebra
  * 
  */
-public class Intervention {
+public class GUIIntervention {
 
     // Attributes
     public String name;
@@ -33,7 +33,7 @@ public class Intervention {
      * @param effectiveness
      *            . <code>double</code>
      */
-    public Intervention(String name, double cost, double effectiveness) {
+    public GUIIntervention(String name, double cost, double effectiveness) {
         this.name = name;
         this.cost = cost;
         this.effectiveness = effectiveness;
@@ -43,12 +43,12 @@ public class Intervention {
      * Calculates the incremental CE Ratio from this intervention to a reference
      * intervention.
      * 
-     * @param referenceIntervention
+     * @param referenceGUIIntervention
      *            . <code>Intervention</code>
      */
-    public void calculateICER(Intervention referenceIntervention) {
-        iCER = (cost - referenceIntervention.cost)
-                / (effectiveness - referenceIntervention.effectiveness);
+    public void calculateICER(GUIIntervention referenceGUIIntervention) {
+        iCER = (cost - referenceGUIIntervention.cost)
+                / (effectiveness - referenceGUIIntervention.effectiveness);
 
     }
 
@@ -69,8 +69,8 @@ public class Intervention {
     }
 
     public String toString() {
-        return new String("Intervention: " + name + "; cost = " + cost + "; effectiveness = "
-                + effectiveness);
+        return "Intervention: " + name + "; cost = " + cost + "; effectiveness = "
+                + effectiveness;
     }
 
 }

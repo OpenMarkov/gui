@@ -71,6 +71,7 @@ import org.openmarkov.core.gui.window.message.MessageWindow;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.MulticriteriaOptions;
+import org.openmarkov.core.inference.tasks.OptimalStrategy;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -87,7 +88,9 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
 import org.openmarkov.inference.tasks.VariableElimination.VEGlobalCEA;
+import org.openmarkov.inference.tasks.VariableElimination.VEOptimalStrategy;
 import org.openmarkov.inference.variableElimination.model.CEP;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
@@ -1254,11 +1257,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 getCurrentNetworkPanel().updateIndividualProbabilities();
                 mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
             } else {
-                // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the
-                // elimination of findings on returning to Edition Mode
-                if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
-                    getCurrentNetworkPanel().setInferenceAlgorithm(null);
-                }
+                // getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
+                //TODO: has the following piece of code sense with the task scenario?
+                //TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
+                //if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
+                //    getCurrentNetworkPanel().setInferenceAlgorithm(null);
+                //}
             }
         }
         getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
@@ -1457,12 +1461,23 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         the mode is changed from inference to edition.
          */
         if (networkPanel.getModified()) {
-            networkPanel.setInferenceAlgorithm(null);
+            //TODO: revise this piece of code under the new task paradigm
+            //networkPanel.setInferenceAlgorithm(null);
         }
-        InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
+
+        //InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
         ProbNet probNet = networkPanel.getProbNet();
+
+        VEOptimalStrategy veOptimalStrategy = null;
         try {
-			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+            veOptimalStrategy = new VEOptimalStrategy(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
+        } catch (NotEvaluableNetworkException e) {
+            e.printStackTrace();
+        }
+
+        try {
+			//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, veOptimalStrategy);
 			optimalStrategyDialog.setVisible(true);
 		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
             JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
@@ -1497,8 +1512,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     CEPDialog cepDialog = new CEPDialog(cep);
                     cepDialog.setVisible(true);
                 } else {
-                    // TODO - AÑADIR TASK PARA UNA DECISIÓN
-
+                    CostEffectivenessAnalysis costEffectivenessAnalysis =
+                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
+                    CostEffectivenessResultsDialog costEffectivenessResultsDialog =
+                            new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
+                    costEffectivenessResultsDialog.setVisible(true);
                 }
             } catch (NotEvaluableNetworkException e) {
                 JOptionPane.showMessageDialog(

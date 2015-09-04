@@ -4,9 +4,7 @@ package org.openmarkov.core.gui.costeffectiveness;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -26,10 +24,6 @@ import org.apache.poi.ss.usermodel.charts.LegendPosition;
 import org.apache.poi.ss.usermodel.charts.ScatterChartData;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * This class is used to generate excel reports with cost effectiveness analysis
@@ -45,8 +39,8 @@ public class CEAExcelReport
     private int          numSlices;
     private String       targetFilename;
     private HSSFWorkbook workBook;
-	private List<Intervention> interventions;
-	private List<Intervention> frontierInterventions;
+	private List<GUIIntervention> guiIntervention;
+	private List<GUIIntervention> frontierGUIInterventions;
 
     public CEAExcelReport (CostEffectivenessAnalysis costEffectivenessAnalysis)
     {
@@ -54,8 +48,8 @@ public class CEAExcelReport
         // TODO - Check this code
         //this.costDiscount = costEffectivenessAnalysis.getCostDiscountRate ();
         //this.effectivenessDiscount = costEffectivenessAnalysis.getEffectivenessDiscountRate ();
-        this.interventions = costEffectivenessAnalysis.getInterventions();
-        this.frontierInterventions = costEffectivenessAnalysis.getFrontierInterventions();
+        this.guiIntervention = costEffectivenessAnalysis.getGuiIntervention();
+        this.frontierGUIInterventions = costEffectivenessAnalysis.getFrontierGUIInterventions();
     }
     
     public void drawScatterChart ()
@@ -123,8 +117,8 @@ public class CEAExcelReport
         // style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND );
         workBook = new HSSFWorkbook ();
         writeInputSheet ();
-        writeAllInterventionsSheet (interventions);
-        writeFrontierSheet (frontierInterventions);
+        writeAllInterventionsSheet (guiIntervention);
+        writeFrontierSheet (frontierGUIInterventions);
         this.targetFilename = checkXlsExtension (filename);
         // FileOutputStream file = new FileOutputStream(
         // PATH_EXCEL_FILES + targetFileName);
@@ -153,7 +147,7 @@ public class CEAExcelReport
         row.createCell (1).setCellValue (effectivenessDiscount);
     }
 
-    private void writeAllInterventionsSheet (List<Intervention> interventions)
+    private void writeAllInterventionsSheet (List<GUIIntervention> guiIntervention)
     {
         HSSFSheet allInterventionsSheet = workBook.createSheet ("All interventions");
         int rowIndex = 1;
@@ -166,20 +160,20 @@ public class CEAExcelReport
         row.createCell (0).setCellValue ("Strategy");
         row.createCell (1).setCellValue ("Effectiveness");
         row.createCell (2).setCellValue ("Cost");
-        for (Intervention intervention : interventions)
+        for (GUIIntervention guiIntervention2 : guiIntervention)
         {
             cellIndex = 0;
             row = allInterventionsSheet.createRow (rowIndex++);
-            row.createCell (cellIndex++).setCellValue (new HSSFRichTextString (intervention.name));
-            row.createCell (cellIndex).setCellValue (intervention.effectiveness);
+            row.createCell (cellIndex++).setCellValue (new HSSFRichTextString (guiIntervention2.name));
+            row.createCell (cellIndex).setCellValue (guiIntervention2.effectiveness);
             row.getCell (cellIndex++).setCellStyle (style);
-            row.createCell (cellIndex).setCellValue (intervention.cost);
+            row.createCell (cellIndex).setCellValue (guiIntervention2.cost);
             row.getCell (cellIndex++).setCellStyle (style);
             // row.createCell(cellIndex++).setCellValue(intervention.iCER);
         }
     }
 
-    private void writeFrontierSheet (List<Intervention> interventions)
+    private void writeFrontierSheet (List<GUIIntervention> guiIntervention)
     {
         HSSFSheet frontierInterventionsSheet = workBook.createSheet ("Frontier");
         int rowIndex = 1;
@@ -193,19 +187,19 @@ public class CEAExcelReport
         row.createCell (1).setCellValue ("Effectiveness");
         row.createCell (2).setCellValue ("Cost");
         row.createCell (2).setCellValue ("ICER");
-        for (int i = 0; i < interventions.size (); i++)
+        for (int i = 0; i < guiIntervention.size (); i++)
         {
-            Intervention intervention = interventions.get (i);
+            GUIIntervention guiIntervention2 = guiIntervention.get (i);
             cellIndex = 0;
             row = frontierInterventionsSheet.createRow (rowIndex++);
-            row.createCell (cellIndex++).setCellValue (new HSSFRichTextString (intervention.name));
-            row.createCell (cellIndex).setCellValue (intervention.effectiveness);
+            row.createCell (cellIndex++).setCellValue (new HSSFRichTextString (guiIntervention2.name));
+            row.createCell (cellIndex).setCellValue (guiIntervention2.effectiveness);
             row.getCell (cellIndex++).setCellStyle (style);
-            row.createCell (cellIndex).setCellValue (intervention.cost);
+            row.createCell (cellIndex).setCellValue (guiIntervention2.cost);
             row.getCell (cellIndex++).setCellStyle (style);
             if (i > 0)
             {
-                row.createCell (cellIndex).setCellValue (intervention.iCER);
+                row.createCell (cellIndex).setCellValue (guiIntervention2.iCER);
                 row.getCell (cellIndex++).setCellStyle (style);
             }
         }

@@ -46,13 +46,13 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
     public void run()
     {
         this.ceaResults = runProbabilisticAnalysis(expandedNetwork, evidence,  numSimulations, useMultithreading);
-        this.globalUtility = calculateMeanUtility(ceaResults);
-        this.interventions = buildProbabilisticInterventions(ceaResults);
-        this.frontierInterventions = calculateFrontierInterventions(interventions);        
+        this.costEffectivenessTable = calculateMeanUtility(ceaResults);
+        this.guiInterventions = buildProbabilisticInterventions(ceaResults);
+        this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
     }    
 
 	private TablePotential calculateMeanUtility(List<TablePotential> ceaResults) {
-        TablePotential globalUtility = new TablePotential(this.globalUtility.getVariables(), PotentialRole.UTILITY);
+        TablePotential globalUtility = new TablePotential(this.costEffectivenessTable.getVariables(), PotentialRole.UTILITY);
         double[] values = globalUtility.values;
         for(TablePotential simulationResult : ceaResults)
         {
@@ -68,7 +68,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         return globalUtility;
     }
 
-    private List<Intervention> buildProbabilisticInterventions(List<TablePotential> results) {
+    private List<GUIIntervention> buildProbabilisticInterventions(List<TablePotential> results) {
 
         List<String> interventionNames = new ArrayList<>();
         List<List<Double>> costs = new ArrayList<>();
@@ -101,13 +101,13 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
                 effectivenesses.get(i).add(values[i*2 + 1]);
             }
         }
-        
-        interventions.clear();
+
+        guiInterventions.clear();
         for(int i=0; i < interventionNames.size(); ++i)
         {
-            interventions.add(new ProbabilisticIntervention(interventionNames.get(i), costs.get(i), effectivenesses.get(i)));
+            guiInterventions.add(new ProbabilisticGUIIntervention(interventionNames.get(i), costs.get(i), effectivenesses.get(i)));
         }
-        return interventions;
+        return guiInterventions;
     }
 
     public int getNumSimulations() {
@@ -231,8 +231,8 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         }
         
         Map<Integer, double[]> results = new LinkedHashMap<>();
-        int numInterventions = interventions.size();
-        int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
+        int numInterventions = guiInterventions.size();
+        int numSimulations = ((ProbabilisticGUIIntervention) guiInterventions.get(0)).getNumSimulations();
         for(int i=0; i<=1000; ++i)
         {
             int ratio = maxRatio * i / 1000; 
@@ -249,7 +249,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
                 int maxBenefitInterventionIndex = -1; 
                 for(int k=0; k< numInterventions; ++k)
                 {
-                    ProbabilisticIntervention intervention = (ProbabilisticIntervention)interventions.get(k);
+                    ProbabilisticGUIIntervention intervention = (ProbabilisticGUIIntervention) guiInterventions.get(k);
                     double netBenefit = ratio * intervention.getEffectivenesses().get(j) - intervention.getCosts().get(j);
                     if(netBenefit > maxNetBenefit)
                     {
@@ -286,8 +286,8 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         {
             effectivePopulation += patientsPerAnnum / Math.pow(1 + discountRate, i);
         }
-        int numInterventions = interventions.size();
-        int numSimulations = ((ProbabilisticIntervention)interventions.get(0)).getNumSimulations();
+        int numInterventions = guiInterventions.size();
+        int numSimulations = ((ProbabilisticGUIIntervention) guiInterventions.get(0)).getNumSimulations();
         double[][] netBenefits = new double[numInterventions][numSimulations];
         // Max benefit in each simulation
         double[] maxNetBenefits = new double[numSimulations];
@@ -303,7 +303,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
                 maxNetBenefits[j] = Double.NEGATIVE_INFINITY;
                 for(int k=0; k< numInterventions; ++k)
                 {
-                    ProbabilisticIntervention intervention = (ProbabilisticIntervention)interventions.get(k);
+                    ProbabilisticGUIIntervention intervention = (ProbabilisticGUIIntervention) guiInterventions.get(k);
                     double netBenefit = ratio * intervention.getEffectivenesses().get(j) - intervention.getCosts().get(j);
                     netBenefits[k][j] = netBenefit;
                     if(netBenefit > maxNetBenefits[j])

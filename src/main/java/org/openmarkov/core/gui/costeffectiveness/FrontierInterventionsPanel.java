@@ -26,29 +26,29 @@ import javax.swing.table.TableModel;
  */
 @SuppressWarnings("serial")
 public class FrontierInterventionsPanel extends JScrollPane {
-	private List<Intervention> frontierInterventions;
+	private List<GUIIntervention> frontierGUIInterventions;
 
 	public FrontierInterventionsPanel(
 			CostEffectivenessAnalysis costEffectivenessAnalysis) {
 		super();
-		this.frontierInterventions = costEffectivenessAnalysis
-				.getFrontierInterventions();
+		this.frontierGUIInterventions = costEffectivenessAnalysis
+				.getFrontierGUIInterventions();
 		NonEditableModel model = new NonEditableModel();
 		JTable table = new JTable(model);
 		model.setColumnCount(4);
-		model.setNumRows(frontierInterventions.size());
-		model.setRowCount(frontierInterventions.size());
+		model.setNumRows(frontierGUIInterventions.size());
+		model.setRowCount(frontierGUIInterventions.size());
 		table.getColumnModel().getColumn(0).setHeaderValue("Strategy");
 		table.getColumnModel().getColumn(1).setHeaderValue("Effectiveness");
 		table.getColumnModel().getColumn(2).setHeaderValue("Cost");
 		table.getColumnModel().getColumn(3).setHeaderValue("ICER");
-		for (int i = 0; i < frontierInterventions.size(); i++) {
-			model.setValueAt(frontierInterventions.get(i).getName(), i, 0);
-			model.setValueAt(frontierInterventions.get(i).getEffectiveness(),
+		for (int i = 0; i < frontierGUIInterventions.size(); i++) {
+			model.setValueAt(frontierGUIInterventions.get(i).getName(), i, 0);
+			model.setValueAt(frontierGUIInterventions.get(i).getEffectiveness(),
 					i, 1);
-			model.setValueAt(frontierInterventions.get(i).getCost(), i, 2);
+			model.setValueAt(frontierGUIInterventions.get(i).getCost(), i, 2);
 			if (i != 0) {
-				model.setValueAt(frontierInterventions.get(i).getICER(), i, 3);
+				model.setValueAt(frontierGUIInterventions.get(i).getICER(), i, 3);
 			}
 		}
 		DefaultTableCellRenderer tcr = new CEResultsCellRenderer();

@@ -82,6 +82,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 
+import org.openmarkov.inference.tasks.VariableElimination.VEExpectedUtilityDecision;
 import org.openmarkov.inference.tasks.VariableElimination.VEPosteriorValues;
 
 /**
@@ -1131,7 +1132,17 @@ public class EditorPanel extends JPanel
                 // Potential expectedUtility = null;// =
                 // inferenceAlgorithm.getExpectedtedUtility(node.getNode().getVariable());
                 Potential expectedUtility;
-                expectedUtility = inferenceAlgorithm.getExpectedUtilities (node.getVariable ());
+
+                //expectedUtility = inferenceAlgorithm.getExpectedUtilities(node.getVariable());
+
+                VEExpectedUtilityDecision veExpectedUtilityDecision = null;
+                try {
+                    veExpectedUtilityDecision = new VEExpectedUtilityDecision(probNet,node.getVariable());
+                } catch (NotEvaluableNetworkException e) {
+                    e.printStackTrace();
+                }
+                expectedUtility = veExpectedUtilityDecision.getGlobalUtility();
+
                 Node dummyNode = new Node (new ProbNet (), node.getVariable (),
                                                    node.getNodeType ());
                 dummyNode.setPotential (expectedUtility);
@@ -2016,9 +2027,12 @@ public class EditorPanel extends JPanel
                 //inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
                 calculateMinAndMaxUtilityRanges ();
                 //individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
-
-
-                VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
+                VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,
+                        probNet.getVariables(),
+                        null,
+                        preResolutionEvidence,
+                        evidenceCase,
+                        null);
                 individualProbabilities = vePosteriorValues.getPosteriorValues();
             }
             catch (OutOfMemoryError e)

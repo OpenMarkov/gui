@@ -23,26 +23,26 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.TransitionTime;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.ProbNetOperations;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.CycleLengthShift;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
 import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
+import org.openmarkov.inference.variableElimination.model.CEP;
 
 /**
  * Cost effectiveness and temporal evolution calculator
@@ -55,11 +55,11 @@ public class CostEffectivenessAnalysis {
 	
 	protected ProbNet probNet;
 	protected ProbNet expandedNetwork;
-	protected TablePotential globalUtility;
-	protected List<Intervention> interventions;
-	protected List<Intervention> frontierInterventions;
+	protected TablePotential costEffectivenessTable;
+	protected List<GUIIntervention> guiInterventions;
+	protected List<GUIIntervention> frontierGUIInterventions;
 	protected EvidenceCase evidence;
-
+	protected Variable decision;
 	/**
 	 * Constructor for deterministic CEA
 	 * 
@@ -77,14 +77,39 @@ public class CostEffectivenessAnalysis {
 		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
 		this.evidence = expandEvidence(expandedNetwork, evidence);
 		this.expandedNetwork = adaptMIDforCE(expandedNetwork, this.evidence);
-		this.globalUtility = runFullAnalysis(expandedNetwork, this.evidence);
-		this.interventions = createInterventions(globalUtility);
-		this.frontierInterventions = calculateFrontierInterventions(interventions);
-		this.frontierInterventions = calculateICERsOfFrontier(this.frontierInterventions);
+		this.costEffectivenessTable = runFullAnalysis(expandedNetwork, this.evidence);
+		this.guiInterventions = createInterventions(costEffectivenessTable);
+		this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
+		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
 	}
 
-	public List<Intervention> getInterventions() {
-		return interventions;
+	public CostEffectivenessAnalysis(ProbNet probNet, Variable decision, EvidenceCase evidence) throws NotEvaluableNetworkException {
+		this.probNet = probNet;
+		this.decision = decision;
+
+		VECEADecision veCEADecision = new VECEADecision(probNet,decision,evidence);
+
+		this.costEffectivenessTable = createCostEffectivenessTable(veCEADecision.getCEPs());
+		this.guiInterventions = createInterventions(costEffectivenessTable);
+		this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
+		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
+	}
+
+	private TablePotential createCostEffectivenessTable(CEP[] ceps) {
+		TablePotential costEffectivenessTable =
+				new TablePotential(Arrays.asList(getCECriteriaVariable(),decision), PotentialRole.UNSPECIFIED);
+		int i = 0;
+		for (CEP cep : ceps) {
+			costEffectivenessTable.values[i] = cep.getCosts()[0];
+			i++;
+			costEffectivenessTable.values[i] = cep.getEffectivities()[0];
+			i++;
+		}
+		return costEffectivenessTable;
+	}
+
+	public List<GUIIntervention> getGuiIntervention() {
+		return guiInterventions;
 	}
 
 	public ProbNet getExpandedNetwork() {
@@ -101,12 +126,12 @@ public class CostEffectivenessAnalysis {
 	}
 
 
-	public TablePotential getGlobalUtility() {
-		return globalUtility;
+	public TablePotential getCostEffectivenessTable() {
+		return costEffectivenessTable;
 	}
 
-	public List<Intervention> getFrontierInterventions() {
-		return frontierInterventions;
+	public List<GUIIntervention> getFrontierGUIInterventions() {
+		return frontierGUIInterventions;
 	}
 
 	/**
@@ -217,7 +242,7 @@ public class CostEffectivenessAnalysis {
 			inferenceAlgorithm.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
 			// Run inference
-//			globalUtility = getGlobalUtility(expandedNetwork, inferenceAlgorithm);
+//			costEffectivenessTable = getCostEffectivenessTable(expandedNetwork, inferenceAlgorithm);
 			globalUtility = inferenceAlgorithm.getGlobalUtility();		
 			
 			globalUtility = reorderVariables(globalUtility);
@@ -312,10 +337,10 @@ public class CostEffectivenessAnalysis {
 	
 
 	
-	private List<Intervention> createInterventions(TablePotential globalUtility) {
+	private List<GUIIntervention> createInterventions(TablePotential globalUtility) {
 		// Reorder variables to force decision criteria to be the conditioned
 		// variable
-		List<Intervention> interventions = new ArrayList<>();
+		List<GUIIntervention> guiIntervention = new ArrayList<>();
 		int[] dimensions = TablePotential.calculateDimensions(globalUtility.getVariables());
 		List<Variable> decisions = globalUtility.getVariables();
 		int[] offsets = TablePotential.calculateOffsets(dimensions);
@@ -334,11 +359,11 @@ public class CostEffectivenessAnalysis {
 			if (description.length() == 0) {
 				description.append("Baseline");
 			}
-			Intervention intervention = new Intervention(description.toString(), cost,
+			GUIIntervention guiIntervention2 = new GUIIntervention(description.toString(), cost,
 					effectiveness);
-			interventions.add(intervention);
+			guiIntervention.add(guiIntervention2);
 		}
-		return interventions;
+		return guiIntervention;
 	}
 
 	/**
@@ -371,74 +396,74 @@ public class CostEffectivenessAnalysis {
 	}
 
 	/**
-	 * @param allInterventions
+	 * @param allGUIInterventions
 	 * @return
 	 */
-	protected List<Intervention> calculateFrontierInterventions(List<Intervention> allInterventions) {
+	protected List<GUIIntervention> calculateFrontierInterventions(List<GUIIntervention> allGUIInterventions) {
 		// 0) Create auxiliar variables
-		List<Intervention> remainingInterventions = new ArrayList<Intervention>(allInterventions);
-		List<Intervention> frontierInterventions = new ArrayList<Intervention>();
-		// 1) Get minor cost intervention
-		Intervention minorIntervention = allInterventions.get(0);
-		for (int i = 1; i < allInterventions.size(); i++) {
-			Intervention intervention = allInterventions.get(i);
-			if ((intervention.cost < minorIntervention.cost)
-					|| (intervention.cost == minorIntervention.cost && intervention.effectiveness > minorIntervention.effectiveness)) {
-				minorIntervention = intervention;
+		List<GUIIntervention> remainingGUIInterventions = new ArrayList<GUIIntervention>(allGUIInterventions);
+		List<GUIIntervention> frontierGUIInterventions = new ArrayList<GUIIntervention>();
+		// 1) Get cheapest intervention
+		GUIIntervention cheapestGUIIntervention = allGUIInterventions.get(0);
+		for (int i = 1; i < allGUIInterventions.size(); i++) {
+			GUIIntervention guiIntervention = allGUIInterventions.get(i);
+			if ((guiIntervention.cost < cheapestGUIIntervention.cost)
+					|| (guiIntervention.cost == cheapestGUIIntervention.cost && guiIntervention.effectiveness > cheapestGUIIntervention.effectiveness)) {
+				cheapestGUIIntervention = guiIntervention;
 			}
 		}
-		frontierInterventions.add(minorIntervention);
-		remainingInterventions.remove(minorIntervention);
-		while (!remainingInterventions.isEmpty()) {
+		frontierGUIInterventions.add(cheapestGUIIntervention);
+		remainingGUIInterventions.remove(cheapestGUIIntervention);
+		while (!remainingGUIInterventions.isEmpty()) {
 			// Remove interventions with minor effectiveness
-			List<Intervention> toRemove = new ArrayList<Intervention>();
-			for (Intervention intervention : remainingInterventions) {
-				if (intervention.effectiveness <= minorIntervention.effectiveness) {
-					toRemove.add(intervention);
+			List<GUIIntervention> toRemove = new ArrayList<GUIIntervention>();
+			for (GUIIntervention guiIntervention : remainingGUIInterventions) {
+				if (guiIntervention.effectiveness <= cheapestGUIIntervention.effectiveness) {
+					toRemove.add(guiIntervention);
 				}
 			}
-			for (Intervention intervention : toRemove) {
-				remainingInterventions.remove(intervention);
+			for (GUIIntervention guiIntervention : toRemove) {
+				remainingGUIInterventions.remove(guiIntervention);
 			}
-			// Get minor ICER from minor intervention
-			double bestICER = Double.POSITIVE_INFINITY;
-			Intervention candidateIntervention = null;
-			for (Intervention intervention : remainingInterventions) {
-				double ICER = (intervention.cost - minorIntervention.cost)
-						/ (intervention.effectiveness - minorIntervention.effectiveness);
-				if (ICER < bestICER) {
-					candidateIntervention = intervention;
-					bestICER = ICER;
+			// Get smallest ICER from minor intervention
+			double smallestICER = Double.POSITIVE_INFINITY;
+			GUIIntervention candidateGUIIntervention = null;
+			for (GUIIntervention guiIntervention : remainingGUIInterventions) {
+				double ICER = (guiIntervention.cost - cheapestGUIIntervention.cost)
+						/ (guiIntervention.effectiveness - cheapestGUIIntervention.effectiveness);
+				if (ICER < smallestICER) {
+					candidateGUIIntervention = guiIntervention;
+					smallestICER = ICER;
 				}
 			}
-			if (!remainingInterventions.isEmpty()) {
-				candidateIntervention.iCER = bestICER;
-				frontierInterventions.add(candidateIntervention);
-				remainingInterventions.remove(candidateIntervention);
-				minorIntervention = candidateIntervention;
+			if (!remainingGUIInterventions.isEmpty()) {
+				candidateGUIIntervention.iCER = smallestICER;
+				frontierGUIInterventions.add(candidateGUIIntervention);
+				remainingGUIInterventions.remove(candidateGUIIntervention);
+				cheapestGUIIntervention = candidateGUIIntervention;
 			}
 		}
-		return frontierInterventions;
+		return frontierGUIInterventions;
 	}
 
 	/**
-	 * @param frontierInterventions
+	 * @param frontierGUIInterventions
 	 *            . <code>ArrayList</code> of <code>Intervention</code>
 	 * @return Interventions with incremental CE ratio. <code>ArrayList</code>
 	 *         of <code>Intervention</code>
 	 */
-	private List<Intervention> calculateICERsOfFrontier(List<Intervention> frontierInterventions) {
-		List<Intervention> interventionsWithICERs = null;
-		if (frontierInterventions != null) {
-			int size = frontierInterventions.size();
-			interventionsWithICERs = new ArrayList<Intervention>();
-			interventionsWithICERs.add(frontierInterventions.get(0));
+	private List<GUIIntervention> calculateICERsOfFrontier(List<GUIIntervention> frontierGUIInterventions) {
+		List<GUIIntervention> interventionsWithICERs = null;
+		if (frontierGUIInterventions != null) {
+			int size = frontierGUIInterventions.size();
+			interventionsWithICERs = new ArrayList<GUIIntervention>();
+			interventionsWithICERs.add(frontierGUIInterventions.get(0));
 			// calculates the ICER of each intervention except the first one
 			for (int i = 1; i < size; i++) {
-				Intervention previousIntervention = frontierInterventions.get(i - 1);
-				Intervention intervention = frontierInterventions.get(i);
-				intervention.calculateICER(previousIntervention);
-				interventionsWithICERs.add(intervention);
+				GUIIntervention previousGUIIntervention = frontierGUIInterventions.get(i - 1);
+				GUIIntervention guiIntervention = frontierGUIInterventions.get(i);
+				guiIntervention.calculateICER(previousGUIIntervention);
+				interventionsWithICERs.add(guiIntervention);
 			}
 		}
 		return interventionsWithICERs;
