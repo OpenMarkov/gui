@@ -27,6 +27,14 @@ public class CEPDialog extends JDialog {
     public CEPDialog(CEP cep){
         this.add(new JScrollPane(getJTableFromCEP(cep)));
         this.pack();
+        
+        // Center dialog
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        int x = (screenSize.width - this.getWidth()) / 2;
+        int y = (screenSize.height - this.getHeight()) / 2;
+        this.setLocation(x, y);
+        
         this.setVisible(true);
     }
 
@@ -39,9 +47,9 @@ public class CEPDialog extends JDialog {
         JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
         TableColumnModel columnModel = jTableCEP.getColumnModel();
         setToolTipAndColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.INTERVENTION.ordinal()), 
-        		"Click to see intervention", Color.yellow);
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.cyan);
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.cyan);
+        		"Click to see intervention", Color.decode("#FFF5EE"));
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.decode("#ADD8E6"));
+        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.decode("#ADD8E6"));
         return jTableCEP;
     }
 
@@ -87,8 +95,8 @@ public class CEPDialog extends JDialog {
         for (int i = 0; i < numRows; i++) {
             data[i][CEPColumns.LAMBDA_INF.ordinal()] = getLambdaLeftEndPoint(cep, i);
             data[i][CEPColumns.LAMBDA_SUP.ordinal()] = getLambdaRightEndPoint(cep, i, numRows);
-            data[i][CEPColumns.COST.ordinal()] = new Double(Util.roundWithPrecision(costs[i], numDecimals)).toString();
-            data[i][CEPColumns.EFFECTIVENESS.ordinal()] = new Double(Util.roundWithPrecision(effectiveness[i], numDecimals)).toString();
+            data[i][CEPColumns.COST.ordinal()] = new Double(Util.roundWithSignificantFigures(costs[i], numDecimals)).toString();
+            data[i][CEPColumns.EFFECTIVENESS.ordinal()] = new Double(Util.roundWithSignificantFigures(effectiveness[i], numDecimals)).toString();
             data[i][CEPColumns.INTERVENTION.ordinal()] = getFirstLine(interventions[i].toString());
         }
 
@@ -135,7 +143,7 @@ public class CEPDialog extends JDialog {
         } else {
             threshold = cep.getThreshold(intervalIndex - 1);
         }
-        return new Double(Util.roundWithPrecision(threshold, numDecimals)).toString();
+        return new Double(Util.roundWithSignificantFigures(threshold, numDecimals)).toString();
     }
 
     /**
@@ -150,7 +158,13 @@ public class CEPDialog extends JDialog {
         } else {
             threshold = cep.getThreshold(intervalIndex);
         }
-        return new Double(Util.roundWithPrecision(threshold, numDecimals)).toString();
+        String lambdaRight;
+        if (threshold == Double.POSITIVE_INFINITY) {
+        	lambdaRight = "+\u221E"; // +Inifinite
+        } else {
+        	lambdaRight = new Double(Util.roundWithSignificantFigures(threshold, numDecimals)).toString();
+        }
+        return lambdaRight;
     }
 
     /**

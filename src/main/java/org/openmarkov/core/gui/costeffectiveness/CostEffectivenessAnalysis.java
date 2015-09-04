@@ -72,7 +72,8 @@ public class CostEffectivenessAnalysis {
 	 * @param transitionTime
 	 * @throws NotEvaluableNetworkException 
 	 */
-	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence) throws NotEvaluableNetworkException {
+	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence) 
+			throws NotEvaluableNetworkException {
 		this.probNet = probNet;
 		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
 		this.evidence = expandEvidence(expandedNetwork, evidence);
@@ -83,7 +84,8 @@ public class CostEffectivenessAnalysis {
 		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
 	}
 
-	public CostEffectivenessAnalysis(ProbNet probNet, Variable decision, EvidenceCase evidence) throws NotEvaluableNetworkException {
+	public CostEffectivenessAnalysis(ProbNet probNet, Variable decision, EvidenceCase evidence) 
+			throws NotEvaluableNetworkException {
 		this.probNet = probNet;
 		this.decision = decision;
 
