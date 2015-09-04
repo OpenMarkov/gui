@@ -23,11 +23,13 @@ public class ScopeSelectorPanel extends JPanel {
     private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
     private JPanel scopeTypePanel;
-    private JComboBox<String> scopeTypeSelector;
+    private ButtonGroup scopeTypeSelector;
     private JPanel decisionSelectorPanel;
     private JPanel mainPanel;
     private ProbNet probNet;
     private Variable decisionSelected;
+    private JRadioButton globalRadioButton;
+    private JRadioButton decisionRadioButton;
 
     HashMap<JComboBox<String>, Variable> selectedScenario;
     private JPanel decisionScenarioPanel;
@@ -72,42 +74,56 @@ public class ScopeSelectorPanel extends JPanel {
         JLabel scopeLabel = new JLabel(stringDatabase.getString("ScopeSelector.Type"));
         scopeTypePanel.add(scopeLabel);
 
-        scopeTypeSelector = new JComboBox<>();
-        for (ScopeType scopeTypeEnum : ScopeType.values()) {
-            scopeTypeSelector.addItem(stringDatabase.getString(scopeTypeEnum.toString()));
-        }
-        scopeTypeSelector.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox<String> scopeSelector = (JComboBox) e.getSource();
-                if (scopeSelector.getSelectedItem().equals(stringDatabase.getString(ScopeType.GLOBAL.toString()))) {
-                    setScopeType(ScopeType.GLOBAL);
-                    decisionSelected = null;
+        JPanel scopeTypeSelectorPanel = new JPanel();
+        scopeTypeSelectorPanel.setLayout(new FlowLayout());
 
-                    if (decisionSelectorPanel != null) {
-                        for (Component component : decisionSelectorPanel.getComponents()) {
-                            component.setEnabled(false);
+        scopeTypeSelector = new ButtonGroup();
+        for (ScopeType scopeTypeEnum : ScopeType.values()) {
+            JRadioButton selectedScopeType = new JRadioButton(stringDatabase.getString(scopeTypeEnum.toString()));
+            scopeTypeSelector.add(selectedScopeType);
+
+//            scopeTypeSelector.addItem(stringDatabase.getString(scopeTypeEnum.toString()));
+
+            selectedScopeType.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JRadioButton scopeSelector = (JRadioButton) e.getSource();
+                    if (scopeSelector.getText().equals(stringDatabase.getString(ScopeType.GLOBAL.toString()))) {
+                        setScopeType(ScopeType.GLOBAL);
+                        decisionSelected = null;
+
+                        if (decisionSelectorPanel != null) {
+                            for (Component component : decisionSelectorPanel.getComponents()) {
+                                component.setEnabled(false);
+                            }
+                        }
+                    } else {
+                        setScopeType(ScopeType.DECISION);
+                        if (decisionSelector != null) {
+                            try {
+                                decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
+                            } catch (NodeNotFoundException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        if (decisionSelectorPanel != null) {
+                            for (Component component : decisionSelectorPanel.getComponents()) {
+                                component.setEnabled(true);
+                            }
                         }
                     }
-                } else {
-                    setScopeType(ScopeType.DECISION);
-                    if (decisionSelector != null) {
-                        try {
-                            decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
-                        } catch (NodeNotFoundException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    if (decisionSelectorPanel != null) {
-                        for (Component component : decisionSelectorPanel.getComponents()) {
-                            component.setEnabled(true);
-                        }
-                    }
+                    refreshScenario();
                 }
-                refreshScenario();
+            });
+            if(scopeTypeEnum.equals(ScopeType.GLOBAL)){
+                globalRadioButton = selectedScopeType;
+                scopeTypeSelectorPanel.add(globalRadioButton);
+            } else if (scopeTypeEnum.equals(ScopeType.DECISION)){
+                decisionRadioButton = selectedScopeType;
+                scopeTypeSelectorPanel.add(decisionRadioButton);
             }
-        });
-        scopeTypePanel.add(scopeTypeSelector);
+        }
+        scopeTypePanel.add(scopeTypeSelectorPanel);
 
 
         boolean couldBeGlobal = true;
@@ -119,15 +135,22 @@ public class ScopeSelectorPanel extends JPanel {
 
         if (!couldBeDecision || !couldBeGlobal){
             if(couldBeGlobal){
-                scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+                //scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+                globalRadioButton.setSelected(true);
+                setScopeType(ScopeType.GLOBAL);
             } else {
-                scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.DECISION.toString()));
+                //scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.DECISION.toString()));
+                decisionRadioButton.setSelected(true);
+                setScopeType(ScopeType.DECISION);
             }
             for (Component component : scopeTypePanel.getComponents()) {
                 component.setEnabled(false);
             }
         } else {
-            scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+//            scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+            globalRadioButton.setSelected(true);
+            setScopeType(ScopeType.GLOBAL);
+
         }
 
         return scopeTypePanel;
