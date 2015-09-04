@@ -88,6 +88,11 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         } catch (IncompatibleEvidenceException e) {
             e.printStackTrace();
         }
+
+        /*
+        Window owner, Node node, EvidenceCase evidence,
+												Variable decisionSelected, List<Finding> scenario
+         */
         TraceTemporalEvolutionDialogExtended dialog = new TraceTemporalEvolutionDialogExtended(
                 getOwner(),
                 selectedNode,

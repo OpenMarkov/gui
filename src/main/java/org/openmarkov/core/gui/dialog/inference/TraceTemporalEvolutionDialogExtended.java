@@ -21,6 +21,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
+import org.openmarkov.inference.tasks.VariableElimination.VETemporalEvolution;
 import org.openmarkov.inference.variableElimination.VariableEliminationCore;
 
 import javax.swing.*;
@@ -88,36 +89,33 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 		// potential set in node, the nodes without an imposed policy will be added to
 		// conditioningVariables
 		conditioningVariables = new ArrayList<Variable>();
-		if(decisionSelected == null) {
-			for (Node decisionNode : decisionNodes) {
-				if (decisionNode.getPotentials().isEmpty()) {
-					conditioningVariables.add(decisionNode.getVariable());
-				}
-			}
-		} else {
+		if(decisionSelected != null) {
 			conditioningVariables.add(decisionSelected);
 		}
+
 		this.isUtility = node.getNodeType () == NodeType.UTILITY;
 
 		try
 		{
 			numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
-			this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
-			evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
+//			evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
 
 			// Convert numeric variables
-			expandedNetwork = ProbNetOperations
-					.convertNumericalVariablesToFS(expandedNetwork, evidence);
+//			expandedNetwork = ProbNetOperations
+//					.convertNumericalVariablesToFS(expandedNetwork, evidence);
 			// evidenceCase and cycleLegth null by the moment
-			if(node.getNodeType() == NodeType.UTILITY)
-			{
-
-				TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-				TemporalNetOperations.applyTransitionTime(expandedNetwork);
-			}
+//			if(node.getNodeType() == NodeType.UTILITY)
+//			{
+//
+//				TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+//				TemporalNetOperations.applyTransitionTime(expandedNetwork);
+//			}
 			this.variableOfInterest = node.getVariable ();
 			// TODO - Añadir las conditioning variables en el constructor
-			VEResolution veResolution = new VEResolution(expandedNetwork, evidence);
+			// ProbNet probNet, Variable temporalVariable, EvidenceCase preResolutionEvidence, Collection<Finding> scenario
+			VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, node.getVariable() ,evidence, decisionSelected);
+			this.expandedNetwork = veTemporalEvolution.getExpandedNetwork();
+			this.temporalEvolution = veTemporalEvolution.getPosteriorValues();
 //			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
 //
 //			variableElimination.setPreResolutionEvidence(evidence);
@@ -167,9 +165,9 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
     private JPanel getJContentPane ()
     {
         JPanel jContentPane = new JPanel ();
-        jContentPane.setLayout (new BorderLayout ());
-        jContentPane.add (getComponentsPanel (), BorderLayout.CENTER);
-        jContentPane.add (getBottomPanel (), BorderLayout.SOUTH);
+        jContentPane.setLayout(new BorderLayout());
+        jContentPane.add(getComponentsPanel(), BorderLayout.CENTER);
+        jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
         return jContentPane;
     }
 
@@ -193,15 +191,13 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
         buttonsPanel.add (jButtonSaveReport);
         JButton jButtonClose = new JButton ();
         jButtonClose.setName ("jButtonClose");
-        jButtonClose.setText (stringDatabase.getString ("Dialog.Close.Label"));
-        jButtonClose.addActionListener (new ActionListener ()
-            {
-                public void actionPerformed (ActionEvent e)
-                {
-                    setVisible (false);
-                    dispose ();
-                }
-            });
+        jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
+        jButtonClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				dispose();
+			}
+		});
         buttonsPanel.add (jButtonClose);
         return buttonsPanel;
     }
@@ -213,10 +209,10 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
     private Component getComponentsPanel ()
     {
         JPanel panel = new JPanel ();
-        panel.setLayout (new BorderLayout (5, 5));
-        panel.setMaximumSize (new Dimension (180, 40));
-        panel.add (getTabbedPane ());
-        pack ();
+        panel.setLayout(new BorderLayout(5, 5));
+        panel.setMaximumSize(new Dimension(180, 40));
+        panel.add(getTabbedPane());
+        pack();
         return panel;
     }
 
@@ -279,7 +275,7 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 
 		legendPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		legendPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		if(conditioningVariables.size() >= 1 || (!isUtility && isIndividual)){
+		if((conditioningVariables != null && conditioningVariables.size() >= 1) || (!isUtility && isIndividual)){
 			chartPanelWithCheckBox.add(legendPanel, BorderLayout.LINE_END);
 		}
 		
@@ -640,10 +636,13 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
      */
 	private void createSeries(){
     	numberOfCombinations = variableOfInterest.getNumStates();
-    	for(int i = 0 ; i < conditioningVariables.size(); i++){
-    		numberOfCombinations *= conditioningVariables.get(i).getNumStates(); 
-    	}
-    	
+
+		if(conditioningVariables != null && !conditioningVariables.isEmpty()){
+			for(int i = 0 ; i < conditioningVariables.size(); i++){
+				numberOfCombinations *= conditioningVariables.get(i).getNumStates();
+			}
+		}
+
     	List<TablePotential> listOfPotentials = new ArrayList<TablePotential>();
     	for(int slice = 0; slice <= numSlices; slice++){
     		String basename = variableOfInterest.getBaseName ();
@@ -682,40 +681,48 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
             if (isUtility)
             {
             	String nameOfSerie = "";
-        		
-            	int positionSelector = variableOfInterest.getNumStates();
-            	for(int j = conditioningVariables.size()-1; j >= 0; j--){
-            		String nameOfConditionalVariable = conditioningVariables.get(j).getName();
-	            	String stateOfConditionalVariable = conditioningVariables.get(j).getStateName((i/positionSelector)%conditioningVariables.get(j).getNumStates());
-	            	positionSelector *=  conditioningVariables.get(j).getNumStates();
-	            	nameOfSerie += nameOfConditionalVariable + " = " + stateOfConditionalVariable + " ; ";
-            	}
-            	if(conditioningVariables.size() > 0){
-            		nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 3);
-            	}
+        		if(conditioningVariables != null && !conditioningVariables.isEmpty()){
+					int positionSelector = variableOfInterest.getNumStates();
+					for(int j = conditioningVariables.size()-1; j >= 0; j--){
+						String nameOfConditionalVariable = conditioningVariables.get(j).getName();
+						String stateOfConditionalVariable = conditioningVariables.get(j).getStateName((i/positionSelector)%conditioningVariables.get(j).getNumStates());
+						positionSelector *=  conditioningVariables.get(j).getNumStates();
+						nameOfSerie += nameOfConditionalVariable + " = " + stateOfConditionalVariable + " ; ";
+					}
+					if(conditioningVariables.size() > 0){
+						nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 3);
+					}
+				}else{
+					nameOfSerie = variableOfInterest.getStateName(i);
+				}
+
             	
             	
             	series = new XYSeries(nameOfSerie);
             }
             else
             {
-            	int stateIndex = i%variableOfInterest.getNumStates();
-            	String nameOfSerie = variableOfInterest.getStateName(stateIndex) + " [";
-        		
-            	int positionSelector = variableOfInterest.getNumStates();
-            	for(int j = conditioningVariables.size()-1; j >= 0; j--){
-            		String nameOfConditionalVariable = conditioningVariables.get(j).getName();
-	            	String stateOfConditionalVariable = conditioningVariables.get(j).getStateName((i/positionSelector)%conditioningVariables.get(j).getNumStates());
-	            	positionSelector *=  conditioningVariables.get(j).getNumStates();
-	            	nameOfSerie += nameOfConditionalVariable + " = " + stateOfConditionalVariable + " ; ";
-            	}
-            	if(conditioningVariables.size() > 0){
-            		nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 3) + "]";
-            	}else{
-            		nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 2);
-            	}
-            	
-            	
+				String nameOfSerie = "";
+				if(conditioningVariables != null && !conditioningVariables.isEmpty()){
+					int stateIndex = i%variableOfInterest.getNumStates();
+					nameOfSerie = variableOfInterest.getStateName(stateIndex) + " [";
+
+					int positionSelector = variableOfInterest.getNumStates();
+					for(int j = conditioningVariables.size()-1; j >= 0; j--){
+						String nameOfConditionalVariable = conditioningVariables.get(j).getName();
+						String stateOfConditionalVariable = conditioningVariables.get(j).getStateName((i/positionSelector)%conditioningVariables.get(j).getNumStates());
+						positionSelector *=  conditioningVariables.get(j).getNumStates();
+						nameOfSerie += nameOfConditionalVariable + " = " + stateOfConditionalVariable + " ; ";
+					}
+					if(conditioningVariables.size() > 0){
+						nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 3) + "]";
+					}else{
+						nameOfSerie = nameOfSerie.substring(0, nameOfSerie.length() - 2);
+					}
+				}else{
+					nameOfSerie = variableOfInterest.getStateName(i);
+				}
+
             	series = new XYSeries(nameOfSerie);
             }
             
@@ -843,7 +850,7 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 	    	}
 	    	
 	    	boolean isSamePolicy = true;
-	    	if(isIndividual && !isUtility && conditioningVariables.size() >= 1){
+	    	if(isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1){
 		    	JLabel groupLabel = new JLabel(subListTitle);
 		    	Font font = groupLabel.getFont();
 		    	groupLabel.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));

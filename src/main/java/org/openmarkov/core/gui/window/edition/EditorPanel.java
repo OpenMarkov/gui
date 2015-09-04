@@ -2029,7 +2029,6 @@ public class EditorPanel extends JPanel
                 //individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
                 VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,
                         probNet.getVariables(),
-                        null,
                         preResolutionEvidence,
                         evidenceCase,
                         null);
