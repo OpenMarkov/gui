@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,6 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
-import org.openmarkov.core.gui.costeffectiveness.TraceTemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.core.gui.dialog.inference.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
@@ -83,7 +83,8 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 
 import org.openmarkov.inference.tasks.VariableElimination.VEExpectedUtilityDecision;
-import org.openmarkov.inference.tasks.VariableElimination.VEPosteriorValues;
+import org.openmarkov.inference.tasks.VariableElimination.VEPropagation;
+import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -120,7 +121,7 @@ public class EditorPanel extends JPanel
      * Maximum height of the panel.
      */
     private static final double                           MAX_HEIGHT                        = Toolkit.getDefaultToolkit ().getScreenSize ().getHeight () * 20;
-   
+
     /**
      * Maximum width of the panel.
      */
@@ -129,7 +130,7 @@ public class EditorPanel extends JPanel
      * Maximum height of the panel.
      */
     private double currentHeight = Toolkit.getDefaultToolkit ().getScreenSize ().getHeight () * 20;
-    
+
     /**
      * Constant that indicates the value of the Expansion Threshold by default.
      */
@@ -760,7 +761,7 @@ public class EditorPanel extends JPanel
     }
 
     /**
-     * 
+     *
      */
     public void showPotentialDialog (boolean readOnly)
     {
@@ -1180,11 +1181,23 @@ public class EditorPanel extends JPanel
             node = selectedNode.get (0);
             ProbNet dummyProbNet = new ProbNet ();
             Node dummy = null;
-            try
-            {
+            //try
+            //{
                 // Potential optimalPolicy =
                 // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
-                Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicy (node.getNode ().getVariable ());
+                Potential optimalPolicy = null; //inferenceAlgorithm.getOptimizedPolicy (node.getNode ().getVariable ());
+
+                try
+                {
+                    // Potential optimalPolicy =
+                    // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
+                    //Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicy (node.getNode ().getVariable ());
+                    VEResolution veResolution = new VEResolution(probNet, preResolutionEvidence, Collections.singletonList(node.getNode().getVariable()));
+                    optimalPolicy = veResolution.getOptimizedPolicy(node.getNode().getVariable());
+                } catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
+                    e.printStackTrace();
+                }
+
                 dummyProbNet.addPotential (optimalPolicy);
                 Variable conditionedVariable = optimalPolicy.getVariable (0);
                 dummy = dummyProbNet.getNode (conditionedVariable);
@@ -1211,14 +1224,14 @@ public class EditorPanel extends JPanel
                                                                                    true);
                 optimalPolicyDialog.setTitle ("OptimalPolicyDialog.Title.Label");
                 optimalPolicyDialog.requestValues ();
-            }
-            catch (IncompatibleEvidenceException | UnexpectedInferenceException e)
+            //}
+/*            catch (IncompatibleEvidenceException | UnexpectedInferenceException e)
             {
                 JOptionPane.showMessageDialog (Utilities.getOwner (this),
                                                "ERROR\n" + e.getMessage (), e.getMessage (),
                                                JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace ();
-            }
+            }*/
         }
         networkChanged = false;
         setSelectedAllNodes (false);
@@ -1814,8 +1827,8 @@ public class EditorPanel extends JPanel
         }
         return areFindings;
     }
-    
-    
+
+
     /**
      * This method returns the number of the Evidence Case that is currently
      * selected
@@ -1839,13 +1852,13 @@ public class EditorPanel extends JPanel
     public void setNewFinding (VisualNode visualNode, Finding finding, boolean toggle)
     {
     	Variable variable = visualNode.getNode ().getVariable ();
-        
+
         boolean isInferenceMode = networkPanel.getWorkingMode () == NetworkPanel.INFERENCE_WORKING_MODE;
         EvidenceCase evidenceCase = (isInferenceMode) ? postResolutionEvidence.get (currentCase)
                                                      : preResolutionEvidence;
         setPropagationActive (isAutomaticPropagation ());
         boolean alreadyHasFinding = evidenceCase.contains(variable);
-        Finding oldFinding = null; 
+        Finding oldFinding = null;
         if (alreadyHasFinding)
         {
         	// There is already a finding. Remove it
@@ -1913,7 +1926,7 @@ public class EditorPanel extends JPanel
         }
         setSelectedAllNodes (false);
         networkPanel.getMainPanel ().getInferenceToolBar ().setCurrentEvidenceCaseName (currentCase);
-        
+
         // If propagation is active, do propagation
         if ((propagationActive) && (evidenceCasesCompilationState.get (currentCase) == false)
             && (isInferenceMode))
@@ -2027,7 +2040,7 @@ public class EditorPanel extends JPanel
                 //inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
                 calculateMinAndMaxUtilityRanges ();
                 //individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
-                VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,
+                VEPropagation vePosteriorValues = new VEPropagation(probNet,
                         probNet.getVariables(),
                         preResolutionEvidence,
                         evidenceCase,
@@ -2231,7 +2244,7 @@ public class EditorPanel extends JPanel
         	NumericVariableBox innerBox = (NumericVariableBox) visualNode.getInnerBox ();
         	innerBox.getVisualState().setStateValue(caseNumber, value);
         }
-	        
+
     }
 
     /**
@@ -2545,7 +2558,7 @@ public class EditorPanel extends JPanel
                                                                                     Utilities.getOwner (this),
                                                                                     this,
                                                                                     networkPanel.getMainPanel ().getInferenceToolBar ());
-        inferenceOptionsDialog.setVisible (true);        
+        inferenceOptionsDialog.setVisible (true);
     }
 
     /**
@@ -2696,7 +2709,7 @@ public class EditorPanel extends JPanel
     {
         visualNetwork.setParameterArity (arity);
     }
-    
+
 	public void editInstanceName() {
 		visualNetwork.editInstanceName ();
 	}
@@ -2722,7 +2735,7 @@ public class EditorPanel extends JPanel
         setPreferredSize (newDimension);
         setSize (newDimension);
     }
-    
+
     /**
      * Sets the zoom so the displayed network fits in the panel.
      */
@@ -2731,9 +2744,9 @@ public class EditorPanel extends JPanel
     	double[] networkBounds = getBounds ((Graphics2D) getGraphics ());
     	Dimension panelBounds = networkPanel.getMainPanel().getMdi().getSize();
     	double zoom = 1;
-    	
+
     	while (((networkBounds[1] * zoom) > panelBounds.getWidth()) ||
-    				((networkBounds[3] * zoom) > panelBounds.getHeight()) && 
+    				((networkBounds[3] * zoom) > panelBounds.getHeight()) &&
     				zoom > 0.1)
     	{
     		zoom -= 0.1;
