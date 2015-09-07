@@ -1494,8 +1494,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         boolean showCEDialog = true;
 
         if(!probNet.getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()) {
-            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-            if(inferenceOptionsDialog.requestData() == InferenceOptionsDialog.CANCEL_BUTTON){
+            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
+                    MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+            if(inferenceOptionsDialog.requestData() != InferenceOptionsDialog.OK_BUTTON){
                 showCEDialog = false;
             }
             probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
@@ -1509,7 +1510,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
                     VEGlobalCEA veGlobalCEA = new VEGlobalCEA(probNet, evidence);
                     CEP cep = (CEP)((GTablePotential)veGlobalCEA.getUtility()).elementTable.get(0);
-                    CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep);
+                    CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep, probNet);
                     cepDialog.setVisible(true);
                 } else {
                     CostEffectivenessAnalysis costEffectivenessAnalysis =
