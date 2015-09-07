@@ -8,6 +8,10 @@
 		<Title>
 			<Label value="Resultados del análisis de coste-efectividad" />
 		</Title>
+		<Intervals>
+			<Title value = "Intervalos de coste-efectividad" />
+			<InterventionTooltip value="Haz clic para mostrar la intervención" />
+		</Intervals>
 		<Plane>
 			<Tab value="Plano de CE" />
 			<Label value="Plano de coste-efectividad" />

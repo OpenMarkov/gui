@@ -1,11 +1,14 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -22,21 +25,26 @@ public class CEPDialog extends JDialog {
 	// Constants
     private final int DEFAULT_NUM_DECIMALS = 6;
     
-	private final String SEA_SHELL_COLOR = "#FFF5EE";
+	private final String INTERVENTION_RANGE_COLOR = "#C9EFFB";
 
-	private final String LIGHT_SEA_GREEN_COLOR ="#20B2AA";
+	private final String CLICKABLE_COLUMN_COLOR ="#DDF5D8";
 
+    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	// Attributes
 	private int numDecimals = DEFAULT_NUM_DECIMALS;
+
+    private Color clickableColumnColor = new Color(255,218,185);
+    private CEP cep;
 	
 	// Constructor
     /**
      * @param cep <code>CEP</code>
      */
-    public CEPDialog(CEP cep){
-        this.add(new JScrollPane(getJTableFromCEP(cep)));
-        this.pack();
-        
+    public CEPDialog(Window owner, CEP cep){
+        super(owner);
+
+        this.cep = cep;
+        initialize();
         // Center dialog
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
@@ -47,6 +55,52 @@ public class CEPDialog extends JDialog {
         this.setVisible(true);
     }
 
+    private void initialize ()
+    {
+        setTitle(stringDatabase.getString("CostEffectivenessResults.Intervals.Title"));
+        setContentPane(getJContentPane());
+        pack();
+    }
+
+    /**
+     * This method initialises jContentPane.
+     * @return a new content panel.
+     */
+    private JPanel getJContentPane ()
+    {
+        JPanel jContentPane = new JPanel ();
+        jContentPane.setLayout(new BorderLayout());
+        jContentPane.add(getComponentsPanel(), BorderLayout.CENTER);
+        jContentPane.add(getBottomPanel(), BorderLayout.SOUTH);
+        return jContentPane;
+    }
+
+    private JPanel getBottomPanel ()
+    {
+        JPanel buttonsPanel = new JPanel ();
+        JButton jButtonClose = new JButton ();
+        jButtonClose.setName ("jButtonClose");
+        jButtonClose.setText (stringDatabase.getString ("Dialog.Close.Label"));
+        jButtonClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
+        buttonsPanel.add (jButtonClose);
+        return buttonsPanel;
+    }
+
+    private Component getComponentsPanel ()
+    {
+        JPanel panel = new JPanel ();
+        panel.setBorder(new EmptyBorder(10,10,10,10));
+        panel.setMaximumSize(new Dimension(180, 40));
+        panel.add(new JScrollPane(getJTableFromCEP(cep)));
+        pack();
+        return panel;
+    }
+
     // Public method
     /**
      * @param cep <code>CEP</code>
@@ -55,13 +109,17 @@ public class CEPDialog extends JDialog {
     public JTable getJTableFromCEP(final CEP cep) {
     	// Set data in jTable
         final JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
-        
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        jTableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
         // Set colors in jTable
-        TableColumnModel columnModel = jTableCEP.getColumnModel();
-        setToolTipAndColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.INTERVENTION.ordinal()), 
-        		"Click to see intervention", Color.decode(SEA_SHELL_COLOR));
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_INF.ordinal()), Color.decode(LIGHT_SEA_GREEN_COLOR));
-        setColumnColorColumn(jTableCEP, columnModel.getColumn(CEPColumns.LAMBDA_SUP.ordinal()), Color.decode(LIGHT_SEA_GREEN_COLOR));
+        setColumnCellRenderer(jTableCEP, CEPColumns.LAMBDA_INF.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+        setColumnCellRenderer(jTableCEP, CEPColumns.LAMBDA_SUP.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+        setColumnCellRenderer(jTableCEP, CEPColumns.COST.ordinal());
+        setColumnCellRenderer(jTableCEP, CEPColumns.EFFECTIVENESS.ordinal());
+        setColumnCellRenderer(jTableCEP, CEPColumns.INTERVENTION.ordinal(), Color.decode(CLICKABLE_COLUMN_COLOR),
+                stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
+
         
         jTableCEP.addMouseListener(new MouseAdapter() 
         {
@@ -143,19 +201,37 @@ public class CEPDialog extends JDialog {
 		return indexEOL == -1 ? string : string.substring(0, indexEOL); 
 	}
 
-	private void setToolTipAndColorColumn(JTable table, TableColumn column, String text, Color color) {
-    	//Set up tool tips.
-    	DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
-    	renderer.setToolTipText("Click to see intervention");
-    	renderer.setBackground(color);
-    	column.setCellRenderer(renderer);
+    private void setColumnCellRenderer(JTable table, int columnIndex) {
+        setColumnCellRenderer(table, columnIndex, null, null);
     }
 
-	private void setColumnColorColumn(JTable table, TableColumn column, Color color) {
-    	//Set up tool tips.
-    	DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
-    	renderer.setBackground(color);
-    	column.setCellRenderer(renderer);
+    private void setColumnCellRenderer(JTable table, int columnIndex, Color color) {
+        setColumnCellRenderer(table, columnIndex, color, null);
+    }
+
+	private void setColumnCellRenderer(JTable table, int columnIndex, Color color, String text) {
+        DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
+        if(text != null){
+            renderer.setToolTipText(text);
+        }
+
+        if(color != null){
+            renderer.setBackground(color);
+        }
+
+        if (columnIndex == CEPColumns.LAMBDA_INF.ordinal()){
+            renderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        } else if (columnIndex == CEPColumns.LAMBDA_SUP.ordinal()){
+            renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        } else if (columnIndex == CEPColumns.COST.ordinal()){
+            renderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        } else if (columnIndex == CEPColumns.EFFECTIVENESS.ordinal()){
+            renderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        } else if (columnIndex == CEPColumns.INTERVENTION.ordinal()){
+            renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        }
+
+        table.getColumnModel().getColumn(columnIndex).setCellRenderer(renderer);
     }
 
     private void showIntervention(Intervention intervention) {

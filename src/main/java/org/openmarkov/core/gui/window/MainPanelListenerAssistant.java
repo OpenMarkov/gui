@@ -1509,7 +1509,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
                     VEGlobalCEA veGlobalCEA = new VEGlobalCEA(probNet, evidence);
                     CEP cep = (CEP)((GTablePotential)veGlobalCEA.getUtility()).elementTable.get(0);
-                    CEPDialog cepDialog = new CEPDialog(cep);
+                    CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep);
                     cepDialog.setVisible(true);
                 } else {
                     CostEffectivenessAnalysis costEffectivenessAnalysis =
