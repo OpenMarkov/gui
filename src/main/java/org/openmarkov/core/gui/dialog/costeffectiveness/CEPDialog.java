@@ -138,11 +138,6 @@ public class CEPDialog extends JDialog {
                 int row = jTableCEP.rowAtPoint(event.getPoint());
                 int column = jTableCEP.columnAtPoint(event.getPoint());
                 if (column == CEPColumns.INTERVENTION.ordinal()) {
-            	  //JFrame interventionFrame = new JFrame();
-            	  //interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
-            	  //interventionFrame.pack();
-            	  //interventionFrame.setVisible(true);
-
                   InterventionDialog interventionDialog = null;
                   try {
                       interventionDialog = new InterventionDialog(getOwner(),
