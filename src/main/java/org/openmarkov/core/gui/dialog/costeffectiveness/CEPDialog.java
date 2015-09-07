@@ -1,6 +1,9 @@
 package org.openmarkov.core.gui.dialog.costeffectiveness;
 
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.variableElimination.model.CEP;
@@ -8,9 +11,6 @@ import org.openmarkov.inference.variableElimination.model.CEP;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,12 +36,14 @@ public class CEPDialog extends JDialog {
 
     private Color clickableColumnColor = new Color(255,218,185);
     private CEP cep;
-	
+
+    private ProbNet probNet;
+
 	// Constructor
     /**
      * @param cep <code>CEP</code>
      */
-    public CEPDialog(Window owner, CEP cep){
+    public CEPDialog(Window owner, CEP cep, ProbNet probNet){
         super(owner);
 
         this.cep = cep;
@@ -52,7 +54,9 @@ public class CEPDialog extends JDialog {
         int x = (screenSize.width - this.getWidth()) / 2;
         int y = (screenSize.height - this.getHeight()) / 2;
         this.setLocation(x, y);
-        
+
+        this.probNet = probNet.copy();
+
         this.setVisible(true);
     }
 
@@ -132,10 +136,22 @@ public class CEPDialog extends JDialog {
                 int row = jTableCEP.rowAtPoint(event.getPoint());
                 int column = jTableCEP.columnAtPoint(event.getPoint());
                 if (column == CEPColumns.INTERVENTION.ordinal()) {
-                    JFrame interventionFrame = new JFrame();
-                    interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
-                    interventionFrame.pack();
-                    interventionFrame.setVisible(true);
+            	  //JFrame interventionFrame = new JFrame();
+            	  //interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
+            	  //interventionFrame.pack();
+            	  //interventionFrame.setVisible(true);
+
+                  InterventionDialog interventionDialog = null;
+                  try {
+                      interventionDialog = new InterventionDialog(getOwner(),
+                              probNet,
+                              cep.getInterventions()[row]);
+                  } catch (IncompatibleEvidenceException e) {
+                      e.printStackTrace();
+                  } catch (UnexpectedInferenceException e) {
+                      e.printStackTrace();
+                  }
+                  interventionDialog.setVisible(true);
                 }
             }
         });
