@@ -30,18 +30,20 @@ public class CEPDialog extends JDialog {
 
 	private final String CLICKABLE_COLUMN_COLOR ="#DDF5D8";
 
-    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	// Attributes
 	private int numDecimals = DEFAULT_NUM_DECIMALS;
 
-    private Color clickableColumnColor = new Color(255,218,185);
     private CEP cep;
 
     private ProbNet probNet;
 
-	// Constructor
+    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+
+    // Constructor
     /**
+     * @param owner
      * @param cep <code>CEP</code>
+     * @param probNet
      */
     public CEPDialog(Window owner, CEP cep, ProbNet probNet){
         super(owner);
@@ -162,8 +164,8 @@ public class CEPDialog extends JDialog {
 
 	/** Enumerate to use in JTable columns */
     private enum CEPColumns {
-        LAMBDA_INF(0, "Lambda inf."),
-        LAMBDA_SUP(1, "Lambda sup."),
+        LAMBDA_INF(0, "\u03BB inf."),
+        LAMBDA_SUP(1, "\u03BB sup."),
         COST(2, "Cost"),
         EFFECTIVENESS(3, "Effectiveness"),
         INTERVENTION(4, "Intervention");
@@ -254,14 +256,6 @@ public class CEPDialog extends JDialog {
         table.getColumnModel().getColumn(columnIndex).setCellRenderer(renderer);
     }
 
-    private void showIntervention(Intervention intervention) {
-        JDialog interventionDialog = new JDialog();
-        //TreeADDEditorPanel treeADDEditorPanel = new TreeADDEditorPanel(intervention);
-        //interventionDialog.add(treeADDEditorPanel);
-        interventionDialog.pack();
-        interventionDialog.setVisible(true);
-    }
-
     /**
      * @param cep
      * @param intervalIndex
@@ -296,61 +290,6 @@ public class CEPDialog extends JDialog {
         	lambdaRight = new Double(Util.roundWithSignificantFigures(threshold, numDecimals)).toString();
         }
         return lambdaRight;
-    }
-
-    /**
-     * @param interventionButton <code>JButton</code>
-     * @param intervention <code>Intervention</code>
-     */
-    private void addInterventionTextToButton(
-            JButton interventionButton,
-            final Intervention intervention) {
-        interventionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getTextWindow(new StringBuilder(intervention.toString()));
-            }
-        });
-    }
-
-    /**
-     * @param buffer <code>StringBuffer</code>
-     */
-    private JFrame getTextWindow(StringBuilder buffer) {
-        JFrame frame = new JFrame("Cost-Effectiveness Partition");
-        String text = buffer.toString();
-        JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
-        frame.getContentPane().add(textArea, BorderLayout.CENTER);
-        JScrollPane scroll = new JScrollPane(textArea);
-        frame.getContentPane().add(scroll, BorderLayout.CENTER);
-        textArea.setText(text);
-        frame.pack();
-        frame.setVisible(true);
-        return frame;
-    }
-
-    /**
-     * @param text <code>String</code>
-     * @return <code>int</code>
-     */
-    private int getMaxCharsInALine(String text) {
-        int maxLengthLine = 0;
-        if (text != null) {
-            int position = 0;
-            int nextEndLine;
-            int textLength = text.length();
-            do {
-                nextEndLine = text.indexOf('\n', position);
-                if (nextEndLine > 0) {
-                    int lengthLine = nextEndLine - position;
-                    if (lengthLine > maxLengthLine) {
-                        maxLengthLine = lengthLine;
-                    }
-                    position = nextEndLine + 1;
-                }
-            } while (nextEndLine != -1 && position < textLength);
-        }
-        return maxLengthLine;
     }
 
     public static class CellEditorNotEditable extends DefaultCellEditor {
