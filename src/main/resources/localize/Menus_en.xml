@@ -407,6 +407,9 @@
     <ShowOptimalStrategy>
       <Title value="Optimal strategy" />
     </ShowOptimalStrategy>
+    <Intervention>
+      <Title value="Intervention" />
+    </Intervention>
     <EditPolicy>
       <Label value="Edit policy" />
     </EditPolicy>

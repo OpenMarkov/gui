@@ -50,7 +50,7 @@ public class InterventionDialog extends OkCancelHorizontalDialog{
         int x = (int) (screenSize.getWidth() - getSize().getWidth()) / 2;
         int y = (int) (screenSize.getHeight() - getSize().getHeight()) / 2;
         setLocation(new Point(x, y));
-        setTitle(stringDatabase.getString("Decision.ShowOptimalStrategy.Title"));
+        setTitle(stringDatabase.getString("Decision.Intervention.Title"));
         setResizable(true);
 	}
 	

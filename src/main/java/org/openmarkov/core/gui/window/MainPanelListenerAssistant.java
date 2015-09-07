@@ -1526,9 +1526,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                                 + e.getMessage()
                                 + "\nCheck the message window for further details.");
                 e.printStackTrace();
-            } catch (IncompatibleEvidenceException e) {
-                e.printStackTrace();
-            } catch (UnexpectedInferenceException e) {
+            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
                 e.printStackTrace();
             }
         }
