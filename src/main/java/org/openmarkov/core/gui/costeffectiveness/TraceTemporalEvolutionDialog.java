@@ -146,9 +146,9 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	            }
 	            this.variableOfInterest = node.getVariable ();
 	            
-				VEResolution variableElimination = new VEResolution(expandedNetwork, evidence);
+				VEResolution variableElimination = new VEResolution(expandedNetwork, evidence, conditioningVariables);
             	
-            	variableElimination.setConditioningVariables(conditioningVariables);
+            	//variableElimination.setConditioningVariables(conditioningVariables);
             	variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
                 initialize ();

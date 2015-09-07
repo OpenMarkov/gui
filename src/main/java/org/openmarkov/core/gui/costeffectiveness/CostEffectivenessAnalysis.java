@@ -232,7 +232,7 @@ public class CostEffectivenessAnalysis {
 		TablePotential globalUtility = null;
 		try {
 //			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
-			VEResolution inferenceAlgorithm = new VEResolution(expandedNetwork, evidence);
+			VEResolution inferenceAlgorithm = new VEResolution(expandedNetwork, evidence, getConditioningVariables(probNet));
 //
 //			// set evidence
 //			inferenceAlgorithm.setPreResolutionEvidence(evidence);
