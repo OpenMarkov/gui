@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EventObject;
 
 /** @author Manuel Arias */
 @SuppressWarnings("serial")
@@ -80,14 +81,14 @@ public class CEPDialog extends JDialog {
         JPanel buttonsPanel = new JPanel ();
         JButton jButtonClose = new JButton ();
         jButtonClose.setName ("jButtonClose");
-        jButtonClose.setText (stringDatabase.getString ("Dialog.Close.Label"));
+        jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
         jButtonClose.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 dispose();
             }
         });
-        buttonsPanel.add (jButtonClose);
+        buttonsPanel.add(jButtonClose);
         return buttonsPanel;
     }
 
@@ -109,7 +110,12 @@ public class CEPDialog extends JDialog {
     public JTable getJTableFromCEP(final CEP cep) {
     	// Set data in jTable
         final JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
+        CellEditorNotEditable notEditableCellEditor = new CellEditorNotEditable(new JTextField());
+
         DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        for(CEPColumns cepColumn : CEPColumns.values()){
+            jTableCEP.getColumnModel().getColumn(cepColumn.ordinal()).setCellEditor(notEditableCellEditor);
+        }
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         jTableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
         // Set colors in jTable
@@ -121,19 +127,17 @@ public class CEPDialog extends JDialog {
                 stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
 
         
-        jTableCEP.addMouseListener(new MouseAdapter() 
-        {
-           public void mouseClicked(MouseEvent event) 
-           {
-              int row = jTableCEP.rowAtPoint(event.getPoint());
-              int column = jTableCEP.columnAtPoint(event.getPoint());
-              if (column == CEPColumns.INTERVENTION.ordinal()) {
-            	  JFrame interventionFrame = new JFrame();
-            	  interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
-            	  interventionFrame.pack();
-            	  interventionFrame.setVisible(true);
-              }
-           }
+        jTableCEP.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent event) {
+                int row = jTableCEP.rowAtPoint(event.getPoint());
+                int column = jTableCEP.columnAtPoint(event.getPoint());
+                if (column == CEPColumns.INTERVENTION.ordinal()) {
+                    JFrame interventionFrame = new JFrame();
+                    interventionFrame.add(new JScrollPane(new JTextArea(cep.getInterventions()[row].toString())));
+                    interventionFrame.pack();
+                    interventionFrame.setVisible(true);
+                }
+            }
         });
 
 
@@ -331,6 +335,16 @@ public class CEPDialog extends JDialog {
             } while (nextEndLine != -1 && position < textLength);
         }
         return maxLengthLine;
+    }
+
+    public static class CellEditorNotEditable extends DefaultCellEditor {
+        public CellEditorNotEditable(JTextField textField) {
+            super(textField);
+        }
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+            return false;
+        }
     }
     
 }
