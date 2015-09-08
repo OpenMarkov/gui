@@ -8,6 +8,7 @@
 		<Title>
 			<Label value="Cost-Effectiveness Analisys Results" />
 		</Title>
+		<Scope value="Scope selector"></Scope>
 		<Intervals>
 			<Title value = "Cost-effectiveness intervals" />
 			<InterventionTooltip value="Click to show intervention" />

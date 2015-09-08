@@ -81,7 +81,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
     }
 
     public void setTitle(String netName) {
-        String title = stringDatabase.getString("CostEffectiveness.TemporalEvolution" + ".Label");
+        String title = stringDatabase.getString("CostEffectivenessResults.Scope");
         super.setTitle(title + " - " + FilenameUtils.getBaseName(netName));
     }
 
