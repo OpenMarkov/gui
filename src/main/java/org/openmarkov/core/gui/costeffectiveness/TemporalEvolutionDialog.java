@@ -113,7 +113,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
     private JTextField getNumSlicesTextField() {
         if (numSlicesTextField == null) {
-            numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+            numSlices = Integer.parseInt(numSlicesTextField.getText());
             numSlicesTextField = new JTextField();
             numSlicesTextField.setText("" + numSlices);
             numSlicesTextField.setColumns(10);

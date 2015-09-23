@@ -42,6 +42,13 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
         this.numSimulations = numSimulations;
         this.useMultithreading = useMultithreading;
     }
+
+    public ProbabilisticCEA(ProbNet probNet, Variable decision, EvidenceCase evidence, int numSimulations,
+                            boolean useMultithreading) throws NotEvaluableNetworkException {
+        super(probNet,decision,evidence);
+        this.numSimulations = numSimulations;
+        this.useMultithreading = useMultithreading;
+    }
     
     public void run()
     {

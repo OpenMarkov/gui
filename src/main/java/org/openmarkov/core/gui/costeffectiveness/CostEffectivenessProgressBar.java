@@ -22,6 +22,7 @@ import javax.swing.SwingWorker;
 
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
 
 @SuppressWarnings("serial")
 public class CostEffectivenessProgressBar extends JDialog implements PropertyChangeListener {
@@ -158,6 +159,81 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
             }
         });
         
+    }
+
+    public CostEffectivenessProgressBar(Window window, ProbNet net, final Variable decision, EvidenceCase e,
+                                        TemporalCostEffectivenessDialog ceDialog) {
+        this.parent = window;
+        this.probNet = net;
+        this.evidence = e;
+        this.costEffectivenessDialog = ceDialog;
+
+        JPanel panel = new JPanel(new BorderLayout());
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setPreferredSize(new Dimension(200, 20));
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+
+        elapsedTimeLabel = new JLabel("Time elapsed: 0 seconds.");
+        remainingTimeLabel = new JLabel("Initializing...");
+
+        panel.add(elapsedTimeLabel, BorderLayout.NORTH);
+        panel.add(remainingTimeLabel, BorderLayout.CENTER);
+        panel.add(progressBar, BorderLayout.SOUTH);
+        setTitle("Running PSA...");
+        setIconImage(null);
+        add(panel, BorderLayout.PAGE_START);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(panel);
+        pack();
+
+
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit ();
+        Dimension screenSize = toolkit.getScreenSize ();
+        int x = (int) (screenSize.getWidth() - getSize().getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - getSize().getHeight()) / 2;
+        setLocation(new Point(x, y));
+
+        setResizable(false);
+
+        addComponentListener(new ComponentAdapter() {
+            public void componentShown(ComponentEvent e) {
+                try
+                {
+                    costEffectivenessAnalysis = new ProbabilisticCEA(probNet,
+                            decision,
+                            evidence,
+                            costEffectivenessDialog.getNumSimulations(),
+                            costEffectivenessDialog.getUseMultithreading());
+	                /* code run when component shown */
+                    runAnalysis();
+                }catch(Exception ex)
+                {
+                    JOptionPane.showMessageDialog(null, "Error while trying to perform sensitivity analysis.\n" +
+                            ex.getMessage() +
+                            "\nCheck the message window for further details.");
+                    ex.printStackTrace();
+                    setVisible(false);
+                }
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                if (task != null) {
+                    task.cancel(true);
+                }
+            }
+
+            public void windowClosed(WindowEvent e) {
+                if (task != null) {
+                    task.cancel(true);
+                }
+            }
+        });
+
     }
     
     private void runAnalysis()

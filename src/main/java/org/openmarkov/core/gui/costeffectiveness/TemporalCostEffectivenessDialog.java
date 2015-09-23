@@ -129,6 +129,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
         int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
         int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
         setLocation(new Point(x, y));
+        getComponentsPanel().add(getScopeSelectorPanel());
         repaint();
     }
 
@@ -543,4 +544,12 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     public Integer getNumSimulations() {
         return numSimulations;
     }
+
+    public ScopeSelectorPanel getScopeSelectorPanel() {
+        if(scopeSelectorPanel == null){
+            scopeSelectorPanel = new ScopeSelectorPanel(probNet);
+        }
+        return scopeSelectorPanel;
+    }
+
 }

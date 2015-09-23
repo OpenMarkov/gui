@@ -36,9 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.gui.configuration.LastOpenFiles;
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessAnalysis;
-import org.openmarkov.core.gui.costeffectiveness.CostEffectivenessResultsDialog;
-import org.openmarkov.core.gui.costeffectiveness.TemporalCostEffectivenessDialog;
+import org.openmarkov.core.gui.costeffectiveness.*;
 import org.openmarkov.core.gui.dialog.AboutBox;
 import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
@@ -46,6 +44,7 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.inference.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
@@ -307,6 +306,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         	ProbNet probNet = getCurrentNetworkPanel().getProbNet();
             showCostEffectivenessResults(probNet, getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 
+        } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY)) {
+            ProbNet probNet = getCurrentNetworkPanel().getProbNet();
+            showCostEffectivenessSensitivityResults(probNet,
+                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
         } else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
             showUserConfigurationDialog();
         } else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
@@ -353,8 +356,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
 
 
-
-	/**
+    /**
      * Create a Frame for a Change Language dialog
      * 
      * @return a change language dialog to allow language change
@@ -1528,6 +1530,43 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 e.printStackTrace();
             } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private void showCostEffectivenessSensitivityResults(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+        boolean showCEDialog = true;
+
+        if(!probNet.getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()) {
+            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
+                    MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+            if(inferenceOptionsDialog.requestData() != InferenceOptionsDialog.OK_BUTTON){
+                showCEDialog = false;
+            }
+            probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+        }
+
+        TemporalCostEffectivenessDialog costEffectivenessDialog =
+                new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet, true, true);
+
+        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
+            ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
+            if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
+                CostEffectivenessProgressBar ceProgressBar =
+                        new CostEffectivenessProgressBar(
+                                Utilities.getOwner(mainPanel),
+                                probNet,
+                                preResolutionEvidence,
+                                costEffectivenessDialog);
+                ceProgressBar.setVisible(true);
+            } else {
+                CostEffectivenessProgressBar ceProgressBar =
+                        new CostEffectivenessProgressBar(
+                                Utilities.getOwner(mainPanel),
+                                probNet,
+                                scopeSelectorPanel.getDecisionSelected(),
+                                preResolutionEvidence,
+                                costEffectivenessDialog);
             }
         }
     }
