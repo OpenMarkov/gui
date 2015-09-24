@@ -121,7 +121,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
 //                    numericalTemporalNode.getVariable().getPartitionedInterval().getMin());
 //        }
         initialize(sensitivityAnalysis, isTemporalEvolution);
-        setResizable(false);
+        setResizable(true);
         setTitle(probNet.getName(), isTemporalEvolution);
         pack();
         Point parentLocation = owner.getLocation();
@@ -134,7 +134,7 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
     }
 
     private void initialize(boolean sensitivityAnalysis, boolean isTemporalEvolution) {
-        setMinimumSize(new Dimension(250, 150));
+        setMinimumSize(new Dimension(300, 300));
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JPanel otherPanel = new JPanel();

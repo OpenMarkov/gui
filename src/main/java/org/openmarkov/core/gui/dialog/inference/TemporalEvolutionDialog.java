@@ -31,6 +31,8 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
      */
     public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase evidenceCase) {
         super(owner);
+        setMinimumSize(new Dimension(300, 300));
+        this.setResizable(true);
         this.probNet = selectedNode.getProbNet();
         this.selectedNode = selectedNode;
         this.evidenceCase = evidenceCase;
@@ -42,7 +44,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         this.pack();
         this.setVisible(true);
 
-        setMinimumSize(new Dimension(250, 150));
+
     }
 
     public JPanel getSlicesPanel() {

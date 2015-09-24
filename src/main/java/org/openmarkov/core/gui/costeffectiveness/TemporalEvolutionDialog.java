@@ -79,7 +79,8 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     }
 
     private void initialize() {
-        setMinimumSize(new Dimension(250, 150));
+        setMinimumSize(new Dimension(300, 300));
+        this.setResizable(true);
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JPanel otherPanel = new JPanel();

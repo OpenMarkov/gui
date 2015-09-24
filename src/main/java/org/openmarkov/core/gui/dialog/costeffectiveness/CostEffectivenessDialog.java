@@ -37,7 +37,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
         super(owner);
         this.probNet = probNet;
         initialize();
-        setResizable(false);
+        setResizable(true);
         setTitle(probNet.getName());
         pack();
         Point parentLocation = owner.getLocation();
@@ -49,7 +49,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
     }
 
     private void initialize() {
-        setMinimumSize(new Dimension(250, 150));
+        setMinimumSize(new Dimension(300, 300));
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         JPanel otherPanel = new JPanel();
@@ -64,6 +64,7 @@ public class CostEffectivenessDialog extends OkCancelHorizontalDialog {
         getComponentsPanel().setLayout(new BorderLayout(20, 0));
         getComponentsPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         getComponentsPanel().add(panel, BorderLayout.NORTH);
+
 
         pack();
         repaint();

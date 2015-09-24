@@ -2,7 +2,6 @@ package org.openmarkov.core.gui.dialog.inference.common;
 
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
 
@@ -33,6 +32,7 @@ public class ScopeSelectorPanel extends JPanel {
 
     HashMap<JComboBox<String>, Variable> selectedScenario;
     private JPanel decisionScenarioPanel;
+    private JScrollPane decisionScenarioScroll;
     private ScopeType scopeType;
     private JComboBox<String> decisionSelector;
 
@@ -46,6 +46,7 @@ public class ScopeSelectorPanel extends JPanel {
         this.setBorder(new TitledBorder(stringDatabase.getString("ScopeSelector.Title")));
         this.add(getMainPanel());
         this.setVisible(true);
+        setMaximumSize(new Dimension(300, 300));
     }
 
     public JPanel getMainPanel() {
@@ -63,7 +64,8 @@ public class ScopeSelectorPanel extends JPanel {
         }
 
 
-        mainPanel.add(getDecisionScenarioPanel());
+        decisionScenarioScroll = new JScrollPane(getDecisionScenarioPanel());
+        mainPanel.add(decisionScenarioScroll);
         return mainPanel;
     }
 
@@ -198,6 +200,7 @@ public class ScopeSelectorPanel extends JPanel {
     }
 
     public JPanel getDecisionScenarioPanel(){
+
         decisionScenarioPanel = new JPanel();
         decisionScenarioPanel.setLayout(new BoxLayout(decisionScenarioPanel, BoxLayout.PAGE_AXIS));
         decisionScenarioPanel.setBorder(new TitledBorder(stringDatabase.getString("ScopeSelector.Scenario")));
@@ -240,7 +243,6 @@ public class ScopeSelectorPanel extends JPanel {
             }
             updateSelectedScenario();
         }
-
         return decisionScenarioPanel;
     }
 
@@ -262,9 +264,10 @@ public class ScopeSelectorPanel extends JPanel {
 
     private void refreshScenario() {
         mainPanel.setVisible(false);
-        if(decisionScenarioPanel != null) {
-            mainPanel.remove(decisionScenarioPanel);
-            mainPanel.add(getDecisionScenarioPanel());
+        if(decisionScenarioScroll != null) {
+            mainPanel.remove(decisionScenarioScroll);
+            decisionScenarioScroll = new JScrollPane(getDecisionScenarioPanel());
+            mainPanel.add(decisionScenarioScroll);
         }
         mainPanel.setVisible(true);
     }
