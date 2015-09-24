@@ -89,12 +89,16 @@ public class CostEffectivenessAnalysis {
 		this.probNet = probNet;
 		this.decision = decision;
 
-		VECEADecision veCEADecision = new VECEADecision(probNet,decision,evidence);
-
-		this.costEffectivenessTable = createCostEffectivenessTable(veCEADecision.getCEPs());
-		this.guiInterventions = createInterventions(costEffectivenessTable);
-		this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
-		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
+		VECEADecision veCEADecision;
+		try {
+			veCEADecision = new VECEADecision(probNet,decision,evidence);
+			this.costEffectivenessTable = createCostEffectivenessTable(veCEADecision.getCEPs());
+			this.guiInterventions = createInterventions(costEffectivenessTable);
+			this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
+			this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
+		} catch (IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private TablePotential createCostEffectivenessTable(CEP[] ceps) {

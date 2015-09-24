@@ -1473,7 +1473,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         VEOptimalStrategy veOptimalStrategy = null;
         try {
             veOptimalStrategy = new VEOptimalStrategy(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
-        } catch (NotEvaluableNetworkException e) {
+        } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
             e.printStackTrace();
         }
 
@@ -1516,7 +1516,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     cepDialog.setVisible(true);
                 } else {
                     CostEffectivenessAnalysis costEffectivenessAnalysis =
-                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
+                            new CostEffectivenessAnalysis(probNet,evidence); //scopeSelectorPanel.getDecisionSelected(),
                     CostEffectivenessResultsDialog costEffectivenessResultsDialog =
                             new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
                     costEffectivenessResultsDialog.setVisible(true);
