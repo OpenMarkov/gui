@@ -1516,7 +1516,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     cepDialog.setVisible(true);
                 } else {
                     CostEffectivenessAnalysis costEffectivenessAnalysis =
-                            new CostEffectivenessAnalysis(probNet,evidence); //scopeSelectorPanel.getDecisionSelected(),
+                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
                     CostEffectivenessResultsDialog costEffectivenessResultsDialog =
                             new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
                     costEffectivenessResultsDialog.setVisible(true);
