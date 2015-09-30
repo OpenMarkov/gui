@@ -1679,7 +1679,11 @@ public class EditorPanel extends JPanel
             // if the network has been changed, propagation must be done in
             // each evidence case in memory. Otherwise, only propagation in
             // current case is needed.
-            if (networkChanged)
+            /*
+             TODO - Always true, remove the or condition and set the network as changed when the criteria is modified
+             for example, when the scale change
+              */
+            if (networkChanged || true)
             {
                 for (int i = 0; i < postResolutionEvidence.size (); i++)
                 {

@@ -1567,6 +1567,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                                 scopeSelectorPanel.getDecisionSelected(),
                                 preResolutionEvidence,
                                 costEffectivenessDialog);
+                ceProgressBar.setVisible(true);
             }
         }
     }

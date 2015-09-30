@@ -257,14 +257,14 @@ public class CostEffectivenessResultsDialog extends JDialog
     private XYDataset createCEACDataset() {
         XYSeriesCollection result = new XYSeriesCollection ();
         ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
-        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(10000);
+        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(40000);
         List<GUIIntervention> guiIntervention = costEffectivenessAnalysis.getGuiIntervention();
         List<Integer> ratios = new ArrayList<>(ceacData.keySet());
         for (int i=0; i < guiIntervention.size(); ++i)
         {
             GUIIntervention guiIntervention2 = guiIntervention.get(i);
             XYSeries series = new XYSeries (guiIntervention2.getName ());
-            if(guiIntervention instanceof ProbabilisticGUIIntervention)
+            if(guiIntervention2 instanceof ProbabilisticGUIIntervention)
             {
                 for(int k=0; k < ratios.size(); ++k)
                 {
