@@ -35,6 +35,7 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
@@ -285,8 +286,15 @@ public class MainPanelMenuAssistant extends MenuAssistant
         boolean hasUncertainty = false;
         for(Node node : getCurrentNetworkPanel().getProbNet().getNodes()){
             for(Potential potential : node.getPotentials()){
-                if(potential.isUncertain()){
-                    hasUncertainty = true;
+                if(potential instanceof SameAsPrevious){
+                    Potential originalPotential = ((SameAsPrevious) potential).getOriginalPotential(getCurrentNetworkPanel().getProbNet());
+                    if(originalPotential.isUncertain()){
+                        hasUncertainty = true;
+                    }
+                }else {
+                    if (potential.isUncertain()) {
+                        hasUncertainty = true;
+                    }
                 }
             }
         }
