@@ -768,14 +768,15 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 {
                     canNodeProperties = true;
                     VisualNode visualNode = selectedNodes.get (0);
-                    if (visualNode.getNode ().getVariable ().isTemporal ()
-                            && !(visualNode.getNode().getNodeType().equals(NodeType.CHANCE) &&
-                            !visualNode.getNode().getVariable().getVariableType().equals(VariableType.FINITE_STATES))
-                            )
-                    {
-                        canLog = true;
-                        canTemporalEvolution = true;
+                    if (visualNode.getNode ().getVariable ().isTemporal ()){
                         canCreateNextSliceNode = !visualNode.getNode ().getProbNet().containsShiftedVariable(visualNode.getNode ().getVariable (), 1);
+
+                        if(!(visualNode.getNode().getNodeType().equals(NodeType.CHANCE) &&
+                            !visualNode.getNode().getVariable().getVariableType().equals(VariableType.FINITE_STATES))){
+                            canLog = true;
+                            canTemporalEvolution = true;
+                        }
+
                     }
                     String label = null;
                     switch (visualNode.getNode ().getNodeType ())
