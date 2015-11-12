@@ -988,8 +988,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         return transitionsPanel;
     }
 
+    public MulticriteriaOptions getMulticriteriaOptions() {
+        return multicriteriaOptions;
+    }
+
     @Override
     protected boolean doOkClickBeforeHide() {
+        selectedButton = OK_BUTTON;
         // If the is user is editing a cell, stop the edition to save the data
         if(table != null && table.getCellEditor() != null){
             table.getCellEditor().stopCellEditing();
@@ -1041,6 +1046,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
         probNet.getPNESupport().closeParenthesis();
 
         return super.doOkClickBeforeHide();
+    }
+
+    @Override
+    protected void doCancelClickBeforeHide() {
+        selectedButton = CANCEL_BUTTON;
     }
 
     public int requestData() {

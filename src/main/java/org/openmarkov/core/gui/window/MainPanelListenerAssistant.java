@@ -1225,23 +1225,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         boolean performInference = true;
         if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
             newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
-            
-            // If the inference was never launched before in this execution, show the inference options dialogs
-            if(!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions().isUnicriterionOptionsShowed()){
-            	
-            	// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-                InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-                        Utilities.getOwner(mainPanel),
-                        MulticriteriaOptions.Type.UNICRITERION);
 
-                if(dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
-                    newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
-                    performInference = false;
-                }
-                // Set as launched
-                //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
+            // Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+            InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+                    Utilities.getOwner(mainPanel),
+                    MulticriteriaOptions.Type.UNICRITERION);
 
+            if(dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+                newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
+                performInference = false;
             }
+            // Set as launched
+            //getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
+
+
         } else {
             newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
         }
@@ -1495,14 +1492,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
         boolean showCEDialog = true;
 
-        if(!probNet.getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()) {
-            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
-                    MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-            if(inferenceOptionsDialog.requestData() != InferenceOptionsDialog.OK_BUTTON){
-                showCEDialog = false;
-            }
-            probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+
+        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
+                MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+        if(inferenceOptionsDialog.getSelectedButton() != InferenceOptionsDialog.OK_BUTTON){
+            return;
         }
+        probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+
 
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
 
@@ -1537,14 +1534,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void showCostEffectivenessSensitivityResults(ProbNet probNet, EvidenceCase preResolutionEvidence) {
         boolean showCEDialog = true;
 
-        if(!probNet.getInferenceOptions().getMultiCriteriaOptions().isCeOptionsShowed()) {
-            InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
-                    MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-            if(inferenceOptionsDialog.requestData() != InferenceOptionsDialog.OK_BUTTON){
-                showCEDialog = false;
-            }
-            probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+
+        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
+                MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+        if(inferenceOptionsDialog.getSelectedButton() != InferenceOptionsDialog.OK_BUTTON){
+            return;
         }
+        probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
+
 
         TemporalCostEffectivenessDialog costEffectivenessDialog =
                 new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet, true, true);
