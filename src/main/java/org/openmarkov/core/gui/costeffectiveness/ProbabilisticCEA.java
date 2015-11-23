@@ -202,15 +202,15 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 	
 	protected TablePotential runSimulationAnalysis(ProbNet expandedNetwork, EvidenceCase evidence)
 			throws NonProjectablePotentialException, WrongCriterionException	{
-		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
-        for(Node node : expandedNetwork.getNodes())
-        {
-        	networkPotentials.put(node.getVariable(), node.getPotentials());
-        }
-		removeIntermediateUtilityNodes(expandedNetwork);
-        TemporalNetOperations.applyTransitionTime(expandedNetwork);
-        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
-        sampleAndTableProject(sortedNodes, networkPotentials, evidence);
+//		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
+//        for(Node node : expandedNetwork.getNodes())
+//        {
+//        	networkPotentials.put(node.getVariable(), node.getPotentials());
+//        }
+//		removeIntermediateUtilityNodes(expandedNetwork);
+//        TemporalNetOperations.applyTransitionTime(expandedNetwork);
+//        List<Node> sortedNodes = ProbNetOperations.sortTopologically(expandedNetwork);
+//        sampleAndTableProject(sortedNodes, networkPotentials, evidence);
 		return runAnalysis(expandedNetwork, evidence);
 	}
 	

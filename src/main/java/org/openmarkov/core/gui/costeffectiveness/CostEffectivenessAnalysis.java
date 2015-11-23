@@ -41,6 +41,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
+import org.openmarkov.inference.tasks.VariableElimination.VEGlobalCEA;
 import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
@@ -72,16 +73,25 @@ public class CostEffectivenessAnalysis {
 	 * @param transitionTime
 	 * @throws NotEvaluableNetworkException 
 	 */
-	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence) 
+	public CostEffectivenessAnalysis(ProbNet probNet, EvidenceCase evidence)
 			throws NotEvaluableNetworkException {
 		this.probNet = probNet;
-		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
-		this.evidence = expandEvidence(expandedNetwork, evidence);
-		this.expandedNetwork = adaptMIDforCE(expandedNetwork, this.evidence);
-		this.costEffectivenessTable = runFullAnalysis(expandedNetwork, this.evidence);
-		this.guiInterventions = createInterventions(costEffectivenessTable);
-		this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
-		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
+//		this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+//		this.evidence = expandEvidence(expandedNetwork, evidence);
+//		this.expandedNetwork = adaptMIDforCE(probNet, evidence);
+//		this.costEffectivenessTable = runFullAnalysis(expandedNetwork, this.evidence);
+//		this.costEffectivenessTable = runFullAnalysis(probNet, evidence);
+//		this.guiInterventions = createInterventions(costEffectivenessTable);
+//		this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);
+//		this.frontierGUIInterventions = calculateICERsOfFrontier(this.frontierGUIInterventions);
+		try {
+			VEGlobalCEA veGlobalCEA = new VEGlobalCEA(probNet, evidence);
+			System.out.println(veGlobalCEA.getGlobalUtility());
+		} catch (IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		} catch (UnexpectedInferenceException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public CostEffectivenessAnalysis(ProbNet probNet, Variable decision, EvidenceCase evidence) 
@@ -169,21 +179,22 @@ public class CostEffectivenessAnalysis {
 	}
 
 	protected TablePotential runFullAnalysis(ProbNet expandedNetwork, EvidenceCase evidence) {
-		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
-		ProbNet copyNetwork = expandedNetwork.copy();
-        for(Node node : copyNetwork.getNodes())
-        {
-        	networkPotentials.put(node.getVariable(), node.getPotentials());
-        }
-        List<Node> sortedNodes = ProbNetOperations.sortTopologically(copyNetwork);
-        removeIntermediateUtilityNodes(copyNetwork);
-        try {
-			tableProjectInNetwork(sortedNodes, networkPotentials, evidence);
-		} catch (NonProjectablePotentialException | WrongCriterionException e) {
-			e.printStackTrace();
-		}
-        TemporalNetOperations.applyTransitionTime(copyNetwork);
-		return runAnalysis(copyNetwork, evidence);
+//		Map<Variable, List<Potential>> networkPotentials = new HashMap<>();
+//		ProbNet copyNetwork = expandedNetwork.copy();
+//        for(Node node : copyNetwork.getNodes())
+//        {
+//        	networkPotentials.put(node.getVariable(), node.getPotentials());
+//        }
+//        List<Node> sortedNodes = ProbNetOperations.sortTopologically(copyNetwork);
+//        removeIntermediateUtilityNodes(copyNetwork);
+//        try {
+//			tableProjectInNetwork(sortedNodes, networkPotentials, evidence);
+//		} catch (NonProjectablePotentialException | WrongCriterionException e) {
+//			e.printStackTrace();
+//		}
+//        TemporalNetOperations.applyTransitionTime(copyNetwork);
+//		return runAnalysis(copyNetwork, evidence);
+		return runAnalysis(expandedNetwork, evidence);
 	}
 	
 	public static void tableProjectInNetwork(List<Node> sortedNodes,
@@ -236,16 +247,16 @@ public class CostEffectivenessAnalysis {
 		TablePotential globalUtility = null;
 		try {
 //			InferenceAlgorithm inferenceAlgorithm = new VariableElimination(expandedNetwork);
-			VEResolution inferenceAlgorithm = new VEResolution(expandedNetwork, evidence, getConditioningVariables(probNet));
+			VEResolution inferenceAlgorithm = new VEResolution(expandedNetwork, evidence, null);
 //
 //			// set evidence
 //			inferenceAlgorithm.setPreResolutionEvidence(evidence);
 			
 			// set decisions and decision criteria as conditioning variables
-			inferenceAlgorithm.setConditioningVariables(getConditioningVariables(probNet));
-
-			// set heuristic for variable elimination
-			inferenceAlgorithm.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
+//			inferenceAlgorithm.setConditioningVariables(getConditioningVariables(probNet));
+//
+//			// set heuristic for variable elimination
+//			inferenceAlgorithm.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
 			// Run inference
 //			costEffectivenessTable = getCostEffectivenessTable(expandedNetwork, inferenceAlgorithm);
@@ -323,22 +334,22 @@ public class CostEffectivenessAnalysis {
 //		}
 //	}
 	
-	private List<Variable> getConditioningVariables(ProbNet probNet)
-	{
-		List<Variable> conditioningVariables = new ArrayList<>();
-		try {
-			conditioningVariables.add(expandedNetwork.getVariable(DECISION_CRITERIA_VARIABLE));
-		} catch (NodeNotFoundException e) {
-			e.printStackTrace();
-		}
-		List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
-		for (Node decisionNode : decisionNodes) {
-			if (!decisionNode.hasPolicy()) {
-				conditioningVariables.add(decisionNode.getVariable());
-			}
-		}
-		return conditioningVariables;
-	}
+//	private List<Variable> getConditioningVariables(ProbNet probNet)
+//	{
+//		List<Variable> conditioningVariables = new ArrayList<>();
+//		try {
+//			conditioningVariables.add(expandedNetwork.getVariable(DECISION_CRITERIA_VARIABLE));
+//		} catch (NodeNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//		List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
+//		for (Node decisionNode : decisionNodes) {
+//			if (!decisionNode.hasPolicy()) {
+//				conditioningVariables.add(decisionNode.getVariable());
+//			}
+//		}
+//		return conditioningVariables;
+//	}
 	
 	
 
@@ -493,8 +504,8 @@ public class CostEffectivenessAnalysis {
 	 */
 	public static ProbNet adaptMIDforCE(ProbNet expandedNetwork,
 			EvidenceCase evidence) throws NotEvaluableNetworkException {
-
-		// Convert numeric variables
+//
+//		// Convert numeric variables
 		expandedNetwork = ProbNetOperations
 				.convertNumericalVariablesToFS(expandedNetwork, evidence);
 
@@ -511,7 +522,7 @@ public class CostEffectivenessAnalysis {
 			// throw new
 			// Exception("For cost effectiveness analysis performance network's decision criteria must be cost and effectiveness");
 		}
-		
+
 		// make all utility nodes of the expanded probNet children of the
 		// decision criteria node
 		Variable decisionCriteriaVariable = getCECriteriaVariable();
@@ -522,7 +533,7 @@ public class CostEffectivenessAnalysis {
 			{
 				throw new NotEvaluableNetworkException("Utility node " + utilityNode.getName() + " does not have a decision criterion");
 			}
-			
+
 			// TODO - This is an old method used in old probNets for Cost-Effectiveness Analysis
 			String decisionCriterion = utilityNode.getVariable().getDecisionCriterion().getCriterionName();
 			if (decisionCriterion.equalsIgnoreCase("cost")
@@ -539,7 +550,7 @@ public class CostEffectivenessAnalysis {
 				utilityNode.setPotential(treeADDPotential);
 			}
 		}
-		
+
 		return expandedNetwork;
 	}
 	

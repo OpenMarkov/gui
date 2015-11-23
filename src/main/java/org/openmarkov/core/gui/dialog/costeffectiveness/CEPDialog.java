@@ -11,6 +11,8 @@ import org.openmarkov.inference.variableElimination.model.CEP;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -39,6 +41,8 @@ public class CEPDialog extends JDialog {
 
     private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
+    private JTable jtableCEP;
+
     // Constructor
     /**
      * @param owner
@@ -49,15 +53,18 @@ public class CEPDialog extends JDialog {
         super(owner);
 
         this.cep = cep;
-        initialize();
-        // Center dialog
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        int x = (screenSize.width - this.getWidth()) / 2;
-        int y = (screenSize.height - this.getHeight()) / 2;
-        this.setLocation(x, y);
-
         this.probNet = probNet.copy();
+
+        initialize();
+
+//        // Center dialog
+        this.setLocationRelativeTo(owner);
+//        Toolkit toolkit = Toolkit.getDefaultToolkit();
+//        Dimension screenSize = toolkit.getScreenSize();
+//        int x = (screenSize.width - this.getWidth()) / 2;
+//        int y = (screenSize.height - this.getHeight()) / 2;
+//        this.setLocation(x, y);
+
 
         this.setVisible(true);
     }
@@ -65,8 +72,9 @@ public class CEPDialog extends JDialog {
     private void initialize ()
     {
         setTitle(stringDatabase.getString("CostEffectivenessResults.Intervals.Title"));
-        setContentPane(getJContentPane());
+        getContentPane().add(getJContentPane(), BorderLayout.CENTER);
         pack();
+        jtableCEP.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     }
 
     /**
@@ -98,14 +106,11 @@ public class CEPDialog extends JDialog {
         return buttonsPanel;
     }
 
-    private Component getComponentsPanel ()
+    private JScrollPane getComponentsPanel ()
     {
-        JPanel panel = new JPanel ();
-        panel.setBorder(new EmptyBorder(10,10,10,10));
-        panel.setMaximumSize(new Dimension(180, 40));
-        panel.add(new JScrollPane(getJTableFromCEP(cep)));
-        pack();
-        return panel;
+        JScrollPane scrollPane = new JScrollPane(getJTableFromCEP(cep));
+        scrollPane.setBorder(new EmptyBorder(10,10,10,10));
+        return scrollPane;
     }
 
     // Public method
@@ -115,28 +120,53 @@ public class CEPDialog extends JDialog {
      */
     public JTable getJTableFromCEP(final CEP cep) {
     	// Set data in jTable
-        final JTable jTableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings());
+        jtableCEP = new JTable(getDataFromCEP(cep), getColumnsStrings())
+        {
+            @Override
+            public void doLayout()
+            {
+                if (tableHeader != null)
+                {
+                    TableColumn resizingColumn = tableHeader.getResizingColumn();
+                    //  Viewport size changed. Increase last columns width
+
+                    if (resizingColumn == null)
+                    {
+                        TableColumnModel tcm = getColumnModel();
+                        int lastColumn = tcm.getColumnCount() - 1;
+                        tableHeader.setResizingColumn( tcm.getColumn( lastColumn ) ) ;
+                    }
+                }
+
+                super.doLayout();
+            }
+
+            public boolean getScrollableTracksViewportWidth()
+            {
+                return getPreferredSize().width < getParent().getWidth();
+            }
+        };
         CellEditorNotEditable notEditableCellEditor = new CellEditorNotEditable(new JTextField());
 
         DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
         for(CEPColumns cepColumn : CEPColumns.values()){
-            jTableCEP.getColumnModel().getColumn(cepColumn.ordinal()).setCellEditor(notEditableCellEditor);
+            jtableCEP.getColumnModel().getColumn(cepColumn.ordinal()).setCellEditor(notEditableCellEditor);
         }
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        jTableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
+        jtableCEP.getTableHeader().setDefaultRenderer(headerRenderer);
         // Set colors in jTable
-        setColumnCellRenderer(jTableCEP, CEPColumns.LAMBDA_INF.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
-        setColumnCellRenderer(jTableCEP, CEPColumns.LAMBDA_SUP.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
-        setColumnCellRenderer(jTableCEP, CEPColumns.COST.ordinal());
-        setColumnCellRenderer(jTableCEP, CEPColumns.EFFECTIVENESS.ordinal());
-        setColumnCellRenderer(jTableCEP, CEPColumns.INTERVENTION.ordinal(), Color.decode(CLICKABLE_COLUMN_COLOR),
+        setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_INF.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+        setColumnCellRenderer(jtableCEP, CEPColumns.LAMBDA_SUP.ordinal(), Color.decode(INTERVENTION_RANGE_COLOR));
+        setColumnCellRenderer(jtableCEP, CEPColumns.COST.ordinal());
+        setColumnCellRenderer(jtableCEP, CEPColumns.EFFECTIVENESS.ordinal());
+        setColumnCellRenderer(jtableCEP, CEPColumns.INTERVENTION.ordinal(), Color.decode(CLICKABLE_COLUMN_COLOR),
                 stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
 
-        
-        jTableCEP.addMouseListener(new MouseAdapter() {
+
+        jtableCEP.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent event) {
-                int row = jTableCEP.rowAtPoint(event.getPoint());
-                int column = jTableCEP.columnAtPoint(event.getPoint());
+                int row = jtableCEP.rowAtPoint(event.getPoint());
+                int column = jtableCEP.columnAtPoint(event.getPoint());
                 if (column == CEPColumns.INTERVENTION.ordinal()) {
                   InterventionDialog interventionDialog = null;
                   try {
@@ -153,8 +183,7 @@ public class CEPDialog extends JDialog {
             }
         });
 
-
-        return jTableCEP;
+        return jtableCEP;
     }
 
 	/** Enumerate to use in JTable columns */
