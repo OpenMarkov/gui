@@ -120,7 +120,7 @@ public enum NetworkType {
 	 * @throws IllegalArgumentException
 	 *             if the type is not valid.
 	 */
-	private NetworkType(int type) throws IllegalArgumentException {
+	NetworkType(int type) throws IllegalArgumentException {
 
 		switch (type) {
 		case 0: {

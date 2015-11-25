@@ -197,7 +197,7 @@ public class CEPDialog extends JDialog {
     	private String text;
     	private int index;
     	
-    	private CEPColumns(int index, String text) {
+    	CEPColumns(int index, String text) {
     		this.index = index;
     		this.text = text;
     	}

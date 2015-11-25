@@ -54,7 +54,7 @@ public enum SelectionState {
 	 * @throws IllegalArgumentException
 	 *             if the state is not valid.
 	 */
-	private SelectionState(int state) throws IllegalArgumentException {
+	SelectionState(int state) throws IllegalArgumentException {
 
 		switch (state) {
 		case 0: {
