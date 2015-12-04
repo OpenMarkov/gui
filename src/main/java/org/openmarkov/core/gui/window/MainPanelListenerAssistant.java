@@ -44,7 +44,6 @@ import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
-import org.openmarkov.core.gui.dialog.inference.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
@@ -67,10 +66,7 @@ import org.openmarkov.core.gui.window.edition.NetworkPanel;
 import org.openmarkov.core.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.gui.window.mdi.MDIListener;
 import org.openmarkov.core.gui.window.message.MessageWindow;
-import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.inference.MulticriteriaOptions;
-import org.openmarkov.core.inference.tasks.OptimalStrategy;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
@@ -87,8 +83,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
-import org.openmarkov.inference.tasks.VariableElimination.VEGlobalCEA;
+import org.openmarkov.inference.tasks.VariableElimination.VECEAGlobal;
 import org.openmarkov.inference.tasks.VariableElimination.VEOptimalStrategy;
 import org.openmarkov.inference.variableElimination.model.CEP;
 //TODO: remove just because reference to cost-effectiveness was removed
@@ -1019,33 +1014,28 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             }
         }
         ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
-        try
-        {
-            try {
-                evidenceCase.extendEvidence(expandedNetwork);
-            } catch (IncompatibleEvidenceException e) {
-                e.printStackTrace();
-            } catch (InvalidStateException e) {
-                e.printStackTrace();
-            } catch (WrongCriterionException e) {
-                e.printStackTrace();
-            }
-            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
-
-            // TODO apply changes for transitions at cycle start, end or half cycle.
-            TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-            TemporalNetOperations.transformToID(expandedNetwork);
-
-
-            String fileName = probNetCopy.getName() + "_expandedCE";
-            expandedNetwork.setName(fileName);
-            NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-            networkPanel.setNetworkFile(fileName);
-            networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
-            networkPanels.add(networkPanel);
-        }catch(NotEvaluableNetworkException e) {
-
+        try {
+            evidenceCase.extendEvidence(expandedNetwork);
+        } catch (IncompatibleEvidenceException e) {
+            e.printStackTrace();
+        } catch (InvalidStateException e) {
+            e.printStackTrace();
+        } catch (WrongCriterionException e) {
+            e.printStackTrace();
         }
+//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
+
+        // TODO apply changes for transitions at cycle start, end or half cycle.
+        TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+        TemporalNetOperations.transformToID(expandedNetwork);
+
+
+        String fileName = probNetCopy.getName() + "_expandedCE";
+        expandedNetwork.setName(fileName);
+        NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+        networkPanel.setNetworkFile(fileName);
+        networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
+        networkPanels.add(networkPanel);
     }
 
     /**
@@ -1507,7 +1497,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
             try {
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
-                    VEGlobalCEA veGlobalCEA = new VEGlobalCEA(probNet, evidence);
+
+                    VECEAGlobal veGlobalCEA = new VECEAGlobal(probNet, evidence);
                     CEP cep = (CEP)((GTablePotential)veGlobalCEA.getUtility()).elementTable.get(0);
                     CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep, probNet);
                     cepDialog.setVisible(true);
@@ -1549,13 +1540,13 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
             if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
-                CostEffectivenessProgressBar ceProgressBar =
-                        new CostEffectivenessProgressBar(
-                                Utilities.getOwner(mainPanel),
-                                probNet,
-                                preResolutionEvidence,
-                                costEffectivenessDialog);
-                ceProgressBar.setVisible(true);
+//                CostEffectivenessProgressBar ceProgressBar =
+//                        new CostEffectivenessProgressBar(
+//                                Utilities.getOwner(mainPanel),
+//                                probNet,
+//                                preResolutionEvidence,
+//                                costEffectivenessDialog);
+//                ceProgressBar.setVisible(true);
             } else {
                 CostEffectivenessProgressBar ceProgressBar =
                         new CostEffectivenessProgressBar(

@@ -132,7 +132,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
             {
 	            numSlices = temporalEvolutionDialog.getNumSlices();
 	            this.expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
-	            evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
+	            evidence.extendEvidence(expandedNetwork); //CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
 
 	    		// Convert numeric variables
 	    		expandedNetwork = ProbNetOperations
