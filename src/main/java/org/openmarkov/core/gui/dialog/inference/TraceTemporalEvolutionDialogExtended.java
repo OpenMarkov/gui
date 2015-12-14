@@ -46,7 +46,7 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 {
     private Map<Variable, TablePotential>     temporalEvolution;
     private ChartPanel                        chartPanel;
-    private JScrollPane                       tablePane;
+    private TemporalEvolutionTablePane        tablePane;
     private JTabbedPane                       tabbedPane;
     private Variable                          variableOfInterest;
     private ProbNet                           expandedNetwork;
@@ -1007,7 +1007,8 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
         throws IOException
     {
         TemporalEvolutionReport report = new TemporalEvolutionReport();
-        report.write(filename, temporalEvolution, expandedNetwork, numSlices, variableOfInterest);
+//        report.write(filename, temporalEvolution, expandedNetwork, numSlices, variableOfInterest);
+		report.write(filename, tablePane.getTable());
     }
     
     /**

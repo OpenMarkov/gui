@@ -213,6 +213,10 @@ public class TemporalEvolutionTablePane extends JScrollPane {
         setAutoscrolls(true);
     }
 
+    public JTable getTable() {
+        return table;
+    }
+
     public class NonEditableModel extends DefaultTableModel {
         public boolean isCellEditable(int row, int column) {
             return false;
