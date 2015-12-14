@@ -7,6 +7,9 @@
 package org.openmarkov.core.gui.dialog.inference;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jfree.chart.*;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
@@ -15,7 +18,10 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.costeffectiveness.*;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
@@ -31,11 +37,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Plot of temporal evolution of variables in CEA
@@ -111,6 +118,7 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 //				TemporalNetOperations.applyTransitionTime(expandedNetwork);
 //			}
 			this.variableOfInterest = node.getVariable ();
+//			createExcel(probNet, evidence, decisionSelected);
 			// TODO - Añadir las conditioning variables en el constructor
 			// ProbNet probNet, Variable temporalVariable, EvidenceCase preResolutionEvidence, Collection<Finding> scenario
 			VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, node.getVariable() ,evidence, decisionSelected);
@@ -150,7 +158,151 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 		}
 
 	}
-    private void initialize ()
+
+	private void createExcel(ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) {
+
+		JFileChooser fileChooser = new JFileChooser ();
+		String netName = probNet.getName();
+		fileChooser.setSelectedFile (new File (netName + "-" + variableOfInterest.getBaseName ()
+				+ "-temporal_evolution.xls"));
+		if (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION) {
+			List<Variable> temporalVariables = new ArrayList<>();
+			for (Variable variable : probNet.getVariables()) {
+				if (variable.isTemporal()) {
+					if (variable.getVariableType().equals(VariableType.NUMERIC) &&
+							!probNet.getNode(variable).getNodeType().equals(NodeType.UTILITY)) {
+						continue;
+					}
+
+					boolean addedOtherSlice = false;
+					for (int i = 0; i < temporalVariables.size(); i++) {
+						if (temporalVariables.get(i).getBaseName().equals(variable.getBaseName())) {
+							addedOtherSlice = true;
+						}
+					}
+					if (!addedOtherSlice) {
+						temporalVariables.add(variable);
+					}
+				}
+			}
+
+
+			HashMap<Variable, JTable> datasheet = new HashMap<>();
+			for (Variable temporalVariable : temporalVariables) {
+				try {
+					VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, temporalVariable, evidence, decisionSelected);
+					HashMap<Variable, TablePotential> result = veTemporalEvolution.getPosteriorValues();
+					JTable table = createJTable(temporalVariable, result);
+					datasheet.put(temporalVariable, table);
+				} catch (NotEvaluableNetworkException e) {
+					e.printStackTrace();
+				} catch (IncompatibleEvidenceException e) {
+					e.printStackTrace();
+				} catch (UnexpectedInferenceException e) {
+					e.printStackTrace();
+				}
+			}
+
+			HSSFWorkbook hwb = new HSSFWorkbook();
+			for (Variable tabVariable : datasheet.keySet()) {
+				JTable jtable = datasheet.get(tabVariable);
+				HSSFSheet sheetTable = hwb.createSheet(tabVariable.getBaseName());
+				// first row, column names
+				HSSFRow rowIndexes = sheetTable.createRow(0);
+				rowIndexes.createCell(0).setCellValue("");
+
+				for (int i = 1; i < jtable.getColumnCount(); i++) {
+					rowIndexes.createCell(i + 1).setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
+				}
+				// fill data
+				for (int i = 0; i < jtable.getRowCount(); i++) {
+					HSSFRow row = sheetTable.createRow(i + 1);
+					for (int j = 0; j < jtable.getColumnCount(); j++) {
+						if (jtable.getValueAt(i, j) instanceof String) {
+							row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
+						} else {
+							row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
+						}
+					}
+
+				}
+			}
+
+
+			String targetFilename = fileChooser.getName().endsWith(".xls") ? fileChooser.getName() : fileChooser.getName() + ".xls";
+			FileOutputStream fileOut = null;
+			try {
+				fileOut = new FileOutputStream(targetFilename);
+				hwb.write(fileOut);
+				fileOut.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private JTable createJTable(Variable temporalVariable, HashMap<Variable, TablePotential> result) {
+		int numRows = this.numSlices + conditioningVariables.size() + 2;
+		int numColumns = temporalVariable.getNumStates();
+		for(Variable conditioningVariable : conditioningVariables){
+			numColumns *= conditioningVariable.getNumStates();
+		}
+		numColumns += 1;
+
+		JTable jtable = new JTable(numRows, numColumns);
+
+
+		int row = 0;
+		// Build conditioning variables names
+		for(; row < conditioningVariables.size(); row++){
+			jtable.setValueAt(conditioningVariables.get(row).getBaseName(), row, 0);
+		}
+
+		//Build states
+		jtable.setValueAt("States", row,0);
+		row++;
+
+		// Build slices column
+		int slice = 0;
+		for(; row < numRows; row++){
+			jtable.setValueAt(slice, row, 0);
+			slice++;
+		}
+
+		// Fill conditioning variables states
+		row = 0;
+		for(Variable conditioningVariable : conditioningVariables) {
+			// Build headers
+			for (int column = 1; column < numColumns; column++) {
+				String stateName = conditioningVariable.getStateName((column-1)/temporalVariable.getNumStates());
+				jtable.setValueAt(stateName, row, column);
+			}
+			row++;
+		}
+
+		// Fill states of the temporal variable
+		for (int column = 1; column < numColumns; column++) {
+			String stateName = temporalVariable.getStateName((column-1)%temporalVariable.getNumStates());
+			jtable.setValueAt(stateName, row, column);
+		}
+
+		// Fill table potentials
+		int slice0row = conditioningVariables.size()+1;
+
+		for(Variable variable : result.keySet()){
+			TablePotential tablePotential = result.get(variable);
+			int rowVariable = variable.getTimeSlice() + slice0row;
+			for (int column = 1; column < numColumns; column++) {
+				jtable.setValueAt(tablePotential.getValues()[(column-1)%temporalVariable.getNumStates()], rowVariable, column);
+			}
+		}
+
+		return jtable;
+	}
+
+	private void initialize ()
     {
         setTitle (stringDatabase.getString ("TemporalEvolutionResultDialog.Title.Label") + " "
                   + variableOfInterest.getBaseName ());
