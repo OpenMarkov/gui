@@ -163,9 +163,13 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 
 		JFileChooser fileChooser = new JFileChooser ();
 		String netName = probNet.getName();
-		fileChooser.setSelectedFile (new File (netName + "-" + variableOfInterest.getBaseName ()
-				+ "-temporal_evolution.xls"));
+		fileChooser.setSelectedFile (new File (netName + "-temporal_evolution.xls"));
 		if (fileChooser.showSaveDialog (this) == JFileChooser.APPROVE_OPTION) {
+
+			String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xls") ?
+					fileChooser.getSelectedFile().getAbsolutePath() :
+					fileChooser.getSelectedFile().getAbsolutePath() + ".xls";
+
 			List<Variable> temporalVariables = new ArrayList<>();
 			for (Variable variable : probNet.getVariables()) {
 				if (variable.isTemporal()) {
@@ -189,16 +193,23 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 
 			HashMap<Variable, JTable> datasheet = new HashMap<>();
 			for (Variable temporalVariable : temporalVariables) {
+				System.out.println(temporalVariable.getBaseName());
 				try {
 					VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, temporalVariable, evidence, decisionSelected);
 					HashMap<Variable, TablePotential> result = veTemporalEvolution.getPosteriorValues();
 					JTable table = createJTable(temporalVariable, result);
+					TemporalEvolutionReport report = new TemporalEvolutionReport();
+					report.write(targetFilename.substring(0,targetFilename.length()-4) +
+							temporalVariable.getBaseName() + ".xls"
+							, table);
 					datasheet.put(temporalVariable, table);
 				} catch (NotEvaluableNetworkException e) {
 					e.printStackTrace();
 				} catch (IncompatibleEvidenceException e) {
 					e.printStackTrace();
 				} catch (UnexpectedInferenceException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -220,6 +231,8 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 					for (int j = 0; j < jtable.getColumnCount(); j++) {
 						if (jtable.getValueAt(i, j) instanceof String) {
 							row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
+						} else if (jtable.getValueAt(i, j) instanceof Integer) {
+							row.createCell(j).setCellValue((Integer) jtable.getValueAt(i, j));
 						} else {
 							row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
 						}
@@ -229,7 +242,7 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 			}
 
 
-			String targetFilename = fileChooser.getName().endsWith(".xls") ? fileChooser.getName() : fileChooser.getName() + ".xls";
+
 			FileOutputStream fileOut = null;
 			try {
 				fileOut = new FileOutputStream(targetFilename);

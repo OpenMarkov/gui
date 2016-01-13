@@ -106,7 +106,9 @@ public class TemporalEvolutionReport {
             for (int j = 0; j < jtable.getColumnCount(); j++) {
                 if(jtable.getValueAt(i, j) instanceof String) {
                     row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
-                } else {
+                } else if (jtable.getValueAt(i, j) instanceof Integer) {
+                    row.createCell(j).setCellValue((Integer) jtable.getValueAt(i, j));
+                }else {
                     row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
                 }
             }
