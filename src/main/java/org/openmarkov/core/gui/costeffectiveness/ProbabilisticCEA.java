@@ -126,7 +126,7 @@ public class ProbabilisticCEA extends CostEffectivenessAnalysis implements Runna
 			boolean useMultithreading)    
 	{
         try {
-            vecepsa = new VECEPSA(expandedNetwork, decision, evidence, numSimulations, useMultithreading);
+            vecepsa = new VECEPSA(expandedNetwork, evidence, decision, numSimulations, useMultithreading);
             return vecepsa.getCeaResults();
         } catch (NotEvaluableNetworkException e) {
             e.printStackTrace();
