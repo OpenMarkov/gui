@@ -78,7 +78,7 @@ public class CostEffectivenessAnalysis {
 
 		VECEADecision veCEADecision;
 		try {
-			veCEADecision = new VECEADecision(probNet,decision,evidence);
+			veCEADecision = new VECEADecision(probNet,evidence, decision);
 			this.costEffectivenessTable = createCostEffectivenessTable(veCEADecision.getCEPs());
 			this.guiInterventions = createInterventions(costEffectivenessTable);
 			this.frontierGUIInterventions = calculateFrontierInterventions(guiInterventions);

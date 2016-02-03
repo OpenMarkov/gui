@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.costeffectiveness;
+package org.openmarkov.core.gui.dialog.inference.temporalevolution;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.openmarkov.core.gui.costeffectiveness.CEResultsCellRenderer;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;

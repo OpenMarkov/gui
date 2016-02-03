@@ -42,8 +42,9 @@ import org.openmarkov.core.gui.dialog.LanguageDialog;
 import org.openmarkov.core.gui.dialog.SelectZoomDialog;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.configuration.PreferencesDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CEPDialog;
-import org.openmarkov.core.gui.dialog.costeffectiveness.CostEffectivenessDialog;
+import org.openmarkov.core.gui.dialog.inference.costeffectiveness.CEDecisionResults;
+import org.openmarkov.core.gui.dialog.inference.costeffectiveness.CEPDialog;
+import org.openmarkov.core.gui.dialog.inference.costeffectiveness.CostEffectivenessDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
@@ -57,7 +58,7 @@ import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.core.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.core.gui.dialog.inference.InferenceOptionsDialog;
+import org.openmarkov.core.gui.dialog.inference.common.InferenceOptionsDialog;
 import org.openmarkov.core.gui.plugin.ToolPluginManager;
 import org.openmarkov.core.gui.util.PropertyNames;
 import org.openmarkov.core.gui.util.Utilities;
@@ -1480,20 +1481,15 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     private void showCostEffectivenessResults(ProbNet probNet,
             EvidenceCase evidence) {
 
-        boolean showCEDialog = true;
-
-
         InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
                 MulticriteriaOptions.Type.COST_EFFECTIVENESS);
         if(inferenceOptionsDialog.getSelectedButton() != InferenceOptionsDialog.OK_BUTTON){
             return;
         }
-        probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
-
 
         CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
 
-        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
+        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON)) {
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
             try {
                 if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
@@ -1503,11 +1499,14 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep, probNet);
                     cepDialog.setVisible(true);
                 } else {
-                    CostEffectivenessAnalysis costEffectivenessAnalysis =
-                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
-                    CostEffectivenessResultsDialog costEffectivenessResultsDialog =
-                            new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
-                    costEffectivenessResultsDialog.setVisible(true);
+                    CEDecisionResults ceDecisionResults = new CEDecisionResults(Utilities.getOwner(mainPanel), probNet,
+                            evidence,scopeSelectorPanel.getDecisionSelected());
+
+//                    CostEffectivenessAnalysis costEffectivenessAnalysis =
+//                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
+//                    CostEffectivenessResultsDialog costEffectivenessResultsDialog =
+//                            new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
+//                    costEffectivenessResultsDialog.setVisible(true);
                 }
             } catch (NotEvaluableNetworkException e) {
                 JOptionPane.showMessageDialog(
@@ -1534,8 +1533,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
 
 
-        TemporalCostEffectivenessDialog costEffectivenessDialog =
-                new TemporalCostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet, true, true);
+        SensitivityParametersCostEffectivenessDialog costEffectivenessDialog =
+                new SensitivityParametersCostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet, true, true);
 
         if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
             ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();

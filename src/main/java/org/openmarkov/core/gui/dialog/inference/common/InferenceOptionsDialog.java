@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.inference;
+package org.openmarkov.core.gui.dialog.inference.common;
 
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;

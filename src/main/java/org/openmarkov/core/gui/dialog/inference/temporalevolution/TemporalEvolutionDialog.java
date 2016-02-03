@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.inference;
+package org.openmarkov.core.gui.dialog.inference.temporalevolution;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;

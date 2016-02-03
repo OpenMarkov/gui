@@ -49,7 +49,7 @@ import org.openmarkov.core.model.network.Variable;
  * 
  * @author myebra
  */
-public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener,
+public class SensitivityParametersCostEffectivenessDialog extends OkCancelHorizontalDialog implements ItemListener,
         FocusListener {
     private static final long       serialVersionUID       = 1L;
 //    private JLabel                  costDiscountLabel;
@@ -110,8 +110,8 @@ public class TemporalCostEffectivenessDialog extends OkCancelHorizontalDialog im
      * @param owner
      *            The parent of the dialog
      */
-    public TemporalCostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
-            boolean isTemporalEvolution) {
+    public SensitivityParametersCostEffectivenessDialog(Window owner, ProbNet probNet, boolean sensitivityAnalysis,
+                                                        boolean isTemporalEvolution) {
         super(owner);
         this.probNet = probNet;
 //        this.initialValues = new HashMap<>();

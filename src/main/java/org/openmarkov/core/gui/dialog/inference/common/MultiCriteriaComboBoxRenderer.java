@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.inference;
+package org.openmarkov.core.gui.dialog.inference.common;
 
 import java.awt.Component;
 

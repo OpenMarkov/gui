@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.dialog.inference.costeffectiveness;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;

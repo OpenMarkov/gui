@@ -4,7 +4,7 @@
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.dialog.inference;
+package org.openmarkov.core.gui.dialog.inference.temporalevolution;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -22,13 +22,10 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.gui.costeffectiveness.*;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 import org.openmarkov.inference.tasks.VariableElimination.VETemporalEvolution;
-import org.openmarkov.inference.variableElimination.VariableEliminationCore;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

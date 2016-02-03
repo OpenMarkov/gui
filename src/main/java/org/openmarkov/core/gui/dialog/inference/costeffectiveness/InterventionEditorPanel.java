@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.dialog.inference.costeffectiveness;
 
 import java.awt.event.ActionListener;
 

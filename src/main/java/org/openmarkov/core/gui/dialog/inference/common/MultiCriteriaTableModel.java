@@ -1,6 +1,4 @@
-package org.openmarkov.core.gui.dialog.inference;
-
-import org.openmarkov.core.gui.dialog.inference.InferenceOptionsDialog;
+package org.openmarkov.core.gui.dialog.inference.common;
 
 import javax.swing.table.DefaultTableModel;
 

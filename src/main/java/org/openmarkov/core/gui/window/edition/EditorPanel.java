@@ -40,7 +40,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
 import org.openmarkov.core.gui.dialog.PropagationOptionsDialog;
-import org.openmarkov.core.gui.dialog.inference.TemporalEvolutionDialog;
+import org.openmarkov.core.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
 import org.openmarkov.core.gui.dialog.link.RevelationArcEditDialog;
 import org.openmarkov.core.gui.dialog.network.NetworkPropertiesDialog;

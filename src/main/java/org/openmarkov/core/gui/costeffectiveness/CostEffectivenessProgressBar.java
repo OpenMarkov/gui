@@ -34,7 +34,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     private PSATask         task;
     private ProbabilisticCEA costEffectivenessAnalysis;
     private final ProbNet probNet;
-    private final TemporalCostEffectivenessDialog costEffectivenessDialog; 
+    private final SensitivityParametersCostEffectivenessDialog costEffectivenessDialog;
     private final EvidenceCase evidence; 
     private long startTime;
 
@@ -88,7 +88,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
     }
 
 //    public CostEffectivenessProgressBar(Window window, ProbNet net, EvidenceCase e,
-//            TemporalCostEffectivenessDialog ceDialog) {
+//            SensitivityParametersCostEffectivenessDialog ceDialog) {
 //        this.parent = window;
 //        this.probNet = net;
 //        this.evidence = e;
@@ -162,7 +162,7 @@ public class CostEffectivenessProgressBar extends JDialog implements PropertyCha
 //    }
 
     public CostEffectivenessProgressBar(Window window, ProbNet net, final Variable decision, EvidenceCase e,
-                                        TemporalCostEffectivenessDialog ceDialog) {
+                                        SensitivityParametersCostEffectivenessDialog ceDialog) {
         this.parent = window;
         this.probNet = net;
         this.evidence = e;

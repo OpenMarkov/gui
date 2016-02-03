@@ -1,4 +1,4 @@
-package org.openmarkov.core.gui.costeffectiveness;
+package org.openmarkov.core.gui.dialog.inference.temporalevolution;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

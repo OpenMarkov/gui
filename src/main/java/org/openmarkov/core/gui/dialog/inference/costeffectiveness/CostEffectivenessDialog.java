@@ -4,7 +4,7 @@
  * distributed on an "AS IS" basis, WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.gui.dialog.costeffectiveness;
+package org.openmarkov.core.gui.dialog.inference.costeffectiveness;
 
 import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
