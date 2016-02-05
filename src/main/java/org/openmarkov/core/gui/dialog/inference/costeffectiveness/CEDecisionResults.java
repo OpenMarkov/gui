@@ -27,6 +27,8 @@ import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
 import org.openmarkov.inference.variableElimination.model.CEP;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -209,15 +211,17 @@ public class CEDecisionResults extends JDialog {
      * Get the intervals panel with all the compact intervals
      * @return
      */
-    public JPanel getIntervalsPanel(AnalysisTab analysisTab) {
+    public JScrollPane getIntervalsPanel(AnalysisTab analysisTab) {
 
         JPanel intervalsPanel = new JPanel();
+        // TODO - Localize
+        intervalsPanel.setBorder(new TitledBorder("Intervals"));
         intervalsPanel.setLayout(new BoxLayout(intervalsPanel, BoxLayout.PAGE_AXIS));
 
         cepsForDecision = new CEP[gtablePotentialResult.elementTable.size()];
 
         // TODO - Remove debugging
-        /*
+
         try {
             double[] costs = {1, 2, 3, 4};
             double[] effectivities = {4, 3, 2, 1};
@@ -228,16 +232,15 @@ public class CEDecisionResults extends JDialog {
             cepsForDecision[1] = new CEP(interventions, effectivities, costs, thresholds);
         } catch (CostEffectivenessException e) {
             e.printStackTrace();
-        }*/
+        }
 
         boolean moreThanOneInterval = false;
 
         LinkedHashSet<Double> thresholds = new LinkedHashSet<>();
         for (int i = 0; i < gtablePotentialResult.elementTable.size(); i++) {
-            CEP cep = (CEP) gtablePotentialResult.elementTable.get(i);
-
             // TODO - Remove debugging
-//            CEP cep = cepsForDecision[i];
+//          CEP cep = (CEP) gtablePotentialResult.elementTable.get(i);
+            CEP cep = cepsForDecision[i];
 
             cepsForDecision[i] = cep;
             if (cep.getNumIntervals() != 1) {
@@ -292,7 +295,10 @@ public class CEDecisionResults extends JDialog {
             selectedMinThreshold = 0;
             selectedMaxThreshold = Double.POSITIVE_INFINITY;
         }
-        return intervalsPanel;
+
+        JScrollPane scrollPane = new JScrollPane(intervalsPanel);
+        scrollPane.setBorder(new EmptyBorder(2,2,2,2));
+        return scrollPane;
     }
 
     /**
@@ -359,17 +365,27 @@ public class CEDecisionResults extends JDialog {
         return columnNames;
     }
 
+    /**
+     * Build the right column with both panels
+     * @return
+     */
     public JPanel getAbsRelShowHidePanel() {
         JPanel absRelShowHidePanel = new JPanel();
-        absRelShowHidePanel.setLayout(new BoxLayout(absRelShowHidePanel, BoxLayout.PAGE_AXIS));
-        absRelShowHidePanel.add(getAbsoluteRelativePanel());
-        absRelShowHidePanel.add(getShowHidePanel());
+        absRelShowHidePanel.setLayout(new BorderLayout());
+        absRelShowHidePanel.add(getAbsoluteRelativePanel(), BorderLayout.NORTH);
+        absRelShowHidePanel.add(getShowHidePanel(),BorderLayout.SOUTH);
 
         return absRelShowHidePanel;
     }
 
+    /**
+     * Returns the scroll pane with the absolute/relative functionality
+     * @return
+     */
     public JPanel getAbsoluteRelativePanel(){
         JPanel absoluteRelativePanel = new JPanel();
+        // TODO - LOCALIZE
+        absoluteRelativePanel.setBorder(new TitledBorder("Display:"));
         absoluteRelativePanel.setLayout(new BoxLayout(absoluteRelativePanel, BoxLayout.PAGE_AXIS));
 
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -392,11 +408,18 @@ public class CEDecisionResults extends JDialog {
             }
         });
 
+        JPanel absoluteRadioButtonPanel = new JPanel();
+        absoluteRadioButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        absoluteRadioButtonPanel.add(absoluteRadioButton);
+        absoluteRelativePanel.add(absoluteRadioButtonPanel);
+
+        JPanel relativeRadioButtonPanel = new JPanel();
+        relativeRadioButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        relativeRadioButtonPanel.add(relativeRadioButton);
+        absoluteRelativePanel.add(relativeRadioButtonPanel);
+
         buttonGroup.add(absoluteRadioButton);
         buttonGroup.add(relativeRadioButton);
-
-        absoluteRelativePanel.add(absoluteRadioButton);
-        absoluteRelativePanel.add(relativeRadioButton);
 
         relativeDecisionSelector = new JComboBox<>();
         for(State state :decisionVariable.getStates()){
@@ -409,13 +432,21 @@ public class CEDecisionResults extends JDialog {
                 refreshChartPanel();
             }
         });
+
         absoluteRelativePanel.add(relativeDecisionSelector);
+        absoluteRelativePanel.add(new JPanel());
 
         return absoluteRelativePanel;
     }
 
-    public JPanel getShowHidePanel(){
+    /**
+     * Returns the scroll pane with the show/hide functionality
+     * @return
+     */
+    public JScrollPane getShowHidePanel(){
         JPanel showHidePanel = new JPanel();
+        // TODO - LOCALIZE
+        showHidePanel.setBorder(new TitledBorder("Show/hide interventions"));
         showHidePanel.setLayout(new BoxLayout(showHidePanel, BoxLayout.PAGE_AXIS));
 
         showHideCheckBoxes = new ArrayList();
@@ -432,9 +463,14 @@ public class CEDecisionResults extends JDialog {
             showHidePanel.add(stateCheckbox);
         }
 
-        return showHidePanel;
+        JScrollPane scrollPane = new JScrollPane(showHidePanel);
+        scrollPane.setBorder(new EmptyBorder(2,2,2,2));
+        return scrollPane;
     }
 
+    /**
+     * Action performed when a threshold has changed
+     */
     private void thresholdChanged() {
         List<JRadioButton> currentTabRadioButtons;
         List<JRadioButton> otherTabRadioButtons;
@@ -473,6 +509,9 @@ public class CEDecisionResults extends JDialog {
         refreshTablePanel();
     }
 
+    /**
+     * Repaint and refresh the chart panel and its components
+     */
     private void refreshChartPanel() {
         this.setVisible(false);
         cePlanePanel.remove(ceChartPanel);
@@ -480,6 +519,9 @@ public class CEDecisionResults extends JDialog {
         this.setVisible(true);
     }
 
+    /**
+     * Repaint and refresh the tablePanel and its components
+     */
     private void refreshTablePanel(){
         this.setVisible(false);
         analysisPanel.remove(tablePanel);
@@ -487,6 +529,10 @@ public class CEDecisionResults extends JDialog {
         this.setVisible(true);
     }
 
+    /**
+     * Get cost-effectiveness plane chart
+     * @return
+     */
     public ChartPanel getCEPlaneChartPanel() {
         // JFreeChart attributes definition
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -526,10 +572,9 @@ public class CEDecisionResults extends JDialog {
         }
 
         // Set the JFreeChart parameters call
-		/* Spider diagram chart */
         // TODO - LOCALIZE
         JFreeChart chart = ChartFactory.createScatterPlot(
-                stringDatabase.getString("SensitivityAnalysis.Type.Spider"), // Chart title
+                "Cost-effectiveness plane", // Chart title
                 "Effectiveness",                                                    // X axis label
                 "Cost",                                               // Y axis label
                 dataset,                                            // data
@@ -555,4 +600,6 @@ public class CEDecisionResults extends JDialog {
 
         return ceChartPanel;
     }
+
+
 }
