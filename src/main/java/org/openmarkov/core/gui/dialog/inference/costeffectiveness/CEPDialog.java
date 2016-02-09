@@ -6,7 +6,7 @@ import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.Intervention;
-import org.openmarkov.inference.variableElimination.model.CEP;
+import org.openmarkov.core.model.network.CEP;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

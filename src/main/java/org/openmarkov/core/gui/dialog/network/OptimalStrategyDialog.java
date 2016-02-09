@@ -20,8 +20,7 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDEditorPanel;
-import org.openmarkov.core.inference.InferenceAlgorithm;
-import org.openmarkov.core.inference.tasks.OptimalStrategy;
+import org.openmarkov.core.inference.tasks.OptimalIntervention;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -30,12 +29,12 @@ import org.openmarkov.core.model.network.Variable;
 @SuppressWarnings("serial")
 public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
 
-	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalStrategy optimalStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalIntervention optimalIntervention) throws IncompatibleEvidenceException, UnexpectedInferenceException {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
-		dummyNode.setPotential(optimalStrategy.getOptimalStrategy());
+		dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
 
 		//VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();

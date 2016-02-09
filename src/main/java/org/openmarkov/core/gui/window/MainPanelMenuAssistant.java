@@ -263,8 +263,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
 
     private boolean getEnableWorkingModeButton() {
         org.openmarkov.core.model.network.type.NetworkType networkType = currentNetworkPanel.getProbNet().getNetworkType();
-        return networkType instanceof InfluenceDiagramType
-                || networkType instanceof BayesianNetworkType;
+        return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType
+                //|| networkType instanceof MIDType
+                ;
     }
 
 

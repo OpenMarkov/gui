@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.inference.tasks.VariableElimination.VECEADecision;
-import org.openmarkov.inference.variableElimination.model.CEP;
+import org.openmarkov.core.model.network.CEP;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -122,7 +122,7 @@ public class CEDecisionResults extends JDialog {
         // Run the task
         try {
             veceaDecision = new VECEADecision(probNet, evidenceCase, decisionVariable);
-            gtablePotentialResult = (GTablePotential) veceaDecision.getGlobalUtility();
+            gtablePotentialResult = veceaDecision.getCEPPotential();
 
         } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | UnexpectedInferenceException e) {
             e.printStackTrace();

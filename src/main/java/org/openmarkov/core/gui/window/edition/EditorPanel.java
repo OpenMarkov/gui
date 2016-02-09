@@ -1142,7 +1142,7 @@ public class EditorPanel extends JPanel
                 } catch (NotEvaluableNetworkException e) {
                     e.printStackTrace();
                 }
-                expectedUtility = veExpectedUtilityDecision.getGlobalUtility();
+                expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
 
                 Node dummyNode = new Node (new ProbNet (), node.getVariable (),
                                                    node.getNodeType ());
@@ -1185,15 +1185,15 @@ public class EditorPanel extends JPanel
             //{
                 // Potential optimalPolicy =
                 // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
-                Potential optimalPolicy = null; //inferenceAlgorithm.getOptimizedPolicy (node.getNode ().getVariable ());
+                Potential optimalPolicy = null; //inferenceAlgorithm.getOptimalPolicy (node.getNode ().getVariable ());
 
                 try
                 {
                     // Potential optimalPolicy =
                     // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
-                    //Potential optimalPolicy = inferenceAlgorithm.getOptimizedPolicy (node.getNode ().getVariable ());
+                    //Potential optimalPolicy = inferenceAlgorithm.getOptimalPolicy (node.getNode ().getVariable ());
                     VEResolution veResolution = new VEResolution(probNet, preResolutionEvidence, Collections.singletonList(node.getNode().getVariable()));
-                    optimalPolicy = veResolution.getOptimizedPolicy(node.getNode().getVariable());
+                    optimalPolicy = veResolution.getOptimalPolicy(node.getNode().getVariable());
                 } catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
                     e.printStackTrace();
                 }
@@ -2042,6 +2042,7 @@ public class EditorPanel extends JPanel
                 //inferenceAlgorithm = getInferenceAlgorithm();
                 //inferenceAlgorithm.setPreResolutionEvidence(preResolutionEvidence);
                 //inferenceAlgorithm.setPostResolutionEvidence(evidenceCase);
+
                 calculateMinAndMaxUtilityRanges ();
                 //individualProbabilities = inferenceAlgorithm.getProbsAndUtilities ();
                 VEPropagation vePosteriorValues = new VEPropagation(probNet,

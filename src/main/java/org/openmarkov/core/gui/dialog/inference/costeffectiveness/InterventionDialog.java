@@ -11,7 +11,6 @@ import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.core.gui.dialog.treeadd.TreeADDEditorPanel;
-import org.openmarkov.core.inference.tasks.OptimalStrategy;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
