@@ -36,6 +36,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.loader.element.IconLoader;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
@@ -62,6 +63,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     private static final int DISTRIBUTION_COLUMN_INDEX = 1;
     private static final int PARAMETERS_COLUMN_INDEX   = 2;
     private static final int NAME_COLUMN_INDEX         = 3;
+    
+    protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
     public class DistributionsTableListener implements TableModelListener {
         public void tableChanged(TableModelEvent e) {
@@ -247,6 +250,10 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         pos = potential.getPosition(coordinates);
         return pos;
     }
+    
+    private String getColumnString(String column){
+    	return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns."+column+".Label");
+    }
 
     private void fillDistributionsTableModel(Variable variable,
             EvidenceCase configuration,
@@ -261,15 +268,17 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         }
         UncertainValue[] projectedUncertainTable = projectedPotential.getUncertaintyTable();
         // Get the table of uncertain values
-        if (!hasUncertainValues(projectedUncertainTable)) {
-            // Case assign
-            uncertainTable = createExactUncertainValuesFromDouble(projectedPotential);
-        } else {
-            // Case edit
-            uncertainTable = projectedPotential.getUncertaintyTable();
-        }
+        uncertainTable = !hasUncertainValues(projectedUncertainTable)?createExactUncertainValuesFromDouble(projectedPotential):
+        	projectedPotential.getUncertaintyTable();
         // Fill the table for the dialog
-        String[] columnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
+        
+		String[] englishColumnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
+		int numColumns = englishColumnNames.length;
+		String[] columnNames = new String[numColumns];
+		for (int i = 0; i < numColumns; i++) {
+			columnNames[i] = getColumnString(englishColumnNames[i]);
+		}      	
+        
         List<String> allowedDistributionTypes = ProbDensFunctionManager.getUniqueInstance().getValidProbDensFunctions(isChanceVariable);
         State[] states = variable.getStates();
         int numStates = states.length;
@@ -285,10 +294,11 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             String distribution = probDensFunction.getClass().getAnnotation(ProbDensFunctionType.class).name();
             distributionTypes.add(distribution);
             int iPosInitialData = lastPosStates - i;
-            initialData[iPosInitialData][STATE_COLUMN_INDEX] = states[i].getName();
-            initialData[iPosInitialData][DISTRIBUTION_COLUMN_INDEX] = distribution;
-            initialData[iPosInitialData][PARAMETERS_COLUMN_INDEX] = getString(probDensFunction.getParameters());
-            initialData[iPosInitialData][NAME_COLUMN_INDEX] = uncertainValue.getName();
+            Object[] initialDataIPosInitialData = initialData[iPosInitialData];
+			initialDataIPosInitialData[STATE_COLUMN_INDEX] = states[i].getName();
+            initialDataIPosInitialData[DISTRIBUTION_COLUMN_INDEX] = distribution;
+            initialDataIPosInitialData[PARAMETERS_COLUMN_INDEX] = getString(probDensFunction.getParameters());
+            initialDataIPosInitialData[NAME_COLUMN_INDEX] = uncertainValue.getName();
         }
         distributionTableModel = new DistributionTableModel(initialData, columnNames);
         distributionTable = new JTable(distributionTableModel);
