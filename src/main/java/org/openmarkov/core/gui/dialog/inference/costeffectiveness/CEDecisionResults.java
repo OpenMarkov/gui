@@ -221,26 +221,27 @@ public class CEDecisionResults extends JDialog {
         cepsForDecision = new CEP[gtablePotentialResult.elementTable.size()];
 
         // TODO - Remove debugging
-
-        try {
-            double[] costs = {1, 2, 3, 4};
-            double[] effectivities = {4, 3, 2, 1};
-            double[] thresholds = {1, 2, 3};
-            Intervention[] interventions = {new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable)};
-
-            cepsForDecision[0] = new CEP(interventions, costs, effectivities, thresholds);
-            cepsForDecision[1] = new CEP(interventions, effectivities, costs, thresholds);
-        } catch (CostEffectivenessException e) {
-            e.printStackTrace();
-        }
+//
+//        try {
+//            double[] costs = {1, 2, 3, 4};
+//            double[] effectivities = {4, 3, 2, 1};
+//            double[] thresholds = {1, 2, 3};
+//            Intervention[] interventions = {new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable)};
+//
+//            cepsForDecision[0] = new CEP(interventions, costs, effectivities, thresholds);
+//            cepsForDecision[1] = new CEP(interventions, effectivities, costs, thresholds);
+//        } catch (CostEffectivenessException e) {
+//            e.printStackTrace();
+//        }
 
         boolean moreThanOneInterval = false;
 
         LinkedHashSet<Double> thresholds = new LinkedHashSet<>();
         for (int i = 0; i < gtablePotentialResult.elementTable.size(); i++) {
             // TODO - Remove debugging
-//          CEP cep = (CEP) gtablePotentialResult.elementTable.get(i);
-            CEP cep = cepsForDecision[i];
+//            CEP cep = cepsForDecision[i];
+            CEP cep = (CEP) gtablePotentialResult.elementTable.get(i);
+
 
             cepsForDecision[i] = cep;
             if (cep.getNumIntervals() != 1) {
