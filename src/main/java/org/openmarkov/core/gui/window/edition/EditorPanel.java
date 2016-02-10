@@ -1171,6 +1171,7 @@ public class EditorPanel extends JPanel
 
     /**
      * This method shows the optimal policy for a decision node.
+     * TODO - THIS METHOD IS NOT WORKING
      */
     public void showOptimalPolicyOfNode ()
     {
