@@ -257,7 +257,7 @@
 //    private XYDataset createCEACDataset() {
 //        XYSeriesCollection result = new XYSeriesCollection ();
 //        ProbabilisticCEA pCEA = (ProbabilisticCEA)costEffectivenessAnalysis;
-        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(40000);
+//        Map<Integer, double[]> ceacData = pCEA.calculateCEAC(40000);
 //        List<GUIIntervention> guiIntervention = costEffectivenessAnalysis.getGuiIntervention();
 //        List<Integer> ratios = new ArrayList<>(ceacData.keySet());
 //        for (int i=0; i < guiIntervention.size(); ++i)
