@@ -29,9 +29,11 @@ import org.openmarkov.core.model.network.CEP;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -108,6 +110,11 @@ public class CEDecisionResults extends JDialog {
     private List<JRadioButton> cePlanethresholdsRadioButtons;
     private JPanel tablePanel;
     private JPanel analysisPanel;
+    private final int COLUMN_STATE_NAME = 0;
+    private final int COLUMN_COST = 1;
+    private final int COLUMN_EFFECTIVENESS = 2;
+    private final int COLUMN_INTERVENTION = 3;
+    private final String CLICKABLE_COLUMN_COLOR ="#DDF5D8";
 
     private enum AnalysisTab {
         ANALYSIS,
@@ -150,6 +157,7 @@ public class CEDecisionResults extends JDialog {
      * Set title, icon and contentPane
      */
     private void initialize() {
+        // TODO - Localize
         this.setTitle("OpenMarkov - " + StringDatabase.getUniqueInstance().getString("SensitivityAnalysis.Title") + " - " + probNet.getName());
         this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
         setContentPane(getJContentPane());
@@ -214,35 +222,15 @@ public class CEDecisionResults extends JDialog {
     public JScrollPane getIntervalsPanel(AnalysisTab analysisTab) {
 
         JPanel intervalsPanel = new JPanel();
-        // TODO - Localize
-        intervalsPanel.setBorder(new TitledBorder("Intervals"));
-        intervalsPanel.setLayout(new BoxLayout(intervalsPanel, BoxLayout.PAGE_AXIS));
+
 
         cepsForDecision = new CEP[gtablePotentialResult.elementTable.size()];
-
-        // TODO - Remove debugging
-//
-//        try {
-//            double[] costs = {1, 2, 3, 4};
-//            double[] effectivities = {4, 3, 2, 1};
-//            double[] thresholds = {1, 2, 3};
-//            Intervention[] interventions = {new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable), new Intervention(decisionVariable)};
-//
-//            cepsForDecision[0] = new CEP(interventions, costs, effectivities, thresholds);
-//            cepsForDecision[1] = new CEP(interventions, effectivities, costs, thresholds);
-//        } catch (CostEffectivenessException e) {
-//            e.printStackTrace();
-//        }
 
         boolean moreThanOneInterval = false;
 
         LinkedHashSet<Double> thresholds = new LinkedHashSet<>();
         for (int i = 0; i < gtablePotentialResult.elementTable.size(); i++) {
-            // TODO - Remove debugging
-//            CEP cep = cepsForDecision[i];
             CEP cep = (CEP) gtablePotentialResult.elementTable.get(i);
-
-
             cepsForDecision[i] = cep;
             if (cep.getNumIntervals() != 1) {
                 moreThanOneInterval = true;
@@ -254,6 +242,10 @@ public class CEDecisionResults extends JDialog {
 
         // If there are more than one interval, is necessary get the compact intervals and paint it into the panel
         if (moreThanOneInterval) {
+            // TODO - Localize
+            intervalsPanel.setBorder(new TitledBorder("Intervals"));
+            intervalsPanel.setLayout(new BoxLayout(intervalsPanel, BoxLayout.PAGE_AXIS));
+
             thresholdList = new ArrayList<>(thresholds);
             Collections.sort(thresholdList);
             List<JRadioButton> thresholdsRadioButtons = new ArrayList<>();
@@ -309,7 +301,7 @@ public class CEDecisionResults extends JDialog {
     public JPanel getTablePanel() {
         tablePanel = new JPanel();
         tablePanel.setName("tablePanel");
-        tablePanel.add(getTable());
+        tablePanel.add(new JScrollPane(getTable()));
         return tablePanel;
     }
 
@@ -319,36 +311,107 @@ public class CEDecisionResults extends JDialog {
      */
     public JTable getTable(){
         // Add one for the header
-        int numRows = decisionVariable.getNumStates() + 1;
+        int numRows = decisionVariable.getNumStates();
         int numColumns = getColumns().length;
         // Set data in jTable
         Object[][] values = new Object[numRows][numColumns];
 
-        //Set header values
-        for (int column = 0; column < numColumns; column++){
-            values[0][column] = getColumns()[column];
-        }
+//        //Set header values
+//        for (int column = 0; column < numColumns; column++){
+//            values[0][column] = getColumns()[column];
+//        }
 
-        for (int row = 1; row < numRows; row++){
+        for (int row = 0; row < numRows; row++){
             // Set decision variable state name
-            values[row][0] = decisionVariable.getStateName(row - 1);
+            values[row][COLUMN_STATE_NAME] = decisionVariable.getStateName(row);
 
             // Set costs and effectiveness for that decision state
-            values[row][1] = cepsForDecision[row-1].getCost(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
-            values[row][2] = cepsForDecision[row-1].getEffectiveness(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
-            values[row][3] = cepsForDecision[row-1].getIntervention(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
+            values[row][COLUMN_COST] = cepsForDecision[row].getCost(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
+            values[row][COLUMN_EFFECTIVENESS] = cepsForDecision[row].getEffectiveness(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
+            values[row][COLUMN_INTERVENTION] = cepsForDecision[row].getIntervention(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
         }
 
-        JTable jtable = new JTable();
-        DefaultTableModel tableModel = new DefaultTableModel(values, getColumns()) {
-
+        final JTable jtable = new JTable(values, getColumns()) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public void doLayout()
+            {
+                if (tableHeader != null)
+                {
+                    TableColumn resizingColumn = tableHeader.getResizingColumn();
+                    //  Viewport size changed. Increase last columns width
+
+                    if (resizingColumn == null)
+                    {
+                        TableColumnModel tcm = getColumnModel();
+                        int lastColumn = tcm.getColumnCount() - 1;
+                        tableHeader.setResizingColumn( tcm.getColumn( lastColumn ) ) ;
+                    }
+                }
+
+                super.doLayout();
+            }
+
+            public boolean getScrollableTracksViewportWidth()
+            {
+                return getPreferredSize().width < getParent().getWidth();
+            }
+        };
+
+        jtable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent event) {
+                int row = jtable.rowAtPoint(event.getPoint());
+                int column = jtable.columnAtPoint(event.getPoint());
+                if (column == COLUMN_INTERVENTION) {
+                    Intervention intervention = cepsForDecision[row].getIntervention(
+                            selectedMinThreshold + (selectedMaxThreshold - selectedMinThreshold) / 2);
+
+                    if (intervention != null) {
+                        InterventionDialog interventionDialog = null;
+                        try {
+                            interventionDialog = new InterventionDialog(getOwner(),
+                                    probNet,
+                                    intervention);
+                        } catch (IncompatibleEvidenceException e) {
+                            e.printStackTrace();
+                        } catch (UnexpectedInferenceException e) {
+                            e.printStackTrace();
+                        }
+                        interventionDialog.setVisible(true);
+                    }
+                }
+            }
+        });
+
+//        DefaultTableModel tableModel = new DefaultTableModel() {
+//
+//            @Override
+//            public boolean isCellEditable(int row, int column) {
+//                return false;
+//            }
+//        };
+//
+//        jtable.setModel(tableModel);
+
+        DefaultCellEditor notEditableCellEditor = new DefaultCellEditor(new JTextField()){
+            @Override
+            public boolean isCellEditable(EventObject anEvent) {
                 return false;
             }
         };
 
-        jtable.setModel(tableModel);
+        for (int columnIndex = 0 ; columnIndex < jtable.getColumnModel().getColumnCount(); columnIndex++){
+            jtable.getColumnModel().getColumn(columnIndex).setCellEditor(notEditableCellEditor);
+        }
+
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        jtable.getTableHeader().setDefaultRenderer(headerRenderer);
+        // Set colors in jTable
+        DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
+        renderer.setBackground(Color.decode(CLICKABLE_COLUMN_COLOR));
+        jtable.getColumnModel().getColumn(COLUMN_INTERVENTION).setCellRenderer(renderer);
+
+
         return jtable;
     }
 
