@@ -11,7 +11,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
-import org.openmarkov.core.exception.CostEffectivenessException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
@@ -115,6 +114,7 @@ public class CEDecisionResults extends JDialog {
     private final int COLUMN_EFFECTIVENESS = 2;
     private final int COLUMN_INTERVENTION = 3;
     private final String CLICKABLE_COLUMN_COLOR ="#DDF5D8";
+    private boolean hasInterventions;
 
     private enum AnalysisTab {
         ANALYSIS,
@@ -130,6 +130,15 @@ public class CEDecisionResults extends JDialog {
         try {
             veceaDecision = new VECEADecision(probNet, evidenceCase, decisionVariable);
             gtablePotentialResult = veceaDecision.getCEPPotential();
+
+            hasInterventions = false;
+            for (Object cep : veceaDecision.getCEPPotential().elementTable) {
+                Intervention [] interventions = ((CEP) cep).getInterventions();
+                if (interventions != null && interventions.length != 0 && interventions[0] != null) {
+                    hasInterventions = true;
+                    break;
+                }
+            }
 
         } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | UnexpectedInferenceException e) {
             e.printStackTrace();
@@ -328,7 +337,9 @@ public class CEDecisionResults extends JDialog {
             // Set costs and effectiveness for that decision state
             values[row][COLUMN_COST] = cepsForDecision[row].getCost(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
             values[row][COLUMN_EFFECTIVENESS] = cepsForDecision[row].getEffectiveness(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
-            values[row][COLUMN_INTERVENTION] = cepsForDecision[row].getIntervention(selectedMinThreshold + (selectedMaxThreshold-selectedMinThreshold)/2);
+            if (hasInterventions) {
+                values[row][COLUMN_INTERVENTION] = cepsForDecision[row].getIntervention(selectedMinThreshold + (selectedMaxThreshold - selectedMinThreshold) / 2);
+            }
         }
 
         final JTable jtable = new JTable(values, getColumns()) {
@@ -409,7 +420,10 @@ public class CEDecisionResults extends JDialog {
         // Set colors in jTable
         DefaultTableCellRenderer renderer =	new DefaultTableCellRenderer();
         renderer.setBackground(Color.decode(CLICKABLE_COLUMN_COLOR));
-        jtable.getColumnModel().getColumn(COLUMN_INTERVENTION).setCellRenderer(renderer);
+
+        if (hasInterventions) {
+            jtable.getColumnModel().getColumn(COLUMN_INTERVENTION).setCellRenderer(renderer);
+        }
 
 
         return jtable;
@@ -420,12 +434,21 @@ public class CEDecisionResults extends JDialog {
      * @return
      */
     public String[] getColumns() {
+        String[] columnNames;
         // TODO - Localize
-        String[] columnNames = new String[4];
-        columnNames[0] =  decisionVariable.getBaseName();
-        columnNames[1] = "cost";
-        columnNames[2] = "effectiveness";
-        columnNames[3] = "intervention";
+        if (hasInterventions) {
+            columnNames = new String[4];
+            columnNames[0] =  decisionVariable.getBaseName();
+            columnNames[1] = "cost";
+            columnNames[2] = "effectiveness";
+            columnNames[3] = "intervention";
+        } else {
+            columnNames = new String[3];
+            columnNames[0] =  decisionVariable.getBaseName();
+            columnNames[1] = "cost";
+            columnNames[2] = "effectiveness";
+        }
+
         return columnNames;
     }
 
