@@ -93,14 +93,18 @@ public class ToolPluginManager
         try
         {
             Class<?> plugin =  plugins.get(command);
-        	try
-            {
-        		plugin.getConstructor ().newInstance ();
+            if (plugin == null) {
+                JOptionPane.showMessageDialog(
+                        null, StringDatabase.getUniqueInstance().getString("Tools.Plugin.NotAvailable"),
+                        StringDatabase.getUniqueInstance().getString("ErrorWindow.Title.Label") + " - " + command,
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    plugin.getConstructor().newInstance();
+                } catch (NoSuchMethodException e2) {
+                    plugin.getConstructor(JFrame.class).newInstance(parent);
+                }
             }
-        	catch (NoSuchMethodException e2)
-        	{
-        		plugin.getConstructor (JFrame.class).newInstance (parent);
-        	}
         }
         catch (Exception e1)
         {

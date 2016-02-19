@@ -4,40 +4,6 @@
 		<Title value="Añadir estado" />
 		<Message value="Introduzca el nombre del nuevo estado" />
 	</AddState>
-	<CostEffectivenessResults>
-		<Title>
-			<Label value="Resultados del análisis de coste-efectividad" />
-		</Title>
-		<Scope value="Selección de escenario"></Scope>
-		<Intervals>
-			<Title value = "Intervalos de coste-efectividad" />
-			<InterventionTooltip value="Haz clic para mostrar la intervención" />
-		</Intervals>
-		<Plane>
-			<Tab value="Plano de CE" />
-			<Label value="Plano de coste-efectividad" />
-			<Vertical value="Coste" />
-			<Horizontal value="Efectividad" />
-		</Plane>
-		<Analysis>
-			<Tab value="Análisis" />
-		</Analysis>
-		<FrontierInterventions>
-			<Tab value="Intervenciones fronterizas" />
-		</FrontierInterventions>
-		<AcceptabilityCurve>
-			<Tab value="CACE" />
-			<Label value="Curva de aceptabilidad de coste-efectividad" />
-			<Vertical value="Probabilidad de coste-efectividad" />
-			<Horizontal value="Disposición a pagar" />
-		</AcceptabilityCurve>
-		<EVPI>
-			<Tab value="VEIP" />
-			<Label value="Valor esperado de la información perfecta" />
-			<Vertical value="VEIP" />
-			<Horizontal value="Disposición a pagar" />
-		</EVPI>
-	</CostEffectivenessResults>
 	<TemporalEvolutionResultDialog>
 		<Title>
 			<Label value="Evolución temporal de:" />

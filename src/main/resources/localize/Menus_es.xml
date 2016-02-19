@@ -348,6 +348,7 @@
       <Mnemonic value="c" />
     </Configuration>
     <Plugin>
+        <NotAvailable value="La funcionalidad que está intentando ejecutar no está disponible" />
     	<Error value="Error tratando de procesar el comando: " />
     </Plugin>
     <Label value="Herramientas" />
