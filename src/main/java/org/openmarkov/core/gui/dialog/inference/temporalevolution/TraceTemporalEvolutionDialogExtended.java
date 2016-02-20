@@ -743,8 +743,8 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
     			double value = 0.0;
     			double slice = 0;
     			for(int j = 0; j < arrayXYSeries.get(i).getItemCount(); j++){
-    				value += (double) arrayXYSeries.get(i).getY(j);
-    				slice = (double) arrayXYSeries.get(i).getX(j);
+    				value += (Double) arrayXYSeries.get(i).getY(j);
+    				slice = (Double) arrayXYSeries.get(i).getX(j);
     				serie.add(slice, value);
     			}
     			result.addSeries(serie);
