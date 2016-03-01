@@ -1461,7 +1461,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         try {
             veOptimalStrategy = new VEOptimalIntervention(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
         } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                    "An error occurred when trying to show the optimal strategy: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         try {
@@ -1473,91 +1476,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     "An error occurred when trying to show the optimal strategy",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
 		}
-    }    
-
-//    private void showCostEffectivenessResults(ProbNet probNet,
-//            EvidenceCase evidence) {
-//
-//        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
-//                MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-//        if(inferenceOptionsDialog.getSelectedButton() != InferenceOptionsDialog.OK_BUTTON){
-//            return;
-//        }
-//
-//        CostEffectivenessDialog costEffectivenessDialog = new CostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet);
-//
-//        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON)) {
-//            ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
-//            try {
-//                if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
-//
-//                    VECEAGlobal veGlobalCEA = new VECEAGlobal(probNet, evidence);
-//                    CEP cep = veGlobalCEA.getCEP();
-//                    CEPDialog cepDialog = new CEPDialog(Utilities.getOwner(mainPanel),cep, probNet);
-//                    cepDialog.setVisible(true);
-//                } else {
-//                    CEDecisionResults ceDecisionResults = new CEDecisionResults(Utilities.getOwner(mainPanel), probNet,
-//                            evidence,scopeSelectorPanel.getDecisionSelected());
-//
-////                    CostEffectivenessAnalysis costEffectivenessAnalysis =
-////                            new CostEffectivenessAnalysis(probNet,scopeSelectorPanel.getDecisionSelected(),evidence);
-////                    CostEffectivenessResultsDialog costEffectivenessResultsDialog =
-////                            new CostEffectivenessResultsDialog(Utilities.getOwner(mainPanel), costEffectivenessAnalysis);
-////                    costEffectivenessResultsDialog.setVisible(true);
-//                }
-//            } catch (NotEvaluableNetworkException e) {
-//                JOptionPane.showMessageDialog(
-//                        null,
-//                        "Error while trying to perform cost-effectiveness analysis.\n"
-//                                + e.getMessage()
-//                                + "\nCheck the message window for further details.");
-//                e.printStackTrace();
-//            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-//    private void showCostEffectivenessSensitivityResults(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-//        boolean showCEDialog = true;
-//
-//        // TODO - CHECK THIS METHOD CALL
-//
-////        InferenceOptionsDialog inferenceOptionsDialog = new InferenceOptionsDialog(probNet, Utilities.getOwner(mainPanel),
-////                MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-////        if(inferenceOptionsDialog.getSelectedButton() != InferenceOptionsDialog.OK_BUTTON){
-////            return;
-////        }
-////        probNet.getInferenceOptions().getMultiCriteriaOptions().setCeOptionsShowed(true);
-////
-////
-////        SensitivityParametersCostEffectivenessDialog costEffectivenessDialog =
-////                new SensitivityParametersCostEffectivenessDialog(Utilities.getOwner(mainPanel), probNet, true, true);
-////
-////        if ((costEffectivenessDialog.requestData() == CostEffectivenessDialog.OK_BUTTON) && showCEDialog) {
-////            ScopeSelectorPanel scopeSelectorPanel = costEffectivenessDialog.getScopeSelectorPanel();
-////            if(scopeSelectorPanel.getScopeType().equals(ScopeType.GLOBAL)) {
-//////                CostEffectivenessProgressBar ceProgressBar =
-//////                        new CostEffectivenessProgressBar(
-//////                                Utilities.getOwner(mainPanel),
-//////                                probNet,
-//////                                preResolutionEvidence,
-//////                                costEffectivenessDialog);
-//////                ceProgressBar.setVisible(true);
-////            } else {
-////                CostEffectivenessProgressBar ceProgressBar =
-////                        new CostEffectivenessProgressBar(
-////                                Utilities.getOwner(mainPanel),
-////                                probNet,
-////                                scopeSelectorPanel.getDecisionSelected(),
-////                                preResolutionEvidence,
-////                                costEffectivenessDialog);
-////                ceProgressBar.setVisible(true);
-////            }
-////        }
-//    }
+    }
 
 	/**
 	 * @param buffer <code>StringBuffer</code>

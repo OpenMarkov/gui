@@ -29,7 +29,8 @@ import org.openmarkov.core.model.network.Variable;
 @SuppressWarnings("serial")
 public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
 
-	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalIntervention optimalIntervention) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+	public OptimalStrategyDialog(Window owner, ProbNet probNet, OptimalIntervention optimalIntervention) throws
+			IncompatibleEvidenceException, UnexpectedInferenceException {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();
