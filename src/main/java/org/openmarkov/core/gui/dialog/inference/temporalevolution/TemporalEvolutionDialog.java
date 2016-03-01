@@ -4,6 +4,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
+import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -85,10 +86,12 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     protected boolean doOkClickBeforeHide() {
         try {
             evidenceCase.addFindings(scopeSelectorPanel.getSelectedFindings());
-        } catch (InvalidStateException e) {
-            e.printStackTrace();
-        } catch (IncompatibleEvidenceException e) {
-            e.printStackTrace();
+        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    e.getMessage(),
+                    stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence"),
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         /*
