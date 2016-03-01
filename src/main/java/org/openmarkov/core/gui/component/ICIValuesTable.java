@@ -40,8 +40,7 @@ public class ICIValuesTable extends ValuesTable
     public void setValueAt (Object newValue, int row, int col)
     {
         Object oldValue = getValueAt (row, col);
-        // TODO Verificar si la ubicación del siguiente código es
-        // adecuada
+        // TODO Verificar si la ubicación del siguiente código es adecuada
         if (((Double) newValue).isNaN ())
         {
             newValue = oldValue;

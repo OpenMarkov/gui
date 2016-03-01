@@ -119,7 +119,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 	public void undo() {
 		super.undo();
 		probNet.setAgents(lastAgents);
-		//TODO restaurate agents in nodes
+		//TODO restore agents in nodes
 	}
 
 }

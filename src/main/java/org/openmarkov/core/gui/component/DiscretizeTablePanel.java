@@ -809,8 +809,6 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
         Object[][] intervalTable = partitionInterval.convertToTableFormat();
         State states[] = node.getVariable().getStates();
         int rows = intervalTable.length;
-        // TODO six is the number of columns of this particular table
-        // int col = 6;
         // invert states to display in the correct order
         State reorderedStates[] = states.clone();
         Collections.reverse(Arrays.asList(reorderedStates));

@@ -124,7 +124,6 @@ public class LinkRestrictionValuesTable extends ValuesTable
             catch (ConstraintViolationException | CanNotDoEditException
                     | NonProjectablePotentialException | WrongCriterionException | DoEditException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (this,
                                                StringDatabase.getUniqueInstance ().getString (e.getMessage ()),

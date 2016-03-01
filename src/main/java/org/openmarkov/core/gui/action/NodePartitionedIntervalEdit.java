@@ -275,7 +275,6 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * @return a boolean lower identifier
 		 */
 		public boolean getLower() {
-			// TODO Auto-generated method stub
 			return lower;
 		}
 		/**
@@ -283,7 +282,6 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * @return the new value of the limit modified
 		 */
 		public Double getNewValue() {
-			// TODO Auto-generated method stub
 			return newValue;
 		}
 		/**
@@ -291,7 +289,6 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit{
 		 * @return the index of the state modified
 		 */
 		public Integer getIndexState() {
-			// TODO Auto-generated method stub
 			return indexState;
 		}
 }
