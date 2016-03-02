@@ -139,10 +139,12 @@ public class ScopeSelectorPanel extends JPanel {
             if(couldBeGlobal){
                 //scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
                 globalRadioButton.setSelected(true);
+                decisionRadioButton.setEnabled(false);
                 setScopeType(ScopeType.GLOBAL);
             } else {
                 //scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.DECISION.toString()));
                 decisionRadioButton.setSelected(true);
+                globalRadioButton.setEnabled(false);
                 setScopeType(ScopeType.DECISION);
             }
             for (Component component : scopeTypePanel.getComponents()) {
@@ -150,8 +152,8 @@ public class ScopeSelectorPanel extends JPanel {
             }
         } else {
 //            scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
-            globalRadioButton.setSelected(true);
-            setScopeType(ScopeType.GLOBAL);
+            decisionRadioButton.setSelected(true);
+            setScopeType(ScopeType.DECISION);
 
         }
 
@@ -180,7 +182,9 @@ public class ScopeSelectorPanel extends JPanel {
                 }
             }
         });
-        decisionSelector.setSelectedIndex(0);
+        if (decisionSelector.getItemCount() > 0) {
+            decisionSelector.setSelectedIndex(0);
+        }
         decisionSelectorPanel.add(decisionSelector);
 
         if(scopeType.equals(ScopeType.GLOBAL)){
