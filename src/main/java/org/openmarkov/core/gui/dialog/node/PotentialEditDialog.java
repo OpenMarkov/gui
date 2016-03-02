@@ -129,7 +129,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         super (owner);
         this.node = node;
         this.readOnly = readOnly;
-        // TODO create PNESupport
+        node.getProbNet ().getPNESupport ().setWithUndo(true);
         node.getProbNet ().getPNESupport ().openParenthesis ();
         initialize ();
         List<Potential> potentials = node.getPotentials();
@@ -450,7 +450,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         			: commentPane.getCommentText();
             node.getPotentials().get(0).setComment(comment);
         }
-        node.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet().getPNESupport().closeParenthesis();
         return true;
     }
 
@@ -458,7 +458,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     protected void doCancelClickBeforeHide ()
     {
         getPotentialPanel ().close ();
-        node.getProbNet ().getPNESupport ().closeParenthesis ();
+        node.getProbNet().getPNESupport().closeParenthesis();
     }
 
     /**
