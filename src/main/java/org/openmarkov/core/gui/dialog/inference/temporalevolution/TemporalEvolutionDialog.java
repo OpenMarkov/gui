@@ -92,6 +92,19 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
                     e.getMessage(),
                     stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence"),
                     JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        try {
+            numSlices = Integer.parseInt(numSlicesTextField.getText());
+            probNet.getInferenceOptions().getTemporalOptions().setNumberOfSlices(numSlices);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    stringDatabase.getString("NumberFormatException.Text.Label"),
+                    stringDatabase.getString("NumberFormatException.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
         }
 
         /*
