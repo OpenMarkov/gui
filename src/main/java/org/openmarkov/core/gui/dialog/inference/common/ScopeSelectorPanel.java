@@ -38,9 +38,12 @@ public class ScopeSelectorPanel extends JPanel {
 
     private List<Finding> selectedFindings;
 
-    public ScopeSelectorPanel(ProbNet probNet){
+    private EvidenceCase preResolutionEvidence;
+
+    public ScopeSelectorPanel(ProbNet probNet, EvidenceCase preResolutionEvidence){
         super();
         this.probNet = probNet;
+        this.preResolutionEvidence = preResolutionEvidence;
         selectedFindings = new ArrayList<>();
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBorder(new TitledBorder(stringDatabase.getString("ScopeSelector.Title")));
@@ -131,7 +134,15 @@ public class ScopeSelectorPanel extends JPanel {
         boolean couldBeGlobal = true;
         boolean couldBeDecision = true;
 
-        if(probNet.getNodes(NodeType.DECISION).size() == 0){
+        // Get all the avaible decision nodes (without policy)
+        List<Node> avaibleDecisionNodes = new ArrayList<>();
+        for (Node node : probNet.getNodes(NodeType.DECISION)) {
+            if (node.getPotentials().size() == 0) {
+                avaibleDecisionNodes.add(node);
+            }
+        }
+
+        if(avaibleDecisionNodes.size() == 0){
             couldBeDecision = false;
         }
 
@@ -169,7 +180,10 @@ public class ScopeSelectorPanel extends JPanel {
 
         decisionSelector = new JComboBox<>();
         for(Node node : probNet.getNodes(NodeType.DECISION)){
-            decisionSelector.addItem(node.getName());
+            // If the decision has not an imposed policy, add to the selector
+            if (node.getPotentials().size() == 0) {
+                decisionSelector.addItem(node.getName());
+            }
         }
         decisionSelector.addActionListener(new ActionListener() {
             @Override
@@ -222,6 +236,10 @@ public class ScopeSelectorPanel extends JPanel {
                     JComboBox<String> stateSelector = new JComboBox<>();
                     for(State state : variable.getStates()){
                         stateSelector.addItem(state.getName());
+                    }
+                    if (preResolutionEvidence.contains(variable)) {
+                        stateSelector.setSelectedItem(preResolutionEvidence.getFinding(variable).getState());
+                        stateSelector.setEnabled(false);
                     }
                     selectedScenario.put(stateSelector, variable);
 

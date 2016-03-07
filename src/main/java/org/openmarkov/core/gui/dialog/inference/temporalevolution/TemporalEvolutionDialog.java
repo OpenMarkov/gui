@@ -4,7 +4,6 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
-import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -24,19 +23,19 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     private ProbNet                 probNet;
     private ScopeSelectorPanel      scopeSelectorPanel;
     private Node                    selectedNode;
-    private EvidenceCase            evidenceCase;
+    private EvidenceCase preResolutionEvidence;
     /**
      * Constructor. initialises the instance.
      *
      * @param owner window that owns the dialog.
      */
-    public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase evidenceCase) {
+    public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase preResolutionEvidence) {
         super(owner);
         setMinimumSize(new Dimension(300, 300));
         this.setResizable(true);
         this.probNet = selectedNode.getProbNet();
         this.selectedNode = selectedNode;
-        this.evidenceCase = evidenceCase;
+        this.preResolutionEvidence = preResolutionEvidence;
         this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet().getName());
         getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
         getComponentsPanel().add(getSlicesPanel());
@@ -77,7 +76,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
     public ScopeSelectorPanel getScopeSelectorPanel() {
         if(scopeSelectorPanel == null){
-            scopeSelectorPanel = new ScopeSelectorPanel(probNet);
+            scopeSelectorPanel = new ScopeSelectorPanel(probNet, preResolutionEvidence);
         }
         return scopeSelectorPanel;
     }
@@ -85,7 +84,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     @Override
     protected boolean doOkClickBeforeHide() {
         try {
-            evidenceCase.addFindings(scopeSelectorPanel.getSelectedFindings());
+            preResolutionEvidence.addFindings(scopeSelectorPanel.getSelectedFindings());
         } catch (InvalidStateException | IncompatibleEvidenceException e) {
             JOptionPane.showMessageDialog(
                     null,
@@ -114,7 +113,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
         TraceTemporalEvolutionDialog dialog = new TraceTemporalEvolutionDialog(
                 getOwner(),
                 selectedNode,
-                evidenceCase,
+                preResolutionEvidence,
                 scopeSelectorPanel.getDecisionSelected());
 
         return super.doOkClickBeforeHide();
