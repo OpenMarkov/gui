@@ -52,7 +52,7 @@ public class VisualState extends VisualElement
      * Color associated to the Evidence Case number N+2 (where N = [0, 5, 10
      * ,...]).
      */
-    public static final Color   EVIDENCE_CASE_2_COLOR = Color.ORANGE;
+    public static final Color   EVIDENCE_CASE_2_COLOR = new Color(0,190,0);
     /**
      * Color associated to the Evidence Case number N+3 (where N = [0, 5, 10
      * ,...]).
@@ -62,7 +62,7 @@ public class VisualState extends VisualElement
      * Color associated to the Evidence Case number N+4 (where N = [0, 5, 10
      * ,...]).
      */
-    public static final Color   EVIDENCE_CASE_4_COLOR = Color.YELLOW;
+    public static final Color   EVIDENCE_CASE_4_COLOR = new Color(255,153,51);
 
     /**
      * Number of decimals
