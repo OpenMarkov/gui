@@ -39,6 +39,7 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.gui.action.PasteEdit;
 import org.openmarkov.core.gui.action.RemoveSelectedEdit;
+import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.gui.dialog.PropagationOptionsDialog;
 import org.openmarkov.core.gui.dialog.inference.temporalevolution.TemporalEvolutionDialog;
 import org.openmarkov.core.gui.dialog.link.LinkRestrictionEditDialog;
@@ -68,21 +69,17 @@ import org.openmarkov.core.gui.window.edition.mode.EditionModeManager;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 
 import org.openmarkov.inference.tasks.VariableElimination.VEExpectedUtilityDecision;
+import org.openmarkov.inference.tasks.VariableElimination.VEOptimalPolicy;
 import org.openmarkov.inference.tasks.VariableElimination.VEPropagation;
 import org.openmarkov.inference.tasks.VariableElimination.VEResolution;
 
@@ -1130,18 +1127,9 @@ public class EditorPanel extends JPanel
             Node node = visualNode.getNode ();
             try
             {
-                // Potential expectedUtility = null;// =
-                // inferenceAlgorithm.getExpectedtedUtility(node.getNode().getVariable());
-                Potential expectedUtility;
+                Potential expectedUtility = null;
 
-                //expectedUtility = inferenceAlgorithm.getExpectedUtilities(node.getVariable());
-
-                VEExpectedUtilityDecision veExpectedUtilityDecision = null;
-                try {
-                    veExpectedUtilityDecision = new VEExpectedUtilityDecision(probNet,node.getVariable());
-                } catch (NotEvaluableNetworkException e) {
-                    e.printStackTrace();
-                }
+                VEExpectedUtilityDecision veExpectedUtilityDecision = new VEExpectedUtilityDecision(probNet,node.getVariable());
                 expectedUtility = veExpectedUtilityDecision.getExpectedUtility();
 
                 Node dummyNode = new Node (new ProbNet (), node.getVariable (),
@@ -1154,7 +1142,7 @@ public class EditorPanel extends JPanel
                 expectedUtilityDialog.setTitle ("ExpectedUtilityDialog.Title.Label");
                 expectedUtilityDialog.requestValues ();
             }
-            catch (IncompatibleEvidenceException | UnexpectedInferenceException e)
+            catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e)
             {
                 JOptionPane.showMessageDialog (Utilities.getOwner (this),
                                                "ERROR\n" + e.getMessage (), e.getMessage (),
@@ -1171,68 +1159,54 @@ public class EditorPanel extends JPanel
 
     /**
      * This method shows the optimal policy for a decision node.
-     * TODO - THIS METHOD IS NOT WORKING
      */
     public void showOptimalPolicyOfNode ()
     {
-        VisualNode node = null;
-        List<VisualNode> selectedNode = visualNetwork.getSelectedNodes ();
-        if (selectedNode.size () == 1)
+        VisualNode visualNode = null;
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes ();
+        if (selectedNodes.size () == 1)
         {
-            node = selectedNode.get (0);
+            visualNode = selectedNodes.get (0);
             ProbNet dummyProbNet = new ProbNet ();
             Node dummy = null;
-            //try
-            //{
-                // Potential optimalPolicy =
-                // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
-                Potential optimalPolicy = null; //inferenceAlgorithm.getOptimalPolicy (node.getNode ().getVariable ());
+            Potential optimalPolicy = null;
 
+
+            try
+            {
+                VEOptimalPolicy veOptimalPolicy = new VEOptimalPolicy(probNet, visualNode.getNode().getVariable());
+                optimalPolicy = veOptimalPolicy.getOptimalPolicy();
+            } catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
+                e.printStackTrace();
+            }
+
+            dummyProbNet.addPotential (optimalPolicy);
+            Variable conditionedVariable = optimalPolicy.getVariable (0);
+            dummy = dummyProbNet.getNode (conditionedVariable);
+            dummy.setNodeType (NodeType.DECISION);
+            dummy.setPolicyType (PolicyType.OPTIMAL);
+            for (Variable variable : optimalPolicy.getVariables ())
+            {
+                if (variable.equals (conditionedVariable))
+                {
+                    continue;
+                }
                 try
                 {
-                    // Potential optimalPolicy =
-                    // inferenceAlgorithm.getOptimizedPolicies().get(node.getNode().getVariable());
-                    //Potential optimalPolicy = inferenceAlgorithm.getOptimalPolicy (node.getNode ().getVariable ());
-                    VEResolution veResolution = new VEResolution(probNet, preResolutionEvidence, Collections.singletonList(node.getNode().getVariable()));
-                    optimalPolicy = veResolution.getOptimalPolicy(node.getNode().getVariable());
-                } catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
-                    e.printStackTrace();
+                    dummyProbNet.addLink (variable, conditionedVariable, true);
                 }
-
-                dummyProbNet.addPotential (optimalPolicy);
-                Variable conditionedVariable = optimalPolicy.getVariable (0);
-                dummy = dummyProbNet.getNode (conditionedVariable);
-                dummy.setNodeType (NodeType.DECISION);
-                dummy.setPolicyType (PolicyType.OPTIMAL);
-                for (Variable variable : optimalPolicy.getVariables ())
+                catch (NodeNotFoundException e)
                 {
-                    if (variable.equals (conditionedVariable))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        dummyProbNet.addLink (variable, conditionedVariable, true);
-                    }
-                    catch (NodeNotFoundException e)
-                    {
-                        throw new RuntimeException ("Node not found: " + e.getMessage ());
-                    }
+                    throw new RuntimeException ("Node not found: " + e.getMessage ());
                 }
-                PotentialEditDialog optimalPolicyDialog = new PotentialEditDialog (
-                                                                                   Utilities.getOwner (this),
-                                                                                   dummy, false,
-                                                                                   true);
-                optimalPolicyDialog.setTitle ("OptimalPolicyDialog.Title.Label");
-                optimalPolicyDialog.requestValues ();
-            //}
-/*            catch (IncompatibleEvidenceException | UnexpectedInferenceException e)
-            {
-                JOptionPane.showMessageDialog (Utilities.getOwner (this),
-                                               "ERROR\n" + e.getMessage (), e.getMessage (),
-                                               JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace ();
-            }*/
+            }
+            PotentialEditDialog optimalPolicyDialog = new PotentialEditDialog (
+                                                                               Utilities.getOwner (this),
+                                                                               dummy, false,
+                                                                               true);
+            optimalPolicyDialog.setTitle ("OptimalPolicyDialog.Title.Label");
+            optimalPolicyDialog.requestValues ();
+
         }
         networkChanged = false;
         setSelectedAllNodes (false);

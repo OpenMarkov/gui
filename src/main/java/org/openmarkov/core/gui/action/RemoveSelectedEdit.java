@@ -78,7 +78,6 @@ public class RemoveSelectedEdit extends CompoundPNEdit
             }
             catch (NodeNotFoundException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (null,
                                                StringDatabase.getUniqueInstance ().getString (e.getMessage ()),

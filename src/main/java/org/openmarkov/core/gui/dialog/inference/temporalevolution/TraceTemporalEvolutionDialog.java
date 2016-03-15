@@ -46,7 +46,7 @@ import java.util.List;
  * @author myebra
  */
 @SuppressWarnings("serial")
-public class TraceTemporalEvolutionDialogExtended extends JDialog
+public class TraceTemporalEvolutionDialog extends JDialog
 {
     private Map<Variable, TablePotential>     temporalEvolution;
     private ChartPanel                        chartPanel;
@@ -75,20 +75,19 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
     private JScrollPane					      legendPanel;	  
     private final Dimension 				  legendsDimension = new Dimension(200,450);;
 
-    public TraceTemporalEvolutionDialogExtended(Window owner, Node node, EvidenceCase evidence)
+    public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence)
     {
         this(owner, node, evidence, null);
 
     }
 
-	public TraceTemporalEvolutionDialogExtended(Window owner, Node node, EvidenceCase evidence,
-												Variable decisionSelected){
+	public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence,
+										Variable decisionSelected){
 		super (owner);
 		this.node = node;
 		ProbNet probNet = node.getProbNet ();
 		isIndividual = true;
 
-		List<Node> decisionNodes = probNet.getNodes(NodeType.DECISION);
 		// Check if all decision nodes have an imposed policy,
 		// potential set in node, the nodes without an imposed policy will be added to
 		// conditioningVariables
@@ -102,34 +101,13 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 		try
 		{
 			numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
-//			evidence = CostEffectivenessAnalysis.expandEvidence(expandedNetwork, evidence);
 
-			// Convert numeric variables
-//			expandedNetwork = ProbNetOperations
-//					.convertNumericalVariablesToFS(expandedNetwork, evidence);
-			// evidenceCase and cycleLegth null by the moment
-//			if(node.getNodeType() == NodeType.UTILITY)
-//			{
-//
-//				TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-//				TemporalNetOperations.applyTransitionTime(expandedNetwork);
-//			}
 			this.variableOfInterest = node.getVariable ();
-//			createExcel(probNet, evidence, decisionSelected);
-			// TODO - Añadir las conditioning variables en el constructor
-			// ProbNet probNet, Variable temporalVariable, EvidenceCase preResolutionEvidence, Collection<Finding> scenario
+
 			VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, node.getVariable() ,evidence, decisionSelected);
 			this.expandedNetwork = veTemporalEvolution.getExpandedNetwork();
 			this.temporalEvolution = veTemporalEvolution.getPosteriorValues();
-//			VariableElimination variableElimination = new VariableElimination(expandedNetwork);
-//
-//			variableElimination.setPreResolutionEvidence(evidence);
-//			variableElimination.setConditioningVariables(conditioningVariables);
-//			variableElimination.setHeuristicFactory(new CostEffectivenessHeuristicFactory());
 
-//			this.temporalEvolution = TemporalNetOperations.traceTemporalEvolution (expandedNetwork, variableElimination, variableOfInterest);
-
-			// TODO - FIN DEL PROCESO REAL
 			initialize ();
 			Toolkit toolkit = Toolkit.getDefaultToolkit ();
 			Dimension screenSize = toolkit.getScreenSize ();
@@ -238,8 +216,6 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 				}
 			}
 
-
-
 			FileOutputStream fileOut = null;
 			try {
 				fileOut = new FileOutputStream(targetFilename);
@@ -262,7 +238,6 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 		numColumns += 1;
 
 		JTable jtable = new JTable(numRows, numColumns);
-
 
 		int row = 0;
 		// Build conditioning variables names
@@ -450,13 +425,6 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
 	 */
     private ChartPanel getChartsPanel (XYDataset dataset)
     {
-//    	String chartName = stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label")
-//    			+ " " + variableOfInterest.getBaseName ();
-    	
-    	// If there is at least one conditioning variable 
-//    	if(node.getProbNet().getNodes(NodeType.DECISION).size() > conditioningVariables.size()){
-//    		chartName += " " + stringDatabase.getString("TemporalEvolutionResultDialog.Title.ConditioningVariables");
-//    	}
 	    chart = ChartFactory.createXYLineChart ("","t", "value",
 	    		dataset, PlotOrientation.VERTICAL, true, true, true);
 
@@ -902,105 +870,12 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
             arrayXYSeries.add(series);
         }
     }
-	
-	/* This method modifies the Legend in the JFreeChart panel
-	private void getLegendTitle_OLD(){
-		legendLabels = new ArrayList<JLabel>();
-	    LegendItemCollection legendItemsOld = chart.getPlot().getLegendItems();
 
-	    chart.removeLegend();
-	    //BlockContainer bottom = new BlockContainer(new FlowArrangement());
-	    BlockContainer rightBlock = new BlockContainer(new ColumnArrangement());
-	    
-	    
-	    int listPointer = 0;
-	    while(listPointer < legendItemsOld.getItemCount()){
-	    	
-		    	final LegendItemCollection collection = new LegendItemCollection();
-		    	
-		    	String subListTitle = legendItemsOld.get(listPointer).getLabel();
-		    	if(subListTitle.indexOf('[') != -1){
-		    		subListTitle = subListTitle.substring(subListTitle.indexOf('[') + 1,subListTitle.indexOf(']'));
-		    	}
-		    	
-		    	boolean isSamePolicy = true;
-		    	if(isIndividual){
-			    	LegendItem legendItem = new LegendItem(subListTitle);
-			    	legendItem.setShapeVisible(false);
-			    	legendItem.setLineVisible(false);
-			    	legendItem.setLabelFont(new Font(Font.DIALOG,Font.BOLD, 12));
-			    	collection.add(legendItem);
-		    	}
-		    	
-	
-			    while(isSamePolicy && listPointer < legendItemsOld.getItemCount()){
-			    	String subListTitle2 = legendItemsOld.get(listPointer).getLabel();
-			    	if(subListTitle2.indexOf('[') != -1){
-			    		subListTitle2 = subListTitle2.substring(subListTitle2.indexOf('[') + 1,subListTitle2.indexOf(']'));
-			    	}
-			    	
-			    	if(!subListTitle.equals(subListTitle2)){
-			    		isSamePolicy = false;
-			    	}else{
-				    	LegendItem item = legendItemsOld.get(listPointer);
-				    	String nameItem2 = item.getLabel();
-				    	if(nameItem2.indexOf('[') != -1){
-				    		nameItem2 = nameItem2.substring(0, nameItem2.indexOf('[') - 1);
-				    	}
-				    	
-				    	LegendItem item2 = new LegendItem(nameItem2, item.getDescription(), item.getToolTipText(), item.getURLText(), item.isShapeVisible(), item.getShape(), item.isShapeFilled(), item.getFillPaint(), item.isShapeOutlineVisible(), item.getOutlinePaint(), item.getOutlineStroke(), item.isLineVisible(), item.getLine(), item.getLineStroke(), item.getLinePaint());
-			    		collection.add(item2);
-			    			
-		    			listPointer++;
-			    		
-		    		}
-			    }
-			    
-			    
-
-		    LegendItemSource source = new LegendItemSource() {
-			    LegendItemCollection lic = new LegendItemCollection();
-			    {lic.addAll(collection);}
-			    public LegendItemCollection getLegendItems() {  
-			        return lic;
-			    }
-		    };
-		    
-		    LegendTitle legendTitle = new LegendTitle(source);
-		    
-		    //chart.addLegend(legendTitle);
-		    //chart.addLegend(legendTitle);
-		    
-
-		    legendTitle.setPosition(RectangleEdge.RIGHT);
-		    legendTitle.setVerticalAlignment(VerticalAlignment.TOP);
-		    
-
-		    rightBlock.add(legendTitle);
-		    
-		    //legendTitle.setPosition(RectangleEdge.RIGHT);
-		    //newList.add(legendTitle);
-
-	    	
-	    }
-	    //chart.getLegend().setPosition(RectangleEdge.RIGHT);
-	    CompositeTitle subtitle = new CompositeTitle(rightBlock);
-	    subtitle.setPosition(RectangleEdge.RIGHT);
-
-	    chart.addSubtitle(subtitle);
-
-	    
-	    //chart.setSubtitles(newList);
-	    //chart.getSubtitle(0).setPosition(RectangleEdge.RIGHT);
-	    
-	}
-	*/
-	
 	/**
 	 * Gets the LegendTitles and updates the LegendPanel at the end
 	 */
 	private void getLegendTitle(){
-		legendLabels = new ArrayList<JLabel>();
+		legendLabels = new ArrayList<>();
 	    LegendItemCollection legendItemsOld = chart.getPlot().getLegendItems();
 	    
 	    int listPointer = 0;
@@ -1169,7 +1044,6 @@ public class TraceTemporalEvolutionDialogExtended extends JDialog
         throws IOException
     {
         TemporalEvolutionReport report = new TemporalEvolutionReport();
-//        report.write(filename, temporalEvolution, expandedNetwork, numSlices, variableOfInterest);
 		report.write(filename, tablePane.getTable());
     }
     

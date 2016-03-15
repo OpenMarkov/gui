@@ -62,7 +62,7 @@ import org.openmarkov.core.model.network.VariableType;
  * 
  * @author jlgozalo
  * @version 1.0 jlgozalo
- * @versión 1.5 mpalacios
+ * @version 1.5 mpalacios
  */
 public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemListener,
         CommentListener, ActionListener {
@@ -70,7 +70,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     private JLabel            jLabelTimeSlice;
     private JComboBox<String> jComboBoxTimeSlice;
     private JLabel            jLabelDecisionCriteria;
-    private JComboBox<String> jComboBoxDecisionCriteria;
+    private JComboBox<Criterion> jComboBoxDecisionCriteria;
     /**
      * String database
      */
@@ -88,10 +88,8 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
     }
 
     /**
-     * constructor
-     * 
-     * @param notifier
-     *            - the element that will sent events to this class
+     * Constructor
+     * @param node
      */
     public NodeDefinitionPanel(Node node) {
         this(true);// , notifier );
@@ -147,8 +145,6 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      * 
      * @param newNode
      *            - true if the node is a new node; otherwise false
-     * @param notifier
-     *            - the element that will sent events to this class
      */
     public NodeDefinitionPanel(final boolean newNode) {// , ElementObservable
                                                        // notifier) {
@@ -470,7 +466,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
      */
     @SuppressWarnings("unused")
     private void fillJComboBoxNodeRelevance() {
-        String number = "0.0";
+        String number;
         if (jComboBoxNodeRelevance != null) {
             for (int realPart = 0; realPart < 10; realPart++) {
                 for (int decimalPart = 0; decimalPart < 10; decimalPart++) {
@@ -628,23 +624,18 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
         return jLabelDecisionCriteria;
     }
 
-    private JComboBox<String> getJComboBoxDecisionCriteria() {
+    private JComboBox<Criterion> getJComboBoxDecisionCriteria() {
         if (jComboBoxDecisionCriteria == null) {
             List<Criterion> decisionCriteria = node.getProbNet().getDecisionCriteria();
-            String[] criteriaNames = null;
-            if (decisionCriteria != null) {
-                criteriaNames = new String[decisionCriteria.size()/* + 1*/];
-                //criteriaNames[0] = "";
-                for (int i = 0 /*1*/; i < decisionCriteria.size() /*+ 1*/; i++) {
-                    criteriaNames[i] = decisionCriteria.get(i/* - 1*/).getCriterionName();
-                }
-            } 
-            jComboBoxDecisionCriteria = (decisionCriteria!=null)? new JComboBox<>(criteriaNames) : new JComboBox<String>();
+            jComboBoxDecisionCriteria = new JComboBox<>();
+
+            for (Criterion criterion : decisionCriteria) {
+                jComboBoxDecisionCriteria.addItem(criterion);
+            }
             jComboBoxDecisionCriteria.setName("jComboBoxDecisionCriteria");
             jComboBoxDecisionCriteria.setPreferredSize(new Dimension(50, 15));
             if (node.getVariable().getDecisionCriterion() != null && decisionCriteria != null) {
-                String decisionCriterion = node.getVariable().getDecisionCriterion().getCriterionName();
-                jComboBoxDecisionCriteria.setSelectedItem(decisionCriterion);
+                jComboBoxDecisionCriteria.setSelectedItem(node.getVariable().getDecisionCriterion());
                 jComboBoxDecisionCriteria.addItemListener(this);
             } else {
                 jComboBoxDecisionCriteria.setEnabled(false);
@@ -816,9 +807,11 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                     e1.printStackTrace();
                 }
             }
-        } else if (comboBox.toString().toLowerCase().equals(jComboBoxDecisionCriteria.toString().toLowerCase())) {
+        } else if (comboBox.equals(jComboBoxDecisionCriteria)) {
             if (!(itemSelected == null)) {
-                Criterion decisionCriteria = new Criterion(itemSelected);
+
+                // Search the criterion into probNets decision criteria
+                Criterion decisionCriteria = (Criterion) jComboBoxDecisionCriteria.getSelectedItem();
                 NodeDecisionCriteriaEdit nodeDecisionCriteriaEdit = new NodeDecisionCriteriaEdit(node,
                         decisionCriteria);
                 try {
@@ -887,9 +880,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
 
     /**
      * This method fills the content of the fields from a NodeProperties object.
-     * 
-     * @param additionalProperties
-     *            object from where load the information.
+     * @param node <code>Node</code>
      */
     public void setFieldsFromProperties(Node node) {
         jTextFieldNodeName.setText(node.getVariable().getBaseName());

@@ -4,44 +4,6 @@
 		<Title value="Add state" />
 		<Message value="Provide the new state's name" />
 	</AddState>
-	<CostEffectivenessResults>
-		<Title>
-			<Label value="Cost-Effectiveness Analisys Results" />
-		</Title>
-		<Scope value="Scope selector"></Scope>
-		<Intervals>
-			<Title value = "Cost-effectiveness intervals" />
-			<InterventionTooltip value="Click to show intervention" />
-		</Intervals>
-		<Plane>
-			<Tab value="CE Plane" />
-			<Label value="Cost-Effectiveness Plane" />
-			<Vertical value="Cost" />
-			<Horizontal value="Effectiveness" />
-		</Plane>
-		<Analysis>
-			<Tab value="Analysis" />
-		</Analysis>
-		<FrontierInterventions>
-			<Tab value="Frontier interventions" />
-		</FrontierInterventions>
-		<AcceptabilityCurve>
-			<Tab value="CEAC" />
-			<Label value="Cost-Effectiveness Acceptability Curve" />
-			<Vertical value="Probability of cost effectiveness" />
-			<Horizontal value="Willingness to pay" />
-		</AcceptabilityCurve>
-		<EVPI>
-			<Tab value="EVPI" />
-			<Label value="Expected Value of Information" />
-			<Vertical value="EVPI" />
-			<Horizontal value="Willingness to pay" />
-			<MaxRatio value="Max ratio" />
-			<Population value="Population per annum" />
-			<Lifetime value="Technology lifetime" />
-			<Discount value="Discount rate" />
-		</EVPI>
-	</CostEffectivenessResults>
 	<TemporalEvolutionResultDialog>
 		<Title>
 			<Label value="Temporal Evolution of:" />

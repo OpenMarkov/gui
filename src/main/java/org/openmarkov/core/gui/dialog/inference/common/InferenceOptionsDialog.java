@@ -290,8 +290,15 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
             this.getJButtonOK().doClick();
             this.dispose();
         }else {
+            // Center dialog
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension screenSize = toolkit.getScreenSize();
+            int x = (screenSize.width - this.getWidth()) / 2;
+            int y = (screenSize.height - this.getHeight()) / 2;
+            this.setLocation(x, y);
             this.setVisible(true);
         }
+
     }
 
     /**

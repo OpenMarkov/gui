@@ -75,8 +75,6 @@ public class MoveNodeEdit extends SimplePNEdit
             }
             catch (NodeNotFoundException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace ();
                 JOptionPane.showMessageDialog (null,
                                                StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
                                                StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
@@ -101,7 +99,6 @@ public class MoveNodeEdit extends SimplePNEdit
             }
             catch (NodeNotFoundException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace ();
                 JOptionPane.showMessageDialog (null,
                                                StringDatabase.getUniqueInstance ().getString (e.getMessage ()),

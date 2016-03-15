@@ -23,19 +23,19 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     private ProbNet                 probNet;
     private ScopeSelectorPanel      scopeSelectorPanel;
     private Node                    selectedNode;
-    private EvidenceCase            evidenceCase;
+    private EvidenceCase preResolutionEvidence;
     /**
      * Constructor. initialises the instance.
      *
      * @param owner window that owns the dialog.
      */
-    public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase evidenceCase) {
+    public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase preResolutionEvidence) {
         super(owner);
         setMinimumSize(new Dimension(300, 300));
         this.setResizable(true);
         this.probNet = selectedNode.getProbNet();
         this.selectedNode = selectedNode;
-        this.evidenceCase = evidenceCase;
+        this.preResolutionEvidence = preResolutionEvidence;
         this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet().getName());
         getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
         getComponentsPanel().add(getSlicesPanel());
@@ -76,7 +76,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
     public ScopeSelectorPanel getScopeSelectorPanel() {
         if(scopeSelectorPanel == null){
-            scopeSelectorPanel = new ScopeSelectorPanel(probNet);
+            scopeSelectorPanel = new ScopeSelectorPanel(probNet, preResolutionEvidence);
         }
         return scopeSelectorPanel;
     }
@@ -84,21 +84,36 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
     @Override
     protected boolean doOkClickBeforeHide() {
         try {
-            evidenceCase.addFindings(scopeSelectorPanel.getSelectedFindings());
-        } catch (InvalidStateException e) {
-            e.printStackTrace();
-        } catch (IncompatibleEvidenceException e) {
-            e.printStackTrace();
+            preResolutionEvidence.addFindings(scopeSelectorPanel.getSelectedFindings());
+        } catch (InvalidStateException | IncompatibleEvidenceException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    e.getMessage(),
+                    stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence"),
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        try {
+            numSlices = Integer.parseInt(numSlicesTextField.getText());
+            probNet.getInferenceOptions().getTemporalOptions().setNumberOfSlices(numSlices);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    stringDatabase.getString("NumberFormatException.Text.Label"),
+                    stringDatabase.getString("NumberFormatException.Title.Label"),
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
         }
 
         /*
         Window owner, Node node, EvidenceCase evidence,
 												Variable decisionSelected, List<Finding> scenario
          */
-        TraceTemporalEvolutionDialogExtended dialog = new TraceTemporalEvolutionDialogExtended(
+        TraceTemporalEvolutionDialog dialog = new TraceTemporalEvolutionDialog(
                 getOwner(),
                 selectedNode,
-                evidenceCase,
+                preResolutionEvidence,
                 scopeSelectorPanel.getDecisionSelected());
 
         return super.doOkClickBeforeHide();

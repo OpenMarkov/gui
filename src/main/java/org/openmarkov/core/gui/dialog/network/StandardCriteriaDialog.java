@@ -16,8 +16,10 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Criterion;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
+import org.openmarkov.core.model.network.Variable;
 
 public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialog{
 
@@ -105,6 +107,12 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+
+		// Set as default the first criteria of the probNet
+		Criterion defaultCriterion = probNet.getDecisionCriteria().get(0);
+		for (Variable variable : probNet.getVariables(NodeType.UTILITY)) {
+			variable.setDecisionCriterion(defaultCriterion);
 		}
 
 		probNet.getPNESupport().closeParenthesis();
