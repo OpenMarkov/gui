@@ -395,21 +395,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private JMenuItem           toolsConfigurationMenuItem                = null;
 
     /**
-     * Object that represent the item 'Tools - CostEffectiveness analysis'.
-     */
-    private JMenu               toolsCostEffectivenessMenuItem;
-
-    /**
-     * Object that represents the item 'Tools - Deterministic CostEffectiveness analysis'.
-     */
-    private JMenuItem           toolsCostEffectivenessDeterministicMenuItem              = null;
-
-    /**
-     * Object that represents the item 'Tools - Sensitivity CostEffectiveness analysis'.
-     */
-    private JMenuItem           toolsCostEffectivenessSensitivityMenuItem              = null;
-
-    /**
      * Object that represents the menu 'Options'.
      */
     // private JMenu optionsMenu = null; //FOR FUTURE USE
@@ -1805,53 +1790,12 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
                 menuItem.addActionListener(listener);
                 toolsMenu.add(menuItem);
             }
-            toolsMenu.addSeparator();
-            toolsMenu.add(getToolsCostEffectivenessMenuItem());
-            toolsMenu.addSeparator();
+
             toolsMenu.add(getToolsConfigurationMenuItem());
         }
 
         return toolsMenu;
 
-    }
-
-    private JMenuItem getToolsCostEffectivenessSensitivityMenuItem() {
-        if (toolsCostEffectivenessSensitivityMenuItem == null) {
-            toolsCostEffectivenessSensitivityMenuItem = new LocalizedMenuItem(MenuItemNames.COSTEFFECTIVENESSSENSITIVITY_MENUITEM,
-                    ActionCommands.COST_EFFECTIVENESS_SENSITIVITY);
-            toolsCostEffectivenessSensitivityMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                    InputEvent.CTRL_DOWN_MASK));
-            toolsCostEffectivenessSensitivityMenuItem.addActionListener(listener);
-            toolsCostEffectivenessSensitivityMenuItem.setEnabled(false);
-        }
-
-        return toolsCostEffectivenessSensitivityMenuItem;
-    }
-
-    private JMenuItem getToolsCostEffectivenessDeterministicMenuItem() {
-        if (toolsCostEffectivenessDeterministicMenuItem == null) {
-            toolsCostEffectivenessDeterministicMenuItem = new LocalizedMenuItem(MenuItemNames.COSTEFFECTIVENESSDETERMINISTIC_MENUITEM,
-                    ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC);
-            toolsCostEffectivenessDeterministicMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-                    InputEvent.CTRL_DOWN_MASK));
-            toolsCostEffectivenessDeterministicMenuItem.addActionListener(listener);
-            toolsCostEffectivenessDeterministicMenuItem.setEnabled(false);
-        }
-
-        return toolsCostEffectivenessDeterministicMenuItem;
-    }
-
-    private JMenuItem getToolsCostEffectivenessMenuItem() {
-        if (toolsCostEffectivenessMenuItem == null) {
-            toolsCostEffectivenessMenuItem = new JMenu();
-            toolsCostEffectivenessMenuItem.setName(MenuItemNames.COSTEFFECTIVENESS_SUBMENU);
-            toolsCostEffectivenessMenuItem.setText(MenuLocalizer.getLabel(MenuItemNames.COSTEFFECTIVENESS_SUBMENU));
-            toolsCostEffectivenessMenuItem.add(getToolsCostEffectivenessDeterministicMenuItem());
-            toolsCostEffectivenessMenuItem.add(getToolsCostEffectivenessSensitivityMenuItem());
-
-        }
-
-        return toolsCostEffectivenessMenuItem;
     }
 
     /**
@@ -2099,10 +2043,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
             component = viewZoomMenu;
         } else if (actionCommand.equals(ActionCommands.NODES)) {
             component = viewNodesMenu;
-        } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
-            component = toolsCostEffectivenessDeterministicMenuItem;
-        } else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_SENSITIVITY)) {
-            component = toolsCostEffectivenessSensitivityMenuItem;
         }
 
         return component;
