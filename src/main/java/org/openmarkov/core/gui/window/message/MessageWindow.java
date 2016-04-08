@@ -123,8 +123,8 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
         
 		normalMessageStream = new StandardStreamOut(textArea);
 		errorMessageStream = new StandardStreamErr(textArea);
-//		System.setOut(normalMessageStream);
-//		System.setErr(errorMessageStream);
+		System.setOut(normalMessageStream);
+		System.setErr(errorMessageStream);
 	}
 
 	/**
