@@ -254,6 +254,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Gets the panel that matches the type of potential to be edited
      * @return the potential panel matching the potential edited.
+     * carmenyago added support for TableDelta
+     * @author carmenyago
      */
     private PotentialPanel getPotentialPanel ()
     {
@@ -261,9 +263,25 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
             String potentialFamily = potentialManager.getPotentialsFamily (potentialName);
+            //CMI
+            if (potentialName.equals("TableDelta"))
+            {
+            	potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel ("Table",
+            			potentialManager.getPotentialsFamily ("Table"),
+                        node);
+	
+            } else
+            potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel (potentialName,
+                    potentialFamily,
+                    node);
+
+           
+            /*
             potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel (potentialName,
                                                                                      potentialFamily,
                                                                                      node);
+            */
+            //CMF
             potentialPanel.setReadOnly (readOnly);
             potentialPanel.suscribePanelResizeEventListener(this);
         }
@@ -285,8 +303,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     {
         // Shows the potentials' options table
         if (node.getNodeType () == NodeType.DECISION
-              && node.getPolicyType () == PolicyType.OPTIMAL 
+              && node.getPolicyType () == PolicyType.OPTIMAL
+              //CMI Removed isUtility; 
+              /*
               && (node.getPotentials ().isEmpty () || !node.getPotentials ().get (0).isUtility ())  
+              */
+              && (node.getPotentials ().isEmpty ())
+              //CMF
               && readOnly)
         {
             setEnabledDecisionOptions (true);
@@ -603,7 +626,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         // or chance or decision node with a policy and in both cases with more than two variables,
         // and the potential panel is of probability type,
         // the reorder variable button should be enabled
+        //CMI How do I have to substitute PotentialRole.UTILITY
+        /*
         if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) ||
+        */
+        if (((numPotentialVariables > 1 ) ||
+        //CMF		
                 (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY) ||
                 (potential.getNumVariables () > 2 && node.hasPolicy()))
                 && getPotentialPanel () instanceof ProbabilityTablePanel) {

@@ -72,7 +72,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     private JFreeChart						  chart;
     private Node							  node;
     private List<JLabel> 					  legendLabels;
-    private JScrollPane					      legendPanel;
+    private JScrollPane					      legendPanel;	  
     private final Dimension 				  legendsDimension = new Dimension(200,450);;
 
     public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence)
@@ -370,7 +370,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         }
         return tabbedPane;
     }
-
+    
     /**
      * Gets the ChartPanel with the control area
      * @return JPanel with the ChartPanel and the Control Area
@@ -405,7 +405,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 		for(JLabel legend : legendLabels){
 			panel.add(legend);
 		}
-
+		
 		legendPanel = new JScrollPane(panel);
 		legendPanel.setPreferredSize(legendsDimension);
 		legendPanel.setMinimumSize(legendsDimension);
@@ -415,7 +415,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 		if((conditioningVariables != null && conditioningVariables.size() >= 1) || (!isUtility && isIndividual)){
 			chartPanelWithCheckBox.add(legendPanel, BorderLayout.LINE_END);
 		}
-
+		
 	}
 
 	/**
@@ -434,13 +434,13 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	        renderer.setSeriesLinesVisible (i, true);
 	        renderer.setSeriesShapesVisible (i, true);
 	    }
-
+	    
 	    chart.getXYPlot ().setRenderer (renderer);
 	    chart.getXYPlot().setDomainGridlinesVisible(true);
 	    chart.getXYPlot().setRangeGridlinesVisible(true);
 	    chart.getXYPlot().setDomainGridlinePaint(Color.darkGray);
 	    chart.getXYPlot().setRangeGridlinePaint(Color.darkGray);
-
+	    
 	    // Create the custom legend in an adjoined panel
 	    getLegendTitle();
 
@@ -448,8 +448,8 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	    for(int i = 0; i < chart.getSubtitleCount(); i++){
 	    	chart.getSubtitle(i).setVisible(false);
 	    }
-
-
+	    
+	    
 	    chartPanel = new ChartPanel (chart);
 	    chartPanel.setAutoscrolls (true);
 	    chartPanel.setDisplayToolTips (true);
@@ -465,20 +465,20 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
         return chartPanel;
     }
-
+    
     private JPanel getChartOptionsPanel(){
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.add(getDisplayTypePanel(), BorderLayout.PAGE_START);
         panel.add(getCheckBoxesPanel(), BorderLayout.CENTER);
-
+        
         if(variableOfInterest.getNumStates() <= 1 || isUtility){
         	getCheckBoxesPanel().setVisible(false);
         }
         panel.setPreferredSize(new Dimension(150,450));
         return panel;
     }
-
+    
     /**
      * Control panel with checkBox controls
      * @return
@@ -487,14 +487,14 @@ public class TraceTemporalEvolutionDialog extends JDialog
 		if(checkBoxPanel == null){
 			JPanel panel = new JPanel();
 			panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
+			
 			jcheckBoxList = new ArrayList<JCheckBox>();
 
 			// Add a checkbox for each state in the variable
 			for(State state : variableOfInterest.getStates()){
 				JCheckBox checkBox = new JCheckBox(state.getName());
 				checkBox.addActionListener(new ActionListener() {
-
+	
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						checkBoxChanged();
@@ -506,8 +506,8 @@ public class TraceTemporalEvolutionDialog extends JDialog
 			}
 
 			panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.States.Label")));
-
-
+			
+			
 			checkBoxPanel = new JScrollPane(panel);
 			checkBoxPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			checkBoxPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -516,7 +516,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 		}
 		return checkBoxPanel;
 	}
-
+    
     /**
      * Panel with the radio button control that changes the display type
      * @return
@@ -526,7 +526,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     	displayType.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Label")));
     	displayType.setPreferredSize(new Dimension(150,150));
     	displayType.setLayout(new BoxLayout(displayType, BoxLayout.PAGE_AXIS));
-
+    	
     	// Create the custom radio button group. If we have an utility node
     	// we can choose between "instaneus/accumulate" in other case
     	// we can choose between "individual/summatory".
@@ -534,7 +534,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     	if(isUtility){
     		radioInstantaneus = new JRadioButton(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Instantaneus"));
     		radioInstantaneus.addActionListener(new ActionListener() {
-
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					radioButtonChanged(e);
@@ -543,18 +543,18 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
 			radioAccumulate = new JRadioButton(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Accumulate"));
 			radioAccumulate.addActionListener(new ActionListener() {
-
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					radioButtonChanged(e);
 				}
 			});
-
+			
 			radioButtonGroup.add(radioInstantaneus);
 			radioButtonGroup.add(radioAccumulate);
 			radioInstantaneus.setSelected(true);
 			isCumulative = false;
-
+			
 			displayType.add(radioInstantaneus);
 			displayType.add(radioAccumulate);
     	}else{
@@ -569,24 +569,24 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
 			radioSummatory = new JRadioButton(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Summatory"));
 			radioSummatory.addActionListener(new ActionListener() {
-
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					radioButtonChanged(e);
 				}
 			});
-
+			
 			radioButtonGroup.add(radioIndividual);
 			radioButtonGroup.add(radioSummatory);
 			radioIndividual.setSelected(true);
 			isIndividual = true;
-
+			
 			displayType.add(radioIndividual);
 			displayType.add(radioSummatory);
     	}
-		return displayType;
+		return displayType;		
     }
-
+    
     /**
      * Action that trigger a change in a radio button.
      * @param e
@@ -634,7 +634,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 				markedCheckBoxes[i] = false;
 			}
 		}
-		// Update the visual info and repaint
+		// Update the visual info and repaint 
 		if(isUtility){
 			showUtilitySeries();
 		}else{
@@ -649,18 +649,18 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	 */
     private void showChartSeriesWithFilter(boolean[] markedCheckBoxes) {
     	XYSeriesCollection result = new XYSeriesCollection ();
-
+    	
     	boolean someCheckBoxMarked = false;
         for(int j = 0; j < markedCheckBoxes.length; j++){
         	if(markedCheckBoxes[j]){
                 someCheckBoxMarked = true;;
         	}
         }
-
+    	
         if(arrayXYSeries == null){
         	createSeries();
         }
-
+    	
     	if(isIndividual){
     		if(someCheckBoxMarked){
     	        for(int i = 0; i < numberOfCombinations/variableOfInterest.getNumStates(); i++){
@@ -699,11 +699,11 @@ public class TraceTemporalEvolutionDialog extends JDialog
      */
     private void showUtilitySeries(){
     	XYSeriesCollection result = new XYSeriesCollection ();
-
+    	
         if(arrayXYSeries == null){
         	createSeries();
         }
-
+    	
     	if(isCumulative){
     		for(int i = 0; i < arrayXYSeries.size(); i++ ){
     			String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
@@ -727,7 +727,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 					e.printStackTrace();
 				}
    	        	serie.setKey(nameOfSerie);
-                result.addSeries(serie);
+                result.addSeries(serie);   
 	        }
     	}
 
@@ -736,7 +736,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 		chartPanelWithCheckBox.add(chartPanel, BorderLayout.CENTER);
 		this.repaint();
     }
-
+    
     /**
      * Sum a list of series to obtain a new serie
      * @param arraySeries
@@ -748,7 +748,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     	if(conditioningVariables.size() >= 1){
     		seriesName = seriesName.substring(seriesName.indexOf('[')+1, seriesName.indexOf(']'));
     	}
-
+    	
     	XYSeries series = new XYSeries(seriesName);
     	for(int i = 0; i < arraySeries.get(0).getItemCount(); i++){
     		double yCoordinate = 0;
@@ -785,25 +785,25 @@ public class TraceTemporalEvolutionDialog extends JDialog
 				listOfPotentials.add(null);
 				continue;
 			}
-
+            
 			TablePotential tablePotential = null;
-
+			
 			tablePotential = temporalEvolution.get(variableInSliceJ);
-
-
+			
+			 
 			if(tablePotential.getValues().length < numberOfCombinations){
 				double[] values = new double[numberOfCombinations];
 				for(int z = 0; z < numberOfCombinations; z++){
 					values[z] = tablePotential.getValues()[z%temporalEvolution.get(variableInSliceJ).getValues().length];///(numberOfCombinations/variableOfInterest.getNumStates());
 				}
-
+				
 				tablePotential.setValues(values);
 			}
 			listOfPotentials.add(tablePotential);
     	}
-
+    			
     	arrayXYSeries = new ArrayList<XYSeries>();
-
+    	
     	double value = 0.0;
         for (int i = 0; i < numberOfCombinations; i++)
         {
@@ -826,8 +826,8 @@ public class TraceTemporalEvolutionDialog extends JDialog
 					nameOfSerie = variableOfInterest.getStateName(i);
 				}
 
-
-
+            	
+            	
             	series = new XYSeries(nameOfSerie);
             }
             else
@@ -855,16 +855,16 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
             	series = new XYSeries(nameOfSerie);
             }
-
+            
             for (int j = 0; j <= numSlices; j++)
             {
-
+                
 	        	if(listOfPotentials.get(j) != null){
 	                value = listOfPotentials.get(j).getValues ()[i];
 	                int time = j;
 	                series.add (time, value);
 	        	}
-
+                
 
             }
             arrayXYSeries.add(series);
@@ -877,21 +877,21 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	private void getLegendTitle(){
 		legendLabels = new ArrayList<>();
 	    LegendItemCollection legendItemsOld = chart.getPlot().getLegendItems();
-
+	    
 	    int listPointer = 0;
 	    while(listPointer < legendItemsOld.getItemCount()){
-
+		    	
 	    	String subListTitle = legendItemsOld.get(listPointer).getLabel();
 	    	if(subListTitle.indexOf('[') != -1){
 	    		subListTitle = subListTitle.substring(subListTitle.indexOf('[') + 1,subListTitle.indexOf(']'));
 	    	}
-
+	    	
 	    	boolean isSamePolicy = true;
 	    	if(isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1){
 		    	JLabel groupLabel = new JLabel(subListTitle);
 		    	Font font = groupLabel.getFont();
 		    	groupLabel.setFont(new Font(font.getName(), Font.BOLD, font.getSize()));
-
+		    	
 				// get metrics from the graphics
 				FontMetrics metrics = groupLabel.getFontMetrics(groupLabel.getFont());
 				// get the height of a line of text in this font and render context
@@ -900,25 +900,25 @@ public class TraceTemporalEvolutionDialog extends JDialog
 				int adv = metrics.stringWidth(subListTitle);
 				// calculate the size of a box to hold the text with some padding.
 				Dimension size = new Dimension(adv+5, hgt+10);
-
+				
 				groupLabel.setMinimumSize(size);
 				groupLabel.setMaximumSize(size);
 				groupLabel.setPreferredSize(size);
-
+				
 				groupLabel.setToolTipText(subListTitle);
-
-
+		    	
+		    	
 		    	font = null;
 		    	legendLabels.add(groupLabel);
 	    	}
-
-
+	    	
+	    	
 		    while(isSamePolicy && listPointer < legendItemsOld.getItemCount()){
 		    	String subListTitle2 = legendItemsOld.get(listPointer).getLabel();
 		    	if(subListTitle2.indexOf('[') != -1){
 		    		subListTitle2 = subListTitle2.substring(subListTitle2.indexOf('[') + 1,subListTitle2.indexOf(']'));
 		    	}
-
+		    	
 		    	if(!subListTitle.equals(subListTitle2)){
 		    		isSamePolicy = false;
 		    	}else{
@@ -927,10 +927,10 @@ public class TraceTemporalEvolutionDialog extends JDialog
 			    	if(nameItem2.indexOf('[') != -1){
 			    		nameItem2 = nameItem2.substring(0, nameItem2.indexOf('[') - 1);
 			    	}
-
+			    	
 	    			Image img = makeImage(item, (Color) chart.getXYPlot().getRenderer().getSeriesPaint(listPointer));
-	    			JLabel itemLegendLabel = makeLegendLabel(nameItem2, img);
-
+	    			JLabel itemLegendLabel = makeLegendLabel(nameItem2, img); 
+					
 	    			// get metrics from the graphics
 					FontMetrics metrics = itemLegendLabel.getFontMetrics(itemLegendLabel.getFont());
 					// get the height of a line of text in this font and render context
@@ -938,22 +938,22 @@ public class TraceTemporalEvolutionDialog extends JDialog
 					// get the advance of my text in this font and render context
 					int adv = metrics.stringWidth(nameItem2);
 					// calculate the size of a box to hold the text with some padding.
-
+					
 					Dimension size = new Dimension(adv + 30, hgt+10);
 					itemLegendLabel.setMinimumSize(size);
 					itemLegendLabel.setMaximumSize(size);
 					itemLegendLabel.setPreferredSize(size);
 					itemLegendLabel.setToolTipText(nameItem2);
-
+					
 	    			legendLabels.add(itemLegendLabel);
 	    			listPointer++;
-
+		    		
 	    		}
 		    }
 	    }
 	    getLegendsPanel();
 	}
-
+    
 	/**
 	 * Create the dataset using the result given by createSeries method
 	 * @return
@@ -974,7 +974,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
      */
     private JScrollPane getTablePane ()
     {
-
+        
 	    tablePane = new TemporalEvolutionTablePane (
 	    		temporalEvolution,
 	    		expandedNetwork,
@@ -983,7 +983,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 	    		numSlices,
 	    		isUtility,
 	    		isCumulative);
-
+        
         return tablePane;
     }
 
@@ -1006,7 +1006,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         	String filename = fileChooser.getSelectedFile ().getAbsolutePath ();
         	if(tabbedPane.getSelectedIndex() == 0){
         		try {
-
+        			
         			// Shows the default subtitles, save the png and then hide again the default subtitles
         			for(int i = 0; i < chart.getSubtitleCount(); i++){
         				chart.getSubtitle(0).setVisible(true);
@@ -1046,7 +1046,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
         TemporalEvolutionReport report = new TemporalEvolutionReport();
 		report.write(filename, tablePane.getTable());
     }
-
+    
     /**
      * Auxiliary method to make a legend JLabel with a title and an image
      * @param title
@@ -1059,7 +1059,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
     	label.setIcon(icon);
     	return label;
     }
-
+    
     /**
      * Auxiliary method to obtain an Image from an LegendItem of JFreeChart and a color
      * @param item
@@ -1077,15 +1077,15 @@ public class TraceTemporalEvolutionDialog extends JDialog
         gr.setBackground(Color.WHITE);
         gr.clearRect(0, 0, image.getWidth(), image.getHeight());
         gr.setColor(color);
-
+        
         // move the shape in the region of the image
         gr.translate(-r.x*1.5 , -r.y*1.5);
         gr.fill(item.getShape());
         gr.drawLine(-r.width, 0, r.width, 0);
-
+        
 
         gr.dispose();
-
+        
         return image;
     }
 }

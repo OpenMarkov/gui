@@ -111,7 +111,11 @@ public class ICIOptionsPanelTest {
 		pBA.values[3] = 0.1;
 		pU = new TablePotential(adVariables, 
 				PotentialRole.CONDITIONAL_PROBABILITY);
+		//CMI There is not utilityVariable any more
+		/*
 		pU.setUtilityVariable(U);
+		*/
+		//CMF
 		pU.values[0] = 1;
 		pU.values[1] = 2;
 		pU.values[2] = 3;
