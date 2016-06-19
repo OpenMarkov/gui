@@ -337,10 +337,16 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
             values = setCanonicalTable(values, properties);
 
             setPosition(getNumberOfPostions(properties.getPotentials()));
-
+        //CMI Changed the list of exceptions for cheIfNoPotential    
+        /*
         } catch (NullListPotentialsException ex) {
             values = setBlankCanonicalTable(properties);
         }
+        */
+    	} catch (Exception ex) {
+    		values = setBlankCanonicalTable(properties);
+    	}
+        //CMF
         return values;
     }
 
