@@ -150,6 +150,8 @@ public class PasteEdit extends CompoundEdit
                             potential.replaceVariable (i, variable);
                         }
                     }
+                    //CMI-->Commented to compile TablePotential; I think now it is not necessary
+                    /*
                     if(potential.isUtility())
                     {
                     	Variable utilityVariable = potential.getUtilityVariable();
@@ -158,6 +160,8 @@ public class PasteEdit extends CompoundEdit
                     		potential.replaceVariable (utilityVariable, probNet.getVariable (newVariables.get (utilityVariable.getName())));
                     	}
                     }
+                    */
+                    //CMF
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);

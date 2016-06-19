@@ -177,9 +177,19 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
             throws WrongCriterionException {
         super(owner);
+        //CMI Setting isChanceVariable=true for compiling
+        isChanceVariable= true;
+        /*
         isChanceVariable = !(potential.isUtility());
+        */
+        //CMF
         distributionTypes = new ArrayList<>();
+        //CMI Now variable is always potential.getVariable(0);
+        /*
         variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
+        */
+        variable = potential.getVariable(0);
+        //CMF
         setTitle(getConfigurationDescription(variable, isChanceVariable, configuration));
         posBase = getPositionBaseUncertainValue(potential, configuration);
         setResizable(true);
@@ -259,17 +269,22 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             EvidenceCase configuration,
             TablePotential potential)
             throws WrongCriterionException {
-        UncertainValue[] uncertainTable = potential.getUncertainValues();
+    	//CMI
+    	return;
+    	//CMF
+    	//CMI
+    	/*
+        UncertainValue[] uncertainTable = potential.getUncertaintyTable();
         TablePotential projectedPotential = null;
         try {
             projectedPotential = potential.tableProject(configuration, null).get(0);
         } catch (NonProjectablePotentialException e) {
             e.printStackTrace();
         }
-        UncertainValue[] projectedUncertainTable = projectedPotential.getUncertainValues();
+        UncertainValue[] projectedUncertainTable = projectedPotential.getUncertaintyTable();
         // Get the table of uncertain values
         uncertainTable = !hasUncertainValues(projectedUncertainTable)?createExactUncertainValuesFromDouble(projectedPotential):
-        	projectedPotential.getUncertainValues();
+        	projectedPotential.getUncertaintyTable();
         // Fill the table for the dialog
         
 		String[] englishColumnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
@@ -307,6 +322,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         TableColumn column = columnModel.getColumn(DISTRIBUTION_COLUMN_INDEX);
         column.setCellEditor(new DefaultCellEditor(distributionTypesCombo));
         columnModel.getColumn(0).setCellEditor(null);
+        */
+    	//CMF
     }
 
     private String getString(double[] parameters) {
