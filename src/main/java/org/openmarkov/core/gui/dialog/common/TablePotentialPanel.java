@@ -195,7 +195,7 @@ public TablePotentialPanel(Node node){
 	this.node = node;
 	// This panel displays the first potential of the node
 	potential = node.getPotentials().get(0);
-	if (potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential")){	
+	if (potential instanceof TableDeltaPotential){	
 		isTableDeltaPotential=true;
 		tablePotential=((TableDeltaPotential)potential).getTablePotential();
 	} else tablePotential= (TablePotential)potential; 
@@ -1566,14 +1566,26 @@ public TablePotentialPanel(Node node){
 		// Generates the evidenceCase based on the column
 		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
-		UncertainValuesDialog uncertDialog = new UncertainValuesDialog(
+		UncertainValuesDialog uncertDialog;
+		if (isTableDeltaPotential){
+			uncertDialog = new UncertainValuesDialog(
+					Utilities.getOwner(this), evidenceCase, (TableDeltaPotential)potential);
+		} 
+		else {
+			uncertDialog = new UncertainValuesDialog(
 				Utilities.getOwner(this), evidenceCase, tablePotential);
+		}
 		int button = uncertDialog.requestUncertainValues();
 		if (button == UncertainValuesDialog.OK_BUTTON) {
-			UncertainValuesEdit uncertEdit = new UncertainValuesEdit(node,
+			UncertainValuesEdit uncertEdit=null;
+			try{
+					uncertEdit = new UncertainValuesEdit(node,
 					uncertDialog.getUncertainColumn(),
 					uncertDialog.getValuesColumn(), uncertDialog.getPosBase(),
 					selectedColumn, uncertDialog.isChanceVariable());
+			} catch (Exception e){
+				e.printStackTrace();
+			}
 			try {
 				node.getProbNet().doEdit(uncertEdit);
 				if (selectedColumn > 0) {
