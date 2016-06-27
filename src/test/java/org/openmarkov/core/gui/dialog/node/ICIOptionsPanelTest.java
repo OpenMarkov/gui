@@ -24,6 +24,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -31,6 +32,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * behavior).
  * 
  * @author jlgozalo
+ * @author carmenyago -->changed the tablePotential of U for a TableDeltaPotential; minor changes
  * @version 1.0
  */
 public class ICIOptionsPanelTest {
@@ -76,10 +78,16 @@ public class ICIOptionsPanelTest {
 
 		ArrayList<Variable> aVariables;
 		ArrayList<Variable> abVariables;
-		ArrayList<Variable> adVariables;
+		//CMI Now the list is U, A, D
+		//ArrayList<Variable> adVariables;
+		ArrayList<Variable> uadVariables;
+		//CMF
 		TablePotential pA;
 		TablePotential pBA;
-		TablePotential pU;
+		// CMI-->Now it is TableDeltaPotential
+		// TablePotential pU;
+		TableDeltaPotential pU;
+		// CMF
 		ProbNet simpleProbNet;
 		
 		// create simpleProbNet
@@ -95,9 +103,17 @@ public class ICIOptionsPanelTest {
 		abVariables = new ArrayList<Variable>(2);
 		abVariables.add(B);
 		abVariables.add(A);
+		//CMI Filling the list for the node U
+		/*
 		adVariables = new ArrayList<Variable>(2);
 		adVariables.add(A);
 		adVariables.add(D);
+		*/
+		uadVariables = new ArrayList<Variable>(3);
+		uadVariables.add(U);
+		uadVariables.add(A);
+		uadVariables.add(D);
+		//CMF
 		// create potentials
 		pA = new TablePotential(aVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);
@@ -109,17 +125,28 @@ public class ICIOptionsPanelTest {
 		pBA.values[1] = 0.8;
 		pBA.values[2] = 0.9;
 		pBA.values[3] = 0.1;
+		//CMI Creating the TableDeltaPotential for Utility nodes
+		/*
 		pU = new TablePotential(adVariables, 
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		//CMI There is not utilityVariable any more
-		/*
 		pU.setUtilityVariable(U);
 		*/
+	
+		pU = new TableDeltaPotential(uadVariables, 
+				PotentialRole.CONDITIONAL_PROBABILITY);
 		//CMF
+		//CMI adding values to pU.getTablePotential
+		/*
 		pU.values[0] = 1;
 		pU.values[1] = 2;
 		pU.values[2] = 3;
 		pU.values[3] = 4;
+		*/
+		pU.getTablePotential().values[0] = 1;
+		pU.getTablePotential().values[1] = 2;
+		pU.getTablePotential().values[2] = 3;
+		pU.getTablePotential().values[3] = 4;
+		//CMF
 		simpleProbNet = new ProbNet();
 		simpleProbNet.addConstraint(new NoCycle(), true);
 		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
