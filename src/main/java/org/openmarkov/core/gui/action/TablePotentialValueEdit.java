@@ -195,7 +195,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		double[] test;
 		try{
 			potential = node.getPotentials().get(0);
-			this.setTableDeltaPotential(potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential"));
+			this.setTableDeltaPotential(potential instanceof TableDeltaPotential);
 		    if (isTableDeltaPotential()){
 		        this.oldTableDeltaPotential= (TableDeltaPotential)(potential);		    	
 		        this.oldTablePotential=((TableDeltaPotential)potential).getTablePotential();

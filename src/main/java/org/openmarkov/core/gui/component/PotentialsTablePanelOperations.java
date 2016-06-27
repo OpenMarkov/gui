@@ -350,7 +350,8 @@ public void checkIfNoPotential(List<Potential> listPotentials)
  * @return true if the class of the potential is TableDeltaPotential; false otherwise
  */
 public boolean getIsTableDeltaPotential(Potential potential){
-	return potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential");   	
+	return (potential instanceof TableDeltaPotential); 
+	// potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential");   	
 }
 
 

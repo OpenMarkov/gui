@@ -245,7 +245,7 @@ public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifi
     }
     //Adding the initialisation of isTableDeltaPotential
     
-    this.isTableDeltaPotential=node.getPotentials().get(0).getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential");
+    this.isTableDeltaPotential=(node.getPotentials().get(0) instanceof TableDeltaPotential);
     if (isTableDeltaPotential){
     	tablePotential=((TableDeltaPotential)(this.potential)).getTablePotential();
     } else if (node.getPotentials().get(0).getClass().getName().equals("org.openmarkov.core.model.network.potential.TablePotential")) 
