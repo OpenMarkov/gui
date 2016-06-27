@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 
 @SuppressWarnings("serial")
 public class PasteEdit extends CompoundEdit
@@ -50,9 +51,11 @@ public class PasteEdit extends CompoundEdit
     // Methods
     /**
      * Generate edits and does them
+     * carmenyago only adapted the method to the change in utility potentials
      * @throws DoEditException
      * @throws WrongCriterionException
      * @throws NonProjectablePotentialException
+     * @author carmenyago
      */
     public void doEdit ()
         throws DoEditException,
@@ -150,7 +153,8 @@ public class PasteEdit extends CompoundEdit
                             potential.replaceVariable (i, variable);
                         }
                     }
-                    //CMI-->Commented to compile TablePotential; I think now it is not necessary
+                    //carmenyago Commented to adapt the code to the new potentials. Now there isn't utilityVariable
+                    // If the potential is TableDeltaPotential Iset the new childVariable
                     /*
                     if(potential.isUtility())
                     {
@@ -161,7 +165,18 @@ public class PasteEdit extends CompoundEdit
                     	}
                     }
                     */
-                    //CMF
+                    
+                	if (potential instanceof TableDeltaPotential){
+                		Variable child = ((TableDeltaPotential)potential).getChildVariable();
+                		if(newVariables.containsKey (child.getName()))
+                		{
+                			((TableDeltaPotential)potential).setChildVariable(probNet.getVariable (newVariables.get (child.getName())));
+                		}
+                
+                	}
+                    	
+                    
+                    //
                     newPotentials.add (potential);
                 }
                 newNode.setPotentials (newPotentials);
