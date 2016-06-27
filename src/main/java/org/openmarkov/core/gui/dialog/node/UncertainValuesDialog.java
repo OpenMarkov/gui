@@ -55,6 +55,7 @@ import org.openmarkov.core.model.network.modelUncertainty.RangeFunction;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class UncertainValuesDialog extends OkCancelHorizontalDialog {
@@ -166,6 +167,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     // potential
     private int                    posBase;
 
+
     /**
      * @param owner
      * @param variable
@@ -177,20 +179,21 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
             throws WrongCriterionException {
         super(owner);
-        //CMI Setting isChanceVariable=true for compiling
-        isChanceVariable= true;
+        //carmenyago this constructor is never called by a utility node
         /*
         isChanceVariable = !(potential.isUtility());
         */
-        //CMF
+        isChanceVariable = true;
+        //
         distributionTypes = new ArrayList<>();
-        //CMI Now variable is always potential.getVariable(0);
+        //carmenyago now the variable of the node is always at potential.getVariable(0)
         /*
         variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
         */
         variable = potential.getVariable(0);
-        //CMF
+        //
         setTitle(getConfigurationDescription(variable, isChanceVariable, configuration));
+        
         posBase = getPositionBaseUncertainValue(potential, configuration);
         setResizable(true);
         JPanel componentsPanel = getComponentsPanel();
@@ -222,6 +225,68 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         setLocation(new Point(x, y));
     }
 
+    
+    
+    /**
+     * Creates and displays the UncertainValuesDialog for a TableDeltaPotential
+     * @param owner
+     * @param configuration
+     * @param potential
+     * 			- tableDeltaPotential for which we will set uncertainty
+     * @throws WrongCriterionException
+     * @wbp.parser.constructor
+     * @author carmenyago -minor changes to the TablePotential method
+     */
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TableDeltaPotential potential)
+            throws WrongCriterionException {
+        super(owner);
+        TablePotential tablePotential= potential.getTablePotential();
+        //carmenyago this constructor is always called in a utility node
+        /*
+        isChanceVariable = !(potential.isUtility());
+        */
+        isChanceVariable = false;
+        //
+        distributionTypes = new ArrayList<>();
+        //carmenyago now the variable of the node is always at potential.getVariable(0)
+        /*
+        variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
+        */
+        variable = potential.getVariable(0);
+        setTitle(getConfigurationDescription(variable, isChanceVariable, configuration));
+        posBase = getPositionBaseUncertainValue(tablePotential, configuration);
+        setResizable(true);
+        JPanel componentsPanel = getComponentsPanel();
+        // Panel of distributions
+        distributionsPanel = new JPanel();
+        fillDistributionsTableModel(variable, configuration, tablePotential);
+        distributionTable.getModel().addTableModelListener(new DistributionsTableListener());
+        distributionTable.addMouseListener(new DistributionsTableMouseListener());
+        distributionsPanel.setBorder(new TitledBorder("Distributions"));
+        JScrollPane distributionsTablePane = new JScrollPane(distributionTable);
+        distributionsPanel.add(distributionsTablePane);
+        distributionsTablePane.setPreferredSize(new Dimension(300, 100));
+        distributionsPanel.setPreferredSize(new Dimension(350, 150));
+        componentsPanel.add(distributionsPanel);
+        try {
+            initialize();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    stringDatabase.getString(e.getMessage()),
+                    stringDatabase.getString(e.getMessage()),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        Point parentLocation = owner.getLocation();
+        Dimension parentSize = owner.getSize();
+        int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
+        int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
+        setLocation(new Point(x, y));
+    }
+    
+    
+    
     public int requestUncertainValues() {
         setVisible(true);
         return this.selectedButton;
@@ -269,22 +334,17 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
             EvidenceCase configuration,
             TablePotential potential)
             throws WrongCriterionException {
-    	//CMI
-    	return;
-    	//CMF
-    	//CMI
-    	/*
-        UncertainValue[] uncertainTable = potential.getUncertaintyTable();
+        UncertainValue[] uncertainTable = potential.getUncertainValues();
         TablePotential projectedPotential = null;
         try {
             projectedPotential = potential.tableProject(configuration, null).get(0);
         } catch (NonProjectablePotentialException e) {
             e.printStackTrace();
         }
-        UncertainValue[] projectedUncertainTable = projectedPotential.getUncertaintyTable();
+        UncertainValue[] projectedUncertainTable = projectedPotential.getUncertainValues();
         // Get the table of uncertain values
         uncertainTable = !hasUncertainValues(projectedUncertainTable)?createExactUncertainValuesFromDouble(projectedPotential):
-        	projectedPotential.getUncertaintyTable();
+        	projectedPotential.getUncertainValues();
         // Fill the table for the dialog
         
 		String[] englishColumnNames = new String[] { "State", "Distribution", "Parameters", "Name" };
@@ -322,8 +382,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         TableColumn column = columnModel.getColumn(DISTRIBUTION_COLUMN_INDEX);
         column.setCellEditor(new DefaultCellEditor(distributionTypesCombo));
         columnModel.getColumn(0).setCellEditor(null);
-        */
-    	//CMF
     }
 
     private String getString(double[] parameters) {
