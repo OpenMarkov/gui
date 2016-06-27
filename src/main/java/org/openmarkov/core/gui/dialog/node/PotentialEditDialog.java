@@ -49,7 +49,6 @@ import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -64,6 +63,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
  * @author mpalacios
  * @author jmendoza
  * @author ibermejo
+ * @author carmenyago - adapted the class to the new utility treatment; minor changes
  * @version 1.0
  * @version 1.2 jlgozalo - set class to use independent panels;
  */
@@ -254,8 +254,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * Gets the panel that matches the type of potential to be edited
      * @return the potential panel matching the potential edited.
-     * carmenyago added support for TableDelta
-     * @author carmenyago
      */
     private PotentialPanel getPotentialPanel ()
     {
@@ -263,7 +261,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
             String potentialFamily = potentialManager.getPotentialsFamily (potentialName);
-            //CMI
+            //CMI Adaptation to deal with TableDeltaPotential too
             if (potentialName.equals("TableDelta"))
             {
             	potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel ("Table",
@@ -298,18 +296,20 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * @return An integer indicating the button clicked by the user when closing
      *         this dialog
+     * @author carmenyago
+     * carmenyago only changed the treatment of the utility potentials        
      */
     public int requestValues ()
     {
         // Shows the potentials' options table
         if (node.getNodeType () == NodeType.DECISION
               && node.getPolicyType () == PolicyType.OPTIMAL
-              //CMI Removed isUtility; 
+              //carmenyago When the node is decision, the node.getPotentials ().get (0) is not utility 
               /*
               && (node.getPotentials ().isEmpty () || !node.getPotentials ().get (0).isUtility ())  
               */
-              && (node.getPotentials ().isEmpty ())
-              //CMF
+              
+              //
               && readOnly)
         {
             setEnabledDecisionOptions (true);
@@ -615,26 +615,33 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         pack();
         repaint();
     }
-
+    
+    /**
+     * This method computes if reorderVariableButton should be enabled
+     * @return true if the ReorderVariableButton should be enabled
+     */
     private boolean enableReorderVariableButton () {
         boolean enable = false;
         // We retrieve the necessary data from the node
         Potential potential = node.getPotentials ().get (0);
         int numPotentialVariables = potential.getNumVariables();
-        PotentialRole role = potential.getPotentialRole ();
-        // And if it is a utility node with more than one variable,
-        // or chance or decision node with a policy and in both cases with more than two variables,
-        // and the potential panel is of probability type,
-        // the reorder variable button should be enabled
-        //CMI How do I have to substitute PotentialRole.UTILITY
+        //carmenyago -->The role is not necessary without utilityVariabble
         /*
-        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) ||
+        PotentialRole role = potential.getPotentialRole ();
         */
-        if (((numPotentialVariables > 1 ) ||
-        //CMF		
+        //
+        //carmenyago
+        // Commented the case which considers the utility node (utilityVariable+ two parent variables in the potential)
+        /*
+        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) ||		
                 (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY) ||
                 (potential.getNumVariables () > 2 && node.hasPolicy()))
                 && getPotentialPanel () instanceof ProbabilityTablePanel) {
+            enable = true;
+        }
+        */
+        if ( (numPotentialVariables >2)		
+              && getPotentialPanel () instanceof ProbabilityTablePanel) {
             enable = true;
         }
         // Finally, the value of enable is returned
