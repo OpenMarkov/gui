@@ -327,6 +327,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * @param parents
      *            - <code>NodeWrapper</code> list of the parents
      * @return the table data to be set
+     * carmenyago only changed the catch sentence
+     * @author carmenyago
      */
     protected Object[][] convertListPotentialsToCanonicalTableFormat(Node properties) {
         Object[][] values = null;
@@ -337,7 +339,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
             values = setCanonicalTable(values, properties);
 
             setPosition(getNumberOfPostions(properties.getPotentials()));
-        //CMI Changed the list of exceptions for cheIfNoPotential    
+        //carmenyago     
         /*
         } catch (NullListPotentialsException ex) {
             values = setBlankCanonicalTable(properties);
