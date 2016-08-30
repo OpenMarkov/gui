@@ -49,8 +49,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -167,14 +167,14 @@ public class ValuesTable extends KeyTable
     protected Potential		potential = null;
     
     /**
-     * True if the class of potential is TableDeltaPotential
+     * True if the class of potential is ExactDistrPotential
      * @author carmenyago
      * 
      */
-    protected boolean isTableDeltaPotential = false;
+    protected boolean isExactDistrPotential = false;
     
     /**
-     * if isTableDeltaPotential tablePotential=potential.getTablePotential, if !isTableDeltaPotential tablePotential= (tablePotential)potential
+     * if getExactDistrPotential tablePotential=potential.getTablePotential, if !getExactDistrPotential tablePotential= (tablePotential)potential
      * @author carmenyago
      */
     protected TablePotential tablePotential = null;
@@ -219,12 +219,12 @@ public class ValuesTable extends KeyTable
 /**
  * Default constructor
  * @param node
- *			- the node with the TablePotential or TableDeltaPotential
+ *			- the node with the TablePotential or ExactDistrPotential
  * @param tableModel
- * 			- the model of the TablePotential or TableDeltaPotential
+ * 			- the model of the TablePotential or ExactDistrPotential
  * @param modifiable
  * 			- true if the table can be edited and modified
- * carmenyago added the initialisation of isTableDeltaPotentialPanel 
+ * carmenyago added the initialisation of isExactDistrPotentialPanel
  * @author carmenyago
  */
 public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifiable)
@@ -243,11 +243,11 @@ public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifi
                                      stringDatabase.getString (e.getMessage ()),
                                      JOptionPane.ERROR_MESSAGE);
     }
-    //Adding the initialisation of isTableDeltaPotential
+    //Adding the initialisation of getExactDistrPotential
     
-    this.isTableDeltaPotential=(node.getPotentials().get(0) instanceof TableDeltaPotential);
-    if (isTableDeltaPotential){
-    	tablePotential=((TableDeltaPotential)(this.potential)).getTablePotential();
+    this.isExactDistrPotential =(node.getPotentials().get(0) instanceof ExactDistrPotential);
+    if (isExactDistrPotential){
+    	tablePotential=((ExactDistrPotential)(this.potential)).getTablePotential();
     } else if (node.getPotentials().get(0).getClass().getName().equals("org.openmarkov.core.model.network.potential.TablePotential")) 
     	tablePotential=(TablePotential)this.potential;
 
@@ -574,13 +574,13 @@ public void setValueAt (Object newValue, int row, int col)
 	// Not clear if I have to use equals
     if (oldValue.equals (newValue)) return;
     // When is tablePotential, the value cannot be negative
-    if (((Double) newValue) < 0 && !isTableDeltaPotential)
+    if (((Double) newValue) < 0 && !isExactDistrPotential)
     {
         newValue = oldValue;
         JOptionPane.showMessageDialog (this.getParent (), "Introduced value cannot be negative");
     }
     //if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
-    if (!isTableDeltaPotential)
+    if (!isExactDistrPotential)
     {
     	if (lastCol != col)
         {
@@ -611,8 +611,8 @@ public void setValueAt (Object newValue, int row, int col)
       JOptionPane.ERROR_MESSAGE);
     }
     // UNCLEAR Should it be here?
-    // Sets the value in case of TableDeltaPotential
-    if (isTableDeltaPotential) super.setValueAt(newValue, row, col);
+    // Sets the value in case of ExactDistrPotential
+    if (isExactDistrPotential) super.setValueAt(newValue, row, col);
 }
 
     
@@ -1255,7 +1255,7 @@ public void setShowingAllParameters (boolean showingAllParameters)
     if (showingAllParameters)
     {
         // I suppose variable is != null and has a name
-    	if (!isTableDeltaPotential)
+    	if (!isExactDistrPotential)
         {
             String name = getVariable ().getName ();
             if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
@@ -1753,7 +1753,7 @@ public void tablePotentialValueEditHappened (TablePotentialValueEdit edit)
 {
     int position = 0;
     TablePotential editPotential = edit.getPotential ();
-    if (!edit.isTableDeltaPotential())
+    if (!edit.getExactDistrPotential())
     {
         priorityList = edit.getPriorityList ();
         ListIterator<Integer> listIterator = priorityList.listIterator ();
@@ -1822,7 +1822,7 @@ public void undoEditHappened (UndoableEditEvent event)
     {
         TablePotentialValueEdit edit = (TablePotentialValueEdit) event.getEdit ();
         TablePotential editPotential = edit.getPotential ();
-        if (!edit.isTableDeltaPotential())
+        if (!edit.getExactDistrPotential())
         {
             priorityList = edit.getPriorityList ();
             for (Integer position : priorityList)

@@ -261,8 +261,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         {
             String potentialName = (String) potentialTypeComboBox.getSelectedItem ();
             String potentialFamily = potentialManager.getPotentialsFamily (potentialName);
-            //CMI Adaptation to deal with TableDeltaPotential too
-            if (potentialName.equals("TableDelta"))
+            //CMI Adaptation to deal with ExactDistrPotential too
+            if (potentialName.equals("Exact33"))
             {
             	potentialPanel = PotentialPanelManager.getInstance ().getPotentialPanel ("Table",
             			potentialManager.getPotentialsFamily ("Table"),

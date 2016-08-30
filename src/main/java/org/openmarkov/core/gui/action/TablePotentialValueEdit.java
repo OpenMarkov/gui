@@ -19,8 +19,8 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 //import org.openmarkov.core.model.network.Variable;
 //import org.openmarkov.core.model.network.potential.Potential;
 //import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -34,8 +34,8 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * @version 1.0 21/12/10
  * @author mpalacios
  * 
- * @version 1.1 28/05/2016 - eliminates the different treatment of the utility nodes and introduces the behaviour of TableDeltaPotential
- * 						   - adding the attribute isTableDeltaPotential
+ * @version 1.1 28/05/2016 - eliminates the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
+ * 						   - adding the attribute getExactDistrPotential
  * @author carmenyago
  */
 @SuppressWarnings("serial")
@@ -74,18 +74,18 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	private TablePotential oldTablePotential;
 	
 	/**
-	 * True is the tablePotential belongs to a TableDeltaPotential
+	 * True is the tablePotential belongs to a ExactDistrPotential
 	 * @author carmenyago
 	 */
-	private boolean isTableDeltaPotential;
+	private boolean isExactDistrPotential;
 	
 	/**
 	 * For doEdit
 	 * @author carmenyago 
 	 * 
 	 */
-	private TableDeltaPotential oldTableDeltaPotential;
-	private TableDeltaPotential tableDeltaPotential;
+	private ExactDistrPotential oldExactDistrPotential;
+	private ExactDistrPotential exactDistrPotential;
 	/**
 	 * the increment to get the real position of the value modified
 	 */
@@ -182,7 +182,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * @param notEditablePositions
 	 *            two dimensional array with the information about editable
 	 *            positions.
-	 * carmenyago added the new initialisation of isTableDeltaPotential
+	 * carmenyago added the new initialisation of getExactDistrPotential
 	 * and for modularity changed the constructor definition to remove tablePotential  and probNet (UNCLEAR)
 	 *            
 	 * @author carmenyago           
@@ -195,11 +195,11 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		double[] test;
 		try{
 			potential = node.getPotentials().get(0);
-			this.setTableDeltaPotential(potential instanceof TableDeltaPotential);
-		    if (isTableDeltaPotential()){
-		        this.oldTableDeltaPotential= (TableDeltaPotential)(potential);		    	
-		        this.oldTablePotential=((TableDeltaPotential)potential).getTablePotential();
-		        test=((TableDeltaPotential)potential).getTablePotential().getValues();
+			this.setExactDistrPotential(potential instanceof ExactDistrPotential);
+		    if (getExactDistrPotential()){
+		        this.oldExactDistrPotential = (ExactDistrPotential)(potential);
+		        this.oldTablePotential=((ExactDistrPotential)potential).getTablePotential();
+		        test=((ExactDistrPotential)potential).getTablePotential().getValues();
 		    } else this.oldTablePotential=(TablePotential)potential;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -220,16 +220,16 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(node) - row;
 		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
 		
-		if (isTableDeltaPotential){
+		if (isExactDistrPotential){
 			//copy returns null so 
-			this.tableDeltaPotential= new TableDeltaPotential(
-					((TableDeltaPotential)potential).getVariables(),
-					((TableDeltaPotential)potential).getPotentialRole());
+			this.exactDistrPotential = new ExactDistrPotential(
+					((ExactDistrPotential)potential).getVariables(),
+					((ExactDistrPotential)potential).getPotentialRole());
 			
-			TablePotential newPotential=(TablePotential)(oldTableDeltaPotential.getTablePotential().copy());
-			this.tableDeltaPotential.setTablePotential(newPotential);
+			TablePotential newPotential=(TablePotential)(oldExactDistrPotential.getTablePotential().copy());
+			this.exactDistrPotential.setTablePotential(newPotential);
 			this.tablePotential=newPotential;
-			this.newTable= this.tableDeltaPotential.getTablePotential().getValues();
+			this.newTable= this.exactDistrPotential.getTablePotential().getValues();
 		} else{
 			// Reorder the values table of TablePotential
 			this.tablePotential = (TablePotential) oldTablePotential.copy();
@@ -325,17 +325,17 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	/** 
 	 * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
 	 * and updates the probNet
-	 * In case the potential is TableDeltaPotential... 
+	 * In case the potential is ExactDistrPotential...
 	 * @throws <code>DoEditException</code>
-	 * carmenyago only eliminated the different treatment for UTILITY role and introduced tableDeltaPotential
-	 * UNCLEAR--> Expected behaviour,  	probNet.doEdit(changePotentialEdit) will be able to distinguish is TableDeltaPotential???
+	 * carmenyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
+	 * UNCLEAR--> Expected behaviour,  	probNet.doEdit(changePotentialEdit) will be able to distinguish is ExactDistrPotential???
 	 * @author carmenyago 
 	 * 
 	 * */
 	@Override
 	public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit=null;
-		if (!isTableDeltaPotential()) {
+		if (!getExactDistrPotential()) {
 			if (priorityList.isEmpty()) {
 				// User is editing a new column of potentials //node
 				priorityList = getPriorityListInitialization();
@@ -402,7 +402,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 			newTable[potentialSelected] = newValue;
 			tablePotential.getValues()[potentialSelected]=newValue;
 			changePotentialEdit = new PotentialChangeEdit(
-					probNet, oldTableDeltaPotential, tableDeltaPotential);
+					probNet, oldExactDistrPotential, exactDistrPotential);
 		}
 		
 		try {
@@ -516,16 +516,16 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 
 	/**
 	 * 
-	 * @return true if tablePotential comes from a TableDeltaPotential
+	 * @return true if tablePotential comes from a ExactDistrPotential
 	 * @author carmenyago
 	 */
-	public boolean isTableDeltaPotential() {
-		return isTableDeltaPotential;
+	public boolean getExactDistrPotential() {
+		return isExactDistrPotential;
 	}
 
 
-	private void setTableDeltaPotential(boolean isTableDeltaPotential) {
-		this.isTableDeltaPotential = isTableDeltaPotential;
+	private void setExactDistrPotential(boolean isExactDistrPotential) {
+		this.isExactDistrPotential = isExactDistrPotential;
 	}
 
 }

@@ -24,9 +24,9 @@ import org.openmarkov.core.exception.NullPotentialException;
 import org.openmarkov.core.model.network.Node;
 //import org.openmarkov.core.model.network.NodeType;
 //import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 //import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -259,7 +259,7 @@ public int calculateLastEditableRow(Node node) {
 
 	int row = 0;
 	Potential potential=node.getPotentials().get(0);
-	if (getIsTableDeltaPotential(potential)) 
+	if (getIsExactDistrPotential(potential))
 		row =potential.getNumVariables()-1; 
 	else
 	// Number of parents + Number of variable states -1
@@ -328,7 +328,7 @@ public void checkIfNoPotential(List<Potential> listPotentials)
 /**
  * This method returns the potential index of the table of the first potential of the node corresponding to the (row, column) position 
  * in the Jtable 
- * If the class of the first potential is <code>TableDeltaPotential</code>, 
+ * If the class of the first potential is <code>ExactDistrPotential</code>,
  * the method returns the index in its TablePotential 
  * @param row
  * 		- the index of the row of the JTable
@@ -344,14 +344,14 @@ public void checkIfNoPotential(List<Potential> listPotentials)
  */
 
 /**
- * True if the class of the potential is TableDeltaPotential
+ * True if the class of the potential is ExactDistrPotential
  * @param potential
  * 		- The potential to check
- * @return true if the class of the potential is TableDeltaPotential; false otherwise
+ * @return true if the class of the potential is ExactDistrPotential; false otherwise
  */
-public boolean getIsTableDeltaPotential(Potential potential){
-	return (potential instanceof TableDeltaPotential); 
-	// potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.TableDeltaPotential");   	
+public boolean getIsExactDistrPotential(Potential potential){
+	return (potential instanceof ExactDistrPotential);
+	// potential.getClass().getName().equals("org.openmarkov.core.model.network.potential.ExactDistrPotential");
 }
 
 
@@ -448,8 +448,8 @@ public int getPotentialStartIndexOfColumn(int column, Node node) {
 	Potential potential= node.getPotentials().get(0);
 	TablePotential tablePotential=null;
 
-	if (getIsTableDeltaPotential(potential))
-		tablePotential=((TableDeltaPotential)potential).getTablePotential();
+	if (getIsExactDistrPotential(potential))
+		tablePotential=((ExactDistrPotential)potential).getTablePotential();
 	else
 		tablePotential = (TablePotential)potential;
 
@@ -477,7 +477,7 @@ public int getPotentialStartIndexOfColumn(int column, Node node) {
 		numberOfDimensions = dimensions.length - 1;
 	
 	int lowerBound = 0;
-	if (getIsTableDeltaPotential(potential)) lowerBound = -1; 
+	if (getIsExactDistrPotential(potential)) lowerBound = -1;
 	for (int i = numberOfDimensions; i > lowerBound; i--) {
 		int dimension = dimensions[i];
 		position += (temp % dimension) * tablePotential.getOffsets()[i];

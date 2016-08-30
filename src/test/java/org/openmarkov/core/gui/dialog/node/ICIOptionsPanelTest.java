@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * behavior).
  * 
  * @author jlgozalo
- * @author carmenyago -->changed the tablePotential of U for a TableDeltaPotential; minor changes
+ * @author carmenyago -->changed the tablePotential of U for a ExactDistrPotential; minor changes
  * @version 1.0
  */
 public class ICIOptionsPanelTest {
@@ -84,9 +84,9 @@ public class ICIOptionsPanelTest {
 		//CMF
 		TablePotential pA;
 		TablePotential pBA;
-		// CMI-->Now it is TableDeltaPotential
+		// CMI-->Now it is ExactDistrPotential
 		// TablePotential pU;
-		TableDeltaPotential pU;
+		ExactDistrPotential pU;
 		// CMF
 		ProbNet simpleProbNet;
 		
@@ -125,14 +125,14 @@ public class ICIOptionsPanelTest {
 		pBA.values[1] = 0.8;
 		pBA.values[2] = 0.9;
 		pBA.values[3] = 0.1;
-		//CMI Creating the TableDeltaPotential for Utility nodes
+		//CMI Creating the ExactDistrPotential for Utility nodes
 		/*
 		pU = new TablePotential(adVariables, 
 				PotentialRole.CONDITIONAL_PROBABILITY);
 		pU.setUtilityVariable(U);
 		*/
 	
-		pU = new TableDeltaPotential(uadVariables, 
+		pU = new ExactDistrPotential(uadVariables,
 				PotentialRole.CONDITIONAL_PROBABILITY);
 		//CMF
 		//CMI adding values to pU.getTablePotential

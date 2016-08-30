@@ -55,7 +55,7 @@ import org.openmarkov.core.model.network.modelUncertainty.RangeFunction;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
 import org.openmarkov.core.model.network.modelUncertainty.TriangularFunction;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 public class UncertainValuesDialog extends OkCancelHorizontalDialog {
@@ -228,16 +228,16 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     
     
     /**
-     * Creates and displays the UncertainValuesDialog for a TableDeltaPotential
+     * Creates and displays the UncertainValuesDialog for a ExactDistrPotential
      * @param owner
      * @param configuration
      * @param potential
-     * 			- tableDeltaPotential for which we will set uncertainty
+     * 			- exactDistrPotential for which we will set uncertainty
      * @throws WrongCriterionException
      * @wbp.parser.constructor
      * @author carmenyago -minor changes to the TablePotential method
      */
-    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TableDeltaPotential potential)
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential)
             throws WrongCriterionException {
         super(owner);
         TablePotential tablePotential= potential.getTablePotential();

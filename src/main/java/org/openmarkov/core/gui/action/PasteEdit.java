@@ -30,7 +30,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TableDeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 
 @SuppressWarnings("serial")
 public class PasteEdit extends CompoundEdit
@@ -154,7 +154,7 @@ public class PasteEdit extends CompoundEdit
                         }
                     }
                     //carmenyago Commented to adapt the code to the new potentials. Now there isn't utilityVariable
-                    // If the potential is TableDeltaPotential Iset the new childVariable
+                    // If the potential is ExactDistrPotential Iset the new childVariable
                     /*
                     if(potential.isUtility())
                     {
@@ -166,11 +166,11 @@ public class PasteEdit extends CompoundEdit
                     }
                     */
                     
-                	if (potential instanceof TableDeltaPotential){
-                		Variable child = ((TableDeltaPotential)potential).getChildVariable();
+                	if (potential instanceof ExactDistrPotential){
+                		Variable child = ((ExactDistrPotential)potential).getChildVariable();
                 		if(newVariables.containsKey (child.getName()))
                 		{
-                			((TableDeltaPotential)potential).setChildVariable(probNet.getVariable (newVariables.get (child.getName())));
+                			((ExactDistrPotential)potential).setChildVariable(probNet.getVariable (newVariables.get (child.getName())));
                 		}
                 
                 	}
