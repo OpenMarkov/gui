@@ -426,7 +426,9 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.UTILITY_CREATION, true);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
-                setOptionEnabled (ActionCommands.DECISION_TREE, true);
+                if (currentProbNet.getNetworkType() instanceof InfluenceDiagramType) {
+                    setOptionEnabled(ActionCommands.DECISION_TREE, true);
+                }
                 setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
             if ((currentProbNet.getNetworkType () instanceof MIDType
