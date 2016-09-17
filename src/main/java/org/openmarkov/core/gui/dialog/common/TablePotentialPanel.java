@@ -45,8 +45,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 
@@ -90,14 +90,14 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	
 	/**
 	 * First potential of node;  its class  should be  org.openmarkov.core.model.network.potential.TablePotential or
-	 * org.openmarkov.core.model.network.potential.ExactDistrPotential
+	 * org.openmarkov.core.model.network.potential.TableDeltaPotential
 	 * @author carmenyago
 	 */
 	protected Potential potential = null;
 	
 	/**
 	 * When potential is an instance of TablePotential, tablePotential is potential casted as TablePotential
-	 * When potential is an instance of ExactDistrPotential, tablePotential=(TablePotential)potential.getTablePotential()
+	 * When potential is an instance of TableDeltaPotential, tablePotential=(TablePotential)potential.getTablePotential()
 	 * @author carmenyago
 	 */
 	
@@ -105,10 +105,10 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	
 	
 	/**
-	 * True if class of zeroPotential is org.openmarkov.core.model.network.potential.ExactDistrPotential
+	 * True if class of zeroPotential is org.openmarkov.core.model.network.potential.TableDeltaPotential
 	 * @author carmenyago
 	 */
-	protected boolean isExactDistrPotential =false;
+	protected boolean isTableDeltaPotential=false; 
 	
 	/**
 	 *  
@@ -172,9 +172,9 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
  * 
  * 
  * 
- * If it is not ExactDistrPotential or TablePotential it cast to TablePotential
- * @param node : node whose first potential is a TablePotential or a ExactDistrPotential
- * @author carmenyago : adaptation to ExactDistrPotential
+ * If it is not TableDeltaPotential or TablePotential it cast to TablePotential
+ * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
+ * @author carmenyago : adaptation to TableDeltaPotential
  */
 public TablePotentialPanel(Node node){
 	super();
@@ -195,8 +195,8 @@ public TablePotentialPanel(Node node){
 	this.node = node;
 	// This panel displays the first potential of the node
 	potential = node.getPotentials().get(0);
-	if (potential instanceof ExactDistrPotential){
-		isExactDistrPotential =true;
+	if (potential instanceof ExactDistrPotential){	
+		isTableDeltaPotential=true;
 		tablePotential=((ExactDistrPotential)potential).getTablePotential();
 	} else tablePotential= (TablePotential)potential; 
 
@@ -671,14 +671,14 @@ public TablePotentialPanel(Node node){
 		// Set the states of the node variable on the left column  
 		values = setNodeStatesInLeftArea(values);
 		
-		// Set the TablePotential/ExactDistrPotential Data on values
+		// Set the TablePotential/TableDeltaPotential Data on values
 		values = setPotentialDataInCentreArea(values);
 		
 		// UNCLEAR--> REMOVED
 		// When the potential is a TablePotential, last row is filled with the name of the node variable in values[lastRow, 0 ] 
 		// and when column>0, values[lastRow, column] is the number of the state that has the maximum value in the column 
 		/*
-		if (!getExactDistrPotential) {
+		if (!isTableDeltaPotential) {
 			values = setVariableNameInLowerLeftCornerArea(values,node);
 			values = setVariableStatesInBottomArea(values);
 		}
@@ -774,20 +774,20 @@ public TablePotentialPanel(Node node){
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
 		setBaseIndexForCoordinates(firstEditableRow);	
 			
-		if (isExactDistrPotential) setBaseIndexForCoordinates(firstEditableRow - 1); //UNCLEAR
+		if (isTableDeltaPotential) setBaseIndexForCoordinates(firstEditableRow - 1); //UNCLEAR
 
 		// Number of data elements of tablePotential
 		int tableSize =tablePotential.getTableSize();//-->UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
 		
-		// Number of states of the variable of the node; if getExactDistrPotential numDimensions=1
+		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions=1;
-		if (!isExactDistrPotential)
+		if (!isTableDeltaPotential) 
 			numDimensions = tablePotential.getDimensions()[0];
 		// Parent variables + states of node variable
 		numRows = firstEditableRow + numDimensions;
 		lastEditableRow= numRows-1;    
 		
-		/*if (!getExactDistrPotential) numRows++;*/ //--> UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
+		/*if (!isTableDeltaPotential) numRows++;*/ //--> UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
 		numColumns = numColumns + tableSize /numDimensions;	
 		
 		// create the array of arrays
@@ -991,7 +991,7 @@ public TablePotentialPanel(Node node){
 	 */
 	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
-		if (isExactDistrPotential) values[firstEditableRow][0] = node.getName();
+		if (isTableDeltaPotential) values[firstEditableRow][0] = node.getName();
 		else{
 			
 			// Why not trying lastEditableRow?
@@ -1053,8 +1053,8 @@ public TablePotentialPanel(Node node){
 	 * 
 	 * @param oldValues
 	 * 
-	 * @return an array filled with the date table from tablePotential or exactDistrPotential filled with the data values
-	 * from tablePotential or exactDistrPotential in the correct positions to be displayed by ValuesTable
+	 * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values 
+	 * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable
 	 * 
 	 */
 	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
@@ -1327,7 +1327,7 @@ public TablePotentialPanel(Node node){
 	 */
 	private Object[][] getNotEditablePositions() {
 		Object[][] notEditablePositions = createEmptyTable();
-		if (!isExactDistrPotential && hasLinkRestriction){
+		if (!isTableDeltaPotential && hasLinkRestriction){
 			
 			List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
 						.getStateCombinationsWithLinkRestriction(node);
@@ -1567,7 +1567,7 @@ public TablePotentialPanel(Node node){
 		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 		UncertainValuesDialog uncertDialog;
-		if (isExactDistrPotential){
+		if (isTableDeltaPotential){
 			uncertDialog = new UncertainValuesDialog(
 					Utilities.getOwner(this), evidenceCase, (ExactDistrPotential)potential);
 		} 
@@ -2047,7 +2047,9 @@ public TablePotentialPanel(Node node){
 			
 			
 		} else { // node.getNodeType() == NodeType.DECISION)
-			if ( (node.getPolicyType() == PolicyType.OPTIMAL) && (!isExactDistrPotential))
+			if ( (node.getPolicyType() == PolicyType.OPTIMAL) && 
+					(node.getPotentials().isEmpty() || (!node.getPotentials().get(0).hasCriterion())))
+					
 			{
 				// UNCLEAR--> When ReadOnly is se?
 				// A node has policy if is a decision node with a non uniform potential
@@ -2055,7 +2057,7 @@ public TablePotentialPanel(Node node){
 				cellRenderer = new ValuesTableOptimalPolicyCellRenderer(
 							firstEditableRow, uncertaintyInColumns, imposingPolicyByUser);
 			} else {
-				boolean showingOptimalPolicy = isExactDistrPotential && isReadOnly();
+				boolean showingOptimalPolicy = node.getPotentials().get(0).hasCriterion() && isReadOnly();
 				if (!showingOptimalPolicy) {
 					cellRenderer = new ValuesTableCellRenderer(
 								firstEditableRow, uncertaintyInColumns);
