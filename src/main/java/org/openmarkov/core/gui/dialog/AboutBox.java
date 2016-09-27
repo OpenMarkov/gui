@@ -56,7 +56,7 @@ public class AboutBox extends JDialog
      */
     private AboutBox          anAboutBox           = null;
     String                    product              = "";
-    String                    version              = "0.2.0-SNAPSHOT";
+    String                    version              = "0.3.0-SNAPSHOT";
     String                    copyright            = "";
     String                    copyright2           = "";
     String                    authors              = "";
