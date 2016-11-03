@@ -45,6 +45,7 @@ import org.openmarkov.core.gui.dialog.inference.common.ScopeSelectorPanel;
 import org.openmarkov.core.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.core.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.core.gui.dialog.io.FileChooser;
+import org.openmarkov.core.gui.dialog.io.FileFilterAll;
 import org.openmarkov.core.gui.dialog.io.FileFilterBasic;
 import org.openmarkov.core.gui.dialog.io.NetsIO;
 import org.openmarkov.core.gui.dialog.io.NetworkFileChooser;
@@ -105,6 +106,8 @@ import org.openmarkov.core.model.network.CEP;
  *          (edition/inference), - Expansion and contraction of nodes, -
  *          Introduction and elimination of evidence - Management of multiple
  *          evidence cases.
+ * @version 1.6 - carmenyago - Modify saveNetworkActions method to support several ProbModelXML formats    
+ *       
  */
 public class MainPanelListenerAssistant extends WindowAdapter implements ActionListener,
         MDIListener, PropertyNames, ComponentListener {
@@ -497,10 +500,74 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
     }
 
+    
+//CMI    
+//    /**
+//     * Saves a network in a file and makes the rest of actions in the
+//     * environment (menus, messages, etc.).
+//     * 
+//     * @param networkPanel
+//     *            network panel which contains the network to be saved.
+//     * @param fileName
+//     *            file where save the network.
+//     * @param saveOptions
+//     * @return true if the network could be saved; otherwise, false.
+//     */
+//    private boolean saveNetworkActions(NetworkPanel networkPanel,
+//            String fileName,
+//            SaveOptions saveOptions) {
+//        boolean result = false;
+//        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("SavingNetwork.Text.Label")
+//                + " "
+//                + fileName);
+//        try {
+//            if (saveOptions != null && saveOptions.isSavePlainNetwork()) {
+//                networkPanel.showPlainNetwork();
+//            }
+//            if (saveOptions != null
+//                    && saveOptions.isSaveClassesInFile()
+//                    && networkPanel.getProbNet() instanceof OOPNet) {
+//                ((OOPNet) networkPanel.getProbNet()).fillClassList();
+//            }
+//            
+//            NetsIO.saveNetworkFile(networkPanel.getProbNet(),
+//                    networkPanel.getEditorPanel().getEvidence(),
+//                    fileName);
+//            // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
+//            networkPanel.setModified(false);
+//            networkPanel.setNetworkFile(fileName);
+//            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
+//            lastOpenFiles.setLastFileName(fileName);
+//            OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+//                    getDirectoryFileName(fileName),
+//                    OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+//            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkSaved.Text.Label"));
+//            mainPanel.getMainMenu().rechargeLastOpenFiles();
+//            result = true;
+//        } catch (NotRecognisedNetworkFileExtensionException e) {
+//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//                    stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
+//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+//                    JOptionPane.ERROR_MESSAGE);
+//        } catch (CanNotWriteNetworkToFileException e) {
+//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//                    stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
+//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+//                    JOptionPane.ERROR_MESSAGE);
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//                    stringDatabase.getString("Generic I/O error"),
+//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+//                    JOptionPane.ERROR_MESSAGE);
+//        }
+//        return result;
+//    }
+
+    
     /**
-     * Saves a network in a file and makes the rest of actions in the
+     * Saves a network in a file considering the file format chosen. Also it makes the rest of actions in the
      * environment (menus, messages, etc.).
-     * 
+     * @author carmenyago
      * @param networkPanel
      *            network panel which contains the network to be saved.
      * @param fileName
@@ -509,7 +576,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      * @return true if the network could be saved; otherwise, false.
      */
     private boolean saveNetworkActions(NetworkPanel networkPanel,
-            String fileName,
+            String fileName, String fileFormat,
             SaveOptions saveOptions) {
         boolean result = false;
         mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("SavingNetwork.Text.Label")
@@ -524,12 +591,23 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                     && networkPanel.getProbNet() instanceof OOPNet) {
                 ((OOPNet) networkPanel.getProbNet()).fillClassList();
             }
+ //CMI           
+/*
             NetsIO.saveNetworkFile(networkPanel.getProbNet(),
                     networkPanel.getEditorPanel().getEvidence(),
                     fileName);
+*/
+            NetsIO.saveNetworkFile(networkPanel.getProbNet(),
+                    networkPanel.getEditorPanel().getEvidence(),
+                    fileName,fileFormat);
+
+//CMF 
             // networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
             networkPanel.setModified(false);
             networkPanel.setNetworkFile(fileName);
+//CMI
+            networkPanel.setNetworkFileFormat(fileFormat);
+//CMF
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
             lastOpenFiles.setLastFileName(fileName);
             OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
@@ -557,8 +635,25 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         return result;
     }
 
+  
+    //CMF
+    /**
+     * Saves a network in the file given by 
+     * @param networkPanel
+     * @param fileName
+     *            - the file where the network is stored
+     * @return
+     */
+    
     private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
-        return saveNetworkActions(networkPanel, fileName, null);
+        //CMI
+    	/*
+    	return saveNetworkActions(networkPanel, fileName, null);
+    	*/
+    	String fileFormat= OpenMarkovPreferences.get(OpenMarkovPreferences.LAST_OPENED_FORMAT,
+    			OpenMarkovPreferences.OPENMARKOV_FORMATS, FileChooser.DEFAULT_FILE_FORMAT);
+    	return saveNetworkActions(networkPanel, fileName, fileFormat, null);
+    	//CMF
     }
 
     /**
@@ -634,11 +729,21 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
      */
     private boolean saveNetworkAs(NetworkPanel networkPanel) {
         String fileName = networkPanel.getNetworkFile();
+        //CMI
+        /*
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
+        */
+        String fileFormat;
+        ArrayList<String> fileNameAndFormat = requestNetworkFileAndFormatToSave((fileName != null) ? fileName
+                : networkPanel.getProbNet().getName());
+        fileName= fileNameAndFormat.get(0);
+        fileFormat= fileNameAndFormat.get(1);
+        //CMF
         SaveOptions saveOptions = null;
         if (fileName != null) {
             networkPanel.setNetworkFile(fileName);
+            networkPanel.setNetworkFileFormat(fileFormat);
             networkPanel.getProbNet().setName(new File(fileName).getName());
             MainPanel mainPanel = MainPanel.getUniqueInstance();
             saveOptions = new SaveOptions(null, networkPanel.getProbNet(), true);
@@ -652,7 +757,12 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
                 saveOptions.setVisible(true);
             }
         }
+        //CMI
+        /*
         return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions) : false;
+        */
+        return (fileName != null) ? saveNetworkActions(networkPanel, fileName, fileFormat, saveOptions) : false;
+        //CMF
     }
 
     /**
@@ -677,7 +787,36 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
         return filename;
     }
-
+    
+    //CMI
+    /**
+     * 
+     * @param suggestedFileName
+     * @return a list with the absolute path of of the chosen filename and the file format chosen 
+     */
+    private ArrayList<String> requestNetworkFileAndFormatToSave(String suggestedFileName) {
+        NetworkFileChooser fileChooser = new NetworkFileChooser(false,false);
+        String title = stringDatabase.getString("SaveNetwork.Title.Label");
+        fileChooser.setDialogTitle(title);
+        fileChooser.setSelectedFile(new File(suggestedFileName));
+        ArrayList<String> fileNameAndFormat = new ArrayList<String>(); 
+        String filename = null;
+        String fileFormat = null;
+        if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+            filename = fileChooser.getSelectedFile().getAbsolutePath();
+            String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
+            if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
+                filename += "." + chosenFilterExtension.toLowerCase();
+            }
+            fileFormat = ((FileFilterAll)fileChooser.getFileFilter()).getFileDescription();
+        }
+        fileNameAndFormat.add(filename);
+        fileNameAndFormat.add(fileFormat);
+        return fileNameAndFormat;
+    }
+    //CMF
+    
+    
     /**
      * Creates a new network in the workspace. First, it requests the
      * additionalProperties of the new network and, if the user accepts the

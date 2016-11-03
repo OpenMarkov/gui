@@ -10,12 +10,19 @@
 package org.openmarkov.core.gui.dialog.io;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.gui.localize.StringDatabase;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * This class implements a file chooser dialog file to select OpenMarkov files.
@@ -38,6 +45,16 @@ public abstract class FileChooser extends JFileChooser {
 	 */
 	private static String directoryPath = System.getProperty("user.home");
 
+	//CMI
+	/**
+	 * Static field representing the default file format
+	 */
+	public static final String DEFAULT_FILE_FORMAT = "OpenMarkov.0.5.0";
+	//CMF
+	
+	
+	
+	
 	/**
 	 * Creates a new file chooser that starts in the current directory,
 	 * filtering the files with the file filters.
@@ -106,14 +123,71 @@ public abstract class FileChooser extends JFileChooser {
 
 	}
 
-	public void setFileFilter(String extension) {
+	//CMI
+//	
+//	public void setFileFilter(String extension) {
+//		for(FileFilter filter : getChoosableFileFilters())
+//		{
+//			if(filter instanceof FileFilterBasic &&
+//					((FileFilterBasic)filter).getFilterExtension().equalsIgnoreCase(extension))
+//			{
+//				setFileFilter(filter);
+//			}
+//		}
+//	}
+    
+	/**
+	 * Sets the file given by description
+	 * @param description
+	 * 			- description of de filter: "Elvira" or "OpenMarkov_version"
+	 */
+	public void setFileFilter(String description) {
+		boolean isSet=false;
 		for(FileFilter filter : getChoosableFileFilters())
 		{
-			if(filter instanceof FileFilterBasic &&
-					((FileFilterBasic)filter).getFilterExtension().equalsIgnoreCase(extension))
+			if(filter instanceof FileFilterAll &&
+					((FileFilterAll)filter).getFileDescription().equals(description))
 			{
 				setFileFilter(filter);
+				isSet=true;
+				break;
+			}
+		}
+		// In case there is an outdated value in the register
+		if (!isSet){
+			OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,FileChooser.DEFAULT_FILE_FORMAT,
+            OpenMarkovPreferences.OPENMARKOV_FORMATS);
+			description=FileChooser.DEFAULT_FILE_FORMAT;
+			for(FileFilter filter : getChoosableFileFilters())
+			{
+				if(filter instanceof FileFilterAll && ((FileFilterAll)filter).getFileDescription().equals(description))
+				{
+					setFileFilter(filter);
+					break;
+				}
 			}
 		}
 	}
+	//CMF
+
+	//CMI -- New method
+	/**
+	 * Extracts the version of a pgmx file and concatenate it to the String "OpenMarkov" for having the description of the file
+	 * @return the format OpenMarkov.version of a pgmx file
+	 * @throws ParserConfigurationException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 */
+	
+	public String getPgmxFileFormat() throws ParserConfigurationException, SAXException, IOException{
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(getSelectedFile());
+		String version=doc.getDocumentElement().getAttribute("formatVersion");
+		//Removing the last digit of the version
+		version=version.substring(0,version.lastIndexOf('.'));
+		return "OpenMarkov.".concat(version);
+			
+	}
+	//CMF
 }

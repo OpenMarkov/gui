@@ -9,13 +9,19 @@ package org.openmarkov.core.gui.dialog.io;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.openmarkov.core.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.core.io.format.annotation.FormatManager;
+import org.xml.sax.SAXException;
 
 /**
  * This class implements a file chooser dialog file to select OpenMarkov files.
@@ -34,17 +40,44 @@ public class NetworkFileChooser extends FileChooser
         super (acceptAllfile);
         FormatManager formatManager = FormatManager.getInstance ();
         HashMap<String, String> parsersListForFilters = isOpening?formatManager.getReaders():formatManager.getWriters();
-        for (String item : parsersListForFilters.keySet ())
+        //CMI List of extensions for opening a file
+        List<String> extensionList= new ArrayList<String>();
+        // for (String item : parsersListForFilters.keySet ())
+        List<String> descriptions = new ArrayList<>();
+        descriptions.addAll(parsersListForFilters.keySet ());
+        Collections.sort(descriptions);
+        for (String item : descriptions)
+        	//CMF
         {
-            addChoosableFileFilter (new FileFilterAll (parsersListForFilters.get (item), item));
+            //CMI
+        	/*
+        	addChoosableFileFilter (new FileFilterAll (parsersListForFilters.get (item), item));
+        	*/
+        	String itemExtension= parsersListForFilters.get(item);
+        	
+        	addChoosableFileFilter (new FileFilterAll (itemExtension, item));
+        	
+        	//CMF
         }
         File currentDirectory = new File (
                                           OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                                                                      OpenMarkovPreferences.OPENMARKOV_DIRECTORIES,
                                                                      "."));
         setCurrentDirectory (currentDirectory);
+        //CMI
+        /*
         setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                                   OpenMarkovPreferences.OPENMARKOV_FORMATS, "pgmx"));
+        */
+        //CMI UNCLEAR Where is set pgmx? By default LAST_OPENED_FORMAT=pgmx 
+        
+        if (isOpening){
+            setFileFilter("OpenMarkov");	
+        } else {
+        	setFileFilter (OpenMarkovPreferences.get (OpenMarkovPreferences.LAST_OPENED_FORMAT,
+                                                  OpenMarkovPreferences.OPENMARKOV_FORMATS, FileChooser.DEFAULT_FILE_FORMAT));
+        }
+        //CMF
     }
 
     public NetworkFileChooser ()
@@ -61,10 +94,27 @@ public class NetworkFileChooser extends FileChooser
         {
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                                        getSelectedFile ().getAbsolutePath (),
-                                       OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);            
+                                       OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+            // CMI
+            /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            */
+            try {
+				OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
+											getPgmxFileFormat(),
+				                          OpenMarkovPreferences.OPENMARKOV_FORMATS);
+			} catch (ParserConfigurationException e) {				
+				e.printStackTrace();
+			} catch (SAXException e) {
+				
+				e.printStackTrace();
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+            //CMF
         }
         return result;
     }
@@ -79,9 +129,20 @@ public class NetworkFileChooser extends FileChooser
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
                                        getSelectedFile ().getAbsolutePath (),
                                        OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);            
+            //CMI
+            /*
             OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT,
                                        ((FileFilterBasic) getFileFilter ()).getFilterExtension (),
                                        OpenMarkovPreferences.OPENMARKOV_FORMATS);
+            */
+           
+			OpenMarkovPreferences.set (OpenMarkovPreferences.LAST_OPENED_FORMAT, 
+										((FileFilterAll) getFileFilter ()).getFileDescription(),	
+										OpenMarkovPreferences.OPENMARKOV_FORMATS);
+			
+            //CMF
+            
+            
         }
         return result;
     }

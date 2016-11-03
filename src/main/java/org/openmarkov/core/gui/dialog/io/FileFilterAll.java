@@ -39,7 +39,7 @@ public class FileFilterAll extends FileFilterBasic {
 	 */
 	public FileFilterAll(String extension, String description) {
 		formatExtension = extension;
-		fileDescription = description;
+		setFileDescription(description);
 	}
 
 	/**
@@ -71,11 +71,31 @@ public class FileFilterAll extends FileFilterBasic {
 	@Override
 	public String getDescription() {
 
-		return StringDatabase.getUniqueInstance ().getString("FileExtension." + fileDescription + ".Description")
+		return StringDatabase.getUniqueInstance ().getString("FileExtension." + getFileDescription() + ".Description")
 			+ " (*." + formatExtension + ")";
 
 	}
+	//CMI
+	/**
+	 * @author carmenyago
+	 * @return the fileDescription used to match the filter with the proper Reader/Writer
+	 */
+	public String getFileDescription() {
+		return fileDescription;
+	}
 
+	/**
+	 *  Sets the fileDescripion used to match the filter with the proper Reader/Writer
+	 * @param the fileDescription used to match the filter with the proper Reader/Writer
+	 * @author carmenyago
+	 * 
+	 */
+	public void setFileDescription(String fileDescription) {
+		this.fileDescription = fileDescription;
+	}
+	
+	//CMF
+	
 	/**
 	 * Returns the extension of the files that match this filter.
 	 * 

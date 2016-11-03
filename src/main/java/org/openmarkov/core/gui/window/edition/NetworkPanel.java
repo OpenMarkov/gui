@@ -79,6 +79,13 @@ public class NetworkPanel extends FrameContentPanel
      * Name of the file where the network is saved (updated or not).
      */
     private String            networkFile            = null;
+    
+    //CMI
+    /**
+     * Format of the file where the network is saved (updated or not).
+     */
+    private String            networkFileFormat            = null;
+    //CMF
     /**
      * Indicates if the network has been modified.
      */
@@ -240,7 +247,25 @@ public class NetworkPanel extends FrameContentPanel
         networkFile = name;
     }
 
+    //CMI
     /**
+     * Returns the format of the file where the network is saved.
+     * @return a string that contains the format of the file.
+     */
+    public String getNetworkFileFormat() {
+		return networkFileFormat;
+	}
+    
+    /**
+     * Sets the format of the file where the network is saved.
+     * @param name networkFileFormat format of the file.
+     */
+	public void setNetworkFileFormat(String networkFileFormat) {
+		this.networkFileFormat = networkFileFormat;
+	}
+	//CMF
+
+	/**
      * Changes the state of the edition and carries out the necessary actions in
      * each case.
      * @param newState new edition state.
