@@ -274,6 +274,16 @@
 		<OpenMarkov>
 			<Description value="Fichero de OpenMarkov" />
 		</OpenMarkov>
+		<!-- CMI -->
+		<OpenMarkov.0.2>		
+			<Description value="Ficharo de OpenMarkov. ProbModel 0.2" />
+		</OpenMarkov.0.2>
+
+		<OpenMarkov.0.5>		
+			<Description value="Fichero de OpenMarkov. ProbModel 0.5" />
+		</OpenMarkov.0.5>
+
+		<!-- CMF -->
 	</FileExtension>
 	<LanguageDialog>
 		<Title>
