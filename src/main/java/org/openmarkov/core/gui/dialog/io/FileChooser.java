@@ -139,7 +139,7 @@ public abstract class FileChooser extends JFileChooser {
 	/**
 	 * Sets the file given by description
 	 * @param description
-	 * 			- description of de filter: "Elvira" or "OpenMarkov_version"
+	 * 			- description of the filter: "Elvira" or "OpenMarkov_version"
 	 */
 	public void setFileFilter(String description) {
 		boolean isSet=false;
