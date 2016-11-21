@@ -126,6 +126,31 @@
 			<artifactId>org.openmarkov.inference.tasks</artifactId>
 			<version>0.2.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
+			<version>0.1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.decompositionIntoSymmetricDANs</artifactId>
+			<version>0.1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.heuristic.CanoAndMoral</artifactId>
+			<version>0.1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.heuristic.hybridElimination</artifactId>
+			<version>0.1.6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openmarkov</groupId>
+			<artifactId>org.openmarkov.inference.huginPropagation</artifactId>
+			<version>0.1.6-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
