@@ -138,7 +138,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmarkov</groupId>
-			<artifactId>org.openmarkov.inference.heuristic.CanoAndMoral</artifactId>
+			<artifactId>org.openmarkov.inference.heuristic.canoAndMoral</artifactId>
 			<version>0.1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
