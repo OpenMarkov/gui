@@ -108,6 +108,11 @@
 			<artifactId>org.openmarkov.io.probmodelxml</artifactId>
 			<version>0.1.6-SNAPSHOT</version>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.openmarkov</groupId>-->
+			<!--<artifactId>org.openmarkov.io.elvira</artifactId>-->
+			<!--<version>0.1.6-SNAPSHOT</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.openmarkov</groupId>
 			<artifactId>org.openmarkov.inference.decompositionIntoSymmetricDANs</artifactId>
