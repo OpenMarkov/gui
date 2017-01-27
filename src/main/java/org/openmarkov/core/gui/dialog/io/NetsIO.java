@@ -59,7 +59,7 @@ public class NetsIO {
 		// ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
 		
 		// CMF
-		ProbNetInfo probNetInfo = probNetReader.loadProbNet(fileName);
+		ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(fileName);
 
 		if (probNetInfo == null) {
 			System.out.println("NetsIO.openNetworkFile from " + fileName + ": probNet null");
@@ -253,7 +253,7 @@ public class NetsIO {
 		FormatManager formatManager = FormatManager.getInstance();
 		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
 
-		ProbNetInfo probNetInfo = probNetReader.loadProbNet(url.openStream(), networkName);
+		ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(networkName, url.openStream());
 
 		if (probNetInfo == null) {
 			System.out.println("NetsIO.openNetworkFile from " + networkName + ": probNet null");
