@@ -40,140 +40,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  */
 public class PotentialsTablePanelOperations implements TableMethods {
 
-//	/**
-//	 * To check if the list of <code>Potential</code>s must be changed when
-//	 * parents or states have been changed
-//	 * 
-//	 * @param listPotentials
-//	 *            - current list of potentials
-//	 * @param additionalProperties
-//	 *            - additionalProperties related to this variable
-//	 * @return new list of potentials for the variable with the changes applied
-//	 */
-//	public List<Potential> checkIfPotentialsMustBeChanged(
-//			List<Potential> listPotentials, Node properties) {
-//		List<Potential> newListPotentials = listPotentials;
-//		if (listPotentials != null) {
-//			if (listPotentials.get(0) != null) {
-//				List<Variable> variablesPotential = listPotentials.get(0)
-//						.getVariables();
-//				List<Node> parents = properties.getParents();
-//				if ((variablesPotential.size() - 1) > parents.size()) {
-//					newListPotentials = doDeleteParent(listPotentials,
-//							properties);
-//				} else if ((variablesPotential.size() - 1) < parents.size()) {
-//					newListPotentials = doAddParent(listPotentials, properties);
-//				}
-//			}
-//		}
-//		return newListPotentials;
-//	}
 
-//	/**
-//	 * Method to generate a new ArrayList of <code>Potential</code> by adding a
-//	 * new parent to the previous ones
-//	 * 
-//	 * @param listPotentials
-//	 *            - previous list of potentials
-//	 * @param additionalProperties
-//	 *            - additionalProperties related to the variable in use that
-//	 *            contains a new parent
-//	 * @return new list of Potentials with the new parent add
-//	 */
-//	private List<Potential> doAddParent(List<Potential> listPotentials,
-//			Node properties) {
-//		List<Potential> newListPotentials = new ArrayList<Potential>();
-//		List<Variable> variables = new ArrayList<Variable>();
-//		// first, this variable. The potentials is not null
-//		Variable thisVariable = listPotentials.get(0).getVariable(0);
-//		variables.add(thisVariable); // this variable
-//		int numOfCellsInTable = thisVariable.getNumStates();
-//		double initialValue = 1 / (new Double(numOfCellsInTable));
-//		if (properties.getNodeType() == NodeType.UTILITY) {
-//			initialValue = 0;
-//		}
-//		// add now all the parents
-//		for (Node node : properties.getParents()) {
-//			variables.add(node.getVariable());
-//			numOfCellsInTable *= node.getVariable().getNumStates();
-//		}
-//		// sets a new table with new columns and with all the same values
-//		double[] table = new double[numOfCellsInTable];
-//		for (int i = 0; i < numOfCellsInTable; i++) {
-//			table[i] = initialValue;
-//		}
-//		// and finally, create the potential and the list of potentials
-//		TablePotential tablePotential = new TablePotential(variables,
-//				PotentialRole.CONDITIONAL_PROBABILITY, table);
-//		newListPotentials.add(tablePotential);
-//		return newListPotentials;
-//	}
-
-//	/**
-//	 * Method to generate a new ArrayList of <code>Potential</code> by removing
-//	 * a parent from the previous ones
-//	 * 
-//	 * @param listPotentials
-//	 *            - previous list of potentials
-//	 * @param additionalProperties
-//	 *            - additionalProperties related to the variable in use that
-//	 *            contains the parent
-//	 * @return new list of Potentials with the parent removed
-//	 */
-//	private List<Potential> doDeleteParent(List<Potential> listPotentials,
-//			Node properties) {
-//		List<Potential> newListPotentials = new ArrayList<Potential>();
-//		List<Variable> variables = new ArrayList<Variable>();
-//		// first, this variable. The potentials is not null
-//		Variable thisVariable = listPotentials.get(0).getVariable(0);
-//		variables.add(thisVariable); // this variable
-//		int numOfCellsInTable = thisVariable.getNumStates();
-//		double initialValue = 1 / (new Double(numOfCellsInTable));
-//		// add now all the parents
-//		for (Node node : properties.getParents()) {
-//			variables.add(node.getVariable());
-//			numOfCellsInTable *= node.getVariable().getNumStates();
-//		}
-//		// sets a new table with new columns and with all the same values
-//		double[] table = new double[numOfCellsInTable];
-//		for (int i = 0; i < numOfCellsInTable; i++) {
-//			table[i] = initialValue;
-//		}
-//		// and finally, create the potential and the list of potentials
-//		TablePotential tablePotential = new TablePotential(variables,
-//				PotentialRole.CONDITIONAL_PROBABILITY, table);
-//		newListPotentials.add(tablePotential);
-//		return newListPotentials;
-//	}
-
-//	/**
-//	 * calculate the first editable Row of the table, based upon:
-//	 * <p>
-//	 * <ul>
-//	 * <li>number of parents for the node</li>
-//	 * <li>type of the node (utility or other)</li>
-//	 * </ul>
-//	 * 
-//	 * @param potentials
-//	 *            - potentials for the variable
-//	 * @param additionalProperties
-//	 *            - additionalProperties for this variable
-//	 */
-//	@Override
-//	public int calculateFirstEditableRow(Node node) {
-//		int row = 0;
-//		if (node.getPotentials() != null) {
-//			if (node.getNodeType() == NodeType.UTILITY) {
-//				row = node.getPotentials().get(0).getNumVariables();
-//			} else {
-//				row = node.getPotentials().get(0).getNumVariables() - 1;
-//			}
-//		} else {
-//			row = 0;
-//		}
-//
-//		return row;
-//	}
 
 	
 	
@@ -200,42 +67,6 @@ public int calculateFirstEditableRow(Node node) {
 	return row;
 }
 	
-	
-		
-//	/**
-//	 * calculate the last editable Row of the table, based upon:
-//	 * <p>
-//	 * <ul>
-//	 * <li>number of parents for the node</li>
-//	 * <li>type of the node (utility or other)</li>
-//	 * </ul>
-//	 * 
-//	 * @param listPotentials
-//	 *            - potentials for the variable
-//	 * @param additionalProperties
-//	 *            - additionalProperties for this variable
-//	 */
-//	@Override
-//	public int calculateLastEditableRow(Node node) {
-//		int row = 0;
-//		if (node.getPotentials() != null) {
-//			// Get the number of parents
-//			row = node.getPotentials().get(0).getNumVariables() - 1;
-//			if (node.getNodeType() == NodeType.UTILITY) {
-//				row += 1;
-//			} else {
-//				row += node.getVariable().getStates().length - 1;
-//			}
-//			/*
-//			 * if (properties.getNodeType() == NodeType.UTILITY) { row += 1; }
-//			 * else { row += properties.getVariable().getStates().length; }
-//			 */
-//		} else {
-//			row = 0;
-//		}
-//
-//		return row;
-//	}
 
 
 /**
@@ -268,27 +99,6 @@ public int calculateLastEditableRow(Node node) {
 	return row;
 }
 
-//	/**
-//	 * determine if a list of potentials is empty or not
-//	 * 
-//	 * @param listPotentials
-//	 *            - the list of potentials to check
-//	 *            
-//	 * 
-//	 */
-//	public void checkIfNoPotential(List<Potential> listPotentials)
-//			throws NullListPotentialsException {
-//		if (listPotentials == null) {
-//			throw new NullListPotentialsException("");
-//		} else {
-//			try {
-//				listPotentials.get(0);
-//			} catch (IndexOutOfBoundsException ex) {
-//				throw new NullListPotentialsException("");
-//			}
-//		}
-//	}	
-	
 	
 /**
  * This method determines if a list of potentials is empty or not. If the 
@@ -310,19 +120,6 @@ public void checkIfNoPotential(List<Potential> listPotentials)
 	if (listPotentials.isEmpty()) throw new NullPotentialException("");
 }
 
-//	@Override
-//	public int getPotentialIndex(int row, int column, Node node) {
-//
-//		// First of all we get the start index of the column
-//		int potentialIndex = getPotentialStartIndexOfColumn(column, node);
-//
-//		// We get the last editable row in the JTable
-//		int lastRow = calculateLastEditableRow(node);
-//
-//		// Then we move a number of positions equals to the row (without the headers)
-//		potentialIndex += (lastRow - row);
-//		return potentialIndex;
-//	}
 	
 
 /**
@@ -375,47 +172,77 @@ public int getPotentialIndex(int row, int column, Node node) {
 	return potentialIndex;
 }	
 	
+//CMI
+/**
+* Created for univariateDistributions 
+*/
 
-//	/**
-//	 * Gets the index of the first potential of a column
-//	 * 
-//	 * @param column
-//	 * @return index of the potential
-//	 */
-//	public int getPotentialStartIndexOfColumn(int column, Node node) {
-//		TablePotential tablePotential = (TablePotential) node.getPotentials()
-//				.get(0);
-//		int position = 0;
-//
-//		// We use a temporal value to make the column 1 as the first (column 0)
-//		int temp = column - 1;
-//		if (tablePotential.getDimensions() != null) {
-//			// In this code we get the coordinates (states index) of the
-//			// variable and
-//			// we calculate the position in the list of potentials. The position
-//			// is the product of each state index and the respective offset
-//			// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
-//			int numberOfDimensions = tablePotential.getDimensions().length - 1;
-//			int lowerBound = 0;
-//			if (node.getNodeType() == NodeType.UTILITY) {
-//				// numberOfDimensions += 1;
-//				lowerBound = -1;
-//			}
-//			for (int i = numberOfDimensions; i > lowerBound; i--) {
-//				// Dimension of the first parent
-//				int dimension = tablePotential.getDimensions()[i];
-//
-//				// In each iteration this code add the s[i]*offset[i] to the
-//				// position
-//				position += (temp % dimension) * tablePotential.getOffsets()[i];
-//				temp = temp / dimension;
-//			}
-//
-//		} else {
-//			position = 0;
-//		}
-//		return position;
-//	}
+public int getPotentialIndex(int row, int column, TablePotential tableDistribution) {
+	// First of all we get the start index of the column
+	int potentialIndex = getPotentialStartIndexOfColumn(column, tableDistribution);
+  
+	// We get the last editable row in the JTable
+	int lastRow = calculateLastEditableRow(tableDistribution);
+
+	// Then we move a number of positions equals to the row (without the headers)
+	potentialIndex += (lastRow - row);
+	return potentialIndex;
+}	
+
+
+public int getPotentialStartIndexOfColumn(int column, TablePotential tablePotential) {
+		
+	// Index in tablePotential of the beginning of the column
+	int position=0;
+	// Making the column 1 as the first (column 0)
+	int temp = column - 1;
+	
+	// In this code we get the coordinates (states index) of the variable and
+	// we calculate the position in the list of potentials. The position
+	// The position is the product of each state index and the respective offset
+	// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
+	
+	// Dimensions--> list with the states of each variable of the potential
+	// 
+	// Now there is no difference between CHANCE and UTILITY
+	int[] dimensions =tablePotential.getDimensions();
+	int numberOfDimensions=0;
+	if (dimensions ==null){
+		return 0;
+	}else
+		numberOfDimensions = dimensions.length - 1;
+	
+	int lowerBound = 0;
+	//if (getIsExactDistrPotential(potential)) lowerBound = -1;
+	for (int i = numberOfDimensions; i > lowerBound; i--) {
+		int dimension = dimensions[i];
+		position += (temp % dimension) * tablePotential.getOffsets()[i];
+		temp = temp / dimension;
+	}
+		return position;		
+}
+
+
+public int calculateFirstEditableRow(TablePotential potential) {
+	int row = 0;
+	row = potential.getNumVariables() -1;		
+	return row;
+}
+
+
+public int calculateLastEditableRow(TablePotential potential) {
+
+	int row = 0;
+//	if (getIsExactDistrPotential(potential))
+//		row =potential.getNumVariables()-1; 
+
+	// Number of parents + Number of variable states -1
+	row = potential.getNumVariables() - 1 + potential.getVariable(0).getStates().length - 1; 	 		
+	return row;
+}
+
+//CMF
+
 
 /**
  * Given the number of column of a JTable, 
