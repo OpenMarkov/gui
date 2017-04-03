@@ -117,13 +117,6 @@ public class ValuesTable extends KeyTable
      * last editable row. By default, it is zero until runtime initialisation
      */
     protected int                              lastEditableRow            = 0;
-//CMI -->There is not deterministic tables
-//    /**
-//     * define if the model is deterministic or probabilistic. By default, the
-//     * model is probabilistic (false)
-//     */
-//    protected boolean                          deterministic              = false;
-// CMF  
     /**
      * define if the table is using General or Canonical Potentials
      * <ul>
@@ -196,24 +189,7 @@ public class ValuesTable extends KeyTable
     private boolean                            isSelectAllForActionEvent  = false;
     private boolean                            isSelectAllForKeyEvent     = false;
 
-//    /**
-//     * default constructor with parameters
-//     */
-//    public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifiable)
-//    {
-//        super (tableModel, modifiable, true, true);
-//        node.getProbNet ().getPNESupport ().addUndoableEditListener (this);
-//        this.tableModel = tableModel;
-//        this.node = node;
-//        this.probNet = node.getProbNet ();
-//        if (modifiable)
-//        {
-//            int numRowsModel = tableModel.getRowCount ();
-//            int numColumsModel = tableModel.getColumnCount ();
-//            this.dataModified = new boolean[numRowsModel][numColumsModel];
-//            initializeDataModified (false);
-//        }
-//    }
+
     
     
 /**
@@ -323,49 +299,6 @@ public void initializeDataModified (boolean isModified)
     }
 }
 
-//    /**
-//     * This is an internal method to count how many rows are not modified in a column
-//     * @param column - the column
-//     * @param firstEditableRow - first editable row of data
-//     * @param lastEditableRow - last editable row of data
-//     * @return number of rows that are still not modified
-//     */
-//    private int countRowsNotModified (int column, int firstEditableRow, int lastEditableRow)
-//    {
-//        int value = 0;
-//        for (int i = firstEditableRow; i < lastEditableRow; i++)
-//        {
-//            if (!getDataModified ()[i][column])
-//            {
-//                value++;
-//            }
-//        }
-//        return value;
-//    }
-
-///**
-// * This is an internal method to count how many rows are not modified in a column
-// * @param column 
-// * 			- the column
-// * @param firstEditableRow 
-// * 			- first editable row of data
-// * @param lastEditableRow 
-// * 			- last editable row of data
-// * @return number of rows that are still not modified
-// * 
-// * carmenyago considered dataModified is not null and substituted the call to getDataModified to
-// * the use of dataModified variable
-// * @author carmenyago
-// */
-//private int countRowsNotModified (int column, int firstEditableRow, int lastEditableRow)
-//{
-//    int value = 0;
-//    for (int i = firstEditableRow; i < lastEditableRow; i++)
-//    {
-//        if (!dataModified[i][column]) value++; 
-//    }
-//    return value;
-//}
  
       
     
@@ -473,87 +406,6 @@ public void stopCellEditing ()
     }
 }
 
-//    /**
-//     * check the value to modify in the table and sets
-//     */
-//    public void setValueAt (Object newValue, int row, int col)
-//    {
-//        Object oldValue = getValueAt (row, col);
-//        if (((Double) newValue) < 0 && node.getNodeType () != NodeType.UTILITY)
-//        {
-//            newValue = oldValue;
-//            JOptionPane.showMessageDialog (this.getParent (), "Introduced value cannot be negative");
-//        }
-//        if (!oldValue.equals (newValue))
-//        {
-//        	TablePotential tablePotential = (TablePotential)node.getPotentials().get(0);
-//            if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION)
-//            {
-//                if (deterministic)
-//                {
-//                    checkDeterministic (oldValue, newValue, row, col);
-//                }
-//                else
-//                {
-//                    if (lastCol != col)
-//                    {
-//                        priorityList.clear ();
-//                        lastCol = col;
-//                    }
-//                    TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
-//                                                                                             node,
-//                                                                                             probNet,
-//                                                                                             tablePotential,
-//                                                                                             (Double) newValue,
-//                                                                                             row,
-//                                                                                             col,
-//                                                                                             priorityList,
-//                                                                                             getTableModel ().getNotEditablePositions ());
-//                    try
-//                    {
-//                        probNet.doEdit (nodePotentialEdit);
-//                    }
-//                    catch (ConstraintViolationException | CanNotDoEditException
-//                            | NonProjectablePotentialException | WrongCriterionException
-//                            | DoEditException e)
-//                    {
-//                        e.printStackTrace ();
-//                        JOptionPane.showMessageDialog (this,
-//                                                       stringDatabase.getString (e.getMessage ()),
-//                                                       stringDatabase.getString (e.getMessage ()),
-//                                                       JOptionPane.ERROR_MESSAGE);
-//                    }
-//                }
-//            }
-//            else if (nodeType == NodeType.UTILITY)
-//            {
-//                TablePotentialValueEdit nodePotentialEdit = new TablePotentialValueEdit (
-//                                                                                         node,
-//                                                                                         probNet,
-//                                                                                         tablePotential,
-//                                                                                         (Double) newValue,
-//                                                                                         row,
-//                                                                                         col,
-//                                                                                         priorityList,
-//                                                                                         this.getTableModel ().getNotEditablePositions ());
-//                try
-//                {
-//                    probNet.doEdit (nodePotentialEdit);
-//                }
-//                catch (ConstraintViolationException | CanNotDoEditException
-//                        | NonProjectablePotentialException | WrongCriterionException
-//                        | DoEditException e)
-//                {
-//                    e.printStackTrace ();
-//                    JOptionPane.showMessageDialog (this,
-//                                                   stringDatabase.getString (e.getMessage ()),
-//                                                   stringDatabase.getString (e.getMessage ()),
-//                                                   JOptionPane.ERROR_MESSAGE);
-//                }
-//                checkUtilityValue (oldValue, newValue, row, col);
-//            }
-//        } // else it is not required to update values
-//    }
 
 /**
  * UNCLEAR-->
@@ -616,35 +468,6 @@ public void setValueAt (Object newValue, int row, int col)
 }
 
     
-///**
-// * Check if the value is valid on an Utility node.
-// * <p>
-// * @param oldValue - previous value in the cell
-// * @param newValue - new value to validate
-// * @param row - the row for the cell
-// * @param col - the column for the cell
-// */
-//public void checkUtilityValue (Object oldValue, Object newValue, int row, int col)
-//{
-//    Double value = 0.0;
-//    try
-//    {
-//        if (newValue instanceof String)
-//        {
-//            value = Double.parseDouble ((String) newValue);
-//        }
-//        else if (newValue instanceof Double)
-//        {
-//            value = (Double) newValue;
-//        }
-//        super.getModel ().setValueAt (value, row, col);
-//    }
-//    catch (Exception ex)
-//    {
-//        showNodePotentialTableErrorMsg ("Double conversion error");
-//        super.getModel ().setValueAt (oldValue, row, col);
-//    }
-//}
    
     
      
@@ -668,119 +491,10 @@ protected boolean castValue (Object newValue)
    return false;
 }
 
-//    /**
-//     * 
-//     * Check if the value is valid on a deterministic model.
-//     * <p>
-//     * In this model, every column has one cell with value 1 and the rest with value 0
-//     * @param oldValue - previous value in the cell
-//     * @param newValue - new value to validate
-//     * @param row - the row for the cell
-//     * @param col - the column for the cell
-//     */
-//    public void checkDeterministic (Object oldValue, Object newValue, int row, int col)
-//    {
-//        Double value = 0.0;
-//        try
-//        {
-//            if (newValue instanceof String)
-//            {
-//                value = Double.parseDouble ((String) newValue);
-//            }
-//            else if (newValue instanceof Double)
-//            {
-//                value = (Double) newValue;
-//            }
-//            // true if value=0 || value= 1; if value!=1 throws DeterministicValueNotAllowedException
-//            checkZeroOrOneValues (value);
-//            //
-//            assignNewDeterministicValuesToColumn (oldValue, value, row, col);
-//        }
-//        catch (DeterministicValueNotAllowedException ex)
-//        {
-//            showNodePotentialTableErrorMsg ("NodePotentialTable.Msg.DeterministicValueNotAllowed");
-//            super.getModel ().setValueAt (oldValue, row, col);
-//        }
-//    }
-
-//    /**
-//     * Name changed--> previously checkDeterministic
-//     * UNCLEAR---> What to do with the exception. Now catch it and
-//     * Check if the value is valid on a deterministic model.
-//     * <p>
-//     * In this model, every column has one cell with value 1 and the rest with value 0
-//     * @param oldValue - previous value in the cell
-//     * @param newValue - new value to validate
-//     * @param row - the row for the cell
-//     * @param col - the column for the cell
-//     * 
-//     * @author carmenyago
-//     */
-//    public void setNewDeterministicValuesToColumn (Object oldValue, Object newValue, int row, int col)
-//    {
-//        Double value = 0.0;
-//        try
-//        {
-//            if (newValue instanceof String)
-//            {
-//                value = Double.parseDouble ((String) newValue);
-//            }
-//            else if (newValue instanceof Double)
-//            {
-//                value = (Double) newValue;
-//            }
-//            // Previously true if value=0 || value= 1; if value!=1 throws DeterministicValueNotAllowedException
-//            //checkZeroOrOneValues (value);
-//            
-//            // I change the behaviour, now is assignNewDeterministicValuesToColumn which throws the exception 
-//            assignNewDeterministicValuesToColumn (oldValue, value, row, col);
-//        }
-//        catch (DeterministicValueNotAllowedException ex)
-//        {
-//            showNodePotentialTableErrorMsg ("NodePotentialTable.Msg.DeterministicValueNotAllowed");
-//            super.getModel ().setValueAt (oldValue, row, col);
-//        }
-//    }
    
     
     
     
-//    /**
-//     * Check if the value is valid on a probabilistic model
-//     * <p>
-//     * In this model, the sum of the values of the column is 1 but there are no
-//     * restrictions to the individual values
-//     * @param oldValue - previous value in the cell
-//     * @param newValue - new value to validate
-//     * @param row - the row for the cell
-//     * @param col - the column for the cell
-//     */
-//    public void checkProbabilistic (Object oldValue, Object newValue, int row, int col)
-//    {
-//        Double value = 0.0;
-//        try
-//        {
-//            if (newValue instanceof String)
-//            {
-//                value = Double.parseDouble ((String) newValue);
-//            }
-//            else if (newValue instanceof Double)
-//            {
-//                value = (Double) newValue;
-//            }
-//            checkValueBetweenZeroAndOneValues (value);
-//            int rowsToModified = existsRowsToModify (col);
-//            if (rowsToModified > 0)
-//            {
-//                assignNewProbabilisticValuesToColumn (oldValue, value, row, col, rowsToModified);
-//            }
-//        }
-//        catch (ProbabilisticValueNotAllowedException ex)
-//        {
-//            showNodePotentialTableErrorMsg ("NodePotentialTable.Msg.ProbabilisticValueNotAllowed");
-//            super.getModel ().setValueAt (oldValue, row, col);
-//        }
-//    }
 
 /**
  * show a error window message to the user with a specific msg
@@ -794,209 +508,8 @@ private void showNodePotentialTableErrorMsg (String msg)
                                    JOptionPane.ERROR_MESSAGE);
 }
 
-//    /**
-//     * Check if a value is equal to 0 or 1
-//     * @param value - the value to check
-//     * @return true if value is compliance with the condition
-//     * revised --> not changed
-//     */
-//    private boolean checkZeroOrOneValues (double value)
-//        throws DeterministicValueNotAllowedException
-//    {
-//        boolean result = false;
-//        if ((value == 1.0) || (value == 0.0))
-//        {
-//            result = true;
-//        }
-//        else
-//        {
-//            throw new DeterministicValueNotAllowedException ("");
-//        }
-//        return result;
-//    }
 
 
-///**
-//     * Check if a value is between 0 and 1 values
-//     * @param value - the value to check
-//     * @return true if value is compliance with the condition
-//     */
-//    private boolean checkValueBetweenZeroAndOneValues (double value)
-//        throws ProbabilisticValueNotAllowedException
-//    {
-//        boolean result = false;
-//        if ((value >= 0.0) & (value <= 1.0))
-//        {
-//            result = true;
-//        }
-//        else
-//        {
-//            throw new ProbabilisticValueNotAllowedException ("");
-//        }
-//        return result;
-//    }
-
-//    /**
-//     * In a particular column, this method will tell if there is still values
-//     * which have not been modified yet by the user
-//     * @param column - the column to know status
-//     * @return number of rows pending to be modified
-//     */
-//    private int existsRowsToModify (int column)
-//    {
-//        int initialRow = ((ValuesTableModel) getModel ()).getFirstEditableRow ();
-//        int numOfRowsToModify = countRowsNotModified (column, initialRow, lastEditableRow);
-//        if (numOfRowsToModify == 0)
-//        {
-//            if (askToResetDataModified ())
-//            {
-//                numOfRowsToModify = lastEditableRow - initialRow;
-//            }
-//        }
-//        return numOfRowsToModify;
-//    }
-
-//    /**
-//     * UNCLEAR-->Why does it uses lastColumn for the state when value=1 and lastColumn+1 when value=0
-//     * 
-//     * UNCLEAR-->Why when changing 0 to 1 does not control where the 1 is
-//     * 
-//     * assign new deterministic values to column with the following condition:
-//     * <p>
-//     * <ul>
-//     * <li>if the new value is 1.0, then previous 1.0 cell is set to 0.0</li>
-//     * <li>if the new value is 0.0, then previous cell is trying to be set to
-//     * 1.0 except when it is in first editable row. In this case, next cell is
-//     * set to 1.0</li>
-//     * </ul>
-//     * @param oldValue - previous value of the cell that is being edited
-//     * @param value - new value of the cell that is being edited
-//     * @param row - the row of the cell that is being edited
-//     * @param col - the column where the values are stored for the edited cell
-//     * 
-//     * revised --> UNCLEAR
-//     */
-//    private void assignNewDeterministicValuesToColumn (Object oldValue,
-//                                                       Object value,
-//                                                       int row,
-//                                                       int col) throws DeterministicValueNotAllowedException
-//    {
-//        if (value!=0 and value 
-//    	int initialRow = ((ValuesTableModel) getModel ()).getFirstEditableRow ();
-//        if (((Double) value) == 1.0)
-//        {
-//            for (int i = initialRow; i < lastEditableRow; i++)
-//            {
-//                if (((Double) super.getModel ().getValueAt (i, col)) == 1.0)
-//                {
-//                    super.getModel ().setValueAt (0.0, i, col);
-//                    super.getModel ().setValueAt (value, row, col);
-//                    String stateValue = (String) super.getModel ().getValueAt (row, 0);
-//                    //The last row gets the name of the state with the '1' value 
-//                    // UNCLEAR--> Why is not lastEditableRow +1??
-//                    super.getModel ().setValueAt (stateValue, lastEditableRow, col);
-//                    break;
-//                }
-//            }
-//        }
-//        else if (((Double) value) == 0.0)
-//        {
-//            String stateValue = "";
-//            if (row == initialRow)
-//            {
-//                if (row == lastEditableRow)
-//                {
-//                    super.getModel ().setValueAt (1.0, row, col);
-//                    stateValue = (String) super.getModel ().getValueAt (row, 0);
-//                }
-//                else
-//                {
-//                    super.getModel ().setValueAt (1.0, row + 1, col);
-//                    stateValue = (String) super.getModel ().getValueAt (row + 1, 0);
-//                }
-//            }
-//            else
-//            {
-//                super.getModel ().setValueAt (1.0, row - 1, col);
-//                stateValue = (String) super.getModel ().getValueAt (row - 1, 0);
-//            }
-//            super.getModel ().setValueAt (stateValue, lastEditableRow + 1, col);
-//            super.getModel ().setValueAt (0.0, row, col);
-//        }
-//    }
-
-//    /**
-//     * AssignNewProbabilisticValuesToColumn(...) assign new probabilistic values
-//     * to column by splitting the difference between the old and new value of
-//     * the edited cell between the other not modified cells of the column, and
-//     * ensuring that addition of all values in the column is equals to 1.
-//     * <p>
-//     * And setting the value of the edited cell to the new value.
-//     * @param oldValue - previous value of the cell that is being edited
-//     * @param value - new value of the cell that is being edited
-//     * @param row - the row of the cell that is being edited
-//     * @param col - the column where the values are stored for the edited cell
-//     */
-//    private void assignNewProbabilisticValuesToColumn (Object oldValue,
-//                                                       Object value,
-//                                                       int row,
-//                                                       int col,
-//                                                       int numRowsToModify)
-//    {
-//        int initialRow = ((ValuesTableModel) getModel ()).getFirstEditableRow ();
-//        double delta = 0.0;
-//        double summa = 0.0;
-//        double newSumma = 0.0;
-//        double auxValue = 0.0;
-//        // option 1. Delta equal distribution but only in not modified nodes
-//        for (int i = initialRow; i < lastEditableRow; i++)
-//        {
-//            if (dataModified[i][col])
-//            { // summarize all previous edited values
-//                summa = roundingDouble (summa + (Double) super.getModel ().getValueAt (i, col));
-//            }
-//        }
-//        if (dataModified[row][col])
-//        {
-//            summa = roundingDouble (summa - (Double) oldValue);
-//            numRowsToModify++;
-//        }
-//        newSumma = roundingDouble (summa + (Double) value);
-//        if (newSumma > 1.0)
-//        {
-//            showNodePotentialTableErrorMsg ("NodePotentialTable.Msg.SummaOfProbabilitiesHigherThanOne");
-//            super.getModel ().setValueAt (oldValue, row, col);
-//        }
-//        else
-//        { // probabilistic condition is valid
-//            super.getModel ().setValueAt (value, row, col);
-//            summa = newSumma;
-//            dataModified[row][col] = true;
-//            numRowsToModify--;
-//            if (numRowsToModify != 0)
-//            {
-//                delta = ((((Double) value).doubleValue () - ((Double) oldValue).doubleValue ()) / numRowsToModify);
-//                delta = roundingDouble (delta); // only 2 decimals positions
-//                for (int i = initialRow; i < lastEditableRow; i++)
-//                {
-//                    if (i != row && !dataModified[i][col])
-//                    {
-//                        // change and summarize
-//                        auxValue = (Double) super.getModel ().getValueAt (i, col);
-//                        auxValue = roundingDouble (auxValue - delta);
-//                        newSumma = roundingDouble (summa + auxValue);
-//                        if (newSumma > 1.0)
-//                        {
-//                            // ensure summa is not greater than 1
-//                            auxValue = roundingDouble (auxValue - (newSumma - 1.0));
-//                        }
-//                        summa = roundingDouble (summa + auxValue);
-//                        super.getModel ().setValueAt (auxValue, i, col);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
 /**
  * @return the variable
@@ -1047,118 +560,7 @@ public boolean isUsingGeneralPotential ()
 }
 
 
-///**
-// * @param usingGeneralPotential the usingGeneralPotential to set
-// */
-//public void setUsingGeneralPotential (int indexPotential)
-//{
-//    this.indexPotential = indexPotential;
-//    if (isUsingGeneralPotential ())
-//    {// if indexPotential == 0
-//        if ("leak".equals (getValueAt (0, getColumnCount () - 1)))
-//        {
-//            // previous model=Optimal
-//            // remove the leakColumn
-//            int index = getColumnCount () - 1;
-//            TableColumn column = getColumnModel ().getColumn (index);
-//            getColumnModel ().removeColumn (column);
-//        }
-//        else
-//        {
-//            // do nothing
-//        }
-//    }
-//    else
-//    { // canonical models
-//        if ("leak".equals (getValueAt (0, getColumnCount () - 1)))
-//        {
-//            // previous model=Optimal
-//            // do nothing
-//        }
-//        else
-//        {
-//            int rowCount = getModel ().getRowCount ();
-//            int firstRow = ((ValuesTableModel) getModel ()).getFirstEditableRow ();
-//            Object[] values = new Object[rowCount];
-//            values[0] = "leak";
-//            for (int i = 1; i < firstRow; i++)
-//            {
-//                values[i] = "-";
-//            }
-//            for (int i = firstRow; i < rowCount; i++)
-//            {
-//                values[i] = 0.0;
-//            }
-//            if (1 <= indexPotential & indexPotential <= 3)
-//            {
-//                // OR family
-//                values[rowCount - 1] = 1.0;
-//            }
-//            else if (4 <= indexPotential & indexPotential <= 6)
-//            {
-//                // AND family
-//                values[firstRow] = 1.0;
-//            }
-//            else
-//            {
-//                // error ????????
-//            }
-//            betterAddColumn ("leak", values);
-//        }
-//    }
-//}
 
-//    /**
-//     * @return the deterministic
-//     */
-//    public boolean isDeterministic ()
-//    {
-//        return deterministic;
-//    }
-
-//    /**
-//     * Define the deterministic behaviour of the table
-//     * @param deterministic the table behaviour as deterministic(true) or not
-//     */
-//    public void setDeterministic (boolean deterministic)
-//    {
-//        this.deterministic = deterministic;
-//        if (isDeterministic ())
-//        {
-//            for (int k = FIRST_EDITABLE_COLUMN; k < getModel ().getColumnCount (); k++)
-//            {
-//                double maxValue = -1;
-//                int rowPosition = -1;
-//                for (int i = ((ValuesTableModel) getModel ()).getFirstEditableRow (); i < getLastEditableRow (); i++)
-//                {
-//                    if (((Double) ((ValuesTableModel) getModel ()).getValueAt (i, k)) > maxValue)
-//                    {
-//                        maxValue = (Double) ((ValuesTableModel) getModel ()).getValueAt (i, k);
-//                        rowPosition = i;
-//                    }
-//                }
-//                for (int i = ((ValuesTableModel) getModel ()).getFirstEditableRow (); i < getLastEditableRow (); i++)
-//                {
-//                    if (i == rowPosition)
-//                    {
-//                        ((ValuesTableModel) getModel ()).setValueAt (1.0, i, k);
-//                    }
-//                    else
-//                    {
-//                        ((ValuesTableModel) getModel ()).setValueAt (0.0, i, k);
-//                    }
-//                }
-//            }
-//            // and now, by default, show in the table, the name of the state
-//            // but not the values of the cells
-//            setShowingProbabilitiesValues (false);
-//        }
-//        else
-//        {
-//            setShowingProbabilitiesValues (true);
-//        }
-//        initializeDataModified (false);
-//    }
 
 /**
  * @return the showingAllParameters
@@ -1168,67 +570,6 @@ public boolean isShowingAllParameters ()
     return showingAllParameters;
 }
 
-//    /**
-//     * Method to show/hide rows based on the showingAllParameters attribute
-//     * using a RowFilter mechanism.
-//     * <ul>
-//     * <li>If true, the table is shown completely with probabilities values
-//     * which means that there is no active row filter</li>
-//     * <li>If not, the row filter is set to show all rows except the one that
-//     * has the state name equals to the last state name.</li>
-//     * </ul>
-//     * @param showingAllParameters if true, show all; if false, show only
-//     *            independent parameters
-//     */
-//    public void setShowingAllParameters (boolean showingAllParameters)
-//    {
-//        this.showingAllParameters = showingAllParameters;
-//        tableRowSorter = new TableRowSorter<ValuesTableModel> (((ValuesTableModel) getModel ()));
-//        if (isShowingAllParameters ())
-//        {
-//            if ((getVariable () != null) && (getVariable ().getName () != null)
-//                && node.getNodeType () != NodeType.UTILITY)
-//            {
-//                String name = getVariable ().getName ();
-//                if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
-//                {
-//                    name = getRegExp (name);
-//                }
-//                if (name.contains ("(") || name.contains (")"))
-//                {
-//                    name = getRegExpParenthesis (name);
-//                }
-//                if (name.contains ("+"))
-//                {
-//                    name = name.replace ("+", "\\+");
-//                }
-//                if (name.contains ("?"))
-//                {
-//                    name = name.replace ("?", "\\?");
-//                }
-//                tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.regexFilter ("^" + name
-//                                                                                         + "$", 0)));
-//                this.setRowSorter (tableRowSorter);
-//            }
-//            else
-//            {
-//                this.setRowSorter (null);
-//            }
-//        }
-//        else
-//        {
-//            int lastRow = getModel ().getRowCount () - 1 - 1;
-//            lastRow = (lastRow < 0 ? 0 : lastRow);
-//            LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>> ();
-//            list.add (RowFilter.notFilter (RowFilter.regexFilter ((String) getModel ().getValueAt (lastRow,
-//                                                                                                   0),
-//                                                                  0)));
-//            list.add (RowFilter.notFilter (RowFilter.regexFilter (getVariable ().getName (), 0)));
-//            tableRowSorter.setRowFilter (RowFilter.andFilter (list));
-//            this.setRowSorter (tableRowSorter);
-//        }
-//    }
-//
     
  
 
@@ -1349,49 +690,6 @@ protected boolean isShowingProbabilitiesValues ()
     return showingProbabilitiesValues;
 }
 
-//    /**
-//     * Method to show/hide rows based upon the showingProbabilitiesValues
-//     * parameter. If showingProbabilitiesValues is true, table shows numerical
-//     * values for all the configurations but if showingProbabilitiesValues is
-//     * false, table shows the name of the state of the node corresponding to the
-//     * maximum value in a deterministic model.
-//     * <ul>
-//     * <li>true = show probabilities</li>
-//     * <li>false = show values</li>
-//     * </ul>
-//     * @param showingProbabilitiesValues the showingProbabilitiesValues to set
-//     */
-//    public void setShowingProbabilitiesValues (boolean showingProbabilitiesValues)
-//    {
-//        this.showingProbabilitiesValues = showingProbabilitiesValues;
-//        tableRowSorter = new TableRowSorter<ValuesTableModel> (((ValuesTableModel) getModel ()));
-//        if (isShowingProbabilitiesValues ())
-//        {
-//            if ((getVariable () != null) && (getVariable ().getName () != null))
-//            {
-//                String name = getVariable ().getName ();
-//                tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.regexFilter (name, 0)));
-//                this.setRowSorter (tableRowSorter);
-//            }
-//            else
-//            {
-//                this.setRowSorter (null);
-//            }
-//        }
-//        else
-//        {
-//            int lastRow = getModel ().getRowCount () - 1 - 1;
-//            lastRow = (lastRow < 0 ? 0 : lastRow);
-//            LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>> ();
-//            list.add (RowFilter.regexFilter ((String) getModel ().getValueAt (lastRow, 0), 0));
-//            for (State state : getVariable ().getStates ())
-//            {
-//                list.add (RowFilter.regexFilter (state.getName (), 0));
-//            }
-//            tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.orFilter (list)));
-//            this.setRowSorter (tableRowSorter);
-//        }
-//    }
 
     /**
      * @return the showingTPCvalues
@@ -1401,26 +699,6 @@ protected boolean isShowingProbabilitiesValues ()
         return showingTPCvalues;
     }
 
-//    /**
-//     * Method to show/hide rows based upon th showingProbabilitiesValues
-//     * attribute If showingProbabilities, table shows numerical values for all
-//     * the configurations but if showingValues, table shows the name of the
-//     * state of the node corresponding to the maximum value in a deterministic
-//     * model
-//     * @param showingProbabilitiesValues the showingProbabilitiesValues to set
-//     */
-//    public void setShowingTPCvalues (boolean showingTPCvalues)
-//    {
-//        this.showingTPCvalues = showingTPCvalues;
-//        if (isShowingTPCvalues ())
-//        {
-//            System.out.println ("NodePotentialTable. Showing TPC values coming soon...");
-//        }
-//        else
-//        {
-//            System.out.println ("NodePotentialTable. Showing Canonical values coming soon...");
-//        }
-//    }
 
     /**
      * @return the showingOptimal
@@ -1438,56 +716,6 @@ protected boolean isShowingProbabilitiesValues ()
         this.showingOptimal = showingOptimal;
     }
 
-// Commented because it is not used
-//    /**
-//     * Internal method to add a column without affecting the other columns in
-//     * the table. If using directly addColumn() to the JTable will cause all
-//     * columns will lost previous visual formats
-//     * @param columnHeaderName - name of the column to be used
-//     * @param values - values to be set in the column
-//     */
-//    public void betterAddColumn (Object columnHeaderName, Object[] values)
-//    {
-//        ValuesTableModel model = (ValuesTableModel) getModel ();
-//        TableColumn col = new TableColumn (model.getColumnCount ());
-//        setAutoCreateColumnsFromModel (false);
-//        col.setHeaderValue (columnHeaderName);
-//        // model.addColumn(col);
-//        model.addColumn (columnHeaderName.toString (), values);
-//        setAutoCreateColumnsFromModel (true);
-//    }
-
-// Commented because it is not used
-//    /**
-//     * UNCLEAR-->id column; I think there is no id column now. 
-//     * 
-//     * set the number of columns in the table adding one more for the variable's
-//     * states and adding one more for the id column (hidden)
-//     * @param parents - parents of the variable
-//     * @return the number of columns in the table
-//     * 
-//     * revised--> to change after solving UNCLEAR
-//     */
-//    public static int howManyColumns (Node properties)
-//    {
-//        int numColumns = 0;
-//        if (properties.getParents () != null)
-//        {
-//            int aux = 1;
-//            for (Node parent : properties.getParents ())
-//            {
-//                State[] parentStates = parent.getVariable ().getStates ();
-//                aux = aux * parentStates.length;
-//            }
-//            numColumns = aux;
-//        }
-//        else
-//        {
-//            numColumns = 1;
-//        }
-//        numColumns = FIRST_EDITABLE_COLUMN + numColumns;
-//        return numColumns;
-//    }
 
     
     
@@ -1526,32 +754,6 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
     return columnsId;
 }
 
-//    /**
-//     * Auxiliar method to ask user to confirm the reset of the control of the
-//     * data already modified.
-//     * @return <ul>
-//     *         <li>true - if user has decided to reset edition controls and
-//     *         proceed;</li>
-//     *         <li>false - otherwise</li>
-//     *         </ul>
-//     */
-//    private boolean askToResetDataModified ()
-//    {
-//        int result = -1;
-//        result = JOptionPane.showConfirmDialog (this,
-//                                                this.stringDatabase.getString ("NodePotentialTable.Msg.AllowAgainValuesToModified.Text"),
-//                                                this.stringDatabase.getString ("NodePotentialTable.Msg.AllowAgainValuesToModified.Title"),
-//                                                JOptionPane.YES_NO_OPTION);
-//        if (result == JOptionPane.YES_OPTION)
-//        {
-//            initializeDataModified (true);
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//    }
 
     /**
      * print the NodePotentialTable
@@ -1583,9 +785,6 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
         }
         System.out.println ("    lastEditableRow = " + lastEditableRow);
         System.out.println ("    usingGeneralPotencial = " + isUsingGeneralPotential ());
-        //CMI : remove deterministic table
-        //System.out.println ("    deterministic = " + isDeterministic ());
-        //CMF
         System.out.println ("    showingAllParameters = " + isShowingAllParameters ());
         System.out.println ("    showingProbabilitiesValues = " + isShowingProbabilitiesValues ());
         System.out.println ("    showingTPCvalues = " + isShowingTPCvalues ());
@@ -1607,18 +806,6 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
         decimalPositions = newDecimalPositions;
     }
 
-///**
-// * roundDouble takes a double number and returns a new double with a certain
-// * number of decimals positions, using rounding mechanism
-// * @param number - double number to be rounded
-// * @return double with only n-decimals positions
-// * revised-->not changed
-// */
-//private static final double roundingDouble (double number)
-//{
-//    double positions = Math.pow (10, (double) decimalPositions);
-//    return Math.round (number * positions) / positions;
-//}
 
 
 /**
@@ -1640,39 +827,6 @@ public void undoableEditHappened (UndoableEditEvent event)
     }
 }
 
-//    private void uncertainValuesEditHappened (UncertainValuesEdit edit)
-//    {
-//        boolean isChance;
-//        int row;
-//        int positionInValues;
-//        isChance = edit.isChanceVariable ();
-//        TablePotential tablePotential = (TablePotential) edit.getNode ().getPotentials ().get (0);
-//        List<Variable> varsPotential = tablePotential.getVariables ();
-//        int numVarsPotential = varsPotential.size ();
-//        int numParents = (isChance) ? numVarsPotential - 1 : numVarsPotential;
-//        int col = edit.getSelectedColumn ();
-//        TableModel superModel = super.getModel ();
-//        double[] values = tablePotential.values;
-//        int basePosition = edit.getBasePosition ();
-//        if (isChance)
-//        {
-//            int numStates = varsPotential.get (0).getNumStates ();
-//            int startRow = numParents + (numStates - 1);
-//            for (int i = 0; i < numStates; i++)
-//            {
-//                row = startRow - i;
-//                positionInValues = basePosition + i;
-//                superModel.setValueAt (values[positionInValues], row, col);
-//            }
-//        }
-//        else
-//        {
-//            row = numParents;
-//            //positionInValues = col - 1;
-//            positionInValues = basePosition;
-//            superModel.setValueAt (values[positionInValues], row, col);
-//        }
-//    }
 
 /**
  * Updates the table if the edited column has uncertainty   
@@ -1714,32 +868,6 @@ private void uncertainValuesEditHappened (UncertainValuesEdit edit)
 }
    
     
-    
-    
-    
-//    public void tablePotentialValueEditHappened (TablePotentialValueEdit edit)
-//    {
-//        int position = 0;
-//        TablePotential editPotential = edit.getPotential ();
-//        if (editPotential.getPotentialRole () != PotentialRole.UTILITY)
-//        {
-//            priorityList = edit.getPriorityList ();
-//            ListIterator<Integer> listIterator = priorityList.listIterator ();
-//            double[] values = editPotential.getValues ();
-//            while (listIterator.hasNext () == true)
-//            {
-//                position = (Integer) listIterator.next ();
-//                super.getModel ().setValueAt (values[position], edit.getRowPosition (position),
-//                                              edit.getColumnPosition ());
-//            }
-//        }
-//        else
-//        {
-//            position = edit.getColumnPosition () - 1;
-//            super.getModel ().setValueAt (editPotential.values[position], edit.getRowPosition (),
-//                                          edit.getColumnPosition ());
-//        }
-//    }
 
 /**
  * Sets the values in the edited column
@@ -1775,7 +903,7 @@ public void tablePotentialValueEditHappened (TablePotentialValueEdit edit)
 }
     
  /**
-  * revised-->not changed   
+  *    
   */
 public void undoableEditWillHappen (UndoableEditEvent event)
     throws ConstraintViolationException,
@@ -1784,31 +912,6 @@ public void undoableEditWillHappen (UndoableEditEvent event)
     // Ignore
 }
 
-//    public void undoEditHappened (UndoableEditEvent event)
-//    {
-//        if (event.getEdit () instanceof TablePotentialValueEdit)
-//        {
-//            TablePotentialValueEdit edit = (TablePotentialValueEdit) event.getEdit ();
-//            TablePotential editPotential = edit.getPotential ();
-//            if (editPotential.getPotentialRole () == PotentialRole.CONDITIONAL_PROBABILITY)
-//            {
-//                priorityList = edit.getPriorityList ();
-//                for (Integer position : priorityList)
-//                {
-//                    super.getModel ().setValueAt (editPotential.values[position],
-//                                                  edit.getRowPosition (position),
-//                                                  edit.getColumnPosition ());
-//                }
-//            }
-//            else if (editPotential.getPotentialRole () == PotentialRole.UTILITY)
-//            {
-//                int position = edit.getColumnPosition () - 1;
-//                super.getModel ().setValueAt (editPotential.values[position],
-//                                              edit.getRowPosition (), edit.getColumnPosition ());
-//            }
-//        }
-//    }
-//    
 
 /**
  * carmenyago only changed the role dependency
