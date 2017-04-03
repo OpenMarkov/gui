@@ -14,9 +14,12 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -32,6 +35,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.action.UnivariateDistrPotentialValueEdit;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
@@ -42,15 +46,19 @@ import org.openmarkov.core.gui.dialog.common.PotentialPanel;
 import org.openmarkov.core.gui.dialog.common.PotentialPanelManager;
 import org.openmarkov.core.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.core.gui.dialog.common.TablePotentialPanel;
+import org.openmarkov.core.gui.dialog.common.UnivariateDistrPotentialPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
@@ -114,6 +122,46 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      */
     private boolean              readOnly;
     private JButton              reorderVariablesButton;
+    
+    
+    
+    //CMI
+    //For Univariate
+    /**
+     * The JComboBox object that shows all the potentials types
+     */
+
+    private JComboBox<String>    univariateDistrComboBox;
+    /**
+     * Label for distribution type
+     */
+    private JLabel               lblUnivariateDistrComboBox;
+    /**
+     * Option deselected in the jComboboxRelationType
+     */
+    private int                  distributionOptionPreviouslySelected        = 0;
+    
+    private String               previouslySelectedDistribution = "";
+       
+    
+    /**
+     * 
+     */
+    private JComboBox<String>    univariateDistrParametrizationComboBox;
+    
+    /**
+     * 
+     */
+    private JLabel               lblParametrizationComboBox;
+    /**
+     * 
+     */
+        
+    //CMF
+
+    
+    
+    
     
     private CommentHTMLScrollPane commentPane;
     
@@ -185,6 +233,23 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().add (getPotentialTypePanel (), BorderLayout.NORTH);
         getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
 
+     //CMI
+     // For univariate        
+             if (showUnivariateDistrComboBox()){
+             	getUnivariateDistrJCombobox().setVisible(true);
+             	getUnivariateDistrJCombobox().setEnabled(true);
+             	getUnivariateDistrParametrizationJCombobox().setVisible(true);
+             	getUnivariateDistrParametrizationJCombobox().setEnabled(true);
+             }else{
+             	getUnivariateDistrJCombobox().setVisible(false);
+             	getUnivariateDistrJCombobox().setEnabled(false);
+             	getUnivariateDistrParametrizationJCombobox().setVisible(false);
+             	getUnivariateDistrParametrizationJCombobox().setEnabled(false);
+
+             }
+     //CMF
+        
+        
         if (enableReorderVariableButton())
         {
             getReorderVariablesButton ().setVisible (true);
@@ -304,12 +369,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         // Shows the potentials' options table
         if (node.getNodeType () == NodeType.DECISION
               && node.getPolicyType () == PolicyType.OPTIMAL
-              //carmenyago When the node is decision, the node.getPotentials ().get (0) is not utility 
-              /*
-              && (node.getPotentials ().isEmpty () || !node.getPotentials ().get (0).isUtility ())  
-              */
-              
-              //
               && readOnly)
         {
             setEnabledDecisionOptions (true);
@@ -366,6 +425,13 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             potentialTypePanel.setName ("potentialTypePanel");
             potentialTypePanel.add (getPotentialTypeJLabel ());
             potentialTypePanel.add (getPotentialTypeJCombobox ());
+            //CMI
+            //For Univariate
+            potentialTypePanel.add (getUnivariateDistrTypeJLabel ());
+            potentialTypePanel.add (getUnivariateDistrJCombobox ());
+            potentialTypePanel.add (getParametrizationComboBoxJLabel());
+            potentialTypePanel.add (getUnivariateDistrParametrizationJCombobox());
+            //CMF        
             potentialTypePanel.add (getReorderVariablesButton ());
             // potentialTypePanel.add( getPoliticyTypePanel() );
             // /getPoliticyTypePanel().setVisible(false);
@@ -374,6 +440,189 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         return potentialTypePanel;
     }
 
+    //CMI
+    //For Univariate
+    
+    /**
+     * @return label for the type of relations or policy
+     */
+    protected JLabel getUnivariateDistrTypeJLabel()
+    {
+        if (lblUnivariateDistrComboBox == null)
+        {
+            lblUnivariateDistrComboBox = new JLabel ();
+            lblUnivariateDistrComboBox.setName ("jLabelDistrType");
+            lblUnivariateDistrComboBox.setText ("Distribution");
+            //TODO
+            //lblDistrType.setText (stringDatabase.getString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+        }
+        return lblUnivariateDistrComboBox;
+    }
+    
+    
+   
+    
+
+    
+    private boolean showUnivariateDistrComboBox() {
+        boolean enable = false;
+        // We retrieve the necessary data from the node
+        
+        if ( getPotentialPanel () instanceof UnivariateDistrPotentialPanel) {
+        	ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
+        	List<String> distributionUnivariateNames = probDensFunctionManager.getDistributions();
+        	Collections.sort (distributionUnivariateNames);
+        	univariateDistrComboBox.setModel(new DefaultComboBoxModel<String>(distributionUnivariateNames.toArray(new String[0])));
+        	String univariateName =((UnivariateDistrPotential)(node.getPotentials().get(0))).getProbDensFunctionUnivariateName();       	
+        	univariateDistrComboBox.setSelectedItem (univariateName);
+            enable = true;
+        }
+        // Finally, the value of enable is returned
+        return enable;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    protected JComboBox<String> getUnivariateDistrJCombobox()
+    {
+    	        
+        if (univariateDistrComboBox == null)
+        {
+        	
+        	univariateDistrComboBox = new JComboBox<String>();                                      
+        	univariateDistrComboBox.setBorder (new LineBorder (
+                    UIManager.getColor ("List.dropLineColor"),
+                    1, false));
+        	univariateDistrComboBox.setName ("jComboBoxDistr");
+        	univariateDistrComboBox.addActionListener (new java.awt.event.ActionListener ()
+        	{
+        		@Override
+        		public void actionPerformed (java.awt.event.ActionEvent evt)
+        		{
+        			String univariateName= (String)univariateDistrComboBox.getSelectedItem();
+        			showUnivariateDistrParametrizationComboBox(univariateName);
+        		}
+        	});	
+        	univariateDistrComboBox.setEnabled (!readOnly);
+        }
+        	return univariateDistrComboBox;        
+  
+    }
+    
+    
+    
+    /**
+     * 
+     * @return
+     */
+    protected JComboBox<String> getUnivariateDistrParametrizationJCombobox()
+    {
+    	        
+        if (univariateDistrParametrizationComboBox == null)
+        {
+        	
+        	univariateDistrParametrizationComboBox = new JComboBox<String>();                                      
+        	univariateDistrParametrizationComboBox.setBorder (new LineBorder (
+                    UIManager.getColor ("List.dropLineColor"),
+                    1, false));
+        	univariateDistrParametrizationComboBox.setName ("jComboBoxParametrization");
+        	univariateDistrParametrizationComboBox.addActionListener (new java.awt.event.ActionListener ()
+        	{
+        		@Override
+        		public void actionPerformed (java.awt.event.ActionEvent evt)
+        		{
+        			
+           			String distributionUnivariateName =(String)univariateDistrComboBox.getSelectedItem();
+        			String distributionParameters =(String)univariateDistrParametrizationComboBox.getSelectedItem();
+        			//When we are changing the distribution the first value should be selected
+        			
+        			String distributionName = ProbDensFunctionManager.getUniqueInstance().getDistributionName(distributionUnivariateName,distributionParameters);
+        			UnivariateDistrPotentialValueEdit nodePotentialEdit = new UnivariateDistrPotentialValueEdit (
+        					node, distributionName);
+        			try{
+        				node.getProbNet ().doEdit (nodePotentialEdit);
+        			}catch (Exception e)
+        			{
+        				e.printStackTrace ();
+ 
+        			}
+ 
+           			((UnivariateDistrPotentialPanel)potentialPanel).distributionChanged( distributionName, evt);       			
+        			
+ 
+        		}
+        	});	
+        	univariateDistrParametrizationComboBox.setEnabled (!readOnly);
+        }
+        	return univariateDistrParametrizationComboBox;        
+  
+    }
+    /**
+     * 
+     * @return
+     */
+    protected JLabel getParametrizationComboBoxJLabel()
+    {
+        if (lblParametrizationComboBox == null)
+        {
+        	lblParametrizationComboBox = new JLabel ();
+        	lblParametrizationComboBox.setName ("jLabelDistrType");
+        	lblParametrizationComboBox.setText ("Parametrization");
+            //TODO
+            //lblParametrizationComboBox.setText (stringDatabase.getString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+        }
+        return lblParametrizationComboBox;
+    }    
+    
+    
+    /**
+     * 
+     * @return
+     */
+    private boolean showUnivariateDistrParametrizationComboBox(String univariateName) {
+        boolean enable = false;
+        // We retrieve the necessary data from the node
+        //UNCLEAR this if is Necessary?? 
+    	ProbDensFunctionManager probDensFunctionManager = ProbDensFunctionManager.getUniqueInstance();
+    	List<String[]> parametrizationDataList = probDensFunctionManager.getParametrizations(univariateName);
+    	List<String> parametrizationNames= new ArrayList<String>();
+    	for (String[] parametrizationData:parametrizationDataList){
+    		parametrizationNames.add(parametrizationData[0]);
+    	}
+    	Collections.sort (parametrizationNames);
+    	univariateDistrParametrizationComboBox.setModel(new DefaultComboBoxModel<String>(parametrizationNames.toArray(new String[0])));        	      	
+        String parametrizationName; 
+		if (!univariateName.equals ( ((UnivariateDistrPotential)node.getPotentials().get(0)).getProbDensFunctionUnivariateName())){
+			parametrizationName=parametrizationNames.get(0);
+		} else {
+			parametrizationName = ((UnivariateDistrPotential)node.getPotentials().get(0)).getProbDensFunctionParametrizationName();
+		}
+			 
+        univariateDistrParametrizationComboBox.setSelectedItem(parametrizationName);
+    	enable = true;
+        // Finally, the value of enable is returned
+        return enable;
+    }
+    
+    
+    
+    
+    
+    //CMF
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * @return The panel that indicates the type of the table (and perhaps the
      *         type of policy (optimal or imposed))
@@ -492,6 +741,26 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         getComponentsPanel ().remove (getPotentialPanel ());
         potentialPanel.close ();
         potentialPanel = null;
+        //CMI
+        // For Univariate        
+        if (showUnivariateDistrComboBox()){
+        	getUnivariateDistrTypeJLabel().setVisible(true);
+            getUnivariateDistrJCombobox().setVisible(true);
+            getUnivariateDistrJCombobox().setEnabled(true);
+            getParametrizationComboBoxJLabel().setVisible(true);
+            getUnivariateDistrParametrizationJCombobox().setVisible(true);
+            getUnivariateDistrParametrizationJCombobox().setEnabled(true);
+         }else{
+           	getUnivariateDistrTypeJLabel().setVisible(false);
+           	getUnivariateDistrJCombobox().setVisible(false);
+           	getUnivariateDistrJCombobox().setEnabled(false);
+                	
+           	getParametrizationComboBoxJLabel().setVisible(false);
+           	getUnivariateDistrParametrizationJCombobox().setVisible(false);
+           	getUnivariateDistrParametrizationJCombobox().setEnabled(false);
+
+        }
+        //CMF    
 
         if (enableReorderVariableButton())
         {
@@ -571,6 +840,29 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         {
             List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel ().getVariables ();
             
+            //CMI
+            //For Univariate
+            if (getPotentialPanel () instanceof UnivariateDistrPotentialPanel){
+                Potential potential = DiscretePotentialOperations.reorder((UnivariateDistrPotential)node.getPotentials().get(0),newVariables);
+                SetPotentialEdit potentialEdit = new SetPotentialEdit (node, potential);
+                try
+                {
+                		node.getProbNet ().doEdit (potentialEdit);
+                }
+                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                		| NonProjectablePotentialException | WrongCriterionException e)
+                {
+                	// TODO Auto-generated catch block
+                	e.printStackTrace ();
+                }
+                updatePotentialPanel ();
+            	
+            }            
+            //CMF
+           
+            
+            
+            
             if (getPotentialPanel () instanceof TablePotentialPanel)
             {
                 // if (node.getPotentials().get(0) instanceof
@@ -625,21 +917,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         // We retrieve the necessary data from the node
         Potential potential = node.getPotentials ().get (0);
         int numPotentialVariables = potential.getNumVariables();
-        //carmenyago -->The role is not necessary without utilityVariabble
-        /*
-        PotentialRole role = potential.getPotentialRole ();
-        */
-        //
-        //carmenyago
-        // Commented the case which considers the utility node (utilityVariable+ two parent variables in the potential)
-        /*
-        if (((numPotentialVariables > 1 && role == PotentialRole.UTILITY) ||		
-                (numPotentialVariables > 2 && role == PotentialRole.CONDITIONAL_PROBABILITY) ||
-                (potential.getNumVariables () > 2 && node.hasPolicy()))
-                && getPotentialPanel () instanceof ProbabilityTablePanel) {
-            enable = true;
-        }
-        */
+        
+        
         if ( (numPotentialVariables >2)		
               && getPotentialPanel () instanceof ProbabilityTablePanel) {
             enable = true;
