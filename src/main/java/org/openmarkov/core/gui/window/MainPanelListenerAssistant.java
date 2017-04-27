@@ -79,6 +79,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.inference.tasks.VariableElimination.VECEAGlobal;
@@ -1591,6 +1592,11 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         if (networkPanel.getModified()) {
             //TODO: revise this piece of code under the new task paradigm
             //networkPanel.setInferenceAlgorithm(null);
+        }
+
+        if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
+            System.out.println("Es una DAN!!!");
+            return;
         }
 
         //InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
