@@ -18,7 +18,7 @@ import org.openmarkov.core.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
 /**
@@ -38,10 +38,6 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 	 * The row of the table where is the potential
 	 */
 	private int row;
-	/**
-	 * The index of the value selected in the graphic table
-	 */
-	private int indexSelected;
 	/**
 	 * Index of the value selected
 	 */
@@ -63,37 +59,18 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 
 	private UnivariateDistrPotential newPotential;
 	
-	/**
-	 * The distributionTable to be Changed
-	 */
-	private TablePotential oldTablePotential;
 	
 	/**
 	 * The new distributionTable
 	 */
-	private TablePotential newTablePotential;
+	private AugmentedTable newDistributionTable;
 	
-	/**
-	 * The new values for the new distributionTable
-	 */
-	private double[] newTable;
-
-	
-	
-	/**
-	 * the increment to get the real position of the value modified
-	 */
-	private int increment;
 	
 	/**
 	 * Pseudo-util class with common operations used  in potential tables
 	 */
 	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
 
-	/**
-	 * Represents the not editable cells of the represented table
-	 */
-	private Object[][] notEditablePostitions = new Object[0][0];
 	
 	/**
 	 * The node which potential is changed
@@ -119,12 +96,11 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 	 *         - the notEditablePositions of the displayed table
 	 * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential        
 	 */
-	public UnivariateDistrPotentialValueEdit(Node node, Double newValue, int row, int col, Object[][] notEditablePositions) {
+	public UnivariateDistrPotentialValueEdit(Node node, String newValue, int row, int col, Object[][] notEditablePositions) {
 		super(node.getProbNet());
 		this.node = node;
 		try{
 			this.oldPotential = (UnivariateDistrPotential)node.getPotentials().get(0);
-			this.oldTablePotential = ((UnivariateDistrPotential)oldPotential).getDistributionTable();
 		}catch(Exception e){
 			e.printStackTrace();
 /* TODO
@@ -138,18 +114,11 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 		this.row = row;
 		this.col = col;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-		this.notEditablePostitions = notEditablePositions;
-		this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(oldTablePotential) - row;
-		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, oldTablePotential);
 
 		this.newPotential = new UnivariateDistrPotential(oldPotential);
-		this.newTablePotential = newPotential.getDistributionTable();
-		this.newTable= this.newTablePotential.getValues();
-		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, newTablePotential);
-		
-		newTable[potentialSelected] = newValue;
-		newTablePotential.getValues()[potentialSelected]=newValue;
-		
+		this.newDistributionTable = newPotential.getDistributionTable();
+		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, newDistributionTable);
+		newDistributionTable.getFunctionValues()[potentialSelected]=newValue;		
 	}
 	
 	/**
@@ -211,69 +180,9 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 		}
 	}
 
+		
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * Gets the table-potential of the node
-	 * 
-	 * @return variable1 <code>Variable</code>
-	 */
-	public TablePotential getPotential() {
-		return newTablePotential;
-	}
 
-	
-	/*
-	 * private double roundingDouble(double number) { double positions =
-	 * Math.pow( 10, (double) decimalPositions ); return Math.round( number *
-	 * positions ) / positions; }
-	 */
 	/**
 	 * Gets the row position associated to value edited if priorityList exists
 	 * 
@@ -283,7 +192,7 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 	 */
 	public int getRowPosition(int position) {
 		int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
-		return lastRow - position % newTablePotential.getDimensions()[0];
+		return lastRow - position % newDistributionTable.getDimensions()[0];
 	}
 
 	/**
@@ -307,26 +216,6 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 		return col;
 	}
 
-	/***
-	 * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
-	 * UNCLEAR--> Have I to change the behaviour; depends on doEdit()
-	 * @param position
-	 * @return true if the cell is editable
-	 * revised-->not changed
-	 */
-	private boolean isEditablePosition(int position) {
-		boolean editable = false;
-		int row = getRowPosition(position);
-		if (this.notEditablePostitions.length > row
-				&& this.notEditablePostitions[0].length > col) {
-			if (this.notEditablePostitions[row][col] == null) {
-				editable = true;
-			}
-		} else {
-			editable = true;
-		}
-		return editable;
-	}
-
+	
 	
 }
