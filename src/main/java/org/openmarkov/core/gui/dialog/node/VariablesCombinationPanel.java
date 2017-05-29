@@ -31,7 +31,7 @@ private Node node;
 	public void initialize() {
 		 setLayout (new BoxLayout(this, BoxLayout.Y_AXIS));
 		// ButtonGroup buttonGroup = new ButtonGroup();
-		List<Variable> variables =  node.getPotentials().get(0).getVariables();
+		List<Variable> variables =  node.getPotentials().get(0).getVariables(); 
 		List<Variable> possibleVariables = new ArrayList<Variable>();
 		for (int i = 1; i < variables.size(); i++) {
 			possibleVariables.add(variables.get(i));

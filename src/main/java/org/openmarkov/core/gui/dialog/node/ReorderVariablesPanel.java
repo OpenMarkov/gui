@@ -22,8 +22,10 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
 @SuppressWarnings("serial")
 public class ReorderVariablesPanel extends KeyTablePanel
@@ -62,6 +64,13 @@ public class ReorderVariablesPanel extends KeyTablePanel
     {
     	Potential potential = node.getPotentials ().get (0);
         List<Variable> variables = potential.getVariables();
+        //CMI
+        if ( node.getPotentials().get(0) instanceof UnivariateDistrPotential){
+            variables = ((UnivariateDistrPotential) node.getPotentials().get(0)).getAugmentedTable().getVariables();
+        }else if ( node.getPotentials().get(0) instanceof AugmentedTablePotential){
+            variables = ((AugmentedTablePotential) node.getPotentials().get(0)).getAugmentedTable().getVariables();
+        }
+        //CMF
         // 26/11/2014
         // Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
         // when imposing a policy in a decision node
