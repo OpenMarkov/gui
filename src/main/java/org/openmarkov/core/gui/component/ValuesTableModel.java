@@ -26,7 +26,7 @@ public class ValuesTableModel extends DefaultTableModel
     /***
      * List of additional not editable positions
      */
-    private Object[][]        notEditablePositions;
+    protected Object[][]        notEditablePositions;
 
     /**
      * constructor
@@ -39,7 +39,6 @@ public class ValuesTableModel extends DefaultTableModel
     /**
      * constructor
      * 
-     * revised-->not changed
      */
     public ValuesTableModel (Object[][] data, String[] columns, int firstEditableRow)
     {

@@ -75,7 +75,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * 						 - eliminates the deterministic values
  * 						 	 
  * @author carmenyago        
- *         
+ *         value
  */
 public class ValuesTable extends KeyTable
     implements
@@ -117,6 +117,15 @@ public class ValuesTable extends KeyTable
      * last editable row. By default, it is zero until runtime initialisation
      */
     protected int                              lastEditableRow            = 0;
+    
+ 
+    /**
+     * first editable row. By default, it is zero until runtime initialisation
+     */
+    private int                              firstEditableRow            = 0;
+     
+    
+    
     /**
      * define if the table is using General or Canonical Potentials
      * <ul>
@@ -185,9 +194,9 @@ public class ValuesTable extends KeyTable
      */
     
     protected List<Integer>                    priorityList               = new LinkedList<Integer> ();
-    private boolean                            isSelectAllForMouseEvent   = true;
-    private boolean                            isSelectAllForActionEvent  = false;
-    private boolean                            isSelectAllForKeyEvent     = false;
+    protected boolean                            isSelectAllForMouseEvent   = true;
+    protected boolean                            isSelectAllForActionEvent  = false;
+    protected boolean                            isSelectAllForKeyEvent     = false;
 
 
     
@@ -224,9 +233,9 @@ public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifi
     this.isExactDistrPotential =(node.getPotentials().get(0) instanceof ExactDistrPotential);
     if (isExactDistrPotential){
     	tablePotential=((ExactDistrPotential)(this.potential)).getTablePotential();
-    } else if (node.getPotentials().get(0).getClass().getName().equals("org.openmarkov.core.model.network.potential.TablePotential")) 
+    } else if (potential instanceof TablePotential){ 
     	tablePotential=(TablePotential)this.potential;
-
+    }	
     //
     if (modifiable)
     {
@@ -241,7 +250,6 @@ public ValuesTable (Node node, ValuesTableModel tableModel, final boolean modifi
     
 /**
  * Constructor for ValuesTable
- * revised-->not changed
  */
 public ValuesTable (ValuesTableModel tableModel, final boolean modifiable)
 {
@@ -304,7 +312,6 @@ public void initializeDataModified (boolean isModified)
     
 /**
  * Default display configuration for this table
- * revised-->not changed
  */
 @Override
 protected void defaultConfiguration ()
@@ -408,7 +415,7 @@ public void stopCellEditing ()
 
 
 /**
- * UNCLEAR-->
+ * 
  * 
  * check the value to modify in the table and sets
  * carmenyago removed the dependency with the utility type, the use of deterministic tables 
@@ -501,7 +508,7 @@ protected boolean castValue (Object newValue)
  * @param msg - the error message to show to user
  * revised-->not changed
  */
-private void showNodePotentialTableErrorMsg (String msg)
+protected void showNodePotentialTableErrorMsg (String msg)
 {
     JOptionPane.showMessageDialog (this, stringDatabase.getString (msg + ".Text"),
                                    stringDatabase.getString (msg + ".Title"),
@@ -552,6 +559,26 @@ public void setLastEditableRow (int lastEditableRow)
 }
 
 /**
+ * @return the firstEditableRow
+ */
+public int getFirstEditableRow()
+{
+    return firstEditableRow;
+}
+
+
+
+/**
+ * @param firstEditableRow the firstEditableRow to set
+ */
+public void setFirstEditableRow( int firstEditableRow )
+{
+    this.firstEditableRow = firstEditableRow;
+}
+
+
+
+/**
  * @return the usingGeneralPotential
  */
 public boolean isUsingGeneralPotential ()
@@ -574,7 +601,6 @@ public boolean isShowingAllParameters ()
  
 
 /**
- * UNCLEAR--> Always called with true
  * 
  * Method to show/hide rows based on the showingAllParameters attribute
  * using a RowFilter mechanism.
@@ -651,7 +677,7 @@ public void setShowingAllParameters (boolean showingAllParameters)
  * revised--> not changed
  * 
  */
-private String getRegExp (String name)
+protected String getRegExp (String name)
 {
     int cont1 = name.indexOf ("[");
     String s1 = name.substring (0, cont1);
@@ -667,9 +693,8 @@ private String getRegExp (String name)
  * @return the regular expression of the name of node. This method returns 
  * the same name but substituting '(' and ')' by '\\(' and '\\)'
  * 
- * revised--> not changed
  */
-private String getRegExpParenthesis (String name)
+protected String getRegExpParenthesis (String name)
 {
     if (name.contains ("("))
     {
@@ -724,7 +749,6 @@ protected boolean isShowingProbabilitiesValues ()
  * Sets a default id for the columns (Excel format)
  * @param howManyColumns
  * 			- number of columns of the table
- * revised-->not changed
  */
 public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
 {
@@ -758,8 +782,7 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
     /**
      * print the NodePotentialTable
      * carmenyago only removed the println of the deterministic attribute
-     * @carmenyago
-     * revised-->minor changes
+     * @carmenyago minor changes
      */
     public void printTable ()
     {
@@ -812,7 +835,6 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
  * Updates the edited column
  * @see tablePotentialValueEditHappened 
  * @see uncertainValuesEditHappened
- * revised--> not changed
  */
 public void undoableEditHappened (UndoableEditEvent event)
 {
@@ -873,9 +895,8 @@ private void uncertainValuesEditHappened (UncertainValuesEdit edit)
  * Sets the values in the edited column
  * @param edit
  * 		- context for changing the
- * carmenyago only changed the use of UTILITY role 
+ * carmenyago only changed the use of UTILITY role; minor changes
  * @author carmenyago	
- * revised-->minor changes
  */
 public void tablePotentialValueEditHappened (TablePotentialValueEdit edit)
 {
@@ -915,9 +936,7 @@ public void undoableEditWillHappen (UndoableEditEvent event)
 
 /**
  * carmenyago only changed the role dependency
- * UNCLEAR-->Where is the TablePotentialValueEdit created?
  * @author carmenyago
- * revised-->minor changes
  */
 public void undoEditHappened (UndoableEditEvent event)
 {
@@ -960,7 +979,6 @@ public void undoEditHappened (UndoableEditEvent event)
  * @see isSelectAllForKeyEvent
  * @see selectAll
  * 
- * revised--> not changed
  */
 public boolean editCellAt (int row, int column, EventObject e)
 {
@@ -977,7 +995,6 @@ public boolean editCellAt (int row, int column, EventObject e)
  * If the editor is a JTextComponent then: 
  * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
  * @param e: event which provoked the edition and selection
- * revised --> not changed
  */
 private void selectAll (EventObject e)
 {
@@ -1020,7 +1037,6 @@ private void selectAll (EventObject e)
 /**
  * This method sets the variable probNet to the node probNet
  * @param node: the node whose potential is being displayed
- * revised-->not changed
  */
 public void setData (Node node)
 {
@@ -1034,7 +1050,6 @@ public void setData (Node node)
 
 /**
  * Closes this object and prepare it for disposal
- * revised--> not changed
  */
 public void close ()
 {
@@ -1044,7 +1059,6 @@ public void close ()
 /**
  * Adjusts columns width to its content
  * 
- * revised--> not changed
  */
 public void fitColumnsWidthToContent() {
     JTableHeader header = getTableHeader();

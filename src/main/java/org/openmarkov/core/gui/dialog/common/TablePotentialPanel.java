@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -68,7 +69,8 @@ import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPote
  * 
  * @author jlgozalo
  * @author myebra
- * @author carmenyago 19/06/2916
+ * @author carmenyago 19/06/2016
+ * 
  */
 @SuppressWarnings("serial")
 @PotentialPanelPlugin(potentialType = "Table")
@@ -81,7 +83,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	/**
 	 * Indicates if the data of the table is modifiable.
 	 */
-	private boolean modifiable;
+	protected boolean modifiable;
 	/**
 	 * Panel to scroll the table.
 	 */
@@ -127,7 +129,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	/**
 	 * Pseudo-util class with common operations used in potential tables
 	 */
-	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
+	protected PotentialsTablePanelOperations tablePotentialsPanelOperations;
 
 	/**
 	 * ContextualMenu to assign/remove uncertainty. 
@@ -135,11 +137,13 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * This method creates the evidenceCase object when the user do right click on the table.
 	 */
 
-	private UncertaintyContextualMenu uncertaintyContextualMenu;
+	protected UncertaintyContextualMenu uncertaintyContextualMenu;
 	
 		
+public TablePotentialPanel(){
+		super();
+}	
 
-	
 /**
  * Constructor used by CPTablePanel
  * This method creates, initialises, and displays a ValuesTable object for the first potential of the node
@@ -337,7 +341,7 @@ public TablePotentialPanel(Node node){
 	 *         an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
 	 * @author carmenyago        
 	 */
-	private boolean[] getUncertaintyInColumns() {
+	protected boolean[] getUncertaintyInColumns() {
 
 		int size = valuesTable.getColumnCount();
 		
@@ -422,7 +426,7 @@ public TablePotentialPanel(Node node){
 	 * Continuous variables have only one state
 	 *  tableSize is always >0       
 	 */
-	private Object[][] createEmptyTable() { 
+	protected Object[][] createEmptyTable() { 
      
 		// If there is no potential
 		try{
@@ -477,7 +481,7 @@ public TablePotentialPanel(Node node){
 	 *        
 	 * 
 	 */
-	private Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues) {
+	protected Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
 		// Adding the parent
 		// The first variable is always the node variable
@@ -498,7 +502,7 @@ public TablePotentialPanel(Node node){
 	 *             
 	 * @author carmenyago
 	 */
-	private Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
+	protected Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
 		
 		int numColumns = values[0].length;
@@ -540,7 +544,7 @@ public TablePotentialPanel(Node node){
 	 *            - the table that is being modified
 	 * @author carmenyago
 	 */
-	private Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
+	protected Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
 		if (isTableDeltaPotential) values[firstEditableRow][0] = node.getName();
 		else{
@@ -568,7 +572,7 @@ public TablePotentialPanel(Node node){
 	 * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTable
 	 * 
 	 */
-	private Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
+	protected Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
 
 		int numColumns = values[0].length;
@@ -607,7 +611,7 @@ public TablePotentialPanel(Node node){
 	 * @author carmenyago
 	 * minor changes
 	 */
-	private int setNumberOfPostions() {
+	protected int setNumberOfPostions() {
 		int numPositions = 1;
 		try {
 			for (Variable variable : potential.getVariables()) {
@@ -633,7 +637,7 @@ public TablePotentialPanel(Node node){
 	 *         at the second position.
 	 * revised--> only changed the code between CMI, CMF        
 	 */
-	private int[] getRowAndColumnForStateCombination(int[] stateIndices,
+	protected int[] getRowAndColumnForStateCombination(int[] stateIndices,
 			TablePotential potential) {
 		int numStates = node.getVariable().getNumStates();
 		int position = potential.getPosition(stateIndices);
@@ -674,7 +678,7 @@ public TablePotentialPanel(Node node){
 	 * @author carmenyago        
 	 * 
 	 */
-	private Object[][] getNotEditablePositions() {
+	protected Object[][] getNotEditablePositions() {
 		Object[][] notEditablePositions = createEmptyTable();
 		if (!isTableDeltaPotential && hasLinkRestriction){
 			
@@ -724,7 +728,7 @@ public TablePotentialPanel(Node node){
 	 * @author carmenyago
 	 * 
 	 */
-	private EvidenceCase getConfiguration(int col)
+	protected EvidenceCase getConfiguration(int col)
 			throws InvalidStateException, IncompatibleEvidenceException {
 
 		
@@ -974,7 +978,7 @@ public TablePotentialPanel(Node node){
 	 * Method for update the options showed in the contextual menu
 	 * revised-->not changed
 	 */
-	private void updateContextualMenuOptions() {
+	protected void updateContextualMenuOptions() {
 		if (node.getPotentials().size() > 0
 				&& node.getPotentials().get(0) instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential) node
@@ -1010,9 +1014,8 @@ public TablePotentialPanel(Node node){
 	 * Handles the double click in a cell
 	 * 
 	 * @param evt
-	 * revised-->minor changes; only changed the call to getConfiguration
 	 */
-	private void doubleClickEvent(MouseEvent evt) {
+	protected void doubleClickEvent(MouseEvent evt) {
 		if (node.getPotentials().size() > 0
 				&& node.getPotentials().get(0) instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential) node
@@ -1049,7 +1052,7 @@ public TablePotentialPanel(Node node){
 	 * @return the node contextual menu.
 	 * revised-->not changed
 	 */
-	private UncertaintyContextualMenu getUncertaintyContextualMenu() {
+	protected UncertaintyContextualMenu getUncertaintyContextualMenu() {
 		if (uncertaintyContextualMenu == null) {
 			uncertaintyContextualMenu = new UncertaintyContextualMenu(this);
 			uncertaintyContextualMenu.setName("uncertaintyContextualMenu");
@@ -1119,8 +1122,6 @@ public TablePotentialPanel(Node node){
 	 * common KeyTable hierarchy. This method creates the evidenceCase object
 	 * when the user do right click on the table.
 	 * 
-	 * revised--> not changed
-	 * UNCLEAR-->What happens with read only and uncertainty?
 	 */
 	protected void setTableSpecificListeners() {
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
