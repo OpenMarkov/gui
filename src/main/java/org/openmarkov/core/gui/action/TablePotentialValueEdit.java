@@ -136,14 +136,12 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		super(node.getProbNet());
 		this.node = node;
 		Potential potential=null;
-		double[] test;
 		try{
 			potential = node.getPotentials().get(0);
 			this.setExactDistrPotential(potential instanceof ExactDistrPotential);
 		    if (getExactDistrPotential()){
 		        this.oldExactDistrPotential = (ExactDistrPotential)(potential);
 		        this.oldTablePotential=((ExactDistrPotential)potential).getTablePotential();
-		        test=((ExactDistrPotential)potential).getTablePotential().getValues();
 		    } else this.oldTablePotential=(TablePotential)potential;
 		}catch(Exception e){
 			e.printStackTrace();

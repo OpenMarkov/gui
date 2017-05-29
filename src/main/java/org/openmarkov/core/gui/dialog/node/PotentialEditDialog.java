@@ -35,7 +35,9 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.core.gui.action.UnivariateDistrPotentialValueEdit;
+import org.openmarkov.core.gui.dialog.common.AugmentedTablePotentialPanel;
 import org.openmarkov.core.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.core.gui.dialog.common.ICIPotentialsTablePanel;
 import org.openmarkov.core.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
@@ -55,6 +57,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
+import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -136,13 +139,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * Label for distribution type
      */
     private JLabel               lblUnivariateDistrComboBox;
-    /**
-     * Option deselected in the jComboboxRelationType
-     */
-    private int                  distributionOptionPreviouslySelected        = 0;
-    
-    private String               previouslySelectedDistribution = "";
-       
     
     /**
      * 
@@ -156,6 +152,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
     /**
      * 
      */
+    private String              previouslySelectedDistributionName="Exact";
         
     //CMF
 
@@ -533,32 +530,51 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
         		@Override
         		public void actionPerformed (java.awt.event.ActionEvent evt)
         		{
-        			
-           			String distributionUnivariateName =(String)univariateDistrComboBox.getSelectedItem();
-        			String distributionParameters =(String)univariateDistrParametrizationComboBox.getSelectedItem();
-        			//When we are changing the distribution the first value should be selected
-        			
-        			String distributionName = ProbDensFunctionManager.getUniqueInstance().getDistributionName(distributionUnivariateName,distributionParameters);
-        			UnivariateDistrPotentialValueEdit nodePotentialEdit = new UnivariateDistrPotentialValueEdit (
-        					node, distributionName);
-        			try{
-        				node.getProbNet ().doEdit (nodePotentialEdit);
-        			}catch (Exception e)
-        			{
-        				e.printStackTrace ();
- 
-        			}
- 
-           			((UnivariateDistrPotentialPanel)potentialPanel).distributionChanged( distributionName, evt);       			
-        			
- 
-        		}
+        			distributionChanged();
+        		}	
         	});	
         	univariateDistrParametrizationComboBox.setEnabled (!readOnly);
         }
         	return univariateDistrParametrizationComboBox;        
   
     }
+    
+    protected void distributionChanged ()
+    {
+        
+        String distributionUnivariateName =(String)univariateDistrComboBox.getSelectedItem();
+        String distributionParameters =(String)univariateDistrParametrizationComboBox.getSelectedItem();
+        //When we are changing the distribution the first value should be selected
+        
+        String distributionName = ProbDensFunctionManager.getUniqueInstance().getDistributionName(distributionUnivariateName,distributionParameters);
+        if (!previouslySelectedDistributionName.equals (distributionName)){
+            
+            AugmentedPotentialValueEdit nodePotentialEdit = new AugmentedPotentialValueEdit (node, distributionName);
+            try{
+                node.getProbNet ().doEdit (nodePotentialEdit);
+            }catch (ConstraintViolationException e1){
+                JOptionPane.showMessageDialog (this,
+                                               stringDatabase.getString (e1.getMessage ()),
+                                               stringDatabase.getString ("ConstraintViolationException"),
+                                               JOptionPane.ERROR_MESSAGE);
+                revertPotentialTypeChange ();
+                potentialTypeComboBox.requestFocus ();
+            }
+            catch (Exception e1)
+            {
+                e1.printStackTrace ();
+            }
+            updatePotentialPanel();
+            previouslySelectedDistributionName = distributionName;
+        
+    
+        }
+        
+    }
+
+    
+    
+    
     /**
      * 
      * @return
@@ -694,6 +710,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             updatePotentialPanel ();
             previouslySelectedPotentialType = potentialType;
             optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex ();
+            getComponentsPanel ().add (getPotentialPanel (), BorderLayout.CENTER);
+            getComponentsPanel ().updateUI ();
+            getComponentsPanel ().repaint ();
+            this.repaint ();
+            this.pack ();
+
         }
     }
 
@@ -857,12 +879,24 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
                 }
                 updatePotentialPanel ();
             	
-            }            
+            } else if (getPotentialPanel () instanceof AugmentedTablePotentialPanel){
+                Potential potential = DiscretePotentialOperations.reorder((AugmentedTablePotential)node.getPotentials().get(0),newVariables);
+                SetPotentialEdit potentialEdit = new SetPotentialEdit (node, potential);
+                try
+                {
+                        node.getProbNet ().doEdit (potentialEdit);
+                }
+                catch (DoEditException | ConstraintViolationException | CanNotDoEditException
+                        | NonProjectablePotentialException | WrongCriterionException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace ();
+                }
+                updatePotentialPanel ();
+                
+            } else           
             //CMF
-           
-            
-            
-            
+                       
             if (getPotentialPanel () instanceof TablePotentialPanel)
             {
                 // if (node.getPotentials().get(0) instanceof
