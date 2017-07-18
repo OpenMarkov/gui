@@ -952,7 +952,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
                 }
                 */
                 
-                if ((parentTreeADD.hasCriterion()) || (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY)) {
+                if ((parentTreeADD.isAdditive()) || (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY)) {
                     variables.add(parentTreeADD.getVariables().get(0));
                 }    
                 //  
@@ -1213,7 +1213,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             }
         }
         */
-        if ((rootTreeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) || rootTreeADDPotential.hasCriterion()) {
+        if ((rootTreeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) || rootTreeADDPotential.isAdditive()) {
             if((branchingStates != null && branchingStates.length != 0) || partitionedInterval !=  null){
                 newTreeADD = new TreeADDPotential(newTreeVariables,
                         newRootVariable,

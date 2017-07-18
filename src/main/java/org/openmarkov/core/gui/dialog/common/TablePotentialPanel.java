@@ -10,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -1092,7 +1091,7 @@ public TablePotentialPanel(Node node){
 			
 		} else { // node.getNodeType() == NodeType.DECISION)
 			if ( (node.getPolicyType() == PolicyType.OPTIMAL) && 
-					(node.getPotentials().isEmpty() || (!node.getPotentials().get(0).hasCriterion())))
+					(node.getPotentials().isEmpty() || (!node.getPotentials().get(0).isAdditive())))
 					
 			{
 				// UNCLEAR--> When ReadOnly is se?
@@ -1101,7 +1100,7 @@ public TablePotentialPanel(Node node){
 				cellRenderer = new ValuesTableOptimalPolicyCellRenderer(
 							firstEditableRow, uncertaintyInColumns, imposingPolicyByUser);
 			} else {
-				boolean showingOptimalPolicy = node.getPotentials().get(0).hasCriterion() && isReadOnly();
+				boolean showingOptimalPolicy = node.getPotentials().get(0).isAdditive() && isReadOnly();
 				if (!showingOptimalPolicy) {
 					cellRenderer = new ValuesTableCellRenderer(
 								firstEditableRow, uncertaintyInColumns);
