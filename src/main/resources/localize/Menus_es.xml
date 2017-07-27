@@ -11,6 +11,9 @@
         <EditInstanceName>
         <Label value="Editar el nombre de la instancia"/>
     </EditInstanceName>
+    <Arity>
+      <Label value="Aridad"/>
+    </Arity>
     <!-- TODO OOBN end -->
     <Mode>
         <Link>
@@ -98,7 +101,14 @@
       <Label value="Conmutar a modo Inferencia" />
       <Mnemonic value="s" />
     </SwitchToInference>
+    <InstanceInput>
+      <Label value="Entrada" />
+    </InstanceInput>
     <Mnemonic value="e" />
+    <ObjectSelection>
+      <Label value="Selección de objetos" />
+      <Mnemonic value="j" />
+    </ObjectSelection>
     <Copy>
       <Label value="Copiar" />
       <Mnemonic value="o" />

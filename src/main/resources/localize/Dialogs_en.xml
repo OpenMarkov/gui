@@ -48,7 +48,6 @@
 			<Label value="Save report" />
 		</SaveReport>
 	</Dialog>
-
 	<DiscreteTablePanel>
 		<Table>
 			<Columns>
@@ -186,6 +185,35 @@
 			</PropertyValueColumn>
 		</OtherPropertiesTablePanel>
 	</NodeOtherPropertiesPanel>
+	<NodePotentialTable>
+		<Msg>
+			<AllowAgainValuesToModified>
+				<Text
+						value="All values in this column were already modified. Do you really want to continue? If so, the values will be overwritten." />
+				<Title value="Overwrite confirmation" />
+			</AllowAgainValuesToModified>
+			<ProbabilisticValueNotAllowed>
+				<Title value="Probabilistic value not allowed" />
+				<Text
+						value="In a probabilistic model, please use values between zero (0) and one (1)" />
+			</ProbabilisticValueNotAllowed>
+			<DeterministicSumMustBeEqualToOne>
+				<Text
+						value="In a deterministic model, the values in the column must add &quot;1&quot;.&#xD;&#xA;Please, change one of the values &quot;0&quot; a &quot;1&quot; and this value &quot;0&quot; will be adjusted automatically." />
+				<Title value="Deterministic value not allowed" />
+			</DeterministicSumMustBeEqualToOne>
+			<DeterministicValueNotAllowed>
+				<Title value="Deterministic value not allowed" />
+				<Text
+						value="In a deterministic value, please, use zero (0) or one (1) values" />
+			</DeterministicValueNotAllowed>
+			<SummaOfProbabilitiesHigherThanOne>
+				<Text
+						value="Value not allowed since the sum of probabilities would be greater than unity." />
+				<Title value="Error Mesage" />
+			</SummaOfProbabilitiesHigherThanOne>
+		</Msg>
+	</NodePotentialTable>
 	<HTMLTextEditor>
 		<jButtonCancelHTML>
 			<Text value="Cancel" />
@@ -429,24 +457,31 @@
 		<Columns>
 			<ValuesSeparator>
 				<Text value="," />
+				<Order value="4" />
 			</ValuesSeparator>
 			<LowLimitValue>
 				<Text value="Lower limit" />
+				<Order value="3" />
 			</LowLimitValue>
 			<UpperLimitValue>
 				<Text value="Upper limit" />
+				<Order value="5" />
 			</UpperLimitValue>
 			<IntervalId>
 				<Text value="Id" />
+				<Order value="0" />
 			</IntervalId>
 			<IntervalName>
 				<Text value="Interval name" />
+				<Order value="1" />
 			</IntervalName>
 			<UpperLimitSymbol>
 				<Text value=" " />
+				<Order value="6" />
 			</UpperLimitSymbol>
 			<LowLimitSymbol>
 				<Text value=" " />
+				<Order value="2" />
 			</LowLimitSymbol>
 		</Columns>
 	</DiscretizeTableModel>
@@ -752,40 +787,17 @@
 		</jLabelOtherPropertiesTable>
 		<jLabelOtherPropertiesTable value="Other properties:" />
 	</NetworkOtherPropertiesPanel>
+	<OpenMarkovFileExtension>
+		<Description value="OpenMarkov file" />
+	</OpenMarkovFileExtension>
+	<ElviraFileExtension>
+		<Description value="Elvira file" />
+	</ElviraFileExtension>
 	<NodePotentialReorderVariables>
 		<Title>
 			<Label value="Reorder variables" />
 		</Title>
 	</NodePotentialReorderVariables>
-	<NodePotentialTable>
-		<Msg>
-			<ProbabilisticValueNotAllowed>
-				<Title value="Probabilistic value not allowed" />
-				<Text
-					value="For a probabilistic model, please, use a value between zero (0) and single (1) " />
-			</ProbabilisticValueNotAllowed>
-			<DeterministicSumMustBeEqualToOne>
-				<Text
-					value="For a deterministic model, please,  in the column must summarize &quot;1&quot;. &#xD;&#xA;Please, change first one of the &quot;0&quot;  to &quot;1&quot; and this &quot;0&quot;  will be set properly." />
-				<Title value="Deterministic value not allowed" />
-			</DeterministicSumMustBeEqualToOne>
-			<DeterministicValueNotAllowed>
-				<Title value="Deterministic value not allowed" />
-				<Text
-					value="For a deterministic model, please, use zero (0) or single (1) " />
-			</DeterministicValueNotAllowed>
-			<AllowAgainToModified>
-				<Text
-					value="All  in this column were already modified. Do you really want to continue? If yes,  will be re-written." />
-				<Title value="Re-write confirmation" />
-			</AllowAgainToModified>
-			<SummaOfProbabilitiesHigherThanOne>
-				<Text
-					value="Value not allowed as the summa of probabilities would be higher than the unity. " />
-				<Title value="Error Message" />
-			</SummaOfProbabilitiesHigherThanOne>
-		</Msg>
-	</NodePotentialTable>
 	<NodePotentialDialog>
 		<Title>
 			<Label value="Node Potential" />

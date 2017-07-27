@@ -54,7 +54,7 @@
     </Text>
   </Copy>
   <Clear>
-    <Text>
+    <Text value="Clear">
       <Mnemonic value="l" />
       <Label value="Clear" />
     </Text>

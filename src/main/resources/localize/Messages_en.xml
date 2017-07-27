@@ -393,6 +393,11 @@
       <Label value="Internal frame iconification vetoed" />
     </Text>
   </IconificationVetoed>
+    <ErrorLoadingInference>
+        <Text>
+            <Label value="This evidence can not be opened. Check message window." />
+        </Text>
+    </ErrorLoadingInference>
   <EmptyState>
     <Text>
       <Label value="You must specify the text of the state" />

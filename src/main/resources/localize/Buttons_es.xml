@@ -54,11 +54,10 @@
     </Text>
   </Copy>
   <Clear>
-    <Text>
+    <Text value="Limpiar">
       <Mnemonic value="l" />
       <Label value="Limpiar" />
     </Text>
-    <Text value="Limpiar" />
   </Clear>
   <Delete>
     <Text>

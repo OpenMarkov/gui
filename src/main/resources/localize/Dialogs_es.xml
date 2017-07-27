@@ -40,7 +40,6 @@
 			<Label value="Guardar" />
 		</Title>
 	</SaveNetwork>
-
 	<Dialog>
 		<Close>
 			<Label value="Cerrar" />
@@ -49,6 +48,34 @@
 			<Label value="Guardar informe" />
 		</SaveReport>
 	</Dialog>
+	<DiscreteTablePanel>
+		<Table>
+			<Columns>
+				<Value>
+					<Text value="Valor" />
+				</Value>
+				<Id>
+					<Prefix value="s" />
+					<Text value="Id" />
+				</Id>
+				<Name>
+					<Text value="Estado" />
+				</Name>
+			</Columns>
+		</Table>
+		<jLabelStates>
+			<Text value=":" />
+		</jLabelStates>
+		<commentHTMLScrollPaneNodeComment>
+			<Text value="Comentario para el nodo {0}" />
+		</commentHTMLScrollPaneNodeComment>
+		<jTextAreaLabelNodeComment>
+			<Text value="Comentar&#xD;&#xA;(Doble click para &#xD;&#xA;añadir o modificar) :" />
+		</jTextAreaLabelNodeComment>
+		<jLabelPanel>
+			<Text value="Estados:" />
+		</jLabelPanel>
+	</DiscreteTablePanel>
 	<NodeProbsValuesTablePanel>
 		<jLabelNodeRelationComment>
 			<Text value="Comentario:" />
@@ -110,35 +137,6 @@
 			<Text value="Política óptima" />
 		</jRadioButtonOptimal>
 	</NodeProbsValuesTablePanel>
-	<NodePotentialTable>
-		<Msg>
-			<AllowAgainValuesToModified>
-				<Text
-					value="Todos los valores en esta columna fueron ya modificados. ¿quiere realmente continuar? Si es asi, los valores se sobreescribiran." />
-				<Title value="Confirmación de sobreescritura" />
-			</AllowAgainValuesToModified>
-			<ProbabilisticValueNotAllowed>
-				<Title value="Valor probabilista no permitido" />
-				<Text
-					value="En un modelo probabilista, por favor, use valores entre cero (0) y uno (1)" />
-			</ProbabilisticValueNotAllowed>
-			<DeterministicSumMustBeEqualToOne>
-				<Text
-					value="En un modelo determinista, los valores en la columna deben sumar &quot;1&quot;.&#xD;&#xA;Por favor, cambie primero uno de los valores &quot;0&quot; a &quot;1&quot; y este valor &quot;0&quot; se ajustará apropiadamente." />
-				<Title value="Valor determinista no permitido" />
-			</DeterministicSumMustBeEqualToOne>
-			<DeterministicValueNotAllowed>
-				<Title value="Valor determinista no permitido" />
-				<Text
-					value="En un modelo determinista, por favor, use valores cero (0) o uno (1)" />
-			</DeterministicValueNotAllowed>
-			<SummaOfProbabilitiesHigherThanOne>
-				<Text
-					value="Valor no permitido ya que la suma de probabilidades sería mayor que la unidad." />
-				<Title value="Mensaje de Error" />
-			</SummaOfProbabilitiesHigherThanOne>
-		</Msg>
-	</NodePotentialTable>
 	<DiscreteValuesTablePanel>
 		<ValuesTable>
 			<Columns>
@@ -156,7 +154,7 @@
 		</ValuesTable>
 		<jTextAreaLabelNodeValuesComment>
 			<Text
-				value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :" />
+					value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :" />
 		</jTextAreaLabelNodeValuesComment>
 		<jLabelStatesValues>
 			<Text value="Valores:" />
@@ -188,6 +186,35 @@
 			</PropertyValueColumn>
 		</OtherPropertiesTablePanel>
 	</NodeOtherPropertiesPanel>
+	<NodePotentialTable>
+		<Msg>
+			<AllowAgainValuesToModified>
+				<Text
+					value="Todos los valores en esta columna fueron ya modificados. ¿quiere realmente continuar? Si es asi, los valores se sobreescribiran." />
+				<Title value="Confirmación de sobreescritura" />
+			</AllowAgainValuesToModified>
+			<ProbabilisticValueNotAllowed>
+				<Title value="Valor probabilista no permitido" />
+				<Text
+					value="En un modelo probabilista, por favor, use valores entre cero (0) y uno (1)" />
+			</ProbabilisticValueNotAllowed>
+			<DeterministicSumMustBeEqualToOne>
+				<Text
+					value="En un modelo determinista, los valores en la columna deben sumar &quot;1&quot;.&#xD;&#xA;Por favor, cambie primero uno de los valores &quot;0&quot; a &quot;1&quot; y este valor &quot;0&quot; se ajustará apropiadamente." />
+				<Title value="Valor determinista no permitido" />
+			</DeterministicSumMustBeEqualToOne>
+			<DeterministicValueNotAllowed>
+				<Title value="Valor determinista no permitido" />
+				<Text
+					value="En un modelo determinista, por favor, use valores cero (0) o uno (1)" />
+			</DeterministicValueNotAllowed>
+			<SummaOfProbabilitiesHigherThanOne>
+				<Text
+					value="Valor no permitido ya que la suma de probabilidades sería mayor que la unidad." />
+				<Title value="Mensaje de Error" />
+			</SummaOfProbabilitiesHigherThanOne>
+		</Msg>
+	</NodePotentialTable>
 	<HTMLTextEditor>
 		<jButtonCancelHTML>
 			<Text value="Cancelar" />
@@ -331,8 +358,7 @@
 		</CommentHTMLScrollPaneNetworkDefinition>
 		<NetworkDefinitionComment>
 			<Mnemonic value="c" />
-			<Text
-				value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :" />
+			<Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :" />
 		</NetworkDefinitionComment>
 		<NetworkName>
 			<Text value="Nombre de la red:" />
@@ -438,8 +464,8 @@
 				<Order value="3" />
 			</LowLimitValue>
 			<UpperLimitValue>
-				<Order value="5" />
 				<Text value="Limite superior" />
+				<Order value="5" />
 			</UpperLimitValue>
 			<IntervalId>
 				<Text value="Id" />
@@ -646,8 +672,7 @@
 		</commentHTMLScrollPaneNodeDefinitionComment>
 		<jTextAreaLabelNodeDefinitionComment>
 			<Mnemonic value="o" />
-			<Text
-				value="Comentario &#xD;&#xA;(Pulse dos veces &#xD;&#xA;para añadir&#xD;&#xA; o modificar) :" />
+			<Text value="Comentario &#xD;&#xA;(Pulse dos veces &#xD;&#xA;para añadir&#xD;&#xA; o modificar) :" />
 		</jTextAreaLabelNodeDefinitionComment>
 		<jLabelNodePurpose>
 			<Text value="Proposito:" />
@@ -695,8 +720,7 @@
 			<Text value="Aceptar" />
 		</OK>
 		<Product>
-			<Text
-				value="Una herramienta gráfica de software libre para redes probabilistas" />
+			<Text value="Una herramienta gráfica de software libre para redes probabilistas" />
 		</Product>
 		<Title>
 			<Text value="Acerca de ... OpenMarkov" />
@@ -766,6 +790,9 @@
 	<OpenMarkovFileExtension>
 		<Description value="Fichero de OpenMarkov" />
 	</OpenMarkovFileExtension>
+	<ElviraFileExtension>
+		<Description value="Ficheros de Elvira" />
+	</ElviraFileExtension>
 	<NodePotentialReorderVariables>
 		<Title>
 			<Label value="Reordenar variables" />
@@ -791,9 +818,6 @@
 			<Label value="Tipos de Variables:" />
 		</Title>
 	</VariableTypeOptions>
-	<ElviraFileExtension>
-		<Description value="Ficheros de Elvira" />
-	</ElviraFileExtension>
 	<OKCancelHorizontalDialog>
 		<jButtonCancel>
 			<Text value="Cancelar" />
@@ -831,6 +855,29 @@
 			<Label value="Imponer política" />
 		</Title>
 	</ImposePolicydialog>
+	<NodeDiscretizeTablePanel>
+		<jTextAreaLabelNodeComment>
+			<Text value="Comentar&#xD;&#xA;(Doble click para &#xD;&#xA;añadir o modificar) :" />
+		</jTextAreaLabelNodeComment>
+		<commentHTMLScrollPaneNodeComment>
+			<Text value="Comentario para el nodo {0}" />
+		</commentHTMLScrollPaneNodeComment>
+		<jLabelPrecision>
+			<Text value="Precisión" />
+		</jLabelPrecision>
+		<jRadioButtonMonotonyUp>
+			<Text value="Creciente" />
+		</jRadioButtonMonotonyUp>
+		<jLabelStates>
+			<Text value=":" />
+		</jLabelStates>
+		<jRadioButtonMonotonyDown>
+			<Text value="Decreciente" />
+		</jRadioButtonMonotonyDown>
+		<jLabelPanel>
+			<Text value="Estados:" />
+		</jLabelPanel>
+	</NodeDiscretizeTablePanel>
 	<AddFindingDialog>
 		<CancelButton>
 			<Label value="Cancelar" />

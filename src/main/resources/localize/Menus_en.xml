@@ -45,6 +45,9 @@
       <Mnemonic value="u" />
       <Label value="Undo" />
     </Undo>
+    <InstanceCreation>
+      <Label value="Instance creation" />
+    </InstanceCreation>
     <ViewPolicy>
       <Label value="View policy ..." />
     </ViewPolicy>
@@ -338,6 +341,14 @@
 	<SensitivityAnalysis>
 		<Label value="Sensitivity analysis" />
 	</SensitivityAnalysis>
+    <Learning>
+      <Label value="Learning" />
+      <Mnemonic value="a" />
+    </Learning>
+    <UtilityCalculator>
+      <Label value="Utility calculator" />
+      <Mnemonic value="u" />
+    </UtilityCalculator>
     <Evaluation>
       <Label value="Evaluation" />
       <Mnemonic value="e" />

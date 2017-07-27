@@ -84,6 +84,9 @@
       <Label value="Go to the previous evidence case" />
     </ToolTip>
   </GoToPreviousEvidenceCase>
+  <BUNDLEFILE>
+    <Text value="Default (english)" />
+  </BUNDLEFILE>
   <ClipboardCut>
     <ToolTip>
       <Label value="Cuts the selected nodes and save them into the clipboard" />
@@ -148,8 +151,5 @@
       <Label value="Show optimal strategy" />
     </ToolTip>
   </ShowOptimalStrategy>
-	<BUNDLEFILE>
-    <Text value="Default (english)" />
-  </BUNDLEFILE>
 </properties>
 
