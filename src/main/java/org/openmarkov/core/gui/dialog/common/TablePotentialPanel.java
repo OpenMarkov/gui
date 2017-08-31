@@ -109,7 +109,7 @@ public class TablePotentialPanel extends ProbabilityTablePanel {
 	 * True if class of zeroPotential is org.openmarkov.core.model.network.potential.TableDeltaPotential
 	 * @author carmenyago
 	 */
-	protected boolean isTableDeltaPotential=false; 
+	protected boolean isExactDistrPotential=false; 
 	
 	/**
 	 *  
@@ -175,7 +175,7 @@ public TablePotentialPanel(Node node){
 	// This panel displays the first potential of the node
 	potential = node.getPotentials().get(0);
 	if (potential instanceof ExactDistrPotential){	
-		isTableDeltaPotential=true;
+		isExactDistrPotential=true;
 		tablePotential=((ExactDistrPotential)potential).getTablePotential();
 	} else tablePotential= (TablePotential)potential; 
 
@@ -448,14 +448,14 @@ public TablePotentialPanel(Node node){
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
 		setBaseIndexForCoordinates(firstEditableRow);	
 			
-		if (isTableDeltaPotential) setBaseIndexForCoordinates(firstEditableRow - 1); //UNCLEAR
+		if (isExactDistrPotential) setBaseIndexForCoordinates(firstEditableRow - 1); //UNCLEAR
 
 		// Number of data elements of tablePotential
 		int tableSize =tablePotential.getTableSize();//-->UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
 		
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions=1;
-		if (!isTableDeltaPotential) 
+		if (!isExactDistrPotential) 
 			numDimensions = tablePotential.getDimensions()[0];
 		// Parent variables + states of node variable
 		numRows = firstEditableRow + numDimensions;
@@ -545,7 +545,7 @@ public TablePotentialPanel(Node node){
 	 */
 	protected Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
-		if (isTableDeltaPotential) values[firstEditableRow][0] = node.getName();
+		if (isExactDistrPotential) values[firstEditableRow][0] = node.getName();
 		else{
 			
 			// Why not trying lastEditableRow?
@@ -679,8 +679,10 @@ public TablePotentialPanel(Node node){
 	 */
 	protected Object[][] getNotEditablePositions() {
 		Object[][] notEditablePositions = createEmptyTable();
-		if (!isTableDeltaPotential && hasLinkRestriction){
-			
+		//CMI Bug #162 Applying restriction to utility Nodes
+		//if (!isTableDeltaPotential && hasLinkRestriction){
+		if (hasLinkRestriction){
+		//CMF	
 			List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
 						.getStateCombinationsWithLinkRestriction(node);
 				
@@ -800,7 +802,7 @@ public TablePotentialPanel(Node node){
 		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 		UncertainValuesDialog uncertDialog;
-		if (isTableDeltaPotential){
+		if (isExactDistrPotential){
 			uncertDialog = new UncertainValuesDialog(
 					Utilities.getOwner(this), evidenceCase, (ExactDistrPotential)potential);
 		} 

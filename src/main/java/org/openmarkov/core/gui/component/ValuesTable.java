@@ -622,38 +622,56 @@ public void setShowingAllParameters (boolean showingAllParameters)
     if (showingAllParameters)
     {
         // I suppose variable is != null and has a name
-    	if (!isExactDistrPotential)
-        {
-            String name = getVariable ().getName ();
-            if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
-            {
-                //Inserts '\\' before '[' and ']'; name= namenode\\[number\\]
-            	name = getRegExp (name);
-            }
-            if (name.contains ("(") || name.contains (")"))
-            {
-            	//Inserts '\\' before '(' and ')';
-            	name = getRegExpParenthesis (name);
-            }
-            if (name.contains ("+"))
-            {
-                name = name.replace ("+", "\\+");
-            }
-            if (name.contains ("?"))
-            {
-                name = name.replace ("?", "\\?");
-            }
-            tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.regexFilter ("^" + name
-                                                                                     + "$", 0)));
-                this.setRowSorter (tableRowSorter);
-            }
-            else
-            {
-                this.setRowSorter (null);
-            }
-        }
-        else
-        {
+        
+        //CMI Bug #280
+        /*
+         * The commented code creates a RowFilter that filters the rows containing the name of the variable.
+         * Is it necessary in some case? 
+         */
+        
+        /*
+         * RowFilter.regexFilter ("^" + name+ "$", 0) --> Returns a RowFilter that returns anything beginning with the name of the variable why?
+         * RowFilter.notFilter --> Returns a RowFilter that includes entries if the supplied filter does not include the entry. That is, returns 
+         * the entries which does not contain the variable name
+         * 
+         */
+        
+//    	if (!isExactDistrPotential)
+//        {
+//            String name = getVariable ().getName ();
+//            if (getVariable ().getTimeSlice () != Integer.MIN_VALUE)
+//            {
+//                //Inserts '\\' before '[' and ']'; name= namenode\\[number\\]
+//            	name = getRegExp (name);
+//            }
+//            if (name.contains ("(") || name.contains (")"))
+//            {
+//            	//Inserts '\\' before '(' and ')';
+//            	name = getRegExpParenthesis (name);
+//            }
+//            if (name.contains ("+"))
+//            {
+//                name = name.replace ("+", "\\+");
+//            }
+//            if (name.contains ("?"))
+//            {
+//                name = name.replace ("?", "\\?");
+//            }
+//            
+//            tableRowSorter.setRowFilter (RowFilter.notFilter (RowFilter.regexFilter ("^" + name+ "$", 0)));
+//            this.setRowSorter (tableRowSorter);            
+//            this.setRowSorter (null);
+//            
+//         }
+//         else
+//         {
+//                this.setRowSorter (null);
+//         }
+        this.setRowSorter (null);
+        //CMF
+     }
+     else
+     {
             int lastRow = getModel ().getRowCount () - 1 - 1;
             lastRow = (lastRow < 0 ? 0 : lastRow);
             LinkedList<RowFilter<Object, Object>> list = new LinkedList<RowFilter<Object, Object>> ();
@@ -663,8 +681,8 @@ public void setShowingAllParameters (boolean showingAllParameters)
             list.add (RowFilter.notFilter (RowFilter.regexFilter (getVariable ().getName (), 0)));
             tableRowSorter.setRowFilter (RowFilter.andFilter (list));
             this.setRowSorter (tableRowSorter);
-        }
-    }
+     }
+ }
 
     
    
