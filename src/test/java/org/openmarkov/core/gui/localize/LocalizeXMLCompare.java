@@ -29,8 +29,13 @@ public class LocalizeXMLCompare {
             Set<String> mainNames = new HashSet<>();
             int languageCodePlusExtensionLenght = 7;
             for (String file : files) {
-                String fileWithoutLang = file.substring(0,file.length()-languageCodePlusExtensionLenght);
-                mainNames.add(fileWithoutLang);
+                // We only get the XML localization files
+                if (file.substring(file.length()-3).equalsIgnoreCase("XML")) {
+                    String fileWithoutLang = file.substring(0,file.length()-languageCodePlusExtensionLenght);
+                    mainNames.add(fileWithoutLang);
+                } else {
+                    continue;
+                }
             }
 
             Iterator<String> iter = mainNames.iterator();
