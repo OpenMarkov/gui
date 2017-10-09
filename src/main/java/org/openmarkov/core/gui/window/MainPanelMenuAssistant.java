@@ -37,6 +37,7 @@ import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
 import org.openmarkov.core.oopn.OOPNet;
@@ -223,7 +224,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
         {
             workingMode = currentNetworkPanel.getWorkingMode ();
             boolean enable = currentNetworkPanel.getProbNet ().getNetworkType () instanceof InfluenceDiagramType
-                             || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MIDType;
+                    || currentNetworkPanel.getProbNet ().getNetworkType () instanceof MIDType
+                    || currentNetworkPanel.getProbNet ().getNetworkType () instanceof DecisionAnalysisNetworkType;
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, enable);
             setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, enable);
         }
@@ -432,9 +434,10 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
             }
             if ((currentProbNet.getNetworkType () instanceof MIDType
-                || currentProbNet.getNetworkType () instanceof InfluenceDiagramType)
-                && currentProbNet.getDecisionCriteria() != null
-                && currentProbNet.getDecisionCriteria().size() > 1)
+                    || currentProbNet.getNetworkType () instanceof InfluenceDiagramType
+                    || currentProbNet.getNetworkType () instanceof DecisionAnalysisNetworkType)
+                    && currentProbNet.getDecisionCriteria() != null
+                    && currentProbNet.getDecisionCriteria().size() > 1)
             {
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, true);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, true);
