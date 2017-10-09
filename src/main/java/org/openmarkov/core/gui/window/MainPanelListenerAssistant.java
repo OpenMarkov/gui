@@ -79,9 +79,12 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.GTablePotential;
+import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANDecompositionAlgorithm;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluationOutput;
 import org.openmarkov.inference.tasks.VariableElimination.VECEAGlobal;
 import org.openmarkov.inference.tasks.VariableElimination.VEOptimalIntervention;
 import org.openmarkov.core.model.network.CEP;
@@ -1594,34 +1597,49 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
             //networkPanel.setInferenceAlgorithm(null);
         }
 
-        if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
-            System.out.println("Es una DAN!!!");
-            return;
-        }
-
-        //InferenceAlgorithm inferenceAlgorithm = networkPanel.getEditorPanel().getInferenceAlgorithm();
         ProbNet probNet = networkPanel.getProbNet();
 
-        VEOptimalIntervention veOptimalStrategy = null;
-        try {
-            veOptimalStrategy = new VEOptimalIntervention(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
-        } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
-            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                    "An error occurred when trying to show the optimal strategy: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+        if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
+            DANDecompositionAlgorithm danDecompositionAlgorithm = new DANDecompositionAlgorithm();
+            DANEvaluationOutput output = danDecompositionAlgorithm.evaluate(probNet, networkPanel.getEditorPanel().getPreResolutionEvidence());
+            Intervention intervention = output.getUtility().get(0).interventions[0];
+
+            try {
+                //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, intervention);
+                optimalStrategyDialog.setVisible(true);
+            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                        "An error occurred when trying to show the optimal strategy",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            // MID or ID
+        } else {
+
+            VEOptimalIntervention veOptimalStrategy = null;
+            try {
+                veOptimalStrategy = new VEOptimalIntervention(probNet, networkPanel.getEditorPanel().getPreResolutionEvidence());
+            } catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                        "An error occurred when trying to show the optimal strategy: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            try {
+                //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, veOptimalStrategy);
+                optimalStrategyDialog.setVisible(true);
+            } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                        "An error occurred when trying to show the optimal strategy",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
 
-        try {
-			//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-			OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, veOptimalStrategy);
-			optimalStrategyDialog.setVisible(true);
-		} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-                    "An error occurred when trying to show the optimal strategy",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-		}
     }
 
 	/**
