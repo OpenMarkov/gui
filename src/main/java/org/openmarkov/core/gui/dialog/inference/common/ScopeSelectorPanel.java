@@ -4,6 +4,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -143,6 +144,10 @@ public class ScopeSelectorPanel extends JPanel {
         }
 
         if(avaibleDecisionNodes.size() == 0){
+            couldBeDecision = false;
+        }
+
+        if(probNet.getNetworkType() instanceof DecisionAnalysisNetworkType) {
             couldBeDecision = false;
         }
 
