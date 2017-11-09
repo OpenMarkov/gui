@@ -83,8 +83,8 @@ import org.openmarkov.core.model.network.potential.Intervention;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANDecompositionAlgorithm;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluationOutput;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.tasks.VariableElimination.VECEAGlobal;
 import org.openmarkov.inference.tasks.VariableElimination.VEOptimalIntervention;
 import org.openmarkov.core.model.network.CEP;
@@ -1600,9 +1600,20 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         ProbNet probNet = networkPanel.getProbNet();
 
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
-            DANDecompositionAlgorithm danDecompositionAlgorithm = new DANDecompositionAlgorithm();
-            DANEvaluationOutput output = danDecompositionAlgorithm.evaluate(probNet, networkPanel.getEditorPanel().getPreResolutionEvidence());
-            Intervention intervention = output.getUtility().get(0).interventions[0];
+        	DANEvaluation eval = null;
+			try {
+				eval = new DecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
+			} catch (NotEvaluableNetworkException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            Intervention intervention = null;
+			try {
+				intervention = eval.getUtility().interventions[0];
+			} catch (UnexpectedInferenceException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
             try {
                 //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
