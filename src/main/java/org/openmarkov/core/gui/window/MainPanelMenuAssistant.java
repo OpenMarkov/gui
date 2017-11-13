@@ -40,6 +40,7 @@ import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.core.model.network.type.MIDType;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.OOPNet;
 
 /**
@@ -428,7 +429,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
                 setOptionEnabled (ActionCommands.UTILITY_CREATION, true);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC, false);
                 setOptionEnabled (ActionCommands.COST_EFFECTIVENESS_SENSITIVITY, false);
-                if (currentProbNet.getNetworkType() instanceof InfluenceDiagramType) {
+                NetworkType networkType = currentProbNet.getNetworkType(); 
+                if ((networkType instanceof InfluenceDiagramType) || (networkType instanceof DecisionAnalysisNetworkType)) {
                     setOptionEnabled(ActionCommands.DECISION_TREE, true);
                 }
                 setOptionEnabled (ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, true);
