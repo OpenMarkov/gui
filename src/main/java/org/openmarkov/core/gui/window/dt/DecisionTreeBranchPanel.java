@@ -48,7 +48,11 @@ public class DecisionTreeBranchPanel extends DecisionTreeElementPanel
             txtLeft.append (" P=" + df.format (treeBranch.getBranchProbability()));
             txtLeft.append (" / ");
         }
-        txtLeft.append ("U=" + df.format (treeBranch.getChild().getUtility ()));
+        double utility = treeBranch.getChild().getUtility ();
+        if (Double.isNaN(utility)){
+        	utility = 0.0;
+        }
+		txtLeft.append ("U=" + df.format (utility));
         txtLeft.append ("</td>");
         txtLeft.append ("</table></html>");
         return txtLeft.toString ();
