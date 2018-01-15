@@ -694,7 +694,7 @@
 	<AboutBox>
 		<Advertisement>
 			<Text
-				value="Please visit OpenMarkov's Web page (www.openmarkov.org) for the latest updates" />
+				value="Please visit OpenMarkov's web page (www.openmarkov.org) for the latest updates" />
 		</Advertisement>
 		<LineSeparatorImage>
 			<URL value="lineSeparator.jpg" />
