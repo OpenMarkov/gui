@@ -181,7 +181,7 @@
   </NetworkNotSaved>
   <NotEnoughMemoryForExactInference>
     <Title value="Not enough memory for exact inference" />
-    <Text value="There is not enough memory available for exact inference.&#xA; An approximate inference algorithm will be used instead." />
+    <Text value="There is not enough memory available " /><!--for exact inference.&#xA; An approximate inference algorithm will be used instead.-->
   </NotEnoughMemoryForExactInference>
   <IntervalOverlap>
     <Text>
