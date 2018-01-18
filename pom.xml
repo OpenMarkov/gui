@@ -8,13 +8,13 @@
         <version>0.3.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>org.openmarkov.core.gui</artifactId>
+    <artifactId>org.openmarkov.gui</artifactId>
     <version>0.3.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>org.openmarkov</groupId>
-            <artifactId>org.openmarkov.inference.tasks</artifactId>
+            <artifactId>org.openmarkov.inference</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
 
