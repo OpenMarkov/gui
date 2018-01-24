@@ -106,7 +106,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 
 			VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, node.getVariable() ,evidence, decisionSelected);
 			this.expandedNetwork = veTemporalEvolution.getExpandedNetwork();
-			this.temporalEvolution = veTemporalEvolution.getPosteriorValues();
+			this.temporalEvolution = veTemporalEvolution.getTemporalEvolution();
 
 			initialize ();
 			Toolkit toolkit = Toolkit.getDefaultToolkit ();
@@ -171,7 +171,7 @@ public class TraceTemporalEvolutionDialog extends JDialog
 				System.out.println(temporalVariable.getBaseName());
 				try {
 					VETemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, temporalVariable, evidence, decisionSelected);
-					HashMap<Variable, TablePotential> result = veTemporalEvolution.getPosteriorValues();
+					HashMap<Variable, TablePotential> result = veTemporalEvolution.getTemporalEvolution();
 					JTable table = createJTable(temporalVariable, result);
 					TemporalEvolutionReport report = new TemporalEvolutionReport();
 					report.write(targetFilename.substring(0,targetFilename.length()-4) +

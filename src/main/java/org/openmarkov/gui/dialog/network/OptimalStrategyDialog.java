@@ -12,10 +12,10 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.treeadd.TreeADDCellRenderer;
@@ -25,7 +25,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.gui.localize.StringDatabase;
 
 @SuppressWarnings("serial")
 public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
@@ -36,7 +37,14 @@ public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
-		dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
+		try {
+			dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
+		} catch (NotEvaluableNetworkException e) {
+			JOptionPane.showMessageDialog (owner,
+					StringDatabase.getUniqueInstance ().getString ("ExceptionNotEvaluableNetwork.Text.Label"),
+					StringDatabase.getUniqueInstance ().getString ("ExceptionNotEvaluableNetwork.Title.Label"),
+					JOptionPane.ERROR_MESSAGE);
+		}
 
 		//VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();
@@ -61,13 +69,13 @@ public class OptimalStrategyDialog extends OkCancelHorizontalDialog{
         setResizable(true);
 	}
 
-	public OptimalStrategyDialog(Window owner, ProbNet probNet, Intervention optimalIntervention) throws
+	public OptimalStrategyDialog(Window owner, ProbNet probNet, StrategyTree optimalStrategyTree) throws
 			IncompatibleEvidenceException, UnexpectedInferenceException {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
-		dummyNode.setPotential(optimalIntervention);
+		dummyNode.setPotential(optimalStrategyTree);
 
 		//VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();

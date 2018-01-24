@@ -41,8 +41,6 @@ import org.openmarkov.gui.dialog.LanguageDialog;
 import org.openmarkov.gui.dialog.SelectZoomDialog;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
-import org.openmarkov.gui.dialog.inference.common.ScopeSelectorPanel;
-import org.openmarkov.gui.dialog.inference.common.ScopeType;
 import org.openmarkov.gui.dialog.io.DBReaderFileChooser;
 import org.openmarkov.gui.dialog.io.FileChooser;
 import org.openmarkov.gui.dialog.io.FileFilterAll;
@@ -78,16 +76,14 @@ import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
-import org.openmarkov.core.model.network.potential.GTablePotential;
-import org.openmarkov.core.model.network.potential.Intervention;
+import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionIntoSymmetricDANsEvaluation;
-import org.openmarkov.inference.variableElimination.tasks.VECEAGlobal;
+
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
-import org.openmarkov.core.model.network.CEP;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
@@ -1607,9 +1603,9 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-            Intervention intervention = null;
+            StrategyTree strategyTree = null;
 			try {
-				intervention = eval.getUtility().interventions[0];
+				strategyTree = eval.getUtility().strategyTrees[0];
 			} catch (UnexpectedInferenceException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -1617,7 +1613,8 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
             try {
                 //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, intervention);
+                OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet,
+						strategyTree);
                 optimalStrategyDialog.setVisible(true);
             } catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
                 JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
