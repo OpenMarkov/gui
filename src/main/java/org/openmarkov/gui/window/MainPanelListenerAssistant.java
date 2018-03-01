@@ -1605,12 +1605,7 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 				e1.printStackTrace();
 			}
             StrategyTree strategyTree = null;
-			try {
-				strategyTree = eval.getUtility().strategyTrees[0];
-			} catch (UnexpectedInferenceException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			strategyTree = eval.getUtility().strategyTrees[0];
 
             try {
                 //OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
