@@ -1568,6 +1568,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
 
     private void showDecisionTree(ProbNet probNet) {
         try {
+            InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+            if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+                return;
+            }
             DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
             mainPanel.getMdi().createNewFrame(decisionTree);
             mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
@@ -1595,7 +1599,10 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
         }
 
         ProbNet probNet = networkPanel.getProbNet();
-
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+        if(costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON){
+            return;
+        }
         if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
         	DANEvaluation eval = null;
 			try {
