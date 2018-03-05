@@ -63,12 +63,12 @@ public class DecisionTreePanel extends JScrollPane
     public static DecisionTreeElement buildDecisionTreeDAN (ProbNet probNet)
     {
         DecisionTreeElement root = null;
-//        if (probNet.getNetworkType () instanceof InfluenceDiagramType)
-//        {
-//            root = DecisionTreeBuilder.buildDecisionTreeFromID (probNet);
-//        }
-//        else if (probNet.getNetworkType () instanceof DecisionAnalysisNetworkType)
-//        {
+        if (probNet.getNetworkType () instanceof InfluenceDiagramType)
+        {
+            root = DecisionTreeBuilder.buildDecisionTreeFromID (probNet);
+        }
+        else if (probNet.getNetworkType () instanceof DecisionAnalysisNetworkType)
+        {
             root =  new DecisionTreeBranch (probNet);
             DecisionTreeNode child = null;
 			try {
@@ -78,7 +78,7 @@ public class DecisionTreePanel extends JScrollPane
 				e.printStackTrace();
 			}
             ((DecisionTreeBranch)root).setChild(child);
-//        }
+        }
         return root;
     }
 }
