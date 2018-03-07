@@ -362,8 +362,6 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
     /**
      * This method shows the dialog and requests the user the node
      * additionalProperties.
-     * @param newNetwork network to which the node belongs.
-     * @param additionalProperties additionalProperties of the node.
      * @return OK_BUTTON if the user has pressed the 'Ok' button or
      *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
      */

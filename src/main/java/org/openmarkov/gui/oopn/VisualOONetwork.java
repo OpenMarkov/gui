@@ -380,8 +380,8 @@ public class VisualOONetwork extends VisualNetwork
     /**
      * Sets the selection state of an instance.
      * 
-     * @param node
-     *            node to be selected/deselected.
+     * @param instance
+     *            Visual instance to be selected/deselected.
      * @param selected
      *            new selection state.
      */

@@ -206,8 +206,8 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
     /**
      * sets the first row for edition
      * 
-     * @param firstRow
-     *            - the first row that is available for edition
+     * @param firstEditableRow
+     *            position of the first row that is available for edition
      */
     protected void setFirstEditableRow(int firstEditableRow) {
 

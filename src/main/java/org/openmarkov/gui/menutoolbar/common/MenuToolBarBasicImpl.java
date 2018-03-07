@@ -141,7 +141,7 @@ public class MenuToolBarBasicImpl {
 	 * 
 	 * @param component
 	 *            component whose text is going to be modified.
-	 * @param text
+	 * @param newCaption
 	 *            The new text to set.
 	 */
 	public static void setText(JComponent component, String newCaption) {

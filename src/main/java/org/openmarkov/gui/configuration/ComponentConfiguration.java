@@ -28,10 +28,10 @@ public class ComponentConfiguration
 	private String componentName;
 
 	// Constructor
-	/** @param componentName. <code>String</code> */
+	/** @param componentName <code>String</code> */
 	public ComponentConfiguration(String componentName) {
 		this.componentName = componentName;
-		componentVariables = new HashMap<String, Object>();
+		componentVariables = new HashMap<>();
 	}
 	
 	// Methods

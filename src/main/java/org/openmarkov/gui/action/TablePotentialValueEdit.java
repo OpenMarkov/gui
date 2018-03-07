@@ -342,8 +342,6 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * Gets the row position associated to value edited if priorityList no
 	 * exists
 	 * 
-	 * @param position
-	 *            position of the value in the array of values
 	 * @return the position in the table
 	 */
 	public int getRowPosition() {

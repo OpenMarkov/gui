@@ -121,8 +121,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 	 * 
 	 * @param probNet
 	 *            object that has the information of the network.
-	 * @param editorPanel
-	 *            editor panel associated to this network.
 	 */ 
 	public VisualNetwork(ProbNet probNet) {
         

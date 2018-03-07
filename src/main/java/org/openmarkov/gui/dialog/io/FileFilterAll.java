@@ -84,7 +84,7 @@ public class FileFilterAll extends FileFilterBasic {
 
 	/**
 	 *  Sets the fileDescripion used to match the filter with the proper Reader/Writer
-	 * @param the fileDescription used to match the filter with the proper Reader/Writer
+	 * @param fileDescription the fileDescription used to match the filter with the proper Reader/Writer
 	 * @author carmenyago
 	 * 
 	 */

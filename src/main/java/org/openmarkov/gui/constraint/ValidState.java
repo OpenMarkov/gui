@@ -83,7 +83,8 @@ public class ValidState extends PNConstraint
 
     /**
      * This method checks if exists the state specified.
-     * @param name name of the node to search.
+     * @param node node to search.
+     * @param state state to be checked
      * @return true if the state exists; otherwise, false.
      */
     public boolean existState (String state, Node node)

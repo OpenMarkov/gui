@@ -65,8 +65,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
     /**
      * This method initializes this instance.
      * @param owner window that owns the dialog.
-     * @param newElement if true, it indicates that a new network is being
-     *            created; if false, an existing network is being modified.
      * @wbp.parser.constructor
      */
     public NetworkPropertiesDialog (Window owner)
@@ -81,8 +79,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
     /**
      * This method initializes this instance.
      * @param owner window that owns the dialog.
-     * @param newElement if true, it indicates that a new network is being
-     *            created; if false, an existing network is being modified.
+     * @param probNet network
      */
     public NetworkPropertiesDialog (Window owner, ProbNet probNet)
     {
@@ -256,7 +253,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
     /**
      * This method shows the dialog and requests the user the network
      * additionalProperties.
-     * @param additionalProperties additionalProperties of the network.
      * @return OK_BUTTON if the user has pressed the 'Ok' button or
      *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
      */

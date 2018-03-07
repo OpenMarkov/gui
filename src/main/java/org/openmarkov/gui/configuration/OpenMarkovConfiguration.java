@@ -78,8 +78,8 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 		return configurations.get(name);
 	}
 	
-	/** @param pluginName. <code>String</code>
-	 * @param propertyName. <code>String</code>
+	/** @param pluginName <code>String</code>
+	 * @param propertyName <code>String</code>
 	 * @return Property value or <code>null</code> if property does not exists.
 	 *  <code>Object</code> */
 	public static Object getProperty(String pluginName, String propertyName) {
@@ -146,7 +146,7 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 		}
 	}
 
-	/** @param configurationsCollection. <code>HashMap</code> with <code>key =
+	/** @param configurationsCollection <code>HashMap</code> with <code>key =
 	 *  String</code> and <code>value = ComponentConfiguration</code> */
 	private void generateDefaultConfiguration(
 			HashMap<String, Configuration> configurationsCollection) {

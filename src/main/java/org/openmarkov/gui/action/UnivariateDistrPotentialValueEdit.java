@@ -128,7 +128,7 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 	 * 
 	 * @param node
 	 *            - the node to be edited
-	 * @param distributioName
+	 * @param distributionName
 	 *            - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class
 	 * @see org.openmarkov.core.model.network.potential.UnivariateDistrPotential           
 	 *            
@@ -200,8 +200,6 @@ public class UnivariateDistrPotentialValueEdit extends SimplePNEdit {
 	 * Gets the row position associated to value edited if priorityList no
 	 * exists
 	 * 
-	 * @param position
-	 *            position of the value in the array of values
 	 * @return the position in the table
 	 */
 	public int getRowPosition() {

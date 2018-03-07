@@ -410,7 +410,7 @@ protected EvidenceCase getConfiguration(int col)
         /**
          * This class overrides the double click listener calling the
          * 
-         * @see doubleClickEvent
+         * @see DoubleCdoubleClickEvent
          * revised-->not changed
          */
         private class MouseClickedListener extends MouseAdapter {
@@ -428,7 +428,7 @@ protected EvidenceCase getConfiguration(int col)
         /**
          * Handles the double click in a cell
          * 
-         * @param evt
+         * @param e
          */
         @Override
         protected void doubleClickEvent(MouseEvent e) {

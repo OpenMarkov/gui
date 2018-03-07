@@ -167,7 +167,7 @@ public class StringDatabase
     }
 
     /**
-     * @param locale the locale to set
+     * @param newLocale the locale to set
      */
     public void setLocale (Locale newLocale)
     {

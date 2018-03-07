@@ -290,7 +290,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
     /**
      * This method fills the content of the fields from a NodeProperties object.
      * 
-     * @param additionalProperties
+     * @param properties
      *            object from where load the information.
      */
     public void setFieldsFromProperties(Node properties) {

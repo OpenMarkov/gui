@@ -73,7 +73,7 @@ public int calculateFirstEditableRow(Node node) {
  * 
  * carmenyago removed the dependence with NodeType
  * 
- * @param Node node:  node who "owns" the table
+ * @param node node who "owns" the table
  * @author carmenyago
  */
 @Override

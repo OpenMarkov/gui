@@ -259,7 +259,7 @@ public class NetworkPanel extends FrameContentPanel
     
     /**
      * Sets the format of the file where the network is saved.
-     * @param name networkFileFormat format of the file.
+     * @param networkFileFormat format of the file.
      */
 	public void setNetworkFileFormat(String networkFileFormat) {
 		this.networkFileFormat = networkFileFormat;
@@ -269,7 +269,7 @@ public class NetworkPanel extends FrameContentPanel
 	/**
      * Changes the state of the edition and carries out the necessary actions in
      * each case.
-     * @param newState new edition state.
+     * @param newEditionMode new edition state.
      */
     public void setEditionMode (String newEditionMode)
     {
@@ -554,7 +554,7 @@ public class NetworkPanel extends FrameContentPanel
 
     /**
      * Sets a new contextual menu factory.
-     * @param newContextuaMenuFactory contextual menu factory to be set.
+     * @param newContextualMenuFactory contextual menu factory to be set.
      */
     public void setContextualMenuFactory (ContextualMenuFactory newContextualMenuFactory)
     {

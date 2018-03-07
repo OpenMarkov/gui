@@ -83,7 +83,6 @@ public class NodeParentsPanel extends JPanel
     /**
      * This method initialises this instance.
      * @param newNode - true if the node is a new node; otherwise false
-     * @param notifier - Observable notifier
      */
     public NodeParentsPanel (final boolean newNode)
     {// , ElementObservable notifier) {

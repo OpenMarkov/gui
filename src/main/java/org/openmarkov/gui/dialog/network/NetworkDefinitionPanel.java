@@ -290,7 +290,7 @@ public class NetworkDefinitionPanel extends JPanel
     /**
      * This method fills the content of the fields from a NetworkProperties
      * object.
-     * @param propNet network from where load the information.
+     * @param probNet network from where load the information.
      */
     private void setFieldsFromProperties (ProbNet probNet)
     {

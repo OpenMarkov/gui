@@ -841,7 +841,7 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
     }
 
     /**
-     * @param decimalPositions the decimalPositions to set
+     * @param newDecimalPositions the decimalPositions to set
      */
     protected static void setDecimalPositions (int newDecimalPositions)
     {

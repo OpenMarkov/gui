@@ -45,13 +45,12 @@ public class SelectedContent
     /**
      * 
      * Copy constructor for ClipboardContent.
-     * @param nodes
-     * @param links
+     * @param content selected nodes and links
      */
     public SelectedContent(SelectedContent content) 
     {
-        this.nodes = new ArrayList<Node> (content.getNodes ());
-        this.links = new ArrayList<Link<Node>> (content.getLinks ());
+        this.nodes = new ArrayList<>(content.getNodes());
+        this.links = new ArrayList<>(content.getLinks());
     }    
     
     /**

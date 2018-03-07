@@ -77,7 +77,7 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
      * 
      * @param firstEditableRow
      *            value of the first editable row
-     * @param editableColumns
+     * @param uncertaintyInColumns
      *            boolean array with the columns with (1)/without (0) mark. The
      *            array only has to contain indexes for the editables columns
      */

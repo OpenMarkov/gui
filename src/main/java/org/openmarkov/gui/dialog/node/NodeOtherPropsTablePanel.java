@@ -210,7 +210,7 @@ public class NodeOtherPropsTablePanel extends JPanel
 
     /**
      * This method fills the content of the fields from a NodeProperties object.
-     * @param additionalProperties object from where load the information.
+     * @param properties object from where load the information.
      */
     public void setFieldsFromProperties (Node properties)
     {

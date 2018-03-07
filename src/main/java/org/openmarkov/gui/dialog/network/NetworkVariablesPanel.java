@@ -85,7 +85,6 @@ public class NetworkVariablesPanel extends JPanel
 
     /**
      * This method initialises this instance.
-     * @param newNetwork true if the network to show is new, otherwise false
      * @wbp.parser.constructor
      */
     public NetworkVariablesPanel ()

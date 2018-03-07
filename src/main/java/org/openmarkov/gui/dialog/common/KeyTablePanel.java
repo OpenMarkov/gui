@@ -141,8 +141,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
      * @param modifiable
      *            if true, the cells of the table (except the first) are
      *            modifiable.
-     * @param notifier
-     *            - ElementObservable notifier
      */
     public KeyTablePanel(String[] columns, Object[][] data, boolean reorderable,
             boolean modifiable, boolean showHeader) {

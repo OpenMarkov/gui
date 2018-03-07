@@ -18,7 +18,7 @@ import org.openmarkov.gui.dialog.common.KeyTable;
 
 
 /**
- * This class tests the class {@link openmarkov.gui.components.DiscretizeTableModel}.
+ * This class tests the class {@link org.openmarkov.gui.component.DiscretizeTableModel}.
  * 
  * @author jlgozalo
  * @version 1.0 Agosto/09

@@ -208,7 +208,7 @@ public class TreeADDModel implements TreeModel {
 		}
 	}
 	
-	/**
+	/*
 	 * 
 	 * @param goal
 	 */
