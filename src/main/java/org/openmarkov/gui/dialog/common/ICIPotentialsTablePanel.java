@@ -36,8 +36,8 @@ import java.util.List;
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "ICI") public class ICIPotentialsTablePanel
 		extends ProbabilityTablePanel {
 
-	private ICIOptionsPanel iciOptionPanel;
 	protected Logger logger;
+	private ICIOptionsPanel iciOptionPanel;
 	/**
 	 * JTable where show the values.
 	 */
@@ -71,6 +71,42 @@ import java.util.List;
 		showValuesTable(true);
 		setData(node);
 		repaint();
+	}
+
+	/**
+	 * calculate the last editable Row of the table, based upon:
+	 * <p>
+	 * <ul>
+	 * <li>number of parents for the node</li>
+	 * <li>type of the node (utility or other)</li>
+	 * </ul>
+	 *
+	 * @param listPotentials - potentials for the variable
+	 */
+	public static int calculateLastEditableRow(List<Potential> listPotentials) {
+		int row = 0;
+		if (listPotentials != null) {
+			row = listPotentials.get(0).getVariables().get(0).getNumStates() + 1;
+			// numStates of the child variable plus one empty cell plus a cell
+			// for the variable´s name
+		} else {
+			row = 0;
+		}
+		return row + 1;
+	}
+
+	public static int calculateFirstEditableRow(List<Potential> listPotentials) {
+		int row = 0;
+		if (listPotentials != null) {
+
+			row = 2; // In a canonical table there are always two rows: one for
+			// parent´s names
+			// and another for parent´s states
+		} else {
+			row = 0;
+		}
+
+		return row;
 	}
 
 	private ICIOptionsPanel getICIOptionPanel() {
@@ -156,42 +192,6 @@ import java.util.List;
 			// TODO setCellRenderes
 			setCellRenderers();
 		}
-	}
-
-	/**
-	 * calculate the last editable Row of the table, based upon:
-	 *
-	 * <ul>
-	 * <li>number of parents for the node</li>
-	 * <li>type of the node (utility or other)</li>
-	 * </ul>
-	 *
-	 * @param listPotentials - potentials for the variable
-	 */
-	public static int calculateLastEditableRow(List<Potential> listPotentials) {
-		int row = 0;
-		if (listPotentials != null) {
-			row = listPotentials.get(0).getVariables().get(0).getNumStates() + 1;
-			// numStates of the child variable plus one empty cell plus a cell
-			// for the variable´s name
-		} else {
-			row = 0;
-		}
-		return row + 1;
-	}
-
-	public static int calculateFirstEditableRow(List<Potential> listPotentials) {
-		int row = 0;
-		if (listPotentials != null) {
-
-			row = 2; // In a canonical table there are always two rows: one for
-			// parent´s names
-			// and another for parent´s states
-		} else {
-			row = 0;
-		}
-
-		return row;
 	}
 
 	/**

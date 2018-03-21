@@ -26,14 +26,14 @@ public class PropagationOptionsDialog extends JDialog {
 	 */
 	private static final long serialVersionUID = 1912979194800110113L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Button group that holds the radio buttons that will be shown. There is a
 	 * radio button for each state of the node.
 	 */
 	ButtonGroup buttonGroup = new ButtonGroup();
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * This method initialises this instance.

@@ -21,11 +21,6 @@ import static org.junit.Assert.*;
  */
 public class DiscretizeTableModelTest {
 	/**
-	 * Common object for all tests.
-	 */
-	private DiscretizeTableModel discretizeTableModel = null;
-	private KeyTable discretizeTable = null;
-	/**
 	 * constant definition of the columns
 	 */
 	private static final int COLUMN_ID = 0;
@@ -35,6 +30,11 @@ public class DiscretizeTableModelTest {
 	private static final int COLUMN_SEPARATOR = 4;
 	private static final int COLUMN_UPPER_LIMIT_VALUE = 5;
 	private static final int COLUMN_UPPER_LIMIT_SYMBOL = 6;
+	/**
+	 * Common object for all tests.
+	 */
+	private DiscretizeTableModel discretizeTableModel = null;
+	private KeyTable discretizeTable = null;
 
 	/**
 	 * Creates a new discretizeTableModel for all tests.

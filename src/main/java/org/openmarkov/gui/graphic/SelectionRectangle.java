@@ -60,6 +60,29 @@ public class SelectionRectangle {
 	private double h = 0;
 
 	/**
+	 * Recalculates the dimensions of the selection rectangle because the width
+	 * and/or the heigth can't be negative. If any of them are negative, the
+	 * point must be recalculated and they must became positive.
+	 *
+	 * @param dimensions object that contains the dimensions.
+	 * @return the new dimensions of the rectangle.
+	 */
+	private static double[] calculatePositiveDimensions(double[] dimensions) {
+
+		if (dimensions[2] < 0) {
+			dimensions[0] += dimensions[2];
+			dimensions[2] = -dimensions[2];
+		}
+		if (dimensions[3] < 0) {
+			dimensions[1] += dimensions[3];
+			dimensions[3] = -dimensions[3];
+		}
+
+		return dimensions;
+
+	}
+
+	/**
 	 * initialises a new selection.
 	 *
 	 * @param start the upper-left corner of the selection rectangle.
@@ -85,29 +108,6 @@ public class SelectionRectangle {
 	public void clearSelectionSquare() {
 
 		setSize(0, 0);
-
-	}
-
-	/**
-	 * Recalculates the dimensions of the selection rectangle because the width
-	 * and/or the heigth can't be negative. If any of them are negative, the
-	 * point must be recalculated and they must became positive.
-	 *
-	 * @param dimensions object that contains the dimensions.
-	 * @return the new dimensions of the rectangle.
-	 */
-	private static double[] calculatePositiveDimensions(double[] dimensions) {
-
-		if (dimensions[2] < 0) {
-			dimensions[0] += dimensions[2];
-			dimensions[2] = -dimensions[2];
-		}
-		if (dimensions[3] < 0) {
-			dimensions[1] += dimensions[3];
-			dimensions[3] = -dimensions[3];
-		}
-
-		return dimensions;
 
 	}
 

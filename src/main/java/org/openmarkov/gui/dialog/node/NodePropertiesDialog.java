@@ -28,14 +28,18 @@ import java.awt.*;
  */
 public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizontalDialog implements ChangeListener {
 	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
 	 * Constant that defines the height of the tables that are shown into the
 	 * dialog box.
 	 */
 	protected static final int TABLE_HEIGHT = 180;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * Object where all information will be saved.
+	 */
+	protected Node node = null;
 	/**
 	 * Panel to tab the different options.
 	 */
@@ -56,7 +60,6 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 * place the fields at the top of the panel.
 	 */
 	private NodeParentsPanel nodeParentsPanel = null;
-
 	/**
 	 * Panel that contains the panel where other property table fields are. It
 	 * is used to place the fields at the top of the panel.
@@ -66,10 +69,6 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
-	/**
-	 * Object where all information will be saved.
-	 */
-	protected Node node = null;
 	/**
 	 * v
 	 */
@@ -191,9 +190,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 */
 	protected void initialize() {
 		setTitle(stringDatabase.getString("NodePropertiesDialog.Title.Label") + ": " + (
-				node == null ?
-						"" :
-						node.getName()
+				node == null ? "" : node.getName()
 		));
 		getComponentsPanel().setName("NodePropertiesDialogComponentPane");
 		configureComponentsPanel();

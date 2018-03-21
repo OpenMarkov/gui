@@ -99,6 +99,126 @@ public class VisualArrow extends VisualElement {
 	}
 
 	/**
+	 * Calculates the nine points of the line with top of arrow. /** Calculates
+	 * the nine points of the line with top of arrow.
+	 * <p>
+	 * <pre>
+	 * 0
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *         * *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *        *   *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *      *       *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *     *         *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *    *           *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *   *             *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *  1****2**3**4****5
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       *     *
+	 * </pre>
+	 * <p>
+	 * <pre>
+	 *       6**7**8
+	 * </pre>
+	 *
+	 * @param start start of the line.
+	 * @param end   end of the line.
+	 * @return return an array that contains the coordinates of the nine points.
+	 */
+	private static Point2D.Double[] calculatePointsOfArrow(Point2D.Double start, Point2D.Double end) {
+
+		double tx = start.getX();
+		double ty = start.getY();
+		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
+		Point2D.Double[] points = new Point2D.Double[9];
+		double incrHeight = 0;
+		double halfWidth = WIDTH_TOP_ARROW / 2;
+		int index = 0;
+		int length = 0;
+		AffineTransform transformation2D = new AffineTransform();
+
+		transformation2D.rotate(-angle);
+		transformation2D.translate(-tx, -ty);
+		points[0] = new Point2D.Double();
+		transformation2D.transform(end, points[0]);
+		incrHeight = (points[0].getX() >= 0) ? HEIGHT_TOP_ARROW : -HEIGHT_TOP_ARROW;
+		points[1] = new Point2D.Double(points[0].getX() - incrHeight, points[0].getY() - halfWidth);
+		points[3] = new Point2D.Double(points[1].getX(), points[0].getY());
+		points[2] = new Point2D.Double(points[3].getX(), points[3].getY() - WIDTH_LINE_TO_SELECT);
+		points[4] = new Point2D.Double(points[3].getX(), points[3].getY() + WIDTH_LINE_TO_SELECT);
+		points[5] = new Point2D.Double(points[1].getX(), points[0].getY() + halfWidth);
+		points[7] = new Point2D.Double(0, 0);
+		points[6] = new Point2D.Double(points[7].getX(), points[7].getY() - WIDTH_LINE_TO_SELECT);
+		points[8] = new Point2D.Double(points[7].getX(), points[7].getY() + WIDTH_LINE_TO_SELECT);
+		try {
+			transformation2D = transformation2D.createInverse();
+		} catch (NoninvertibleTransformException e) {
+			// ExceptionsHandler.handleException(e, null, true);
+			Logger.getLogger(VisualLink.class).info(e);
+		}
+		length = points.length;
+		for (index = 0; index < length; index++) {
+			transformation2D.transform(points[index], points[index]);
+		}
+
+		return points;
+
+	}
+
+	/**
 	 * Sets the starting point of the arrow.
 	 *
 	 * @param point new starting point.
@@ -222,126 +342,6 @@ public class VisualArrow extends VisualElement {
 		polygon.closePath();
 
 		return polygon;
-	}
-
-	/**
-	 * Calculates the nine points of the line with top of arrow. /** Calculates
-	 * the nine points of the line with top of arrow.
-	 *
-	 * <pre>
-	 * 0
-	 * </pre>
-	 *
-	 * <pre>
-	 *         * *
-	 * </pre>
-	 *
-	 * <pre>
-	 *        *   *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *      *       *
-	 * </pre>
-	 *
-	 * <pre>
-	 *     *         *
-	 * </pre>
-	 *
-	 * <pre>
-	 *    *           *
-	 * </pre>
-	 *
-	 * <pre>
-	 *   *             *
-	 * </pre>
-	 *
-	 * <pre>
-	 *  1****2**3**4****5
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       *     *
-	 * </pre>
-	 *
-	 * <pre>
-	 *       6**7**8
-	 * </pre>
-	 *
-	 * @param start start of the line.
-	 * @param end   end of the line.
-	 * @return return an array that contains the coordinates of the nine points.
-	 */
-	private static Point2D.Double[] calculatePointsOfArrow(Point2D.Double start, Point2D.Double end) {
-
-		double tx = start.getX();
-		double ty = start.getY();
-		double angle = Math.atan((end.getY() - ty) / (end.getX() - tx));
-		Point2D.Double[] points = new Point2D.Double[9];
-		double incrHeight = 0;
-		double halfWidth = WIDTH_TOP_ARROW / 2;
-		int index = 0;
-		int length = 0;
-		AffineTransform transformation2D = new AffineTransform();
-
-		transformation2D.rotate(-angle);
-		transformation2D.translate(-tx, -ty);
-		points[0] = new Point2D.Double();
-		transformation2D.transform(end, points[0]);
-		incrHeight = (points[0].getX() >= 0) ? HEIGHT_TOP_ARROW : -HEIGHT_TOP_ARROW;
-		points[1] = new Point2D.Double(points[0].getX() - incrHeight, points[0].getY() - halfWidth);
-		points[3] = new Point2D.Double(points[1].getX(), points[0].getY());
-		points[2] = new Point2D.Double(points[3].getX(), points[3].getY() - WIDTH_LINE_TO_SELECT);
-		points[4] = new Point2D.Double(points[3].getX(), points[3].getY() + WIDTH_LINE_TO_SELECT);
-		points[5] = new Point2D.Double(points[1].getX(), points[0].getY() + halfWidth);
-		points[7] = new Point2D.Double(0, 0);
-		points[6] = new Point2D.Double(points[7].getX(), points[7].getY() - WIDTH_LINE_TO_SELECT);
-		points[8] = new Point2D.Double(points[7].getX(), points[7].getY() + WIDTH_LINE_TO_SELECT);
-		try {
-			transformation2D = transformation2D.createInverse();
-		} catch (NoninvertibleTransformException e) {
-			// ExceptionsHandler.handleException(e, null, true);
-			Logger.getLogger(VisualLink.class).info(e);
-		}
-		length = points.length;
-		for (index = 0; index < length; index++) {
-			transformation2D.transform(points[index], points[index]);
-		}
-
-		return points;
-
 	}
 
 	/**

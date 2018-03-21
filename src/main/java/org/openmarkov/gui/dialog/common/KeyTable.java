@@ -29,20 +29,13 @@ import java.awt.*;
 public class KeyTable extends JTable {
 
 	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 5072153109141850112L;
-
-	/**
 	 * Width of the key column.
 	 */
 	protected static final int KEY_COLUMN_WIDTH = 60;
-
 	/**
 	 * Width of the key column.
 	 */
 	protected static final int ROW_HEIGHT = 20;
-
 	/**
 	 * Selection Background color
 	 */
@@ -51,32 +44,22 @@ public class KeyTable extends JTable {
 	 * Selection Foreground color
 	 */
 	protected static final Color SELECTION_FOREGROUND_COLOR = Color.BLACK;
-
 	/**
 	 * Background color
 	 */
 	protected static final Color BACKGROUND_COLOR = new Color(230, 230, 250);
-
+	/**
+	 * Static field for serializable class.
+	 */
+	private static final long serialVersionUID = 5072153109141850112L;
 	/**
 	 * Indicates if the object is already created.
 	 */
 	protected boolean created = false;
-
-	/**
-	 * Outer object that listens to the changes of the table selection.
-	 */
-	private ListSelectionListener listener = null;
-
 	/**
 	 * This variable says if the table can be modified. False by default
 	 */
 	protected boolean modifiable;
-
-	/**
-	 * This variable says if the first column is hidden. Not Visible by default
-	 */
-	private boolean firstColumnHidden = true;
-
 	/**
 	 * This variable is used to set additionalProperties for the columns in the
 	 * table
@@ -87,6 +70,14 @@ public class KeyTable extends JTable {
 	 * table
 	 */
 	protected JTableHeader header = null;
+	/**
+	 * Outer object that listens to the changes of the table selection.
+	 */
+	private ListSelectionListener listener = null;
+	/**
+	 * This variable says if the first column is hidden. Not Visible by default
+	 */
+	private boolean firstColumnHidden = true;
 	/**
 	 * This variable is used to display or not the column header. Visible by
 	 * default

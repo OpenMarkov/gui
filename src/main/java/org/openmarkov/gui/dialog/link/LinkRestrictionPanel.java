@@ -39,11 +39,6 @@ import java.util.List;
 	 */
 	protected ValuesTable valuesTable = null;
 	/**
-	 * Indicates if the data of the table is modifiable.
-	 */
-	private boolean modifiable;
-
-	/**
 	 * Panel to scroll the table.
 	 */
 	protected JScrollPane valuesTableScrollPane = null;
@@ -59,6 +54,10 @@ import java.util.List;
 	 * The link which has the link restriction
 	 */
 	protected Link<Node> link;
+	/**
+	 * Indicates if the data of the table is modifiable.
+	 */
+	private boolean modifiable;
 
 	public LinkRestrictionPanel(Link<Node> link) {
 

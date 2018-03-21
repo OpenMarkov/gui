@@ -29,6 +29,15 @@ import javax.swing.table.TableModel;
  ***/
 public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements TableModelListener {
 	/***
+	 * Preferred column width
+	 */
+	private static final int CHECKBOX_COLUMN_WIDTH = 60;
+	private static final int STATENAME_COLUMN_WIDTH = 440;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	/***
 	 * Link containing the revelation conditions
 	 */
 	private Link<Node> link;
@@ -36,11 +45,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 	 * Node whose values are revealing
 	 */
 	private Node node;
-	/***
-	 * Preferred column width
-	 */
-	private static final int CHECKBOX_COLUMN_WIDTH = 60;
-	private static final int STATENAME_COLUMN_WIDTH = 440;
 
 	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
 			boolean firstColumnHidden, Link<Node> link) {
@@ -66,11 +70,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 	}
 
 	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * This method initializes tableModel.
 	 *
 	 * @return a new tableModel.
@@ -82,31 +81,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 			tableModel = new SelectableTableModel(data, columns);
 		}
 		return tableModel;
-	}
-
-	class SelectableTableModel extends DefaultTableModel {
-
-		private static final long serialVersionUID = 4478294244055128574L;
-
-		public SelectableTableModel(Object[][] data, String[] columns) {
-			super(data, columns);
-
-		}
-
-		public boolean isCellEditable(int row, int col) {
-			if (col == 1) {
-				return true;
-			} else
-				return false;
-		}
-
-		public Class<?> getColumnClass(int c) {
-			if (getRowCount() > 0) {
-				return getValueAt(0, c).getClass();
-			} else
-				return Object.class;
-		}
-
 	}
 
 	/**
@@ -144,5 +118,30 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 						stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+
+	class SelectableTableModel extends DefaultTableModel {
+
+		private static final long serialVersionUID = 4478294244055128574L;
+
+		public SelectableTableModel(Object[][] data, String[] columns) {
+			super(data, columns);
+
+		}
+
+		public boolean isCellEditable(int row, int col) {
+			if (col == 1) {
+				return true;
+			} else
+				return false;
+		}
+
+		public Class<?> getColumnClass(int c) {
+			if (getRowCount() > 0) {
+				return getValueAt(0, c).getClass();
+			} else
+				return Object.class;
+		}
+
 	}
 }

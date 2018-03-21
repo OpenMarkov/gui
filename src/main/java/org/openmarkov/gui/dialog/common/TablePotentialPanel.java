@@ -1026,21 +1026,6 @@ import java.util.List;
 	}
 
 	/**
-	 * This class overrides the double click listener calling the
-	 *
-	 * @see DoubleClickListener
-	 * revised-->not changed
-	 */
-	public class DoubleClickListener extends MouseAdapter {
-
-		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
-				doubleClickEvent(e);
-			}
-		}
-	}
-
-	/**
 	 * Close the table
 	 * revised-->not changed
 	 */
@@ -1074,6 +1059,21 @@ import java.util.List;
 			}
 		}
 		getValuesTable().setModifiable(!readOnly);
+	}
+
+	/**
+	 * This class overrides the double click listener calling the
+	 *
+	 * @see DoubleClickListener
+	 * revised-->not changed
+	 */
+	public class DoubleClickListener extends MouseAdapter {
+
+		@Override public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				doubleClickEvent(e);
+			}
+		}
 	}
 
 }

@@ -19,12 +19,11 @@ import java.net.URL;
  */
 public class SplashScreenLoader {
 
-	private SplashScreen splash;
-
 	/**
 	 * the logo file
 	 */
 	private final String logoFile = "images/OpenMarkovSplash.jpg";
+	private SplashScreen splash;
 
 	/**
 	 * start the splash screen, do work and destroy

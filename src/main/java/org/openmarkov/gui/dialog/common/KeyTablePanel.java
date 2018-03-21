@@ -68,46 +68,38 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 	 * This variable enables the buttons to reorder the elements of the table.
 	 */
 	protected boolean reorderable;
-
-	/**
-	 * Indicates if the data of the table is modifiable.
-	 */
-	private boolean modifiable;
-
-	/**
-	 * Indicates if the header is shown
-	 */
-	private boolean showHeader;
-
 	/**
 	 * Button to bring one value up.
 	 */
 	protected JButton upValueButton = null;
-
 	/**
 	 * Button to bring one value down.
 	 */
 	protected JButton downValueButton = null;
-
 	/**
 	 * Button to add a new value.
 	 */
 	protected JButton addValueButton = null;
-
 	/**
 	 * Button to delete an existing value.
 	 */
 	protected JButton removeValueButton = null;
-
 	/**
 	 * Icon loader.
 	 */
 	protected IconLoader iconLoader = null;
-
 	/**
 	 * String Database
 	 */
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * Indicates if the data of the table is modifiable.
+	 */
+	private boolean modifiable;
+	/**
+	 * Indicates if the header is shown
+	 */
+	private boolean showHeader;
 
 	/**
 	 * this is a default constructor with no construction parameters

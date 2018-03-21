@@ -25,6 +25,10 @@ import java.awt.*;
  */
 public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements PropertyNames {
 	private static final long serialVersionUID = -8734100506781534551L;
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	private ProbNet probNet = null;
 	/**
 	 * Panel to tab the different options.
@@ -53,10 +57,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
 	private boolean newNetwork = false;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * This method initializes this instance.

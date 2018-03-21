@@ -15,19 +15,17 @@ package org.openmarkov.gui.localize;
 public class MenuLocalizer {
 
 	/**
-	 * String resource.
-	 */
-	private static StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	/**
 	 * Suffix that has label string resources.
 	 */
 	private final static String LABEL_SUFFIX = ".Label";
-
 	/**
 	 * Suffix that has mnemonic string resources.
 	 */
 	private final static String MNEMONIC_SUFFIX = ".Mnemonic";
+	/**
+	 * String resource.
+	 */
+	private static StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	public static String getString(String stringId) {
 		return stringDatabase.getString(stringId);

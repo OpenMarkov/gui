@@ -45,120 +45,97 @@ import java.util.Locale;
 public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
-	 * Reference to the localize object
-	 */
-	StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	/**
-	 * Scroll Pane for the table
-	 */
-	private JScrollPane tableScrollPane;
-
-	/**
-	 * Table
-	 */
-	private JTable table;
-
-	/**
-	 * Unicriterion radio button
-	 */
-	private JRadioButton unicriterion;
-
-	/**
-	 * Cost Effectiveness radio button
-	 */
-	private JRadioButton costEffectiveness;
-
-	/**
-	 * Temporal copy of the decisionCriteria
-	 */
-	private java.util.List<Criterion> decisionCriteria;
-
-	/**
-	 * Main panel of the layout
-	 */
-	private JPanel mainPanel;
-
-	/**
-	 * Panel in which the user can select the main unit of the unicriterion conversion
-	 */
-	private JPanel unitsPanel;
-
-	/**
-	 * ProbNet in which we are working
-	 */
-	private ProbNet probNet;
-
-	/**
-	 * Combobox with all the possible units of the decision criteria
-	 */
-	private JComboBox<String> existingUnits;
-
-	/**
-	 * Boolean attribute that indicates if the probnet is temporal or not
-	 */
-	private boolean isTemporal;
-
-	/**
-	 * Boolean attribute that indicates if the probnet have multicriteria
-	 */
-	private boolean isMulticriteria;
-
-	/**
-	 * Temporal copy of Multicriteria options
-	 */
-	private MulticriteriaOptions multicriteriaOptions;
-
-	/**
-	 * Temporal copy of Tempora options
-	 */
-	private TemporalOptions temporalOptions;
-
-	/**
 	 * Constant for Criteria column
 	 */
 	public static final int CRITERION_COLUMN = 0;
-
 	/**
 	 * Constant for Unicriterion scales column
 	 */
 	public static final int UNICRITERIA_SCALE_COLUMN = 1;
-
 	/**
 	 * Constant for Discounts column if unicriteria
 	 */
 	public static final int UNICRITERIA_DISCOUNT_COLUMN = 2;
-
 	/**
 	 * Constant for Discounts column if Unicriteria
 	 */
 	public static final int UNICRITERIA_DISCOUNT_UNIT_COLUMN = 3;
-
 	/**
 	 * Constant for Uses column if CE
 	 */
 	public static final int CE_USE_COLUMN = 1;
-
 	/**
 	 * Constant for Cost-Effectiveness scales column
 	 */
 	public static final int CE_SCALE_COLUMN = 2;
-
 	/**
 	 * Constant for Discounts column
 	 */
 	public static final int CE_DISCOUNT_COLUMN = 3;
-
 	/**
 	 * Constant for Discounts column if CE
 	 */
 	public static final int CE_DISCOUNT_UNIT_COLUMN = 4;
-
 	/**
 	 * Serial UID
 	 */
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * Reference to the localize object
+	 */
+	StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * Scroll Pane for the table
+	 */
+	private JScrollPane tableScrollPane;
+	/**
+	 * Table
+	 */
+	private JTable table;
+	/**
+	 * Unicriterion radio button
+	 */
+	private JRadioButton unicriterion;
+	/**
+	 * Cost Effectiveness radio button
+	 */
+	private JRadioButton costEffectiveness;
+	/**
+	 * Temporal copy of the decisionCriteria
+	 */
+	private java.util.List<Criterion> decisionCriteria;
+	/**
+	 * Main panel of the layout
+	 */
+	private JPanel mainPanel;
+	/**
+	 * Panel in which the user can select the main unit of the unicriterion conversion
+	 */
+	private JPanel unitsPanel;
+	/**
+	 * ProbNet in which we are working
+	 */
+	private ProbNet probNet;
+	/**
+	 * Combobox with all the possible units of the decision criteria
+	 */
+	private JComboBox<String> existingUnits;
+	/**
+	 * Boolean attribute that indicates if the probnet is temporal or not
+	 */
+	private boolean isTemporal;
+	/**
+	 * Boolean attribute that indicates if the probnet have multicriteria
+	 */
+	private boolean isMulticriteria;
+	/**
+	 * Temporal copy of Multicriteria options
+	 */
+	private MulticriteriaOptions multicriteriaOptions;
+	/**
+	 * Temporal copy of Tempora options
+	 */
+	private TemporalOptions temporalOptions;
 	/**
 	 * Number of slices label
 	 */

@@ -76,7 +76,6 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 *
 	 * <code>Initialize</code>
 	 * <p>
 	 * initialize the layout for this panel

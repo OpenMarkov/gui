@@ -47,26 +47,22 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 	 * Button selected by the user.
 	 */
 	protected int selectedButton = 0;
-
-	/**
-	 * Ok button.
-	 */
-	private JButton jButtonOK = null;
-
-	/**
-	 * Cancel button.
-	 */
-	private JButton jButtonCancel = null;
-
 	/**
 	 * Icon loader.
 	 */
 	protected IconLoader iconLoader = null;
-
 	/**
 	 * String database
 	 */
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * Ok button.
+	 */
+	private JButton jButtonOK = null;
+	/**
+	 * Cancel button.
+	 */
+	private JButton jButtonCancel = null;
 
 	/**
 	 * Constructor. initialises the instance.

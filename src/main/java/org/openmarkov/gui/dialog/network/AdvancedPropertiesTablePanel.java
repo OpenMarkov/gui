@@ -30,9 +30,9 @@ import java.util.List;
 @SuppressWarnings("serial") public class AdvancedPropertiesTablePanel extends KeyTablePanel
 		implements TableModelListener, PNUndoableEditListener {
 
+	protected Object dataTable[][];
 	private String keyPrefix;
 	private AdvancedPropertiesTableModel advancedPropertiestableModel;
-	protected Object dataTable[][];
 	/**
 	 * Each time an agent has been edited the corresponding edit would be stored
 	 */

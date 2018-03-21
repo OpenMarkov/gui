@@ -20,14 +20,14 @@ public class ValuesTableModel extends DefaultTableModel {
 	 * calculated serial ID
 	 */
 	private static final long serialVersionUID = 7010730473355625101L;
-	/**
-	 * first editable row. By default, all rows are editable (first 0)
-	 */
-	int firstEditableRow = 0;
 	/***
 	 * List of additional not editable positions
 	 */
 	protected Object[][] notEditablePositions;
+	/**
+	 * first editable row. By default, all rows are editable (first 0)
+	 */
+	int firstEditableRow = 0;
 
 	/**
 	 * constructor

@@ -33,10 +33,10 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	 *
 	 */
 	private static final long serialVersionUID = -8678529566501560594L;
-	private JTextPane jTextPaneCommentHTML = null;
-	private HTMLTextEditor hTMLTextEditor = null;
 	private static int HTML_COMMENT_HEIGHT = 10;
 	private static int HTML_COMMENT_WIDTH = 30;
+	private JTextPane jTextPaneCommentHTML = null;
+	private HTMLTextEditor hTMLTextEditor = null;
 	/**
 	 * Listener to the comment changes.
 	 */
@@ -45,6 +45,13 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	private boolean isChanged = false;
 	private boolean isEmpty = true;
 	private boolean isEditable = true;
+	/**
+	 * Double Click Selector for the HTML Comment area
+	 */
+	private MouseListener doubleClickSelector = new MouseAdapter() {
+		public void mouseClicked(MouseEvent e) {
+		}
+	};
 
 	/**
 	 * This method initialises this instance.
@@ -166,14 +173,6 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		}
 		return hTMLTextEditor;
 	}
-
-	/**
-	 * Double Click Selector for the HTML Comment area
-	 */
-	private MouseListener doubleClickSelector = new MouseAdapter() {
-		public void mouseClicked(MouseEvent e) {
-		}
-	};
 
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

@@ -33,18 +33,15 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 5380198895714343936L;
-
-	/**
-	 * Object that listen to the user's actions.
-	 */
-	private ActionListener listener;
-
 	/**
 	 * Map of class names
 	 */
 	Map<String, String> classNames;
-
 	String currentClassName;
+	/**
+	 * Object that listen to the user's actions.
+	 */
+	private ActionListener listener;
 
 	/**
 	 * Constructor that fills and initialize the combobox.

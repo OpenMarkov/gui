@@ -69,18 +69,21 @@ import java.util.ListIterator;
  */
 public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
-	 * default serial ID
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
 	 * first editable Column
 	 */
 	public static final int FIRST_EDITABLE_COLUMN = 1;
 	/**
+	 * default serial ID
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * number of decimals positions to be used for calculations and display
+	 */
+	protected static int decimalPositions = 2;                                  // by
+	/**
 	 * table model
 	 */
 	protected ValuesTableModel tableModel;
-
 	/**
 	 * Boolean array with the rows and columns of the tableModel.
 	 * Each cell of the array is true if the data has been modified
@@ -95,21 +98,11 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * type of node for this variable
 	 */
 	protected NodeType nodeType = null;
-	/**
-	 * number of decimals positions to be used for calculations and display
-	 */
-	protected static int decimalPositions = 2;                                  // by
 	// default;
 	/**
 	 * last editable row. By default, it is zero until runtime initialisation
 	 */
 	protected int lastEditableRow = 0;
-
-	/**
-	 * first editable row. By default, it is zero until runtime initialisation
-	 */
-	private int firstEditableRow = 0;
-
 	/**
 	 * define if the table is using General or Canonical Potentials
 	 * <ul>
@@ -118,19 +111,18 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * <li>if index = 4,5,6 then Using Canonical Potential (famili AND)</li>
 	 */
 	protected int indexPotential = 0;                                  // General
-	// Potential
-	// by
-	// default
 	/**
 	 * define if the table shows all parameters or only independent parameters
 	 */
 	protected boolean showingAllParameters = false;
+	// Potential
+	// by
+	// default
 	/**
 	 * define if the table shows probabilities values or state name
 	 */
 
 	protected boolean showingProbabilitiesValues = false;
-
 	/**
 	 * define if the table shows TPC values or canonical values
 	 */
@@ -143,32 +135,26 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * String database
 	 */
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
 	protected Node node;
-
 	/**
 	 * First potential of node
 	 *
 	 * @author carmenyago
 	 */
 	protected Potential potential = null;
-
 	/**
 	 * True if the class of potential is ExactDistrPotential
 	 *
 	 * @author carmenyago
 	 */
 	protected boolean isExactDistrPotential = false;
-
 	/**
 	 * if getExactDistrPotential tablePotential=potential.getTablePotential, if !getExactDistrPotential tablePotential= (tablePotential)potential
 	 *
 	 * @author carmenyago
 	 */
 	protected TablePotential tablePotential = null;
-
 	protected ProbNet probNet;
-
 	/**
 	 * Define the last column of the table that was modified
 	 */
@@ -182,6 +168,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	protected boolean isSelectAllForMouseEvent = true;
 	protected boolean isSelectAllForActionEvent = false;
 	protected boolean isSelectAllForKeyEvent = false;
+	/**
+	 * first editable row. By default, it is zero until runtime initialisation
+	 */
+	private int firstEditableRow = 0;
 
 	/**
 	 * Default constructor
@@ -234,6 +224,44 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			this.dataModified = new boolean[numRowsModel][numColumsModel];
 			initializeDataModified(false);
 		}
+	}
+
+	/**
+	 * Sets a default id for the columns (Excel format)
+	 *
+	 * @param howManyColumns - number of columns of the table
+	 */
+	public static String[] getColumnsIdsSpreadSheetStyle(int howManyColumns) {
+		String[] columnsId = new String[howManyColumns];
+		String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		for (int columnPosition = 0; columnPosition < howManyColumns; columnPosition++) {
+			String columnId = "";
+			int firstLetterPosition = columnPosition % 26;
+			int secondLetterPosition = columnPosition / 26 - 1;
+			if (columnPosition >= (26 * 27)) {
+			} else if (columnPosition >= 26) {
+				columnId = columnId + ALPHABET.substring(secondLetterPosition, secondLetterPosition + 1) + ALPHABET
+						.substring(firstLetterPosition, firstLetterPosition + 1);
+			} else {
+				columnId = columnId + ALPHABET.substring(firstLetterPosition, firstLetterPosition + 1);
+			}
+			columnsId[columnPosition] = columnId;
+		}
+		return columnsId;
+	}
+
+	/**
+	 * @return the decimalPositions
+	 */
+	protected static int getDecimalPositions() {
+		return decimalPositions;
+	}
+
+	/**
+	 * @param newDecimalPositions the decimalPositions to set
+	 */
+	protected static void setDecimalPositions(int newDecimalPositions) {
+		decimalPositions = newDecimalPositions;
 	}
 
 	/**
@@ -645,30 +673,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	/**
-	 * Sets a default id for the columns (Excel format)
-	 *
-	 * @param howManyColumns - number of columns of the table
-	 */
-	public static String[] getColumnsIdsSpreadSheetStyle(int howManyColumns) {
-		String[] columnsId = new String[howManyColumns];
-		String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		for (int columnPosition = 0; columnPosition < howManyColumns; columnPosition++) {
-			String columnId = "";
-			int firstLetterPosition = columnPosition % 26;
-			int secondLetterPosition = columnPosition / 26 - 1;
-			if (columnPosition >= (26 * 27)) {
-			} else if (columnPosition >= 26) {
-				columnId = columnId + ALPHABET.substring(secondLetterPosition, secondLetterPosition + 1) + ALPHABET
-						.substring(firstLetterPosition, firstLetterPosition + 1);
-			} else {
-				columnId = columnId + ALPHABET.substring(firstLetterPosition, firstLetterPosition + 1);
-			}
-			columnsId[columnPosition] = columnId;
-		}
-		return columnsId;
-	}
-
-	/**
 	 * print the NodePotentialTable
 	 * carmenyago only removed the println of the deterministic attribute
 	 *
@@ -693,20 +697,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		System.out.println("    showingAllParameters = " + isShowingAllParameters());
 		System.out.println("    showingProbabilitiesValues = " + isShowingProbabilitiesValues());
 		System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
-	}
-
-	/**
-	 * @return the decimalPositions
-	 */
-	protected static int getDecimalPositions() {
-		return decimalPositions;
-	}
-
-	/**
-	 * @param newDecimalPositions the decimalPositions to set
-	 */
-	protected static void setDecimalPositions(int newDecimalPositions) {
-		decimalPositions = newDecimalPositions;
 	}
 
 	public void undoableEditHappened(UndoableEditEvent event) {

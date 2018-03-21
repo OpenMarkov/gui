@@ -226,32 +226,6 @@ import java.util.Map;
 
 	}
 
-	private class CovarianceTableModel extends DefaultTableModel {
-
-		@Override public boolean isCellEditable(int row, int column) {
-			return row > 0 && column > 0 && row >= column;
-		}
-
-		@Override public Class<?> getColumnClass(int columnIndex) {
-			return (columnIndex == 0) ? String.class : Double.class;
-		}
-	}
-
-	private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
-		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-				boolean hasFocus, int row, int column) {
-			Color backgroundColor = Color.WHITE;
-			if (row == 0 || column == 0) {
-				backgroundColor = new Color(207, 227, 253);
-			} else if (column > row) {
-				backgroundColor = new Color(220, 220, 220);
-			}
-			setBackground(backgroundColor);
-
-			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		}
-	}
-
 	@Override public void itemStateChanged(ItemEvent e) {
 		if (e.getSource().equals(timeVariableComboBox) && timeVariableComboBox.getSelectedItem() != null
 				&& !timeVariableComboBox.getSelectedItem().equals(selectedTimeVariable)) {
@@ -327,6 +301,32 @@ import java.util.Map;
 					}
 				}
 			}
+		}
+	}
+
+	private class CovarianceTableModel extends DefaultTableModel {
+
+		@Override public boolean isCellEditable(int row, int column) {
+			return row > 0 && column > 0 && row >= column;
+		}
+
+		@Override public Class<?> getColumnClass(int columnIndex) {
+			return (columnIndex == 0) ? String.class : Double.class;
+		}
+	}
+
+	private class CovarianceTableCellRenderer extends DefaultTableCellRenderer {
+		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+				boolean hasFocus, int row, int column) {
+			Color backgroundColor = Color.WHITE;
+			if (row == 0 || column == 0) {
+				backgroundColor = new Color(207, 227, 253);
+			} else if (column > row) {
+				backgroundColor = new Color(220, 220, 220);
+			}
+			setBackground(backgroundColor);
+
+			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		}
 	}
 

@@ -95,20 +95,6 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 	}
 
 	/**
-	 * Sets a new table model with new data.
-	 *
-	 * @param newData new data for the table without the key column.
-	 */
-	@Override public void setData(Object[][] newData) {
-
-		data = fillDataKeys(newData);
-		tableModel = null;
-		valuesTable.setModel(getTableModel());
-		tableModel.addTableModelListener(this);
-
-	}
-
-	/**
 	 * This method takes a data object and creates a new column that content a
 	 * row key. This key begins with the key prefix following a number that
 	 * starts at 0.
@@ -333,6 +319,20 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 		}
 
 		return result;
+
+	}
+
+	/**
+	 * Sets a new table model with new data.
+	 *
+	 * @param newData new data for the table without the key column.
+	 */
+	@Override public void setData(Object[][] newData) {
+
+		data = fillDataKeys(newData);
+		tableModel = null;
+		valuesTable.setModel(getTableModel());
+		tableModel.addTableModelListener(this);
 
 	}
 

@@ -53,20 +53,79 @@ import java.util.List;
  */
 public class NodeDefinitionPanel extends JPanel
 		implements FocusListener, ItemListener, CommentListener, ActionListener {
+	/**
+	 * serial uid
+	 */
+	private static final long serialVersionUID = 1047978130482205148L;
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	private JComboBox<String> jComboBoxNetworkAgents;
 	private JLabel jLabelTimeSlice;
 	private JComboBox<String> jComboBoxTimeSlice;
 	private JLabel jLabelDecisionCriteria;
 	private JComboBox<Criterion> jComboBoxDecisionCriteria;
 	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	/**
 	 * Variable to store the previous selectd item in the combobox
 	 */
 	private Object comboBoxPreviousSelectedItem = null;
+	/**
+	 * The Node Name Label
+	 */
+	private JLabel jLabelNodeName = null;
+	/**
+	 * The Node Name Text Field
+	 */
+	private JTextField jTextFieldNodeName = null;
+	/**
+	 * The always observed property label
+	 */
+	private JLabel jLabelAlwaysObserved = null;
+	/**
+	 * The always observed checkbox
+	 */
+	private JCheckBox jCheckboxAlwaysObserved = null;
+	/**
+	 * Network agents label
+	 */
+	private JLabel jLabelNetworkAgents = null;
+	/**
+	 * internal node type item for convenience purpose
+	 */
+	private VariableType variableType = null;
+	/**
+	 * the Node Relevance Label
+	 */
+	private JLabel jLabelNodeRelevance = null;
+	/**
+	 * The Node Relevance Combo Box
+	 */
+	private JComboBox<Double> jComboBoxNodeRelevance = null;
+	/**
+	 * The Node Purpose Label
+	 */
+	private JLabel jLabelNodePurpose = null;
+	/**
+	 * The Node Purpose Combo Box
+	 */
+	private JComboBox<String> jComboBoxNodePurpose = null;
+	/**
+	 * The Node Definition Comment Label
+	 */
+	private JTextArea jTextAreaLabelNodeDefinitionComment;
+	/**
+	 * The Node Comment Scroll Panel box
+	 */
+	private CommentHTMLScrollPane commentHTMLScrollPaneNodeDefinitionComment = null;
+	/**
+	 * Object where all information will be saved.
+	 */
+	private Node node = null;
+	/**
+	 * Specifies if the node whose additionalProperties are edited is new.
+	 */
+	private boolean newNode = false;
 
 	/**
 	 * constructor without construction parameters
@@ -171,7 +230,6 @@ public class NodeDefinitionPanel extends JPanel
 	}
 
 	/**
-	 *
 	 * <code>Initialize</code>
 	 * <p>
 	 * initialize the layout for this panel
@@ -894,67 +952,6 @@ public class NodeDefinitionPanel extends JPanel
 	public boolean checkPurpose() {
 		return true;
 	}
-
-	/**
-	 * serial uid
-	 */
-	private static final long serialVersionUID = 1047978130482205148L;
-	/**
-	 * The Node Name Label
-	 */
-	private JLabel jLabelNodeName = null;
-	/**
-	 * The Node Name Text Field
-	 */
-	private JTextField jTextFieldNodeName = null;
-	/**
-	 * The always observed property label
-	 */
-	private JLabel jLabelAlwaysObserved = null;
-	/**
-	 * The always observed checkbox
-	 */
-	private JCheckBox jCheckboxAlwaysObserved = null;
-	/**
-	 * Network agents label
-	 */
-	private JLabel jLabelNetworkAgents = null;
-	/**
-	 * internal node type item for convenience purpose
-	 */
-	private VariableType variableType = null;
-	/**
-	 * the Node Relevance Label
-	 */
-	private JLabel jLabelNodeRelevance = null;
-	/**
-	 * The Node Relevance Combo Box
-	 */
-	private JComboBox<Double> jComboBoxNodeRelevance = null;
-	/**
-	 * The Node Purpose Label
-	 */
-	private JLabel jLabelNodePurpose = null;
-	/**
-	 * The Node Purpose Combo Box
-	 */
-	private JComboBox<String> jComboBoxNodePurpose = null;
-	/**
-	 * The Node Definition Comment Label
-	 */
-	private JTextArea jTextAreaLabelNodeDefinitionComment;
-	/**
-	 * The Node Comment Scroll Panel box
-	 */
-	private CommentHTMLScrollPane commentHTMLScrollPaneNodeDefinitionComment = null;
-	/**
-	 * Object where all information will be saved.
-	 */
-	private Node node = null;
-	/**
-	 * Specifies if the node whose additionalProperties are edited is new.
-	 */
-	private boolean newNode = false;
 
 	public void commentHasChanged() {
 

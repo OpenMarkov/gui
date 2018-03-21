@@ -359,22 +359,6 @@ import java.util.List;
 	}
 
 	/**
-	 * This class overrides the double click listener calling the
-	 *
-	 * @see DoubleClickListener
-	 * revised-->not changed
-	 */
-	private class MouseClickedListener extends MouseAdapter {
-
-		@Override public void mousePressed(MouseEvent e) {
-
-			if (e.getClickCount() == 2) {
-				doubleClickEvent(e);
-			}
-		}
-	}
-
-	/**
 	 * Handles the double click in a cell
 	 *
 	 * @param e
@@ -390,6 +374,22 @@ import java.util.List;
 			int row = valuesTable.rowAtPoint(e.getPoint());
 			int column = valuesTable.columnAtPoint(e.getPoint());
 			valuesTable.setValueAt(function, row, column);
+		}
+	}
+
+	/**
+	 * This class overrides the double click listener calling the
+	 *
+	 * @see DoubleClickListener
+	 * revised-->not changed
+	 */
+	private class MouseClickedListener extends MouseAdapter {
+
+		@Override public void mousePressed(MouseEvent e) {
+
+			if (e.getClickCount() == 2) {
+				doubleClickEvent(e);
+			}
 		}
 	}
 

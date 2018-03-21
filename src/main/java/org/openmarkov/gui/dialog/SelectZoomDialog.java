@@ -354,6 +354,16 @@ public class SelectZoomDialog extends OkCancelHorizontalDialog {
 	}
 
 	/**
+	 * Returns the zoom value selected by the user.
+	 *
+	 * @return the zoom value selected by the user or 0 if the user cancels the
+	 * dialog box.
+	 */
+	public double getZoom() {
+		return zoom;
+	}
+
+	/**
 	 * Checks the radiobutton corresponding to the zoom value.
 	 *
 	 * @param value The value of the zoom to set
@@ -381,16 +391,6 @@ public class SelectZoomDialog extends OkCancelHorizontalDialog {
 			zoomOther.setSelected(true);
 			zoomSpinner.setValue((int) Math.round(value * 100));
 		}
-	}
-
-	/**
-	 * Returns the zoom value selected by the user.
-	 *
-	 * @return the zoom value selected by the user or 0 if the user cancels the
-	 * dialog box.
-	 */
-	public double getZoom() {
-		return zoom;
 	}
 
 	/**

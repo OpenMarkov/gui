@@ -27,16 +27,11 @@ import java.util.List;
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Function") public class FunctionPotentialPanel
 		extends PotentialPanel {
 
-	private JPanel functionPanel;
 	/**
 	 * Panel with the function
 	 */
 
 	protected JTextArea functionTextArea = null;
-
-	private Node node = null;
-	private FunctionPotential potential = null;
-
 	/**
 	 *
 	 */
@@ -46,11 +41,13 @@ import java.util.List;
 	 */
 
 	protected List<Variable> variables;
-
 	/**
 	 * Parents list
 	 */
 	protected List<Variable> parents;
+	private JPanel functionPanel;
+	private Node node = null;
+	private FunctionPotential potential = null;
 
 	public FunctionPotentialPanel(Node node) {
 		super();
@@ -100,19 +97,6 @@ import java.util.List;
 		return function;
 	}
 
-	private class FunctionTextAreaMouseListener extends MouseAdapter {
-		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
-				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parents, function);
-				expressionDialog.setVisible(true);
-				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-					function = expressionDialog.getExpression();
-					functionTextArea.setText(function);
-				}
-			}
-		}
-	}
-
 	public boolean saveChanges() {
 		FunctionPotential newPotential = (FunctionPotential) this.potential.copy();
 
@@ -130,6 +114,19 @@ import java.util.List;
 
 	@Override public void close() {
 
+	}
+
+	private class FunctionTextAreaMouseListener extends MouseAdapter {
+		@Override public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parents, function);
+				expressionDialog.setVisible(true);
+				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+					function = expressionDialog.getExpression();
+					functionTextArea.setText(function);
+				}
+			}
+		}
 	}
 
 }

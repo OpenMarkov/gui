@@ -33,42 +33,34 @@ import java.util.List;
 public class VisualInstance extends VisualElement {
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
-
-	/**
-	 * Default internal color of the visual instance
-	 */
-	private static final Color BACKGROUND_COLOR = Color.WHITE;
-
-	/**
-	 * Internal color of the visual instance when it is marked as input.
-	 */
-	private static final Color BACKGROUND_COLOR_INPUT = new Color(0.8f, 0.8f, 0.8f);
-
-	/**
-	 * Color of the letters
-	 */
-	private static final Color FOREGROUND_COLOR = Color.BLACK;
-
-	/**
-	 * Width of a the arc of the rounded rectangle.
-	 */
-	private static final double ARC_WIDTH = 20;
-
-	/**
-	 * Height of a the arc of the rounded rectangle.
-	 */
-	private static final double ARC_HEIGHT = 20;
-
 	/**
 	 * Horizontal margin for the bounding box
 	 */
 	protected static final double HORIZONTAL_MARGIN = 70;
-
 	/**
 	 * Vertical margin for the bounding box
 	 */
 	protected static final double VERTICAL_MARGIN = 35;
-
+	/**
+	 * Default internal color of the visual instance
+	 */
+	private static final Color BACKGROUND_COLOR = Color.WHITE;
+	/**
+	 * Internal color of the visual instance when it is marked as input.
+	 */
+	private static final Color BACKGROUND_COLOR_INPUT = new Color(0.8f, 0.8f, 0.8f);
+	/**
+	 * Color of the letters
+	 */
+	private static final Color FOREGROUND_COLOR = Color.BLACK;
+	/**
+	 * Width of a the arc of the rounded rectangle.
+	 */
+	private static final double ARC_WIDTH = 20;
+	/**
+	 * Height of a the arc of the rounded rectangle.
+	 */
+	private static final double ARC_HEIGHT = 20;
 	private static final Font FONT_HELVETICA_BOLD = new Font("Helvetica", Font.BOLD, 15);
 
 	private static final Font FONT_HELVETICA_PLAIN = new Font("Helvetica", Font.PLAIN, 15);

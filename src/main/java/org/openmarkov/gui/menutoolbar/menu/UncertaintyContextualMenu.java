@@ -22,31 +22,28 @@ import java.awt.event.ActionListener;
  */
 public class UncertaintyContextualMenu extends ContextualMenu {
 
+	/**
+	 * Static field for serializable class.
+	 */
+	private static final long serialVersionUID = 8556550568033250304L;
+	/**
+	 * Object that represents the item 'Cut'.
+	 */
+	private JMenuItem assignMenuItem = null;
+	/**
+	 * Object that represents the item 'Copy'.
+	 */
+	private JMenuItem editMenuItem = null;
+	/**
+	 * Object that represents the item 'Remove'.
+	 */
+	private JMenuItem removeMenuItem = null;
+
 	public UncertaintyContextualMenu(ActionListener newListener) {
 		super(newListener);
 		// TODO Auto-generated constructor stub
 		initialize();
 	}
-
-	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 8556550568033250304L;
-
-	/**
-	 * Object that represents the item 'Cut'.
-	 */
-	private JMenuItem assignMenuItem = null;
-
-	/**
-	 * Object that represents the item 'Copy'.
-	 */
-	private JMenuItem editMenuItem = null;
-
-	/**
-	 * Object that represents the item 'Remove'.
-	 */
-	private JMenuItem removeMenuItem = null;
 
 	/**
 	 * This method initializes this instance.

@@ -79,17 +79,10 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	 * last editable row (only for temporal storage)
 	 */
 	protected int lastEditableRow = -1;
-
-	/**
-	 * base index for coordinates in the table
-	 */
-	private int baseIndexForCoordinates = -1;
-
 	/**
 	 * Icon loader.
 	 */
 	protected IconLoader iconLoader = null;
-
 	/**
 	 * Properties for options to display in the table
 	 */
@@ -97,23 +90,24 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	protected boolean showProbabilitiesValues = true;
 	protected boolean showTPCvalues = true;
 	protected boolean showNetValues = true;
-
-	// private Node node;
 	/**
 	 * The contextualMenu that appears when there is a click on the valuesTable
 	 * Object
 	 */
 	protected ContextualMenuFactory contextualMenuFactory;
 
+	// private Node node;
 	protected EvidenceCase evidenceCase;
 	/**
 	 * index of the column selected in valuesTable
 	 */
 	protected int selectedColumn = -1;
-
-	private JLabel jLabelNodeRelationComment;
-
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * base index for coordinates in the table
+	 */
+	private int baseIndexForCoordinates = -1;
+	private JLabel jLabelNodeRelationComment;
 
 	/**
 	 * this is a default constructor with no construction parameters
@@ -200,6 +194,16 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	}
 
 	/**
+	 * gets the first row on edition
+	 *
+	 * @return first row for edition
+	 */
+	protected int getFirstEditableRow() {
+
+		return this.firstEditableRow;
+	}
+
+	/**
 	 * sets the first row for edition
 	 *
 	 * @param firstEditableRow position of the first row that is available for edition
@@ -208,16 +212,6 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 
 		this.firstEditableRow = firstEditableRow;
 
-	}
-
-	/**
-	 * gets the first row on edition
-	 *
-	 * @return first row for edition
-	 */
-	protected int getFirstEditableRow() {
-
-		return this.firstEditableRow;
 	}
 
 	/**

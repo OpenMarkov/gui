@@ -24,18 +24,16 @@ public class MultiCriteriaComboBoxRenderer extends ValuesTableCellRenderer {
 
 	public static final int USE_RENDERER = 0;
 	public static final int DISCOUNT_UNIT_RENDERER = 1;
-
+	/**
+	 * Serial version UID
+	 */
+	private static final long serialVersionUID = 7294499626818840525L;
 	private int rendererType;
 
 	public MultiCriteriaComboBoxRenderer(int rendererType) {
 		super(1);
 		this.rendererType = rendererType;
 	}
-
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = 7294499626818840525L;
 
 	@SuppressWarnings("unchecked") @Override public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {

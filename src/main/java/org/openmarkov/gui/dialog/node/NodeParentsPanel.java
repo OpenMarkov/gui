@@ -78,7 +78,26 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	}
 
 	/**
+	 * Returns an array of arrays of objects that contains in each row the name
+	 * and the title of each node of the arraylist.
 	 *
+	 * @param nodes arraylist of nodes.
+	 * @return an array of arrays of objects that contains the name and the
+	 * title of the nodes.
+	 */
+	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
+		int i, l;
+		Object[][] result;
+		l = nodes.size();
+		result = new Object[l][2];
+		for (i = 0; i < l; i++) {
+			result[i][0] = "p_" + i; // internal name for the parent
+			result[i][1] = nodes.get(i).getName();
+		}
+		return result;
+	}
+
+	/**
 	 * <code>Initialize</code>
 	 * <p>
 	 * initialize the layout for this panel
@@ -174,6 +193,8 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 		subItemStateChanged(e);
 	}
 
+	;
+
 	/**
 	 * Invoked when an item has been selected. This method must be overridden in
 	 * subclasses to listen to their combobox components.
@@ -182,8 +203,6 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 */
 	protected void subItemStateChanged(ItemEvent e) {
 	}
-
-	;
 
 	/**
 	 * This method fills the content of the fields from a NodeProperties object.
@@ -194,25 +213,5 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 		getPrefixedDataTablePanelParentsTable().setData(fillArrayWithNodes(node.getParents()));
 		// getPrefixedDataTablePanelParentsTable().setPrefixedData(
 		// fillArrayWithNodeWrapper(node.getPossibleParents()));
-	}
-
-	/**
-	 * Returns an array of arrays of objects that contains in each row the name
-	 * and the title of each node of the arraylist.
-	 *
-	 * @param nodes arraylist of nodes.
-	 * @return an array of arrays of objects that contains the name and the
-	 * title of the nodes.
-	 */
-	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
-		int i, l;
-		Object[][] result;
-		l = nodes.size();
-		result = new Object[l][2];
-		for (i = 0; i < l; i++) {
-			result[i][0] = "p_" + i; // internal name for the parent
-			result[i][1] = nodes.get(i).getName();
-		}
-		return result;
 	}
 }

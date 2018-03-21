@@ -34,63 +34,51 @@ import java.awt.*;
 public class MainPanel extends JPanel {
 
 	private static final long serialVersionUID = -7852474978327911654L;
-
+	/**
+	 * Object that allows to access some private methods for this.
+	 */
+	private static MainPanel mainPanel = null;
 	/**
 	 * Object that manages the MultiDocument Interface.
 	 */
 	private MDI mdi = null;
-
 	/**
 	 * Main menu.
 	 */
 	private MainMenu mainMenu = null;
-
 	/**
 	 * Message window.
 	 */
 	private MessageWindow messageWindow = null;
-
 	/**
 	 * Panel that contains the toolbars.
 	 */
 	private JPanel toolBarPanel = null;
-
 	/**
 	 * Standard toolbar.
 	 */
 	private StandardToolBar standardToolBar = null;
-
 	/**
 	 * Edition toolbar.
 	 */
 	private EditionToolBar editionToolBar = null;
-
 	/**
 	 * Inference toolbar.
 	 */
 	private InferenceToolBar inferenceToolBar = null;
-
 	/**
 	 * Object that supplies the contextual menus.
 	 */
 	private ContextualMenuFactory contextualMenuFactory = null;
-
 	/**
 	 * Object that assists this in the management of the menus and toolbars.
 	 */
 	private MainPanelMenuAssistant mainPanelMenuAssistant = null;
-
 	/**
 	 * Object that listens and manages the user's actions on the menus, contextual
 	 * menus and toolbars. This object also listens and manages the mdi events.
 	 */
 	private MainPanelListenerAssistant mainPanelListenerAssistant = null;
-
-	/**
-	 * Object that allows to access some private methods for this.
-	 */
-	private static MainPanel mainPanel = null;
-
 	/**
 	 * The frame where this panel belongs to.
 	 */

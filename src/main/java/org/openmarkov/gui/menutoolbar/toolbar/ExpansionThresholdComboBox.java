@@ -96,6 +96,15 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 	}
 
 	/**
+	 * This method returns the current expansion threshold value.
+	 *
+	 * @return the current expansion threshold value.
+	 */
+	public double getExpansionThreshold() {
+		return currentValue;
+	}
+
+	/**
 	 * This method sets the value of the comboBox.
 	 *
 	 * @param value new value for the Expansion Threshold.
@@ -105,15 +114,6 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 			comboModel.setSelectedItem(Math.floor(value));
 			currentValue = (Double) comboModel.getSelectedItem();
 		}
-	}
-
-	/**
-	 * This method returns the current expansion threshold value.
-	 *
-	 * @return the current expansion threshold value.
-	 */
-	public double getExpansionThreshold() {
-		return currentValue;
 	}
 
 }

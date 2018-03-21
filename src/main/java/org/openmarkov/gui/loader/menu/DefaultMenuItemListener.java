@@ -20,6 +20,13 @@ import java.awt.event.ItemListener;
 public class DefaultMenuItemListener implements ActionListener, ItemListener {
 
 	/**
+	 * Default constructor
+	 */
+	public DefaultMenuItemListener() {
+
+	}
+
+	/**
 	 * Dispatch check/uncheck events from CheckboxMenuItems.
 	 */
 	public void itemStateChanged(ItemEvent e) {
@@ -52,13 +59,6 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 				mih.itemActivated(mi, e, mi.getActionCommand());
 			}
 		}
-	}
-
-	/**
-	 * Default constructor
-	 */
-	public DefaultMenuItemListener() {
-
 	}
 
 }

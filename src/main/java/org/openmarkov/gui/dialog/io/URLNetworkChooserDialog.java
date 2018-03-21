@@ -49,6 +49,25 @@ public class URLNetworkChooserDialog extends OkCancelHorizontalDialog {
 	}
 
 	/**
+	 * @param url a URL
+	 * @return the final URL in case of redirection
+	 * @throws IOException http://stackoverflow.com/questions/14951696/java-urlconnection-get-the-final-redirected-url
+	 */
+	public static String getFinalURL(String url) throws IOException {
+		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+		con.setInstanceFollowRedirects(false);
+		con.connect();
+		con.getInputStream();
+
+		if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
+				|| con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+			String redirectUrl = con.getHeaderField("Location");
+			return getFinalURL(redirectUrl);
+		}
+		return url;
+	}
+
+	/**
 	 * This method initialises this instance.
 	 */
 	private void initialize() {
@@ -142,25 +161,6 @@ public class URLNetworkChooserDialog extends OkCancelHorizontalDialog {
 	public int requestNetworkURL() {
 		setVisible(true);
 		return selectedButton;
-	}
-
-	/**
-	 * @param url a URL
-	 * @return the final URL in case of redirection
-	 * @throws IOException http://stackoverflow.com/questions/14951696/java-urlconnection-get-the-final-redirected-url
-	 */
-	public static String getFinalURL(String url) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-		con.setInstanceFollowRedirects(false);
-		con.connect();
-		con.getInputStream();
-
-		if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
-				|| con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
-			String redirectUrl = con.getHeaderField("Location");
-			return getFinalURL(redirectUrl);
-		}
-		return url;
 	}
 
 }

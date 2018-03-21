@@ -42,374 +42,300 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 8267763502728836096L;
-
+	/**
+	 * Set of menu items and their default texts.
+	 */
+	HashMap<JComponent, String> defaultText = new HashMap<JComponent, String>();
 	/**
 	 * Object that represents the menu 'File'.
 	 */
 	private JMenu fileMenu = null;
-
 	/**
 	 * Object that represents the item 'File - New'.
 	 */
 	private JMenuItem fileNewMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Open'.
 	 */
 	private JMenuItem fileOpenMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Open from URL'.
 	 */
 	private JMenuItem fileOpenURLMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Save'.
 	 */
 	private JMenuItem fileSaveMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Save and Reopen'.
 	 */
 	private JMenuItem fileSaveOpenMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Save as'.
 	 */
 	private JMenuItem fileSaveAsMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Close'.
 	 */
 	private JMenuItem fileCloseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Load Evidence'.
 	 */
 	private JMenuItem fileLoadEvidenceMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Save Evidence'.
 	 */
 	private JMenuItem fileSaveEvidenceMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Network additionalProperties'.
 	 */
 	private JMenuItem fileNetworkPropertiesMenuItem = null;
-
 	/**
 	 * Object that represents the item 'File - Exit'.
 	 */
 	private JMenuItem fileExitMenuItem = null;
-
 	/**
 	 * Object that represents the menu 'Edit'.
 	 */
 	private JMenu editMenu = null;
-
 	/**
 	 * Object that represents the item 'Edit - Undo'.
 	 */
 	private JMenuItem editUndoMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Redo'.
 	 */
 	private JMenuItem editRedoMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Cut'.
 	 */
 	private JMenuItem editCutMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Copy'.
 	 */
 	private JMenuItem editCopyMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Paste'.
 	 */
 	private JMenuItem editPasteMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Remove'.
 	 */
 	private JMenuItem editRemoveMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Select all'.
 	 */
 	private JMenuItem editSelectAllMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Object selection'.
 	 */
 	private JCheckBoxMenuItem editObjectSelectionMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Chance nodes creation'.
 	 */
 	private JCheckBoxMenuItem editChanceCreationMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Decision nodes creation'.
 	 */
 	private JCheckBoxMenuItem editDecisionCreationMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Utility nodes creation'.
 	 */
 	private JCheckBoxMenuItem editUtilityCreationMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Links creation'.
 	 */
 	private JCheckBoxMenuItem editLinkCreationMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Instance creation'.
 	 */
 	private JCheckBoxMenuItem editInstanceCreationMenuItem = null;
-
 	/**
 	 * Object used to make autoexclusive the different select options.
 	 */
 	private ButtonGroup groupEditOptions = new ButtonGroup();
-
 	/**
 	 * Object that represents the item 'Edit - Node additionalProperties'.
 	 */
 	private JMenuItem editNodePropertiesMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Node Relation Table'.
 	 */
 	private JMenuItem editRelationMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Link additionalProperties'.
 	 */
 	private JMenuItem editLinkPropertiesMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Edit - Switch to Inference mode'.
 	 */
 	private JMenuItem editSwitchToInferenceModeMenuItem = null;
-
 	/**
 	 * Object that represents the menu 'Inference'.
 	 */
 	private JMenu inferenceMenu = null;
-
 	/**
 	 * Object that represents the item 'Inference - Switch to Edition mode'.
 	 */
 	private JMenuItem inferenceSwitchToEditionModeMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Propagation Options'.
 	 */
 	private JMenuItem propagationOptionsMenuItem = null;
-
 	/**
 	 * Object that represents the item "Inference - Inference Options".
 	 */
 	private JMenuItem inferenceOptionsItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Create New Evidence Case'.
 	 */
 	private JMenuItem inferenceCreateNewEvidenceCaseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Go To First Evidence Case'.
 	 */
 	private JMenuItem inferenceGoToFirstEvidenceCaseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Go To Previous Evidence
 	 * Case'.
 	 */
 	private JMenuItem inferenceGoToPreviousEvidenceCaseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Go To Next Evidence Case'.
 	 */
 	private JMenuItem inferenceGoToNextEvidenceCaseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Go To Last Evidence Case'.
 	 */
 	private JMenuItem inferenceGoToLastEvidenceCaseMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - Clear Out All Evidence
 	 * Cases'.
 	 */
 	private JMenuItem inferenceClearEvidenceCasesMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - PropagateEvidence'.
 	 */
 	private JMenuItem inferencePropagateEvidenceMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - ExpandNode'.
 	 */
 	private JMenuItem inferenceExpandNodeMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - ContractNode'.
 	 */
 	private JMenuItem inferenceContractNodeMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Inference - RemoveAllFindings'.
 	 */
 	private JMenuItem inferenceRemoveAllFindingsMenuItem = null;
-
 	/**
 	 * Object that represents the menu 'View'.
 	 */
 	private JMenu viewMenu = null;
-
 	/**
 	 * Object that represents the menu 'View - Nodes'.
 	 */
 	private JMenu viewNodesMenu = null;
-
 	/**
 	 * Object that represents the item 'View - Nodes - ByName'.
 	 */
 	private JCheckBoxMenuItem viewNodesByNameMenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Nodes - ByTitle'.
 	 */
 	private JCheckBoxMenuItem viewNodesByTitleMenuItem = null;
-
 	/**
 	 * Object used to make autoexclusive the options 'ByName' and 'ByTitle'.
 	 */
 	private ButtonGroup groupByNameByTitle = new ButtonGroup();
-
 	/**
 	 * Object that represents the menu 'View - Zoom'.
 	 */
 	private JMenu viewZoomMenu = null;
-
 	/**
 	 * Object that represents the menu 'View - Toolbars'.
 	 */
 	private JMenu viewToolbarsMenu = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - Zoom in'.
 	 */
 	private JMenuItem viewZoomInMenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - Zoom out'.
 	 */
 	private JMenuItem viewZoomOutMenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 500%'.
 	 */
 	private JCheckBoxMenuItem viewZoom500MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 200%'.
 	 */
 	private JCheckBoxMenuItem viewZoom200MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 150%'.
 	 */
 	private JCheckBoxMenuItem viewZoom150MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 100%'.
 	 */
 	private JCheckBoxMenuItem viewZoom100MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 75%'.
 	 */
 	private JCheckBoxMenuItem viewZoom75MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 50%'.
 	 */
 	private JCheckBoxMenuItem viewZoom50MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 25%'.
 	 */
 	private JCheckBoxMenuItem viewZoom25MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - 10%'.
 	 */
 	private JCheckBoxMenuItem viewZoom10MenuItem = null;
-
 	/**
 	 * Object that represents the item 'View - Zoom - Other'.
 	 */
 	private JCheckBoxMenuItem viewZoomOtherMenuItem = null;
-
 	/**
 	 * Object used to make autoexclusive the zoom values.
 	 */
 	private ButtonGroup groupZoom = new ButtonGroup();
-
 	/**
 	 * Object that represents the item 'View - Message window'.
 	 */
 	private JMenuItem viewMessageWindowMenuItem = null;
-
 	/**
 	 * Object that represents the menu 'Tools'.
 	 */
 	private JMenu toolsMenu = null;
-
 	/**
 	 * Object that represents the item 'Tools - Configuration'.
 	 */
 	private JMenuItem toolsConfigurationMenuItem = null;
-
 	/**
 	 * Object that represents the menu 'Help'.
 	 */
 	private JMenu helpMenu = null;
-
 	/**
 	 * Object that represents the item 'Help - Help'.
 	 */
 	private JMenuItem helpOpenHelpMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Help - ChangeLanguage'.
 	 */
 	private JMenuItem helpOpenChangeLanguageMenuItem = null;
-
 	/**
 	 * Object that represents the item 'Help - About'.
 	 */
 	private JMenuItem helpOpenAboutMenuItem = null;
-
 	/**
 	 * Object that is filled the MDI class.
 	 */
 	private JMenu menuMDI = null;
-
-	/**
-	 * Set of menu items and their default texts.
-	 */
-	HashMap<JComponent, String> defaultText = new HashMap<JComponent, String>();
-
 	/**
 	 * Object that listen to the user's actions.
 	 */

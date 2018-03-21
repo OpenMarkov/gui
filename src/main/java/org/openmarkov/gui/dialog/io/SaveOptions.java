@@ -19,6 +19,13 @@ import org.openmarkov.core.oopn.OOPNet;
  */
 @SuppressWarnings("serial") public class SaveOptions extends javax.swing.JDialog {
 
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JButton btnOk;
+	private javax.swing.JCheckBox chkSaveClassesInFile;
+	private javax.swing.JCheckBox chkSaveEvidence;
+	private javax.swing.JCheckBox chkSavePlainNetwork;
+	private javax.swing.JCheckBox chkSavePolicies;
+
 	/**
 	 * Creates new form SaveOptions
 	 */
@@ -122,12 +129,5 @@ import org.openmarkov.core.oopn.OOPNet;
 		return chkSavePlainNetwork.isEnabled() || chkSaveEvidence.isEnabled() || chkSavePolicies.isEnabled()
 				|| chkSaveClassesInFile.isEnabled();
 	}
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton btnOk;
-	private javax.swing.JCheckBox chkSaveClassesInFile;
-	private javax.swing.JCheckBox chkSaveEvidence;
-	private javax.swing.JCheckBox chkSavePlainNetwork;
-	private javax.swing.JCheckBox chkSavePolicies;
 	// End of variables declaration//GEN-END:variables
 }

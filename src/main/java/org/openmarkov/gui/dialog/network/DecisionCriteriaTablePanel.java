@@ -30,10 +30,8 @@ import java.util.List;
 
 @SuppressWarnings("serial") public class DecisionCriteriaTablePanel extends AdvancedPropertiesTablePanel {
 
-	private ProbNet probNet;
-
 	JButton standardCriteriaButton;
-
+	private ProbNet probNet;
 	private Window owner;
 	/**
 	 * Each time an agent has been edited the corresponding edit would be stored

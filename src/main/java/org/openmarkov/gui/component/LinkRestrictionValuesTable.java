@@ -34,6 +34,16 @@ import java.util.ArrayList;
  **/
 @SuppressWarnings("serial") public class LinkRestrictionValuesTable extends ValuesTable
 		implements PNUndoableEditListener {
+	/***
+	 * Constant value to describe compatibility of a position of the link
+	 * restriction potential.
+	 */
+	private final String COMPATIBILITY_VALUE = "1";
+	/***
+	 * Constant value to describe incompatibility of a position of the link
+	 * restriction potential.
+	 */
+	private final String INCOMPATIBILITY_VALUE = "0";
 	/****
 	 * The link with the link restriction.
 	 **/
@@ -50,16 +60,6 @@ import java.util.ArrayList;
 	 * The ProbNet containing the link.
 	 */
 	private ProbNet net;
-	/***
-	 * Constant value to describe compatibility of a position of the link
-	 * restriction potential.
-	 */
-	private final String COMPATIBILITY_VALUE = "1";
-	/***
-	 * Constant value to describe incompatibility of a position of the link
-	 * restriction potential.
-	 */
-	private final String INCOMPATIBILITY_VALUE = "0";
 
 	public LinkRestrictionValuesTable(Link<Node> link, ValuesTableModel tableModel, final boolean modifiable) {
 		super(tableModel, modifiable);

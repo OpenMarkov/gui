@@ -26,6 +26,10 @@ import java.util.List;
 
 @SuppressWarnings("serial") public class ICITablePotentialValueEdit extends SimplePNEdit {
 	/**
+	 *
+	 */
+	protected Logger logger;
+	/**
 	 * The column of the table where is the potential
 	 */
 	private int col;
@@ -45,10 +49,6 @@ import java.util.List;
 	 *
 	 */
 	private ICIPotential iciPotential;
-	/**
-	 *
-	 */
-	protected Logger logger;
 	/**
 	 *
 	 */
@@ -184,6 +184,12 @@ import java.util.List;
 			newNoisyParameters = lastNoisyParameters.clone();
 
 		}
+
+	}
+
+	public static int toPositionOnJtable(int index, int columnGroup, int numOfStates) {
+
+		return (columnGroup * numOfStates) + numOfStates + 1 - index;
 
 	}
 
@@ -401,12 +407,6 @@ import java.util.List;
 
 		return toPositionOnJtable(position, columnGroup, node.getVariable().
 				getNumStates());
-
-	}
-
-	public static int toPositionOnJtable(int index, int columnGroup, int numOfStates) {
-
-		return (columnGroup * numOfStates) + numOfStates + 1 - index;
 
 	}
 

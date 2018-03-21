@@ -56,6 +56,10 @@ public class MDIMenu extends Component {
 	 */
 	public static final String WINDOW_NEXT_MENUITEM = WINDOW_MENU + ".Next";
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Object that represents the menu 'Window'.
 	 */
 	private JMenu windowMenu = null;
@@ -100,10 +104,6 @@ public class MDIMenu extends Component {
 	 * Table that relates the panels to the menu items which represent them.
 	 */
 	private HashMap<JPanel, JCheckBoxMenuItem> panelToMenuItem = new HashMap<JPanel, JCheckBoxMenuItem>();
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * Listener of the user's actions.
 	 */

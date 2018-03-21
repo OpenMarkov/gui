@@ -103,15 +103,6 @@ public abstract class InnerBox extends VisualElement {
 	protected VisualNode visualNode;
 
 	/**
-	 * Returns the visualNode associated with the innerBox.
-	 *
-	 * @return visualNode associated with the innerBox.
-	 */
-	public VisualNode getVisualNode() {
-		return visualNode;
-	}
-
-	/**
 	 * Returns the height of the text used in the innerBox.
 	 *
 	 * @param text text that appears in the innerBox.
@@ -131,6 +122,15 @@ public abstract class InnerBox extends VisualElement {
 	 */
 	protected static double getInnerBoxTextWidth(String text, Graphics2D g) {
 		return fontMeter.getStringBounds(text, g).getWidth();
+	}
+
+	/**
+	 * Returns the visualNode associated with the innerBox.
+	 *
+	 * @return visualNode associated with the innerBox.
+	 */
+	public VisualNode getVisualNode() {
+		return visualNode;
 	}
 
 	/**

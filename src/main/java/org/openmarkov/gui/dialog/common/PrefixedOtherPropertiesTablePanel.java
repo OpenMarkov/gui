@@ -82,18 +82,6 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel {
 	}
 
 	/**
-	 * Sets a new table model with new data.
-	 *
-	 * @param newData new data for the table without the key column.
-	 */
-	@Override public void setData(Object[][] newData) {
-		data = fillDataKeys(newData);
-		tableModel = null;
-		valuesTable.setModel(getTableModel());
-		// valuesTable.getModel().addTableModelListener(this);
-	}
-
-	/**
 	 * This method takes a data object and creates a new column that content a
 	 * row key. This key begins with the key prefix following a number that
 	 * starts at 0.
@@ -186,5 +174,17 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel {
 			result = new Object[0][0];
 		}
 		return result;
+	}
+
+	/**
+	 * Sets a new table model with new data.
+	 *
+	 * @param newData new data for the table without the key column.
+	 */
+	@Override public void setData(Object[][] newData) {
+		data = fillDataKeys(newData);
+		tableModel = null;
+		valuesTable.setModel(getTableModel());
+		// valuesTable.getModel().addTableModelListener(this);
 	}
 }

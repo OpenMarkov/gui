@@ -37,6 +37,20 @@ import java.util.Properties;
 		componentVariables = new HashMap<>();
 	}
 
+	public static OperatingSystem getOperatingSystem() {
+		OperatingSystem operatingSystem = null;
+		Properties properties = System.getProperties();
+		String osName = properties.getProperty("os.name");
+		if (osName.toLowerCase().contains("windows")) {
+			operatingSystem = OperatingSystem.WINDOWS;
+		} else if (osName.toLowerCase().contains("linux")) {
+			operatingSystem = OperatingSystem.LINUX;
+		} else {
+			operatingSystem = OperatingSystem.OTHER;
+		}
+		return operatingSystem;
+	}
+
 	// Methods
 	public void generateDefaultConfiguration() {
 		String initialPath = System.getProperty("user.dir");
@@ -74,20 +88,6 @@ import java.util.Properties;
 		componentVariables.put("ceTestDirectory", ceNetTest);
 		componentVariables.put("netsTestDirectory", netTest);
 		componentVariables.put("ioTestDirectory", ioTest);
-	}
-
-	public static OperatingSystem getOperatingSystem() {
-		OperatingSystem operatingSystem = null;
-		Properties properties = System.getProperties();
-		String osName = properties.getProperty("os.name");
-		if (osName.toLowerCase().contains("windows")) {
-			operatingSystem = OperatingSystem.WINDOWS;
-		} else if (osName.toLowerCase().contains("linux")) {
-			operatingSystem = OperatingSystem.LINUX;
-		} else {
-			operatingSystem = OperatingSystem.OTHER;
-		}
-		return operatingSystem;
 	}
 
 	public void setProperty(String name, Object value) {

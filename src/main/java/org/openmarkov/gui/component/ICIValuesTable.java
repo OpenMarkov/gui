@@ -36,6 +36,33 @@ import java.util.ListIterator;
 	}
 
 	/**
+	 * set the number of columns in the table for canonical models adding one
+	 * column per parent state and adding one more for the id column (hidden)
+	 *
+	 * @param properties - node properties
+	 * @return the number of columns in the table
+	 */
+	public static int howManyCanonicalColumns(Node properties) {
+		int numColumns = 0;
+		if (properties.getParents() != null) {
+			int aux = 1;// first column for child states
+			for (Node parent : properties.getParents()) {
+				State[] parentStates = parent.getVariable().getStates();
+				aux += parentStates.length;
+			}
+			numColumns = aux + 1; // last column for the leak potential
+		} else {
+			numColumns = 1;
+		}
+		// numColumns = FIRST_EDITABLE_COLUMN + numColumns;
+		return numColumns;
+	}
+
+	public static int toPositionOnJtable(int index, int col, int numOfStates, int numOfParents) {
+		return numOfParents - 1 + numOfStates + (numOfStates * (col - 1)) - index;
+	}
+
+	/**
 	 * check the value to modify in the table and sets
 	 */
 	public void setValueAt(Object newValue, int row, int col) {
@@ -66,33 +93,6 @@ import java.util.ListIterator;
 				}
 			}
 		} // else it is not required to update values
-	}
-
-	/**
-	 * set the number of columns in the table for canonical models adding one
-	 * column per parent state and adding one more for the id column (hidden)
-	 *
-	 * @param properties - node properties
-	 * @return the number of columns in the table
-	 */
-	public static int howManyCanonicalColumns(Node properties) {
-		int numColumns = 0;
-		if (properties.getParents() != null) {
-			int aux = 1;// first column for child states
-			for (Node parent : properties.getParents()) {
-				State[] parentStates = parent.getVariable().getStates();
-				aux += parentStates.length;
-			}
-			numColumns = aux + 1; // last column for the leak potential
-		} else {
-			numColumns = 1;
-		}
-		// numColumns = FIRST_EDITABLE_COLUMN + numColumns;
-		return numColumns;
-	}
-
-	public static int toPositionOnJtable(int index, int col, int numOfStates, int numOfParents) {
-		return numOfParents - 1 + numOfStates + (numOfStates * (col - 1)) - index;
 	}
 
 	public void undoableEditHappened(UndoableEditEvent arg0) {

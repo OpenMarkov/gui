@@ -94,22 +94,6 @@ public class StringDatabase {
 		return instance;
 	}
 
-	/**
-	 * Sets the language to a new one.
-	 *
-	 * @param newLanguage new language.
-	 */
-	public void setLanguage(String newLanguage) {
-		if (!newLanguage.equals(language)) {
-			language = (newLanguage.equals("es")) ? "es" : "en";
-			setLocale(getLocaleByLanguage(language));
-			resetBundles();
-			fireLocaleChangeEvent(new LocaleChangeEvent(this, newLanguage));
-			OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
-					OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
-		}
-	}
-
 	private Locale getLocaleByLanguage(String language) {
 		Locale locale = Locale.ENGLISH;
 		if (language.equals(Locale.ENGLISH.getLanguage())) {
@@ -130,6 +114,22 @@ public class StringDatabase {
 	 */
 	public String getLanguage() {
 		return language;
+	}
+
+	/**
+	 * Sets the language to a new one.
+	 *
+	 * @param newLanguage new language.
+	 */
+	public void setLanguage(String newLanguage) {
+		if (!newLanguage.equals(language)) {
+			language = (newLanguage.equals("es")) ? "es" : "en";
+			setLocale(getLocaleByLanguage(language));
+			resetBundles();
+			fireLocaleChangeEvent(new LocaleChangeEvent(this, newLanguage));
+			OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
+					OpenMarkovPreferences.OPENMARKOV_LANGUAGES);
+		}
 	}
 
 	/**
