@@ -6,11 +6,9 @@
  */
 
 package org.openmarkov.gui.plugin;
+
 /**
- * 
  * @author Iñigo
- *
  */
-public class PluginManager
-{
+public class PluginManager {
 }

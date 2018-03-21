@@ -7,21 +7,16 @@
 
 package org.openmarkov.gui.graphic;
 
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import org.openmarkov.core.model.network.Node;
 
-
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class implements the square with various nodes are selected. It is
  * formed by a rectangle painted with a dash line.
- * 
+ *
  * @author jmendoza
  * @version 1.0
  */
@@ -30,8 +25,7 @@ public class SelectionRectangle {
 	/**
 	 * Used to paint dashed lines.
 	 */
-	private static final BasicStroke DASHED_STROKE =
-		new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+	private static final BasicStroke DASHED_STROKE = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
 			10.0f, new float[] { 3.0f }, 0.0f);
 
 	/**
@@ -43,8 +37,7 @@ public class SelectionRectangle {
 	 * Shape of the selection. The dimensions of the shape can't be negative.
 	 * This shape is only used in 'paint' and 'selectingNode' methods.
 	 */
-	private Rectangle2D.Double rectangleSelection =
-		new Rectangle2D.Double(0, 0, 0, 0);
+	private Rectangle2D.Double rectangleSelection = new Rectangle2D.Double(0, 0, 0, 0);
 
 	/**
 	 * X-coordinate of the rectangle selection.
@@ -68,13 +61,10 @@ public class SelectionRectangle {
 
 	/**
 	 * initialises a new selection.
-	 * 
-	 * @param start
-	 *            the upper-left corner of the selection rectangle.
-	 * @param newW
-	 *            the width of the selection rectangle.
-	 * @param newH
-	 *            the height of the selection rectangle.
+	 *
+	 * @param start the upper-left corner of the selection rectangle.
+	 * @param newW  the width of the selection rectangle.
+	 * @param newH  the height of the selection rectangle.
 	 */
 	public void initSelection(Point2D.Double start, double newW, double newH) {
 
@@ -85,9 +75,7 @@ public class SelectionRectangle {
 		w = newW;
 		h = newH;
 		dimensions = calculatePositiveDimensions(dimensions);
-		rectangleSelection =
-			new Rectangle2D.Double(dimensions[0], dimensions[1], dimensions[2],
-				dimensions[3]);
+		rectangleSelection = new Rectangle2D.Double(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
 
 	}
 
@@ -104,9 +92,8 @@ public class SelectionRectangle {
 	 * Recalculates the dimensions of the selection rectangle because the width
 	 * and/or the heigth can't be negative. If any of them are negative, the
 	 * point must be recalculated and they must became positive.
-	 * 
-	 * @param dimensions
-	 *            object that contains the dimensions.
+	 *
+	 * @param dimensions object that contains the dimensions.
 	 * @return the new dimensions of the rectangle.
 	 */
 	private static double[] calculatePositiveDimensions(double[] dimensions) {
@@ -126,7 +113,7 @@ public class SelectionRectangle {
 
 	/**
 	 * Returns the width of the rectangle selection.
-	 * 
+	 *
 	 * @return the width of the rectangle selection.
 	 */
 	public double getWidth() {
@@ -137,7 +124,7 @@ public class SelectionRectangle {
 
 	/**
 	 * Returns the height of the rectangle selection.
-	 * 
+	 *
 	 * @return the height of the rectangle selection.
 	 */
 	public double getHeight() {
@@ -148,11 +135,9 @@ public class SelectionRectangle {
 
 	/**
 	 * Sets the width and height of the selection rectangle.
-	 * 
-	 * @param newW
-	 *            the width of the selection rectangle.
-	 * @param newH
-	 *            the height of the selection rectangle.
+	 *
+	 * @param newW the width of the selection rectangle.
+	 * @param newH the height of the selection rectangle.
 	 */
 	public void setSize(double newW, double newH) {
 
@@ -161,16 +146,14 @@ public class SelectionRectangle {
 		w = newW;
 		h = newH;
 		calculatePositiveDimensions(dimensions);
-		rectangleSelection.setRect(
-			dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
+		rectangleSelection.setRect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
 
 	}
 
 	/**
 	 * Paints the selection rectangle into the graphics object.
-	 * 
-	 * @param g
-	 *            graphics object where paint the rectangle.
+	 *
+	 * @param g graphics object where paint the rectangle.
 	 */
 	public void paint(Graphics2D g) {
 
@@ -188,28 +171,26 @@ public class SelectionRectangle {
 	/**
 	 * Tests if the center point of the node is inside the boundary of the
 	 * rectangle selection.
-	 * 
-	 * @param visualNode
-	 *            node to be tested.
+	 *
+	 * @param visualNode node to be tested.
 	 * @return true if the center of the node is contained into the rectangle;
-	 *         otherwise, false.
+	 * otherwise, false.
 	 */
 	public boolean containsNode(VisualNode visualNode) {
 
 		Node node = visualNode.getNode();
 
-		return rectangleSelection.contains(node.getCoordinateX(), 
-				node.getCoordinateY());
+		return rectangleSelection.contains(node.getCoordinateX(), node.getCoordinateY());
 
 	}
 
 	/**
 	 * Tests if the selection rectangle contains a certain rectangle.
-	 * 
+	 *
 	 * @return true if the whole ractangle is contained into the rectangle;
-	 *         otherwise, false.
-	 */	
+	 * otherwise, false.
+	 */
 	public boolean containsRectangle(double x, double y, double width, double height) {
-		return rectangleSelection.contains(x,y) && rectangleSelection.contains(x + width, y + height);
+		return rectangleSelection.contains(x, y) && rectangleSelection.contains(x + width, y + height);
 	}
 }

@@ -7,14 +7,12 @@
 
 package org.openmarkov.gui.component;
 
-@SuppressWarnings("serial")
-public class LinkRestrictionValuesTableModel extends ValuesTableModel {
+@SuppressWarnings("serial") public class LinkRestrictionValuesTableModel extends ValuesTableModel {
 
 	/**
 	 * constructor
 	 */
-	public LinkRestrictionValuesTableModel(Object[][] data, String[] columns,
-			int firstEditableRow) {
+	public LinkRestrictionValuesTableModel(Object[][] data, String[] columns, int firstEditableRow) {
 		super(data, columns, firstEditableRow);
 
 	}
@@ -34,9 +32,9 @@ public class LinkRestrictionValuesTableModel extends ValuesTableModel {
 			return integerExample.getClass();
 		}
 	}
-	
-	
-	public boolean isCellEditable(int row, int col)
-    { return false; }
+
+	public boolean isCellEditable(int row, int col) {
+		return false;
+	}
 
 }

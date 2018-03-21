@@ -7,58 +7,52 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 
  * @author myebra
- * 
  */
-@SuppressWarnings("serial")
-public class AddVariablesCheckBoxPanel extends JPanel {
+@SuppressWarnings("serial") public class AddVariablesCheckBoxPanel extends JPanel {
 
-    private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-    private TreeADDBranch branch;
-    private TreeADDPotential treeADD;
+	private ArrayList<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private TreeADDBranch branch;
+	private TreeADDPotential treeADD;
 
-    public AddVariablesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
-        // super();
-        this.branch = branch;
-        this.treeADD = treeADD;
-        initialize();
-        repaint();
-    }
+	public AddVariablesCheckBoxPanel(TreeADDBranch branch, TreeADDPotential treeADD) {
+		// super();
+		this.branch = branch;
+		this.treeADD = treeADD;
+		initialize();
+		repaint();
+	}
 
-    public void initialize() {
-        // setLayout(new BorderLayout());
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	public void initialize() {
+		// setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        List<Variable> possibleVariables = branch.getAddableVariables();
-        for (Variable variable : possibleVariables) {
-            JCheckBox checkBox = new JCheckBox(variable.getName());
-            checkBoxes.add(checkBox);
-            add(checkBox, CENTER_ALIGNMENT);
-        }
-    }
+		List<Variable> possibleVariables = branch.getAddableVariables();
+		for (Variable variable : possibleVariables) {
+			JCheckBox checkBox = new JCheckBox(variable.getName());
+			checkBoxes.add(checkBox);
+			add(checkBox, CENTER_ALIGNMENT);
+		}
+	}
 
-    public TreeADDBranch getBranch() {
-        return this.branch;
-    }
+	public TreeADDBranch getBranch() {
+		return this.branch;
+	}
 
-    public TreeADDPotential getTreeADDPotential() {
-        return this.treeADD;
-    }
+	public TreeADDPotential getTreeADDPotential() {
+		return this.treeADD;
+	}
 
-    public ArrayList<JCheckBox> getCheckBoxes() {
-        return this.checkBoxes;
-    }
+	public ArrayList<JCheckBox> getCheckBoxes() {
+		return this.checkBoxes;
+	}
 }

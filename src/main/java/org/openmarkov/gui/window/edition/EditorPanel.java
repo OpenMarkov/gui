@@ -61,7 +61,9 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.variableElimination.tasks.*;
+import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
+import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
+import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
 
 import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
@@ -1759,7 +1761,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				inferenceAlgorithm = inferenceManager.getDefaultApproximateAlgorithm(probNet);
 				// TODO - Check these lines
 				// ((VEPropagation) inferenceAlgorithm).setPostResolutionEvidence(evidenceCase);
-//				individualProbabilities = inferenceAlgorithm.getProbsAndUtilities();
+				//				individualProbabilities = inferenceAlgorithm.getProbsAndUtilities();
 			}
 			long elapsedTimeMillis = System.currentTimeMillis() - start;
 			System.out.println("Inference took " + elapsedTimeMillis + " milliseconds.");
@@ -1790,7 +1792,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	// This commented method computes the exact ranges of the utility functions.
 	// However, we are using an approximation in the method currently offered by
 	// this class.
-	/**
+	/*
 	 * Calculates minUtilityRange and maxUtilityRange fields.
 	 */
 	/*

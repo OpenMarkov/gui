@@ -15,21 +15,21 @@ import java.util.ResourceBundle;
 /**
  * @author mluque
  * ResourceBundle based in XML properties files.
- *
  */
 public class XMLResourceBundle extends ResourceBundle {
 	private XMLProperties props;
-    public XMLResourceBundle(InputStream stream) throws IOException {
-        props = new XMLProperties();
-        //props.loadFromXML(stream);
-        props.load(stream);
-    }
-    protected Object handleGetObject(String key) {
-        return props.getProperty(key);
-    }
-   
-	@Override
-	public Enumeration<String> getKeys() {
+
+	public XMLResourceBundle(InputStream stream) throws IOException {
+		props = new XMLProperties();
+		//props.loadFromXML(stream);
+		props.load(stream);
+	}
+
+	protected Object handleGetObject(String key) {
+		return props.getProperty(key);
+	}
+
+	@Override public Enumeration<String> getKeys() {
 		return (Enumeration<String>) props.keySet();
 	}
 }

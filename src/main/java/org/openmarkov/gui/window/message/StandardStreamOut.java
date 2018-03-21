@@ -7,10 +7,9 @@
 
 package org.openmarkov.gui.window.message;
 
-
 /**
  * This class forwards the character stream to the text area as normal messages.
- * 
+ *
  * @author jmendoza
  * @version 1.0 jmendoza
  */
@@ -18,9 +17,8 @@ public class StandardStreamOut extends StandardStream {
 
 	/**
 	 * Default constructor.
-	 * 
-	 * @param newMessageArea
-	 *            area where the messages are written.
+	 *
+	 * @param newMessageArea area where the messages are written.
 	 */
 	public StandardStreamOut(MessageArea newMessageArea) {
 
@@ -29,12 +27,10 @@ public class StandardStreamOut extends StandardStream {
 
 	/**
 	 * Prints a string.
-	 * 
-	 * @param x
-	 *            the string to be printed.
+	 *
+	 * @param x the string to be printed.
 	 */
-	@Override
-	public void print(String x) {
+	@Override public void print(String x) {
 
 		messageArea.writeInformationMessage(x);
 	}
@@ -43,10 +39,8 @@ public class StandardStreamOut extends StandardStream {
 	 * Terminate the current line by writing the line separator string. The line
 	 * separator string is defined by the system property line.separator.
 	 */
-	@Override
-	public void println() {
+	@Override public void println() {
 
-		messageArea.writeInformationMessage(System
-			.getProperty("line.separator"));
+		messageArea.writeInformationMessage(System.getProperty("line.separator"));
 	}
 }

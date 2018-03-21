@@ -7,17 +7,14 @@
 
 package org.openmarkov.gui.util;
 
-
-import java.awt.geom.Point2D;
-
 import org.openmarkov.core.model.network.Node;
 
-
+import java.awt.geom.Point2D;
 
 /**
  * This class contains the information of a node that has been moved. This class
  * only serves to contain the information for undo and redo.
- * 
+ *
  * @author jmendoza
  */
 public class MovedNodeInfo {
@@ -34,14 +31,11 @@ public class MovedNodeInfo {
 
 	/**
 	 * Constructor. Only saves the information.
-	 * 
-	 * @param newNodeWrapper
-	 *            node moved.
-	 * @param newDiffPosition
-	 *            difference with the original position.
+	 *
+	 * @param newNodeWrapper  node moved.
+	 * @param newDiffPosition difference with the original position.
 	 */
-	public MovedNodeInfo(Node newNodeWrapper,
-							Point2D.Double newDiffPosition) {
+	public MovedNodeInfo(Node newNodeWrapper, Point2D.Double newDiffPosition) {
 
 		nodeWrapper = newNodeWrapper;
 		diffPosition = newDiffPosition;
@@ -49,7 +43,7 @@ public class MovedNodeInfo {
 
 	/**
 	 * Returns the node that has been moved.
-	 * 
+	 *
 	 * @return the node that has been moved.
 	 */
 	public Node getNode() {
@@ -59,9 +53,9 @@ public class MovedNodeInfo {
 
 	/**
 	 * Returns the difference of position of the node.
-	 * 
+	 *
 	 * @return two values that represents the difference of position of the
-	 *         node.
+	 * node.
 	 */
 	public Point2D.Double getDiffPosition() {
 
@@ -70,9 +64,8 @@ public class MovedNodeInfo {
 
 	/**
 	 * Sets the value of the differente of position.
-	 * 
-	 * @param newDiffPosition
-	 *            new difference of position.
+	 *
+	 * @param newDiffPosition new difference of position.
 	 */
 	public void setDiffPosition(Point2D.Double newDiffPosition) {
 

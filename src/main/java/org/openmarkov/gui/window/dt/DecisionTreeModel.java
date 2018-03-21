@@ -7,97 +7,74 @@
 
 package org.openmarkov.gui.window.dt;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
 import org.openmarkov.core.dt.DecisionTreeBranch;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
 
-public class DecisionTreeModel implements TreeModel
-{
-    private Set<TreeModelListener> listeners;
-    private DecisionTreeElementPanel root;
-    
-    /**
-     * Constructor for DecisionTreeModel.
-     */
-    public DecisionTreeModel (DecisionTreeElement root)
-    {
-        super ();
-        this.listeners = new HashSet<> ();
-        this.root = buildPanelTree(root);
-    }
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import java.util.HashSet;
+import java.util.Set;
 
-    private DecisionTreeElementPanel buildPanelTree (DecisionTreeElement treeElement)
-    {
-        DecisionTreeElementPanel treeElementPanel = null;
-        if(treeElement instanceof DecisionTreeNode)
-        {
-            treeElementPanel = new DecisionTreeNodePanel((DecisionTreeNode)treeElement);
-        }else if(treeElement instanceof DecisionTreeBranch)
-        {
-            treeElementPanel = new DecisionTreeBranchPanel((DecisionTreeBranch)treeElement);
-        }
-        
-        for(DecisionTreeElement child : treeElement.getChildren ())
-        {
-            treeElementPanel.addChild (buildPanelTree (child));
-        }
-        
-        return treeElementPanel;
-    }
+public class DecisionTreeModel implements TreeModel {
+	private Set<TreeModelListener> listeners;
+	private DecisionTreeElementPanel root;
 
-    @Override
-    public void addTreeModelListener (TreeModelListener listener)
-    {
-        listeners.add (listener);        
-    }
+	/**
+	 * Constructor for DecisionTreeModel.
+	 */
+	public DecisionTreeModel(DecisionTreeElement root) {
+		super();
+		this.listeners = new HashSet<>();
+		this.root = buildPanelTree(root);
+	}
 
-    @Override
-    public Object getChild (Object parent, int index)
-    {
-        return ((DecisionTreeElementPanel)parent).getChildren ().get (index);
-    }
+	private DecisionTreeElementPanel buildPanelTree(DecisionTreeElement treeElement) {
+		DecisionTreeElementPanel treeElementPanel = null;
+		if (treeElement instanceof DecisionTreeNode) {
+			treeElementPanel = new DecisionTreeNodePanel((DecisionTreeNode) treeElement);
+		} else if (treeElement instanceof DecisionTreeBranch) {
+			treeElementPanel = new DecisionTreeBranchPanel((DecisionTreeBranch) treeElement);
+		}
 
-    @Override
-    public int getChildCount (Object parent)
-    {
-        return ((DecisionTreeElementPanel)parent).getChildren ().size ();
-    }
+		for (DecisionTreeElement child : treeElement.getChildren()) {
+			treeElementPanel.addChild(buildPanelTree(child));
+		}
 
-    @Override
-    public int getIndexOfChild (Object parent, Object child)
-    {
-        return ((DecisionTreeElementPanel)parent).getChildren ().indexOf (child);
-    }
+		return treeElementPanel;
+	}
 
-    @Override
-    public Object getRoot ()
-    {
-        return root;
-    }
+	@Override public void addTreeModelListener(TreeModelListener listener) {
+		listeners.add(listener);
+	}
 
-    @Override
-    public boolean isLeaf (Object node)
-    {
-        return getChildCount (node) == 0;
-    }
+	@Override public Object getChild(Object parent, int index) {
+		return ((DecisionTreeElementPanel) parent).getChildren().get(index);
+	}
 
-    @Override
-    public void removeTreeModelListener (TreeModelListener listener)
-    {
-        listeners.remove (listener);
-    }
+	@Override public int getChildCount(Object parent) {
+		return ((DecisionTreeElementPanel) parent).getChildren().size();
+	}
 
-    @Override
-    public void valueForPathChanged (TreePath path, Object newValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override public int getIndexOfChild(Object parent, Object child) {
+		return ((DecisionTreeElementPanel) parent).getChildren().indexOf(child);
+	}
+
+	@Override public Object getRoot() {
+		return root;
+	}
+
+	@Override public boolean isLeaf(Object node) {
+		return getChildCount(node) == 0;
+	}
+
+	@Override public void removeTreeModelListener(TreeModelListener listener) {
+		listeners.remove(listener);
+	}
+
+	@Override public void valueForPathChanged(TreePath path, Object newValue) {
+		// TODO Auto-generated method stub
+
+	}
 }

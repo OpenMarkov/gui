@@ -7,26 +7,22 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import java.awt.BorderLayout;
-import java.awt.Window;
-
-import javax.swing.JPanel;
-
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+
+import javax.swing.*;
+import java.awt.*;
+
 /**
- * 
  * @author myebra
- *
  */
-@SuppressWarnings("serial")
-public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	private RemoveStatesCheckBoxPanel dissociateStatesCheckBoxPanel;
 	private TreeADDBranch treeADDBranch;
 	private TreeADDPotential parentTreeADD;
-	
+
 	public RemoveStatesDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);
 		this.treeADDBranch = treeADDBranch;
@@ -36,13 +32,15 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		//setMinimumSize(new Dimension( 100, 100 ));
 		setResizable(true);
 		pack();
-		
+
 	}
+
 	private void initialize() {
 
 		configureComponentsPanel();
 		pack();
 	}
+
 	/**
 	 * Sets up the panel where all components, except the buttons of the buttons
 	 * panel, will be appear.
@@ -55,32 +53,33 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		setTitle(dialogStringResource
 				.getString("NodePotentialDialog.Title.Label"));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		getComponentsPanel().add( getJPanelRemoveStates(), BorderLayout.CENTER );
-		
+		getComponentsPanel().add(getJPanelRemoveStates(), BorderLayout.CENTER);
+
 	}
-	
+
 	protected JPanel getJPanelRemoveStates() {
-	
+
 		if (dissociateStatesCheckBoxPanel == null) {
 			dissociateStatesCheckBoxPanel = new RemoveStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
 			//dissociateStatesCheckBoxPanel.setLayout( new FlowLayout() );
-			dissociateStatesCheckBoxPanel.setName( "jPanelDissociateBranchStates" );
-			
+			dissociateStatesCheckBoxPanel.setName("jPanelDissociateBranchStates");
+
 		}
 		return dissociateStatesCheckBoxPanel;
 
-		
 	}
+
 	public int requestValues() {
-		
+
 		setVisible(true);
-		
+
 		return selectedButton;
 	}
+
 	/**
 	 * This method carries out the actions when the user press the Ok button
 	 * before hide the dialog.
-	 * 
+	 *
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
@@ -92,6 +91,6 @@ public class RemoveStatesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	 * before hide the dialog.
 	 */
 	protected void doCancelClickBeforeHide() {
-		
+
 	}
 }

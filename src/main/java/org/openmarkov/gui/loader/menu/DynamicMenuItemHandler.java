@@ -7,16 +7,13 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JMenuItem;
-
 
 /*
  * Handles the Dynamic activation inside a menu that is loaded by name at
  * runtime @author jlgozalo
- * 
+ *
  * @version 1.0
  */
 public class DynamicMenuItemHandler extends MenuItemAdapter {
@@ -33,8 +30,7 @@ public class DynamicMenuItemHandler extends MenuItemAdapter {
 	 */
 	public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
 
-		System.out.println("Menu item " + item.getName()
-			+ " activated dynamically!");
+		System.out.println("Menu item " + item.getName() + " activated dynamically!");
 		System.out.println("Command = '" + sCommand + "'");
 	}
 }

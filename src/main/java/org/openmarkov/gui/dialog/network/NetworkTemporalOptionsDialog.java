@@ -7,40 +7,34 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import java.awt.Component;
-import java.awt.Window;
-
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.openmarkov.core.action.CycleLengthEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.gui.localize.StringDatabase;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.CycleLength.Unit;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.localize.StringDatabase;
 
-public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
-	
+import javax.swing.*;
+import java.awt.*;
+
+public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog {
+
 	/**
 	 * Serial Version UID
 	 */
 	private static final long serialVersionUID = 5179498063445726852L;
-	
+
 	private ProbNet probNet;
-	
+
 	private JComboBox<String> temporalUnits;
-	
+
 	private JTextField unitScale;
-	
+
 	private Unit probNetUnit;
-	
+
 	private double probNetScale;
 
 	private JPanel componentsPanel;
@@ -49,22 +43,21 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 		super(owner);
 		this.probNet = probNet;
 		initialize();
-		
+
 		CycleLength temporalUnit;
-		if(probNet.getCycleLength() != null){
+		if (probNet.getCycleLength() != null) {
 			temporalUnit = probNet.getCycleLength();
-		}else{
+		} else {
 			temporalUnit = new CycleLength();
 			probNet.setCycleLength(temporalUnit);
 		}
-		
+
 		probNetUnit = temporalUnit.getUnit();
 		probNetScale = temporalUnit.getValue();
-		
-		
-		temporalUnits.setSelectedItem(stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + probNetUnit.toString()));
+
+		temporalUnits.setSelectedItem(
+				stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + probNetUnit.toString()));
 		unitScale.setText(String.valueOf(probNetScale));
-		
 
 		setName("TemporalOptionsDialog");
 		setLocationRelativeTo(owner);
@@ -80,18 +73,18 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 		getComponentsPanel();
 		pack();
 	}
-	
-	
+
 	/**
 	 * This method initialises componentsPanel.
-	 * 
+	 *
 	 * @return a new components panel.
 	 */
 	protected JPanel getComponentsPanel() {
 
 		if (componentsPanel == null) {
 			componentsPanel = new JPanel();
-			JLabel label = new JLabel(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Label"));
+			JLabel label = new JLabel(
+					StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Label"));
 			componentsPanel.add(label);
 			componentsPanel.add(getUnitScale());
 			componentsPanel.add(getTemporalUnits());
@@ -100,22 +93,22 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 		return componentsPanel;
 
 	}
-	
+
 	private Component getTemporalUnits() {
-		if(temporalUnits == null){
+		if (temporalUnits == null) {
 			temporalUnits = new JComboBox<String>();
-			for(Unit unit : Unit.values()){
-				String newUnit = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
+			for (Unit unit : Unit.values()) {
+				String newUnit = StringDatabase.getUniqueInstance()
+						.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString());
 				temporalUnits.addItem(newUnit);
 			}
-			
 
 		}
 		return temporalUnits;
 	}
 
 	private Component getUnitScale() {
-		if(unitScale == null){
+		if (unitScale == null) {
 			unitScale = new JTextField();
 
 		}
@@ -125,46 +118,43 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 	/**
 	 * This method carries out the actions when the user press the Ok button
 	 * before hide the dialog.
-	 * 
+	 *
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
 		double newScale;
-		try{
+		try {
 			newScale = Double.parseDouble(unitScale.getText());
-		}catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(
-					null,
-					stringDatabase.getString("NumberFormatException.Text.Label"),
-					stringDatabase.getString("NumberFormatException.Title.Label"),
-					JOptionPane.ERROR_MESSAGE
-					);
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, stringDatabase.getString("NumberFormatException.Text.Label"),
+					stringDatabase.getString("NumberFormatException.Title.Label"), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
+
 		String selectedUnitString = temporalUnits.getSelectedItem().toString();
-		String unitDataBaseString = StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + probNetUnit.toString());
-		
-		if(newScale != probNetScale || 
-				!unitDataBaseString.equals(selectedUnitString)){
-						
-			for(Unit unit: Unit.values()){
-				if(StringDatabase.getUniqueInstance().getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString()).equals(selectedUnitString)){
+		String unitDataBaseString = StringDatabase.getUniqueInstance()
+				.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + probNetUnit.toString());
+
+		if (newScale != probNetScale || !unitDataBaseString.equals(selectedUnitString)) {
+
+			for (Unit unit : Unit.values()) {
+				if (StringDatabase.getUniqueInstance()
+						.getString("NetworkAdvancedPanel.TemporalOptions.Unit." + unit.toString())
+						.equals(selectedUnitString)) {
 					probNetUnit = unit;
 					break;
 				}
 			}
-			CycleLength temporalUnit = new CycleLength(probNetUnit,newScale);
+			CycleLength temporalUnit = new CycleLength(probNetUnit, newScale);
 			CycleLengthEdit edit = new CycleLengthEdit(probNet, temporalUnit);
-	    	try {
+			try {
 				probNet.getPNESupport().doEdit(edit);
-			} catch (DoEditException | NonProjectablePotentialException
-					| WrongCriterionException e) {
+			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 				e.printStackTrace();
 			}
-	    	return super.doOkClickBeforeHide();
+			return super.doOkClickBeforeHide();
 		}
-		
+
 		return true;
 	}
 
@@ -172,8 +162,7 @@ public class NetworkTemporalOptionsDialog extends OkCancelHorizontalDialog{
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
-	@Override
-	protected void doCancelClickBeforeHide() {
+	@Override protected void doCancelClickBeforeHide() {
 		super.doCancelClickBeforeHide();
 	}
 }

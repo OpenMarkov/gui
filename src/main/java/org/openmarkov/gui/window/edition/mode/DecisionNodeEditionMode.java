@@ -6,17 +6,14 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.window.edition.EditorPanel;
 
-@EditionState(name="Edit.Mode.Decision", icon="decision.gif", cursor="decision.gif")
-public class DecisionNodeEditionMode extends NodeEditionMode
-{
+@EditionState(name = "Edit.Mode.Decision", icon = "decision.gif", cursor = "decision.gif") public class DecisionNodeEditionMode
+		extends NodeEditionMode {
 
-    public DecisionNodeEditionMode (EditorPanel editorPanel,
-                                  ProbNet probNet)
-    {
-        super (editorPanel, probNet, NodeType.DECISION);
-    }
+	public DecisionNodeEditionMode(EditorPanel editorPanel, ProbNet probNet) {
+		super(editorPanel, probNet, NodeType.DECISION);
+	}
 }

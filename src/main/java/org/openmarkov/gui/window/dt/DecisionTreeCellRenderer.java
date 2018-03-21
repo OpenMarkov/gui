@@ -7,30 +7,18 @@
 
 package org.openmarkov.gui.window.dt;
 
-import java.awt.Component;
-
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
+import java.awt.*;
 
-public class DecisionTreeCellRenderer implements
-TreeCellRenderer
-{
+public class DecisionTreeCellRenderer implements TreeCellRenderer {
 
-    @Override
-    public Component getTreeCellRendererComponent (JTree tree,
-                                                   Object object,
-                                                   boolean selected,
-                                                   boolean expanded,
-                                                   boolean leaf,
-                                                   int row,
-                                                   boolean hasFocus)
-    {
-        if(object instanceof DecisionTreeElementPanel)
-        {
-            ((DecisionTreeElementPanel)object).update(selected, expanded, leaf, row, hasFocus);
-        }
-        return (Component)object;
-    }
-    
-    
+	@Override public Component getTreeCellRendererComponent(JTree tree, Object object, boolean selected,
+			boolean expanded, boolean leaf, int row, boolean hasFocus) {
+		if (object instanceof DecisionTreeElementPanel) {
+			((DecisionTreeElementPanel) object).update(selected, expanded, leaf, row, hasFocus);
+		}
+		return (Component) object;
+	}
+
 }

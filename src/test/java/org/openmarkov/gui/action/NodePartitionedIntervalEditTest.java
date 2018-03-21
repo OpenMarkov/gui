@@ -7,19 +7,19 @@
 
 package org.openmarkov.gui.action;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.action.VariableTypeEdit;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the action of undoing the changes in the node's name of nodes.
@@ -45,19 +45,19 @@ public class NodePartitionedIntervalEditTest {
 
 	private Variable variableA;
 	private Variable variableB;
+
 	/**
 	 * This method creates a network and various nodes and various links.
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 
-		probNet = new ProbNet( InfluenceDiagramType.getUniqueInstance() );
+		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
 		probNet.setComment("Influence diagram for testing");
-		State [] states = {new State("absent"), new State("present")};
-		variableA = new Variable("A",states );
+		State[] states = { new State("absent"), new State("present") };
+		variableA = new Variable("A", states);
 		variableB = new Variable("B");
 
 		node1 = probNet.addNode(variableA, NodeType.CHANCE);
@@ -69,27 +69,23 @@ public class NodePartitionedIntervalEditTest {
 		node2.setCoordinateY(49.0);
 
 		probNet.getPNESupport().setWithUndo(true);
-		
-		VariableTypeEdit variableTypeEdit = new VariableTypeEdit (
-				node1, VariableType.DISCRETIZED );
-		
+
+		VariableTypeEdit variableTypeEdit = new VariableTypeEdit(node1, VariableType.DISCRETIZED);
+
 		probNet.doEdit(variableTypeEdit);
 
-		NodePartitionedIntervalEdit nodePartitionedIntervalEdit = 
-			new NodePartitionedIntervalEdit(node1, 
-					StateAction.MODIFY_DELIMITER_INTERVAL, 0, true);
-		
-        probNet.doEdit (nodePartitionedIntervalEdit);
-	}
+		NodePartitionedIntervalEdit nodePartitionedIntervalEdit = new NodePartitionedIntervalEdit(node1,
+				StateAction.MODIFY_DELIMITER_INTERVAL, 0, true);
 
+		probNet.doEdit(nodePartitionedIntervalEdit);
+	}
 
 	/**
 	 * This method undoes and redoes several times the node's name.
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@Test
-	public final void testUndoRedo() throws Exception {
+	@Test public final void testUndoRedo() throws Exception {
 
 		assertEquals(node1.getVariable().getPartitionedInterval().
 				getBelongsToLeftSide(0), false);
@@ -98,7 +94,7 @@ public class NodePartitionedIntervalEditTest {
 		assertEquals(node1.getVariable().getPartitionedInterval().
 				getBelongsToLeftSide(0), true);
 		probNet.getPNESupport().redo();
-		
+
 		assertEquals(node1.getVariable().getPartitionedInterval().
 				getBelongsToLeftSide(0), false);
 		probNet.getPNESupport().undo();
@@ -107,9 +103,6 @@ public class NodePartitionedIntervalEditTest {
 				getBelongsToLeftSide(0), true);
 		probNet.getPNESupport().redo();
 
-
-		
 	}
-
 
 }

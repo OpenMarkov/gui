@@ -11,14 +11,13 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * Model for multicriteria table
- * 
- * @author Jorge
  *
+ * @author Jorge
  */
 public class MultiCriteriaTableModel extends DefaultTableModel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +25,7 @@ public class MultiCriteriaTableModel extends DefaultTableModel {
 		super();
 	}
 
-	@Override
-	public boolean isCellEditable(int row, int column) {
+	@Override public boolean isCellEditable(int row, int column) {
 
 		// The user wouldn't be able to edit the criteria
 		if (column == InferenceOptionsDialog.CRITERION_COLUMN || row == 0) {

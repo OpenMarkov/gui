@@ -7,14 +7,13 @@
 
 package org.openmarkov.gui.window.edition;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
 
 /**
- * This class is used to test the class {@link openmarkov.gui.edition.zoom.Zoom}.
- * 
+ * This class is used to test the class {@link Zoom}.
+ *
  * @author jmendoza
  */
 public class ZoomTest {
@@ -22,8 +21,7 @@ public class ZoomTest {
 	 * Test the default constructor and the constructor with a value 0 as
 	 * parameter.
 	 */
-	@Test
-	public final void testZoom() {
+	@Test public final void testZoom() {
 		Zoom zoom;
 
 		zoom = new Zoom();
@@ -32,24 +30,20 @@ public class ZoomTest {
 		assertTrue(zoom.getZoom() == 1.0);
 	}
 
-
 	/**
 	 * Test the the constructor with a value non 0 as parameter.
 	 */
-	@Test
-	public final void testZoomDouble() {
+	@Test public final void testZoomDouble() {
 		Zoom zoom;
 
 		zoom = new Zoom(0.5);
 		assertTrue(zoom.getZoom() == 0.5);
 	}
 
-
 	/**
 	 * Test the limits of the zoom.
 	 */
-	@Test
-	public final void testZoomLimits() {
+	@Test public final void testZoomLimits() {
 		Zoom zoom;
 
 		zoom = new Zoom(6.0);
@@ -58,25 +52,21 @@ public class ZoomTest {
 		assertTrue(zoom.getZoom() == 0.1);
 	}
 
-
 	/**
 	 * This method tests the method setZoom.
 	 */
-	@Test
-	public final void testSetZoom() {
+	@Test public final void testSetZoom() {
 		Zoom zoom = new Zoom();
 
 		zoom.setZoom(4.5);
 		assertTrue(zoom.getZoom() == 4.5);
 	}
 
-
 	/**
 	 * This method tests the conversion of screen coordinates to panel
 	 * coordinates.
 	 */
-	@Test
-	public final void testScreenToPanel() {
+	@Test public final void testScreenToPanel() {
 		Zoom zoom = new Zoom(4);
 		double value;
 
@@ -84,13 +74,11 @@ public class ZoomTest {
 		assertTrue(value == 540.5);
 	}
 
-
 	/**
 	 * This method tests the conversion of panel coordinates to screen
 	 * coordinates.
 	 */
-	@Test
-	public final void testPanelToScreen() {
+	@Test public final void testPanelToScreen() {
 		Zoom zoom = new Zoom(1.5);
 		double value;
 

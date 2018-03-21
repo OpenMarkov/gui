@@ -7,9 +7,6 @@
 
 package org.openmarkov.gui.action;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
@@ -17,30 +14,31 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.gui.component.PotentialsTablePanelOperations;
+
+import java.util.Iterator;
+import java.util.List;
+
 //import org.openmarkov.core.model.network.Variable;
 //import org.openmarkov.core.model.network.potential.Potential;
 //import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 /**
  * <code>NodePotentialEdit</code> is a simple edit that allows to modify the
  * node's <code>Potential</code> values. It is implemented for TablePotential
  * Only
- * 
- * @version 1.0 21/12/10
+ *
  * @author mpalacios
- * 
- * @version 1.1 28/05/2016 - eliminates the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
- * 						   - adding the attribute getExactDistrPotential
  * @author carmenyago
+ * @version 1.1 28/05/2016 - eliminates the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
+ * - adding the attribute getExactDistrPotential
  */
-@SuppressWarnings("serial")
-public class TablePotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class TablePotentialValueEdit extends SimplePNEdit {
 	/**
 	 * The column of the table where is the potential
 	 */
@@ -73,17 +71,18 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * Old table potential
 	 */
 	private TablePotential oldTablePotential;
-	
+
 	/**
 	 * True is the tablePotential belongs to a ExactDistrPotential
+	 *
 	 * @author carmenyago
 	 */
 	private boolean isExactDistrPotential;
-	
+
 	/**
 	 * For doEdit
-	 * @author carmenyago 
-	 * 
+	 *
+	 * @author carmenyago
 	 */
 	private ExactDistrPotential oldExactDistrPotential;
 	private ExactDistrPotential exactDistrPotential;
@@ -91,7 +90,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * the increment to get the real position of the value modified
 	 */
 	private int increment;
-	
+
 	/**
 	 * Pseudo-util class with common operations used  in potential tables
 	 */
@@ -106,45 +105,38 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	private Object[][] notEditablePostitions = new Object[0][0];
 	private Node node;
 
-
-
 	// Constructor
+
 	/**
 	 * Creates a new <code>NodePotentialEdit</code> specifying the node to be
 	 * edited, the new value of the potential, the row and column where is the
 	 * value to be modified and a priority list for potentials updating.
-	 * 
-	 * @param node
-	 *            the node to be edited
-	 * @param newValue
-	 *            the new value
-	 * @param col
-	 *            the column in the edited table
-	 * @param row
-	 *            the row in the edited table
-	 * @param priorityList
-	 *            the priority lists for potentials update.
-	 * @param notEditablePositions
-	 *            two dimensional array with the information about editable
-	 *            positions.
-	 * carmenyago added the new initialisation of getExactDistrPotential
-	 * and for modularity changed the constructor definition to remove tablePotential  and probNet (UNCLEAR)
-	 *            
-	 * @author carmenyago           
+	 *
+	 * @param node                 the node to be edited
+	 * @param newValue             the new value
+	 * @param col                  the column in the edited table
+	 * @param row                  the row in the edited table
+	 * @param priorityList         the priority lists for potentials update.
+	 * @param notEditablePositions two dimensional array with the information about editable
+	 *                             positions.
+	 *                             carmenyago added the new initialisation of getExactDistrPotential
+	 *                             and for modularity changed the constructor definition to remove tablePotential  and probNet (UNCLEAR)
+	 * @author carmenyago
 	 */
-	public TablePotentialValueEdit(Node node, Double newValue, int row, int col,
-			List<Integer> priorityList, Object[][] notEditablePositions) {
+	public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
+			Object[][] notEditablePositions) {
 		super(node.getProbNet());
 		this.node = node;
-		Potential potential=null;
-		try{
+		Potential potential = null;
+		try {
 			potential = node.getPotentials().get(0);
 			this.setExactDistrPotential(potential instanceof ExactDistrPotential);
-		    if (getExactDistrPotential()){
-		        this.oldExactDistrPotential = (ExactDistrPotential)(potential);
-		        this.oldTablePotential=((ExactDistrPotential)potential).getTablePotential();
-		    } else this.oldTablePotential=(TablePotential)potential;
-		}catch(Exception e){
+			if (getExactDistrPotential()) {
+				this.oldExactDistrPotential = (ExactDistrPotential) (potential);
+				this.oldTablePotential = ((ExactDistrPotential) potential).getTablePotential();
+			} else
+				this.oldTablePotential = (TablePotential) potential;
+		} catch (Exception e) {
 			e.printStackTrace();
 /* TODO
 			JOptionPane.showMessageDialog(this,
@@ -152,7 +144,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 					stringDatabase.getString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 			return;		
-*/		
+*/
 		}
 		this.row = row;
 		this.col = col;
@@ -162,45 +154,39 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 		this.notEditablePostitions = notEditablePositions;
 		this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(node) - row;
 		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
-		
-		if (isExactDistrPotential){
+
+		if (isExactDistrPotential) {
 			//copy returns null so 
-			this.exactDistrPotential = new ExactDistrPotential(
-					((ExactDistrPotential)potential).getVariables(),
-					((ExactDistrPotential)potential).getPotentialRole());
-			
-			TablePotential newPotential=(TablePotential)(oldExactDistrPotential.getTablePotential().copy());
+			this.exactDistrPotential = new ExactDistrPotential(((ExactDistrPotential) potential).getVariables(),
+					((ExactDistrPotential) potential).getPotentialRole());
+
+			TablePotential newPotential = (TablePotential) (oldExactDistrPotential.getTablePotential().copy());
 			this.exactDistrPotential.setTablePotential(newPotential);
-			this.tablePotential=newPotential;
-			this.newTable= this.exactDistrPotential.getTablePotential().getValues();
-		} else{
+			this.tablePotential = newPotential;
+			this.newTable = this.exactDistrPotential.getTablePotential().getValues();
+		} else {
 			// Reorder the values table of TablePotential
 			this.tablePotential = (TablePotential) oldTablePotential.copy();
 			// values table reordered
 			this.newTable = this.tablePotential.getValues();
-		}	
+		}
 
 		// Get the potential index
 		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, node);
 
 	}
-	
-	
 
-
-	/** 
+	/**
 	 * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
 	 * and updates the probNet
 	 * In case the potential is ExactDistrPotential...
-	 * @throws <code>DoEditException</code>
-	 * carmenyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
-	 * UNCLEAR--> Expected behaviour,  	probNet.doEdit(changePotentialEdit) will be able to distinguish is ExactDistrPotential???
-	 * @author carmenyago 
-	 * 
-	 * */
-	@Override
-	public void doEdit() throws DoEditException {
-		PotentialChangeEdit changePotentialEdit=null;
+	 *
+	 * @throws <code>DoEditException</code> carmenyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
+	 *                                      UNCLEAR--> Expected behaviour,  	probNet.doEdit(changePotentialEdit) will be able to distinguish is ExactDistrPotential???
+	 * @author carmenyago
+	 */
+	@Override public void doEdit() throws DoEditException {
+		PotentialChangeEdit changePotentialEdit = null;
 		if (!getExactDistrPotential()) {
 			if (priorityList.isEmpty()) {
 				// User is editing a new column of potentials //node
@@ -218,13 +204,11 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 			int maxDecimals = 10;
 			double epsilon;
 			epsilon = Math.pow(10, -(maxDecimals + 2));
-			newTable[potentialSelected] = Util.roundAndReduce(newValue,
-					epsilon, maxDecimals);
+			newTable[potentialSelected] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()) {
 				position = (Integer) listIterator.next();
 				if (isEditablePosition(position)) {
-					sum = Util.roundAndReduce(sum + newTable[position],
-							epsilon, maxDecimals);
+					sum = Util.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
 				}
 				// sum += newTable[pos];
 			}
@@ -235,15 +219,13 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				while (listIterator.hasNext() && rest != 0) {
 					position = (Integer) listIterator.next();
 					if (this.isEditablePosition(position)) {
-						rest = Util.roundAndReduce(rest - newTable[position],
-								epsilon, maxDecimals);
+						rest = Util.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
 						// rest = rest - newTable[pos];
 						if (rest < 0) {// it is because the value of the table
-										// is bigger than the rest
-										// and now there's nothing left to reach
-										// one
-							newTable[position] = Math.abs(Util.roundAndReduce(
-									rest, epsilon, maxDecimals));
+							// is bigger than the rest
+							// and now there's nothing left to reach
+							// one
+							newTable[position] = Math.abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
 							break;
 						} else
 							newTable[position] = 0.0;
@@ -255,37 +237,29 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 				while (listIterator.hasNext() && !updated) {
 					position = (Integer) listIterator.next();
 					if (this.isEditablePosition(position)) {
-						newTable[position] = Util
-								.roundAndReduce(newTable[position] + rest,
-										epsilon, maxDecimals);
+						newTable[position] = Util.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
 						updated = true;
 					}
 				}
 			}
-			changePotentialEdit = new PotentialChangeEdit(
-					probNet, oldTablePotential, tablePotential);
+			changePotentialEdit = new PotentialChangeEdit(probNet, oldTablePotential, tablePotential);
 		} else {
 			newTable[potentialSelected] = newValue;
-			tablePotential.getValues()[potentialSelected]=newValue;
-			changePotentialEdit = new PotentialChangeEdit(
-					probNet, oldExactDistrPotential, exactDistrPotential);
+			tablePotential.getValues()[potentialSelected] = newValue;
+			changePotentialEdit = new PotentialChangeEdit(probNet, oldExactDistrPotential, exactDistrPotential);
 		}
-		
+
 		try {
 			probNet.doEdit(changePotentialEdit);
-		} catch (ConstraintViolationException | CanNotDoEditException
-				| NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 			throw new DoEditException(e);
 		}
 	}
-	
-	
-	
-	
+
 	/**
 	 * Gets the table-potential of the node
-	 * 
+	 *
 	 * @return variable1 <code>Variable</code>
 	 */
 	public TablePotential getPotential() {
@@ -293,15 +267,15 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	}
 
 	/**
-	 * Gets the priority list initialisation. 
-	 * Creates a list with the positions in the table of tablePotential of the column containing the edited value. 
+	 * Gets the priority list initialisation.
+	 * Creates a list with the positions in the table of tablePotential of the column containing the edited value.
 	 * The list first contains the positions corresponding to the not edited cells
 	 * and the last position corresponds to the edited cell
-	 *  
+	 *
 	 * @return the priority list initialised with the the value edited in the
-	 *         last place of the list
-	 *         
-	 * revised-->not changed        
+	 * last place of the list
+	 * <p>
+	 * revised-->not changed
 	 */
 	private List<Integer> getPriorityListInitialization() {
 		for (int i = 0; i < node.getVariable().getNumStates(); i++) {
@@ -314,7 +288,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 
 	/**
 	 * Gets the priority list
-	 * 
+	 *
 	 * @return the priority list
 	 */
 	public List<Integer> getPriorityList() {
@@ -326,11 +300,11 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	 * Math.pow( 10, (double) decimalPositions ); return Math.round( number *
 	 * positions ) / positions; }
 	 */
+
 	/**
 	 * Gets the row position associated to value edited if priorityList exists
-	 * 
-	 * @param position
-	 *            position of the value in the array of values
+	 *
+	 * @param position position of the value in the array of values
 	 * @return the position in the table
 	 */
 	public int getRowPosition(int position) {
@@ -341,7 +315,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	/**
 	 * Gets the row position associated to value edited if priorityList no
 	 * exists
-	 * 
+	 *
 	 * @return the position in the table
 	 */
 	public int getRowPosition() {
@@ -350,7 +324,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 
 	/**
 	 * Gets the column where the value is edited
-	 * 
+	 *
 	 * @return the column edited
 	 */
 	public int getColumnPosition() {
@@ -367,8 +341,7 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	private boolean isEditablePosition(int position) {
 		boolean editable = false;
 		int row = getRowPosition(position);
-		if (this.notEditablePostitions.length > row
-				&& this.notEditablePostitions[0].length > col) {
+		if (this.notEditablePostitions.length > row && this.notEditablePostitions[0].length > col) {
 			if (this.notEditablePostitions[row][col] == null) {
 				editable = true;
 			}
@@ -379,14 +352,12 @@ public class TablePotentialValueEdit extends SimplePNEdit {
 	}
 
 	/**
-	 * 
 	 * @return true if tablePotential comes from a ExactDistrPotential
 	 * @author carmenyago
 	 */
 	public boolean getExactDistrPotential() {
 		return isExactDistrPotential;
 	}
-
 
 	private void setExactDistrPotential(boolean isExactDistrPotential) {
 		this.isExactDistrPotential = isExactDistrPotential;

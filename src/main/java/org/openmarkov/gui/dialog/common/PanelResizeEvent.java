@@ -7,26 +7,25 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 public class PanelResizeEvent {
-    private JPanel source;
-    private Dimension newDimension;
-    
-    public PanelResizeEvent(JPanel source, Dimension newDimension) {
-        super();
-        this.source = source;
-        this.newDimension = newDimension;
-    }
+	private JPanel source;
+	private Dimension newDimension;
 
-    public JPanel getSource() {
-        return source;
-    }
+	public PanelResizeEvent(JPanel source, Dimension newDimension) {
+		super();
+		this.source = source;
+		this.newDimension = newDimension;
+	}
 
-    public Dimension getNewDimension() {
-        return newDimension;
-    }
-    
+	public JPanel getSource() {
+		return source;
+	}
+
+	public Dimension getNewDimension() {
+		return newDimension;
+	}
+
 }

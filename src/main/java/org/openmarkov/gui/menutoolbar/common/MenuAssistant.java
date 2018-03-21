@@ -10,14 +10,13 @@ package org.openmarkov.gui.menutoolbar.common;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * This class implements the basic features of a class that assists to another
  * to manage various menus and toolbars. It manages only menus and toolbars that
  * implements the interface 'MenuToolBarBasic'. The management of another types
  * of menus and toolbars (that implements, for example, the interface
  * 'ZoomMenuToolBar'), must be implemented in subclasses.
- * 
+ *
  * @author jmendoza
  */
 public class MenuAssistant {
@@ -30,47 +29,40 @@ public class MenuAssistant {
 
 	/**
 	 * Constructor that registers the array of menus.
-	 * 
-	 * @param newBasicMenus
-	 *            array of basic menus and toolbars.
+	 *
+	 * @param newBasicMenus array of basic menus and toolbars.
 	 */
 	public MenuAssistant(List<MenuToolBarBasic> newBasicMenus) {
 
 		if (newBasicMenus == null) {
-		    basicMenus = new ArrayList<MenuToolBarBasic>();
-		}else
-		{
-		    basicMenus = newBasicMenus;
+			basicMenus = new ArrayList<MenuToolBarBasic>();
+		} else {
+			basicMenus = newBasicMenus;
 		}
 	}
-	
-    public MenuAssistant(MenuToolBarBasic... newBasicMenus) {
 
-        basicMenus = new ArrayList<>();
-        for(MenuToolBarBasic newMenu : newBasicMenus)
-        {
-            basicMenus.add (newMenu);
-        }
-    }	
-    
-    public void addMenu(MenuToolBarBasic newBasicMenu)
-    {
-        basicMenus.add (newBasicMenu);
-    }
-    
-    public void removeMenu(MenuToolBarBasic newBasicMenu)
-    {
-        basicMenus.remove (newBasicMenu);
-    }
+	public MenuAssistant(MenuToolBarBasic... newBasicMenus) {
+
+		basicMenus = new ArrayList<>();
+		for (MenuToolBarBasic newMenu : newBasicMenus) {
+			basicMenus.add(newMenu);
+		}
+	}
+
+	public void addMenu(MenuToolBarBasic newBasicMenu) {
+		basicMenus.add(newBasicMenu);
+	}
+
+	public void removeMenu(MenuToolBarBasic newBasicMenu) {
+		basicMenus.remove(newBasicMenu);
+	}
 
 	/**
 	 * Selects or unselects an option identified by an action command on the
 	 * menus and toolbars.
-	 * 
-	 * @param actionCommand
-	 *            action command that identifies the option.
-	 * @param b
-	 *            true to select the option, false to unselect.
+	 *
+	 * @param actionCommand action command that identifies the option.
+	 * @param b             true to select the option, false to unselect.
 	 */
 	public void setOptionSelected(String actionCommand, boolean b) {
 
@@ -83,27 +75,23 @@ public class MenuAssistant {
 	/**
 	 * Enables or disabled an option identified by an action command on the
 	 * menus and toolbars.
-	 * 
-	 * @param actionCommand
-	 *            action command that identifies the option.
-	 * @param b
-	 *            true to enable the option, false to disable.
+	 *
+	 * @param actionCommand action command that identifies the option.
+	 * @param b             true to enable the option, false to disable.
 	 */
 	public void setOptionEnabled(String actionCommand, boolean b) {
 
 		for (MenuToolBarBasic menu : basicMenus) {
-	        menu.setOptionEnabled(actionCommand, b);
+			menu.setOptionEnabled(actionCommand, b);
 		}
 
 	}
-	
+
 	/**
 	 * Enables or disabled a group of options on the menus and toolbars.
-	 * 
-	 * @param actionCommandGroup
-	 *            array of action command.
-	 * @param b
-	 *            true to enable the options, false to disable.
+	 *
+	 * @param actionCommandGroup array of action command.
+	 * @param b                  true to enable the options, false to disable.
 	 */
 	public void setOptionEnabled(String[] actionCommandGroup, boolean b) {
 
@@ -114,18 +102,14 @@ public class MenuAssistant {
 		}
 
 	}
-	
-	
 
 	/**
 	 * Adds a text to the label of an option identified by an action command on
 	 * the menus and toolbars.
-	 * 
-	 * @param actionCommand
-	 *            action command that identifies the option.
-	 * @param text
-	 *            text to add to the label of the options. If null, nothing is
-	 *            added.
+	 *
+	 * @param actionCommand action command that identifies the option.
+	 * @param text          text to add to the label of the options. If null, nothing is
+	 *                      added.
 	 */
 	public void addOptionText(String actionCommand, String text) {
 
@@ -134,16 +118,14 @@ public class MenuAssistant {
 		}
 
 	}
-	
+
 	/**
 	 * Changes the caption of menu item identified by an action command on
 	 * the menus and toolbars.
-	 * 
-	 * @param actionCommand
-	 *            action command that identifies the option.
-	 * @param text
-	 *            text to add to the label of the options. If null, nothing is
-	 *            added.
+	 *
+	 * @param actionCommand action command that identifies the option.
+	 * @param text          text to add to the label of the options. If null, nothing is
+	 *                      added.
 	 */
 	public void setText(String actionCommand, String text) {
 

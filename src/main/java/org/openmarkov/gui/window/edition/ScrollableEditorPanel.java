@@ -7,14 +7,11 @@
 
 package org.openmarkov.gui.window.edition;
 
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
-@SuppressWarnings("serial")
-public class ScrollableEditorPanel extends JScrollPane
-{
-    public ScrollableEditorPanel(EditorPanel editorPanel)
-    {
-        setViewportView (editorPanel);
-        getVerticalScrollBar ().setUnitIncrement (25);
-    }
+@SuppressWarnings("serial") public class ScrollableEditorPanel extends JScrollPane {
+	public ScrollableEditorPanel(EditorPanel editorPanel) {
+		setViewportView(editorPanel);
+		getVerticalScrollBar().setUnitIncrement(25);
+	}
 }

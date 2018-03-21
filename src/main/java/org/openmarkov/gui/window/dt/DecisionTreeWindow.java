@@ -7,49 +7,37 @@
 
 package org.openmarkov.gui.window.dt;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-
-import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.window.mdi.FrameContentPanel;
 
-@SuppressWarnings("serial")
-public class DecisionTreeWindow extends FrameContentPanel
-{
-    private String  title   = null;
-    private DecisionTreePanel decisionTreePanel = null;
+import java.awt.*;
 
-    public DecisionTreeWindow (ProbNet probNet)
-    {
-        setLayout(new BorderLayout());
-        title  = probNet.getName () + "- decision tree";
-        decisionTreePanel = new DecisionTreePanel (probNet);
-        add (decisionTreePanel, BorderLayout.CENTER);
-        setBackground (Color.blue);
-    }
+@SuppressWarnings("serial") public class DecisionTreeWindow extends FrameContentPanel {
+	private String title = null;
+	private DecisionTreePanel decisionTreePanel = null;
 
-    @Override
-    public String getTitle ()
-    {
-        return title;
-    }
+	public DecisionTreeWindow(ProbNet probNet) {
+		setLayout(new BorderLayout());
+		title = probNet.getName() + "- decision tree";
+		decisionTreePanel = new DecisionTreePanel(probNet);
+		add(decisionTreePanel, BorderLayout.CENTER);
+		setBackground(Color.blue);
+	}
 
-    @Override
-    public void close ()
-    {
-        // TODO Auto-generated method stub
-    }
+	@Override public String getTitle() {
+		return title;
+	}
 
-    @Override
-    public double getZoom ()
-    {
-        return decisionTreePanel.getZoom ();
-    }
+	@Override public void close() {
+		// TODO Auto-generated method stub
+	}
 
-    @Override
-    public void setZoom (double zoom)
-    {
-        decisionTreePanel.setZoom (zoom);
-    }
+	@Override public double getZoom() {
+		return decisionTreePanel.getZoom();
+	}
+
+	@Override public void setZoom(double zoom) {
+		decisionTreePanel.setZoom(zoom);
+	}
 
 }

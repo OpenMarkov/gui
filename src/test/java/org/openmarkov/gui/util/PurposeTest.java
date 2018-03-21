@@ -7,25 +7,23 @@
 
 package org.openmarkov.gui.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.gui.localize.StringDatabase;
 
+import static org.junit.Assert.assertEquals;
 
 /**
- * This class tests the class {@link openmarkov.gui.networks.Purpose}.
- * 
+ * This class tests the class {@link Purpose}.
+ *
  * @author jmendoza
  */
 public class PurposeTest {
 	/**
 	 * This method initializes the language to English.
 	 */
-	@Before
-	public void setUp() {
-		StringDatabase.getUniqueInstance ().setLanguage("en");
+	@Before public void setUp() {
+		StringDatabase.getUniqueInstance().setLanguage("en");
 	}
 
 	/**
@@ -33,8 +31,7 @@ public class PurposeTest {
 	 * known in English. Also it gets the language-dependent string of an
 	 * unknown purpose.
 	 */
-	@Test
-	public final void testGetString() {
+	@Test public final void testGetString() {
 		String string;
 
 		string = Purpose.getString("treatment");
@@ -43,13 +40,11 @@ public class PurposeTest {
 		assertEquals(string, ">>> purpose.unknown.Text <<<");
 	}
 
-
 	/**
 	 * This method obtains the language-dependent strings of all the known
 	 * purposes.
 	 */
-	@Test
-	public final void testGetListStrings() {
+	@Test public final void testGetListStrings() {
 		String[] strings;
 
 		strings = Purpose.getListStrings(true);
@@ -67,12 +62,10 @@ public class PurposeTest {
 		assertEquals(strings[10], "other");
 	}
 
-
 	/**
 	 * This method gets all purposes by their indexes.
 	 */
-	@Test
-	public final void testGetByIndex() {
+	@Test public final void testGetByIndex() {
 		assertEquals(Purpose.getByIndex(0), "");
 		assertEquals(Purpose.getByIndex(1), "cost");
 		assertEquals(Purpose.getByIndex(2), "effectiveness");
@@ -86,12 +79,10 @@ public class PurposeTest {
 		assertEquals(Purpose.getByIndex(10), "other");
 	}
 
-
 	/**
 	 * This method checks that all the purposes correspond to their index.
 	 */
-	@Test
-	public final void testGetIndex() {
+	@Test public final void testGetIndex() {
 		assertEquals(Purpose.getIndex(""), 0);
 		assertEquals(Purpose.getIndex("cost"), 1);
 		assertEquals(Purpose.getIndex("effectiveness"), 2);

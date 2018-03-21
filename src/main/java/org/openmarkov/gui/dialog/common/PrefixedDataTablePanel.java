@@ -7,25 +7,24 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NodeNotFoundException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.gui.localize.StringDatabase;
-import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.gui.util.Utilities;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements a key table with the following features:
@@ -38,9 +37,8 @@ import org.openmarkov.core.model.network.ProbNet;
  * down.</li>
  * <li>The rows can be removed.</li>
  * </ul>
- * 
+ *
  * @author jmendoza
- * @version 1.0 jmendoza
  * @author jlgozalo
  * @version 1.0 jlgozalo - change class modifier to public
  */
@@ -68,29 +66,22 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	private String titleToSelectRows;
 
 	private Node node;
-	
-	
+
 	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 
 	/**
 	 * This is the default constructor
-	 * 
-	 * @param newColumns
-	 *            array of texts that appear in the header of the columns.
-	 * @param newData
-	 *            content of the cells (subset of prefixedData).
-	 * @param newPrefixedData
-	 *            content that can appears into the cells.
-	 * @param newTitleToSelectRows
-	 *            title of the window where the user can select new rows.
+	 *
+	 * @param newColumns           array of texts that appear in the header of the columns.
+	 * @param newData              content of the cells (subset of prefixedData).
+	 * @param newPrefixedData      content that can appears into the cells.
+	 * @param newTitleToSelectRows title of the window where the user can select new rows.
 	 */
-	public PrefixedDataTablePanel(Node node, String[] newColumns, Object[][] newData,
-									Object[][] newPrefixedData,
-									String newTitleToSelectRows,
-									boolean firstColumnHidden){
+	public PrefixedDataTablePanel(Node node, String[] newColumns, Object[][] newData, Object[][] newPrefixedData,
+			String newTitleToSelectRows, boolean firstColumnHidden) {
 
 		super(newColumns, new Object[0][0], false, false);
-		this.node = node; 
+		this.node = node;
 		prefixedData = newPrefixedData.clone();
 		titleToSelectRows = newTitleToSelectRows;
 		initialize();
@@ -100,12 +91,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 
 	/**
 	 * Sets a new table model with new data.
-	 * 
-	 * @param newData
-	 *            new data for the table.
+	 *
+	 * @param newData new data for the table.
 	 */
-	@Override
-	public void setData(Object[][] newData) {
+	@Override public void setData(Object[][] newData) {
 
 		data = newData.clone();
 		tableModel = null;
@@ -114,6 +103,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		setEnabledAddValue(absentData.length != 0);
 
 	}
+
 	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
 
 		int i, l;
@@ -121,7 +111,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		l = nodes.size();
 		result = new Object[l][2];
 		for (i = 0; i < l; i++) {
-			result[i][0] = "p_"+i; //internal name for the parent
+			result[i][0] = "p_" + i; //internal name for the parent
 			result[i][1] = nodes.get(i).getName();
 		}
 
@@ -131,8 +121,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	/**
 	 * Invoked when the button 'add' is pressed.
 	 */
-	@Override
-	protected void actionPerformedAddValue() {
+	@Override protected void actionPerformedAddValue() {
 
 		int newIndex = 0;
 		int i = 0;
@@ -140,43 +129,33 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		Object[][] newData = null;
 
 		newIndex = valuesTable.getRowCount();
-		if (absentData == null){
-			JOptionPane.showMessageDialog(
-					Utilities.getOwner(this), "Ningún nodo disponible",
-					stringDatabase.getString("ErrorWindow.Title.Label"),
-					JOptionPane.INFORMATION_MESSAGE);
-		}else{
+		if (absentData == null) {
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), "Ningún nodo disponible",
+					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.INFORMATION_MESSAGE);
+		} else {
 			newData = requestNewData();
 			if (newData != null) {
 				l = newData.length;
 				for (i = 0; i < l; i++) {
-					String name =  (String) newData[i][1];
-					for (PNEdit edit:edits){
-						if (((AddLinkEdit)edit).getNode1().getName().equals(
-								name)){
+					String name = (String) newData[i][1];
+					for (PNEdit edit : edits) {
+						if (((AddLinkEdit) edit).getNode1().getName().equals(name)) {
 							try {
-								node.getProbNet().getPNESupport().doEdit(
-										(AddLinkEdit)edit);
+								node.getProbNet().getPNESupport().doEdit((AddLinkEdit) edit);
 								tableModel.insertRow(newIndex + i, newData[i]);
 								edits.remove(edit);
 								break;
-							} catch (DoEditException
-									| NonProjectablePotentialException
-									| WrongCriterionException e) {
+							} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
-								JOptionPane.showMessageDialog(
-										Utilities.getOwner(this), e.getMessage(),
-										stringDatabase
-										.getString("ErrorWindow.Title.Label"),
-										JOptionPane.ERROR_MESSAGE);
-							} 
+								JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
+										stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+							}
 						}
-						
+
 					}
 				}
-				valuesTable.getSelectionModel().setSelectionInterval(
-						newIndex, newIndex);
+				valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
 				absentData = absentPrefixedData();
 				setEnabledAddValue(absentData.length != 0);
 			}
@@ -188,59 +167,52 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * This method request the user to select one or more new elements to add.
 	 * The new elements are the subset of the prefixed set that aren't in the
 	 * array 'data'.
-	 * 
+	 *
 	 * @return the elements that the user has selected or null if he/she has
-	 *         selected nothing.
+	 * selected nothing.
 	 */
 	private Object[][] requestNewData() {
 
 		Object[][] possibleData = absentData;
 		KeyListSelectionDialog dialog = null;
-		dialog =
-			new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows,
-				possibleData, columns);
+		dialog = new KeyListSelectionDialog(Utilities.getOwner(this), titleToSelectRows, possibleData, columns);
 
-		return (dialog.requestSelectRows() == KeyListSelectionDialog.OK_BUTTON)
-			? dialog.getSelectedRows() : null;
+		return (dialog.requestSelectRows() == KeyListSelectionDialog.OK_BUTTON) ? dialog.getSelectedRows() : null;
 
 	}
 
 	/**
 	 * This method returns an array of arrays of strings whose elements are the
 	 * prefixed ones that aren't in the array 'data'.
-	 * 
+	 *
 	 * @return the prefixed data that aren't in the array 'data'.
 	 */
 	private Object[][] absentPrefixedData() {
-	    List<Node> allNodes = node.getProbNet().getNodes();
-	    List<Node> nodes = new ArrayList<Node>();
+		List<Node> allNodes = node.getProbNet().getNodes();
+		List<Node> nodes = new ArrayList<Node>();
 		edits.clear();
-		
-		for (Node otherNode:allNodes){
-			if (!node.getParents().contains(otherNode) &&  otherNode != node){
-				
+
+		for (Node otherNode : allNodes) {
+			if (!node.getParents().contains(otherNode) && otherNode != node) {
+
 				//LinkEdit linkEdit = new LinkEdit(node.getProbNet(),pNode.getName(), node.getName(), true, true);
-				AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(),
-						otherNode.getVariable(), node.getVariable(), true);
-				
+				AddLinkEdit linkEdit = new AddLinkEdit(node.getProbNet(), otherNode.getVariable(), node.getVariable(),
+						true);
+
 				try {
 					node.getProbNet().getPNESupport().announceEdit(linkEdit);
 					edits.add(linkEdit);
 					nodes.add(otherNode);
-				} catch(ConstraintViolationException ignore){
-				} catch (CanNotDoEditException
-						| NonProjectablePotentialException
-						| WrongCriterionException e) {
+				} catch (ConstraintViolationException ignore) {
+				} catch (CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringDatabase
-							.getString( e.getMessage() ),
-							stringDatabase.getString( e.getMessage() ),
-						JOptionPane.ERROR_MESSAGE );
-				} 
-				
+					JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+							stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+				}
+
 			}
-			
+
 		}
 		return fillArrayWithNodes(nodes);
 	}
@@ -248,12 +220,11 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	/**
 	 * Invoked when the button 'remove' is pressed.
 	 */
-	@Override
-	protected void actionPerformedRemoveValue() {
+	@Override protected void actionPerformedRemoveValue() {
 
 		int selectedRow = valuesTable.getSelectedRow();
 		int rowCount = 0;
-		
+
 		String name = (String) valuesTable.getValueAt(selectedRow, 1);
 		
 		/*LinkEdit linkEdit;
@@ -263,10 +234,9 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		ProbNet probNet = node.getProbNet();
 		RemoveLinkEdit linkEdit;
 		try {
-			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name),
-					node.getVariable(), true);
+			linkEdit = new RemoveLinkEdit(probNet, probNet.getVariable(name), node.getVariable(), true);
 			node.getProbNet().doEdit(linkEdit);
-				
+
 			tableModel.removeRow(selectedRow);
 			rowCount = valuesTable.getRowCount();
 			// Fixing issue #249
@@ -279,78 +249,64 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 			}*/
 			absentData = absentPrefixedData();
 			setEnabledAddValue(true);
-            // After deleting an item from the list,
-            // the remove value button is disabled
-            // till a new element is selected from the list
-            setEnabledRemoveValue(false);
-			
+			// After deleting an item from the list,
+			// the remove value button is disabled
+			// till a new element is selected from the list
+			setEnabledRemoveValue(false);
+
 		} catch (DoEditException e) {
-		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-			Utilities.getOwner(this), e.getMessage(),
-			stringDatabase.getString("ErrorWindow.Title.Label"),
-			JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
+					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
 		} catch (CanNotDoEditException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-			Utilities.getOwner(this), e.getMessage(),
-			stringDatabase.getString("ErrorWindow.Title.Label"),
-			JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
+					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		} catch (WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e.getMessage() ),
-					stringDatabase.getString( e.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase
-					.getString( e1.getMessage() ),
-					stringDatabase.getString( e1.getMessage() ),
-				JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
+					stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
-		
-		
 
 	}
 
 	// ESCA-JAVA0025:
+
 	/**
 	 * Invoked when the button 'up' is pressed.
 	 */
-	@Override
-	protected void actionPerformedUpValue() {
+	@Override protected void actionPerformedUpValue() {
 
 	}
 
 	// ESCA-JAVA0025:
+
 	/**
 	 * Invoked when the button 'down' is pressed.
 	 */
-	@Override
-	protected void actionPerformedDownValue() {
+	@Override protected void actionPerformedDownValue() {
 
 	}
 
-
-    /**
-     * Invoked when the row selection changes.
-     *
-     * @param e
-     *            selection event information.
-     */
+	/**
+	 * Invoked when the row selection changes.
+	 *
+	 * @param e selection event information.
+	 */
     /*
     Fixing issue https://bitbucket.org/cisiad/org.openmarkov.issues/issue/221/button-delete-in-node-properties-parents
     The remove button was always set to disabled, unless more than two parents were present
@@ -358,23 +314,22 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
     as in it we are not able to determine in which panel we are located and thus
     if the button needs to be enabled or not.
      */
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        super.valueChanged(e);
+	@Override public void valueChanged(ListSelectionEvent e) {
+		super.valueChanged(e);
 
-        boolean removeValueButtonEnabled = true;
-        int rowCount = valuesTable.getRowCount();
-        
-        // If there are less than two rows
-        if (rowCount <= 2) {
-                // But at least there is one, it has not to be the nodes parent table, as
-                // one parent may be removable
-                if (rowCount >= 1 &&
-                        this.titleToSelectRows != StringDatabase.getUniqueInstance().getString ("NodeParentsPanel.prefixedDataTablePanelParentsTable.Title")) {
-                removeValueButtonEnabled = false;
-            }
-        }
-        // The button is enabled or disabled accordingly
-        removeValueButton.setEnabled(removeValueButtonEnabled);
-    }
+		boolean removeValueButtonEnabled = true;
+		int rowCount = valuesTable.getRowCount();
+
+		// If there are less than two rows
+		if (rowCount <= 2) {
+			// But at least there is one, it has not to be the nodes parent table, as
+			// one parent may be removable
+			if (rowCount >= 1 && this.titleToSelectRows != StringDatabase.getUniqueInstance()
+					.getString("NodeParentsPanel.prefixedDataTablePanelParentsTable.Title")) {
+				removeValueButtonEnabled = false;
+			}
+		}
+		// The button is enabled or disabled accordingly
+		removeValueButton.setEnabled(removeValueButtonEnabled);
+	}
 }

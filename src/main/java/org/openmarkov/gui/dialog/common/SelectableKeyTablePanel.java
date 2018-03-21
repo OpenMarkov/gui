@@ -7,12 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import javax.swing.JOptionPane;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
 import org.openmarkov.core.action.RevelationStateEdit;
 import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
@@ -23,12 +17,17 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 /**
  * This class implements a key table with a table model which renders the cells
  * according to the class type.
  ***/
-public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
-		TableModelListener {
+public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements TableModelListener {
 	/***
 	 * Link containing the revelation conditions
 	 */
@@ -43,8 +42,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 	private static final int CHECKBOX_COLUMN_WIDTH = 60;
 	private static final int STATENAME_COLUMN_WIDTH = 440;
 
-	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData,
-			String newKeyPrefix, boolean firstColumnHidden, Link<Node> link) {
+	public SelectableKeyTablePanel(String[] newColumns, Object[][] noKeyData, String newKeyPrefix,
+			boolean firstColumnHidden, Link<Node> link) {
 		super(newColumns, new Object[0][0], newKeyPrefix, true);
 		this.link = link;
 		this.node = link.getNode1();
@@ -60,23 +59,20 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 	 */
 	public void adjustColumnSize() {
 
-		getValuesTable().getColumnModel().getColumn(0)
-				.setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
-		getValuesTable().getColumnModel().getColumn(1)
-				.setMaxWidth(CHECKBOX_COLUMN_WIDTH);
-		getValuesTable().getColumnModel().getColumn(1)
-				.setPreferredWidth(STATENAME_COLUMN_WIDTH);
+		getValuesTable().getColumnModel().getColumn(0).setPreferredWidth(CHECKBOX_COLUMN_WIDTH);
+		getValuesTable().getColumnModel().getColumn(1).setMaxWidth(CHECKBOX_COLUMN_WIDTH);
+		getValuesTable().getColumnModel().getColumn(1).setPreferredWidth(STATENAME_COLUMN_WIDTH);
 
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * This method initializes tableModel.
-	 * 
+	 *
 	 * @return a new tableModel.
 	 */
 	protected DefaultTableModel getTableModel() {
@@ -115,9 +111,8 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 
 	/**
 	 * Invoked when the row selection changes.
-	 * 
-	 * @param e
-	 *            selection event information.
+	 *
+	 * @param e selection event information.
 	 */
 	public void tableChanged(TableModelEvent e) {
 		int row = e.getFirstRow();
@@ -127,35 +122,26 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements
 		State[] states = node.getVariable().getStates();
 		if (states.length > 0) {
 			State selectedState = states[states.length - row - 1];
-			RevelationStateEdit arcEdit = new RevelationStateEdit(link,
-					selectedState, Boolean.valueOf((Boolean) data));
+			RevelationStateEdit arcEdit = new RevelationStateEdit(link, selectedState, Boolean.valueOf((Boolean) data));
 			try {
 				node.getProbNet().doEdit(arcEdit);
 			} catch (ConstraintViolationException e1) {
 			} catch (CanNotDoEditException e3) {
 				e3.printStackTrace();
-				JOptionPane.showMessageDialog(this,
-				                              stringDatabase.getString(e3.getMessage()),
-				                              stringDatabase.getString(e3.getMessage()),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, stringDatabase.getString(e3.getMessage()),
+						stringDatabase.getString(e3.getMessage()), JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e4) {
 				e4.printStackTrace();
-				JOptionPane.showMessageDialog(this,
-				                              stringDatabase.getString(e4.getMessage()),
-				                              stringDatabase.getString(e4.getMessage()),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, stringDatabase.getString(e4.getMessage()),
+						stringDatabase.getString(e4.getMessage()), JOptionPane.ERROR_MESSAGE);
 			} catch (WrongCriterionException e5) {
 				e5.printStackTrace();
-				JOptionPane.showMessageDialog(this,
-				                              stringDatabase.getString(e5.getMessage()),
-				                              stringDatabase.getString(e5.getMessage()),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, stringDatabase.getString(e5.getMessage()),
+						stringDatabase.getString(e5.getMessage()), JOptionPane.ERROR_MESSAGE);
 			} catch (DoEditException e6) {
 				e6.printStackTrace();
-				JOptionPane.showMessageDialog(this,
-				                              stringDatabase.getString(e6.getMessage()),
-				                              stringDatabase.getString(e6.getMessage()),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, stringDatabase.getString(e6.getMessage()),
+						stringDatabase.getString(e6.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

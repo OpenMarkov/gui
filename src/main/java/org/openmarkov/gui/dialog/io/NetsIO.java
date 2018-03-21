@@ -7,10 +7,6 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.WriterException;
@@ -21,13 +17,16 @@ import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class contains some routines to load and to save nets.
- * 
+ *
  * @author jmendoza
- * @version 1.0 - jmendoza -
  * @version 1.1 - jlgozalo - Catch block deleted form OpenNetwork (not required)
- *          private constructor added
+ * private constructor added
  */
 public class NetsIO {
 
@@ -39,12 +38,10 @@ public class NetsIO {
 	/**
 	 * Opens a network saved in a file and returns the object that contains its
 	 * information.
-	 * 
-	 * @param fileName
-	 *            file where the network is saved.
+	 *
+	 * @param fileName file where the network is saved.
 	 * @return an ProbNetInfo object with the information of the network.
-	 * @throws Exception
-	 *             if the file doesn't exist or the file format isn't correct.
+	 * @throws Exception if the file doesn't exist or the file format isn't correct.
 	 */
 	public static ProbNetInfo openNetworkFile(String fileName) throws Exception {
 		//CMI
@@ -53,9 +50,9 @@ public class NetsIO {
 		FormatManager formatManager = FormatManager.getInstance();
 		//CMI
 		ProbNetReader probNetReader = formatManager.getProbNetReader(fileName);
-		
+
 		// ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
-		
+
 		// CMF
 		ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(fileName);
 
@@ -77,73 +74,67 @@ public class NetsIO {
 		 * PGMXReader.getUniqueInstance().loadProbNet(fileName); if (probNet ==
 		 * null) { System.out.println("NetsIO.openNetworkFile from " + fileName
 		 * + ": probNet null"); } return probNet;
-		 * 
+		 *
 		 * }
 		 */
 
 	}
 
-//	/**
-//	 * Saves a network in a file.
-//	 * 
-//	 * @param network
-//	 *            - network to save in the file
-//	 * @param evidence
-//	 *            - list of evidence cases
-//	 * @param fileName
-//	 *            - file where the network is going to be saved
-//	 * @throws NotRecognisedNetworkFileExtensionException
-//	 *             - if file extension is not recognised
-//	 * @throws CanNotWriteNetworkToFileException
-//	 *             - if an I/O error has happened
-//	 */
-//	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName)
-//			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
-//		String fileExtension = getFileExtension(fileName);
-//		FormatManager formatManager = FormatManager.getInstance();
-//		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension);
-//		try {
-//			probNetWriter.writeProbNet(fileName, network, evidence);
-//			/*
-//			 * if (fileExtension.contentEquals("elv")) {
-//			 * //ElviraWriter.getUniqueInstance().writeProbNet(fileName,
-//			 * network); } else if (fileExtension.contentEquals("xml")) {
-//			 * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
-//			 * } else if (fileExtension.contentEquals("pgmx")) {
-//			 * PGMXWriter.getUniqueInstance().writeProbNet(fileName, network); }
-//			 * else if (fileExtension.contentEquals("bif")) {
-//			 * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
-//			 * network); } else { throw new
-//			 * NotRecognisedNetworkFileExtensionException(fileName); } } catch
-//			 * (IOException ex) { throw new
-//			 * CanNotWriteNetworkToFileException(fileName); }
-//			 */
-//		} catch (WriterException ex) {
-//			throw new CanNotWriteNetworkToFileException(fileName);
-//		}
-//	}
+	//	/**
+	//	 * Saves a network in a file.
+	//	 *
+	//	 * @param network
+	//	 *            - network to save in the file
+	//	 * @param evidence
+	//	 *            - list of evidence cases
+	//	 * @param fileName
+	//	 *            - file where the network is going to be saved
+	//	 * @throws NotRecognisedNetworkFileExtensionException
+	//	 *             - if file extension is not recognised
+	//	 * @throws CanNotWriteNetworkToFileException
+	//	 *             - if an I/O error has happened
+	//	 */
+	//	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName)
+	//			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
+	//		String fileExtension = getFileExtension(fileName);
+	//		FormatManager formatManager = FormatManager.getInstance();
+	//		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension);
+	//		try {
+	//			probNetWriter.writeProbNet(fileName, network, evidence);
+	//			/*
+	//			 * if (fileExtension.contentEquals("elv")) {
+	//			 * //ElviraWriter.getUniqueInstance().writeProbNet(fileName,
+	//			 * network); } else if (fileExtension.contentEquals("xml")) {
+	//			 * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
+	//			 * } else if (fileExtension.contentEquals("pgmx")) {
+	//			 * PGMXWriter.getUniqueInstance().writeProbNet(fileName, network); }
+	//			 * else if (fileExtension.contentEquals("bif")) {
+	//			 * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
+	//			 * network); } else { throw new
+	//			 * NotRecognisedNetworkFileExtensionException(fileName); } } catch
+	//			 * (IOException ex) { throw new
+	//			 * CanNotWriteNetworkToFileException(fileName); }
+	//			 */
+	//		} catch (WriterException ex) {
+	//			throw new CanNotWriteNetworkToFileException(fileName);
+	//		}
+	//	}
 
 	/**
 	 * Saves a network in a file.
-	 * 
-	 * @param network
-	 *            	- network to save in the file
-	 * @param evidence
-	 *            	- list of evidence cases
-	 * @param fileName
-	 *            	- file where the network is going to be saved
-	 * @param fileFormat
-	 *            	- the extension and format of file where the network is going to be saved
-	 * @throws NotRecognisedNetworkFileExtensionException
-	 *             - if file extension is not recognised
-	 * @throws CanNotWriteNetworkToFileException
-	 *             	- if an I/O error has happened
-	 * @throws InstantiationException 
-	 * 				-
-	 * @throws IllegalAccessException 
+	 *
+	 * @param network    - network to save in the file
+	 * @param evidence   - list of evidence cases
+	 * @param fileName   - file where the network is going to be saved
+	 * @param fileFormat - the extension and format of file where the network is going to be saved
+	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
+	 * @throws CanNotWriteNetworkToFileException          - if an I/O error has happened
+	 * @throws InstantiationException                     -
+	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException, IllegalAccessException, InstantiationException {
+			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException,
+			IllegalAccessException, InstantiationException {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
 		//CMI
@@ -170,57 +161,47 @@ public class NetsIO {
 		}
 	}
 
-//CMF	
-	
-	
-	
-	
-	
-	
-	
-	
-//CMI	
-	
-//	/**
-//	 * Saves a network in a file.
-//	 * 
-//	 * @param network
-//	 *            - network to save in the file
-//	 * @param fileName
-//	 *            - file where the network is going to be saved
-//	 * @throws NotRecognisedNetworkFileExtensionException
-//	 *             - if file extension is not recognised
-//	 * @throws CanNotWriteNetworkToFileException
-//	 *             - if an I/O error has happened
-//	 */
-//	public static void saveNetworkFile(ProbNet network, String fileName)
-//			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
-//
-//		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName);
-//	}
+	//CMF
+
+	//CMI
+
+	//	/**
+	//	 * Saves a network in a file.
+	//	 *
+	//	 * @param network
+	//	 *            - network to save in the file
+	//	 * @param fileName
+	//	 *            - file where the network is going to be saved
+	//	 * @throws NotRecognisedNetworkFileExtensionException
+	//	 *             - if file extension is not recognised
+	//	 * @throws CanNotWriteNetworkToFileException
+	//	 *             - if an I/O error has happened
+	//	 */
+	//	public static void saveNetworkFile(ProbNet network, String fileName)
+	//			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException {
+	//
+	//		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName);
+	//	}
 
 	/**
 	 * Saves a network in a file.
-	 * 
-	 * @param network
-	 *            - network to save in the file
-	 * @param fileName
-	 *            - file where the network is going to be saved
-	 * @throws NotRecognisedNetworkFileExtensionException
-	 *             - if file extension is not recognised
-	 * @throws CanNotWriteNetworkToFileException
-	 *             - if an I/O error has happened
-	 * @throws InstantiationException 
-	 * @throws IllegalAccessException 
+	 *
+	 * @param network  - network to save in the file
+	 * @param fileName - file where the network is going to be saved
+	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
+	 * @throws CanNotWriteNetworkToFileException          - if an I/O error has happened
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException, IllegalAccessException, InstantiationException {
+			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException,
+			IllegalAccessException, InstantiationException {
 
 		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);
 	}
-	
-//CMF
-	
+
+	//CMF
+
 	private static String getFileExtension(String fileName) {
 
 		String fileExtension = null;
@@ -236,12 +217,10 @@ public class NetsIO {
 	/**
 	 * Opens a network from a URL.
 	 *
-	 * @param url
-	 *            The full url of the file to be opened file where the network
+	 * @param url The full url of the file to be opened file where the network
 	 *            is saved.
 	 * @return an ProbNetInfo object with the information of the network.
-	 * @throws Exception
-	 *             if the file doesn't exist or the file format isn't correct.
+	 * @throws Exception if the file doesn't exist or the file format isn't correct.
 	 */
 	public static ProbNetInfo openNetworkURL(URL url) throws Exception {
 		String networkName = url.getPath();

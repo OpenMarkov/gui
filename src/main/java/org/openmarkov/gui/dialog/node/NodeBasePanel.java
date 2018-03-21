@@ -7,115 +7,94 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.openmarkov.gui.localize.StringDatabase;
+
+import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import org.openmarkov.gui.localize.StringDatabase;
-
 /**
  * Base Panel for node panels
+ *
  * @author jlgozalo
  * @version 1.0 jlgozalo
  */
-public class NodeBasePanel extends JPanel
-    implements
-        ItemListener
-{
-    /**
-     * serial uid
-     */
-    private static final long serialVersionUID = 1047978130482205148L;
-    /**
-     * Network to which the node belongs.
-     */
-    /**
-     * Specifies if the node whose additionalProperties are edited is new.
-     */
-    private boolean           newNode          = false;
+public class NodeBasePanel extends JPanel implements ItemListener {
+	/**
+	 * serial uid
+	 */
+	private static final long serialVersionUID = 1047978130482205148L;
 
-    /**
-     * constructor without construction parameters
-     */
-    public NodeBasePanel ()
-    {
-        init ();
-    }
+	/**
+	 * Specifies if the node whose additionalProperties are edited is new.
+	 */
+	private boolean newNode = false;
 
-    /**
-     * This method initialises this instance.
-     * @param newNode true if the node is a new node; otherwise false
-     */
-    public NodeBasePanel (final boolean newNode)
-    {
-        this.newNode = newNode;
-        setName ("NodeBasePanel");
-        init ();
-    }
+	/**
+	 * constructor without construction parameters
+	 */
+	public NodeBasePanel() {
+		init();
+	}
 
-    /**
-     * set the visual aspect of the panel
-     */
-    private void init ()
-    {
-        try
-        {
-            initialize ();
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace ();
-            JOptionPane.showMessageDialog (this,
-                                           StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                           StringDatabase.getUniqueInstance ().getString (e.getMessage ()),
-                                           JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	/**
+	 * This method initialises this instance.
+	 *
+	 * @param newNode true if the node is a new node; otherwise false
+	 */
+	public NodeBasePanel(final boolean newNode) {
+		this.newNode = newNode;
+		setName("NodeBasePanel");
+		init();
+	}
 
-    /**
-     * @return the newNode
-     */
-    public boolean isNewNode ()
-    {
-        return newNode;
-    }
+	/**
+	 * set the visual aspect of the panel
+	 */
+	private void init() {
+		try {
+			initialize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
+					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-    /**
-     * @param newNode the newNode to set
-     */
-    public void setNewNode (boolean newNode)
-    {
-        this.newNode = newNode;
-    }
+	/**
+	 * @return the newNode
+	 */
+	public boolean isNewNode() {
+		return newNode;
+	}
 
-    /**
-     * <p>
-     * <code>Initialize</code>
-     * <p>
-     * initialize the layout for this panel
-     */
-    private void initialize ()
-        throws Exception
-    {
-        final GroupLayout groupLayout = new GroupLayout ((JComponent) this);
-        groupLayout.setHorizontalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.LEADING).addGap (0,
-                                                                                                                500,
-                                                                                                                Short.MAX_VALUE));
-        groupLayout.setVerticalGroup (groupLayout.createParallelGroup (GroupLayout.Alignment.LEADING).addGap (0,
-                                                                                                              375,
-                                                                                                              Short.MAX_VALUE));
-        setLayout (groupLayout);
-    }
+	/**
+	 * @param newNode the newNode to set
+	 */
+	public void setNewNode(boolean newNode) {
+		this.newNode = newNode;
+	}
 
-    /**
-     * Invoked when an item has been selected.
-     * @param e event information.
-     */
-    public void itemStateChanged (ItemEvent e)
-    {
-    }
+	/**
+	 *
+	 * <code>Initialize</code>
+	 * <p>
+	 * initialize the layout for this panel
+	 */
+	private void initialize() throws Exception {
+		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
+		groupLayout.setHorizontalGroup(
+				groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 500, Short.MAX_VALUE));
+		groupLayout.setVerticalGroup(
+				groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 375, Short.MAX_VALUE));
+		setLayout(groupLayout);
+	}
+
+	/**
+	 * Invoked when an item has been selected.
+	 *
+	 * @param e event information.
+	 */
+	public void itemStateChanged(ItemEvent e) {
+	}
 }

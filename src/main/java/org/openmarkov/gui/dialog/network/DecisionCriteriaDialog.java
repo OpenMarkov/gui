@@ -7,20 +7,17 @@
 
 package org.openmarkov.gui.dialog.network;
 
-import java.awt.Window;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
-import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
+import org.openmarkov.gui.localize.StringDatabase;
 
-@SuppressWarnings("serial")
-public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.List;
+
+@SuppressWarnings("serial") public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 
 	private DecisionCriteriaTablePanel decisionCriteriaTablePanel;
 
@@ -28,8 +25,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 
 	private ProbNet probNet;
 
-	public DecisionCriteriaDialog(Window owner, ProbNet probNet,
-			boolean newElement) {
+	public DecisionCriteriaDialog(Window owner, ProbNet probNet, boolean newElement) {
 		super(owner);
 		this.probNet = probNet;
 
@@ -39,7 +35,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 		setName("DecisionCriteriaDialog");
 		setLocationRelativeTo(owner);
 		pack();
-		
+
 	}
 
 	/**
@@ -60,7 +56,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * This method initialises componentsPanel.
-	 * 
+	 *
 	 * @return a new components panel.
 	 */
 	protected JPanel getComponentsPanel() {
@@ -78,17 +74,12 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 			StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 			String[] columnNames = {
-					stringDatabase
-							.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Id.Text"),
-					stringDatabase
-							.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Name.Text"),
-					stringDatabase
-							.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Unit.Text") };
+					stringDatabase.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Id.Text"),
+					stringDatabase.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Name.Text"),
+					stringDatabase.getString("NetworkAdvancedPanel.DecisionCriteria.ValuesTable.Columns.Unit.Text") };
 
-			decisionCriteriaTablePanel = new DecisionCriteriaTablePanel(
-					columnNames, probNet, this.getOwner());
-			
-			
+			decisionCriteriaTablePanel = new DecisionCriteriaTablePanel(columnNames, probNet, this.getOwner());
+
 			decisionCriteriaTablePanel.setName("DecisionCriteriaPanel");
 			decisionCriteriaTablePanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -124,7 +115,7 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 	/**
 	 * This method carries out the actions when the user press the Ok button
 	 * before hide the dialog.
-	 * 
+	 *
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
@@ -136,11 +127,10 @@ public class DecisionCriteriaDialog extends OkCancelHorizontalDialog {
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
-	@Override
-	protected void doCancelClickBeforeHide() {
+	@Override protected void doCancelClickBeforeHide() {
 		probNet.getPNESupport().closeParenthesis();
 		probNet.getPNESupport().undoAndDelete();
-		
+
 		// TODO PNESupport must support more depth levels parenthesis
 		// As current performance edits from NetworkAgentsPanel only be undone
 		// when cancel

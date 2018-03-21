@@ -7,9 +7,6 @@
 
 package org.openmarkov.gui.dialog.link;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
@@ -18,17 +15,18 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LinkRestrictionPanelTest {
 
 	private LinkRestrictionPanel panel = null;
 	private Variable varA, varB;
 	private State[] stateA, stateB;
 
-	@Before
-	public void setUp() throws Exception {
+	@Before public void setUp() throws Exception {
 
-		stateA = new State[] { new State("A1"), new State("A2"),
-				new State("A3") };
+		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };
 		varA = new Variable("A", stateA);
 		varB = new Variable("B", stateB);
@@ -44,17 +42,17 @@ public class LinkRestrictionPanelTest {
 		link.setCompatibilityValue(stateA[1], stateB[0], 0);
 		link.setCompatibilityValue(stateA[0], stateB[1], 0);
 		panel = new LinkRestrictionPanel(link);
-		
+
 	}
 
-//	@Test
-//	public void testInit() {
-//		
-//		 JFrame frame = new JFrame();
-//				 frame.add(panel);
-//				 frame.setSize(600, 400);
-//				 frame.show();
-//				 frame.show(false);
-//	}
+	//	@Test
+	//	public void testInit() {
+	//
+	//		 JFrame frame = new JFrame();
+	//				 frame.add(panel);
+	//				 frame.setSize(600, 400);
+	//				 frame.show();
+	//				 frame.show(false);
+	//	}
 
 }
