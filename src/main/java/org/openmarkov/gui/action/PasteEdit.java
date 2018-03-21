@@ -103,10 +103,7 @@ public class PasteEdit extends CompoundEdit
             {
                 String originalSourceNodeName = link.getNode1 ().getName ();
                 String originalDestinationNodeName = link.getNode2 ().getName ();
-                /**edits.add (new LinkEdit (probNet,
-                                         newVariables.get (originalSourceNodeName),
-                                         newVariables.get (originalDestinationNodeName),
-                                         link.isDirected (), true));**/
+
                 edits.add(new AddLinkEdit (probNet,
                         probNet.getVariable(newVariables.get (originalSourceNodeName)),
                         probNet.getVariable(newVariables.get (originalDestinationNodeName)),

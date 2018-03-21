@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * OpenMarkov - ColorTableCellEditor.java
- */
 package org.openmarkov.gui.dialog.configuration;
 
 import java.awt.Color;

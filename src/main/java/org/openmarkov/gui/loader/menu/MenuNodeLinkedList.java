@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * MenuNodeLinkedList class
- */
 package org.openmarkov.gui.loader.menu;
 
 
@@ -23,20 +20,20 @@ import java.util.LinkedList;
  */
 public class MenuNodeLinkedList {
 
-	private LinkedList<MenuNode> menuList = null;
+	private LinkedList<MenuNode> menuList;
 
 	/**
 	 * constructor
 	 */
-	public MenuNodeLinkedList() {
+	MenuNodeLinkedList() {
 
-		this.menuList = new LinkedList<MenuNode>();
+		this.menuList = new LinkedList<>();
 	}
 
 	/**
 	 * Look for the Menunode element in the list and returns the position
 	 * 
-	 * @param menuNode
+	 * @param menuNode Menunode element
 	 * @return the position of the first ocurrence of a MenuNode element equal
 	 *         to the specified element or -1 if no matching element is found
 	 */
@@ -49,7 +46,7 @@ public class MenuNodeLinkedList {
 	 * Look for the name of the sName element in the list and returns the
 	 * position
 	 * 
-	 * @param sName
+	 * @param sName sName element
 	 * @return the position of the first ocurrence of a MenuNode element equal
 	 *         to the specified element or -1 if no matching element is found
 	 */

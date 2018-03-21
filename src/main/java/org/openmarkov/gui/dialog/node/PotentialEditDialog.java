@@ -112,10 +112,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
      * Panel of the graphic editor
      */
     private PotentialPanel       potentialPanel;
-    /**
-     * The builder object that contains UncertaintyContextualMenu
-     */
-    // unused private ContextualMenuFactory contextualMenuFactory;
+
     /**
      * Option deselected in the jComboboxRelationType
      */

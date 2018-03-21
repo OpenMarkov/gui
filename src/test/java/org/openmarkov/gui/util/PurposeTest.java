@@ -15,7 +15,7 @@ import org.openmarkov.gui.localize.StringDatabase;
 
 
 /**
- * This class tests the class {@link openmarkov.gui.networks.Purpose}.
+ * This class tests the class {@link Purpose}.
  * 
  * @author jmendoza
  */

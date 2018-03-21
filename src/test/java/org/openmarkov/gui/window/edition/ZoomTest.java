@@ -13,7 +13,7 @@ import org.junit.Test;
 
 
 /**
- * This class is used to test the class {@link openmarkov.gui.edition.zoom.Zoom}.
+ * This class is used to test the class {@link Zoom}.
  * 
  * @author jmendoza
  */

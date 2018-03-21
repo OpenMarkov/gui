@@ -107,7 +107,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
      * Shows the tree in read only mode
      *
      * @param node
-     * @param treeADDPotential
+     * @param cellRenderer
      * @param readOnly
      */
     public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, boolean readOnly) {
@@ -974,11 +974,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
         }
     }
 
-    /**
-     * @param ae
-     * @param treeADD
-     * @param path
-     */
+
     private void associateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) {
         Object parentPath = path.getParentPath();
         TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();

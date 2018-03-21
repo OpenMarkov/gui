@@ -393,11 +393,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
     private JMenuItem           toolsConfigurationMenuItem                = null;
 
     /**
-     * Object that represents the menu 'Options'.
-     */
-    // private JMenu optionsMenu = null; //FOR FUTURE USE
-
-    /**
      * Object that represents the menu 'Help'.
      */
     private JMenu               helpMenu                                  = null;
@@ -439,11 +434,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 
     // private HashMap<JComponent, String> dynamicActions = new
     // HashMap<JComponent, String>();
-
-    /**
-     * last open file index
-     */
-    // private int lastOpenFileIndex = 0;
 
     /**
      * Creates a new instance.
@@ -1812,19 +1802,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
         return toolsConfigurationMenuItem;
 
     }
-
-    /**
-     * This method initializes optionsMenu.
-     * 
-     * @return a new Options menu.
-     */
-    /*
-     * private JMenu getOptionsMenu() { //FOR FUTURE USE if (optionsMenu ==
-     * null) { optionsMenu = new JMenu(); optionsMenu.setName(OPTIONS_MENU);
-     * optionsMenu.setText(stringResource.getString(OPTIONS_MENU +
-     * LABEL_SUFFIX)); optionsMenu.setMnemonic(stringResource.getString(
-     * OPTIONS_MENU + MNEMONIC_SUFFIX).charAt(0)); } return optionsMenu; }
-     */// FOR FUTURE USE
 
     /**
      * This method initializes helpMenu

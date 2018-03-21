@@ -211,13 +211,7 @@ public class RevelationArcPanel extends JPanel
             }
         }
     }
-
-    /**
-     * Convert an array of strings in an array of arrays of objects with the
-     * same elements.
-     * @param values array of strings.
-     * @return an array of arrays of objects that has the same elements.
-     */
+    
     protected Object[][] convertStringsToTableDiscreteFormat (Link<Node> link)
     {
         Node node = link.getNode1 ();

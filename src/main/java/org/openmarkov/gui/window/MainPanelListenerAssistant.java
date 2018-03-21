@@ -383,15 +383,6 @@ public class MainPanelListenerAssistant extends WindowAdapter implements ActionL
     }
 
     /**
-     * Create an instance of <code>openmarkov.learning.gui.NewLearningGUI</code>
-     * 
-     * @return LearningGUI
-     */
-    /*
-     * private LearningGUI learning() { //return
-     * LearningGUI.getUniqueInstance(mainPanel.getMainFrame()); }
-     */
-    /**
      * Returns the current network panel of the current frame.
      * 
      * @return the current network panel.

@@ -4,9 +4,6 @@
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
-/**
- * 
- */
 
 package org.openmarkov.gui.configuration;
 
@@ -33,11 +30,7 @@ public class OpenMarkovPreferences
      * the package nodes in the Preferences
      */
     public static final String    OPENMARKOV_NODE_PREFERENCES = "OPENMARKOV";
-    /**
-     * the package system in the Preferences
-     */
-    // public static final String OPENMARKOV_SYSTEM_PREFERENCES =
-    // "Openmarkovkernel";
+
     /**
      * the preferences
      */

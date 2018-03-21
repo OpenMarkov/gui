@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * OpenMarkov - ColorTableCellRenderer.java
- */
 package org.openmarkov.gui.dialog.configuration;
 
 

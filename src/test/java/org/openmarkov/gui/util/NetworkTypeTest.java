@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.NodeType;
 
 
 /**
- * This class tests the class {@link openmarkov.gui.networks.NetworkType}.
+ * This class tests the class {@link NetworkType}.
  * 
  * @author jmendoza
  */

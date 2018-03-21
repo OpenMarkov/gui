@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * LocaleChangeEvent
- */
 package org.openmarkov.gui.localize;
 
 

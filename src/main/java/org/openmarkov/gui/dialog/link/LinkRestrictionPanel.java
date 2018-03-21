@@ -180,20 +180,6 @@ public class LinkRestrictionPanel extends ProbabilityTablePanel {
 
 	}
 
-	/**
-	 * Prepare the table data from the <code>Potential</code>s and States.
-	 * <p>
-	 * 
-	 * 
-	 * @param listPotentials
-	 *            - potentials of the table
-	 * @param states
-	 *            - states of the variable of this node
-	 * @param parents
-	 *            - <code>NodeWrapper</code> list of the parents
-	 * @return the table data to be set
-	 */
-
 	/*****
 	 * Prepare the table data from the two nodes of the link.
 	 * 

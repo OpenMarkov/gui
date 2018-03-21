@@ -132,11 +132,6 @@ public class PreferencesDialog extends JDialog
      *            root-node of the User preferences tree (if userObj is null,
      *            then the rootnode of all user preferences will be used)
      * @boolean showUserPrefs if true, then show user preferences
-     * @param systemObj the package to which this object belongs is used as the
-     *            root-node of the System preferences tree (if systemObj is
-     *            null, then the rootnode of all system preferences will be
-     *            used)
-     * @param showSystemPrefs if true, then show system preferences
      */
     public PreferencesDialog (JFrame owner, String title, Object userObj, boolean showUserPrefs/*
                                                                                                 * ,
@@ -169,8 +164,6 @@ public class PreferencesDialog extends JDialog
      * create the Tree where the Preferences will be displayed
      * @param userObj class to define the User Preferences
      * @param showUserPrefs true if User Preferences will be shown
-     * @param systemObj class to define the System Preferences
-     * @param showSystemPrefs true if System Preferences will be shown
      */
     private void createTree (Object userObj, boolean showUserPrefs/*
                                                                    * , Object

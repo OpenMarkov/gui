@@ -5,9 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * MenuNode class
- */
 package org.openmarkov.gui.loader.menu;
 
 
@@ -40,13 +37,6 @@ public class MenuNode {
 	 * structure
 	 */
 	private MenuNodeLinkedList list = null;
-
-	/**
-	 * constructor
-	 */
-	public MenuNode() {
-
-	}
 
 	/**
 	 * constructor
@@ -123,11 +113,11 @@ public class MenuNode {
 
 		StringBuilder buf = new StringBuilder();
 		buf.append("[MenuNode ->");
-		buf.append(" name= " + this.name);
-		buf.append(" ,object=" + this.getObject().getName());
+		buf.append(" name= ").append(this.name);
+		buf.append(" ,object=").append(this.getObject().getName());
 		if (this.list != null) {
-			buf.append(" ,listSize= " + this.getList().getSize());
-			buf.append("\n\t\t" + this.getList().toString());
+			buf.append(" ,listSize= ").append(this.getList().getSize());
+			buf.append("\n\t\t").append(this.getList().toString());
 		} else {
 			buf.append(" ,listSize= 0");
 		}

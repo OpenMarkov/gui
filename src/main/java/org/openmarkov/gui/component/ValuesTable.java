@@ -850,11 +850,7 @@ public static String[] getColumnsIdsSpreadSheetStyle (int howManyColumns)
 
 
 
-/**
- * Updates the edited column
- * @see tablePotentialValueEditHappened 
- * @see uncertainValuesEditHappened
- */
+
 public void undoableEditHappened (UndoableEditEvent event)
 {
     UndoableEdit edit = event.getEdit ();
@@ -993,10 +989,6 @@ public void undoEditHappened (UndoableEditEvent event)
  * 		- the column of the edited cell
  * @param e 
  * 		- event to pass into shouldSelectCell;
- * @see isSelectAllForMouseEvent
- * @see isSelectAllForActionEvent
- * @see isSelectAllForKeyEvent
- * @see selectAll
  * 
  */
 public boolean editCellAt (int row, int column, EventObject e)

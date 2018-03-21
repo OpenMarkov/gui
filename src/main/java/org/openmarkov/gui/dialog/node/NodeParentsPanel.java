@@ -207,20 +207,10 @@ public class NodeParentsPanel extends JPanel
     {
     };
 
-    /**
-     * This method fills a NodeProperties object from the content of the fields
-     * of the dialog box.
-     * @param additionalProperties object where save the information.
-     */
-    /*
-     * public void setPropertiesFromFields(NodeProperties additionalProperties)
-     * { additionalProperties
-     * .setParents(fillNodeWrapperWithArray(prefixedDataTablePanelParentsTable
-     * .getData())); }
-     */
+
     /**
      * This method fills the content of the fields from a NodeProperties object.
-     * @param additionalProperties object from where load the information.
+     * @param node object from where load the information.
      */
     public void setFieldsFromProperties (Node node)
     {

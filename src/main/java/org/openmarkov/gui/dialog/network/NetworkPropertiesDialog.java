@@ -246,13 +246,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog
     /**
      * This method shows the dialog and requests the user the network
      * additionalProperties.
-     * @param additionalProperties additionalProperties of the network.
-     * @return OK_BUTTON if the user has pressed the 'Ok' button or
-     *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
-     */
-    /**
-     * This method shows the dialog and requests the user the network
-     * additionalProperties.
      * @return OK_BUTTON if the user has pressed the 'Ok' button or
      *         CANCEL_BUTTON if the user has pressed the 'Cancel' button.
      */

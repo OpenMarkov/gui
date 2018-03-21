@@ -113,7 +113,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
      * This method initialises nodeContextualMenu.
      * 
      * @param panel
-     * @param selectedElement
+     * @param selectedNode
      * 
      * @return the node contextual menu.
      */

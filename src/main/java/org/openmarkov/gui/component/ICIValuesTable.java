@@ -96,7 +96,7 @@ public class ICIValuesTable extends ValuesTable
     /**
      * set the number of columns in the table for canonical models adding one
      * column per parent state and adding one more for the id column (hidden)
-     * @param parents - parents of the variable
+     * @param properties - node properties
      * @return the number of columns in the table
      */
     public static int howManyCanonicalColumns (Node properties)

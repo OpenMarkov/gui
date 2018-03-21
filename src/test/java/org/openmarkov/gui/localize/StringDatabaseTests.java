@@ -18,8 +18,8 @@ import org.junit.Test;
 
 /**
  * This class tests the classes
- * {@link StringDatabase.gui.localize.StringResourceLoader} and
- * {@link StringBundle.gui.localize.StringResource}.
+ * {@link StringDatabase} and
+ * {@link StringBundle}.
  * 
  * @author jmendoza
  * @version 1.0
@@ -39,7 +39,7 @@ public class StringDatabaseTests {
 	 * This method gets a correct string identified by its key from a string
 	 * resource.
 	 * 
-	 * @param stringResource string resource from which the string is loaded.
+	 * @param stringDatabase string resource from which the string is loaded.
 	 * @param key key of the string.
 	 * @throws MissingResourceException if the string can't be loaded from the
 	 * string resource.

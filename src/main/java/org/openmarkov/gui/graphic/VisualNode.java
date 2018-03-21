@@ -387,7 +387,7 @@ public abstract class VisualNode extends VisualElement {
     
     /**
      * Updates the visual node according to the changes in the node
-     * @param numEvidenceCases
+     * @param numCases
      */
     public void update(int numCases)
     {

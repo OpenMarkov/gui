@@ -214,7 +214,7 @@ public class NodeDefinitionPanel extends JPanel implements FocusListener, ItemLi
                 GroupLayout.PREFERRED_SIZE)).addGroup(groupLayout.createSequentialGroup().addComponent(getJLabelNodePurpose()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJComboBoxNodePurpose(),
                 GroupLayout.PREFERRED_SIZE,
                 203,
-                GroupLayout.PREFERRED_SIZE).addGap(18) /***/
+                GroupLayout.PREFERRED_SIZE).addGap(18)
         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJLabelNodeRelevance()).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(getJComboBoxNodeRelevance(),
                 GroupLayout.PREFERRED_SIZE,
                 85,

@@ -5,9 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-/**
- * 
- */
+
 package org.openmarkov.gui.configuration;
 import static org.openmarkov.gui.configuration.OpenMarkovPreferencesKeys.LAST_OPEN_FILE;
 

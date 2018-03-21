@@ -313,16 +313,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
 
     /**
      * Activates the corresponding options when a network has been modified.
-     * @param undoManager network panel undo manager.
-     */
-    /*
-     * public void updateOptionsNetworkModified(UndoManagerInfo undoManager) {
-     * updateUndoRedo(undoManager); //changed by mpalacios updateUndoRedo(true,
-     * true); setOptionEnabled(ActionCommands.SAVE_NETWORK, true); }
-     */
-    /**
-     * Activates the corresponding options when a network has been modified.
-     * @param undoManager network panel undo manager.
+     * @param canRedo
+     * @param canUndo
      */
     public void updateOptionsNetworkModified (boolean canUndo, boolean canRedo)
     {
@@ -502,25 +494,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
     /**
      * Enables or disables the undo and redo operations in the menubar and in
      * the toolbar, according to the state of undo and redo of the network.
-     * @param undoManager undo manager.
-     */
-    /*
-     * private void updateUndoRedo(UndoManagerInfo undoManager) { if
-     * (undoManager.canUndo()) { setOptionEnabled(ActionCommands.UNDO, true);
-     * addOptionText(ActionCommands.UNDO, undoManager
-     * .getUndoPresentationName()); } else {
-     * setOptionEnabled(ActionCommands.UNDO, false);
-     * addOptionText(ActionCommands.UNDO, null); } if (undoManager.canRedo()) {
-     * setOptionEnabled(ActionCommands.REDO, true);
-     * addOptionText(ActionCommands.REDO, undoManager
-     * .getRedoPresentationName()); } else {
-     * setOptionEnabled(ActionCommands.REDO, false);
-     * addOptionText(ActionCommands.REDO, null); } }
-     */
-    /**
-     * Enables or disables the undo and redo operations in the menubar and in
-     * the toolbar, according to the state of undo and redo of the network.
-     * @param undoManager undo manager.
+     * @param canRedo
+     * @param canUndo
      */
     private void updateUndoRedo (boolean canUndo, boolean canRedo)
     {
@@ -665,7 +640,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
     /**
      * Activates an edition option on the menus and toolbars according to the
      * edition state.
-     * @param value actual edition state.
+     * @param newEditionMode new edition mode.
      * @param canPaste if the state is SELECTION, this parameter says if there
      *            is data in the clipboard.
      */
@@ -680,9 +655,8 @@ public class MainPanelMenuAssistant extends MenuAssistant
      * This method activates o desactivates some options depending on the
      * numbers of nodes or links selected or the expanded state of the specific
      * nodes selected
-     * @param nodes number of selected nodes.
-     * @param links number of selected links.
-     * @param arrayOfNodes an array with the selected nodes.
+     * @param selectedNodes list of selected nodes.
+     * @param selectedLinks list of selected links.
      */
     public void objectsSelected (List<VisualNode> selectedNodes, List<VisualLink> selectedLinks)
     {
@@ -895,9 +869,10 @@ public class MainPanelMenuAssistant extends MenuAssistant
      * This method activates o desactivates some options depending on the
      * numbers of nodes or links selected or the expanded state of the specific
      * nodes selected
-     * @param nodes number of selected nodes.
-     * @param links number of selected links.
-     * @param arrayOfNodes an array with the selected nodes.
+     * @param selectedNodes list of selected nodes.
+     * @param selectedLinks list of selected links.
+     * @param selectedInstances list of selected instances.
+     * @param selectedReferenceLinks list of selected reference links
      */
     public void objectsSelected (List<VisualNode> selectedNodes,
                                  List<VisualLink> selectedLinks,
@@ -1138,15 +1113,7 @@ public class MainPanelMenuAssistant extends MenuAssistant
         setOptionEnabled (ActionCommands.CLIPBOARD_PASTE, false);
     }
 
-    /**
-     * This method notifies to the listener that an edition action has occurred
-     * on a network panel.
-     * @param undoManager undo manager object limited in functionality.
-     */
-    /*
-     * public void editionPerformed(UndoManagerInfo undoManager) {
-     * updateOptionsNetworkModified(undoManager); }
-     */
+
     public void undoableEditHappened (UndoableEditEvent e)
     {
         ProbNet probNet = currentNetworkPanel.getProbNet ();
@@ -1204,7 +1171,6 @@ public class MainPanelMenuAssistant extends MenuAssistant
 
     /**
      * Shows or hides 'Propagate evidence' option from menu and toolbar.
-     * @param value indicates if options should be enabled or disabled.
      */
     public void updatePropagateEvidenceButton ()
     {

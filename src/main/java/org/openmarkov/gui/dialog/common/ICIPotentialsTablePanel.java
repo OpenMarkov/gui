@@ -142,14 +142,8 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * items: <li>list of Potentials of the variable</li> <li>states of the
      * variable</li> <li>parents of the variable</li>
      * 
-     * @param listPotentials
-     *            - the list of potentials of the variable
-     * @param variableName
-     *            - name of the variable
-     * @param variableStates
-     *            - states of the variable
-     * @param parents
-     *            - parents of the variable
+     * @param properties
+     *            Node properties
      */
     public void setData(Node properties) {
         this.node = properties;
@@ -189,8 +183,6 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * 
      * @param listPotentials
      *            - potentials for the variable
-     * @param additionalProperties
-     *            - additionalProperties for this variable
      */
     public static int calculateLastEditableRow(List<Potential> listPotentials) {
         int row = 0;
@@ -223,7 +215,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * the node, the number of parents and the number of states of the variable
      * for canonical models
      * 
-     * @param additionalProperties
+     * @param properties
      *            - node additionalProperties
      * @return the number of rows of this Potentials Table
      */
@@ -243,7 +235,7 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
     /**
      * Set a blank data table for canonical models
      * 
-     * @param additionalProperties
+     * @param properties
      *            - to obtain the required number of rows and columns
      * @return the blank data table
      */
@@ -283,13 +275,9 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * Calculates number of positions in a canonical table Number of canonical
      * table positions: sum of the product of each parent variable states by the
      * child variable states (conditioned)
-     * 
-     * @param values
-     *            - the table that is being modified
+     *
      * @param listPotentials
      *            - the list of potentials of the node
-     * @param additionalProperties
-     *            - the additionalProperties of the node
      */
     private int getNumberOfPostions(List<Potential> listPotentials) {
         int numPositions = 0;
@@ -318,12 +306,9 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
      * If the Potential is null, then the information is taken from the
      * <code>NodeProperties</code>
      * 
-     * @param listPotentials
-     *            - potentials of the table
-     * @param states
-     *            - states of the variable of this node
-     * @param parents
-     *            - <code>NodeWrapper</code> list of the parents
+     * @param properties
+     *            - node properties
+     *
      * @return the table data to be set
      * carmenyago only changed the catch sentence
      * @author carmenyago
@@ -353,11 +338,11 @@ public class ICIPotentialsTablePanel extends ProbabilityTablePanel {
     /**
      * set values table size for the potential of the canonical model
      * 
-     * @param values
+     * @param oldValues
      *            - the table that is being modified
      * 
-     * @param additionalProperties
-     *            - the additionalProperties of the node
+     * @param properties
+     *            - the properties of the node
      */
 
     private Object[][] setCanonicalTableSize(Object[][] oldValues, Node properties) {

@@ -52,8 +52,8 @@ public class VisualUtilityNode extends VisualNode {
      * 
      * @param node
      *            object that has the information of the node.
-     * @param panel
-     *            editor panel to which this visual node is associated.
+     * @param visualNetwork
+     *            visual network to which this visual node is associated.
      */
     public VisualUtilityNode(Node node, VisualNetwork visualNetwork) {
         super(node, visualNetwork);

@@ -20,7 +20,7 @@ import org.openmarkov.gui.loader.element.IconLoader;
 
 
 /**
- * This class tests the class {@link openmarkov.gui.resources.icons.IconLoader}.
+ * This class tests the class {@link IconLoader}.
  * 
  * @author jmendoza
  * @author jlgozalo

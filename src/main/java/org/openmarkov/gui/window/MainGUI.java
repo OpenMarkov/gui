@@ -48,7 +48,7 @@ public class MainGUI extends JFrame {
      */
     public MainGUI() {
 
-        /**
+        /*
          * Splash Screen panel
          */
         SplashScreenLoader splash = new SplashScreenLoader();

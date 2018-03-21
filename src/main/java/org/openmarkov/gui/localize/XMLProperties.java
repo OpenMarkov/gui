@@ -134,8 +134,7 @@ class XMLProperties extends Properties {
      * @deprecated This method does not throw an IOException
      *   if an I/O error occurs while saving the property list.
      *   As of the Java 2 platform v1.2, the preferred way to save
-     *   a properties list is via the 
-     *   <code>{@link store(OutputStream out, String header}</code>
+     *   a properties list is via the
      *   method.
      */
     public void save(OutputStream out, String header) {

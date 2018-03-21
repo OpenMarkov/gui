@@ -36,10 +36,6 @@ public abstract class PotentialPanel extends JPanel
     /**
      * Modify the node according to the changes entered by the user in the panel
      */
-
-    /**
-     * Modify the node according to the changes entered by the user in the panel
-     */
     public boolean saveChanges()
     {
     	close();

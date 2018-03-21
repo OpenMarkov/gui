@@ -67,10 +67,10 @@ public class NetworkPanel extends FrameContentPanel
      * Panel where the network is painted.
      */
     private EditorPanel       editorPanel            = null;
+
     /**
      * Network that is edited.
      */
-    /** For undo/redo operations. */
     public ProbNet            probNet;
     /**
      * Application main
@@ -110,14 +110,6 @@ public class NetworkPanel extends FrameContentPanel
         initialize ();
     }
 
-    /**
-     * Constructor that creates the instance.
-     * @param newNetwork network that will be edited.
-     */
-    /*
-     * public NetworkPanel(PNESupport pNESupport) { this.pNESupport=pNESupport;
-     * network = pNESupport.getProbNet(); initialize(); }
-     */
     /**
      * Constructor that creates the instance.
      * @param mainPanel application main panel.
@@ -330,13 +322,6 @@ public class NetworkPanel extends FrameContentPanel
     }
 
     /**
-     * This method shows a dialog box with to introduce the number of slices and
-     * the display the expanded network
-     */
-    /*
-     * public void expandNetwork() { editorPanel.expandNetwork(); }
-     */
-    /**
      * This method shows a dialog box with the additionalProperties of a node.
      * If some property has changed, insert a new undo point into the network
      * undo manager.
@@ -537,9 +522,7 @@ public class NetworkPanel extends FrameContentPanel
     /**
      * This method requests to the user the additionalProperties of a network.
      * @param owner window that owns the dialog box.
-     * @param additionalProperties object that contains the additionalProperties
-     *            of the network and where changes will be saved, if the user
-     *            accepts the changes.
+     * @param probNet Netwoek
      * @param newNetwork specifies if the network whose additionalProperties are
      *            going to be edited is new.
      * @return true, if the user has made changes on the additionalProperties;

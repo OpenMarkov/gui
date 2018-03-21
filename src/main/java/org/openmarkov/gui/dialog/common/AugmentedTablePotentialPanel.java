@@ -119,7 +119,7 @@ public AugmentedTablePotentialPanel(Node node){
  * This method returns the tableModel of valuesTable. If valuesTable has not a tableModel, this method creates one.
  * 
  * @return the tableModel of valuesTable.  
- * @see valuesTable
+ * @see org.openmarkov.gui.component.ValuesTable
  * revised-->minor changes
  * 
  */
@@ -436,8 +436,6 @@ protected int setNumberOfPostions() {
 
 /**
  * This class overrides the double click listener calling the
- * 
- * @see doubleClickEvent
  */	
  private class MouseClickedListener extends MouseAdapter {
 

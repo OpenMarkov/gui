@@ -24,7 +24,7 @@ public class EditorPanelClipboardAssistant
     }
 
     /**
-     * @param nodes nodes to copy to the clipboard.
+     * @param copiedContent selected content to copy to the clipboard.
      */
     public void copyToClipboard (SelectedContent copiedContent)
     {

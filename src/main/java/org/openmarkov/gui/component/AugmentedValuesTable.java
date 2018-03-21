@@ -4,9 +4,6 @@
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
  */
-/**
- * 
- */
 
 package org.openmarkov.gui.component;
 
@@ -217,8 +214,6 @@ protected boolean castValue (Object newValue)
  
 /**
  * Updates the edited column
- * @see tablePotentialValueEditHappened 
- * @see uncertainValuesEditHappened
  */
 @Override
 public void undoableEditHappened (UndoableEditEvent event)
@@ -307,11 +302,6 @@ public void undoEditHappened (UndoableEditEvent event)
  * 		- the column of the edited cell
  * @param e 
  * 		- event to pass into shouldSelectCell;
- * @see isSelectAllForMouseEvent
- * @see isSelectAllForActionEvent
- * @see isSelectAllForKeyEvent
- * @see selectAll
- * 
  * revised--> not changed
  */
 @Override

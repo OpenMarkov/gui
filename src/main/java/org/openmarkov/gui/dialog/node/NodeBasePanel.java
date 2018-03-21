@@ -30,9 +30,7 @@ public class NodeBasePanel extends JPanel
      * serial uid
      */
     private static final long serialVersionUID = 1047978130482205148L;
-    /**
-     * Network to which the node belongs.
-     */
+
     /**
      * Specifies if the node whose additionalProperties are edited is new.
      */

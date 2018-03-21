@@ -886,7 +886,7 @@ public TablePotentialPanel(Node node){
 	 * This method returns the tableModel of valuesTable. If valuesTable has not a tableModel, this method creates one.
 	 * 
 	 * @return the tableModel of valuesTable.  
-	 * @see valuesTable
+	 * @see ValuesTable
 	 * revised-->minor changes
 	 * 
 	 */
@@ -1154,7 +1154,7 @@ public TablePotentialPanel(Node node){
 	/**
 	 * This class overrides the double click listener calling the
 	 * 
-	 * @see doubleClickEvent
+	 * @see DoubleClickListener
 	 * revised-->not changed
 	 */
 	public class DoubleClickListener extends MouseAdapter {

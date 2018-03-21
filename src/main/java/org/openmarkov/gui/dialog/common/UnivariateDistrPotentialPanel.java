@@ -117,7 +117,7 @@ import org.openmarkov.core.model.network.potential.AugmentedTable;
 	 * This method returns the tableModel of valuesTable. If valuesTable has not a tableModel, this method creates one.
 	 * 
 	 * @return the tableModel of valuesTable.  
-	 * @see valuesTable
+	 * @see ValuesTable
 	 * revised-->minor changes
 	 * 
 	 */
@@ -410,7 +410,7 @@ protected EvidenceCase getConfiguration(int col)
         /**
          * This class overrides the double click listener calling the
          * 
-         * @see DoubleCdoubleClickEvent
+         * @see DoubleClickListener
          * revised-->not changed
          */
         private class MouseClickedListener extends MouseAdapter {

@@ -1790,7 +1790,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	// This commented method computes the exact ranges of the utility functions.
 	// However, we are using an approximation in the method currently offered by
 	// this class.
-	/**
+	/*
 	 * Calculates minUtilityRange and maxUtilityRange fields.
 	 */
 	/*

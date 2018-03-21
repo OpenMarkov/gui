@@ -118,25 +118,6 @@ public void checkIfNoPotential(List<Potential> listPotentials)
 	if (listPotentials.isEmpty()) throw new NullPotentialException("");
 }
 
-	
-
-/**
- * This method returns the potential index of the table of the first potential of the node corresponding to the (row, column) position 
- * in the Jtable 
- * If the class of the first potential is <code>ExactDistrPotential</code>,
- * the method returns the index in its TablePotential 
- * @param row
- * 		- the index of the row of the JTable
- * @param column
- * 		- the index of the column of the JTable
- * @param node
- *  		- the node with the TablePotential
- *  
- * @return the index of the potential corresponding to the (row, column) cell in JTable  
- * carmenyago only added the exception handling
- * 
- * @author carmenyago
- */
 
 /**
  * True if the class of the potential is ExactDistrPotential

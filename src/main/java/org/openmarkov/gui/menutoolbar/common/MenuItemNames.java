@@ -466,11 +466,6 @@ public class MenuItemNames
         TOOLS_MENU + ".Configuration";
     
     /**
-     * Constant that defines the menu 'Options'.
-     */
-    //public static final String OPTIONS_MENU = "Options"; //FOR FUTURE USE
-
-    /**
      * Constant that defines the menu 'Help'.
      */
     public static final String HELP_MENU = "Help";

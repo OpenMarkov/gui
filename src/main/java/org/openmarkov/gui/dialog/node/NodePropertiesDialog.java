@@ -64,11 +64,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
      * place the fields at the top of the panel.
      */
     private NodeParentsPanel           nodeParentsPanel           = null;
-    /**
-     * Panel that contains the panel where probability table are. It is used to
-     * place the fields at the top of the panel.
-     */
-    // protected NodeProbsValuesTablePanel nodeProbsValuesTablePanel = null;
+
     /**
      * Panel that contains the panel where other property table fields are. It
      * is used to place the fields at the top of the panel.

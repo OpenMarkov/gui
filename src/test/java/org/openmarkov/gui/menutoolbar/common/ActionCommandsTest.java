@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  * This class tests the class
- * {@link openmarkov.gui.menutoolbar.common.ActionCommands}.
+ * {@link org.openmarkov.gui.menutoolbar.common.ActionCommands}.
  * 
  * @author jmendoza
  */

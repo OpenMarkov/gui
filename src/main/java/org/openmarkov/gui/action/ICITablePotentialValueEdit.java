@@ -431,7 +431,7 @@ public class ICITablePotentialValueEdit extends  SimplePNEdit {
 		return lastLeakyParameters;
 	}
 	
-	/**
+	/*
 	 * First position is the noisy potential
 	 * Second position is the index within it
 	 * @param row

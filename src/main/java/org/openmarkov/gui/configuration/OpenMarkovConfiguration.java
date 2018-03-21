@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 
 
 @SuppressWarnings("serial")
-/** Contains all the components configurations. */
+
 public class OpenMarkovConfiguration implements DefaultConfiguration, Serializable {
 
 	// Attributes
