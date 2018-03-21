@@ -7,15 +7,13 @@
 
 package org.openmarkov.gui.window.mdi;
 
-
-import javax.swing.JPanel;
-
+import javax.swing.*;
 
 /**
  * This class represents the content pane of a frame of the multidocument
  * interface. The classes that can be set as content pane of a frame of the MDI
  * must extends this class.
- * 
+ *
  * @author jmendoza
  * @version 1.0
  */
@@ -35,9 +33,8 @@ public abstract class FrameContentPanel extends JPanel {
 
 	/**
 	 * This method allows to an object to be registered as title listener.
-	 * 
-	 * @param newContainer
-	 *            container title listener.
+	 *
+	 * @param newContainer container title listener.
 	 */
 	public void setFrameContentPanelContainer(FrameContentPanelContainer newContainer) {
 
@@ -46,18 +43,18 @@ public abstract class FrameContentPanel extends JPanel {
 
 	/**
 	 * Returns the title of the content panel.
-	 * 
+	 *
 	 * @return the title of the content panel.
 	 */
 	public abstract String getTitle();
-	
+
 	/**
 	 * Prepares the frame for closing
 	 */
 	public abstract void close();
 
-    public abstract double getZoom ();
+	public abstract double getZoom();
 
-    public abstract void setZoom (double zoom);
+	public abstract void setZoom(double zoom);
 
 }

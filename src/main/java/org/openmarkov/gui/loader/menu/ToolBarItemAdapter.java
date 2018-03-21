@@ -7,17 +7,14 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-
-import javax.swing.JComponent;
-
 
 /*
  * This class will do the work when the items were activated/deselected/checked
  * @author jlgozalo
- * 
+ *
  * @version 1.0
  */
 public class ToolBarItemAdapter implements ToolBarItemHandler {
@@ -32,8 +29,7 @@ public class ToolBarItemAdapter implements ToolBarItemHandler {
 	/**
 	 * Called when a ToolBatItem(component) is activated.
 	 */
-	public void itemActivated(JComponent item, ActionEvent event,
-								String sCommand) {
+	public void itemActivated(JComponent item, ActionEvent event, String sCommand) {
 
 		System.out.println("que pasaaaaa");
 	}

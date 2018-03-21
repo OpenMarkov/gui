@@ -7,33 +7,19 @@
 
 package org.openmarkov.gui.dialog.common;
 
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Point;
-import java.awt.Rectangle;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.WindowConstants;
-
-import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
-import org.openmarkov.gui.localize.StringDatabase;
-
 import com.hexidec.ekit.EkitCore;
 import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
 import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
+import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
+import org.openmarkov.gui.localize.StringDatabase;
 
-
-
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * initialises a HTML Editor for the different comments in EditNodeDialog
- * 
+ *
  * @author Alberto Manuel Ruiz Lafuente UCLM 2008
- * @version 1.0
  * @version 1.1 jlgozalo - javadocs, undo variables and localize methods
  */
 public class HTMLTextEditor extends JDialog {
@@ -46,8 +32,7 @@ public class HTMLTextEditor extends JDialog {
 	/**
 	 * ToolBar elements for the dialog
 	 */
-	public static final String TOOLBAR_OPENMARKOV_SINGLE =
-		"CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
+	public static final String TOOLBAR_OPENMARKOV_SINGLE = "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
 
 	private JPanel jContentPane = null;
 
@@ -58,7 +43,7 @@ public class HTMLTextEditor extends JDialog {
 	private JButton jButtonAcceptHTML = null;
 
 	private JButton jButtonCancelHTML = null;
-	
+
 	private boolean okButton = false;
 
 	/**
@@ -72,17 +57,14 @@ public class HTMLTextEditor extends JDialog {
 	 */
 	private String commentText = "";
 
-	private ExtendedHTMLEditorKit extendedHTMLEditorKit=null;
-	private ExtendedHTMLDocument extendedHTMLDocument=null;
-
+	private ExtendedHTMLEditorKit extendedHTMLEditorKit = null;
+	private ExtendedHTMLDocument extendedHTMLDocument = null;
 
 	/**
 	 * HTMLTextEditor dialog constructor
-	 * 
-	 * @param owner
-	 *            The frame where the dialog belongs to
-	 * @param updateComment
-	 *            the comment to update
+	 *
+	 * @param owner         The frame where the dialog belongs to
+	 * @param updateComment the comment to update
 	 */
 	public HTMLTextEditor(Frame owner, final String updateComment) {
 
@@ -103,18 +85,16 @@ public class HTMLTextEditor extends JDialog {
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setModal(true);
 		this.setVisible(false);
-		this.setTitle(StringDatabase.getUniqueInstance ()
-			.getString("HTMLTextEditor.Title.Text"));
+		this.setTitle(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.Title.Text"));
 		this.setContentPane(getJContentPane());
 		this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().
-        		getOpenMarkovLogoIconImage16());
-
+				getOpenMarkovLogoIconImage16());
 
 	}
 
 	/**
 	 * This method initialises jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJContentPane() {
@@ -133,7 +113,7 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * This method initialises ekitCoreEditorHTMLPanel
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getEkitCoreEditorHTMLPanel() {
@@ -148,10 +128,8 @@ public class HTMLTextEditor extends JDialog {
 
 		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
 		if (ekitCoreEditorHTMLPanel == null) {
-			ekitCoreEditorHTMLPanel =
-					new EkitCore(null, null, updateComment, null, null, true,
-							false, true, true, sLanguage, sCountry, false, false, true, false,
-							toolbar);
+			ekitCoreEditorHTMLPanel = new EkitCore(null, null, updateComment, null, null, true, false, true, true,
+					sLanguage, sCountry, false, false, true, false, toolbar);
 			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
 			ekitCoreEditorHTMLPanel.setVisible(true);
 		}
@@ -160,7 +138,7 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * This method initialises jToolBarEditorHTML
-	 * 
+	 *
 	 * @return javax.swing.JToolBar
 	 */
 	private JToolBar getJToolBarEditorHTML() {
@@ -174,7 +152,7 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * This method initialises jButtonAcceptHTML
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButtonAcceptHTML() {
@@ -182,29 +160,26 @@ public class HTMLTextEditor extends JDialog {
 		if (jButtonAcceptHTML == null) {
 			jButtonAcceptHTML = new JButton();
 			jButtonAcceptHTML.setBounds(new Rectangle(183, 258, 106, 21));
-			jButtonAcceptHTML.setText(StringDatabase.getUniqueInstance ()
-				.getString("HTMLTextEditor.jButtonAcceptHTML.Text"));
 			jButtonAcceptHTML
-				.addActionListener(new java.awt.event.ActionListener() {
+					.setText(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonAcceptHTML.Text"));
+			jButtonAcceptHTML.addActionListener(new java.awt.event.ActionListener() {
 
-					public void actionPerformed(java.awt.event.ActionEvent e) {
-						//update the commentText
-						commentText = ekitCoreEditorHTMLPanel.getDocumentBody();
-						extendedHTMLEditorKit =
-							ekitCoreEditorHTMLPanel.gethtmlKit();
-						extendedHTMLDocument =
-							ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
-						setVisible(false);
-						okButton = true;
-					}
-				});
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					//update the commentText
+					commentText = ekitCoreEditorHTMLPanel.getDocumentBody();
+					extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
+					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
+					setVisible(false);
+					okButton = true;
+				}
+			});
 		}
 		return jButtonAcceptHTML;
 	}
 
 	/**
 	 * This method initialises jButtonCancelHTML
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButtonCancelHTML() {
@@ -212,21 +187,18 @@ public class HTMLTextEditor extends JDialog {
 		if (jButtonCancelHTML == null) {
 			jButtonCancelHTML = new JButton();
 			jButtonCancelHTML.setBounds(new Rectangle(306, 258, 106, 21));
-			jButtonCancelHTML.setText(StringDatabase.getUniqueInstance ()
-				.getString("HTMLTextEditor.jButtonCancelHTML.Text"));
-			// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			jButtonCancelHTML
-				.addActionListener(new java.awt.event.ActionListener() {
+					.setText(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonCancelHTML.Text"));
+			// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			jButtonCancelHTML.addActionListener(new java.awt.event.ActionListener() {
 
-					public void actionPerformed(java.awt.event.ActionEvent e) {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 
-						extendedHTMLEditorKit =
-							ekitCoreEditorHTMLPanel.gethtmlKit();
-						extendedHTMLDocument =
-							ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
-						setVisible(false);
-					}
-				});
+					extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
+					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
+					setVisible(false);
+				}
+			});
 
 		}
 		return jButtonCancelHTML;
@@ -234,7 +206,7 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * Method to return the document text
-	 * 
+	 *
 	 * @return String with the Text
 	 */
 	public String getCommentText() {
@@ -244,7 +216,7 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * Return an object to set the EditorKit of JTextPane
-	 * 
+	 *
 	 * @return extendedHTMLEditorKit
 	 */
 	public ExtendedHTMLEditorKit getExtendedHTMLEditorKit() {
@@ -254,16 +226,16 @@ public class HTMLTextEditor extends JDialog {
 
 	/**
 	 * Return an object to set the Document of JTextPane
-	 * 
+	 *
 	 * @return extendedHTMLDocument
 	 */
 	public ExtendedHTMLDocument getEextendedHTMLDocument() {
 
 		return extendedHTMLDocument;
 	}
-	public boolean getOkButtonStatus (){
+
+	public boolean getOkButtonStatus() {
 		return okButton;
 	}
-	
 
 }

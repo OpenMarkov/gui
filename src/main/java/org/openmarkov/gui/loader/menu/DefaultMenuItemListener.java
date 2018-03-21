@@ -7,14 +7,11 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
-import javax.swing.JMenuItem;
-
 
 /**
  * @author jlgozalo
@@ -30,8 +27,7 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 		Object oSource = e.getSource();
 		if (oSource instanceof JMenuItem) {
 			JMenuItem mi = (JMenuItem) oSource;
-			MenuItemHandler mih =
-				MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
+			MenuItemHandler mih = MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
 			if (mih != null) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					mih.itemSelected(mi, e, mi.getActionCommand());
@@ -51,8 +47,7 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 		Object oSource = e.getSource();
 		if (oSource instanceof JMenuItem) {
 			JMenuItem mi = (JMenuItem) oSource;
-			MenuItemHandler mih =
-				MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
+			MenuItemHandler mih = MenuHandlersTable.getUniqueInstance().menuitemhandlerFind(mi);
 			if (mih != null) {
 				mih.itemActivated(mi, e, mi.getActionCommand());
 			}

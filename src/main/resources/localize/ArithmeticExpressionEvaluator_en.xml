@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-<ArithmeticExpressionEvaluator>
-  <Title value="Enter an expression"/>
-  <Instructions>
-  	<Variables value ="Double click to introduce the selected variable in the expression"/>
-  	<Functions value ="Double click to introduce the call to the selected function in the expression"/>
-  </Instructions>
-  <Functions>
-  	<Label value="Functions"/>
-  </Functions>
-  <Variables>
-  	<Label value="Variables"/>
-  </Variables>
-  <Help value = "&lt;P&gt;
+    <ArithmeticExpressionEvaluator>
+        <Title value="Enter an expression"/>
+        <Instructions>
+            <Variables value="Double click to introduce the selected variable in the expression"/>
+            <Functions value="Double click to introduce the call to the selected function in the expression"/>
+        </Instructions>
+        <Functions>
+            <Label value="Functions"/>
+        </Functions>
+        <Variables>
+            <Label value="Variables"/>
+        </Variables>
+        <Help value="&lt;P&gt;
  This expression evaluator supports mathematical expressions involving numbers, operators and variables. 
  Variables can be referenced by their name, but it is recommended to enclose them in curly braces, i.e. '{' and '}'.
  &lt;br/&gt;
@@ -110,6 +110,6 @@
  expression and subexpressions are evaluated according to operator precedence.&lt;/li&gt;
  &lt;/ul&gt;
 &lt;P&gt;"/>
-  </ArithmeticExpressionEvaluator>
+    </ArithmeticExpressionEvaluator>
 </properties>
 

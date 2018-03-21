@@ -7,15 +7,12 @@
 
 package org.openmarkov.gui.window.message;
 
-
 import java.io.PrintStream;
-
 
 /**
  * This class forwards the character stream to the text area.
- * 
+ *
  * @author jmendoza
- * @version 1.0 jmendoza
  * @version 1.1 jlgozalo - adding exceptions for code quality checking
  */
 public class StandardStream extends PrintStream {
@@ -27,9 +24,8 @@ public class StandardStream extends PrintStream {
 
 	/**
 	 * Constructor that links this object with the text area.
-	 * 
-	 * @param newMessageArea
-	 *            area where the messages are written.
+	 *
+	 * @param newMessageArea area where the messages are written.
 	 */
 	public StandardStream(MessageArea newMessageArea) {
 
@@ -40,31 +36,32 @@ public class StandardStream extends PrintStream {
 
 	// ESCA-JAVA0025: Allowing method with no statement inside
 	// ESCA-JAVA0132:Allowing overriding of print(Object) with print(String)
+
 	/**
 	 * Prints a string.
-	 * 
-	 * @param x
-	 *            the string to be printed.
+	 *
+	 * @param x the string to be printed.
 	 */
-	@Override
-	public void print(String x) {
+	@Override public void print(String x) {
 
-	};
+	}
+
+	;
 
 	/**
 	 * Terminate the current line by writing the line separator string. The line
 	 * separator string is defined by the system property line.separator.
 	 */
-	@Override
-	public void println() {
+	@Override public void println() {
 
-	};
+	}
+
+	;
 
 	/**
 	 * Prints a boolean.
 	 */
-	@Override
-	public void print(boolean x) {
+	@Override public void print(boolean x) {
 
 		// ESCA-JAVA0278: ensures a correct boolean value is printed
 		print(new Boolean(x).toString());
@@ -73,8 +70,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a character.
 	 */
-	@Override
-	public void print(char x) {
+	@Override public void print(char x) {
 
 		print(new Character(x).toString());
 	}
@@ -82,8 +78,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an integer.
 	 */
-	@Override
-	public void print(int x) {
+	@Override public void print(int x) {
 
 		// ESCA-JAVA0153: ensures the correct integer value is printed
 		print(new Integer(x).toString());
@@ -92,8 +87,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a long.
 	 */
-	@Override
-	public void print(long x) {
+	@Override public void print(long x) {
 
 		print(new Long(x).toString());
 	}
@@ -101,8 +95,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a float.
 	 */
-	@Override
-	public void print(float x) {
+	@Override public void print(float x) {
 
 		print(new Float(x).toString());
 	}
@@ -110,8 +103,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a double.
 	 */
-	@Override
-	public void print(double x) {
+	@Override public void print(double x) {
 
 		print(new Double(x).toString());
 	}
@@ -119,8 +111,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an array.
 	 */
-	@Override
-	public void print(char[] x) {
+	@Override public void print(char[] x) {
 
 		print(new String(x));
 	}
@@ -128,8 +119,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an object.
 	 */
-	@Override
-	public void print(Object x) {
+	@Override public void print(Object x) {
 
 		if (x == null) {
 			print("null");
@@ -141,8 +131,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a boolean and then terminates the line.
 	 */
-	@Override
-	public void println(boolean x) {
+	@Override public void println(boolean x) {
 
 		println(new Boolean(x).toString());
 	}
@@ -150,8 +139,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a character and then terminates the line.
 	 */
-	@Override
-	public void println(char x) {
+	@Override public void println(char x) {
 
 		println(new Character(x).toString());
 	}
@@ -159,8 +147,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an integer and then terminates the line.
 	 */
-	@Override
-	public void println(int x) {
+	@Override public void println(int x) {
 
 		// ESCA-JAVA0153: ensures the correct integer value is printed
 		println(new Integer(x).toString());
@@ -169,8 +156,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a long and then terminates the line.
 	 */
-	@Override
-	public void println(long x) {
+	@Override public void println(long x) {
 
 		println(new Long(x).toString());
 	}
@@ -178,8 +164,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a float and then terminates the line.
 	 */
-	@Override
-	public void println(float x) {
+	@Override public void println(float x) {
 
 		println(new Float(x).toString());
 	}
@@ -187,8 +172,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints a double and then terminates the line.
 	 */
-	@Override
-	public void println(double x) {
+	@Override public void println(double x) {
 
 		println(new Double(x).toString());
 	}
@@ -196,8 +180,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an array of characters and then terminates the line.
 	 */
-	@Override
-	public void println(char[] x) {
+	@Override public void println(char[] x) {
 
 		println(new String(x));
 	}
@@ -205,8 +188,7 @@ public class StandardStream extends PrintStream {
 	/**
 	 * Prints an object and then terminates the line.
 	 */
-	@Override
-	public void println(Object x) {
+	@Override public void println(Object x) {
 
 		if (x == null) {
 			println("null");
@@ -217,12 +199,10 @@ public class StandardStream extends PrintStream {
 
 	/**
 	 * Prints a string and then terminates the line.
-	 * 
-	 * @param x
-	 *            the string to be printed.
+	 *
+	 * @param x the string to be printed.
 	 */
-	@Override
-	public void println(String x) {
+	@Override public void println(String x) {
 
 		print(x);
 		println();

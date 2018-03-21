@@ -7,18 +7,14 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-
 
 /*
  * This class will do the work when the items were activated/deselected/checked
  * @author jlgozalo
- * 
+ *
  * @version 1.0
  */
 public class MenuItemAdapter implements MenuItemHandler {
@@ -40,8 +36,7 @@ public class MenuItemAdapter implements MenuItemHandler {
 	 */
 	public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
 
-		System.out.println("Item activado " + item.getName() + " y evento "
-			+ event.toString());
+		System.out.println("Item activado " + item.getName() + " y evento " + event.toString());
 	}
 
 	/**

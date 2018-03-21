@@ -7,16 +7,6 @@
 
 package org.openmarkov.gui.window;
 
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-
-import javax.swing.JApplet;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
@@ -29,6 +19,8 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.MDI;
 import org.openmarkov.gui.window.message.MessageWindow;
 
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This is the main panel of the OpenMarkov interface. It contains all the menu
@@ -36,10 +28,8 @@ import org.openmarkov.gui.window.message.MessageWindow;
  * OepnMarkov.
  *
  * @author jmendoza
- * @version 1.0 jmendoza
- * @version 1.1 jlgozalo Add getMainFrame()
  * @version 1.2 asaez	Added InferenceToolBar. Layout changed for having the
- * 						main and the secondary toolbar in the same line
+ * main and the secondary toolbar in the same line
  */
 public class MainPanel extends JPanel {
 
@@ -111,8 +101,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * Creates a new instance with a clear declared parent.
 	 *
-	 * @param parentFrame
-	 *            the parent Frame of the Main Panel
+	 * @param parentFrame the parent Frame of the Main Panel
 	 */
 	public MainPanel(JFrame parentFrame) {
 
@@ -120,16 +109,15 @@ public class MainPanel extends JPanel {
 		mainPanel.setName("MainPanel");
 		mainFrame = parentFrame;
 		mainFrame.setName(parentFrame.getName());
-        toolbarManager = new ToolbarManager (this);
+		toolbarManager = new ToolbarManager(this);
 
-        initialize();
+		initialize();
 	}
 
 	/**
 	 * Singleton pattern
 	 *
-	 * @param parentFrame
-	 *            is the parent Frame for this Main Panel
+	 * @param parentFrame is the parent Frame for this Main Panel
 	 * @return mainPanel. <code>MainPanel</code>
 	 */
 	public static MainPanel getUniqueInstance(JFrame parentFrame) {
@@ -181,14 +169,12 @@ public class MainPanel extends JPanel {
 
 	}
 
-
 	/**
 	 * When this panel is added to a container, it tries to set the menubar of
 	 * its top level ancestor that must be an instance of the classes JFrame or
 	 * JApplet.
 	 */
-	@Override
-	public void addNotify() {
+	@Override public void addNotify() {
 
 		Component container = null;
 		JFrame frame = null;
@@ -283,10 +269,9 @@ public class MainPanel extends JPanel {
 	 * This method establishes the type of tool bar (Edition or Inference) to be
 	 * set in the panel.
 	 *
-	 * @param barType
-	 *            new type of tool bar to be set in the panel
+	 * @param barType new type of tool bar to be set in the panel
 	 */
-	protected void setToolBarPanel (int barType) {
+	protected void setToolBarPanel(int barType) {
 		if (barType == NetworkPanel.EDITION_WORKING_MODE) {
 			mainPanel.getToolBarPanel().remove(mainPanel.getInferenceToolBar());
 			mainPanel.getToolBarPanel().add(mainPanel.getEditionToolBar(), 1);
@@ -304,11 +289,10 @@ public class MainPanel extends JPanel {
 	 * This method sets the button for switching between Edition/inference to
 	 * the pertinent value (pressed or not)
 	 *
-	 * @param workingMode
-	 *            the working mode of the currently selected NetworkPanel.
-	 *            Depending on this value, the button will be set pressed or not.
+	 * @param workingMode the working mode of the currently selected NetworkPanel.
+	 *                    Depending on this value, the button will be set pressed or not.
 	 */
-	public void changeWorkingModeButton(int workingMode){
+	public void changeWorkingModeButton(int workingMode) {
 		getStandardToolBar().changeWorkingModeButton(workingMode);
 	}
 
@@ -322,7 +306,7 @@ public class MainPanel extends JPanel {
 		if (mdi == null) {
 			mdi = new MDI(mainMenu.getMenuMDI());
 			mdi.addFrameStateListener(mainPanelListenerAssistant);
-			mdi.setPreferredSize(new Dimension(400,600));
+			mdi.setPreferredSize(new Dimension(400, 600));
 			mdi.createNewFrame(getMessageWindow(), false);
 		}
 
@@ -372,7 +356,6 @@ public class MainPanel extends JPanel {
 		return inferenceToolBar;
 	}
 
-
 	/**
 	 * This method initialises menuAssistant.
 	 *
@@ -381,10 +364,9 @@ public class MainPanel extends JPanel {
 	public MainPanelMenuAssistant getMainPanelMenuAssistant() {
 
 		if (mainPanelMenuAssistant == null) {
-			mainPanelMenuAssistant =
-				new MainPanelMenuAssistant(new MenuToolBarBasic[] { mainMenu,
-					standardToolBar, editionToolBar, getInferenceToolBar(), contextualMenuFactory },
-					new ZoomMenuToolBar[] { mainMenu, standardToolBar }, this);
+			mainPanelMenuAssistant = new MainPanelMenuAssistant(
+					new MenuToolBarBasic[] { mainMenu, standardToolBar, editionToolBar, getInferenceToolBar(),
+							contextualMenuFactory }, new ZoomMenuToolBar[] { mainMenu, standardToolBar }, this);
 			mainPanelMenuAssistant.updateOptionsAllNetworkClosed();
 		}
 
@@ -417,20 +399,20 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * Opens a prob net
+	 *
 	 * @param fileName
 	 */
-	public void openNetwork(String fileName)
-	{
-	    getMainPanelListenerAssistant().openNetwork (fileName);
+	public void openNetwork(String fileName) {
+		getMainPanelListenerAssistant().openNetwork(fileName);
 	}
 
 	/**
 	 * Returns instance of toolbarManager
+	 *
 	 * @return
 	 */
-    public ToolbarManager getToolbarManager ()
-    {
-        return toolbarManager;
+	public ToolbarManager getToolbarManager() {
+		return toolbarManager;
 	}
 
 	/**
@@ -456,10 +438,12 @@ public class MainPanel extends JPanel {
 		}
 
 		// If the toolbar cannot show them in one single line
-		if ((getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) ||
-		   (currentNetworkPanelWidth < currentNetworkPanelMaxWidth)) {
+		if ((getToolBarPanel().getWidth() < toolBarComponentsWidth + safetyWidth) || (
+				currentNetworkPanelWidth < currentNetworkPanelMaxWidth
+		)) {
 			// we increase the height of the toolbar accordingly
-			getToolBarPanel().setPreferredSize(new Dimension(getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
+			getToolBarPanel()
+					.setPreferredSize(new Dimension(getWidth() + safetyWidth, toolBarComponentsHeight + safetyHeight));
 		}
 		// and if the toolbar can show them in one line
 		else {

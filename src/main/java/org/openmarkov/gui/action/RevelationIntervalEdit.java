@@ -11,17 +11,16 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.PartitionedInterval;
 
 /*****
  * A simple edit which allows to add and modify intervals and modify them.
- * 
+ *
  * @author caroline
- * 
+ *
  */
-@SuppressWarnings("serial")
-public class RevelationIntervalEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class RevelationIntervalEdit extends SimplePNEdit {
 
 	/***
 	 * Object which stores the revelation conditions
@@ -58,7 +57,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 	/*****
 	 * Creates a RevelationConditionEdit which carries out the modifications of
 	 * a revealing condition interval.
-	 * 
+	 *
 	 * @param link
 	 * @param stateAction
 	 * @param row
@@ -66,8 +65,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 	 * @param isLower
 	 */
 
-	public RevelationIntervalEdit(Link<Node> link, StateAction stateAction, int row,
-			double newValue, boolean isLower) {
+	public RevelationIntervalEdit(Link<Node> link, StateAction stateAction, int row, double newValue, boolean isLower) {
 		super(link.getNode1().getProbNet());
 		this.link = link;
 		this.stateAction = stateAction;
@@ -76,8 +74,7 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 		this.isLower = isLower;
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 
 		switch (stateAction) {
 		case ADD:
@@ -91,25 +88,23 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 			lastInterval = link.getRevealingIntervals().get(rowSelected);
 			link.getRevealingIntervals().remove(rowSelected);
 		}
-			break;
+		break;
 		case MODIFY_VALUE_INTERVAL: {
-			PartitionedInterval currentPartitionedInterval = link
-					.getRevealingIntervals().get(rowSelected);
+			PartitionedInterval currentPartitionedInterval = link.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
 			oldValue = currentPartitionedInterval.getLimits()[intervalIndex];
 			currentPartitionedInterval.getLimits()[intervalIndex] = newValue;
 
 		}
-			break;
+		break;
 
 		case MODIFY_DELIMITER_INTERVAL: {
-			PartitionedInterval currentPartitionedInterval = link
-					.getRevealingIntervals().get(rowSelected);
+			PartitionedInterval currentPartitionedInterval = link.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
 			currentPartitionedInterval.getBelongsToLeftSide()[intervalIndex] = !currentPartitionedInterval
 					.getBelongsToLeftSide(intervalIndex);
 		}
-			break;
+		break;
 
 		}
 
@@ -125,20 +120,17 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 			link.getRevealingIntervals().add(rowSelected, lastInterval);
 			break;
 		case MODIFY_VALUE_INTERVAL: {
-			PartitionedInterval interval = link.getRevealingIntervals().get(
-					rowSelected);
+			PartitionedInterval interval = link.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
 			interval.getLimits()[intervalIndex] = oldValue;
 		}
-			break;
+		break;
 		case MODIFY_DELIMITER_INTERVAL: {
-			PartitionedInterval interval = link.getRevealingIntervals().get(
-					rowSelected);
+			PartitionedInterval interval = link.getRevealingIntervals().get(rowSelected);
 			int intervalIndex = isLower ? 0 : 1;
-			interval.getBelongsToLeftSide()[intervalIndex] = !interval
-					.getBelongsToLeftSide(intervalIndex);
+			interval.getBelongsToLeftSide()[intervalIndex] = !interval.getBelongsToLeftSide(intervalIndex);
 		}
-			break;
+		break;
 		}
 
 	}
@@ -146,19 +138,16 @@ public class RevelationIntervalEdit extends SimplePNEdit {
 	/**
 	 * This method add a new default subInterval, in the current
 	 * PartitionedInterval object
-	 * 
+	 *
 	 * @return The PartitionedInterval object with a new default subInterval
 	 */
 
 	private PartitionedInterval getNewPartitionedInterval() {
 		if (link.getRevealingIntervals().isEmpty()) {
-			return new PartitionedInterval(false, Double.NEGATIVE_INFINITY,
-					Double.POSITIVE_INFINITY, false);
+			return new PartitionedInterval(false, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
 		} else {
-			PartitionedInterval interval = link.getRevealingIntervals().get(
-					link.getRevealingIntervals().size() - 1);
-			return new PartitionedInterval(false, interval.getLimit(1),
-					Double.POSITIVE_INFINITY, false);
+			PartitionedInterval interval = link.getRevealingIntervals().get(link.getRevealingIntervals().size() - 1);
+			return new PartitionedInterval(false, interval.getLimit(1), Double.POSITIVE_INFINITY, false);
 		}
 	}
 

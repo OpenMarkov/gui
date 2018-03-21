@@ -7,25 +7,21 @@
 
 package org.openmarkov.gui.dialog.node;
 
-
-import java.awt.Window;
-
-import javax.swing.event.ChangeEvent;
-
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.VariableType;
 
-
+import javax.swing.event.ChangeEvent;
+import java.awt.*;
 
 /**
  * This class implements the chance node additionalProperties dialog box adding more
  * fields.
- * 
+ *
  * @author jlgozalo
  * @version 1.10
  */
-public class CommonNodePropertiesDialog extends NodePropertiesDialog{
+public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 
 	/**
 	 * Static field for serializable class.
@@ -34,14 +30,11 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 
 	/**
 	 * This method initializes this instance.
-	 * 
-	 * @param owner
-	 *            window that owns this dialog.
-	 * @param newNode
-	 *            if true, it indicates that a new network is being created; if
-	 *            false, an existing network is being modified.
-	 * @param readOnly
-	 * 			  if true, values inside the dialog will not be editable
+	 *
+	 * @param owner    window that owns this dialog.
+	 * @param newNode  if true, it indicates that a new network is being created; if
+	 *                 false, an existing network is being modified.
+	 * @param readOnly if true, values inside the dialog will not be editable
 	 */
 	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode, boolean readOnly) {
 
@@ -52,29 +45,26 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 		setLocationRelativeTo(owner);
 
 	}
-	
+
 	/**
 	 * This method initializes this instance.
-	 * 
-	 * @param owner
-	 *            window that owns this dialog.
-	 * @param newNode
-	 *            if true, it indicates that a new network is being created; if
-	 *            false, an existing network is being modified.
+	 *
+	 * @param owner   window that owns this dialog.
+	 * @param newNode if true, it indicates that a new network is being created; if
+	 *                false, an existing network is being modified.
 	 */
 	public CommonNodePropertiesDialog(Window owner, Node node, boolean newNode) {
 
 		this(owner, node, newNode, false);
-	}	
+	}
 
 	/**
 	 * This method carries out the checks of the specific fields. This specific
 	 * fields depend on the type of the node.
-	 * 
+	 *
 	 * @return true if all the fields are correct.
 	 */
-	@Override
-	protected boolean specificChecks() {
+	@Override protected boolean specificChecks() {
 
 		boolean result = false;
 
@@ -82,18 +72,15 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 			result = true;
 		} else {
 			// node variable type
-			VariableType varType = ((NodeDefinitionPanel) getNodeDefinitionPanel())
-							.getVariableType();
+			VariableType varType = ((NodeDefinitionPanel) getNodeDefinitionPanel()).getVariableType();
 			if (varType != null) {
-				if (varType.equals(VariableType.FINITE_STATES)|| varType.equals(VariableType.DISCRETIZED)) {
+				if (varType.equals(VariableType.FINITE_STATES) || varType.equals(VariableType.DISCRETIZED)) {
 					//changed by mpalacios
 					//result = ((DiscreteValuesTablePanel) getNodeDiscreteValuesTablePanel())
-						//			.checkStates();
-					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel())
-					.checkStates();
+					//			.checkStates();
+					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel()).checkStates();
 				} else if (varType.equals(VariableType.DISCRETIZED)) {
-					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel())
-									.checkStates();
+					result = ((NodeDomainValuesTablePanel) getNodeDomainValuesTablePanel()).checkStates();
 				} else if (varType.equals(VariableType.NUMERIC)) {
 					// TODO this must be set when continuos will be implemented
 					result = true;
@@ -103,9 +90,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog{
 		return result;
 
 	}
-	
 
-	
 	public void stateChanged(ChangeEvent e) {
 		/*JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
 		int index = sourceTabbedPane.getSelectedIndex();

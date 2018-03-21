@@ -7,29 +7,25 @@
 
 package org.openmarkov.gui.graphic;
 
-
 import java.util.List;
 
 /**
  * This interface is used in order to a network panel advise to the listener
  * that some objects are selected, to copy, cut or remove them.
- * 
+ *
  * @author jmendoza
  * @author asaez
- * @version 1.1 	Added arrayOfNodes as a new parameter
- * 					Needed for knowing which nodes are currently selected
+ * @version 1.1    Added arrayOfNodes as a new parameter
+ * Needed for knowing which nodes are currently selected
  */
 public interface SelectionListener {
 
 	/**
 	 * This method indicates the selected elements
-	 * 
-	 * @param selectedNodes
-	 * 			  array of nodes that are currently selected
-	 * @param selectedLinks
-	 * 			  array of links that are currently selected
+	 *
+	 * @param selectedNodes array of nodes that are currently selected
+	 * @param selectedLinks array of links that are currently selected
 	 */
-	void objectsSelected(List<VisualNode> selectedNodes,
-			List<VisualLink> selectedLinks);
-	
+	void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks);
+
 }

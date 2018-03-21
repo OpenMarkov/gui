@@ -7,15 +7,13 @@
 
 package org.openmarkov.gui.util;
 
-
-import java.util.HashSet;
 import org.openmarkov.core.model.network.NodeType;
 
-
+import java.util.HashSet;
 
 /**
  * This enum class encapsulates the types of a network.
- * 
+ *
  * @author jmendoza
  */
 public enum NetworkType {
@@ -38,71 +36,66 @@ public enum NetworkType {
 	 * Ghain graph.
 	 */
 	CHAIN_GRAPH(3),
-	
+
 	/**
 	 * Simple Markov Model.
 	 */
 	SIMPLE_MARKOV_MODEL(4),
-	
+
 	/**
 	 * Simple Markov Model.
 	 */
 	MARKOV_DECISION_PROCESS(5),
-	
+
 	/**
 	 * Simple Markov Model.
 	 */
 	POMDP(6),
-	
-	
+
 	/****
 	 * Decision Analysis Network
 	 */
-	
+
 	DAN(7),
-	
+
 	/****
 	 * LIMID
 	 */
-	
-	LIMID(8),
-	/****
-	 * 
+
+	LIMID(8), /****
+	 *
 	 * Dynamic Bayesian Network
 	 * */
-	
+
 	DYN_BAYESIAN_NET(9),
-	
+
 	/****
-	 * 
+	 *
 	 * Dynamic LIMID
-	 * 
+	 *
 	 */
 	DYN_LIMID(10),
-	
+
 	/****
-	 * 
+	 *
 	 * Dec-pomdp
-	 * 
+	 *
 	 */
 	DEC_POMDP(11),
-	
+
 	/****
-	 * 
+	 *
 	 * OOPN
-	 * 
+	 *
 	 */
 	OOPN(12),
-	
-    /****
-     * 
-     * TUNING
-     * 
-     */
-    TUNING(13);
 
-	
-	
+	/****
+	 *
+	 * TUNING
+	 *
+	 */
+	TUNING(13);
 
 	/**
 	 * Types of node that can be created into the network.
@@ -112,11 +105,9 @@ public enum NetworkType {
 	/**
 	 * Constructor that saves the information about the nodes that can be
 	 * created into the network.
-	 * 
-	 * @param type
-	 *            new type of network.
-	 * @throws IllegalArgumentException
-	 *             if the type is not valid.
+	 *
+	 * @param type new type of network.
+	 * @throws IllegalArgumentException if the type is not valid.
 	 */
 	NetworkType(int type) throws IllegalArgumentException {
 
@@ -140,9 +131,9 @@ public enum NetworkType {
 		case 8:
 		case 9:
 		case 10:
-        case 11:
-        case 12:
-		case 13:{
+		case 11:
+		case 12:
+		case 13: {
 			break;
 		}
 		default: {
@@ -153,9 +144,9 @@ public enum NetworkType {
 
 	/**
 	 * Returns types of node that can be created into this type of network.
-	 * 
+	 *
 	 * @return a list of types of node that can be created into this type of
-	 *         network.
+	 * network.
 	 */
 	public HashSet<NodeType> getNodeTypes() {
 

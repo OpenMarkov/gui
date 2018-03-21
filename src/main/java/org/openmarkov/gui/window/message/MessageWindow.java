@@ -7,33 +7,19 @@
 
 package org.openmarkov.gui.window.message;
 
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 
-
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Class which manages a window where message texts of the application will
  * appear.
- * 
+ *
  * @author jmendoza
- * @version 1.0 jmendoza
- * @version 1.1 jlgozalo - externalize constants and set position for window
  * @version 1.2 jlgozalo - adding get/set to normal and error streams (to avoid System.out and System.err in source code as much as possible)
  */
 public class MessageWindow extends FrameContentPanel implements ActionListener {
@@ -86,14 +72,15 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 * convenience variable to store the owner Frame
 	 */
 	private JFrame ownerFrame = null;
-	
+
 	/**
 	 * String database
 	 */
-	StringDatabase stringDatabase = StringDatabase.getUniqueInstance ();
+	StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * This is the default constructor
+	 *
 	 * @param owner - frame where this message window is associated
 	 */
 	public MessageWindow(JFrame owner) {
@@ -109,16 +96,16 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	private void initialize() {
 
 		int x = ownerFrame.getX();
-		int y = ownerFrame.getY() + ownerFrame.getHeight() * 5/6;
+		int y = ownerFrame.getY() + ownerFrame.getHeight() * 5 / 6;
 		int width = ownerFrame.getWidth();
-		
-        int height = ownerFrame.getHeight()/6;
-			
+
+		int height = ownerFrame.getHeight() / 6;
+
 		this.setBounds(x, y, width, height);
 		this.setLayout(new BorderLayout());
-        this.add(getTopPanel(), BorderLayout.NORTH);
-        this.add(getScrollPane(), BorderLayout.CENTER);
-        
+		this.add(getTopPanel(), BorderLayout.NORTH);
+		this.add(getScrollPane(), BorderLayout.CENTER);
+
 		normalMessageStream = new StandardStreamOut(textArea);
 		errorMessageStream = new StandardStreamErr(textArea);
 		System.setOut(normalMessageStream);
@@ -127,7 +114,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises scrollPane.
-	 * 
+	 *
 	 * @return a new scroll pane.
 	 */
 	private JScrollPane getScrollPane() {
@@ -141,7 +128,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises textArea.
-	 * 
+	 *
 	 * @return a new text area.
 	 */
 	private NonEditableTextArea getTextArea() {
@@ -154,7 +141,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises topPanel.
-	 * 
+	 *
 	 * @return a new top panel.
 	 */
 	private JPanel getTopPanel() {
@@ -169,7 +156,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises buttonsPanel.
-	 * 
+	 *
 	 * @return a new buttons panel.
 	 */
 	private JPanel getButtonsPanel() {
@@ -177,7 +164,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		if (buttonsPanel == null) {
 			buttonsPanel = new JPanel();
 			buttonsPanel.setLayout(new GridLayout(1, 0, 10, 10));
-			buttonsPanel.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+			buttonsPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 			buttonsPanel.add(getButtonCopy());
 			buttonsPanel.add(getButtonClear());
 		}
@@ -186,7 +173,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises buttonClear.
-	 * 
+	 *
 	 * @return a new button to clear.
 	 */
 	private JButton getButtonClear() {
@@ -194,10 +181,8 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		if (buttonClear == null) {
 			buttonClear = new JButton();
 			buttonClear.setName("Clear");
-			buttonClear.setText(stringDatabase
-				.getString("Clear.Text.Label"));
-			buttonClear.setMnemonic(stringDatabase.getString(
-				"Clear.Text.Mnemonic").charAt(0));
+			buttonClear.setText(stringDatabase.getString("Clear.Text.Label"));
+			buttonClear.setMnemonic(stringDatabase.getString("Clear.Text.Mnemonic").charAt(0));
 			buttonClear.setFocusable(false);
 			buttonClear.addActionListener(this);
 		}
@@ -206,7 +191,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * This method initialises buttonCopy.
-	 * 
+	 *
 	 * @return a new button to copy to the clipboard.
 	 */
 	private JButton getButtonCopy() {
@@ -214,10 +199,8 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		if (buttonCopy == null) {
 			buttonCopy = new JButton();
 			buttonCopy.setName("Copy");
-			buttonCopy.setText(stringDatabase
-				.getString("Copy.Text.Label"));
-			buttonCopy.setMnemonic(stringDatabase.getString(
-				"Copy.Text.Mnemonic").charAt(0));
+			buttonCopy.setText(stringDatabase.getString("Copy.Text.Label"));
+			buttonCopy.setMnemonic(stringDatabase.getString("Copy.Text.Mnemonic").charAt(0));
 			buttonCopy.setFocusable(false);
 			buttonCopy.addActionListener(this);
 		}
@@ -226,9 +209,8 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 
 	/**
 	 * Invoked when an action occurs.
-	 * 
-	 * @param e
-	 *            event information.
+	 *
+	 * @param e event information.
 	 */
 	public void actionPerformed(ActionEvent e) {
 
@@ -241,52 +223,40 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		}
 	}
 
-	
 	public StandardStream getNormalMessageStream() {
-	
+
 		return normalMessageStream;
 	}
 
-	
 	public void setNormalMessageStream(StandardStream normalMessageStream) {
-	
+
 		this.normalMessageStream = normalMessageStream;
 	}
 
-	
 	public StandardStream getErrorMessageStream() {
-	
+
 		return errorMessageStream;
 	}
 
-	
 	public void setErrorMessageStream(StandardStream errorMessageStream) {
-	
+
 		this.errorMessageStream = errorMessageStream;
 	}
 
-    @Override
-    public String getTitle ()
-    {
-        return stringDatabase.getString("MessageWindow.Title.Label");
-    }
+	@Override public String getTitle() {
+		return stringDatabase.getString("MessageWindow.Title.Label");
+	}
 
-    @Override
-    public void close ()
-    {
-        setVisible (false);
-    }
+	@Override public void close() {
+		setVisible(false);
+	}
 
-    @Override
-    public double getZoom ()
-    {
-        // Ignore
-        return 0;
-    }
+	@Override public double getZoom() {
+		// Ignore
+		return 0;
+	}
 
-    @Override
-    public void setZoom (double zoom)
-    {
-        // Ignore
-    }
+	@Override public void setZoom(double zoom) {
+		// Ignore
+	}
 }

@@ -7,11 +7,8 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
-import java.awt.event.ActionListener;
-
-import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-
+import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.constraint.LinkRestrictionValidator;
 import org.openmarkov.gui.constraint.RevelationArcValidator;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -19,13 +16,14 @@ import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
 import org.openmarkov.gui.window.edition.EditorPanel;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /**
  * This class implements a contextual menu that is displayes when the user clicks on
  * a link.
- * 
+ *
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
@@ -52,7 +50,6 @@ class LinkContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem linkRestrictionEditMenuItem = null;
 
-	
 	/**
 	 * Object that represents the item 'Remove restriction'.
 	 */
@@ -70,35 +67,33 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This constructor creates a new instance.
-	 * 
-	 * @param newListener
-	 *            object that listens to the menu events.
-	 * @param panel 
-	 * @param selectedLink 
+	 *
+	 * @param newListener  object that listens to the menu events.
+	 * @param panel
+	 * @param selectedLink
 	 */
 	public LinkContextualMenu(ActionListener newListener, VisualLink selectedLink, EditorPanel panel) {
 
 		super(newListener);
 
 		initialize();
-		Link<Node> link = selectedLink.getLink ();
-        boolean linkRestrictionEnabled = false;
-        if (LinkRestrictionValidator.validate(link)) {
-            linkRestrictionEnabled = true;
-        }
+		Link<Node> link = selectedLink.getLink();
+		boolean linkRestrictionEnabled = false;
+		if (LinkRestrictionValidator.validate(link)) {
+			linkRestrictionEnabled = true;
+		}
 
-        setOptionEnabled (ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
-                          (linkRestrictionEnabled && !link.hasRestrictions ()));
-        setOptionEnabled (ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
-                          (linkRestrictionEnabled && link.hasRestrictions ()));
-        setOptionEnabled (ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
-                          (linkRestrictionEnabled && link.hasRestrictions ()));
-        boolean revelationArcEnabled = false;
-        if (RevelationArcValidator.validate (link))
-        {
-            revelationArcEnabled = true;
-        }
-        setOptionEnabled (ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
+		setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
+				(linkRestrictionEnabled && !link.hasRestrictions()));
+		setOptionEnabled(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES,
+				(linkRestrictionEnabled && link.hasRestrictions()));
+		setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
+				(linkRestrictionEnabled && link.hasRestrictions()));
+		boolean revelationArcEnabled = false;
+		if (RevelationArcValidator.validate(link)) {
+			revelationArcEnabled = true;
+		}
+		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
 	}
 
 	/**
@@ -111,7 +106,7 @@ class LinkContextualMenu extends ContextualMenu {
 		 * This item must be added to the menu when is active the possibility of
 		 * editing the additionalProperties of a link in future versions.
 		 */
-	
+
 		addSeparator();
 		add(getLinkRestrictionEnableMenuItem());
 		add(getLinkRestrictionEditMenuItem());
@@ -125,15 +120,13 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method initialises removeMenuItem.
-	 * 
+	 *
 	 * @return a new 'Remove' menu item.
 	 */
 	private JMenuItem getRemoveMenuItem() {
 
 		if (removeMenuItem == null) {
-			removeMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_REMOVE_MENUITEM,
-					ActionCommands.OBJECT_REMOVAL);
+			removeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REMOVE_MENUITEM, ActionCommands.OBJECT_REMOVAL);
 			removeMenuItem.addActionListener(listener);
 		}
 
@@ -143,14 +136,13 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method initialises the enableLinkRestriction menu item.
-	 * 
+	 *
 	 * @return a new 'LinkRestrictionEnable' menu item.
 	 */
 	private JMenuItem getLinkRestrictionEnableMenuItem() {
 
 		if (linkRestrictionEnableMenuItem == null) {
-			linkRestrictionEnableMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKRESTRICTION_ENABLE_MENUITEM,
+			linkRestrictionEnableMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_LINKRESTRICTION_ENABLE_MENUITEM,
 					ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES);
 			linkRestrictionEnableMenuItem.addActionListener(listener);
 		}
@@ -161,14 +153,13 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method initialises the disableLinkRestriction menu item.
-	 * 
+	 *
 	 * @return a new 'LinkRestrictionDisable' menu item.
 	 */
 	private JMenuItem getLinkRestrictionDisableMenuItem() {
 
 		if (linkRestrictionDisableMenuItem == null) {
-			linkRestrictionDisableMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKRESTRICTION_DISABLE_MENUITEM,
+			linkRestrictionDisableMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_LINKRESTRICTION_DISABLE_MENUITEM,
 					ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES);
 			linkRestrictionDisableMenuItem.addActionListener(listener);
 		}
@@ -176,17 +167,16 @@ class LinkContextualMenu extends ContextualMenu {
 		return linkRestrictionDisableMenuItem;
 
 	}
-	
+
 	/**
 	 * This method initialises the editLinkRestriction menu item.
-	 * 
+	 *
 	 * @return a new 'LinkRestrictionEdit' menu item.
 	 */
 	private JMenuItem getLinkRestrictionEditMenuItem() {
 
 		if (linkRestrictionEditMenuItem == null) {
-			linkRestrictionEditMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKRESTRICTION_EDIT_MENUITEM,
+			linkRestrictionEditMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_LINKRESTRICTION_EDIT_MENUITEM,
 					ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES);
 			linkRestrictionEditMenuItem.addActionListener(listener);
 		}
@@ -197,15 +187,14 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method initialises the revelationArc menu item.
-	 * 
+	 *
 	 * @return a new 'revelationArc' menu item.
 	 */
 
 	private JMenuItem getRevelationArcMenuItem() {
 
 		if (revelationArcMenuItem == null) {
-			revelationArcMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKREVELATIONARC_MENUITEM,
+			revelationArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_LINKREVELATIONARC_MENUITEM,
 					ActionCommands.LINK_REVELATIONARC_PROPERTIES);
 			revelationArcMenuItem.addActionListener(listener);
 		}
@@ -216,14 +205,13 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method initialises propertiesMenuItem.
-	 * 
+	 *
 	 * @return a new 'Properties' menu item.
 	 */
 	private JMenuItem getPropertiesMenuItem() {
 
 		if (propertiesMenuItem == null) {
-			propertiesMenuItem = new LocalizedMenuItem(
-					MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
+			propertiesMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_LINKPROPERTIES_MENUITEM,
 					ActionCommands.LINK_PROPERTIES);
 			propertiesMenuItem.addActionListener(listener);
 		}
@@ -234,32 +222,23 @@ class LinkContextualMenu extends ContextualMenu {
 
 	/**
 	 * Returns the component that corresponds to an action command.
-	 * 
-	 * @param actionCommand
-	 *            action command that identifies the component.
+	 *
+	 * @param actionCommand action command that identifies the component.
 	 * @return a components identified by the action command.
 	 */
-	@Override
-	protected JComponent getJComponentActionCommand(String actionCommand) {
+	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
 
 		JComponent component = null;
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		} else if (actionCommand
-				.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
+		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			component = linkRestrictionEnableMenuItem;
-		} else if (actionCommand
-				.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
+		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
 			component = linkRestrictionDisableMenuItem;
-		}
-		else if (actionCommand
-				.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
+		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
 			component = linkRestrictionEditMenuItem;
-		}
-		
-		else if (actionCommand
-				.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
+		} else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			component = revelationArcMenuItem;
 		}
 

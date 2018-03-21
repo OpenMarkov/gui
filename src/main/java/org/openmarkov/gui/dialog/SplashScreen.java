@@ -11,48 +11,43 @@
  */
 package org.openmarkov.gui.dialog;
 
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
-
 import org.apache.log4j.Logger;
 
-
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * SplashScreen shows the OpenMarkov logo and the progress bar meantime OpenMarkov is
  * loaded.
- * 
+ *
  * @author jlgozalo
  * @version 1.0 22/11/2008
  */
 public class SplashScreen extends JFrame {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6227174335233774982L;
-	/** Component to store the image to splash */
+	/**
+	 * Component to store the image to splash
+	 */
 	JLabel imageLabel = new JLabel();
-	/** Component to present the progress of the loading */
+	/**
+	 * Component to present the progress of the loading
+	 */
 	JProgressBar progressBar = new JProgressBar();
-	/** Image to be displayed */
+	/**
+	 * Image to be displayed
+	 */
 	ImageIcon imageIcon;
-	
+
 	private Logger logger;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param imageIcon
-	 *            The image to be used as Splash Screen
+	 *
+	 * @param imageIcon The image to be used as Splash Screen
 	 */
 	public SplashScreen(ImageIcon imageIcon) {
 		this.logger = Logger.getLogger(SplashScreen.class);
@@ -67,7 +62,7 @@ public class SplashScreen extends JFrame {
 
 	/**
 	 * Main initialization method to display visual components
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	void jbInit() throws Exception {
@@ -78,7 +73,7 @@ public class SplashScreen extends JFrame {
 			this.getContentPane().setLayout(new BorderLayout());
 
 			progressBar.setStringPainted(true);
-			progressBar.setForeground(new Color(10,110,230));
+			progressBar.setForeground(new Color(10, 110, 230));
 			this.getContentPane().add(progressBar, BorderLayout.SOUTH);
 
 			imageLabel.setIcon(imageIcon);
@@ -93,7 +88,7 @@ public class SplashScreen extends JFrame {
 
 	/**
 	 * States which will be the maximum progress to be displayed
-	 * 
+	 *
 	 * @param maxProgress
 	 */
 	public void setProgressMax(int maxProgress) {
@@ -103,7 +98,7 @@ public class SplashScreen extends JFrame {
 
 	/**
 	 * Update the progress of the loading of the main program
-	 * 
+	 *
 	 * @param progress
 	 */
 	public void setProgress(int progress) {
@@ -120,11 +115,9 @@ public class SplashScreen extends JFrame {
 
 	/**
 	 * Display the progress of the loading in a Progress Bar
-	 * 
-	 * @param message
-	 *            The underlying message with the progress
-	 * @param progress
-	 *            The graphical bar with the progress
+	 *
+	 * @param message  The underlying message with the progress
+	 * @param progress The graphical bar with the progress
 	 */
 	public void setProgress(String message, int progress) {
 
@@ -143,9 +136,8 @@ public class SplashScreen extends JFrame {
 
 	/**
 	 * Show SplashScreen
-	 * 
-	 * @param b
-	 *            True to put SplashScreen visible, false otherwise
+	 *
+	 * @param b True to put SplashScreen visible, false otherwise
 	 */
 	public void setScreenVisible(boolean b) {
 

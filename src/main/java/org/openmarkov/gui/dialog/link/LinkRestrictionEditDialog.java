@@ -7,26 +7,21 @@
 
 package org.openmarkov.gui.dialog.link;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Window;
-import java.text.MessageFormat;
-
+import org.openmarkov.core.model.graph.Link;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.gui.localize.StringDatabase;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.Node;
+
+import java.awt.*;
+import java.text.MessageFormat;
 
 /**
  * This class implements the link restriction dialog box for the edition of link
  * restrictions.
- * 
  */
 
-@SuppressWarnings("serial")
-public class LinkRestrictionEditDialog extends
-		OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class LinkRestrictionEditDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	/****
 	 * The link containing the link restrictions
@@ -58,9 +53,8 @@ public class LinkRestrictionEditDialog extends
 		String title = "";
 		if (link != null) {
 			MessageFormat messageForm = new MessageFormat(
-					StringDatabase.getUniqueInstance ().getString("LinkRestrictionDialog.Title.Label"));
-			Object[] labelArgs = new Object[] { node1.getName(),
-					node2.getName() };
+					StringDatabase.getUniqueInstance().getString("LinkRestrictionDialog.Title.Label"));
+			Object[] labelArgs = new Object[] { node1.getName(), node2.getName() };
 			title = messageForm.format(labelArgs);
 		}
 		setTitle(title);
@@ -75,8 +69,7 @@ public class LinkRestrictionEditDialog extends
 	private void configureComponentsPanel() {
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
 
-		getComponentsPanel()
-				.add(getLinkRestrictionPanel(), BorderLayout.CENTER);
+		getComponentsPanel().add(getLinkRestrictionPanel(), BorderLayout.CENTER);
 	}
 
 	private ProbabilityTablePanel getLinkRestrictionPanel() {
@@ -89,7 +82,7 @@ public class LinkRestrictionEditDialog extends
 
 	/**
 	 * @return An integer indicating the button clicked by the user when closing
-	 *         this dialog
+	 * this dialog
 	 */
 	public int requestValues() {
 		setVisible(true);
@@ -99,21 +92,18 @@ public class LinkRestrictionEditDialog extends
 	/**
 	 * This method carries out the actions when the user presses the OK button
 	 * before hiding the dialog.
-	 * 
+	 *
 	 * @return true if all the fields are correct.
-
 	 */
-	@Override
-	protected boolean doOkClickBeforeHide() {
-	
+	@Override protected boolean doOkClickBeforeHide() {
+
 		getLinkRestrictionPanel().close();
 		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}
 
-	@Override
-	protected void doCancelClickBeforeHide() {
-	
+	@Override protected void doCancelClickBeforeHide() {
+
 		link.getNode1().getProbNet().getPNESupport().closeParenthesis();
 
 	}

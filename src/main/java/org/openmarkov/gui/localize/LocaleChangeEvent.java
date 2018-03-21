@@ -7,13 +7,12 @@
 
 package org.openmarkov.gui.localize;
 
-
 import java.util.EventObject;
 import java.util.Locale;
 
 /**
  * Event for Locale Changes in the OPENMARKOV project
- * 
+ *
  * @author jlgozalo
  * @version 1.0 26 Jun 2009
  */
@@ -27,37 +26,37 @@ public class LocaleChangeEvent extends EventObject {
 	 * the language of the locale
 	 */
 	private String language = "";
-	/** 
+	/**
 	 * the locale
 	 */
 	private Locale locale = null;
 
 	/**
-	 * default LocaleChangeEvent constructor when the language is set. In this 
+	 * default LocaleChangeEvent constructor when the language is set. In this
 	 * case, the locale for the LocaleChangeEvent is internally set.
-	 * 
+	 *
 	 * @param language
 	 */
 	public LocaleChangeEvent(Object source, final String language) {
 
 		super(source);
 		this.language = language;
-		if (language.equals(Locale.ENGLISH.getLanguage ())) {
+		if (language.equals(Locale.ENGLISH.getLanguage())) {
 			locale = Locale.ENGLISH;
-		} else if (language.equals("es")) { 
+		} else if (language.equals("es")) {
 			locale = new Locale("es");
 		} else {
 			//System.out.println("LocaleChangeEvent failure for locale " 
 			//                   + locale.toString() + ": not defined");
 			//System.out.println("Setting english as default locale...");
 			locale = Locale.ENGLISH;
+		}
 	}
-}
 
 	/**
-	 * default LocaleChangeEvent constructor when the locale is set. In this 
+	 * default LocaleChangeEvent constructor when the locale is set. In this
 	 * case, the language for the LocaleChangeEvent is internally set.
-	 * 
+	 *
 	 * @param locale
 	 */
 	public LocaleChangeEvent(Object source, final Locale locale) {
@@ -66,7 +65,7 @@ public class LocaleChangeEvent extends EventObject {
 		this.locale = locale;
 		if (locale.equals(Locale.ENGLISH)) {
 			language = "en";
-		} else if (locale.toString().equals("es")) { 
+		} else if (locale.toString().equals("es")) {
 			language = "es";
 		} else {
 			//System.out.println("LocaleChangeEvent failure for locale " 
@@ -76,6 +75,7 @@ public class LocaleChangeEvent extends EventObject {
 		}
 
 	}
+
 	/**
 	 * get the language of the LocaleChangeEvent
 	 */
@@ -84,12 +84,11 @@ public class LocaleChangeEvent extends EventObject {
 		return language;
 	}
 
-	
 	/**
 	 * @return the locale
 	 */
 	public Locale getLocale() {
-	
+
 		return locale;
 	}
 }

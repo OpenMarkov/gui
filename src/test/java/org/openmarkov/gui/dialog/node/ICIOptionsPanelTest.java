@@ -7,28 +7,27 @@
 
 package org.openmarkov.gui.dialog.node;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.constraint.NoCycle;
+import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.constraint.NoCycle;
-import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-
 /**
  * This class tests the TablePotentialPanelTest class (not the visual
  * behavior).
- * 
+ *
  * @author jlgozalo
  * @author carmenyago -->changed the tablePotential of U for a ExactDistrPotential; minor changes
  * @version 1.0
@@ -37,20 +36,17 @@ public class ICIOptionsPanelTest {
 
 	ICIOptionsPanel panel = null;
 
-	private  ProbNet probNet = null;
-	private  Node node = null;
+	private ProbNet probNet = null;
+	private Node node = null;
 	private Variable A;
 	private Variable B;
 	private Variable U;
 	private Variable D;
-	
 
-	@Before
-	public void setUp() throws Exception {
- 
-	
+	@Before public void setUp() throws Exception {
+
 		panel = new ICIOptionsPanel(false);
-		
+
 		probNet = createSimpleProbNet();
 		node = probNet.getNodes().get(0);
 	}
@@ -58,8 +54,7 @@ public class ICIOptionsPanelTest {
 	/**
 	 * test to verify the getter and setter methods (non visual elements)
 	 */
-	@Test
-	public void testGetterAndSetters() {
+	@Test public void testGetterAndSetters() {
 
 		assertFalse(panel.isNewNode());
 		panel.setNewNode(true);
@@ -69,7 +64,7 @@ public class ICIOptionsPanelTest {
 
 	/**
 	 * auxiliary class to create a simple ProbNet
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public ProbNet createSimpleProbNet() throws Exception {
@@ -87,7 +82,7 @@ public class ICIOptionsPanelTest {
 		ExactDistrPotential pU;
 		// CMF
 		ProbNet simpleProbNet;
-		
+
 		// create simpleProbNet
 		// create variables
 		A = new Variable("A", 2);
@@ -97,7 +92,7 @@ public class ICIOptionsPanelTest {
 		// create Arrays of variables used in potentials
 		aVariables = new ArrayList<Variable>(1);
 		aVariables.add(A);
-		
+
 		abVariables = new ArrayList<Variable>(2);
 		abVariables.add(B);
 		abVariables.add(A);
@@ -113,12 +108,10 @@ public class ICIOptionsPanelTest {
 		uadVariables.add(D);
 		//CMF
 		// create potentials
-		pA = new TablePotential(aVariables,
-				PotentialRole.CONDITIONAL_PROBABILITY);
+		pA = new TablePotential(aVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pA.values[0] = 0.9;
 		pA.values[1] = 0.1;
-		pBA = new TablePotential(abVariables, 
-				PotentialRole.CONDITIONAL_PROBABILITY);
+		pBA = new TablePotential(abVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		pBA.values[0] = 0.2;
 		pBA.values[1] = 0.8;
 		pBA.values[2] = 0.9;
@@ -129,9 +122,8 @@ public class ICIOptionsPanelTest {
 				PotentialRole.CONDITIONAL_PROBABILITY);
 		pU.setUtilityVariable(U);
 		*/
-	
-		pU = new ExactDistrPotential(uadVariables,
-				PotentialRole.CONDITIONAL_PROBABILITY);
+
+		pU = new ExactDistrPotential(uadVariables, PotentialRole.CONDITIONAL_PROBABILITY);
 		//CMF
 		//CMI adding values to pU.getTablePotential
 		/*
@@ -154,9 +146,9 @@ public class ICIOptionsPanelTest {
 		simpleProbNet.addPotential(pU);
 		simpleProbNet.addPotential(pBA);
 		simpleProbNet.addLink(B, D, true);
-        //network = new ProbNet(simpleProbNet);
+		//network = new ProbNet(simpleProbNet);
 		//additionalProperties.setNetwork(simpleProbNet);
-		
+
 		return simpleProbNet;
 	}
 

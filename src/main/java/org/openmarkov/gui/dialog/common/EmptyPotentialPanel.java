@@ -6,30 +6,23 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import java.awt.BorderLayout;
-
 import org.openmarkov.core.model.network.Node;
 
-@SuppressWarnings("serial")
-@PotentialPanelPlugin(potentialType="Uniform")
-public class EmptyPotentialPanel extends PotentialPanel 
-{
-    public EmptyPotentialPanel(Node node)
-    {
-    	setLayout(new BorderLayout());
-    }
+import java.awt.*;
 
-    @Override
-    public void setData (Node node)
-    {
-        // TODO Auto-generated method stub
-        
-    }
+@SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Uniform") public class EmptyPotentialPanel
+		extends PotentialPanel {
+	public EmptyPotentialPanel(Node node) {
+		setLayout(new BorderLayout());
+	}
 
-    @Override
-    public void close ()
-    {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override public void setData(Node node) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override public void close() {
+		// TODO Auto-generated method stub
+
+	}
 }

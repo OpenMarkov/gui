@@ -7,16 +7,12 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-
+import javax.swing.*;
 
 /**
  * MenuNode encapsulates the definition for a entry in the OpenMarkov Menu when
  * reading from files prior to generate the definitive JMenuXX components.
- * 
+ *
  * @author jlgozalo
  * @version 1.0 18/11/2008
  */
@@ -40,11 +36,9 @@ public class MenuNode {
 
 	/**
 	 * constructor
-	 * 
-	 * @param name
-	 *            name of the node of the menu
-	 * @param object
-	 *            kind of object to store
+	 *
+	 * @param name   name of the node of the menu
+	 * @param object kind of object to store
 	 */
 	public MenuNode(String name, JComponent object) {
 
@@ -64,8 +58,7 @@ public class MenuNode {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param name the name to set
 	 */
 	public void setName(String name) {
 
@@ -81,8 +74,7 @@ public class MenuNode {
 	}
 
 	/**
-	 * @param object
-	 *            the object to set
+	 * @param object the object to set
 	 */
 	public void setObject(JComponent object) {
 
@@ -98,8 +90,7 @@ public class MenuNode {
 	}
 
 	/**
-	 * @param list
-	 *            the list to set
+	 * @param list the list to set
 	 */
 	public void setList(MenuNodeLinkedList list) {
 

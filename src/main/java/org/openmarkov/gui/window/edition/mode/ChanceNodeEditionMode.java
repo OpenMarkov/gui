@@ -6,17 +6,14 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
-import org.openmarkov.gui.window.edition.EditorPanel;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.gui.window.edition.EditorPanel;
 
-@EditionState(name="Edit.Mode.Chance", icon="chance.gif", cursor="chance.gif")
-public class ChanceNodeEditionMode extends NodeEditionMode
-{
+@EditionState(name = "Edit.Mode.Chance", icon = "chance.gif", cursor = "chance.gif") public class ChanceNodeEditionMode
+		extends NodeEditionMode {
 
-    public ChanceNodeEditionMode (EditorPanel editorPanel,
-                                  ProbNet probNet)
-    {
-        super (editorPanel, probNet, NodeType.CHANCE);
-    }
+	public ChanceNodeEditionMode(EditorPanel editorPanel, ProbNet probNet) {
+		super(editorPanel, probNet, NodeType.CHANCE);
+	}
 }

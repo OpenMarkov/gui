@@ -7,20 +7,17 @@
 
 package org.openmarkov.gui.window.message;
 
-
-import java.awt.Color;
-
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
+import java.awt.*;
 
 /**
  * This class implements a non editable area where appear the data stream
  * destined for the standard output and standar error.
- * 
+ *
  * @author jmendoza
  * @version 1.0 jmendoza
  */
@@ -75,34 +72,30 @@ public class NonEditableTextArea extends JTextPane implements MessageArea {
 
 	/**
 	 * Writes an information message in the text area.
-	 * 
-	 * @param message
-	 *            text to write.
+	 *
+	 * @param message text to write.
 	 */
 	public void writeInformationMessage(String message) {
 
 		StyleConstants.setForeground(attributeSet, normalMessageColor);
 		// ESCA-JAVA0008: allows an empty catch block in the method
 		try {
-			styledDocument.insertString(
-				styledDocument.getLength(), message, attributeSet);
+			styledDocument.insertString(styledDocument.getLength(), message, attributeSet);
 		} catch (BadLocationException e) {
 		}
 	}
 
 	/**
 	 * Writes an error message in the text area.
-	 * 
-	 * @param message
-	 *            text to write.
+	 *
+	 * @param message text to write.
 	 */
 	public void writeErrorMessage(String message) {
 
 		StyleConstants.setForeground(attributeSet, errorMessageColor);
 		// ESCA-JAVA0008: allows an empty catch block in the method
 		try {
-			styledDocument.insertString(
-				styledDocument.getLength(), message, attributeSet);
+			styledDocument.insertString(styledDocument.getLength(), message, attributeSet);
 		} catch (BadLocationException e) {
 		}
 	}

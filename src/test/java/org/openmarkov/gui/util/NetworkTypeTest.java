@@ -7,18 +7,17 @@
 
 package org.openmarkov.gui.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashSet;
-
 import org.junit.Test;
 import org.openmarkov.core.model.network.NodeType;
 
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the class {@link NetworkType}.
- * 
+ *
  * @author jmendoza
  */
 public class NetworkTypeTest {
@@ -26,8 +25,7 @@ public class NetworkTypeTest {
 	 * This method tests the type of nodes that can be inserted into each type
 	 * of network.
 	 */
-	@Test
-	public final void testGetNodeTypes() {
+	@Test public final void testGetNodeTypes() {
 		HashSet<NodeType> nodeTypes;
 
 		nodeTypes = NetworkType.BAYESIAN_NET.getNodeTypes();

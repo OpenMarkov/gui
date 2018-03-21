@@ -7,21 +7,18 @@
 
 package org.openmarkov.gui.loader;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.util.MissingResourceException;
-
-import javax.swing.Icon;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmarkov.gui.loader.element.IconLoader;
 
+import javax.swing.*;
+import java.util.MissingResourceException;
 
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests the class {@link IconLoader}.
- * 
+ *
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo add test for Infinite Positive and negative icons
@@ -32,23 +29,19 @@ public class IconLoaderTest {
 	 */
 	private IconLoader loader = null;
 
-
 	/**
 	 * Creates a new icon loader for all tests.
 	 */
-	@Before
-	public void setUp() {
+	@Before public void setUp() {
 		this.loader = new IconLoader();
 	}
 
-
 	/**
 	 * This method tests the method 'load' when tries to load an icon.
-	 * 
+	 *
 	 * @throws MissingResourceException if any icon doesn't exist.
 	 */
-	@Test
-	public final void testLoad() throws MissingResourceException {
+	@Test public final void testLoad() throws MissingResourceException {
 		Icon icon;
 
 		icon = this.loader.load(IconLoader.ICON_NEW_ENABLED);
@@ -109,12 +102,10 @@ public class IconLoaderTest {
 		//assertNotNull(icon);
 	}
 
-
 	/**
 	 * This method tests the method 'load' when tries to load an incorrect icon.
 	 */
-	@Test(expected = MissingResourceException.class)
-	public final void testWrongLoad() {
+	@Test(expected = MissingResourceException.class) public final void testWrongLoad() {
 		this.loader.load("incorrect.gif");
 	}
 }

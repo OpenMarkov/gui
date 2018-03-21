@@ -7,13 +7,11 @@
 
 package org.openmarkov.gui.window.edition;
 
-
 /**
  * This class is used to translate the coordinates of the screen to the
  * coordinates of a panel, according to a zoom value.
- * 
+ *
  * @author jmendoza
- * @version 1.0
  * @version 1.1 jlgozalo - fix constants values adding final modifiers
  */
 public class Zoom {
@@ -49,9 +47,8 @@ public class Zoom {
 
 	/**
 	 * Constructor that sets the zoom value.
-	 * 
-	 * @param newZoom
-	 *            new zoom value.
+	 *
+	 * @param newZoom new zoom value.
 	 */
 	public Zoom(final double newZoom) {
 
@@ -65,7 +62,7 @@ public class Zoom {
 
 	/**
 	 * Return the zoom value.
-	 * 
+	 *
 	 * @return the zoom value of the object.
 	 */
 	public double getZoom() {
@@ -76,9 +73,8 @@ public class Zoom {
 
 	/**
 	 * Sets the zoom value.
-	 * 
-	 * @param value
-	 *            new value of zoom.
+	 *
+	 * @param value new value of zoom.
 	 */
 	public void setZoom(double value) {
 
@@ -96,9 +92,8 @@ public class Zoom {
 	 * Converts a component of a coordinate of the screen to a component of a
 	 * coordinate in the panel. The result must be rounded because if not, a
 	 * little variation is added if the zoom isn't 1.0.
-	 * 
-	 * @param value
-	 *            a component of a coordinate of the screen.
+	 *
+	 * @param value a component of a coordinate of the screen.
 	 * @return a component of a coordinate of the panel.
 	 */
 	public double screenToPanel(double value) {
@@ -111,9 +106,8 @@ public class Zoom {
 	 * Converts a component of a coordinate of the panel to a component of a
 	 * coordinate in the screen. The result must be rounded because if not, a
 	 * little variation is added if the zoom isn't 1.0.
-	 * 
-	 * @param value
-	 *            a component of a coordinate of the panel.
+	 *
+	 * @param value a component of a coordinate of the panel.
 	 * @return a component of a coordinate of the screen.
 	 */
 	public double panelToScreen(double value) {

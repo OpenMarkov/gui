@@ -7,13 +7,11 @@
 
 package org.openmarkov.gui.graphic;
 
-
 import java.awt.geom.Point2D;
-
 
 /**
  * This class represents a segment delimited by two points.
- * 
+ *
  * @author jmendoza
  * @version 1.0
  */
@@ -63,16 +61,12 @@ public class Segment {
 	/**
 	 * Allowed constructor. It calculates the ecuation of the line that contains
 	 * both points.
-	 * 
-	 * @param newStartPoint
-	 *            first edge of the segment.
-	 * @param newEndPoint
-	 *            second edge of the segment.
-	 * @throws IllegalArgumentException
-	 *             if both points are equals.
+	 *
+	 * @param newStartPoint first edge of the segment.
+	 * @param newEndPoint   second edge of the segment.
+	 * @throws IllegalArgumentException if both points are equals.
 	 */
-	public Segment(Point2D.Double newStartPoint, Point2D.Double newEndPoint)
-					throws IllegalArgumentException {
+	public Segment(Point2D.Double newStartPoint, Point2D.Double newEndPoint) throws IllegalArgumentException {
 
 		startPoint = newStartPoint;
 		endPoint = newEndPoint;
@@ -85,9 +79,7 @@ public class Segment {
 			b = newStartPoint.getX();
 		} else {
 			segmentType = SEGMENT_NORMAL;
-			m =
-				(newEndPoint.getY() - newStartPoint.getY())
-					/ (newEndPoint.getX() - newStartPoint.getX());
+			m = (newEndPoint.getY() - newStartPoint.getY()) / (newEndPoint.getX() - newStartPoint.getX());
 			b = newStartPoint.getY() - m * newStartPoint.getX();
 		}
 		length = newStartPoint.distance(newEndPoint);
@@ -96,7 +88,7 @@ public class Segment {
 
 	/**
 	 * Returns the first limit of the segment.
-	 * 
+	 *
 	 * @return the first limit of the segment.
 	 */
 	public Point2D.Double getStartPoint() {
@@ -107,7 +99,7 @@ public class Segment {
 
 	/**
 	 * Returns the second limit of the segment.
-	 * 
+	 *
 	 * @return the second limit of the segment.
 	 */
 	public Point2D.Double getEndPoint() {
@@ -118,7 +110,7 @@ public class Segment {
 
 	/**
 	 * Returns the value of the constant 'm' in the expression 'y = mx + b'.
-	 * 
+	 *
 	 * @return the value of 'm'.
 	 */
 	public double getM() {
@@ -129,7 +121,7 @@ public class Segment {
 
 	/**
 	 * Returns the value of the constant 'b' in the expression 'y = mx + b'.
-	 * 
+	 *
 	 * @return the value of 'b'.
 	 */
 	public double getB() {
@@ -140,7 +132,7 @@ public class Segment {
 
 	/**
 	 * Returns the type of the segment.
-	 * 
+	 *
 	 * @return segment type.
 	 */
 	public int getSegmentType() {
@@ -152,11 +144,10 @@ public class Segment {
 	/**
 	 * Returns the point where this segment and the parameter cut themselves.
 	 * Both segments are normal.
-	 * 
-	 * @param segment
-	 *            segment that cuts this one.
+	 *
+	 * @param segment segment that cuts this one.
 	 * @return a point where both segments have jointly or null if they have
-	 *         not.
+	 * not.
 	 */
 	private Point2D.Double cutPointNormalNormal(Segment segment) {
 
@@ -169,8 +160,7 @@ public class Segment {
 			resultY = m * resultX + b;
 			result = new Point2D.Double(resultX, resultY);
 
-			return (insideSegment(result) && segment.insideSegment(result))
-				? result : null;
+			return (insideSegment(result) && segment.insideSegment(result)) ? result : null;
 		}
 
 		return null;
@@ -180,11 +170,10 @@ public class Segment {
 	/**
 	 * Returns the point where this segment and the parameter cut themselves.
 	 * The segment passed as parameter is vertical.
-	 * 
-	 * @param segment
-	 *            segment that cuts this one.
+	 *
+	 * @param segment segment that cuts this one.
 	 * @return a point where both segments have jointly or null if they have
-	 *         not.
+	 * not.
 	 */
 	private Point2D.Double cutPointNormalVertical(Segment segment) {
 
@@ -192,25 +181,23 @@ public class Segment {
 		double resultY = m * resultX + b;
 		Point2D.Double result = new Point2D.Double(resultX, resultY);
 
-		return (insideSegment(result) && segment.insideSegment(result))
-			? result : null;
+		return (insideSegment(result) && segment.insideSegment(result)) ? result : null;
 
 	}
 
 	/**
 	 * Returns the point where this segment and the parameter cut themselves.
-	 * 
-	 * @param segment
-	 *            segment that cuts this one.
+	 *
+	 * @param segment segment that cuts this one.
 	 * @return a point that both segments have jointly or null if they have not.
 	 */
 	public Point2D.Double cutPoint(Segment segment) {
 
 		if (segmentType == SEGMENT_NORMAL) {
 
-			return (segment.getSegmentType() == SEGMENT_NORMAL)
-				? cutPointNormalNormal(segment)
-				: cutPointNormalVertical(segment);
+			return (segment.getSegmentType() == SEGMENT_NORMAL) ?
+					cutPointNormalNormal(segment) :
+					cutPointNormalVertical(segment);
 		} else if (segment.getSegmentType() == SEGMENT_NORMAL) {
 			return segment.cutPoint(this);
 		} else {
@@ -222,13 +209,11 @@ public class Segment {
 	/**
 	 * Returns the point(s) where a segment and a circle cut themselves. The
 	 * segment is horizontal.
-	 * 
-	 * @param segment
-	 *            horizontal segment that cuts the circle.
-	 * @param circleRadius
-	 *            radius of the circle that cuts this segment.
+	 *
+	 * @param segment      horizontal segment that cuts the circle.
+	 * @param circleRadius radius of the circle that cuts this segment.
 	 * @return an array which contains the points that the circle and the
-	 *         segment have jointly or null if they haven't.
+	 * segment have jointly or null if they haven't.
 	 */
 	private Point2D.Double[] cutPointVertical(Segment segment, double circleRadius) {
 
@@ -251,8 +236,7 @@ public class Segment {
 		}
 		if (point1 != null) {
 
-			return (point2 != null) ? new Point2D.Double[] { point1, point2 }
-				: new Point2D.Double[] { point1 };
+			return (point2 != null) ? new Point2D.Double[] { point1, point2 } : new Point2D.Double[] { point1 };
 		}
 
 		return (point2 != null) ? new Point2D.Double[] { point2 } : null;
@@ -262,13 +246,11 @@ public class Segment {
 	/**
 	 * Returns the point(s) where this segment and the circle cut themselves.
 	 * The segment is horizontal.
-	 * 
-	 * @param segment
-	 *            vertical segment that cuts the circle.
-	 * @param circleRadius
-	 *            radius of the circle that cuts this segment.
+	 *
+	 * @param segment      vertical segment that cuts the circle.
+	 * @param circleRadius radius of the circle that cuts this segment.
 	 * @return an array which contains the points that the circle and the
-	 *         segment have jointly or null if they haven't.
+	 * segment have jointly or null if they haven't.
 	 */
 	private Point2D.Double[] cutPointHorizontal(Segment segment, double circleRadius) {
 
@@ -299,8 +281,7 @@ public class Segment {
 		}
 		if (point1 != null) {
 
-			return (point2 != null) ? new Point2D.Double[] { point1, point2 }
-				: new Point2D.Double[] { point1 };
+			return (point2 != null) ? new Point2D.Double[] { point1, point2 } : new Point2D.Double[] { point1 };
 		}
 
 		return (point2 != null) ? new Point2D.Double[] { point2 } : null;
@@ -309,13 +290,11 @@ public class Segment {
 
 	/**
 	 * Returns the point(s) where this segment and the circle cut themselves.
-	 * 
-	 * @param circleCenter
-	 *            center of the circle that cuts this segment.
-	 * @param circleRadius
-	 *            radius of the circle that cuts this segment.
+	 *
+	 * @param circleCenter center of the circle that cuts this segment.
+	 * @param circleRadius radius of the circle that cuts this segment.
 	 * @return an array which contains the points that the circle and the
-	 *         segment have jointly or null if they haven't.
+	 * segment have jointly or null if they haven't.
 	 */
 	public Point2D.Double[] cutPoint(Point2D.Double circleCenter, double circleRadius) {
 
@@ -325,10 +304,8 @@ public class Segment {
 		Point2D.Double[] points;
 
 		try {
-			segment =
-				new Segment(new Point2D.Double(startPoint.getX() - cx,
-					startPoint.getY() - cy), new Point2D.Double(endPoint.getX()
-					- cx, endPoint.getY() - cy));
+			segment = new Segment(new Point2D.Double(startPoint.getX() - cx, startPoint.getY() - cy),
+					new Point2D.Double(endPoint.getX() - cx, endPoint.getY() - cy));
 		} catch (IllegalArgumentException e) {
 
 			return null;
@@ -351,9 +328,8 @@ public class Segment {
 	/**
 	 * This method determines if the point of the line that contains the segment
 	 * is placed inside the segment.
-	 * 
-	 * @param point
-	 *            point of the line.
+	 *
+	 * @param point point of the line.
 	 * @return true if the point is placed inside the segment, false if not.
 	 */
 	private boolean insideSegment(Point2D.Double point) {
@@ -365,10 +341,8 @@ public class Segment {
 
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return startPoint + " -- " + endPoint;
 	}
-	
-	
+
 }

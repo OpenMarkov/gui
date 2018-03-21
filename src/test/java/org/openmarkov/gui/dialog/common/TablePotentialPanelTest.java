@@ -7,11 +7,6 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -26,36 +21,38 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
-public class TablePotentialPanelTest extends TablePotentialPanel{
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class TablePotentialPanelTest extends TablePotentialPanel {
 
 	public TablePotentialPanelTest() throws NodeNotFoundException {
 		super(probNet.getNode("E"));
 	}
 
 	private static ProbNet probNet;
-	@BeforeClass
-	public static void setUp() throws Exception {
+
+	@BeforeClass public static void setUp() throws Exception {
 		probNet = buildpotential_panel_reordered_pgmx();
 	}
 
-	@Test
-	public void testHowManyRows() throws NodeNotFoundException{
-		assertEquals(this.howManyRows(probNet.getNode("E")),5); 
+	@Test public void testHowManyRows() throws NodeNotFoundException {
+		assertEquals(this.howManyRows(probNet.getNode("E")), 5);
 	}
-	
-	@Test
-	public void testNumberOfColumns(){
+
+	@Test public void testNumberOfColumns() {
 		assertTrue(this.columns.length == 17);
 	}
-	
-	@Test
-	public void testGetEvidenceCaseFromSelectedColumn(){
+
+	@Test public void testGetEvidenceCaseFromSelectedColumn() {
 		this.selectedColumn = 3;
 		EvidenceCase ec = this.getEvidenceCaseFromSelectedColumn();
 		String i = null;
-		for(Finding f : ec.getFindings()){
+		for (Finding f : ec.getFindings()) {
 			i = f.getVariable().getName();
-			switch(i){
+			switch (i) {
 			case "A":
 				assertTrue(f.getStateIndex() == 0);
 				break;
@@ -68,17 +65,16 @@ public class TablePotentialPanelTest extends TablePotentialPanel{
 			}
 		}
 	}
-	
-	@Test
-	public void testGetEvidenceCaseFromSelectedColumn2(){
+
+	@Test public void testGetEvidenceCaseFromSelectedColumn2() {
 		this.selectedColumn = 9;
 		EvidenceCase ec = this.getEvidenceCaseFromSelectedColumn();
-		
+
 		String i = null;
-		
-		for(Finding f : ec.getFindings()){
+
+		for (Finding f : ec.getFindings()) {
 			i = f.getVariable().getName();
-			switch(i){
+			switch (i) {
 			case "A":
 				assertTrue(f.getStateIndex() == 2);
 				break;
@@ -91,45 +87,46 @@ public class TablePotentialPanelTest extends TablePotentialPanel{
 			}
 		}
 	}
-	
 
-	private static ProbNet buildpotential_panel_reordered_pgmx () {
-		  ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
-		  // Variables
-		  Variable varA = new Variable("A", "absent", "mild", "moderate", "severe");
-		  Variable varB = new Variable("B", "no", "yes");
-		  Variable varC = new Variable("C", "negative", "positive");
-		  Variable varE = new Variable("E", "absent", "present");
+	private static ProbNet buildpotential_panel_reordered_pgmx() {
+		ProbNet probNet = new ProbNet(BayesianNetworkType.getUniqueInstance());
+		// Variables
+		Variable varA = new Variable("A", "absent", "mild", "moderate", "severe");
+		Variable varB = new Variable("B", "no", "yes");
+		Variable varC = new Variable("C", "negative", "positive");
+		Variable varE = new Variable("E", "absent", "present");
 
-		  // Nodes
-		  Node nodeA= probNet.addNode(varA, NodeType.CHANCE);
-		  Node nodeB= probNet.addNode(varB, NodeType.CHANCE);
-		  Node nodeC= probNet.addNode(varC, NodeType.CHANCE);
-		  Node nodeE= probNet.addNode(varE, NodeType.CHANCE);
+		// Nodes
+		Node nodeA = probNet.addNode(varA, NodeType.CHANCE);
+		Node nodeB = probNet.addNode(varB, NodeType.CHANCE);
+		Node nodeC = probNet.addNode(varC, NodeType.CHANCE);
+		Node nodeE = probNet.addNode(varE, NodeType.CHANCE);
 
-		  // Links
-		  probNet.makeLinksExplicit(false);
-		  probNet.addLink(nodeA, nodeE, true);
-		  probNet.addLink(nodeB, nodeE, true);
-		  probNet.addLink(nodeC, nodeE, true);
+		// Links
+		probNet.makeLinksExplicit(false);
+		probNet.addLink(nodeA, nodeE, true);
+		probNet.addLink(nodeB, nodeE, true);
+		probNet.addLink(nodeC, nodeE, true);
 
-		  // Potentials
-		  UniformPotential potA = new UniformPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		  nodeA.setPotential(potA);
+		// Potentials
+		UniformPotential potA = new UniformPotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeA.setPotential(potA);
 
-		  UniformPotential potB = new UniformPotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
-		  nodeB.setPotential(potB);
+		UniformPotential potB = new UniformPotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeB.setPotential(potB);
 
-		  UniformPotential potC = new UniformPotential(Arrays.asList(varC), PotentialRole.CONDITIONAL_PROBABILITY);
-		  nodeC.setPotential(potC);
+		UniformPotential potC = new UniformPotential(Arrays.asList(varC), PotentialRole.CONDITIONAL_PROBABILITY);
+		nodeC.setPotential(potC);
 
-		  TablePotential potE = new TablePotential(Arrays.asList(varE, varA, varB, varC), PotentialRole.CONDITIONAL_PROBABILITY);
-		  potE.values = new double[]{0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.001, 0.999, 0, 1, 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6};
-		  nodeE.setPotential(potE);
+		TablePotential potE = new TablePotential(Arrays.asList(varE, varA, varB, varC),
+				PotentialRole.CONDITIONAL_PROBABILITY);
+		potE.values = new double[] { 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8,
+				0.001, 0.999, 0, 1, 0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.5, 0.5, 0.4, 0.6 };
+		nodeE.setPotential(potE);
 
-		  // Link restrictions and revealing states
-		  // Always observed nodes
+		// Link restrictions and revealing states
+		// Always observed nodes
 
-		 return probNet;
-		}
+		return probNet;
+	}
 }

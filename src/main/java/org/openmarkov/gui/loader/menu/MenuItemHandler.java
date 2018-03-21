@@ -11,15 +11,14 @@ package org.openmarkov.gui.loader.menu;
 /*
  * Interface
  */
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 
-import javax.swing.JMenuItem;
-
-
 /**
  * Menu XML uses this interface to notify client objects of MenuItem events.
- * 
+ *
  * @author jlgozalo
  * @version 1.0
  */

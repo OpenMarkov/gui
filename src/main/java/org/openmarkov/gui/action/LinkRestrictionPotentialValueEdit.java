@@ -14,8 +14,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-@SuppressWarnings("serial")
-public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
+@SuppressWarnings("serial") public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 
 	/**
 	 * The column of the table where is the potential
@@ -58,31 +57,26 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	 */
 	private TablePotential tablePotential;
 
-	public LinkRestrictionPotentialValueEdit(Link<Node> link, Integer newValue,
-			int row, int col) {
+	public LinkRestrictionPotentialValueEdit(Link<Node> link, Integer newValue, int row, int col) {
 		super(link.getNode1().getProbNet());
 		this.link = link;
 		this.node1 = link.getNode1();
 		this.node2 = link.getNode2();
 		this.col = col;
 		this.row = row;
-		this.tablePotential = (TablePotential) link
-		.getRestrictionsPotential();
+		this.tablePotential = (TablePotential) link.getRestrictionsPotential();
 		this.newValue = newValue;
-		this.lastTable = ((TablePotential) link.getRestrictionsPotential())
-				.getValues().clone();
+		this.lastTable = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		int numStates2 = node2.getVariable().getNumStates();
 		int stateIndex1 = col - 1;
 		int stateIndex2 = numStates2 - row;
 		State state1 = node1.getVariable().getStates()[stateIndex1];
 		State state2 = node2.getVariable().getStates()[stateIndex2];
 		link.setCompatibilityValue(state1, state2, this.newValue.intValue());
-		newTable = ((TablePotential) link.getRestrictionsPotential()).values
-				.clone();
+		newTable = ((TablePotential) link.getRestrictionsPotential()).values.clone();
 
 	}
 
@@ -91,8 +85,7 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		super.redo();
 		if (!link.hasRestrictions()) {
 			link.initializesRestrictionsPotential();
-			this.tablePotential = (TablePotential) link
-					.getRestrictionsPotential();
+			this.tablePotential = (TablePotential) link.getRestrictionsPotential();
 		}
 		tablePotential.setValues(newTable);
 		checkRestrictionPotential(newTable);
@@ -102,8 +95,7 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 		super.undo();
 		if (!link.hasRestrictions()) {
 			link.initializesRestrictionsPotential();
-			this.tablePotential = (TablePotential) link
-					.getRestrictionsPotential();
+			this.tablePotential = (TablePotential) link.getRestrictionsPotential();
 		}
 		tablePotential.setValues(lastTable);
 		checkRestrictionPotential(lastTable);
@@ -116,7 +108,7 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 	/**
 	 * Gets the row position associated to value edited if priorityList no
 	 * exists
-	 * 
+	 *
 	 * @return the position in the table
 	 */
 	public int getRowPosition() {
@@ -125,7 +117,7 @@ public class LinkRestrictionPotentialValueEdit extends SimplePNEdit {
 
 	/**
 	 * Gets the column where the value is edited
-	 * 
+	 *
 	 * @return the column edited
 	 */
 	public int getColumnPosition() {

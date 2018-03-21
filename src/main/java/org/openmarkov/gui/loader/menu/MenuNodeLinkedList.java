@@ -7,14 +7,12 @@
 
 package org.openmarkov.gui.loader.menu;
 
-
 import java.util.LinkedList;
-
 
 /**
  * MenuNodeLinkedList defines an object to manipulate MenuNode objects prior to
  * define the final menus in the OpenMarkov Tool
- * 
+ *
  * @author jlgozalo
  * @version 1.0 18/11/2008
  */
@@ -32,10 +30,10 @@ public class MenuNodeLinkedList {
 
 	/**
 	 * Look for the Menunode element in the list and returns the position
-	 * 
+	 *
 	 * @param menuNode Menunode element
 	 * @return the position of the first ocurrence of a MenuNode element equal
-	 *         to the specified element or -1 if no matching element is found
+	 * to the specified element or -1 if no matching element is found
 	 */
 	public int indexOf(MenuNode menuNode) {
 
@@ -45,10 +43,10 @@ public class MenuNodeLinkedList {
 	/**
 	 * Look for the name of the sName element in the list and returns the
 	 * position
-	 * 
+	 *
 	 * @param sName sName element
 	 * @return the position of the first ocurrence of a MenuNode element equal
-	 *         to the specified element or -1 if no matching element is found
+	 * to the specified element or -1 if no matching element is found
 	 */
 	public int indexOf(String sName) {
 
@@ -72,8 +70,7 @@ public class MenuNodeLinkedList {
 	}
 
 	/**
-	 * @param menuList
-	 *            the menuList to set
+	 * @param menuList the menuList to set
 	 */
 	public void setMenuList(LinkedList<MenuNode> menuList) {
 
@@ -110,7 +107,7 @@ public class MenuNodeLinkedList {
 
 	/**
 	 * toString method
-	 * 
+	 *
 	 * @return String the element
 	 */
 	public String toString() {

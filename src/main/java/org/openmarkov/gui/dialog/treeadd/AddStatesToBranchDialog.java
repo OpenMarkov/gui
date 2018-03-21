@@ -6,99 +6,93 @@
  */
 package org.openmarkov.gui.dialog.treeadd;
 
-import java.awt.BorderLayout;
-import java.awt.Window;
-
-import javax.swing.JPanel;
-
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
- * 
  * @author myebra
- * 
  */
-@SuppressWarnings("serial")
-public class AddStatesToBranchDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class AddStatesToBranchDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
-    private AddStatesCheckBoxPanel statesCheckBoxPanel;
-    private TreeADDBranch          treeADDBranch;
-    private TreeADDPotential       parentTreeADD;
+	private AddStatesCheckBoxPanel statesCheckBoxPanel;
+	private TreeADDBranch treeADDBranch;
+	private TreeADDPotential parentTreeADD;
 
-    public AddStatesToBranchDialog(Window owner, TreeADDBranch treeADDBranch,
-            TreeADDPotential parentTreeADD) {
-        super(owner);
-        this.treeADDBranch = treeADDBranch;
-        this.parentTreeADD = parentTreeADD;
-        // add(checkBoxPanel, BorderLayout.NORTH );
-        initialize();
-        setLocationRelativeTo(owner);
-        // setMinimumSize(new Dimension( 100, 100 ));
-        setResizable(true);
-        pack();
+	public AddStatesToBranchDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
+		super(owner);
+		this.treeADDBranch = treeADDBranch;
+		this.parentTreeADD = parentTreeADD;
+		// add(checkBoxPanel, BorderLayout.NORTH );
+		initialize();
+		setLocationRelativeTo(owner);
+		// setMinimumSize(new Dimension( 100, 100 ));
+		setResizable(true);
+		pack();
 
-    }
+	}
 
-    private void initialize() {
+	private void initialize() {
 
-        configureComponentsPanel();
-        pack();
-    }
+		configureComponentsPanel();
+		pack();
+	}
 
-    /**
-     * Sets up the panel where all components, except the buttons of the buttons
-     * panel, will be appear.
-     */
-    private void configureComponentsPanel() {
-        /*
-         * dialogStringResource =
-         * StringResourceLoader.getUniqueInstance().getBundleDialogs();
-         * messageStringResource =
-         * StringResourceLoader.getUniqueInstance().getBundleMessages();
-         * setTitle(dialogStringResource
-         * .getString("NodePotentialDialog.Title.Label"));
-         */
-        // getContentPane().setLayout (new BoxLayout(getContentPane(),
-        // BoxLayout.Y_AXIS));
+	/**
+	 * Sets up the panel where all components, except the buttons of the buttons
+	 * panel, will be appear.
+	 */
+	private void configureComponentsPanel() {
+		/*
+		 * dialogStringResource =
+		 * StringResourceLoader.getUniqueInstance().getBundleDialogs();
+		 * messageStringResource =
+		 * StringResourceLoader.getUniqueInstance().getBundleMessages();
+		 * setTitle(dialogStringResource
+		 * .getString("NodePotentialDialog.Title.Label"));
+		 */
+		// getContentPane().setLayout (new BoxLayout(getContentPane(),
+		// BoxLayout.Y_AXIS));
 
-        getComponentsPanel().setLayout(new BorderLayout(5, 5));
-        getComponentsPanel().add(getJPanelBranchStates(), BorderLayout.CENTER);
+		getComponentsPanel().setLayout(new BorderLayout(5, 5));
+		getComponentsPanel().add(getJPanelBranchStates(), BorderLayout.CENTER);
 
-    }
+	}
 
-    protected JPanel getJPanelBranchStates() {
+	protected JPanel getJPanelBranchStates() {
 
-        if (statesCheckBoxPanel == null) {
-            statesCheckBoxPanel = new AddStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
-            // statesCheckBoxPanel.setLayout( new FlowLayout() );
-            statesCheckBoxPanel.setName("jPanelBranchStates");
+		if (statesCheckBoxPanel == null) {
+			statesCheckBoxPanel = new AddStatesCheckBoxPanel(treeADDBranch, parentTreeADD);
+			// statesCheckBoxPanel.setLayout( new FlowLayout() );
+			statesCheckBoxPanel.setName("jPanelBranchStates");
 
-        }
-        return statesCheckBoxPanel;
-    }
+		}
+		return statesCheckBoxPanel;
+	}
 
-    public int requestValues() {
-        setVisible(true);
-        return selectedButton;
-    }
+	public int requestValues() {
+		setVisible(true);
+		return selectedButton;
+	}
 
-    /**
-     * This method carries out the actions when the user press the Ok button
-     * before hide the dialog.
-     * 
-     * @return true if the dialog box can be closed.
-     */
-    protected boolean doOkClickBeforeHide() {
-        return true;
-    }
+	/**
+	 * This method carries out the actions when the user press the Ok button
+	 * before hide the dialog.
+	 *
+	 * @return true if the dialog box can be closed.
+	 */
+	protected boolean doOkClickBeforeHide() {
+		return true;
+	}
 
-    /**
-     * This method carries out the actions when the user press the Cancel button
-     * before hide the dialog.
-     */
-    protected void doCancelClickBeforeHide() {
+	/**
+	 * This method carries out the actions when the user press the Cancel button
+	 * before hide the dialog.
+	 */
+	protected void doCancelClickBeforeHide() {
 
-    }
+	}
 }

@@ -7,41 +7,39 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Window;
-
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+
+import java.awt.*;
 
 /**
  * @author myebra
- *
  */
-@SuppressWarnings("serial")
-public class AddVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class AddVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	private AddVariablesCheckBoxPanel variableCheckBoxPanel;
 	private TreeADDBranch treeADDBranch;
 	private TreeADDPotential parentTreeADD;
-	
+
 	public AddVariablesDialog(Window owner, TreeADDBranch treeADDBranch, TreeADDPotential parentTreeADD) {
 		super(owner);
 		this.treeADDBranch = treeADDBranch;
 		this.parentTreeADD = parentTreeADD;
 		initialize();
 		setLocationRelativeTo(owner);
-		setMinimumSize(new Dimension( 100, 100 ));
+		setMinimumSize(new Dimension(100, 100));
 		setResizable(true);
 		pack();
-		
+
 	}
+
 	private void initialize() {
 
 		configureComponentsPanel();
 		pack();
 	}
+
 	/**
 	 * Sets up the panel where all components, except the buttons of the buttons
 	 * panel, will be appear.
@@ -54,36 +52,37 @@ public class AddVariablesDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		setTitle(dialogStringResource
 				.getString("NodePotentialDialog.Title.Label"));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		getComponentsPanel().add( getJPanelVariables(), BorderLayout.CENTER );
-		
+		getComponentsPanel().add(getJPanelVariables(), BorderLayout.CENTER);
+
 	}
-	
+
 	protected AddVariablesCheckBoxPanel getJPanelVariables() {
-	
+
 		if (variableCheckBoxPanel == null) {
 			variableCheckBoxPanel = new AddVariablesCheckBoxPanel(treeADDBranch, parentTreeADD);
 			//variableCheckBoxPanel.setLayout( new FlowLayout() );
-			variableCheckBoxPanel.setName( "jPanelPotentialVariables" );
-			
+			variableCheckBoxPanel.setName("jPanelPotentialVariables");
+
 		}
 		return variableCheckBoxPanel;
 
-		
 	}
+
 	public int requestValues() {
-		
+
 		setVisible(true);
-		
+
 		return selectedButton;
 	}
+
 	/**
 	 * This method carries out the actions when the user press the Ok button
 	 * before hide the dialog.
-	 * 
+	 *
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
-		
+
 		return true;
 	}
 

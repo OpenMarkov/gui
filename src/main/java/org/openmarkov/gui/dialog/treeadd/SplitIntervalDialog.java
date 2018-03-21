@@ -7,37 +7,34 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Window;
-
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+
+import java.awt.*;
+
 /**
- * 
  * @author myebra
- *
  */
 
-@SuppressWarnings("serial")
-public class SplitIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+@SuppressWarnings("serial") public class SplitIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 
 	private SplitIntervalPanel splitIntervalPanel;
 
-	
 	public SplitIntervalDialog(Window owner) {
 		super(owner);
 		initialize();
 		setLocationRelativeTo(owner);
-		setMinimumSize(new Dimension( 200, 200));
+		setMinimumSize(new Dimension(200, 200));
 		//setResizable(true);
 		pack();
-		
+
 	}
+
 	private void initialize() {
 		setTitle("Split Interval");
 		configureComponentsPanel();
 		pack();
 	}
+
 	/**
 	 * Sets up the panel where all components, except the buttons of the buttons
 	 * panel, will be appear.
@@ -50,40 +47,41 @@ public class SplitIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 		setTitle(dialogStringResource
 				.getString("NodePotentialDialog.Title.Label"));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
-		getComponentsPanel().add( getJPanelSplitInterval(), BorderLayout.CENTER );
-		
+		getComponentsPanel().add(getJPanelSplitInterval(), BorderLayout.CENTER);
+
 	}
-	
+
 	protected SplitIntervalPanel getJPanelSplitInterval() {
-	
+
 		if (splitIntervalPanel == null) {
 			splitIntervalPanel = new SplitIntervalPanel();
 			//splitIntervalPanel.setLayout( new FlowLayout() );
-			splitIntervalPanel.setName( "jPanelSplitInterval" );
-			
+			splitIntervalPanel.setName("jPanelSplitInterval");
+
 		}
 		return splitIntervalPanel;
 
-		
 	}
+
 	public int requestValues() {
-		
+
 		setVisible(true);
-		
+
 		return selectedButton;
 	}
+
 	/**
 	 * This method carries out the actions when the user press the Ok button
 	 * before hide the dialog.
-	 * 
+	 *
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
-		if (((SplitIntervalPanel)getJPanelSplitInterval()).getLimit().getText() == null) {
-			
+		if (((SplitIntervalPanel) getJPanelSplitInterval()).getLimit().getText() == null) {
+
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -92,7 +90,7 @@ public class SplitIntervalDialog extends OkCancelApplyUndoRedoHorizontalDialog {
 	 * before hide the dialog.
 	 */
 	protected void doCancelClickBeforeHide() {
-		
+
 	}
 
 }

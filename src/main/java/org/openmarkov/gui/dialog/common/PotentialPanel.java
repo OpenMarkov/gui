@@ -6,44 +6,39 @@
  */
 package org.openmarkov.gui.dialog.common;
 
+import org.openmarkov.core.model.network.Node;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
-import org.openmarkov.core.model.network.Node;
-
-@SuppressWarnings("serial")
-public abstract class PotentialPanel extends JPanel
-{
-    private List<PanelResizeEventListener> listeners;
+@SuppressWarnings("serial") public abstract class PotentialPanel extends JPanel {
+	private List<PanelResizeEventListener> listeners;
 	/**
 	 * If true, values inside the panel will not be editable
 	 */
 	private boolean readOnly;
-	
-	public PotentialPanel()
-	{
-	    listeners = new ArrayList<>();
+
+	public PotentialPanel() {
+		listeners = new ArrayList<>();
 	}
 
-    /**
-     * Fill the panel with the data from the node
-     * @param node
-     */
-    public abstract void setData (Node node);
-    
-    /**
-     * Modify the node according to the changes entered by the user in the panel
-     */
-    public boolean saveChanges()
-    {
-    	close();
-    	return true;
-    }
-    
-    
-    public abstract void close();
+	/**
+	 * Fill the panel with the data from the node
+	 *
+	 * @param node
+	 */
+	public abstract void setData(Node node);
+
+	/**
+	 * Modify the node according to the changes entered by the user in the panel
+	 */
+	public boolean saveChanges() {
+		close();
+		return true;
+	}
+
+	public abstract void close();
 
 	/**
 	 * @return the readOnly
@@ -58,25 +53,20 @@ public abstract class PotentialPanel extends JPanel
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
-	
-	public void suscribePanelResizeEventListener(PanelResizeEventListener listener)
-	{
-	    listeners.add(listener);
-	}
-	
-    public boolean unsuscribePanelResizeEventListener(PanelResizeEventListener listener)
-    {
-        return listeners.remove(listener);
-    }
-    
-    public void notifyPanelResizeEventListeners()
-    {
-        PanelResizeEvent event  = new PanelResizeEvent(this, getSize());
-        for(PanelResizeEventListener listener : listeners)
-        {
-            listener.panelSizeChanged(event);
-        }
-    }
 
-    
+	public void suscribePanelResizeEventListener(PanelResizeEventListener listener) {
+		listeners.add(listener);
+	}
+
+	public boolean unsuscribePanelResizeEventListener(PanelResizeEventListener listener) {
+		return listeners.remove(listener);
+	}
+
+	public void notifyPanelResizeEventListeners() {
+		PanelResizeEvent event = new PanelResizeEvent(this, getSize());
+		for (PanelResizeEventListener listener : listeners) {
+			listener.panelSizeChanged(event);
+		}
+	}
+
 }

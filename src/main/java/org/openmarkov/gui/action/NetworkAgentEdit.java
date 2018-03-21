@@ -7,57 +7,57 @@
 
 package org.openmarkov.gui.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <code>NetworkAgentEdit</code> is a simple edit that allow modify
  * the agents of a network
- * @author myebra
  *
+ * @author myebra
  */
-@SuppressWarnings("serial")
-public class NetworkAgentEdit extends SimplePNEdit {
-	
+@SuppressWarnings("serial") public class NetworkAgentEdit extends SimplePNEdit {
+
 	private String agentName;
 	private String newName;
 	private int agentIndex;
 	private StateAction stateAction;
 	//private StringsWithProperties lastAgents;
 	private List<StringWithProperties> lastAgents;
-	private Object [][]dataTable;
+	private Object[][] dataTable;
 	private List<Node> oldNodes;
 
-	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName, Object [][]dataTable) {
+	public NetworkAgentEdit(ProbNet probnet, StateAction stateAction, String newName, String agentName,
+			Object[][] dataTable) {
 		super(probnet);
 		//probNet.getPNESupport().setWithUndo(true);
 		this.agentName = agentName;
 		this.stateAction = stateAction;
 		this.newName = newName;
-		if(probnet.getAgents() != null){
+		if (probnet.getAgents() != null) {
 			//StringsWithProperties agents =  probnet.getAgents();
-			List<StringWithProperties> agents =  probnet.getAgents();
+			List<StringWithProperties> agents = probnet.getAgents();
 			//this.lastAgents = probnet.getAgents().copy();
 			this.lastAgents = new ArrayList<StringWithProperties>(probnet.getAgents());
-		}else {
+		} else {
 			this.lastAgents = probnet.getAgents();
 		}
 		this.dataTable = dataTable;
 		this.oldNodes = new ArrayList<Node>(probNet.getNodes());
 	}
 
-	@Override
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		//StringsWithProperties agents = probNet.getAgents();
 		List<StringWithProperties> agents = probNet.getAgents();
 		StringWithProperties agent = null;
-		switch (stateAction){
+		switch (stateAction) {
 		case ADD:
 			if (agents == null) {
 				//agents = new StringsWithProperties();
@@ -80,10 +80,10 @@ public class NetworkAgentEdit extends SimplePNEdit {
 				for (Node node : probNet.getNodes()) {
 					if (node.getVariable().getAgent().getString().equals(agentName)) {
 						node.getVariable().setAgent(null);
-					} 
+					}
 				}
 			}
-			
+
 			if (agents.size() == 0) {
 				agents = null;
 			}
@@ -94,7 +94,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			ArrayList<StringWithProperties> newAgentsDown = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
 				//newAgentsDown.put((String)dataTable[i][0]);
-				newAgentsDown.add(new StringWithProperties((String)dataTable[i][0]));
+				newAgentsDown.add(new StringWithProperties((String) dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsDown);
 			break;
@@ -103,7 +103,7 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			ArrayList<StringWithProperties> newAgentsUp = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
 				//newAgentsUp.put((String)dataTable[i][0]);
-				newAgentsUp.add(new StringWithProperties((String)dataTable[i][0]));
+				newAgentsUp.add(new StringWithProperties((String) dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsUp);
 			break;
@@ -113,17 +113,16 @@ public class NetworkAgentEdit extends SimplePNEdit {
 			ArrayList<StringWithProperties> newAgentsRename = new ArrayList<StringWithProperties>();
 			for (int i = 0; i < dataTable.length; i++) {
 				//newAgentsRename.put((String)dataTable[i][0]);
-				newAgentsRename.add(new StringWithProperties((String)dataTable[i][0]));
+				newAgentsRename.add(new StringWithProperties((String) dataTable[i][0]));
 			}
 			probNet.setAgents(newAgentsRename);
 			break;
-			
+
 		}
-		
-		
+
 	}
-	@Override
-	public void undo() {
+
+	@Override public void undo() {
 		super.undo();
 		probNet.setAgents(lastAgents);
 		//TODO restore agents in nodes

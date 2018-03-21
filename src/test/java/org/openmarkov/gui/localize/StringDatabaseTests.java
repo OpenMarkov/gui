@@ -7,53 +7,49 @@
 
 package org.openmarkov.gui.localize;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.MissingResourceException;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.MissingResourceException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests the classes
  * {@link StringDatabase} and
  * {@link StringBundle}.
- * 
+ *
  * @author jmendoza
- * @version 1.0
  * @author jlgozalo
  * @version 1.1 jlgozalo. modified as MissingErrorExpectedException is not longer
  * required
  */
 public class StringDatabaseTests {
 
-    StringDatabase stringDatabase = null; 
-    
-    @Before
-    public void setUp() throws Exception {
-        stringDatabase = StringDatabase.getUniqueInstance ();
-    }
+	StringDatabase stringDatabase = null;
+
+	@Before public void setUp() throws Exception {
+		stringDatabase = StringDatabase.getUniqueInstance();
+	}
+
 	/**
 	 * This method gets a correct string identified by its key from a string
 	 * resource.
-	 * 
+	 *
 	 * @param stringDatabase string resource from which the string is loaded.
-	 * @param key key of the string.
+	 * @param key            key of the string.
 	 * @throws MissingResourceException if the string can't be loaded from the
-	 * string resource.
+	 *                                  string resource.
 	 */
-	private void getCorrectString(StringDatabase stringDatabase, String key)
-			throws MissingResourceException {
+	private void getCorrectString(StringDatabase stringDatabase, String key) throws MissingResourceException {
 		assertNotNull(stringDatabase.getString(key));
 	}
-
 
 	/**
 	 * This method gets a string identified by its key from the buttons resorce
 	 * bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringButtons() throws MissingResourceException {
@@ -67,37 +63,32 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "Ok.Text.Label");
 	}
 
-
 	/**
 	 * This method tests the method getBundleButtons and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleButtons() throws MissingResourceException {
-	    StringDatabase.getUniqueInstance ().setLanguage("en");
+	@Test public final void testGetBundleButtons() throws MissingResourceException {
+		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringButtons();
-		StringDatabase.getUniqueInstance ().setLanguage("es");
+		StringDatabase.getUniqueInstance().setLanguage("es");
 		getStringButtons();
 	}
-
 
 	/**
 	 * This method tests the method getBundleButtons loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleButtonsWrong() {
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleButtonsWrong() {
+		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
-
 	/**
 	 * This method gets a string identified by its key from the dialogs resorce
 	 * bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringDialogs() throws MissingResourceException {
@@ -110,39 +101,34 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "Values.Text.Mnemonic");
 	}
 
-
 	/**
 	 * This method tests the method getBundleDialogs and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleDialogs() throws MissingResourceException {
-	    StringDatabase.getUniqueInstance ().setLanguage("en");
+	@Test public final void testGetBundleDialogs() throws MissingResourceException {
+		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringDialogs();
-		StringDatabase.getUniqueInstance ().setLanguage("es");
+		StringDatabase.getUniqueInstance().setLanguage("es");
 		getStringDialogs();
 	}
-
 
 	/**
 	 * This method tests the method getBundleDialogs loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleDialogsWrong() {
+	@Test public final void testGetBundleDialogsWrong() {
 
 		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
-		
-	}
 
+	}
 
 	/**
 	 * This method gets a string identified by its key from the menus resorce
 	 * bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMenus() throws MissingResourceException {
@@ -156,38 +142,33 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "View.Label");
 	}
 
-
 	/**
 	 * This method tests the method getBundleMenus and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleMenus() throws MissingResourceException {
-	    StringDatabase.getUniqueInstance ().setLanguage("en");
+	@Test public final void testGetBundleMenus() throws MissingResourceException {
+		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringMenus();
-		StringDatabase.getUniqueInstance ().setLanguage("es");
+		StringDatabase.getUniqueInstance().setLanguage("es");
 		getStringMenus();
 	}
-
 
 	/**
 	 * This method tests the method getBundleMenus loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleMenusWrong() {
+	@Test public final void testGetBundleMenusWrong() {
 
 		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
-
 	/**
 	 * This method gets a string identified by its key from the messages resorce
 	 * bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringMessages() throws MissingResourceException {
@@ -201,41 +182,36 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "SelectionVetoed.Text.Label");
 	}
 
-
 	/**
 	 * This method tests the method getBundleMessages and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleMessages() throws MissingResourceException {
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleMessages() throws MissingResourceException {
+		stringDatabase.setLanguage("en");
 		getStringMessages();
 		stringDatabase.setLanguage("es");
 		getStringMessages();
 	}
 
-
 	/**
 	 * This method tests the method getBundleMessages loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleMessagesWrong() {
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleMessagesWrong() {
+		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
-
 	/**
 	 * This method gets a string identified by its key from the selectables
 	 * resorce bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringSelectables() throws MissingResourceException {
-		
+
 		getCorrectString(stringDatabase, "absent.Text.Label");
 		getCorrectString(stringDatabase, "high.Text.Label");
 		getCorrectString(stringDatabase, "mild.Text.Label");
@@ -245,39 +221,33 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "yes.Text.Label");
 	}
 
-
 	/**
 	 * This method tests the method getBundleSelectables and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleSelectables()
-			throws MissingResourceException {
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleSelectables() throws MissingResourceException {
+		stringDatabase.setLanguage("en");
 		getStringSelectables();
 		stringDatabase.setLanguage("es");
 		getStringSelectables();
 	}
 
-
 	/**
 	 * This method tests the method getBundleSelectables loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleSelectablesWrong() {
-		
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleSelectablesWrong() {
+
+		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");
 	}
 
-
 	/**
 	 * This method gets a string identified by its key from the toolbars resorce
 	 * bundle.
-	 * 
+	 *
 	 * @throws MissingResourceException if any string doesn't exist.
 	 */
 	private void getStringToolBars() throws MissingResourceException {
@@ -291,27 +261,23 @@ public class StringDatabaseTests {
 		getCorrectString(stringDatabase, "UtilityCreation.ToolTip.Label");
 	}
 
-
 	/**
 	 * This method tests the method getBundleToolBars and setLanguage loading
 	 * various strings in English and Spanish.
-	 * 
+	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
-	@Test
-	public final void testGetBundleToolBars() throws MissingResourceException {
-	    stringDatabase.setLanguage("en");
+	@Test public final void testGetBundleToolBars() throws MissingResourceException {
+		stringDatabase.setLanguage("en");
 		getStringToolBars();
 		stringDatabase.setLanguage("es");
 		getStringToolBars();
 	}
 
-
 	/**
 	 * This method tests the method getBundleToolBars loading a wrong key.
 	 */
-	@Test
-	public final void testGetBundleToolBarsWrong() {
+	@Test public final void testGetBundleToolBarsWrong() {
 		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
 		assertEquals(string, ">>> incorrect <<<");

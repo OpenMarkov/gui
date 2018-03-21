@@ -7,15 +7,13 @@
 
 package org.openmarkov.gui.menutoolbar.common;
 
-
 /**
  * This class defines the constants used to identify the actions invoked by the
  * user.
- * 
+ *
  * @author jmendoza
- * @version 1.0 jmendoza
  * @version 1.1 jlgozalo Add help menus (previously to change to dynamic version),
- *    ficheros usados recientemente y cambios de lenguaje
+ * ficheros usados recientemente y cambios de lenguaje
  */
 public class ActionCommands {
 
@@ -37,29 +35,29 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to open a network.
 	 */
-	public static final String OPEN_LAST_1_FILE ="OpenLastRecentNetwork1";
+	public static final String OPEN_LAST_1_FILE = "OpenLastRecentNetwork1";
 	/**
 	 * Action invoked when the user wants to open a network.
 	 */
-	public static final String OPEN_LAST_2_FILE ="OpenLastRecentNetwork2";
+	public static final String OPEN_LAST_2_FILE = "OpenLastRecentNetwork2";
 	/**
 	 * Action invoked when the user wants to open a network.
 	 */
-	public static final String OPEN_LAST_3_FILE ="OpenLastRecentNetwork3";
+	public static final String OPEN_LAST_3_FILE = "OpenLastRecentNetwork3";
 	/**
 	 * Action invoked when the user wants to open a network.
 	 */
-	public static final String OPEN_LAST_4_FILE ="OpenLastRecentNetwork4";
+	public static final String OPEN_LAST_4_FILE = "OpenLastRecentNetwork4";
 	/**
 	 * Action invoked when the user wants to open a network.
 	 */
-	public static final String OPEN_LAST_5_FILE ="OpenLastRecentNetwork5";
+	public static final String OPEN_LAST_5_FILE = "OpenLastRecentNetwork5";
 
 	/**
 	 * Action invoked when the user wants to save a network.
 	 */
 	public static final String SAVE_NETWORK = "SaveNetwork";
-	
+
 	/**
 	 * Action invoked when the user wants to save and open newly the same network.
 	 */
@@ -75,17 +73,17 @@ public class ActionCommands {
 	 */
 	public static final String CLOSE_NETWORK = "CloseNetwork";
 
-    /**
-     * Action invoked when the user wants to load evidence.
-     */
-    public static final String LOAD_EVIDENCE = "LoadEvidence";
+	/**
+	 * Action invoked when the user wants to load evidence.
+	 */
+	public static final String LOAD_EVIDENCE = "LoadEvidence";
 
-    /**
-     * Action invoked when the user wants to save evidence.
-     */
-    public static final String SAVE_EVIDENCE = "SaveEvidence";
+	/**
+	 * Action invoked when the user wants to save evidence.
+	 */
+	public static final String SAVE_EVIDENCE = "SaveEvidence";
 
-    /**
+	/**
 	 * Action invoked when the user wants to edit the additionalProperties of a network.
 	 */
 	public static final String NETWORK_PROPERTIES = "NetworkProperties";
@@ -132,11 +130,11 @@ public class ActionCommands {
 	 */
 	public static final String SELECT_ALL = "SelectAll";
 
-    /**
-     * Prefix used for edition mode changes
-     */
-    public static final String EDITION_MODE_PREFIX = "Edit.Mode";
-	
+	/**
+	 * Prefix used for edition mode changes
+	 */
+	public static final String EDITION_MODE_PREFIX = "Edit.Mode";
+
 	/**
 	 * Action invoked when the user wants to activate the selection option.
 	 */
@@ -164,43 +162,43 @@ public class ActionCommands {
 	 * Action invoked when the user wants to activate the link creation option.
 	 */
 	public static final String LINK_CREATION = "Edit.Mode.Link";
-	
-    /**
-     * Action invoked when the user wants to mark an object as input parameter.
-     */
-    public static final String INSTANCE_CREATION = "Edit.Mode.Instance";        
 
-    //TODO OOPN start
-    /**
+	/**
 	 * Action invoked when the user wants to mark an object as input parameter.
 	 */
-	public static final String MARK_AS_INPUT = "MarkAsInput";		
+	public static final String INSTANCE_CREATION = "Edit.Mode.Instance";
 
-    /**
-     * Action invoked when the user wants to edit the class of the instance selected
-     */
-    public static final String EDIT_CLASS = "EditClass";       
+	//TODO OOPN start
+	/**
+	 * Action invoked when the user wants to mark an object as input parameter.
+	 */
+	public static final String MARK_AS_INPUT = "MarkAsInput";
 
-    /**
-     * Action invoked when the user wants to edit the name of an instance
-     */
-    public static final String EDIT_INSTANCE_NAME = "EditInstanceName";       
-    
-    /**
-     * Action invoked when the user wants to set the arity of the selected parameter
-     */
-    public static final String SET_ARITY = "Arity";       
+	/**
+	 * Action invoked when the user wants to edit the class of the instance selected
+	 */
+	public static final String EDIT_CLASS = "EditClass";
 
-    /**
-     * Action invoked when the user wants to set the arity of the selected parameter to one
-     */
-    public static final String SET_ARITY_ONE = "Arity.One";
-    
-    /**
-     * Action invoked when the user wants to set the arity of the selected parameter to one
-     */
-    public static final String SET_ARITY_MANY = "Arity.Many";
-    //TODO OOPN end
+	/**
+	 * Action invoked when the user wants to edit the name of an instance
+	 */
+	public static final String EDIT_INSTANCE_NAME = "EditInstanceName";
+
+	/**
+	 * Action invoked when the user wants to set the arity of the selected parameter
+	 */
+	public static final String SET_ARITY = "Arity";
+
+	/**
+	 * Action invoked when the user wants to set the arity of the selected parameter to one
+	 */
+	public static final String SET_ARITY_ONE = "Arity.One";
+
+	/**
+	 * Action invoked when the user wants to set the arity of the selected parameter to one
+	 */
+	public static final String SET_ARITY_MANY = "Arity.Many";
+	//TODO OOPN end
 
 	/**
 	 * Action invoked when the user wants to change the working mode by
@@ -208,13 +206,13 @@ public class ActionCommands {
 	 * (switching from Edition to Inference mode or vice versa).
 	 */
 	public static final String CHANGE_WORKING_MODE = "ChangeWorkingMode";
-	
+
 	/**
 	 * Action invoked when the user wants to change to inference mode
 	 * using the option in the Edit menu
 	 */
 	public static final String CHANGE_TO_INFERENCE_MODE = "ChangeToInferenceMode";
-	
+
 	/**
 	 * Action invoked when the user wants to change to edition mode
 	 * using the option in the Inference menu
@@ -225,27 +223,27 @@ public class ActionCommands {
 	 * Action invoked when the user wants to change the Expansion Threshold.
 	 */
 	public static final String SET_NEW_EXPANSION_THRESHOLD = "SetNewExpansionThreshold";
-	
+
 	/**
 	 * Action invoked when the user wants to create a new evidence case.
 	 */
 	public static final String CREATE_NEW_EVIDENCE_CASE = "CreateNewEvidenceCase";
-	
+
 	/**
 	 * Action invoked when the user wants to go to the first evidence case.
 	 */
 	public static final String GO_TO_FIRST_EVIDENCE_CASE = "GoToFirstEvidenceCase";
-	
+
 	/**
 	 * Action invoked when the user wants to go to the previous evidence case.
 	 */
 	public static final String GO_TO_PREVIOUS_EVIDENCE_CASE = "GoToPreviousEvidenceCase";
-	
+
 	/**
 	 * Action invoked when the user wants to go to the next evidence case.
 	 */
 	public static final String GO_TO_NEXT_EVIDENCE_CASE = "GoToNextEvidenceCase";
-	
+
 	/**
 	 * Action invoked when the user wants to go to the last evidence case.
 	 */
@@ -255,12 +253,12 @@ public class ActionCommands {
 	 * Action invoked when the user wants to clear out all evidence cases.
 	 */
 	public static final String CLEAR_OUT_ALL_EVIDENCE_CASES = "ClearOutAllEvidenceCases";
-	
+
 	/**
 	 * Action invoked when the user wants to propagate inference.
 	 */
 	public static final String PROPAGATE_EVIDENCE = "PropagateEvidence";
-	
+
 	/**
 	 * Action invoked when the user wants to undo an operation.
 	 */
@@ -275,46 +273,46 @@ public class ActionCommands {
 	 * Action invoked when the user wants to show the additionalProperties of a node.
 	 */
 	public static final String NODE_PROPERTIES = "NodeProperties";
-	
+
 	/**
 	 * Action invoked when the user wants to show the table of a node.
 	 */
 	public static final String EDIT_POTENTIAL = "NodePotential";
-		
-	/** 
+
+	/**
 	 * Action invoked when the user wants to impose a policy in a decision node.
 	 */
 	public static final String DECISION_IMPOSE_POLICY = "ImposePolicy";
-	
-	/** 
+
+	/**
 	 * Action invoked when the user wants to modify the policy of a decision node.
 	 */
 	public static final String DECISION_EDIT_POLICY = "EditPolicy";
-	
-	/** 
+
+	/**
 	 * Action invoked when the user wants to remove a policy from a decision node.
 	 */
 	public static final String DECISION_REMOVE_POLICY = "RemovePolicy";
-	
+
 	/**
 	 * Action invoked when the user wants to show the expected utility of a decision node.
 	 */
 	public static final String DECISION_SHOW_EXPECTED_UTILITY = "ShowExpectedUtility";
-	
+
 	/**
 	 * Action invoked when the user wants to show the optimal policy of a decision node.
 	 */
-	public static final String DECISION_SHOW_OPTIMAL_POLICY = "ShowOptimalPolicy"; 	
-	
-    /**
-     * Action invoked when the user wants to show the decision tree.
-     */
-    public static final String DECISION_TREE = "DecisionTree";  
-    
-    /**
-     * Action invoked when the user wants to show the optimal strategy of a decision node.
-     */
-    public static final String DECISION_SHOW_OPTIMAL_STRATEGY = "ShowOptimalStrategy";    
+	public static final String DECISION_SHOW_OPTIMAL_POLICY = "ShowOptimalPolicy";
+
+	/**
+	 * Action invoked when the user wants to show the decision tree.
+	 */
+	public static final String DECISION_TREE = "DecisionTree";
+
+	/**
+	 * Action invoked when the user wants to show the optimal strategy of a decision node.
+	 */
+	public static final String DECISION_SHOW_OPTIMAL_STRATEGY = "ShowOptimalStrategy";
 
 	/**
 	 * Action invoked for testing
@@ -325,28 +323,28 @@ public class ActionCommands {
 	 * Action invoked when the user wants to expand a node.
 	 */
 	public static final String NODE_EXPANSION = "NodeExpansion";
-	
+
 	/**
 	 * Action invoked when the user wants to contract a node.
 	 */
 	public static final String NODE_CONTRACTION = "NodeContraction";
-	
+
 	/**
 	 * Action invoked when the user wants to add a finding to a node.
 	 */
-	public static final String NODE_ADD_FINDING = "NodeAddFinding";	
+	public static final String NODE_ADD_FINDING = "NodeAddFinding";
 
 	/**
 	 * Action invoked when the user wants to remove a finding from a node.
 	 */
 	public static final String NODE_REMOVE_FINDING = "NodeRemoveFinding";
-	
+
 	/**
 	 * Action invoked when the user wants to remove all the finding of the
 	 * current evidence case
 	 */
-	public static final String NODE_REMOVE_ALL_FINDINGS = "NodeRemoveAllFindings"; 
-	
+	public static final String NODE_REMOVE_ALL_FINDINGS = "NodeRemoveAllFindings";
+
 	/**
 	 * Action invoked when the user wants to show the additionalProperties of a link.
 	 */
@@ -355,40 +353,38 @@ public class ActionCommands {
 	/****
 	 * Action invoked when the user wants to enable the linkRestrictions of a link.
 	 */
-	
+
 	public static final String LINK_RESTRICTION_ENABLE_PROPERTIES = "LinkRestrictionEnableProperties";
-	
-	
+
 	/****
 	 * Action invoked when the user wants to disable the linkRestrictions of a link.
 	 */
-	
+
 	public static final String LINK_RESTRICTION_DISABLE_PROPERTIES = "LinkRestrictionDisableProperties";
-	
+
 	/****
 	 * Action invoked when the user wants to disable the linkRestrictions of a link.
 	 */
-	
+
 	public static final String LINK_RESTRICTION_EDIT_PROPERTIES = "LinkRestrictionEditProperties";
-	
-	
+
 	/****
 	 * Action invoked when the user wants to show the revlationArc conditions of a link,
 	 */
-	
-	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
-	
-    /**
-     * Action invoked when the user wants to view a toolbar
-     */
-    public static final String VIEW_TOOLBARS = "View.Toolbars";
 
-    /**
+	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
+
+	/**
+	 * Action invoked when the user wants to view a toolbar
+	 */
+	public static final String VIEW_TOOLBARS = "View.Toolbars";
+
+	/**
 	 * Action invoked when the user wants to change the zoom of the panel to
 	 * another value.
 	 */
 	public static final String ZOOM_OTHER = "ZoomOther";
-    
+
 	/**
 	 * Action invoked when the user wants to increment the zoom of the panel.
 	 */
@@ -423,7 +419,7 @@ public class ActionCommands {
 	 * Action invoked when the user wants to learn a network.
 	 */
 	public static final String LEARNING = "Tools.Learning";
-	
+
 	/**
 	 * Action invoked when the user wants to obtain the optimal interventions.
 	 */
@@ -460,12 +456,12 @@ public class ActionCommands {
 	 * Action invoked when the user wants to configure OPENMARKOV options
 	 */
 	public static final String CONFIGURATION = "Tools.Configuration";
-	
+
 	/**
 	 * Action invoked when the user wants to set the inference options.
 	 */
 	public static final String PROPAGATION_OPTIONS = "PropagationOptions";
-	
+
 	/**
 	 * TODO - Action invoked when the user wants to set the multicriteria options
 	 */
@@ -475,7 +471,7 @@ public class ActionCommands {
 	 * TODO - Action invoked when the user wants to set the temporal options
 	 */
 	public static final String TEMPORAL_OPTIONS = "TemporalOptions";
-	
+
 	/**
 	 * Action invoked when the user wants to change the language
 	 */
@@ -485,18 +481,17 @@ public class ActionCommands {
 	 * Action invoked when the user wants to open the "About..."
 	 */
 	public static final String HELP_ABOUT = "Help.About";
-	
-	
+
 	/**
 	 * Action invoked when the user wants to assign uncertainty to potential
 	 */
 	public static final String UNCERTAINTY_ASSIGN = "Uncertainty.Assign";
-	
+
 	/**
 	 * Action invoked when the user wants to edit the uncertainty of potential
 	 */
 	public static final String UNCERTAINTY_EDIT = "Uncertainty.Edit";
-	
+
 	/**
 	 * Action invoked when the user wants to remove uncertainty on potential
 	 */
@@ -510,25 +505,24 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user selects another class to instantiate
 	 */
-	public static final String CHANGE_ACTIVE_CLASS = "PRM.ChangeActiveClass";	
-	
+	public static final String CHANGE_ACTIVE_CLASS = "PRM.ChangeActiveClass";
+
 	/**
 	 * Action invoked when the user selects temporal evolution menu item
 	 */
 	public static final String TEMPORAL_EVOLUTION_ACTION = "Temporal.Evolution";
-	
+
 	/**
-     * Action invoked when the user selects temporal evolution menu item
-     */
-    public static final String NEXT_SLICE_NODE = "Edit.NextSliceNode";    	
+	 * Action invoked when the user selects temporal evolution menu item
+	 */
+	public static final String NEXT_SLICE_NODE = "Edit.NextSliceNode";
 
 	/**
 	 * Checks if the action command corresponds to a zoom action command.
-	 * 
-	 * @param actionCommand
-	 *            action command.
+	 *
+	 * @param actionCommand action command.
 	 * @return true if the action command corresponds to a zoom action command;
-	 *         otherwise, false.
+	 * otherwise, false.
 	 */
 	public static boolean isZoomActionCommand(String actionCommand) {
 
@@ -537,8 +531,7 @@ public class ActionCommands {
 		if (actionCommand.length() < (lengthZoomPrefix + 1)) {
 
 			return false;
-		} else if (actionCommand.substring(0, lengthZoomPrefix).equals(
-			ZOOM_PREFIX)) {
+		} else if (actionCommand.substring(0, lengthZoomPrefix).equals(ZOOM_PREFIX)) {
 			try {
 				new Integer(actionCommand.substring(lengthZoomPrefix));
 			} catch (NumberFormatException e) {
@@ -553,28 +546,27 @@ public class ActionCommands {
 
 	/**
 	 * Returns the zoom value of a zoom action command.
-	 * 
-	 * @param actionCommand
-	 *            action command.
+	 *
+	 * @param actionCommand action command.
 	 * @return the value of zoom of the action command or 0 if the action
-	 *         command isn't a zoom menu item.
+	 * command isn't a zoom menu item.
 	 */
 	public static double getValueZoomActionCommand(String actionCommand) {
 
 		int lengthZoomPrefix = ZOOM_PREFIX.length();
 
-		return (isZoomActionCommand(actionCommand)) ? (new Double(actionCommand
-			.substring(lengthZoomPrefix)).doubleValue() / 100) : 0;
+		return (isZoomActionCommand(actionCommand)) ? (
+				new Double(actionCommand.substring(lengthZoomPrefix)).doubleValue() / 100
+		) : 0;
 
 	}
 
 	/**
 	 * Returns the action command associated with the specified zoom value.
-	 * 
-	 * @param zoom
-	 *            value of the zoom.
+	 *
+	 * @param zoom value of the zoom.
 	 * @return a string that represents an action command associated with the
-	 *         zoom value.
+	 * zoom value.
 	 */
 	public static String getZoomActionCommandValue(double zoom) {
 

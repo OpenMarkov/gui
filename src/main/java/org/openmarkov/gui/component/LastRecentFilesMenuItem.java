@@ -7,14 +7,12 @@
 
 package org.openmarkov.gui.component;
 
-
-import javax.swing.JMenuItem;
-
+import javax.swing.*;
 
 /**
  * This is a convenience class to distinguish between a normal MenuItem and the
  * LastRecentFile MenuItem lines (that will help for i18n working well).
- * 
+ *
  * @author jlgozalo
  * @version 1.0 25 Jul 2009
  */

@@ -11,16 +11,15 @@ package org.openmarkov.gui.loader.menu;
 /*
  * Interface
  */
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-
-import javax.swing.JComponent;
-
 
 /**
  * Menu XML uses this interface to notify client objects of ToolBar Component
  * events.
- * 
+ *
  * @author jlgozalo
  * @version 1.0
  */
@@ -29,8 +28,7 @@ public interface ToolBarItemHandler {
 	/**
 	 * Called when a ToolBarItem is activated.
 	 */
-	public void itemActivated(JComponent item, ActionEvent event,
-								String sCommand);
+	public void itemActivated(JComponent item, ActionEvent event, String sCommand);
 
 	/**
 	 * Called when a ToolBarItem is deselected.

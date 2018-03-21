@@ -7,16 +7,13 @@
 
 package org.openmarkov.gui.dialog;
 
-
-
+import javax.swing.*;
 import java.net.URL;
-
-import javax.swing.ImageIcon;
 
 /**
  * SplashScreenOpenMarkov Splash Screen Loader in OpenMarkov to prevent impatient user
  * and to show the progress of loading elements in the Main Program
- * 
+ *
  * @author jlgozalo
  * @version 1.0 16/11/2008
  */
@@ -27,10 +24,11 @@ public class SplashScreenLoader {
 	/**
 	 * the logo file
 	 */
-	private final String logoFile =	"images/OpenMarkovSplash.jpg" ;
-	
+	private final String logoFile = "images/OpenMarkovSplash.jpg";
+
 	/**
 	 * start the splash screen, do work and destroy
+	 *
 	 * @wbp.parser.entryPoint
 	 */
 	public SplashScreenLoader() {
@@ -42,23 +40,21 @@ public class SplashScreenLoader {
 
 	/**
 	 * This method draws on the splash screen.
+	 *
 	 * @wbp.parser.entryPoint
 	 */
 	public void splashScreenInit() {
 
 		// TODO externalize to OpenMarkov Properties the string for the icon
-		
-		
-		
+
 		URL url = this.getClass().getClassLoader().getResource(logoFile);
-		ImageIcon myImage =
-				new ImageIcon(url);
-			splash = new SplashScreen(myImage);
-			splash.setLocationRelativeTo(null);
-			splash.setProgressMax(100);
-			splash.setScreenVisible(true);
-	
-	}	
+		ImageIcon myImage = new ImageIcon(url);
+		splash = new SplashScreen(myImage);
+		splash.setLocationRelativeTo(null);
+		splash.setProgressMax(100);
+		splash.setScreenVisible(true);
+
+	}
 
 	/**
 	 * simulate the main program is being loaded
@@ -88,7 +84,7 @@ public class SplashScreenLoader {
 
 	/**
 	 * get splash
-	 * 
+	 *
 	 * @return aSplash The real splash screen
 	 * @wbp.parser.entryPoint
 	 */

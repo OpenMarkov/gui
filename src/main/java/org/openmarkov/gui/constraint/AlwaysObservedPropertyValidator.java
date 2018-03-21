@@ -7,8 +7,8 @@
 
 package org.openmarkov.gui.constraint;
 
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
 
 public class AlwaysObservedPropertyValidator {
