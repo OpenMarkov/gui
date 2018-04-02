@@ -91,15 +91,10 @@ import java.util.Map;
  * Management of multiple evidence cases.
  */
 public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener {
-	protected ProbNet probNet;
 	/**
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 2789011585460326400L;
-	/**
-	 * Object to convert coordinates of the screen to the panel and vice versa.
-	 */
-	protected Zoom zoom;
 	/**
 	 * Maximum width of the panel.
 	 */
@@ -108,7 +103,41 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * Maximum height of the panel.
 	 */
 	private static final double MAX_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 20;
-
+	/**
+	 * Constant that indicates the value of the Expansion Threshold by default.
+	 */
+	// This should be in a future a configuration option that should be read on
+	// start
+	private static final int DEFAULT_THRESHOLD_VALUE = 5;
+	protected ProbNet probNet;
+	/**
+	 * Object to convert coordinates of the screen to the panel and vice versa.
+	 */
+	protected Zoom zoom;
+	/**
+	 * Visual representation of the network
+	 */
+	protected VisualNetwork visualNetwork = null;
+	/**
+	 * Position of the mouse cursor when it is pressed.
+	 */
+	protected Point2D.Double cursorPosition = new Point2D.Double();
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * Object Dialog for potentials edition
+	 */
+	PotentialEditDialog potentialsDialog = null;
+	/****
+	 * Dialog for link restriction edition
+	 */
+	LinkRestrictionEditDialog linkRestrictionDialog = null;
+	/***
+	 * Dialog for revelation arc edition
+	 */
+	RevelationArcEditDialog revelationArcDialog = null;
 	/**
 	 * Maximum width of the panel.
 	 */
@@ -117,13 +146,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * Maximum height of the panel.
 	 */
 	private double currentHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 20;
-
-	/**
-	 * Constant that indicates the value of the Expansion Threshold by default.
-	 */
-	// This should be in a future a configuration option that should be read on
-	// start
-	private static final int DEFAULT_THRESHOLD_VALUE = 5;
 	/**
 	 * Current edition mode.
 	 */
@@ -185,14 +207,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	private boolean networkChanged = true;
 	/**
-	 * Visual representation of the network
-	 */
-	protected VisualNetwork visualNetwork = null;
-	/**
-	 * Position of the mouse cursor when it is pressed.
-	 */
-	protected Point2D.Double cursorPosition = new Point2D.Double();
-	/**
 	 * Listener that listen to the changes of size.
 	 */
 	private HashSet<EditorPanelSizeListener> sizeListeners = new HashSet<EditorPanelSizeListener>();
@@ -204,23 +218,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * Object that assists this panel in the operations with the clipboard.
 	 */
 	private EditorPanelClipboardAssistant clipboardAssistant = null;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	private EditionModeManager editionModeManager;
-	/**
-	 * Object Dialog for potentials edition
-	 */
-	PotentialEditDialog potentialsDialog = null;
-	/****
-	 * Dialog for link restriction edition
-	 */
-	LinkRestrictionEditDialog linkRestrictionDialog = null;
-	/***
-	 * Dialog for revelation arc edition
-	 */
-	RevelationArcEditDialog revelationArcDialog = null;
 	private boolean approximateInferenceWarningGiven = false;
 	private boolean canBeExpanded = false;
 
@@ -253,6 +251,19 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
+	 * This method requests to the user the additionalProperties of a network.
+	 *
+	 * @param owner   window that owns the dialog box.
+	 * @param probNet the network from where the properties are retrieved
+	 * @return true, if the user has made changes on the additionalProperties;
+	 * otherwise, false.
+	 */
+	public static boolean requestNetworkProperties(Window owner, ProbNet probNet) {
+		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
+		return (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON);
+	}
+
+	/**
 	 * This method initializes this instance.
 	 */
 	private void initialize() {
@@ -265,6 +276,16 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
+	 * Returns the presentation mode of the text of the nodes.
+	 *
+	 * @return true if the title of the nodes is the name or false if it is the
+	 * name.
+	 */
+	public boolean getByTitle() {
+		return visualNetwork.getByTitle();
+	}
+
+	/**
 	 * Changes the presentation mode of the text of the nodes.
 	 *
 	 * @param value new value of the presentation mode of the text of the nodes.
@@ -273,16 +294,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		visualNetwork.setByTitle(value);
 		adjustPanelDimension();
 		repaint();
-	}
-
-	/**
-	 * Returns the presentation mode of the text of the nodes.
-	 *
-	 * @return true if the title of the nodes is the name or false if it is the
-	 * name.
-	 */
-	public boolean getByTitle() {
-		return visualNetwork.getByTitle();
 	}
 
 	/**
@@ -522,6 +533,15 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
+	 * Returns the value of the zoom.
+	 *
+	 * @return actual value of zoom.
+	 */
+	public double getZoom() {
+		return zoom.getZoom();
+	}
+
+	/**
 	 * Changes the value of the zoom.
 	 *
 	 * @param value new zoom.
@@ -538,15 +558,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			adjustPanelDimension();
 			repaint();
 		}
-	}
-
-	/**
-	 * Returns the value of the zoom.
-	 *
-	 * @return actual value of zoom.
-	 */
-	public double getZoom() {
-		return zoom.getZoom();
 	}
 
 	/**
@@ -768,6 +779,14 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		return (linkRestrictionDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
 
+	// private boolean requestCostEffectiveness(Window owner,
+	// String suffixTypeAnalysis, boolean isProbabilistic) {
+	// costEffectivenessDialog = new CostEffectivenessDialog(owner);
+	// costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
+	// return (costEffectivenessDialog.requestData(probNet.getName(),
+	// suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
+	// }
+
 	/**
 	 * This method requests to the user the revelation arc properties of a link.
 	 *
@@ -780,14 +799,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		revelationArcDialog = new RevelationArcEditDialog(owner, link);
 		return (revelationArcDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
-
-	// private boolean requestCostEffectiveness(Window owner,
-	// String suffixTypeAnalysis, boolean isProbabilistic) {
-	// costEffectivenessDialog = new CostEffectivenessDialog(owner);
-	// costEffectivenessDialog.showSimulationsNumberElements(isProbabilistic);
-	// return (costEffectivenessDialog.requestData(probNet.getName(),
-	// suffixTypeAnalysis) == CostEffectivenessDialog.OK_BUTTON);
-	// }
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a link.
@@ -813,19 +824,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		if (!requestNetworkProperties(Utilities.getOwner(this), probNet)) {
 			probNet.getPNESupport().undoAndDelete();
 		}
-	}
-
-	/**
-	 * This method requests to the user the additionalProperties of a network.
-	 *
-	 * @param owner   window that owns the dialog box.
-	 * @param probNet the network from where the properties are retrieved
-	 * @return true, if the user has made changes on the additionalProperties;
-	 * otherwise, false.
-	 */
-	public static boolean requestNetworkProperties(Window owner, ProbNet probNet) {
-		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(owner, probNet);
-		return (dialogProperties.showProperties() == NetworkPropertiesDialog.OK_BUTTON);
 	}
 
 	/**
@@ -1244,10 +1242,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		return currentCase;
 	}
 
-	public EvidenceCase getPreResolutionEvidence() {
-		return preResolutionEvidence;
-	}
-
 	/**
 	 * This method sets which is the current evidence case.
 	 *
@@ -1255,6 +1249,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	public void setCurrentCase(int currentCase) {
 		this.currentCase = currentCase;
+	}
+
+	public EvidenceCase getPreResolutionEvidence() {
+		return preResolutionEvidence;
 	}
 
 	/**
@@ -1382,21 +1380,21 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
-	 * This method changes the current expansion threshold.
-	 *
-	 * @param expansionThreshold new value of the expansion threshold.
-	 */
-	public void setExpansionThreshold(double expansionThreshold) {
-		this.currentExpansionThreshold = expansionThreshold;
-	}
-
-	/**
 	 * This method returns the current expansion threshold.
 	 *
 	 * @return the value of the current expansion threshold.
 	 */
 	public double getExpansionThreshold() {
 		return currentExpansionThreshold;
+	}
+
+	/**
+	 * This method changes the current expansion threshold.
+	 *
+	 * @param expansionThreshold new value of the expansion threshold.
+	 */
+	public void setExpansionThreshold(double expansionThreshold) {
+		this.currentExpansionThreshold = expansionThreshold;
 	}
 
 	/**
@@ -2255,21 +2253,21 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
-	 * Sets a new visualNetwork.
-	 *
-	 * @param visualNetwork
-	 */
-	public void setVisualNetwork(VisualNetwork visualNetwork) {
-		this.visualNetwork = visualNetwork;
-	}
-
-	/**
 	 * Returns the visualNetwork.
 	 *
 	 * @return the visualNetwork.
 	 */
 	public VisualNetwork getVisualNetwork() {
 		return visualNetwork;
+	}
+
+	/**
+	 * Sets a new visualNetwork.
+	 *
+	 * @param visualNetwork
+	 */
+	public void setVisualNetwork(VisualNetwork visualNetwork) {
+		this.visualNetwork = visualNetwork;
 	}
 
 	public void setProbNet(ProbNet probNet) {

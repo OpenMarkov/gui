@@ -29,6 +29,10 @@ class PreferencesTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 3278473793314149896L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Preferences to work with
 	 */
 	Preferences pref;
@@ -40,10 +44,6 @@ class PreferencesTableModel extends AbstractTableModel {
 	 * Keys for the preferences
 	 */
 	String[] keys;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * constructor

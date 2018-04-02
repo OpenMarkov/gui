@@ -51,15 +51,9 @@ import java.util.Map;
  */
 public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	private static final long serialVersionUID = -6230911169585766424L;
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
 	protected JPopupMenu contextualMenu = new JPopupMenu();
 	// menu to start painting the treeADD with the panel in blank
 	protected JMenu submenuAddStartTree = new JMenu();
-	// when clicking a branch you can set a potential or add a subtree to that
-	// branch
-	protected JMenu addSubtree = new JMenu(stringDatabase.getString("TreeADD.AddSubtree"));
-	protected JMenu changeRootVariable = new JMenu(stringDatabase.getString("TreeADD.ChangeVariable"));
 	protected JMenuItem editPotential = new LocalizedMenuItem("TreeADD.EditPotential", ActionCommands.EDIT_POTENTIAL);
 	protected JMenuItem associateStates = new LocalizedMenuItem("TreeADD.JoinBranches", ActionCommands.JOIN_BRANCHES);
 	protected JMenuItem dissociateStates = new LocalizedMenuItem("TreeADD.DissociateStates",
@@ -76,12 +70,16 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	protected JMenuItem setReference = new LocalizedMenuItem("TreeADD.SetReference", ActionCommands.SET_REFERENCE);
 	protected JMenuItem removeReference = new LocalizedMenuItem("TreeADD.RemoveReference",
 			ActionCommands.REMOVE_REFERENCE);
-
 	protected TreeADDPotential rootTreeADDPotential;
 	protected JTree jTree;
 	protected boolean readOnlyMode = true;
 	// Variables of the treeADDPotential root of the tree
 	protected List<Variable> treeVariables;
+	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	// when clicking a branch you can set a potential or add a subtree to that
+	// branch
+	protected JMenu addSubtree = new JMenu(stringDatabase.getString("TreeADD.AddSubtree"));
+	protected JMenu changeRootVariable = new JMenu(stringDatabase.getString("TreeADD.ChangeVariable"));
 	// Mouse event detection
 	private int xx, yy;
 	private Node node;
@@ -1317,6 +1315,40 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		model.notifyTreeStructureChanged(path);
 	}
 
+	public void setReadOnly(boolean readOnly) {
+
+		if (!readOnlyMode && readOnly) {
+			// menu to add a subtree to a branch
+			addVariables.removeActionListener(this);
+			editPotential.removeActionListener(this);
+			associateStates.removeActionListener(this);
+			dissociateStates.removeActionListener(this);
+			removeVariables.removeActionListener(this);
+			removeSubtree.removeActionListener(this);
+			splitInterval.removeActionListener(this);
+			changeInterval.removeActionListener(this);
+			setLabel.removeActionListener(this);
+			setReference.removeActionListener(this);
+			removeLabel.removeActionListener(this);
+			removeReference.removeActionListener(this);
+		} else if (readOnlyMode && !readOnly) {
+			// menu to add a subtree to a branch
+			addVariables.addActionListener(this);
+			editPotential.addActionListener(this);
+			associateStates.addActionListener(this);
+			dissociateStates.addActionListener(this);
+			removeVariables.addActionListener(this);
+			removeSubtree.addActionListener(this);
+			splitInterval.addActionListener(this);
+			changeInterval.addActionListener(this);
+			setLabel.addActionListener(this);
+			setReference.addActionListener(this);
+			removeLabel.addActionListener(this);
+			removeReference.addActionListener(this);
+		}
+		readOnlyMode = readOnly;
+	}
+
 	/**
 	 * TODO: Convert to Inner Class of the Viewer?
 	 */
@@ -1411,39 +1443,5 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			}
 
 		}
-	}
-
-	public void setReadOnly(boolean readOnly) {
-
-		if (!readOnlyMode && readOnly) {
-			// menu to add a subtree to a branch
-			addVariables.removeActionListener(this);
-			editPotential.removeActionListener(this);
-			associateStates.removeActionListener(this);
-			dissociateStates.removeActionListener(this);
-			removeVariables.removeActionListener(this);
-			removeSubtree.removeActionListener(this);
-			splitInterval.removeActionListener(this);
-			changeInterval.removeActionListener(this);
-			setLabel.removeActionListener(this);
-			setReference.removeActionListener(this);
-			removeLabel.removeActionListener(this);
-			removeReference.removeActionListener(this);
-		} else if (readOnlyMode && !readOnly) {
-			// menu to add a subtree to a branch
-			addVariables.addActionListener(this);
-			editPotential.addActionListener(this);
-			associateStates.addActionListener(this);
-			dissociateStates.addActionListener(this);
-			removeVariables.addActionListener(this);
-			removeSubtree.addActionListener(this);
-			splitInterval.addActionListener(this);
-			changeInterval.addActionListener(this);
-			setLabel.addActionListener(this);
-			setReference.addActionListener(this);
-			removeLabel.addActionListener(this);
-			removeReference.addActionListener(this);
-		}
-		readOnlyMode = readOnly;
 	}
 }

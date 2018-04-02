@@ -208,6 +208,37 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
 	}
 
 	/**
+	 * This method sets the text and the background color to be shown in the
+	 * text field
+	 *
+	 * @param currentCase The number of the current case.
+	 */
+	public void setCurrentEvidenceCaseName(int currentCase) {
+		if (currentCase < 10) {
+			currentEvidenceCaseName
+					.setText("   " + stringDatabase.getString("CaseNumber.Label") + " " + currentCase + "   ");
+		} else {
+			currentEvidenceCaseName.setText(stringDatabase.getString("CaseNumber.Label") + " " + currentCase);
+		}
+		if (currentCase % 5 == 0) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase % 5 == 1) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_1_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase % 5 == 2) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_2_COLOR);
+			currentEvidenceCaseName.setForeground(Color.WHITE);
+		} else if (currentCase % 5 == 3) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_3_COLOR);
+			currentEvidenceCaseName.setForeground(Color.BLACK);
+		} else if (currentCase % 5 == 4) {
+			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_4_COLOR);
+			currentEvidenceCaseName.setForeground(Color.BLACK);
+		}
+	}
+
+	/**
 	 * This method initializes goToNextEvidenceCaseButton.
 	 *
 	 * @return a Go To Next Evidence Case button.
@@ -319,37 +350,6 @@ public class InferenceToolBar extends ToolBarBasic implements MouseMotionListene
 	 */
 	public void setExpansionThreshold(double expansionThreshold) {
 		expansionThresholdComboBox.setExpansionThreshold(expansionThreshold);
-	}
-
-	/**
-	 * This method sets the text and the background color to be shown in the
-	 * text field
-	 *
-	 * @param currentCase The number of the current case.
-	 */
-	public void setCurrentEvidenceCaseName(int currentCase) {
-		if (currentCase < 10) {
-			currentEvidenceCaseName
-					.setText("   " + stringDatabase.getString("CaseNumber.Label") + " " + currentCase + "   ");
-		} else {
-			currentEvidenceCaseName.setText(stringDatabase.getString("CaseNumber.Label") + " " + currentCase);
-		}
-		if (currentCase % 5 == 0) {
-			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_0_COLOR);
-			currentEvidenceCaseName.setForeground(Color.WHITE);
-		} else if (currentCase % 5 == 1) {
-			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_1_COLOR);
-			currentEvidenceCaseName.setForeground(Color.WHITE);
-		} else if (currentCase % 5 == 2) {
-			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_2_COLOR);
-			currentEvidenceCaseName.setForeground(Color.WHITE);
-		} else if (currentCase % 5 == 3) {
-			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_3_COLOR);
-			currentEvidenceCaseName.setForeground(Color.BLACK);
-		} else if (currentCase % 5 == 4) {
-			currentEvidenceCaseName.setBackground(VisualState.EVIDENCE_CASE_4_COLOR);
-			currentEvidenceCaseName.setForeground(Color.BLACK);
-		}
 	}
 
 	/**

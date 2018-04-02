@@ -18,18 +18,17 @@ import javax.swing.*;
  * @version 1.0
  */
 public abstract class FrameContentPanel extends JPanel {
-	public FrameContentPanel() {
-	}
-
 	/**
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 6808692603537287168L;
-
 	/**
 	 * Object that contains this panel.
 	 */
 	protected FrameContentPanelContainer container = null;
+
+	public FrameContentPanel() {
+	}
 
 	/**
 	 * This method allows to an object to be registered as title listener.

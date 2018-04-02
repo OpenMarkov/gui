@@ -46,6 +46,20 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = -8957131079235183957L;
 	/**
+	 * constants for graphical drawing
+	 */
+	private static final int DIVIDER_LOCATION = 250;
+	private static final int PREFERENCE_WIDTH = 640;
+	private static final int PREFERENCE_HEIGHT = 480;
+	/**
+	 * file chooser for export/import options
+	 */
+	final private JFileChooser chooser = new JFileChooser();
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * main display components
 	 */
 	JTree jTreePreferences = null;
@@ -58,21 +72,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	JButton jButtonExport = null;
 	JButton jButtonImport = null;
 	JButton jButtonReset = null;
-	/**
-	 * file chooser for export/import options
-	 */
-	final private JFileChooser chooser = new JFileChooser();
-	/**
-	 * constants for graphical drawing
-	 */
-	private static final int DIVIDER_LOCATION = 250;
-	private static final int PREFERENCE_WIDTH = 640;
-	private static final int PREFERENCE_HEIGHT = 480;
 	private Logger logger;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * Creates PreferencesEditor dialog that show all System and User

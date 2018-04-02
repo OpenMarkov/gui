@@ -24,6 +24,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 @SuppressWarnings("serial") public class PolicyTypePanel extends JPanel implements ItemListener {
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	private ButtonGroup buttonGroupRelationType;
 	/**
 	 * Option to set as probabilistic the potential
@@ -49,10 +53,6 @@ import java.awt.event.ItemListener;
 	 * Parent dialog
 	 */
 	private PotentialEditDialog parent;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * Constructor for PolicyTypePanel.

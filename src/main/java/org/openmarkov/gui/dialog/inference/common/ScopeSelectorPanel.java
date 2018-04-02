@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class ScopeSelectorPanel extends JPanel {
 
+	HashMap<JComboBox<String>, Variable> selectedScenario;
 	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
 	private JPanel scopeTypePanel;
 	private ButtonGroup scopeTypeSelector;
 	private JPanel decisionSelectorPanel;
@@ -44,8 +44,6 @@ public class ScopeSelectorPanel extends JPanel {
 	private Variable decisionSelected;
 	private JRadioButton globalRadioButton;
 	private JRadioButton decisionRadioButton;
-
-	HashMap<JComboBox<String>, Variable> selectedScenario;
 	private JPanel decisionScenarioPanel;
 	private JScrollPane decisionScenarioScroll;
 	private ScopeType scopeType;
@@ -309,21 +307,21 @@ public class ScopeSelectorPanel extends JPanel {
 		mainPanel.setVisible(true);
 	}
 
+	public ScopeType getScopeType() {
+		return scopeType;
+	}
+
 	public void setScopeType(ScopeType scopeType) {
 		this.scopeType = scopeType;
 	}
 
-	public ScopeType getScopeType() {
-		return scopeType;
+	public Variable getDecisionSelected() {
+		return decisionSelected;
 	}
 
 	public void setDecisionSelected(Variable decisionSelected) {
 		this.decisionSelected = decisionSelected;
 		refreshScenario();
-	}
-
-	public Variable getDecisionSelected() {
-		return decisionSelected;
 	}
 
 	public List<Finding> getSelectedFindings() {

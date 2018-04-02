@@ -21,10 +21,6 @@ import java.net.URL;
  */
 public class CursorLoader {
 	/**
-	 * Folder where cursors are saved.
-	 */
-	private static final String CURSORS_PATH = "cursors/";
-	/**
 	 * Name of the cursor that represents the default one.
 	 */
 	public static final Cursor CURSOR_DEFAULT = load(Cursor.DEFAULT_CURSOR);
@@ -36,6 +32,10 @@ public class CursorLoader {
 	 * Name of the cursor that represents the selection of varios nodes.
 	 */
 	public static final Cursor CURSOR_MULTIPLE_SELECTION = load(Cursor.CROSSHAIR_CURSOR);
+	/**
+	 * Folder where cursors are saved.
+	 */
+	private static final String CURSORS_PATH = "cursors/";
 	/**
 	 * Name of the cursor that represents the creation of chance nodes.
 	 */

@@ -42,13 +42,13 @@ import java.text.NumberFormat;
  */
 public class NodeDomainValuesTablePanelListener
 		implements ActionListener, ItemListener, FocusListener, PropertyChangeListener {
+	private static int DOWN = 0;
+	private static int UP = 1;
 	/**
 	 * the panel to handle the events
 	 */
 	private NodeDomainValuesTablePanel panel;
 	private int previousMonotony = -1;
-	private static int DOWN = 0;
-	private static int UP = 1;
 
 	/**
 	 * Constructor

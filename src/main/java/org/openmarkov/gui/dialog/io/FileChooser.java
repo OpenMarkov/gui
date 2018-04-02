@@ -31,20 +31,19 @@ import java.io.IOException;
 public abstract class FileChooser extends JFileChooser {
 
 	/**
+	 * Static field representing the default file format
+	 */
+	public static final String DEFAULT_FILE_FORMAT = "OpenMarkov.0.5.0";
+	/**
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 9076351651764305920L;
 
+	//CMI
 	/**
 	 * Directory where the dialog box searchs the files.
 	 */
 	private static String directoryPath = System.getProperty("user.home");
-
-	//CMI
-	/**
-	 * Static field representing the default file format
-	 */
-	public static final String DEFAULT_FILE_FORMAT = "OpenMarkov.0.5.0";
 	//CMF
 
 	/**

@@ -45,10 +45,6 @@ import java.util.List;
  */
 public class NetworkPanel extends FrameContentPanel implements PNUndoableEditListener {
 	/**
-	 * Static field for serializable class.
-	 */
-	private static final long serialVersionUID = 6804988702698858496L;
-	/**
 	 * Constant that represents the Edition Working Mode.
 	 */
 	public static final int EDITION_WORKING_MODE = 0;
@@ -57,14 +53,17 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 */
 	public static final int INFERENCE_WORKING_MODE = 1;
 	/**
-	 * Panel where the network is painted.
+	 * Static field for serializable class.
 	 */
-	private EditorPanel editorPanel = null;
-
+	private static final long serialVersionUID = 6804988702698858496L;
 	/**
 	 * Network that is edited.
 	 */
 	public ProbNet probNet;
+	/**
+	 * Panel where the network is painted.
+	 */
+	private EditorPanel editorPanel = null;
 	/**
 	 * Application main
 	 */
@@ -111,6 +110,20 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	public NetworkPanel(MainPanel mainPanel) {
 		this.mainPanel = mainPanel;
 		initialize();
+	}
+
+	/**
+	 * This method requests to the user the additionalProperties of a network.
+	 *
+	 * @param owner      window that owns the dialog box.
+	 * @param probNet    Netwoek
+	 * @param newNetwork specifies if the network whose additionalProperties are
+	 *                   going to be edited is new.
+	 * @return true, if the user has made changes on the additionalProperties;
+	 * otherwise, false.
+	 */
+	public static boolean requestNetworkProperties(ProbNet probNet, Window owner, boolean newNetwork) {
+		return EditorPanel.requestNetworkProperties(owner, probNet);
 	}
 
 	/**
@@ -220,6 +233,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		return networkFile;
 	}
 
+	//CMI
+
 	/**
 	 * Sets the name of the file where the network is saved.
 	 *
@@ -229,8 +244,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		networkFile = name;
 	}
 
-	//CMI
-
 	/**
 	 * Returns the format of the file where the network is saved.
 	 *
@@ -239,6 +252,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	public String getNetworkFileFormat() {
 		return networkFileFormat;
 	}
+	//CMF
 
 	/**
 	 * Sets the format of the file where the network is saved.
@@ -248,7 +262,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	public void setNetworkFileFormat(String networkFileFormat) {
 		this.networkFileFormat = networkFileFormat;
 	}
-	//CMF
 
 	/**
 	 * Changes the state of the edition and carries out the necessary actions in
@@ -258,6 +271,15 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 */
 	public void setEditionMode(String newEditionMode) {
 		editorPanel.setEditionMode(newEditionMode);
+	}
+
+	/**
+	 * Returns the current working mode.
+	 *
+	 * @return the value of the current working mode (Edition or Inference).
+	 */
+	public int getWorkingMode() {
+		return workingMode;
 	}
 
 	/**
@@ -276,12 +298,12 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
-	 * Returns the current working mode.
+	 * Returns the current expansion threshold.
 	 *
-	 * @return the value of the current working mode (Edition or Inference).
+	 * @return the value of the current expansion threshold.
 	 */
-	public int getWorkingMode() {
-		return workingMode;
+	public double getExpansionThreshold() {
+		return editorPanel.getExpansionThreshold();
 	}
 
 	/**
@@ -291,15 +313,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 */
 	public void setExpansionThreshold(double expansionThreshold) {
 		editorPanel.setExpansionThreshold(expansionThreshold);
-	}
-
-	/**
-	 * Returns the current expansion threshold.
-	 *
-	 * @return the value of the current expansion threshold.
-	 */
-	public double getExpansionThreshold() {
-		return editorPanel.getExpansionThreshold();
 	}
 
 	/**
@@ -490,20 +503,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
-	 * This method requests to the user the additionalProperties of a network.
-	 *
-	 * @param owner      window that owns the dialog box.
-	 * @param probNet    Netwoek
-	 * @param newNetwork specifies if the network whose additionalProperties are
-	 *                   going to be edited is new.
-	 * @return true, if the user has made changes on the additionalProperties;
-	 * otherwise, false.
-	 */
-	public static boolean requestNetworkProperties(ProbNet probNet, Window owner, boolean newNetwork) {
-		return EditorPanel.requestNetworkProperties(owner, probNet);
-	}
-
-	/**
 	 * Sets a new contextual menu factory.
 	 *
 	 * @param newContextualMenuFactory contextual menu factory to be set.
@@ -547,15 +546,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
-	 * Changes the presentation mode of the text of the nodes.
-	 *
-	 * @param value new value of the presentation mode of the text of the nodes.
-	 */
-	public void setByTitle(boolean value) {
-		editorPanel.setByTitle(value);
-	}
-
-	/**
 	 * Returns the presentation mode of the text of the nodes.
 	 *
 	 * @return true if the title of the nodes is the name or false if it is the
@@ -566,12 +556,12 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
-	 * Changes the value of the zoom.
+	 * Changes the presentation mode of the text of the nodes.
 	 *
-	 * @param value new zoom.
+	 * @param value new value of the presentation mode of the text of the nodes.
 	 */
-	public void setZoom(double value) {
-		editorPanel.setZoom(value);
+	public void setByTitle(boolean value) {
+		editorPanel.setByTitle(value);
 	}
 
 	/**
@@ -581,6 +571,15 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 */
 	public double getZoom() {
 		return editorPanel.getZoom();
+	}
+
+	/**
+	 * Changes the value of the zoom.
+	 *
+	 * @param value new zoom.
+	 */
+	public void setZoom(double value) {
+		editorPanel.setZoom(value);
 	}
 
 	/**

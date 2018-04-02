@@ -62,6 +62,20 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	}
 
 	/**
+	 * @param pluginName   <code>String</code>
+	 * @param propertyName <code>String</code>
+	 * @return Property value or <code>null</code> if property does not exists.
+	 * <code>Object</code>
+	 */
+	public static Object getProperty(String pluginName, String propertyName) {
+		Configuration componentConfiguration = getUniqueInstance().getComponentConfiguration(pluginName);
+		if (componentConfiguration != null) {
+			return componentConfiguration.getProperty(propertyName);
+		}
+		return null;
+	}
+
+	/**
 	 * Write configuration to disk in serialized format.
 	 */
 	public void writeConfiguration() {
@@ -90,20 +104,6 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	 */
 	public Configuration getComponentConfiguration(String name) {
 		return configurations.get(name);
-	}
-
-	/**
-	 * @param pluginName   <code>String</code>
-	 * @param propertyName <code>String</code>
-	 * @return Property value or <code>null</code> if property does not exists.
-	 * <code>Object</code>
-	 */
-	public static Object getProperty(String pluginName, String propertyName) {
-		Configuration componentConfiguration = getUniqueInstance().getComponentConfiguration(pluginName);
-		if (componentConfiguration != null) {
-			return componentConfiguration.getProperty(propertyName);
-		}
-		return null;
 	}
 
 	/**

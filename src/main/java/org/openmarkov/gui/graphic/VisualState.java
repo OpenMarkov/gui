@@ -28,14 +28,6 @@ import java.util.Locale;
  */
 public class VisualState extends VisualElement {
 	/**
-	 * Font type Helvetica, plain, size 11.
-	 */
-	protected static final Font STATES_FONT = new Font("Helvetica", Font.PLAIN, 11);
-	/**
-	 * Color for the text of the state's name.
-	 */
-	private static final Color TEXT_COLOR = Color.BLACK;
-	/**
 	 * Color associated to the Evidence Case number N+0 (where N = [0, 5, 10
 	 * ,...]).
 	 */
@@ -60,12 +52,18 @@ public class VisualState extends VisualElement {
 	 * ,...]).
 	 */
 	public static final Color EVIDENCE_CASE_4_COLOR = new Color(255, 153, 51);
-
 	/**
 	 * Number of decimals
 	 */
 	public static final int NUMBER_OF_DECIMALS = 4;
-
+	/**
+	 * Font type Helvetica, plain, size 11.
+	 */
+	protected static final Font STATES_FONT = new Font("Helvetica", Font.PLAIN, 11);
+	/**
+	 * Color for the text of the state's name.
+	 */
+	private static final Color TEXT_COLOR = Color.BLACK;
 	/**
 	 * The VisualNode this State is associated to.
 	 */

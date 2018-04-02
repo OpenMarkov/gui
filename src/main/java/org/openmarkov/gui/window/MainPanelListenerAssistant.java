@@ -96,6 +96,14 @@ import java.util.List;
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
 	/**
+	 * Value for the Zoom increment/decrement
+	 */
+	private static final double zoomChangeValue = 0.2;
+	/**
+	 * Counter incremented each time a network frame is created.
+	 */
+	private static int frameIndex = 1;
+	/**
 	 * Main panel which this object helps.
 	 */
 	private MainPanel mainPanel = null;
@@ -108,15 +116,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 */
 	// private StringResource stringResource;
 	private List<NetworkPanel> networkPanels;
-	/**
-	 * Counter incremented each time a network frame is created.
-	 */
-	private static int frameIndex = 1;
-	/**
-	 * Value for the Zoom increment/decrement
-	 */
-	private static final double zoomChangeValue = 0.2;
-
 	private StringDatabase stringDatabase = null;
 
 	/**
@@ -132,6 +131,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		// .getBundleMessages();
 		this.networkPanels = new ArrayList<NetworkPanel>();
 		this.stringDatabase = StringDatabase.getUniqueInstance();
+	}
+
+	/**
+	 * commodity method to provide the path directory for the network file name
+	 *
+	 * @param fileName - name of the file to obtain the short name
+	 * @return the directory of the file
+	 */
+	private static String getDirectoryFileName(String fileName) {
+		return (new File(fileName)).getAbsolutePath();
 	}
 
 	/**
@@ -438,23 +447,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
-	/**
-	 * This method executes when a network frame has been selected.
-	 *
-	 * @param contentPanel content panel of the frame that has been selected.
-	 */
-	public void frameSelected(FrameContentPanel contentPanel) {
-		if (contentPanel instanceof NetworkPanel) {
-			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent((NetworkPanel) contentPanel);
-			mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
-			mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
-		} else if (contentPanel instanceof MessageWindow) {
-			mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
-		} else if (contentPanel instanceof DecisionTreeWindow) {
-			mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree((DecisionTreeWindow) contentPanel);
-		}
-	}
-
 	//CMI
 	//    /**
 	//     * Saves a network in a file and makes the rest of actions in the
@@ -518,6 +510,25 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	//    }
 
 	/**
+	 * This method executes when a network frame has been selected.
+	 *
+	 * @param contentPanel content panel of the frame that has been selected.
+	 */
+	public void frameSelected(FrameContentPanel contentPanel) {
+		if (contentPanel instanceof NetworkPanel) {
+			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent((NetworkPanel) contentPanel);
+			mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+			mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(true);
+		} else if (contentPanel instanceof MessageWindow) {
+			mainPanel.getMainPanelMenuAssistant().updateOptionsWindowSelected(false);
+		} else if (contentPanel instanceof DecisionTreeWindow) {
+			mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree((DecisionTreeWindow) contentPanel);
+		}
+	}
+
+	//CMF
+
+	/**
 	 * Saves a network in a file considering the file format chosen. Also it makes the rest of actions in the
 	 * environment (menus, messages, etc.).
 	 *
@@ -578,8 +589,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		return result;
 	}
-
-	//CMF
 
 	/**
 	 * Saves a network in the file given by
@@ -704,6 +713,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		//CMF
 	}
 
+	//CMI
+
 	/**
 	 * It asks the user to choose a file by means of a save-file dialog box.
 	 *
@@ -725,8 +736,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		return filename;
 	}
-
-	//CMI
+	//CMF
 
 	/**
 	 * @param suggestedFileName
@@ -752,7 +762,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		fileNameAndFormat.add(fileFormat);
 		return fileNameAndFormat;
 	}
-	//CMF
 
 	/**
 	 * Creates a new network in the workspace. First, it requests the
@@ -1438,16 +1447,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == SelectZoomDialog.OK_BUTTON) {
 			frameContentPanel.setZoom(dialogZoom.getZoom());
 		}
-	}
-
-	/**
-	 * commodity method to provide the path directory for the network file name
-	 *
-	 * @param fileName - name of the file to obtain the short name
-	 * @return the directory of the file
-	 */
-	private static String getDirectoryFileName(String fileName) {
-		return (new File(fileName)).getAbsolutePath();
 	}
 
 	/**

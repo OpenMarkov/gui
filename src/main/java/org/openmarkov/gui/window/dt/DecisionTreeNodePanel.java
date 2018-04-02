@@ -18,11 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("serial") public class DecisionTreeNodePanel extends DecisionTreeElementPanel {
-	private DecisionTreeNode treeNode;
-
 	private static Map<String, Icon> chanceNodeIconPool = new HashMap<>();
 	private static Map<String, Icon> decisionNodeIconPool = new HashMap<>();
 	private static Map<String, Icon> utilityNodeIconPool = new HashMap<>();
+	private DecisionTreeNode treeNode;
 
 	/**
 	 * Constructor for DecisionTreeNodePanel.

@@ -28,42 +28,38 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 4878811677752222720L;
-
+	/**
+	 * String database
+	 */
+	StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * Scroll pane for the text area.
 	 */
 	private JScrollPane scrollPane = null;
-
 	/**
 	 * Area where the messages will be written.
 	 */
 	private NonEditableTextArea textArea = null;
-
 	/**
 	 * Panel that contains the buttons panel.
 	 */
 	private JPanel topPanel = null;
-
 	/**
 	 * Panel that contains the buttons.
 	 */
 	private JPanel buttonsPanel = null;
-
 	/**
 	 * Button to clear the text area.
 	 */
 	private JButton buttonClear = null;
-
 	/**
 	 * Button to copy the text of the area to the clipboard.
 	 */
 	private JButton buttonCopy = null;
-
 	/**
 	 * Object used to substitute the standard output.
 	 */
 	private StandardStream normalMessageStream = null;
-
 	/**
 	 * Object used to substitute the standard error.
 	 */
@@ -72,11 +68,6 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 * convenience variable to store the owner Frame
 	 */
 	private JFrame ownerFrame = null;
-
-	/**
-	 * String database
-	 */
-	StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * This is the default constructor

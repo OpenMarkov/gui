@@ -71,35 +71,15 @@ import java.util.Vector;
 public class DiscretizeTablePanel extends KeyTablePanel implements TableModelListener, MouseListener {
 
 	/**
-	 * Class to manage Discretize Render Table in columns "()" and "[]"
-	 *
-	 * @author Alberto Ruiz
+	 * number of the columns in this type of table
 	 */
-	public class DiscretizeComboBoxRenderer extends JComboBox<String> implements TableCellRenderer {
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public DiscretizeComboBoxRenderer(String[] items) {
-			super(items);
-		}
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			if (isSelected) {
-				setForeground(table.getSelectionForeground());
-				super.setBackground(table.getSelectionBackground());
-			} else {
-				setForeground(table.getForeground());
-				setBackground(table.getBackground());
-			}
-			// Select the current value
-			setSelectedItem(value);
-			return this;
-		}
-	}
-
+	protected static final int ID_COLUMN_INDEX = 0;
+	protected static final int INTERVAL_NAME_COLUMN_INDEX = 1;
+	protected static final int LOWER_BOUND_SYMBOL_COLUMN_INDEX = 2;
+	protected static final int LOWER_BOUND_VALUE_COLUMN_INDEX = 3;
+	protected static final int VALUES_SEPARATOR_COLUMN_INDEX = 4;
+	protected static final int UPPER_BOUND_VALUE_COLUMN_INDEX = 5;
+	protected static final int UPPER_BOUND_SYMBOL_COLUMN_INDEX = 6;
 	/**
 	 * default serial id
 	 */
@@ -112,19 +92,29 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 	private static final String[] intervalLowerSymbols = new String[] { "[", "(" };
 	private static final String[] intervalUpperSymbols = new String[] { "]", ")" };
 	/**
-	 * number of the columns in this type of table
+	 * Size of the states table
 	 */
-	protected static final int ID_COLUMN_INDEX = 0;
-	protected static final int INTERVAL_NAME_COLUMN_INDEX = 1;
-	protected static final int LOWER_BOUND_SYMBOL_COLUMN_INDEX = 2;
-	protected static final int LOWER_BOUND_VALUE_COLUMN_INDEX = 3;
-	protected static final int VALUES_SEPARATOR_COLUMN_INDEX = 4;
-	protected static final int UPPER_BOUND_VALUE_COLUMN_INDEX = 5;
-	protected static final int UPPER_BOUND_SYMBOL_COLUMN_INDEX = 6;
-
+	private final int STATES_TABLE_WIDTH = 406;
+	/**
+	 * Width of the parenthesis and brackets in the state's table
+	 */
+	private final int LIMITS_WIDTH = 40;
+	/**
+	 * Width of the separator used in intervals
+	 */
+	private final int SEPARATOR_WIDTH = 10;
+	private final int DISCRETIZED_STATES_WIDTH = 120;
+	/**
+	 * Button to select variable states.
+	 */
+	protected JButton standardDomainButton = null;
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	protected Node node;
 	private JComboBox<String> lowerSymbolComboBox = null;
 	private JComboBox<String> upperSymbolComboBox = null;
-
 	/**
 	 * monotony of the items in the table - true = up; false=down;
 	 */
@@ -143,35 +133,9 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 	 */
 	private JButton negativeInfinityButton = null;
 	/**
-	 * Button to select variable states.
-	 */
-	protected JButton standardDomainButton = null;
-
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	/**
 	 * discretize table model
 	 */
 	private DiscretizeTableModel discretizeTableModel = null;
-	protected Node node;
-	/**
-	 * Size of the states table
-	 */
-	private final int STATES_TABLE_WIDTH = 406;
-	/**
-	 * Width of the parenthesis and brackets in the state's table
-	 */
-	private final int LIMITS_WIDTH = 40;
-
-	/**
-	 * Width of the separator used in intervals
-	 */
-	private final int SEPARATOR_WIDTH = 10;
-
-	private final int DISCRETIZED_STATES_WIDTH = 120;
 
 	/**
 	 * default constructor
@@ -606,21 +570,6 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 	}
 
 	/**
-	 * Sets a new table model with new data.
-	 *
-	 * @param newData new data for the table without the key column.
-	 */
-	@Override public void setData(Object[][] newData) {
-		if (newData != null) {
-			data = fillDataKeys(newData);
-			discretizeTableModel = new DiscretizeTableModel(data, columns);
-			valuesTable.setModel(discretizeTableModel);
-			valuesTable.getModel().addTableModelListener(this);
-			this.defineTableLookAndFeel();
-		}
-	}
-
-	/**
 	 * @return the upMonotony
 	 */
 	public boolean isUpMonotony() {
@@ -831,6 +780,21 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 			}
 		}
 		return datatmp;
+	}
+
+	/**
+	 * Sets a new table model with new data.
+	 *
+	 * @param newData new data for the table without the key column.
+	 */
+	@Override public void setData(Object[][] newData) {
+		if (newData != null) {
+			data = fillDataKeys(newData);
+			discretizeTableModel = new DiscretizeTableModel(data, columns);
+			valuesTable.setModel(discretizeTableModel);
+			valuesTable.getModel().addTableModelListener(this);
+			this.defineTableLookAndFeel();
+		}
 	}
 
 	/**
@@ -1286,6 +1250,36 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 			}
 		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Class to manage Discretize Render Table in columns "()" and "[]"
+	 *
+	 * @author Alberto Ruiz
+	 */
+	public class DiscretizeComboBoxRenderer extends JComboBox<String> implements TableCellRenderer {
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public DiscretizeComboBoxRenderer(String[] items) {
+			super(items);
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			if (isSelected) {
+				setForeground(table.getSelectionForeground());
+				super.setBackground(table.getSelectionBackground());
+			} else {
+				setForeground(table.getForeground());
+				setBackground(table.getBackground());
+			}
+			// Select the current value
+			setSelectedItem(value);
+			return this;
 		}
 	}
 

@@ -31,6 +31,15 @@ public class MenuHandlersTable {
 	private static Hashtable<Object, MenuItemHandler> htMenuItemHandlers;
 
 	/**
+	 * constructor
+	 */
+
+	private MenuHandlersTable() {
+
+		htMenuItemHandlers = new Hashtable<Object, MenuItemHandler>();
+	}
+
+	/**
 	 * @return MenuHandlersTable unique instance (singleton pattern).
 	 */
 	public static MenuHandlersTable getUniqueInstance() {
@@ -39,15 +48,6 @@ public class MenuHandlersTable {
 			menuHandlersTable = new MenuHandlersTable();
 		}
 		return menuHandlersTable;
-	}
-
-	/**
-	 * constructor
-	 */
-
-	private MenuHandlersTable() {
-
-		htMenuItemHandlers = new Hashtable<Object, MenuItemHandler>();
 	}
 
 	/**

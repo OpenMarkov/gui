@@ -108,7 +108,6 @@ public class ICIOptionsPanel extends JPanel {
 	}
 
 	/**
-	 *
 	 * <code>Initialize</code>
 	 * <p>
 	 * initialize the layout for this panel

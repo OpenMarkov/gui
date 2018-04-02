@@ -31,16 +31,14 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 	 * Generated serial version UID
 	 */
 	private static final long serialVersionUID = 7540156073158685187L;
-
-	/**
-	 * Standard criteria panel
-	 */
-	private StandardCriteriaPanel standardCriteriaPanel;
-
 	/**
 	 * String database
 	 */
 	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
+	 * Standard criteria panel
+	 */
+	private StandardCriteriaPanel standardCriteriaPanel;
 	private ProbNet probNet;
 
 	public StandardCriteriaDialog(Window owner, ProbNet probNet) {

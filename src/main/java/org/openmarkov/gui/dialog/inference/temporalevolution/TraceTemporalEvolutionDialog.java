@@ -62,6 +62,7 @@ import java.util.Map;
  * @author myebra
  */
 @SuppressWarnings("serial") public class TraceTemporalEvolutionDialog extends JDialog {
+	private final Dimension legendsDimension = new Dimension(200, 450);
 	private Map<Variable, TablePotential> temporalEvolution;
 	private ChartPanel chartPanel;
 	private TemporalEvolutionTablePane tablePane;
@@ -87,7 +88,6 @@ import java.util.Map;
 	private Node node;
 	private List<JLabel> legendLabels;
 	private JScrollPane legendPanel;
-	private final Dimension legendsDimension = new Dimension(200, 450);
 	;
 
 	public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence) {

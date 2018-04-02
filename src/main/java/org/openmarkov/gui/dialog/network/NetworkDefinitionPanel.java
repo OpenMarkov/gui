@@ -44,6 +44,10 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * The Network Type Label
 	 */
 	private JLabel jLabelNetworkTypes = null;
@@ -67,10 +71,6 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 	 * Checkbox to define Object Orientedness of Network
 	 */
 	private JCheckBox jcheckBoxShowCommentOnOpening = null;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */

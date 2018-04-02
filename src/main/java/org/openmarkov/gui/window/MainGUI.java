@@ -86,6 +86,24 @@ import java.awt.*;
 	}
 
 	/**
+	 * read the <code>OpenMarkovPreferences</code> configuration, and set the
+	 * LastConnection preference to current Time
+	 */
+	private static void doReadPreferences() {
+
+		final boolean initialised = OpenMarkovPreferences
+				.getBoolean(OpenMarkovPreferencesKeys.INITIALIZED, OpenMarkovPreferences.OPENMARKOV_PREFERENCES, false);
+		if (!initialised) {
+			OpenMarkovPreferences.setDefaultPreferences();
+		}
+		OpenMarkovPreferences
+				.set(OpenMarkovPreferencesKeys.LAST_CONNECTION, Double.toString(System.currentTimeMillis()),
+						OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
+		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_USER_CONNECTED, System.getProperty("user.name"),
+				OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
+	}
+
+	/**
 	 * This method returns a dimension that represents the 3/4 size of the
 	 * screen.
 	 *
@@ -121,24 +139,6 @@ import java.awt.*;
 	 */
 	public void openNetwork(String fileName) {
 		mainPanel.openNetwork(fileName);
-	}
-
-	/**
-	 * read the <code>OpenMarkovPreferences</code> configuration, and set the
-	 * LastConnection preference to current Time
-	 */
-	private static void doReadPreferences() {
-
-		final boolean initialised = OpenMarkovPreferences
-				.getBoolean(OpenMarkovPreferencesKeys.INITIALIZED, OpenMarkovPreferences.OPENMARKOV_PREFERENCES, false);
-		if (!initialised) {
-			OpenMarkovPreferences.setDefaultPreferences();
-		}
-		OpenMarkovPreferences
-				.set(OpenMarkovPreferencesKeys.LAST_CONNECTION, Double.toString(System.currentTimeMillis()),
-						OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
-		OpenMarkovPreferences.set(OpenMarkovPreferencesKeys.LAST_USER_CONNECTED, System.getProperty("user.name"),
-				OpenMarkovPreferences.OPENMARKOV_PREFERENCES);
 	}
 
 }

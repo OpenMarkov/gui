@@ -90,6 +90,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	public static final String[] VIEWING_ACTION_COMMANDS = { ActionCommands.ZOOM, ActionCommands.ZOOM_IN,
 			ActionCommands.ZOOM_OUT, ActionCommands.ZOOM_OTHER, ActionCommands.NODES };
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Menus and toolbar that manage zoom.
 	 */
 	private ZoomMenuToolBar[] zoomMenus = null;
@@ -101,11 +105,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * networkPanel that is currently selected.
 	 */
 	private NetworkPanel currentNetworkPanel = null;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
 	/**
 	 * Variable to know if a network was opened from a URL
 	 */

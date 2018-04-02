@@ -48,26 +48,21 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 2127072068749928448L;
-
+	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 	/**
 	 * Prefixed data.
 	 */
 	private Object[][] prefixedData = null;
-
 	/**
 	 * Array that contains the prefixed data that is not in the table.
 	 */
 	private Object[][] absentData = null;
-
 	/**
 	 * String that appears in the titlebar of the dialog box showed to add new
 	 * rows.
 	 */
 	private String titleToSelectRows;
-
 	private Node node;
-
-	ArrayList<PNEdit> edits = new ArrayList<PNEdit>();
 
 	/**
 	 * This is the default constructor
@@ -89,6 +84,20 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		setData(newData);
 	}
 
+	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
+
+		int i, l;
+		Object[][] result;
+		l = nodes.size();
+		result = new Object[l][2];
+		for (i = 0; i < l; i++) {
+			result[i][0] = "p_" + i; //internal name for the parent
+			result[i][1] = nodes.get(i).getName();
+		}
+
+		return result;
+	}
+
 	/**
 	 * Sets a new table model with new data.
 	 *
@@ -102,20 +111,6 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 		absentData = absentPrefixedData();
 		setEnabledAddValue(absentData.length != 0);
 
-	}
-
-	private static Object[][] fillArrayWithNodes(List<Node> nodes) {
-
-		int i, l;
-		Object[][] result;
-		l = nodes.size();
-		result = new Object[l][2];
-		for (i = 0; i < l; i++) {
-			result[i][0] = "p_" + i; //internal name for the parent
-			result[i][1] = nodes.get(i).getName();
-		}
-
-		return result;
 	}
 
 	/**

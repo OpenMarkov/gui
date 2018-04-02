@@ -25,15 +25,13 @@ import java.awt.*;
 public class HTMLTextEditor extends JDialog {
 
 	/**
-	 * serial version id
-	 */
-	private static final long serialVersionUID = 7066844472238575449L;
-
-	/**
 	 * ToolBar elements for the dialog
 	 */
 	public static final String TOOLBAR_OPENMARKOV_SINGLE = "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
-
+	/**
+	 * serial version id
+	 */
+	private static final long serialVersionUID = 7066844472238575449L;
 	private JPanel jContentPane = null;
 
 	private JToolBar jToolBarEditorHTML = null;

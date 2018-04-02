@@ -33,6 +33,10 @@ import java.util.List;
  * @author ckonig
  */
 @SuppressWarnings("serial") public class RevelationArcPanel extends JPanel implements ItemListener {
+	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/***
 	 * Object where all the information will be saved
 	 */
@@ -53,10 +57,6 @@ import java.util.List;
 	 * table to show intervals of the variable's domain.
 	 */
 	private RevelationArcDiscretizeTablePanel discretizedNodeStatesTablePanel;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/****
 	 * Constructor - constructs a JPanel for displaying the revelation

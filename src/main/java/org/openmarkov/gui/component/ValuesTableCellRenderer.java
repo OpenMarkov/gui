@@ -29,10 +29,6 @@ import java.util.Locale;
  */
 public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**
-	 * default serial ID
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
 	 * first color to use in header rows
 	 */
 	protected static final Color TABLE_HEADER_TEXT_COLOR_1 = OpenMarkovPreferences
@@ -54,14 +50,16 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * color to use in the background of header rows
 	 */
 	protected static final Color TABLE_HEADER_BACKGROUND_COLOR = new Color(220, 220, 220);
-
+	/**
+	 * default serial ID
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final DecimalFormat formatter = new DecimalFormat("0.######", new DecimalFormatSymbols(Locale.US));
-
-	private boolean[] uncertaintyInColumns = null;
 	/**
 	 * to define the first editable row of the table
 	 */
 	protected int firstEditableRow;
+	private boolean[] uncertaintyInColumns = null;
 	private JLabel jUncertaintyIcon;
 	private IconLoader iconLoader;
 

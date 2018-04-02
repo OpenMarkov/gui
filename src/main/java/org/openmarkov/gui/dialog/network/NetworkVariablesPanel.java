@@ -43,6 +43,10 @@ public class NetworkVariablesPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -5183671164848473079L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Label of the variables Type checkboxes
 	 */
 	private JLabel jLabelVariablesType = null;
@@ -60,10 +64,6 @@ public class NetworkVariablesPanel extends JPanel {
 	private boolean newNetwork = false;
 	private ProbNet probNet;
 	private JComboBox<String> jComboBoxVariableType;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * constructor without construction parameters

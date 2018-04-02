@@ -66,9 +66,7 @@ import java.util.List;
 	private void initialize() {
 
 		setTitle(StringDatabase.getUniqueInstance().getString("ImposePolicydialog.Title.Label") + ": " + (
-				node == null ?
-						"" :
-						node.getName()
+				node == null ? "" : node.getName()
 		));
 
 		configureComponentsPanel();

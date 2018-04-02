@@ -32,6 +32,10 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * label for the table to show the other additionalProperties
 	 */
 	private JLabel jLabelOtherPropertiesTable = null;
@@ -47,10 +51,6 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * constructor without construction parameters

@@ -29,19 +29,6 @@ public class AboutBox extends JDialog implements ActionListener {
 	 * default id
 	 */
 	private static final long serialVersionUID = -2926600957370532009L;
-	/**
-	 * String database
-	 */
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-	/**
-	 * Image Loader
-	 */
-	private ImageLoader imageLoader = null;
-	private Logger logger;
-	/**
-	 * AboutBox visual components
-	 */
-	private AboutBox anAboutBox = null;
 	String product = "";
 	String version = "0.3.0-SNAPSHOT";
 	String copyright = "";
@@ -75,31 +62,19 @@ public class AboutBox extends JDialog implements ActionListener {
 	int width = 0;
 	int x = 0;
 	int y = 0;
-
 	/**
-	 * singleton for AboutBox
-	 *
-	 * @return anAboutBox dialog
+	 * String database
 	 */
-	public AboutBox getUniqueInstance() {
-		return getUniqueInstance(null);
-	}
-
+	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	/**
-	 * singleton for AboutBox
-	 *
-	 * @param parent the parent for the AboutBox frame
-	 * @return anAboutBox dialog
+	 * Image Loader
 	 */
-	public AboutBox getUniqueInstance(JFrame parent) {
-		this.logger = Logger.getLogger(AboutBox.class);
-		if (anAboutBox == null) { // singleton
-			new AboutBox(parent);
-		} else { // it is already created and not visible
-			this.setVisible(true);
-		}
-		return anAboutBox;
-	}
+	private ImageLoader imageLoader = null;
+	private Logger logger;
+	/**
+	 * AboutBox visual components
+	 */
+	private AboutBox anAboutBox = null;
 
 	/**
 	 * constructor on a open window
@@ -126,6 +101,39 @@ public class AboutBox extends JDialog implements ActionListener {
 			// ExceptionsHandler.handleException(e, null, true);
 			logger.info(e);
 		}
+	}
+
+	/**
+	 * align a text in a label with a center alignment
+	 */
+	private static void setTextInLabelAligned(JLabel theLabel, String theText, int alignment) {
+		theLabel.setHorizontalAlignment(alignment);
+		theLabel.setText(theText);
+	}
+
+	/**
+	 * singleton for AboutBox
+	 *
+	 * @return anAboutBox dialog
+	 */
+	public AboutBox getUniqueInstance() {
+		return getUniqueInstance(null);
+	}
+
+	/**
+	 * singleton for AboutBox
+	 *
+	 * @param parent the parent for the AboutBox frame
+	 * @return anAboutBox dialog
+	 */
+	public AboutBox getUniqueInstance(JFrame parent) {
+		this.logger = Logger.getLogger(AboutBox.class);
+		if (anAboutBox == null) { // singleton
+			new AboutBox(parent);
+		} else { // it is already created and not visible
+			this.setVisible(true);
+		}
+		return anAboutBox;
 	}
 
 	/**
@@ -214,13 +222,5 @@ public class AboutBox extends JDialog implements ActionListener {
 		if (actionEvent.getActionCommand().equals(stringDatabase.getString("AboutBox.OK.Text"))) {
 			this.setVisible(false);
 		}
-	}
-
-	/**
-	 * align a text in a label with a center alignment
-	 */
-	private static void setTextInLabelAligned(JLabel theLabel, String theText, int alignment) {
-		theLabel.setHorizontalAlignment(alignment);
-		theLabel.setText(theText);
 	}
 }

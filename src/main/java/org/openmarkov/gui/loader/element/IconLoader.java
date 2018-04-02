@@ -22,11 +22,6 @@ import java.util.MissingResourceException;
  */
 public class IconLoader {
 	/**
-	 * Folder where icons are saved.
-	 */
-	// TODO must be externalize in a property
-	private static final String RESOURCE_ICONS_PATH = "icons/";
-	/**
 	 * Name of the 'new' enabled icon.
 	 */
 	public static final String ICON_NEW_ENABLED = "new.gif";
@@ -190,16 +185,19 @@ public class IconLoader {
 	 * Name of the 'show optimal strategy' enabled icon.
 	 */
 	public static final String ICON_OPTIMAL_STRATEGY = "optimalStrategy.gif";
-
 	/**
 	 * Name of the 'cost-effectiveness analysis" icon
 	 */
 	public static final String ICON_COST_EFFECTIVENESS = "costEffectiveness.gif";
-
 	/**
 	 * Name of the 'Sensitivity analysis" icon
 	 */
 	public static final String ICON_SENS_ANALYSIS = "sensAnalysis.gif";
+	/**
+	 * Folder where icons are saved.
+	 */
+	// TODO must be externalize in a property
+	private static final String RESOURCE_ICONS_PATH = "icons/";
 
 	/**
 	 * This method loads an icon resource.

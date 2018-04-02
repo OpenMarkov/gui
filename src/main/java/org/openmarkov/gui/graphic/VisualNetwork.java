@@ -247,6 +247,18 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	/**
+	 * Returns the presentation mode of the text of the nodes.
+	 *
+	 * @return true if the title of the nodes is the name or false if it is the
+	 * name.
+	 */
+	public boolean getByTitle() {
+
+		return byTitle;
+
+	}
+
+	/**
 	 * Changes the presentation mode of the text of the nodes.
 	 *
 	 * @param value new value of the presentation mode of the text of the nodes.
@@ -259,18 +271,6 @@ public class VisualNetwork implements PNUndoableEditListener {
 		for (VisualNode node : visualNodes) {
 			node.setByTitle(value);
 		}
-
-	}
-
-	/**
-	 * Returns the presentation mode of the text of the nodes.
-	 *
-	 * @return true if the title of the nodes is the name or false if it is the
-	 * name.
-	 */
-	public boolean getByTitle() {
-
-		return byTitle;
 
 	}
 
@@ -1176,12 +1176,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 		this.isPropagationActive = isPropagationActive;
 	}
 
-	public void setWorkingMode(int workingMode) {
-		this.workingMode = workingMode;
-	}
-
 	public int getWorkingMode() {
 		return workingMode;
+	}
+
+	public void setWorkingMode(int workingMode) {
+		this.workingMode = workingMode;
 	}
 
 	//TODO OOPN start

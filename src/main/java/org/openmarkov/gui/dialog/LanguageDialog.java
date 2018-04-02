@@ -53,6 +53,25 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	private Logger logger;
 
 	/**
+	 * constructor on a parent JFrame
+	 *
+	 * @param parent
+	 */
+	private LanguageDialog(JFrame parent) {
+		super(parent, "", true);
+		setName("LanguageDialog");
+		this.logger = Logger.getLogger(LanguageDialog.class);
+		this.oldLanguage = stringDatabase.getLanguage();
+		stringDatabase.addLocaleChangeListener(this);
+		try {
+			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			initialize();
+		} catch (Exception e) {
+			logger.fatal(e);
+		}
+	}
+
+	/**
 	 * singleton for LanguageDialog
 	 *
 	 * @return a LanguageDialog dialog
@@ -72,25 +91,6 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 			languageDialog = new LanguageDialog(parent);
 		}
 		return languageDialog;
-	}
-
-	/**
-	 * constructor on a parent JFrame
-	 *
-	 * @param parent
-	 */
-	private LanguageDialog(JFrame parent) {
-		super(parent, "", true);
-		setName("LanguageDialog");
-		this.logger = Logger.getLogger(LanguageDialog.class);
-		this.oldLanguage = stringDatabase.getLanguage();
-		stringDatabase.addLocaleChangeListener(this);
-		try {
-			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			initialize();
-		} catch (Exception e) {
-			logger.fatal(e);
-		}
 	}
 
 	/**

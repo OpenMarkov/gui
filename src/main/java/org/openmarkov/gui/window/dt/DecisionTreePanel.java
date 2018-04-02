@@ -35,6 +35,24 @@ import java.awt.*;
 		setBackground(Color.white);
 	}
 
+	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet) {
+		DecisionTreeElement root = null;
+		if (probNet.getNetworkType() instanceof InfluenceDiagramType) {
+			root = DecisionTreeBuilder.buildDecisionTreeFromID(probNet);
+		} else if (probNet.getNetworkType() instanceof DecisionAnalysisNetworkType) {
+			root = new DecisionTreeBranch(probNet);
+			DecisionTreeNode child = null;
+			try {
+				child = new DANDecisionTreeEvaluation(probNet).getDecisionTree();
+			} catch (NotEvaluableNetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			((DecisionTreeBranch) root).setChild(child);
+		}
+		return root;
+	}
+
 	/**
 	 * Returns the zoom.
 	 *
@@ -52,23 +70,5 @@ import java.awt.*;
 	protected void setZoom(Double zoom) {
 		jTree.setZoom(zoom);
 		repaint();
-	}
-
-	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet) {
-		DecisionTreeElement root = null;
-		if (probNet.getNetworkType() instanceof InfluenceDiagramType) {
-			root = DecisionTreeBuilder.buildDecisionTreeFromID(probNet);
-		} else if (probNet.getNetworkType() instanceof DecisionAnalysisNetworkType) {
-			root = new DecisionTreeBranch(probNet);
-			DecisionTreeNode child = null;
-			try {
-				child = new DANDecisionTreeEvaluation(probNet).getDecisionTree();
-			} catch (NotEvaluableNetworkException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			((DecisionTreeBranch) root).setChild(child);
-		}
-		return root;
 	}
 }

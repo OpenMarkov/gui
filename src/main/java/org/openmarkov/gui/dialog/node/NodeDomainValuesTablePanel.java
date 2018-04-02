@@ -63,6 +63,10 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	 */
 	private static final long serialVersionUID = 1047978130482205148L;
 	/**
+	 * String database
+	 */
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	/**
 	 * Object where all information will be saved.
 	 */
 	private Node node = null;
@@ -138,10 +142,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	private NodeDomainValuesTablePanelListener listener = null;
 	private JComboBox<String> jComboBoxNodeVariableType;
 	private boolean uploadingData = false;
-	/**
-	 * String database
-	 */
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
 	/**
 	 * constructor without construction parameters
@@ -179,7 +179,6 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 *
 	 * <code>Initialize</code>
 	 * <p>
 	 * initialize the layout for this panel
@@ -1051,12 +1050,12 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		}
 	}
 
-	public void setUploadingData(boolean uploadingData) {
-		this.uploadingData = uploadingData;
-	}
-
 	public boolean isUploadingData() {
 		return uploadingData;
+	}
+
+	public void setUploadingData(boolean uploadingData) {
+		this.uploadingData = uploadingData;
 	}
 
 	@Override public void actionPerformed(ActionEvent arg0) {

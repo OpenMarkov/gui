@@ -55,83 +55,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	private static final int DISTRIBUTION_COLUMN_INDEX = 1;
 	private static final int PARAMETERS_COLUMN_INDEX = 2;
 	private static final int NAME_COLUMN_INDEX = 3;
-
-	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	public class DistributionsTableListener implements TableModelListener {
-		public void tableChanged(TableModelEvent e) {
-			if (e.getColumn() == DISTRIBUTION_COLUMN_INDEX) {
-				int selectedRow = distributionTable.getSelectedRow();
-				String distributionType = distributionTableModel.getValueAt(selectedRow, DISTRIBUTION_COLUMN_INDEX)
-						.toString();
-				DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
-						distributionType);
-				if (!distributionTypes.get(selectedRow).equals(distributionType)) {
-					parameterDialog.setVisible(true);
-					if (parameterDialog.getSelectedButton() == OK_BUTTON) {
-						StringBuilder parameterString = new StringBuilder();
-						for (double parameter : parameterDialog.getParameters()) {
-							parameterString.append(parameter);
-							parameterString.append(" ");
-						}
-						distributionTableModel
-								.setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
-						distributionTypes.set(selectedRow, distributionType);
-					} else {
-						distributionTableModel
-								.setValueAt(distributionTypes.get(selectedRow), selectedRow, DISTRIBUTION_COLUMN_INDEX);
-					}
-				}
-			}
-		}
-	}
-
-	public class DistributionsTableMouseListener extends MouseAdapter {
-
-		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2 && distributionTable.getSelectedColumn() == PARAMETERS_COLUMN_INDEX) {
-				int selectedRow = distributionTable.getSelectedRow();
-				String distributionType = distributionTableModel.getValueAt(selectedRow, DISTRIBUTION_COLUMN_INDEX)
-						.toString();
-				String currentParameters = distributionTableModel.getValueAt(selectedRow, PARAMETERS_COLUMN_INDEX)
-						.toString();
-				double[] parameters = null;
-				if (!currentParameters.isEmpty()) {
-					String[] parameterArray = currentParameters.split(" ");
-					parameters = new double[parameterArray.length];
-					for (int i = 0; i < parameters.length; ++i) {
-						parameters[i] = Double.parseDouble(parameterArray[i]);
-					}
-				}
-				DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
-						distributionType, parameters);
-				parameterDialog.setVisible(true);
-				if (parameterDialog.getSelectedButton() == OK_BUTTON) {
-					StringBuilder parameterString = new StringBuilder();
-					for (double parameter : parameterDialog.getParameters()) {
-						parameterString.append(parameter);
-						parameterString.append(" ");
-					}
-					distributionTableModel.setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
-				}
-			}
-		}
-	}
-
-	public class DistributionTableModel extends DefaultTableModel {
-
-		private static final long serialVersionUID = 1L;
-
-		public DistributionTableModel(Object[][] initialData, String[] columnNames) {
-			super(initialData, columnNames);
-		}
-
-		@Override public boolean isCellEditable(int row, int col) {
-			return (col == DISTRIBUTION_COLUMN_INDEX) || (col == NAME_COLUMN_INDEX);
-		}
-	}
-
 	private static final long serialVersionUID = 1L;
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 	// Components related to the distributions box
 	private DistributionTableModel distributionTableModel;
 	private JTable distributionTable;
@@ -139,7 +64,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	private Variable variable;
 	private List<String> distributionTypes;
 	private boolean isChanceVariable;
-
 	// List of uncertain values
 	private List<UncertainValue> uncertainColumn;
 	// List of doubles calculated from uncertainColum by taking the mean value
@@ -201,7 +125,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
 		setLocation(new Point(x, y));
 	}
-
 	/**
 	 * Creates and displays the UncertainValuesDialog for a ExactDistrPotential
 	 *
@@ -256,6 +179,137 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		int x = (int) (parentLocation.getX() + parentSize.getWidth() / 2 - getSize().getWidth() / 2);
 		int y = (int) (parentLocation.getY() + parentSize.getHeight() / 2 - getSize().getHeight() / 2);
 		setLocation(new Point(x, y));
+	}
+
+	public static boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {
+		boolean hasUncertainValues;
+		if ((auxUncertainTable == null) || (auxUncertainTable.length == 0)) {
+			hasUncertainValues = false;
+		} else {
+			hasUncertainValues = false;
+			for (int i = 0; (i < auxUncertainTable.length) && !hasUncertainValues; i++) {
+				hasUncertainValues = (auxUncertainTable[i] != null);
+			}
+		}
+		return hasUncertainValues;
+	}
+
+	public static List<Double> calculateReferenceValues(List<UncertainValue> uncertainColumn) {
+		List<Integer> complementIndexes = new ArrayList<Integer>();
+		List<Integer> dirichletIndexes = new ArrayList<Integer>();
+		List<Integer> otherIndexes = new ArrayList<Integer>();
+		double[] refValues = new double[uncertainColumn.size()];
+		ComplementFamily comp = new ComplementFamily(uncertainColumn);
+		DirichletFamily dir = new DirichletFamily(uncertainColumn);
+		List<UncertainValue> otherUncertain = new ArrayList<UncertainValue>();
+		for (int i = 0; i < uncertainColumn.size(); i++) {
+			UncertainValue uncertainValue = uncertainColumn.get(i);
+			if (uncertainValue.getProbDensFunction() instanceof ComplementFunction) {
+				complementIndexes.add(i);
+			} else if (uncertainValue.getProbDensFunction() instanceof DirichletFunction) {
+				dirichletIndexes.add(i);
+			} else {
+				otherIndexes.add(i);
+			}
+		}
+		otherUncertain = getElementsFromIndexes(uncertainColumn, otherIndexes);
+		// Process other
+		FamilyDistribution other = new FamilyDistribution(otherUncertain);
+		double[] meanOther = other.getMean();
+		placeInArray(refValues, otherIndexes, meanOther);
+		// Process Dirichlet
+		double[] meanDir = dir.getMean();
+		placeInArray(refValues, dirichletIndexes, meanDir);
+		// Process complements
+		double massForComp = 1.0 - (Tools.sum(meanOther) + Tools.sum(meanDir));
+		comp.setProbMass(massForComp);
+		double[] meanComp = comp.getMean();
+		placeInArray(refValues, complementIndexes, meanComp);
+		List<Double> ref = new ArrayList<Double>();
+		for (int i = 0; i < refValues.length; i++) {
+			ref.add(refValues[i]);
+		}
+		return ref;
+	}
+
+	private static void placeInArray(double[] refValue, List<Integer> indexes, double[] x) {
+		for (int i = 0; i < indexes.size(); i++) {
+			refValue[indexes.get(i)] = x[i];
+		}
+	}
+
+	private static List<UncertainValue> getElementsFromIndexes(List<UncertainValue> column, List<Integer> index) {
+		List<UncertainValue> list = new ArrayList<UncertainValue>();
+		for (Integer aux : index) {
+			list.add(column.get(aux));
+		}
+		return list;
+	}
+
+	private static List<UncertainValue> getUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
+			List<Class<? extends ProbDensFunction>> classes) {
+		List<UncertainValue> filtered = new ArrayList<UncertainValue>();
+		for (UncertainValue aux : uncertainValues) {
+			boolean isInClasses = false;
+			for (int i = 0; (i < classes.size()) && !isInClasses; i++) {
+				isInClasses = classes.get(i).isAssignableFrom(aux.getProbDensFunction().getClass());
+			}
+			if (isInClasses) {
+				filtered.add(aux);
+			}
+		}
+		return filtered;
+	}
+
+	private static boolean thereAreExactValuesGreaterThanZero(List<UncertainValue> arrayUncertain) {
+		boolean thereAre = false;
+		for (int i = 0; (i < arrayUncertain.size()) && !thereAre; i++) {
+			UncertainValue aux = arrayUncertain.get(i);
+			ProbDensFunction probDensityFunction = aux.getProbDensFunction();
+			thereAre = (probDensityFunction instanceof ExactFunction) && probDensityFunction.getMean() > 0;
+		}
+		return thereAre;
+	}
+
+	/**
+	 * @param uncertainValues
+	 * @param types
+	 * @return
+	 */
+	private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
+			List<Class<? extends ProbDensFunction>> types) {
+		List<Integer> indexes = new ArrayList<Integer>();
+		for (int i = 0; i < uncertainValues.size(); i++) {
+			UncertainValue uncertainValue = uncertainValues.get(i);
+			ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
+			boolean isInTypes = false;
+			for (int j = 0; (j < types.size()) && !isInTypes; j++) {
+				isInTypes = types.get(j).isAssignableFrom(probDensFunction.getClass());
+			}
+			if (isInTypes) {
+				indexes.add(i);
+			}
+		}
+		int numIndexesOfTypes = indexes.size();
+		int[] intIndexes = new int[numIndexesOfTypes];
+		for (int i = 0; i < numIndexesOfTypes; i++) {
+			intIndexes[i] = indexes.get(i);
+		}
+		return intIndexes;
+	}
+
+	public static int[] getIndexesUncertainValuesOfClass(List<UncertainValue> uncertainValues,
+			Class<? extends ProbDensFunction> functionClass) {
+		List<Class<? extends ProbDensFunction>> classes = new ArrayList<>();
+		classes.add(functionClass);
+		return getIndexesUncertainValuesOfClasses(uncertainValues, classes);
+	}
+
+	private static List<UncertainValue> getUncertainValuesOfClass(List<UncertainValue> arrayUncertain,
+			Class<? extends ProbDensFunction> type) {
+		List<Class<? extends ProbDensFunction>> types = new ArrayList<>();
+		types.add(type);
+		return getUncertainValuesOfClasses(arrayUncertain, types);
 	}
 
 	public int requestUncertainValues() {
@@ -355,6 +409,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		columnModel.getColumn(0).setCellEditor(null);
 	}
 
+	;
+
 	private String getString(double[] parameters) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < parameters.length; ++i) {
@@ -376,19 +432,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 			uncertainTable[i] = new UncertainValue(tableProjected[i]);
 		}
 		return uncertainTable;
-	}
-
-	public static boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {
-		boolean hasUncertainValues;
-		if ((auxUncertainTable == null) || (auxUncertainTable.length == 0)) {
-			hasUncertainValues = false;
-		} else {
-			hasUncertainValues = false;
-			for (int i = 0; (i < auxUncertainTable.length) && !hasUncertainValues; i++) {
-				hasUncertainValues = (auxUncertainTable[i] != null);
-			}
-		}
-		return hasUncertainValues;
 	}
 
 	private String getConfigurationDescription(Variable variable, boolean isChanceVariable,
@@ -448,8 +491,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		return verify;
 	}
 
-	;
-
 	private List<UncertainValue> reverse(List<UncertainValue> list) {
 		List<UncertainValue> rev = new ArrayList<UncertainValue>();
 		for (int i = list.size() - 1; i >= 0; i--) {
@@ -460,58 +501,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 
 	private List<Double> calculateReferenceValues() {
 		return calculateReferenceValues(uncertainColumn);
-	}
-
-	public static List<Double> calculateReferenceValues(List<UncertainValue> uncertainColumn) {
-		List<Integer> complementIndexes = new ArrayList<Integer>();
-		List<Integer> dirichletIndexes = new ArrayList<Integer>();
-		List<Integer> otherIndexes = new ArrayList<Integer>();
-		double[] refValues = new double[uncertainColumn.size()];
-		ComplementFamily comp = new ComplementFamily(uncertainColumn);
-		DirichletFamily dir = new DirichletFamily(uncertainColumn);
-		List<UncertainValue> otherUncertain = new ArrayList<UncertainValue>();
-		for (int i = 0; i < uncertainColumn.size(); i++) {
-			UncertainValue uncertainValue = uncertainColumn.get(i);
-			if (uncertainValue.getProbDensFunction() instanceof ComplementFunction) {
-				complementIndexes.add(i);
-			} else if (uncertainValue.getProbDensFunction() instanceof DirichletFunction) {
-				dirichletIndexes.add(i);
-			} else {
-				otherIndexes.add(i);
-			}
-		}
-		otherUncertain = getElementsFromIndexes(uncertainColumn, otherIndexes);
-		// Process other
-		FamilyDistribution other = new FamilyDistribution(otherUncertain);
-		double[] meanOther = other.getMean();
-		placeInArray(refValues, otherIndexes, meanOther);
-		// Process Dirichlet
-		double[] meanDir = dir.getMean();
-		placeInArray(refValues, dirichletIndexes, meanDir);
-		// Process complements
-		double massForComp = 1.0 - (Tools.sum(meanOther) + Tools.sum(meanDir));
-		comp.setProbMass(massForComp);
-		double[] meanComp = comp.getMean();
-		placeInArray(refValues, complementIndexes, meanComp);
-		List<Double> ref = new ArrayList<Double>();
-		for (int i = 0; i < refValues.length; i++) {
-			ref.add(refValues[i]);
-		}
-		return ref;
-	}
-
-	private static void placeInArray(double[] refValue, List<Integer> indexes, double[] x) {
-		for (int i = 0; i < indexes.size(); i++) {
-			refValue[indexes.get(i)] = x[i];
-		}
-	}
-
-	private static List<UncertainValue> getElementsFromIndexes(List<UncertainValue> column, List<Integer> index) {
-		List<UncertainValue> list = new ArrayList<UncertainValue>();
-		for (Integer aux : index) {
-			list.add(column.get(aux));
-		}
-		return list;
 	}
 
 	private boolean verifyLocalConstraintsUncertainty(List<UncertainValue> uncertainvalues) {
@@ -582,72 +571,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 			}
 		}
 		return verify;
-	}
-
-	private static List<UncertainValue> getUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
-			List<Class<? extends ProbDensFunction>> classes) {
-		List<UncertainValue> filtered = new ArrayList<UncertainValue>();
-		for (UncertainValue aux : uncertainValues) {
-			boolean isInClasses = false;
-			for (int i = 0; (i < classes.size()) && !isInClasses; i++) {
-				isInClasses = classes.get(i).isAssignableFrom(aux.getProbDensFunction().getClass());
-			}
-			if (isInClasses) {
-				filtered.add(aux);
-			}
-		}
-		return filtered;
-	}
-
-	private static boolean thereAreExactValuesGreaterThanZero(List<UncertainValue> arrayUncertain) {
-		boolean thereAre = false;
-		for (int i = 0; (i < arrayUncertain.size()) && !thereAre; i++) {
-			UncertainValue aux = arrayUncertain.get(i);
-			ProbDensFunction probDensityFunction = aux.getProbDensFunction();
-			thereAre = (probDensityFunction instanceof ExactFunction) && probDensityFunction.getMean() > 0;
-		}
-		return thereAre;
-	}
-
-	/**
-	 * @param uncertainValues
-	 * @param types
-	 * @return
-	 */
-	private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
-			List<Class<? extends ProbDensFunction>> types) {
-		List<Integer> indexes = new ArrayList<Integer>();
-		for (int i = 0; i < uncertainValues.size(); i++) {
-			UncertainValue uncertainValue = uncertainValues.get(i);
-			ProbDensFunction probDensFunction = uncertainValue.getProbDensFunction();
-			boolean isInTypes = false;
-			for (int j = 0; (j < types.size()) && !isInTypes; j++) {
-				isInTypes = types.get(j).isAssignableFrom(probDensFunction.getClass());
-			}
-			if (isInTypes) {
-				indexes.add(i);
-			}
-		}
-		int numIndexesOfTypes = indexes.size();
-		int[] intIndexes = new int[numIndexesOfTypes];
-		for (int i = 0; i < numIndexesOfTypes; i++) {
-			intIndexes[i] = indexes.get(i);
-		}
-		return intIndexes;
-	}
-
-	public static int[] getIndexesUncertainValuesOfClass(List<UncertainValue> uncertainValues,
-			Class<? extends ProbDensFunction> functionClass) {
-		List<Class<? extends ProbDensFunction>> classes = new ArrayList<>();
-		classes.add(functionClass);
-		return getIndexesUncertainValuesOfClasses(uncertainValues, classes);
-	}
-
-	private static List<UncertainValue> getUncertainValuesOfClass(List<UncertainValue> arrayUncertain,
-			Class<? extends ProbDensFunction> type) {
-		List<Class<? extends ProbDensFunction>> types = new ArrayList<>();
-		types.add(type);
-		return getUncertainValuesOfClasses(arrayUncertain, types);
 	}
 
 	@SuppressWarnings("unused") private boolean doVerifyRule4(FamilyDistribution family) {
@@ -788,6 +711,79 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		addButtonToButtonsPanel(getJButtonOK());
 		// addButtonToButtonsPanel(getJButtonRemove());
 		addButtonToButtonsPanel(getJButtonCancel());
+	}
+
+	public class DistributionsTableListener implements TableModelListener {
+		public void tableChanged(TableModelEvent e) {
+			if (e.getColumn() == DISTRIBUTION_COLUMN_INDEX) {
+				int selectedRow = distributionTable.getSelectedRow();
+				String distributionType = distributionTableModel.getValueAt(selectedRow, DISTRIBUTION_COLUMN_INDEX)
+						.toString();
+				DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
+						distributionType);
+				if (!distributionTypes.get(selectedRow).equals(distributionType)) {
+					parameterDialog.setVisible(true);
+					if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+						StringBuilder parameterString = new StringBuilder();
+						for (double parameter : parameterDialog.getParameters()) {
+							parameterString.append(parameter);
+							parameterString.append(" ");
+						}
+						distributionTableModel
+								.setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
+						distributionTypes.set(selectedRow, distributionType);
+					} else {
+						distributionTableModel
+								.setValueAt(distributionTypes.get(selectedRow), selectedRow, DISTRIBUTION_COLUMN_INDEX);
+					}
+				}
+			}
+		}
+	}
+
+	public class DistributionsTableMouseListener extends MouseAdapter {
+
+		@Override public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2 && distributionTable.getSelectedColumn() == PARAMETERS_COLUMN_INDEX) {
+				int selectedRow = distributionTable.getSelectedRow();
+				String distributionType = distributionTableModel.getValueAt(selectedRow, DISTRIBUTION_COLUMN_INDEX)
+						.toString();
+				String currentParameters = distributionTableModel.getValueAt(selectedRow, PARAMETERS_COLUMN_INDEX)
+						.toString();
+				double[] parameters = null;
+				if (!currentParameters.isEmpty()) {
+					String[] parameterArray = currentParameters.split(" ");
+					parameters = new double[parameterArray.length];
+					for (int i = 0; i < parameters.length; ++i) {
+						parameters[i] = Double.parseDouble(parameterArray[i]);
+					}
+				}
+				DistributionParameterDialog parameterDialog = new DistributionParameterDialog(getOwner(),
+						distributionType, parameters);
+				parameterDialog.setVisible(true);
+				if (parameterDialog.getSelectedButton() == OK_BUTTON) {
+					StringBuilder parameterString = new StringBuilder();
+					for (double parameter : parameterDialog.getParameters()) {
+						parameterString.append(parameter);
+						parameterString.append(" ");
+					}
+					distributionTableModel.setValueAt(parameterString.toString(), selectedRow, PARAMETERS_COLUMN_INDEX);
+				}
+			}
+		}
+	}
+
+	public class DistributionTableModel extends DefaultTableModel {
+
+		private static final long serialVersionUID = 1L;
+
+		public DistributionTableModel(Object[][] initialData, String[] columnNames) {
+			super(initialData, columnNames);
+		}
+
+		@Override public boolean isCellEditable(int row, int col) {
+			return (col == DISTRIBUTION_COLUMN_INDEX) || (col == NAME_COLUMN_INDEX);
+		}
 	}
 
 	/**
