@@ -107,7 +107,7 @@ public class NetsIO {
 	//			 * network); } else if (fileExtension.contentEquals("xml")) {
 	//			 * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
 	//			 * } else if (fileExtension.contentEquals("pgmx")) {
-	//			 * PGMXWriter.getUniqueInstance().writeProbNet(fileName, network); }
+	//			 * PGMXWriter0_2.getUniqueInstance().writeProbNet(fileName, network); }
 	//			 * else if (fileExtension.contentEquals("bif")) {
 	//			 * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
 	//			 * network); } else { throw new
@@ -148,7 +148,7 @@ public class NetsIO {
 			 * network); } else if (fileExtension.contentEquals("xml")) {
 			 * //XMLWriter.getUniqueInstance().writeProbNet(fileName, network);
 			 * } else if (fileExtension.contentEquals("pgmx")) {
-			 * PGMXWriter.getUniqueInstance().writeProbNet(fileName, network); }
+			 * PGMXWriter0_2.getUniqueInstance().writeProbNet(fileName, network); }
 			 * else if (fileExtension.contentEquals("bif")) {
 			 * //HuginWriter.getUniqueInstance().writeProbNet(fileName,
 			 * network); } else { throw new
