@@ -487,7 +487,7 @@ public class NodeDefinitionPanel extends JPanel
 			jLabelNetworkAgents.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelNetworkAgents.Text"));
 			/*
 			 * jLabelNetworkAgents.setDisplayedMnemonic(dialogStringResource
-			 * .getString( "NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic")
+			 * .getValuesInAString( "NodeDefinitionPanel.jLabelNodeRelevance.Mnemonic")
 			 * .charAt(0));
 			 */
 			jLabelNetworkAgents.setLabelFor(getJComboBoxNetworkAgents());
@@ -612,7 +612,7 @@ public class NodeDefinitionPanel extends JPanel
 			 * null) { // Dec-POMDP --> POMDP an agent has been already
 			 * assigned to current variable agentNames = new String[2];
 			 * agentNames[0] = ""; agentNames[1] =
-			 * node.getVariable().getAgent().getString(); }
+			 * node.getVariable().getAgent().getValuesInAString(); }
 			 */
 			jComboBoxNetworkAgents = new JComboBox<>(agentNames);
 			jComboBoxNetworkAgents.setName("jComboBoxAgents");
@@ -670,7 +670,7 @@ public class NodeDefinitionPanel extends JPanel
 			jLabelDecisionCriteria.setText(stringDatabase.getString("NodeDefinitionPanel.jLabelDecisionDriteria.Text"));
 			/*
 			 * jLabelDecisionCriteria
-			 * .setDisplayedMnemonic(dialogStringResource.getString(
+			 * .setDisplayedMnemonic(dialogStringResource.getValuesInAString(
 			 * "NodeDefinitionPanel.jLabelNodePurpose.Mnemonic") .charAt(0));
 			 */
 			jLabelDecisionCriteria.setLabelFor(getJComboBoxDecisionCriteria());

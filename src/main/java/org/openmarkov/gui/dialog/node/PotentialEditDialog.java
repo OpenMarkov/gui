@@ -390,7 +390,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			lblUnivariateDistrComboBox.setName("jLabelDistrType");
 			lblUnivariateDistrComboBox.setText("Distribution");
 			//TODO
-			//lblDistrType.setText (stringDatabase.getString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+			//lblDistrType.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
 		}
 		return lblUnivariateDistrComboBox;
 	}
@@ -495,7 +495,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			lblParametrizationComboBox.setName("jLabelDistrType");
 			lblParametrizationComboBox.setText("Parametrization");
 			//TODO
-			//lblParametrizationComboBox.setText (stringDatabase.getString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
+			//lblParametrizationComboBox.setText (stringDatabase.getValuesInAString ("NodeProbsValuesTablePanel.jLabelRelationType.Text"));
 		}
 		return lblParametrizationComboBox;
 	}

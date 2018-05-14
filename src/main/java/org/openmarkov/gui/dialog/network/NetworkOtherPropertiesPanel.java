@@ -117,7 +117,7 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 					stringDatabase.getString(
 							"NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn.Label"),
 					// dialogStringResource
-					// .getString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
+					// .getValuesInAString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
 			};
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},
 					stringDatabase

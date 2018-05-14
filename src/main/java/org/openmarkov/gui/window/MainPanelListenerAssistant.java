@@ -463,7 +463,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	//            String fileName,
 	//            SaveOptions saveOptions) {
 	//        boolean result = false;
-	//        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("SavingNetwork.Text.Label")
+	//        mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("SavingNetwork.Text.Label")
 	//                + " "
 	//                + fileName);
 	//        try {
@@ -487,23 +487,23 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	//            OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
 	//                    getDirectoryFileName(fileName),
 	//                    OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-	//            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getString("NetworkSaved.Text.Label"));
+	//            mainPanel.getMessageWindow().getNormalMessageStream().println(stringDatabase.getValuesInAString("NetworkSaved.Text.Label"));
 	//            mainPanel.getMainMenu().rechargeLastOpenFiles();
 	//            result = true;
 	//        } catch (NotRecognisedNetworkFileExtensionException e) {
 	//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-	//                    stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
-	//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+	//                    stringDatabase.getValuesInAString("CanNotRecognisedFileExtension.Text.Label"),
+	//                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
 	//                    JOptionPane.ERROR_MESSAGE);
 	//        } catch (CanNotWriteNetworkToFileException e) {
 	//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-	//                    stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
-	//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+	//                    stringDatabase.getValuesInAString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
+	//                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
 	//                    JOptionPane.ERROR_MESSAGE);
 	//        } catch (Exception e) {
 	//            JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-	//                    stringDatabase.getString("Generic I/O error"),
-	//                    stringDatabase.getString("ErrorWindow.Title.Label"),
+	//                    stringDatabase.getValuesInAString("Generic I/O error"),
+	//                    stringDatabase.getValuesInAString("ErrorWindow.Title.Label"),
 	//                    JOptionPane.ERROR_MESSAGE);
 	//        }
 	//        return result;

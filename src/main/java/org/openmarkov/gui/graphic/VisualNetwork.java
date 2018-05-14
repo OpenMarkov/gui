@@ -1019,7 +1019,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 				e2.printStackTrace();
 				//JOptionPane.showMessageDialog(
 					//	Utilities.getOwner(this), e2.getMessage(), stringResource
-						//	.getString("ErrorWindow.Title.Label"),
+						//	.getValuesInAString("ErrorWindow.Title.Label"),
 						//JOptionPane.ERROR_MESSAGE);
 					}
 			

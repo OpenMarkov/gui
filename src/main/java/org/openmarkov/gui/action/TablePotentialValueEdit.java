@@ -140,8 +140,8 @@ import java.util.List;
 			e.printStackTrace();
 /* TODO
 			JOptionPane.showMessageDialog(this,
-					stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()),
+					stringDatabase.getValuesInAString(e.getMessage()),
+					stringDatabase.getValuesInAString(e.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 			return;		
 */

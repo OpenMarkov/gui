@@ -170,7 +170,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 					stringDatabase.getString(
 							"NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyValueColumn.Label"),
 					// dialogStringResource
-					// .getString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
+					// .getValuesInAString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyTypeColumn.Label")
 			};
 			// ,
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},

@@ -118,7 +118,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 			nodeDomainValuesTablePanel.setFieldsFromProperties(node);
 			if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
 				// tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
-				// .getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+				// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
 				// true); // set enable the DiscreteValuesPanel
 				// changed by mpalacios
 				tabbedPane.setEnabledAt(tabbedPane
@@ -127,7 +127,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 				// DiscreteValuesPanel
 			} else if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
 				// tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
-				// .getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+				// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
 				// false); // set disable the DiscreteValuesPanel
 				tabbedPane.setEnabledAt(tabbedPane
 								.indexOfTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label")),
@@ -146,11 +146,11 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 			/*
 			 * tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
 			 * .
-			 * getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
+			 * getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label")),
 			 * false); // set disable the DiscreteValuesPanel
 			 * tabbedPane.setEnabledAt
 			 * (tabbedPane.indexOfTab(dialogStringResource
-			 * .getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label"
+			 * .getValuesInAString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label"
 			 * )), false);
 			 */// set disable the DiscreteValuesPanel
 		}
@@ -159,16 +159,16 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		// *******
 		/*
 		 * nodeProbsValuesTablePanel.setNodeProperties(node); String
-		 * auxTitle = dialogStringResource .getString(
+		 * auxTitle = dialogStringResource .getValuesInAString(
 		 * "NodePropertiesDialog.ProbTablesTab.Title.Label"); int auxTabPosition
 		 * = tabbedPane.indexOfTab(auxTitle); if (node.getNodeType() ==
-		 * NodeType.CHANCE ) { auxTitle = dialogStringResource .getString(
+		 * NodeType.CHANCE ) { auxTitle = dialogStringResource .getValuesInAString(
 		 * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeChance"); } else
 		 * if (node.getNodeType() == NodeType.DECISION ) { auxTitle =
-		 * dialogStringResource .getString(
+		 * dialogStringResource .getValuesInAString(
 		 * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeDecision"); }
 		 * else if (node.getNodeType() == NodeType.UTILITY ) { auxTitle =
-		 * dialogStringResource .getString(
+		 * dialogStringResource .getValuesInAString(
 		 * "NodePropertiesDialog.ProbTablesTab.Title.Label.NodeUtility"); }
 		 * tabbedPane.setTitleAt(auxTabPosition,auxTitle);
 		 */
@@ -220,7 +220,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 			// tabbedPane
 			// .addTab(
 			// dialogStringResource
-			// .getString("NodePropertiesDialog.DiscreteValuesTab.Title.Label"),
+			// .getValuesInAString("NodePropertiesDialog.DiscreteValuesTab.Title.Label"),
 			// null, getNodeDiscreteValuesTablePanel(), null);
 			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.DiscretizeValuesTab.Title.Label"), null,
 					getNodeDomainValuesTablePanel(), null);
@@ -228,7 +228,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 					getNodeParentsPanel(), null);
 			/*
 			 * tabbedPane .addTab( dialogStringResource
-			 * .getString("NodePropertiesDialog.ProbTablesTab.Title.Label"),
+			 * .getValuesInAString("NodePropertiesDialog.ProbTablesTab.Title.Label"),
 			 * null, getNodeProbsTablePanel(), null);
 			 */
 			tabbedPane.addTab(stringDatabase.getString("NodePropertiesDialog.OtherPropsTab.Title.Label"), null,

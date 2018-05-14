@@ -49,7 +49,7 @@ import java.awt.*;
 		messageStringResource =
 				StringResourceLoader.getUniqueInstance().getBundleMessages();
 		setTitle(dialogStringResource
-				.getString("NodePotentialDialog.Title.Label"));*/
+				.getValuesInAString("NodePotentialDialog.Title.Label"));*/
 		getComponentsPanel().setLayout(new BorderLayout(5, 5));
 		getComponentsPanel().add(getJPanelVariables(), BorderLayout.CENTER);
 

@@ -356,8 +356,8 @@ import java.util.List;
 	//			} catch (WrongCriterionException e1) {
 	//				e1.printStackTrace();
 	//				JOptionPane.showMessageDialog(this,
-	//						stringDatabase.getString(e1.getMessage()),
-	//						stringDatabase.getString(e1.getMessage()),
+	//						stringDatabase.getValuesInAString(e1.getMessage()),
+	//						stringDatabase.getValuesInAString(e1.getMessage()),
 	//						JOptionPane.ERROR_MESSAGE);
 	//			}
 	//		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
@@ -366,8 +366,8 @@ import java.util.List;
 	//			} catch (WrongCriterionException e1) {
 	//				e1.printStackTrace();
 	//				JOptionPane.showMessageDialog(this,
-	//						stringDatabase.getString(e1.getMessage()),
-	//						stringDatabase.getString(e1.getMessage()),
+	//						stringDatabase.getValuesInAString(e1.getMessage()),
+	//						stringDatabase.getValuesInAString(e1.getMessage()),
 	//						JOptionPane.ERROR_MESSAGE);
 	//			}
 	//		}

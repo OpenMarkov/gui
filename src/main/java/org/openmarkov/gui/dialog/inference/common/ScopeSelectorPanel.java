@@ -99,7 +99,7 @@ public class ScopeSelectorPanel extends JPanel {
 			JRadioButton selectedScopeType = new JRadioButton(stringDatabase.getString(scopeTypeEnum.toString()));
 			scopeTypeSelector.add(selectedScopeType);
 
-			//            scopeTypeSelector.addItem(stringDatabase.getString(scopeTypeEnum.toString()));
+			//            scopeTypeSelector.addItem(stringDatabase.getValuesInAString(scopeTypeEnum.toString()));
 
 			selectedScopeType.addActionListener(new ActionListener() {
 				@Override public void actionPerformed(ActionEvent e) {
@@ -162,12 +162,12 @@ public class ScopeSelectorPanel extends JPanel {
 
 		if (!couldBeDecision || !couldBeGlobal) {
 			if (couldBeGlobal) {
-				//scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+				//scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.GLOBAL.toString()));
 				globalRadioButton.setSelected(true);
 				decisionRadioButton.setEnabled(false);
 				setScopeType(ScopeType.GLOBAL);
 			} else {
-				//scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.DECISION.toString()));
+				//scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.DECISION.toString()));
 				decisionRadioButton.setSelected(true);
 				globalRadioButton.setEnabled(false);
 				setScopeType(ScopeType.DECISION);
@@ -176,7 +176,7 @@ public class ScopeSelectorPanel extends JPanel {
 				component.setEnabled(false);
 			}
 		} else {
-			//            scopeTypeSelector.setSelectedItem(stringDatabase.getString(ScopeType.GLOBAL.toString()));
+			//            scopeTypeSelector.setSelectedItem(stringDatabase.getValuesInAString(ScopeType.GLOBAL.toString()));
 			decisionRadioButton.setSelected(true);
 			setScopeType(ScopeType.DECISION);
 
