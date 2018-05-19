@@ -153,6 +153,8 @@ import java.util.Map;
 		fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xls"));
 		if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 
+			// This is like an if-else:
+			// condition? run if true : run if false;
 			String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xls") ?
 					fileChooser.getSelectedFile().getAbsolutePath() :
 					fileChooser.getSelectedFile().getAbsolutePath() + ".xls";
