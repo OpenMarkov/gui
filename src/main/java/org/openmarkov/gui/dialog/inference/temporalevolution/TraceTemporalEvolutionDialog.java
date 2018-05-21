@@ -11,6 +11,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -150,14 +153,14 @@ import java.util.Map;
 
 		JFileChooser fileChooser = new JFileChooser();
 		String netName = probNet.getName();
-		fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xls"));
+		fileChooser.setSelectedFile(new File(netName + "-temporal_evolution.xlsx"));
 		if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 
 			// This is like an if-else:
 			// condition? run if true : run if false;
-			String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xls") ?
+			String targetFilename = fileChooser.getSelectedFile().getAbsolutePath().endsWith(".xlsx") ?
 					fileChooser.getSelectedFile().getAbsolutePath() :
-					fileChooser.getSelectedFile().getAbsolutePath() + ".xls";
+					fileChooser.getSelectedFile().getAbsolutePath() + ".xlsx";
 
 			List<Variable> temporalVariables = new ArrayList<>();
 			for (Variable variable : probNet.getVariables()) {
@@ -191,7 +194,7 @@ import java.util.Map;
 					TemporalEvolutionReport report = new TemporalEvolutionReport();
 					report.write(
 							targetFilename.substring(0, targetFilename.length() - 4) + temporalVariable.getBaseName()
-									+ ".xls", table);
+									+ ".xlsx", table);
 					datasheet.put(temporalVariable, table);
 				} catch (NotEvaluableNetworkException e) {
 					e.printStackTrace();
@@ -204,12 +207,12 @@ import java.util.Map;
 				}
 			}
 
-			HSSFWorkbook hwb = new HSSFWorkbook();
+			XSSFWorkbook hwb = new XSSFWorkbook();
 			for (Variable tabVariable : datasheet.keySet()) {
 				JTable jtable = datasheet.get(tabVariable);
-				HSSFSheet sheetTable = hwb.createSheet(tabVariable.getBaseName());
+				XSSFSheet sheetTable = hwb.createSheet(tabVariable.getBaseName());
 				// first row, column names
-				HSSFRow rowIndexes = sheetTable.createRow(0);
+				Row rowIndexes = sheetTable.createRow(0);
 				rowIndexes.createCell(0).setCellValue("");
 
 				for (int i = 1; i < jtable.getColumnCount(); i++) {
@@ -218,7 +221,7 @@ import java.util.Map;
 				}
 				// fill data
 				for (int i = 0; i < jtable.getRowCount(); i++) {
-					HSSFRow row = sheetTable.createRow(i + 1);
+					Row row = sheetTable.createRow(i + 1);
 					for (int j = 0; j < jtable.getColumnCount(); j++) {
 						if (jtable.getValueAt(i, j) instanceof String) {
 							row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
@@ -996,7 +999,7 @@ import java.util.Map;
 					new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.png"));
 		} else {
 			fileChooser.setSelectedFile(
-					new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.xls"));
+					new File(netName + "-" + variableOfInterest.getBaseName() + "-temporal_evolution.xlsx"));
 		}
 		if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			String filename = fileChooser.getSelectedFile().getAbsolutePath();
