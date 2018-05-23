@@ -23,7 +23,7 @@ public class TemporalEvolutionReport {
 	// Methods
 
 	/**
-	 * creates a new xslx book with temporal evolution of a variable
+	 * creates a new xlsx book with temporal evolution of a variable
 	 *
 	 * @throws IOException
 	 */

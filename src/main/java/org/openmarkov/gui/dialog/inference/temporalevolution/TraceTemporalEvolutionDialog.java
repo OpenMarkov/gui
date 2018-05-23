@@ -193,7 +193,7 @@ import java.util.Map;
 					JTable table = createJTable(temporalVariable, result);
 					TemporalEvolutionReport report = new TemporalEvolutionReport();
 					report.write(
-							targetFilename.substring(0, targetFilename.length() - 4) + temporalVariable.getBaseName()
+							targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
 									+ ".xlsx", table);
 					datasheet.put(temporalVariable, table);
 				} catch (NotEvaluableNetworkException e) {
