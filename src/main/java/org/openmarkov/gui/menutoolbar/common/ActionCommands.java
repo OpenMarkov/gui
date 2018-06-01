@@ -302,6 +302,12 @@ public class ActionCommands {
 	 * Action invoked when the user wants to show the additionalProperties of a link.
 	 */
 	public static final String LINK_PROPERTIES = "LinkProperties";
+
+	/****
+	 * Action invoked when the user wants to revert a link.
+	 */
+
+	public static final String ARC_REVERSAL = "ArcReversal";
 	/****
 	 * Action invoked when the user wants to enable the linkRestrictions of a link.
 	 */

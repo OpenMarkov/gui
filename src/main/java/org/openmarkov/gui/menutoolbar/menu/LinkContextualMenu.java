@@ -9,6 +9,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.gui.constraint.ArcReversalValidator;
 import org.openmarkov.gui.constraint.LinkRestrictionValidator;
 import org.openmarkov.gui.constraint.RevelationArcValidator;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -39,6 +40,11 @@ class LinkContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'Remove'.
 	 */
 	private JMenuItem removeMenuItem = null;
+
+	/**
+	 * Object that represents the item 'Invert arc'.
+	 */
+	private JMenuItem revertArcMenuItem = null;
 
 	/**
 	 * Object that represents the item 'Add restriction'.
@@ -78,6 +84,14 @@ class LinkContextualMenu extends ContextualMenu {
 
 		initialize();
 		Link<Node> link = selectedLink.getLink();
+
+		// Test if arc reversal should be enabled
+		boolean arcReversalEnabled = false;
+		if (ArcReversalValidator.validate(link)) {
+			arcReversalEnabled = true;
+		}
+		setOptionEnabled(ActionCommands.ARC_REVERSAL, arcReversalEnabled);
+
 		boolean linkRestrictionEnabled = false;
 		if (LinkRestrictionValidator.validate(link)) {
 			linkRestrictionEnabled = true;
@@ -106,7 +120,8 @@ class LinkContextualMenu extends ContextualMenu {
 		 * This item must be added to the menu when is active the possibility of
 		 * editing the additionalProperties of a link in future versions.
 		 */
-
+		addSeparator();
+		add(getRevertArcMenuItem());
 		addSeparator();
 		add(getLinkRestrictionEnableMenuItem());
 		add(getLinkRestrictionEditMenuItem());
@@ -132,6 +147,15 @@ class LinkContextualMenu extends ContextualMenu {
 
 		return removeMenuItem;
 
+	}
+
+	public JMenuItem getRevertArcMenuItem() {
+
+		if (revertArcMenuItem == null) {
+			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.ARC_REVERSAL);
+			revertArcMenuItem.addActionListener(listener);
+		}
+		return revertArcMenuItem;
 	}
 
 	/**
@@ -232,6 +256,8 @@ class LinkContextualMenu extends ContextualMenu {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
+		} else if (actionCommand.equals(ActionCommands.ARC_REVERSAL)) {
+			component = revertArcMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			component = linkRestrictionEnableMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
