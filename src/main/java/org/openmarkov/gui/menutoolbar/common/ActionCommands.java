@@ -307,7 +307,7 @@ public class ActionCommands {
 	 * Action invoked when the user wants to revert a link.
 	 */
 
-	public static final String ARC_REVERSAL = "ArcReversal";
+	public static final String REVERT_ARC = "RevertArc";
 	/****
 	 * Action invoked when the user wants to enable the linkRestrictions of a link.
 	 */

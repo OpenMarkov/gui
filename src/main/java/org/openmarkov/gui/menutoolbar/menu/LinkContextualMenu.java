@@ -90,7 +90,7 @@ class LinkContextualMenu extends ContextualMenu {
 		if (ArcReversalValidator.validate(link)) {
 			arcReversalEnabled = true;
 		}
-		setOptionEnabled(ActionCommands.ARC_REVERSAL, arcReversalEnabled);
+		setOptionEnabled(ActionCommands.REVERT_ARC, arcReversalEnabled);
 
 		boolean linkRestrictionEnabled = false;
 		if (LinkRestrictionValidator.validate(link)) {
@@ -152,7 +152,7 @@ class LinkContextualMenu extends ContextualMenu {
 	public JMenuItem getRevertArcMenuItem() {
 
 		if (revertArcMenuItem == null) {
-			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.ARC_REVERSAL);
+			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.REVERT_ARC);
 			revertArcMenuItem.addActionListener(listener);
 		}
 		return revertArcMenuItem;
@@ -256,7 +256,7 @@ class LinkContextualMenu extends ContextualMenu {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.ARC_REVERSAL)) {
+		} else if (actionCommand.equals(ActionCommands.REVERT_ARC)) {
 			component = revertArcMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			component = linkRestrictionEnableMenuItem;
