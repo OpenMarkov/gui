@@ -481,6 +481,13 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		editorPanel.removeSelectedObjects();
 	}
 
+	/**
+	 * This methods reverts the selected link.
+	 */
+	public void revertArc() {
+		editorPanel.revertArc();
+	}
+
 	/****
 	 * This methods enables the link restriction of the selected link.
 	 */
@@ -822,5 +829,4 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	public void createNextSliceNode() {
 		editorPanel.createNextSliceNode();
 	}
-
 }

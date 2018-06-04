@@ -8,6 +8,10 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
+import org.openmarkov.core.action.ArcRevertEdit;
+import org.openmarkov.core.exception.CanNotDoEditException;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NoFindingException;
@@ -15,6 +19,7 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
@@ -2192,6 +2197,27 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * This method reverts the selceted link
+	 */
+	public void revertArc() {
+		List<VisualLink> links = visualNetwork.getSelectedLinks();
+		if (!links.isEmpty()) {
+			try {
+				Link<Node> link = links.get(0).getLink();
+				Node node1 = link.getNode1();
+				Node node2 = link.getNode2();
+				ArcRevertEdit revertLink = new ArcRevertEdit(probNet, node1.getVariable(), node2.getVariable());
+				probNet.doEdit(revertLink);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
+						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			}
+
+			repaint();
 		}
 	}
 

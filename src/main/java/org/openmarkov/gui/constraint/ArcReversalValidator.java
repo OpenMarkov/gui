@@ -26,7 +26,8 @@ public class ArcReversalValidator {
 	 * @return <code>true</code> if it is so.
 	 */
 	public static boolean validate(Link<Node> link) {
-
+		// TODO Link must be directed
+		// TODO UniformPotential must be accepted
 		Potential potential1 = link.getNode1().getPotentials().get(0);
 		Potential potential2 = link.getNode2().getPotentials().get(0);
 
