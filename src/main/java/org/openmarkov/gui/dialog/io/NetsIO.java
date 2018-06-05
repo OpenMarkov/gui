@@ -44,16 +44,12 @@ public class NetsIO {
 	 * @throws Exception if the file doesn't exist or the file format isn't correct.
 	 */
 	public static ProbNetInfo openNetworkFile(String fileName) throws Exception {
-		//CMI
 		// String fileExtension = getFileExtension(fileName);
-		//CMF
 		FormatManager formatManager = FormatManager.getInstance();
-		//CMI
 		ProbNetReader probNetReader = formatManager.getProbNetReader(fileName);
 
 		// ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
 
-		// CMF
 		ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(fileName);
 
 		if (probNetInfo == null) {
