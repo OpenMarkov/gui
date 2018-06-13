@@ -183,11 +183,6 @@ public class MenuItemNames {
 	public static final String EDIT_LINKPROPERTIES_MENUITEM = EDIT_MENU + ".LinkProperties";
 
 	/**
-	 * Constant that defines the item 'Edit - Revert arc'.
-	 */
-	public static final String EDIT_REVERT_ARC_MENUITEM = EDIT_MENU + ".RevertArc";
-
-	/**
 	 * Constant that defines the item 'Edit - Link enable linkRestrictions'.
 	 */
 	public static final String EDIT_LINKRESTRICTION_ENABLE_MENUITEM = EDIT_MENU + ".LinkRestrictionEnable";
@@ -206,6 +201,11 @@ public class MenuItemNames {
 	 * Constant that defines the item 'Edit - Link revelationArc'.
 	 */
 	public static final String EDIT_LINKREVELATIONARC_MENUITEM = EDIT_MENU + ".RevelationArc";
+
+	/**
+	 * Constant that defines the item 'Edit - Revert arc'.
+	 */
+	public static final String EDIT_REVERT_ARC_MENUITEM = EDIT_MENU + ".RevertArc";
 
 	/**
 	 * Constant that defines the item 'Edit - Switch to Inference mode'.

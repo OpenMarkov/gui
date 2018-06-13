@@ -304,11 +304,6 @@ public class ActionCommands {
 	public static final String LINK_PROPERTIES = "LinkProperties";
 
 	/****
-	 * Action invoked when the user wants to revert a link.
-	 */
-
-	public static final String REVERT_ARC = "RevertArc";
-	/****
 	 * Action invoked when the user wants to enable the linkRestrictions of a link.
 	 */
 
@@ -328,6 +323,10 @@ public class ActionCommands {
 	 */
 
 	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
+	/****
+	 * Action invoked when the user wants to revert a link.
+	 */
+	public static final String REVERT_ARC = "RevertArc";
 	/**
 	 * Action invoked when the user wants to view a toolbar
 	 */
