@@ -214,6 +214,16 @@
             <Label value="This link is not allowed"/>
         </Text>
     </LinkNotAllowed>
+    <LinkNotReversible>
+        <Text>
+            <Parent>
+                <Label value="The potential of the parent doesn't allow arc reversal"/>
+            </Parent>
+            <Child>
+                <Label value="The potential of the child doesn't allow arc reversal"/>
+            </Child>
+        </Text>
+    </LinkNotReversible>
     <IconResourceNotExists>
         <Text>
             <Label value="Missing icon resource: ~"/>

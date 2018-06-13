@@ -214,6 +214,16 @@
             <Label value="Enlace no permitido"/>
         </Text>
     </LinkNotAllowed>
+    <LinkNotReversible>
+        <Text>
+            <Parent>
+                <Label value="El potencial del padre no permite invertir el arco"/>
+            </Parent>
+            <Child>
+                <Label value="El potencial del hijo no permite invertir el arco"/>
+            </Child>
+        </Text>
+    </LinkNotReversible>
     <IconResourceNotExists>
         <Text>
             <Label value="Recurso de icono inexistente: ~"/>
