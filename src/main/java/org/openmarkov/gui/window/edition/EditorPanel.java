@@ -2213,7 +2213,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				ArcRevertEdit revertLink = new ArcRevertEdit(probNet, node1.getVariable(), node2.getVariable());
 				probNet.doEdit(revertLink);
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
+				String message = e.getMessage();
+				if (message.equals("Child") || message.equals("Parent")) {
+					message = stringDatabase.getString("LinkNotReversible.Text." + message + ".Label");
+				}
+				JOptionPane.showMessageDialog(Utilities.getOwner(this), message,
 						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 			}
 

@@ -42,11 +42,6 @@ class LinkContextualMenu extends ContextualMenu {
 	private JMenuItem removeMenuItem = null;
 
 	/**
-	 * Object that represents the item 'Invert arc'.
-	 */
-	private JMenuItem revertArcMenuItem = null;
-
-	/**
 	 * Object that represents the item 'Add restriction'.
 	 */
 	private JMenuItem linkRestrictionEnableMenuItem = null;
@@ -67,6 +62,11 @@ class LinkContextualMenu extends ContextualMenu {
 	private JMenuItem revelationArcMenuItem = null;
 
 	/**
+	 * Object that represents the item 'Invert arc'.
+	 */
+	private JMenuItem revertArcMenuItem = null;
+
+	/**
 	 * Object that represents the item 'Properties'.
 	 */
 	private JMenuItem propertiesMenuItem = null;
@@ -85,13 +85,6 @@ class LinkContextualMenu extends ContextualMenu {
 		initialize();
 		Link<Node> link = selectedLink.getLink();
 
-		// Test if arc reversal should be enabled
-		boolean arcReversalEnabled = false;
-		if (ArcReversalValidator.validate(link)) {
-			arcReversalEnabled = true;
-		}
-		setOptionEnabled(ActionCommands.REVERT_ARC, arcReversalEnabled);
-
 		boolean linkRestrictionEnabled = false;
 		if (LinkRestrictionValidator.validate(link)) {
 			linkRestrictionEnabled = true;
@@ -108,6 +101,13 @@ class LinkContextualMenu extends ContextualMenu {
 			revelationArcEnabled = true;
 		}
 		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
+
+		// Test if arc reversal should be enabled
+		boolean arcReversalEnabled = false;
+		if (ArcReversalValidator.validate(link)) {
+			arcReversalEnabled = true;
+		}
+		setOptionEnabled(ActionCommands.REVERT_ARC, arcReversalEnabled);
 	}
 
 	/**
@@ -121,13 +121,13 @@ class LinkContextualMenu extends ContextualMenu {
 		 * editing the additionalProperties of a link in future versions.
 		 */
 		addSeparator();
-		add(getRevertArcMenuItem());
-		addSeparator();
 		add(getLinkRestrictionEnableMenuItem());
 		add(getLinkRestrictionEditMenuItem());
 		add(getLinkRestrictionDisableMenuItem());
 		addSeparator();
 		add(getRevelationArcMenuItem());
+		addSeparator();
+		add(getRevertArcMenuItem());
 		addSeparator();
 		getPropertiesMenuItem();
 
@@ -147,15 +147,6 @@ class LinkContextualMenu extends ContextualMenu {
 
 		return removeMenuItem;
 
-	}
-
-	public JMenuItem getRevertArcMenuItem() {
-
-		if (revertArcMenuItem == null) {
-			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.REVERT_ARC);
-			revertArcMenuItem.addActionListener(listener);
-		}
-		return revertArcMenuItem;
 	}
 
 	/**
@@ -228,6 +219,20 @@ class LinkContextualMenu extends ContextualMenu {
 	}
 
 	/**
+	 * This method initialises getRevertArcMenuItem.
+	 *
+	 * @return a new 'Revert arc' menu item.
+	 */
+	public JMenuItem getRevertArcMenuItem() {
+
+		if (revertArcMenuItem == null) {
+			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.REVERT_ARC);
+			revertArcMenuItem.addActionListener(listener);
+		}
+		return revertArcMenuItem;
+	}
+
+	/**
 	 * This method initialises propertiesMenuItem.
 	 *
 	 * @return a new 'Properties' menu item.
@@ -256,9 +261,7 @@ class LinkContextualMenu extends ContextualMenu {
 
 		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
 			component = removeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.REVERT_ARC)) {
-			component = revertArcMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
+		}  else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			component = linkRestrictionEnableMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
 			component = linkRestrictionDisableMenuItem;
@@ -266,6 +269,8 @@ class LinkContextualMenu extends ContextualMenu {
 			component = linkRestrictionEditMenuItem;
 		} else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
 			component = revelationArcMenuItem;
+		} else if (actionCommand.equals(ActionCommands.REVERT_ARC)) {
+			component = revertArcMenuItem;
 		}
 
 		return component;
