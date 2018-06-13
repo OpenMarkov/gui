@@ -2201,7 +2201,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
-	 * This method reverts the selceted link
+	 * This method reverts the selected link
 	 */
 	public void revertArc() {
 		List<VisualLink> links = visualNetwork.getSelectedLinks();
