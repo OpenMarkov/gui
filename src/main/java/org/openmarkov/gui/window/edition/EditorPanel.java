@@ -1055,7 +1055,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 
 			try {
 				OptimalPolicies veOptimalPolicy = new VEEvaluation(probNet);
-				veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
+				optimalPolicy = veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
 			} catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
 				e.printStackTrace();
 			}
