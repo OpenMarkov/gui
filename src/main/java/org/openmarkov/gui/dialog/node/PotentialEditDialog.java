@@ -244,8 +244,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			List<String> filteredPotentialNames = potentialManager.getFilteredPotentials(node);
 			Collections.sort(filteredPotentialNames);
 			potentialTypeComboBox = new JComboBox<>((String[]) filteredPotentialNames.toArray(new String[0]));
-			potentialTypeComboBox
-					.setSelectedItem(node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name());
+			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
+			potentialTypeComboBox.setSelectedItem(currentPotentialType);
 			potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
 			potentialTypeComboBox.setName("jComboBoxRelationType");
 			potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -253,6 +253,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 					potentialTypeChanged(evt);
 				}
 			});
+            // Compute the number of columns of the conditional probability table
+            int tableColumns = 1;
+            for (Node parent: node.getParents()) {
+                tableColumns *= parent.getVariable().getNumStates();
+            }
+            // Show small uniform potentials as table potentials. Saves clicks
+            if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+                potentialTypeComboBox.setSelectedItem("Table");
+            }
 			potentialTypeComboBox.setEnabled(!readOnly);
 		}
 		return potentialTypeComboBox;
@@ -686,8 +695,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				break;
 			case PROBABILISTIC:
 				Potential potential = node.getPotentials().get(0);
-				// TODO definir el comportamiento para los demás tipos de
-				// potenciales
+				// TODO definir el comportamiento para los demás tipos de potenciales
 				if (potential instanceof UniformPotential || potential instanceof TablePotential) {
 					getPotentialTypeJCombobox()
 							.setSelectedItem(potential.getClass().getAnnotation(PotentialType.class).name());
