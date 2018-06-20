@@ -116,10 +116,6 @@ class LinkContextualMenu extends ContextualMenu {
 	private void initialize() {
 
 		add(getRemoveMenuItem());
-		/*
-		 * This item must be added to the menu when is active the possibility of
-		 * editing the additionalProperties of a link in future versions.
-		 */
 		addSeparator();
 		add(getLinkRestrictionEnableMenuItem());
 		add(getLinkRestrictionEditMenuItem());
@@ -128,9 +124,12 @@ class LinkContextualMenu extends ContextualMenu {
 		add(getRevelationArcMenuItem());
 		addSeparator();
 		add(getRevertArcMenuItem());
-		addSeparator();
-		getPropertiesMenuItem();
-
+        /*
+         * This item must be added to the menu when is active the possibility of
+         * editing the additionalProperties of a link in future versions.
+         */
+        // addSeparator()
+		// getPropertiesMenuItem();
 	}
 
 	/**
