@@ -1056,7 +1056,22 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			try {
 				OptimalPolicies veOptimalPolicy = new VEEvaluation(probNet);
 				optimalPolicy = veOptimalPolicy.getOptimalPolicy(visualNode.getNode().getVariable());
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException | NotEvaluableNetworkException e) {
+			} catch (IncompatibleEvidenceException e) {
+				JOptionPane.showMessageDialog(null,
+						StringDatabase.getUniqueInstance().getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
+						StringDatabase.getUniqueInstance().getString("ExceptionGeneric.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (UnexpectedInferenceException e) {
+				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString("GenericError.Text"),
+						StringDatabase.getUniqueInstance().getString("ExceptionGeneric.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			} catch (NotEvaluableNetworkException e) {
+				JOptionPane.showMessageDialog(null,
+						StringDatabase.getUniqueInstance().getString("ExceptionNotEvaluableNetwork.Text.Label"),
+						StringDatabase.getUniqueInstance().getString("ExceptionNotEvaluableNetwork.Title.Label"),
+						JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 
