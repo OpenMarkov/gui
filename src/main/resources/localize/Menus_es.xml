@@ -117,6 +117,10 @@
             <Label value="Copiar"/>
             <Mnemonic value="o"/>
         </Copy>
+        <PruneNode>
+            <Label value="Podar"/>
+            <Mnemonic value="d"/>
+        </PruneNode>
         <NodeProperties>
             <Label value="Propiedades del nodo..."/>
             <Mnemonic value="i"/>

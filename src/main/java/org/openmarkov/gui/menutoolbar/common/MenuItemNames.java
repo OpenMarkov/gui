@@ -162,6 +162,10 @@ public class MenuItemNames {
 	public static final String ARITY_MENUITEM = EDIT_MENU + ".Arity";
 	//TODO OOPN end
 
+    /**
+     * Constant that defines the item 'Edit - Prune Node'.
+     */
+    public static final String EDIT_PRUNENODE_MENUITEM = EDIT_MENU + ".PruneNode";
 	/**
 	 * Constant that defines the item 'Edit - Node additionalProperties'.
 	 */
