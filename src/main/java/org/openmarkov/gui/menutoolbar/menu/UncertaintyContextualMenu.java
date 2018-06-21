@@ -117,13 +117,17 @@ public class UncertaintyContextualMenu extends ContextualMenu {
 
 		JComponent component = null;
 
-		if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN)) {
-			component = assignMenuItem;
-		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_EDIT)) {
-			component = editMenuItem;
-		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
-			component = removeMenuItem;
-		}
+        switch (actionCommand) {
+            case ActionCommands.UNCERTAINTY_ASSIGN:
+                component = assignMenuItem;
+                break;
+            case ActionCommands.UNCERTAINTY_EDIT:
+                component = editMenuItem;
+                break;
+            case ActionCommands.UNCERTAINTY_REMOVE:
+                component = removeMenuItem;
+                break;
+        }
 
 		return component;
 
