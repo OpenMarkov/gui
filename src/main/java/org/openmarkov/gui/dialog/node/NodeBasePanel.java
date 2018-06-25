@@ -52,13 +52,7 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	 * set the visual aspect of the panel
 	 */
 	private void init() {
-		try {
-			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
+		initialize();
 	}
 
 	/**
@@ -80,7 +74,7 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	 * <p>
 	 * initialize the layout for this panel
 	 */
-	private void initialize() throws Exception {
+	private void initialize() {
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
 		groupLayout.setHorizontalGroup(
 				groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 500, Short.MAX_VALUE));

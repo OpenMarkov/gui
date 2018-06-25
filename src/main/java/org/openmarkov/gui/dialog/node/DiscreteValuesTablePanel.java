@@ -293,8 +293,6 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 		}
 	}
 
-	;
-
 	/**
 	 * Translate an array of states into their depending-language strings.
 	 *

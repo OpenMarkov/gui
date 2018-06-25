@@ -56,10 +56,6 @@ import java.util.ArrayList;
 		//String states = ((JRadioButton) e.getItem ()).getName ();
 	}
 
-	public ButtonGroup getButtonGroup() {
-		return buttonGroup;
-	}
-
 	public ArrayList<JRadioButton> getRadioButtons() {
 		return radioButtons;
 	}

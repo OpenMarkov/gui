@@ -67,14 +67,13 @@ public class NodeDomainValuesTablePanelListener
 	}
 
 	public void actionPerformed(ActionEvent event) {
-		// TODO do something
 	}
 
 	// button initially selected down
 	public void itemStateChanged(ItemEvent e) {
 		getPanel().getDiscretizedStatesPanel().getNegativeInfinityButton().setVisible(false);
-		getPanel().getDiscretizedStatesPanel().getPositiveInfinityButton().setVisible(false);
 		getPanel().getDiscretizedStatesPanel().getNegativeInfinityButton().setEnabled(false);
+		getPanel().getDiscretizedStatesPanel().getPositiveInfinityButton().setVisible(false);
 		getPanel().getDiscretizedStatesPanel().getPositiveInfinityButton().setEnabled(false);
 		if (e.getItem().equals(getPanel().getJRadioButtonIncreasing())) {
 			itemStateChangedUp(e);

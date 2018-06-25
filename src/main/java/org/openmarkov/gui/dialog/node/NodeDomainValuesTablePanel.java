@@ -58,6 +58,7 @@ import java.util.Locale;
  * @version 1.2 myebra
  */
 public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, ActionListener {
+
 	/**
 	 * serial uid
 	 */
@@ -156,13 +157,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	public NodeDomainValuesTablePanel(Node node) {
 		this(true);// , notifier);
 		this.node = node;
-		try {
-			initialize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
+		initialize();
 	}
 
 	/**
@@ -183,7 +178,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	 * <p>
 	 * initialize the layout for this panel
 	 */
-	private void initialize() throws Exception {
+	private void initialize() {
 		if (node.getNodeType() == NodeType.UTILITY) {
 			getJComboBoxNodeVariableType().setSelectedItem(stringDatabase
 					.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
