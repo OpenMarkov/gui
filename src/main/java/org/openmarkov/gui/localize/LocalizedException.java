@@ -26,9 +26,23 @@ public class LocalizedException {
 	public LocalizedException (Exception openMarkovException, Window ownerWindow) {
 		this.openMarkovException = openMarkovException;
 		this.ownerWindow = ownerWindow;
-		OpenMarkovException lAnnotation = openMarkovException.getClass().getAnnotation(OpenMarkovException.class);
-		this.localizedTitle = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".title");
-		this.localizedMessage = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".message");
+		this.localizedTitle = StringDatabase.getUniqueInstance().getString("GenericException.title");
+		this.localizedMessage = StringDatabase.getUniqueInstance().getString("GenericException.message");
+
+		if (openMarkovException.getClass().isAnnotationPresent(OpenMarkovException.class)) {
+			OpenMarkovException lAnnotation = openMarkovException.getClass().getAnnotation(OpenMarkovException.class);
+			String newTitle = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".title");
+			String newMessage = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".message");
+			if (newTitle != null) {
+				this.localizedTitle = newTitle;
+			}
+			if (newMessage != null) {
+				this.localizedMessage = newMessage;
+			}
+		} else {
+			this.localizedTitle = openMarkovException.getMessage();
+			this.localizedMessage = openMarkovException.getLocalizedMessage();
+		}
 	}
 
 	public void showException(){

@@ -333,6 +333,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		} else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
 			this.getCurrentNetworkPanel().createNextSliceNode();
 		} else {
+			// TODO - Get ToolPluginManager Exceptions
 			ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
 		}
 	}
