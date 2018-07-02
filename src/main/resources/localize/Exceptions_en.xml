@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <ParserException>
+        <title value="Hola mundo" />
+        <message value="Probando uno dos tres" />
+    </ParserException>
+
+</properties>
+
