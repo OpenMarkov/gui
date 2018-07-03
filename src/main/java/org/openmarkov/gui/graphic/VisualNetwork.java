@@ -11,7 +11,6 @@ import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -973,7 +972,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
+			throws ConstraintViolationException {
 		// TODO Auto-generated method stub
 
 	}
@@ -1191,7 +1190,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 					visualNode.getNode());
 			try {
 				probNet.doEdit(markAsInputEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 			}
 		}

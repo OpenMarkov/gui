@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.NetworkCommentEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -312,7 +311,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, getShowComment());
 		try {
 			probNet.doEdit(networkCommentEdit);
-		} catch (ConstraintViolationException | CanNotDoEditException | DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException | DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -341,7 +340,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 					try {
 						probNet.doEdit(changeNetworkType);
 						parent.getNetworkAdvancedPanel().update(probNet);
-					} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 						e.printStackTrace();
 						JOptionPane
 								.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),

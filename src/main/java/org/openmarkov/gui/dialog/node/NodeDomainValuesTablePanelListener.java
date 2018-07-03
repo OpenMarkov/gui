@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.UnitEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -181,7 +180,7 @@ public class NodeDomainValuesTablePanelListener
 					((Double) getPanel().getJFormattedTextFieldPrecision().getValue()).doubleValue());
 			try {
 				getPanel().getNode().getProbNet().doEdit(precisionEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -193,7 +192,7 @@ public class NodeDomainValuesTablePanelListener
 			try {
 				getPanel().getNode().getProbNet().doEdit(unitEdit);
 				getPanel().getJTextFieldUnit().setText(getPanel().getJTextFieldUnit().getText());
-			} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 				e.printStackTrace();
 			}
 		}
@@ -205,7 +204,7 @@ public class NodeDomainValuesTablePanelListener
 					(Double) getPanel().getJFormattedTextFieldPrecision().getValue());
 			try {
 				getPanel().getNode().getProbNet().doEdit(precisionEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -264,7 +263,7 @@ public class NodeDomainValuesTablePanelListener
 						newPartitionedInterval);
 				try {
 					getPanel().getNode().getProbNet().doEdit(partitionedIntervalEdit);
-				} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 					e.printStackTrace();
 				}
 				PartitionedInterval newPartitionInterval = getPanel().getNode().getVariable().getPartitionedInterval();
@@ -275,7 +274,7 @@ public class NodeDomainValuesTablePanelListener
 			UnitEdit unitEdit = new UnitEdit(getPanel().getNode(), getPanel().getJTextFieldUnit().getText());
 			try {
 				getPanel().getNode().getProbNet().doEdit(unitEdit);
-			} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

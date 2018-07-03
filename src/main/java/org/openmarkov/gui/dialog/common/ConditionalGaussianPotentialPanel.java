@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -112,7 +111,7 @@ import java.awt.event.ActionListener;
 		PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		try {
 			probNet.doEdit(edit);
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -139,7 +138,7 @@ import java.awt.event.ActionListener;
 	}
 
 	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException {
 		// Ignore
 	}

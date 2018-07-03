@@ -29,10 +29,12 @@ public class LocalizedException {
 		this.localizedTitle = StringDatabase.getUniqueInstance().getString("GenericException.title");
 		this.localizedMessage = StringDatabase.getUniqueInstance().getString("GenericException.message");
 
-		if (openMarkovException.getClass().isAnnotationPresent(OpenMarkovException.class)) {
-			OpenMarkovException lAnnotation = openMarkovException.getClass().getAnnotation(OpenMarkovException.class);
-			String newTitle = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".title");
-			String newMessage = StringDatabase.getUniqueInstance().getString(lAnnotation.name() + ".message");
+		if (openMarkovException instanceof OpenMarkovException) {
+
+			String token = ((OpenMarkovException) openMarkovException).getToken();
+			String newTitle = String.format(StringDatabase.getUniqueInstance().getString(token + ".title"));
+			String formattedString = StringDatabase.getUniqueInstance().getString(token + ".message");
+			String newMessage = String.format(formattedString, ((OpenMarkovException) openMarkovException).getAttributes());
 			if (newTitle != null) {
 				this.localizedTitle = newTitle;
 			}
