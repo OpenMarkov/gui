@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.dialog;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.loader.element.ImageLoader;
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -127,7 +128,7 @@ public class AboutBox extends JDialog implements ActionListener {
 	 * @return anAboutBox dialog
 	 */
 	public AboutBox getUniqueInstance(JFrame parent) {
-		this.logger = Logger.getLogger(AboutBox.class);
+		this.logger = LogManager.getLogger(AboutBox.class);
 		if (anAboutBox == null) { // singleton
 			new AboutBox(parent);
 		} else { // it is already created and not visible

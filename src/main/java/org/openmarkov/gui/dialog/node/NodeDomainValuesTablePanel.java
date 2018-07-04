@@ -7,11 +7,11 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -170,7 +170,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		setName("NodeDomainValuesTablePanel");
 		this.newNode = newNode;
 		this.listener = new NodeDomainValuesTablePanelListener(this);
-		this.logger = Logger.getLogger(NodeDomainValuesTablePanel.class);
+		this.logger = LogManager.getLogger(NodeDomainValuesTablePanel.class);
 	}
 
 	/**
@@ -892,7 +892,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+				} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 					comboBox.setSelectedIndex(optionDeselected);
@@ -933,7 +933,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+				} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
 					e.printStackTrace();
@@ -960,7 +960,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							}
 						}
 						// @@@
-					} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e1.getMessage()),
 								stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -1035,7 +1035,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
 					}
 					// @@@
-				} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 					e.printStackTrace();
 				}
 				PartitionedInterval newPartitionInterval = node.getVariable().getPartitionedInterval();
@@ -1106,7 +1106,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 							stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 				}
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.RevelationStateEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -100,10 +99,6 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 			try {
 				node.getProbNet().doEdit(arcEdit);
 			} catch (ConstraintViolationException e1) {
-			} catch (CanNotDoEditException e3) {
-				e3.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e3.getMessage()),
-						stringDatabase.getString(e3.getMessage()), JOptionPane.ERROR_MESSAGE);
 			} catch (NonProjectablePotentialException e4) {
 				e4.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e4.getMessage()),

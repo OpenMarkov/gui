@@ -9,7 +9,6 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -105,7 +104,7 @@ import java.util.ArrayList;
 						node2.setPotentials(potentials);
 					}
 				}
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

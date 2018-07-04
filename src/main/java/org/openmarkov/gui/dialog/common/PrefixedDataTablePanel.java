@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.action.AddLinkEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -199,7 +198,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					edits.add(linkEdit);
 					nodes.add(otherNode);
 				} catch (ConstraintViolationException ignore) {
-				} catch (CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (NonProjectablePotentialException | WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -256,10 +255,6 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-		} catch (CanNotDoEditException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (NonProjectablePotentialException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

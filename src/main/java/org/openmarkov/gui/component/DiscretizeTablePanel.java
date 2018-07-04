@@ -9,7 +9,6 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -338,7 +337,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 							propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
 									row, lower);
 							//
-						} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+						} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 							JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 									stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 						}
@@ -363,7 +362,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 							propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
 									row, lower);
 							//
-						} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+						} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 							JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 									stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 						}
@@ -394,7 +393,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 							propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
 									row, lower);
 							//
-						} catch (ConstraintViolationException | DoEditException | NonProjectablePotentialException | WrongCriterionException | CanNotDoEditException e) {
+						} catch (ConstraintViolationException | DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 							JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 									stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 						}
@@ -419,7 +418,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 							propagateNodePartitionedIntervalEditRelatedVariables(StateAction.MODIFY_DELIMITER_INTERVAL,
 									row, lower);
 							//
-						} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+						} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 							JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 									stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 						}
@@ -872,7 +871,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 					getTableModel().insertRow(newIndex, new Object[] { getKeyString(newIndex), option });
 				}
 				valuesTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
@@ -929,7 +928,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 					}
 				}
 			}
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -960,7 +959,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 			valuesTable.setValueAt(valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -986,7 +985,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 			valuesTable.setValueAt(valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -1007,7 +1006,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
 		try {
 			node.getProbNet().doEdit(partitionedIntervalEdit);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
 		valuesTable.setValueAt(INFINITY, selectedRow, selectedColumn);
@@ -1028,7 +1027,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		PartitionedIntervalEdit partitionedIntervalEdit = new PartitionedIntervalEdit(node, newPartitionedInterval);
 		try {
 			node.getProbNet().doEdit(partitionedIntervalEdit);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 		}
 		valuesTable.setValueAt(NEGATIVE_INFINITY, selectedRow, selectedColumn);
@@ -1066,7 +1065,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 						// Propagation of the domain in related variables in temporal models
 						propagateNodeStateEditRelatedVariables(StateAction.RENAME, row, newName);
 						//
-					} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 						JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 						// If an error occurred or a constraint is broken
@@ -1140,7 +1139,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 						newPartitionedInterval);
 				try {
 					node.getProbNet().doEdit(partitionedIntervalEdit);
-				} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 					e.printStackTrace();
 				}
 				setDataFromPartitionedInterval(variable.getPartitionedInterval(), variable.getStates());
@@ -1221,7 +1220,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 					}
 				}
 			}
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 	}
@@ -1248,7 +1247,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 					}
 				}
 			}
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 	}

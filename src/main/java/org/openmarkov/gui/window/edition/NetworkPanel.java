@@ -8,7 +8,6 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
@@ -648,7 +647,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
+			throws ConstraintViolationException {
 		// TODO Auto-generated method stub
 		repaint();
 	}

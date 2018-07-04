@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -167,7 +166,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 				valuesTable.getSelectionModel().setSelectionInterval(0, 0);
 				renameAction = false;
 
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 
@@ -214,7 +213,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			}
 
 			renameAction = false;
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 
@@ -250,7 +249,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
 			renameAction = false;
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -283,7 +282,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
 			renameAction = false;
 
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -360,7 +359,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 						node.getNumParents());
 				valuesTable.setValueAt(node.getVariable().getStates()[i].getName(), row, e.getColumn());
 
-			} catch (CanNotDoEditException | DoEditException | NonProjectablePotentialException | WrongCriterionException e1) {
+			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -389,7 +388,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 					}
 				}
 			}
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 	}

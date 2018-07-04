@@ -8,7 +8,7 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NodeNotFoundException;
@@ -582,7 +582,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-		} catch (CanNotWriteNetworkToFileException e) {
+		} catch (OpenMarkovException e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 					stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);

@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.dialog;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.gui.localize.Languages;
 import org.openmarkov.gui.localize.LocaleChangeEvent;
@@ -60,7 +61,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	private LanguageDialog(JFrame parent) {
 		super(parent, "", true);
 		setName("LanguageDialog");
-		this.logger = Logger.getLogger(LanguageDialog.class);
+		this.logger = LogManager.getLogger(LanguageDialog.class);
 		this.oldLanguage = stringDatabase.getLanguage();
 		stringDatabase.addLocaleChangeListener(this);
 		try {

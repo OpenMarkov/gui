@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.NetworkDefaultStatesEdit;
 import org.openmarkov.core.action.VariableTypeConstraintEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -233,7 +232,7 @@ public class NetworkVariablesPanel extends JPanel {
 		if (variableTypeCE != null) {
 			try {
 				probNet.doEdit(variableTypeCE);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -250,7 +249,7 @@ public class NetworkVariablesPanel extends JPanel {
 					getDefaultStates());
 			try {
 				probNet.doEdit(networkDefaultStatesEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

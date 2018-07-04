@@ -10,7 +10,6 @@ package org.openmarkov.gui.window;
 import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -990,7 +989,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException {
+			throws ConstraintViolationException {
 		// TODO Auto-generated method stub
 	}
 

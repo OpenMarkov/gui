@@ -7,8 +7,9 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.core.exception.CanNotWriteNetworkToFileException;
+import org.openmarkov.core.exception.ExceptionConstants;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.ProbNetReader;
@@ -124,12 +125,12 @@ public class NetsIO {
 	 * @param fileName   - file where the network is going to be saved
 	 * @param fileFormat - the extension and format of file where the network is going to be saved
 	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
-	 * @throws CanNotWriteNetworkToFileException          - if an I/O error has happened
+	 * @throws OpenMarkovException          - if an OpenMarkov error has happened
 	 * @throws InstantiationException                     -
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException,
+			throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
 			IllegalAccessException, InstantiationException {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
@@ -153,7 +154,7 @@ public class NetsIO {
 			 * CanNotWriteNetworkToFileException(fileName); }
 			 */
 		} catch (WriterException ex) {
-			throw new CanNotWriteNetworkToFileException(fileName);
+			throw new OpenMarkovException(ExceptionConstants.CanNotWriteNetworkToFileException, fileName);
 		}
 	}
 
@@ -185,12 +186,12 @@ public class NetsIO {
 	 * @param network  - network to save in the file
 	 * @param fileName - file where the network is going to be saved
 	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
-	 * @throws CanNotWriteNetworkToFileException          - if an I/O error has happened
+	 * @throws OpenMarkovException          - if an I/O error has happened
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, CanNotWriteNetworkToFileException,
+			throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
 			IllegalAccessException, InstantiationException {
 
 		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);

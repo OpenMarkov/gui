@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
@@ -171,7 +170,7 @@ import java.util.List;
 	}
 
 	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, CanNotDoEditException, NonProjectablePotentialException,
+			throws ConstraintViolationException, NonProjectablePotentialException,
 			WrongCriterionException {
 		// TODO Auto-generated method stub
 
