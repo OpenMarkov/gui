@@ -11,7 +11,8 @@
  */
 package org.openmarkov.gui.dialog;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +51,7 @@ public class SplashScreen extends JFrame {
 	 * @param imageIcon The image to be used as Splash Screen
 	 */
 	public SplashScreen(ImageIcon imageIcon) {
-		this.logger = Logger.getLogger(SplashScreen.class);
+		this.logger = LogManager.getLogger(SplashScreen.class);
 		this.imageIcon = imageIcon;
 		try {
 			jbInit();

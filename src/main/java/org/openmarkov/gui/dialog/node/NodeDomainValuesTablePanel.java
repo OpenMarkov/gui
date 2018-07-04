@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.NodeReplaceStatesEdit;
 import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
@@ -174,7 +175,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		setName("NodeDomainValuesTablePanel");
 		this.newNode = newNode;
 		this.listener = new NodeDomainValuesTablePanelListener(this);
-		this.logger = Logger.getLogger(NodeDomainValuesTablePanel.class);
+		this.logger = LogManager.getLogger(NodeDomainValuesTablePanel.class);
 	}
 
 	/**

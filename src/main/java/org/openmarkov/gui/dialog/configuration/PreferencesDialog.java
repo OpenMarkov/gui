@@ -10,7 +10,8 @@
 
 package org.openmarkov.gui.dialog.configuration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -140,7 +141,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 		createButtonPanel();
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
-		this.logger = Logger.getLogger(PreferencesDialog.class);
+		this.logger = LogManager.getLogger(PreferencesDialog.class);
 	}
 
 	/**

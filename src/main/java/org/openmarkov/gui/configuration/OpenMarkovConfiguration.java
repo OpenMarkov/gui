@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.configuration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,7 +43,7 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	 * Reads configuration from disk or generates default configuration.
 	 */
 	private OpenMarkovConfiguration() {
-		this.logger = Logger.getLogger(OpenMarkovConfiguration.class);
+		this.logger = LogManager.getLogger(OpenMarkovConfiguration.class);
 		readConfiguration();
 
 	}
