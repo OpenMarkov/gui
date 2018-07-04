@@ -9,7 +9,6 @@ package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.ArcRevertEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;

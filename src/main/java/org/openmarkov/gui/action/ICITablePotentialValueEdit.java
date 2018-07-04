@@ -7,10 +7,9 @@
 
 package org.openmarkov.gui.action;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -293,7 +292,7 @@ import java.util.List;
 
 		try {
 			probNet.doEdit(iciPotentialEdit);
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
 			throw new DoEditException(e);
 		}

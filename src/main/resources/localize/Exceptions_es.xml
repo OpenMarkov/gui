@@ -15,8 +15,8 @@
     </NotEvaluableNetworkException>
 
     <CanNotWriteNetworkToFileException>
-        <title value="Can not write network to file" />
-        <message value="Can not write network to file: %s" />
+        <title value="No se puede escribir la red al fichero" />
+        <message value="No se puede escribir el fichero %s y por tanto no se pudo guardar la red" />
     </CanNotWriteNetworkToFileException>
 </properties>
 

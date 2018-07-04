@@ -8,7 +8,6 @@
 package org.openmarkov.gui.oopn;
 
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -665,7 +664,7 @@ public class VisualOONetwork extends VisualNetwork {
 					visualInstance.getInstance());
 			try {
 				probNet.doEdit(markAsInputEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 			}
 		}
@@ -717,7 +716,7 @@ public class VisualOONetwork extends VisualNetwork {
 					visualInstance.getInstance(), arity);
 			try {
 				probNet.doEdit(changeParameterArityEdit);
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 				e.printStackTrace();
 			}
 		}

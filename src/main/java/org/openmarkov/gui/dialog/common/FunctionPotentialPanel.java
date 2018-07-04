@@ -7,7 +7,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -106,7 +105,7 @@ import java.util.List;
 				newPotential);
 		try {
 			node.getProbNet().doEdit(potentialChangeEdit);
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
 		return true;

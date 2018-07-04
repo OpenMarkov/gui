@@ -10,7 +10,6 @@ package org.openmarkov.gui.dialog.network;
 import org.openmarkov.core.action.DecisionCriteriaEdit;
 import org.openmarkov.core.action.DecisionCriterionUnitEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -65,7 +64,7 @@ import java.util.List;
 					try {
 						probNet.doEdit(criteriaEdit);
 						//edits.add(criteriaEdit);
-					} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 						JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 								stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 						dataTable[row][column - 1] = criterionName;
@@ -85,7 +84,7 @@ import java.util.List;
 					try {
 						probNet.doEdit(criterionUnitEdit);
 						//edits.add(criterionUnitEdit);
-					} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -115,7 +114,7 @@ import java.util.List;
 				probNet.doEdit(criteriaEdit);
 				//edits.add(criteriaEdit);
 
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 
@@ -159,7 +158,7 @@ import java.util.List;
 		try {
 			probNet.doEdit(criteriaEdit);
 			//edits.add(criteriaEdit);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -202,7 +201,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -238,7 +237,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

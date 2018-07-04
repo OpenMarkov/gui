@@ -7,7 +7,8 @@
 
 package org.openmarkov.gui.graphic;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -207,7 +208,7 @@ public class VisualArrow extends VisualElement {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
 			// ExceptionsHandler.handleException(e, null, true);
-			Logger.getLogger(VisualLink.class).info(e);
+			LogManager.getLogger(VisualLink.class).info(e);
 		}
 		length = points.length;
 		for (index = 0; index < length; index++) {
@@ -444,7 +445,7 @@ public class VisualArrow extends VisualElement {
 		try {
 			transformation2D = transformation2D.createInverse();
 		} catch (NoninvertibleTransformException e) {
-			Logger.getLogger(VisualLink.class).info(e);
+			LogManager.getLogger(VisualLink.class).info(e);
 		}
 		transformation2D.transform(points[0], points[0]);
 		transformation2D.transform(points[1], points[1]);

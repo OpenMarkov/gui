@@ -6,7 +6,7 @@
  */
 package org.openmarkov.gui.dialog.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;

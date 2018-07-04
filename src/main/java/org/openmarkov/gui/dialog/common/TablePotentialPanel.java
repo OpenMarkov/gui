@@ -7,10 +7,9 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -750,7 +749,7 @@ import java.util.List;
 					getValuesTable().repaint();
 					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 				}
-			} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | DoEditException e) {
+			} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -865,7 +864,7 @@ import java.util.List;
 				getValuesTable().repaint();
 				this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 			}
-		} catch (ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | DoEditException e) {
+		} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

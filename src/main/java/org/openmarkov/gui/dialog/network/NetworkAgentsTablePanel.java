@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.CanNotDoEditException;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -54,7 +53,7 @@ import java.util.List;
 				try {
 					probNet.doEdit(networkAgentEdit);
 					edits.add(networkAgentEdit);
-				} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -79,7 +78,7 @@ import java.util.List;
 			try {
 				probNet.doEdit(networkAgentEdit);
 				edits.add(networkAgentEdit);
-			} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -111,7 +110,7 @@ import java.util.List;
 		try {
 			probNet.doEdit(networkAgentEdit);
 			edits.add(networkAgentEdit);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -146,7 +145,7 @@ import java.util.List;
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -174,7 +173,7 @@ import java.util.List;
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException | CanNotDoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
