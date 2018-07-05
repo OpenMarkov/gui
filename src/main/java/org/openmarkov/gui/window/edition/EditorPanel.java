@@ -9,6 +9,8 @@ package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.ArcRevertEdit;
+import org.openmarkov.core.action.PruneNodeEdit;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -683,6 +685,30 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	public void setSelectedAllObjects(boolean selected) {
 		visualNetwork.setSelectedAllObjects(selected);
 	}
+
+    /**
+     * This method prunes a node arc-reversal style. This means removing it if it has no childs or updating the only utility
+     * child it might have and removing it next.
+     */
+    public void pruneNode() {
+        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+        Node node;
+        if (selectedNodes.size() == 1) { // Always happens
+            node = selectedNodes.get(0).getNode();
+        } else {
+            throw new RuntimeException();
+        }
+        try {
+            PruneNodeEdit pruneNode = new PruneNodeEdit(probNet, node.getVariable());
+            probNet.doEdit(pruneNode);
+        } catch (DoEditException | ConstraintViolationException |
+                WrongCriterionException | NonProjectablePotentialException e) {
+            e.printStackTrace();
+        }
+
+        repaint();
+
+    }
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.

@@ -323,6 +323,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		editorPanel.changeNetworkProperties();
 	}
 
+    /**
+     * This method prunes a node arc-reversal style. This means removing it if it has no childs or updating the only utility
+     * child it might have and removing it next.
+     */
+    public void pruneNode() {
+        editorPanel.pruneNode();
+    }
+
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.
 	 * If some property has changed, insert a new undo point into the network
