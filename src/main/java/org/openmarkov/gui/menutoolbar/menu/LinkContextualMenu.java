@@ -85,10 +85,7 @@ class LinkContextualMenu extends ContextualMenu {
 		initialize();
 		Link<Node> link = selectedLink.getLink();
 
-		boolean linkRestrictionEnabled = false;
-		if (LinkRestrictionValidator.validate(link)) {
-			linkRestrictionEnabled = true;
-		}
+		boolean linkRestrictionEnabled = LinkRestrictionValidator.validate(link);
 
 		setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
 				(linkRestrictionEnabled && !link.hasRestrictions()));
@@ -96,14 +93,14 @@ class LinkContextualMenu extends ContextualMenu {
 				(linkRestrictionEnabled && link.hasRestrictions()));
 		setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
 				(linkRestrictionEnabled && link.hasRestrictions()));
-		boolean revelationArcEnabled = false;
-		if (RevelationArcValidator.validate(link)) {
-			revelationArcEnabled = true;
-		}
-		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
+
+        // Test if revelation arc should be enabled. Validate method returns true if that's the case
+		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES,
+                RevelationArcValidator.validate(link));
 
 		// Test if arc reversal should be enabled. Validate method returns true if that's the case
-		setOptionEnabled(ActionCommands.REVERT_ARC, ArcReversalValidator.validate(link));
+		setOptionEnabled(ActionCommands.REVERT_ARC,
+                ArcReversalValidator.validate(link));
 	}
 
 	/**
