@@ -117,10 +117,10 @@
             <Label value="Copy"/>
             <Mnemonic value="o"/>
         </Copy>
-        <PruneNode>
-            <Label value="Prune"/>
+        <AbsorbNode>
+            <Label value="Absorb"/>
             <Mnemonic value="n"/>
-        </PruneNode>
+        </AbsorbNode>
         <NodeProperties>
             <Label value="Node properties..."/>
             <Mnemonic value="i"/>

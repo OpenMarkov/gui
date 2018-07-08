@@ -163,9 +163,9 @@ public class MenuItemNames {
 	//TODO OOPN end
 
     /**
-     * Constant that defines the item 'Edit - Prune Node'.
+     * Constant that defines the item 'Edit - Absorb Node'.
      */
-    public static final String EDIT_PRUNENODE_MENUITEM = EDIT_MENU + ".PruneNode";
+    public static final String EDIT_ABSORBNODE_MENUITEM = EDIT_MENU + ".AbsorbNode";
 	/**
 	 * Constant that defines the item 'Edit - Node additionalProperties'.
 	 */

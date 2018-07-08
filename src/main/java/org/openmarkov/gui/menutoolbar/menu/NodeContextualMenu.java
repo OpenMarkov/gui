@@ -9,7 +9,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.gui.constraint.PruneNodeValidator;
+import org.openmarkov.gui.constraint.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.localize.MenuLocalizer;
@@ -48,9 +48,9 @@ public class NodeContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem removeMenuItem = null;
 	/**
-     * Object that represents the item 'PruneNode'.
+     * Object that represents the item 'AbsorbNode'.
      */
-    private JMenuItem pruneNodeMenuItem = null;
+    private JMenuItem absorbNodeMenuItem = null;
 	/**
 	 * Object that represents the item 'Properties'.
 	 */
@@ -121,9 +121,9 @@ public class NodeContextualMenu extends ContextualMenu {
 		super(newListener);
 		initialize();
 
-        // Test if the node can be pruned. Validate method return true in that case
+        // Test if the node can be absorbed. Validate method return true in that case
         Node node = selectedNode.getNode();
-        setOptionEnabled(ActionCommands.PRUNE_NODE, PruneNodeValidator.validate(node));
+        setOptionEnabled(ActionCommands.ABSORB_NODE, AbsorbNodeValidator.validate(node));
 
         if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
 			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
@@ -148,7 +148,7 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
         addSeparator();
-        add(getPruneNodeMenuItem());
+        add(getAbsorbNodeMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
@@ -177,7 +177,7 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
 		addSeparator();
-        add(getPruneNodeMenuItem());
+        add(getAbsorbNodeMenuItem());
         addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -209,7 +209,7 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
         addSeparator();
-        add(getPruneNodeMenuItem());
+        add(getAbsorbNodeMenuItem());
 		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -363,16 +363,16 @@ public class NodeContextualMenu extends ContextualMenu {
 	}
 
     /**
-     * This method initialises pruneNodeMenuItem.
+     * This method initialises absorbNodeMenuItem.
      *
-     * @return a new 'pruneNode' menu item.
+     * @return a new 'absorbNode' menu item.
      */
-    private JMenuItem getPruneNodeMenuItem() {
-        if (pruneNodeMenuItem == null) {
-            pruneNodeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_PRUNENODE_MENUITEM, ActionCommands.PRUNE_NODE);
-            pruneNodeMenuItem.addActionListener(listener);
+    private JMenuItem getAbsorbNodeMenuItem() {
+        if (absorbNodeMenuItem == null) {
+            absorbNodeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBNODE_MENUITEM, ActionCommands.ABSORB_NODE);
+            absorbNodeMenuItem.addActionListener(listener);
         }
-        return pruneNodeMenuItem;
+        return absorbNodeMenuItem;
     }
 
 	/**
@@ -565,8 +565,8 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.OBJECT_REMOVAL:
                 component = removeMenuItem;
                 break;
-            case ActionCommands.PRUNE_NODE:
-                component = pruneNodeMenuItem;
+            case ActionCommands.ABSORB_NODE:
+                component = absorbNodeMenuItem;
                 break;
             case ActionCommands.NODE_PROPERTIES:
                 component = propertiesMenuItem;
