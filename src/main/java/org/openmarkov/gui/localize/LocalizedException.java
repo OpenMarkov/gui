@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.localize;
 
+import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.gui.plugin.PluginManager;
@@ -15,6 +16,7 @@ import org.openmarkov.plugin.PluginLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.MissingFormatArgumentException;
 
 public class LocalizedException {
 
@@ -34,7 +36,13 @@ public class LocalizedException {
 			String token = ((OpenMarkovException) openMarkovException).getToken();
 			String newTitle = String.format(StringDatabase.getUniqueInstance().getString(token + ".title"));
 			String formattedString = StringDatabase.getUniqueInstance().getString(token + ".message");
-			String newMessage = String.format(formattedString, ((OpenMarkovException) openMarkovException).getAttributes());
+			String newMessage = formattedString;
+			try {
+				newMessage = String
+						.format(formattedString, ((OpenMarkovException) openMarkovException).getAttributes());
+			} catch (MissingFormatArgumentException exception) {
+				LogManager.getLogger(getClass()).warn("Invalid number of arguments in the formatter");
+			}
 			if (newTitle != null) {
 				this.localizedTitle = newTitle;
 			}

@@ -324,6 +324,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
+	 * This method absorbs a node into the rest of the net arc-reversal style. This means updating the only utility
+	 * child it might have and removing it next.
+	 */
+    public void absorbNode() {
+        editorPanel.absorbNode();
+    }
+
+	/**
 	 * This method shows a dialog box with the additionalProperties of a node.
 	 * If some property has changed, insert a new undo point into the network
 	 * undo manager.

@@ -85,10 +85,7 @@ class LinkContextualMenu extends ContextualMenu {
 		initialize();
 		Link<Node> link = selectedLink.getLink();
 
-		boolean linkRestrictionEnabled = false;
-		if (LinkRestrictionValidator.validate(link)) {
-			linkRestrictionEnabled = true;
-		}
+		boolean linkRestrictionEnabled = LinkRestrictionValidator.validate(link);
 
 		setOptionEnabled(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES,
 				(linkRestrictionEnabled && !link.hasRestrictions()));
@@ -96,18 +93,14 @@ class LinkContextualMenu extends ContextualMenu {
 				(linkRestrictionEnabled && link.hasRestrictions()));
 		setOptionEnabled(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES,
 				(linkRestrictionEnabled && link.hasRestrictions()));
-		boolean revelationArcEnabled = false;
-		if (RevelationArcValidator.validate(link)) {
-			revelationArcEnabled = true;
-		}
-		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES, revelationArcEnabled);
 
-		// Test if arc reversal should be enabled
-		boolean arcReversalEnabled = false;
-		if (ArcReversalValidator.validate(link)) {
-			arcReversalEnabled = true;
-		}
-		setOptionEnabled(ActionCommands.REVERT_ARC, arcReversalEnabled);
+        // Test if revelation arc should be enabled. Validate method returns true if that's the case
+		setOptionEnabled(ActionCommands.LINK_REVELATIONARC_PROPERTIES,
+                RevelationArcValidator.validate(link));
+
+		// Test if arc reversal should be enabled. Validate method returns true if that's the case
+		setOptionEnabled(ActionCommands.REVERT_ARC,
+                ArcReversalValidator.validate(link));
 	}
 
 	/**
@@ -258,19 +251,26 @@ class LinkContextualMenu extends ContextualMenu {
 
 		JComponent component = null;
 
-		if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
-			component = removeMenuItem;
-		}  else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
-			component = linkRestrictionEnableMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES)) {
-			component = linkRestrictionDisableMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {
-			component = linkRestrictionEditMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_REVELATIONARC_PROPERTIES)) {
-			component = revelationArcMenuItem;
-		} else if (actionCommand.equals(ActionCommands.REVERT_ARC)) {
-			component = revertArcMenuItem;
-		}
+        switch (actionCommand) {
+            case ActionCommands.OBJECT_REMOVAL:
+                component = removeMenuItem;
+                break;
+            case ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES:
+                component = linkRestrictionEnableMenuItem;
+                break;
+            case ActionCommands.LINK_RESTRICTION_DISABLE_PROPERTIES:
+                component = linkRestrictionDisableMenuItem;
+                break;
+            case ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES:
+                component = linkRestrictionEditMenuItem;
+                break;
+            case ActionCommands.LINK_REVELATIONARC_PROPERTIES:
+                component = revelationArcMenuItem;
+                break;
+            case ActionCommands.REVERT_ARC:
+                component = revertArcMenuItem;
+                break;
+        }
 
 		return component;
 

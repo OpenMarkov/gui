@@ -1800,102 +1800,150 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 
 		JComponent component = null;
 
-		if (actionCommand.equals(ActionCommands.NEW_NETWORK)) {
-			component = fileNewMenuItem;
-		} else if (actionCommand.equals(ActionCommands.OPEN_NETWORK)) {
-			component = fileOpenMenuItem;
-		} else if (actionCommand.equals(ActionCommands.OPEN_NETWORK_URL)) {
-			component = fileOpenURLMenuItem;
-		} else if (actionCommand.equals(ActionCommands.SAVE_NETWORK)) {
-			component = fileSaveMenuItem;
-		} else if (actionCommand.equals(ActionCommands.SAVEAS_NETWORK)) {
-			component = fileSaveAsMenuItem;
-		} else if (actionCommand.equals(ActionCommands.SAVE_OPEN_NETWORK)) {
-			component = fileSaveOpenMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
-			component = fileCloseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
-			component = fileLoadEvidenceMenuItem;
-		} else if (actionCommand.equals(ActionCommands.SAVE_EVIDENCE)) {
-			component = fileSaveEvidenceMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
-			component = fileNetworkPropertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
-			component = fileExitMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_CUT)) {
-			component = editCutMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
-			component = editCopyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_PASTE)) {
-			component = editPasteMenuItem;
-		} else if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
-			component = editRemoveMenuItem;
-		} else if (actionCommand.equals(ActionCommands.UNDO)) {
-			component = editUndoMenuItem;
-		} else if (actionCommand.equals(ActionCommands.REDO)) {
-			component = editRedoMenuItem;
-		} else if (actionCommand.equals(ActionCommands.SELECT_ALL)) {
-			component = editSelectAllMenuItem;
-		} else if (actionCommand.equals(ActionCommands.OBJECT_SELECTION)) {
-			component = editObjectSelectionMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANCE_CREATION)) {
-			component = editChanceCreationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_CREATION)) {
-			component = editDecisionCreationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.UTILITY_CREATION)) {
-			component = editUtilityCreationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_CREATION)) {
-			component = editLinkCreationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
-			component = editNodePropertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
-			component = editRelationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LINK_PROPERTIES)) {
-			component = editLinkPropertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_INFERENCE_MODE)) {
-			component = editSwitchToInferenceModeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_EDITION_MODE)) {
-			component = inferenceSwitchToEditionModeMenuItem;
-			// TODO - MultiCriteria Action Command
-		} else if (actionCommand.equals(ActionCommands.INFERENCE_OPTIONS)) {
-			component = inferenceOptionsItem;
-		} else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
-			component = propagationOptionsMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CREATE_NEW_EVIDENCE_CASE)) {
-			component = inferenceCreateNewEvidenceCaseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.GO_TO_FIRST_EVIDENCE_CASE)) {
-			component = inferenceGoToFirstEvidenceCaseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE)) {
-			component = inferenceGoToPreviousEvidenceCaseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.GO_TO_NEXT_EVIDENCE_CASE)) {
-			component = inferenceGoToNextEvidenceCaseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.GO_TO_LAST_EVIDENCE_CASE)) {
-			component = inferenceGoToLastEvidenceCaseMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES)) {
-			component = inferenceClearEvidenceCasesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.PROPAGATE_EVIDENCE)) {
-			component = inferencePropagateEvidenceMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
-			component = inferenceExpandNodeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {
-			component = inferenceContractNodeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_REMOVE_ALL_FINDINGS)) {
-			component = inferenceRemoveAllFindingsMenuItem;
-		} else if (actionCommand.equals(ActionCommands.BYTITLE_NODES)) {
-			component = viewNodesByTitleMenuItem;
-		} else if (actionCommand.equals(ActionCommands.BYNAME_NODES)) {
-			component = viewNodesByNameMenuItem;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
-			component = viewZoomInMenuItem;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
-			component = viewZoomOutMenuItem;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
-			component = viewZoomOtherMenuItem;
-		} else if (actionCommand.equals(ActionCommands.ZOOM)) {
-			component = viewZoomMenu;
-		} else if (actionCommand.equals(ActionCommands.NODES)) {
-			component = viewNodesMenu;
-		}
+        switch (actionCommand) {
+            case ActionCommands.NEW_NETWORK:
+                component = fileNewMenuItem;
+                break;
+            case ActionCommands.OPEN_NETWORK:
+                component = fileOpenMenuItem;
+                break;
+            case ActionCommands.OPEN_NETWORK_URL:
+                component = fileOpenURLMenuItem;
+                break;
+            case ActionCommands.SAVE_NETWORK:
+                component = fileSaveMenuItem;
+                break;
+            case ActionCommands.SAVEAS_NETWORK:
+                component = fileSaveAsMenuItem;
+                break;
+            case ActionCommands.SAVE_OPEN_NETWORK:
+                component = fileSaveOpenMenuItem;
+                break;
+            case ActionCommands.CLOSE_NETWORK:
+                component = fileCloseMenuItem;
+                break;
+            case ActionCommands.LOAD_EVIDENCE:
+                component = fileLoadEvidenceMenuItem;
+                break;
+            case ActionCommands.SAVE_EVIDENCE:
+                component = fileSaveEvidenceMenuItem;
+                break;
+            case ActionCommands.NETWORK_PROPERTIES:
+                component = fileNetworkPropertiesMenuItem;
+                break;
+            case ActionCommands.EXIT_APPLICATION:
+                component = fileExitMenuItem;
+                break;
+            case ActionCommands.CLIPBOARD_CUT:
+                component = editCutMenuItem;
+                break;
+            case ActionCommands.CLIPBOARD_COPY:
+                component = editCopyMenuItem;
+                break;
+            case ActionCommands.CLIPBOARD_PASTE:
+                component = editPasteMenuItem;
+                break;
+            case ActionCommands.OBJECT_REMOVAL:
+                component = editRemoveMenuItem;
+                break;
+            case ActionCommands.UNDO:
+                component = editUndoMenuItem;
+                break;
+            case ActionCommands.REDO:
+                component = editRedoMenuItem;
+                break;
+            case ActionCommands.SELECT_ALL:
+                component = editSelectAllMenuItem;
+                break;
+            case ActionCommands.OBJECT_SELECTION:
+                component = editObjectSelectionMenuItem;
+                break;
+            case ActionCommands.CHANCE_CREATION:
+                component = editChanceCreationMenuItem;
+                break;
+            case ActionCommands.DECISION_CREATION:
+                component = editDecisionCreationMenuItem;
+                break;
+            case ActionCommands.UTILITY_CREATION:
+                component = editUtilityCreationMenuItem;
+                break;
+            case ActionCommands.LINK_CREATION:
+                component = editLinkCreationMenuItem;
+                break;
+            case ActionCommands.NODE_PROPERTIES:
+                component = editNodePropertiesMenuItem;
+                break;
+            case ActionCommands.EDIT_POTENTIAL:
+                component = editRelationMenuItem;
+                break;
+            case ActionCommands.LINK_PROPERTIES:
+                component = editLinkPropertiesMenuItem;
+                break;
+            case ActionCommands.CHANGE_TO_INFERENCE_MODE:
+                component = editSwitchToInferenceModeMenuItem;
+                break;
+            case ActionCommands.CHANGE_TO_EDITION_MODE:
+                component = inferenceSwitchToEditionModeMenuItem;
+                // TODO - MultiCriteria Action Command
+                break;
+            case ActionCommands.INFERENCE_OPTIONS:
+                component = inferenceOptionsItem;
+                break;
+            case ActionCommands.PROPAGATION_OPTIONS:
+                component = propagationOptionsMenuItem;
+                break;
+            case ActionCommands.CREATE_NEW_EVIDENCE_CASE:
+                component = inferenceCreateNewEvidenceCaseMenuItem;
+                break;
+            case ActionCommands.GO_TO_FIRST_EVIDENCE_CASE:
+                component = inferenceGoToFirstEvidenceCaseMenuItem;
+                break;
+            case ActionCommands.GO_TO_PREVIOUS_EVIDENCE_CASE:
+                component = inferenceGoToPreviousEvidenceCaseMenuItem;
+                break;
+            case ActionCommands.GO_TO_NEXT_EVIDENCE_CASE:
+                component = inferenceGoToNextEvidenceCaseMenuItem;
+                break;
+            case ActionCommands.GO_TO_LAST_EVIDENCE_CASE:
+                component = inferenceGoToLastEvidenceCaseMenuItem;
+                break;
+            case ActionCommands.CLEAR_OUT_ALL_EVIDENCE_CASES:
+                component = inferenceClearEvidenceCasesMenuItem;
+                break;
+            case ActionCommands.PROPAGATE_EVIDENCE:
+                component = inferencePropagateEvidenceMenuItem;
+                break;
+            case ActionCommands.NODE_EXPANSION:
+                component = inferenceExpandNodeMenuItem;
+                break;
+            case ActionCommands.NODE_CONTRACTION:
+                component = inferenceContractNodeMenuItem;
+                break;
+            case ActionCommands.NODE_REMOVE_ALL_FINDINGS:
+                component = inferenceRemoveAllFindingsMenuItem;
+                break;
+            case ActionCommands.BYTITLE_NODES:
+                component = viewNodesByTitleMenuItem;
+                break;
+            case ActionCommands.BYNAME_NODES:
+                component = viewNodesByNameMenuItem;
+                break;
+            case ActionCommands.ZOOM_IN:
+                component = viewZoomInMenuItem;
+                break;
+            case ActionCommands.ZOOM_OUT:
+                component = viewZoomOutMenuItem;
+                break;
+            case ActionCommands.ZOOM_OTHER:
+                component = viewZoomOtherMenuItem;
+                break;
+            case ActionCommands.ZOOM:
+                component = viewZoomMenu;
+                break;
+            case ActionCommands.NODES:
+                component = viewNodesMenu;
+                break;
+        }
 
 		return component;
 

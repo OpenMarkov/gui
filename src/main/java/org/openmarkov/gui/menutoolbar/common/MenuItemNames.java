@@ -162,6 +162,10 @@ public class MenuItemNames {
 	public static final String ARITY_MENUITEM = EDIT_MENU + ".Arity";
 	//TODO OOPN end
 
+    /**
+     * Constant that defines the item 'Edit - Absorb Node'.
+     */
+    public static final String EDIT_ABSORBNODE_MENUITEM = EDIT_MENU + ".AbsorbNode";
 	/**
 	 * Constant that defines the item 'Edit - Node additionalProperties'.
 	 */

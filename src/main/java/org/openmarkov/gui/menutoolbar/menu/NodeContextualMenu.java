@@ -7,7 +7,9 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.gui.constraint.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.localize.MenuLocalizer;
@@ -45,6 +47,10 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'Remove'.
 	 */
 	private JMenuItem removeMenuItem = null;
+	/**
+     * Object that represents the item 'AbsorbNode'.
+     */
+    private JMenuItem absorbNodeMenuItem = null;
 	/**
 	 * Object that represents the item 'Properties'.
 	 */
@@ -114,7 +120,12 @@ public class NodeContextualMenu extends ContextualMenu {
 	public NodeContextualMenu(ActionListener newListener, VisualNode selectedNode, EditorPanel panel) {
 		super(newListener);
 		initialize();
-		if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
+
+        // Test if the node can be absorbed. Validate method return true in that case
+        Node node = selectedNode.getNode();
+        setOptionEnabled(ActionCommands.ABSORB_NODE, AbsorbNodeValidator.validate(node));
+
+        if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
 			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
 				setDecisionNodeContextualMenuInEditionMode();
 			} else {
@@ -136,6 +147,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCutMenuItem());
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
+        addSeparator();
+        add(getAbsorbNodeMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
@@ -164,6 +177,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
 		addSeparator();
+        add(getAbsorbNodeMenuItem());
+        addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
 		addSeparator();
@@ -193,6 +208,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCutMenuItem());
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
+        addSeparator();
+        add(getAbsorbNodeMenuItem());
 		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -248,7 +265,7 @@ public class NodeContextualMenu extends ContextualMenu {
 
 	/**
 	 * This method sets the ContextualMenu for Decision nodes in Inference mode
-	 * when the network is compiled
+	 * when the network is not compiled
 	 */
 	public void setDecisionNodeContextualMenuInNotCompiledInferenceMode() {
 		removeAll();
@@ -344,6 +361,19 @@ public class NodeContextualMenu extends ContextualMenu {
 		}
 		return removeMenuItem;
 	}
+
+    /**
+     * This method initialises absorbNodeMenuItem.
+     *
+     * @return a new 'absorbNode' menu item.
+     */
+    private JMenuItem getAbsorbNodeMenuItem() {
+        if (absorbNodeMenuItem == null) {
+            absorbNodeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBNODE_MENUITEM, ActionCommands.ABSORB_NODE);
+            absorbNodeMenuItem.addActionListener(listener);
+        }
+        return absorbNodeMenuItem;
+    }
 
 	/**
 	 * This method initialises propertiesMenuItem.
@@ -523,47 +553,69 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * @param actionCommand action command that identifies the component.
 	 * @return a components identified by the action command.
 	 */
-	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
-		JComponent component = null;
-		if (actionCommand.equals(ActionCommands.CLIPBOARD_CUT)) {
-			component = cutMenuItem;
-		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
-			component = copyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.OBJECT_REMOVAL)) {
-			component = removeMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
-			component = propertiesMenuItem;
-		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
-			component = relationMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_IMPOSE_POLICY)) {
-			component = imposePolicyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_EDIT_POLICY)) {
-			component = editPolicyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
-			component = removePolicyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
-			component = showExpectedUtilityMenuItem;
-		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
-			component = showOptimalPolicyMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
-			component = expandMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {
-			component = contractMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_ADD_FINDING)) {
-			component = addFindingMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NODE_REMOVE_FINDING)) {
-			component = removeFindingMenuItem;
-		} else if (actionCommand.equals(ActionCommands.LOG)) {
-			component = logMenuItem;
-			// TODO OOPN start
-		} else if (actionCommand.equals(ActionCommands.MARK_AS_INPUT)) {
-			component = inputMenuItem;
-			// TODO OOPN end
-		} else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_ACTION)) {
-			component = temporalEvolutionMenuItem;
-		} else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
-			component = nextSliceNodeMenuItem;
-		}
+    @Override protected JComponent getJComponentActionCommand(String actionCommand) {
+        JComponent component = null;
+        switch (actionCommand) {
+            case ActionCommands.CLIPBOARD_CUT:
+                component = cutMenuItem;
+                break;
+            case ActionCommands.CLIPBOARD_COPY:
+                component = copyMenuItem;
+                break;
+            case ActionCommands.OBJECT_REMOVAL:
+                component = removeMenuItem;
+                break;
+            case ActionCommands.ABSORB_NODE:
+                component = absorbNodeMenuItem;
+                break;
+            case ActionCommands.NODE_PROPERTIES:
+                component = propertiesMenuItem;
+                break;
+            case ActionCommands.EDIT_POTENTIAL:
+                component = relationMenuItem;
+                break;
+            case ActionCommands.DECISION_IMPOSE_POLICY:
+                component = imposePolicyMenuItem;
+                break;
+            case ActionCommands.DECISION_EDIT_POLICY:
+                component = editPolicyMenuItem;
+                break;
+            case ActionCommands.DECISION_REMOVE_POLICY:
+                component = removePolicyMenuItem;
+                break;
+            case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY:
+                component = showExpectedUtilityMenuItem;
+                break;
+            case ActionCommands.DECISION_SHOW_OPTIMAL_POLICY:
+                component = showOptimalPolicyMenuItem;
+                break;
+            case ActionCommands.NODE_EXPANSION:
+                component = expandMenuItem;
+                break;
+            case ActionCommands.NODE_CONTRACTION:
+                component = contractMenuItem;
+                break;
+            case ActionCommands.NODE_ADD_FINDING:
+                component = addFindingMenuItem;
+                break;
+            case ActionCommands.NODE_REMOVE_FINDING:
+                component = removeFindingMenuItem;
+                break;
+            case ActionCommands.LOG:
+                component = logMenuItem;
+                // TODO OOPN start
+                break;
+            case ActionCommands.MARK_AS_INPUT:
+                component = inputMenuItem;
+                // TODO OOPN end
+                break;
+            case ActionCommands.TEMPORAL_EVOLUTION_ACTION:
+                component = temporalEvolutionMenuItem;
+                break;
+            case ActionCommands.NEXT_SLICE_NODE:
+                component = nextSliceNodeMenuItem;
+                break;
+        }
 		return component;
 	}
 }

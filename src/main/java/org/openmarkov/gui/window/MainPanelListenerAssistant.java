@@ -240,7 +240,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			evidenceCasesNavigationOption("CLEAR_OUT_ALL_EVIDENCE_CASES");
 		} else if (actionCommand.equals(ActionCommands.PROPAGATE_EVIDENCE)) {
 			getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
-		} else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
+		} else if (actionCommand.equals(ActionCommands.ABSORB_NODE)) {
+            this.getCurrentNetworkPanel().absorbNode();
+        } else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNodeProperties();
 		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
 			getCurrentNetworkPanel().changePotential();

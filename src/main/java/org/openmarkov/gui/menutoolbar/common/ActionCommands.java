@@ -237,6 +237,11 @@ public class ActionCommands {
 	 * Action invoked when the user wants to redo an operation.
 	 */
 	public static final String REDO = "Redo";
+    /**
+     * Action invoked when the user wants to absorb a node into the net for arc reversal algorithm.
+     * It is relevant in the case of chance or decision nodes with an only utility child.
+     */
+    public static final String ABSORB_NODE = "AbsorbNode";
 	/**
 	 * Action invoked when the user wants to show the additionalProperties of a node.
 	 */
