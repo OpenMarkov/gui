@@ -329,9 +329,9 @@ public class ActionCommands {
 
 	public static final String LINK_REVELATIONARC_PROPERTIES = "RevelationArcProperties";
 	/****
-	 * Action invoked when the user wants to revert a link.
+	 * Action invoked when the user wants to invert a link updating its potentials.
 	 */
-	public static final String REVERT_ARC = "RevertArc";
+	public static final String INVERT_LINK_AND_UPDATE_POTENTIALS = "InvertLinkAndUpdatePotentials";
 	/**
 	 * Action invoked when the user wants to view a toolbar
 	 */

@@ -491,8 +491,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	/**
 	 * This methods reverts the selected link.
 	 */
-	public void revertArc() {
-		editorPanel.revertArc();
+	public void invertLinkAndUpdatePotentials() {
+		editorPanel.invertLinkAndUpdatePotentials();
 	}
 
 	/****

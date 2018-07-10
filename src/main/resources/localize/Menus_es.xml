@@ -69,10 +69,10 @@
             <Label value="Registrar evolución temporal"/>
             <Mnemonic value="l"/>
         </Log>
-        <RevertArc>
+        <InvertLinkAndUpdatePotentials>
             <Mnemonic value="v"/>
-            <Label value="Invertir arco"/>
-        </RevertArc>
+            <Label value="Invertir enlace"/>
+        </InvertLinkAndUpdatePotentials>
         <RevelationArc>
             <Mnemonic value="a"/>
             <Label value="Editar condiciones de revelación"/>

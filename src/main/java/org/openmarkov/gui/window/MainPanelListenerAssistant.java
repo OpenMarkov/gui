@@ -304,8 +304,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			showLanguageChangeDialog();
 		} else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
 			showAbout();
-		} else if (actionCommand.equals(ActionCommands.REVERT_ARC)) {
-			this.getCurrentNetworkPanel().revertArc();
+		} else if (actionCommand.equals(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS)) {
+			this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_ENABLE_PROPERTIES)) {
 			this.getCurrentNetworkPanel().enableLinkRestriction();
 		} else if (actionCommand.equals(ActionCommands.LINK_RESTRICTION_EDIT_PROPERTIES)) {

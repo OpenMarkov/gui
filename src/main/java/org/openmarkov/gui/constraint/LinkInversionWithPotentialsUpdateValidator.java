@@ -21,23 +21,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /******
- * This class validates if a link can be reverted
+ * This class validates if a link can be inverted arc-reversal style
  *
- * @author iago
+ * @author iagoparis
  *
  */
-public class ArcReversalValidator {
+public class LinkInversionWithPotentialsUpdateValidator {
 
 	/******
-	 * Links can be reverted if each one of its nodes has a table potential or one convertible to a table.
+	 * Links can be inverted if each one of its nodes has a table potential or one convertible to a table.
 	 *
 	 * @return <code>true</code> if it is so.
 	 */
 	public static boolean validate(Link<Node> link) {
 
-		boolean validPotentials = true;
-
-		List<Potential> potentials = new ArrayList<>();
+		boolean validPotentials;
 
 		Potential potential1 = link.getNode1().getPotentials().get(0);
 		Potential potential2 = link.getNode2().getPotentials().get(0);

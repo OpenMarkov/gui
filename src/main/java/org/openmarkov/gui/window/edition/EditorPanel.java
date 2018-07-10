@@ -8,12 +8,14 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.ArcRevertEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
+
+import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
+
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -2240,17 +2242,18 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
-	 * This method reverts the selected link
+	 * This method inverts the selected link arc-reversal style
 	 */
-	public void revertArc() {
+	public void invertLinkAndUpdatePotentials() {
 		List<VisualLink> links = visualNetwork.getSelectedLinks();
 		if (!links.isEmpty()) {
 			try {
 				Link<Node> link = links.get(0).getLink();
 				Node node1 = link.getNode1();
 				Node node2 = link.getNode2();
-				ArcRevertEdit revertLink = new ArcRevertEdit(probNet, node1.getVariable(), node2.getVariable());
-				probNet.doEdit(revertLink);
+				InvertLinkAndUpdatePotentialsEdit invertLink = new InvertLinkAndUpdatePotentialsEdit(probNet,
+                        node1.getVariable(), node2.getVariable());
+				probNet.doEdit(invertLink);
 			} catch (Exception e) {
 				String message = e.getMessage();
 				if (message.equals("Child") || message.equals("Parent")) {

@@ -209,7 +209,7 @@ public class MenuItemNames {
 	/**
 	 * Constant that defines the item 'Edit - Revert arc'.
 	 */
-	public static final String EDIT_REVERT_ARC_MENUITEM = EDIT_MENU + ".RevertArc";
+	public static final String EDIT_INVERT_LINK_AND_UPDATE_POTENTIALS_MENUITEM = EDIT_MENU + ".InvertLinkAndUpdatePotentials";
 
 	/**
 	 * Constant that defines the item 'Edit - Switch to Inference mode'.

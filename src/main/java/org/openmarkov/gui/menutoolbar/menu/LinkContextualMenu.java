@@ -9,7 +9,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.constraint.ArcReversalValidator;
+import org.openmarkov.gui.constraint.LinkInversionWithPotentialsUpdateValidator;
 import org.openmarkov.gui.constraint.LinkRestrictionValidator;
 import org.openmarkov.gui.constraint.RevelationArcValidator;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
  *
  * @author jmendoza
  * @author jlgozalo
+ * @author iagoparis
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
  */
 class LinkContextualMenu extends ContextualMenu {
@@ -64,7 +65,7 @@ class LinkContextualMenu extends ContextualMenu {
 	/**
 	 * Object that represents the item 'Invert arc'.
 	 */
-	private JMenuItem revertArcMenuItem = null;
+	private JMenuItem invertLinkAndUpdatePotentialsMenuItem = null;
 
 	/**
 	 * Object that represents the item 'Properties'.
@@ -99,8 +100,8 @@ class LinkContextualMenu extends ContextualMenu {
                 RevelationArcValidator.validate(link));
 
 		// Test if arc reversal should be enabled. Validate method returns true if that's the case
-		setOptionEnabled(ActionCommands.REVERT_ARC,
-                ArcReversalValidator.validate(link));
+		setOptionEnabled(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS,
+                LinkInversionWithPotentialsUpdateValidator.validate(link));
 	}
 
 	/**
@@ -116,7 +117,7 @@ class LinkContextualMenu extends ContextualMenu {
 		addSeparator();
 		add(getRevelationArcMenuItem());
 		addSeparator();
-		add(getRevertArcMenuItem());
+		add(getInvertLinkAndUpdatePotentialsMenuItem());
         /*
          * This item must be added to the menu when is active the possibility of
          * editing the additionalProperties of a link in future versions.
@@ -211,17 +212,18 @@ class LinkContextualMenu extends ContextualMenu {
 	}
 
 	/**
-	 * This method initialises getRevertArcMenuItem.
+	 * This method initialises invertLinkAndUpdatePotentialsMenuItem.
 	 *
-	 * @return a new 'Revert arc' menu item.
+	 * @return a new 'Invert link and update potentials' menu item.
 	 */
-	public JMenuItem getRevertArcMenuItem() {
+	public JMenuItem getInvertLinkAndUpdatePotentialsMenuItem() {
 
-		if (revertArcMenuItem == null) {
-			revertArcMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_REVERT_ARC_MENUITEM, ActionCommands.REVERT_ARC);
-			revertArcMenuItem.addActionListener(listener);
+		if (invertLinkAndUpdatePotentialsMenuItem == null) {
+			invertLinkAndUpdatePotentialsMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_INVERT_LINK_AND_UPDATE_POTENTIALS_MENUITEM,
+                    ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS);
+			invertLinkAndUpdatePotentialsMenuItem.addActionListener(listener);
 		}
-		return revertArcMenuItem;
+		return invertLinkAndUpdatePotentialsMenuItem;
 	}
 
 	/**
@@ -267,8 +269,8 @@ class LinkContextualMenu extends ContextualMenu {
             case ActionCommands.LINK_REVELATIONARC_PROPERTIES:
                 component = revelationArcMenuItem;
                 break;
-            case ActionCommands.REVERT_ARC:
-                component = revertArcMenuItem;
+            case ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS:
+                component = invertLinkAndUpdatePotentialsMenuItem;
                 break;
         }
 
