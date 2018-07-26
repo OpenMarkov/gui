@@ -349,6 +349,7 @@
                 <DEC_POMDP value="Dec-POMDP"/>
                 <MDP value="Proceso de decisión de Markov"/>
                 <MID value="MID"/>
+                <MPAD value="MPAD" />
             </Items>
             <Mnemonic value="t"/>
             <Text value="Tipo de red:"/>
