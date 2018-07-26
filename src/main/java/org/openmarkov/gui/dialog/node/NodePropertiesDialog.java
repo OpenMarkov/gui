@@ -357,6 +357,8 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 	 * @return true if all the fields are correct.
 	 */
 	@Override protected boolean doOkClickBeforeHide() {
+		// If the is user is editing a cell, stop the edition to save the data
+		nodeDomainValuesTablePanel.getDiscretizedStatesPanel().stopCellEditing();
 		if (generalChecks() /* && specificChecks() */) {
 			node.getProbNet().getPNESupport().closeParenthesis();
 			return true;
