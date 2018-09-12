@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.window.edition;
 
+import org.openmarkov.inference.geneticsearch.StrategyGenerator;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
 
@@ -27,18 +28,10 @@ import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.inference.tasks.Propagation;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.*;
+import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
+import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
@@ -68,6 +61,7 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
+import org.openmarkov.inference.geneticsearch.BackwardsEvaluator;
 import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
 import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
@@ -2240,6 +2234,24 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
+	/**
+	 * This methods evaluates a POMDP policy
+	 */
+	public void evaluatePolicy() {
+
+		// Generate the strategy
+		StrategyGenerator strategyGenerator = new StrategyGenerator(probNet);
+		List<Potential> strategy = strategyGenerator.getRandomStrategy();
+		int horizon = 3;
+
+		// Evaluate the strategy
+		BackwardsEvaluator evaluator = new BackwardsEvaluator(strategy, probNet, horizon);
+		double expectedUtility = evaluator.evaluate();
+	}
+
+
+
 
 	/**
 	 * This method inverts the selected link arc-reversal style

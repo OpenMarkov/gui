@@ -65,6 +65,10 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 */
 	private JButton showOptimalStrategyButton = null;
 	/**
+	 * Button to show optimal strategy temporal by Iago.
+	 */
+	private JButton showOptimalStrategy2Button = null;
+	/**
 	 * Button to open a decision tree panel.
 	 */
 	private JButton decisionTreeButton = null;
@@ -107,6 +111,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		addSeparator();
 		add(getWorkingModeButton());
 		add(getShowOptimalStrategyButton());
+		add(getShowOptimalStrategy2Button());
 		add(getDecisionTreeButton());
 		add(getSensAnalysisButton());
 		add(getCostEffectivenessButton());
@@ -285,6 +290,25 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	}
 
 	/**
+	 * This method initialises showOptimalStrategy2Button temporal by Iago.
+	 *
+	 * @return a new button.
+	 */
+	public JButton getShowOptimalStrategy2Button() {
+		if (showOptimalStrategy2Button == null) {
+			showOptimalStrategy2Button = new JButton();
+			showOptimalStrategy2Button.setIcon(iconLoader.load(IconLoader.ICON_OPTIMAL_STRATEGY_2));
+			showOptimalStrategy2Button.setActionCommand(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2);
+			showOptimalStrategy2Button.setFocusable(false);
+			showOptimalStrategy2Button.setToolTipText(
+					stringDatabase.getString(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2 + STRING_TOOLTIP_SUFFIX));
+			showOptimalStrategy2Button.addActionListener(listener);
+			showOptimalStrategy2Button.addMouseMotionListener(this);
+		}
+		return showOptimalStrategy2Button;
+	}
+
+	/**
 	 * This method initialises decisionTreeButton.
 	 *
 	 * @return a new button.
@@ -389,6 +413,8 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 			component = sensAnalysisButton;
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY)) {
 			component = showOptimalStrategyButton;
+		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2)) {
+			component = showOptimalStrategy2Button;
 		}
 		return component;
 	}

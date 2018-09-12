@@ -278,6 +278,10 @@ public class ActionCommands {
 	 * Action invoked when the user wants to show the optimal strategy of a decision node.
 	 */
 	public static final String DECISION_SHOW_OPTIMAL_STRATEGY = "ShowOptimalStrategy";
+    /**
+     * Action invoked when the user wants to show the optimal strategy of a decision node temporal by Iago.
+     */
+    public static final String DECISION_SHOW_OPTIMAL_STRATEGY_2 = "ShowOptimalStrategy2";
 	/**
 	 * Action invoked for testing
 	 */
