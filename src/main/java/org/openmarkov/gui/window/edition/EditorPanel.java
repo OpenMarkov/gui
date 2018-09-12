@@ -70,9 +70,7 @@ import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +89,7 @@ import java.util.Map;
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
  */
-public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 	/**
 	 * Static field for serializable class.
 	 */
@@ -270,6 +268,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	private void initialize() {
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
 		this.setBackground(Color.white);
 		//adjustPanelDimension ();
 		setZoomToFitNetwork();
@@ -373,6 +372,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * @param e mouse event information.
 	 */
 	public void mousePressed(MouseEvent e) {
+		// requestFocusInWindow(); Activate if nodes can't be moved by arrows.
 		Graphics2D g = (Graphics2D) getGraphics();
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
 		// Specific functionality depending on the edition mode;
@@ -2460,4 +2460,40 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		}
 	}
 
+	// The key listener needs a focusable object to listen
+	@Override
+	public boolean isFocusable() {
+		return true;
+	}
+
+	// Moves the selected nodes when pressing the arrows
+	@Override
+	public void keyPressed(KeyEvent keyEvent) {
+		int key = keyEvent.getKeyCode();
+		switch (key) {
+			case KeyEvent.VK_UP:
+				visualNetwork.moveSelectedElements(0, -2);
+				break;
+			case KeyEvent.VK_RIGHT:
+				visualNetwork.moveSelectedElements(+2, 0);
+				break;
+			case KeyEvent.VK_DOWN:
+				visualNetwork.moveSelectedElements(0, +2);
+				break;
+			case KeyEvent.VK_LEFT:
+				visualNetwork.moveSelectedElements( -2, 0);
+				break;
+		}
+		repaint();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent keyEvent) {
+
+	}
+
+
+	@Override
+	public void keyTyped(KeyEvent keyEvent) {
+	}
 }
