@@ -257,9 +257,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
 			getCurrentNetworkPanel().showOptimalPolicyOfNode();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2)) {
-//
-//			 expandNetwork(getCurrentNetworkPanel().getProbNet(),
-//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 			this.getCurrentNetworkPanel().evaluatePolicy();
 
 		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
