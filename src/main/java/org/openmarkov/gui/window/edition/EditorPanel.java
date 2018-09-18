@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.window.edition;
 
-import org.openmarkov.inference.geneticsearch.StrategyGenerator;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
 
@@ -30,8 +29,6 @@ import org.openmarkov.core.inference.tasks.Propagation;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.gui.action.PasteEdit;
 import org.openmarkov.gui.action.RemoveSelectedEdit;
@@ -61,7 +58,7 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.geneticsearch.BackwardsEvaluator;
+import org.openmarkov.inference.geneticsearch.StrategySpectrum;
 import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
 import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
@@ -1065,6 +1062,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * This method shows the optimal policy for a decision node.
 	 */
 	public void showOptimalPolicyOfNode() {
+		VisualNetwork n = getVisualNetwork();
 		VisualNode visualNode = null;
 		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
 		if (selectedNodes.size() == 1) {
@@ -2240,14 +2238,112 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	public void evaluatePolicy() {
 
-		// Generate the strategy
-		StrategyGenerator strategyGenerator = new StrategyGenerator(probNet);
-		List<Potential> strategy = strategyGenerator.getRandomStrategy();
-		int horizon = 3;
+		// Network is expanded before calling to evaluatePolicy
 
-		// Evaluate the strategy
-		BackwardsEvaluator evaluator = new BackwardsEvaluator(strategy, probNet, horizon);
-		double expectedUtility = evaluator.evaluate();
+		if (!networkPanel.getNetworkFile().endsWith("_expanded.pgmx") && !networkPanel.getNetworkFile().endsWith("_expanded")) {
+			JOptionPane.showMessageDialog( this, "Did you expand the network?");
+			return;
+		}
+
+		int horizon = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+		System.out.println("Horizon: " + horizon);
+
+
+		// Generate the strategy
+		StrategySpectrum s = new StrategySpectrum(probNet, horizon);
+
+
+		// TODO Implement this two methods into StrategySpectrum
+		// Evaluate all strategies. BRUTE FORCE
+		System.out.println();
+		System.out.println("[Brute force...]");
+		long startTime = System.currentTimeMillis();
+		StrategySpectrum strategySpectrum = new StrategySpectrum(probNet, horizon);
+		strategySpectrum.createBaseStrategy();
+		double bestUtility = strategySpectrum.evaluate();
+		int nStrategies = 1;
+		List<Potential> bestStrategy = null;
+
+		double utility;
+		try { // An IndexOutOfBoundsException will break this loop
+
+			for (int i = 0; i < 60002; i++) {
+				strategySpectrum.next();
+				utility = strategySpectrum.evaluate();
+				if (utility > bestUtility) {
+					bestUtility = utility;
+					bestStrategy = strategySpectrum.getPotentialForm();
+					System.out.println(bestUtility);
+				}
+				nStrategies++;
+				if (nStrategies%10000 == 0) {
+					System.out.println(nStrategies);
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			// End of while. Last strategy reached.
+		}
+
+		long timeElapsed = System.currentTimeMillis() - startTime;
+		System.out.println("Best utility of the " + nStrategies + " strategies evaluated: " + bestUtility);
+		for (Potential policy : bestStrategy ) {
+			System.out.println(policy.toString());
+		}
+		System.out.println("Time elapsed: " + timeElapsed + " ms");
+
+		// Evaluate random n strategies. RANDOM WALK
+		System.out.println();
+		System.out.println("[Random walk...]");
+		startTime = System.currentTimeMillis();
+		bestUtility = Double.NEGATIVE_INFINITY;
+		nStrategies = 0;
+		bestStrategy = null;
+
+		try { // An IndexOutOfBoundsException will break this loop
+
+			for (int i = 0; i < 60002; i++) {
+				strategySpectrum.createRandomStrategy();
+				utility = strategySpectrum.evaluate();
+				if (utility > bestUtility) {
+					bestUtility = utility;
+					bestStrategy = strategySpectrum.getPotentialForm();
+					System.out.println(bestUtility);
+				}
+				nStrategies++;
+				if (nStrategies%10000 == 0) {
+					System.out.println(nStrategies);
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			// End of while. Last strategy reached.
+		}
+
+		timeElapsed = System.currentTimeMillis() - startTime;
+		System.out.println("Best utility of the " + nStrategies + " strategies evaluated: " + bestUtility);
+		for (Potential policy : bestStrategy ) {
+			System.out.println(policy.toString());
+		}
+		System.out.println("Time elapsed: " + timeElapsed + " ms");
+
+
+		/* Set the strategy into the nodes */
+		Map<Variable, VisualNode> visualDecisionNodes = new HashMap<>();
+		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+			if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
+				visualDecisionNodes.put(visualNode.getNode().getVariable(), visualNode);
+			}
+		}
+
+		// Use the variable of the potential to know which policy goes to which node
+		for (int policy = 0; policy < bestStrategy.size(); policy++) {
+			Variable decisionVariable = bestStrategy.get(policy).getVariable(0);
+			visualDecisionNodes.get(decisionVariable).getNode().
+					setPotentials(bestStrategy.subList(policy, policy + 1));
+			((VisualDecisionNode) visualDecisionNodes.get(decisionVariable)).setHasPolicy(true);
+		}
+
+		setNetworkChangedWithOutEdit(true);
+		repaint();
 	}
 
 

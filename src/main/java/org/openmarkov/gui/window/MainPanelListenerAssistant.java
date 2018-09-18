@@ -256,6 +256,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().showExpectedUtilityOfNode();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
 			getCurrentNetworkPanel().showOptimalPolicyOfNode();
+		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2)) {
+//
+//			 expandNetwork(getCurrentNetworkPanel().getProbNet(),
+//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+			this.getCurrentNetworkPanel().evaluatePolicy();
+
 		} else if (actionCommand.equals(ActionCommands.NODE_EXPANSION)) {
 			getCurrentNetworkPanel().expandNode();
 		} else if (actionCommand.equals(ActionCommands.NODE_CONTRACTION)) {
@@ -294,9 +300,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		//            showCostEffectivenessSensitivityResults(probNet,
 		//                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 		//        }
-		else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2)) {
-			this.getCurrentNetworkPanel().evaluatePolicy();
-		} else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
+		 else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
 			showUserConfigurationDialog();
 		} else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
 			setPropagationOptions();
