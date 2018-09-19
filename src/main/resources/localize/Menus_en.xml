@@ -446,7 +446,7 @@
     </Options>
     <CostEffectiveness>
         <Cycles value="cycles"/>
-        <NumberOfCycles value="Number of cycles"/>
+        <NumberOfCycles value="Horizon"/>
         <NumberOfSimulations value="Number of Simulations"/>
         <InitialAge value="Initial age"/>
         <FinalAge value="Final age"/>
