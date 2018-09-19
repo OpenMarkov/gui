@@ -890,7 +890,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	private JTextField getNumSlicesTextField() {
 		if (numSlicesTextField == null) {
 			numSlicesTextField = new JTextField();
-			numSlicesTextField.setText("" + this.temporalOptions.getNumberOfSlices());
+			numSlicesTextField.setText("" + this.temporalOptions.getHorizon());
 			numSlicesTextField.setColumns(10);
 			numSlicesTextField.setName("numSlicesTextField");
 		}
@@ -975,7 +975,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		}
 
 		if (isTemporal) {
-			int numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+			int numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
 			try {
 				numSlices = Integer.parseInt(numSlicesTextField.getText());
 			} catch (NumberFormatException exception) {
@@ -983,7 +983,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 						stringDatabase.getString("NumberFormatException.Title.Label"), JOptionPane.ERROR_MESSAGE);
 			}
 
-			this.temporalOptions.setNumberOfSlices(numSlices);
+			this.temporalOptions.setHorizon(numSlices);
 			if (beginningOfCycleButton.isSelected()) {
 				this.temporalOptions.setTransition(TransitionTime.BEGINNING);
 			} else if (halfCycleButton.isSelected()) {

@@ -2245,7 +2245,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			return;
 		}
 
-		int horizon = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+		int horizon = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
 		System.out.println("Horizon: " + horizon);
 
 

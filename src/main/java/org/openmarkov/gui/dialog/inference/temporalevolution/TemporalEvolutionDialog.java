@@ -73,7 +73,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
 	private JTextField getNumSlicesTextField() {
 		if (numSlicesTextField == null) {
-			numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+			numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
 			numSlicesTextField = new JTextField();
 			numSlicesTextField.setText("" + numSlices);
 			numSlicesTextField.setColumns(10);
@@ -100,7 +100,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
 		try {
 			numSlices = Integer.parseInt(numSlicesTextField.getText());
-			probNet.getInferenceOptions().getTemporalOptions().setNumberOfSlices(numSlices);
+			probNet.getInferenceOptions().getTemporalOptions().setHorizon(numSlices);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, stringDatabase.getString("NumberFormatException.Text.Label"),
 					stringDatabase.getString("NumberFormatException.Title.Label"), JOptionPane.ERROR_MESSAGE);

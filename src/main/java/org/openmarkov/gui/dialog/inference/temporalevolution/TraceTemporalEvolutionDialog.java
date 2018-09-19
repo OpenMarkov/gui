@@ -8,9 +8,6 @@
 package org.openmarkov.gui.dialog.inference.temporalevolution;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -115,7 +112,7 @@ import java.util.Map;
 		this.isUtility = node.getNodeType() == NodeType.UTILITY;
 
 		try {
-			numSlices = probNet.getInferenceOptions().getTemporalOptions().getNumberOfSlices();
+			numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
 
 			this.variableOfInterest = node.getVariable();
 
