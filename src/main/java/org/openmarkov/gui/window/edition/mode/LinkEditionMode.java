@@ -39,7 +39,11 @@ import java.awt.geom.Point2D;
 				try {
 					probNet.doEdit(linkEdit);
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(Utilities.getOwner(editorPanel), ex.getMessage(),
+					String message = ex.getMessage();
+					if (ex.getMessage() == null || ex.getMessage() == "") {
+						message = "This link can't be created.";
+					}
+					JOptionPane.showMessageDialog(Utilities.getOwner(editorPanel), message,
 							"Error while creating link", JOptionPane.ERROR_MESSAGE);
 				}
 			}
