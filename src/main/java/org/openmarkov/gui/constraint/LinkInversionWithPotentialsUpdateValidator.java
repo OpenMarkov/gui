@@ -23,7 +23,7 @@ import java.util.List;
 /******
  * This class validates if a link can be inverted arc-reversal style
  *
- * @author iagoparis
+ * @author iagoparís - 1-6-2018
  *
  */
 public class LinkInversionWithPotentialsUpdateValidator {
@@ -61,5 +61,3 @@ public class LinkInversionWithPotentialsUpdateValidator {
 				potential instanceof UnivariateDistrPotential));
 	}
 }
-
-				// JOptionPane.showMessageDialog(this,"The potential from node " + x.getName() + " doesn't allow arc reversal", "Error", JOptionPane.ERROR_MESSAGE);
