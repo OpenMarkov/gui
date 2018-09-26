@@ -58,7 +58,7 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.geneticsearch.StrategySpectrum;
+import org.openmarkov.inference.dlimidevaluation.StrategySpectrum;
 import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
 import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
