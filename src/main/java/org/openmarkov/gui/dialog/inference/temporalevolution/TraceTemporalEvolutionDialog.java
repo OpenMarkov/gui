@@ -119,8 +119,8 @@ import java.util.Map;
 			TemporalEvolution veTemporalEvolution = new VETemporalEvolution(probNet, node.getVariable());
 			veTemporalEvolution.setPreResolutionEvidence(evidence);
 			veTemporalEvolution.setDecisionVariable(decisionSelected);
-			this.expandedNetwork = veTemporalEvolution.getExpandedNetwork();
 			this.temporalEvolution = veTemporalEvolution.getTemporalEvolution();
+			this.expandedNetwork = veTemporalEvolution.getExpandedNetwork();
 
 			initialize();
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
