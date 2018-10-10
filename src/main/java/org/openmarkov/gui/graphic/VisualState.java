@@ -64,6 +64,10 @@ public class VisualState extends VisualElement {
 	 * Color for the text of the state's name.
 	 */
 	private static final Color TEXT_COLOR = Color.BLACK;
+
+	/** Factor to multiply a number in the range of (0,1) to draw a bar to obtain its size in pixels. */
+	private static final double lengthRelationInBars = 10000.0;
+
 	/**
 	 * The VisualNode this State is associated to.
 	 */
@@ -395,9 +399,9 @@ public class VisualState extends VisualElement {
 					Double maxRange = ((NumericVariableBox) innerBox).getMaxValue();
 					Double range = maxRange - minRange;
 					Double value = stateValues.get(i) - minRange;
-					barLength = (value * 100) / range;
+					barLength = ((value * lengthRelationInBars) / range) / InnerBox.BAR_FULL_LENGTH;;
 				} else {
-					barLength = (stateValues.get(i) * 10000) / InnerBox.BAR_FULL_LENGTH;
+					barLength = (stateValues.get(i) * lengthRelationInBars) / InnerBox.BAR_FULL_LENGTH;
 				}
 				g.fill(new Rectangle2D.Double(xBar, yFirstBar + (i * InnerBox.BAR_HEIGHT), barLength,
 						InnerBox.BAR_HEIGHT));
