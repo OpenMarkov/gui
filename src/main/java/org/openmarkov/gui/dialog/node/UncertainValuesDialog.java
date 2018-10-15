@@ -40,6 +40,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -474,6 +475,12 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 * @return true if the dialog box can be closed.
 	 */
 	protected boolean doOkClickBeforeHide() {
+		TableCellEditor currentEditor = distributionTable.getCellEditor();
+
+		if (currentEditor != null) {
+			currentEditor.stopCellEditing();
+		}
+
 		List<UncertainValue> uncertainValues = readDataFromTable();
 		boolean verify = verifyLocalConstraintsUncertainty(uncertainValues);
 		if (verify) {
