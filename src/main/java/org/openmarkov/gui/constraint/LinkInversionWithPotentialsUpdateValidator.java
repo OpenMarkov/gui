@@ -23,7 +23,7 @@ import java.util.List;
 /******
  * This class validates if a link can be inverted arc-reversal style
  *
- * @author iagoparís - 1-6-2018
+ * @author iagoparís - summer
  *
  */
 public class LinkInversionWithPotentialsUpdateValidator {

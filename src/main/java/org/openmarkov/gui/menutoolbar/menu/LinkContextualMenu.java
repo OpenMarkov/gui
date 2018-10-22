@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
  *
  * @author jmendoza
  * @author jlgozalo
- * @author iagoparis
+ * @author iagoparis - summer 2018
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
  */
 class LinkContextualMenu extends ContextualMenu {
