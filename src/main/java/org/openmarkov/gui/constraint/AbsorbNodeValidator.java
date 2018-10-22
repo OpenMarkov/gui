@@ -5,6 +5,12 @@ import org.openmarkov.core.model.network.NodeType;
 
 import java.util.List;
 
+/******
+ * This class validates if a chance or decision node can be absorbed into an utility node
+ *
+ * @author iagoparís - summer
+ *
+ */
 public class AbsorbNodeValidator {
     // The node is of decision or chance and has only a utility child
     public static boolean validate(Node node) {
