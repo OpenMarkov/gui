@@ -422,6 +422,10 @@ public class ActionCommands {
 	 */
 	public static final String HELP_CHANGE_LANGUAGE = "Help.ChangeLanguage";
 	/**
+	 * Action invoked when the user wants to open the shortcuts window
+	 */
+	public static final String HELP_SHORTCUTS = "Help.Shortcuts";
+	/**
 	 * Action invoked when the user wants to open the "About..."
 	 */
 	public static final String HELP_ABOUT = "Help.About";

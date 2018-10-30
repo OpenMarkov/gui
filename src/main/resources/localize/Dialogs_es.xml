@@ -692,6 +692,75 @@
             <Mnemonic value="o"/>
         </Text>
     </ZoomOther>
+    <ShortcutsBox>
+        <Title value="Atajos de teclado"/>
+        <NoteIndicator value="Nota"/>
+        <Specific>
+            <OpenTable>
+                <Shortcut value="Alt + (Ctrl) + click en nodo de azar/utilidad"/>
+                <Function value="Editar tabla de probabilidades/utilidades"/>
+            </OpenTable>
+            <OpenTableNote>
+                <Shortcut value="Nota"/>
+                <Function value="Ctrl solo en algunas distribuciones de Linux (como Linux Mint)"/>
+            </OpenTableNote>
+            <MoveNodes>
+                <Shortcut value="Selecionar nodo(s) + Flechas"/>
+                <Function value="Mover nodos con precisión"/>
+            </MoveNodes>
+            <ToggleEditionInference>
+                <Shortcut value="Ctrl + I"/>
+                <Function value="Alternar entre modo de edición y de inferencia"/>
+            </ToggleEditionInference>
+            <PreviousNext>
+                <Shortcut value="Ctrl + A/Q"/>
+                <Function value="Anterior/siguiente sub-ventana de OpenMarkov"/>
+            </PreviousNext>
+            <SaveReopen>
+                <Shortcut value="Ctrl + W"/>
+                <Function value="Guardar y reabrir"/>
+            </SaveReopen>
+        </Specific>
+
+        <Common>
+            <New>
+                <Shortcut value="Ctrl + N"/>
+                <Function value="Nuevo"/>
+            </New>
+            <Open>
+                <Shortcut value="Ctrl + O"/>
+                <Function value="Abrir"/>
+            </Open>
+            <Save>
+                <Shortcut value="Ctrl + S"/>
+                <Function value="Guardar"/>
+            </Save>
+            <SelectAll>
+                <Shortcut value="Ctrl + E"/>
+                <Function value="Seleccionar todo"/>
+            </SelectAll>
+            <Cut>
+                <Shortcut value="Ctrl + X"/>
+                <Function value="Cortar"/>
+            </Cut>
+            <Copy>
+                <Shortcut value="Ctrl + C"/>
+                <Function value="Copiar"/>
+            </Copy>
+            <Paste>
+                <Shortcut value="Ctrl + V"/>
+                <Function value="Pegar"/>
+            </Paste>
+            <Undo>
+                <Shortcut value="Ctrl + Z"/>
+                <Function value="Deshacer"/>
+            </Undo>
+            <Redo>
+                <Shortcut value="Ctrl + Y"/>
+                <Function value="Rehacer"/>
+            </Redo>
+        </Common>
+    </ShortcutsBox>
     <AboutBox>
         <Advertisement>
             <Text

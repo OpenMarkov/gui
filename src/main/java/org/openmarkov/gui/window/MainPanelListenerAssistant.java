@@ -39,6 +39,7 @@ import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.dialog.AboutBox;
 import org.openmarkov.gui.dialog.LanguageDialog;
 import org.openmarkov.gui.dialog.SelectZoomDialog;
+import org.openmarkov.gui.dialog.ShortcutsBox;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
@@ -305,7 +306,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			setInferenceOptions(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.HELP_CHANGE_LANGUAGE)) {
 			showLanguageChangeDialog();
-		} else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
+		} else if (actionCommand.equals(ActionCommands.HELP_SHORTCUTS)) {
+			showShortcuts();
+		 } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
 			showAbout();
 		} else if (actionCommand.equals(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS)) {
 			this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
@@ -359,6 +362,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 */
 	private PreferencesDialog showUserConfigurationDialog() {
 		return new PreferencesDialog(mainPanel.getMainFrame());
+	}
+
+	/**
+	 * Create a Frame for shortcuts information
+	 *
+	 * @return a JDialog (shortcutsBox with shortcut information
+	 */
+	private ShortcutsBox showShortcuts() {
+		return new ShortcutsBox(mainPanel.getMainFrame());
 	}
 
 	/**

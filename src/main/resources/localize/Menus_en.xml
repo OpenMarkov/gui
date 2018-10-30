@@ -317,19 +317,23 @@
         <Mnemonic value="v"/>
     </View>
     <Help>
-        <About>
-            <Mnemonic value="a"/>
-            <Label value="About..."/>
-        </About>
-        <Label value="Help"/>
         <ChangeLanguage>
             <Label value="Change language..."/>
             <Mnemonic value="l"/>
         </ChangeLanguage>
+        <Shortcuts>
+            <Mnemonic value="s"/>
+            <Label value="Shortcuts"/>
+        </Shortcuts>
+        <About>
+            <Mnemonic value="a"/>
+            <Label value="About..."/>
+        </About>
         <Help>
             <Label value="Help"/>
             <Mnemonic value="h"/>
         </Help>
+        <Label value="Help"/>
         <Mnemonic value="h"/>
     </Help>
     <Tools>

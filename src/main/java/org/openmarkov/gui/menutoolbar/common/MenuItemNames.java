@@ -451,6 +451,11 @@ public class MenuItemNames {
 	public static final String HELP_CHANGELANGUAGE_MENUITEM = HELP_MENU + ".ChangeLanguage";
 
 	/**
+	 * Constant that defines the item 'Help - Shortcuts'.
+	 */
+	public static final String HELP_SHORTCUTS_MENUITEM = HELP_MENU + ".Shortcuts";
+
+	/**
 	 * Constant that defines the item 'Help - About'.
 	 */
 	public static final String HELP_ABOUT_MENUITEM = HELP_MENU + ".About";

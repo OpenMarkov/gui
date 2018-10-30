@@ -333,6 +333,10 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 	 */
 	private JMenuItem helpOpenAboutMenuItem = null;
 	/**
+	 * Object that represents the item 'Help - Shortcuts'.
+	 */
+	private JMenuItem helpOpenShortcutsMenuItem = null;
+	/**
 	 * Object that is filled the MDI class.
 	 */
 	private JMenu menuMDI = null;
@@ -1700,6 +1704,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 			helpMenu.addSeparator();
 			helpMenu.add(getHelpOpenChangeLanguageItem());
 			helpMenu.addSeparator();
+			helpMenu.add(getHelpOpenShortcutsItem());
 			helpMenu.add(getHelpOpenAboutItem());
 		}
 
@@ -1721,6 +1726,22 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 		}
 
 		return helpOpenChangeLanguageMenuItem;
+
+	}
+
+	/**
+	 * This methods initializes openShortcutMenuItem
+	 *
+	 * @return a new item 'Help - Shortcuts'
+	 */
+	private JMenuItem getHelpOpenShortcutsItem() {
+
+		if (helpOpenShortcutsMenuItem == null) {
+			helpOpenShortcutsMenuItem = new LocalizedMenuItem(MenuItemNames.HELP_SHORTCUTS_MENUITEM, ActionCommands.HELP_SHORTCUTS);
+			helpOpenShortcutsMenuItem.addActionListener(listener);
+		}
+
+		return helpOpenShortcutsMenuItem;
 
 	}
 
