@@ -695,15 +695,24 @@
     <ShortcutsBox>
         <Title value="Shortcuts"/>
         <NoteIndicator value="Note"/>
+
+        <ShortcutRowTitle value="Shortcut"/>
+        <FunctionRowTitle value="Function"/>
+
+        <SpecificTableTitle value ="Specific shortcuts"/>
         <Specific>
             <OpenTable>
-                <Shortcut value="Alt + (Ctrl) + click on chance/utility node"/>
+                <Shortcut value="Alt + [Ctrl] + click on chance/utility node"/>
                 <Function value="Edit probability/utility table"/>
             </OpenTable>
             <OpenTableNote>
                 <Shortcut value="Note"/>
-                <Function value="Ctrl only in some Linux distributions (as Linux Mint)"/>
+                <Function value="Ctrl in some Linux distributions, Cmd + Option in Mac"/>
             </OpenTableNote>
+            <OpenProperties>
+                <Shortcut value="Double click on node"/>
+                <Function value="Opens node properties"/>
+            </OpenProperties>
             <MoveNodes>
                 <Shortcut value="Select node(s) + Arrows"/>
                 <Function value="Accurately move nodes"/>
@@ -722,6 +731,8 @@
             </SaveReopen>
         </Specific>
 
+
+        <CommonTableTitle value ="Common shortcuts"/>
         <Common>
             <New>
                 <Shortcut value="Ctrl + N"/>
@@ -759,6 +770,10 @@
                 <Shortcut value="Ctrl + Y"/>
                 <Function value="Redo"/>
             </Redo>
+            <MacNote>
+                <Shortcut value="Note"/>
+                <Function value="In Mac Cmd key replaces Ctrl key"/>
+            </MacNote>
         </Common>
     </ShortcutsBox>
     <AboutBox>

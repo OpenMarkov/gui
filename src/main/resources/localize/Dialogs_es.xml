@@ -693,17 +693,26 @@
         </Text>
     </ZoomOther>
     <ShortcutsBox>
-        <Title value="Atajos de teclado"/>
+        <Title value="Atajos"/>
         <NoteIndicator value="Nota"/>
+
+        <ShortcutRowTitle value="Atajo"/>
+        <FunctionRowTitle value="Función"/>
+
+        <SpecificTableTitle value ="Atajos específicos"/>
         <Specific>
             <OpenTable>
-                <Shortcut value="Alt + (Ctrl) + click en nodo de azar/utilidad"/>
+                <Shortcut value="Alt + [Ctrl] + click en nodo de azar/utilidad"/>
                 <Function value="Editar tabla de probabilidades/utilidades"/>
             </OpenTable>
             <OpenTableNote>
                 <Shortcut value="Nota"/>
-                <Function value="Ctrl solo en algunas distribuciones de Linux (como Linux Mint)"/>
+                <Function value="Ctrl solo en algunas distribuciones de Linux (como Ubuntu y Linux Mint)"/>
             </OpenTableNote>
+            <OpenProperties>
+                <Shortcut value="Doble click en nodo"/>
+                <Function value="Abre las propiedades del nodo"/>
+            </OpenProperties>
             <MoveNodes>
                 <Shortcut value="Selecionar nodo(s) + Flechas"/>
                 <Function value="Mover nodos con precisión"/>
@@ -722,6 +731,8 @@
             </SaveReopen>
         </Specific>
 
+
+        <CommonTableTitle value ="Atajos genéricos"/>
         <Common>
             <New>
                 <Shortcut value="Ctrl + N"/>
@@ -759,6 +770,10 @@
                 <Shortcut value="Ctrl + Y"/>
                 <Function value="Rehacer"/>
             </Redo>
+            <MacNote>
+                <Shortcut value="Nota"/>
+                <Shortcut value="En Mac la tecla Cmd sustituye a Ctrl"/>
+            </MacNote>
         </Common>
     </ShortcutsBox>
     <AboutBox>

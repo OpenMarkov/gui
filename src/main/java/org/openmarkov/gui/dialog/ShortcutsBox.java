@@ -39,6 +39,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 	private String[] specificShortcuts = new String[]{
 			"OpenTable",
 			"OpenTableNote",
+			"OpenProperties",
 			"MoveNodes",
 			"ToggleEditionInference",
 			"PreviousNext",
@@ -54,7 +55,8 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 			"Copy",
 			"Paste",
 			"Undo",
-			"Redo"};
+			"Redo",
+			"MacNote"};
 
 
 	/**
@@ -99,15 +101,15 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 		specificPanel.setLayout(specificLayout);
 
 		// First row
-		JLabel specificTitle = new JLabel("Specific shortcuts");
+		JLabel specificTitle = new JLabel(stringDatabase.getString("ShortcutsBox.SpecificTableTitle"));
 		specificTitle.setFont(bigBold);
 		specificPanel.add(specificTitle);
 		specificPanel.add(new JLabel(""));
 
 		// Second row
-		JLabel shortcutTitle = new JLabel("Shortcut");
+		JLabel shortcutTitle = new JLabel(stringDatabase.getString("ShortcutsBox.ShortcutRowTitle"));
 		shortcutTitle.setFont(bold);
-		JLabel functionTitle = new JLabel("Function");
+		JLabel functionTitle = new JLabel(stringDatabase.getString("ShortcutsBox.FunctionRowTitle"));
 		functionTitle.setFont(bold);
 		specificPanel.add(shortcutTitle);
 		specificPanel.add(functionTitle);
@@ -131,7 +133,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 		commonPanel.setLayout(commonLayout);
 
 		// First row
-		JLabel commonTitle = new JLabel("Common shortcuts");
+		JLabel commonTitle = new JLabel(stringDatabase.getString("ShortcutsBox.CommonTableTitle"));
 		commonTitle.setFont(bigBold);
 		commonPanel.add(commonTitle);
 		commonPanel.add(new JLabel(""));
@@ -139,7 +141,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 		// Common shortcut rows
 		for (String entry : commonShortcuts) {
 			String shortcut = stringDatabase.getString("ShortcutsBox.Common." + entry + ".Shortcut");
-			String function = stringDatabase.getString("ShortcutsBox.Common."  + entry + ".Function");
+			String function = stringDatabase.getString("ShortcutsBox.Common." + entry + ".Function");
 			addRow(commonPanel, shortcut, function);
 		}
 

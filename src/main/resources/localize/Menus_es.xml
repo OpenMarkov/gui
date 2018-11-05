@@ -323,7 +323,7 @@
         </ChangeLanguage>
         <Shortcuts>
             <Mnemonic value="j"/>
-            <Label value="Atajos de teclado"/>
+            <Label value="Atajos"/>
         </Shortcuts>
         <About>
             <Mnemonic value="a"/>
