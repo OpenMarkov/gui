@@ -703,7 +703,7 @@
         <Specific>
             <OpenTable>
                 <Shortcut value="Alt + [Ctrl] + click en nodo de azar/utilidad"/>
-                <Function value="Editar tabla de probabilidades/utilidades"/>
+                <Function value="Editar probabilidades/utilidades"/>
             </OpenTable>
             <OpenTableNote>
                 <Shortcut value="Nota"/>
