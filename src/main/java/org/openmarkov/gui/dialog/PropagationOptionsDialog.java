@@ -5,8 +5,6 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-This code will break OpenMarkov - Jenkins
-
 package org.openmarkov.gui.dialog;
 
 import org.openmarkov.gui.localize.StringDatabase;
