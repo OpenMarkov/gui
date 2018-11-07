@@ -66,6 +66,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	private JButton showOptimalStrategyButton = null;
 	/**
 	 * Button to show optimal strategy temporal by Iago.
+	 * TODO Remove when POMDP policy evaluation is fully implemented
 	 */
 	private JButton showOptimalStrategy2Button = null;
 	/**
@@ -111,7 +112,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		addSeparator();
 		add(getWorkingModeButton());
 		add(getShowOptimalStrategyButton());
-		add(getShowOptimalStrategy2Button());
+		// add(getShowOptimalStrategy2Button()); To be removed
 		add(getDecisionTreeButton());
 		add(getSensAnalysisButton());
 		add(getCostEffectivenessButton());
