@@ -279,9 +279,21 @@ public class ActionCommands {
 	 */
 	public static final String DECISION_SHOW_OPTIMAL_STRATEGY = "ShowOptimalStrategy";
     /**
+	 * TODO Remove when limidEvaluation is linked to inference mode
      * Action invoked when the user wants to show the optimal strategy of a decision node temporal by Iago.
      */
     public static final String DECISION_SHOW_OPTIMAL_STRATEGY_2 = "ShowOptimalStrategy2";
+
+    /* Tree contextual menu actions */
+	/**
+	 * Action invoked when the user wants to show the decision tree.
+	 */
+	public static final String TREE_EXPAND_N = "ExpandN";
+	/**
+	 * Action invoked when the user wants to show the decision tree.
+	 */
+	public static final String TREE_EXPAND_ALL = "ExpandAll";
+	/* End tree contextual menu actions */
 	/**
 	 * Action invoked for testing
 	 */

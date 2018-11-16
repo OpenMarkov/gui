@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBasic, LocaleChangeListener {
 
 	/**
-	 *
+	 * Serialization ID
 	 */
 	private static final long serialVersionUID = -792738738895619891L;
 	/**

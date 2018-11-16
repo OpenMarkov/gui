@@ -73,4 +73,8 @@ import java.util.Map;
 			rightLabel.setText(" U =" + treeNode.getUtility());
 		}
 	}
+
+	public NodeType getNodeType() {
+		return treeNode.getNodeType();
+	}
 }

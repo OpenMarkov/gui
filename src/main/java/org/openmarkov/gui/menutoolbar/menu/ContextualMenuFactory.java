@@ -46,6 +46,11 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	public static final int INSTANCE = 3;
 
 	/**
+	* Constant that identifies the tree contextual menu.
+	*/
+	public static final int TREE = 4;
+
+	/**
 	 * Contextual menu that has the options of a whole network.
 	 */
 	private ContextualMenu networkContextualMenu = null;
@@ -64,6 +69,12 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * Contextual menu that has the options of an instance.
 	 */
 	private ContextualMenu instanceContextualMenu = null;
+
+	/**
+	 * Contextual menu that has the options of a node in a decision tree.
+	 */
+	private ContextualMenu treeContextualMenu = null;
+
 
 	/**
 	 * Assistant that manages all the contextual menus.
@@ -158,6 +169,20 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 		return instanceContextualMenu;
 	}
 
+	/**
+	 * This method initialises treeContextualMenu. A menu for the nodes of a decision tree.
+	 *
+	 * @return the tree contextual menu.
+	 */
+	private ContextualMenu getStandardTreeContextualMenu() {
+
+		menuAssistant.removeMenu(treeContextualMenu);
+		treeContextualMenu = new TreeContextualMenu(listener);
+		treeContextualMenu.setName("treeContextualMenu");
+		menuAssistant.addMenu(treeContextualMenu);
+		return treeContextualMenu;
+	}
+
 	// TODO OOPN end
 
 	/**
@@ -226,4 +251,16 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 		}
 		return contextualMenu;
 	}
+
+	/**
+	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
+	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel)).
+	 *
+	 * @return the correspondent tree pop-up menu
+	 */
+	public ContextualMenu getTreeContextualMenu() {
+		return getStandardTreeContextualMenu();
+	}
+
+
 }

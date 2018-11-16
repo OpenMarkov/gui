@@ -336,6 +336,16 @@
         <Label value="Ayuda"/>
         <Mnemonic value="a"/>
     </Help>
+    <Tree>
+        <ExpandN>
+            <Label value = "Expandir N niveles"/>
+            <Mnemonic value = "n"/>
+        </ExpandN>
+        <ExpandAll>
+            <Label value = "Expandir todos los niveles"/>
+            <Mnemonic value = "t"/>
+        </ExpandAll>
+    </Tree>
     <Tools>
         <DBGenerator>
             <Mnemonic value="g"/>
