@@ -489,12 +489,6 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
-	 * This methods evaluates a POMDP policy as for now
-	 */
-	public void evaluatePolicy() {
-		editorPanel.evaluatePolicy();
-	}
-	/**
 	 * This methods reverts the selected link.
 	 */
 	public void invertLinkAndUpdatePotentials() {

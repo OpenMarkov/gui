@@ -151,10 +151,5 @@
             <Label value="Show optimal strategy"/>
         </ToolTip>
     </ShowOptimalStrategy>
-    <ShowOptimalStrategy2>
-        <ToolTip>
-            <Label value="Show optimal strategy (alternative)"/>
-        </ToolTip>
-    </ShowOptimalStrategy2>
 </properties>
 

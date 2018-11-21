@@ -186,10 +186,6 @@ public class IconLoader {
 	 */
 	public static final String ICON_OPTIMAL_STRATEGY = "optimalStrategy.gif";
 	/**
-	 * Name of the 'show optimal strategy' enabled icon.
-	 */
-	public static final String ICON_OPTIMAL_STRATEGY_2 = "optimalStrategy2.png";
-	/**
 	 * Name of the 'cost-effectiveness analysis" icon
 	 */
 	public static final String ICON_COST_EFFECTIVENESS = "costEffectiveness.gif";

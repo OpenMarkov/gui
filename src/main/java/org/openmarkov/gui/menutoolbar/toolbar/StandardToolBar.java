@@ -65,11 +65,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 */
 	private JButton showOptimalStrategyButton = null;
 	/**
-	 * Button to show optimal strategy temporal by Iago.
-	 * TODO Remove when POMDP policy evaluation is fully implemented
-	 */
-	private JButton showOptimalStrategy2Button = null;
-	/**
 	 * Button to open a decision tree panel.
 	 */
 	private JButton decisionTreeButton = null;
@@ -112,7 +107,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		addSeparator();
 		add(getWorkingModeButton());
 		add(getShowOptimalStrategyButton());
-		// add(getShowOptimalStrategy2Button()); To be removed
 		add(getDecisionTreeButton());
 		add(getSensAnalysisButton());
 		add(getCostEffectivenessButton());
@@ -291,25 +285,6 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	}
 
 	/**
-	 * This method initialises showOptimalStrategy2Button temporal by Iago.
-	 *
-	 * @return a new button.
-	 */
-	public JButton getShowOptimalStrategy2Button() {
-		if (showOptimalStrategy2Button == null) {
-			showOptimalStrategy2Button = new JButton();
-			showOptimalStrategy2Button.setIcon(iconLoader.load(IconLoader.ICON_OPTIMAL_STRATEGY_2));
-			showOptimalStrategy2Button.setActionCommand(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2);
-			showOptimalStrategy2Button.setFocusable(false);
-			showOptimalStrategy2Button.setToolTipText(
-					stringDatabase.getString(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2 + STRING_TOOLTIP_SUFFIX));
-			showOptimalStrategy2Button.addActionListener(listener);
-			showOptimalStrategy2Button.addMouseMotionListener(this);
-		}
-		return showOptimalStrategy2Button;
-	}
-
-	/**
 	 * This method initialises decisionTreeButton.
 	 *
 	 * @return a new button.
@@ -392,30 +367,40 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 */
 	@Override protected JComponent getJComponentActionCommand(String actionCommand) {
 		JComponent component = null;
-		if (actionCommand.equals(ActionCommands.NEW_NETWORK)) {
-			component = newNetworkButton;
-		} else if (actionCommand.equals(ActionCommands.OPEN_NETWORK)) {
-			component = openNetworkButton;
-		} else if (actionCommand.equals(ActionCommands.SAVE_NETWORK)) {
-			component = saveNetworkButton;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_IN)) {
-			component = zoomInButton;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_OUT)) {
-			component = zoomOutButton;
-		} else if (actionCommand.equals(ActionCommands.ZOOM_OTHER)) {
-			component = zoomComboBox;
-		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
-			component = workingModeButton;
-		} else if (actionCommand.equals(ActionCommands.DECISION_TREE)) {
-			component = decisionTreeButton;
-		} else if (actionCommand.equals(ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC)) {
-			component = costEffectivenessButton;
-		} else if (actionCommand.equals(ActionCommands.SENSITIVITY_ANALYSIS)) {
-			component = sensAnalysisButton;
-		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY)) {
-			component = showOptimalStrategyButton;
-		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY_2)) {
-			component = showOptimalStrategy2Button;
+		switch (actionCommand) {
+			case ActionCommands.NEW_NETWORK:
+				component = newNetworkButton;
+				break;
+			case ActionCommands.OPEN_NETWORK:
+				component = openNetworkButton;
+				break;
+			case ActionCommands.SAVE_NETWORK:
+				component = saveNetworkButton;
+				break;
+			case ActionCommands.ZOOM_IN:
+				component = zoomInButton;
+				break;
+			case ActionCommands.ZOOM_OUT:
+				component = zoomOutButton;
+				break;
+			case ActionCommands.ZOOM_OTHER:
+				component = zoomComboBox;
+				break;
+			case ActionCommands.CHANGE_WORKING_MODE:
+				component = workingModeButton;
+				break;
+			case ActionCommands.DECISION_TREE:
+				component = decisionTreeButton;
+				break;
+			case ActionCommands.COST_EFFECTIVENESS_DETERMINISTIC:
+				component = costEffectivenessButton;
+				break;
+			case ActionCommands.SENSITIVITY_ANALYSIS:
+				component = sensAnalysisButton;
+				break;
+			case ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY:
+				component = showOptimalStrategyButton;
+				break;
 		}
 		return component;
 	}

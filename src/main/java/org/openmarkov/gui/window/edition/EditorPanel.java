@@ -58,7 +58,7 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.dlimidevaluation.StrategySpectrum;
+import org.openmarkov.inference.dlimidevaluation.StrategyManager;
 import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
 import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
@@ -2234,12 +2234,20 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	/**
-	 * This methods evaluates a POMDP policy
+	 * This methods evaluates a POMDP or dLIMID strategy, for a predetermined 60000 strategies first with brute force
+	 * and then with random walk.
+	 **/
+	/*
+	 * This method works with StrategyManager of the dlimidEvaluation package. That package is not completed (and
+	 * will remain like that for a long time). As for now, the method is not called from anywhere.
+	 * Ask @IagoParis about details.
 	 */
 	public void evaluatePolicy() {
 
 		// Network is expanded before calling to evaluatePolicy
 
+        // To test if the network is expanded it uses the file name. This produces a lot of false negatives and should
+        // be changed.
 		if (!networkPanel.getNetworkFile().endsWith("_expanded.pgmx") && !networkPanel.getNetworkFile().endsWith("_expanded")) {
 			JOptionPane.showMessageDialog( this, "Did you expand the network?");
 			return;
@@ -2249,92 +2257,20 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		System.out.println("Horizon: " + horizon);
 
 
-		// Generate the strategy
-		StrategySpectrum s = new StrategySpectrum(probNet, horizon);
-
-
-		// TODO Implement this two methods into StrategySpectrum
-		// Evaluate all strategies. BRUTE FORCE
-		System.out.println();
-		System.out.println("[Brute force...]");
-		long startTime = System.currentTimeMillis();
-		StrategySpectrum strategySpectrum = new StrategySpectrum(probNet, horizon);
-		strategySpectrum.createBaseStrategy();
-		double bestUtility = strategySpectrum.evaluate();
-		int nStrategies = 1;
-		List<Potential> bestStrategy = null;
-
-		double utility;
-		try { // An IndexOutOfBoundsException will break this loop
-
-			for (int i = 0; i < 60002; i++) {
-				strategySpectrum.next();
-				utility = strategySpectrum.evaluate();
-				if (utility > bestUtility) {
-					bestUtility = utility;
-					bestStrategy = strategySpectrum.getPotentialForm();
-					System.out.println(bestUtility);
-				}
-				nStrategies++;
-				if (nStrategies%10000 == 0) {
-					System.out.println(nStrategies);
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			// End of while. Last strategy reached.
-		}
-
-		long timeElapsed = System.currentTimeMillis() - startTime;
-		System.out.println("Best utility of the " + nStrategies + " strategies evaluated: " + bestUtility);
-		for (Potential policy : bestStrategy ) {
-			System.out.println(policy.toString());
-		}
-		System.out.println("Time elapsed: " + timeElapsed + " ms");
-
-		// Evaluate random n strategies. RANDOM WALK
-		System.out.println();
-		System.out.println("[Random walk...]");
-		startTime = System.currentTimeMillis();
-		bestUtility = Double.NEGATIVE_INFINITY;
-		nStrategies = 0;
-		bestStrategy = null;
-
-		try { // An IndexOutOfBoundsException will break this loop
-
-			for (int i = 0; i < 60002; i++) {
-				strategySpectrum.createRandomStrategy();
-				utility = strategySpectrum.evaluate();
-				if (utility > bestUtility) {
-					bestUtility = utility;
-					bestStrategy = strategySpectrum.getPotentialForm();
-					System.out.println(bestUtility);
-				}
-				nStrategies++;
-				if (nStrategies%10000 == 0) {
-					System.out.println(nStrategies);
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			// End of while. Last strategy reached.
-		}
-
-		timeElapsed = System.currentTimeMillis() - startTime;
-		System.out.println("Best utility of the " + nStrategies + " strategies evaluated: " + bestUtility);
-		for (Potential policy : bestStrategy ) {
-			System.out.println(policy.toString());
-		}
-		System.out.println("Time elapsed: " + timeElapsed + " ms");
+		// Create a strategy manager and random walk for the best strategy of the net
+		StrategyManager strategyManager = new StrategyManager(probNet, horizon);
+		List<Potential> bestStrategy = strategyManager.randomWalk(60000);
 
 
 		/* Set the strategy into the nodes */
+
 		Map<Variable, VisualNode> visualDecisionNodes = new HashMap<>();
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
 			if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
 				visualDecisionNodes.put(visualNode.getNode().getVariable(), visualNode);
 			}
 		}
-
-		// Use the variable of the potential to know which policy goes to which node
+		// Use the variable of the potential to know which policy goes into which node
 		for (int policy = 0; policy < bestStrategy.size(); policy++) {
 			Variable decisionVariable = bestStrategy.get(policy).getVariable(0);
 			visualDecisionNodes.get(decisionVariable).getNode().
@@ -2342,6 +2278,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			((VisualDecisionNode) visualDecisionNodes.get(decisionVariable)).setHasPolicy(true);
 		}
 
+		// Recreate the visual net to see the changes
 		setNetworkChangedWithOutEdit(true);
 		repaint();
 	}
