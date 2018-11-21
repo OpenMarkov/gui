@@ -88,7 +88,6 @@ import java.util.Map;
 	private Node node;
 	private List<JLabel> legendLabels;
 	private JScrollPane legendPanel;
-	;
 
 	public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence) {
 		this(owner, node, evidence, null);
@@ -664,7 +663,6 @@ import java.util.Map;
 		for (int j = 0; j < markedCheckBoxes.length; j++) {
 			if (markedCheckBoxes[j]) {
 				someCheckBoxMarked = true;
-				;
 			}
 		}
 

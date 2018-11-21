@@ -74,9 +74,7 @@ public class FileFilterBasic extends FileFilter {
 		return null;
 	}
 
-	;
-
-	@Override public String getDescription() {
+    @Override public String getDescription() {
 
 		// TODO Auto-generated method stub
 		return null;

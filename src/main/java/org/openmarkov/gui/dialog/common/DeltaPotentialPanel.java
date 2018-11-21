@@ -121,7 +121,6 @@ import java.awt.*;
 						)
 				)) {
 					valueSpinner.setValue(value);
-					;
 				}
 			}
 		} else {

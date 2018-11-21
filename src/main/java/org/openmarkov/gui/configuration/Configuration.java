@@ -12,13 +12,13 @@ public interface Configuration extends DefaultConfiguration {
 	/**
 	 * @return Component name. <code>String</code>
 	 */
-	public String getComponentName();
+	String getComponentName();
 
 	/**
 	 * @param name <code>String</code>. Property name.
 	 * @return An <code>Object</code> whose name = <code>name</code>.
 	 */
-	public Object getProperty(String name);
+	Object getProperty(String name);
 
 	/**
 	 * Creates or modifies a property.
@@ -26,6 +26,6 @@ public interface Configuration extends DefaultConfiguration {
 	 * @param name  <code>String</code>. Property name.
 	 * @param value <code>Object</code>.
 	 */
-	public void setProperty(String name, Object value);
+	void setProperty(String name, Object value);
 
 }

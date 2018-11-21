@@ -410,8 +410,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 		columnModel.getColumn(0).setCellEditor(null);
 	}
 
-	;
-
 	private String getString(double[] parameters) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < parameters.length; ++i) {

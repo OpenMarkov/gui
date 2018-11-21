@@ -399,7 +399,7 @@ public class VisualState extends VisualElement {
 					Double maxRange = ((NumericVariableBox) innerBox).getMaxValue();
 					Double range = maxRange - minRange;
 					Double value = stateValues.get(i) - minRange;
-					barLength = ((value * lengthRelationInBars) / range) / InnerBox.BAR_FULL_LENGTH;;
+					barLength = ((value * lengthRelationInBars) / range) / InnerBox.BAR_FULL_LENGTH;
 				} else {
 					barLength = (stateValues.get(i) * lengthRelationInBars) / InnerBox.BAR_FULL_LENGTH;
 				}

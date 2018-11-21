@@ -16,5 +16,5 @@ import java.util.EventListener;
  * @version 1.0 25 Jun 2009
  */
 public interface LocaleChangeListener extends EventListener {
-	public abstract void processLocaleChange(LocaleChangeEvent event);
+	void processLocaleChange(LocaleChangeEvent event);
 }

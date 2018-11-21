@@ -222,7 +222,7 @@ public class Segment {
 		double y = Math.sqrt(r2 - b2);
 		Point2D.Double point1 = null, point2 = null;
 
-		if (y == Double.NaN) {
+		if (Double.isNaN(y)) {
 
 			return null;
 		}
@@ -265,7 +265,7 @@ public class Segment {
 		double x;
 		Point2D.Double point1 = null, point2 = null;
 
-		if (squareroot == Double.NaN) {
+		if (Double.isNaN(squareroot)) {
 
 			return null;
 		}

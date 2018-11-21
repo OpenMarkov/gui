@@ -12,6 +12,6 @@ package org.openmarkov.gui.configuration;
  */
 public interface DefaultConfiguration {
 
-	public void generateDefaultConfiguration();
+	void generateDefaultConfiguration();
 
 }

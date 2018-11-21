@@ -46,8 +46,6 @@ public class StandardStream extends PrintStream {
 
 	}
 
-	;
-
 	/**
 	 * Terminate the current line by writing the line separator string. The line
 	 * separator string is defined by the system property line.separator.
@@ -56,15 +54,13 @@ public class StandardStream extends PrintStream {
 
 	}
 
-	;
-
 	/**
 	 * Prints a boolean.
 	 */
 	@Override public void print(boolean x) {
 
 		// ESCA-JAVA0278: ensures a correct boolean value is printed
-		print(new Boolean(x).toString());
+		print(Boolean.toString(x));
 	}
 
 	/**
@@ -72,7 +68,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void print(char x) {
 
-		print(new Character(x).toString());
+		print(Character.toString(x));
 	}
 
 	/**
@@ -81,7 +77,7 @@ public class StandardStream extends PrintStream {
 	@Override public void print(int x) {
 
 		// ESCA-JAVA0153: ensures the correct integer value is printed
-		print(new Integer(x).toString());
+		print(Integer.toString(x));
 	}
 
 	/**
@@ -89,7 +85,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void print(long x) {
 
-		print(new Long(x).toString());
+		print(Long.toString(x));
 	}
 
 	/**
@@ -97,7 +93,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void print(float x) {
 
-		print(new Float(x).toString());
+		print(Float.toString(x));
 	}
 
 	/**
@@ -105,7 +101,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void print(double x) {
 
-		print(new Double(x).toString());
+		print(Double.toString(x));
 	}
 
 	/**
@@ -133,7 +129,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void println(boolean x) {
 
-		println(new Boolean(x).toString());
+		println(Boolean.toString(x));
 	}
 
 	/**
@@ -141,7 +137,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void println(char x) {
 
-		println(new Character(x).toString());
+		println(Character.toString(x));
 	}
 
 	/**
@@ -150,7 +146,7 @@ public class StandardStream extends PrintStream {
 	@Override public void println(int x) {
 
 		// ESCA-JAVA0153: ensures the correct integer value is printed
-		println(new Integer(x).toString());
+		println(Integer.toString(x));
 	}
 
 	/**
@@ -158,7 +154,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void println(long x) {
 
-		println(new Long(x).toString());
+		println(Long.toString(x));
 	}
 
 	/**
@@ -166,7 +162,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void println(float x) {
 
-		println(new Float(x).toString());
+		println(Float.toString(x));
 	}
 
 	/**
@@ -174,7 +170,7 @@ public class StandardStream extends PrintStream {
 	 */
 	@Override public void println(double x) {
 
-		println(new Double(x).toString());
+		println(Double.toString(x));
 	}
 
 	/**

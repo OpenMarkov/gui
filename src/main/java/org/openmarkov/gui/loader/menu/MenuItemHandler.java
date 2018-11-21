@@ -27,15 +27,15 @@ public interface MenuItemHandler {
 	/**
 	 * Called when a JMenuItem is activated.
 	 */
-	public void itemActivated(JMenuItem item, ActionEvent event, String sCommand);
+    void itemActivated(JMenuItem item, ActionEvent event, String sCommand);
 
 	/**
 	 * Called when a CheckboxMenuItem is deselected.
 	 */
-	public void itemDeselected(JMenuItem item, ItemEvent event, String sCommand);
+    void itemDeselected(JMenuItem item, ItemEvent event, String sCommand);
 
 	/**
 	 * Called when a CheckboxMenuItem is selected.
 	 */
-	public void itemSelected(JMenuItem item, ItemEvent event, String sCommand);
+    void itemSelected(JMenuItem item, ItemEvent event, String sCommand);
 }

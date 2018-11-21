@@ -109,7 +109,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 			substring = zString;
 		}
 		try {
-			result = new Integer(substring);
+			result = Integer.parseInt(substring);
 		} catch (NumberFormatException e) {
 			result = null;
 		}
@@ -127,7 +127,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			if (!e.getItem().equals(oldValue)) {
 				zoomValue = getZoomValue((String) e.getItem());
-				if ((zoomValue == null) || (zoomValue.intValue() < 10) || (zoomValue.intValue() > 500)) {
+				if ((zoomValue == null) || (zoomValue < 10) || (zoomValue > 500)) {
 					JOptionPane.showMessageDialog(getRootPane(),
 							StringDatabase.getUniqueInstance().getString("WrongZoomValue.Text.Label"),
 							StringDatabase.getUniqueInstance().getString("ErrorWindow.Title.Label"),

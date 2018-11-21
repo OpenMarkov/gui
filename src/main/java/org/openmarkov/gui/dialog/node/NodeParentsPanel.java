@@ -193,8 +193,6 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 		subItemStateChanged(e);
 	}
 
-	;
-
 	/**
 	 * Invoked when an item has been selected. This method must be overridden in
 	 * subclasses to listen to their combobox components.

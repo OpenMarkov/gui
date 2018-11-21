@@ -20,5 +20,5 @@ public interface ZoomMenuToolBar {
 	 *
 	 * @param value
 	 */
-	public void setZoom(double value);
+    void setZoom(double value);
 }

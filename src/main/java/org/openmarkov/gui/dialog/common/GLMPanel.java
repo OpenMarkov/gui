@@ -50,9 +50,7 @@ import java.util.List;
 		notifyActionListeners(new ActionEvent(this, 1, "Add"));
 	}
 
-	;
-
-	/**
+    /**
 	 * Invoked when the button 'remove' is pressed.
 	 */
 	protected void actionPerformedRemoveValue() {
@@ -60,9 +58,7 @@ import java.util.List;
 		notifyActionListeners(new ActionEvent(this, 2, "Remove"));
 	}
 
-	;
-
-	/**
+    /**
 	 * Invoked when the button 'up' is pressed.
 	 */
 	protected void actionPerformedUpValue() {
@@ -70,9 +66,7 @@ import java.util.List;
 		notifyActionListeners(new ActionEvent(this, 3, "Up"));
 	}
 
-	;
-
-	/**
+    /**
 	 * Invoked when the button 'down' is pressed.
 	 */
 	protected void actionPerformedDownValue() {
@@ -80,9 +74,7 @@ import java.util.List;
 		notifyActionListeners(new ActionEvent(this, 4, "Down"));
 	}
 
-	;
-
-	public void addActionListener(ActionListener listener) {
+    public void addActionListener(ActionListener listener) {
 		listeners.add(listener);
 	}
 

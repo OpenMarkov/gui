@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -68,7 +69,7 @@ import java.util.Properties;
 	 */
 	public void load(InputStream inputStream) throws IOException {
 
-		load(new InputStreamReader(inputStream, "UTF-8"));
+		load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
 
 	/**

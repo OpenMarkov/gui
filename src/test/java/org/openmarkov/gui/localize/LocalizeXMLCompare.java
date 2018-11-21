@@ -151,9 +151,8 @@ public class LocalizeXMLCompare {
 	private Document getXMLDocument(String xmlDocument) {
 		// Get file if not included.
 		InputStream stream = this.getClass().getClassLoader().getResourceAsStream("localize/" + xmlDocument);
-		;
 
-		// Get root element.
+        // Get root element.
 		SAXBuilder builder = new SAXBuilder();
 		builder.setJDOMFactory(new LocatedJDOMFactory());
 		Document document = null;

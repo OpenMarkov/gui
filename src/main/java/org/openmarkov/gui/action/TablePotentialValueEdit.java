@@ -193,7 +193,7 @@ import java.util.List;
 			} else {
 				// the user is editing a the same column of potentials that last
 				// time
-				priorityList.remove(new Integer(potentialSelected));
+				priorityList.remove((Integer) potentialSelected);
 				priorityList.add(potentialSelected);
 			}
 			Iterator<Integer> listIterator = priorityList.listIterator();

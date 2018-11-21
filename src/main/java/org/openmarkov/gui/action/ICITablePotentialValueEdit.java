@@ -201,7 +201,7 @@ import java.util.List;
 		} else {
 			//the user is editing the same column of potentials that last
 			//time
-			priorityList.remove(new Integer(position));
+			priorityList.remove((Integer) position);
 			priorityList.add(position);
 
 		}

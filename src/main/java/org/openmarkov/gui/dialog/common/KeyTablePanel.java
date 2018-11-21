@@ -370,8 +370,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 
 	}
 
-	;
-
 	/**
 	 * Invoked when the button 'remove' is pressed.
 	 */
@@ -379,8 +377,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 		int selectedRowIndex = valuesTable.getSelectedRow();
 		tableModel.removeRow(selectedRowIndex);
 	}
-
-	;
 
 	/**
 	 * Invoked when the button 'up' is pressed.
@@ -391,8 +387,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 		valuesTable.setRowSelectionInterval(selectedRowIndex - 1, selectedRowIndex - 1);
 	}
 
-	;
-
 	/**
 	 * Invoked when the button 'down' is pressed.
 	 */
@@ -401,8 +395,6 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 		tableModel.moveRow(selectedRowIndex, selectedRowIndex, selectedRowIndex + 1);
 		valuesTable.setRowSelectionInterval(selectedRowIndex + 1, selectedRowIndex + 1);
 	}
-
-	;
 
 	/**
 	 * Invoked when the row selection changes.

@@ -8,6 +8,6 @@
 package org.openmarkov.gui.dialog;
 
 public interface CommentListener {
-	public void commentHasChanged();
+	void commentHasChanged();
 
 }

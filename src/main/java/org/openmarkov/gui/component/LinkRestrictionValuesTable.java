@@ -74,12 +74,12 @@ import java.util.ArrayList;
 	 ***/
 	public void setValueAt(Object newValue, int row, int col) {
 		if (newValue != null) {
-			Integer newNumericValue = new Integer(INCOMPATIBILITY_VALUE);
+			Integer newNumericValue;
 			try {
 				newNumericValue = (Integer) newValue;
 				if (!newNumericValue.equals(Integer.valueOf(INCOMPATIBILITY_VALUE)) && !newNumericValue
 						.equals(Integer.valueOf(COMPATIBILITY_VALUE))) {
-					newValue = new Integer(INCOMPATIBILITY_VALUE);
+					newValue = Integer.parseInt(INCOMPATIBILITY_VALUE);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -28,15 +28,15 @@ public interface ToolBarItemHandler {
 	/**
 	 * Called when a ToolBarItem is activated.
 	 */
-	public void itemActivated(JComponent item, ActionEvent event, String sCommand);
+	void itemActivated(JComponent item, ActionEvent event, String sCommand);
 
 	/**
 	 * Called when a ToolBarItem is deselected.
 	 */
-	public void itemDeselected(JComponent item, ItemEvent event, String sCommand);
+	void itemDeselected(JComponent item, ItemEvent event, String sCommand);
 
 	/**
 	 * Called when a ToolBarItem is selected.
 	 */
-	public void itemSelected(JComponent item, ItemEvent event, String sCommand);
+    void itemSelected(JComponent item, ItemEvent event, String sCommand);
 }
