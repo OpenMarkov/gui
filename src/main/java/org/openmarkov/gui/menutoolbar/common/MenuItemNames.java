@@ -394,14 +394,23 @@ public class MenuItemNames {
 	 */
 	public static final String TREE_MENU = "Tree";
 	/**
-	 * String database token for the item 'Tree - Expand N'.
+	 * String database token for the item 'Tree - Expand next'.
 	 */
-	public static final String TREE_EXPAND_N_MENUITEM = TREE_MENU + ".ExpandN";
+	public static final String TREE_EXPAND_NEXT_MENUITEM = TREE_MENU + ".ExpandNext";
 
 	/**
-	 * String database token for the item 'Tree - Expand N'.
+	 * String database token for the item 'Tree - Expand all'.
 	 */
 	public static final String TREE_EXPAND_ALL_MENUITEM = TREE_MENU + ".ExpandAll";
+	/**
+	 * String database token for the item 'Tree - Open network'.
+	 */
+	public static final String TREE_OPEN_NETWORK_MENUITEM = TREE_MENU + ".OpenNetwork";
+
+	/**
+	 * String database token for the item 'Tree - Extra option'.
+	 */
+	public static final String TREE_EXTRA_OPTION_MENUITEM = TREE_MENU + ".ExtraOption";
 	/* End tree contextual menu */
 
 	/**

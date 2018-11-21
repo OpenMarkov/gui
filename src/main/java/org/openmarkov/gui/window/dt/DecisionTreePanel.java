@@ -12,7 +12,6 @@ import org.openmarkov.core.dt.DecisionTreeBuilder;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
@@ -23,7 +22,6 @@ import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANDecisionTreeEvaluation;
 
 import javax.swing.*;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -95,12 +93,20 @@ import java.awt.event.MouseListener;
 		public void actionPerformed(ActionEvent e) {
 			String actionCommand = e.getActionCommand();
 			switch (actionCommand) {
-				case ActionCommands.TREE_EXPAND_N:
+				case ActionCommands.TREE_EXPAND_NEXT:
 					System.out.println("Expanding some levels");
 					// Expand N levels
 					break;
 				case ActionCommands.TREE_EXPAND_ALL:
 					System.out.println("Expanding all levels");
+					// Expand all levels
+					break;
+				case ActionCommands.TREE_OPEN_NETWORK:
+					System.out.println("Opening associated network");
+					// Expand all levels
+					break;
+				case ActionCommands.TREE_EXTRA_OPTION:
+					System.out.println("Doing something wonderful");
 					// Expand all levels
 					break;
 				default:

@@ -345,6 +345,14 @@
             <Label value = "Expandir todos los niveles"/>
             <Mnemonic value = "t"/>
         </ExpandAll>
+        <OpenNetwork>
+            <Label value = "Abrir red"/>
+            <Mnemonic value = "a"/>
+        </OpenNetwork>
+        <ExtraOption>
+            <Label value = "Opción extra"/>
+            <Mnemonic value = "x"/>
+        </ExtraOption>
     </Tree>
     <Tools>
         <DBGenerator>

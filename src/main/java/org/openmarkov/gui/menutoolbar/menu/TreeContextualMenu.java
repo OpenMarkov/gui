@@ -1,11 +1,8 @@
 package org.openmarkov.gui.menutoolbar.menu;
 
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuItemNames;
-import org.openmarkov.gui.window.edition.EditorPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -16,13 +13,21 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private static final long serialVersionUID = 8556550111033250304L;
     /**
-     * Object that represents the item 'Expand N'.
+     * Object that represents the item 'Expand next'.
      */
-    private JMenuItem expandNMenuItem = null;
+    private JMenuItem expandNextMenuItem = null;
     /**
      * Object that represents the item 'Expand all'.
      */
     private JMenuItem expandAllMenuItem = null;
+    /**
+     * Object that represents the item 'Open network'.
+     */
+    private JMenuItem openNetworkMenuItem = null;
+    /**
+     * Object that represents the item 'Extra option'.
+     */
+    private JMenuItem extraOptionMenuItem = null;
 
     public TreeContextualMenu(ActionListener newListener) {
         super(newListener);
@@ -34,27 +39,29 @@ public class TreeContextualMenu extends ContextualMenu {
      * Construct the menu from the items
      */
     private void initialize() {
-        add(getExpandNMenuItem());
+        add(getExpandNextMenuItem());
         add(getExpandAllMenuItem());
+        add(getOpenNetworkMenuItem());
+        add(getExtraOptionMenuItem());
     }
 
     /**
-     * This method initializes cutMenuItem.
+     * This method initializes expandNextMenuItem.
      *
-     * @return a new 'Cut' menu item.
+     * @return a new 'Expand next' menu item.
      */
-    private JMenuItem getExpandNMenuItem() {
-        if (expandNMenuItem == null) {
-            expandNMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_N_MENUITEM, ActionCommands.TREE_EXPAND_N);
-            expandNMenuItem.addActionListener(listener);
+    private JMenuItem getExpandNextMenuItem() {
+        if (expandNextMenuItem == null) {
+            expandNextMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXPAND_NEXT_MENUITEM, ActionCommands.TREE_EXPAND_NEXT);
+            expandNextMenuItem.addActionListener(listener);
         }
-        return expandNMenuItem;
+        return expandNextMenuItem;
     }
 
     /**
-     * This method initialises copyMenuItem.
+     * This method initialises expandAllMenuItem.
      *
-     * @return a new 'Copy' menu item.
+     * @return a new 'Expand all' menu item.
      */
     private JMenuItem getExpandAllMenuItem() {
         if (expandAllMenuItem == null) {
@@ -62,6 +69,32 @@ public class TreeContextualMenu extends ContextualMenu {
             expandAllMenuItem.addActionListener(listener);
         }
         return expandAllMenuItem;
+    }
+
+    /**
+     * This method initialises openNetworkMenuItem.
+     *
+     * @return a new 'Open network' menu item.
+     */
+    private JMenuItem getOpenNetworkMenuItem() {
+        if (openNetworkMenuItem == null) {
+            openNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_OPEN_NETWORK_MENUITEM, ActionCommands.TREE_OPEN_NETWORK);
+            openNetworkMenuItem.addActionListener(listener);
+        }
+        return openNetworkMenuItem;
+    }
+
+    /**
+     * This method initialises extraOptionMenuItem.
+     *
+     * @return a new 'Extra option' menu item.
+     */
+    private JMenuItem getExtraOptionMenuItem() {
+        if (extraOptionMenuItem == null) {
+            extraOptionMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXTRA_OPTION_MENUITEM, ActionCommands.TREE_EXTRA_OPTION);
+            extraOptionMenuItem.addActionListener(listener);
+        }
+        return extraOptionMenuItem;
     }
 
     /**
@@ -74,11 +107,17 @@ public class TreeContextualMenu extends ContextualMenu {
     protected JComponent getJComponentActionCommand(String actionCommand) {
         JComponent component = null;
         switch (actionCommand) {
-            case ActionCommands.TREE_EXPAND_N:
-                component = expandNMenuItem;
+            case ActionCommands.TREE_EXPAND_NEXT:
+                component = expandNextMenuItem;
                 break;
             case ActionCommands.TREE_EXPAND_ALL:
                 component = expandAllMenuItem;
+                break;
+            case ActionCommands.TREE_OPEN_NETWORK:
+                component = openNetworkMenuItem;
+                break;
+            case ActionCommands.TREE_EXTRA_OPTION:
+                component = extraOptionMenuItem;
                 break;
         }
         return component;

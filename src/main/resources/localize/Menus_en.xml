@@ -337,14 +337,22 @@
         <Mnemonic value="h"/>
     </Help>
     <Tree>
-        <ExpandN>
-            <Label value = "Expand N levels"/>
+        <ExpandNext>
+            <Label value = "Expand next level"/>
             <Mnemonic value = "n"/>
-        </ExpandN>
+        </ExpandNext>
         <ExpandAll>
             <Label value = "Expand all levels"/>
             <Mnemonic value = "a"/>
         </ExpandAll>
+        <OpenNetwork>
+            <Label value = "Open network"/>
+            <Mnemonic value = "o"/>
+        </OpenNetwork>
+        <ExtraOption>
+            <Label value = "Extra option"/>
+            <Mnemonic value = "x"/>
+        </ExtraOption>
     </Tree>
     <Tools>
         <DBGenerator>

@@ -286,13 +286,21 @@ public class ActionCommands {
 
     /* Tree contextual menu actions */
 	/**
-	 * Action invoked when the user wants to show the decision tree.
+	 * Action invoked when the user wants to expand one level of a decision tree.
 	 */
-	public static final String TREE_EXPAND_N = "ExpandN";
+	public static final String TREE_EXPAND_NEXT = "ExpandNext";
 	/**
-	 * Action invoked when the user wants to show the decision tree.
+	 * Action invoked when the user wants to expand all levels of a decision tree.
 	 */
 	public static final String TREE_EXPAND_ALL = "ExpandAll";
+	/**
+	 * Action invoked when the user wants to open the associated network of a node of the tree.
+	 */
+	public static final String TREE_OPEN_NETWORK = "OpenAssociatedNetwork";
+	/**
+	 * Action invoked when the user wants to do something not yet implemented. TODO Rewrite
+	 */
+	public static final String TREE_EXTRA_OPTION = "ExtraOption";
 	/* End tree contextual menu actions */
 	/**
 	 * Action invoked for testing
@@ -490,7 +498,7 @@ public class ActionCommands {
 			return false;
 		} else if (actionCommand.substring(0, lengthZoomPrefix).equals(ZOOM_PREFIX)) {
 			try {
-				new Integer(actionCommand.substring(lengthZoomPrefix));
+				Integer.parseInt(actionCommand.substring(lengthZoomPrefix));
 			} catch (NumberFormatException e) {
 				return false;
 			}
