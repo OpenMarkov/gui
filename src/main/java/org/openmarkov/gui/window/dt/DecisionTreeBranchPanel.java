@@ -22,6 +22,10 @@ import java.util.Locale;
 		super();
 		this.treeBranch = treeBranch;
 	}
+	
+	public DecisionTreeBranch getTreeBranch() {
+		return treeBranch;
+	}
 
 	/**
 	 * Builds the text to be shown in the branch

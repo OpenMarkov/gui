@@ -32,6 +32,11 @@ import java.util.Map;
 		this.treeNode = treeNode;
 		leftLabel.setIcon(createNodeIcon(treeNode.getVariable(), treeNode.getNodeType()));
 	}
+	
+	public DecisionTreeNode getTreeNode() {
+		return treeNode;
+	}
+
 
 	/**
 	 * Create a new icon for a node of the ADD/Tree

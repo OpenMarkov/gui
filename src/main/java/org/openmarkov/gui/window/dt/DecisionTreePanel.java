@@ -15,11 +15,16 @@ import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
+import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
+import org.openmarkov.gui.oopn.VisualInstance;
+import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANDecisionTreeEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.IDDecisionTreeEvaluation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +44,11 @@ import java.awt.event.MouseListener;
 
 		//DecisionTreeElement root = DecisionTreeBuilder.buildDecisionTree (probNet);
 		DecisionTreeElement root = buildDecisionTreeDAN(probNet);
+		updateVisualInformation(root);
+
+	}
+
+	private void updateVisualInformation(DecisionTreeElement root) {
 		DecisionTreeModel model = new DecisionTreeModel(root);
 		jTree = new DecisionTree(model);
 		jTree.addMouseListener(listener);
@@ -50,21 +60,27 @@ import java.awt.event.MouseListener;
 
 	}
 
+
 	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet) {
+		//TODO We are testing with an initial value of 1
+		return buildDecisionTreeDAN(probNet,1);
+	}
+	
+	
+	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet,int depth) {
 		DecisionTreeElement root = null;
-		if (probNet.getNetworkType() instanceof InfluenceDiagramType) {
-			root = DecisionTreeBuilder.buildDecisionTreeFromID(probNet);
-		} else if (probNet.getNetworkType() instanceof DecisionAnalysisNetworkType) {
+		NetworkType networkType = probNet.getNetworkType();
+		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
 			DecisionTreeNode child = null;
 			try {
-				child = new DANDecisionTreeEvaluation(probNet).getDecisionTree();
+				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth):new DANDecisionTreeEvaluation(probNet,depth)).getDecisionTree();
 			} catch (NotEvaluableNetworkException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			((DecisionTreeBranch) root).setChild(child);
-		}
+		} 
 		return root;
 	}
 
@@ -96,13 +112,18 @@ import java.awt.event.MouseListener;
 				case ActionCommands.TREE_EXPAND_NEXT:
 					System.out.println("Expanding some levels");
 					// Expand N levels
+					inferenceExpandLevels(1);
 					break;
 				case ActionCommands.TREE_EXPAND_ALL:
 					System.out.println("Expanding all levels");
 					// Expand all levels
+					inferenceExpandAllLevels();
 					break;
 				case ActionCommands.TREE_OPEN_NETWORK:
 					System.out.println("Opening associated network");
+					openAssociatedNetwork();
+					
+					
 					// Expand all levels
 					break;
 				case ActionCommands.TREE_EXTRA_OPTION:
@@ -113,6 +134,51 @@ import java.awt.event.MouseListener;
 
 			}
 		}
+		
+
+		private void openAssociatedNetwork() {
+			
+			Object selectedComponent = jTree.getLastSelectedPathComponent();
+			if (selectedComponent instanceof DecisionTreeNodePanel) {
+				DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
+				DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
+				MainPanel.getUniqueInstance().getMainPanelListenerAssistant().openNetwork(treeNode.getNetwork());	
+			}
+			
+		}
+
+
+		public void inferenceExpandLevels(int n) {
+			DecisionTreeModel auxModel = (DecisionTreeModel)jTree.getModel();
+			DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
+			inferenceExpandLevels(root.getTreeBranch(),null,n);
+			updateVisualInformation(root.getTreeBranch());			
+		}
+
+		private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) {
+			if (root instanceof DecisionTreeBranch || ((DecisionTreeNode)root).getNodeType()!= NodeType.UTILITY) {
+				if (root instanceof DecisionTreeNode) {
+					parent = (DecisionTreeNode) root;
+				}
+				for (DecisionTreeElement branch : root.getChildren()) {
+					inferenceExpandLevels(branch,parent, n);						
+				}
+			}
+			else {
+				DecisionTreeNode rootDT = (DecisionTreeNode)root;
+				DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTreeDAN(rootDT.getNetwork(), n)).getChild();				
+				if (parent.getNodeType()==NodeType.DECISION || 
+						(!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))){
+					rootDT.copy(auxRoot);
+				}
+			}
+		}
+
+
+		public void inferenceExpandAllLevels() {
+			inferenceExpandLevels(Integer.MAX_VALUE);		
+		}
+
 
 		/* Listener methods */
 		// Open tree contextual menu on right click
