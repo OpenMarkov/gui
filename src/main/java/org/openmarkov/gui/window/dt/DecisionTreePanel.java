@@ -43,7 +43,7 @@ import java.awt.event.MouseListener;
 		contextualMenuFactory = new ContextualMenuFactory(listener);
 
 		//DecisionTreeElement root = DecisionTreeBuilder.buildDecisionTree (probNet);
-		DecisionTreeElement root = buildDecisionTreeDAN(probNet);
+		DecisionTreeElement root = buildDecisionTree(probNet);
 		updateVisualInformation(root);
 
 	}
@@ -61,13 +61,13 @@ import java.awt.event.MouseListener;
 	}
 
 
-	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet) {
-		//TODO We are testing with an initial value of 1
-		return buildDecisionTreeDAN(probNet,1);
+	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) {
+		//TODO We are testing with an initial value of 1. The value should be something like 5 or 6
+		return buildDecisionTree(probNet,1);
 	}
 	
 	
-	public static DecisionTreeElement buildDecisionTreeDAN(ProbNet probNet,int depth) {
+	public static DecisionTreeElement buildDecisionTree(ProbNet probNet,int depth) {
 		DecisionTreeElement root = null;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
@@ -166,7 +166,7 @@ import java.awt.event.MouseListener;
 			}
 			else {
 				DecisionTreeNode rootDT = (DecisionTreeNode)root;
-				DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTreeDAN(rootDT.getNetwork(), n)).getChild();				
+				DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();				
 				if (parent.getNodeType()==NodeType.DECISION || 
 						(!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))){
 					rootDT.copy(auxRoot);
