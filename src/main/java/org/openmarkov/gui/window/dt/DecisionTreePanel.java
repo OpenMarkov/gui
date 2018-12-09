@@ -102,6 +102,38 @@ import java.awt.event.MouseListener;
 		jTree.setZoom(zoom);
 		repaint();
 	}
+	
+	public void inferenceExpandLevels(int n) {
+		DecisionTreeModel auxModel = (DecisionTreeModel)jTree.getModel();
+		DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
+		inferenceExpandLevels(root.getTreeBranch(),null,n);
+		updateVisualInformation(root.getTreeBranch());			
+	}
+	
+	private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) {
+		if (root instanceof DecisionTreeBranch || ((DecisionTreeNode)root).getNodeType()!= NodeType.UTILITY) {
+			if (root instanceof DecisionTreeNode) {
+				parent = (DecisionTreeNode) root;
+			}
+			for (DecisionTreeElement branch : root.getChildren()) {
+				inferenceExpandLevels(branch,parent, n);						
+			}
+		}
+		else {
+			DecisionTreeNode rootDT = (DecisionTreeNode)root;
+			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();				
+			if (parent.getNodeType()==NodeType.DECISION || 
+					(!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))){
+				rootDT.copy(auxRoot);
+			}
+		}
+	}
+
+
+	public void inferenceExpandAllLevels() {
+		inferenceExpandLevels(Integer.MAX_VALUE);		
+	}
+
 
 	private class TreePanelListener implements ActionListener, MouseListener {
 
@@ -148,37 +180,9 @@ import java.awt.event.MouseListener;
 		}
 
 
-		public void inferenceExpandLevels(int n) {
-			DecisionTreeModel auxModel = (DecisionTreeModel)jTree.getModel();
-			DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
-			inferenceExpandLevels(root.getTreeBranch(),null,n);
-			updateVisualInformation(root.getTreeBranch());			
-		}
+		
 
-		private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) {
-			if (root instanceof DecisionTreeBranch || ((DecisionTreeNode)root).getNodeType()!= NodeType.UTILITY) {
-				if (root instanceof DecisionTreeNode) {
-					parent = (DecisionTreeNode) root;
-				}
-				for (DecisionTreeElement branch : root.getChildren()) {
-					inferenceExpandLevels(branch,parent, n);						
-				}
-			}
-			else {
-				DecisionTreeNode rootDT = (DecisionTreeNode)root;
-				DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();				
-				if (parent.getNodeType()==NodeType.DECISION || 
-						(!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))){
-					rootDT.copy(auxRoot);
-				}
-			}
-		}
-
-
-		public void inferenceExpandAllLevels() {
-			inferenceExpandLevels(Integer.MAX_VALUE);		
-		}
-
+	
 
 		/* Listener methods */
 		// Open tree contextual menu on right click
