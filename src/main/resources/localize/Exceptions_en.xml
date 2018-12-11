@@ -4,6 +4,7 @@
         <title value="Error" />
         <message value="An unexpected error occurred. Please check the log for more information." />
     </GenericException>
+
     <ParserException>
         <title value="Hola mundo" />
         <message value="Probando uno dos tres" />
@@ -18,5 +19,56 @@
         <title value="Cannot write network to file" />
         <message value="Cannot write network to file: %s" />
     </CanNotWriteNetworkToFileException>
+
+    <NormalizeNullVectorException>
+        <title value="Normalization error in TablePotential."/>
+        <message value="All elements in the TablePotential: %s are equal to 0.0"/>
+    </NormalizeNullVectorException>
+
+    <IncompatibleEvidenceException>
+        <title value="Incompatible evidence."/>
+        <message value="Incompatible evidence."/>
+    </IncompatibleEvidenceException>
+
+    <NuSuchMethodException>
+        <title value="No such method."/>
+        <message value="No such method: %s."/>
+    </NuSuchMethodException>
+
+    <InstantiationException>
+        <title value="Can not instantiate object."/>
+        <message value="Can not instantiate object."/>
+    </InstantiationException>
+
+    <IllegalAccessException>
+        <title value="Can not access object."/>
+        <message value="Can not access object."/>
+    </IllegalAccessException>
+
+    <IllegalArgumentException>
+        <title value="Illegal argument."/>
+        <message value="Illegal argument."/>
+    </IllegalArgumentException>
+
+    <InvocationTargetException>
+        <title value="Can not invocate method."/>
+        <message value="Can not invocate method."/>
+    </InvocationTargetException>
+
+    <ConfigurationException>
+        <title value="Problems with the configuration file."/>
+        <message value="Can not read or write the configuration file: %s. "/>
+    </ConfigurationException>
+
+    <PreferencesException>
+        <title value="Problems with preferences file."/>
+        <message value="Problems with preferences file: %s."/>
+    </PreferencesException>
+
+    <NotRecognisedNetworkFileExtensionException>
+        <title value="File extension not recognized."/>
+        <message value="Unknown file extension: %s."/>
+    </NotRecognisedNetworkFileExtensionException>
+
 </properties>
 

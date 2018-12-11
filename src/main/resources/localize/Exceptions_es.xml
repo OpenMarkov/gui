@@ -18,5 +18,41 @@
         <title value="No se puede escribir la red al fichero" />
         <message value="No se puede escribir el fichero %s y por tanto no se pudo guardar la red" />
     </CanNotWriteNetworkToFileException>
+
+    <NormalizeNullVectorException>
+        <title value="Error de normalización en tabla."/>
+        <message value="Todos los elementos en la tabla con las variables: %s son 0.0"/>
+    </NormalizeNullVectorException>
+
+    <IncompatibleEvidenceException>
+        <title value="Evidencia incompatible."/>
+        <message value="Evidencia incompatible."/>
+    </IncompatibleEvidenceException>
+
+    <NuSuchMethodException>
+        <title value="No existe el método."/>
+        <message value="No existe el método: %s."/>
+    </NuSuchMethodException>
+
+    <InstantiationException>
+        <title value="No se puede instanciar el objeto."/>
+        <message value="No se puede instanciar el objeto."/>
+    </InstantiationException>
+
+    <IllegalAccessException>
+        <title value="No se puede acceder al objeto."/>
+        <message value="No se puede acceder al objeto."/>
+    </IllegalAccessException>
+
+    <IllegalArgumentException>
+        <title value="Argumento ilegal."/>
+        <message value="Argumento ilegal."/>
+    </IllegalArgumentException>
+
+    <InvocationTargetException>
+        <title value="No se puede invocar el método."/>
+        <message value="No se puede invocar el método."/>
+    </InvocationTargetException>
+
 </properties>
 

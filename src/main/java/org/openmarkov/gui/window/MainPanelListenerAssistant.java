@@ -53,6 +53,7 @@ import org.openmarkov.gui.dialog.io.SaveOptions;
 import org.openmarkov.gui.dialog.io.URLNetworkChooserDialog;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
+import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.plugin.ToolPluginManager;
@@ -593,16 +594,25 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			mainPanel.getMainMenu().rechargeLastOpenFiles();
 			result = true;
 		} catch (NotRecognisedNetworkFileExtensionException e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException extensionException = new LocalizedException(new OpenMarkovException(
+					"NotRecognisedNetworkFileExtensionException", stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label") + e.getToken()), null);
+			extensionException.showException();
+//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//					stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
+//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (OpenMarkovException e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException someBadThingHappenedException = new LocalizedException(new OpenMarkovException(
+					"GenericException", stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage()), null);
+			someBadThingHappenedException.showException();
+//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//					stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
+//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("Generic I/O error"),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException someBadThingHappenedException = new LocalizedException(new OpenMarkovException(
+					"GenericException", stringDatabase.getString("Generic I/O error")), null);
+			someBadThingHappenedException.showException();
+//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("Generic I/O error"),
+//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 		return result;
 	}
