@@ -682,8 +682,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			in.close();
 			out.close();
 		} catch (IOException e) {
-			mainPanel.getMessageWindow().getNormalMessageStream()
-					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"WriterException", stringDatabase.getString("NetworkBackupError.Text.Label")), null);
+			localizedException.showException();
+//			mainPanel.getMessageWindow().getNormalMessageStream()
+//					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
 		}
 		mainPanel.getMessageWindow().getNormalMessageStream()
 				.println(stringDatabase.getString("NetworkBackup.Text.Label"));
@@ -843,8 +846,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			// mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
 			mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
 		} catch (UnsupportedOperationException e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), e.getMessage(),
-					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"OpenMarkovException", stringDatabase.getString("ErrorWindow.Title.Label")), null);
+			localizedException.showException();
+//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), e.getMessage(),
+//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 		return networkPanel;
 	}
@@ -915,10 +921,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				}
 			} catch (Exception e) {
 				mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage(),
-						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"ParserException", stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage()), null);
+				localizedException.showException();
+//				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//						stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage(),
+//						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+//				e.printStackTrace();
 			}
 		}
 	}
@@ -978,10 +987,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				}
 			} catch (Exception e) {
 				mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage(),
-						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"ParserException", stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage()), null);
+				localizedException.showException();
+//				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//						stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage(),
+//						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+//				e.printStackTrace();
 			}
 		}
 	}
@@ -1090,8 +1102,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		for (Finding finding : evidence.getFindings()) {
 			String baseName = finding.getVariable().getBaseName();
 			int slice = finding.getVariable().getTimeSlice();
+			Variable variable = null;
 			try {
-				Variable variable = probNetCopy.getVariable(baseName, slice);
+				variable = probNetCopy.getVariable(baseName, slice);
 				if (variable.getVariableType().equals(VariableType.NUMERIC)) {
 					Finding findingCopy = new Finding(variable, finding.getNumericalValue());
 					findingCopy.setStateIndex(finding.getStateIndex());
@@ -1103,11 +1116,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
 					evidenceCase.addFinding(findingCopy);
 				}
 			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"NodeNotFoundException", "Variable " + baseName + " not found."), null);
+				localizedException.showException();
 			} catch (IncompatibleEvidenceException e) {
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+				localizedException.showException();
 			} catch (InvalidStateException e) {
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"InvalidStateException", variable.getName(), finding.getState()), null);
+				localizedException.showException();
 			}
 		}
 		double maxX = 0.0;
@@ -1120,11 +1139,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		try {
 			evidenceCase.extendEvidence(expandedNetwork);
 		} catch (IncompatibleEvidenceException e) {
-			e.printStackTrace();
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+			localizedException.showException();
 		} catch (InvalidStateException e) {
-			e.printStackTrace();
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"InvalidStateException"), null);
+			localizedException.showException();
 		} catch (WrongCriterionException e) {
-			e.printStackTrace();
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"WrongCriterionException", e.getCause()), null);
+			localizedException.showException();
 		}
 		//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
 
@@ -1199,21 +1224,33 @@ public class MainPanelListenerAssistant extends WindowAdapter
 									newEvidenceCase.addFinding(new Finding(variable,
 											variable.getStateIndex(variables.get(j).getStateName(cases[i][j]))));
 								} catch (InvalidStateException e) {
-									JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-											stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
-													.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label"),
-											JOptionPane.ERROR_MESSAGE);
+									LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+											"InvalidStateException", stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
+											.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label")), null);
+									localizedException.showException();
+
+//									JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//											stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
+//													.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label"),
+//											JOptionPane.ERROR_MESSAGE);
 								}
 							}
 						} catch (NodeNotFoundException e) {
-							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
-											+ variables.get(j).getName(),
-									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+							LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+									"NodeNotFoundException", stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") +
+									": " + variables.get(j).getName()), null);
+							localizedException.showException();
+//							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
+//											+ variables.get(j).getName(),
+//									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 						} catch (IncompatibleEvidenceException e) {
-							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-									stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
-									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+							LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+									"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+							localizedException.showException();
+//							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//									stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
+//									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
@@ -1226,10 +1263,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
 						getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
 						OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						stringDatabase.getString("LoadEvidence.Error.Text"),
-						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"ParserException", stringDatabase.getString("LoadEvidence.Error.Text")), null);
+				localizedException.showException();
+//				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//						stringDatabase.getString("LoadEvidence.Error.Text"),
+//						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+//				e.printStackTrace();
 			}
 		}
 	}
@@ -1241,9 +1281,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		try {
 			undoRedo(true);
 		} catch (CannotUndoException e) {
-			JOptionPane
-					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotUndo.Text.Label"),
-							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"UndoException", stringDatabase.getString("CannotUndo.Text.Label")), null);
+			localizedException.showException();
+//			JOptionPane
+//					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotUndo.Text.Label"),
+//							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1254,9 +1297,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		try {
 			undoRedo(false);
 		} catch (CannotRedoException e) {
-			JOptionPane
-					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotRedo.Text.Label"),
-							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"RedoException", stringDatabase.getString("CannotRedo.Text.Label")), null);
+			localizedException.showException();
+//			JOptionPane
+//					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotRedo.Text.Label"),
+//							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1504,9 +1550,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			mainPanel.getMdi().createNewFrame(decisionTree);
 			mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
 		} catch (OutOfMemoryError e) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label"),
-					stringDatabase.getString("ExceptionNotEnoughMemory.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+					"OutOfMemoryException", stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label")), null);
+			localizedException.showException();
+//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//					stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label"),
+//					stringDatabase.getString("ExceptionNotEnoughMemory.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1537,8 +1586,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				eval = new DecompositionIntoSymmetricDANsEvaluation(probNet,
 						networkPanel.getEditorPanel().getPreResolutionEvidence());
 			} catch (NotEvaluableNetworkException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+                LocalizedException localizedException = new LocalizedException(new OpenMarkovException("NotEvaluableNetworkException"), null);
+                localizedException.showException();
 			}
 			StrategyTree strategyTree = null;
 			strategyTree = eval.getUtility().strategyTrees[0];
@@ -1548,10 +1597,14 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
 						probNet, strategyTree);
 				optimalStrategyDialog.setVisible(true);
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						"An error occurred when trying to show the optimal strategy", "Error",
-						JOptionPane.ERROR_MESSAGE);
+			} catch (IncompatibleEvidenceException e) {
+                LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+                        "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
+                localizedException.showException();
+            } catch (UnexpectedInferenceException e) {
+                LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+                        "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
+                localizedException.showException();
 			}
 
 			// MID or ID

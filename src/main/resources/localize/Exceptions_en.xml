@@ -1,44 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <GenericException>
-        <title value="Error" />
-        <message value="An unexpected error occurred. Please check the log for more information." />
-    </GenericException>
-
-    <ParserException>
-        <title value="Hola mundo" />
-        <message value="Probando uno dos tres" />
-    </ParserException>
-
-    <NotEvaluableNetworkException>
-        <title value="Not evaluable network" />
-        <message value="The selected network is not evaluable" />
-    </NotEvaluableNetworkException>
-
     <CanNotWriteNetworkToFileException>
         <title value="Cannot write network to file" />
         <message value="Cannot write network to file: %s" />
     </CanNotWriteNetworkToFileException>
 
-    <NormalizeNullVectorException>
-        <title value="Normalization error in TablePotential."/>
-        <message value="All elements in the TablePotential: %s are equal to 0.0"/>
-    </NormalizeNullVectorException>
+    <ConfigurationException>
+        <title value="Problems with the configuration file."/>
+        <message value="Can not read or write the configuration file: %s. "/>
+    </ConfigurationException>
 
-    <IncompatibleEvidenceException>
-        <title value="Incompatible evidence."/>
-        <message value="Incompatible evidence."/>
-    </IncompatibleEvidenceException>
-
-    <NuSuchMethodException>
-        <title value="No such method."/>
-        <message value="No such method: %s."/>
-    </NuSuchMethodException>
-
-    <InstantiationException>
-        <title value="Can not instantiate object."/>
-        <message value="Can not instantiate object."/>
-    </InstantiationException>
+    <GenericException>
+        <title value="Error" />
+        <message value="An unexpected error occurred. Please check the log for more information." />
+    </GenericException>
 
     <IllegalAccessException>
         <title value="Can not access object."/>
@@ -50,25 +25,80 @@
         <message value="Illegal argument."/>
     </IllegalArgumentException>
 
+    <IncompatibleEvidenceException>
+        <title value="Incompatible evidence."/>
+        <message value="Incompatible evidence."/>
+    </IncompatibleEvidenceException>
+
+    <InstantiationException>
+        <title value="Can not instantiate object."/>
+        <message value="Can not instantiate object."/>
+    </InstantiationException>
+
+    <InvalidStateException>
+        <title value="Invalid state in evidence."/>
+        <message value="Variable %s can not have the value %s."/>
+    </InvalidStateException>
+
     <InvocationTargetException>
         <title value="Can not invocate method."/>
         <message value="Can not invocate method."/>
     </InvocationTargetException>
 
-    <ConfigurationException>
-        <title value="Problems with the configuration file."/>
-        <message value="Can not read or write the configuration file: %s. "/>
-    </ConfigurationException>
+    <NodeNotFoundException>
+        <title value="Node not found."/>
+        <message value="%s not found."/>
+    </NodeNotFoundException>
+
+    <NormalizeNullVectorException>
+        <title value="Normalization error in TablePotential."/>
+        <message value="All elements in the TablePotential: %s are equal to 0.0"/>
+    </NormalizeNullVectorException>
+
+    <NoSuchMethodException>
+        <title value="No such method."/>
+        <message value="No such method: %s."/>
+    </NoSuchMethodException>
+
+    <NotEvaluableNetworkException>
+        <title value="Not evaluable network" />
+        <message value="The selected network is not evaluable" />
+    </NotEvaluableNetworkException>
+
+    <NotRecognisedNetworkFileExtensionException>
+        <title value="File extension not recognized."/>
+        <message value="Unknown file extension: %s."/>
+    </NotRecognisedNetworkFileExtensionException>
+
+    <OutOfMemoryException>
+        <title value="Not enough memory."/>
+        <message value="Not enough memory."/>
+    </OutOfMemoryException>
+
+    <ParserException>
+        <title value="Error reading." />
+        <message value="Can not read network %s." />
+    </ParserException>
 
     <PreferencesException>
         <title value="Problems with preferences file."/>
         <message value="Problems with preferences file: %s."/>
     </PreferencesException>
 
-    <NotRecognisedNetworkFileExtensionException>
-        <title value="File extension not recognized."/>
-        <message value="Unknown file extension: %s."/>
-    </NotRecognisedNetworkFileExtensionException>
+    <RedoException>
+        <title value="Can not redo action."/>
+        <message value="Can not redo action."/>
+    </RedoException>
+
+    <UndoException>
+        <title value="Can not undo action."/>
+        <message value="Undoable action."/>
+    </UndoException>
+
+    <WrongCriterionException>
+        <title value="Wrong criterion."/>
+        <message value="Wrong criterion: %s."/>
+    </WrongCriterionException>
 
 </properties>
 
