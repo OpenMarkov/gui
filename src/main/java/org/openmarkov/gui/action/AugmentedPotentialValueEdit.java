@@ -29,6 +29,9 @@ import java.util.List;
  * @version 1.1 22/05/2017 Changed into AugmentedPotentialValueEdit: now is the edit for all the AugmentedPotentials
  */
 @SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends SimplePNEdit {
+
+	// This comment represents my new feature.
+
 	/**
 	 * The column of the table where is the potential
 	 */
