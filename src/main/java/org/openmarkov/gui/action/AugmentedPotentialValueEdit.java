@@ -30,7 +30,6 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class AugmentedPotentialValueEdit extends SimplePNEdit {
 
-	// This comment represents my new feature.
 
 	/**
 	 * The column of the table where is the potential
