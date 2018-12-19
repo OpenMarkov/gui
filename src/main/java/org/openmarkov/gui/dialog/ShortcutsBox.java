@@ -17,8 +17,7 @@ import java.awt.event.ActionListener;
 /**
  * Class that shows a window with OpenMarkov shortcuts
  *
- * @author IagoParis
- * @since 29/10/2018
+ * @author IagoParis - 29/10/2018
  * @version 1.0
  */
 public class ShortcutsBox extends JDialog implements ActionListener {

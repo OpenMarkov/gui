@@ -254,7 +254,8 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 
 	/**
 	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
-	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel)).
+	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel))
+	 * is not necessary.
 	 *
 	 * @return the correspondent tree pop-up menu
 	 */

@@ -2240,7 +2240,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	/*
 	 * This method works with StrategyManager of the dlimidEvaluation package. That package is not completed (and
 	 * will remain like that for a long time). As for now, the method is not called from anywhere.
-	 * Ask @IagoParis about details.
+	 * Ask {@author IagoParis} about details.
 	 */
 	public void evaluatePolicy() {
 
