@@ -287,6 +287,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	}
 
+	/** Auxiliar constructor that don't force any type of multicriteria analysis (unicriterion or cost-effectiveness) **/
+	public InferenceOptionsDialog(ProbNet probNet, Window owner) {
+		this(probNet, owner, null);
+	}
+
 	/**
 	 * Get multicriteria options panel
 	 *
