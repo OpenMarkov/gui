@@ -349,10 +349,10 @@
             <Label value = "Open network"/>
             <Mnemonic value = "o"/>
         </OpenNetwork>
-        <ExtraOption>
-            <Label value = "Extra option"/>
-            <Mnemonic value = "x"/>
-        </ExtraOption>
+        <ShowCEP>
+            <Label value = "Show CEP"/>
+            <Mnemonic value = "c"/>
+        </ShowCEP>
     </Tree>
     <Tools>
         <DBGenerator>

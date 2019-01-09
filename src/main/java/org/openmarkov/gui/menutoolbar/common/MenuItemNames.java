@@ -408,9 +408,9 @@ public class MenuItemNames {
 	public static final String TREE_OPEN_NETWORK_MENUITEM = TREE_MENU + ".OpenNetwork";
 
 	/**
-	 * String database token for the item 'Tree - Extra option'.
+	 * String database token for the item 'Tree - Show CEP'.
 	 */
-	public static final String TREE_EXTRA_OPTION_MENUITEM = TREE_MENU + ".ExtraOption";
+	public static final String TREE_SHOW_CEP_MENUITEM = TREE_MENU + ".ShowCEP";
 	/* End tree contextual menu */
 
 	/**

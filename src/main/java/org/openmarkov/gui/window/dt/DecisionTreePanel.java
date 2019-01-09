@@ -154,13 +154,11 @@ import java.awt.event.MouseListener;
 				case ActionCommands.TREE_OPEN_NETWORK:
 					System.out.println("Opening associated network");
 					openAssociatedNetwork();
-					
-					
-					// Expand all levels
+					// Open tree
 					break;
-				case ActionCommands.TREE_EXTRA_OPTION:
+				case ActionCommands.TREE_SHOW_CEP:
 					System.out.println("Doing something wonderful");
-					// Expand all levels
+					// Show CEP or utility
 					break;
 				default:
 

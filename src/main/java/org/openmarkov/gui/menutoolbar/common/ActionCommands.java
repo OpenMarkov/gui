@@ -295,7 +295,7 @@ public class ActionCommands {
 	/**
 	 * Action invoked when the user wants to do something not yet implemented. TODO Rewrite
 	 */
-	public static final String TREE_EXTRA_OPTION = "ExtraOption";
+	public static final String TREE_SHOW_CEP = "ShowCEP";
 	/* End tree contextual menu actions */
 	/**
 	 * Action invoked for testing
