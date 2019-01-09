@@ -1542,9 +1542,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	private void showDecisionTree(ProbNet probNet) {
 		try {
 			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+					Utilities.getOwner(mainPanel));
 			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
 				return;
+			} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
+					== MulticriteriaOptions.Type.UNICRITERION){
+				// Do something for show unicriterion decision tree
+			} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
+					== MulticriteriaOptions.Type.COST_EFFECTIVENESS){
+				// Do something for show cost-effectiveness decision tree
 			}
 			DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
 			mainPanel.getMdi().createNewFrame(decisionTree);
