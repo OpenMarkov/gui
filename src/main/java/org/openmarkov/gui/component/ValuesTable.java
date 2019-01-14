@@ -307,8 +307,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		setFirstColumnHidden(false); // key prefix column is hidden
 		setShowColumnHeader(false); // no column header here
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		setRowSelectionAllowed(false);
-		setColumnSelectionAllowed(false);
+		setRowSelectionAllowed(true);
+		setColumnSelectionAllowed(true);
 		setGridColor(Color.DARK_GRAY);
 		setDefaultRenderer(Double.class, new ValuesTableCellRenderer(0));
 		setDefaultRenderer(String.class, new ValuesTableCellRenderer(0));
