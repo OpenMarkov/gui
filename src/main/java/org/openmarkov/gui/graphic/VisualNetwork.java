@@ -993,6 +993,11 @@ public class VisualNetwork implements PNUndoableEditListener {
 		case DECISION:
 			visualNode = new VisualDecisionNode(node, this);
 			break;
+
+		case EVENT:
+				visualNode = new VisualEventNode(node, this);
+				break;
+
 		case UTILITY:
 			visualNode = new VisualUtilityNode(node, this);
 			break;

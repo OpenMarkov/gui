@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.constraint.NoEventNodes;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -70,7 +71,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 */
 	public static final String[] EDITING_ACTION_COMMANDS = { ActionCommands.OBJECT_SELECTION,
 			ActionCommands.CHANCE_CREATION, ActionCommands.DECISION_CREATION, ActionCommands.UTILITY_CREATION,
-			ActionCommands.LINK_CREATION, /*
+			ActionCommands.LINK_CREATION, /*Event node added*/ ActionCommands.EVENT_CREATION,
+			/*
                                                                             * //TODO
                                                                             * OOPN
                                                                             */
@@ -387,6 +389,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
+			if (currentProbNet.hasConstraint(NoEventNodes.class)){
+				setOptionEnabled(ActionCommands.EVENT_CREATION, false);
+			}
 			if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
