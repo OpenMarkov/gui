@@ -336,6 +336,7 @@
     <NetworkDefinitionPanel>
         <NetworkTypes>
             <Items>
+                <DESNet value="DESNet (DES Network)"/>
                 <InfluenceDiagram value="Influence diagram"/>
                 <POMDP value="POMDP"/>
                 <TuningNetwork value="Tuning network"/>

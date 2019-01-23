@@ -14,6 +14,7 @@ package org.openmarkov.gui.menutoolbar.common;
  * @author jmendoza
  * @version 1.1 jlgozalo Add help menus (previously to change to dynamic version),
  * ficheros usados recientemente y cambios de lenguaje
+ * @version 1.2 cyago Add event node constants
  */
 public class ActionCommands {
 
@@ -141,6 +142,11 @@ public class ActionCommands {
 	 * option.
 	 */
 	public static final String DECISION_CREATION = "Edit.Mode.Decision";
+	/**
+	 * Action invoked when the user wants to activate the chance node creation
+	 * option.
+	 */
+	public static final String EVENT_CREATION = "Edit.Mode.Event";
 	/**
 	 * Action invoked when the user wants to activate the utility node creation
 	 * option.

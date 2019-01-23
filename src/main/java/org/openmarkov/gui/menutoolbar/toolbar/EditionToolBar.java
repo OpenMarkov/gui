@@ -19,6 +19,7 @@ import java.awt.event.MouseMotionListener;
  * This class implements the edition toolbar of the application.
  *
  * @author jmendoza
+ * @verion 1.1 cyago. Event button added
  */
 public class EditionToolBar extends ToolBarBasic implements MouseMotionListener {
 	/**
@@ -62,6 +63,11 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 	 */
 	private JToggleButton decisionCreationButton = null;
 	/**
+	 * Button to activate chance creation.
+	 */
+	private JToggleButton eventCreationButton = null;
+
+	/**
 	 * Button to activate utility creation.
 	 */
 	private JToggleButton utilityCreationButton = null;
@@ -104,6 +110,7 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		add(getObjectSelectionButton());
 		add(getChanceCreationButton());
 		add(getDecisionCreationButton());
+		add(getEventCreationButton());
 		add(getUtilityCreationButton());
 		add(getLinkCreationButton());
 		add(Box.createHorizontalGlue());
@@ -279,6 +286,31 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 		return decisionCreationButton;
 	}
 
+
+	/**
+	 * This method initialises eventCreationButton.
+	 *
+	 * @return an event creation button.
+	 */
+	private JToggleButton getEventCreationButton() {
+		if (eventCreationButton == null) {
+			eventCreationButton = new JToggleButton();
+			eventCreationButton.setIcon(iconLoader.load(IconLoader.ICON_EVENT_ENABLED));
+			eventCreationButton.setActionCommand(ActionCommands.EVENT_CREATION);
+			eventCreationButton.setFocusable(false);
+			eventCreationButton
+					.setToolTipText(stringDatabase.getString(ActionCommands.EVENT_CREATION + STRING_TOOLTIP_SUFFIX));
+			eventCreationButton.addActionListener(listener);
+			eventCreationButton.addMouseMotionListener(this);
+			editionButtonGroup.add(eventCreationButton);
+		}
+		return eventCreationButton;
+	}
+
+
+
+
+
 	/**
 	 * This method initialises utilityCreationButton.
 	 *
@@ -343,6 +375,8 @@ public class EditionToolBar extends ToolBarBasic implements MouseMotionListener 
 			component = objectSelectionButton;
 		} else if (actionCommand.equals(ActionCommands.CHANCE_CREATION)) {
 			component = chanceCreationButton;
+		} else if (actionCommand.equals(ActionCommands.EVENT_CREATION)) {
+			component = eventCreationButton;
 		} else if (actionCommand.equals(ActionCommands.DECISION_CREATION)) {
 			component = decisionCreationButton;
 		} else if (actionCommand.equals(ActionCommands.UTILITY_CREATION)) {

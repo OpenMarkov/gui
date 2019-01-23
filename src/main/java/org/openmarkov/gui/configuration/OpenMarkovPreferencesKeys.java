@@ -47,6 +47,9 @@ public interface OpenMarkovPreferencesKeys {
 	String NODEDECISION_BACKGROUND_COLOR = "node decision background";
 	String NODEDECISION_FOREGROUND_COLOR = "node decision foreground";
 	String NODEDECISION_TEXT_COLOR = "node decision text";
+	String NODEEVENT_BACKGROUND_COLOR = "node event background";
+	String NODEEVENT_FOREGROUND_COLOR = "node event foreground";
+	String NODEEVENT_TEXT_COLOR = "node event text";
 	String NODEUTILITY_BACKGROUND_COLOR = "node utility background";
 	String NODEUTILITY_FOREGROUND_COLOR = "node utility foreground";
 	String NODEUTILITY_TEXT_COLOR = "node utility text";

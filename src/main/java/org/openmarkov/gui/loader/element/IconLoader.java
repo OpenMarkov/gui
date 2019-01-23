@@ -70,6 +70,10 @@ public class IconLoader {
 	 */
 	public static final String ICON_DECISION_ENABLED = "decision.gif";
 	/**
+	 * Name of the 'chance node creation' enabled icon.
+	 */
+	public static final String ICON_EVENT_ENABLED = "event.gif";
+	/**
 	 * Name of the 'utility node creation' enabled icon.
 	 */
 	public static final String ICON_UTILITY_ENABLED = "utility.gif";

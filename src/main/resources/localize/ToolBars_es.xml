@@ -12,6 +12,11 @@
                     <Label value="Seleción de objetos"/>
                 </ToolTip>
             </Selection>
+            <Event>
+                <ToolTip>
+                    <Label value="Añadir nodos de eventos"/>
+                </ToolTip>
+            </Event>
             <Decision>
                 <ToolTip>
                     <Label value="Añadir nodos de decisión"/>

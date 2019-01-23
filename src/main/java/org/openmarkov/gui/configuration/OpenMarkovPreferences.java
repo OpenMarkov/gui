@@ -365,6 +365,22 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				// Color( 230, 230, 230 ), //one dark
 				// green color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
+
+		setColor(OpenMarkovPreferences.NODEEVENT_BACKGROUND_COLOR, // def
+				Color.ORANGE,
+				OpenMarkovPreferences.OPENMARKOV_COLORS);
+		setColor(OpenMarkovPreferences.NODEEVENT_FOREGROUND_COLOR, // def
+				Color.BLACK, // black color
+				OpenMarkovPreferences.OPENMARKOV_COLORS);
+		setColor(OpenMarkovPreferences.NODEEVENT_TEXT_COLOR, // def
+				Color.BLACK, // black color
+				OpenMarkovPreferences.OPENMARKOV_COLORS);
+
+
+
+
+
+
 		setColor(OpenMarkovPreferences.TABLE_HEADER_TEXT_COLOR_1, // def
 				new Color(0, 0, 0), // black color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
