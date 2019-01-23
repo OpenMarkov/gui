@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+ * Unless required by applicable law or agreed to in writing,
+ * this code is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OF ANY KIND.
+ */
+
 package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -25,9 +32,9 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem openNetworkMenuItem = null;
     /**
-     * Object that represents the item 'Extra option'.
+     * Object that represents the item 'Show CEP'.
      */
-    private JMenuItem extraOptionMenuItem = null;
+    private JMenuItem showCEPMenuItem = null;
 
     public TreeContextualMenu(ActionListener newListener) {
         super(newListener);
@@ -42,7 +49,7 @@ public class TreeContextualMenu extends ContextualMenu {
         add(getExpandNextMenuItem());
         add(getExpandAllMenuItem());
         add(getOpenNetworkMenuItem());
-        add(getExtraOptionMenuItem());
+        add(getShowCEPMenuItem());
     }
 
     /**
@@ -85,16 +92,16 @@ public class TreeContextualMenu extends ContextualMenu {
     }
 
     /**
-     * This method initialises extraOptionMenuItem.
+     * This method initialises showCEPMenuItem.
      *
-     * @return a new 'Extra option' menu item.
+     * @return a new 'Show CEP' menu item.
      */
-    private JMenuItem getExtraOptionMenuItem() {
-        if (extraOptionMenuItem == null) {
-            extraOptionMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_EXTRA_OPTION_MENUITEM, ActionCommands.TREE_EXTRA_OPTION);
-            extraOptionMenuItem.addActionListener(listener);
+    private JMenuItem getShowCEPMenuItem() {
+        if (showCEPMenuItem == null) {
+            showCEPMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SHOW_CEP_MENUITEM, ActionCommands.TREE_SHOW_CEP);
+            showCEPMenuItem.addActionListener(listener);
         }
-        return extraOptionMenuItem;
+        return showCEPMenuItem;
     }
 
     /**
@@ -116,8 +123,8 @@ public class TreeContextualMenu extends ContextualMenu {
             case ActionCommands.TREE_OPEN_NETWORK:
                 component = openNetworkMenuItem;
                 break;
-            case ActionCommands.TREE_EXTRA_OPTION:
-                component = extraOptionMenuItem;
+            case ActionCommands.TREE_SHOW_CEP:
+                component = showCEPMenuItem;
                 break;
         }
         return component;

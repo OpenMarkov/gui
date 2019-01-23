@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -2240,7 +2240,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	/*
 	 * This method works with StrategyManager of the dlimidEvaluation package. That package is not completed (and
 	 * will remain like that for a long time). As for now, the method is not called from anywhere.
-	 * Ask @IagoParis about details.
+	 * Ask {@author IagoParis} about details.
 	 */
 	public void evaluatePolicy() {
 

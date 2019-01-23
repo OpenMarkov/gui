@@ -349,10 +349,10 @@
             <Label value = "Abrir red"/>
             <Mnemonic value = "a"/>
         </OpenNetwork>
-        <ExtraOption>
-            <Label value = "Opción extra"/>
-            <Mnemonic value = "x"/>
-        </ExtraOption>
+        <ShowCEP>
+            <Label value = "Mostrar partición CE"/>
+            <Mnemonic value = ""/>
+        </ShowCEP>
     </Tree>
     <Tools>
         <DBGenerator>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -254,7 +254,8 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 
 	/**
 	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
-	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel)).
+	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel))
+	 * is not necessary.
 	 *
 	 * @return the correspondent tree pop-up menu
 	 */

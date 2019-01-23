@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -74,7 +74,7 @@ import java.awt.event.MouseListener;
 			root = new DecisionTreeBranch(probNet);
 			DecisionTreeNode child = null;
 			try {
-				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth):new DANDecisionTreeEvaluation(probNet,depth)).getDecisionTree();
+				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true):new DANDecisionTreeEvaluation(probNet,depth,true)).getDecisionTree();
 			} catch (NotEvaluableNetworkException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -154,13 +154,11 @@ import java.awt.event.MouseListener;
 				case ActionCommands.TREE_OPEN_NETWORK:
 					System.out.println("Opening associated network");
 					openAssociatedNetwork();
-					
-					
-					// Expand all levels
+					// Open tree
 					break;
-				case ActionCommands.TREE_EXTRA_OPTION:
+				case ActionCommands.TREE_SHOW_CEP:
 					System.out.println("Doing something wonderful");
-					// Expand all levels
+					// Show CEP or utility
 					break;
 				default:
 

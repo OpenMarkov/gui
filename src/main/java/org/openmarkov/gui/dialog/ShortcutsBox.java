@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -17,8 +17,7 @@ import java.awt.event.ActionListener;
 /**
  * Class that shows a window with OpenMarkov shortcuts
  *
- * @author IagoParis
- * @since 29/10/2018
+ * @author IagoParis - 29/10/2018
  * @version 1.0
  */
 public class ShortcutsBox extends JDialog implements ActionListener {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2018. Licensed under the GPLv3 licence
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -1046,7 +1046,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		}
 	}
 
-	// when clicking on a brach
+	// when clicking on a branch
 	private void addSubtree(ActionEvent ae, TreeADDBranch branch, TreePath path) {
 		List<Variable> parentVariables = branch.getParentVariables();
 		JMenuItem menuRootVariable = (JMenuItem) ae.getSource();
