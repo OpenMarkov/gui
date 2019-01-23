@@ -74,7 +74,7 @@ import java.awt.event.MouseListener;
 			root = new DecisionTreeBranch(probNet);
 			DecisionTreeNode child = null;
 			try {
-				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth):new DANDecisionTreeEvaluation(probNet,depth)).getDecisionTree();
+				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true):new DANDecisionTreeEvaluation(probNet,depth,true)).getDecisionTree();
 			} catch (NotEvaluableNetworkException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
