@@ -56,6 +56,7 @@ import java.util.List;
  * (edition/inference), - Expansion and contraction of nodes, -
  * Introduction and elimination of evidence - Management of multiple
  * evidence cases.
+ * @version 1.3 - cyago - 23/01/2019 - Added DES Network
  */
 public class MainPanelMenuAssistant extends MenuAssistant implements OOSelectionListener, PNUndoableEditListener {
 	/**
