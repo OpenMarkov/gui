@@ -10,7 +10,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
-@EditionState(name = "Edit.Mode.Event", icon = "event.gif", cursor = "chance.gif") public class EventNodeEditionMode
+@EditionState(name = "Edit.Mode.Event", icon = "event.gif", cursor = "event.gif") public class EventNodeEditionMode
 		extends NodeEditionMode {
 
 	public EventNodeEditionMode(EditorPanel editorPanel, ProbNet probNet) {
