@@ -179,7 +179,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	 * initialize the layout for this panel
 	 */
 	private void initialize() {
-		if (node.getNodeType() == NodeType.UTILITY) {
+		if ( (node.getNodeType() == NodeType.UTILITY)) {
 			getJComboBoxNodeVariableType().setSelectedItem(stringDatabase
 					.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
 			getDiscretizedStatesPanel().setEnabled(false);
@@ -823,17 +823,40 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		if (jComboBoxNodeVariableType == null) {
 			jComboBoxNodeVariableType = new JComboBox<>();
 			jComboBoxNodeVariableType.setName("jComboBoxNodeVariableType");
-			if (node.getNodeType() == NodeType.UTILITY) {
+
+			switch (node.getNodeType()){
+
+				case UTILITY:
 				jComboBoxNodeVariableType.addItem(stringDatabase
 						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
-			} else {
+
+					break;
+				case EVENT:
+					jComboBoxNodeVariableType.addItem(stringDatabase
+							.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discrete"));
+					jComboBoxNodeVariableType.addItem(stringDatabase
+							.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discretized"));
+					break;
+				default:
 				jComboBoxNodeVariableType.addItem(stringDatabase
 						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discrete"));
 				jComboBoxNodeVariableType.addItem(stringDatabase
 						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discretized"));
 				jComboBoxNodeVariableType.addItem(stringDatabase
 						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
+
 			}
+//			if ((node.getNodeType() == NodeType.UTILITY) ) {
+//				jComboBoxNodeVariableType.addItem(stringDatabase
+//						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
+//			} else {
+//				jComboBoxNodeVariableType.addItem(stringDatabase
+//						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discrete"));
+//				jComboBoxNodeVariableType.addItem(stringDatabase
+//						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discretized"));
+//				jComboBoxNodeVariableType.addItem(stringDatabase
+//						.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Continuous"));
+//			}
 			// jComboBoxNodeVariableType.setSize(181, 80);
 			// jComboBoxNodeVariableType.addItemListener(listener);
 			jComboBoxNodeVariableType.addItemListener(this);
