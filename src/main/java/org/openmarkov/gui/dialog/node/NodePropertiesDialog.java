@@ -114,7 +114,7 @@ public abstract class NodePropertiesDialog extends OkCancelApplyUndoRedoHorizont
 		setTitle(stringDatabase.getString("NodePropertiesDialog.Title.Label") + ": " + node.getName());
 		nodeDefinitionPanel.setNodeProperties(node);
 		// *******
-		if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION) {
+		if (node.getNodeType() == NodeType.CHANCE || node.getNodeType() == NodeType.DECISION  || node.getNodeType() == NodeType.EVENT ) {
 			nodeDomainValuesTablePanel.setFieldsFromProperties(node);
 			if (node.getVariable().getVariableType() == VariableType.FINITE_STATES) {
 				// tabbedPane.setEnabledAt(tabbedPane.indexOfTab(dialogStringResource
