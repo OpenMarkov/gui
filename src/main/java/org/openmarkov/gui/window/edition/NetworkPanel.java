@@ -376,6 +376,14 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	/**
+	 * This method edits the time to event of an event node.
+	 */
+	public void	editNodeTimeToEvent(){ editorPanel.editNodeTimeToEvent();	}
+
+
+
+
+	/**
 	 * This method shows the expected utility of a decision node.
 	 */
 	public void showExpectedUtilityOfNode() {

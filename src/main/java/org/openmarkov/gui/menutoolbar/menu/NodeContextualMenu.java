@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
+import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.gui.constraint.AbsorbNodeValidator;
@@ -29,6 +30,7 @@ import java.awt.event.ActionListener;
  * @author jlgozalo
  * @version 1.2 asaez - Add options for expanding and contracting nodes, setting
  * and deleting findings and policies.
+ * @version 1.3 cyago - 03/02/2019- Added the "Add Time To Event" menu item for DESNets.
  */
 public class NodeContextualMenu extends ContextualMenu {
 	/**
@@ -60,6 +62,11 @@ public class NodeContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'ImposePolicy'.
 	 */
 	private JMenuItem imposePolicyMenuItem = null;
+	/**
+	 * Object that represents the item 'AddTimeToEvent'.
+	 */
+	private JMenuItem editTimeToEventMenuItem = null;
+
 	/**
 	 * Object that represents the item 'EditPolicy'.
 	 */
@@ -135,7 +142,21 @@ public class NodeContextualMenu extends ContextualMenu {
 					setDecisionNodeContextualMenuInNotCompiledInferenceMode();
 				}
 			}
-		} else {
+		} else if (selectedNode.getNode().getNodeType().equals(NodeType.EVENT)) {
+			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
+				setEventNodeContextualMenuInEditionMode();
+			} else { //Not Implemented  Raise an exception??
+
+				try {
+					throw new UnexpectedInferenceException("Inference with event nodes isn't implemented yet");
+				} catch (UnexpectedInferenceException e) {
+					e.printStackTrace();
+				}
+
+			}
+		} else
+
+			{
 			setDefaultNodeContextualMenu();
 		}
 	}
@@ -234,6 +255,35 @@ public class NodeContextualMenu extends ContextualMenu {
 		// TODO OOPN start
 		pack();
 	}
+
+
+	/**
+	 * This method sets the contextual menu for Event nodes in Edition mode
+	 */
+	public void setEventNodeContextualMenuInEditionMode() {
+		removeAll();
+		add(getCutMenuItem());
+		add(getCopyMenuItem());
+		add(getRemoveMenuItem());
+		addSeparator();
+		add(getAbsorbNodeMenuItem()); //??
+		addSeparator();
+		add(getTemporalEvolutionMenuItem()); //Is it useful when repeating event should be modeled separately??
+		add(getNextSliceNodeMenuItem());
+		addSeparator();
+		add(getPropertiesMenuItem()); //??
+		addSeparator();
+		add(getExpandMenuItem());
+		add(getContractMenuItem());
+		addSeparator();
+		add(getEditTimeToEventMenuItem());
+		addSeparator();
+		add(getAddFindingMenuItem()); //Keep it ??
+		add(getRemoveFindingMenuItem()); //Keep it??
+		pack();
+	}
+
+
 
 	/**
 	 * This method sets the contextual menu for Decision nodes in Inference mode
@@ -402,6 +452,25 @@ public class NodeContextualMenu extends ContextualMenu {
 		}
 		return relationMenuItem;
 	}
+
+
+	/**
+	 * This methods return the Time To Event menu item
+	 *
+	 * @return a new addTimeToEvent menu item.
+	 */
+	private JMenuItem getEditTimeToEventMenuItem() {
+		if (editTimeToEventMenuItem == null) {
+			editTimeToEventMenuItem = new LocalizedMenuItem(MenuItemNames.EVENT_EDIT_TIME_TO_EVENT_MENUITEM,
+					ActionCommands.EVENT_EDIT_TIME_TO_EVENT);
+			editTimeToEventMenuItem.addActionListener(listener);
+		}
+		return editTimeToEventMenuItem;
+	}
+
+
+
+
 
 	/**
 	 * This method initialises imposePolicyMenuItem.
@@ -583,6 +652,9 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.DECISION_REMOVE_POLICY:
                 component = removePolicyMenuItem;
                 break;
+			case ActionCommands.EVENT_EDIT_TIME_TO_EVENT:
+				component = editTimeToEventMenuItem;
+				break;
             case ActionCommands.DECISION_SHOW_EXPECTED_UTILITY:
                 component = showExpectedUtilityMenuItem;
                 break;

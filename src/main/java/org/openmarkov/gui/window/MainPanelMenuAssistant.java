@@ -613,6 +613,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		boolean canImposePolicy = false;
 		boolean canEditPolicy = false;
 		boolean canRemovePolicy = false;
+		boolean canAddTimeToEvent = false;
 		boolean canShowExpectedUtility = false;
 		boolean canShowOptimalPolicy = false;
 		boolean canTemporalEvolution = false;
@@ -686,8 +687,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 					String label = null;
 					switch (visualNode.getNode().getNodeType()) {
 					case CHANCE:
-					//TODO Change when EVENT is defined
-					case EVENT:
 						canNodeTable = true;
 						if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 							label = stringDatabase.getString("Edit.NodePotential.Label");
@@ -724,7 +723,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 							}
 						}
 						break;
+					case EVENT:
+						canAddTimeToEvent = true;
+						if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+								label = stringDatabase.getString("Edit.NodePotential.Label");
+						} else {
+								label = stringDatabase.getString("Edit.ViewNodePotential.Label");
+						}
+							break;
 					}
+
 					setText(ActionCommands.EDIT_POTENTIAL, label);
 					canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.EDITION_WORKING_MODE)
 							|| (
@@ -767,6 +775,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_IMPOSE_POLICY, canImposePolicy);
 		setOptionEnabled(ActionCommands.DECISION_EDIT_POLICY, canEditPolicy);
 		setOptionEnabled(ActionCommands.DECISION_REMOVE_POLICY, canRemovePolicy);
+		setOptionEnabled(ActionCommands.EVENT_EDIT_TIME_TO_EVENT, canAddTimeToEvent);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, canShowExpectedUtility);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, canShowOptimalPolicy);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, canTemporalEvolution);
@@ -801,6 +810,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		boolean canImposePolicy = false;
 		boolean canEditPolicy = false;
 		boolean canRemovePolicy = false;
+		boolean canAddTimeToEvent = false;
 		boolean canShowExpectedUtility = false;
 		boolean canShowOptimalPolicy = false;
 		boolean canTemporalEvolution = false;
@@ -914,6 +924,17 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 							}
 						}
 						break;
+						case EVENT:
+							if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
+								label = stringDatabase.getString("Edit.NodePotential.Label");
+								if (((VisualDecisionNode) visualNode).isHasPolicy()) {
+									canEditPolicy = true;
+									canRemovePolicy = true;
+								} else {
+									canImposePolicy = true;
+								}
+							}
+							break;
 					}
 					setText(ActionCommands.EDIT_POTENTIAL, label);
 					canAddFinding = !visualNode.hasAnyFinding() || (workingMode == NetworkPanel.EDITION_WORKING_MODE)

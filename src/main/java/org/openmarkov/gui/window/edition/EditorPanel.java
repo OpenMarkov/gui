@@ -997,6 +997,38 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		repaint();
 	}
 
+
+
+	/**
+	 * This method edits the time to event of an event node.
+	 */
+	public void editNodeTimeToEvent() {
+		VisualNode visualNode = null;
+		List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
+		if (selectedNode.size() == 1) {
+			visualNode = selectedNode.get(0);
+			if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
+				Node node = visualNode.getNode();
+				// TODO manage other kind of policy types from the interface
+				// node.setPolicyType(PolicyType.OPTIMAL);
+				// Potential imposedPolicy = node.getPotentials ().get (0);
+				PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(Utilities.getOwner(this), node, false);
+				if (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+					// change it color
+					((VisualDecisionNode) visualNode).setHasPolicy(true);
+					networkChanged = true;
+				}
+			}
+		}
+		setSelectedAllNodes(false);
+		repaint();
+	}
+
+
+
+
+
+
 	/**
 	 * This method removes an imposed policy from a decision node.
 	 */

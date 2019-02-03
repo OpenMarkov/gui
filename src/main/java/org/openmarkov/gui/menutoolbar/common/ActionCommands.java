@@ -14,7 +14,7 @@ package org.openmarkov.gui.menutoolbar.common;
  * @author jmendoza
  * @version 1.1 jlgozalo Add help menus (previously to change to dynamic version),
  * ficheros usados recientemente y cambios de lenguaje
- * @version 1.2 cyago Add event node constants
+ * @version 1.2 cyago  - 03/02/2019 - Event node constants added
  */
 public class ActionCommands {
 
@@ -256,6 +256,12 @@ public class ActionCommands {
 	 * Action invoked when the user wants to show the table of a node.
 	 */
 	public static final String EDIT_POTENTIAL = "NodePotential";
+
+	/**
+	 * Action invoked when the user wants to impose a policy in a decision node.
+	 */
+	public static final String 	EVENT_EDIT_TIME_TO_EVENT = "EditTimeToEvent";
+
 	/**
 	 * Action invoked when the user wants to impose a policy in a decision node.
 	 */

@@ -257,6 +257,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().editNodePolicy();
 		} else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
 			getCurrentNetworkPanel().removePolicyFromNode();
+		} else if (actionCommand.equals(ActionCommands.EVENT_EDIT_TIME_TO_EVENT)) {
+			getCurrentNetworkPanel().editNodeTimeToEvent();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
 			getCurrentNetworkPanel().showExpectedUtilityOfNode();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
