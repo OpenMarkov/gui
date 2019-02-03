@@ -266,17 +266,11 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getCopyMenuItem());
 		add(getRemoveMenuItem());
 		addSeparator();
-		add(getAbsorbNodeMenuItem()); //??
-		addSeparator();
 		add(getTemporalEvolutionMenuItem()); //Is it useful when repeating event should be modeled separately??
 		add(getNextSliceNodeMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem()); //??
-		addSeparator();
-		add(getExpandMenuItem());
-		add(getContractMenuItem());
-		addSeparator();
-		add(getEditTimeToEventMenuItem());
+        add(getEditTimeToEventMenuItem());
 		addSeparator();
 		add(getAddFindingMenuItem()); //Keep it ??
 		add(getRemoveFindingMenuItem()); //Keep it??
