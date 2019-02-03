@@ -462,6 +462,16 @@
             <Label value="Impose policy"/>
         </ImposePolicy>
     </Decision>
+
+    <Event>
+        <EditTimeToEvent>
+            <Label value="Edit time to event"/>
+        </EditTimeToEvent>
+    </Event>
+
+
+
+
     <Options>
         <Mnemonic value="o"/>
         <Label value="Options"/>
