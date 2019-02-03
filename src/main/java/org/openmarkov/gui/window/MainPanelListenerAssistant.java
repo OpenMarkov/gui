@@ -468,7 +468,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
-	//CMI
+
 	//    /**
 	//     * Saves a network in a file and makes the rest of actions in the
 	//     * environment (menus, messages, etc.).
@@ -547,7 +547,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
-	//CMF
+
 
 	/**
 	 * Saves a network in a file considering the file format chosen. Also it makes the rest of actions in the

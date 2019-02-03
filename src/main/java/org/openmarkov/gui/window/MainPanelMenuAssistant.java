@@ -686,6 +686,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 					String label = null;
 					switch (visualNode.getNode().getNodeType()) {
 					case CHANCE:
+					//TODO Change when EVENT is defined
+					case EVENT:
 						canNodeTable = true;
 						if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 							label = stringDatabase.getString("Edit.NodePotential.Label");
