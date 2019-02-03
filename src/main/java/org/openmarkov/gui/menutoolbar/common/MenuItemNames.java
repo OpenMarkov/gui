@@ -518,6 +518,12 @@ public class MenuItemNames {
 	public static final String DECISION_REMOVE_POLICY_MENUITEM = "Decision.RemovePolicy";
 
 	/**
+	 * String database token for the item 'Impose Policy' in decision node's contextual menu
+	 */
+	public static final String EVENT_EDIT_TIME_TO_EVENT_MENUITEM = "Event.EditTimeToEvent";
+
+
+	/**
 	 * String database token for the item 'Show Expected Utility' in decision node's contextual menu
 	 */
 	public static final String SHOW_EXPECTED_UTILITY_MENUITEM = "Decision.ShowExpectedUtility";
