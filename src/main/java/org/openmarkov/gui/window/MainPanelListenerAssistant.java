@@ -96,7 +96,8 @@ import java.util.List;
  * MainMenu to carry out this task.
  *
  * @author jmendoza
- * @version 1.6 - carmenyago - Modify saveNetworkActions method to support several ProbModelXML formats
+ * @version 1.6 - cyago - Modify saveNetworkActions method to support several ProbModelXML formats
+ * @version 1.7 - cyago - 02/02/2019 - Changed actionPerformed to address event nodes
  */
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
