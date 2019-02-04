@@ -7,11 +7,14 @@
 
 package org.openmarkov.gui.action;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
@@ -21,6 +24,7 @@ import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
+import org.openmarkov.gui.localize.LocalizedException;
 
 import java.util.List;
 
@@ -84,7 +88,12 @@ import java.util.List;
 	 */
 	private AugmentedTable newAugmentedTable;
 	private String[] newAugmentedValues;
-
+	
+	/**
+	 * Logger
+	 */
+	private Logger logger;
+	
 	// Constructor
 
 	/**
@@ -103,6 +112,7 @@ import java.util.List;
 	public AugmentedPotentialValueEdit(Node node, String newValue, int row, int col, List<Integer> priorityList,
 			Object[][] notEditablePositions) {
 		super(node.getProbNet());
+		logger = LogManager.getLogger(AugmentedPotentialValueEdit.class.getName());
 		boolean isAugmentedTablePotential = false;
 		try {
 			oldPotential = node.getPotentials().get(0);
@@ -125,6 +135,11 @@ import java.util.List;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.warn(e.getMessage());
+			LocalizedException exception = new LocalizedException(e);
+			exception.showException();
+
+			
 /* TODO
 			JOptionPane.showMessageDialog(this,
 					stringDatabase.getValuesInAString(e.getMessage()),
@@ -167,6 +182,9 @@ import java.util.List;
 			oldUnivariateDistrPotential = (UnivariateDistrPotential) oldPotential;
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.warn(e.getMessage());
+			LocalizedException exception = new LocalizedException(e);
+			exception.showException();
 			return;
 /* TODO
             JOptionPane.showMessageDialog(this,
@@ -199,6 +217,9 @@ import java.util.List;
 			probNet.doEdit(changePotentialEdit);
 		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 			e.printStackTrace();
+			logger.warn(e.getMessage());
+			LocalizedException exception = new LocalizedException(e);
+			exception.showException();
 			throw new DoEditException(e);
 		}
 	}

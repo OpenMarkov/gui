@@ -7,10 +7,12 @@
 
 package org.openmarkov.gui.action;
 
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.graphic.VisualNode;
+import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
@@ -42,6 +44,11 @@ public class MoveNodeEdit extends SimplePNEdit {
 	 * The node's name to move
 	 */
 	private List<String> namesNode = new ArrayList<String>();
+	
+	/**
+	 * Logger
+	 */
+	protected Logger logger;
 
 	/**
 	 * Creates a new <code>MoveNodeEdit</code> with the nodes, and new X, Y
@@ -68,6 +75,10 @@ public class MoveNodeEdit extends SimplePNEdit {
 				node.setCoordinateX(newPositions.get(i).getX());
 				node.setCoordinateY(newPositions.get(i).getY());
 			} catch (NodeNotFoundException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
+				LocalizedException exception = new LocalizedException(e);
+				exception.showException();				
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
@@ -86,6 +97,9 @@ public class MoveNodeEdit extends SimplePNEdit {
 				node.setCoordinateY(lastPositions.get(i).getY());
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
+				logger.warn(e.getMessage());
+				LocalizedException exception = new LocalizedException(e);
+				exception.showException();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
