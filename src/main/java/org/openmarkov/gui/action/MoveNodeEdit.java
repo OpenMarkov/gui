@@ -98,7 +98,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 			} catch (NodeNotFoundException e) {
 				e.printStackTrace();
 				logger.warn(e.getMessage());
-				LocalizedException exception = new LocalizedException(e);
+				LocalizedException exception = new LocalizedException(e); 
 				exception.showException();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

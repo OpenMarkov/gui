@@ -37,7 +37,7 @@ import java.util.List;
 	 * The column of the table where is the potential
 	 */
 	private int col;
-	/**
+	/** 
 	 * The row of the table where is the potential
 	 */
 	private int row;
