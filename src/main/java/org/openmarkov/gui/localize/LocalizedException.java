@@ -55,6 +55,10 @@ public class LocalizedException {
 		}
 	}
 
+	public LocalizedException (Exception openMarkovException) {
+		this(openMarkovException, null);
+	}
+
 	public void showException(){
 		JOptionPane.showMessageDialog(
 				ownerWindow,
