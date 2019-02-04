@@ -33,10 +33,9 @@ public class TemporalEvolutionReport {
 		XSSFSheet sheetTable = hwb.createSheet("Temporal Evolution Report");
 		// first row, column names
 		Row rowIndexes = sheetTable.createRow(0);
-		rowIndexes.createCell(0).setCellValue("");
 
-		for (int i = 1; i < jtable.getColumnCount(); i++) {
-			rowIndexes.createCell(i + 1).setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
+		for (int i = 0; i < jtable.getColumnCount(); i++) {
+			rowIndexes.createCell(i).setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
 		}
 		// fill data
 		for (int i = 0; i < jtable.getRowCount(); i++) {

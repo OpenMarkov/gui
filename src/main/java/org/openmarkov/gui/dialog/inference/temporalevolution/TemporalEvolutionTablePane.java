@@ -92,7 +92,7 @@ import java.util.Set;
 					getString("TemporalEvolutionResultDialog.States.Label"));
 			for (int i = 0; i < numRows; i++) {
 				info[i][lastColumnIndex] = variableOfInterest.getStateName(i % variableOfInterest.getNumStates());
-				model.setValueAt(variableOfInterest.getStateName(i % variableOfInterest.getNumStates()), i, 1);
+				model.setValueAt(variableOfInterest.getStateName(i % variableOfInterest.getNumStates()), i, lastColumnIndex);
 			}
 			lastColumnIndex++;
 		}
