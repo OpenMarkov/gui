@@ -41,6 +41,7 @@ import java.util.List;
  * Management of working modes (edition/inference), - Expansion and
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
+ * @version 1.4. - cyago - 03/02/2019 - added the method to open TTE dialog
  */
 public class NetworkPanel extends FrameContentPanel implements PNUndoableEditListener {
 	/**
