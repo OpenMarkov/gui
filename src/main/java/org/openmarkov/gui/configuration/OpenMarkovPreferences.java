@@ -22,6 +22,7 @@ import java.util.prefs.Preferences;
  * @author jlgozalo
  * @version 1.1 30 Oct 2009 - adding kernel and languages subsets. - adding
  * getInt/setInt methods - adding interface implementation (constants)
+ * @version 1.2 - cyago - 07/02/1019 - added event nodes
  */
 public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	/**
@@ -367,7 +368,10 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 
 		setColor(OpenMarkovPreferences.NODEEVENT_BACKGROUND_COLOR, // def
-				Color.ORANGE,
+				Color.ORANGE, //245-208-051 Saffron
+				OpenMarkovPreferences.OPENMARKOV_COLORS);
+		setColor(OpenMarkovPreferences.NODEEVENT_TERMINAL_BACKGROUND_COLOR, // def
+				new Color(230, 126, 0),
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEEVENT_FOREGROUND_COLOR, // def
 				Color.BLACK, // black color
