@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -26,12 +27,27 @@ public class VisualEventNode extends VisualNode {
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
 
+	//TODO Change to core
+    public static final String PURPOSE_TERMINAL ="eventTerminal";
+
 	/**
-	 * Internal color of the visual node when there is no finding established.
+	 * Internal color of the visual node when it is no terminal.
 	 */
 	private static final Color BACKGROUND_COLOR =
 			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
-					Color.ORANGE);
+					Color.ORANGE); //245-208-051 Saffron TODO change
+
+	/**
+	 * Internal color of the visual event node when it is terminal.
+	 */
+	private static final Color TERMINAL_BACKGROUND_COLOR =
+			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_TERMINAL_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+					new Color (230, 126, 0));
+
+//	private static final Color TERMINAL_BACKGROUND_COLOR =	new Color (230, 126, 0);
+
+
+
 
 	/**
 	 * Internal color of the visual node when there is a preResolution
@@ -280,22 +296,31 @@ public class VisualEventNode extends VisualNode {
 	 * @param g graphics object where paint the node.
 	 */
 	@Override public void paint(Graphics2D g) {
-
+//TODO Inference mode? Take a look to Chance Nodes
 		String text = getNodeString();
 		double textHeight = getHeight(text, g);
 		double textWidth = getWidth(text, g);
 		Shape shape = getShape(g);
 		double[] dimensions = getNodeDimensions(g);
 
-		if (preResolutionFinding) {
-			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
-		} else if (postResolutionFinding && (
-				visualNetwork.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE
-		)) {
-			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
+//		if (preResolutionFinding) {
+//			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
+//		} else if (postResolutionFinding && (
+//				visualNetwork.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE
+//		)) {
+//			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
+//		} else {//
+//			g.setPaint(BACKGROUND_COLOR);
+//		}
+
+
+// If it is Non Terminal Node
+		if (node.getPurpose().equals(PURPOSE_TERMINAL)){
+			g.setPaint(TERMINAL_BACKGROUND_COLOR);
 		} else {
 			g.setPaint(BACKGROUND_COLOR);
 		}
+
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
 
