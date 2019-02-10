@@ -60,12 +60,11 @@ import java.util.List;
  * states of the parents of the variable.</li> <li>The header of columns is
  * hidden.</li>
  * <p>
- * carmenyago: Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
- * 3. when the potential doesn't exit an exception is raised
  *
  * @author jlgozalo
  * @author myebra
- * @author carmenyago 19/06/2016
+ * @author cyago 19/06/2016 -  Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
+ *  3. when the potential doesn't exit an exception is raised
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Table") public class TablePotentialPanel
 		extends ProbabilityTablePanel {

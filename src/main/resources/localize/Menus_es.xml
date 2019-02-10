@@ -463,9 +463,9 @@
         </ImposePolicy>
     </Decision>
     <Event>
-        <AddTimeToEvent>
+        <EditTimeToEvent>
             <Label value="Editar time to event"/>
-        </AddTimeToEvent>
+        </EditTimeToEvent>
     </Event>
     <Options>
         <Mnemonic value="o"/>

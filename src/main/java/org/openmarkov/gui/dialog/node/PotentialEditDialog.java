@@ -60,7 +60,7 @@ import java.util.List;
  * @author mpalacios
  * @author jmendoza
  * @author ibermejo
- * @author carmenyago - adapted the class to the new utility treatment; minor changes
+ * @author cyago - adapted the class to the new utility treatment; minor changes
  * @version 1.2 jlgozalo - set class to use independent panels;
  */
 public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
