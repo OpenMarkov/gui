@@ -148,6 +148,11 @@
         </qaly>
     </defaultCriteria>
     <purpose>
+        <eventTerminal>
+            <Text value="Terminal event"/>
+        </eventTerminal>
+
+
         <effectiveness>
             <Text value="Effectiveness"/>
         </effectiveness>

@@ -150,6 +150,11 @@
     </defaultCriteria>
 
     <purpose>
+
+        <eventTerminal>
+            <Text value="Evento terminal"/>
+        </eventTerminal>
+
         <effectiveness>
             <Text value="Efectividad"/>
         </effectiveness>

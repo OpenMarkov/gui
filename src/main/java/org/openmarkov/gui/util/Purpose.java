@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.util;
 
+import org.openmarkov.gui.graphic.VisualEventNode;
 import org.openmarkov.gui.localize.StringDatabase;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.MissingResourceException;
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix initial values for fields
+ * @version 1.2 - cyago - 08/02/2019 - added purpuse "terminal"
  */
 public class Purpose {
 	/**
@@ -32,6 +34,7 @@ public class Purpose {
 		if (list == null) {
 			list = new ArrayList<String>();
 			list.add("");
+			list.add(VisualEventNode.PURPOSE_TERMINAL);
 			list.add("cost");
 			list.add("effectiveness");
 			list.add("treatment");
