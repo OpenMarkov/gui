@@ -404,6 +404,44 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 				getJLabelUnit().setVisible(true);
 				break;
 			}
+				case EVENT: {
+					getJComboBoxNodeVariableType().setSelectedItem(stringDatabase
+							.getString("NodeDomainValuesTablePanel." + "jComboBoxNodeVariableType.Items.Event"));
+					getJComboBoxNodeVariableType().setEnabled(false);
+					getJLabelPrecision().setEnabled(false);
+					getJComboBoxPrecision().setVisible(false);
+					getJComboBoxPrecision().setEnabled(false);
+					// getJFormattedTextFieldPrecision().setEnabled(true);
+					getJLabelValuesPanel().setVisible(false);
+					getJLabelDomainValues().setVisible(false);
+					getJComboBoxStatesValues().setVisible(false);
+					getJLabelPrecision().setVisible(false);
+					getJFormattedTextFieldPrecision().setVisible(false);
+					getJPanelMonotonyUpDown().setVisible(false);
+					jRadioButtonIncreasing.setEnabled(false);
+					jRadioButtonDecreasing.setEnabled(false);
+					jRadioButtonIncreasing.setSelected(false);
+					jRadioButtonDecreasing.setSelected(false);
+					getDiscretizedStatesPanel().setVisible(false);
+					getDiscretizedStatesPanel().setEnabled(false);
+//					getDiscretizedStatesPanel().setVisibleButtonPanel(false);
+//					getDiscretizedStatesPanel().setEnabledAddValue(false);
+//					getDiscretizedStatesPanel().setEnabledRemoveValue(false);
+//					getDiscretizedStatesPanel().setEnabledUpValue(false);
+//					getDiscretizedStatesPanel().setEnabledDownValue(false);
+//					getDiscretizedStatesPanel().setVisibleAddValue(false);
+//					getDiscretizedStatesPanel().setVisibleRemoveValue(false);
+//					getDiscretizedStatesPanel().setVisibleUpValue(false);
+//					getDiscretizedStatesPanel().setVisibleDownValue(false);
+//					getDiscretizedStatesPanel().getStandardDomainButton().setVisible(false);
+//					getDiscretizedStatesPanel().getStandardDomainButton().setEnabled(false);
+					getJTextFieldUnit().setEnabled(false);
+					getJTextFieldUnit().setVisible(false);
+					getJLabelUnit().setEnabled(false);
+					getJLabelUnit().setVisible(false);
+					break;
+				}
+
 			}
 		}
 		// jComboBoxStatesValues.addItemListener(this);
@@ -833,9 +871,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					break;
 				case EVENT:
 					jComboBoxNodeVariableType.addItem(stringDatabase
-							.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discrete"));
-					jComboBoxNodeVariableType.addItem(stringDatabase
-							.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Discretized"));
+							.getString("NodeDomainValuesTablePanel.jComboBoxNodeVariableType." + "Items.Event"));
 					break;
 				default:
 				jComboBoxNodeVariableType.addItem(stringDatabase

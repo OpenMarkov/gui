@@ -572,6 +572,7 @@
                 <Continuous value="Numérica"/>
                 <Discrete value="Finitos estados"/>
                 <Discretized value="Discretizada"/>
+                <Event value="Evento"></Event>
             </Items>
         </jComboBoxNodeVariableType>
         <jLabelUnit>

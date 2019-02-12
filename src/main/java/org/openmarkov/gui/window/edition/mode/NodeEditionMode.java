@@ -8,14 +8,7 @@
 package org.openmarkov.gui.window.edition.mode;
 
 import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.DefaultStates;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -55,6 +48,7 @@ public abstract class NodeEditionMode extends EditionMode {
 						states[i] = new State(GUIDefaultStates.getString(states[i].getName()));
 					}
 					Variable variable = new Variable(nodeName, states);
+					if (nodeType== NodeType.EVENT) variable.setVariableType(VariableType.EVENT);
 					if (probNet.onlyTemporal()) {
 						// default value
 						variable.setBaseName(nodeName);
