@@ -23,8 +23,9 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANDecisionTreeEvaluation;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.IDDecisionTreeEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.core.DecisionTreeComputation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,14 +73,9 @@ import java.awt.event.MouseListener;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
-			DecisionTreeNode child = null;
-			try {
-				child = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true):new DANDecisionTreeEvaluation(probNet,depth,true)).getDecisionTree();
-			} catch (NotEvaluableNetworkException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			((DecisionTreeBranch) root).setChild(child);
+			DecisionTreeComputation computation = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true):
+				new DANDecisionTreeEvaluation(probNet,depth,true));
+			((DecisionTreeBranch) root).setChild(computation.getDecisionTree());
 		} 
 		return root;
 	}

@@ -64,8 +64,8 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluation;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionIntoSymmetricDANsEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
 
 import javax.swing.*;
@@ -1588,13 +1588,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
 			DANEvaluation eval = null;
-			try {
-				eval = new DecompositionIntoSymmetricDANsEvaluation(probNet,
-						networkPanel.getEditorPanel().getPreResolutionEvidence());
-			} catch (NotEvaluableNetworkException e1) {
-                LocalizedException localizedException = new LocalizedException(new OpenMarkovException("NotEvaluableNetworkException"), null);
-                localizedException.showException();
-			}
+			eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
 			StrategyTree strategyTree = null;
 			strategyTree = eval.getUtility().strategyTrees[0];
 
