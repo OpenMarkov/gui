@@ -8,7 +8,6 @@
 package org.openmarkov.gui.window.dt;
 
 import org.openmarkov.core.dt.DecisionTreeBranch;
-import org.openmarkov.core.dt.DecisionTreeBuilder;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
@@ -23,7 +22,7 @@ import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.core.DecisionTreeComputation;
+import org.openmarkov.core.inference.DecisionTreeComputation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
@@ -39,7 +38,7 @@ import java.awt.event.MouseListener;
 	private ContextualMenuFactory contextualMenuFactory;
 	private TreePanelListener listener;
 
-	public DecisionTreePanel(ProbNet probNet) {
+	public DecisionTreePanel(ProbNet probNet) throws NotEvaluableNetworkException {
 		listener = new TreePanelListener();
 		contextualMenuFactory = new ContextualMenuFactory(listener);
 
@@ -60,15 +59,14 @@ import java.awt.event.MouseListener;
 		setBackground(Color.white);
 
 	}
-
-
-	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) {
+	
+	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException {
 		//TODO We are testing with an initial value of 1. The value should be something like 5 or 6
-		return buildDecisionTree(probNet,1);
+		return buildDecisionTree(probNet,6);
 	}
-	
-	
-	public static DecisionTreeElement buildDecisionTree(ProbNet probNet,int depth) {
+
+
+	public static DecisionTreeElement buildDecisionTree(ProbNet probNet,int depth) throws NotEvaluableNetworkException {
 		DecisionTreeElement root = null;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
@@ -99,14 +97,18 @@ import java.awt.event.MouseListener;
 		repaint();
 	}
 	
-	public void inferenceExpandLevels(int n) {
+	public void inferenceExpandNextLevel() throws NotEvaluableNetworkException {
+		inferenceExpandLevels(1);
+	}
+	
+	public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException {
 		DecisionTreeModel auxModel = (DecisionTreeModel)jTree.getModel();
 		DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
 		inferenceExpandLevels(root.getTreeBranch(),null,n);
 		updateVisualInformation(root.getTreeBranch());			
 	}
 	
-	private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) {
+	private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) throws NotEvaluableNetworkException {
 		if (root instanceof DecisionTreeBranch || ((DecisionTreeNode)root).getNodeType()!= NodeType.UTILITY) {
 			if (root instanceof DecisionTreeNode) {
 				parent = (DecisionTreeNode) root;
@@ -117,16 +119,18 @@ import java.awt.event.MouseListener;
 		}
 		else {
 			DecisionTreeNode rootDT = (DecisionTreeNode)root;
-			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();				
-			if (parent.getNodeType()==NodeType.DECISION || 
-					(!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))){
-				rootDT.copy(auxRoot);
+			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();
+			if (parent != null) {
+				if (parent.getNodeType() == NodeType.DECISION
+						|| (!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))) {
+					rootDT.copy(auxRoot);
+				}
 			}
 		}
 	}
 
 
-	public void inferenceExpandAllLevels() {
+	public void inferenceExpandAllLevels() throws NotEvaluableNetworkException {
 		inferenceExpandLevels(Integer.MAX_VALUE);		
 	}
 
@@ -140,12 +144,22 @@ import java.awt.event.MouseListener;
 				case ActionCommands.TREE_EXPAND_NEXT:
 					System.out.println("Expanding some levels");
 					// Expand N levels
-					inferenceExpandLevels(1);
+				try {
+					inferenceExpandNextLevel();
+				} catch (NotEvaluableNetworkException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 					break;
 				case ActionCommands.TREE_EXPAND_ALL:
 					System.out.println("Expanding all levels");
 					// Expand all levels
+				try {
 					inferenceExpandAllLevels();
+				} catch (NotEvaluableNetworkException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 					break;
 				case ActionCommands.TREE_OPEN_NETWORK:
 					System.out.println("Opening associated network");

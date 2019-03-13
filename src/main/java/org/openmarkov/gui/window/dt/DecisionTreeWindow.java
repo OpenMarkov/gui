@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.window.dt;
 
+import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 
@@ -19,7 +20,11 @@ import java.awt.*;
 	public DecisionTreeWindow(ProbNet probNet) {
 		setLayout(new BorderLayout());
 		title = probNet.getName() + "- decision tree";
-		decisionTreePanel = new DecisionTreePanel(probNet);
+		try {
+			decisionTreePanel = new DecisionTreePanel(probNet);
+		} catch (NotEvaluableNetworkException e) {
+			e.printStackTrace();
+		}
 		add(decisionTreePanel, BorderLayout.CENTER);
 		setBackground(Color.blue);
 	}
