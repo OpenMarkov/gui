@@ -10,9 +10,14 @@ package org.openmarkov.gui.window.dt;
 import org.openmarkov.core.dt.DecisionTreeBranch;
 import org.openmarkov.core.dt.DecisionTreeElement;
 import org.openmarkov.core.dt.DecisionTreeNode;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.Instance;
@@ -35,6 +40,11 @@ import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial") public class DecisionTreePanel extends JScrollPane {
 	protected DecisionTree jTree;
+	public DecisionTree getjTree() {
+		return jTree;
+	}
+
+
 	private ContextualMenuFactory contextualMenuFactory;
 	private TreePanelListener listener;
 
@@ -61,18 +71,28 @@ import java.awt.event.MouseListener;
 	}
 	
 	public static DecisionTreeElement buildDecisionTree(ProbNet probNet) throws NotEvaluableNetworkException {
-		//TODO We are testing with an initial value of 1. The value should be something like 5 or 6
-		return buildDecisionTree(probNet,6);
+		return buildDecisionTree(probNet,5);
 	}
 
 
 	public static DecisionTreeElement buildDecisionTree(ProbNet probNet,int depth) throws NotEvaluableNetworkException {
+		return buildDecisionTree(probNet,depth,new EvidenceCase());
+	}
+	
+	/**
+	 * @param probNet
+	 * @param depth
+	 * @param branchEvidence
+	 * @return
+	 * @throws NotEvaluableNetworkException
+	 */
+	private static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
 		DecisionTreeElement root = null;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
-			DecisionTreeComputation computation = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true):
-				new DANDecisionTreeEvaluation(probNet,depth,true));
+			DecisionTreeComputation computation = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true,branchEvidence):
+				new DANDecisionTreeEvaluation(probNet,depth,true,branchEvidence));
 			((DecisionTreeBranch) root).setChild(computation.getDecisionTree());
 		} 
 		return root;
@@ -104,22 +124,29 @@ import java.awt.event.MouseListener;
 	public void inferenceExpandLevels(int n) throws NotEvaluableNetworkException {
 		DecisionTreeModel auxModel = (DecisionTreeModel)jTree.getModel();
 		DecisionTreeBranchPanel root = (DecisionTreeBranchPanel) auxModel.getRoot();
-		inferenceExpandLevels(root.getTreeBranch(),null,n);
+		inferenceExpandLevels(root.getTreeBranch(),null,n, new EvidenceCase());
 		updateVisualInformation(root.getTreeBranch());			
 	}
 	
-	private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n) throws NotEvaluableNetworkException {
+	private void inferenceExpandLevels(DecisionTreeElement root,DecisionTreeNode parent, int n, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
 		if (root instanceof DecisionTreeBranch || ((DecisionTreeNode)root).getNodeType()!= NodeType.UTILITY) {
 			if (root instanceof DecisionTreeNode) {
 				parent = (DecisionTreeNode) root;
 			}
 			for (DecisionTreeElement branch : root.getChildren()) {
-				inferenceExpandLevels(branch,parent, n);						
+				EvidenceCase newEvi;
+				if (root instanceof DecisionTreeBranch) {
+					newEvi = createEvidenceBranchPath(branchEvidence, (DecisionTreeBranch) root);
+				}
+				else {
+					newEvi = branchEvidence;
+				}
+				inferenceExpandLevels(branch,parent, n, newEvi);						
 			}
 		}
 		else {
 			DecisionTreeNode rootDT = (DecisionTreeNode)root;
-			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n)).getChild();
+			DecisionTreeNode auxRoot = ((DecisionTreeBranch) buildDecisionTree(rootDT.getNetwork(), n, branchEvidence)).getChild();
 			if (parent != null) {
 				if (parent.getNodeType() == NodeType.DECISION
 						|| (!(parent.getVariable().getName().equalsIgnoreCase(auxRoot.getVariable().getName())))) {
@@ -127,6 +154,23 @@ import java.awt.event.MouseListener;
 				}
 			}
 		}
+	}
+	
+	
+
+	private EvidenceCase createEvidenceBranchPath(EvidenceCase branchEvidence, DecisionTreeBranch branch) {
+		EvidenceCase newEvi = new EvidenceCase(branchEvidence);
+		try {
+			if (branch != null) {
+				Variable branchVariable = branch.getBranchVariable();
+				if (branchVariable != null && (!branchVariable.getName().equalsIgnoreCase("OD"))) {
+					newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
+				}
+			}
+		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			e.printStackTrace();
+		}
+		return newEvi;
 	}
 
 
@@ -209,7 +253,8 @@ import java.awt.event.MouseListener;
 				Object selectedComponent = jTree.getLastSelectedPathComponent();
 				if (selectedComponent instanceof DecisionTreeNodePanel) {
 					NodeType nodeType = ((DecisionTreeNodePanel) selectedComponent).getNodeType();
-					if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
+					//if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
+					if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION || nodeType == NodeType.UTILITY) {
 						// Get menu from the contextualMenuFactory
 						TreeContextualMenu treeMenu = (TreeContextualMenu) contextualMenuFactory.getTreeContextualMenu();
 						treeMenu.show(e.getComponent(), e.getX(), e.getY());
