@@ -296,6 +296,10 @@ public class ActionCommands {
 	 * Action invoked when the user wants to do something not yet implemented. TODO Rewrite
 	 */
 	public static final String TREE_SHOW_CEP = "ShowCEP";
+    /**
+     * Action invoked when the user wants to obtain a Graphviz/dot structure of a sub-tree.
+     */
+    public static final String TREE_SAVE_GRAPHVIZ = "SaveGraphViz";
 	/* End tree contextual menu actions */
 	/**
 	 * Action invoked for testing

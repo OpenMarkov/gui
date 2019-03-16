@@ -353,6 +353,10 @@
             <Label value = "Show CEP"/>
             <Mnemonic value = "c"/>
         </ShowCEP>
+        <SaveGraphviz>
+            <Label value="Save Graphviz"/>
+            <Mnemonic value="g"/>
+        </SaveGraphviz>
     </Tree>
     <Tools>
         <DBGenerator>

@@ -411,6 +411,12 @@ public class MenuItemNames {
 	 * String database token for the item 'Tree - Show CEP'.
 	 */
 	public static final String TREE_SHOW_CEP_MENUITEM = TREE_MENU + ".ShowCEP";
+
+    /**
+     * String database token for the item 'Tree - Save Graphviz'.
+     */
+    public static final String TREE_SAVE_GRAPHVIZ = TREE_MENU + ".SaveGraphviz";
+
 	/* End tree contextual menu */
 
 	/**

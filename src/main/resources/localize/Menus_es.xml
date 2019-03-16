@@ -351,8 +351,12 @@
         </OpenNetwork>
         <ShowCEP>
             <Label value = "Mostrar partición CE"/>
-            <Mnemonic value = ""/>
+            <Mnemonic value="c"/>
         </ShowCEP>
+        <SaveGraphviz>
+            <Label value="Guardar en formato Graphviz"/>
+            <Mnemonic value="g"/>
+        </SaveGraphviz>
     </Tree>
     <Tools>
         <DBGenerator>

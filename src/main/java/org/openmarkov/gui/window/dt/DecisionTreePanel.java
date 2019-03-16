@@ -26,6 +26,7 @@ import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.oopn.VisualInstance;
+import org.openmarkov.gui.util.TreeNodeToDot;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.core.inference.DecisionTreeComputation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
@@ -213,7 +214,19 @@ import java.awt.event.MouseListener;
 				case ActionCommands.TREE_SHOW_CEP:
 					System.out.println("Doing something wonderful");
 					// Show CEP or utility
+
 					break;
+                case ActionCommands.TREE_SAVE_GRAPHVIZ:
+                    System.out.println("Doing something wonderful");
+                    // Show CEP or utility
+                    TreeNodeToDot tree2dot = new TreeNodeToDot();
+                    Object selectedComponent = jTree.getLastSelectedPathComponent();
+                    if (selectedComponent instanceof DecisionTreeNodePanel) {
+                        DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
+                        DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
+                        tree2dot.paintDTNode(treeNode);
+                    }
+                    break;
 				default:
 
 			}
