@@ -33,6 +33,8 @@ import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDec
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
 import javax.swing.*;
+import javax.swing.tree.TreeModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,7 +43,7 @@ import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial") public class DecisionTreePanel extends JScrollPane {
 	protected DecisionTree jTree;
-	public DecisionTree getjTree() {
+	public DecisionTree getJTree() {
 		return jTree;
 	}
 
@@ -281,5 +283,14 @@ import java.awt.event.MouseListener;
 		public void mouseReleased(MouseEvent mouseEvent) { }
 		public void mouseEntered(MouseEvent mouseEvent) { }
 		public void mouseExited(MouseEvent mouseEvent) { }
+	}
+
+
+	public DecisionTreeNode getDecisionTreeNode() {
+		DecisionTree dt = (DecisionTree)getJTree();				
+		TreeModel model = dt.getModel();
+		DecisionTreeBranchPanel branchPanel = (DecisionTreeBranchPanel) model.getRoot();
+		DecisionTreeBranch root = branchPanel.getTreeBranch();
+		return root.getChild();
 	}
 }
