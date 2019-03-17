@@ -19,23 +19,24 @@ public class TreeNodeToDot {
     private final String C_utilityColor = "#d0e6b2";
 
     private class DotNode {
-        private String label;
+        private String nodeName;
         private int number;
         private NodeType type;
+        private double computedUtility;
 
-
-        public DotNode(int number, String label, NodeType type) {
-            this.label = label;
+        public DotNode(int number, String nodeName, double computedUtility, NodeType type) {
+            this.nodeName = nodeName;
             this.number = number;
             this.type = type;
+            this.computedUtility = computedUtility;
         }
 
-        public String getLabel() {
-            return label;
+        public String getNodeName() {
+            return nodeName;
         }
 
-        public void setLabel(String label) {
-            this.label = label;
+        public void setNodeName(String nodeName) {
+            this.nodeName = nodeName;
         }
 
         public int getNumber() {
@@ -54,7 +55,7 @@ public class TreeNodeToDot {
             this.type = type;
         }
 
-        private String getShape() {
+        private String buildStyle() {
             if (this.type.equals(NodeType.CHANCE)) {
                 return "shape = \"oval\", color=\"" + C_chanceColor + "\"";
             } else if (this.type.equals(NodeType.DECISION)) {
@@ -64,21 +65,28 @@ public class TreeNodeToDot {
             }
         }
 
+        private String buildLabel() {
+            return "<b>" + this.nodeName + "</b><br/>U=" + df.format(this.computedUtility);
+        }
+
         @Override
         public String toString() {
-            return this.number + " [label=\"" + this.label + "\", " + getShape() + "];";
+            return this.number + " [label=<" + buildLabel() + ">, " + buildStyle() + "];";
         }
     }
 
     private class DotLink {
         private DotNode sourceNode;
         private DotNode destinationNode;
-        private String label;
+        private String branchState;
+        private double probability;
 
-        public DotLink(DotNode sourceNode, DotNode destinationNode, String label) {
+        public DotLink(DotNode sourceNode, DotNode destinationNode, String branchState, double probability) {
             this.sourceNode = sourceNode;
             this.destinationNode = destinationNode;
-            this.label = label;
+            this.probability = probability;
+            this.branchState = branchState;
+
         }
 
         public DotNode getSourceNode() {
@@ -97,17 +105,17 @@ public class TreeNodeToDot {
             this.destinationNode = destinationNode;
         }
 
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
+        private String buildLabel() {
+            if (this.sourceNode.getType().equals(NodeType.CHANCE)) {
+                return "<b>" + this.branchState + "</b><br/>P=" + df.format(this.probability);
+            } else {
+                return "<b>" + this.branchState + "</b>";
+            }
         }
 
         @Override
         public String toString() {
-            return this.sourceNode.getNumber() + " -> " + this.destinationNode.getNumber() + " [label=\"" + this.label + "\"];";
+            return this.sourceNode.getNumber() + " -> " + this.destinationNode.getNumber() + " [label=<" + buildLabel() + ">];";
         }
     }
 
@@ -127,9 +135,10 @@ public class TreeNodeToDot {
         List<DecisionTreeNode> children = new ArrayList<>();
         children.add(treeNode);
 
-        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), treeNode.getNodeType());
+        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), treeNode.getUtility(), treeNode.getNodeType());
         numNode += 1;
         dotNodes.add(sourceNode);
+
 
         parseTreeNode(sourceNode, treeNode);
 
@@ -165,25 +174,24 @@ public class TreeNodeToDot {
         // Analyze the branches of that node
         for (DecisionTreeElement elements : treeNode.getChildren()) {
             DecisionTreeBranch branch = (DecisionTreeBranch) elements;
-            String linkLabel = null;
-            if (treeNode.getNodeType().equals(NodeType.CHANCE)) {
-                linkLabel = branch.getBranchState().getName() + " / P=" + df.format(branch.getBranchProbability()) +
-                        " / U=" + df.format(branch.getUtility());
-            } else if (treeNode.getNodeType().equals(NodeType.DECISION)) {
-                linkLabel = branch.getBranchState().getName() + " / U=" + df.format(branch.getUtility());
-            } else if (treeNode.getNodeType().equals(NodeType.UTILITY)) {
-                // Code reachable only when SV-nodes
-                linkLabel = branch.getBranchState().getName() + " / P=" + df.format(branch.getBranchProbability()) +
-                        " / U=" + df.format(branch.getUtility());
-            }
+            String branchState = null;
+            branchState = branch.getBranchState().getName();
 
             DecisionTreeNode childNode = branch.getChild();
-            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), childNode.getNodeType());
+            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), childNode.getUtility(), childNode.getNodeType());
             numNode += 1;
             dotNodes.add(destinationNode);
-            dotLinks.add(new DotLink(sourceNode, destinationNode, linkLabel));
+            dotLinks.add(new DotLink(sourceNode, destinationNode, branchState, branch.getBranchProbability()));
 
             parseTreeNode(destinationNode, childNode);
+        }
+
+        if (sourceNode.getType().equals(NodeType.DECISION)) {
+
+        } else if (sourceNode.getType().equals(NodeType.CHANCE)) {
+
+        } else if (sourceNode.getType().equals(NodeType.UTILITY)) {
+
         }
 
     }
