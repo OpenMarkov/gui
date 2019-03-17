@@ -165,8 +165,17 @@ public class TreeNodeToDot {
         // Analyze the branches of that node
         for (DecisionTreeElement elements : treeNode.getChildren()) {
             DecisionTreeBranch branch = (DecisionTreeBranch) elements;
-            String linkLabel = branch.getBranchState().getName() + " / P=" + df.format(branch.getBranchProbability()) +
-                    " / U=" + df.format(branch.getUtility());
+            String linkLabel = null;
+            if (treeNode.getNodeType().equals(NodeType.CHANCE)) {
+                linkLabel = branch.getBranchState().getName() + " / P=" + df.format(branch.getBranchProbability()) +
+                        " / U=" + df.format(branch.getUtility());
+            } else if (treeNode.getNodeType().equals(NodeType.DECISION)) {
+                linkLabel = branch.getBranchState().getName() + " / U=" + df.format(branch.getUtility());
+            } else if (treeNode.getNodeType().equals(NodeType.UTILITY)) {
+                // Code reachable only when SV-nodes
+                linkLabel = branch.getBranchState().getName() + " / P=" + df.format(branch.getBranchProbability()) +
+                        " / U=" + df.format(branch.getUtility());
+            }
 
             DecisionTreeNode childNode = branch.getChild();
             DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), childNode.getNodeType());
