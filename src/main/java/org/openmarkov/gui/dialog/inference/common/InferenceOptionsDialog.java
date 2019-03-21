@@ -457,7 +457,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			for (Criterion criterion : decisionCriteria) {
 
 				// Gets the string of the scale (with units)
-				String scale = String.valueOf(criterion.getUnicriteriaScale());
+                String scale = String.valueOf(criterion.getUnicriterizationScale());
 				if (criterion.getCriterionUnit() != null && !criterion.getCriterionUnit()
 						.equals(multicriteriaOptions.getMainUnit())) {
 					scale += " " + multicriteriaOptions.getMainUnit() + "/" + criterion.getCriterionUnit();
@@ -644,7 +644,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 						DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
 						format.applyLocalizedPattern("#.###");
 						scale = format.format(Double.parseDouble(scale));
-						decisionCriteria.get(row - 1).setUnicriteriaScale(Double.parseDouble(scale));
+                        decisionCriteria.get(row - 1).setUnicriterizationScale(Double.parseDouble(scale));
 					}
 
 					if (isTemporal) {

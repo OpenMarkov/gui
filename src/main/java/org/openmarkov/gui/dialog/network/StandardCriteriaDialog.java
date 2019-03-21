@@ -147,7 +147,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 					stringDatabase.getString("defaultCriteria.euros.Text"));
 			Criterion benefitCriterion = new Criterion(stringDatabase.getString("defaultCriteria.benefit.Text"),
 					stringDatabase.getString("defaultCriteria.euros.Text"));
-			costCriterion.setUnicriteriaScale(-1);
+            costCriterion.setUnicriterizationScale(-1);
 
 			defaultCriteria.add(costCriterion);
 			defaultCriteria.add(benefitCriterion);
@@ -156,7 +156,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 					stringDatabase.getString("defaultCriteria.pounds.Text"));
 			Criterion benefitCriterion = new Criterion(stringDatabase.getString("defaultCriteria.benefit.Text"),
 					stringDatabase.getString("defaultCriteria.pounds.Text"));
-			costCriterion.setUnicriteriaScale(-1);
+            costCriterion.setUnicriterizationScale(-1);
 
 			defaultCriteria.add(costCriterion);
 			defaultCriteria.add(benefitCriterion);
@@ -166,7 +166,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 					stringDatabase.getString("defaultCriteria.dollars.Text"));
 			Criterion benefitCriterion = new Criterion(stringDatabase.getString("defaultCriteria.benefit.Text"),
 					stringDatabase.getString("defaultCriteria.dollars.Text"));
-			costCriterion.setUnicriteriaScale(-1);
+            costCriterion.setUnicriterizationScale(-1);
 
 			defaultCriteria.add(costCriterion);
 			defaultCriteria.add(benefitCriterion);
