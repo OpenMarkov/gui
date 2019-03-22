@@ -1588,7 +1588,13 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
 			DANEvaluation eval = null;
-			eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
+			try {
+				eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
+			} catch (NotEvaluableNetworkException e1) {
+				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+						"An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
 			StrategyTree strategyTree = null;
 			strategyTree = eval.getUtility().strategyTrees[0];
 

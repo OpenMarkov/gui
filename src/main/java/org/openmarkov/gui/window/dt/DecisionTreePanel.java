@@ -28,7 +28,8 @@ import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.util.TreeNodeToDot;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.core.inference.DecisionTreeComputation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecisionTreeComputation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionGenerateDecisionTree;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
@@ -94,9 +95,13 @@ import java.awt.event.MouseListener;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
-			DecisionTreeComputation computation = (networkType instanceof InfluenceDiagramType?new IDDecisionTreeEvaluation(probNet,depth,true,branchEvidence):
-				new DANDecisionTreeEvaluation(probNet,depth,true,branchEvidence));
-			((DecisionTreeBranch) root).setChild(computation.getDecisionTree());
+			DecompositionGenerateDecisionTree genDT = new DecompositionGenerateDecisionTree(probNet, depth);
+			try {
+				genDT.setPreResolutionEvidence(branchEvidence);
+			} catch (IncompatibleEvidenceException e) {
+				e.printStackTrace();
+			}
+			((DecisionTreeBranch) root).setChild(genDT.getDecisionTree());
 		} 
 		return root;
 	}
