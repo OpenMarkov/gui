@@ -35,6 +35,10 @@ public class TreeContextualMenu extends ContextualMenu {
      * Object that represents the item 'Show CEP'.
      */
     private JMenuItem showCEPMenuItem = null;
+    /**
+     * Object that represents the item 'Save GraphViz'.
+     */
+    private JMenuItem saveGraphvizMenuItem = null;
 
     public TreeContextualMenu(ActionListener newListener) {
         super(newListener);
@@ -50,6 +54,7 @@ public class TreeContextualMenu extends ContextualMenu {
         add(getExpandAllMenuItem());
         add(getOpenNetworkMenuItem());
         add(getShowCEPMenuItem());
+        add(getSaveGraphvizMenuItem());
     }
 
     /**
@@ -102,6 +107,19 @@ public class TreeContextualMenu extends ContextualMenu {
             showCEPMenuItem.addActionListener(listener);
         }
         return showCEPMenuItem;
+    }
+
+    /**
+     * This method initialises saveGraphvizMenuItem.
+     *
+     * @return a new 'Save Graphviz' menu item.
+     */
+    private JMenuItem getSaveGraphvizMenuItem() {
+        if (saveGraphvizMenuItem == null) {
+            saveGraphvizMenuItem = new LocalizedMenuItem(MenuItemNames.TREE_SAVE_GRAPHVIZ, ActionCommands.TREE_SAVE_GRAPHVIZ);
+            saveGraphvizMenuItem.addActionListener(listener);
+        }
+        return saveGraphvizMenuItem;
     }
 
     /**

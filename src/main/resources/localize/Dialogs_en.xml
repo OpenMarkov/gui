@@ -413,7 +413,7 @@
     </NodePropertiesDialog>
     <MulticriteriaDialog>
         <Title>
-            <Label value="Mutlti criteria selection"/>
+            <Label value="Multi criteria selection"/>
         </Title>
         <Type>
             <Title value="Analysis"/>

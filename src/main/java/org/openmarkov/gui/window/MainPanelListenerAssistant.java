@@ -30,10 +30,7 @@ import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.StrategyTree;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
-import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
@@ -67,8 +64,8 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DANEvaluation;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionIntoSymmetricDANsEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
 
 import javax.swing.*;
@@ -1595,18 +1592,18 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
 			DANEvaluation eval = null;
 			try {
-				eval = new DecompositionIntoSymmetricDANsEvaluation(probNet,
-						networkPanel.getEditorPanel().getPreResolutionEvidence());
+				eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
 			} catch (NotEvaluableNetworkException e1) {
-                LocalizedException localizedException = new LocalizedException(new OpenMarkovException("NotEvaluableNetworkException"), null);
-                localizedException.showException();
+				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+						"An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 			StrategyTree strategyTree = null;
 			strategyTree = eval.getUtility().strategyTrees[0];
 
 			try {
 				//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-				strategyTree.graftNode("OD");
+				strategyTree.pruneAndGraftNode("OD");
 				OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
 						probNet, strategyTree);
 				optimalStrategyDialog.setVisible(true);

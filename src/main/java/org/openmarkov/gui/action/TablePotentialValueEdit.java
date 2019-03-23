@@ -33,8 +33,7 @@ import java.util.List;
  * Only
  *
  * @author mpalacios
- * @author carmenyago
- * @version 1.1 28/05/2016 - eliminates the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
+ * @version 1.1 28/05/2016 - cyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
 @SuppressWarnings("serial") public class TablePotentialValueEdit extends SimplePNEdit {
@@ -74,14 +73,12 @@ import java.util.List;
 	/**
 	 * True is the tablePotential belongs to a ExactDistrPotential
 	 *
-	 * @author carmenyago
 	 */
 	private boolean isExactDistrPotential;
 
 	/**
 	 * For doEdit
 	 *
-	 * @author carmenyago
 	 */
 	private ExactDistrPotential oldExactDistrPotential;
 	private ExactDistrPotential exactDistrPotential;
@@ -118,9 +115,7 @@ import java.util.List;
 	 * @param priorityList         the priority lists for potentials update.
 	 * @param notEditablePositions two dimensional array with the information about editable
 	 *                             positions.
-	 *                             carmenyago added the new initialisation of getExactDistrPotential
-	 *                             and for modularity changed the constructor definition to remove tablePotential  and probNet (UNCLEAR)
-	 * @author carmenyago
+	 *                             cyago added the new initialisation of getExactDistrPotential
 	 */
 	public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
 			Object[][] notEditablePositions) {
@@ -180,9 +175,7 @@ import java.util.List;
 	 * and updates the probNet
 	 * In case the potential is ExactDistrPotential...
 	 *
-	 * @throws <code>DoEditException</code> carmenyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
-	 *                                      UNCLEAR--> Expected behaviour,  	probNet.doEdit(changePotentialEdit) will be able to distinguish is ExactDistrPotential???
-	 * @author carmenyago
+	 * @throws <code>DoEditException</code> cyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
 	 */
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;
@@ -352,7 +345,6 @@ import java.util.List;
 
 	/**
 	 * @return true if tablePotential comes from a ExactDistrPotential
-	 * @author carmenyago
 	 */
 	public boolean getExactDistrPotential() {
 		return isExactDistrPotential;
