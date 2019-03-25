@@ -308,7 +308,7 @@ import java.util.List;
 	 * @return the position in the table
 	 */
 	public int getRowPosition(int position) {
-		int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(node);
+		int lastRow = tablePotentialsPanelOperations.calculateLastEditableRow(tablePotential);
 		return lastRow - position % tablePotential.getDimensions()[0];
 	}
 
