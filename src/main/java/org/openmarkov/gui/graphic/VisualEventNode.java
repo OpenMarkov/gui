@@ -353,17 +353,8 @@ public class VisualEventNode extends VisualNode {
 	}
 
 	@Override public void update(int numCases) {
-		switch (node.getVariable().getVariableType()) {
-		case FINITE_STATES:
-			innerBox = new FSVariableBox(this);
-			break;
-		case DISCRETIZED:
-			innerBox = new DiscretizedVariableBox(this);
-			break;
-		case NUMERIC:
-			innerBox = new NumericVariableBox(this);
-			break;
-		}
+		//TODO This innerbox is for Chance nodes. Check what do Event nodes need.
+		innerBox = new FSVariableBox(this);
 		super.update(numCases);
 	}
 }
