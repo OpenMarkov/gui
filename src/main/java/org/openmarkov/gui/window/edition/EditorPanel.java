@@ -1016,7 +1016,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				PotentialEditDialog editTimeToEventDialog = new PotentialEditDialog(Utilities.getOwner(this), node, false);
 				if (editTimeToEventDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 					// change it color
-					((VisualDecisionNode) visualNode).setHasPolicy(true);
 					networkChanged = true;
 				}
 			}
