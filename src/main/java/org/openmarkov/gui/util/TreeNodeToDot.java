@@ -57,16 +57,16 @@ public class TreeNodeToDot {
 
         private String buildStyle() {
             if (this.type.equals(NodeType.CHANCE)) {
-                return "shape = \"oval\", color=\"" + C_chanceColor + "\"";
+                return "shape = \"oval\", fillcolor=\"" + C_chanceColor + "\"";
             } else if (this.type.equals(NodeType.DECISION)) {
-                return "shape = \"box\", color=\"" + C_decisionColor + "\"";
+                return "shape = \"box\", fillcolor=\"" + C_decisionColor + "\"";
             } else {
-                return "shape = \"hexagon\", color=\"" + C_utilityColor + "\"";
+                return "shape = \"hexagon\", fillcolor=\"" + C_utilityColor + "\"";
             }
         }
 
         private String buildLabel() {
-            return "<b>" + this.nodeName + "</b><br/>U=" + df.format(this.computedUtility);
+            return "<b>" + this.nodeName + "</b><br/><font color=\"red\"> U=" + df.format(this.computedUtility) + "</font>";
         }
 
         @Override
@@ -184,14 +184,6 @@ public class TreeNodeToDot {
             dotLinks.add(new DotLink(sourceNode, destinationNode, branchState, branch.getBranchProbability()));
 
             parseTreeNode(destinationNode, childNode);
-        }
-
-        if (sourceNode.getType().equals(NodeType.DECISION)) {
-
-        } else if (sourceNode.getType().equals(NodeType.CHANCE)) {
-
-        } else if (sourceNode.getType().equals(NodeType.UTILITY)) {
-
         }
 
     }
