@@ -17,11 +17,9 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.EventTablePotential;
 import org.openmarkov.core.model.network.potential.EventTimeTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
-import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,9 +57,6 @@ import java.util.List;
 	 * The index of the value selected in the graphic table
 	 */
 	private int indexSelected;
-	/**
-	 * Index of the value selected
-	 */
 	private int potentialSelected;
 
 	/**
@@ -154,7 +149,7 @@ import java.util.List;
 		this.newTable = this.tablePotential.getValues();
 
 		// Get the eventTablePotential index
-		this.potentialSelected = tablePotentialsPanelOperations.getPotentialIndex(row, col, oldTablePotential);
+		this.setPotentialSelected(tablePotentialsPanelOperations.getPotentialIndex(row, col, oldTablePotential));
 
 	}
 
@@ -169,8 +164,8 @@ import java.util.List;
 		PotentialChangeEdit changePotentialEdit = null;
 
 		if (eventTablePotential instanceof EventTimeTablePotential){
-			newTable[potentialSelected] = newValue;
-			tablePotential.getValues()[potentialSelected] = newValue;
+			newTable[getPotentialSelected()] = newValue;
+			tablePotential.getValues()[getPotentialSelected()] = newValue;
 			changePotentialEdit = new PotentialChangeEdit(probNet, oldEventTablePotential, eventTablePotential);
 		}
 
@@ -182,8 +177,8 @@ import java.util.List;
 			} else {
 				// the user is editing a the same column of potentials that last
 				// time
-				priorityList.remove((Integer) potentialSelected);
-				priorityList.add(potentialSelected);
+				priorityList.remove((Integer) getPotentialSelected());
+				priorityList.add(getPotentialSelected());
 			}
 			Iterator<Integer> listIterator = priorityList.listIterator();
 			Double sum = 0.0;
@@ -192,7 +187,7 @@ import java.util.List;
 			int maxDecimals = 10;
 			double epsilon;
 			epsilon = Math.pow(10, -(maxDecimals + 2));
-			newTable[potentialSelected] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
+			newTable[getPotentialSelected()] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()) {
 				position = (Integer) listIterator.next();
 				if (isEditablePosition(position)) {
@@ -352,4 +347,14 @@ import java.util.List;
 	}
 
 
+    /**
+     * Index of the value selected
+     */
+    public int getPotentialSelected() {
+        return potentialSelected;
+    }
+
+    public void setPotentialSelected(int potentialSelected) {
+        this.potentialSelected = potentialSelected;
+    }
 }
