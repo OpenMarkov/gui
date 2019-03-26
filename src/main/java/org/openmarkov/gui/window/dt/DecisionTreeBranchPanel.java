@@ -51,7 +51,7 @@ import java.util.Locale;
 			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 			txtLeft.append(" / ");
 		}
-		double utility = treeBranch.getChild().getUtility();
+		double utility = (double) treeBranch.getValuation();
 		if (Double.isNaN(utility)) {
 			utility = 0.0;
 		}

@@ -20,18 +20,13 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oopn.Instance;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
-import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.util.TreeNodeToDot;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecisionTreeComputation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionGenerateDecisionTree;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
@@ -90,8 +85,8 @@ import java.awt.event.MouseListener;
 	 * @return
 	 * @throws NotEvaluableNetworkException
 	 */
-	private static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
-		DecisionTreeElement root = null;
+	private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
+		DecisionTreeBranch root = null;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
@@ -171,7 +166,9 @@ import java.awt.event.MouseListener;
 		try {
 			if (branch != null) {
 				Variable branchVariable = branch.getBranchVariable();
-				if (branchVariable != null && (!branchVariable.getName().equalsIgnoreCase("OD"))) {
+				if (branchVariable != null && (!branchVariable.getName().equalsIgnoreCase("OD")) && !newEvi.contains(branchVariable)
+						) 
+				{
 					newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
 				}
 			}

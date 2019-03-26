@@ -135,7 +135,7 @@ public class TreeNodeToDot {
         List<DecisionTreeNode> children = new ArrayList<>();
         children.add(treeNode);
 
-        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), treeNode.getUtility(), treeNode.getNodeType());
+        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), (double) treeNode.getValuation(), treeNode.getNodeType());
         numNode += 1;
         dotNodes.add(sourceNode);
 
@@ -172,13 +172,13 @@ public class TreeNodeToDot {
     private void parseTreeNode(DotNode sourceNode, DecisionTreeNode treeNode) {
 
         // Analyze the branches of that node
-        for (DecisionTreeElement elements : treeNode.getChildren()) {
+        for (Object elements : treeNode.getChildren()) {
             DecisionTreeBranch branch = (DecisionTreeBranch) elements;
             String branchState = null;
             branchState = branch.getBranchState().getName();
 
             DecisionTreeNode childNode = branch.getChild();
-            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), childNode.getUtility(), childNode.getNodeType());
+            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), (double) childNode.getValuation(), childNode.getNodeType());
             numNode += 1;
             dotNodes.add(destinationNode);
             dotLinks.add(new DotLink(sourceNode, destinationNode, branchState, branch.getBranchProbability()));
