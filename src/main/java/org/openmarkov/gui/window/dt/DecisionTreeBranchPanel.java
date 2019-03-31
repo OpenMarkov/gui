@@ -51,15 +51,14 @@ import java.util.Locale;
 			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 			txtLeft.append(" / ");
 		}
-		double utility = (double) treeBranch.getValuation();
-		if (Double.isNaN(utility)) {
-			utility = 0.0;
-		}
-		txtLeft.append("U=" + df.format(utility));
+		
+		txtLeft.append(treeBranch.getChild().formatValuation(df));
 		txtLeft.append("</td>");
 		txtLeft.append("</table></html>");
 		return txtLeft.toString();
 	}
+
+	
 
 	@Override public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		leftLabel.setText(getBranchDescriptiontHTML());

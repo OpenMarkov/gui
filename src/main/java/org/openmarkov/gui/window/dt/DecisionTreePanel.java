@@ -13,6 +13,7 @@ import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -20,8 +21,10 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
+
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
 import org.openmarkov.gui.util.TreeNodeToDot;
@@ -29,6 +32,7 @@ import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionGenerateDecisionTree;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.tree.TreeModel;
 
 import java.awt.*;
@@ -216,8 +220,8 @@ import java.awt.event.MouseListener;
 					// Open tree
 					break;
 				case ActionCommands.TREE_SHOW_CEP:
-					System.out.println("Doing something wonderful");
-					// Show CEP or utility
+					System.out.println("Opening associated CEP");
+					openAssociatedCEP();
 
 					break;
                 case ActionCommands.TREE_SAVE_GRAPHVIZ:
@@ -236,6 +240,17 @@ import java.awt.event.MouseListener;
 			}
 		}
 		
+
+		private void openAssociatedCEP() {
+			Object selectedComponent = jTree.getLastSelectedPathComponent();
+			if (selectedComponent instanceof DecisionTreeNodePanel) {
+				DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
+				DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
+				CEPDialog cepDialog = new CEPDialog(null, (CEP)(treeNode.getValuation()), treeNode.getNetwork());
+				cepDialog.setVisible(true);
+			}
+		}
+
 
 		private void openAssociatedNetwork() {
 			
