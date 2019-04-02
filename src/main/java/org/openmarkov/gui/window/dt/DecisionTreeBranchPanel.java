@@ -31,7 +31,6 @@ import java.util.Locale;
 	 * Builds the text to be shown in the branch
 	 */
 	public String getBranchDescriptiontHTML() {
-		DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 		StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
 		DecisionTreeNode parent = treeBranch.getParent();
 		if (parent != null && parent.getNodeType() == NodeType.DECISION) {
@@ -45,14 +44,13 @@ import java.util.Locale;
 		if (treeBranch.getBranchVariable() != null) {
 			txtLeft.append(treeBranch.getBranchVariable().getName() + "=");
 			txtLeft.append(treeBranch.getBranchState().getName());
-			txtLeft.append(" / ");
 		}
 		if (parent != null && parent.getNodeType() == NodeType.CHANCE) {
-			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 			txtLeft.append(" / ");
+			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 		}
 		
-		txtLeft.append(treeBranch.getChild().formatValuation(df));
+		txtLeft.append(treeBranch.getChild().formatValuation(df,parent != null));
 		txtLeft.append("</td>");
 		txtLeft.append("</table></html>");
 		return txtLeft.toString();
