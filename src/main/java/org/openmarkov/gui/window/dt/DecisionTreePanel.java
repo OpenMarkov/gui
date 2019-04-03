@@ -13,6 +13,8 @@ import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.inference.MulticriteriaOptions;
+import org.openmarkov.core.inference.MulticriteriaOptions.Type;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -255,15 +257,22 @@ import java.awt.event.MouseListener;
 		private void openAssociatedNetwork() {
 			
 			Object selectedComponent = jTree.getLastSelectedPathComponent();
-			if (selectedComponent instanceof DecisionTreeNodePanel) {
-				DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
-				DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
-				MainPanel.getUniqueInstance().getMainPanelListenerAssistant().openNetwork(treeNode.getNetwork());	
+			if (selectedComponent instanceof DecisionTreeNodePanel) {				
+				MainPanel.getUniqueInstance().getMainPanelListenerAssistant().openNetwork(getNetwork(selectedComponent));	
 			}
 			
 		}
 
-
+		
+		
+		
+		public ProbNet getNetwork(Object selectedComponent) {
+			
+			DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
+			DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
+			return treeNode.getNetwork();
+		}
+			
 		
 
 	
@@ -288,7 +297,8 @@ import java.awt.event.MouseListener;
 					//if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
 					if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION || nodeType == NodeType.UTILITY) {
 						// Get menu from the contextualMenuFactory
-						TreeContextualMenu treeMenu = (TreeContextualMenu) contextualMenuFactory.getTreeContextualMenu();
+						Type type = getNetwork(selectedComponent).getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType();
+						TreeContextualMenu treeMenu = (TreeContextualMenu) contextualMenuFactory.getTreeContextualMenu(type == Type.COST_EFFECTIVENESS);
 						treeMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}

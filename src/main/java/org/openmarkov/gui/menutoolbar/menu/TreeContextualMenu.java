@@ -40,20 +40,23 @@ public class TreeContextualMenu extends ContextualMenu {
      */
     private JMenuItem saveGraphvizMenuItem = null;
 
-    public TreeContextualMenu(ActionListener newListener) {
+    public TreeContextualMenu(ActionListener newListener, boolean enableShowCEP) {
         super(newListener);
-        initialize();
+        initialize(enableShowCEP);
 
     }
 
     /**
      * Construct the menu from the items
+     * @param enableShowCEP 
      */
-    private void initialize() {
+    private void initialize(boolean enableShowCEP) {
         add(getExpandNextMenuItem());
         add(getExpandAllMenuItem());
         add(getOpenNetworkMenuItem());
-        add(getShowCEPMenuItem());
+        if (enableShowCEP) {
+        	add(getShowCEPMenuItem());
+        }
         add(getSaveGraphvizMenuItem());
     }
 
