@@ -207,7 +207,7 @@ import java.util.EventObject;
 			data[i][CEPColumns.COST.getIndex()] = costs[i];
 			data[i][CEPColumns.EFFECTIVENESS.getIndex()] = effectiveness[i];
 			data[i][CEPColumns.INTERVENTION.getIndex()] = strategyTrees[i] == null ?
-					"null" :
+					"---" :
 					getFirstLine(strategyTrees[i].toString());
 		}
 
