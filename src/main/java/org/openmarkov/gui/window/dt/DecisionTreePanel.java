@@ -248,7 +248,7 @@ import java.awt.event.MouseListener;
 			if (selectedComponent instanceof DecisionTreeNodePanel) {
 				DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
 				DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
-				CEPDialog cepDialog = new CEPDialog(null, (CEP)(treeNode.getValuation()), treeNode.getNetwork());
+				CEPDialog cepDialog = new CEPDialog(null, (CEP)(treeNode.getUtility()), treeNode.getNetwork());
 				cepDialog.setVisible(true);
 			}
 		}

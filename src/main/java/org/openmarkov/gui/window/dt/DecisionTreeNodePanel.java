@@ -76,7 +76,7 @@ import java.util.Map;
 
 	@Override public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		if (treeNode.getNodeType() == NodeType.UTILITY) {
-			rightLabel.setText(treeNode.formatValuation(df,false));
+			rightLabel.setText(treeNode.formatUtility(df,false));
 		}
 	}
 

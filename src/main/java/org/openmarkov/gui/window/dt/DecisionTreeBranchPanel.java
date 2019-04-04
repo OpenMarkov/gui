@@ -50,7 +50,7 @@ import java.util.Locale;
 			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 		}
 		
-		txtLeft.append(treeBranch.getChild().formatValuation(df,parent != null));
+		txtLeft.append(treeBranch.getChild().formatUtility(df,parent != null));
 		txtLeft.append("</td>");
 		txtLeft.append("</table></html>");
 		return txtLeft.toString();

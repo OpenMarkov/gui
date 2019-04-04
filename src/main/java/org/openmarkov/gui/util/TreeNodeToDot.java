@@ -135,7 +135,7 @@ public class TreeNodeToDot {
         List<DecisionTreeNode> children = new ArrayList<>();
         children.add(treeNode);
 
-        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), (double) treeNode.getValuation(), treeNode.getNodeType());
+        DotNode sourceNode = new DotNode(numNode, treeNode.getVariable().getName(), (double) treeNode.getUtility(), treeNode.getNodeType());
         numNode += 1;
         dotNodes.add(sourceNode);
 
@@ -178,7 +178,7 @@ public class TreeNodeToDot {
             branchState = branch.getBranchState().getName();
 
             DecisionTreeNode childNode = branch.getChild();
-            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), (double) childNode.getValuation(), childNode.getNodeType());
+            DotNode destinationNode = new DotNode(numNode, childNode.getVariable().getName(), (double) childNode.getUtility(), childNode.getNodeType());
             numNode += 1;
             dotNodes.add(destinationNode);
             dotLinks.add(new DotLink(sourceNode, destinationNode, branchState, branch.getBranchProbability()));
