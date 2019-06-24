@@ -222,9 +222,9 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getImposePolicyMenuItem());
 		add(getEditPolicyMenuItem());
 		add(getRemovePolicyMenuItem());
-		addSeparator();
-		add(getAddFindingMenuItem());
-		add(getRemoveFindingMenuItem());
+		//addSeparator();
+		//add(getAddFindingMenuItem());
+		//add(getRemoveFindingMenuItem());
 		/*
 		 * addSeparator(); add(getLogMenuItem());
 		 */
