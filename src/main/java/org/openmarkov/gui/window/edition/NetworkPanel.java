@@ -432,7 +432,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 * with the current individual probabilities.
 	 */
 	public void updateIndividualProbabilities() {
-		editorPanel.updateIndividualProbabilities();
+		editorPanel.updateIndividualProbabilitiesAndUtilities();
 	}
 
 	/**

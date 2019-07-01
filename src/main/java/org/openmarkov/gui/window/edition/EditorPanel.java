@@ -1478,20 +1478,22 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
-	public void updateIndividualProbabilities() {
+	public void updateIndividualProbabilitiesAndUtilities() {
 		// if some visualNode has a number of values different from the
 		// number of evidence cases in memory, we need to recreate its
 		// visual states and consider that the network has been changed.
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
 			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
-			if (innerBox instanceof FSVariableBox) {
-				visualState = ((FSVariableBox) innerBox).getVisualState(0);
-				updateVisualStateAndEvidence(innerBox, visualState);
-			} else if (innerBox instanceof NumericVariableBox) {
-				visualState = ((NumericVariableBox) innerBox).getVisualState();
+			if (innerBox instanceof FSVariableBox || innerBox instanceof NumericVariableBox) {
+				if (innerBox instanceof FSVariableBox) {
+					visualState = ((FSVariableBox) innerBox).getVisualState(0);
+				} else { // (innerBox instanceof NumericVariableBox)
+					visualState = ((NumericVariableBox) innerBox).getVisualState();
+				}
 				updateVisualStateAndEvidence(innerBox, visualState);
 			}
+			
 		}
 		if ((propagationActive) && (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			// if the network has been changed, propagation must be done in
