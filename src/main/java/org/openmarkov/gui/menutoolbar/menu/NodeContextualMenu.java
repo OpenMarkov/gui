@@ -9,6 +9,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.gui.constraint.AbsorbIntermNodeValidator;
 import org.openmarkov.gui.constraint.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -129,6 +130,9 @@ public class NodeContextualMenu extends ContextualMenu {
         Node node = selectedNode.getNode();
         setOptionEnabled(ActionCommands.ABSORB_NODE, AbsorbNodeValidator.validate(node));
 
+		// Test if the node can absorbed intermediate nodes. Validate method return true in that case
+		setOptionEnabled(ActionCommands.ABSORBINTERM_NODE, AbsorbIntermNodeValidator.validate(node));
+
         if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
 			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
 				setDecisionNodeContextualMenuInEditionMode();
@@ -142,6 +146,7 @@ public class NodeContextualMenu extends ContextualMenu {
 		} else {
 			setDefaultNodeContextualMenu();
 		}
+
 	}
 
 	/**

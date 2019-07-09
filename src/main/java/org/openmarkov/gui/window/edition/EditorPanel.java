@@ -704,12 +704,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     }
     
     /**
-     * 
+     * TODO: Fill as desired
      */
     public void absorbIntermNode() {
        /**
         * 
-        * insert your code here
+        * TODO: Put the code that the Absorb Intermediate nodes menu item will launch here
         * 
         */
     }
