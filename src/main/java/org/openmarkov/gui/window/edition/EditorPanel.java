@@ -26,6 +26,7 @@ import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.inference.tasks.Propagation;
+import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
@@ -700,6 +701,17 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 
         repaint();
 
+    }
+    
+    /**
+     * 
+     */
+    public void absorbIntermNode() {
+       /**
+        * 
+        * insert your code here
+        * 
+        */
     }
 
 	/**
@@ -1852,7 +1864,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	private void calculateMinAndMaxUtilityRanges() throws NonProjectablePotentialException {
 		List<Variable> utilityVariables = probNet.getVariables(NodeType.UTILITY);
 		for (Variable utility : utilityVariables) {
-			Node node = probNet.getNode(utility);
+			ProbNet newNet = probNet.copy(); 
+			newNet = TaskUtilities.extendPreResolutionEvidence(newNet, getPreResolutionEvidence());
+			Node node = newNet.getNode(utility);
+			//minUtilityRange.put(utility, node.getApproximateMaxMinimumUtilityFunction(false, preResolutionEvidence));
+			//maxUtilityRange.put(utility, node.getApproximateMaxMinimumUtilityFunction(true, preResolutionEvidence));
 			minUtilityRange.put(utility, node.getApproximateMinimumUtilityFunction());
 			maxUtilityRange.put(utility, node.getApproximateMaximumUtilityFunction());
 		}

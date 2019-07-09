@@ -330,6 +330,12 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     public void absorbNode() {
         editorPanel.absorbNode();
     }
+	/**
+	 * This method absorbs intermediate utility nodes.
+	 */
+    public void absorbIntermNode() {
+        editorPanel.absorbIntermNode();
+    }
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.

@@ -166,6 +166,12 @@ public class MenuItemNames {
      * String database token for the item 'Edit - Absorb Node'.
      */
     public static final String EDIT_ABSORBNODE_MENUITEM = EDIT_MENU + ".AbsorbNode";
+    
+    /**
+     * String database token for the item 'Edit - Absorb Intermediate Node'.
+     */
+    public static final String EDIT_ABSORBINTERMNODE_MENUITEM = EDIT_MENU + ".AbsorbIntermNode";
+    
 	/**
 	 * String database token for the item 'Edit - Node additionalProperties'.
 	 */

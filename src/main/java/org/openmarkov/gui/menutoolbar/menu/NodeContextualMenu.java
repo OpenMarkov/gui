@@ -52,6 +52,10 @@ public class NodeContextualMenu extends ContextualMenu {
      */
     private JMenuItem absorbNodeMenuItem = null;
 	/**
+     * Object that represents the item 'AbsorbIntermNode'.
+     */
+    private JMenuItem absorbIntermNodeMenuItem = null;
+	/**
 	 * Object that represents the item 'Properties'.
 	 */
 	private JMenuItem propertiesMenuItem = null;
@@ -150,6 +154,8 @@ public class NodeContextualMenu extends ContextualMenu {
         addSeparator();
         add(getAbsorbNodeMenuItem());
 		addSeparator();
+		add(getAbsorbIntermNodeMenuItem());
+		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
 		addSeparator();
@@ -179,6 +185,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
         add(getAbsorbNodeMenuItem());
         addSeparator();
+		add(getAbsorbIntermNodeMenuItem());
+		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
 		addSeparator();
@@ -210,6 +218,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getRemoveMenuItem());
         addSeparator();
         add(getAbsorbNodeMenuItem());
+		addSeparator();
+		add(getAbsorbIntermNodeMenuItem());
 		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -544,6 +554,20 @@ public class NodeContextualMenu extends ContextualMenu {
 		}
 		return inputMenuItem;
 	}
+	
+    /**
+     * This method initialises absorbIntermNodeMenuItem.
+     *
+     * @return a new 'absorbIntermNode' menu item.
+     */
+    private JMenuItem getAbsorbIntermNodeMenuItem() {
+        if (absorbIntermNodeMenuItem == null) {
+        	absorbIntermNodeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBINTERMNODE_MENUITEM, ActionCommands.ABSORBINTERM_NODE);
+        	absorbIntermNodeMenuItem.addActionListener(listener);
+        }
+        
+        return absorbIntermNodeMenuItem;
+    }
 
 	// TODO OOPN end
 
@@ -567,6 +591,9 @@ public class NodeContextualMenu extends ContextualMenu {
                 break;
             case ActionCommands.ABSORB_NODE:
                 component = absorbNodeMenuItem;
+                break;
+            case ActionCommands.ABSORBINTERM_NODE:
+                component = absorbIntermNodeMenuItem;
                 break;
             case ActionCommands.NODE_PROPERTIES:
                 component = propertiesMenuItem;

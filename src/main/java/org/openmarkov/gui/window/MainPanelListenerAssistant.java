@@ -244,6 +244,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
 		} else if (actionCommand.equals(ActionCommands.ABSORB_NODE)) {
             this.getCurrentNetworkPanel().absorbNode();
+		} else if (actionCommand.equals(ActionCommands.ABSORBINTERM_NODE)) {
+            this.getCurrentNetworkPanel().absorbIntermNode();
         } else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNodeProperties();
 		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {

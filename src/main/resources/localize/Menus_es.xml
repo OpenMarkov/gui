@@ -119,8 +119,12 @@
         </Copy>
         <AbsorbNode>
             <Label value="Absorber"/>
-            <Mnemonic value="d"/>
+            <Mnemonic value="b"/>
         </AbsorbNode>
+        <AbsorbIntermNode>
+            <Label value="Absorber nodo intermedio"/>
+        	<Mnemonic value="n"/>
+        </AbsorbIntermNode>
         <NodeProperties>
             <Label value="Propiedades del nodo..."/>
             <Mnemonic value="i"/>

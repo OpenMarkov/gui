@@ -242,6 +242,10 @@ public class ActionCommands {
      * It is relevant in the case of chance or decision nodes with an only utility child.
      */
     public static final String ABSORB_NODE = "AbsorbNode";
+    /**
+     * Absorb utility parents
+     */
+    public static final String ABSORBINTERM_NODE = "AbsorbIntermNode";
 	/**
 	 * Action invoked when the user wants to show the additionalProperties of a node.
 	 */
