@@ -7,10 +7,8 @@
 
 package org.openmarkov.gui.constraint;
 
+import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-
-import java.util.List;
 
 /******
  * This class validates the necessary requirements of a node to allow absorbing intermediate parents.
@@ -22,11 +20,8 @@ import java.util.List;
  *
  */
 public class AbsorbIntermNodeValidator {
-    // The node is of decision or chance and has only a utility child
+	
     public static boolean validate(Node node) {
-
-        // TODO: Put the code to validate here
-        return true;
-
+    	return BasicOperations.haveParentsAndAreAllAbsorbable(node);
     }
 }

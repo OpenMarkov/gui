@@ -8,6 +8,7 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
+import org.openmarkov.core.action.AbsorbIntermediateNodeEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
 
 import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
@@ -684,13 +685,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * child it might have and removing it next.
      */
     public void absorbNode() {
-        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        Node node;
-        if (selectedNodes.size() == 1) { // Always happens
-            node = selectedNodes.get(0).getNode();
-        } else {
-            throw new RuntimeException();
-        }
+        Node node = getSelectedNode();
         try {
             AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
             probNet.doEdit(absorbNode);
@@ -702,17 +697,35 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
 
     }
+
+	private Node getSelectedNode() {
+		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+        Node node;
+        if (selectedNodes.size() == 1) { // Always happens
+            node = selectedNodes.get(0).getNode();
+        } else {
+            throw new RuntimeException();
+        }
+		return node;
+	}
     
     /**
      * TODO: Fill as desired
      */
-    public void absorbIntermNode() {
-       /**
-        * 
-        * TODO: Put the code that the Absorb Intermediate nodes menu item will launch here
-        * 
-        */
-    }
+	public void absorbIntermNode() {
+		
+	
+	 Node node = getSelectedNode();
+     try {
+    	 AbsorbIntermediateNodeEdit absorbNode = new AbsorbIntermediateNodeEdit(probNet, node);
+         probNet.doEdit(absorbNode);
+     } catch (DoEditException | ConstraintViolationException |
+             WrongCriterionException | NonProjectablePotentialException e) {
+         e.printStackTrace();
+     }
+
+     repaint();
+	}
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.
