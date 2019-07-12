@@ -341,10 +341,10 @@
         <Mnemonic value="a"/>
     </Help>
     <Tree>
-        <ExpandN>
+        <ExpandNext>
             <Label value = "Expandir N niveles"/>
             <Mnemonic value = "n"/>
-        </ExpandN>
+        </ExpandNext>
         <ExpandAll>
             <Label value = "Expandir todos los niveles"/>
             <Mnemonic value = "t"/>
