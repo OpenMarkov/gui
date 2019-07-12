@@ -4,40 +4,16 @@
         <title value="Error" />
         <message value="An unexpected error occurred. Please check the log for more information." />
     </GenericException>
-    <ParserException>
-        <title value="Hola mundo" />
-        <message value="Probando uno dos tres" />
-    </ParserException>
-
-    <NotEvaluableNetworkException>
-        <title value="Not evaluable network" />
-        <message value="The selected network is not evaluable" />
-    </NotEvaluableNetworkException>
 
     <CanNotWriteNetworkToFileException>
         <title value="No se puede escribir la red al fichero" />
         <message value="No se puede escribir el fichero %s y por tanto no se pudo guardar la red" />
     </CanNotWriteNetworkToFileException>
 
-    <NormalizeNullVectorException>
-        <title value="Error de normalización en tabla."/>
-        <message value="Todos los elementos en la tabla con las variables: %s son 0.0"/>
-    </NormalizeNullVectorException>
-
-    <IncompatibleEvidenceException>
-        <title value="Evidencia incompatible."/>
-        <message value="Evidencia incompatible."/>
-    </IncompatibleEvidenceException>
-
-    <NuSuchMethodException>
-        <title value="No existe el método."/>
-        <message value="No existe el método: %s."/>
-    </NuSuchMethodException>
-
-    <InstantiationException>
-        <title value="No se puede instanciar el objeto."/>
-        <message value="No se puede instanciar el objeto."/>
-    </InstantiationException>
+    <ConfigurationException>
+        <title value="Problems with the configuration file."/>
+        <message value="Can not read or write the configuration file: %s. "/>
+    </ConfigurationException>
 
     <IllegalAccessException>
         <title value="No se puede acceder al objeto."/>
@@ -49,10 +25,90 @@
         <message value="Argumento ilegal."/>
     </IllegalArgumentException>
 
+    <IncompatibleEvidenceException>
+        <title value="Evidencia incompatible."/>
+        <message value="Evidencia incompatible."/>
+    </IncompatibleEvidenceException>
+
+    <InstantiationException>
+        <title value="No se puede instanciar el objeto."/>
+        <message value="No se puede instanciar el objeto."/>
+    </InstantiationException>
+
+    <InvalidStateException>
+        <title value="Invalid state in evidence."/>
+        <message value="Variable %s can not have the value %s."/>
+    </InvalidStateException>
+
+    <InvalidStateNameDuplicatedException>
+        <title value="Invalid state name."/>
+        <message value="There is already a state with that name in the variable."/>
+    </InvalidStateNameDuplicatedException>
+
+    <InvalidStateNameEmptyException>
+        <title value="Invalid state name."/>
+        <message value="There should be no empty names."/>
+    </InvalidStateNameEmptyException>
+
     <InvocationTargetException>
         <title value="No se puede invocar el método."/>
         <message value="No se puede invocar el método."/>
     </InvocationTargetException>
+
+    <NodeNotFoundException>
+        <title value="Node not found."/>
+        <message value="%s not found."/>
+    </NodeNotFoundException>
+
+    <NormalizeNullVectorException>
+        <title value="Error de normalización en tabla."/>
+        <message value="Todos los elementos en la tabla con las variables: %s son 0.0"/>
+    </NormalizeNullVectorException>
+
+    <NoSuchMethodException>
+        <title value="No existe el método."/>
+        <message value="No existe el método: %s."/>
+    </NoSuchMethodException>
+
+    <NotEvaluableNetworkException>
+        <title value="Not evaluable network" />
+        <message value="The selected network is not evaluable" />
+    </NotEvaluableNetworkException>
+
+    <NotRecognisedNetworkFileExtensionException>
+        <title value="File extension not recognized."/>
+        <message value="Unknown file extension: %s."/>
+    </NotRecognisedNetworkFileExtensionException>
+
+    <OutOfMemoryException>
+        <title value="Not enough memory."/>
+        <message value="Not enough memory."/>
+    </OutOfMemoryException>
+
+    <ParserException>
+        <title value="Hola mundo" />
+        <message value="Probando uno dos tres" />
+    </ParserException>
+
+    <PreferencesException>
+        <title value="Problems with preferences file."/>
+        <message value="Problems with preferences file: %s."/>
+    </PreferencesException>
+
+    <RedoException>
+        <title value="Can not redo action."/>
+        <message value="Can not redo action."/>
+    </RedoException>
+
+    <UndoException>
+        <title value="Can not undo action."/>
+        <message value="Undoable action."/>
+    </UndoException>
+
+    <WrongCriterionException>
+        <title value="Wrong criterion."/>
+        <message value="Wrong criterion: %s."/>
+    </WrongCriterionException>
 
 </properties>
 

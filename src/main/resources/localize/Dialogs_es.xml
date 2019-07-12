@@ -772,7 +772,7 @@
             </Redo>
             <MacNote>
                 <Shortcut value="Nota"/>
-                <Shortcut value="En Mac la tecla Cmd sustituye a Ctrl"/>
+                <Function value="En Mac la tecla Cmd sustituye a Ctrl"/>
             </MacNote>
         </Common>
     </ShortcutsBox>
