@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.core.exception.ExceptionConstants;
+import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WriterException;
@@ -154,7 +154,7 @@ public class NetsIO {
 			 * CanNotWriteNetworkToFileException(fileName); }
 			 */
 		} catch (WriterException ex) {
-			throw new OpenMarkovException(ExceptionConstants.CanNotWriteNetworkToFileException, fileName);
+			throw new OpenMarkovException(OpenMarkovExceptionConstants.CanNotWriteNetworkToFileException, fileName);
 		}
 	}
 
