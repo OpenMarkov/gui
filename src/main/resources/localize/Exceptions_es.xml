@@ -2,7 +2,7 @@
 <properties>
     <GenericException>
         <title value="Error" />
-        <message value="An unexpected error occurred. Please check the log for more information." />
+        <message value="Se ha producido un error inesperado. Por favor consulte el log para más información." />
     </GenericException>
 
     <CanNotWriteNetworkToFileException>
@@ -11,8 +11,8 @@
     </CanNotWriteNetworkToFileException>
 
     <ConfigurationException>
-        <title value="Problems with the configuration file."/>
-        <message value="Can not read or write the configuration file: %s. "/>
+        <title value="Problemas con el fichero de configuración."/>
+        <message value="No se puede leer o escribir el fichero de configuración: %s. "/>
     </ConfigurationException>
 
     <IllegalAccessException>
@@ -36,18 +36,18 @@
     </InstantiationException>
 
     <InvalidStateException>
-        <title value="Invalid state in evidence."/>
-        <message value="Variable %s can not have the value %s."/>
+        <title value="Estado no válido en la evidencia."/>
+        <message value="La variable %s no puede tener el valor  %s."/>
     </InvalidStateException>
 
     <InvalidStateNameDuplicatedException>
-        <title value="Invalid state name."/>
-        <message value="There is already a state with that name in the variable."/>
+        <title value="Nombre de estado no válido."/>
+        <message value="Ya existe un estado con ese nombre en la variable."/>
     </InvalidStateNameDuplicatedException>
 
     <InvalidStateNameEmptyException>
-        <title value="Invalid state name."/>
-        <message value="There should be no empty names."/>
+        <title value="Nombre de estado no válido."/>
+        <message value="El nombre del estado no puede estar vacío."/>
     </InvalidStateNameEmptyException>
 
     <InvocationTargetException>
@@ -56,8 +56,8 @@
     </InvocationTargetException>
 
     <NodeNotFoundException>
-        <title value="Node not found."/>
-        <message value="%s not found."/>
+        <title value="Nodo no encontrado."/>
+        <message value="%s no encontrado."/>
     </NodeNotFoundException>
 
     <NormalizeNullVectorException>
@@ -71,43 +71,43 @@
     </NoSuchMethodException>
 
     <NotEvaluableNetworkException>
-        <title value="Not evaluable network" />
-        <message value="The selected network is not evaluable" />
+        <title value="Red no evaluable." />
+        <message value="La red seleccionada no es evaluable." />
     </NotEvaluableNetworkException>
 
     <NotRecognisedNetworkFileExtensionException>
-        <title value="File extension not recognized."/>
-        <message value="Unknown file extension: %s."/>
+        <title value="No se reconoce la extensión del fichero."/>
+        <message value="Exttensión de fichero desconocida: %s."/>
     </NotRecognisedNetworkFileExtensionException>
 
     <OutOfMemoryException>
-        <title value="Not enough memory."/>
-        <message value="Not enough memory."/>
+        <title value="No hay suficiente memoria."/>
+        <message value="No hay suficiente memoria."/>
     </OutOfMemoryException>
 
     <ParserException>
-        <title value="Hola mundo" />
-        <message value="Probando uno dos tres" />
+        <title value="Error de lectura." />
+        <message value="No se puede leer la red %s." />
     </ParserException>
 
     <PreferencesException>
-        <title value="Problems with preferences file."/>
-        <message value="Problems with preferences file: %s."/>
+        <title value="Problemas con el fichero de preferencias."/>
+        <message value="Problemas con el fichero de preferencias: %s."/>
     </PreferencesException>
 
     <RedoException>
-        <title value="Can not redo action."/>
-        <message value="Can not redo action."/>
+        <title value="No se puede rehacer la acción."/>
+        <message value="No se puede rehacer la acción."/>
     </RedoException>
 
     <UndoException>
-        <title value="Can not undo action."/>
-        <message value="Undoable action."/>
+        <title value="No se puede deshacer la acción."/>
+        <message value="La acción no se puede deshacer."/>
     </UndoException>
 
     <WrongCriterionException>
-        <title value="Wrong criterion."/>
-        <message value="Wrong criterion: %s."/>
+        <title value="Criterio incorrecto."/>
+        <message value="Criterio incorrecto: %s."/>
     </WrongCriterionException>
 
 </properties>
