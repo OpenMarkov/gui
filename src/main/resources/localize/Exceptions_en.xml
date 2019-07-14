@@ -50,6 +50,16 @@
         <message value="There should be no empty names."/>
     </InvalidStateNameEmptyException>
 
+    <InvalidVariableNameExistingException>
+        <title value="Invalid variable name."/>
+        <message value="There is already a variable with that name in the net."/>
+    </InvalidVariableNameExistingException>
+
+    <InvalidVariableNameExistingTimeSliceException>
+        <title value="Invalid variable name."/>
+        <message value="There is already a variable with that name and in the same time slice in the net."/>
+    </InvalidVariableNameExistingTimeSliceException>
+
     <InvocationTargetException>
         <title value="Can not invocate method."/>
         <message value="Can not invocate method."/>

@@ -50,6 +50,16 @@
         <message value="El nombre del estado no puede estar vacío."/>
     </InvalidStateNameEmptyException>
 
+    <InvalidVariableNameExisting>
+        <title value="Nombre de variable no válido."/>
+        <message value="Ya existe una variable con ese nombre en la red."/>
+    </InvalidVariableNameExisting>
+
+    <InvalidVariableNameExistingTimeSlice>
+        <title value="Nombre de variable no válido."/>
+        <message value="Ya existe una variable con ese nombre y con el mismo ciclo en la red."/>
+    </InvalidVariableNameExistingTimeSlice>
+
     <InvocationTargetException>
         <title value="No se puede invocar el método."/>
         <message value="No se puede invocar el método."/>
