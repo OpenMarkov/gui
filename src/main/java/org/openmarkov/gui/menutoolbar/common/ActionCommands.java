@@ -243,9 +243,9 @@ public class ActionCommands {
      */
     public static final String ABSORB_NODE = "AbsorbNode";
     /**
-     * Absorb utility parents
+     * Absorb parents
      */
-    public static final String ABSORBINTERM_NODE = "AbsorbIntermNode";
+    public static final String ABSORB_PARENTS = "AbsorbParents";
 	/**
 	 * Action invoked when the user wants to show the additionalProperties of a node.
 	 */

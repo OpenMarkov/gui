@@ -8,7 +8,7 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.AbsorbIntermediateNodeEdit;
+import org.openmarkov.core.action.AbsorbParentsEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
 
 import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
@@ -712,13 +712,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
     /**
      * TODO: Fill as desired
      */
-	public void absorbIntermNode() {
+	public void absorbParents() {
 		
 	
 	 Node node = getSelectedNode();
      try {
-    	 AbsorbIntermediateNodeEdit absorbNode = new AbsorbIntermediateNodeEdit(probNet, node);
-         probNet.doEdit(absorbNode);
+    	 AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
+         probNet.doEdit(absorbParents);
      } catch (DoEditException | ConstraintViolationException |
              WrongCriterionException | NonProjectablePotentialException e) {
          e.printStackTrace();

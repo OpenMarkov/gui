@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.Node;
  * @author iagoparís - summer 2019
  *
  */
-public class AbsorbIntermNodeValidator {
+public class AbsorbParentsValidator {
 	
     public static boolean validate(Node node) {
     	return BasicOperations.haveParentsAndAreAllAbsorbable(node);

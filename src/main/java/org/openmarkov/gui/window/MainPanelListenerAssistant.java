@@ -244,8 +244,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
 		} else if (actionCommand.equals(ActionCommands.ABSORB_NODE)) {
             this.getCurrentNetworkPanel().absorbNode();
-		} else if (actionCommand.equals(ActionCommands.ABSORBINTERM_NODE)) {
-            this.getCurrentNetworkPanel().absorbIntermNode();
+		} else if (actionCommand.equals(ActionCommands.ABSORB_PARENTS)) {
+            this.getCurrentNetworkPanel().absorbParents();
         } else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNodeProperties();
 		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
@@ -1376,7 +1376,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		if (performInference) {
 			if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 
-				getCurrentNetworkPanel().updateIndividualProbabilities();
+				getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
 				mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
 			} else {
 				// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode

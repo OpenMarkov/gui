@@ -335,8 +335,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	/**
 	 * This method absorbs intermediate utility nodes.
 	 */
-    public void absorbIntermNode() {
-        editorPanel.absorbIntermNode();
+    public void absorbParents() {
+        editorPanel.absorbParents();
     }
 
 	/**
@@ -439,7 +439,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
-	public void updateIndividualProbabilities() {
+	public void updateIndividualProbabilitiesAndUtilities() {
 		editorPanel.updateIndividualProbabilitiesAndUtilities();
 	}
 

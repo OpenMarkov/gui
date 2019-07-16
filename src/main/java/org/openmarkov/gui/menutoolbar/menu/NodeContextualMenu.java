@@ -9,7 +9,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.gui.constraint.AbsorbIntermNodeValidator;
+import org.openmarkov.gui.constraint.AbsorbParentsValidator;
 import org.openmarkov.gui.constraint.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -53,9 +53,9 @@ public class NodeContextualMenu extends ContextualMenu {
      */
     private JMenuItem absorbNodeMenuItem = null;
 	/**
-     * Object that represents the item 'AbsorbIntermNode'.
+     * Object that represents the item 'AbsorbParents'.
      */
-    private JMenuItem absorbIntermNodeMenuItem = null;
+    private JMenuItem absorbParentsMenuItem = null;
 	/**
 	 * Object that represents the item 'Properties'.
 	 */
@@ -126,12 +126,12 @@ public class NodeContextualMenu extends ContextualMenu {
 		super(newListener);
 		initialize();
 
-        // Test if the node can be absorbed. Validate method return true in that case
+        // Test if the node can be absorbed. Validate method returns true in that case
         Node node = selectedNode.getNode();
         setOptionEnabled(ActionCommands.ABSORB_NODE, AbsorbNodeValidator.validate(node));
 
-		// Test if the node can absorbed intermediate nodes. Validate method return true in that case
-		setOptionEnabled(ActionCommands.ABSORBINTERM_NODE, AbsorbIntermNodeValidator.validate(node));
+		// Test if parents of the node can be absorbed. Validate method returns true in that case
+		setOptionEnabled(ActionCommands.ABSORB_PARENTS, AbsorbParentsValidator.validate(node));
 
         if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
 			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
@@ -159,7 +159,7 @@ public class NodeContextualMenu extends ContextualMenu {
         addSeparator();
         add(getAbsorbNodeMenuItem());
 		addSeparator();
-		add(getAbsorbIntermNodeMenuItem());
+		add(getAbsorbParentsMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
@@ -190,7 +190,7 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
         add(getAbsorbNodeMenuItem());
         addSeparator();
-		add(getAbsorbIntermNodeMenuItem());
+		add(getAbsorbParentsMenuItem());
 		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -224,7 +224,7 @@ public class NodeContextualMenu extends ContextualMenu {
         addSeparator();
         add(getAbsorbNodeMenuItem());
 		addSeparator();
-		add(getAbsorbIntermNodeMenuItem());
+		add(getAbsorbParentsMenuItem());
 		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
@@ -561,17 +561,17 @@ public class NodeContextualMenu extends ContextualMenu {
 	}
 	
     /**
-     * This method initialises absorbIntermNodeMenuItem.
+     * This method initialises AbsorbParentsMenuItem.
      *
-     * @return a new 'absorbIntermNode' menu item.
+     * @return a new 'AbsorbParents' menu item.
      */
-    private JMenuItem getAbsorbIntermNodeMenuItem() {
-        if (absorbIntermNodeMenuItem == null) {
-        	absorbIntermNodeMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBINTERMNODE_MENUITEM, ActionCommands.ABSORBINTERM_NODE);
-        	absorbIntermNodeMenuItem.addActionListener(listener);
+    private JMenuItem getAbsorbParentsMenuItem() {
+        if (absorbParentsMenuItem == null) {
+        	absorbParentsMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBPARENTS_MENUITEM, ActionCommands.ABSORB_PARENTS);
+        	absorbParentsMenuItem.addActionListener(listener);
         }
         
-        return absorbIntermNodeMenuItem;
+        return absorbParentsMenuItem;
     }
 
 	// TODO OOPN end
@@ -597,8 +597,8 @@ public class NodeContextualMenu extends ContextualMenu {
             case ActionCommands.ABSORB_NODE:
                 component = absorbNodeMenuItem;
                 break;
-            case ActionCommands.ABSORBINTERM_NODE:
-                component = absorbIntermNodeMenuItem;
+            case ActionCommands.ABSORB_PARENTS:
+                component = absorbParentsMenuItem;
                 break;
             case ActionCommands.NODE_PROPERTIES:
                 component = propertiesMenuItem;

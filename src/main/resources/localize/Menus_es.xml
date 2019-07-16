@@ -121,10 +121,10 @@
             <Label value="Absorber este nodo"/>
             <Mnemonic value="b"/>
         </AbsorbNode>
-        <AbsorbIntermNode>
+        <AbsorbParents>
             <Label value="Absorber padres"/>
         	<Mnemonic value="n"/>
-        </AbsorbIntermNode>
+        </AbsorbParents>
         <NodeProperties>
             <Label value="Propiedades del nodo..."/>
             <Mnemonic value="i"/>
