@@ -787,6 +787,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
 			if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
 				filename += "." + chosenFilterExtension.toLowerCase();
+				File selectedFile = new File(filename);
+				if (selectedFile.exists()) {
+					int response = JOptionPane.showConfirmDialog(this.getCurrentPanel(), "The file " + selectedFile.getName()
+									+ " already exists. The file will be renamed to " + selectedFile.getName() + " (1)." + chosenFilterExtension.toLowerCase(), "Network renamed",
+							JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+
+					filename = fileChooser.getSelectedFile().getAbsolutePath() + " (1)." + chosenFilterExtension.toLowerCase();
+				}
+
 			}
 			fileFormat = ((FileFilterAll) fileChooser.getFileFilter()).getFileDescription();
 		}
