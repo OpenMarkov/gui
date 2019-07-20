@@ -13,10 +13,7 @@ import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PurposeEdit;
 import org.openmarkov.core.action.RelevanceEdit;
 import org.openmarkov.core.action.TimeSliceEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -28,6 +25,7 @@ import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
 import org.openmarkov.gui.constraint.AlwaysObservedPropertyValidator;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.util.Purpose;
 
@@ -864,8 +862,9 @@ public class NodeDefinitionPanel extends JPanel
 				} catch (ConstraintViolationException e1) {
 					// TODO Auto-generated catch block
 					// e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, e1.getMessage(),
-							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
+					LocalizedException localizedException = new LocalizedException(e1);
+					localizedException.showException();
+
 					jTextFieldNodeName.setText(node.getName());
 					jTextFieldNodeName.requestFocus();
 				} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e1) {

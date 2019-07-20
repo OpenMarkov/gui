@@ -118,9 +118,13 @@
             <Mnemonic value="o"/>
         </Copy>
         <AbsorbNode>
-            <Label value="Absorb"/>
-            <Mnemonic value="n"/>
+            <Label value="Absorb this node"/>
+            <Mnemonic value="b"/>
         </AbsorbNode>
+        <AbsorbParents>
+            <Label value="Absorb parents"/>
+            <Mnemonic value="n"/>
+        </AbsorbParents>
         <NodeProperties>
             <Label value="Node properties..."/>
             <Mnemonic value="i"/>

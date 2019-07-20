@@ -8,6 +8,7 @@
 package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.AddNodeEdit;
+import org.openmarkov.core.action.AbsorbParentsEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
 
 import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
@@ -26,6 +27,7 @@ import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
 import org.openmarkov.core.inference.tasks.Propagation;
+import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.*;
@@ -684,13 +686,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      * child it might have and removing it next.
      */
     public void absorbNode() {
-        List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        Node node;
-        if (selectedNodes.size() == 1) { // Always happens
-            node = selectedNodes.get(0).getNode();
-        } else {
-            throw new RuntimeException();
-        }
+        Node node = getSelectedNode();
         try {
             AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
             probNet.doEdit(absorbNode);
@@ -702,6 +698,35 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
 
     }
+
+	private Node getSelectedNode() {
+		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+        Node node;
+        if (selectedNodes.size() == 1) { // Always happens
+            node = selectedNodes.get(0).getNode();
+        } else {
+            throw new RuntimeException();
+        }
+		return node;
+	}
+    
+    /**
+     * TODO: Fill as desired
+     */
+	public void absorbParents() {
+		
+	
+	 Node node = getSelectedNode();
+     try {
+    	 AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
+         probNet.doEdit(absorbParents);
+     } catch (DoEditException | ConstraintViolationException |
+             WrongCriterionException | NonProjectablePotentialException e) {
+         e.printStackTrace();
+     }
+
+     repaint();
+	}
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.
@@ -1510,20 +1535,22 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
-	public void updateIndividualProbabilities() {
+	public void updateIndividualProbabilitiesAndUtilities() {
 		// if some visualNode has a number of values different from the
 		// number of evidence cases in memory, we need to recreate its
 		// visual states and consider that the network has been changed.
 		for (VisualNode visualNode : visualNetwork.getAllNodes()) {
 			InnerBox innerBox = visualNode.getInnerBox();
 			VisualState visualState = null;
-			if (innerBox instanceof FSVariableBox) {
-				visualState = ((FSVariableBox) innerBox).getVisualState(0);
-				updateVisualStateAndEvidence(innerBox, visualState);
-			} else if (innerBox instanceof NumericVariableBox) {
-				visualState = ((NumericVariableBox) innerBox).getVisualState();
+			if (innerBox instanceof FSVariableBox || innerBox instanceof NumericVariableBox) {
+				if (innerBox instanceof FSVariableBox) {
+					visualState = ((FSVariableBox) innerBox).getVisualState(0);
+				} else { // (innerBox instanceof NumericVariableBox)
+					visualState = ((NumericVariableBox) innerBox).getVisualState();
+				}
 				updateVisualStateAndEvidence(innerBox, visualState);
 			}
+			
 		}
 		if ((propagationActive) && (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
 			// if the network has been changed, propagation must be done in
@@ -1882,7 +1909,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	private void calculateMinAndMaxUtilityRanges() throws NonProjectablePotentialException {
 		List<Variable> utilityVariables = probNet.getVariables(NodeType.UTILITY);
 		for (Variable utility : utilityVariables) {
-			Node node = probNet.getNode(utility);
+			ProbNet newNet = probNet.copy(); 
+			newNet = TaskUtilities.extendPreResolutionEvidence(newNet, getPreResolutionEvidence());
+			Node node = newNet.getNode(utility);
+			//minUtilityRange.put(utility, node.getApproximateMaxMinimumUtilityFunction(false, preResolutionEvidence));
+			//maxUtilityRange.put(utility, node.getApproximateMaxMinimumUtilityFunction(true, preResolutionEvidence));
 			minUtilityRange.put(utility, node.getApproximateMinimumUtilityFunction());
 			maxUtilityRange.put(utility, node.getApproximateMaximumUtilityFunction());
 		}

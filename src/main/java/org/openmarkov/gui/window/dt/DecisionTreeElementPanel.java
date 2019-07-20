@@ -9,8 +9,11 @@ package org.openmarkov.gui.window.dt;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("serial") public abstract class DecisionTreeElementPanel extends JPanel {
 	/**
@@ -23,6 +26,8 @@ import java.util.List;
 	protected JLabel rightLabel = new JLabel();
 
 	protected List<DecisionTreeElementPanel> children;
+	
+	DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 
 	public DecisionTreeElementPanel() {
 		super(new BorderLayout());

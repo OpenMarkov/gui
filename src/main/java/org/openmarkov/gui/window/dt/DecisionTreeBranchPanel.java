@@ -31,7 +31,6 @@ import java.util.Locale;
 	 * Builds the text to be shown in the branch
 	 */
 	public String getBranchDescriptiontHTML() {
-		DecimalFormat df = new DecimalFormat("0.0000", new DecimalFormatSymbols(Locale.US));
 		StringBuilder txtLeft = new StringBuilder("<html><table border=1>");
 		DecisionTreeNode parent = treeBranch.getParent();
 		if (parent != null && parent.getNodeType() == NodeType.DECISION) {
@@ -45,21 +44,19 @@ import java.util.Locale;
 		if (treeBranch.getBranchVariable() != null) {
 			txtLeft.append(treeBranch.getBranchVariable().getName() + "=");
 			txtLeft.append(treeBranch.getBranchState().getName());
-			txtLeft.append(" / ");
 		}
 		if (parent != null && parent.getNodeType() == NodeType.CHANCE) {
-			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 			txtLeft.append(" / ");
+			txtLeft.append(" P=" + df.format(treeBranch.getBranchProbability()));
 		}
-		double utility = treeBranch.getChild().getUtility();
-		if (Double.isNaN(utility)) {
-			utility = 0.0;
-		}
-		txtLeft.append("U=" + df.format(utility));
+		
+		txtLeft.append(treeBranch.getChild().formatUtility(df,parent != null));
 		txtLeft.append("</td>");
 		txtLeft.append("</table></html>");
 		return txtLeft.toString();
 	}
+
+	
 
 	@Override public void update(boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		leftLabel.setText(getBranchDescriptiontHTML());

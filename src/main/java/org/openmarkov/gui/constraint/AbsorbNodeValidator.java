@@ -15,7 +15,7 @@ import java.util.List;
 /******
  * This class validates if a chance or decision node can be absorbed into an utility node
  *
- * @author iagoparís - summer
+ * @author iagoparís - summer 2018
  *
  */
 public class AbsorbNodeValidator {

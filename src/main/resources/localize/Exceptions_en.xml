@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+    <GenericException>
+        <title value="Error" />
+        <message value="An unexpected error occurred. Please check the log for more information." />
+    </GenericException>
+
     <CanNotWriteNetworkToFileException>
         <title value="Cannot write network to file" />
         <message value="Cannot write network to file: %s" />
@@ -9,11 +14,6 @@
         <title value="Problems with the configuration file."/>
         <message value="Can not read or write the configuration file: %s. "/>
     </ConfigurationException>
-
-    <GenericException>
-        <title value="Error" />
-        <message value="An unexpected error occurred. Please check the log for more information." />
-    </GenericException>
 
     <IllegalAccessException>
         <title value="Can not access object."/>
@@ -39,6 +39,26 @@
         <title value="Invalid state in evidence."/>
         <message value="Variable %s can not have the value %s."/>
     </InvalidStateException>
+
+    <InvalidStateNameDuplicatedException>
+        <title value="Invalid state name."/>
+        <message value="There is already a state with that name in the variable."/>
+    </InvalidStateNameDuplicatedException>
+
+    <InvalidStateNameEmptyException>
+        <title value="Invalid state name."/>
+        <message value="There should be no empty names."/>
+    </InvalidStateNameEmptyException>
+
+    <InvalidVariableNameExistingException>
+        <title value="Invalid variable name."/>
+        <message value="There is already a variable with that name in the net."/>
+    </InvalidVariableNameExistingException>
+
+    <InvalidVariableNameExistingTimeSliceException>
+        <title value="Invalid variable name."/>
+        <message value="There is already a variable with that name and in the same time slice in the net."/>
+    </InvalidVariableNameExistingTimeSliceException>
 
     <InvocationTargetException>
         <title value="Can not invocate method."/>

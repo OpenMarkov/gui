@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.edition;
 
+import org.openmarkov.core.action.CloseParenthesisEdit;
+import org.openmarkov.core.action.OpenParenthesisEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
@@ -331,6 +333,12 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
     public void absorbNode() {
         editorPanel.absorbNode();
     }
+	/**
+	 * This method absorbs intermediate utility nodes.
+	 */
+    public void absorbParents() {
+        editorPanel.absorbParents();
+    }
 
 	/**
 	 * This method shows a dialog box with the additionalProperties of a node.
@@ -440,8 +448,8 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 * This method updates the value of each state for each node in the network
 	 * with the current individual probabilities.
 	 */
-	public void updateIndividualProbabilities() {
-		editorPanel.updateIndividualProbabilities();
+	public void updateIndividualProbabilitiesAndUtilities() {
+		editorPanel.updateIndividualProbabilitiesAndUtilities();
 	}
 
 	/**
@@ -660,7 +668,10 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	public void undoableEditHappened(UndoableEditEvent arg0) {
-		setModified(true);
+		if (!arg0.getEdit().getClass().equals(OpenParenthesisEdit.class) &&
+				!arg0.getEdit().getClass().equals(CloseParenthesisEdit.class) ) {
+			setModified(true);
+		}
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)

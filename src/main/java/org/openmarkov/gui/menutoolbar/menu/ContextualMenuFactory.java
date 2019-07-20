@@ -171,13 +171,14 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 
 	/**
 	 * This method initialises treeContextualMenu. A menu for the nodes of a decision tree.
+	 * @param enableShowCEP 
 	 *
 	 * @return the tree contextual menu.
 	 */
-	private ContextualMenu getStandardTreeContextualMenu() {
+	private ContextualMenu getStandardTreeContextualMenu(boolean enableShowCEP) {
 
 		menuAssistant.removeMenu(treeContextualMenu);
-		treeContextualMenu = new TreeContextualMenu(listener);
+		treeContextualMenu = new TreeContextualMenu(listener,enableShowCEP);
 		treeContextualMenu.setName("treeContextualMenu");
 		menuAssistant.addMenu(treeContextualMenu);
 		return treeContextualMenu;
@@ -256,11 +257,12 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * Returns the correspondent tree pop-up menu. As for now there is only one possible menu
 	 * so discrimination by inputs (as is @link #getContextualMenu(VisualElement, EditorPanel))
 	 * is not necessary.
+	 * @param enableShowCEP 
 	 *
 	 * @return the correspondent tree pop-up menu
 	 */
-	public ContextualMenu getTreeContextualMenu() {
-		return getStandardTreeContextualMenu();
+	public ContextualMenu getTreeContextualMenu(boolean enableShowCEP) {
+		return getStandardTreeContextualMenu(enableShowCEP);
 	}
 
 

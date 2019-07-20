@@ -2,42 +2,18 @@
 <properties>
     <GenericException>
         <title value="Error" />
-        <message value="An unexpected error occurred. Please check the log for more information." />
+        <message value="Se ha producido un error inesperado. Por favor consulte el log para más información." />
     </GenericException>
-    <ParserException>
-        <title value="Hola mundo" />
-        <message value="Probando uno dos tres" />
-    </ParserException>
-
-    <NotEvaluableNetworkException>
-        <title value="Not evaluable network" />
-        <message value="The selected network is not evaluable" />
-    </NotEvaluableNetworkException>
 
     <CanNotWriteNetworkToFileException>
         <title value="No se puede escribir la red al fichero" />
         <message value="No se puede escribir el fichero %s y por tanto no se pudo guardar la red" />
     </CanNotWriteNetworkToFileException>
 
-    <NormalizeNullVectorException>
-        <title value="Error de normalización en tabla."/>
-        <message value="Todos los elementos en la tabla con las variables: %s son 0.0"/>
-    </NormalizeNullVectorException>
-
-    <IncompatibleEvidenceException>
-        <title value="Evidencia incompatible."/>
-        <message value="Evidencia incompatible."/>
-    </IncompatibleEvidenceException>
-
-    <NuSuchMethodException>
-        <title value="No existe el método."/>
-        <message value="No existe el método: %s."/>
-    </NuSuchMethodException>
-
-    <InstantiationException>
-        <title value="No se puede instanciar el objeto."/>
-        <message value="No se puede instanciar el objeto."/>
-    </InstantiationException>
+    <ConfigurationException>
+        <title value="Problemas con el fichero de configuración."/>
+        <message value="No se puede leer o escribir el fichero de configuración: %s. "/>
+    </ConfigurationException>
 
     <IllegalAccessException>
         <title value="No se puede acceder al objeto."/>
@@ -49,10 +25,100 @@
         <message value="Argumento ilegal."/>
     </IllegalArgumentException>
 
+    <IncompatibleEvidenceException>
+        <title value="Evidencia incompatible."/>
+        <message value="Evidencia incompatible."/>
+    </IncompatibleEvidenceException>
+
+    <InstantiationException>
+        <title value="No se puede instanciar el objeto."/>
+        <message value="No se puede instanciar el objeto."/>
+    </InstantiationException>
+
+    <InvalidStateException>
+        <title value="Estado no válido en la evidencia."/>
+        <message value="La variable %s no puede tener el valor  %s."/>
+    </InvalidStateException>
+
+    <InvalidStateNameDuplicatedException>
+        <title value="Nombre de estado no válido."/>
+        <message value="Ya existe un estado con ese nombre en la variable."/>
+    </InvalidStateNameDuplicatedException>
+
+    <InvalidStateNameEmptyException>
+        <title value="Nombre de estado no válido."/>
+        <message value="El nombre del estado no puede estar vacío."/>
+    </InvalidStateNameEmptyException>
+
+    <InvalidVariableNameExistingException>
+        <title value="Nombre de variable no válido."/>
+        <message value="Ya existe una variable con ese nombre en la red."/>
+    </InvalidVariableNameExistingException>
+
+    <InvalidVariableNameExistingTimeSliceException>
+        <title value="Nombre de variable no válido."/>
+        <message value="Ya existe una variable con ese nombre y con el mismo ciclo en la red."/>
+    </InvalidVariableNameExistingTimeSliceException>
+
     <InvocationTargetException>
         <title value="No se puede invocar el método."/>
         <message value="No se puede invocar el método."/>
     </InvocationTargetException>
+
+    <NodeNotFoundException>
+        <title value="Nodo no encontrado."/>
+        <message value="%s no encontrado."/>
+    </NodeNotFoundException>
+
+    <NormalizeNullVectorException>
+        <title value="Error de normalización en tabla."/>
+        <message value="Todos los elementos en la tabla con las variables: %s son 0.0"/>
+    </NormalizeNullVectorException>
+
+    <NoSuchMethodException>
+        <title value="No existe el método."/>
+        <message value="No existe el método: %s."/>
+    </NoSuchMethodException>
+
+    <NotEvaluableNetworkException>
+        <title value="Red no evaluable." />
+        <message value="La red seleccionada no es evaluable." />
+    </NotEvaluableNetworkException>
+
+    <NotRecognisedNetworkFileExtensionException>
+        <title value="No se reconoce la extensión del fichero."/>
+        <message value="Exttensión de fichero desconocida: %s."/>
+    </NotRecognisedNetworkFileExtensionException>
+
+    <OutOfMemoryException>
+        <title value="No hay suficiente memoria."/>
+        <message value="No hay suficiente memoria."/>
+    </OutOfMemoryException>
+
+    <ParserException>
+        <title value="Error de lectura." />
+        <message value="No se puede leer la red %s." />
+    </ParserException>
+
+    <PreferencesException>
+        <title value="Problemas con el fichero de preferencias."/>
+        <message value="Problemas con el fichero de preferencias: %s."/>
+    </PreferencesException>
+
+    <RedoException>
+        <title value="No se puede rehacer la acción."/>
+        <message value="No se puede rehacer la acción."/>
+    </RedoException>
+
+    <UndoException>
+        <title value="No se puede deshacer la acción."/>
+        <message value="La acción no se puede deshacer."/>
+    </UndoException>
+
+    <WrongCriterionException>
+        <title value="Criterio incorrecto."/>
+        <message value="Criterio incorrecto: %s."/>
+    </WrongCriterionException>
 
 </properties>
 

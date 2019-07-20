@@ -165,8 +165,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	protected List<Integer> priorityList = new LinkedList<Integer>();
 	protected boolean isSelectAllForMouseEvent = true;
-	protected boolean isSelectAllForActionEvent = false;
-	protected boolean isSelectAllForKeyEvent = false;
+	protected boolean isSelectAllForActionEvent = true;
+	protected boolean isSelectAllForKeyEvent = true;
 	/**
 	 * first editable row. By default, it is zero until runtime initialisation
 	 */

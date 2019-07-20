@@ -118,9 +118,13 @@
             <Mnemonic value="o"/>
         </Copy>
         <AbsorbNode>
-            <Label value="Absorber"/>
-            <Mnemonic value="d"/>
+            <Label value="Absorber este nodo"/>
+            <Mnemonic value="b"/>
         </AbsorbNode>
+        <AbsorbParents>
+            <Label value="Absorber padres"/>
+        	<Mnemonic value="n"/>
+        </AbsorbParents>
         <NodeProperties>
             <Label value="Propiedades del nodo..."/>
             <Mnemonic value="i"/>
@@ -337,10 +341,10 @@
         <Mnemonic value="a"/>
     </Help>
     <Tree>
-        <ExpandN>
+        <ExpandNext>
             <Label value = "Expandir N niveles"/>
             <Mnemonic value = "n"/>
-        </ExpandN>
+        </ExpandNext>
         <ExpandAll>
             <Label value = "Expandir todos los niveles"/>
             <Mnemonic value = "t"/>

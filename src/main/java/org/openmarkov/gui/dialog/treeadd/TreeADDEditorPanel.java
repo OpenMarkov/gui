@@ -175,7 +175,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 				newPosibleRootVariables.add(variable);
 			}
 		}
-		if (!hasSubTrees && newPosibleRootVariables.size() != 0) {
+		if (newPosibleRootVariables.size() != 0) {
 			for (Variable variable : treeADD.getVariables()) {
 				if (variable != currentRootVariable && variable != conditionedVariable) {
 					JMenuItem posibleRootVariable = new JMenuItem(variable.getName());

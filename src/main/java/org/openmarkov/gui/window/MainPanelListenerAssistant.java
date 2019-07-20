@@ -245,6 +245,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().propagateEvidence(mainPanel.getMainPanelMenuAssistant());
 		} else if (actionCommand.equals(ActionCommands.ABSORB_NODE)) {
             this.getCurrentNetworkPanel().absorbNode();
+		} else if (actionCommand.equals(ActionCommands.ABSORB_PARENTS)) {
+            this.getCurrentNetworkPanel().absorbParents();
         } else if (actionCommand.equals(ActionCommands.NODE_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNodeProperties();
 		} else if (actionCommand.equals(ActionCommands.EDIT_POTENTIAL)) {
@@ -788,6 +790,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			String chosenFilterExtension = ((FileFilterBasic) fileChooser.getFileFilter()).getFilterExtension();
 			if (!filename.toLowerCase().endsWith("." + chosenFilterExtension.toLowerCase())) {
 				filename += "." + chosenFilterExtension.toLowerCase();
+				File selectedFile = new File(filename);
+				if (selectedFile.exists()) {
+					int response = JOptionPane.showConfirmDialog(this.getCurrentPanel(), "The file " + selectedFile.getName()
+									+ " already exists. The file will be renamed to " + selectedFile.getName() + " (1)." + chosenFilterExtension.toLowerCase(), "Network renamed",
+							JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+
+					filename = fileChooser.getSelectedFile().getAbsolutePath() + " (1)." + chosenFilterExtension.toLowerCase();
+				}
+
 			}
 			fileFormat = ((FileFilterAll) fileChooser.getFileFilter()).getFileDescription();
 		}
@@ -1377,7 +1388,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		if (performInference) {
 			if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
 
-				getCurrentNetworkPanel().updateIndividualProbabilities();
+				getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
 				mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
 			} else {
 				// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode

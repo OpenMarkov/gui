@@ -10,6 +10,7 @@ package org.openmarkov.gui.menutoolbar.menu;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.gui.constraint.AbsorbParentsValidator;
 import org.openmarkov.gui.constraint.AbsorbNodeValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
@@ -53,6 +54,10 @@ public class NodeContextualMenu extends ContextualMenu {
      * Object that represents the item 'AbsorbNode'.
      */
     private JMenuItem absorbNodeMenuItem = null;
+	/**
+     * Object that represents the item 'AbsorbParents'.
+     */
+    private JMenuItem absorbParentsMenuItem = null;
 	/**
 	 * Object that represents the item 'Properties'.
 	 */
@@ -128,9 +133,12 @@ public class NodeContextualMenu extends ContextualMenu {
 		super(newListener);
 		initialize();
 
-        // Test if the node can be absorbed. Validate method return true in that case
+        // Test if the node can be absorbed. Validate method returns true in that case
         Node node = selectedNode.getNode();
         setOptionEnabled(ActionCommands.ABSORB_NODE, AbsorbNodeValidator.validate(node));
+
+		// Test if parents of the node can be absorbed. Validate method returns true in that case
+		setOptionEnabled(ActionCommands.ABSORB_PARENTS, AbsorbParentsValidator.validate(node));
 
         if (selectedNode.getNode().getNodeType().equals(NodeType.DECISION)) {
 			if (panel.getNetworkPanel().getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
@@ -159,6 +167,7 @@ public class NodeContextualMenu extends ContextualMenu {
 			{
 			setDefaultNodeContextualMenu();
 		}
+
 	}
 
 	/**
@@ -170,6 +179,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getRemoveMenuItem());
         addSeparator();
         add(getAbsorbNodeMenuItem());
+		addSeparator();
+		add(getAbsorbParentsMenuItem());
 		addSeparator();
 		add(getPropertiesMenuItem());
 		add(getEditPotentialMenuItem());
@@ -200,6 +211,8 @@ public class NodeContextualMenu extends ContextualMenu {
 		addSeparator();
         add(getAbsorbNodeMenuItem());
         addSeparator();
+		add(getAbsorbParentsMenuItem());
+		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
 		addSeparator();
@@ -232,6 +245,8 @@ public class NodeContextualMenu extends ContextualMenu {
         addSeparator();
         add(getAbsorbNodeMenuItem());
 		addSeparator();
+		add(getAbsorbParentsMenuItem());
+		addSeparator();
 		add(getTemporalEvolutionMenuItem());
 		add(getNextSliceNodeMenuItem());
 		addSeparator();
@@ -243,9 +258,9 @@ public class NodeContextualMenu extends ContextualMenu {
 		add(getImposePolicyMenuItem());
 		add(getEditPolicyMenuItem());
 		add(getRemovePolicyMenuItem());
-		addSeparator();
-		add(getAddFindingMenuItem());
-		add(getRemoveFindingMenuItem());
+		//addSeparator();
+		//add(getAddFindingMenuItem());
+		//add(getRemoveFindingMenuItem());
 		/*
 		 * addSeparator(); add(getLogMenuItem());
 		 */
@@ -607,6 +622,20 @@ public class NodeContextualMenu extends ContextualMenu {
 		}
 		return inputMenuItem;
 	}
+	
+    /**
+     * This method initialises AbsorbParentsMenuItem.
+     *
+     * @return a new 'AbsorbParents' menu item.
+     */
+    private JMenuItem getAbsorbParentsMenuItem() {
+        if (absorbParentsMenuItem == null) {
+        	absorbParentsMenuItem = new LocalizedMenuItem(MenuItemNames.EDIT_ABSORBPARENTS_MENUITEM, ActionCommands.ABSORB_PARENTS);
+        	absorbParentsMenuItem.addActionListener(listener);
+        }
+        
+        return absorbParentsMenuItem;
+    }
 
 	// TODO OOPN end
 
@@ -630,6 +659,9 @@ public class NodeContextualMenu extends ContextualMenu {
                 break;
             case ActionCommands.ABSORB_NODE:
                 component = absorbNodeMenuItem;
+                break;
+            case ActionCommands.ABSORB_PARENTS:
+                component = absorbParentsMenuItem;
                 break;
             case ActionCommands.NODE_PROPERTIES:
                 component = propertiesMenuItem;

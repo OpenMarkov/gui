@@ -251,7 +251,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		org.openmarkov.core.model.network.type.NetworkType networkType = currentNetworkPanel.getProbNet()
 				.getNetworkType();
 		return networkType instanceof InfluenceDiagramType || networkType instanceof BayesianNetworkType
-				//|| networkType instanceof MIDType
+				|| networkType instanceof MIDType
 				;
 	}
 

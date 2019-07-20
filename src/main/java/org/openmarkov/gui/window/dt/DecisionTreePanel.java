@@ -13,6 +13,9 @@ import org.openmarkov.core.dt.DecisionTreeNode;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
+import org.openmarkov.core.inference.MulticriteriaOptions;
+import org.openmarkov.core.inference.MulticriteriaOptions.Type;
+import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.NodeType;
@@ -20,20 +23,18 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
-import org.openmarkov.core.oopn.Instance;
+
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
+import org.openmarkov.gui.dialog.costeffectiveness.CEPDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TreeContextualMenu;
-import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.util.TreeNodeToDot;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecisionTreeComputation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.DecompositionGenerateDecisionTree;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecisionTreeEvaluation;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.IDDecisionTreeEvaluation;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.tree.TreeModel;
 
 import java.awt.*;
@@ -90,8 +91,8 @@ import java.awt.event.MouseListener;
 	 * @return
 	 * @throws NotEvaluableNetworkException
 	 */
-	private static DecisionTreeElement buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
-		DecisionTreeElement root = null;
+	private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {
+		DecisionTreeBranch root = null;
 		NetworkType networkType = probNet.getNetworkType();
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
@@ -171,7 +172,9 @@ import java.awt.event.MouseListener;
 		try {
 			if (branch != null) {
 				Variable branchVariable = branch.getBranchVariable();
-				if (branchVariable != null && (!branchVariable.getName().equalsIgnoreCase("OD"))) {
+				if (branchVariable != null && (!branchVariable.getName().equalsIgnoreCase("OD")) && !newEvi.contains(branchVariable)
+						) 
+				{
 					newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
 				}
 			}
@@ -219,8 +222,8 @@ import java.awt.event.MouseListener;
 					// Open tree
 					break;
 				case ActionCommands.TREE_SHOW_CEP:
-					System.out.println("Doing something wonderful");
-					// Show CEP or utility
+					System.out.println("Opening associated CEP");
+					openAssociatedCEP();
 
 					break;
                 case ActionCommands.TREE_SAVE_GRAPHVIZ:
@@ -240,18 +243,36 @@ import java.awt.event.MouseListener;
 		}
 		
 
-		private void openAssociatedNetwork() {
-			
+		private void openAssociatedCEP() {
 			Object selectedComponent = jTree.getLastSelectedPathComponent();
 			if (selectedComponent instanceof DecisionTreeNodePanel) {
 				DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
 				DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
-				MainPanel.getUniqueInstance().getMainPanelListenerAssistant().openNetwork(treeNode.getNetwork());	
+				CEPDialog cepDialog = new CEPDialog(null, (CEP)(treeNode.getUtility()), treeNode.getNetwork());
+				cepDialog.setVisible(true);
+			}
+		}
+
+
+		private void openAssociatedNetwork() {
+			
+			Object selectedComponent = jTree.getLastSelectedPathComponent();
+			if (selectedComponent instanceof DecisionTreeNodePanel) {				
+				MainPanel.getUniqueInstance().getMainPanelListenerAssistant().openNetwork(getNetwork(selectedComponent));	
 			}
 			
 		}
 
-
+		
+		
+		
+		public ProbNet getNetwork(Object selectedComponent) {
+			
+			DecisionTreeNodePanel treeNodePanel = (DecisionTreeNodePanel) selectedComponent;
+			DecisionTreeNode treeNode = treeNodePanel.getTreeNode();
+			return treeNode.getNetwork();
+		}
+			
 		
 
 	
@@ -276,7 +297,8 @@ import java.awt.event.MouseListener;
 					//if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
 					if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION || nodeType == NodeType.UTILITY) {
 						// Get menu from the contextualMenuFactory
-						TreeContextualMenu treeMenu = (TreeContextualMenu) contextualMenuFactory.getTreeContextualMenu();
+						Type type = getNetwork(selectedComponent).getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType();
+						TreeContextualMenu treeMenu = (TreeContextualMenu) contextualMenuFactory.getTreeContextualMenu(type == Type.COST_EFFECTIVENESS);
 						treeMenu.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}
