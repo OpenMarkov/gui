@@ -632,8 +632,11 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		//For uno
 		if (edit.getEventTablePotential() instanceof EventTimeTablePotential) {
 			position = edit.getColumnPosition() - 1;
+//			super.getModel()
+//					.setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
 			super.getModel()
-					.setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
+					.setValueAt(editPotential.values[edit.getPotentialSelected()], edit.getRowPosition(), edit.getColumnPosition());
+
 			//
 		} else{
 				priorityList = edit.getPriorityList();
