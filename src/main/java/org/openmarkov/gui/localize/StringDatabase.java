@@ -74,6 +74,8 @@ public class StringDatabase {
 	 */
 	private StringDatabase() {
 		setLocale(new Locale(language));
+		/* Set format locale to english (to format decimal point)*/
+		Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
 		bundles = getAllBundles();
 		listenerList = new EventListenerList();
 		if (bundles.isEmpty()) {
@@ -125,6 +127,8 @@ public class StringDatabase {
 		if (!newLanguage.equals(language)) {
 			language = (newLanguage.equals("es")) ? "es" : "en";
 			setLocale(getLocaleByLanguage(language));
+			/* Set format locale to english (to format decimal point)*/
+			Locale.setDefault(Locale.Category.FORMAT, Locale.ENGLISH);
 			resetBundles();
 			fireLocaleChangeEvent(new LocaleChangeEvent(this, newLanguage));
 			OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
