@@ -210,7 +210,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		setLocationRelativeTo(owner);
 
 		// Make a working copy of the criteria
-		this.decisionCriteria = new ArrayList<Criterion>();
+		this.decisionCriteria = new ArrayList<>();
 
 		for (Criterion criterion : probNet.getDecisionCriteria()) {
 			this.decisionCriteria.add(criterion.clone());
@@ -336,7 +336,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		mixedPanel.add(selectTypePanel);
 
 		unitsPanel = getUnitsPanel();
-		unitsPanel.setPreferredSize(selectTypePanel.getPreferredSize());
+//		unitsPanel.setPreferredSize(selectTypePanel.getPreferredSize());
 		mixedPanel.add(unitsPanel);
 
 		return mixedPanel;
@@ -737,11 +737,11 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 		unitsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		unitsPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Unit.Select")));
+		unitsPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Unit.Title")));
 
-		JLabel unitsLabel = new JLabel(stringDatabase.getString("MulticriteriaDialog.Unit.Title"));
-		unitsPanel.add(unitsLabel, BorderLayout.LINE_START);
-		unitsLabel.setSize(new Dimension(50, 50));
+//		JLabel unitsLabel = new JLabel(stringDatabase.getString("MulticriteriaDialog.Unit.Title"));
+//		unitsPanel.add(unitsLabel, BorderLayout.LINE_START);
+//		unitsLabel.setSize(new Dimension(50, 50));
 
 		existingUnits = new JComboBox<String>();
 
