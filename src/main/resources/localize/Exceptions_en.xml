@@ -120,5 +120,11 @@
         <message value="Wrong criterion: %s."/>
     </WrongCriterionException>
 
+    <NonProjectablePotentialException>
+        <UniformNumeric>
+            <title value="Can not project numeric uniform potentials."/>
+            <message value="Numeric variable %s makes it impossible to project this uniform potential into a table."/>
+        </UniformNumeric>
+    </NonProjectablePotentialException>
 </properties>
 
