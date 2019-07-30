@@ -365,14 +365,18 @@ import java.util.List;
 	 */
 	@Override protected void doubleClickEvent(MouseEvent e) {
 		String function = null;
+		
 		List<Variable> parameterVariables = ((UnivariateDistrPotential) potential).getParameterVariables();
+		int row = valuesTable.rowAtPoint(e.getPoint());
+		int column = valuesTable.columnAtPoint(e.getPoint());
+		function = (String) valuesTable.getValueAt(row, column);
 		ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
 				function);
 		expressionDialog.setVisible(true);
 		if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
 			function = expressionDialog.getExpression();
-			int row = valuesTable.rowAtPoint(e.getPoint());
-			int column = valuesTable.columnAtPoint(e.getPoint());
+			//int row = valuesTable.rowAtPoint(e.getPoint());
+			//int column = valuesTable.columnAtPoint(e.getPoint());
 			valuesTable.setValueAt(function, row, column);
 		}
 	}
