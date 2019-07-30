@@ -45,6 +45,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -667,9 +668,7 @@ import java.util.List;
 		List<Variable> parents = variables.subList(1, potential.getNumVariables());
 
 		EvidenceCase evidence = new EvidenceCase();
-
-		int[] parentsConfiguration = new int[parents.size()];
-
+		
 		/*
 		 * If there is no potential, an exception is shown (caught) and startPosition=0
 		 */
@@ -681,20 +680,19 @@ import java.util.List;
 		int[] configuration = tablePotential.getConfiguration(startPosition);
 
 		// Extracts the configuration of the parents from configuration
-		// It is the same for every cell of the selected column 
-
-		for (int i = configuration.length - 1; i > 0; i--) {
-			parentsConfiguration[i - 1] = configuration[i];
+		// It is the same for every cell of the selected column
+		int initialIndex = (node.getNodeType() == NodeType.UTILITY) ? 0 : 1;
+		int[] parentsConfiguration = null;
+		
+		int parentsSize = parents.size();
+		if (parentsSize > 0) {
+			parentsConfiguration = Arrays.copyOfRange(configuration, initialIndex, configuration.length);
 		}
 
-		// Gets the evidence
-		int j = 0;
 		// Adds to evidence a finding containing the parent and its configuration
-		Finding finding;
-		for (Variable var : parents) {
-			finding = new Finding(var, parentsConfiguration[j]);
+		for (int j = 0; j < parentsSize; j++) {
+			Finding finding = new Finding(parents.get(j), parentsConfiguration[j]);
 			evidence.addFinding(finding);
-			j++;
 		}
 		return evidence;
 	}

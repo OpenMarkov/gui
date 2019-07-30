@@ -720,7 +720,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		isChance = edit.isChanceVariable();
 		List<Variable> varsPotential = tablePotential.getVariables();
 		int numVarsPotential = varsPotential.size();
-		int numParents = numVarsPotential - 1;
+		int numParents = numVarsPotential - (isChance ? 1 : 0);
 		int col = edit.getSelectedColumn();
 		TableModel superModel = super.getModel();
 		double[] values = tablePotential.values;
