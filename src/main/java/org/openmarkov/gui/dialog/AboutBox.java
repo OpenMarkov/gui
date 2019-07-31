@@ -31,7 +31,7 @@ public class AboutBox extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = -2926600957370532009L;
 	String product = "";
-	String version = "0.3.0-SNAPSHOT";
+	String version = "0.3.2-SNAPSHOT";
 	String copyright = "";
 	String copyright2 = "";
 	String authors = "";

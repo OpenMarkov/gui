@@ -778,8 +778,7 @@
     </ShortcutsBox>
     <AboutBox>
         <Advertisement>
-            <Text
-                    value="Por favor, visite la pagina web de OpenMarkov (www.openmarkov.org) para obtener las ultimas actualizaciones"/>
+            <Text value="Por favor, visite la pagina web de OpenMarkov (www.openmarkov.org) para obtener las ultimas actualizaciones"/>
         </Advertisement>
         <LineSeparatorImage>
             <URL value="lineSeparator.jpg"/>
@@ -788,7 +787,7 @@
             <AllRightsReserved>
                 <Text value="Todos los derechos reservados"/>
             </AllRightsReserved>
-            <Text value=" (c) UNED - 2008-2012"/>
+            <Text value=" (c) UNED - 2008-2019"/>
         </Copyright>
         <jLabelLogo>
             <BlankSpace>
