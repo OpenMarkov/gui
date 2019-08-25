@@ -7,11 +7,13 @@
 
 package org.openmarkov.gui.dialog.inference.common;
 
+import org.openmarkov.core.action.MonteCarloOptionsEdit;
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.inference.MonteCarloOptions;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.TransitionTime;
@@ -19,6 +21,7 @@ import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.localize.StringDatabase;
@@ -128,6 +131,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	 * Boolean attribute that indicates if the probnet have multicriteria
 	 */
 	private boolean isMulticriteria;
+	//CMI 25/07/11019
+	/**
+	 * Boolean attribute that indicates if the simulation will be done using Monte Carlo Simulation
+	 */
+	private boolean isMonteCarloSimulation;
+
+	//CMF
 	/**
 	 * Temporal copy of Multicriteria options
 	 */
@@ -136,6 +146,15 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	 * Temporal copy of Tempora options
 	 */
 	private TemporalOptions temporalOptions;
+
+	//CMI 25/07/11019
+	/**
+	 * Contains the parameters of the Monte Carlo simulation
+	 */
+	private MonteCarloOptions monteCarloOptions;
+	//CMF
+
+
 	/**
 	 * Number of slices label
 	 */
@@ -181,7 +200,28 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	private JPanel multicriteriaPanel;
 
 	private JPanel temporalPanel;
+	// CMI 25/08/2019
+	private JPanel monteCarloOptionsPanel;
+	/**
+	 * Number of series of simulations
+	 */
+	private JLabel numSeriesLabel;
 
+	/**
+	 * Number of simulations JTextField
+	 */
+	private JTextField numSeriesTextField;
+
+	/**
+	 * Number simulations
+	 */
+	private JLabel numSimulationsLabel;
+
+	/**
+	 * Number of simulations JTextField
+	 */
+	private JTextField numSimulationsTextField;
+	//CMF
 	/**
 	 * Constructor of the dialog
 	 *
@@ -206,6 +246,14 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			this.isMulticriteria = true;
 		}
 
+		//CMI 25/08/2019
+		//isMCSimulation may be used with another networks but currently is used only with DesNet
+		isMonteCarloSimulation = false;
+		if (probNet.getNetworkType() instanceof DESNetworkType) {
+			isMonteCarloSimulation = true;
+		}
+		//CMF
+
 		// Center the dialog
 		setLocationRelativeTo(owner);
 
@@ -220,11 +268,21 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		this.multicriteriaOptions = probNet.getInferenceOptions().getMultiCriteriaOptions().clone();
 		this.temporalOptions = probNet.getInferenceOptions().getTemporalOptions().clone();
 
+
+		//CMI 25/08/2019 TODO May be an error when no DESNet???
+		this.monteCarloOptions = probNet.getInferenceOptions().getMonteCarloOptions().clone();
+		//CMF
+
 		mainPanel = new JPanel();
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
 		boolean requiredInfereceOptions = false;
+		//CMI 25/08/2019
+		if (isMonteCarloSimulation) {
+			mainPanel.add(getMonteCarloOptionsPanel());
+		}
+        //CMF
 		if (isTemporal) {
 			mainPanel.add(getTemporalPanel());
 			requiredInfereceOptions = true;
@@ -868,6 +926,80 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		return temporalPanel;
 	}
 
+	//CMI
+	/**
+	 * Get
+	 *
+	 * @return
+	 */
+	public JPanel getMonteCarloOptionsPanel() {
+		if (monteCarloOptionsPanel == null) {
+			monteCarloOptionsPanel = new JPanel();
+			monteCarloOptionsPanel.setLayout(new BorderLayout());
+			monteCarloOptionsPanel.setBorder(
+			new TitledBorder("Monte Carlo Options"));
+			JPanel numSeriesPanel = new JPanel();
+			numSeriesPanel.add(getJLabelNumSeries());
+			numSeriesPanel.add(getNumSeriesTextField());
+			JPanel numSimulationsPanel = new JPanel();
+            numSimulationsPanel.add(getJLabelNumSimulations());
+            numSimulationsPanel.add(getNumSimulationsTextField());
+            monteCarloOptionsPanel.add(numSimulationsPanel,BorderLayout.WEST);
+            monteCarloOptionsPanel.add(numSeriesPanel,BorderLayout.EAST);
+		}
+		return monteCarloOptionsPanel;
+	}
+
+
+
+
+
+
+	private JLabel getJLabelNumSimulations() {
+		if (numSimulationsLabel == null) {
+			//TODO use stringDatabase
+			numSimulationsLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
+			numSimulationsLabel = new JLabel("Number of simulations");
+		}
+		return numSimulationsLabel;
+
+	}
+
+	private JLabel getJLabelNumSeries() {
+		if (numSeriesLabel == null) {
+			//TODO use stringDatabase
+//			numSeriesLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
+			numSeriesLabel = new JLabel("Number of series");
+		}
+		return numSeriesLabel;
+
+	}
+
+	private JTextField getNumSimulationsTextField() {
+
+		if (numSimulationsTextField == null) {
+			numSimulationsTextField = new JTextField();
+			numSimulationsTextField.setText("" + this.monteCarloOptions.getNumSimulations());
+			numSimulationsTextField.setColumns(10);
+			numSimulationsTextField.setName("numSimulationsTextField");
+		}
+		return numSimulationsTextField;
+	}
+
+	private JTextField getNumSeriesTextField() {
+
+		if (numSeriesTextField == null) {
+			numSeriesTextField = new JTextField();
+			numSeriesTextField.setText("" + this.monteCarloOptions.getNumSeries());
+			numSeriesTextField.setColumns(10);
+			numSeriesTextField.setName("numSeriesTextField");
+		}
+		return numSeriesTextField;
+	}
+
+
+//CMF
+
 	private JPanel getNumSlicesPanel() {
 		if (numSlicesPanel == null) {
 			numSlicesPanel = new JPanel();
@@ -989,6 +1121,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			}
 
 			this.temporalOptions.setHorizon(numSlices);
+
 			if (beginningOfCycleButton.isSelected()) {
 				this.temporalOptions.setTransition(TransitionTime.BEGINNING);
 			} else if (halfCycleButton.isSelected()) {
@@ -996,14 +1129,30 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			} else if (endOfCycleButton.isSelected()) {
 				this.temporalOptions.setTransition(TransitionTime.END);
 			}
-
 			TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
 			try {
 				probNet.getPNESupport().doEdit(editTemporal);
 			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
 				e.printStackTrace();
 			}
+
+
 		}
+        //CMI 25/08/2019
+		if (isMonteCarloSimulation) {
+			this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
+			this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
+			MonteCarloOptionsEdit editMonteCarlo = new MonteCarloOptionsEdit(probNet, monteCarloOptions);
+
+			try {
+				probNet.getPNESupport().doEdit(editMonteCarlo);
+			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+				e.printStackTrace();
+			}
+		}
+		//CMF
+
+
 
 		probNet.getPNESupport().closeParenthesis();
 
