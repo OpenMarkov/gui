@@ -64,6 +64,7 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
+import org.openmarkov.inference.DES.DESInference;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
@@ -223,6 +224,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			activateEditionMode(actionCommand);
 		} else if (actionCommand.equals(ActionCommands.CHANGE_WORKING_MODE)) {
 			setNewWorkingMode();
+		//CMI 21/08/2019
+		} else if (actionCommand.equals(ActionCommands.MC_SIMULATE_NETWORK)) {
+			monteCarloSimulation();
+		//CMF
 		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_INFERENCE_MODE)) {
 			setNewWorkingMode();
 		} else if (actionCommand.equals(ActionCommands.CHANGE_TO_EDITION_MODE)) {
@@ -1403,6 +1408,37 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		mainPanel.adaptToolBarSize();
 	}
 
+	//CMI 21/08/2019
+	/**
+	 * This method performs N Monte Carlo simulations
+	 *
+	 */
+	protected void monteCarloSimulation(){
+		boolean performInference = true;
+
+		InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+				Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+		ProbNet probNet =getCurrentNetworkPanel().getProbNet();
+		// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+		if (dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+			performInference = false;
+		}
+
+		if (performInference) {
+			try {
+				DESInference desInference = new DESInference(probNet);
+			} catch (NotEvaluableNetworkException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+    //CMF
+
+
+
+
+
+
 	/**
 	 * This method establishes the new expansion threshold of the network.
 	 *
@@ -1655,7 +1691,61 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 	}
 
-	/**
+
+	//CMI 24/08/2019
+    //To be integrated with some method simulateNetwork to be MonteCarlo simulated
+    /**
+     *
+     * @param networkPanel
+     */
+    private void simulateDESNetwork(NetworkPanel networkPanel) {
+
+        ProbNet probNet = networkPanel.getProbNet();
+        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+                Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+        if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+            return;
+        }
+        return;
+//        //Should implement the Evaluation interface org.openmarkov.core.inference.tasks.Evaluation
+//        // DANEvaluation eval = null;
+//            try {
+//                eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel().getPreResolutionEvidence());
+//            } catch (NotEvaluableNetworkException e1) {
+//                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+//                        "An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
+//                        JOptionPane.ERROR_MESSAGE);
+//            } catch (UnexpectedInferenceException e) {
+//                LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//                        "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
+//                localizedException.showException();
+//            }
+//        }
+    }
+    //CMF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
 	 * @param buffer    <code>StringBuffer</code>
 	 * @param mainPanel <code>MainPanel</code>
 	 */

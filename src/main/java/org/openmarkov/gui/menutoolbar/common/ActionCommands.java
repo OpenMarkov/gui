@@ -192,6 +192,20 @@ public class ActionCommands {
 	 * (switching from Edition to Inference mode or vice versa).
 	 */
 	public static final String CHANGE_WORKING_MODE = "ChangeWorkingMode";
+
+
+	//CMI 21/08/2019
+	/**
+	 * Action invoked when the user wants to change the working mode by
+	 * pressing the button in the standard tool bar
+	 * (switching from Edition to Inference mode or vice versa).
+	 */
+	public static final String MC_SIMULATE_NETWORK = "MCSimulateNetwork";
+	//CMF
+
+
+
+
 	//TODO OOPN end
 	/**
 	 * Action invoked when the user wants to change to inference mode

@@ -22,6 +22,7 @@ import java.awt.event.MouseMotionListener;
  *
  * @author jmendoza
  * @version 1.2 20100408 jlgozalo Change the order of ZoomIn and ZoomOut buttons
+ * @version 1.3 20190821 21/08/2019 cyago added the button for performing a Monte Carlo simulation for DESNetworks
  */
 public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, MouseMotionListener {
 	/**
@@ -60,6 +61,12 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 * Button to switch to Inference mode.
 	 */
 	private JToggleButton workingModeButton = null;
+	//CMI 25/08/2019
+	/**
+	 * Button perform a Monte Carlo simulation. Currently only it works with DESNet
+	 */
+	private JToggleButton MonteCarloSimulationButton = null;
+    //
 	/**
 	 * Button to show optimal strategy.
 	 */
@@ -105,7 +112,10 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		add(getZoomComboBox());
 		add(getZoomInButton());
 		addSeparator();
+		//CMI 21/08/2019
 		add(getWorkingModeButton());
+		//CMF
+		add(getMonteCarloSimulationButton());
 		add(getShowOptimalStrategyButton());
 		add(getDecisionTreeButton());
 		add(getSensAnalysisButton());
@@ -265,6 +275,34 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		return workingModeButton;
 	}
 
+
+
+	//CMI 21/08/2019
+	/**
+	 * This method initialises simulateDESNetBUtton.
+	 *
+	 * @return a
+	 */
+	private JToggleButton getMonteCarloSimulationButton() {
+		if (MonteCarloSimulationButton == null) {
+			MonteCarloSimulationButton = new JToggleButton();
+			MonteCarloSimulationButton.setIcon(iconLoader.load(IconLoader.ICON_SIMULATION_ENABLED));
+			MonteCarloSimulationButton.setFocusable(false);
+			MonteCarloSimulationButton.setActionCommand(ActionCommands.MC_SIMULATE_NETWORK);
+			MonteCarloSimulationButton.setToolTipText(
+					stringDatabase.getString(ActionCommands.MC_SIMULATE_NETWORK + STRING_TOOLTIP_SUFFIX));
+			MonteCarloSimulationButton.addActionListener(listener);
+			MonteCarloSimulationButton.addMouseMotionListener(this);
+		}
+		return MonteCarloSimulationButton;
+	}
+	//CMF
+	
+	
+	
+	
+	
+
 	/**
 	 * This method initialises showOptimalStrategyButton.
 	 *
@@ -385,6 +423,11 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 			case ActionCommands.CHANGE_WORKING_MODE:
 				component = workingModeButton;
 				break;
+			//	CMI 21/08/2019
+			case ActionCommands.MC_SIMULATE_NETWORK:
+				component = MonteCarloSimulationButton;
+				break;
+			// CMF
 			case ActionCommands.DECISION_TREE:
 				component = decisionTreeButton;
 				break;

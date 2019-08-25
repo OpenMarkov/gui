@@ -21,11 +21,7 @@ import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.core.model.network.type.InfluenceDiagramType;
-import org.openmarkov.core.model.network.type.MIDType;
-import org.openmarkov.core.model.network.type.NetworkType;
+import org.openmarkov.core.model.network.type.*;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualLink;
@@ -162,6 +158,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 		setOptionEnabled(ActionCommands.SELECT_ALL, false);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
+		//CMI 21/08/2019 Simulate button
+		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
+		//CMF
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
 
@@ -221,6 +220,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		}
 		setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
+
+		// CMI 21/08/2019
+		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, getEnableSimulationButton());
+		// CMF
 		setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, true);
 
 		checkInferenceOptions();
@@ -254,6 +257,22 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				|| networkType instanceof MIDType
 				;
 	}
+
+	//CMI 21/08/2019
+
+	/**
+	 * This method is used to enabling/disabling the simulation button according to the network loaded
+	 * Currently it is only enabled when a DESNetwork is loaded.
+	 * @return true if the simulation button is applicable for the loaded network
+	 */
+	private boolean getEnableSimulationButton() {
+		NetworkType networkType = currentNetworkPanel.getProbNet()
+				.getNetworkType();
+		return networkType instanceof DESNetworkType;
+	}
+	//CMF
+
+
 
 	public void updateInferenceButtons() {
 		if (getCurrentNetworkPanel() == null) {

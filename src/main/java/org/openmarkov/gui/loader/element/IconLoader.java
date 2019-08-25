@@ -19,6 +19,7 @@ import java.util.MissingResourceException;
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo 20/08 add Infinite Positive and Negative icons
+ * @version 1.2 cyago 20190821 21/08/2019 added icons related to DESNetwork: the Event node and menu item for simulation
  */
 public class IconLoader {
 	/**
@@ -149,6 +150,15 @@ public class IconLoader {
 	 * Name of the 'inference mode' enabled icon.
 	 */
 	public static final String ICON_INFERENCE_MODE_ENABLED = "inference_mode.png";
+
+
+	//CMI 21/08/2918
+	/**
+	 * Name of the 'Monte Carlo simulation for DESNETs' enabled icon.
+	 */
+	public static final String ICON_SIMULATION_ENABLED = "simulate.png";
+	//CMF
+
 	/**
 	 * Name of the 'Create New Evidence Case' enabled icon.
 	 */
