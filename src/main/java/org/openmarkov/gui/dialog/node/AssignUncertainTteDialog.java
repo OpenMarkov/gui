@@ -7,17 +7,12 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.exception.ExceptionUncertainValuesDialogEdition;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.*;
-import org.openmarkov.core.model.network.potential.EventTablePotential;
-import org.openmarkov.core.model.network.potential.EventTimeTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.loader.element.IconLoader;
@@ -68,7 +63,7 @@ public class AssignUncertainTteDialog extends OkCancelHorizontalDialog {
 	 * @wbp.parser.constructor
 	 * @author carmenyago -minor changes to the TablePotential method
 	 */
-	public AssignUncertainTteDialog(Window owner, EventTimeTablePotential potential, int position)
+	public AssignUncertainTteDialog(Window owner, TimeToEventTablePotential potential, int position)
 			throws WrongCriterionException {
 		super(owner);
 		TablePotential tablePotential = potential.getTablePotential();

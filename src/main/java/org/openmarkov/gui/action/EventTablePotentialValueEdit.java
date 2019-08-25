@@ -15,8 +15,8 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.potential.EventTablePotential;
-import org.openmarkov.core.model.network.potential.EventTimeTablePotential;
+import org.openmarkov.core.model.network.potential.TransitionTablePotential;
+import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
@@ -67,8 +67,8 @@ import java.util.List;
 	private TablePotential tablePotential;
 	private TablePotential oldTablePotential;
 
-	private EventTablePotential oldEventTablePotential;
-	private EventTablePotential eventTablePotential;
+	private TransitionTablePotential oldTransitionTablePotential;
+	private TransitionTablePotential transitionTablePotential;
 
 	/**
 	 * the increment to get the real position of the value modified
@@ -111,8 +111,8 @@ import java.util.List;
 		this.node = node;
 
 		try {
-			this.oldEventTablePotential = (EventTablePotential) node.getPotentials().get(0);
-			this.oldTablePotential = oldEventTablePotential.getTablePotential();
+			this.oldTransitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
+			this.oldTablePotential = oldTransitionTablePotential.getTablePotential();
 		} catch (Exception e) {
 			e.printStackTrace();
 /* TODO
@@ -133,18 +133,18 @@ import java.util.List;
 		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, oldTablePotential);
 
 		//TODO Clone
-		if (oldEventTablePotential instanceof EventTimeTablePotential){
-			this.eventTablePotential = new EventTimeTablePotential(oldEventTablePotential.getVariables(),
-					oldEventTablePotential.getPotentialRole());
+		if (oldTransitionTablePotential instanceof TimeToEventTablePotential){
+			this.transitionTablePotential = new TimeToEventTablePotential(oldTransitionTablePotential.getVariables(),
+					oldTransitionTablePotential.getPotentialRole());
 		} else {
-			this.eventTablePotential = new EventTablePotential(oldEventTablePotential.getVariables(),
-					oldEventTablePotential.getPotentialRole());
+			this.transitionTablePotential = new TransitionTablePotential(oldTransitionTablePotential.getVariables(),
+					oldTransitionTablePotential.getPotentialRole());
 		}
 
 
 
-		this.tablePotential = (TablePotential) (oldEventTablePotential.getTablePotential().copy());
-		this.eventTablePotential.setTablePotential(this.tablePotential);
+		this.tablePotential = (TablePotential) (oldTransitionTablePotential.getTablePotential().copy());
+		this.transitionTablePotential.setTablePotential(this.tablePotential);
 
 		this.newTable = this.tablePotential.getValues();
 
@@ -163,10 +163,10 @@ import java.util.List;
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;
 
-		if (eventTablePotential instanceof EventTimeTablePotential){
+		if (transitionTablePotential instanceof TimeToEventTablePotential){
 			newTable[getPotentialSelected()] = newValue;
 			tablePotential.getValues()[getPotentialSelected()] = newValue;
-			changePotentialEdit = new PotentialChangeEdit(probNet, oldEventTablePotential, eventTablePotential);
+			changePotentialEdit = new PotentialChangeEdit(probNet, oldTransitionTablePotential, transitionTablePotential);
 		}
 
 		else {
@@ -225,7 +225,7 @@ import java.util.List;
 					}
 				}
 			}
-			changePotentialEdit = new PotentialChangeEdit(probNet, oldEventTablePotential, eventTablePotential);
+			changePotentialEdit = new PotentialChangeEdit(probNet, oldTransitionTablePotential, transitionTablePotential);
 
 		}
 
@@ -253,8 +253,8 @@ import java.util.List;
 	 *
 	 * @return variable1 <code>Variable</code>
 	 */
-	public EventTablePotential getEventTablePotential() {
-		return eventTablePotential;
+	public TransitionTablePotential getTransitionTablePotential() {
+		return transitionTablePotential;
 	}
 
 

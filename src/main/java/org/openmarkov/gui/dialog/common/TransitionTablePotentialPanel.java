@@ -10,11 +10,10 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainTteEdit;
 import org.openmarkov.core.action.UncertainTteRemoveEdit;
-import org.openmarkov.core.action.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.EventTablePotential;
-import org.openmarkov.core.model.network.potential.EventTimeTablePotential;
+import org.openmarkov.core.model.network.potential.TransitionTablePotential;
+import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.*;
@@ -37,7 +36,8 @@ import java.util.List;
  * Transition class to be merged with the new structure of tables
  * @version 1.0 - cyago - 24/03/2019
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "Event") public class EventTablePotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "Event")
+public class TransitionTablePotentialPanel
 		extends ProbabilityTablePanel {
 	protected Logger logger;
 	/**
@@ -58,7 +58,7 @@ import java.util.List;
 	 * First eventTablePotential of node;  its class  should be  org.openmarkov.core.model.network.eventTablePotential.EventTablePotential or
 	 *
 	 */
-	protected EventTablePotential eventTablePotential = null;
+	protected TransitionTablePotential transitionTablePotential = null;
 
 	/**
 	 * TablePotential of EventTablePotential
@@ -97,7 +97,7 @@ import java.util.List;
 
 	protected UncertaintyContextualMenu uncertaintyContextualMenu;
 
-	public EventTablePotentialPanel() {
+	public TransitionTablePotentialPanel() {
 		super();
 	}
 
@@ -110,7 +110,7 @@ import java.util.List;
 	 * @param node : node whose first eventTablePotential is a TablePotential or a TableDeltaPotential
 	 * @author carmenyago : adaptation to TableDeltaPotential
 	 */
-	public EventTablePotentialPanel(Node node) {
+	public TransitionTablePotentialPanel(Node node) {
 		super();
 
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
@@ -126,15 +126,15 @@ import java.util.List;
 		}
 		this.node = node;
 
-		eventTablePotential = (EventTablePotential) node.getPotentials().get(0);
-		boolean yes =eventTablePotential instanceof EventTimeTablePotential;
+		transitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
+		boolean yes = transitionTablePotential instanceof TimeToEventTablePotential;
 
 
 
-		tablePotential =  eventTablePotential.getTablePotential();
+		tablePotential =  transitionTablePotential.getTablePotential();
 
 		// The list of variables of eventTablePotential
-		variables = eventTablePotential.getVariables();
+		variables = transitionTablePotential.getVariables();
 
 		// The list of variables of the tablePotential of EventTablePotential
 		tableVariables = tablePotential.getVariables();
@@ -685,7 +685,7 @@ import java.util.List;
 		//TODO REVIEW
 		int position = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(selectedColumn, tablePotential);
 
-		AssignUncertainTteDialog uncertDialog = new AssignUncertainTteDialog(Utilities.getOwner(this), (EventTimeTablePotential) eventTablePotential, position);
+		AssignUncertainTteDialog uncertDialog = new AssignUncertainTteDialog(Utilities.getOwner(this), (TimeToEventTablePotential) transitionTablePotential, position);
 
 		int button = uncertDialog.requestUncertainValues();
 		if (button == UncertainValuesDialog.OK_BUTTON) {

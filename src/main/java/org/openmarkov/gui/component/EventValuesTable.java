@@ -20,11 +20,10 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.EventTablePotential;
-import org.openmarkov.core.model.network.potential.EventTimeTablePotential;
+import org.openmarkov.core.model.network.potential.TransitionTablePotential;
+import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.EventTablePotentialValueEdit;
-import org.openmarkov.gui.action.TablePotentialValueEdit;
 import org.openmarkov.gui.dialog.common.KeyTable;
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -116,7 +115,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * First eventTablePotential of node
 	 *
 	 */
-	protected EventTablePotential eventTablePotential = null;
+	protected TransitionTablePotential transitionTablePotential = null;
 	protected TablePotential tablePotential = null;
 	protected ProbNet probNet;
 	/**
@@ -151,7 +150,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		this.node = node;
 		this.probNet = node.getProbNet();
 		try {
-			this.eventTablePotential = (EventTablePotential) node.getPotentials().get(0);
+			this.transitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -159,7 +158,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		}
 		//Adding the initialisation of getEventTablePotential
 
-		tablePotential = eventTablePotential.getTablePotential();
+		tablePotential = transitionTablePotential.getTablePotential();
 		//
 		if (modifiable) {
 			int numRowsModel = eventValuesTableModel.getRowCount();
@@ -630,7 +629,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		TablePotential editPotential = edit.getTablePotential();
 
 		//For uno
-		if (edit.getEventTablePotential() instanceof EventTimeTablePotential) {
+		if (edit.getTransitionTablePotential() instanceof TimeToEventTablePotential) {
 			position = edit.getColumnPosition() - 1;
 //			super.getModel()
 //					.setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
@@ -666,7 +665,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		if (event.getEdit() instanceof EventTablePotentialValueEdit) {
 			EventTablePotentialValueEdit edit = (EventTablePotentialValueEdit) event.getEdit();
 			TablePotential editPotential = edit.getTablePotential();
-			EventTablePotential eventTablePotential = edit.getEventTablePotential();
+			TransitionTablePotential transitionTablePotential = edit.getTransitionTablePotential();
 
 			priorityList = edit.getPriorityList();
 			for (Integer position : priorityList) {
