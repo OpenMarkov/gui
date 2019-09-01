@@ -185,6 +185,17 @@
             <Label value="Assign uncertainty"/>
         </Assign>
     </Uncertainty>
+    <!--CMI 25/08/2019 For event nodes, establish configuration as impossible/possible-->
+    <ImpossibleConfiguration>
+        <Set>
+            <Label value="Set as impossible"></Label>
+        </Set>
+        <UnSet>
+            <Label value="Set as possible"></Label>
+        </UnSet>
+
+    </ImpossibleConfiguration>
+    <!--CMF -->
     <Inference>
         <GoToNextEvidenceCase>
             <Label value="Go to the next evidence case"/>
