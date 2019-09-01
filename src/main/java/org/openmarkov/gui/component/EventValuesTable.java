@@ -11,15 +11,11 @@
 package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
-import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TransitionTablePotential;
 import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -36,10 +32,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.EventObject;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * This table implementation is responsible for the graphical and data model
@@ -117,6 +111,9 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 */
 	protected TransitionTablePotential transitionTablePotential = null;
 	protected TablePotential tablePotential = null;
+	private ArrayList<ImpossibleConfiguration> impossibleConfigurations;
+
+
 	protected ProbNet probNet;
 	/**
 	 * Define the last column of the table that was modified
@@ -159,6 +156,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		//Adding the initialisation of getEventTablePotential
 
 		tablePotential = transitionTablePotential.getTablePotential();
+		setImpossibleConfigurations(transitionTablePotential.getImpossibleConfigurations());
 		//
 		if (modifiable) {
 			int numRowsModel = eventValuesTableModel.getRowCount();
@@ -583,42 +581,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		UndoableEdit edit = event.getEdit();
 		if (edit instanceof EventTablePotentialValueEdit) {
 			eventTablePotentialValueEditHappened((EventTablePotentialValueEdit) edit);
-		} else if (edit instanceof UncertainValuesEdit) {
-			uncertainValuesEditHappened((UncertainValuesEdit) edit);
-		}
-	}
 
-	/**
-	 * Updates the table if the edited column has uncertainty
-	 *
-	 * @param edit carmenyago changed the use of Chance and Utility variables
-	 * @author carmenyago
-	 */
-	private void uncertainValuesEditHappened(UncertainValuesEdit edit) {
-		boolean isChance;
-		int row;
-		int positionInValues;
-		isChance = edit.isChanceVariable();
-		List<Variable> varsPotential = tablePotential.getVariables();
-		int numVarsPotential = varsPotential.size();
-		int numParents = numVarsPotential - 1;
-		int col = edit.getSelectedColumn();
-		TableModel superModel = super.getModel();
-		double[] values = tablePotential.values;
-		int basePosition = edit.getBasePosition();
-		if (isChance) {
-			int numStates = varsPotential.get(0).getNumStates();
-			int startRow = numParents + (numStates - 1);
-			for (int i = 0; i < numStates; i++) {
-				row = startRow - i;
-				positionInValues = basePosition + i;
-				superModel.setValueAt(values[positionInValues], row, col);
-			}
-		} else {
-			row = numParents;
-			//positionInValues = col - 1;
-			positionInValues = basePosition;
-			superModel.setValueAt(values[positionInValues], row, col);
 		}
 	}
 
@@ -802,5 +765,13 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 				column.setMinWidth(width + margin);
 			}
 		}
+	}
+
+	public ArrayList<ImpossibleConfiguration> getImpossibleConfigurations() {
+		return impossibleConfigurations;
+	}
+
+	public void setImpossibleConfigurations(ArrayList<ImpossibleConfiguration> impossibleConfigurations) {
+		this.impossibleConfigurations = impossibleConfigurations;
 	}
 }
