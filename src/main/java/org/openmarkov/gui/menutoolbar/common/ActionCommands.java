@@ -15,6 +15,7 @@ package org.openmarkov.gui.menutoolbar.common;
  * @version 1.1 jlgozalo Add help menus (previously to change to dynamic version),
  * ficheros usados recientemente y cambios de lenguaje
  * @version 1.2 cyago  - 03/02/2019 - Event node constants added
+ * @version 1.3 cyago 20190815 -25/08/2019 - Added action commands for indicating impossible configurations in TTE potentials
  */
 public class ActionCommands {
 
@@ -490,6 +491,20 @@ public class ActionCommands {
 	 * Action invoked when the user wants to remove uncertainty on potential
 	 */
 	public static final String UNCERTAINTY_REMOVE = "Uncertainty.Remove";
+
+	//CMI 25/08/2019
+	/*
+	* Action invoked when the user wants to establish a configuration as impossible in a TTE potential
+	 */
+	public static final String SET_IMPOSSIBLE_CONFIGURATION = "ImpossibleConfiguration.Set";
+
+	/*
+	 * Action invoked when the user wants to establish a configuration as possible in a TTE potential
+	 */
+	public static final String UNSET_IMPOSSIBLE_CONFIGURATION = "ImpossibleConfiguration.UnSet";
+	//CMF
+
+
 	/**
 	 * Action invoked when the user wants to log temporal evolution
 	 */
