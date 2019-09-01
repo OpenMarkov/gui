@@ -8,8 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.action.UncertainTteEdit;
-import org.openmarkov.core.action.UncertainTteRemoveEdit;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TransitionTablePotential;
@@ -17,11 +15,8 @@ import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.*;
-import org.openmarkov.gui.dialog.node.AssignUncertainTteDialog;
-import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
-import org.openmarkov.gui.util.Utilities;
+import org.openmarkov.gui.menutoolbar.menu.SetImpossibleConfigurationContextualMenu;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -79,10 +74,7 @@ public class TransitionTablePotentialPanel
 	 */
 	protected boolean hasLinkRestriction;
 
-	/**
-	 * UNCLEAR-->We calculate the uncertainty. This is calculated several times; i have to check if calculations are repeated unnecessarily
-	 */
-	protected boolean[] uncertaintyInColumns;
+
 
 	/**
 	 * Pseudo-util class with common operations used in eventTablePotential tables
@@ -95,7 +87,15 @@ public class TransitionTablePotentialPanel
 	 * This method creates the evidenceCase object when the user do right click on the table.
 	 */
 
-	protected UncertaintyContextualMenu uncertaintyContextualMenu;
+	protected SetImpossibleConfigurationContextualMenu setImpossibleConfigurationContextualMenu;
+
+
+    /**
+     *
+     */
+    protected boolean[] impossibleColumns;
+
+
 
 	public TransitionTablePotentialPanel() {
 		super();
@@ -244,7 +244,6 @@ public class TransitionTablePotentialPanel
 		eventValuesTable.setData(node);
 
 		Object[][] tableData = null;
-		uncertaintyInColumns = null;
 		String[] newColumns = null;
 
 		// tableData contains the table to be displayed in EventValuesTable
@@ -260,12 +259,10 @@ public class TransitionTablePotentialPanel
 
 		//Sets the table model in eventValuesTable
 		setDataInValuesTable(tableData, newColumns);
+        impossibleColumns= getImpossibleColumns();
 
-		//uncertaintyInColums indicates the data columns which have uncertainty
-		uncertaintyInColumns = getUncertaintyInColumns();
-
-		// set the Cell Renders according to NodeType (a different renderer for some DECISON nodes) and the uncertainty
-		setCellRenderers(uncertaintyInColumns);
+        // set the Cell Renders according to NodeType (a different renderer for some DECISON nodes) and the uncertainty
+		setCellRenderers(impossibleColumns);
 
 		// getNotEditablePositions checked if there is any link restriction
 		// which make the correspondent cells no editable and returns an array with the size of the table
@@ -286,29 +283,29 @@ public class TransitionTablePotentialPanel
 	 * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
 	 * @author carmenyago
 	 */
-	protected boolean[] getUncertaintyInColumns() {
+	protected boolean[] getImpossibleColumns() {
 
 		int size = eventValuesTable.getColumnCount();
 
 		// Column 0 contains the name of the states
-		boolean[] newUncertaintyInColumns = new boolean[size - 1];
+		boolean[] newImpossibleColumns = new boolean[size - 1];
 
 		for (int i = 1; i < size; i++) {
-			boolean hasUncertainty = false;
+			boolean isImpossible = false;
 			try {
 				// Returns an evidence case with one finding for every parent variable and its state in the column
 				EvidenceCase configuration = getConfiguration(i);
 				// If the column configuration has uncertainty hasUncertainty= true
-				hasUncertainty = tablePotential.hasUncertainty(configuration);
+				isImpossible = transitionTablePotential.isImpossibleConfiguration(configuration);
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
 			// Indicates whether this column has uncertainty or not
-			newUncertaintyInColumns[i - 1] = hasUncertainty;
+			newImpossibleColumns[i - 1] = isImpossible;
 		}
-		return newUncertaintyInColumns;
+		return newImpossibleColumns;
 	}
 
 	/**
@@ -597,15 +594,7 @@ public class TransitionTablePotentialPanel
 				notEditablePositions[row][column] = 1;
 			}
 		}
-		// I suppose it is calculated previously
-		//	uncertaintyInColumns = getUncertaintyInColumns();
-		for (int row = firstEditableRow; row < notEditablePositions.length; ++row) {
-			for (int column = 1; column < notEditablePositions[0].length; ++column) {
-				if (uncertaintyInColumns[column - 1]) {
-					notEditablePositions[row][column] = 1;
-				}
-			}
-		}
+
 		return notEditablePositions;
 	}
 
@@ -674,44 +663,44 @@ public class TransitionTablePotentialPanel
 		return evi;
 	}
 
-	/**
-	 * Creates and shows the UncertainValuesDialog object
-	 *
-	 * @throws WrongCriterionException revised-->minor changes
-	 */
-	public void showUncertaintyDialog() throws WrongCriterionException {
-//		 Generates the evidenceCase based on the column
-//		 selected on the JTable object
-		//TODO REVIEW
-		int position = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(selectedColumn, tablePotential);
-
-		AssignUncertainTteDialog uncertDialog = new AssignUncertainTteDialog(Utilities.getOwner(this), (TimeToEventTablePotential) transitionTablePotential, position);
-
-		int button = uncertDialog.requestUncertainValues();
-		if (button == UncertainValuesDialog.OK_BUTTON) {
-			UncertainTteEdit uncertEdit = null;
-			try {
-				uncertEdit = new UncertainTteEdit(node, uncertDialog.getUncertainColumn(),
-						uncertDialog.getValuesColumn(), position, selectedColumn);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
-				node.getProbNet().doEdit(uncertEdit);
-				if (selectedColumn > 0) {
-					(
-							(ValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
-					).setMark(selectedColumn - 1);
-					getEventValuesTable().repaint();
-					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
-				}
-			} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
+//	/**
+//	 * Creates and shows the UncertainValuesDialog object
+//	 *
+//	 * @throws WrongCriterionException revised-->minor changes
+//	 */
+//	public void showUncertaintyDialog() throws WrongCriterionException {
+////		 Generates the evidenceCase based on the column
+////		 selected on the JTable object
+//		//TODO REVIEW
+//		int position = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(selectedColumn, tablePotential);
+//
+//		AssignUncertainTteDialog uncertDialog = new AssignUncertainTteDialog(Utilities.getOwner(this), (TimeToEventTablePotential) transitionTablePotential, position);
+//
+//		int button = uncertDialog.requestUncertainValues();
+//		if (button == UncertainValuesDialog.OK_BUTTON) {
+//			UncertainTteEdit uncertEdit = null;
+//			try {
+//				uncertEdit = new UncertainTteEdit(node, uncertDialog.getUncertainColumn(),
+//						uncertDialog.getValuesColumn(), position, selectedColumn);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			try {
+//				node.getProbNet().doEdit(uncertEdit);
+//				if (selectedColumn > 0) {
+//					(
+//							(ValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
+//					).setMark(selectedColumn - 1);
+//					getEventValuesTable().repaint();
+//					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
+//				}
+//			} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
+//				e.printStackTrace();
+//				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+//						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+//			}
+//		}
+//	}
 
 	/**
 	 * This method initialises eventValuesTable and defines that first two columns cannot be selected
@@ -779,79 +768,70 @@ public class TransitionTablePotentialPanel
 
 	/**
 	 * Handles an action performed
-	 * revised-->not changed
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
-		if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN) || actionCommand
-				.equals(ActionCommands.UNCERTAINTY_EDIT)) {
-			try {
-				showUncertaintyDialog();
-			} catch (WrongCriterionException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
-			try {
-				removeUncertainty();
-			} catch (WrongCriterionException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
+		if (actionCommand.equals(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION) ) {
+            try {
+                setImpossibleColumn();
+            } catch (WrongCriterionException ex) {
+                ex.printStackTrace();
+            }
+
+        } else if (actionCommand.equals(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION)) {
+                try {
+                    unSetImpossibleColumn();
+                } catch (WrongCriterionException ex) {
+                    ex.printStackTrace();
+                }
+            }
 		}
+
+
+
+	protected void  setImpossibleColumn() throws WrongCriterionException {
+		// Generates the evidenceCase based on the column
+		// selected on the JTable object
+		EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
+		ImpossibleConfiguration iC= new ImpossibleConfiguration(eC);
+        eventValuesTable.getImpossibleConfigurations().add(iC);
+        impossibleColumns[selectedColumn -1] = true;
+
+        if (selectedColumn > 0) {
+					(
+							(EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
+					).setMark(selectedColumn - 1);
+					getEventValuesTable().repaint();
+					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
+				}
+
+
 	}
 
-	/**
-	 * Method for removing the uncertain values for a certain configuration
-	 *
-	 * @throws WrongCriterionException revised-->minor changes; only changed the call to getNotEditablePositions
-	 */
-	public void removeUncertainty() throws WrongCriterionException {
-		evidenceCase = getEvidenceCaseFromSelectedColumn();
-		UncertainTteRemoveEdit uncertEdit = new UncertainTteRemoveEdit(node, evidenceCase);
-		try {
-			node.getProbNet().doEdit(uncertEdit);
-			if (selectedColumn > 0) {
-				(
-						(ValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
-				).unMark(selectedColumn - 1);
-				getEventValuesTable().repaint();
-				this.getTableModel().setNotEditablePositions(getNotEditablePositions());
-			}
-		} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
-	}
 
-	/**
-	 * Method for update the options showed in the contextual menu
-	 * revised-->not changed
-	 */
-	protected void updateContextualMenuOptions() {
-		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
-			TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
-			boolean hasUncertainty = tablePotential.hasUncertainty(getEvidenceCaseFromSelectedColumn());
-			if (hasUncertainty) {
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString())
-						.setEnabled(false);
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString())
-						.setEnabled(true);
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString())
-						.setEnabled(true);
-			} else {
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_ASSIGN.toString())
-						.setEnabled(true);
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_EDIT.toString())
-						.setEnabled(false);
-				getUncertaintyContextualMenu().getJComponentActionCommand(ActionCommands.UNCERTAINTY_REMOVE.toString())
-						.setEnabled(false);
-			}
-		}
-	}
+    protected void  unSetImpossibleColumn() throws WrongCriterionException {
+        // Generates the evidenceCase based on the column
+        // selected on the JTable object
+        EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
+        ImpossibleConfiguration iC= new ImpossibleConfiguration(eC);
+        eventValuesTable.getImpossibleConfigurations().remove(iC);
+        impossibleColumns[selectedColumn -1] = false;
+
+        if (selectedColumn > 0) {
+            (
+                    (EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
+            ).setUnMark(selectedColumn - 1);
+            getEventValuesTable().repaint();
+            this.getTableModel().setNotEditablePositions(getNotEditablePositions());
+        }
+
+
+    }
+
+
+
+
+
 
 	/**
 	 * Handles the double click in a cell
@@ -859,28 +839,46 @@ public class TransitionTablePotentialPanel
 	 * @param evt
 	 */
 	protected void doubleClickEvent(MouseEvent evt) {
+	    //TODO copy from Uncertaninty menu
 		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
 			TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
 
-			EvidenceCase configuration = null;
+			EvidenceCase configuration1 = null;
+            EvidenceCase configuration2 = null;
 			int selectedColumn = eventValuesTable.columnAtPoint(evt.getPoint());
 			try {
-				configuration = getConfiguration(selectedColumn);
+                configuration1 = getEvidenceCaseFromSelectedColumn();
+				configuration2 = getConfiguration(selectedColumn);
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
 				e.printStackTrace();
 			}
-			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
-			if (hasUncertainty) {
-				try {
-					showUncertaintyDialog();
-				} catch (WrongCriterionException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-				}
-			}
+//			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
+//			if (hasUncertainty) {
+//				try {
+//					showUncertaintyDialog();
+//				} catch (WrongCriterionException e1) {
+//					e1.printStackTrace();
+//					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
+//							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
+//				}
+//			}
 		}
 	}
+
+//	/**
+//	 * This method initialises uncertaintyContextualMenu.
+//	 *
+//	 * @return the node contextual menu.
+//	 * revised-->not changed
+//	 */
+//	protected UncertaintyContextualMenu getUncertaintyContextualMenu() {
+//		if (uncertaintyContextualMenu == null) {
+//			uncertaintyContextualMenu = new UncertaintyContextualMenu(this);
+//			uncertaintyContextualMenu.setName("uncertaintyContextualMenu");
+//		}
+//		return uncertaintyContextualMenu;
+//	}
+
 
 	/**
 	 * This method initialises uncertaintyContextualMenu.
@@ -888,64 +886,29 @@ public class TransitionTablePotentialPanel
 	 * @return the node contextual menu.
 	 * revised-->not changed
 	 */
-	protected UncertaintyContextualMenu getUncertaintyContextualMenu() {
-		if (uncertaintyContextualMenu == null) {
-			uncertaintyContextualMenu = new UncertaintyContextualMenu(this);
-			uncertaintyContextualMenu.setName("uncertaintyContextualMenu");
+	protected SetImpossibleConfigurationContextualMenu getSetImpossibleConfigurationContextualMenu() {
+		if (setImpossibleConfigurationContextualMenu == null) {
+			setImpossibleConfigurationContextualMenu = new SetImpossibleConfigurationContextualMenu(this);
+			setImpossibleConfigurationContextualMenu.setName("timeToEventContextualMenu");
 		}
-		return uncertaintyContextualMenu;
+		return setImpossibleConfigurationContextualMenu;
 	}
 
+
+
+
 	/**
-	 * This method sets renders for the cells in the table. Only has to be called when it sets
-	 * data.
-	 * It is always used when eventTablePotential!=null
-	 * <p>
-	 * In a DECISION node a change is colored in green
-	 * <p>
-	 * UNCLEAR--> When ReadOnly is se?
-	 * <p>
-	 * NodeType.DECISION + policyType.OPTIMAL +!eventTablePotential.isUtility()
+	 * Currently only with Chance and event nodes and no link restrictions
+	 * If extended to Decision and Utility nodes then look at TablePotentialPanel
 	 *
-	 * @param uncertaintyInColumns
-	 * @author carmenyago
+	 * @param impossibleColumns
 	 */
-	protected void setCellRenderers(boolean[] uncertaintyInColumns) {
+	protected void setCellRenderers(boolean[] impossibleColumns) {
 
 		TableCellRenderer cellRenderer = null;
 
-		if (node.getNodeType() != NodeType.DECISION) {
-			// Creates the TableCellRenderer distinguishing if the node has or not link restrictions
-			if (!hasLinkRestriction) {
-				cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
-			} else {
-				cellRenderer = new ValuesTableWithLinkRestrictionCellRenderer(firstEditableRow, uncertaintyInColumns);
-			}
-
-		} else { // node.getNodeType() == NodeType.DECISION)
-			if ((node.getPolicyType() == PolicyType.OPTIMAL) && (
-					node.getPotentials().isEmpty() || (
-							!node.getPotentials().get(0).isAdditive()
-					)
-			))
-
-			{
-				// UNCLEAR--> When ReadOnly is se?
-				// A node has policy if is a decision node with a non uniform eventTablePotential
-				boolean imposingPolicyByUser = node.hasPolicy() && !isReadOnly();
-				cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns,
-						imposingPolicyByUser);
-			} else {
-				boolean showingOptimalPolicy = node.getPotentials().get(0).isAdditive() && isReadOnly();
-				if (!showingOptimalPolicy) {
-					cellRenderer = new ValuesTableCellRenderer(firstEditableRow, uncertaintyInColumns);
-				} else {
-					// When showing the expected utility we want the color of the cells to be green
-					cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns,
-							true);
-				}
-			}
-		}
+		// Creates the TableCellRenderer distinguishing if the node has or not link restrictions
+		cellRenderer = new EventValuesTableCellRenderer(firstEditableRow, impossibleColumns);
 		eventValuesTable.setDefaultRenderer(Double.class, cellRenderer);
 		eventValuesTable.setDefaultRenderer(String.class, cellRenderer);
 	}
@@ -967,11 +930,15 @@ public class TransitionTablePotentialPanel
 									e);
 				}
 				if (SwingUtilities.isRightMouseButton(e)) {
+
+                    int selectedColumn = eventValuesTable.columnAtPoint(e.getPoint());
 					if ((row > -1) && (col > 0) && !isReadOnly()) {
-						if (getUncertaintyContextualMenu() != null) {
+						if (getSetImpossibleConfigurationContextualMenu() != null) {
 							updateContextualMenuOptions();
-							getUncertaintyContextualMenu().show(eventValuesTable, e.getX(), e.getY());
-						}
+							getSetImpossibleConfigurationContextualMenu().show(eventValuesTable, e.getX(), e.getY());
+
+                        }
+
 					}
 				}
 			}
@@ -979,6 +946,30 @@ public class TransitionTablePotentialPanel
 		});
 		eventValuesTable.addMouseListener(new DoubleClickListener());
 	}
+
+	/**
+	 * Method for update the options showed in the contextual menu
+	 * revised-->not changed
+	 */
+	protected void updateContextualMenuOptions() {
+		TransitionTablePotential transitionTablePotentialPotential = (TransitionTablePotential) node.getPotentials().get(0);
+		boolean isImpossible = transitionTablePotential.isImpossibleConfiguration(getEvidenceCaseFromSelectedColumn());
+		if (isImpossible) {
+			getSetImpossibleConfigurationContextualMenu().getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
+						.setEnabled(false);
+			getSetImpossibleConfigurationContextualMenu().getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
+						.setEnabled(true);
+
+		} else {
+            getSetImpossibleConfigurationContextualMenu().getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
+                    .setEnabled(true);
+            getSetImpossibleConfigurationContextualMenu().getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
+                    .setEnabled(false);
+		}
+	}
+
+
+
 
 	/**
 	 * Close the table
@@ -1005,12 +996,10 @@ public class TransitionTablePotentialPanel
 		This is the case if the new read only value is different from the previous one.
 		 */
 		if (wasReadOnly != readOnly) {
-			boolean[] uncertaintyInColumns = null;
 			if (node.getPotentials() != null) {
-				uncertaintyInColumns = getUncertaintyInColumns();
-				setCellRenderers(uncertaintyInColumns);
+			    setCellRenderers(impossibleColumns);
 			} else {
-				setCellRenderers(uncertaintyInColumns);
+				setCellRenderers(impossibleColumns);
 			}
 		}
 		getEventValuesTable().setModifiable(!readOnly);
