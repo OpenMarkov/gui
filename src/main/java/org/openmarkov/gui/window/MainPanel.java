@@ -284,6 +284,16 @@ public class MainPanel extends JPanel {
 		getStandardToolBar().changeWorkingModeButton(workingMode);
 	}
 
+	//CMI 09/09/2019
+	/**
+	 *
+	 */
+	public void selecMonteCarloButton(boolean select){
+        getStandardToolBar().selectMonteCarloButton(select);
+	}
+	//CMF
+
+
 	/**
 	 * This method initialises mainMDI.
 	 *
