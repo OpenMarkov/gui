@@ -1415,9 +1415,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 */
 	protected void monteCarloSimulation(){
 		boolean performInference = true;
-
+		mainPanel.selecMonteCarloButton(false);
+		
 		InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-				Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+				Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
 		ProbNet probNet =getCurrentNetworkPanel().getProbNet();
 		// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
 		if (dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
@@ -1431,6 +1432,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				e.printStackTrace();
 			}
 		}
+
+
 	}
     //CMF
 
