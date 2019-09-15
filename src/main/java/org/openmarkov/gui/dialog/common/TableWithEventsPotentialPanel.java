@@ -8,10 +8,11 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.TableWithEventsPotential;
 import org.openmarkov.core.model.network.potential.TransitionTablePotential;
-import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.component.*;
@@ -31,8 +32,8 @@ import java.util.List;
  * Transition class to be merged with the new structure of tables
  * @version 1.0 - cyago - 24/03/2019
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "Event")
-public class TransitionTablePotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "TransitionTable")
+public class TableWithEventsPotentialPanel
 		extends ProbabilityTablePanel {
 	protected Logger logger;
 	/**
@@ -42,7 +43,7 @@ public class TransitionTablePotentialPanel
 	/**
 	 * Indicates if the data of the table is modifiable.
 	 */
-	protected boolean modifiable;
+	protected boolean modifiable=true;
 	/**
 	 * Panel to scroll the table.
 	 */
@@ -53,7 +54,7 @@ public class TransitionTablePotentialPanel
 	 * First eventTablePotential of node;  its class  should be  org.openmarkov.core.model.network.eventTablePotential.EventTablePotential or
 	 *
 	 */
-	protected TransitionTablePotential transitionTablePotential = null;
+	protected TableWithEventsPotential tableWithEvents = null;
 
 	/**
 	 * TablePotential of EventTablePotential
@@ -97,7 +98,7 @@ public class TransitionTablePotentialPanel
 
 
 
-	public TransitionTablePotentialPanel() {
+	public TableWithEventsPotentialPanel() {
 		super();
 	}
 
@@ -110,7 +111,7 @@ public class TransitionTablePotentialPanel
 	 * @param node : node whose first eventTablePotential is a TablePotential or a TableDeltaPotential
 	 * @author carmenyago : adaptation to TableDeltaPotential
 	 */
-	public TransitionTablePotentialPanel(Node node) {
+	public TableWithEventsPotentialPanel(Node node) {
 		super();
 
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
@@ -126,40 +127,56 @@ public class TransitionTablePotentialPanel
 		}
 		this.node = node;
 
-		transitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
-		boolean yes = transitionTablePotential instanceof TimeToEventTablePotential;
+		tableWithEvents = (TableWithEventsPotential) node.getPotentials().get(0);
 
-
-
-		tablePotential =  transitionTablePotential.getTablePotential();
-
-		// The list of variables of eventTablePotential
-		variables = transitionTablePotential.getVariables();
-
-		// The list of variables of the tablePotential of EventTablePotential
-		tableVariables = tablePotential.getVariables();
-
-
-
-		// Creating the table; class EventValuesTable
-		eventValuesTable = new EventValuesTable(node, getTableModel(), modifiable);
-		eventValuesTable.setName("EventPotentialsTablePanel.eventValuesTable");
-		eventValuesTable.setVisible(true);
-
-		modifiable = true;
-
-		setTableSpecificListeners();
-
-		setData();
-
-		setLayout(new BorderLayout());
-
-		// If the ScrollPane is not created, initialise it and set the Viewport.
-		// Then add the element to the Layout.
-		add(getValuesTableScrollPane(), BorderLayout.CENTER);
-
-		repaint();
+        initialize();
 	}
+
+
+	public TableWithEventsPotentialPanel(Node node, TableWithEventsPotential tableWithEvents) {
+		super();
+
+		this.node = node;
+		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
+
+		this.tableWithEvents = tableWithEvents;
+		initialize();
+
+
+
+	}
+
+	public void initialize() {
+        tablePotential = tableWithEvents.getTablePotential();
+
+        // The list of variables of eventTablePotential
+        variables = tableWithEvents.getVariables();
+
+        // The list of variables of the tablePotential of EventTablePotential
+        tableVariables = tablePotential.getVariables();
+
+
+		eventValuesTable = new EventValuesTable(node,tableWithEvents,  new EventValuesTableModel(data, columns, firstEditableRow), modifiable);
+        eventValuesTable.setName("EventPotentialsTablePanel.eventValuesTable");
+        eventValuesTable.setVisible(true);
+
+
+
+        setTableSpecificListeners();
+
+        setData();
+
+        setLayout(new BorderLayout());
+
+        // If the ScrollPane is not created, initialise it and set the Viewport.
+        // Then add the element to the Layout.
+        add(getValuesTableScrollPane(), BorderLayout.CENTER);
+
+        repaint();
+
+    }
+
+
 
 	/**
 	 * Sets a new table model with new data and new columns in eventValuesTable
@@ -264,10 +281,6 @@ public class TransitionTablePotentialPanel
         // set the Cell Renders according to NodeType (a different renderer for some DECISON nodes) and the uncertainty
 		setCellRenderers(impossibleColumns);
 
-		// getNotEditablePositions checked if there is any link restriction
-		// which make the correspondent cells no editable and returns an array with the size of the table
-		// with the not editable cells set to 1
-		this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 
 		// Establish the column width
 		eventValuesTable.fitColumnsWidthToContent();
@@ -296,7 +309,7 @@ public class TransitionTablePotentialPanel
 				// Returns an evidence case with one finding for every parent variable and its state in the column
 				EvidenceCase configuration = getConfiguration(i);
 				// If the column configuration has uncertainty hasUncertainty= true
-				isImpossible = transitionTablePotential.isImpossibleConfiguration(configuration);
+				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -709,10 +722,7 @@ public class TransitionTablePotentialPanel
 	 * revised-->not changed
 	 */
 	public EventValuesTable getEventValuesTable() {
-		if (eventValuesTable == null) {
-			eventValuesTable = new EventValuesTable(node, getTableModel(), modifiable);
-			eventValuesTable.setName("PotentialsTablePanel.eventValuesTable");
-		}
+
 		return eventValuesTable;
 	}
 
@@ -793,8 +803,7 @@ public class TransitionTablePotentialPanel
 		// Generates the evidenceCase based on the column
 		// selected on the JTable object
 		EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
-		ImpossibleConfiguration iC= new ImpossibleConfiguration(eC);
-        eventValuesTable.getImpossibleConfigurations().add(iC);
+        eventValuesTable.getImpossibleConfigurations().add(new Configuration(eC));
         impossibleColumns[selectedColumn -1] = true;
 
         if (selectedColumn > 0) {
@@ -802,7 +811,6 @@ public class TransitionTablePotentialPanel
 							(EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
 					).setMark(selectedColumn - 1);
 					getEventValuesTable().repaint();
-					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 				}
 
 
@@ -813,7 +821,7 @@ public class TransitionTablePotentialPanel
         // Generates the evidenceCase based on the column
         // selected on the JTable object
         EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
-        ImpossibleConfiguration iC= new ImpossibleConfiguration(eC);
+        Configuration iC= new Configuration(eC);
         eventValuesTable.getImpossibleConfigurations().remove(iC);
         impossibleColumns[selectedColumn -1] = false;
 
@@ -822,7 +830,6 @@ public class TransitionTablePotentialPanel
                     (EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
             ).setUnMark(selectedColumn - 1);
             getEventValuesTable().repaint();
-            this.getTableModel().setNotEditablePositions(getNotEditablePositions());
         }
 
 
@@ -839,30 +846,30 @@ public class TransitionTablePotentialPanel
 	 * @param evt
 	 */
 	protected void doubleClickEvent(MouseEvent evt) {
-	    //TODO copy from Uncertaninty menu
-		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
-			TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
-
-			EvidenceCase configuration1 = null;
-            EvidenceCase configuration2 = null;
-			int selectedColumn = eventValuesTable.columnAtPoint(evt.getPoint());
-			try {
-                configuration1 = getEvidenceCaseFromSelectedColumn();
-				configuration2 = getConfiguration(selectedColumn);
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
-				e.printStackTrace();
-			}
-//			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
-//			if (hasUncertainty) {
-//				try {
-//					showUncertaintyDialog();
-//				} catch (WrongCriterionException e1) {
-//					e1.printStackTrace();
-//					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-//							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-//				}
+//	    //TODO copy from Uncertaninty menu
+//		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
+//			TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+//
+//			EvidenceCase configuration1 = null;
+//            EvidenceCase configuration2 = null;
+//			int selectedColumn = eventValuesTable.columnAtPoint(evt.getPoint());
+//			try {
+//                configuration1 = getEvidenceCaseFromSelectedColumn();
+//				configuration2 = getConfiguration(selectedColumn);
+//			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+//				e.printStackTrace();
 //			}
-		}
+////			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
+////			if (hasUncertainty) {
+////				try {
+////					showUncertaintyDialog();
+////				} catch (WrongCriterionException e1) {
+////					e1.printStackTrace();
+////					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
+////							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
+////				}
+////			}
+//		}
 	}
 
 //	/**
@@ -889,7 +896,7 @@ public class TransitionTablePotentialPanel
 	protected SetImpossibleConfigurationContextualMenu getSetImpossibleConfigurationContextualMenu() {
 		if (setImpossibleConfigurationContextualMenu == null) {
 			setImpossibleConfigurationContextualMenu = new SetImpossibleConfigurationContextualMenu(this);
-			setImpossibleConfigurationContextualMenu.setName("timeToEventContextualMenu");
+			setImpossibleConfigurationContextualMenu.setName("impossibleConfigurationContextualMenu");
 		}
 		return setImpossibleConfigurationContextualMenu;
 	}
@@ -926,7 +933,7 @@ public class TransitionTablePotentialPanel
 				selectedColumn = col;
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					eventValuesTable
-							.editCellAt(eventValuesTable.rowAtPoint(e.getPoint()), eventValuesTable.columnAtPoint(e.getPoint()),
+							.editCellAt(row, col,
 									e);
 				}
 				if (SwingUtilities.isRightMouseButton(e)) {
@@ -952,8 +959,8 @@ public class TransitionTablePotentialPanel
 	 * revised-->not changed
 	 */
 	protected void updateContextualMenuOptions() {
-		TransitionTablePotential transitionTablePotentialPotential = (TransitionTablePotential) node.getPotentials().get(0);
-		boolean isImpossible = transitionTablePotential.isImpossibleConfiguration(getEvidenceCaseFromSelectedColumn());
+		TableWithEventsPotential tablePotentialWithEvents = tableWithEvents;
+		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getEvidenceCaseFromSelectedColumn());
 		if (isImpossible) {
 			getSetImpossibleConfigurationContextualMenu().getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
 						.setEnabled(false);

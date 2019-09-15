@@ -16,8 +16,7 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.TransitionTablePotential;
-import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEventsPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.EventTablePotentialValueEdit;
 import org.openmarkov.gui.dialog.common.KeyTable;
@@ -109,9 +108,9 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * First eventTablePotential of node
 	 *
 	 */
-	protected TransitionTablePotential transitionTablePotential = null;
+	protected TableWithEventsPotential tableWithEventsPotential = null;
 	protected TablePotential tablePotential = null;
-	private ArrayList<ImpossibleConfiguration> impossibleConfigurations;
+	private ArrayList<Configuration> impossibleConfigurations;
 
 
 	protected ProbNet probNet;
@@ -147,7 +146,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		this.node = node;
 		this.probNet = node.getProbNet();
 		try {
-			this.transitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
+			this.tableWithEventsPotential = (TableWithEventsPotential) node.getPotentials().get(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -155,8 +154,8 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		}
 		//Adding the initialisation of getEventTablePotential
 
-		tablePotential = transitionTablePotential.getTablePotential();
-		setImpossibleConfigurations(transitionTablePotential.getImpossibleConfigurations());
+		tablePotential = tableWithEventsPotential.getTablePotential();
+		setImpossibleConfigurations(tableWithEventsPotential.getImpossibleConfigurations());
 		//
 		if (modifiable) {
 			int numRowsModel = eventValuesTableModel.getRowCount();
@@ -165,6 +164,49 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 			initializeDataModified(false);
 		}
 	}
+
+
+	/**
+	 * Default constructor
+	 *
+	 * @param node       - the node with the EvemtTablePotential
+	 * @param eventValuesTableModel - the model of the EventTablePotential
+	 * @param modifiable - true if the table can be edited and modified
+	 */
+	public EventValuesTable(Node node, TableWithEventsPotential tableWithEventsPotential, EventValuesTableModel eventValuesTableModel, final boolean modifiable) {
+		super(eventValuesTableModel, modifiable, true, true);
+		node.getProbNet().getPNESupport().addUndoableEditListener(this);
+		this.eventValuesTableModel = eventValuesTableModel;
+		this.node = node;
+		this.probNet = node.getProbNet();
+		try {
+			this.tableWithEventsPotential = tableWithEventsPotential;
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		}
+		//Adding the initialisation of getEventTablePotential
+
+		tablePotential = this.tableWithEventsPotential.getTablePotential();
+		setImpossibleConfigurations(this.tableWithEventsPotential.getImpossibleConfigurations());
+		//
+		if (modifiable) {
+			int numRowsModel = eventValuesTableModel.getRowCount();
+			int numColumsModel = eventValuesTableModel.getColumnCount();
+			this.dataModified = new boolean[numRowsModel][numColumsModel];
+			initializeDataModified(false);
+		}
+	}
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * Constructor for ValuesTable
@@ -373,10 +415,10 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 
 		// Chance, decision and utility
 
-		EventTablePotentialValueEdit nodePotentialEdit = new EventTablePotentialValueEdit(node, (Double) newValue, row, col,
-				priorityList, getEventValuesTableModel().getNotEditablePositions());
+		EventTablePotentialValueEdit eventTablePotentialValueEdit = new EventTablePotentialValueEdit(node, tableWithEventsPotential, (Double) newValue, row, col,
+				priorityList);
 		try {
-			probNet.doEdit(nodePotentialEdit);
+			probNet.doEdit(eventTablePotentialValueEdit);
 		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -588,26 +630,32 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 
 
 	public void eventTablePotentialValueEditHappened(EventTablePotentialValueEdit edit) {
+		// postition in the table of TablePotential
 		int position = 0;
+		int rowPosition = edit.getRowPosition(position);
+		int columnPosition = edit.getColumnPosition();
 		TablePotential editPotential = edit.getTablePotential();
+		if ((getNodeType()==NodeType.EVENT) || (getNodeType()==NodeType.UTILITY)){
 
-		//For uno
-		if (edit.getTransitionTablePotential() instanceof TimeToEventTablePotential) {
-			position = edit.getColumnPosition() - 1;
-//			super.getModel()
-//					.setValueAt(editPotential.values[position], edit.getRowPosition(), edit.getColumnPosition());
-			super.getModel()
-					.setValueAt(editPotential.values[edit.getPotentialSelected()], edit.getRowPosition(), edit.getColumnPosition());
+			int potentialSelected = edit.getPotentialSelected();
 
-			//
+			rowPosition = edit.getRowPosition(position);
+			columnPosition = edit.getColumnPosition();
+			try {
+
+				getModel()
+					.setValueAt(editPotential.getValues()[potentialSelected], edit.getRowPosition(), edit.getColumnPosition());
+			}catch(Exception e){
+
+			}
 		} else{
 				priorityList = edit.getPriorityList();
 				ListIterator<Integer> listIterator = priorityList.listIterator();
 				double[] values = editPotential.getValues();
 				while (listIterator.hasNext()) {
 					position = (Integer) listIterator.next();
-					int rowPosition = edit.getRowPosition(position);
-					int columnPosition = edit.getColumnPosition();
+					rowPosition = edit.getRowPosition(position);
+					columnPosition = edit.getColumnPosition();
 					super.getModel().setValueAt(values[position], rowPosition, columnPosition);
 				}
 			}
@@ -628,7 +676,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		if (event.getEdit() instanceof EventTablePotentialValueEdit) {
 			EventTablePotentialValueEdit edit = (EventTablePotentialValueEdit) event.getEdit();
 			TablePotential editPotential = edit.getTablePotential();
-			TransitionTablePotential transitionTablePotential = edit.getTransitionTablePotential();
+			TableWithEventsPotential transitionTablePotential = (TableWithEventsPotential) edit.getTableWithEventsPotential();
 
 			priorityList = edit.getPriorityList();
 			for (Integer position : priorityList) {
@@ -654,6 +702,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 			selectAll(e);
 		}
 		return result;
+
 	}
 
 	/**
@@ -767,11 +816,11 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		}
 	}
 
-	public ArrayList<ImpossibleConfiguration> getImpossibleConfigurations() {
+	public ArrayList<Configuration> getImpossibleConfigurations() {
 		return impossibleConfigurations;
 	}
 
-	public void setImpossibleConfigurations(ArrayList<ImpossibleConfiguration> impossibleConfigurations) {
+	public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
 		this.impossibleConfigurations = impossibleConfigurations;
 	}
 }
