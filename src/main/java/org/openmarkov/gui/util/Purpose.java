@@ -34,7 +34,9 @@ public class Purpose {
 		if (list == null) {
 			list = new ArrayList<String>();
 			list.add("");
+			//CMI 03/2019
 			list.add("eventTerminal");
+			//CMF
 			list.add("cost");
 			list.add("effectiveness");
 			list.add("treatment");
