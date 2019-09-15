@@ -65,7 +65,9 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	/**
 	 * Button perform a Monte Carlo simulation. Currently only it works with DESNet
 	 */
-	private JToggleButton MonteCarloSimulationButton = null;
+	private JToggleButton monteCarloSimulationButton = null;
+	//CMF
+
     //
 	/**
 	 * Button to show optimal strategy.
@@ -284,17 +286,17 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 * @return a
 	 */
 	private JToggleButton getMonteCarloSimulationButton() {
-		if (MonteCarloSimulationButton == null) {
-			MonteCarloSimulationButton = new JToggleButton();
-			MonteCarloSimulationButton.setIcon(iconLoader.load(IconLoader.ICON_SIMULATION_ENABLED));
-			MonteCarloSimulationButton.setFocusable(false);
-			MonteCarloSimulationButton.setActionCommand(ActionCommands.MC_SIMULATE_NETWORK);
-			MonteCarloSimulationButton.setToolTipText(
+		if (monteCarloSimulationButton == null) {
+			monteCarloSimulationButton = new JToggleButton();
+			monteCarloSimulationButton.setIcon(iconLoader.load(IconLoader.ICON_SIMULATION_ENABLED));
+			monteCarloSimulationButton.setFocusable(false);
+			monteCarloSimulationButton.setActionCommand(ActionCommands.MC_SIMULATE_NETWORK);
+			monteCarloSimulationButton.setToolTipText(
 					stringDatabase.getString(ActionCommands.MC_SIMULATE_NETWORK + STRING_TOOLTIP_SUFFIX));
-			MonteCarloSimulationButton.addActionListener(listener);
-			MonteCarloSimulationButton.addMouseMotionListener(this);
+			monteCarloSimulationButton.addActionListener(listener);
+			monteCarloSimulationButton.addMouseMotionListener(this);
 		}
-		return MonteCarloSimulationButton;
+		return monteCarloSimulationButton;
 	}
 	//CMF
 	
@@ -393,6 +395,20 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 		workingModeButton.setSelected(workingMode == NetworkPanel.INFERENCE_WORKING_MODE);
 	}
 
+	//CMI 2019/09/09
+	/**
+	 * Select/unselect MonteCarloButon
+	 * @param select - true if moteCarloButton will be selected0
+	 */
+	public void selectMonteCarloButton(boolean select) {
+	        monteCarloSimulationButton.setSelected(false);
+	}
+
+
+	//CMF
+
+
+
 	/**
 	 * Returns the component that corresponds to an action command.
 	 *
@@ -425,7 +441,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 				break;
 			//	CMI 21/08/2019
 			case ActionCommands.MC_SIMULATE_NETWORK:
-				component = MonteCarloSimulationButton;
+				component = monteCarloSimulationButton;
 				break;
 			// CMF
 			case ActionCommands.DECISION_TREE:
