@@ -921,7 +921,9 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			temporalPanel.setBorder(
 					new TitledBorder(stringDatabase.getString("NetworkAdvancedPanel.TemporalOptions.Title")));
 			temporalPanel.add(getNumSlicesPanel());
+
 			temporalPanel.add(getTransitionsPanel());
+
 		}
 		return temporalPanel;
 	}
@@ -1084,6 +1086,14 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			transitionsPanel.add(getBeginningOfCycleButton());
 			transitionsPanel.add(getHalfCycleButton());
 			transitionsPanel.add(getEndOfCycleButton());
+			//CMI 10/09/2019
+			if (isMonteCarloSimulation){
+				getBeginningOfCycleButton().setEnabled(false);
+				getHalfCycleButton().setEnabled(false);
+				getEndOfCycleButton().setEnabled(false);
+				transitionsPanel.setEnabled(false);
+			}
+			//CMF
 		}
 		return transitionsPanel;
 	}
@@ -1121,7 +1131,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			}
 
 			this.temporalOptions.setHorizon(numSlices);
-
+			if (!isMonteCarloSimulation)
 			if (beginningOfCycleButton.isSelected()) {
 				this.temporalOptions.setTransition(TransitionTime.BEGINNING);
 			} else if (halfCycleButton.isSelected()) {
