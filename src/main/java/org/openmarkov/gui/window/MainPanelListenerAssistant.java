@@ -1431,6 +1431,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			} catch (NotEvaluableNetworkException e) {
 				e.printStackTrace();
 			}
+			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+					"The simulation has ended", "MonteCarlo simulation",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
 
 
@@ -1710,20 +1713,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
             return;
         }
         return;
-//        //Should implement the Evaluation interface org.openmarkov.core.inference.tasks.Evaluation
-//        // DANEvaluation eval = null;
-//            try {
-//                eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet, networkPanel.getEditorPanel().getPreResolutionEvidence());
-//            } catch (NotEvaluableNetworkException e1) {
-//                JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-//                        "An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
-//                        JOptionPane.ERROR_MESSAGE);
-//            } catch (UnexpectedInferenceException e) {
-//                LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-//                        "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
-//                localizedException.showException();
-//            }
-//        }
+
     }
     //CMF
 
