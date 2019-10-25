@@ -257,10 +257,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             for (Node parent: node.getParents()) {
                 tableColumns *= parent.getVariable().getNumStates();
             }
+			System.out.println(tableColumns);
             // Show small uniform potentials as table potentials. Saves clicks
             if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
                 potentialTypeComboBox.setSelectedItem("Table");
             }
+			// Show small uniform potentials as 'Exact' potentials. Saves clicks
+			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+				potentialTypeComboBox.setSelectedItem("Exact");
+			}
 			potentialTypeComboBox.setEnabled(!readOnly);
 		}
 		return potentialTypeComboBox;
