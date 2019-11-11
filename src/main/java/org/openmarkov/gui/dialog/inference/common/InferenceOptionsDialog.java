@@ -13,10 +13,7 @@ import org.openmarkov.core.action.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.MonteCarloOptions;
-import org.openmarkov.core.inference.MulticriteriaOptions;
-import org.openmarkov.core.inference.TemporalOptions;
-import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.inference.*;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
@@ -147,11 +144,12 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	 */
 	private TemporalOptions temporalOptions;
 
-	//CMI 25/07/11019
+	//CMI 25/07/2019 - added desNetLogOptions 25/09/2019
 	/**
 	 * Contains the parameters of the Monte Carlo simulation
 	 */
 	private MonteCarloOptions monteCarloOptions;
+
 	//CMF
 
 
@@ -200,7 +198,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	private JPanel multicriteriaPanel;
 
 	private JPanel temporalPanel;
-	// CMI 25/08/2019
+	// CMI 25/08/2019 --25/09/2019 added desNetLogOptionsPanel --06/01/2019 statistics Panel added
 	private JPanel monteCarloOptionsPanel;
 	/**
 	 * Number of series of simulations
@@ -221,6 +219,29 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	 * Number of simulations JTextField
 	 */
 	private JTextField numSimulationsTextField;
+
+
+	private JPanel desNetLogOptionsPanel;
+
+	private JCheckBox onlySummaryLogCheckBox;
+
+	private JCheckBox stateLogCheckBox;
+
+	private JCheckBox eventLogCheckBox;
+
+	private JCheckBox scheduledEventsCheckBox;
+
+
+	//Statistics Panel
+	private JPanel statisticsPanel;
+	private JCheckBox meanCheckBox;
+	private JCheckBox sumCheckBox;
+	private JCheckBox treemedMeanCheckBox;
+	private JCheckBox medianCheckBox;
+
+
+
+
 	//CMF
 	/**
 	 * Constructor of the dialog
@@ -269,8 +290,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		this.temporalOptions = probNet.getInferenceOptions().getTemporalOptions().clone();
 
 
-		//CMI 25/08/2019 TODO May be an error when no DESNet???
-		this.monteCarloOptions = probNet.getInferenceOptions().getMonteCarloOptions().clone();
+		//CMI 25/08/2019
+		if (isMonteCarloSimulation) {
+			this.monteCarloOptions = probNet.getInferenceOptions().getMonteCarloOptions().clone();
+		}
 		//CMF
 
 		mainPanel = new JPanel();
@@ -281,6 +304,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		//CMI 25/08/2019
 		if (isMonteCarloSimulation) {
 			mainPanel.add(getMonteCarloOptionsPanel());
+//			mainPanel.add(getDesNetLogOptionsPanel());
+//			mainPanel.add(getStatisticsPanel());
 		}
         //CMF
 		if (isTemporal) {
@@ -928,7 +953,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		return temporalPanel;
 	}
 
-	//CMI
+	//CMI -25/09/2919 added Log options - 06/10/2019
 	/**
 	 * Get
 	 *
@@ -937,7 +962,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	public JPanel getMonteCarloOptionsPanel() {
 		if (monteCarloOptionsPanel == null) {
 			monteCarloOptionsPanel = new JPanel();
-			monteCarloOptionsPanel.setLayout(new BorderLayout());
+			monteCarloOptionsPanel.setLayout(new BoxLayout(monteCarloOptionsPanel, BoxLayout.Y_AXIS));
 			monteCarloOptionsPanel.setBorder(
 			new TitledBorder("Monte Carlo Options"));
 			JPanel numSeriesPanel = new JPanel();
@@ -946,37 +971,54 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			JPanel numSimulationsPanel = new JPanel();
             numSimulationsPanel.add(getJLabelNumSimulations());
             numSimulationsPanel.add(getNumSimulationsTextField());
-            monteCarloOptionsPanel.add(numSimulationsPanel,BorderLayout.WEST);
-            monteCarloOptionsPanel.add(numSeriesPanel,BorderLayout.EAST);
+            JPanel firstLinePanel = new JPanel();
+            firstLinePanel.setLayout(new BorderLayout());
+            firstLinePanel.add(numSimulationsPanel,BorderLayout.WEST);
+			firstLinePanel.add(numSeriesPanel,BorderLayout.EAST);
+			monteCarloOptionsPanel.add(firstLinePanel);
+            monteCarloOptionsPanel.add(getDesNetLogOptionsPanel());
+			monteCarloOptionsPanel.add(getStatisticsPanel());
 		}
+
+		onlySummaryLogCheckBox.addActionListener(new ActionListener() {
+
+			@Override public void actionPerformed(ActionEvent e) {
+				changeLogCheckBox();
+			}
+		});
 		return monteCarloOptionsPanel;
 	}
+	
+	private void changeLogCheckBox(){
+		if (onlySummaryLogCheckBox.isSelected()){
+			monteCarloOptions.setOnlySummary(true);
+			monteCarloOptions.setStateLog(false);
+			monteCarloOptions.setEventLog(false);
+			monteCarloOptions.setScheduledEventLog(false);
+			getJCheckBoxStateLog().setEnabled(false);
+			getJCheckBoxStateLog().setSelected(false);
+			getJCheckBoxEventLog().setEnabled(false);
+			getJCheckBoxEventLog().setSelected(false);
+			getJCheckBoxScheduledEventsLog().setEnabled(false);
+			getJCheckBoxScheduledEventsLog().setSelected(false);
 
 
+		} else{
+			getJCheckBoxStateLog().setEnabled(true);
+			getJCheckBoxEventLog().setEnabled(true);
+			getJCheckBoxScheduledEventsLog().setEnabled(true);
 
-
-
+		}
+	}
 
 	private JLabel getJLabelNumSimulations() {
 		if (numSimulationsLabel == null) {
 			//TODO use stringDatabase
-			numSimulationsLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
 			numSimulationsLabel = new JLabel("Number of simulations");
 		}
 		return numSimulationsLabel;
 
 	}
-
-	private JLabel getJLabelNumSeries() {
-		if (numSeriesLabel == null) {
-			//TODO use stringDatabase
-//			numSeriesLabel = new JLabel(stringDatabase.getString("CostEffectiveness.NumberOfCycles"));
-			numSeriesLabel = new JLabel("Number of series");
-		}
-		return numSeriesLabel;
-
-	}
-
 	private JTextField getNumSimulationsTextField() {
 
 		if (numSimulationsTextField == null) {
@@ -988,11 +1030,20 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		return numSimulationsTextField;
 	}
 
+	private JLabel getJLabelNumSeries() {
+		if (numSeriesLabel == null) {
+			//TODO use stringDatabase
+			numSeriesLabel = new JLabel("Number of series");
+		}
+		return numSeriesLabel;
+
+	}
+
 	private JTextField getNumSeriesTextField() {
 
 		if (numSeriesTextField == null) {
 			numSeriesTextField = new JTextField();
-			numSeriesTextField.setText("" + this.monteCarloOptions.getNumSeries());
+			numSeriesTextField.setText("" + this.monteCarloOptions.getNumTrialSets());
 			numSeriesTextField.setColumns(10);
 			numSeriesTextField.setName("numSeriesTextField");
 		}
@@ -1000,6 +1051,136 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	}
 
 
+	public JPanel getDesNetLogOptionsPanel() {
+		if (desNetLogOptionsPanel == null) {
+			desNetLogOptionsPanel = new JPanel();
+			desNetLogOptionsPanel.setBorder( new TitledBorder("DES Inference Log Options"));
+			desNetLogOptionsPanel.add(getJCheckBoxOnlySummaryLog());
+			desNetLogOptionsPanel.add(getJCheckBoxStateLog());
+			desNetLogOptionsPanel.add(getJCheckBoxEventLog());
+			desNetLogOptionsPanel.add(getJCheckBoxScheduledEventsLog());
+		}
+		return desNetLogOptionsPanel;
+	}
+
+	private JCheckBox getJCheckBoxOnlySummaryLog() {
+		if (onlySummaryLogCheckBox == null) {
+			//TODO use stringDatabase
+			onlySummaryLogCheckBox = new JCheckBox("Only Summary",monteCarloOptions.isOnlySummary());
+
+		}
+		return onlySummaryLogCheckBox;
+	}
+
+	private JCheckBox getJCheckBoxStateLog() {
+		if (stateLogCheckBox == null) {
+			//TODO use stringDatabase
+			stateLogCheckBox = new JCheckBox("States",monteCarloOptions.isStateLog());
+			if (onlySummaryLogCheckBox.isSelected()){
+			    stateLogCheckBox.setEnabled(false);
+			    stateLogCheckBox.setSelected(false);
+            }
+
+		}
+		return stateLogCheckBox;
+	}
+
+	private JCheckBox getJCheckBoxEventLog() {
+		if (eventLogCheckBox == null) {
+			//TODO use stringDatabase
+			eventLogCheckBox = new JCheckBox("Events", monteCarloOptions.isEventLog());
+            if (onlySummaryLogCheckBox.isSelected()){
+                eventLogCheckBox.setEnabled(false);
+                eventLogCheckBox.setSelected(false);
+            }
+		}
+
+		return eventLogCheckBox;
+	}
+
+	private JCheckBox getJCheckBoxScheduledEventsLog() {
+		if (scheduledEventsCheckBox == null) {
+			//TODO use stringDatabase
+			scheduledEventsCheckBox = new JCheckBox("Scheduled Events", monteCarloOptions.isScheduledEventLog());
+            if (onlySummaryLogCheckBox.isSelected()){
+                scheduledEventsCheckBox.setSelected(false);
+                scheduledEventsCheckBox.setEnabled(false);
+            }
+		}
+		return scheduledEventsCheckBox;
+	}
+
+
+	private JPanel getStatisticsPanel(){
+		if (statisticsPanel == null) {
+			statisticsPanel = new JPanel();
+			statisticsPanel.setBorder( new TitledBorder("DES Inference Statistics"));
+			statisticsPanel.add(getJCheckBoxMean());
+			statisticsPanel.add(getJCheckBoxSum());
+			statisticsPanel.add(getJCheckBoxTreemedMean());
+			statisticsPanel.add(getJCheckBoxMedian());
+		}
+		return statisticsPanel;
+		
+	}
+
+	private JCheckBox getJCheckBoxMean() {
+		if (meanCheckBox == null) {
+			//TODO use stringDatabase
+			meanCheckBox = new JCheckBox("Mean", monteCarloOptions.isMean());
+			meanCheckBox.setEnabled(true);
+			meanCheckBox.setSelected(true);		
+		}
+		return meanCheckBox;
+	}
+
+	private JCheckBox getJCheckBoxSum() {
+		if (sumCheckBox == null) {
+			//TODO use stringDatabase
+			sumCheckBox = new JCheckBox("Sum", monteCarloOptions.isMean());
+			sumCheckBox.setEnabled(false);
+			sumCheckBox.setSelected(false);
+		}
+		return sumCheckBox;
+	}
+	
+	
+	private JCheckBox getJCheckBoxTreemedMean() {
+		if (treemedMeanCheckBox == null) {
+			//TODO use stringDatabase
+			treemedMeanCheckBox = new JCheckBox("Treemed Mean", monteCarloOptions.isMean());
+			treemedMeanCheckBox.setEnabled(false);
+			treemedMeanCheckBox.setSelected(false);
+		}
+		return treemedMeanCheckBox;
+	}
+
+	private JCheckBox getJCheckBoxMedian() {
+		if (medianCheckBox == null) {
+			//TODO use stringDatabase
+			medianCheckBox = new JCheckBox("Median", monteCarloOptions.isMean());
+			medianCheckBox.setEnabled(false);
+			medianCheckBox.setSelected(false);
+		}
+		return medianCheckBox;
+	}
+	
+	
+	//Statistics dialog
+
+
+	private void setMonteCarloOptions() {
+		this.monteCarloOptions.setNumTrialSets(Integer.parseInt(numSeriesTextField.getText()));
+		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
+		this.monteCarloOptions.setStateLog(stateLogCheckBox.isSelected());
+		this.monteCarloOptions.setEventLog(eventLogCheckBox.isSelected());
+		this.monteCarloOptions.setScheduledEventLog(scheduledEventsCheckBox.isSelected());
+		this.monteCarloOptions.setOnlySummary(onlySummaryLogCheckBox.isSelected());
+		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
+		this.monteCarloOptions.setTreemedMean(treemedMeanCheckBox.isSelected());
+		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
+		this.monteCarloOptions.setSum(sumCheckBox.isSelected());
+	}
 //CMF
 
 	private JPanel getNumSlicesPanel() {
@@ -1148,12 +1329,10 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 
 		}
-        //CMI 25/08/2019
+        //CMI 25/08/2019 -- 28/09/2019 -- added DESNET log options --06/10/2019 encapsulated the translation from the gui to the monteCarloOptions
 		if (isMonteCarloSimulation) {
-			this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
-			this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
+			setMonteCarloOptions();
 			MonteCarloOptionsEdit editMonteCarlo = new MonteCarloOptionsEdit(probNet, monteCarloOptions);
-
 			try {
 				probNet.getPNESupport().doEdit(editMonteCarlo);
 			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {

@@ -29,6 +29,13 @@ public class VisualUtilityNode extends VisualNode {
 			.getColor(OpenMarkovPreferences.NODEUTILITY_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
 					new Color(208, 230, 178));
 
+	//CMI 11/11/2019 Internal color when one of the parents is an Event node
+
+	private static final Color WITH_EVENT_BACKGROUND_COLOR = OpenMarkovPreferences
+			.getColor(OpenMarkovPreferences.NODEUTILITY_WITH_EVENT_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+					new Color(93, 155, 49));
+	//CMF
+
 	/**
 	 * Color of lines and letters.
 	 */
@@ -187,8 +194,15 @@ public class VisualUtilityNode extends VisualNode {
 		double textWidth = getWidth(text, g);
 		Shape shape = getShape(g);
 		Point2D.Double[] points = getPoints(g);
+		//CMI 11/11/2019
+//		g.setPaint(BACKGROUND_COLOR);
+		if (node.getEventParents().isEmpty()){
+			g.setPaint(BACKGROUND_COLOR);
 
-		g.setPaint(BACKGROUND_COLOR);
+		} else {
+			g.setPaint(WITH_EVENT_BACKGROUND_COLOR);
+		}
+		//CMF
 		g.fill(shape);
 		g.setPaint(FOREGROUND_COLOR);
 		g.setStroke(getContourStroke());
