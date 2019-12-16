@@ -22,9 +22,10 @@ import java.awt.event.ActionListener;
  * Adapted from UncertaintyContextualMenu
  * @author cyago
  * @version 1.0 20190825 - 25/08/2019 only contains the items "Set impossible configuration" and "Unset impossible configuration"
+ * @version 1.1 20191214 - 14/12/2019 added the possibility of typing a function
  *
  */
-public class SetImpossibleConfigurationContextualMenu extends ContextualMenu {
+public class TableWithEventsContextualMenu extends ContextualMenu {
 
 	/**
 	 * Static field for serializable class.
@@ -39,20 +40,36 @@ public class SetImpossibleConfigurationContextualMenu extends ContextualMenu {
 	 */
 	private JMenuItem unsetImpossibleMenuItem = null;
 
-	public SetImpossibleConfigurationContextualMenu(ActionListener newListener) {
+	/**
+	 * Selected to introduce a formula instead of a number
+	 */
+	private JMenuItem addFunctionMenuItem = null;
+
+
+
+	public TableWithEventsContextualMenu(ActionListener newListener) {
+		this(newListener, true);
+	}
+
+
+	public TableWithEventsContextualMenu(ActionListener newListener, boolean setAddFunction) {
 		super(newListener);
-		initialize();
+		initialize(setAddFunction);
 	}
 
 	/**
 	 * This method initializes this instance.
 	 */
-	private void initialize() {
+	private void initialize(boolean setAddFunction) {
 
 		add(getSetImpossibleMenuItem());
 		add(getUnsetImpossibleMenuItem());
-
+		if (setAddFunction) {
+			add(getAddFunctionMenuItem());
+		}
 	}
+
+
 
 	/**
 	 * This method initializes assignMenuItem.
@@ -75,9 +92,9 @@ public class SetImpossibleConfigurationContextualMenu extends ContextualMenu {
 
 
 	/**
-	 * This method initializes removeMenuItem.
+	 * This method initializes UnsetImpossibleMenuItem.
 	 *
-	 * @return a new 'Remove' menu item.
+	 * @return a new 'Unset Impossible Configuration' menu item.
 	 */
 	private JMenuItem getUnsetImpossibleMenuItem() {
 		//TODO Use new unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
@@ -91,6 +108,25 @@ public class SetImpossibleConfigurationContextualMenu extends ContextualMenu {
 		return unsetImpossibleMenuItem;
 
 	}
+
+	/**
+	 * This method initializes AddFunctionMenuItem.
+	 *
+	 * @return a new 'Add Function' menu item.
+	 */
+	private JMenuItem getAddFunctionMenuItem() {
+		if (addFunctionMenuItem == null) {
+			addFunctionMenuItem = new LocalizedMenuItem(MenuItemNames.ADD_FUNCTION	,
+					ActionCommands.ADD_FUNCTION);
+			addFunctionMenuItem.addActionListener(listener);
+		}
+
+		return addFunctionMenuItem;
+
+
+	}
+
+
 
 	/**
 	 * Returns the component that corresponds to an action command.
@@ -109,6 +145,9 @@ public class SetImpossibleConfigurationContextualMenu extends ContextualMenu {
             case ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION:
                 component = unsetImpossibleMenuItem;
                 break;
+			case ActionCommands.ADD_FUNCTION:
+				component = unsetImpossibleMenuItem;
+				break;
         }
 
 		return component;
