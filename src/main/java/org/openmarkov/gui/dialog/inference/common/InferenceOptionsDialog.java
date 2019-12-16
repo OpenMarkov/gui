@@ -236,7 +236,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	private JPanel statisticsPanel;
 	private JCheckBox meanCheckBox;
 	private JCheckBox sumCheckBox;
-	private JCheckBox treemedMeanCheckBox;
+	private JCheckBox trimmedMeanCheckBox;
 	private JCheckBox medianCheckBox;
 
 
@@ -1146,13 +1146,13 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	
 	
 	private JCheckBox getJCheckBoxTreemedMean() {
-		if (treemedMeanCheckBox == null) {
+		if (trimmedMeanCheckBox == null) {
 			//TODO use stringDatabase
-			treemedMeanCheckBox = new JCheckBox("Treemed Mean", monteCarloOptions.isMean());
-			treemedMeanCheckBox.setEnabled(false);
-			treemedMeanCheckBox.setSelected(false);
+			trimmedMeanCheckBox = new JCheckBox("Trimmed Mean", monteCarloOptions.isMean());
+			trimmedMeanCheckBox.setEnabled(false);
+			trimmedMeanCheckBox.setSelected(false);
 		}
-		return treemedMeanCheckBox;
+		return trimmedMeanCheckBox;
 	}
 
 	private JCheckBox getJCheckBoxMedian() {
@@ -1177,7 +1177,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		this.monteCarloOptions.setScheduledEventLog(scheduledEventsCheckBox.isSelected());
 		this.monteCarloOptions.setOnlySummary(onlySummaryLogCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
-		this.monteCarloOptions.setTreemedMean(treemedMeanCheckBox.isSelected());
+		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
 		this.monteCarloOptions.setSum(sumCheckBox.isSelected());
 	}
