@@ -515,6 +515,7 @@ public class MenuItemNames {
 	public static final String EDIT_LOG_MENUITEM = EDIT_MENU + ".Log";
 
 	//CMI 26/08/2019 Contextual Menu Item for setting in the TTE potential impossible configurations
+	// 14/12/2019 Added contextual menu item for adding a function to a TableWithEvents
 	/**
 	 * String database token for the TTE contextual menu item Set impossible configuration.
 	 */
@@ -524,6 +525,11 @@ public class MenuItemNames {
 	 * String database token for the TTE contextual menu item Set possible configuration.
 	 */
 	public static final String UNSET_IMPOSSIBLE_CONFIGURATION_MENUITEM = "ImpossibleConfiguration.UnSet";
+
+	/**
+	 * String database token for the TTE contextual menu item Set possible configuration.
+	 */
+	public static final String ADD_FUNCTION = "AddFunction";
 
 	//CMF
 
