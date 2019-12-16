@@ -7,18 +7,12 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.action.PotentialChangeEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.TableWithEventsPotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
-import org.openmarkov.core.model.network.potential.TransitionTablePotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 import javax.swing.*;
@@ -37,13 +31,13 @@ public class TimeToEventTablePotentialPanel
 	private JPanel jDistribution;
 	private JLabel jlDistribution;
 	private JComboBox<String> jcDistribution;
-	private TableWithEventsPotentialPanel tableWithEventsPotentialPanel;
+	private TableWithEventsPanel tableWithEventsPanel;
 
 	protected Node node;
 	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
 	protected TimeToEventTablePotential tteTablePotential;
 	protected TablePotential tablePotential;
-	protected TableWithEventsPotential tableWithEvents;
+	protected TableWithEvents tableWithEvents;
 	protected ProbDensFunctionManager distributionManager;
 	protected ProbDensFunction distribution;
 
@@ -56,17 +50,6 @@ public class TimeToEventTablePotentialPanel
 
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
-        // If there is no eventTablePotential
-        try {
-            tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-                    stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        this.node = node;
-
         tteTablePotential = (TimeToEventTablePotential) node.getPotentials().get(0);
         tableWithEvents =  tteTablePotential.getTableWithEvents();
 
@@ -75,7 +58,7 @@ public class TimeToEventTablePotentialPanel
 		this.add(getjDistribution(),BorderLayout.PAGE_START);
 
 
-		this.add( getTableWithEventsPotentialPanel(),BorderLayout.CENTER);
+		this.add( getTableWithEventsPanel(),BorderLayout.CENTER);
 
 //		jsP = new JScrollPane();
 //		jsP.setName("TimeToEventTablePotentialPanel.jsP");
@@ -142,15 +125,15 @@ public class TimeToEventTablePotentialPanel
 		this.jcDistribution = jcDistribution;
 	}
 
-	protected TableWithEventsPotentialPanel getTableWithEventsPotentialPanel() {
-		if (tableWithEventsPotentialPanel ==null) {
-			tableWithEventsPotentialPanel =new TableWithEventsPotentialPanel(node, tableWithEvents);
+	protected TableWithEventsPanel getTableWithEventsPanel() {
+		if (tableWithEventsPanel ==null) {
+			tableWithEventsPanel =new TableWithEventsPanel(node, tableWithEvents,tteTablePotential.getFunctionVariables() );
 		}
-		return tableWithEventsPotentialPanel;
+		return tableWithEventsPanel;
 	}
 
-	protected void setTableWithEventsPotentialPanel(TableWithEventsPotentialPanel tableWithEventsPotentialPanel) {
-		this.tableWithEventsPotentialPanel = tableWithEventsPotentialPanel;
+	protected void setTableWithEventsPanel(TableWithEventsPanel tableWithEventsPanel) {
+		this.tableWithEventsPanel = tableWithEventsPanel;
 
 	}
 
@@ -178,11 +161,11 @@ public class TimeToEventTablePotentialPanel
 				} catch (IllegalAccessException ex) {
 					ex.printStackTrace();
 				}
-				this.remove(tableWithEventsPotentialPanel);
+				this.remove(tableWithEventsPanel);
 				tteTablePotential.changeDistribution(sDistribution);
 				tableWithEvents = tteTablePotential.getTableWithEvents();
-				tableWithEventsPotentialPanel = new TableWithEventsPotentialPanel(node, tteTablePotential.getTableWithEvents());
-				this.add(tableWithEventsPotentialPanel, BorderLayout.CENTER);
+				tableWithEventsPanel = new TableWithEventsPanel(node, tteTablePotential.getTableWithEvents());
+				this.add(tableWithEventsPanel, BorderLayout.CENTER);
 				this.revalidate();
 				this.repaint();
 
