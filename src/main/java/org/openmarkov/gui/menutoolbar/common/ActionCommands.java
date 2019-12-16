@@ -492,7 +492,7 @@ public class ActionCommands {
 	 */
 	public static final String UNCERTAINTY_REMOVE = "Uncertainty.Remove";
 
-	//CMI 25/08/2019
+	//CMI 25/08/2019 impossible configuration; 14/12/2019 add function for a Table With Events
 	/*
 	* Action invoked when the user wants to establish a configuration as impossible in a TTE potential
 	 */
@@ -502,6 +502,11 @@ public class ActionCommands {
 	 * Action invoked when the user wants to establish a configuration as possible in a TTE potential
 	 */
 	public static final String UNSET_IMPOSSIBLE_CONFIGURATION = "ImpossibleConfiguration.UnSet";
+
+	/*
+	 * Action invoked when the user wants add a function in a Table With Events
+	 */
+	public static final String ADD_FUNCTION = "AddFunction";
 	//CMF
 
 
