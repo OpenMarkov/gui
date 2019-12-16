@@ -185,7 +185,8 @@
             <Label value="Assign uncertainty"/>
         </Assign>
     </Uncertainty>
-    <!--CMI 25/08/2019 For event nodes, establish configuration as impossible/possible-->
+    <!--CMI 25/08/2019 For event nodes, establish configuration as impossible/possible
+      14/12/2019 adding Add Function for a Table With Events  -->
     <ImpossibleConfiguration>
         <Set>
             <Label value="Set as impossible"></Label>
@@ -195,6 +196,10 @@
         </UnSet>
 
     </ImpossibleConfiguration>
+
+    <AddFunction>
+        <Label value="Add Function"/>
+    </AddFunction>
     <!--CMF -->
     <Inference>
         <GoToNextEvidenceCase>
