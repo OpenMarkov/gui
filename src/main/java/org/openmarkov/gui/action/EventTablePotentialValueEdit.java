@@ -7,16 +7,15 @@
 
 package org.openmarkov.gui.action;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.potential.TableWithEventsPotential;
-import org.openmarkov.core.model.network.potential.TransitionTablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithFunctions;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 import java.util.Iterator;
@@ -44,14 +43,31 @@ import java.util.List;
 	 * The row of the table where is the eventTablePotential
 	 */
 	private int row;
+
 	/**
 	 * The new value of the eventTablePotential
 	 */
-	private Double newValue;
+	private String newValue;
+
+
+	/**
+	 * The new value of the eventTablePotential
+	 */
+	private double newDoubleValue;
+
+	/**
+	 * The new value of the eventTablePotential
+	 */
+	private String newFunctionValue;
+
+
+
+
 	/**
 	 * A list that store the edition order
 	 */
 	private List<Integer> priorityList;
+
 	/**
 	 * The index of the value selected in the graphic table
 	 */
@@ -64,10 +80,9 @@ import java.util.List;
 	 */
 
 	private TablePotential tablePotential;
-//	private TablePotential oldTablePotential;
+	private TableWithFunctions tableWithFunctions;
 
-//	private TableWithEventsPotential oldTransitionTablePotential;
-	private TableWithEventsPotential tableWithEventsPotential;
+	private TableWithEvents tableWithEvents;
 
 	/**
 	 * the increment to get the real position of the value modified
@@ -82,10 +97,13 @@ import java.util.List;
 	/**
 	 * the table eventTablePotential
 	 */
-	private double[] newTable;
-	// private List<Variable> orderVariables = new ArrayList<Variable>();
-	// private List<Variable> newOrderVariables = new ArrayList<Variable>();
-//	private Object[][] notEditablePostitions = new Object[0][0];
+	private double[] newDoubleTable;
+
+	/**
+	 * The table eventTablePotential
+	 */
+	private String[] newFunctionTable;
+
 	private Node node;
 
 	// Constructor
@@ -101,54 +119,35 @@ import java.util.List;
 	 * @param row                  the row in the edited table
 	 * @param priorityList         the priority lists for potentials update.
 	 */
-	public EventTablePotentialValueEdit(Node node, TableWithEventsPotential tableWithEventsPotential, Double newValue, int row, int col, List<Integer> priorityList) {
+	public EventTablePotentialValueEdit(Node node, TableWithEvents tableWithEvents, Object newValue, int row, int col, List<Integer> priorityList) {
 		super(node.getProbNet());
 		this.node = node;
 
 		try {
-//			this.oldTransitionTablePotential = (TransitionTablePotential) node.getPotentials().get(0);
-//			this.oldTablePotential = oldTransitionTablePotential.getTablePotential();
-			this.tableWithEventsPotential = tableWithEventsPotential;
-			this.tablePotential = tableWithEventsPotential.getTablePotential();
+			this.tableWithEvents = tableWithEvents;
+			this.tablePotential = tableWithEvents.getTablePotential();
+			this.tableWithFunctions = tableWithEvents.getTableWithFunctions();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-/* TODO
-			JOptionPane.showMessageDialog(this,
-					stringDatabase.getValuesInAString(e.getMessage()),
-					stringDatabase.getValuesInAString(e.getMessage()),
-					JOptionPane.ERROR_MESSAGE);
-			return;		
-*/
 		}
 		this.row = row;
 		this.col = col;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
-		this.newValue = newValue;
+		if (tableWithFunctions == null) {
+			this.newDoubleValue = ((Double) newValue).doubleValue();
+			this.newDoubleTable = this.tablePotential.getValues();
+		} else {
+			try{
+				this.newFunctionValue =(String) newValue;
+			}catch(Exception e){
+				this.newFunctionValue = ((Double) newValue).toString();
+			}
+			this.newFunctionTable = tableWithFunctions.getFunctionValues();
+		}
 		this.priorityList = priorityList;
 		this.indexSelected = tablePotentialsPanelOperations.calculateLastEditableRow(tablePotential) - row;
 		this.increment = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, tablePotential);
-
-//		//TODO Clone
-//		if (oldTransitionTablePotential instanceof TimeToEventTablePotential){
-//			this.transitionTablePotential = new TimeToEventTablePotential(oldTransitionTablePotential.getVariables(),
-//					oldTransitionTablePotential.getPotentialRole());
-//		} else {
-
-
-//			this.transitionTablePotential = new TransitionTablePotential(oldTransitionTablePotential.getVariables(),
-//					oldTransitionTablePotential.getPotentialRole());
-
-
-
-			//		}
-
-
-
-//		this.tablePotential = (TablePotential) (oldTransitionTablePotential.getTablePotential().copy());
-//		this.transitionTablePotential.setTablePotential(this.tablePotential);
-
-		this.newTable = this.tablePotential.getValues();
 
 		// Get the eventTablePotential index
 		this.setPotentialSelected(tablePotentialsPanelOperations.getPotentialIndex(row, col, tablePotential));
@@ -158,7 +157,6 @@ import java.util.List;
 	/**
 	 * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
 	 * and updates the probNet
-	 * In case the eventTablePotential is ExactDistrPotential...
 	 *
 	 * @throws <code>DoEditException</code> cyago only eliminated the different treatment for UTILITY role and introduced eventTablePotential
 	 */
@@ -166,9 +164,12 @@ import java.util.List;
 		PotentialChangeEdit changePotentialEdit = null;
 
 		if ((node.getNodeType() == NodeType.EVENT) || (node.getNodeType() == NodeType.UTILITY)){
-			newTable[getPotentialSelected()] = newValue;
+			try {
+				newDoubleTable[getPotentialSelected()] = newDoubleValue;
+			} catch(Exception e){
+				newFunctionTable[getPotentialSelected()] = (String) newFunctionValue;
+			}
 		}else {
-			//		if (!getEventTablePotential()) {
 			if (priorityList.isEmpty()) {
 				// User is editing a new column of potentials //node
 				priorityList = getPriorityListInitialization();
@@ -185,13 +186,10 @@ import java.util.List;
 			int maxDecimals = 10;
 			double epsilon;
 			epsilon = Math.pow(10, -(maxDecimals + 2));
-			newTable[getPotentialSelected()] = Util.roundAndReduce(newValue, epsilon, maxDecimals);
+			newDoubleTable[getPotentialSelected()] = Util.roundAndReduce(newDoubleValue, epsilon, maxDecimals);
 			while (listIterator.hasNext()) {
 				position = (Integer) listIterator.next();
-//				if (isEditablePosition(position)) {
-					sum = Util.roundAndReduce(sum + newTable[position], epsilon, maxDecimals);
-//				}
-				// sum += newTable[pos];
+					sum = Util.roundAndReduce(sum + newDoubleTable[position], epsilon, maxDecimals);
 			}
 			rest = Math.abs(Util.roundAndReduce(1 - sum, epsilon, maxDecimals));
 			// rest = Math.abs( 1 - sum );
@@ -199,17 +197,15 @@ import java.util.List;
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() && rest != 0) {
 					position = (Integer) listIterator.next();
-//					if (this.isEditablePosition(position)) {
-						rest = Util.roundAndReduce(rest - newTable[position], epsilon, maxDecimals);
-						// rest = rest - newTable[pos];
+						rest = Util.roundAndReduce(rest - newDoubleTable[position], epsilon, maxDecimals);
 						if (rest < 0) {// it is because the value of the table
 							// is bigger than the rest
 							// and now there's nothing left to reach
 							// one
-							newTable[position] = Math.abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
+							newDoubleTable[position] = Math.abs(Util.roundAndReduce(rest, epsilon, maxDecimals));
 							break;
 						} else
-							newTable[position] = 0.0;
+							newDoubleTable[position] = 0.0;
 //					}
 				}
 			} else {// =< 1
@@ -217,10 +213,8 @@ import java.util.List;
 				listIterator = priorityList.listIterator();
 				while (listIterator.hasNext() && !updated) {
 					position = (Integer) listIterator.next();
-//					if (this.isEditablePosition(position)) {
-						newTable[position] = Util.roundAndReduce(newTable[position] + rest, epsilon, maxDecimals);
+						newDoubleTable[position] = Util.roundAndReduce(newDoubleTable[position] + rest, epsilon, maxDecimals);
 						updated = true;
-//					}
 				}
 			}
 
@@ -244,8 +238,8 @@ import java.util.List;
 	 *
 	 * @return variable1 <code>Variable</code>
 	 */
-	public TableWithEventsPotential getTableWithEventsPotential() {
-		return tableWithEventsPotential;
+	public TableWithEvents getTableWithEvents() {
+		return tableWithEvents;
 	}
 
 
