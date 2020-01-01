@@ -18,6 +18,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
@@ -40,6 +41,7 @@ import java.util.Set;
  * @author jlgozalo 1.1
  * @version 1.2 asaez - modified the constructor, the creation of
  * visual nodes and the order of painting nodes
+ * @version 1.3 cyago - added support for self-loops
  */
 public class VisualNetwork implements PNUndoableEditListener {
 
@@ -1134,7 +1136,12 @@ public class VisualNetwork implements PNUndoableEditListener {
 			VisualNode newLinkDestination = null;
 			if (newLinkSource != null) {
 				if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
-					if (!newLinkSource.equals(newLinkDestination)) {
+
+					if (  (!newLinkSource.equals(newLinkDestination))
+					//CMI 29/12/2019 - in DESNETS we can have loops for event nodes - or added
+					|| (newLinkSource.getNode().getNodeType() == NodeType.EVENT))
+					//CMF
+					{
 						try {
 							linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),
 									probNet.getVariable(newLinkDestination.getNode().getName()), true);
