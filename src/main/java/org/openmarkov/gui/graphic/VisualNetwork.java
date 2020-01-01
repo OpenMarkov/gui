@@ -41,7 +41,7 @@ import java.util.Set;
  * @author jlgozalo 1.1
  * @version 1.2 asaez - modified the constructor, the creation of
  * visual nodes and the order of painting nodes
- * @version 1.3 cyago - added support for self-loops
+ * @version 1.3 cyago - added support for self-loops by modifiying #finishLinkCreation
  */
 public class VisualNetwork implements PNUndoableEditListener {
 
