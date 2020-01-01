@@ -8,19 +8,16 @@
 package org.openmarkov.gui.graphic;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 
 /**
  * This class is the visual representation of a link.
  *
  * @author jmendoza
  * @version 1.0
+ * @version 1.1 01/01/2020 cyago - self-loops implemented
  */
 public class VisualArrow extends VisualElement {
 
@@ -259,6 +256,14 @@ public class VisualArrow extends VisualElement {
 
 		pStart = startPoint;
 		pEnd = endPoint;
+		//CMI 29/12/2019 - this is for a loop arrow
+
+		if (startPoint.distance(endPoint) <0.1) {
+			Area area = getLoopShape(startPoint,10);
+			area.add(getLoopArrowHeadShape(startPoint,10));
+			return  area ;
+		}
+		//CMF
 
 		if ((pStart != null) && (pEnd != null)) {
 			allPoints = calculatePointsOfArrow(pStart, pEnd);
@@ -362,6 +367,57 @@ public class VisualArrow extends VisualElement {
 			}
 		}
 	}
+
+//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops
+
+	/**
+	 * This method creates the arrowhead in a circular arrow for a self-loop.
+	 * @param start - the center of the circumference which contains the arc
+	 * @param radious - the radious of the circumference
+	 * @return the Area with the arrowhead of the circular arrow from self-loops
+	 */
+	private Area getLoopShape(Point2D.Double start, double radious){
+		double angleStart = 5;
+		double angleExtent = -355;
+		Arc2D.Float arc = new Arc2D.Float(Arc2D.OPEN);
+		arc.setFrame(start.getX() -radious, start.getY() -radious, radious*2, radious*2);
+		arc.setAngleStart(angleStart);
+		arc.setAngleExtent(angleExtent);
+		return new  Area(arc);
+	}
+
+	/**
+	 * This method creates the arrowhead in a circular arrow for a self-loop.
+	 * @param start - the center of the circumference which contains the arc
+	 * @param radious - the radious of the circumference
+	 * @return the Area with the arrowhead of the circular arrow from self-loops
+	 */
+	private Area getLoopArrowHeadShape(Point2D.Double start, double radious){
+		Shape arrowHead = null;
+		// Draw arrohead. Arrowhead rotates ~37 degrees
+		Point2D.Double startArrow = new Point2D.Double(start.getX() ,start.getY() -radious );
+		Point2D.Double endArrow = new Point2D.Double(start.getX() + radious  ,start.getY() -radious/4);
+		arrowHead = getShapeToPaint( endArrow, startArrow);
+		return new Area(arrowHead);
+	}
+
+
+	/**
+	 * This method draws  a self-loop arrow into de graphics object
+	 *
+	 * @param g  - graphics object where paint the link.
+	 * @param start - the center of the circumference which contains the arc.
+	 * @param stroke - the stroke used to draw the self-loop circular arrow
+	 */
+	public void paintLoopArrow(Graphics2D g, Point2D.Double start, Stroke stroke) {
+		double radious = 10;
+		g.setStroke(stroke);
+		g.fill(getLoopArrowHeadShape(start, radious));
+		g.draw(getLoopShape(start,radious));
+
+	}
+//CMF
+
 
 	/****
 	 * Paints the double stripe of the link
@@ -498,6 +554,14 @@ public class VisualArrow extends VisualElement {
 		} else {
 			paintLine(g, startPoint, endPoint, stroke);
 		}
+		//CMI 01/01/2020 Paints a circular arrow when there is a self-loop in an event node
+		if (startPoint.distance(endPoint)==0){
+			paintLoopArrow(g, startPoint, stroke);
+		}
+		//CMF
+
+
+
 	}
 
 	protected Stroke getStroke() {
