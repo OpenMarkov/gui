@@ -18,9 +18,10 @@ import java.awt.geom.RoundRectangle2D;
 
 /**
  * This class is the visual representation of an Event Node.
+ * It is a version of VisualChangeNode. To be polished if version 1.2
  *
  * @author cyago
- * @version 1
+ * @version 1 28/12/2019
  */
 public class VisualEventNode extends VisualNode {
 
@@ -160,6 +161,22 @@ public class VisualEventNode extends VisualNode {
 
 	}
 
+
+	/**
+	 * New method; not copied
+	 * Returns the point which will be the center for a circular arrow
+	 * 28/12/2019 - At this time only Event Nodes may have circular arrows (loops)
+	 */
+	public Point2D.Double   getCentreArcPoint   (Graphics2D g) {
+		Point2D.Double centreNodePoint = getTemporalPosition();
+		double[] dims = getNodeDimensions(g);
+		//dims[2] = width and dims[3] = height
+		Point2D.Double centreArcPoint = new Point2D.Double();
+		centreArcPoint.setLocation(centreNodePoint.getX()+ dims[2]/2,centreNodePoint.getY()+ dims[3]/2);
+		return centreArcPoint;
+	}
+
+
 	/**
 	 * Returns the X-coordinate of the upper-left corner of the visual node.
 	 *
@@ -196,6 +213,7 @@ public class VisualEventNode extends VisualNode {
 
 	/**
 	 * Returns the point where the segment cuts with the border of the node.
+	 * Copied
 	 *
 	 * @param segment segment that cuts the border of the node.
 	 * @return the point where the segments cuts the border or null if it
