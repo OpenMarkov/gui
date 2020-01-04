@@ -7,12 +7,15 @@
 
 package org.openmarkov.gui.action;
 
+import net.sourceforge.jeval.EvaluationException;
+import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Util;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.TableWithFunctions;
@@ -135,7 +138,16 @@ import java.util.List;
 		this.col = col;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 		if (tableWithFunctions == null) {
-			this.newDoubleValue = ((Double) newValue).doubleValue();
+			try {
+				this.newDoubleValue = ((Double) newValue).doubleValue();
+			}catch (Exception e){
+				Evaluator evaluator = new Evaluator();
+				try {
+					this.newDoubleValue = evaluator.getNumberResult((String)newValue);
+				} catch (EvaluationException ex) {
+					ex.printStackTrace();
+				}
+			}
 			this.newDoubleTable = this.tablePotential.getValues();
 		} else {
 			try{
@@ -167,7 +179,18 @@ import java.util.List;
 			try {
 				newDoubleTable[getPotentialSelected()] = newDoubleValue;
 			} catch(Exception e){
-				newFunctionTable[getPotentialSelected()] = (String) newFunctionValue;
+//				List<Node> parents =  node.getParents();
+//				parents.removeIf(node -> node.getVariable().getVariableType() != VariableType.NUMERIC);
+//				if (parents.isEmpty()){
+//					Evaluator evaluator = new Evaluator();
+//					try {
+//						newDoubleTable[getPotentialSelected()] = evaluator.getNumberResult( newFunctionValue);
+//					} catch (EvaluationException ex) {
+//						ex.printStackTrace();
+//					}
+//				} else {
+					newFunctionTable[getPotentialSelected()] = (String) newFunctionValue;
+//				}
 			}
 		}else {
 			if (priorityList.isEmpty()) {
