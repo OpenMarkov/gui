@@ -152,8 +152,6 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 	/**
 	 * This method changes the old UnivariateDistrPotential in node for the updated potential
 	 * and updates the probNet
-	 *
-	 * @throws <code>DoEditException</code>
 	 */
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;

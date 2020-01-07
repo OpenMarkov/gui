@@ -255,8 +255,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
 	 * If the editor is a JTextComponent then:
 	 * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
-	 *
-	 * @param e: event which provoked the edition and selection
+	 * @param e event which provoked the edition and selection
 	 *           revised --> not changed
 	 */
 	private void selectAll(EventObject e) {

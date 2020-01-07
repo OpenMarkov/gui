@@ -432,7 +432,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel domain values
 	 */
 	protected JLabel getJLabelDomainValues() {
 		if (jLabelStatesValues == null) {
@@ -447,7 +447,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JComboBox precision
 	 */
 	protected JComboBox<String> getJComboBoxPrecision() {
 		if (jComboBoxPrecision == null) {
@@ -462,7 +462,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JComboBox states values
 	 */
 	protected JComboBox<String> getJComboBoxStatesValues() {
 		if (jComboBoxStatesValues == null) {
@@ -476,7 +476,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JPanel monotony up down
 	 */
 	protected JPanel getJPanelMonotonyUpDown() {
 		if (jPanelMonotonyUpDown == null) {
@@ -495,7 +495,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JRadioButton increasing
 	 */
 	protected JRadioButton getJRadioButtonIncreasing() {
 		if (jRadioButtonIncreasing == null) {
@@ -509,7 +509,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JRadioButton decreasing
 	 */
 	protected JRadioButton getJRadioButtonDecreasing() {
 		if (jRadioButtonDecreasing == null) {
@@ -531,7 +531,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel unit
 	 */
 	protected JLabel getJLabelUnit() {
 		if (jLabelUnit == null) {
@@ -608,7 +608,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel values panel
 	 */
 	protected JLabel getJLabelValuesPanel() {
 		if (jLabelValuesPanel == null) {
@@ -657,9 +657,8 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
 	/**
 	 * Initialize the data structure for finite states variables
-	 *
 	 * @param states
-	 * @return
+	 * @return The data from states
 	 */
 	protected Object[][] getDataFromStates(State[] states) {
 		int numColumns = 6; // key column is assigned in setData

@@ -22,10 +22,6 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import javax.swing.*;
 import java.util.List;
 
-//import javax.swing.JOptionPane;
-//import org.openmarkov.core.model.network.NodeType;
-//import org.openmarkov.core.model.network.Variable;
-//import org.openmarkov.core.model.network.potential.PotentialRole;
 
 /**
  * Auxiliary methods for PotentialsTablePanel class
@@ -87,13 +83,11 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	}
 
 	/**
-	 * This method determines if a list of potentials is empty or not. If the
-	 *
+	 * This method determines if a list of potentials is empty or not
 	 * @param listPotentials - the list of potentials to check
-	 * @throws <code>NullListPotentialsException</code> if listPotentials is null
-	 * @throws <code>NullPotentialException</code>      if listPotentials is empty
-	 *                                                  <p>
-	 *                                                  carmenyago simplified the method and added
+	 * @throws NullListPotentialsException if listPotentials is null
+	 * @throws NullPotentialException      if listPotentials is empty
+	 * carmenyago simplified the method
 	 * @author carmenyago
 	 */
 	public void checkIfNoPotential(List<Potential> listPotentials)

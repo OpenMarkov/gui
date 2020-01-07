@@ -325,8 +325,7 @@ import java.util.Map;
 
 	/**
 	 * Get the bottom panel with buttons
-	 *
-	 * @return
+	 * @return The bottom panel
 	 */
 	private JPanel getBottomPanel() {
 		JPanel buttonsPanel = new JPanel();
@@ -354,8 +353,7 @@ import java.util.Map;
 
 	/**
 	 * Gets the components panel
-	 *
-	 * @return
+	 * @return The components panel
 	 */
 	private Component getComponentsPanel() {
 		JPanel panel = new JPanel();
@@ -487,8 +485,7 @@ import java.util.Map;
 
 	/**
 	 * Control panel with checkBox controls
-	 *
-	 * @return
+	 * @return The check boxes panel
 	 */
 	private JScrollPane getCheckBoxesPanel() {
 		if (checkBoxPanel == null) {
@@ -524,8 +521,7 @@ import java.util.Map;
 
 	/**
 	 * Panel with the radio button control that changes the display type
-	 *
-	 * @return
+	 * @return The display type panel
 	 */
 	private JPanel getDisplayTypePanel() {
 		JPanel displayType = new JPanel();
@@ -748,9 +744,8 @@ import java.util.Map;
 
 	/**
 	 * Sum a list of series to obtain a new serie
-	 *
 	 * @param arraySeries
-	 * @return
+	 * @return The XY series
 	 */
 	private XYSeries sumSeries(ArrayList<XYSeries> arraySeries) {
 		String seriesName = "";
@@ -957,9 +952,8 @@ import java.util.Map;
 	}
 
 	/**
-	 * Create the dataset using the result given by createSeries method
-	 *
-	 * @return
+	 * Create the data set using the result given by createSeries method
+	 * @return The data set created
 	 */
 	private XYDataset createDataset() {
 		XYSeriesCollection result = new XYSeriesCollection();
@@ -972,8 +966,7 @@ import java.util.Map;
 
 	/**
 	 * Get the TablePane constructed by the data in temporalEvolution
-	 *
-	 * @return
+	 * @return The TablePane
 	 */
 	private JScrollPane getTablePane() {
 
@@ -1037,10 +1030,9 @@ import java.util.Map;
 
 	/**
 	 * Auxiliary method to make a legend JLabel with a title and an image
-	 *
 	 * @param title
 	 * @param image
-	 * @return
+	 * @return The legend label made
 	 */
 	public JLabel makeLegendLabel(String title, Image image) {
 		Icon icon = new ImageIcon(image);
@@ -1051,10 +1043,9 @@ import java.util.Map;
 
 	/**
 	 * Auxiliary method to obtain an Image from an LegendItem of JFreeChart and a color
-	 *
 	 * @param item
 	 * @param color
-	 * @return
+	 * @return The image made
 	 */
 	public Image makeImage(LegendItem item, Color color) {
 		final int imgScale = 3;

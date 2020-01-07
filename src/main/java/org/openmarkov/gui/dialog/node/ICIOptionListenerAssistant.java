@@ -38,8 +38,6 @@ public class ICIOptionListenerAssistant implements ItemListener {
 	private static int TPC = 1;
 	/**
 	 * Identifies the radio button affected by the event.
-	 *
-	 * @param e
 	 */
 	private int previousModel = -1;
 	private ICIOptionsPanel iciOptionPanel;

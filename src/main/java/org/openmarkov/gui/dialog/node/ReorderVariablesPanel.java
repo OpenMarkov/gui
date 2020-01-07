@@ -138,7 +138,7 @@ import java.util.List;
 	}
 
 	/**
-	 * @return
+	 * @return The lisf of edits
 	 */
 	public List<PNEdit> getEdits() {
 		return edits;

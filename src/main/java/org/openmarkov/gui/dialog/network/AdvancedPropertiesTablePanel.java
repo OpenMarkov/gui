@@ -182,7 +182,7 @@ import java.util.List;
 	}
 
 	/**
-	 * @return
+	 * @return The edits
 	 */
 	public List<PNEdit> getEdits() {
 		return edits;

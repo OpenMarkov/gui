@@ -19,7 +19,7 @@ abstract public class IconFactory {
 	/**
 	 * @param text
 	 * @param f
-	 * @return
+	 * @return The chance icon
 	 */
 	public static Icon createChanceIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);
@@ -55,7 +55,7 @@ abstract public class IconFactory {
 	/**
 	 * @param text
 	 * @param f
-	 * @return
+	 * @return The decision icon
 	 */
 	public static Icon createDecisionIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);
@@ -83,7 +83,7 @@ abstract public class IconFactory {
 	/**
 	 * @param text
 	 * @param f
-	 * @return
+	 * @return The utility icon
 	 */
 	public static Icon createUtilityIcon(String text, Font f) {
 		FontRenderContext fr = new FontRenderContext(null, false, false);

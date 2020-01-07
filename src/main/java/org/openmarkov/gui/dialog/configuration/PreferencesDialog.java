@@ -272,7 +272,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
+	 * @return JButton save
 	 */
 	protected JButton getJButtonSave() {
 		if (jButtonSave == null) {
@@ -285,7 +285,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
+	 * @return JButton cancel
 	 */
 	protected JButton getJButtonCancel() {
 		if (jButtonCancel == null) {
@@ -298,7 +298,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
+	 * @return JButton export
 	 */
 	protected JButton getJButtonExport() {
 		if (jButtonExport == null) {
@@ -311,7 +311,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
+	 * @return JButton import
 	 */
 	protected JButton getJButtonImport() {
 		if (jButtonImport == null) {
@@ -324,7 +324,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
+	 * @return JButton reset
 	 */
 	protected JButton getJButtonReset() {
 		if (jButtonReset == null) {

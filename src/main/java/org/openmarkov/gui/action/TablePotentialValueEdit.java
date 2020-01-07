@@ -174,9 +174,8 @@ import java.util.List;
 	 * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
 	 * and updates the probNet
 	 * In case the potential is ExactDistrPotential...
-	 *
-	 * @throws <code>DoEditException</code> cyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
-	 */
+	 * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
+	 */	
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;
 		if (!getExactDistrPotential()) {

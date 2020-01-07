@@ -821,8 +821,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
 	 * If the editor is a JTextComponent then:
 	 * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
-	 *
-	 * @param e: event which provoked the edition and selection
+	 * @param e event which provoked the edition and selection
 	 */
 	private void selectAll(EventObject e) {
 		// Returns the component that is handling the editing session.
@@ -858,8 +857,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * This method sets the variable probNet to the node probNet
-	 *
-	 * @param node: the node whose potential is being displayed
+	 * @param node the node whose potential is being displayed
 	 */
 	public void setData(Node node) {
 		if (this.probNet.getPNESupport() != node.getProbNet().getPNESupport()) {

@@ -193,7 +193,7 @@ public class DiscreteValuesTablePanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel states values
 	 */
 	protected JLabel getJLabelStatesValues() {
 		if (jLabelStatesValues == null) {

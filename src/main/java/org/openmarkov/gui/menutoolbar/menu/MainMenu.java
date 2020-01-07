@@ -614,8 +614,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 
 	/**
 	 * This method retrieves the LastOpenFiles and show them in the File Menu
-	 *
-	 * @return a new set of items
 	 */
 	private void getLastOpenFiles() {
 
@@ -659,9 +657,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 	}
 
 	/**
-	 * This method reset the LastOpenFiles set of items in the File Menu
-	 *
-	 * @return a new set of items
+	 * This method resets the LastOpenFiles set of items in the File Menu
 	 */
 	public void rechargeLastOpenFiles() {
 		fileMenu.removeAll();

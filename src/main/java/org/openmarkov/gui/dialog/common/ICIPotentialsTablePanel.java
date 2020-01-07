@@ -235,10 +235,9 @@ import java.util.List;
 
 	/**
 	 * Retrieves ICIPotential
-	 *
 	 * @param listPotentials
-	 * @return
-	 */
+	 * @return this ICI potential
+	 */	
 	private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
 
 		ICIPotential aPotential = null;
@@ -354,7 +353,7 @@ import java.util.List;
 	/**
 	 * @param oldValues
 	 * @param node
-	 * @return
+	 * @return the new values
 	 */
 	private Object[][] setCanonicalTable(Object[][] oldValues, Node node) {
 

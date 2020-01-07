@@ -275,7 +275,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	/**
 	 * @param uncertainValues
 	 * @param types
-	 * @return
+	 * @return The indexes of uncertain values
 	 */
 	private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
 			List<Class<? extends ProbDensFunction>> types) {

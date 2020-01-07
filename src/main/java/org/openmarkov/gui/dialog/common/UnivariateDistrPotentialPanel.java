@@ -383,8 +383,7 @@ import java.util.List;
 
 	/**
 	 * This class overrides the double click listener calling the
-	 *
-	 * @see DoubleClickListener
+	 * @see org.openmarkov.gui.dialog.common.TablePotentialPanel.DoubleClickListener
 	 * revised-->not changed
 	 */
 	private class MouseClickedListener extends MouseAdapter {

@@ -428,7 +428,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The univariate distribution JComboBox
 	 */
 	protected JComboBox<String> getUnivariateDistrJCombobox() {
 
@@ -450,7 +450,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The univariate distribution parametrization JComboBox
 	 */
 	protected JComboBox<String> getUnivariateDistrParametrizationJCombobox() {
 
@@ -500,7 +500,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The parametrization ComboBox JLabel
 	 */
 	protected JLabel getParametrizationComboBoxJLabel() {
 		if (lblParametrizationComboBox == null) {
@@ -514,7 +514,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return True iff it is enabled
 	 */
 	private boolean showUnivariateDistrParametrizationComboBox(String univariateName) {
 		boolean enable = false;

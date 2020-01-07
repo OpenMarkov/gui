@@ -293,9 +293,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	}
 
 	/**
-	 * Get multicriteria options panel
-	 *
-	 * @return
+	 * Get multicriteria options panel	 *
+	 * @return the multi criteria panel
 	 */
 	public JPanel getMulticriteriaPanel() {
 		if (multicriteriaPanel == null) {
@@ -324,9 +323,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the Panel in which we have the conversion unit and the panel in which
-	 * we have the multicriteria type to be applied
-	 *
-	 * @return
+	 * we have the multi criteria type to be applied
+	 * @return The units and select panel
 	 */
 	private JPanel getUnitsAndSelectPanels() {
 		JPanel mixedPanel = new JPanel();
@@ -344,8 +342,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Panel in which we have the Table with the criteria data
-	 *
-	 * @return
+	 * @return The table panel
 	 */
 	private JScrollPane getTablePanel() {
 
@@ -729,8 +726,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the Panel with the units
-	 *
-	 * @return
+	 * @return The units panel
 	 */
 	private JPanel getUnitsPanel() {
 		JPanel unitsPanel = new JPanel();
@@ -787,8 +783,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the panel with the selection of the multicriteria type
-	 *
-	 * @return
+	 * @return The select type panel
 	 */
 	private JPanel getSelectTypePanel() {
 		JPanel selectTypePanel = new JPanel();
@@ -853,8 +848,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Get temporal options panel
-	 *
-	 * @return
+	 * @return The temporal panel
 	 */
 	public JPanel getTemporalPanel() {
 		if (temporalPanel == null) {
