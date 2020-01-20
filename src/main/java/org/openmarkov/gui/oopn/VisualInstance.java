@@ -211,8 +211,7 @@ public class VisualInstance extends VisualElement {
 
 	/**
 	 * Get instance name
-	 *
-	 * @return
+	 * @return the instance name
 	 */
 	public String getName() {
 		return instance.getName();
@@ -387,8 +386,7 @@ public class VisualInstance extends VisualElement {
 
 	/**
 	 * Returns list of visual nodes
-	 *
-	 * @return
+	 * @return the visual nodes
 	 */
 	public List<VisualNode> getVisualNodes() {
 		return visualNodes;
@@ -396,8 +394,7 @@ public class VisualInstance extends VisualElement {
 
 	/**
 	 * Returns list of visual nodes
-	 *
-	 * @return
+	 * @return the visual nodes
 	 */
 	public List<VisualNode> getVisualNodes(boolean recursive) {
 		List<VisualNode> visualNodes = new ArrayList<VisualNode>(this.visualNodes);
@@ -411,10 +408,9 @@ public class VisualInstance extends VisualElement {
 
 	/**
 	 * Returns the parameter in the position given (if any)
-	 *
 	 * @param position
 	 * @param g
-	 * @return
+	 * @return the parameter in the position given
 	 */
 	public VisualInstance getParameterInPosition(Point2D.Double position, Graphics2D g) {
 		VisualInstance instance = null;

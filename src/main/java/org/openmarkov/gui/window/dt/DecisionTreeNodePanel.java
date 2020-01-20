@@ -41,8 +41,7 @@ import java.util.Map;
 
 	/**
 	 * Create a new icon for a node of the ADD/Tree
-	 *
-	 * @return
+	 * @return the new node icon created
 	 */
 	protected Icon createNodeIcon(Variable variable, NodeType nodeType) {
 		Font textIconFont = new Font("Helvetica", Font.BOLD, 15);

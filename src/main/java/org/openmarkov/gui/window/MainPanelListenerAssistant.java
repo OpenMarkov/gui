@@ -348,8 +348,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 	/**
 	 * Create a Frame for a Change Language dialog
-	 *
-	 * @return a change language dialog to allow language change
 	 */
 	private void showLanguageChangeDialog() {
 		LanguageDialog.getUniqueInstance(mainPanel.getMainFrame()).setVisible(true);
@@ -621,22 +619,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 	/**
 	 * Saves a network in the file given by
-	 *
 	 * @param networkPanel
-	 * @param fileName     - the file where the network is stored
-	 * @return
+	 * @param fileName	the file where the network is stored
+	 * @return true iff the network could be saved
 	 */
 
 	private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
-		//CMI
-    	/*
-    	return saveNetworkActions(networkPanel, fileName, null);
-    	*/
 		String fileFormat = OpenMarkovPreferences
 				.get(OpenMarkovPreferences.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
 						FileChooser.DEFAULT_FILE_FORMAT);
 		return saveNetworkActions(networkPanel, fileName, fileFormat, null);
-		//CMF
 	}
 
 	/**
@@ -659,7 +651,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * then saves the network.
 	 *
 	 * @param networkPanel network panel that contains the network to be saved.
-	 * @return true if the network has been saved; otherwise, false.
 	 */
 	private void saveOpenNetwork(NetworkPanel networkPanel) {
 		String fileName = networkPanel.getNetworkFile();

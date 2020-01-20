@@ -312,10 +312,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
 	/**
 	 * Finds the list of variables that can be added to the potential
-	 *
 	 * @param branch
 	 * @param branchPath
-	 * @return
+	 * @return the list of variables that can be added to the potential
 	 */
 	private List<Variable> possibleRootVariables(TreeADDBranch branch, TreePath branchPath) {
 		List<Variable> possibleRootVariables = new ArrayList<>();
@@ -1185,7 +1184,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 *
 	 * @param path
 	 * @param rootVariable
-	 * @return
+	 * @return true iff the root variable has been previously used
 	 */
 	private boolean isRootVariableUsedBefore(TreePath path, Variable rootVariable) {
 

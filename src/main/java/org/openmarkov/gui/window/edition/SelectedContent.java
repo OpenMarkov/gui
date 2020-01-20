@@ -68,8 +68,7 @@ public class SelectedContent {
 
 	/**
 	 * returns whether the object is empty
-	 *
-	 * @return
+	 * @return true iff the selected content is empty
 	 */
 	public boolean isEmpty() {
 		return this.nodes.size() == 0 && this.links.size() == 0;

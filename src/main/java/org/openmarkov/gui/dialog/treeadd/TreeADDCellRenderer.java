@@ -98,7 +98,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 	 * @param leaf     true when this treenode is a leaf
 	 * @param row
 	 * @param hasFocus
-	 * @return
+	 * @return the tree cell renderer branch
 	 */
 	public Component getTreeCellRendererBranch(JTree tree, TreeADDBranch branch, boolean selected, boolean expanded,
 			boolean leaf, int row, boolean hasFocus) {
@@ -132,7 +132,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 	 * @param leaf      true when this treenode is a leaf
 	 * @param row
 	 * @param hasFocus
-	 * @return
+	 * @return the tree cell renderer potential
 	 */
 	public Component getTreeCellRendererPotential(JTree tree, Potential potential, boolean selected, boolean expanded,
 			boolean leaf, int row, boolean hasFocus) {
@@ -159,8 +159,7 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 
 	/**
 	 * Create a new icon for a node of the ADD/Tree
-	 *
-	 * @return
+	 * @return the node icon created
 	 */
 	protected Icon createNodeIcon(Variable variable) {
 		Icon icon = null;

@@ -227,7 +227,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 *
 	 * @param position
 	 * @param g
-	 * @return
+	 * @return the instance in the position given
 	 */
 	public VisualInstance getInstanceInPosition(java.awt.geom.Point2D.Double position, Graphics2D g) {
 		VisualInstance instance = null;
@@ -465,8 +465,7 @@ public class VisualOONetwork extends VisualNetwork {
 
 	/**
 	 * Returns the list of nodes belonging to the selected instances
-	 *
-	 * @return
+	 * @return the visual nodes of the selected instances
 	 */
 	public ArrayList<VisualNode> getVisualNodesOfSelectedInstances() {
 		ArrayList<VisualNode> visualNodes = new ArrayList<VisualNode>();
@@ -632,9 +631,9 @@ public class VisualOONetwork extends VisualNetwork {
 	 *
 	 * @param variable
 	 * @param otherVariable
-	 * @return
+	 * @return true if the two variables given are equivalent
 	 */
-	private boolean isEquivalentVariable(Variable variable, Variable otherVariable) {
+	private static boolean isEquivalentVariable(Variable variable, Variable otherVariable) {
 		boolean isEquivalent = true;
 
 		switch (variable.getVariableType()) {

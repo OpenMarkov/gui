@@ -103,8 +103,8 @@ public class TreeADDModel implements TreeModel {
 	}
 
 	/**
-	 * @param parent    , It is usually a TreeADDPotential
-	 * @param objChild, It is usually a TreeADDBranch
+	 * @param parent	It is usually a TreeADDPotential
+	 * @param objChild	It is usually a TreeADDBranch
 	 */
 	//parent must be a treeADD and child a treeADD or a potential
 	public int getIndexOfChild(Object parent, Object objChild) {
