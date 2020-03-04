@@ -76,7 +76,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
 		}
 		if (previousModel == CANONICAL) {
 			// do nothing
-		} else if (previousModel == TPC) { // tpc --> Canonical
+		} else if (previousModel == TPC) { // tpc --&gt; Canonical
 			for (Component component : parentPanel.getComponents()) {
 				if (component instanceof ICIOptionsPanel) {
 					continue;
@@ -98,7 +98,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
 			previousModel = TPC;
 		} else if (e.getStateChange() == ItemEvent.SELECTED) {
 		}
-		if (previousModel == CANONICAL) { // Canonical --> tpc
+		if (previousModel == CANONICAL) { // Canonical --&gt; tpc
 			// show TPC do not allow edit
 			// Copy of the parents panel node
 			Node iciNode = new Node(((ICIPotentialsTablePanel) parentPanel).getNode());

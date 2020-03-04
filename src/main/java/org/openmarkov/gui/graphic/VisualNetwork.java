@@ -275,9 +275,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	/**
 	 * Creates a new list of visual nodes reordering them following
 	 * this criteria:
-	 * - first criteria: selection state -> the selected nodes are in
+	 * - first criteria: selection state -&gt; the selected nodes are in
 	 * the first places of the array.
-	 * - second criteria: relevance -> the higher the relevance
+	 * - second criteria: relevance -&gt; the higher the relevance
 	 * the nearer to the start of the array.
 	 *
 	 * @return a new ordered array (first, selected nodes, and last,

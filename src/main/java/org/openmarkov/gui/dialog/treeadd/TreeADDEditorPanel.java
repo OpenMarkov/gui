@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>JScrollPane<code> for creating and modifying <code>TreeADDPotential<code>s
+ * <code>JScrollPane</code> for creating and modifying <code>TreeADDPotential</code>s
  *
  * @author jfernandez
  * @author myebra

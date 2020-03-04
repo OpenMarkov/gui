@@ -799,8 +799,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * Creates a new network in the workspace. First, it requests the
 	 * additionalProperties of the new network and, if the user accepts the
 	 * dialog box, a new network is created.
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	private void createNewNetwork() {
 		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));

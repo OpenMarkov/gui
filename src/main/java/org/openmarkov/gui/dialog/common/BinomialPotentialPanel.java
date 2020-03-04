@@ -84,7 +84,7 @@ import java.awt.*;
 			if (oldPotential != null) {
 
 				int NValue = oldPotential.getN();
-				// UNCLEAR-->Where to check, when loading or when saving
+				// UNCLEAR--&gt;Where to check, when loading or when saving
 				// We put these value into the spinner if the value is into the bounds
 				if ((NValue > 0) && (NValue <= Integer.MAX_VALUE)) {
 					NSpinner.setValue(NValue);
@@ -98,7 +98,7 @@ import java.awt.*;
 			}
 
 		} else {
-			//UNCLEAR-->Where to check
+			//UNCLEAR--&gt;Where to check
 		}
 	}
 

@@ -159,7 +159,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		// The position is the product of each state index and the respective offset
 		// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
 
-		// Dimensions--> list with the states of each variable of the potential
+		// Dimensions--&gt; list with the states of each variable of the potential
 		//
 		// Now there is no difference between CHANCE and UTILITY
 		int[] dimensions = tablePotential.getDimensions();
@@ -242,7 +242,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		// The position is the product of each state index and the respective offset
 		// s[0]*offset[0] + s[1]*offset[1] + ..... + s[n]*offset[n]
 
-		// Dimensions--> list with the states of each variable of the potential
+		// Dimensions--&gt; list with the states of each variable of the potential
 		//
 		// Now there is no difference between CHANCE and UTILITY
 		int[] dimensions = tablePotential.getDimensions();

@@ -164,8 +164,12 @@ import java.util.List;
 
 	/**
 	 * Sets a new table model with new data and new columns based on three
-	 * items: <li>list of Potentials of the variable</li> <li>states of the
-	 * variable</li> <li>parents of the variable</li>
+	 * items:
+	 * <ul>
+	 * <li>list of Potentials of the variable
+	 * <li>states of the variable
+	 * <li>parents of the variable
+	 * </ul>
 	 *
 	 * @param properties Node properties
 	 */

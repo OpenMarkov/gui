@@ -80,7 +80,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 * preferences.
 	 *
 	 * @param owner owner JFrame
-	 * @wbp.parser.constructor
+	 *
 	 */
 	public PreferencesDialog(JFrame owner) {
 		this(owner, "OPENMARKOV User Preferences", OpenMarkovPreferences.OPENMARKOV_NODE_PREFERENCES, true/*
@@ -116,7 +116,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 * @param userObj the package to which this object belongs is used as the
 	 *                root-node of the User preferences tree (if userObj is null,
 	 *                then the rootnode of all user preferences will be used)
-	 * @boolean showUserPrefs if true, then show user preferences
+	 * @param showUserPrefs if true, then show user preferences
 	 */
 	public PreferencesDialog(JFrame owner, String title, Object userObj, boolean showUserPrefs/*
 	 * ,

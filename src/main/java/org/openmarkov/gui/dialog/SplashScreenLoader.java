@@ -27,8 +27,6 @@ public class SplashScreenLoader {
 
 	/**
 	 * start the splash screen, do work and destroy
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	public SplashScreenLoader() {
 
@@ -39,8 +37,6 @@ public class SplashScreenLoader {
 
 	/**
 	 * This method draws on the splash screen.
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	public void splashScreenInit() {
 
@@ -85,7 +81,6 @@ public class SplashScreenLoader {
 	 * get splash
 	 *
 	 * @return aSplash The real splash screen
-	 * @wbp.parser.entryPoint
 	 */
 	public SplashScreen getSplash() {
 

@@ -331,7 +331,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	public static void setDefaultColors() {
 		// OPENMARKOV COLORS PREFERENCEs
 		setColor(OpenMarkovPreferences.NODECHANCE_BACKGROUND_COLOR, // def
-				new Color(251, 249, 153), // cream color before it was -->
+				new Color(251, 249, 153), // cream color before it was --&gt;
 				// //new Color( 235, 245, 35 ),
 				// //one type of yellow
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
@@ -343,7 +343,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEDECISION_BACKGROUND_COLOR, // def
 				new Color(207, 227, 253), // light blue color before it was
-				// --> //new Color( 25, 255, 255 ),
+				// --&gt; //new Color( 25, 255, 255 ),
 				// // gray color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEDECISION_FOREGROUND_COLOR, // def
@@ -354,14 +354,14 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEUTILITY_BACKGROUND_COLOR, // def
 				new Color(208, 230, 178), // light green color before it was
-				// --> //new Color( 0, 125, 0 ),
+				// --&gt; //new Color( 0, 125, 0 ),
 				// //green color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEUTILITY_FOREGROUND_COLOR, // def
 				Color.BLACK, // black color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEUTILITY_TEXT_COLOR, // def
-				new Color(0, 0, 0), // black color before it was --> //new
+				new Color(0, 0, 0), // black color before it was --&gt; //new
 				// Color( 230, 230, 230 ), //one dark
 				// green color
 				OpenMarkovPreferences.OPENMARKOV_COLORS);

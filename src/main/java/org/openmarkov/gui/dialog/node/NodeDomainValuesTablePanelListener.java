@@ -87,10 +87,10 @@ public class NodeDomainValuesTablePanelListener
 			previousMonotony = UP; // deselected up
 			getPanel().getDiscretizedStatesPanel().setUpMonotony(false);
 		} else if (e.getStateChange() == ItemEvent.SELECTED) {
-			if (previousMonotony == UP) { // UP --> UP
+			if (previousMonotony == UP) { // UP --&gt; UP
 				// do nothing
 				getPanel().getDiscretizedStatesPanel().setUpMonotony(true);
-			} else if (previousMonotony == DOWN) { // DOWN --> UP
+			} else if (previousMonotony == DOWN) { // DOWN --&gt; UP
 				DiscretizeTablePanel panel = getPanel().getDiscretizedStatesPanel();
 				panel.setUpMonotony(true);
 				Object[][] data = panel.getData();
@@ -121,7 +121,7 @@ public class NodeDomainValuesTablePanelListener
 			previousMonotony = DOWN;// deselected down
 			getPanel().getDiscretizedStatesPanel().setUpMonotony(true);
 		} else if (e.getStateChange() == ItemEvent.SELECTED) {
-			if (previousMonotony == UP) { // UP --> DOWN
+			if (previousMonotony == UP) { // UP --&gt; DOWN
 				DiscretizeTablePanel panel = getPanel().getDiscretizedStatesPanel();
 				panel.setUpMonotony(false);
 				Object[][] data = panel.getData();
@@ -143,7 +143,7 @@ public class NodeDomainValuesTablePanelListener
 					}
 				}
 				panel.setData(newData); // set data fill the first key column
-			} else if (previousMonotony == DOWN) { // DOWN --> DOWN
+			} else if (previousMonotony == DOWN) { // DOWN --&gt; DOWN
 				// do nothing
 				getPanel().getDiscretizedStatesPanel().setUpMonotony(false);
 			}

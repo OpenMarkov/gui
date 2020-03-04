@@ -23,7 +23,7 @@ import java.util.Properties;
 	private HashMap<String, Object> componentVariables;
 
 	/**
-	 * @frozen
+	 * frozen
 	 */
 	private String componentName;
 

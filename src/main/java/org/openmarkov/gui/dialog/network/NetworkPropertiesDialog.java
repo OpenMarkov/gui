@@ -62,7 +62,6 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * This method initializes this instance.
 	 *
 	 * @param owner window that owns the dialog.
-	 * @wbp.parser.constructor
 	 */
 	public NetworkPropertiesDialog(Window owner) {
 		super(owner);

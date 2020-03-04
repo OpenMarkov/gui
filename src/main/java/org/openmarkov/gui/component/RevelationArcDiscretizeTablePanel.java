@@ -35,7 +35,7 @@ import java.awt.event.MouseEvent;
 	/**
 	 * default constructor
 	 *
-	 * @wbp.parser.constructor
+	 *
 	 */
 	public RevelationArcDiscretizeTablePanel(String[] newColumns, Link<Node> link) {
 		this(newColumns, new Object[0][0], "s", link.getNode1());

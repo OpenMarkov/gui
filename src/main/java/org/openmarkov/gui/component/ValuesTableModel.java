@@ -54,9 +54,11 @@ public class ValuesTableModel extends DefaultTableModel {
 	}
 
 	/**
-	 * This method determines if the cell is editable or not, considering : <li>
-	 * all rows in the header are not editable</li> <li>column with the name of
-	 * the parents and the values are not editable</li>
+	 * This method determines if the cell is editable or not, considering :
+	 * <ul>
+	 * <li>all rows in the header are not editable
+	 * <li>column with the name of the parents and the values are not editable
+	 * </ul>
 	 */
 	public boolean isCellEditable(int row, int col) {
 		if (row < firstEditableRow) {

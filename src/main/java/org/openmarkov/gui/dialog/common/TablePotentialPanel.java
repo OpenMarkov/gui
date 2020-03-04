@@ -50,16 +50,26 @@ import java.util.List;
 
 /**
  * This class implements a Table potential table with the following features:
- * <li>Its elements, except the first column, are modifiable.</li> <li>New
- * elements can be added, creating a new key row with empty data.</li> <li>The
+ * <ul>
+ * <li>Its elements, except the first column, are modifiable.
+	s* <li>New
+ * elements can be added, creating a new key row with empty data.
+	s* <li>The
  * key data (first column) consist of a key string following of the index of the
- * row and it is used for internal purposes only.</li> <li>The key data is
- * hidden.</li> <li>The information of a row (except the first column) can not
- * be taken up or down.</li> <li>The rows can not be removed.</li> <li>The first
- * editable row is the one that has the values of the potentials.</li> <li>The
+ * row and it is used for internal purposes only.
+	s* <li>The key data is
+ * hidden.
+	s* <li>The information of a row (except the first column) can not
+ * be taken up or down.
+	s* <li>The rows can not be removed.
+	s* <li>The first
+ * editable row is the one that has the values of the potentials.
+	s* <li>The
  * rows between 0 and the first editable row are ocuppied by the values of the
- * states of the parents of the variable.</li> <li>The header of columns is
+ * states of the parents of the variable.
+	s* <li>The header of columns is
  * hidden.</li>
+ * </ul>
  * <p>
  * carmenyago: Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
  * 3. when the potential doesn't exit an exception is raised
@@ -117,7 +127,7 @@ import java.util.List;
 	protected boolean hasLinkRestriction;
 
 	/**
-	 * UNCLEAR-->We calculate the uncertainty. This is calculated several times; i have to check if calculations are repeated unnecessarily
+	 * UNCLEAR--&gt;We calculate the uncertainty. This is calculated several times; i have to check if calculations are repeated unnecessarily
 	 */
 	protected boolean[] uncertaintyInColumns;
 
@@ -142,7 +152,7 @@ import java.util.List;
 	 * Constructor used by CPTablePanel
 	 * This method creates, initialises, and displays a ValuesTable object for the first potential of the node
 	 * <p>
-	 * When there is no potential NullListPotentialException is showed-->UNCLEAR stop???
+	 * When there is no potential NullListPotentialException is showed--&gt;UNCLEAR stop???
 	 * <p>
 	 * <p>
 	 * <p>
@@ -184,7 +194,7 @@ import java.util.List;
 
 		modifiable = true;
 
-		// Previous-->Ok
+		// Previous--&gt;Ok
 		setTableSpecificListeners();
 
 		setData();
@@ -204,7 +214,7 @@ import java.util.List;
 	 * @param newData    new data for the table
 	 * @param newColumns new columns for the table
 	 * @author carmenyago
-	 * revised--> minor changes
+	 * revised--&gt; minor changes
 	 * Previously named setData; I find this name confusing because coincides with setData()
 	 */
 	public void setDataInValuesTable(Object[][] newData, String[] newColumns) {
@@ -235,7 +245,7 @@ import java.util.List;
 	 * It is necessary to implement setData(Node node)
 	 * Here I deal with potential = null or potential =0;
 	 * <p>
-	 * UNCLEAR--> Called in PotentialEditDialog.showFields(Node)
+	 * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
 	 *
 	 * @author carmenyago
 	 */
@@ -256,8 +266,12 @@ import java.util.List;
 
 	/**
 	 * Sets a new table model with new data and new columns based on three
-	 * items: <li>list of Potentials of the variable</li> <li>states of the
-	 * variable</li> <li>parents of the variable</li>
+	 * items:
+	 * <ul>
+	 *     <li>list of Potentials of the variable
+	 *     <li>states of the variable
+	 *     <li>parents of the variable
+	 * </ul>
 	 * This method obtains if the node has link restrictions and store it in hasLinkrestriction,
 	 * stores the probNet in ValuesTable
 	 * fills the tableData (tableData consists of headers + data),
@@ -291,7 +305,7 @@ import java.util.List;
 		// These column names aren't displayed
 		newColumns = ValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
 
-		//Calculated in convertListPotentialsToTableFormat-->createEmptyTable()  
+		//Calculated in convertListPotentialsToTableFormat--&gt;createEmptyTable()
 		//setFirstEditableRow(tablePotentialsPanelOperations.calculateFirstEditableRow(node));
 		//setLastEditableRow(tablePotentialsPanelOperations.calculateLastEditableRow(node));
 
@@ -317,7 +331,7 @@ import java.util.List;
 	 * Sets the columns that have uncertainty a true in a boolean array
 	 * To do that, this method extracts the uncertainty for every column configuration (parents state set)
 	 * <p>
-	 * UNCLEAR-->When we reach this method potential!=null
+	 * UNCLEAR--&gt;When we reach this method potential!=null
 	 *
 	 * @return Boolean array that represents the columns (true = the column has
 	 * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
@@ -375,7 +389,7 @@ import java.util.List;
 		values = setParentsNameInUpperLeftCornerArea(values);
 
 		// Set the states of the parents on  the top of the table
-		// UNCLEAR--> what happens when the parent variable is continuous????
+		// UNCLEAR--&gt; what happens when the parent variable is continuous????
 		values = setParentsStatesInTopArea(values);
 		// Set the states of the node variable on the left column  
 		values = setNodeStatesInLeftArea(values);
@@ -391,12 +405,12 @@ import java.util.List;
 	/**
 	 * Creates and empty array of empty objects with the [number_of_rows][number_of_columns] of the valuesTable
 	 * Considers the potential is not null
-	 * UNCLEAR --> setBaseIndexForCoordinates
+	 * UNCLEAR --&gt; setBaseIndexForCoordinates
 	 *
 	 * @author carmenyago
 	 * <p>
 	 * Continuous variables have only one state
-	 * tableSize is always >0
+	 * tableSize is always greater than 0
 	 */
 	protected Object[][] createEmptyTable() {
 
@@ -415,7 +429,7 @@ import java.util.List;
 		// First editable row coincides with the number of parents
 		firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(node);
 
-		// The baseIndexForCoordinates is the first editable row-->What for-->UNCLEAR
+		// The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
 		setBaseIndexForCoordinates(firstEditableRow);
 
@@ -424,7 +438,7 @@ import java.util.List;
 
 		// Number of data elements of tablePotential
 		int tableSize = tablePotential
-				.getTableSize();//-->UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
+				.getTableSize();//--&gt;UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
 
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions = 1;
@@ -434,7 +448,7 @@ import java.util.List;
 		numRows = firstEditableRow + numDimensions;
 		lastEditableRow = numRows - 1;
 
-		/*if (!isTableDeltaPotential) numRows++;*/ //--> UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
+		/*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
 		numColumns = numColumns + tableSize / numDimensions;
 
 		// create the array of arrays
@@ -462,7 +476,8 @@ import java.util.List;
 	 * Sets the states of the parents in the top of the table
 	 * Potential is not null
 	 *
-	 * @param oldValues - the table that is being modified. oldValues !=null and oldValues.lenght is always > 0
+	 * @param oldValues - the table that is being modified.
+	 *                     oldValues !=null and oldValues.lenght is always &gt; 0
 	 * @author carmenyago
 	 */
 	protected Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
@@ -540,7 +555,7 @@ import java.util.List;
 		for (int i = 0; i < initialValues.length; i++) {
 			roundedValues[i] = Util.roundAndReduce(initialValues[i], epsilon, maxDecimals);
 		}
-		// UNCLEAR-->What for??
+		// UNCLEAR--&gt;What for??
 		//tablePotential.setValues(roundedValues);
 
 		for (int j = 1; j <= numColumns - 1; j++) {
@@ -582,7 +597,7 @@ import java.util.List;
 	 * @param stateIndices - indexes of the states
 	 * @return an array containing the row at the first position and the column
 	 * at the second position.
-	 * revised--> only changed the code between CMI, CMF
+	 * revised--&gt; only changed the code between CMI, CMF
 	 */
 	protected int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
 		int numStates = node.getVariable().getNumStates();
@@ -617,7 +632,7 @@ import java.util.List;
 	 * @return a two dimensional array with the size of the table containing the
 	 *         information about the editable positions.
 	 *
-	 * UNCLEAR--> Can a utility Node have nodes with restriction and what to do?        
+	 * UNCLEAR--&gt; Can a utility Node have nodes with restriction and what to do?
 	 * @author carmenyago
 	 *
 	 */
@@ -674,7 +689,7 @@ import java.util.List;
 		 */
 		int startPosition = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
 
-		// gets the configuration of startPosition--> the data position in tablePotential corresponding to 
+		// gets the configuration of startPosition--&gt; the data position in tablePotential corresponding to
 		// the beginning of the column
 		// I suppose configuration=[Node Variable, parent_1,----,parent_n]
 		int[] configuration = tablePotential.getConfiguration(startPosition);
@@ -715,7 +730,7 @@ import java.util.List;
 	/**
 	 * Creates and shows the UncertainValuesDialog object
 	 *
-	 * @throws WrongCriterionException revised-->minor changes
+	 * @throws WrongCriterionException revised--&gt;minor changes
 	 */
 	public void showUncertaintyDialog() throws WrongCriterionException {
 		// Generates the evidenceCase based on the column
@@ -759,7 +774,7 @@ import java.util.List;
 	 * This method initialises valuesTable and defines that first two columns cannot be selected
 	 *
 	 * @return a new values table.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public ValuesTable getValuesTable() {
 		if (valuesTable == null) {
@@ -773,7 +788,7 @@ import java.util.List;
 	 * This method initialises valuesTableScrollPane.
 	 *
 	 * @return a new values table scroll pane.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	protected JScrollPane getValuesTableScrollPane() {
 		if (valuesTableScrollPane == null) {
@@ -786,7 +801,7 @@ import java.util.List;
 
 	/**
 	 * special method to show/hide the values table
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public void showValuesTable(final boolean visible) {
 		getValuesTable().setVisible(visible);
@@ -797,7 +812,7 @@ import java.util.List;
 	 *
 	 * @return the tableModel of valuesTable.
 	 * @see ValuesTable
-	 * revised-->minor changes
+	 * revised--&gt;minor changes
 	 */
 	protected ValuesTableModel getTableModel() {
 		ValuesTableModel tableModel = null;
@@ -821,7 +836,7 @@ import java.util.List;
 
 	/**
 	 * Handles an action performed
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
@@ -848,7 +863,7 @@ import java.util.List;
 	/**
 	 * Method for removing the uncertain values for a certain configuration
 	 *
-	 * @throws WrongCriterionException revised-->minor changes; only changed the call to getNotEditablePositions
+	 * @throws WrongCriterionException revised--&gt;minor changes; only changed the call to getNotEditablePositions
 	 */
 	public void removeUncertainty() throws WrongCriterionException {
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
@@ -871,7 +886,7 @@ import java.util.List;
 
 	/**
 	 * Method for update the options showed in the contextual menu
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	protected void updateContextualMenuOptions() {
 		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
@@ -928,7 +943,7 @@ import java.util.List;
 	 * This method initialises uncertaintyContextualMenu.
 	 *
 	 * @return the node contextual menu.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	protected UncertaintyContextualMenu getUncertaintyContextualMenu() {
 		if (uncertaintyContextualMenu == null) {
@@ -945,7 +960,7 @@ import java.util.List;
 	 * <p>
 	 * In a DECISION node a change is colored in green
 	 * <p>
-	 * UNCLEAR--> When ReadOnly is se?
+	 * UNCLEAR--&gt; When ReadOnly is se?
 	 * <p>
 	 * NodeType.DECISION + policyType.OPTIMAL +!potential.isUtility()
 	 *
@@ -972,7 +987,7 @@ import java.util.List;
 			))
 
 			{
-				// UNCLEAR--> When ReadOnly is se?
+				// UNCLEAR--&gt; When ReadOnly is se?
 				// A node has policy if is a decision node with a non uniform potential
 				boolean imposingPolicyByUser = node.hasPolicy() && !isReadOnly();
 				cellRenderer = new ValuesTableOptimalPolicyCellRenderer(firstEditableRow, uncertaintyInColumns,
@@ -1024,7 +1039,7 @@ import java.util.List;
 
 	/**
 	 * Close the table
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	@Override public void close() {
 		getValuesTable().close();
@@ -1036,7 +1051,7 @@ import java.util.List;
 	 * It also changes the cell renderer according to readOnly
 	 *
 	 * @param readOnly - if true, all the table cells become not editable, if false the data cells become editable
-	 *                 revised-->minor changes; only changed the call to getUncertaintyInColumns
+	 *                 revised--&gt;minor changes; only changed the call to getUncertaintyInColumns
 	 */
 	@Override public void setReadOnly(boolean readOnly) {
 		boolean wasReadOnly = super.isReadOnly();
@@ -1062,7 +1077,7 @@ import java.util.List;
 	 * This class overrides the double click listener calling the
 	 *
 	 * @see DoubleClickListener
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public class DoubleClickListener extends MouseAdapter {
 

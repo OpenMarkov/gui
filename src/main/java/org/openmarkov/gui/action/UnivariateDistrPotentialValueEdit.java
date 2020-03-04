@@ -113,7 +113,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 	/**
 	 * Creates a new <code>UnivariateDistrPotentialEdit</code> specifying the node to be and the new probability distribution.
-	 * This is used when the distribution of <code>UnivariateDistrPotential<code> is changed
+	 * This is used when the distribution of <code>UnivariateDistrPotential</code> is changed.
 	 *
 	 * @param node             - the node to be edited
 	 * @param distributionName - the name of the distribution to be created. Represents the attribute name in ProbDensFunctionType which represents the distribution class

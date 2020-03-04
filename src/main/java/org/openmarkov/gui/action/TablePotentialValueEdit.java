@@ -265,8 +265,8 @@ import java.util.List;
 	 *
 	 * @return the priority list initialised with the the value edited in the
 	 * last place of the list
-	 * <p>
-	 * revised-->not changed
+	 *
+	 * revised --&gt; not changed
 	 */
 	private List<Integer> getPriorityListInitialization() {
 		for (int i = 0; i < node.getVariable().getNumStates(); i++) {
@@ -324,10 +324,10 @@ import java.util.List;
 
 	/***
 	 * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
-	 * UNCLEAR--> Have I to change the behaviour; depends on doEdit()
-	 * @param position
+	 * UNCLEAR --&gt; Have I to change the behaviour; depends on doEdit()
+	 * @param position the position
 	 * @return true if the cell is editable
-	 * revised-->not changed
+	 * revised --&gt; not changed
 	 */
 	private boolean isEditablePosition(int position) {
 		boolean editable = false;

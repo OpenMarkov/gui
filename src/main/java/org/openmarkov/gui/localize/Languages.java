@@ -91,7 +91,7 @@ public class Languages {
 
 	/**
 	 * This method returns the language sited in the specified index in the
-	 * list. If the index is out of range (index < 0 || index > list size) the
+	 * list. If the index is out of range (index &lt; 0 || index &gt; list size) the
 	 * null is returned.
 	 *
 	 * @param index element of the list of language.
@@ -147,7 +147,7 @@ public class Languages {
 
 	/**
 	 * This method returns the language sited in the specified index in the
-	 * short name list. If the index is out of range (index < 0 || index > list
+	 * short name list. If the index is out of range (index &lt; 0 || index &gt; list
 	 * size) the null is returned.
 	 *
 	 * @param index element of the short name list of language.

@@ -606,7 +606,7 @@ public class NodeDefinitionPanel extends JPanel
 				agentNames[0] = "";
 			}/*
 			 * else if (agents == null && node.getVariable().getAgent() !=
-			 * null) { // Dec-POMDP --> POMDP an agent has been already
+			 * null) { // Dec-POMDP --&gt; POMDP an agent has been already
 			 * assigned to current variable agentNames = new String[2];
 			 * agentNames[0] = ""; agentNames[1] =
 			 * node.getVariable().getAgent().getValuesInAString(); }

@@ -32,8 +32,6 @@ import java.awt.*;
 
 	/**
 	 * Launch the MainGUIInit runnable process
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	public MainGUI() {
 
@@ -66,8 +64,6 @@ import java.awt.*;
 
 	/**
 	 * This method sets and configures the UI manager.
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	private static void configureUI() {
 
@@ -108,7 +104,6 @@ import java.awt.*;
 	 * screen.
 	 *
 	 * @return new dimensions of the window.
-	 * @wbp.parser.entryPoint
 	 */
 	private Dimension screenPortionSize(Insets screenInsets) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

@@ -58,7 +58,7 @@ import java.util.ListIterator;
  * <li>All parameters or Only independent parameters</li>
  * <li>TPC or canonical parameters(for the Canonical families)</li>
  * <li>Net or Compound values (for the Canonical families)</li>
- *
+ * </ul>
  * @author jlgozalo
  * @author mpalacios
  * @author carmenyago
@@ -108,6 +108,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * <li>if index = 0 then Using General Potential</li>
 	 * <li>if index = 1,2,3 then Using Canonical Potential (family OR)</li>
 	 * <li>if index = 4,5,6 then Using Canonical Potential (famili AND)</li>
+	 * </ul>
 	 */
 	protected int indexPotential = 0;                                  // General
 	/**
@@ -268,7 +269,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 *
 	 * @return dataModified
 	 * @see #dataModified
-	 * revised--> not changed
+	 * revised--&gt; not changed
 	 */
 	public boolean[][] getDataModified() {
 		if (dataModified == null) {
@@ -284,7 +285,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 *
 	 * @param isModified - initial value for the cells is dataModified
 	 * @see #dataModified
-	 * revised--> not changed
+	 * revised--&gt; not changed
 	 */
 	public void initializeDataModified(boolean isModified) {
 		if (tableModel != null) {
@@ -319,7 +320,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * Resets the model in use
-	 * revised-> not changed
+	 * revised-&gt; not changed
 	 */
 	public void resetModel() {
 		tableModel = null;
@@ -328,7 +329,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * Gets the tableModel attribute
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public ValuesTableModel getTableModel() {
 		return this.tableModel;
@@ -341,7 +342,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param newDataModel the new data source for this table.
 	 * @throws IllegalArgumentException if newModel is null.
 	 *                                  <p>
-	 *                                  revised-->not changed
+	 *                                  revised--&gt;not changed
 	 */
 	public void setModel(ValuesTableModel newDataModel) throws IllegalArgumentException {
 		super.setModel(newDataModel);
@@ -352,10 +353,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	/**
-	 * carmenyago-->UNCLEAR Why changeSelection is called twice
+	 * carmenyago--&gt;UNCLEAR Why changeSelection is called twice
 	 *
 	 * @see javax.swing.JTable#changeSelection(int, int, boolean, boolean)
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	@Override public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
 		super.changeSelection(rowIndex, columnIndex, toggle, extend);
@@ -369,7 +370,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * Cancels the editing in any cell of the table, avoiding its new value is
 	 * recorded.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public void cancelCellEditing() {
 		TableCellEditor actualEditor = getCellEditor();
@@ -380,7 +381,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * Stops the editing in any cell of the table, recording the new value.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public void stopCellEditing() {
 		TableCellEditor actualEditor = getCellEditor();
@@ -461,7 +462,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * show a error window message to the user with a specific msg
 	 *
 	 * @param msg - the error message to show to user
-	 *            revised-->not changed
+	 *            revised--&gt;not changed
 	 */
 	protected void showNodePotentialTableErrorMsg(String msg) {
 		JOptionPane.showMessageDialog(this, stringDatabase.getString(msg + ".Text"),
@@ -544,7 +545,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param showingAllParameters if true, show all; if false, show only
 	 *                             independent parameters
 	 *                             <p>
-	 *                             revised-->  minor changes
+	 *                             revised--&gt;  minor changes
 	 */
 	public void setShowingAllParameters(boolean showingAllParameters) {
 		this.showingAllParameters = showingAllParameters;
@@ -559,8 +560,8 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			 */
 
 			/*
-			 * RowFilter.regexFilter ("^" + name+ "$", 0) --> Returns a RowFilter that returns anything beginning with the name of the variable why?
-			 * RowFilter.notFilter --> Returns a RowFilter that includes entries if the supplied filter does not include the entry. That is, returns
+			 * RowFilter.regexFilter ("^" + name+ "$", 0) --&gt; Returns a RowFilter that returns anything beginning with the name of the variable why?
+			 * RowFilter.notFilter --&gt; Returns a RowFilter that includes entries if the supplied filter does not include the entry. That is, returns
 			 * the entries which does not contain the variable name
 			 *
 			 */
@@ -615,7 +616,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param name the name of the node
 	 * @return the regular expression of the name of node. It returns namenode\\[number\\]
 	 * <p>
-	 * revised--> not changed
+	 * revised--&gt; not changed
 	 */
 	protected String getRegExp(String name) {
 		int cont1 = name.indexOf("[");
@@ -675,7 +676,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * print the NodePotentialTable
 	 * carmenyago only removed the println of the deterministic attribute
 	 *
-	 * @carmenyago minor changes
+	 * @author carmenyago minor changes
 	 */
 	public void printTable() {
 		System.out.println("NodePotentialTable: ");

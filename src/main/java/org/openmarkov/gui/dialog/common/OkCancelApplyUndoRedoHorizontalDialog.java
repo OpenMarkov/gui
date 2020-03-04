@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
  * modification</li>
  * <li>a 'Redo' button activated pressing also the CTRL-Y key to redo the last
  * modification</li>
+ * </ul>
  *
  * @author jlgozalo
  * @version 1.1 - 04/02/2010 - adding Undo/Redo buttons
