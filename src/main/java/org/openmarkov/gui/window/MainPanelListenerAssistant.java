@@ -64,7 +64,7 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
-import org.openmarkov.inference.DES.DESInference;
+import org.openmarkov.inference.DES.DESInferenceWithStartingNode;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
@@ -1427,7 +1427,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 		if (performInference) {
 			try {
-				DESInference desInference = new DESInference(probNet);
+//
+//				DESInference desInference = new DESInference(probNet);
+				DESInferenceWithStartingNode desInferenceWithStartingNode =new DESInferenceWithStartingNode(probNet);
 			} catch (NotEvaluableNetworkException e) {
 				e.printStackTrace();
 			}
