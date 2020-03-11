@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.util;
 
+import org.openmarkov.core.model.network.PurposeType;
 import org.openmarkov.gui.graphic.VisualEventNode;
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -19,7 +20,8 @@ import java.util.MissingResourceException;
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix initial values for fields
- * @version 1.2 - cyago - 08/02/2019 - added purpuse "terminal"
+ * @version 1.2 - cyago - 08/02/2019 - 25/01/2020 - added purpose "terminal" and initial. Purpose will be moved to core
+ * @version 1.3 - cyago - 26/01/2020 keys moved to core because they are core data (used in constrains, network representacion and inference)
  */
 public class Purpose {
 	/**
@@ -31,23 +33,28 @@ public class Purpose {
 	 * This method adds all the purposes.
 	 */
 	private static void fillList() {
-		if (list == null) {
-			list = new ArrayList<String>();
-			list.add("");
-			//CMI 03/2019
-			list.add("eventTerminal");
-			//CMF
-			list.add("cost");
-			list.add("effectiveness");
-			list.add("treatment");
-			list.add("riskfactor");
-			list.add("symptom");
-			list.add("sign");
-			list.add("test");
-			list.add("diseaseanomaly");
-			list.add("auxiliary");
-			list.add("other");
-		}
+	//CMI 26/01/2020 Types of purposes moved to org.openmarkov.core.network
+		//		if (list == null) {
+//			list = new ArrayList<String>();
+//			list.add("");
+//			//CMI 03/2019, 25/01/2020
+//			list.add("terminalEvent");
+//			list.add("initialEvent");
+//			//CMF
+//			list.add("cost");
+//			list.add("effectiveness");
+//			list.add("treatment");
+//			list.add("riskfactor");
+//			list.add("symptom");
+//			list.add("sign");
+//			list.add("test");
+//			list.add("diseaseanomaly");
+//			list.add("auxiliary");
+//			list.add("other");
+//		}
+		list = PurposeType.purposeList();
+		list.add(0,"");
+	//CMF
 	}
 
 	/**
