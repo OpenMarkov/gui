@@ -148,11 +148,14 @@
         </qaly>
     </defaultCriteria>
     <purpose>
-        <eventTerminal>
+        <!--CMI 03/2019 25/01/2020  -->
+        <terminalEvent>
             <Text value="Terminal event"/>
-        </eventTerminal>
-
-
+        </terminalEvent>
+        <initialEvent>
+            <Text value="Initial event"/>
+        </initialEvent>
+        <!--CMF -->
         <effectiveness>
             <Text value="Effectiveness"/>
         </effectiveness>

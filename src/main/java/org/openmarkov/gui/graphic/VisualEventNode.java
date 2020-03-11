@@ -9,6 +9,7 @@ package org.openmarkov.gui.graphic;
 
 import org.apache.poi.ss.formula.functions.T;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.PurposeType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
@@ -21,15 +22,15 @@ import java.awt.geom.RoundRectangle2D;
  * It is a version of VisualChangeNode. To be polished if version 1.2
  *
  * @author cyago
- * @version 1 28/12/2019
+ * @version 1 28/12/2019- 25/01/2020 added initialEvent
  */
 public class VisualEventNode extends VisualNode {
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
 
-	//TODO Change to core
-    public static final String PURPOSE_TERMINAL ="eventTerminal";
+
+
 
 	/**
 	 * Internal color of the visual node when it is no terminal.
@@ -44,6 +45,14 @@ public class VisualEventNode extends VisualNode {
 	private static final Color TERMINAL_BACKGROUND_COLOR =
 			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_TERMINAL_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
 					new Color (230, 126, 0));
+
+	/**
+	 * Internal color of the visual event node when it is terminal.
+	 */
+	private static final Color INITIAL_BACKGROUND_COLOR =
+			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_INITIAL_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+					Color.PINK);
+
 
 //	private static final Color TERMINAL_BACKGROUND_COLOR =	new Color (230, 126, 0);
 
@@ -321,21 +330,13 @@ public class VisualEventNode extends VisualNode {
 		Shape shape = getShape(g);
 		double[] dimensions = getNodeDimensions(g);
 
-//		if (preResolutionFinding) {
-//			g.setPaint(BACKGROUND_PRE_RESOLUTION_FINDING_COLOR);
-//		} else if (postResolutionFinding && (
-//				visualNetwork.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE
-//		)) {
-//			g.setPaint(BACKGROUND_POST_RESOLUTION_FINDING_COLOR);
-//		} else {//
-//			g.setPaint(BACKGROUND_COLOR);
-//		}
-
 
 // If it is Non Terminal Node
-		if (node.getPurpose().equals(PURPOSE_TERMINAL)){
+		if (node.getPurpose().equals(PurposeType.TERMINAL_EVENT.getName())){
 			g.setPaint(TERMINAL_BACKGROUND_COLOR);
-		} else {
+		} else if (node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName())) {
+			g.setPaint(INITIAL_BACKGROUND_COLOR);
+		}else {
 			g.setPaint(BACKGROUND_COLOR);
 		}
 
