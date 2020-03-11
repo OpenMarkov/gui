@@ -86,6 +86,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private JCheckBox scheduledEventsCheckBox;
 
 
+	/**
+	 * JCHeckBox for setting the "detailed textual log option"
+	 */
+	private JCheckBox textualLogCheckBox;
+
+
+
 	//Statistics Panel
 	/**
 	 * Panel with the statistics options
@@ -173,12 +180,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * This method extract the options set in the panel and stares them in the monteCarloOptions object
 	 */
 	private void extractMonteCarloOptions() {
-		this.monteCarloOptions.setNumTrialSets(Integer.parseInt(numSeriesTextField.getText()));
+		this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
 		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
-		this.monteCarloOptions.setStateLog(stateLogCheckBox.isSelected());
-		this.monteCarloOptions.setEventLog(eventLogCheckBox.isSelected());
-		this.monteCarloOptions.setScheduledEventLog(scheduledEventsCheckBox.isSelected());
-		this.monteCarloOptions.setOnlySummary(onlySummaryLogCheckBox.isSelected());
+//		this.monteCarloOptions.setStateLog(stateLogCheckBox.isSelected());
+//		this.monteCarloOptions.setEventLog(eventLogCheckBox.isSelected());
+//		this.monteCarloOptions.setScheduledEventLog(scheduledEventsCheckBox.isSelected());
+		this.monteCarloOptions.setTextualLog(textualLogCheckBox.isSelected());
+//		this.monteCarloOptions.setOnlySummary(onlySummaryLogCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
@@ -196,12 +204,12 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 			monteCarloOptions.setStateLog(false);
 			monteCarloOptions.setEventLog(false);
 			monteCarloOptions.setScheduledEventLog(false);
-			getJCheckBoxStateLog().setEnabled(false);
-			getJCheckBoxStateLog().setSelected(false);
-			getJCheckBoxEventLog().setEnabled(false);
-			getJCheckBoxEventLog().setSelected(false);
-			getJCheckBoxScheduledEventsLog().setEnabled(false);
-			getJCheckBoxScheduledEventsLog().setSelected(false);
+//			getJCheckBoxStateLog().setEnabled(false);
+//			getJCheckBoxStateLog().setSelected(false);
+//			getJCheckBoxEventLog().setEnabled(false);
+//			getJCheckBoxEventLog().setSelected(false);
+//			getJCheckBoxScheduledEventsLog().setEnabled(false);
+//			getJCheckBoxScheduledEventsLog().setSelected(false);
 
 
 		} else{
@@ -263,7 +271,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
 		if (numSeriesTextField == null) {
 			numSeriesTextField = new JTextField();
-			numSeriesTextField.setText("" + this.monteCarloOptions.getNumTrialSets());
+			numSeriesTextField.setText("" + this.monteCarloOptions.getNumSeries());
 			numSeriesTextField.setColumns(10);
 			numSeriesTextField.setName("numSeriesTextField");
 		}
@@ -279,12 +287,33 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 			desNetLogOptionsPanel = new JPanel();
 			desNetLogOptionsPanel.setBorder( new TitledBorder("DES Inference Log Options"));
 			desNetLogOptionsPanel.add(getJCheckBoxOnlySummaryLog());
-			desNetLogOptionsPanel.add(getJCheckBoxStateLog());
-			desNetLogOptionsPanel.add(getJCheckBoxEventLog());
-			desNetLogOptionsPanel.add(getJCheckBoxScheduledEventsLog());
+			desNetLogOptionsPanel.add(getTextualLogCheckBox());
+//			desNetLogOptionsPanel.add(getJCheckBoxStateLog());
+//			desNetLogOptionsPanel.add(getJCheckBoxEventLog());
+//			desNetLogOptionsPanel.add(getJCheckBoxScheduledEventsLog());
 		}
 		return desNetLogOptionsPanel;
 	}
+
+
+
+	/**
+	 * Returns the JCheckBox for "Detailed Textual Log"
+	 * @return the JCheckBox for "Event Log"
+	 */
+	private JCheckBox getTextualLogCheckBox() {
+		if (textualLogCheckBox == null) {
+			//TODO use stringDatabase
+			textualLogCheckBox = new JCheckBox("Detailed Textual Log", monteCarloOptions.isTextualLog());
+			if (onlySummaryLogCheckBox.isSelected()){
+				textualLogCheckBox.setEnabled(true);
+				textualLogCheckBox.setSelected(true);
+			}
+		}
+
+		return textualLogCheckBox;
+	}
+
 
 
 	/**
