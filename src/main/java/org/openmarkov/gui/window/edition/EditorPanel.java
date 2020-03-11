@@ -2293,6 +2293,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			//CMI 06/01/2020 for bug fixig
+			e.printStackTrace();
+			//CMF
 		}
 	}
 
