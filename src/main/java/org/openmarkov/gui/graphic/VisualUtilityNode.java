@@ -8,11 +8,13 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 /**
  * This class is the visual representation of a utility node.
@@ -194,9 +196,11 @@ public class VisualUtilityNode extends VisualNode {
 		double textWidth = getWidth(text, g);
 		Shape shape = getShape(g);
 		Point2D.Double[] points = getPoints(g);
-		//CMI 11/11/2019
+		//CMI 11/11/2019 color changes when one parent is an event node; 13/01/2020 remove method getEventParents
 //		g.setPaint(BACKGROUND_COLOR);
-		if (node.getEventParents().isEmpty()){
+		List<Node> eventList = node.getParents();
+		eventList.removeIf(node ->node.getNodeType()!= NodeType.EVENT);
+		if (eventList.isEmpty()){
 			g.setPaint(BACKGROUND_COLOR);
 
 		} else {
