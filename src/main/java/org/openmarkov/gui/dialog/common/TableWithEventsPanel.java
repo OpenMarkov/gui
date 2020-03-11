@@ -307,7 +307,7 @@ public class TableWithEventsPanel
 			boolean isImpossible = false;
 			try {
 				// Returns an evidence case with one finding for every parent variable and its state in the column
-				EvidenceCase configuration = getConfiguration(i);
+				Configuration configuration = getConfiguration(i);
 				// If the column configuration has uncertainty hasUncertainty= true
 				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
@@ -654,11 +654,11 @@ public class TableWithEventsPanel
 	 * @throws InvalidStateException
 	 * @throws IncompatibleEvidenceException
 	 */
-	protected EvidenceCase getConfiguration(int col) throws InvalidStateException, IncompatibleEvidenceException {
+	protected Configuration getConfiguration(int col) throws InvalidStateException, IncompatibleEvidenceException {
 	//I don't know what to do
 		List<Variable> parents = tableVariables.subList(1, tablePotential.getNumVariables());
 
-		EvidenceCase evidence = new EvidenceCase();
+		Configuration resultConfiguration = new Configuration();
 
 		int[] parentsConfiguration = new int[parents.size()];
 
@@ -670,25 +670,25 @@ public class TableWithEventsPanel
 		// gets the configuration of startPosition--> the data position in tablePotential corresponding to
 		// the beginning of the column
 		// I suppose configuration=[Node Variable, parent_1,----,parent_n]
-		int[] configuration = tablePotential.getConfiguration(startPosition);
+		int[] numericConfiguration = tablePotential.getConfiguration(startPosition);
 
 		// Extracts the configuration of the parents from configuration
 		// It is the same for every cell of the selected column
 
-		for (int i = configuration.length - 1; i > 0; i--) {
-			parentsConfiguration[i - 1] = configuration[i];
+		for (int i = numericConfiguration.length - 1; i > 0; i--) {
+			parentsConfiguration[i - 1] = numericConfiguration[i];
 		}
 
-		// Gets the evidence
+		// Gets the resultConfiguration
 		int j = 0;
-		// Adds to evidence a finding containing the parent and its configuration
+		// Adds to resultConfiguration a finding containing the parent and its configuration
 		Finding finding;
 		for (Variable var : parents) {
 			finding = new Finding(var, parentsConfiguration[j]);
-			evidence.addFinding(finding);
+			resultConfiguration.addFinding(finding);
 			j++;
 		}
-		return evidence;
+		return resultConfiguration;
 	}
 
 	/**
@@ -696,14 +696,14 @@ public class TableWithEventsPanel
 	 *
 	 * @return Evidence case
 	 */
-	public EvidenceCase getEvidenceCaseFromSelectedColumn() {
-		EvidenceCase evi = null;
+	public Configuration getConfigurationFromSelectedColumn() {
+		Configuration configuration = null;
 		try {
-			evi = getConfiguration(selectedColumn);
+			configuration = getConfiguration(selectedColumn);
 		} catch (InvalidStateException | IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
-		return evi;
+		return configuration;
 	}
 
 
@@ -811,8 +811,8 @@ public class TableWithEventsPanel
 	protected void  setImpossibleColumn() throws WrongCriterionException {
 		// Generates the evidenceCase based on the column
 		// selected on the JTable object
-		EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
-        eventValuesTable.getImpossibleConfigurations().add(new Configuration(eC));
+
+        eventValuesTable.getImpossibleConfigurations().add( getConfigurationFromSelectedColumn());
         impossibleColumns[selectedColumn -1] = true;
 
         if (selectedColumn > 0) {
@@ -829,9 +829,9 @@ public class TableWithEventsPanel
     protected void  unSetImpossibleColumn() throws WrongCriterionException {
         // Generates the evidenceCase based on the column
         // selected on the JTable object
-        EvidenceCase eC = getEvidenceCaseFromSelectedColumn();
-        Configuration iC= new Configuration(eC);
-        eventValuesTable.getImpossibleConfigurations().remove(iC);
+
+        Configuration impossibleConfiguration= new Configuration(getConfigurationFromSelectedColumn());
+        eventValuesTable.getImpossibleConfigurations().remove(impossibleConfiguration);
         impossibleColumns[selectedColumn -1] = false;
 
         if (selectedColumn > 0) {
@@ -906,7 +906,7 @@ public class TableWithEventsPanel
 			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
 		}
 
-		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getEvidenceCaseFromSelectedColumn());
+		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getConfigurationFromSelectedColumn());
 		if (isImpossible) {
 				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
 						.setEnabled(false);
