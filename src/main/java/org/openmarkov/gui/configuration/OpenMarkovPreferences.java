@@ -30,7 +30,8 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	 */
 	public static final String OPENMARKOV_NODE_PREFERENCES = "OPENMARKOV";
 
-	/**
+
+    /**
 	 * the preferences
 	 */
 	/*
@@ -372,6 +373,9 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEEVENT_TERMINAL_BACKGROUND_COLOR, // def
 				new Color(230, 126, 0),
+				OpenMarkovPreferences.OPENMARKOV_COLORS);
+		setColor(OpenMarkovPreferences.NODEEVENT_INITIAL_BACKGROUND_COLOR, // def
+				Color.PINK,
 				OpenMarkovPreferences.OPENMARKOV_COLORS);
 		setColor(OpenMarkovPreferences.NODEEVENT_FOREGROUND_COLOR, // def
 				Color.BLACK, // black color
