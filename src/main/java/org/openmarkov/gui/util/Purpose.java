@@ -22,6 +22,7 @@ import java.util.MissingResourceException;
  * @version 1.1 jlgozalo - fix initial values for fields
  * @version 1.2 - cyago - 08/02/2019 - 25/01/2020 - added purpose "terminal" and initial. Purpose will be moved to core
  * @version 1.3 - cyago - 26/01/2020 keys moved to core because they are core data (used in constrains, network representacion and inference)
+ *
  */
 public class Purpose {
 	/**
