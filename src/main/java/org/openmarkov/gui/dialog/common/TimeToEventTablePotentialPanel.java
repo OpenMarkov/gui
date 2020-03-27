@@ -106,7 +106,7 @@ public class TimeToEventTablePotentialPanel
 	protected JComboBox<String> getJcDistribution() {
 
         distributionManager =  ProbDensFunctionManager.getUniqueInstance();
-        String[] arrayDistributions = distributionManager.getDistributions().stream()
+        String[] arrayDistributions = distributionManager.getValidForTTEProbDensFunctions().stream()
                 .toArray(String[]::new);
 
 		if (jcDistribution == null){

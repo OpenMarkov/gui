@@ -127,7 +127,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	/**
 	 * JLabel of the JButton for setting the input File
 	 */
-	private JLabel inputFileJLabel = null;
+	private JTextField inputFileJTextField = null;
 
 
 	/**
@@ -142,6 +142,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		monteCarloOptions = probNet.getInferenceOptions().getMonteCarloOptions().clone();
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		this.setBorder(new TitledBorder("Monte Carlo Options"));
 		JPanel numSeriesPanel = new JPanel();
 		numSeriesPanel.add(getJLabelNumSeries());
@@ -154,8 +155,11 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		firstLinePanel.add(numSimulationsPanel,BorderLayout.WEST);
 		firstLinePanel.add(numSeriesPanel,BorderLayout.EAST);
 		this.add(firstLinePanel);
+		this.add(Box.createRigidArea(new Dimension()));
 		this.add(getDesNetLogOptionsPanel());
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 		this.add(getStatisticsPanel());
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 		this.add(getInputFileJPanel());
 		onlySummaryLogCheckBox.addActionListener(new ActionListener() {
 
@@ -461,8 +465,9 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		if (inputFileJPanel == null) {
 			inputFileJPanel = new JPanel();
 			inputFileJPanel.setBorder( new TitledBorder("DES Input File"));
-			inputFileJPanel.add(getJButtonAddInputFile());
-			inputFileJPanel.add(getJLabelInputFile());
+			inputFileJPanel.setLayout(new BorderLayout(0,5));
+			inputFileJPanel.add(getJButtonAddInputFile(), BorderLayout.NORTH);
+			inputFileJPanel.add(getJTextFieldInputFile(), BorderLayout.SOUTH);
 
 		}
 		return inputFileJPanel;
@@ -485,11 +490,15 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * This method returns the JLabel for selecting the simulation input file
 	 * @return the JLabel to select the simulation input file
 	 */
-	private JLabel getJLabelInputFile() {
-		if (inputFileJLabel ==null){
-			inputFileJLabel = new JLabel();
+	private JTextField getJTextFieldInputFile() {
+		if (inputFileJTextField ==null){
+			inputFileJTextField = new JTextField();
+			inputFileJTextField.setText("");
+//			inputFileJTextField.setVisible(false);
+			inputFileJTextField.setEnabled(false);
+
 		}
-		return inputFileJLabel;
+		return inputFileJTextField;
 	}
 
 	/**
@@ -497,9 +506,9 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * @param e actionEvent for inputFileButton
 	 */
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser fileChooser = new JFileChooser("C:\\Tesis") ;
+		JFileChooser fileChooser = new JFileChooser("C:\\Users\\Carmen María\\OneDrive - Consejería de Educación, Formación y Empleo\\Tesis\\DESNetFiles\\InputFile") ;
 
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.CSV", "csv");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.xlsx", "xlsx");
 		fileChooser.setFileFilter(filter);
 
 		//Handle open button action.
@@ -507,8 +516,9 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 			int returnVal = fileChooser.showOpenDialog(MonteCarloOptionsPanel.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				monteCarloOptions.setInputFile(fileChooser.getSelectedFile());
-					inputFileJLabel.setText(fileChooser.getSelectedFile().getAbsolutePath());
-					inputFileJLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					inputFileJTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+//					inputFileJTextField.setVisible(true);
+//					inputFileJTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 			}
 		}
