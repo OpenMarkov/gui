@@ -75,7 +75,10 @@ import java.util.List;
 	protected JTextArea getFunctionTextArea() {
 		if (functionTextArea == null) {
 			functionTextArea = new JTextArea();
-			functionTextArea.setEditable(false);
+			//CMI
+//			functionTextArea.setEditable(false);
+			functionTextArea.setEditable(true);
+			//CMF
 		}
 		return functionTextArea;
 	}
@@ -117,7 +120,7 @@ import java.util.List;
 
 	private class FunctionTextAreaMouseListener extends MouseAdapter {
 		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
+			if (e.getClickCount() >= 1) {
 				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parents, function);
 				expressionDialog.setVisible(true);
 				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
