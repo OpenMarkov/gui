@@ -30,12 +30,6 @@
             <artifactId>org.openmarkov.inference.DES</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.openmarkov</groupId>
-            <artifactId>org.openmarkov.inference.des</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
         <!--- CMF Adding DES inference; the project should be stored in the git repository -->
     </dependencies>
 </project>

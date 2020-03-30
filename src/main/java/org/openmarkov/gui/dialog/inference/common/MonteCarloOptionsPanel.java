@@ -65,10 +65,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 */
 	private JPanel desNetLogOptionsPanel;
 
+
+
+
 	/**
 	 * JCHeckBox for setting the "only summary" option.  When checked, only a summary of the simulations is recorded
 	 */
-	private JCheckBox onlySummaryLogCheckBox;
+	private JCheckBox resultsPerSeriesCheckBox;
 
 	/**
 	 * JCHeckBox for setting the "state log" option. When checked, the states of the patient are logged
@@ -161,12 +164,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		this.add(getStatisticsPanel());
 		this.add(Box.createRigidArea(new Dimension(0,10)));
 		this.add(getInputFileJPanel());
-		onlySummaryLogCheckBox.addActionListener(new ActionListener() {
-
-			@Override public void actionPerformed(ActionEvent e) {
-				changeLogCheckBox();
-			}
-		});
 
 	}
 
@@ -186,11 +183,8 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private void extractMonteCarloOptions() {
 		this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
 		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
-//		this.monteCarloOptions.setStateLog(stateLogCheckBox.isSelected());
-//		this.monteCarloOptions.setEventLog(eventLogCheckBox.isSelected());
-//		this.monteCarloOptions.setScheduledEventLog(scheduledEventsCheckBox.isSelected());
+		this.monteCarloOptions.setExcelResutlsPerSeries(resultsPerSeriesCheckBox.isSelected());
 		this.monteCarloOptions.setTextualLog(textualLogCheckBox.isSelected());
-//		this.monteCarloOptions.setOnlySummary(onlySummaryLogCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
@@ -198,31 +192,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	}
 
 
-	/**
-	 * This method disables and unselects the statelogCheckBox, eventlogCheckBox and scheduledEventLogCheckBox when onlySummaryLogChexBox is selected
-	 * and enables them when onlySummaryLogCheckBox is unselected
-	 */
-	private void changeLogCheckBox(){
-		if (onlySummaryLogCheckBox.isSelected()){
-			monteCarloOptions.setOnlySummary(true);
-			monteCarloOptions.setStateLog(false);
-			monteCarloOptions.setEventLog(false);
-			monteCarloOptions.setScheduledEventLog(false);
-//			getJCheckBoxStateLog().setEnabled(false);
-//			getJCheckBoxStateLog().setSelected(false);
-//			getJCheckBoxEventLog().setEnabled(false);
-//			getJCheckBoxEventLog().setSelected(false);
-//			getJCheckBoxScheduledEventsLog().setEnabled(false);
-//			getJCheckBoxScheduledEventsLog().setSelected(false);
-
-
-		} else{
-			getJCheckBoxStateLog().setEnabled(true);
-			getJCheckBoxEventLog().setEnabled(true);
-			getJCheckBoxScheduledEventsLog().setEnabled(true);
-
-		}
-	}
 
 	/**
 	 * This method returns the label for number of simulations
@@ -290,11 +259,8 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		if (desNetLogOptionsPanel == null) {
 			desNetLogOptionsPanel = new JPanel();
 			desNetLogOptionsPanel.setBorder( new TitledBorder("DES Inference Log Options"));
-			desNetLogOptionsPanel.add(getJCheckBoxOnlySummaryLog());
+			desNetLogOptionsPanel.add(getJCheckBoxExcelResultsPerSeries());
 			desNetLogOptionsPanel.add(getTextualLogCheckBox());
-//			desNetLogOptionsPanel.add(getJCheckBoxStateLog());
-//			desNetLogOptionsPanel.add(getJCheckBoxEventLog());
-//			desNetLogOptionsPanel.add(getJCheckBoxScheduledEventsLog());
 		}
 		return desNetLogOptionsPanel;
 	}
@@ -309,10 +275,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		if (textualLogCheckBox == null) {
 			//TODO use stringDatabase
 			textualLogCheckBox = new JCheckBox("Detailed Textual Log", monteCarloOptions.isTextualLog());
-			if (onlySummaryLogCheckBox.isSelected()){
-				textualLogCheckBox.setEnabled(true);
-				textualLogCheckBox.setSelected(true);
-			}
 		}
 
 		return textualLogCheckBox;
@@ -324,65 +286,16 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * This method returns the JCheckBox for "Only Summary"
 	 * @return the JCheckBox for "Only Summary"
 	 */
-	private JCheckBox getJCheckBoxOnlySummaryLog() {
-		if (onlySummaryLogCheckBox == null) {
+	private JCheckBox getJCheckBoxExcelResultsPerSeries() {
+		if (resultsPerSeriesCheckBox == null) {
 			//TODO use stringDatabase
-			onlySummaryLogCheckBox = new JCheckBox("Only Summary",monteCarloOptions.isOnlySummary());
+			resultsPerSeriesCheckBox = new JCheckBox("Results Per Series (.xlsx file)",monteCarloOptions.isExcelResutlsPerSeries());
 
 		}
-		return onlySummaryLogCheckBox;
-	}
-
-	/**
-	 * This method returns the JCheckBox for "State Log"
-	 * @return the JCheckBox for "State Log"
-	 */
-	private JCheckBox getJCheckBoxStateLog() {
-		if (stateLogCheckBox == null) {
-			//TODO use stringDatabase
-			stateLogCheckBox = new JCheckBox("States",monteCarloOptions.isStateLog());
-			if (onlySummaryLogCheckBox.isSelected()){
-			    stateLogCheckBox.setEnabled(false);
-			    stateLogCheckBox.setSelected(false);
-            }
-
-		}
-		return stateLogCheckBox;
-	}
-
-	/**
-	 * This method returns the JCheckBox for "Event Log"
-	 * @return the JCheckBox for "Event Log"
-	 */
-	private JCheckBox getJCheckBoxEventLog() {
-		if (eventLogCheckBox == null) {
-			//TODO use stringDatabase
-			eventLogCheckBox = new JCheckBox("Events", monteCarloOptions.isEventLog());
-            if (onlySummaryLogCheckBox.isSelected()){
-                eventLogCheckBox.setEnabled(false);
-                eventLogCheckBox.setSelected(false);
-            }
-		}
-
-		return eventLogCheckBox;
+		return resultsPerSeriesCheckBox;
 	}
 
 
-	/**
-	 * This method returns the JCheckBox for "Scheduled events log"
-	 * @return the JCheckBox for "Scheduled events log"
-	 */
-	private JCheckBox getJCheckBoxScheduledEventsLog() {
-		if (scheduledEventsCheckBox == null) {
-			//TODO use stringDatabase
-			scheduledEventsCheckBox = new JCheckBox("Scheduled Events", monteCarloOptions.isScheduledEventLog());
-            if (onlySummaryLogCheckBox.isSelected()){
-                scheduledEventsCheckBox.setSelected(false);
-                scheduledEventsCheckBox.setEnabled(false);
-            }
-		}
-		return scheduledEventsCheckBox;
-	}
 
 	/**
 	 * This method returns the statistics JPanel
@@ -517,8 +430,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				monteCarloOptions.setInputFile(fileChooser.getSelectedFile());
 					inputFileJTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-//					inputFileJTextField.setVisible(true);
-//					inputFileJTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 			}
 		}
