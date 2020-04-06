@@ -368,7 +368,7 @@ public class VisualArrow extends VisualElement {
 		}
 	}
 
-//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops
+//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020 Changed the orientation of the arrow and bigger circle made
 
 	/**
 	 * This method creates the arrowhead in a circular arrow for a self-loop.
@@ -394,9 +394,10 @@ public class VisualArrow extends VisualElement {
 	 */
 	private Area getLoopArrowHeadShape(Point2D.Double start, double radious){
 		Shape arrowHead = null;
-		// Draw arrohead. Arrowhead rotates ~37 degrees
-		Point2D.Double startArrow = new Point2D.Double(start.getX() ,start.getY() -radious );
-		Point2D.Double endArrow = new Point2D.Double(start.getX() + radious  ,start.getY() -radious/4);
+		// Draw arrohead. Arrowhead rotates ~45 degrees
+		double radians = Math.toRadians(45);
+		Point2D.Double startArrow = new Point2D.Double(start.getX() -radious ,start.getY()  );
+		Point2D.Double endArrow = new Point2D.Double(start.getX() -radious*Math.cos(radians)  ,start.getY() +radious*Math.sin(radians));
 		arrowHead = getShapeToPaint( endArrow, startArrow);
 		return new Area(arrowHead);
 	}
@@ -410,7 +411,7 @@ public class VisualArrow extends VisualElement {
 	 * @param stroke - the stroke used to draw the self-loop circular arrow
 	 */
 	public void paintLoopArrow(Graphics2D g, Point2D.Double start, Stroke stroke) {
-		double radious = 10;
+		double radious = 15;
 		g.setStroke(stroke);
 		g.fill(getLoopArrowHeadShape(start, radious));
 		g.draw(getLoopShape(start,radious));
