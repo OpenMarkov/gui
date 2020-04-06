@@ -24,7 +24,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author cyago
  * @version 1 28/12/2019- 25/01/2020 added initialEvent
  */
-public class VisualEventNode extends VisualNode {
+public class VisualEventNode extends VisualNode implements SelfLoopableNode{
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -114,17 +114,6 @@ public class VisualEventNode extends VisualNode {
 		preResolutionFinding = false;
 		postResolutionFinding = false;
 		setTemporalPosition(new Point2D.Double(node.getCoordinateX(), node.getCoordinateY()));
-		switch (node.getVariable().getVariableType()) {
-		case FINITE_STATES:
-			innerBox = new FSVariableBox(this);
-			break;
-		case DISCRETIZED:
-			innerBox = new DiscretizedVariableBox(this);
-			break;
-		case NUMERIC:
-			innerBox = new NumericVariableBox(this);
-			break;
-		}
 	}
 
 	/**
@@ -171,11 +160,15 @@ public class VisualEventNode extends VisualNode {
 	}
 
 
+
 	/**
 	 * New method; not copied
 	 * Returns the point which will be the center for a circular arrow
-	 * 28/12/2019 - At this time only Event Nodes may have circular arrows (loops)
+	 * 28/12/2019 - At this time only Event Nodes may have circular arrows (self-loops) . 05/04/2020 -Chance nodes may have self-loops
+	 * @param g graphics object where to paint the element.
+	 * @return
 	 */
+	@Override
 	public Point2D.Double   getCentreArcPoint   (Graphics2D g) {
 		Point2D.Double centreNodePoint = getTemporalPosition();
 		double[] dims = getNodeDimensions(g);
