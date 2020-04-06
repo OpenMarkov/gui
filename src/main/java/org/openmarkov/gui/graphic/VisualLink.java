@@ -10,6 +10,9 @@ package org.openmarkov.gui.graphic;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
+import org.openmarkov.core.model.network.type.DESNetworkType;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 
 import javax.swing.*;
@@ -118,10 +121,13 @@ public class VisualLink extends VisualArrow {
 		setEndPoint(
 				new Point2D.Double(destination.getTemporalPosition().getX(), destination.getTemporalPosition().getY()));
 		//CMI 29/12/2019 When having a loop in event nodes source = destination and startPoint and endPoint are the center of the arc
-		if ((source.getNode().getNodeType() == NodeType.EVENT) &&
-			source.getNode().getName().equals(destination.getNode().getName())) {
-			setStartPoint(((VisualEventNode) source).getCentreArcPoint(g));
-			setEndPoint(((VisualEventNode) source).getCentreArcPoint(g));
+		//02/02/2020 loops also in Cnance nodes so I have put an abstract method in VisualNode and overriden it in ChanceVisualNode and EventVisualNode
+		if ( source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
+				(destination.getNode().getName().equals(source.getNode().getName()))
+				&& ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
+		) {
+			setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+			setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
 		}
 		//CMF
 
@@ -145,13 +151,16 @@ public class VisualLink extends VisualArrow {
 					new Point2D.Double(destination.getTemporalPosition().getX(),
 							destination.getTemporalPosition().getY()));
 		} catch (IllegalArgumentException e) {
-			//CMI 28/12/2019
+			//CMI 28/12/2019 allowed self lopps for Event nodes- 02/04/2020 allowed self-loops for chance nodes
 			//Before adding this block, this catch was empty only has a return.
 			//Now it checks if the link is a self-loop in an event node. If  it is the case the circular arrow is painted
-			if ((source.getNode().getNodeType() == NodeType.EVENT) &&
-					(destination.getNode().getName().equals(source.getNode().getName()))){
-				setStartPoint(((VisualEventNode)source).getCentreArcPoint(g));
-				setEndPoint(((VisualEventNode)source).getCentreArcPoint(g));
+			if (  source.getNode().getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes()) &&
+					(destination.getNode().getName().equals(source.getNode().getName()))
+					&& ( (destination.getNode().getNodeType() == NodeType.EVENT  ) || (destination.getNode().getNodeType() == NodeType.CHANCE  ))
+			){
+
+				setStartPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
+				setEndPoint(((SelfLoopableNode)source).getCentreArcPoint(g));
 				super.paint(g);
 			} else {
 				e.printStackTrace();

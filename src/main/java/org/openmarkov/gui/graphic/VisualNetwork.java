@@ -20,6 +20,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
 import org.openmarkov.gui.util.MovedNodeInfo;
@@ -1139,7 +1140,10 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 					if (  (!newLinkSource.equals(newLinkDestination))
 					//CMI 29/12/2019 - in DESNETS we can have loops for event nodes - or added
-					|| (newLinkSource.getNode().getNodeType() == NodeType.EVENT))
+					//05/04/2020 - loops for Chance nodes
+					|| ( newLinkDestination.getNode().getProbNet().getNetworkType().isApplicableConstraint((new OnlySelfLoopsWithEventAndChanceNodes()))
+							&& ( (newLinkDestination.getNode().getNodeType() == NodeType.EVENT  ) || (newLinkDestination.getNode().getNodeType() == NodeType.CHANCE  ) ))
+					)
 					//CMF
 					{
 						try {
