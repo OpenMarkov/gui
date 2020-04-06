@@ -368,8 +368,7 @@ public class VisualArrow extends VisualElement {
 		}
 	}
 
-//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020 Changed the orientation of the arrow and bigger circle made
-
+//CMI 26/12/2019 -Methods to draw a circular arrow for self-loops; 06/04/2020: changed orientation of the arrow and circle made bigger
 	/**
 	 * This method creates the arrowhead in a circular arrow for a self-loop.
 	 * @param start - the center of the circumference which contains the arc
