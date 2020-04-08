@@ -17,7 +17,7 @@ import java.awt.geom.*;
  *
  * @author jmendoza
  * @version 1.0
- * @version 1.1 01/01/2020 cyago - self-loops implemented
+ * @version 1.1 01/01/2020, 08/04/2020 cyago - self-loops implemented
  */
 public class VisualArrow extends VisualElement {
 
@@ -52,6 +52,7 @@ public class VisualArrow extends VisualElement {
 	 */
 	private static final Color FOREGROUND_COLOR = Color.DARK_GRAY;
 
+
 	/**
 	 * Start point.
 	 */
@@ -78,6 +79,13 @@ public class VisualArrow extends VisualElement {
 	private boolean isSingleStriped;
 
 	private Color linkColor = FOREGROUND_COLOR;
+
+	//CMI 08/04/2020 -  constants for circular arrow
+	private final double CIRCULAR_ARROW_RADIOUS = 15;
+	private final double CIRCULAR_ARROW_START_ANGLE = 5;
+	private final double CIRCULAR_ARROW_END_ANGLE = -355;
+	private final double CIRCULAR_ARROW_HEAD_ORIENTATION = Math.toRadians(45);
+	//CMF
 
 	/**
 	 * Creates a new visual link from the two points that define the start and
@@ -259,8 +267,8 @@ public class VisualArrow extends VisualElement {
 		//CMI 29/12/2019 - this is for a loop arrow
 
 		if (startPoint.distance(endPoint) <0.1) {
-			Area area = getLoopShape(startPoint,10);
-			area.add(getLoopArrowHeadShape(startPoint,10));
+			Area area = getLoopShape(startPoint, CIRCULAR_ARROW_RADIOUS);
+			area.add(getLoopArrowHeadShape(startPoint, CIRCULAR_ARROW_RADIOUS));
 			return  area ;
 		}
 		//CMF
@@ -376,12 +384,10 @@ public class VisualArrow extends VisualElement {
 	 * @return the Area with the arrowhead of the circular arrow from self-loops
 	 */
 	private Area getLoopShape(Point2D.Double start, double radious){
-		double angleStart = 5;
-		double angleExtent = -355;
 		Arc2D.Float arc = new Arc2D.Float(Arc2D.OPEN);
 		arc.setFrame(start.getX() -radious, start.getY() -radious, radious*2, radious*2);
-		arc.setAngleStart(angleStart);
-		arc.setAngleExtent(angleExtent);
+		arc.setAngleStart(CIRCULAR_ARROW_START_ANGLE);
+		arc.setAngleExtent(CIRCULAR_ARROW_END_ANGLE);
 		return new  Area(arc);
 	}
 
@@ -394,9 +400,8 @@ public class VisualArrow extends VisualElement {
 	private Area getLoopArrowHeadShape(Point2D.Double start, double radious){
 		Shape arrowHead = null;
 		// Draw arrohead. Arrowhead rotates ~45 degrees
-		double radians = Math.toRadians(45);
 		Point2D.Double startArrow = new Point2D.Double(start.getX() -radious ,start.getY()  );
-		Point2D.Double endArrow = new Point2D.Double(start.getX() -radious*Math.cos(radians)  ,start.getY() +radious*Math.sin(radians));
+		Point2D.Double endArrow = new Point2D.Double(start.getX() -radious*Math.cos(CIRCULAR_ARROW_HEAD_ORIENTATION)  ,start.getY() +radious*Math.sin(CIRCULAR_ARROW_HEAD_ORIENTATION));
 		arrowHead = getShapeToPaint( endArrow, startArrow);
 		return new Area(arrowHead);
 	}
@@ -410,10 +415,9 @@ public class VisualArrow extends VisualElement {
 	 * @param stroke - the stroke used to draw the self-loop circular arrow
 	 */
 	public void paintLoopArrow(Graphics2D g, Point2D.Double start, Stroke stroke) {
-		double radious = 15;
 		g.setStroke(stroke);
-		g.fill(getLoopArrowHeadShape(start, radious));
-		g.draw(getLoopShape(start,radious));
+		g.fill(getLoopArrowHeadShape(start, CIRCULAR_ARROW_RADIOUS));
+		g.draw(getLoopShape(start, CIRCULAR_ARROW_RADIOUS));
 
 	}
 //CMF
