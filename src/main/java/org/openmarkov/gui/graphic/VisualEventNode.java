@@ -50,7 +50,7 @@ public class VisualEventNode extends VisualNode implements SelfLoopableNode{
 	 * Internal color of the visual event node when it is terminal.
 	 */
 	private static final Color INITIAL_BACKGROUND_COLOR =
-			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_INITIAL_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
+			OpenMarkovPreferences.getColor(OpenMarkovPreferences.NODEEVENT_TERMINAL_BACKGROUND_COLOR, OpenMarkovPreferences.OPENMARKOV_COLORS,
 					Color.PINK);
 
 
