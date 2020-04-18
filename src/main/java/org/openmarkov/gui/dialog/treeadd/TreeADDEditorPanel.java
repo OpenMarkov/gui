@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
+import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -21,6 +22,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
@@ -103,6 +105,26 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node) {
 		this(cellRenderer, node, false);
 	}
+
+
+	//CMI 08/04/2020
+	public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, TreeADDPotential treeADDPotential, boolean readOnly) {
+		this.rootTreeADDPotential = treeADDPotential;
+		this.node = node;
+		setupUserInterface(cellRenderer);
+
+		setReadOnly(readOnly);
+	}
+
+	public TreeADDEditorPanel(TreeADDCellRenderer cellRenderer, Node node, TreeADDPotential treeADDPotential) {
+		this(cellRenderer, node, treeADDPotential, false);
+	}
+
+
+	//CMF
+
+
+
 
 	private void setupUserInterface(TreeADDCellRenderer cellRenderer) {
 		TreeADDModel model = new TreeADDModel(rootTreeADDPotential);
@@ -323,7 +345,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		// Offer all the variables of the potential that are not utility variables
 		ProbNet probNet = node.getProbNet();
 		for (Variable var : branch.getParentVariables()) {
-			if (probNet.getNode(var).getNodeType() != NodeType.UTILITY)
+//			if (probNet.getNode(var).getNodeType() != NodeType.UTILITY)
 				possibleRootVariables.add(var);
 		}
 		// Except the current root variable and the conditioned variable
@@ -1216,10 +1238,20 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		ProbNet probNet = node.getProbNet();
 		ProbNet dummyProbNet = new ProbNet();
 		dummyProbNet.addPotential(potential);
+		//CMI 10/04/2020 - As dummyProbNet is a BayesianNetwork, dummyProbNet.addPotential(potential) sets every node of potential as a Chance node.
+		// I change the network type only in the case of DESNets because I don't know if other networks need it or not
+		if (probNet.getNetworkType().equals(DESNetworkType.getUniqueInstance())) {
+				dummyProbNet = new ProbNet(DESNetworkType.getUniqueInstance());
+				dummyProbNet.addPotential(potential, probNet);
+		}
+		//CMF
+
+
 		Node dummy = null;
 		Variable conditionedVariable = parentTreeADD.getConditionedVariable();
 		dummy = dummyProbNet.getNode(conditionedVariable);
 		for (Variable variable : potential.getVariables()) {
+
 			if (variable.equals(conditionedVariable)) {
 				continue;
 			}

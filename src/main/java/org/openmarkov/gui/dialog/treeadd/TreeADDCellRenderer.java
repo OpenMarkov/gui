@@ -188,6 +188,13 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 				icon = IconFactory.createUtilityIcon(variable.getName(), textIconFont);
 				break;
 			}
+
+			//CMI 18/04/2020 For TreeWithEventsPotential which has Event Nodes
+				case EVENT: {
+					icon = IconFactory.createEventIcon(variable.getName(), textIconFont);
+					break;
+			}
+			//CMF
 			}
 		} else {
 			icon = IconFactory.createDecisionIcon(variable.getName(), textIconFont);
