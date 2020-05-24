@@ -127,7 +127,7 @@ public class TimeToEventTablePotentialPanel
 
 	protected TableWithEventsPanel getTableWithEventsPanel() {
 		if (tableWithEventsPanel ==null) {
-			tableWithEventsPanel =new TableWithEventsPanel(node, tableWithEvents,tteTablePotential.getFunctionVariables() );
+			tableWithEventsPanel =new TableWithEventsPanel(node, tableWithEvents,tteTablePotential.getNumericVariables() );
 		}
 		return tableWithEventsPanel;
 	}
