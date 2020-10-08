@@ -96,6 +96,7 @@ import java.util.List;
  * @author jmendoza
  * @version 1.6 - cyago - Modify saveNetworkActions method to support several ProbModelXML formats
  * @version 1.7 - cyago - 02/02/2019 - Changed actionPerformed to address event nodes
+ * @version 1.8 - cyago - 08/10/2020 - Changed actionPerformed. Now event nodes use the same method than Chance nodes
  */
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
@@ -262,8 +263,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			getCurrentNetworkPanel().editNodePolicy();
 		} else if (actionCommand.equals(ActionCommands.DECISION_REMOVE_POLICY)) {
 			getCurrentNetworkPanel().removePolicyFromNode();
+			//CMI 08/10/2020 - used the same method for changing probabilities
 		} else if (actionCommand.equals(ActionCommands.EVENT_EDIT_TIME_TO_EVENT)) {
-			getCurrentNetworkPanel().editNodeTimeToEvent();
+			getCurrentNetworkPanel().changePotential();
+			//CMF
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY)) {
 			getCurrentNetworkPanel().showExpectedUtilityOfNode();
 		} else if (actionCommand.equals(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY)) {
