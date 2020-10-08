@@ -87,7 +87,7 @@ import java.util.Map;
  * Management of working modes (edition/inference), - Expansion and
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
- * @version 1.4. - cyago - 03/02/2019 - added the method to open TTE dialog
+ *
  */
 public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 	/**
@@ -1022,37 +1022,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		setSelectedAllNodes(false);
 		repaint();
 	}
-
-
-
-	/**
-	 * This method edits the time to event of an event node.
-	 */
-	public void editNodeTimeToEvent() {
-		VisualNode visualNode = null;
-		List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
-		if (selectedNode.size() == 1) {
-			visualNode = selectedNode.get(0);
-			if (visualNode.getNode().getNodeType() == NodeType.EVENT) {
-				Node node = visualNode.getNode();
-				// TODO manage other kind of policy types from the interface
-				// node.setPolicyType(PolicyType.OPTIMAL);
-				// Potential imposedPolicy = node.getPotentials ().get (0);
-				PotentialEditDialog editTimeToEventDialog = new PotentialEditDialog(Utilities.getOwner(this), node, false);
-				if (editTimeToEventDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-					// change it color
-					networkChanged = true;
-				}
-			}
-		}
-		setSelectedAllNodes(false);
-		repaint();
-	}
-
-
-
-
-
 
 	/**
 	 * This method removes an imposed policy from a decision node.
