@@ -24,9 +24,11 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
- * This class implements a Table eventTablePotential table.
- * Transition class to be merged with the new structure of tables
+ * This class implements the Panel for TimeToEventTablePotential. This panel has two comboboxed for the distribution and parametrization,
+ * and the correspondent TableWithEvents.
+ *
  * @version 1.0 - cyago - 24/03/2019
+ * @version 1.1 - cyago - 22/04/2021 - Added parametrization for distributions and javadoc
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "TimeToEventTable")
 public class TimeToEventTablePotentialPanel
@@ -49,24 +51,24 @@ public class TimeToEventTablePotentialPanel
 //	protected ProbDensFunctionManager distributionManager;
 	protected ProbDensFunction distribution;
 
-
-
-	public TimeToEventTablePotentialPanel(Node node)
+	/**
+	 * Creates a TimeToEventTablePotentialPanel for eventNode. If eventNode stores a TimeToEventTablePotential, this is displayed.
+	 * Otherwise an Exact distribution is displayed.
+	 * @param eventNode - event node which contains the TimeToEventTablePotential
+	 */
+	public TimeToEventTablePotentialPanel(Node eventNode)
 	{
 		super();
-		this.node = node;
+		this.node = eventNode;
 
 
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
-        tteTablePotential = (TimeToEventTablePotential) node.getPotentials().get(0);
+        tteTablePotential = (TimeToEventTablePotential) eventNode.getPotentials().get(0);
         tableWithEvents =  tteTablePotential.getTableWithEvents();
-
-
 
         setLayout(new BorderLayout());
 		this.add(getjDistributionAndParametrization(),BorderLayout.PAGE_START);
-
 
 		this.add( getTableWithEventsPanel(),BorderLayout.CENTER);
 
@@ -76,7 +78,6 @@ public class TimeToEventTablePotentialPanel
 		repaint();
 
 	}
-
 
 
 	@Override
@@ -89,6 +90,10 @@ public class TimeToEventTablePotentialPanel
 
 	}
 
+	/**
+	 * Returns the label for the distribution combobox
+	 * @return the label for the distribution combobox
+	 */
 	protected JLabel getJlDistribution() {
 		if (jlDistribution==null){
 			jlDistribution = new JLabel("Distribution: ");
@@ -96,6 +101,10 @@ public class TimeToEventTablePotentialPanel
 		return jlDistribution;
 	}
 
+	/**
+	 * Returns the combobox with the list of possible distributions
+	 * @return the combobox with the list of possible distributions
+	 */
 	protected JComboBox<String> getJcDistribution() {
 
 		parametrizedFunctionManager = ParametrizedFunctionManager.getUniqueInstance();
@@ -112,6 +121,10 @@ public class TimeToEventTablePotentialPanel
 		return jcDistribution;
 	}
 
+	/**
+	 * Populates jcParametrization with the parametrizations of selectedDistribution
+	 * @param selectedDistribution distribution whose parametrizations are shown
+	 */
 	private void populateJcParametrization(String selectedDistribution){
 		try {
 			parametrizedFunctionManager = ParametrizedFunctionManager.getUniqueInstance();
@@ -124,6 +137,10 @@ public class TimeToEventTablePotentialPanel
 		}
 	}
 
+	/**
+	 * Returns the label for the jcParametrization combobox
+	 * @return the label for the jcParametrization combobox
+	 */
 	protected JLabel getJlParametrization() {
 		if (jlParametrization==null){
 			jlParametrization = new JLabel("Parametrization: ");
@@ -131,6 +148,10 @@ public class TimeToEventTablePotentialPanel
 		return jlParametrization;
 	}
 
+	/**
+	 * Returns the combobox with the parametrizations for the distibution selected in jcDistribution
+	 * @return the combobox with the parametrizations for the distibution selected in jcDistribution
+	 */
 	private JComboBox<String> getJcParametrization() {
 		if (jcParametrization == null){
 			jcParametrization = new JComboBox<String>();
@@ -142,6 +163,10 @@ public class TimeToEventTablePotentialPanel
 		return jcParametrization;
 	}
 
+	/**
+	 * Returns the panel with the comboboxes for distribution and parametrization
+	 * @return the panel with the comboboxes for distribution and parametrization
+	 */
 	protected JPanel getjDistributionAndParametrization() {
 		if (jDistributionAndParametrization ==null){
 			jDistributionAndParametrization = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,10));
@@ -165,27 +190,6 @@ public class TimeToEventTablePotentialPanel
 
 
 
-	public void setjDistributionAndParametrization(JPanel jDistributionAndParametrization) {
-		this.jDistributionAndParametrization = jDistributionAndParametrization;
-	}
-
-
-
-
-	protected void setJcDistribution(JComboBox<String> jcDistribution) {
-		this.jcDistribution = jcDistribution;
-	}
-
-
-//	protected JComboBox<String> getJcParametrization() {
-//
-//		tteTablePotential.getDistributionName();
-//
-//		distributionManager.getParemetersOfTTEProbDensFunction("String functionName");
-//		return jcParametrization;
-//	}
-
-
 
 	protected TableWithEventsPanel getTableWithEventsPanel() {
 		if (tableWithEventsPanel ==null) {
@@ -194,20 +198,12 @@ public class TimeToEventTablePotentialPanel
 		return tableWithEventsPanel;
 	}
 
-	protected void setTableWithEventsPanel(TableWithEventsPanel tableWithEventsPanel) {
-		this.tableWithEventsPanel = tableWithEventsPanel;
 
-	}
-
-
-
-	protected void setJlDistribution(JLabel jlDistribution) {
-		this.jlDistribution = jlDistribution;
-	}
-
-
-
-
+	/**
+	 * Changes the timeToEventPotential and TimeToEventTablePotentialPanel according to the new selected distribution
+	 * or the new selected parametrization
+	 * @param e jcDistribution with the new selected distribution or jcParametrization with the new selected parametrization
+	 */
 	@Override
 	public void itemStateChanged(ItemEvent e)
 	{
@@ -219,29 +215,19 @@ public class TimeToEventTablePotentialPanel
 			if (sDistribution.compareTo(tteTablePotential.getDistributionName()) != 0) {
 				//Change parametrizations
 				populateJcParametrization(sDistribution);
-				this.remove(tableWithEventsPanel);
 				sParametrization = jcParametrization.getSelectedItem().toString();
-				tteTablePotential.changeDistribution(sDistribution,sParametrization);
-				tableWithEvents = tteTablePotential.getTableWithEvents();
-				tableWithEventsPanel = new TableWithEventsPanel(node, tteTablePotential.getTableWithEvents());
-				this.add(tableWithEventsPanel, BorderLayout.CENTER);
-				this.revalidate();
-				this.repaint();
+
 			}
 		}
-
-
 		//Change table
 		this.remove(tableWithEventsPanel);
+		tableWithEventsPanel = null;
 		tteTablePotential.changeDistribution(sDistribution,sParametrization);
 		tableWithEvents = tteTablePotential.getTableWithEvents();
-		tableWithEventsPanel = new TableWithEventsPanel(node, tteTablePotential.getTableWithEvents());
+		tableWithEventsPanel = getTableWithEventsPanel();
 		this.add(tableWithEventsPanel, BorderLayout.CENTER);
 		this.revalidate();
 		this.repaint();
-
-
-
 	}
 
 
