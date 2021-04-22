@@ -64,7 +64,7 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
-import org.openmarkov.inference.DES.DESInferenceWithStartingNode3;
+import org.openmarkov.inference.DES.DESInference3;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
@@ -1411,7 +1411,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		mainPanel.adaptToolBarSize();
 	}
 
-	//CMI 21/08/2019
+	//CMI 21/08/2019 22/04/2021 DESInference3
 	/**
 	 * This method performs N Monte Carlo simulations
 	 *
@@ -1432,16 +1432,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			try {
 //
 //				DESInference desInference = new DESInference(probNet);
-				DESInferenceWithStartingNode3 desInferenceWithStartingNode =new DESInferenceWithStartingNode3(probNet);
+						DESInference3 desInferenceWithStartingNode =new DESInference3(probNet);
 			} catch (NotEvaluableNetworkException e) {
 				e.printStackTrace();
 			}
-			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-					"The simulation has ended", "MonteCarlo simulation",
-					JOptionPane.INFORMATION_MESSAGE);
 		}
-
-
 	}
     //CMF
 
