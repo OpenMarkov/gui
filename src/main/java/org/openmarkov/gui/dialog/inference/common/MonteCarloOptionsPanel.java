@@ -183,7 +183,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private void extractMonteCarloOptions() {
 		this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
 		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
-		this.monteCarloOptions.setExcelResultsPerSeries(resultsPerSeriesCheckBox.isSelected());
+		this.monteCarloOptions.setResultsToExcel(resultsPerSeriesCheckBox.isSelected());
 		this.monteCarloOptions.setTextualLog(textualLogCheckBox.isSelected());
 		this.monteCarloOptions.setMean(meanCheckBox.isSelected());
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
@@ -289,7 +289,7 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private JCheckBox getJCheckBoxExcelResultsPerSeries() {
 		if (resultsPerSeriesCheckBox == null) {
 			//TODO use stringDatabase
-			resultsPerSeriesCheckBox = new JCheckBox("Results Per Series (.xlsx file)",monteCarloOptions.isExcelResultsPerSeries());
+			resultsPerSeriesCheckBox = new JCheckBox("Results Per Series (.xlsx file)",monteCarloOptions.isResultsToExcel());
 
 		}
 		return resultsPerSeriesCheckBox;
