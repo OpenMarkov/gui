@@ -7,12 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.action.NodeAlwaysObservedEdit;
-import org.openmarkov.core.action.NodeCommentEdit;
-import org.openmarkov.core.action.NodeNameEdit;
-import org.openmarkov.core.action.PurposeEdit;
-import org.openmarkov.core.action.RelevanceEdit;
-import org.openmarkov.core.action.TimeSliceEdit;
+import org.openmarkov.core.action.*;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Node;
@@ -47,6 +42,7 @@ import java.util.List;
  *
  * @author jlgozalo
  * @version 1.5 mpalacios
+ * @version 1.5.1 cyago - added scheduling behaviour for Event nodes. Provisional feature
  */
 public class NodeDefinitionPanel extends JPanel
 		implements FocusListener, ItemListener, CommentListener, ActionListener {
@@ -123,6 +119,10 @@ public class NodeDefinitionPanel extends JPanel
 	 * Specifies if the node whose additionalProperties are edited is new.
 	 */
 	private boolean newNode = false;
+
+	//CMI 22/04/2021
+	private JCheckBox jCheckboxAlwaysAppend;
+	//CMF
 
 	/**
 	 * constructor without construction parameters
@@ -641,6 +641,11 @@ public class NodeDefinitionPanel extends JPanel
 		} else if (node.getNodeType() == NodeType.CHANCE) {
 			return getJCheckBoxAlwaysObserved();
 		}
+		//CMI 25/10/2020 Event behaviour
+		else if (node.getNodeType() == NodeType.EVENT) {
+			return getJCheckboxAlwaysAppend();
+		}
+		//CMF
 		// default
 		return getJComboBoxNetworkAgents();
 	}
@@ -718,6 +723,30 @@ public class NodeDefinitionPanel extends JPanel
 		}
 		return jTextAreaLabelNodeDefinitionComment;
 	}
+
+
+	//CMI 22/04/2021 -recoded AlwaysAppend
+
+	/**
+	 * Initialises jCheckBoxOverrideTimeStamp
+	 *
+	 * @return a new checkbox
+	 */
+	public JCheckBox getJCheckboxAlwaysAppend() {
+		if (jCheckboxAlwaysAppend == null) {
+			jCheckboxAlwaysAppend = new JCheckBox(" Always append", false );
+			jCheckboxAlwaysAppend.setVisible(true);
+			jCheckboxAlwaysAppend.setName("jCheckboxOverrideTimeStamp");
+			jCheckboxAlwaysAppend.setVerticalAlignment(SwingConstants.CENTER);
+			jCheckboxAlwaysAppend.addActionListener(this);
+			jCheckboxAlwaysAppend.addFocusListener(this);
+		}
+		return jCheckboxAlwaysAppend;
+	}
+//CMF
+
+
+
 
 	/**
 	 * This method initialises commentHTMLScrollPaneNodeDefinitionComment
@@ -917,6 +946,12 @@ public class NodeDefinitionPanel extends JPanel
 		// node def comment
 		commentHTMLScrollPaneNodeDefinitionComment.setCommentHTMLTextPaneText(node.getComment());
 		jCheckboxAlwaysObserved.setSelected(node.isAlwaysObserved());
+		//CMI 25/10/2020 - Event behaviour
+		if (node.getNodeType() == NodeType.EVENT) {
+			jCheckboxAlwaysAppend.setSelected(node.isAlwaysAppend());
+		}
+		//CMF
+
 	}
 
 	/**
@@ -982,9 +1017,31 @@ public class NodeDefinitionPanel extends JPanel
 		}
 	}
 
+
+	//CMI 22/04/2021 alwaysAppend recoded
+	/****
+	 * Starts the edit event to change the alwaysAppend property in event nodes
+	 */
+	private void alwaysAppendPropertyHasChanged() {
+		EventNodeAlwaysAppendEdit edit = new EventNodeAlwaysAppendEdit(this.node, jCheckboxAlwaysAppend.isSelected());
+		try {
+			node.getProbNet().doEdit(edit);
+		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	//CMF
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
 			alwaysObservedPropertyHasChanged();
 		}
+		//CMI 25/10/2020 Event behaviour
+		if (e.getSource().equals(this.jCheckboxAlwaysAppend)) {
+			alwaysAppendPropertyHasChanged();
+		}
+		//CMF
 	}
 }
