@@ -1,11 +1,11 @@
-package org.openmarkov.core.gui.dialog.common;
+package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.gui.dialog.node.NodePropertiesDialog;
-import org.openmarkov.core.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.core.gui.util.Utilities;
+import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
+import org.openmarkov.gui.dialog.node.PotentialEditDialog;
+import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -111,7 +111,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         try {
             probNet.doEdit(edit);
         } catch (ConstraintViolationException
-                | CanNotDoEditException
+//                | CanNotDoEditException
                 | NonProjectablePotentialException
                 | WrongCriterionException
                 | DoEditException e) {
@@ -145,7 +145,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
 
     @Override
     public void undoableEditWillHappen(UndoableEditEvent event)
-            throws ConstraintViolationException, CanNotDoEditException,
+            throws ConstraintViolationException, 
             NonProjectablePotentialException, WrongCriterionException {
         // Ignore
     }
