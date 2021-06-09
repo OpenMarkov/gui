@@ -417,7 +417,7 @@
         <Type>
             <Title value="Analysis"/>
             <Unicriterion value="Unicriterion"/>
-            <CostEffectiveness value="Cost Effectivenes"/>
+            <CostEffectiveness value="Cost-Effectiveness"/>
         </Type>
         <TableHeader>
             <Criterion value="Criterion"/>
