@@ -468,7 +468,7 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 		if (fileOpenURLMenuItem == null) {
 			fileOpenURLMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_OPEN_URL_MENUITEM,
 					ActionCommands.OPEN_NETWORK_URL, IconLoader.ICON_OPEN_URL_ENABLED,
-					KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+					KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK ));
 			fileOpenURLMenuItem.addActionListener(listener);
 		}
 
@@ -520,7 +520,8 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 
 		if (fileSaveAsMenuItem == null) {
 			fileSaveAsMenuItem = new LocalizedMenuItem(MenuItemNames.FILE_SAVEAS_MENUITEM,
-					ActionCommands.SAVEAS_NETWORK);
+					ActionCommands.SAVEAS_NETWORK, IconLoader.ICON_SAVE_ENABLED,
+					KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK));
 			fileSaveAsMenuItem.addActionListener(listener);
 		}
 

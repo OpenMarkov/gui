@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
+import org.apache.commons.io.FileUtils;
 import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.OpenMarkovException;
@@ -18,6 +19,7 @@ import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +227,9 @@ public class NetsIO {
 
 		String fileExtension = getFileExtension(networkName);
 		FormatManager formatManager = FormatManager.getInstance();
-		ProbNetReader probNetReader = formatManager.getProbNetReader(fileExtension);
+
+		File file = FileUtils.toFile(url);
+		ProbNetReader probNetReader = formatManager.getProbNetReader(url);
 
 		ProbNetInfo probNetInfo = probNetReader.loadProbNetInfo(networkName, url.openStream());
 
