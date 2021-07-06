@@ -566,5 +566,13 @@
             <Label value="El valor introducido no es válido."/>
         </Text>
     </NumberFormatException>
+    <OverwriteFile>
+        <Title>
+            <Label value="Confirmación de sobrescritura"/>
+        </Title>
+        <Text>
+            <Label value="El archivo seleccionado ya existe. ¿Deseas sobreescribirlo?"/>
+        </Text>
+    </OverwriteFile>
 </properties>
 

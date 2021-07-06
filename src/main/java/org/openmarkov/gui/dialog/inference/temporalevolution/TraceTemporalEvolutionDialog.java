@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 /**
  * Plot of temporal evolution of variables in CEA
@@ -980,7 +981,9 @@ import java.util.Map;
 	 * Allows to save a file with the excel or the png of the information showed in the screem
 	 */
 	private void saveReport() {
-		JFileChooser fileChooser = new JFileChooser();
+		Preferences prefs = Preferences.userRoot().node(getClass().getSimpleName());
+
+		JFileChooser fileChooser = new JFileChooser(prefs.get("LAST_FOLDER_TEMPEVO", new File(".").getAbsolutePath()));
 		String netName = FilenameUtils.getBaseName(expandedNetwork.getName());
 		if (tabbedPane.getSelectedIndex() == 0) {
 			fileChooser.setSelectedFile(
@@ -991,6 +994,19 @@ import java.util.Map;
 		}
 		if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			String filename = fileChooser.getSelectedFile().getAbsolutePath();
+
+			if (fileChooser.getSelectedFile().exists()) {
+				int result = JOptionPane.showConfirmDialog(this,
+						stringDatabase.getString("OverwriteFile.Text.Label"),
+						stringDatabase.getString("OverwriteFile.Title.Label"),
+						JOptionPane.YES_NO_OPTION);
+				if (result != JOptionPane.YES_OPTION) {
+					return;
+				}
+			}
+
+			prefs.put("LAST_FOLDER_TEMPEVO", fileChooser.getSelectedFile().getParent());
+
 			if (tabbedPane.getSelectedIndex() == 0) {
 				try {
 

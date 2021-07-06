@@ -566,4 +566,12 @@
             <Label value="Invalid value."/>
         </Text>
     </NumberFormatException>
+    <OverwriteFile>
+        <Title>
+            <Label value="Overwrite confirmation"/>
+        </Title>
+        <Text>
+            <Label value="The select file does exist. Do you want to overwrite it?"/>
+        </Text>
+    </OverwriteFile>
 </properties>

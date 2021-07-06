@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -31,31 +32,26 @@ public class TemporalEvolutionReport {
 		XSSFWorkbook hwb = new XSSFWorkbook();
 		String sheetName = filename;
 		XSSFSheet sheetTable = hwb.createSheet("Temporal Evolution Report");
-		// first row, column names
+
 		Row rowIndexes = sheetTable.createRow(0);
-
-		for (int i = 0; i < jtable.getColumnCount(); i++) {
-			rowIndexes.createCell(i).setCellValue(jtable.getColumnModel().getColumn(i).getHeaderValue().toString());
+		rowIndexes.createCell(0).setCellValue("Cycle");
+		for (int j = 0; j < jtable.getRowCount(); j++) {
+			rowIndexes.createCell(rowIndexes.getLastCellNum()).setCellValue((String) jtable.getValueAt(j, 0));
 		}
-		// fill data
-		for (int i = 0; i < jtable.getRowCount(); i++) {
-			Row row = sheetTable.createRow(i + 1);
-			for (int j = 0; j < jtable.getColumnCount(); j++) {
-				if (jtable.getValueAt(i, j) instanceof String) {
-					row.createCell(j).setCellValue((String) jtable.getValueAt(i, j));
-				} else if (jtable.getValueAt(i, j) instanceof Integer) {
-					row.createCell(j).setCellValue((Integer) jtable.getValueAt(i, j));
-				} else {
-					row.createCell(j).setCellValue((Double) jtable.getValueAt(i, j));
-				}
-			}
 
+		for (int i = 1; i < jtable.getColumnCount(); i++) {
+			Row row = sheetTable.createRow(i);
+			row.createCell(0).setCellValue((Integer) jtable.getColumnModel().getColumn(i).getHeaderValue());
+			for (int j = 0; j < jtable.getRowCount(); j++) {
+				row.createCell(j+1).setCellValue((Double) jtable.getValueAt(j,i));
+			}
 		}
 
 		String targetFilename = filename.endsWith(".xlsx") ? filename : filename + ".xlsx";
 		FileOutputStream fileOut = new FileOutputStream(targetFilename);
 		hwb.write(fileOut);
 		fileOut.close();
+
 	}
 
 	/**
