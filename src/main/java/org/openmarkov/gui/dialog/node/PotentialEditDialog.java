@@ -745,16 +745,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				} else if (potentialPanelForAction instanceof AugmentedTablePotentialPanel) {
 					potential = DiscretePotentialOperations.reorder((AugmentedTablePotential) nodePotential,
 							newVariables);
-				} else {
+				} else {//(potentialPanelForAction instanceof TablePotentialPanel)
 					if (nodePotential instanceof ExactDistrPotential) {
-						ExactDistrPotential nodeExactDistrPotential = (ExactDistrPotential)nodePotential;
-						TablePotential auxPotential = DiscretePotentialOperations.reorder((TablePotential) nodeExactDistrPotential.getTablePotential(),
-								newVariables);
-						List<Variable> newPotentialVariables = new ArrayList<>();
-						newPotentialVariables.add(nodePotential.getVariables().get(0));
-						newPotentialVariables.addAll(newVariables);
-						potential = new ExactDistrPotential(newPotentialVariables, nodeExactDistrPotential.getPotentialRole());
-						((ExactDistrPotential)potential).setTablePotential(auxPotential);
+						potential = DiscretePotentialOperations.reorder((ExactDistrPotential) nodePotential, newVariables);
 					}
 					else {//(nodePotential instanceof TablePotential)
 						potential = DiscretePotentialOperations.reorder((TablePotential) nodePotential, newVariables);
@@ -765,7 +758,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 					node.getProbNet().doEdit(potentialEdit);
 				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
 						| WrongCriterionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
@@ -776,7 +768,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 					node.getProbNet().doEdit(setPotentialVariables);
 				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
 						| WrongCriterionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
