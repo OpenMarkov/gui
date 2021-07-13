@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -732,59 +733,54 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
 		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
-
-			//CMI
-			//For Univariate
-			if (getPotentialPanel() instanceof UnivariateDistrPotentialPanel) {
-				Potential potential = DiscretePotentialOperations
-						.reorder((UnivariateDistrPotential) node.getPotentials().get(0), newVariables);
+			PotentialPanel potentialPanelForAction = getPotentialPanel();
+			Potential nodePotential = node.getPotentials().get(0);
+			if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel
+					|| potentialPanelForAction instanceof AugmentedTablePotentialPanel
+					|| potentialPanelForAction instanceof TablePotentialPanel) {
+				Potential potential;
+				if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel) {
+					potential = DiscretePotentialOperations.reorder((UnivariateDistrPotential) nodePotential,
+							newVariables);
+				} else if (potentialPanelForAction instanceof AugmentedTablePotentialPanel) {
+					potential = DiscretePotentialOperations.reorder((AugmentedTablePotential) nodePotential,
+							newVariables);
+				} else {
+					if (nodePotential instanceof ExactDistrPotential) {
+						ExactDistrPotential nodeExactDistrPotential = (ExactDistrPotential)nodePotential;
+						TablePotential auxPotential = DiscretePotentialOperations.reorder((TablePotential) nodeExactDistrPotential.getTablePotential(),
+								newVariables);
+						List<Variable> newPotentialVariables = new ArrayList<>();
+						newPotentialVariables.add(nodePotential.getVariables().get(0));
+						newPotentialVariables.addAll(newVariables);
+						potential = new ExactDistrPotential(newPotentialVariables, nodeExactDistrPotential.getPotentialRole());
+						((ExactDistrPotential)potential).setTablePotential(auxPotential);
+					}
+					else {//(nodePotential instanceof TablePotential)
+						potential = DiscretePotentialOperations.reorder((TablePotential) nodePotential, newVariables);
+					}
+				}
 				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
 				try {
 					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
+						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
 
-			} else if (getPotentialPanel() instanceof AugmentedTablePotentialPanel) {
-				Potential potential = DiscretePotentialOperations
-						.reorder((AugmentedTablePotential) node.getPotentials().get(0), newVariables);
-				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
+			} else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
+				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
 				try {
-					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+					node.getProbNet().doEdit(setPotentialVariables);
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
+						| WrongCriterionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
-
-			} else
-				//CMF
-
-				if (getPotentialPanel() instanceof TablePotentialPanel) {
-					// if (node.getPotentials().get(0) instanceof
-					// TablePotential) {
-					Potential potential = DiscretePotentialOperations
-							.reorder((TablePotential) node.getPotentials().get(0), newVariables);
-					SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
-					try {
-						node.getProbNet().doEdit(potentialEdit);
-					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					updatePotentialPanel();
-				} else if (getPotentialPanel() instanceof ICIPotentialsTablePanel) {
-					SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
-					try {
-						node.getProbNet().doEdit(setPotentialVariables);
-					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					updatePotentialPanel();
-				}
+			}
 		}
 	}
 
