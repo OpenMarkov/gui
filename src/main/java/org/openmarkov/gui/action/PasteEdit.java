@@ -29,6 +29,7 @@ import javax.swing.undo.UndoableEdit;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("serial") public class PasteEdit extends CompoundEdit implements PNEdit {
@@ -155,7 +156,7 @@ import java.util.List;
 				newNode.setComment(originalNode.getComment());
 				newNode.setRelevance(originalNode.getRelevance());
 				newNode.setPurpose(originalNode.getPurpose());
-				newNode.additionalProperties = new HashMap<String, String>(originalNode.additionalProperties);
+				newNode.additionalProperties = new LinkedHashMap<String, String>(originalNode.additionalProperties);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

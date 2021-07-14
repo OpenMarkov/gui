@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.network;
 
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -37,6 +38,8 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	private PrefixedOtherPropertiesTablePanel otherPropertiesTablePanel = null;
 
 	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+	
+	private ProbNet probNet = null;
 
 	/**
 	 * constructor without construction parameters
@@ -53,6 +56,16 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 	public NetworkOtherPropertiesPanel(final boolean newNetwork) {
 		this.setName("NetworkOtherPropertiesPanel");
 		initialize();
+	}
+	
+	/**
+	 * Set the network additionalProperties in this panel with the provided ones
+	 *
+	 * @param probNetProperties the ProbNet to get the properties from
+	 */
+	public void setProbNetProperties(final ProbNet probNetProperties) {
+		this.probNet = probNetProperties;
+		otherPropertiesTablePanel.setProperties(probNetProperties);
 	}
 
 	/**
@@ -122,7 +135,11 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},
 					stringDatabase
 							.getString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Prefix"),
-					true);// ,
+					true, probNet);
+			/*otherPropertiesTablePanel = new NetworkOtherPropertiesKeyTablePanel(columnNames, new Object[][] {},
+					stringDatabase
+							.getString("NetworkOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Prefix"),
+					true);*/// ,
 			// notifier);
 			// //
 			// true
@@ -136,3 +153,5 @@ public class NetworkOtherPropertiesPanel extends JPanel {
 		return otherPropertiesTablePanel;
 	}
 }
+
+

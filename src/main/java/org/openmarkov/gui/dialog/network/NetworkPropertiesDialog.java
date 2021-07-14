@@ -183,6 +183,9 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 		if (networkOtherPropertiesPanel == null) {
 			networkOtherPropertiesPanel = new NetworkOtherPropertiesPanel(newNetwork);
 			networkOtherPropertiesPanel.setName("networkOtherPropertiesPanel");
+			if (probNet != null) {
+				networkOtherPropertiesPanel.setProbNetProperties(probNet);
+			}
 		}
 		return networkOtherPropertiesPanel;
 	}
