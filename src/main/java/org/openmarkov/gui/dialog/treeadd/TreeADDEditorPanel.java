@@ -1214,6 +1214,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		Potential potential = branch.getPotential();
 		ProbNet probNet = node.getProbNet();
 		ProbNet dummyProbNet = new ProbNet();
+		for (Variable var:potential.getVariables()) {
+			dummyProbNet.addNode(var, probNet.getNode(var).getNodeType());
+		}		
 		dummyProbNet.addPotential(potential);
 		Node dummy = null;
 		Variable conditionedVariable = parentTreeADD.getConditionedVariable();
