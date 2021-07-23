@@ -738,21 +738,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel
 					|| potentialPanelForAction instanceof AugmentedTablePotentialPanel
 					|| potentialPanelForAction instanceof TablePotentialPanel) {
-				Potential potential;
-				if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel) {
-					potential = DiscretePotentialOperations.reorder((UnivariateDistrPotential) nodePotential,
-							newVariables);
-				} else if (potentialPanelForAction instanceof AugmentedTablePotentialPanel) {
-					potential = DiscretePotentialOperations.reorder((AugmentedTablePotential) nodePotential,
-							newVariables);
-				} else {//(potentialPanelForAction instanceof TablePotentialPanel)
-					if (nodePotential instanceof ExactDistrPotential) {
-						potential = DiscretePotentialOperations.reorder((ExactDistrPotential) nodePotential, newVariables);
-					}
-					else {//(nodePotential instanceof TablePotential)
-						potential = DiscretePotentialOperations.reorder((TablePotential) nodePotential, newVariables);
-					}
-				}
+				Potential potential = nodePotential.reorder(newVariables);
 				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
 				try {
 					node.getProbNet().doEdit(potentialEdit);
