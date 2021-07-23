@@ -492,9 +492,9 @@
         <ExpandNetwork>
             <Label value="Expandir red"/>
         </ExpandNetwork>
-        <ExpandNetworkCE>
-            <Label value="Expandir red CE"/>
-        </ExpandNetworkCE>
+<!--        <ExpandNetworkCE>-->
+<!--            <Label value="Expandir red CE"/>-->
+<!--        </ExpandNetworkCE>-->
         <Analysis>
             <Label value="Análisis de coste-efectividad"/>
         </Analysis>

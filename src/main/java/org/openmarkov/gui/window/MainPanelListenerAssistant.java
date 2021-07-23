@@ -197,9 +197,9 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
 			expandNetwork(getCurrentNetworkPanel().getProbNet(),
 					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
-			expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
-					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+//		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
+//			expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
+//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
 			closeApplication();
 		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
@@ -1080,90 +1080,90 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		networkPanels.add(networkPanel);
 	}
 
-	/**
-	 * expand the network like it would be done in CE analysis to show it in the
-	 * GUI
-	 */
-	private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-		if (!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions()
-				.isCeOptionsShowed()) {
-			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-				return;
-			}
-		}
-
-		EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
-
-		ProbNet probNetCopy = probNet.deepCopy();
-
-		EvidenceCase evidenceCase = new EvidenceCase();
-		for (Finding finding : evidence.getFindings()) {
-			String baseName = finding.getVariable().getBaseName();
-			int slice = finding.getVariable().getTimeSlice();
-			Variable variable = null;
-			try {
-				variable = probNetCopy.getVariable(baseName, slice);
-				if (variable.getVariableType().equals(VariableType.NUMERIC)) {
-					Finding findingCopy = new Finding(variable, finding.getNumericalValue());
-					findingCopy.setStateIndex(finding.getStateIndex());
-					evidenceCase.addFinding(findingCopy);
-
-				} else if (variable.getVariableType().equals(VariableType.DISCRETIZED) || variable.getVariableType()
-						.equals(VariableType.FINITE_STATES)) {
-					Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
-					evidenceCase.addFinding(findingCopy);
-				}
-			} catch (NodeNotFoundException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"NodeNotFoundException", "Variable " + baseName + " not found."), null);
-				localizedException.showException();
-			} catch (IncompatibleEvidenceException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
-				localizedException.showException();
-			} catch (InvalidStateException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"InvalidStateException", variable.getName(), finding.getState()), null);
-				localizedException.showException();
-			}
-		}
-		double maxX = 0.0;
-		for (Node node : probNetCopy.getNodes()) {
-			if (node.getCoordinateX() > maxX) {
-				maxX = node.getCoordinateX();
-			}
-		}
-		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
-		try {
-			evidenceCase.extendEvidence(expandedNetwork);
-		} catch (IncompatibleEvidenceException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
-			localizedException.showException();
-		} catch (InvalidStateException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"InvalidStateException"), null);
-			localizedException.showException();
-		} catch (WrongCriterionException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"WrongCriterionException", e.getCause()), null);
-			localizedException.showException();
-		}
-		//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
-
-		// TODO apply changes for transitions at cycle start, end or half cycle.
-		TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-		TemporalNetOperations.transformToID(expandedNetwork);
-
-		String fileName = probNetCopy.getName() + "_expandedCE";
-		expandedNetwork.setName(fileName);
-		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-		networkPanel.setNetworkFile(fileName);
-		networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
-		networkPanels.add(networkPanel);
-	}
+//	/**
+//	 * expand the network like it would be done in CE analysis to show it in the
+//	 * GUI
+//	 */
+//	private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+//		if (!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions()
+//				.isCeOptionsShowed()) {
+//			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+//					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+//			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+//				return;
+//			}
+//		}
+//
+//		EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
+//
+//		ProbNet probNetCopy = probNet.deepCopy();
+//
+//		EvidenceCase evidenceCase = new EvidenceCase();
+//		for (Finding finding : evidence.getFindings()) {
+//			String baseName = finding.getVariable().getBaseName();
+//			int slice = finding.getVariable().getTimeSlice();
+//			Variable variable = null;
+//			try {
+//				variable = probNetCopy.getVariable(baseName, slice);
+//				if (variable.getVariableType().equals(VariableType.NUMERIC)) {
+//					Finding findingCopy = new Finding(variable, finding.getNumericalValue());
+//					findingCopy.setStateIndex(finding.getStateIndex());
+//					evidenceCase.addFinding(findingCopy);
+//
+//				} else if (variable.getVariableType().equals(VariableType.DISCRETIZED) || variable.getVariableType()
+//						.equals(VariableType.FINITE_STATES)) {
+//					Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
+//					evidenceCase.addFinding(findingCopy);
+//				}
+//			} catch (NodeNotFoundException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"NodeNotFoundException", "Variable " + baseName + " not found."), null);
+//				localizedException.showException();
+//			} catch (IncompatibleEvidenceException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+//				localizedException.showException();
+//			} catch (InvalidStateException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"InvalidStateException", variable.getName(), finding.getState()), null);
+//				localizedException.showException();
+//			}
+//		}
+//		double maxX = 0.0;
+//		for (Node node : probNetCopy.getNodes()) {
+//			if (node.getCoordinateX() > maxX) {
+//				maxX = node.getCoordinateX();
+//			}
+//		}
+//		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
+//		try {
+//			evidenceCase.extendEvidence(expandedNetwork);
+//		} catch (IncompatibleEvidenceException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+//			localizedException.showException();
+//		} catch (InvalidStateException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"InvalidStateException"), null);
+//			localizedException.showException();
+//		} catch (WrongCriterionException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"WrongCriterionException", e.getCause()), null);
+//			localizedException.showException();
+//		}
+//		//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
+//
+//		// TODO apply changes for transitions at cycle start, end or half cycle.
+//		TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+//		TemporalNetOperations.transformToID(expandedNetwork);
+//
+//		String fileName = probNetCopy.getName() + "_expandedCE";
+//		expandedNetwork.setName(fileName);
+//		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+//		networkPanel.setNetworkFile(fileName);
+//		networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
+//		networkPanels.add(networkPanel);
+//	}
 
 	/**
 	 * This method saves the evidence of the current network to a file

@@ -420,10 +420,10 @@ public class ActionCommands {
 	 * Action invoked when the user wants to expands the network.
 	 */
 	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
-	/**
-	 * Action invoked when the user wants to expands the network for CE analysis.
-	 */
-	public static final String EXPAND_NETWORK_CE = "CostEffectiveness.ExpandNetworkCE";
+//	/**
+//	 * Action invoked when the user wants to expands the network for CE analysis.
+//	 */
+//	public static final String EXPAND_NETWORK_CE = "CostEffectiveness.ExpandNetworkCE";
 	/**
 	 * Action invoked when the user wants to configure OPENMARKOV options
 	 */

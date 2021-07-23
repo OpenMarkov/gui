@@ -63,8 +63,8 @@ class NetworkContextualMenu extends ContextualMenu {
 		if (canBeExpanded) {
 			addSeparator();
 			add(getExpandedNetworkMenuItem());
-			addSeparator();
-			add(getExpandedNetworkCEMenuItem());
+//			addSeparator();
+//			add(getExpandedNetworkCEMenuItem());
 		}
 	}
 
@@ -82,19 +82,19 @@ class NetworkContextualMenu extends ContextualMenu {
 		return expandNetworkMenuItem;
 	}
 
-	/**
-	 * This method initializes pasteMenuItem.
-	 *
-	 * @return a new 'Paste' menu item.
-	 */
-	private JMenuItem getExpandedNetworkCEMenuItem() {
-		if (expandNetworCEkMenuItem == null) {
-			expandNetworCEkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_CE_MENUITEM,
-					ActionCommands.EXPAND_NETWORK_CE);
-			expandNetworCEkMenuItem.addActionListener(listener);
-		}
-		return expandNetworCEkMenuItem;
-	}
+//	/**
+//	 * This method initializes pasteMenuItem.
+//	 *
+//	 * @return a new 'Paste' menu item.
+//	 */
+//	private JMenuItem getExpandedNetworkCEMenuItem() {
+//		if (expandNetworCEkMenuItem == null) {
+//			expandNetworCEkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_CE_MENUITEM,
+//					ActionCommands.EXPAND_NETWORK_CE);
+//			expandNetworCEkMenuItem.addActionListener(listener);
+//		}
+//		return expandNetworCEkMenuItem;
+//	}
 
 	/**
 	 * This method initializes pasteMenuItem.
