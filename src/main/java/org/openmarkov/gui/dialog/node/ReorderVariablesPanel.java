@@ -63,7 +63,6 @@ import java.util.List;
 	 */
 	private static Object[][] getData(Node node) {
 		Potential nodePotential = node.getPotentials().get(0);
-		Potential potential = nodePotential;
 		List<Variable> variables;
 		//CMI
 		Potential potentialForTakingVariables;
@@ -74,7 +73,7 @@ import java.util.List;
 		} else if (nodePotential instanceof ExactDistrPotential) {
 			potentialForTakingVariables = ((ExactDistrPotential)nodePotential).getTablePotential();
 		} else {
-			potentialForTakingVariables = potential;
+			potentialForTakingVariables = nodePotential;
 		}
 		variables = potentialForTakingVariables.getVariables();
 			
@@ -82,7 +81,8 @@ import java.util.List;
 		// 26/11/2014
 		// Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
 		// when imposing a policy in a decision node
-		if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) {
+		if (isConditionalProbabilityNotExactDistrPotential(nodePotential) 
+				|| node.hasPolicy()) {
 			variables.remove(0);
 		}
 		Object[][] data = new Object[variables.size()][1];
@@ -91,6 +91,10 @@ import java.util.List;
 			data[i][0] = variables.get(i).getName();
 		}
 		return data;
+	}
+
+	private static boolean isConditionalProbabilityNotExactDistrPotential(Potential potential) {
+		return potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY && !(potential instanceof ExactDistrPotential);
 	}
 
 	protected void defineTableLookAndFeel() {
@@ -140,7 +144,7 @@ import java.util.List;
 		// 26/11/2014
 		// Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
 		// when imposing a policy in a decision node
-		if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) {
+		if (isConditionalProbabilityNotExactDistrPotential(potential) || node.hasPolicy()) {
 			newVariables.add(0, potential.getVariables().get(0));
 		}
 		return newVariables;
