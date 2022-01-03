@@ -64,7 +64,7 @@ import org.openmarkov.gui.window.edition.NetworkPanel;
 import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
-import org.openmarkov.inference.DES.DESInference3;
+import org.openmarkov.inference.DES.DESInference;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
@@ -1411,7 +1411,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		mainPanel.adaptToolBarSize();
 	}
 
-	//CMI 21/08/2019 22/04/2021 DESInference3
+	//CMI 21/08/2019 22/04/2021 DESInference
 	/**
 	 * This method performs N Monte Carlo simulations
 	 *
@@ -1429,13 +1429,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 
 		if (performInference) {
-			try {
-//
-//				DESInference desInference = new DESInference(probNet);
-						DESInference3 desInferenceWithStartingNode =new DESInference3(probNet);
-			} catch (NotEvaluableNetworkException e) {
-				e.printStackTrace();
-			}
+
+				ProgressMonitor simulationProgressMonitor = new ProgressMonitor(Utilities.getOwner(mainPanel), "Running simulation",null, 0, 0);
+
+				new Thread(() -> {
+					try {
+						new DESInference(probNet, simulationProgressMonitor);
+					} catch (NotEvaluableNetworkException e) {
+						e.printStackTrace();
+					}
+				}).start();
 		}
 	}
     //CMF
@@ -1696,45 +1699,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 
 	}
-
-
-	//CMI 24/08/2019
-    //To be integrated with some method simulateNetwork to be MonteCarlo simulated
-    /**
-     *
-     * @param networkPanel
-     */
-    private void simulateDESNetwork(NetworkPanel networkPanel) {
-
-        ProbNet probNet = networkPanel.getProbNet();
-        InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-                Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-        if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-            return;
-        }
-        return;
-
-    }
-    //CMF
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
