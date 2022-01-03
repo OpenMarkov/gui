@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
  * There are two types of options: those which establish how the simulation is carried out and what is calculated,
  * and those which determine how this simulation is logged (log options)
  * @version 1.0 cyago - 04/01/2019 - In this version Monte Carlo options is only used for DESNets
+ * @version 1.1 cyago - 24/04/2021 - Added support for an input file
  */
 public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
@@ -419,7 +420,8 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * @param e actionEvent for inputFileButton
 	 */
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser fileChooser = new JFileChooser("C:\\Users\\Carmen María\\OneDrive - Consejería de Educación, Formación y Empleo\\Tesis\\DESNetFiles\\InputFile") ;
+
+		JFileChooser fileChooser = new JFileChooser(".\\DESNetFiles\\InputFile") ;
 
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.xlsx", "xlsx");
 		fileChooser.setFileFilter(filter);
