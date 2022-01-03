@@ -11,7 +11,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.TableWithEvents;
 
 /**
- * TransitionTablePotentialPanel for TranssitionPotential
+ * TransitionTablePotentialPanel for TransitionPotential
  *
  * @version 1.0 - cyago - 24/03/2019 - only one TableWithEventsPanel
  */
