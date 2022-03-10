@@ -1058,5 +1058,15 @@
             <Decision value="Una decisión"/>
         </Scenario>
     </ScopeSelector>
+	<AddOtherProperty>
+		<Name>
+             <Title value="Añadir propiedad"/>
+			 <Message value="Nombre"/>
+        </Name>
+		<Value>
+             <Title value="Añadir propiedad"/>
+			 <Message value="Valor"/>
+        </Value>
+    </AddOtherProperty>
 </properties>
 

@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.JOptionPane;
@@ -16,6 +17,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.openmarkov.gui.action.OtherPropertyEdit;
+import org.openmarkov.gui.component.DiscretizeTableModel;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -99,10 +101,12 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 		initialize();
 		getValuesTable().setFirstColumnHidden(firstColumnHidden);
 		setData(noKeyData);
-		tableModel.addTableModelListener(this);
-		//valuesTable.getModel().addTableModelListener(this);
-		//getValuesTable().getModel().addTableModelListener(this);
-		//getTableModel().addTableModelListener(this);
+		getTableModel().addTableModelListener(this);
+		
+		//tableModel.addTableModelListener(this);
+		////valuesTable.getModel().addTableModelListener(this);
+		////getValuesTable().getModel().addTableModelListener(this);
+		////getTableModel().addTableModelListener(this);
 	}
 	
 	/**
@@ -121,10 +125,12 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 		initialize();
 		getValuesTable().setFirstColumnHidden(firstColumnHidden);
 		setData(noKeyData);
-		tableModel.addTableModelListener(this);
-		//valuesTable.getModel().addTableModelListener(this);
-		//getValuesTable().getModel().addTableModelListener(this);
-		//getTableModel().addTableModelListener(this);
+		getTableModel().addTableModelListener(this);
+		
+		//tableModel.addTableModelListener(this);
+		////valuesTable.getModel().addTableModelListener(this);
+		////getValuesTable().getModel().addTableModelListener(this);
+		////getTableModel().addTableModelListener(this);
 	}
 	
 	/**
@@ -179,11 +185,17 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 	@Override public void setData(Object[][] noKeyData) {
 	///@Override public void setData(Object[][] newData) {
 		data = fillDataKeys(noKeyData);
-		tableModel = null;
-		//tableModel.setDataVector(data, columns);
-		valuesTable.setModel(getTableModel());
-		// valuesTable.getModel().addTableModelListener(this);
+		tableModel = new DefaultTableModel(data, columns);
+		valuesTable.setModel(tableModel);
+		valuesTable.getModel().addTableModelListener(this);
+		
+		
+		//tableModel = null;
+		////tableModel.setDataVector(data, columns);
+		//valuesTable.setModel(getTableModel());
+		//// valuesTable.getModel().addTableModelListener(this);
 	}
+	
 	
 	/**
 	 * Set the node additionalProperties in this panel with the provided ones
@@ -359,6 +371,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 	
 	public void tableChanged(TableModelEvent e) {
 		int row = e.getLastRow();
+		e.getSource();
 
 		if (e.getType() == TableModelEvent.UPDATE) {
 			String newName = ((DefaultTableModel) e.getSource()).getValueAt(row, 1).toString();
@@ -377,6 +390,12 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
+				String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);
+				//List<String> keySet = new ArrayList<>(node.getOtherProperties().keySet());
+				//String oldKey = keySet.get(index);
+				String oldValue = node.getOtherProperties().get(oldName);
+				valuesTable.setValueAt(oldName, row, 1);
+				valuesTable.setValueAt(oldValue, row, 2);
 			}
 		}
 	}
