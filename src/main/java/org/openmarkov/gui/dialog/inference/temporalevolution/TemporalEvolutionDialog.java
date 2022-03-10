@@ -43,7 +43,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 		this.setResizable(true);
 		this.probNet = selectedNode.getProbNet();
 		this.selectedNode = selectedNode;
-		this.preResolutionEvidence = preResolutionEvidence;
+		this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence.getFindings());;
 		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet()
 				.getName());
 		getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
