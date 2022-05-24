@@ -10,9 +10,9 @@ package org.openmarkov.gui.dialog.common;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
+import org.openmarkov.core.model.network.potential.DistributionTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.TableWithEvents;
-import org.openmarkov.core.model.network.potential.TimeToEventTablePotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 import javax.swing.*;
@@ -24,14 +24,15 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
- * This class implements the Panel for TimeToEventTablePotential. This panel has two comboboxed for the distribution and parametrization,
+ * This class implements the Panel for DistributionTablePotential. This panel has two comboboxed for the distribution and parametrization,
  * and the correspondent TableWithEvents.
  *
  * @version 1.0 - cyago - 24/03/2019
  * @version 1.1 - cyago - 22/04/2021 - Added parametrization for distributions and javadoc
+ * @version 1.2 - cyago - 23/05/2022 - Refactored from TimeToEventTablePotentialPanelP to DistributionTablePotentialPanel
  */
-@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "TimeToEventTable")
-public class TimeToEventTablePotentialPanel
+@SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "DistributionTable")
+public class DistributionPotentialPanel
 		extends ProbabilityTablePanel implements ItemListener{
 
 	private JPanel jDistributionAndParametrization;
@@ -43,7 +44,7 @@ public class TimeToEventTablePotentialPanel
 
 	protected Node node;
 	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
-	protected TimeToEventTablePotential tteTablePotential;
+	protected DistributionTablePotential tteTablePotential;
 	protected TablePotential tablePotential;
 	protected TableWithEvents tableWithEvents;
 	protected ParametrizedFunctionManager parametrizedFunctionManager;
@@ -52,11 +53,11 @@ public class TimeToEventTablePotentialPanel
 	protected ProbDensFunction distribution;
 
 	/**
-	 * Creates a TimeToEventTablePotentialPanel for eventNode. If eventNode stores a TimeToEventTablePotential, this is displayed.
+	 * Creates a DistributionPotentialPanel for eventNode. If eventNode stores a DistributionTablePotential, this is displayed.
 	 * Otherwise an Exact distribution is displayed.
-	 * @param eventNode - event node which contains the TimeToEventTablePotential
+	 * @param eventNode - event node which contains the DistributionTablePotential
 	 */
-	public TimeToEventTablePotentialPanel(Node eventNode)
+	public DistributionPotentialPanel(Node eventNode)
 	{
 		super();
 		this.node = eventNode;
@@ -64,7 +65,7 @@ public class TimeToEventTablePotentialPanel
 
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
-        tteTablePotential = (TimeToEventTablePotential) eventNode.getPotentials().get(0);
+        tteTablePotential = (DistributionTablePotential) eventNode.getPotentials().get(0);
         tableWithEvents =  tteTablePotential.getTableWithEvents();
 
         setLayout(new BorderLayout());
@@ -73,7 +74,7 @@ public class TimeToEventTablePotentialPanel
 		this.add( getTableWithEventsPanel(),BorderLayout.CENTER);
 
 //		jsP = new JScrollPane();
-//		jsP.setName("TimeToEventTablePotentialPanel.jsP");
+//		jsP.setName("DistributionPotentialPanel.jsP");
 
 		repaint();
 
@@ -200,7 +201,7 @@ public class TimeToEventTablePotentialPanel
 
 
 	/**
-	 * Changes the timeToEventPotential and TimeToEventTablePotentialPanel according to the new selected distribution
+	 * Changes the timeToEventPotential and DistributionPotentialPanel according to the new selected distribution
 	 * or the new selected parametrization
 	 * @param e jcDistribution with the new selected distribution or jcParametrization with the new selected parametrization
 	 */

@@ -41,7 +41,7 @@ import java.util.List;
  *
  * Transition class to be merged with the new structure of tables
  * @author cyago
- * @version 1.0 - 24/03/2019 - cyago
+ * @version 1.0 - 24/03/2019 - cyago; adapted/copied from ValuesTable
  */
 public class EventValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
@@ -173,7 +173,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	/**
 	 * Default constructor
 	 *
-	 * @param node       - the node with the EvemtTablePotential
+	 * @param node       - the node with the EventTablePotential
 	 * @param eventValuesTableModel - the model of the EventTablePotential
 	 * @param modifiable - true if the table can be edited and modified
 	 */
@@ -395,6 +395,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * and checked if the new can be value converted to a double. She also deleted the use of checkUtilityVariable
 	 *
 	 * @author cyago
+	 * @version 1.1 18/05/2022 - Changed to be used with numeric variables; currently discretized variables not considered
 	 */
 	public void setValueAt(Object newValue, int row, int col) {
 		try {
@@ -403,8 +404,10 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 			if (oldValue.equals(newValue))
 				return;
 
-
-			if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
+			//18/05/2022 - Changed to be used with numeric variables; currently discretized variables not considered
+//			if (nodeType == NodeType.CHANCE || nodeType == NodeType.DECISION) {
+			VariableType variableType = node.getVariable().getVariableType();
+			if (variableType == VariableType.FINITE_STATES) {
 				if (((Double) newValue) < 0) {
 					newValue = oldValue;
 					JOptionPane.showMessageDialog(this.getParent(), "Introduced value cannot be negative");

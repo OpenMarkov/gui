@@ -33,9 +33,8 @@ import java.util.List;
  * node's <code>Potential</code> values. It is implemented for TablePotential
  * Only
  *
- * @author mpalacios
- * @version 1.1 28/05/2016 - cyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
- * - adding the attribute getEventTablePotential
+ * @author cyago - copied/adapted from TablePotentialValueEdit
+ * @version 1.1 18/05/2022 - Changed to be used with numeric variables
  */
 @SuppressWarnings("serial") public class EventTablePotentialValueEdit extends SimplePNEdit {
 	/**
@@ -174,8 +173,10 @@ import java.util.List;
 	 */
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;
-
-		if ((node.getNodeType() == NodeType.EVENT) || (node.getNodeType() == NodeType.UTILITY)){
+		//18/05/2022 - Changed to be used with numeric variables
+//		if ((node.getNodeType() == NodeType.EVENT) || (node.getNodeType() == NodeType.UTILITY)){
+		VariableType variableType = node.getVariable().getVariableType();
+		if ((variableType == VariableType.EVENT) || (variableType == VariableType.NUMERIC)){
 			try {
 				newDoubleTable[getPotentialSelected()] = newDoubleValue;
 			} catch(Exception e){
