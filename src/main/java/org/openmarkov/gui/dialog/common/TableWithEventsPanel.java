@@ -30,6 +30,7 @@ import java.util.List;
  * This class implements a Table eventTablePotential table.
  * Transition class to be merged with the new structure of tables
  * @version 1.0 - cyago - 24/03/2019
+ * @version 1.1 - cyago - 20/08/2022 impossible configuration commented
  */
 
 public class TableWithEventsPanel
@@ -309,7 +310,7 @@ public class TableWithEventsPanel
 				// Returns an evidence case with one finding for every parent variable and its state in the column
 				Configuration configuration = getConfiguration(i);
 				// If the column configuration has uncertainty hasUncertainty= true
-				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
+//				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
 			} catch (InvalidStateException | IncompatibleEvidenceException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
@@ -906,19 +907,19 @@ public class TableWithEventsPanel
 			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
 		}
 
-		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getConfigurationFromSelectedColumn());
-		if (isImpossible) {
-				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
-						.setEnabled(false);
-				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
-						.setEnabled(true);
-
-		} else {
+//		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getConfigurationFromSelectedColumn());
+//		if (isImpossible) {
+//				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
+//						.setEnabled(false);
+//				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
+//						.setEnabled(true);
+//
+//		} else {
 			tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
 						.setEnabled(true);
 			tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
 						.setEnabled(false);
-		}
+//		}
 
 		return tableWithEventsContextualMenu;
 	}
