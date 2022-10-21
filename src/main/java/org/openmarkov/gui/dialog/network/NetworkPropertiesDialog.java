@@ -1,5 +1,5 @@
 /*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+ *  Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
  * Unless required by applicable law or agreed to in writing,
  * this code is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OF ANY KIND.
@@ -50,9 +50,21 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 */
 	private NetworkOtherPropertiesPanel networkOtherPropertiesPanel = null;
 	/**
-	 * Advanced panel containing agents and decision criteria
-	 */
-	private NetworkAdvancedPanel networkAdvancedPanel;
+	 * Panel containing 'Decision Criteria' only for probNet with chance nodes??????????.
+	 * It is used to place the fields at the top of the panel.
+	 */	
+	private NetworkDecisionCriteriaPanel networkDecisionCriteriaPanel = null;
+	/**
+	 * Panel containing 'Agents' for a probNet.
+	 * It is used to place the fields at the top of the panel.
+	 */	
+	private NetworkAgentsPanel networkAgentsPanel;
+	/**
+	 * Panel containing 'temporal Options' for probNet contains the received
+	 * constraint type. It is used to place the fields at the top of the panel.
+	 */	
+	private NetworkTemporalOptionsPanel networkTemporalOptionsPanel;
+	
 	/**
 	 * Specifies if the network whose additionalProperties are edited is new.
 	 */
@@ -72,7 +84,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	}
 
 	/**
-	 * This method initializes this instance.
+	 * This method initialises this instance.
 	 *
 	 * @param owner   window that owns the dialog.
 	 * @param probNet network
@@ -120,13 +132,17 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	private JTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new JTabbedPane();
-			tabbedPane.addTab("", null, getNetworkDefinitionPanel(), null);
-			tabbedPane.setTitleAt(0, stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab.Label"));
-			tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.VariablesTab.Label"), null,
-					getNetworkVariablesPanel(), null);
-			if (!newNetwork) {
-				tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.Advanced.Label"), null,
-						getNetworkAdvancedPanel(), null);
+			//tabbedPane.addTab("", null, getNetworkDefinitionPanel(), null);
+			tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab.Label"), null, getNetworkDefinitionPanel(), null);
+			//tabbedPane.setTitleAt(0, stringDatabase.getString("NetworkPropertiesDialog.DefinitionTab.Label"));
+			tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.VariablesTab.Label"), null, getNetworkVariablesPanel(), null);
+			if (!newNetwork) {				
+				tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.DecisionCriteriaTab.Label"), null,
+						getNetworkDecisionCriteriaPanel(), null);
+				tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.AgentsTab.Label"), null,
+						getNetworkAgentsPanel(), null);
+				tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.TemporalOptionsTab.Label"), null,
+						getNetworkTemporalOptionsPanel(), null);
 				tabbedPane.addTab(stringDatabase.getString("NetworkPropertiesDialog.OtherPropertiesTab.Label"), null,
 						getNetworkOtherPropertiesPanel(), null);
 			}
@@ -134,18 +150,44 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 		}
 		return tabbedPane;
 	}
-
+	
 	/**
-	 * This method initialises networkAdvancedPanel.
+	 * Initialising NetworkDecisionCriteriaPanel.
 	 *
-	 * @return a new definition panel.
+	 * @return a new Decision criteria panel.
 	 */
-	NetworkAdvancedPanel getNetworkAdvancedPanel() {
-		if (networkAdvancedPanel == null) {
-			networkAdvancedPanel = new NetworkAdvancedPanel(newNetwork, probNet);
-			networkAdvancedPanel.setName("networkAdvancedPanel");
+	private NetworkDecisionCriteriaPanel getNetworkDecisionCriteriaPanel() {
+		if (networkDecisionCriteriaPanel == null) {
+			networkDecisionCriteriaPanel = new NetworkDecisionCriteriaPanel(this, probNet);
+			networkDecisionCriteriaPanel.setName("networkDecisionCriteriaPanel");
 		}
-		return networkAdvancedPanel;
+		return networkDecisionCriteriaPanel;
+	}
+	
+	/**
+	 * Initialising NetworkAgentsPanel.
+	 *
+	 * @return a new Agents panel.
+	 */
+	private NetworkAgentsPanel getNetworkAgentsPanel() {
+		if (networkAgentsPanel == null) {
+			networkAgentsPanel = new NetworkAgentsPanel(probNet);
+			networkAgentsPanel.setName("networkAgentsPanel");
+		}
+		return networkAgentsPanel;
+	}
+	
+	/**
+	 * Initialising NetworkTemporalOptionsPanel.
+	 *
+	 * @return a new Temporal options panel.
+	 */
+	private NetworkTemporalOptionsPanel getNetworkTemporalOptionsPanel() {
+		if (networkTemporalOptionsPanel == null) {
+			networkTemporalOptionsPanel = new NetworkTemporalOptionsPanel(probNet);
+			networkTemporalOptionsPanel.setName("networkTemporalOptionsPanel");
+		}
+		return networkTemporalOptionsPanel;
 	}
 
 	/**
@@ -229,7 +271,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	 * This method shows the dialog and requests the user the network
 	 * additionalProperties.
 	 *
-	 * @return OK_BUTTON if the user has pressed the 'Ok' button or
+	 * @return OK_BUTTON if the user has pressed the 'OK' button or
 	 * CANCEL_BUTTON if the user has pressed the 'Cancel' button.
 	 */
 	public int showProperties() {
@@ -245,4 +287,16 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	public ProbNet getProbNet() {
 		return probNet;
 	}
+	
+	/**
+	 * Updates the features of a probNet when it´s set in the definition panel
+	 * 
+	 * @param probNet
+	 */
+	public void update( ProbNet probNet) {
+		getNetworkDecisionCriteriaPanel().update(probNet);
+		getNetworkAgentsPanel().update(probNet);
+		getNetworkTemporalOptionsPanel().update(probNet);
+	}
+	
 }
