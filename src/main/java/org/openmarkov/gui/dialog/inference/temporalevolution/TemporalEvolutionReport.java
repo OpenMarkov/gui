@@ -41,9 +41,19 @@ public class TemporalEvolutionReport {
 
 		for (int i = 1; i < jtable.getColumnCount(); i++) {
 			Row row = sheetTable.createRow(i);
-			row.createCell(0).setCellValue((Integer) jtable.getColumnModel().getColumn(i).getHeaderValue());
+			try {
+				row.createCell(0).setCellValue((Integer) jtable.getColumnModel().getColumn(i).getHeaderValue());
+			} catch (ClassCastException ex){
+				row.createCell(0).setCellValue((String) jtable.getColumnModel().getColumn(i).getHeaderValue());
+			}
+
 			for (int j = 0; j < jtable.getRowCount(); j++) {
-				row.createCell(j+1).setCellValue((Double) jtable.getValueAt(j,i));
+				try {
+					row.createCell(j+1).setCellValue((Double) jtable.getValueAt(j,i));
+				} catch (ClassCastException ex){
+					row.createCell(j+1).setCellValue((String) jtable.getValueAt(j,i));
+				}
+
 			}
 		}
 
