@@ -146,7 +146,11 @@ public class NodeContextualMenu extends ContextualMenu {
 		} else {
 			setDefaultNodeContextualMenu();
 		}
-
+//cmyago
+//		if (selectedNode.getNode().getVariable().isTemporal()){
+//			addFindingMenuItem.setEnabled(false);
+//		}
+//cmyago end
 	}
 
 	/**

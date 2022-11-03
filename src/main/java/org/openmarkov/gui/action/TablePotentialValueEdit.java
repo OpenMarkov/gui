@@ -33,7 +33,7 @@ import java.util.List;
  * Only
  *
  * @author mpalacios
- * @version 1.1 28/05/2016 - cyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
+ * @version 1.1 28/05/2016 - cmyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
 @SuppressWarnings("serial") public class TablePotentialValueEdit extends SimplePNEdit {
@@ -115,7 +115,7 @@ import java.util.List;
 	 * @param priorityList         the priority lists for potentials update.
 	 * @param notEditablePositions two dimensional array with the information about editable
 	 *                             positions.
-	 *                             cyago added the new initialisation of getExactDistrPotential
+	 *                             cmyago added the new initialisation of getExactDistrPotential
 	 */
 	public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
 			Object[][] notEditablePositions) {
