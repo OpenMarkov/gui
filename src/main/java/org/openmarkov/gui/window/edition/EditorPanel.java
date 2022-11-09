@@ -2038,6 +2038,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         else if(selectedNode == null){
         	new CostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
         }*/
+		else if(selectedNode.size() == 0){
+			new TemporalEvolutionDialog(Utilities.getOwner(this), getNetworkPanel().getProbNet(), preResolutionEvidence);
+		}
+
 	}
 
 	/**
