@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo - Add change locale management setting the item names.
+ * @version 1.2 - cmyago 20/10/2022 - Removed "Expand network" menu item and "Temporal evolution by criterion" menu item added. This is done by refactoring expandNetworkMenuItem and changing behaviour
  */
 class NetworkContextualMenu extends ContextualMenu {
 	/**
@@ -38,7 +39,11 @@ class NetworkContextualMenu extends ContextualMenu {
 	 * Object that represents the item 'Network additionalProperties'.
 	 */
 	private JMenuItem networkPropertiesMenuItem = null;
-	private JMenuItem expandNetworkMenuItem;
+
+
+//	private JMenuItem expandNetworkMenuItem;
+	private JMenuItem teCriterionMenuItem;
+
 	private JMenuItem expandNetworCEkMenuItem;
 	private boolean canBeExpanded;
 
@@ -62,25 +67,44 @@ class NetworkContextualMenu extends ContextualMenu {
 		add(getNetworkPropertiesMenuItem());
 		if (canBeExpanded) {
 			addSeparator();
-			add(getExpandedNetworkMenuItem());
+
+			add(getTECriterionMenuItem());
+
 //			addSeparator();
 //			add(getExpandedNetworkCEMenuItem());
 		}
 	}
+
+
+//	/**
+//	 * This method initializes pasteMenuItem.
+//	 *
+//	 * @return a new 'Paste' menu item.
+//	 */
+//	private JMenuItem getExpandedNetworkMenuItem() {
+//		if (expandNetworkMenuItem == null) {
+//			expandNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_MENUITEM,
+//					ActionCommands.EXPAND_NETWORK);
+//			expandNetworkMenuItem.addActionListener(listener);
+//		}
+//		return expandNetworkMenuItem;
+//	}
 
 	/**
 	 * This method initializes pasteMenuItem.
 	 *
 	 * @return a new 'Paste' menu item.
 	 */
-	private JMenuItem getExpandedNetworkMenuItem() {
-		if (expandNetworkMenuItem == null) {
-			expandNetworkMenuItem = new LocalizedMenuItem(MenuItemNames.EXPAND_NETWORK_MENUITEM,
-					ActionCommands.EXPAND_NETWORK);
-			expandNetworkMenuItem.addActionListener(listener);
+	private JMenuItem getTECriterionMenuItem() {
+		if (teCriterionMenuItem == null) {
+			teCriterionMenuItem = new LocalizedMenuItem(MenuItemNames.TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM,
+					ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION);
+			teCriterionMenuItem.addActionListener(listener);
 		}
-		return expandNetworkMenuItem;
+		return teCriterionMenuItem;
 	}
+
+
 
 //	/**
 //	 * This method initializes pasteMenuItem.
