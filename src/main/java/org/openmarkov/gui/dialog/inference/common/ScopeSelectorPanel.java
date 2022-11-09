@@ -66,7 +66,7 @@ public class ScopeSelectorPanel extends JPanel {
 		setMaximumSize(new Dimension(300, 300));
 	}
 
-	//cmyago 20/10/2022
+
 	/**
 	 * Creates a ScopeSelectorPanel where scope panel is only shown if the analysis is not temporal evolution.
 	 * @param probNet network from which the temporal evolution of one/some of their nodes is shown
@@ -77,7 +77,7 @@ public class ScopeSelectorPanel extends JPanel {
 		this(probNet,preResolutionEvidence);
 		if (isTemporalEvolution) mainPanel.remove(scopeTypePanel);
 	}
-	//cmyago end 20/10/2022
+
 
 	public JPanel getMainPanel() {
 		mainPanel = new JPanel();
