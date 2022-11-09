@@ -416,10 +416,18 @@ public class ActionCommands {
 	 * Action invoked for Sensitivity Analysis.
 	 */
 	public static final String SENSITIVITY_ANALYSIS = "Tools.SensitivityAnalysis";
+	//cmyago 20/10/2022
+//	/**
+//	 * Action invoked when the user wants to expand the network.
+//	 */
+//	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
+
 	/**
-	 * Action invoked when the user wants to expands the network.
+	 * Action invoked when the user wants to display the temporal evolution by criterion.
 	 */
-	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
+	public static final String TEMPORAL_EVOLUTION_BY_CRITERION = "CostEffectiveness.TemporalEvolutionByCriterion";
+
+	//cmyago end 20/10/2022
 //	/**
 //	 * Action invoked when the user wants to expands the network for CE analysis.
 //	 */
