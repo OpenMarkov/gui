@@ -9,6 +9,11 @@
             <Label value="Evolución temporal de:"/>
             <ConditioningVariables value="dadas las políticas impuestas"/>
         </Title>
+        <!--cmyago 24/10/2022 title for TraceTemporalEvolution dialog for temporal evolution by criterion -->
+        <ByCriterionTitle>
+            <Label value="Evolución temporal por criterio"/>
+        </ByCriterionTitle>
+        <!--cmyago end-->
         <Legend>
             <Title>
                 <Label value="Leyenda"/>
@@ -17,18 +22,32 @@
         <States>
             <Label value="Estados"/>
         </States>
+        <!--cmyago 24/10/2022 title for TraceTemporalEvolution checkBoxes dialog for temporal evolution by criterion -->
+        <Criteria>
+            <Label value="Criterios"/>
+        </Criteria>
+        <!--cmyago end-->
         <Display>
             <Label value="Visualización"/>
             <Instantaneus value="Instantaneo"/>
             <Accumulate value="Acumulado"/>
             <Individual value="Individual"/>
             <Summatory value="Suma"/>
+            <!--cmyago 08/11/2022 title for upfront values and discount checkBoxes  -->
+            <Upfront value="Incluye desembolso inicial"/>
+            <Discount value="Discounted values"/>
+            <!--cmyago end-->
         </Display>
     </TemporalEvolutionResultDialog>
     <TemporalEvolutionTable>
         <Title>
             <Label value="Tabla"/>
         </Title>
+            <!--cmyago 08/11/2022 headers -->
+        <Headers>
+            <Criteria value="Criterio"/>
+        </Headers>
+            <!--cmyago end -->
     </TemporalEvolutionTable>
     <TemporalEvolutionChart>
         <Title>
