@@ -57,7 +57,7 @@ public class MenuItemNames {
 	 * String database token for the item 'File - Save Evidence'.
 	 */
 	public static final String FILE_SAVE_EVIDENCE_MENUITEM = FILE_MENU + ".SaveEvidence";
-//cmyago 20/10/2022
+
 //	/**
 //	 * String database token for the item 'Expand network'.
 //	 */
@@ -67,7 +67,6 @@ public class MenuItemNames {
 	 * String database token for the item 'Expand network'.
 	 */
 	public static final String TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM = "CostEffectiveness.TemporalEvolutionByCriterion";
-//cmyago end 20/10/2022
 
 //	/**
 //	 * String database token for the item 'Expand network for CE analysis'.
