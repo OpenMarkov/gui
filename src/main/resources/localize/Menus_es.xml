@@ -504,11 +504,9 @@
             <CumulativeValues value="Valores acumulados"/>
             <ValueType value="Tipo de valor"/>
         </TemporalEvolution>
-        <!--cmyago 24/10/2022 menu item for temporal evolution by criterion in network contextual menu-->
         <TemporalEvolutionByCriterion>
             <Label value="Evolución temporal por criterio "/>
         </TemporalEvolutionByCriterion>
-        <!--cmyago end -->
     </CostEffectiveness>
     <TreeADD>
         <AddSubtree value="Añadir subárbol"/>
