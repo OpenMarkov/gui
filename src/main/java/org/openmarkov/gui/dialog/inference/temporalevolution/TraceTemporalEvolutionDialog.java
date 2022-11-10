@@ -345,6 +345,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 ((MIDTemporalEvolution)temporalEvolutionCriterion).forceUnicriterion();
                 ((MIDTemporalEvolution) temporalEvolutionCriterion).setDecisionCriterion(criterion);
                 this.temporalEvolution = temporalEvolutionCriterion.getTemporalEvolution();
+                //10/11/2022 - Used when saving file; TODO change for originalProbNet
+                this.expandedNetwork = temporalEvolutionCriterion.getExpandedNetwork();
                 //Upfront values
                 this.upfrontEvolutionByCriterion.put(criterionName,((MIDTemporalEvolution) temporalEvolutionCriterion).getAtemporalUtility());
                 //No discount
