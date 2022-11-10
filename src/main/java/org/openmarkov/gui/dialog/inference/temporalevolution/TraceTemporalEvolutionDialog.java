@@ -242,13 +242,17 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence, Variable decisionSelected) {
         super(owner);
 
+
         // 28/10/2022 - making probNet a final field; for consistency with the two constructors; node is assigned but not used
 //        this.node = node;
 //        ProbNet probNet = node.getProbNet();
         this.originalProbNet = node.getProbNet();
+
         this.decisionSelected = decisionSelected;
+
         // end
         isIndividual = true;
+
 
         // Check if all decision nodes have an imposed policy,
         // potential set in node, the nodes without an imposed policy will be added to
@@ -259,6 +263,15 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         }
 
         this.isUtility = node.getNodeType() == NodeType.UTILITY;
+        //10/11/2022 error message when there is more than one node without policy
+        try {
+            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
+        } catch (ImposedPoliciesException e) {
+            JOptionPane.showMessageDialog(owner,  "There are more than one decision node without policy","Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        //end
 
         try {
             // 28/10/2022
@@ -323,6 +336,13 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         this.isUtility = true;
         this.isByCriterion = true;
         conditioningVariables = new ArrayList<>();
+        try {
+            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
+        } catch (ImposedPoliciesException e) {
+            JOptionPane.showMessageDialog(owner,  "There are more than one decision node without policy","Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         if (decisionSelected != null) {
             this.decisionSelected = decisionSelected;
             conditioningVariables.add(decisionSelected);
@@ -339,9 +359,13 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 String criterionName = criterion.getCriterionName();
                 List<Node> criterionNodes = probNet.getNodes(NodeType.UTILITY)
                         .stream().filter(node -> node.getVariable().getDecisionCriterion().getCriterionName().equals(criterionName)).collect(Collectors.toList());
+
                 TemporalEvolution temporalEvolutionCriterion = new MIDTemporalEvolution(probNet, criterionNodes);
+
                 temporalEvolutionCriterion.setPreResolutionEvidence(evidence);
                 temporalEvolutionCriterion.setDecisionVariable(decisionSelected);
+
+
                 ((MIDTemporalEvolution)temporalEvolutionCriterion).forceUnicriterion();
                 ((MIDTemporalEvolution) temporalEvolutionCriterion).setDecisionCriterion(criterion);
                 this.temporalEvolution = temporalEvolutionCriterion.getTemporalEvolution();
