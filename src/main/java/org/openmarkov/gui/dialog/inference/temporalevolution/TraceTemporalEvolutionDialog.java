@@ -55,13 +55,14 @@ import java.util.stream.StreamSupport;
  * Plot of temporal evolution of variables in CEA
  *
  * @author myebra
- * @version 2 cmyago -Added 1.- Jorge's algorithm for temporal evolution;  2.- temporal evolution by criterion;
+ * @version 2 cmyago 04/11/2022 -Added 1.- Jorge's algorithm for temporal evolution;  2.- temporal evolution by criterion;
  * 3.-upfront and diccount checks; 4.- check behaviour added to table;  5.- javadoc to some methods which previously lack of it ;
- * 6.- some code optimization
+ * 6.- some code optimization;
+ * @version 2.1 cmysto 16/11/2022 progress bar; reworked constructors
  */
 public class TraceTemporalEvolutionDialog extends JDialog {
     private final String CRITERION = "Criterion";
-    private final String NODEC ="No decision nodes";
+    private final String NODEC = "No decision nodes";
     private final Dimension legendsDimension = new Dimension(200, 450);
 
     //23-24/10/2022 javadoc; added fields: temporalEvolutionByCriterion, temporalEvolutionWithDiscount, originalProbnet, isByCriterion,
@@ -83,31 +84,30 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     private final TreeMap<String, List<TablePotential>> temporalEvolutionByCriterionDiscount = new TreeMap<>();
 
 
-
     /**
      * MID before expansion (from which temporal evolution of one of its elements is displayed)
      */
-    private final ProbNet originalProbNet;
+    private ProbNet originalProbNet;
     /**
      * True if node(s) whose temporal evolution is displayed are utility nodes; false otherwise
      */
-    private final boolean isUtility;
+    private boolean isUtility;
     private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * List of conditioning variables for performing variable elimination algorithm; for temporal evolution there is only zero/one decision variable
      */
-    private final List<Variable> conditioningVariables;
+    private  List<Variable> conditioningVariables;
     /**
      * Conditioning decision for displaying temporal evolution; if there is one it corresponds
      * to the first element of@code{#conditioningVariables}
      * TODO remove? At least To be used for displaying purposes when there is not decision
      */
-    private  Variable decisionSelected;
+    private Variable decisionSelected;
     /**
      * True if temporal evolution by criterion is displayed
      */
     private boolean isByCriterion = false;
-    private Map<Variable, TablePotential> temporalEvolution;
+    private Map<Variable, TablePotential> temporalEvolutionResults;
     /**
      * Temporal evolution of a node or set of nodes
      */
@@ -138,7 +138,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     private List<XYSeries> arrayXYSeries;
 
     /**
-     * List of XYSeries containing the atemporal utility data to be displayed; each XYSeries corresponds to a data line
+     * List of XYSeries containing the timeless utility data to be displayed; each XYSeries corresponds to a data line
      */
     private List<XYSeries> arrayXYSeriesUpfront;
 
@@ -223,13 +223,37 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     //  end
 
+    //cmyago 15/11/2022 - progress bar
+    private ProgressMonitor progressMonitor;
+    //cmyago end
 
-//  31/10/2022 commented not used
-//    public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence, boolean isCumulative, boolean isCumulative1) {
-//        this(owner, node, evidence, null);
-//
-//    }
-    // end
+    //cmyago 15/11/2022  constructors reworked
+    private TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, Variable decisionSelected) {
+        super(owner);
+        this.originalProbNet =probNet;
+        //10/11/2022 error message when there is more than one node without policy
+        try {
+            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
+        } catch (ImposedPoliciesException e) {
+            JOptionPane.showMessageDialog(owner, "There are more than one decision node without policy", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        //end
+        this.numSlices = originalProbNet.getInferenceOptions().getTemporalOptions().getHorizon();
+        conditioningVariables = new ArrayList<>();
+        if (decisionSelected != null) {
+            this.decisionSelected = decisionSelected;
+            conditioningVariables.add(decisionSelected);
+        } else {
+            this.decisionSelected = new Variable(NODEC, NODEC);
+        }
+
+        isIndividual = true;
+        this.progressMonitor = new ProgressMonitor(owner, "Temporal evolution", "Evaluating...", 0, 100);
+
+    }
+
 
     /**
      * Constructor for displaying a temporal evolution dialog of one chance or utility node
@@ -240,83 +264,36 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param decisionSelected conditioning decision for which temporal evolution by criterion is displayed
      */
     public TraceTemporalEvolutionDialog(Window owner, Node node, EvidenceCase evidence, Variable decisionSelected) {
-        super(owner);
-
-
-        // 28/10/2022 - making probNet a final field; for consistency with the two constructors; node is assigned but not used
-//        this.node = node;
-//        ProbNet probNet = node.getProbNet();
-        this.originalProbNet = node.getProbNet();
-
-        this.decisionSelected = decisionSelected;
-
-        // end
-        isIndividual = true;
-
-
-        // Check if all decision nodes have an imposed policy,
-        // potential set in node, the nodes without an imposed policy will be added to
-        // conditioningVariables
-        conditioningVariables = new ArrayList<>();
-        if (decisionSelected != null) {
-            conditioningVariables.add(decisionSelected);
-        }
-
+        this(owner, node.getProbNet(), decisionSelected);
         this.isUtility = node.getNodeType() == NodeType.UTILITY;
-        //10/11/2022 error message when there is more than one node without policy
+        progressMonitor.setMaximum(numSlices);
+        Thread evaluationThread = new Thread(() -> {
         try {
-            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
-        } catch (ImposedPoliciesException e) {
-            JOptionPane.showMessageDialog(owner,  "There are more than one decision node without policy","Warning",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        //end
-
-        try {
-            // 28/10/2022
-//            numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
-            numSlices = originalProbNet.getInferenceOptions().getTemporalOptions().getHorizon();
-            // end
             this.variableOfInterest = node.getVariable();
-
-            // 31/10/2022 refactored to temporalEvolutionOneNode to avoid name repetition
-//			TemporalEvolution temporalEvolutionOneNode = new VETemporalEvolution(probNet, node.getVariable());
-            TemporalEvolution temporalEvolutionOneNode = new MIDTemporalEvolution(originalProbNet, variableOfInterest);
-            // end
-            temporalEvolutionOneNode.setPreResolutionEvidence(evidence);
-            temporalEvolutionOneNode.setDecisionVariable(decisionSelected);
-            this.temporalEvolution = temporalEvolutionOneNode.getTemporalEvolution();
-            //added no discount elements for utility nodes
-            if (isUtility){
-                ((MIDTemporalEvolution) temporalEvolutionOneNode).setDecisionCriterion(variableOfInterest.getDecisionCriterion());
-                this.temporalEvolutionDiscount = temporalEvolutionOneNode.getTemporalEvolutionWithDiscount();
+//			TemporalEvolution temporalEvolution = new VETemporalEvolution(probNet, node.getVariable());
+            TemporalEvolution temporalEvolution = new MIDTemporalEvolution(originalProbNet, variableOfInterest);
+            temporalEvolution.setPreResolutionEvidence(evidence);
+            temporalEvolution.setDecisionVariable(decisionSelected);
+            //no discounted or probabilistic elements
+            this.temporalEvolutionResults = temporalEvolution.getTemporalEvolution();
+            this.expandedNetwork = temporalEvolution.getExpandedNetwork();
+            //discounted elements for utility nodes
+            if (isUtility) {
+                this.temporalEvolutionDiscount = temporalEvolution.getTemporalEvolutionWithDiscount();
             }
-            this.expandedNetwork = temporalEvolutionOneNode.getExpandedNetwork();
             // end
             initialize(owner);
-            // 31/10/2022 moved to initialize to avoid code repetition
-//            Toolkit toolkit = Toolkit.getDefaultToolkit();
-//            Dimension screenSize = toolkit.getScreenSize();
-//            Rectangle bounds = owner.getBounds();
-//            int width = screenSize.width / 2;
-//            int height = screenSize.height / 2;
-//            // center point of the owner window
-//            int x = bounds.x / 2 - width / 2;
-//            int y = bounds.y / 2 - height / 2;
-//            this.setBounds(x, y, width, height);
-//            setMinimumSize(new Dimension(width, height / 2));
-//            setLocationRelativeTo(owner);
-//            setResizable(true);
-//            repaint();
-//            pack();
-//            setVisible(true);
+
+        } catch (IndexOutOfBoundsException ignore){
+            //When pressing "Cancel" in progressMonitor
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), "Error",
+            JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
                     JOptionPane.ERROR_MESSAGE);
         }
-
+        });
+        evaluationThread.start();
+        progressMonitorThread(evaluationThread).start();
     }
 
     // 02/11/2022
@@ -330,100 +307,108 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param decisionSelected conditioning decision for which temporal evolution by criterion is displayed
      */
     public TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) {
-        super(owner);
-        this.originalProbNet = probNet;
-        this.isIndividual = true;
-        this.isUtility = true;
+        this(owner, probNet,decisionSelected);
         this.isByCriterion = true;
-        conditioningVariables = new ArrayList<>();
-        try {
-            MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
-        } catch (ImposedPoliciesException e) {
-            JOptionPane.showMessageDialog(owner,  "There are more than one decision node without policy","Warning",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (decisionSelected != null) {
-            this.decisionSelected = decisionSelected;
-            conditioningVariables.add(decisionSelected);
-        } else{
-            this.decisionSelected = new Variable(NODEC,NODEC);
-        }
+        this.isUtility = true;
+        List<Criterion> criteria = probNet.getDecisionCriteria();
+        progressMonitor.setMaximum(numSlices * criteria.size());
+        this.markedCheckBoxes = new boolean[criteria.size()];
+        Arrays.fill(markedCheckBoxes, true);
+        Thread evaluationThread = new Thread(() -> {
+            try {
+                for (Criterion criterion : criteria) {
+                    String criterionName = criterion.getCriterionName();
+                    List<Node> criterionNodes = probNet.getNodes(NodeType.UTILITY)
+                            .stream().filter(node -> node.getVariable().getDecisionCriterion().getCriterionName().equals(criterionName)).collect(Collectors.toList());
 
-        try {
-            numSlices = probNet.getInferenceOptions().getTemporalOptions().getHorizon();
-            List<Criterion> criteria = probNet.getDecisionCriteria();
-            this.markedCheckBoxes = new boolean[criteria.size()];
-            Arrays.fill(markedCheckBoxes,true);
-            for (Criterion criterion : criteria) {
-                String criterionName = criterion.getCriterionName();
-                List<Node> criterionNodes = probNet.getNodes(NodeType.UTILITY)
-                        .stream().filter(node -> node.getVariable().getDecisionCriterion().getCriterionName().equals(criterionName)).collect(Collectors.toList());
+                    TemporalEvolution temporalEvolutionCriterion = new MIDTemporalEvolution(probNet, criterionNodes);
 
-                TemporalEvolution temporalEvolutionCriterion = new MIDTemporalEvolution(probNet, criterionNodes);
+                    temporalEvolutionCriterion.setPreResolutionEvidence(evidence);
+                    temporalEvolutionCriterion.setDecisionVariable(decisionSelected);
 
-                temporalEvolutionCriterion.setPreResolutionEvidence(evidence);
-                temporalEvolutionCriterion.setDecisionVariable(decisionSelected);
+                    ((MIDTemporalEvolution) temporalEvolutionCriterion).forceUnicriterion();
 
+                    this.temporalEvolutionResults = temporalEvolutionCriterion.getTemporalEvolution();
+                    //Upfront values
+                    this.upfrontEvolutionByCriterion.put(criterionName,  temporalEvolutionCriterion.getAtemporalUtility());
+                    //No discount
+                    List<TablePotential> tablePotentialSequence = this.temporalEvolutionResults.entrySet()
+                            .stream().sorted((Comparator.comparing(v -> v.getKey().getTimeSlice()))).map(Map.Entry::getValue).collect(Collectors.toList());
+                    temporalEvolutionByCriterion.put(criterionName, tablePotentialSequence);
 
-                ((MIDTemporalEvolution)temporalEvolutionCriterion).forceUnicriterion();
-                ((MIDTemporalEvolution) temporalEvolutionCriterion).setDecisionCriterion(criterion);
-                this.temporalEvolution = temporalEvolutionCriterion.getTemporalEvolution();
-                //10/11/2022 - Used when saving file; TODO change for originalProbNet
-                this.expandedNetwork = temporalEvolutionCriterion.getExpandedNetwork();
-                //Upfront values
-                this.upfrontEvolutionByCriterion.put(criterionName,((MIDTemporalEvolution) temporalEvolutionCriterion).getAtemporalUtility());
-                //No discount
-                List<TablePotential> tablePotentialSequence = this.temporalEvolution.entrySet()
-                        .stream().sorted((Comparator.comparing(v -> v.getKey().getTimeSlice()))).map(Map.Entry::getValue).collect(Collectors.toList());
-                temporalEvolutionByCriterion.put(criterionName, tablePotentialSequence);
+                    //Discounted
+                    this.temporalEvolutionDiscount = temporalEvolutionCriterion.getTemporalEvolutionWithDiscount(criterion);
+                    tablePotentialSequence = this.temporalEvolutionDiscount.entrySet()
+                            .stream().sorted((Comparator.comparing(v -> v.getKey().getTimeSlice()))).map(Map.Entry::getValue).collect(Collectors.toList());
+                    temporalEvolutionByCriterionDiscount.put(criterionName, tablePotentialSequence);
 
-                //Discounted
-                this.temporalEvolutionDiscount = temporalEvolutionCriterion.getTemporalEvolutionWithDiscount();
-                tablePotentialSequence = this.temporalEvolutionDiscount.entrySet()
-                        .stream().sorted((Comparator.comparing(v -> v.getKey().getTimeSlice()))).map(Map.Entry::getValue).collect(Collectors.toList());
-                temporalEvolutionByCriterionDiscount.put(criterionName, tablePotentialSequence);
+                }
 
+                //For representation purposes
+                variableOfInterest = new Variable(CRITERION, temporalEvolutionByCriterion.keySet().toArray(new String[0]));
+                initialize(owner);
+            } catch (IndexOutOfBoundsException ignore){
+                //When pressing "Cancel" in progressMonitor
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
+                        JOptionPane.ERROR_MESSAGE);
             }
-
-            //For representation purposes
-            variableOfInterest = new Variable(CRITERION, temporalEvolutionByCriterion.keySet().toArray(new String[0]));
-            initialize(owner);
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        });
+        evaluationThread.start();
+        progressMonitorThread(evaluationThread).start();
 
     }
 
+    private Thread progressMonitorThread(Thread evaluationThread){
+        return new Thread(() -> {
+            int completed = 0;
+            while (completed < progressMonitor.getMaximum()) {
+                synchronized (MIDTemporalEvolution.class) {
+                    try {
+                        MIDTemporalEvolution.class.wait();
+                    } catch (InterruptedException ignored) {
+                    }
+                    progressMonitor.setProgress(++completed);
+                    if (progressMonitor.isCanceled()) {
+                        evaluationThread.interrupt();
+                        return;
+                    }
+                }
+            }
+        });
+    }
+
+
+
     /**
      * Selects and prepares the series to be displayed
+     *
      * @param isDiscounted if true discounted series are shown
-     * @param showUpfront if true upfront values are added to time 0
+     * @param showUpfront  if true upfront values are added to time 0
      * @return List of @link(XYSeries) ready to be displayed
      */
     private List<XYSeries> displaySeries(boolean isDiscounted, boolean showUpfront) {
         List<XYSeries> display;
-        if (isDiscounted){
+        if (isDiscounted) {
             display = new ArrayList<>(arrayXYSeriesDiscount);
-        } else{
+        } else {
             display = new ArrayList<>(arrayXYSeries);
         }
-        if (showUpfront){
+        if (showUpfront) {
             for (int seriesNumber = 0; seriesNumber < display.size(); seriesNumber++) {
-        //Cannot change values from arrayXYSeriesDiscount and
+                //Cannot change values from arrayXYSeriesDiscount and
                 XYSeries xySeriesWithUpfront = null;
                 try {
                     xySeriesWithUpfront = (XYSeries) (display.remove(seriesNumber)).clone();
                 } catch (CloneNotSupportedException e) {
                     throw new RuntimeException(e);
                 }
-                XYDataItem firstDataItem= xySeriesWithUpfront.remove(0);
+                XYDataItem firstDataItem = xySeriesWithUpfront.remove(0);
                 //adding atemporal data
                 firstDataItem.setY(firstDataItem.getYValue() + arrayXYSeriesUpfront.get(seriesNumber).getY(0).doubleValue());
-                xySeriesWithUpfront.add( firstDataItem);
-                display.add(seriesNumber,xySeriesWithUpfront);
+                xySeriesWithUpfront.add(firstDataItem);
+                display.add(seriesNumber, xySeriesWithUpfront);
 
             }
 
@@ -454,7 +439,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 for (int i = 0; i < numberOfCombinations / variableOfInterest.getNumStates(); i++) {
                     for (int j = 0; j < markedCheckBoxes.length; j++) {
                         if (markedCheckBoxes[j]) {
-                            XYSeries individualSeries = displaySeries(isDiscounted,showUpfront).get(i * variableOfInterest.getNumStates() + j);
+                            XYSeries individualSeries = displaySeries(isDiscounted, showUpfront).get(i * variableOfInterest.getNumStates() + j);
                             XYSeries cumulatedSeries = new XYSeries(individualSeries.getKey());
                             double value = 0.0;
                             double slice = 0;
@@ -471,7 +456,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 for (int i = 0; i < numberOfCombinations / variableOfInterest.getNumStates(); i++) {
                     for (int j = 0; j < markedCheckBoxes.length; j++) {
                         if (markedCheckBoxes[j]) {
-                            result.add(displaySeries(isDiscounted,showUpfront).get(i * variableOfInterest.getNumStates() + j));
+                            result.add(displaySeries(isDiscounted, showUpfront).get(i * variableOfInterest.getNumStates() + j));
 
                         }
 
@@ -483,7 +468,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
         // Remove the old Chart, calculate the new Chart and Add the new Chart. Then repaint to update the GUI
         chartPanelWithCheckBox.remove(chartPanel);
-        chartPanel = getChartsByCriterionPanel(result);
+        chartPanel = getChartsByCriterionPanel(result, markedCheckBoxes);
         chartPanelWithCheckBox.add(chartPanel, BorderLayout.CENTER);
         this.repaint();
 
@@ -504,7 +489,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         arrayXYSeriesDiscount = new ArrayList<>();
 
         List<String> decisionCriteria = new ArrayList<>(temporalEvolutionByCriterion.keySet());
-        numberOfCombinations = decisionCriteria.size()*decisionSelected.getNumStates();
+        numberOfCombinations = decisionCriteria.size() * decisionSelected.getNumStates();
 
         for (State decisionState : decisionSelected.getStates()) {
             for (String criterionName : decisionCriteria) {
@@ -514,27 +499,26 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 XYSeries xySeries = new XYSeries(nameOfSeries);
                 XYSeries xySeriesDiscount = new XYSeries(nameOfSeries);
                 XYSeries xySeriesUpfront = new XYSeries(nameOfSeries);
-                TablePotential upfrontTablePotential =upfrontEvolutionByCriterion.get(criterionName);
-                int  numVariables = upfrontTablePotential.getNumVariables();
-                switch (numVariables){
+                TablePotential upfrontTablePotential = upfrontEvolutionByCriterion.get(criterionName);
+                int numVariables = upfrontTablePotential.getNumVariables();
+                switch (numVariables) {
                     case 0:
                         xySeriesUpfront.add(0, upfrontTablePotential.values[0]);
                         break;
                     case 1:
                         int decisionStateIndex = upfrontTablePotential.getVariables().get(0).getStateIndex(decisionState);
-                        xySeriesUpfront.add(0,upfrontTablePotential.getValue(upfrontTablePotential.getVariables(), new int[]{decisionStateIndex}));
+                        xySeriesUpfront.add(0, upfrontTablePotential.getValue(upfrontTablePotential.getVariables(), new int[]{decisionStateIndex}));
                         break;
                     default:
                         throw new ImposedPoliciesException("More than one conditioning variable");
                 }
 
-                //FIXME if utility has no [0]?
-                for (int slice = 0; slice <=numSlices ; slice++) {
+                for (int slice = 0; slice <= numSlices; slice++) {
                     TablePotential tablePotential = temporalEvolutionByCriterion.get(criterionName).get(slice);
                     TablePotential tablePotentialDiscount = temporalEvolutionByCriterionDiscount.get(criterionName).get(slice);
                     double value;
                     double valueDiscount;
-                     numVariables = tablePotential.getNumVariables();
+                    numVariables = tablePotential.getNumVariables();
                     switch (numVariables) {
                         case 0:
                             value = tablePotential.values[0];
@@ -576,16 +560,18 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Gets the Charts Panel with the JFreeChart for displaying temporal evolution by criterion where each criterion has its own axis
      *
      * @param xySeriesToDisplay List of XYSeries any series where each element contains one data line
+     * @param markedCheckBoxes
      * @return a ChartPanel displaying temporal evolution by criterion according to xySeriesToDisplay
      */
-    private ChartPanel getChartsByCriterionPanel(List<XYSeries> xySeriesToDisplay) {
+    private ChartPanel getChartsByCriterionPanel(List<XYSeries> xySeriesToDisplay, boolean[] markedCheckBoxes) {
         //We can use one dataset per axis (as done by examples in "Developer guide" or add the axis using computing the range)
         //First line associated to chart primary index
         XYSeriesCollection dataset = new XYSeriesCollection();
         //GetNumCriteria returns 0
 //		int numCriteria= originalProbNet.getNumCriteria();
-        int numCriteria = temporalEvolutionByCriterion.size();
+//        int numCriteria = temporalEvolutionByCriterion.size();
         List<Criterion> criteria = originalProbNet.getDecisionCriteria();
+        int numCriteria = criteria.size();
         //First dataset matched to main axis; it contains first criterion data;
         for (int i = 0; i < xySeriesToDisplay.size(); i = i + numCriteria) {
             dataset.addSeries(xySeriesToDisplay.get(i));
@@ -876,6 +862,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     /**
      * Get the bottom panel with buttons
+     *
      * @return The bottom panel
      */
     private JPanel getBottomPanel() {
@@ -904,6 +891,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     /**
      * Gets the components panel
+     *
      * @return The components panel
      */
     private Component getComponentsPanel() {
@@ -949,7 +937,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 } catch (InvalidStateException | ImposedPoliciesException e) {
                     throw new RuntimeException(e);
                 }
-                chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true,true)), BorderLayout.CENTER);
+                chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
             } else
                 // end
                 chartPanelWithCheckBox.add(getChartsPanel(createDataset()), BorderLayout.CENTER);
@@ -1049,6 +1037,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     /**
      * Control panel with checkBox controls
+     *
      * @return The check boxes panel
      */
     private JScrollPane getCheckBoxesPanel() {
@@ -1091,6 +1080,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     /**
      * Panel with the radio button control that changes the display type
+     *
      * @return The display type panel
      */
     private JPanel getDisplayTypePanel() {
@@ -1169,7 +1159,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             jCheckBoxUpfrontValues.setSelected(true);
             displayType.add(jCheckBoxUpfrontValues);
         }
-        if (isUtility){
+        if (isUtility) {
             jCheckBoxDiscounted = new JCheckBox(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Discount"));
             jCheckBoxDiscounted.addActionListener(e -> checkBoxChanged());
             jCheckBoxDiscounted.setSelected(true);
@@ -1254,9 +1244,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 showChartSeriesWithFilter(markedCheckBoxes);
             }
     }
-
-
-
 
 
     /**
@@ -1367,6 +1354,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     /**
      * Method that updates utility series. Really similar to "showChartSeriesWithFilter", but in this
      * case, the checkboxes are irrelevant and we must know if the display is cumulative or individual
+     *
      * @param isDiscounted true if discounted results are displayed
      */
     private void showUtilitySeries(boolean isDiscounted) {
@@ -1378,9 +1366,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         }
         // 07/11/2022
         List<XYSeries> displaySeries;
-        if (isDiscounted){
+        if (isDiscounted) {
             displaySeries = arrayXYSeriesDiscount;
-        } else{
+        } else {
             displaySeries = arrayXYSeries;
         }
         // end
@@ -1391,7 +1379,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 //                String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
             for (int i = 0; i < displaySeries.size(); i++) {
                 String nameOfSerie = (String) displaySeries.get(i).getKey();
-            // end
+                // end
                 XYSeries serie = new XYSeries(nameOfSerie);
                 double value = 0.0;
                 double slice = 0;
@@ -1410,9 +1398,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             // 07/11/2022
 //            for (int i = 0; i < arrayXYSeries.size(); i++) {
 //            String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
-                for (int i = 0; i < displaySeries.size(); i++) {
-                    String nameOfSerie = (String) displaySeries.get(i).getKey();
-            // end
+            for (int i = 0; i < displaySeries.size(); i++) {
+                String nameOfSerie = (String) displaySeries.get(i).getKey();
+                // end
 
                 XYSeries serie = null;
                 try {
@@ -1433,8 +1421,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         chartPanelWithCheckBox.add(chartPanel, BorderLayout.CENTER);
         this.repaint();
     }
-
-
 
 
     /**
@@ -1497,22 +1483,22 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
             TablePotential tablePotential = null;
 
-            tablePotential = temporalEvolution.get(variableInSliceJ);
+            tablePotential = temporalEvolutionResults.get(variableInSliceJ);
             // 07/11/2022 adding discounted/no discounted results
-            TablePotential tablePotentialDiscount=null;
+            TablePotential tablePotentialDiscount = null;
             if (isUtility) {
-                tablePotentialDiscount= temporalEvolutionDiscount.get(variableInSliceJ);
+                tablePotentialDiscount = temporalEvolutionDiscount.get(variableInSliceJ);
             }
             // end
 
             if (tablePotential.getValues().length < numberOfCombinations) {
                 double[] values = new double[numberOfCombinations];
                 // 07/11/2022 adding discounted/no discounted results
-                double[] valuesDiscount= new double[numberOfCombinations];
+                double[] valuesDiscount = new double[numberOfCombinations];
 
                 // end
                 for (int z = 0; z < numberOfCombinations; z++) {
-                    values[z] = tablePotential.getValues()[z % temporalEvolution.get(variableInSliceJ)
+                    values[z] = tablePotential.getValues()[z % temporalEvolutionResults.get(variableInSliceJ)
                             .getValues().length];///(numberOfCombinations/variableOfInterest.getNumStates());
                     if (isUtility) {
                         valuesDiscount[z] = tablePotentialDiscount.getValues()[z % temporalEvolutionDiscount.get(variableInSliceJ)
@@ -1603,7 +1589,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     // 07/11/2022 adding discounted/no discounted results
                     if (isUtility) {
                         value = listOfPotentialsDiscount.get(j).getValues()[i];
-                        seriesDiscount.add(time,value);
+                        seriesDiscount.add(time, value);
                     }
                     // end
                 }
@@ -1719,6 +1705,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     /**
      * Create the data set using the result given by createSeries method*
+     *
      * @return The data set created
      */
     private XYDataset createDataset() {
@@ -1731,9 +1718,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 //        for (int i = 0; i < arrayXYSeries.size(); i++) {
 //            result.addSeries(arrayXYSeries.get(i));
 //        }
-        if (isUtility){
+        if (isUtility) {
             arrayXYSeriesDiscount.forEach(result::addSeries);
-        } else{
+        } else {
             arrayXYSeries.forEach(result::addSeries);
         }
         // end
@@ -1751,10 +1738,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 //				conditioningVariables, numSlices, isUtility, isCumulative);
         if (isByCriterion) {
             tablePane = new TemporalEvolutionTablePane(decisionSelected, markedCheckBoxes, isCumulative, new ArrayList<>(temporalEvolutionByCriterion.keySet()), displaySeries(jCheckBoxDiscounted.isSelected(), jCheckBoxUpfrontValues.isSelected()), numSlices);
-        }else if (isUtility){
-            tablePane = new TemporalEvolutionTablePane(decisionSelected, new boolean[]{true}, isCumulative, new ArrayList<>(Collections.singletonList( variableOfInterest.getDecisionCriterion().getCriterionName())), displaySeries(jCheckBoxDiscounted.isSelected(), false), numSlices);
+        } else if (isUtility) {
+            tablePane = new TemporalEvolutionTablePane(decisionSelected, new boolean[]{true}, isCumulative, new ArrayList<>(Collections.singletonList(variableOfInterest.getDecisionCriterion().getCriterionName())), displaySeries(jCheckBoxDiscounted.isSelected(), false), numSlices);
         } else {
-            tablePane = new TemporalEvolutionTablePane(temporalEvolution, expandedNetwork, variableOfInterest,
+            tablePane = new TemporalEvolutionTablePane(temporalEvolutionResults, expandedNetwork, variableOfInterest,
                     conditioningVariables, numSlices, isUtility, isCumulative);
         }
         // end
