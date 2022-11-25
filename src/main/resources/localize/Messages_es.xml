@@ -574,5 +574,12 @@
             <Label value="El archivo seleccionado ya existe. ¿Deseas sobreescribirlo?"/>
         </Text>
     </OverwriteFile>
+    <!--cmyago 25/11/2022; for MID temporal evolution when there is more than one node without policy -->
+    <DecisionWithoutPolicyWarning>
+        <Text>
+            <Label value="Hay más de un nodo de decisión sin política asociada"/>
+        </Text>
+    </DecisionWithoutPolicyWarning>
+    <!--cmyago end -->
 </properties>
 

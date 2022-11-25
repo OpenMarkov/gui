@@ -574,4 +574,12 @@
             <Label value="The select file does exist. Do you want to overwrite it?"/>
         </Text>
     </OverwriteFile>
+    <!--cmyago 25/11/2022; for MID temporal evolution when there is more than one node without policy -->
+    <DecisionWithoutPolicyWarning>
+         <Text>
+             <Label value="There are more than one decision node without associated policy"/>
+         </Text>
+    </DecisionWithoutPolicyWarning>
+    <!--cmyago end -->
+
 </properties>
