@@ -213,11 +213,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     //  end
 
-    //cmyago 15/11/2022 - progress bar
+    //15/11/2022 - progress bar
     private ProgressMonitor progressMonitor;
-    //cmyago end
+    //end
 
-    //cmyago 15/11/2022  constructors reworked
+    //15/11/2022  constructors reworked
     private TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, Variable decisionSelected) {
         super(owner);
         this.originalProbNet = probNet;
@@ -1487,7 +1487,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         }
     }
 
-    // cmyago 24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
+    // 24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
 
     /**
      * Sorts and formats the temporal evolution by criterion chart legends (stored in <code>legendLabels</code>) and updates the legend panel.
@@ -1548,7 +1548,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
         getLegendsPanel();
     }
-    //cmyago end
+    //end
 
     /**
      * Gets the LegendTitles and updates the LegendPanel at the end
@@ -1566,7 +1566,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             }
 
             boolean isSamePolicy = true;
-            // cmyago 24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
+            //24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
             if (isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1) {
                 // end
                 JLabel groupLabel = new JLabel(subListTitle);
