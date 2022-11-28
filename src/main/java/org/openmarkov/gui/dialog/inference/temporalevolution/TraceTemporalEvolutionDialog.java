@@ -17,7 +17,6 @@ import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
@@ -38,27 +37,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
 import java.util.prefs.Preferences;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 /**
  * Plot of temporal evolution of variables in CEA
  *
  * @author myebra
- * @version 2 cmyago 04/11/2022 -Added 1.- Jorge's algorithm for temporal evolution;  2.- temporal evolution by criterion;
- * 3.-upfront and diccount checks; 4.- check behaviour added to table;  5.- javadoc to some methods which previously lack of it ;
- * 6.- some code optimization;
- * @version 2.1 cmysto 16/11/2022 progress bar; reworked constructors
+ * @version 2 cmyago   16/11/2022; progress bar; reworked constructors
  */
 public class TraceTemporalEvolutionDialog extends JDialog {
     private final String CRITERION = "Criterion";
@@ -82,21 +74,19 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Discounted temporal evolution of each @link{Criterion} of @code{#originalProbNet}.
      */
     private final TreeMap<String, List<TablePotential>> temporalEvolutionByCriterionDiscount = new TreeMap<>();
-
-
+    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * MID before expansion (from which temporal evolution of one of its elements is displayed)
      */
-    private ProbNet originalProbNet;
+    private final ProbNet originalProbNet;
     /**
      * True if node(s) whose temporal evolution is displayed are utility nodes; false otherwise
      */
     private boolean isUtility;
-    private final StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
     /**
      * List of conditioning variables for performing variable elimination algorithm; for temporal evolution there is only zero/one decision variable
      */
-    private  List<Variable> conditioningVariables;
+    private List<Variable> conditioningVariables;
     /**
      * Conditioning decision for displaying temporal evolution; if there is one it corresponds
      * to the first element of@code{#conditioningVariables}
@@ -230,12 +220,12 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     //cmyago 15/11/2022  constructors reworked
     private TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, Variable decisionSelected) {
         super(owner);
-        this.originalProbNet =probNet;
+        this.originalProbNet = probNet;
         //10/11/2022 error message when there is more than one node without policy
         try {
             MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
         } catch (ImposedPoliciesException e) {
-            JOptionPane.showMessageDialog(owner, "There are more than one decision node without policy", "Warning",
+            JOptionPane.showMessageDialog(owner, stringDatabase.getString("DecisionWithoutPolicyWarning.Text.Label"), stringDatabase.getString("WarningWindow.Title.Label"),
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -248,9 +238,12 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         } else {
             this.decisionSelected = new Variable(NODEC, NODEC);
         }
-
         isIndividual = true;
-        this.progressMonitor = new ProgressMonitor(owner, "Temporal evolution", "Evaluating...", 0, 100);
+        //Select language; otherwise takes VM language; changing "default locales" does not work.
+        UIManager.put("ProgressMonitor.progressText", stringDatabase.getString("ProgressMonitor.ProgressText.Label"));
+        UIManager.put("OptionPane.cancelButtonText", stringDatabase.getString("Cancel.Text.Label"));
+        this.progressMonitor = new ProgressMonitor(owner, stringDatabase.getString("ProgressMonitor.Message.TemporalEvolution"), stringDatabase.getString("ProgressMonitor.Note.TemporalEvolution"), 0, 100);
+
 
     }
 
@@ -268,29 +261,29 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         this.isUtility = node.getNodeType() == NodeType.UTILITY;
         progressMonitor.setMaximum(numSlices);
         Thread evaluationThread = new Thread(() -> {
-        try {
-            this.variableOfInterest = node.getVariable();
+            try {
+                this.variableOfInterest = node.getVariable();
 //			TemporalEvolution temporalEvolution = new VETemporalEvolution(probNet, node.getVariable());
-            TemporalEvolution temporalEvolution = new MIDTemporalEvolution(originalProbNet, variableOfInterest);
-            temporalEvolution.setPreResolutionEvidence(evidence);
-            temporalEvolution.setDecisionVariable(decisionSelected);
-            //no discounted or probabilistic elements
-            this.temporalEvolutionResults = temporalEvolution.getTemporalEvolution();
-            this.expandedNetwork = temporalEvolution.getExpandedNetwork();
-            //discounted elements for utility nodes
-            if (isUtility) {
-                this.temporalEvolutionDiscount = temporalEvolution.getTemporalEvolutionWithDiscount();
-            }
-            // end
-            initialize(owner);
+                TemporalEvolution temporalEvolution = new MIDTemporalEvolution(originalProbNet, variableOfInterest);
+                temporalEvolution.setPreResolutionEvidence(evidence);
+                temporalEvolution.setDecisionVariable(decisionSelected);
+                //no discounted or probabilistic elements
+                this.temporalEvolutionResults = temporalEvolution.getTemporalEvolution();
+                this.expandedNetwork = temporalEvolution.getExpandedNetwork();
+                //discounted elements for utility nodes
+                if (isUtility) {
+                    this.temporalEvolutionDiscount = temporalEvolution.getTemporalEvolutionWithDiscount();
+                }
+                // end
+                initialize(owner);
 
-        } catch (IndexOutOfBoundsException ignore){
-            //When pressing "Cancel" in progressMonitor
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
-                    JOptionPane.ERROR_MESSAGE);
-        }
+            } catch (IndexOutOfBoundsException ignore) {
+                //When pressing "Cancel" in progressMonitor
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(owner, stringDatabase.getString("GenericError.Text"), stringDatabase.getString("ExceptionGeneric.Title.Label"),
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
         evaluationThread.start();
         progressMonitorThread(evaluationThread).start();
@@ -307,7 +300,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param decisionSelected conditioning decision for which temporal evolution by criterion is displayed
      */
     public TraceTemporalEvolutionDialog(Window owner, ProbNet probNet, EvidenceCase evidence, Variable decisionSelected) {
-        this(owner, probNet,decisionSelected);
+        this(owner, probNet, decisionSelected);
         this.isByCriterion = true;
         this.isUtility = true;
         List<Criterion> criteria = probNet.getDecisionCriteria();
@@ -330,7 +323,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
                     this.temporalEvolutionResults = temporalEvolutionCriterion.getTemporalEvolution();
                     //Upfront values
-                    this.upfrontEvolutionByCriterion.put(criterionName,  temporalEvolutionCriterion.getAtemporalUtility());
+                    this.upfrontEvolutionByCriterion.put(criterionName, temporalEvolutionCriterion.getAtemporalUtility());
                     //No discount
                     List<TablePotential> tablePotentialSequence = this.temporalEvolutionResults.entrySet()
                             .stream().sorted((Comparator.comparing(v -> v.getKey().getTimeSlice()))).map(Map.Entry::getValue).collect(Collectors.toList());
@@ -347,7 +340,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 //For representation purposes
                 variableOfInterest = new Variable(CRITERION, temporalEvolutionByCriterion.keySet().toArray(new String[0]));
                 initialize(owner);
-            } catch (IndexOutOfBoundsException ignore){
+            } catch (IndexOutOfBoundsException ignore) {
                 //When pressing "Cancel" in progressMonitor
             } catch (Exception e) {
                 e.printStackTrace();
@@ -360,7 +353,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     }
 
-    private Thread progressMonitorThread(Thread evaluationThread){
+    private Thread progressMonitorThread(Thread evaluationThread) {
         return new Thread(() -> {
             int completed = 0;
             while (completed < progressMonitor.getMaximum()) {
@@ -380,12 +373,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     }
 
 
-
     /**
      * Selects and prepares the series to be displayed
      *
-     * @param isDiscounted if true discounted series are shown
-     * @param showUpfront  if true upfront values are added to time 0
+     * @param isDiscounted if true, discounted series are shown
+     * @param showUpfront  if true, upfront values are added to time 0
      * @return List of @link(XYSeries) ready to be displayed
      */
     private List<XYSeries> displaySeries(boolean isDiscounted, boolean showUpfront) {
@@ -423,10 +415,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * Based on this#showChartSeriesWithFilter.
      *
      * @param markedCheckBoxes array of boolean representing the MID criteria; when an item is true its temporal evolution is displayed.
-     * @param isDiscounted
-     * @param showUpfront
+     * @param isDiscounted     if true, discounted series are shown
+     * @param showUpfront      if true, upfront values are added to time 0
      */
-    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws InvalidStateException, ImposedPoliciesException {
+    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws InvalidStateException, ImposedPoliciesException, UnexpectedInferenceException {
 
         List<XYSeries> result = new ArrayList<>();
         //At least there is one element marked
@@ -481,8 +473,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * This method only will be launched at the first time. In later
      * modifications and filters the established series are used to get other combined data
      */
-    private void createByCriterionSeries() throws InvalidStateException, ImposedPoliciesException {
-        if (conditioningVariables.size() > 1) throw new ImposedPoliciesException("More than one conditioning variable");
+    private void createByCriterionSeries() throws InvalidStateException, ImposedPoliciesException, UnexpectedInferenceException {
         //Only one decision variable; conditioningVariables.size() =1
         arrayXYSeriesUpfront = new ArrayList<>();
         arrayXYSeries = new ArrayList<>();
@@ -510,7 +501,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                         xySeriesUpfront.add(0, upfrontTablePotential.getValue(upfrontTablePotential.getVariables(), new int[]{decisionStateIndex}));
                         break;
                     default:
-                        throw new ImposedPoliciesException("More than one conditioning variable");
+                        throw new UnexpectedInferenceException(stringDatabase.getString("UnexpectedInferenceException.TemporalEvolution"));
                 }
 
                 for (int slice = 0; slice <= numSlices; slice++) {
@@ -530,7 +521,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                             valueDiscount = tablePotentialDiscount.getValue(tablePotential.getVariables(), new int[]{decisionStateIndex});
                             break;
                         default:
-                            throw new ImposedPoliciesException("More than one conditioning variable");
+                            throw new UnexpectedInferenceException(stringDatabase.getString("UnexpectedInferenceException.TemporalEvolution"));
                     }//if it is greater than two -->exception
                     xySeries.add(slice, value);
                     xySeriesDiscount.add(slice, valueDiscount);
@@ -545,22 +536,12 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     }
 
-//    /**
-//     * Utility checks are discounting and upfront data. Graph and table are redrawn according to the changes in the check
-//     */
-//    private void checkBoxUtilityChanged() {
-//        tabbedPane.removeTabAt(1);
-//        checkBoxChanged();
-//        tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
-//                null);
-//
-//    }
 
     /**
      * Gets the Charts Panel with the JFreeChart for displaying temporal evolution by criterion where each criterion has its own axis
      *
      * @param xySeriesToDisplay List of XYSeries any series where each element contains one data line
-     * @param markedCheckBoxes
+     * @param markedCheckBoxes  array indicating which criteria are to be displayed
      * @return a ChartPanel displaying temporal evolution by criterion according to xySeriesToDisplay
      */
     private ChartPanel getChartsByCriterionPanel(List<XYSeries> xySeriesToDisplay, boolean[] markedCheckBoxes) {
@@ -572,16 +553,28 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 //        int numCriteria = temporalEvolutionByCriterion.size();
         List<Criterion> criteria = originalProbNet.getDecisionCriteria();
         int numCriteria = criteria.size();
+        //Displayed criterion according to markedCheckBoxes
+        int numDisplayedCriteria = 0;
+        List<String> yAxisLabels = new ArrayList<>();
+        for (int i = 0; i < markedCheckBoxes.length; i++) {
+            if (markedCheckBoxes[i]) {
+                numDisplayedCriteria++;
+                String criterionName = (String) temporalEvolutionByCriterion.keySet().toArray()[i];
+                String criterionUnit = criteria.stream().filter(criterion -> criterion.getCriterionName().equals(criterionName)).findFirst().get().getCriterionUnit();
+                yAxisLabels.add(String.format("%s (%s)", criterionName, criterionUnit));
+            }
+        }
+
         //First dataset matched to main axis; it contains first criterion data;
-        for (int i = 0; i < xySeriesToDisplay.size(); i = i + numCriteria) {
+        for (int i = 0; i < xySeriesToDisplay.size(); i = i + numDisplayedCriteria) {
             dataset.addSeries(xySeriesToDisplay.get(i));
         }
-        String criterionName = (String) temporalEvolutionByCriterion.keySet().toArray()[0];
-        String criterionUnit = criteria.stream().filter(criterion -> criterion.getCriterionName().equals(criterionName)).findFirst().get().getCriterionUnit();
-        String xAxisLabel = String.format("%s (%s)", criterionName, criterionUnit);
-        chart = ChartFactory.createXYLineChart("", "t", xAxisLabel, dataset, PlotOrientation.VERTICAL, true, true, true);
+        chart = ChartFactory.createXYLineChart("", "t", yAxisLabels.get(0), dataset, PlotOrientation.VERTICAL, true, true, true);
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         XYPlot plot = chart.getXYPlot();
+        XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"),
+                new DecimalFormat("0.00"));
+        renderer.setBaseToolTipGenerator(generator);
         plot.setRenderer(renderer);
         plot.setDomainGridlinesVisible(true);
         plot.setRangeGridlinesVisible(true);
@@ -591,56 +584,50 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 //        plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
 
         //One axis per criterion; next axis
-        for (int numCriterion = 1; numCriterion < numCriteria; numCriterion++) {
-            String criterionNameNext = (String) temporalEvolutionByCriterion.keySet().toArray()[numCriterion];
-            String criterionUnitNext = criteria.stream().filter(criterion -> criterion.getCriterionName().equals(criterionNameNext)).findFirst().get().getCriterionUnit();
-            String xAxisLabelNext = String.format("%s (%s)", criterionNameNext, criterionUnitNext);
-            NumberAxis axis = new NumberAxis(xAxisLabelNext);
+        for (int numDisplayedCriterion = 1; numDisplayedCriterion < numDisplayedCriteria; numDisplayedCriterion++) {
+            NumberAxis axis = new NumberAxis(yAxisLabels.get(numDisplayedCriterion));
             axis.setLabelFont(plot.getRangeAxis().getLabelFont());
 
-            plot.setRangeAxis(numCriterion, axis);
+            plot.setRangeAxis(numDisplayedCriterion, axis);
             dataset = new XYSeriesCollection();
-            for (int i = numCriterion; i < xySeriesToDisplay.size(); i = i + numCriteria) {
+            for (int i = numDisplayedCriterion; i < xySeriesToDisplay.size(); i = i + numDisplayedCriteria) {
                 dataset.addSeries(xySeriesToDisplay.get(i));
             }
-            plot.setDataset(numCriterion, dataset);
-            plot.mapDatasetToRangeAxis(numCriterion, numCriterion);
+            plot.setDataset(numDisplayedCriterion, dataset);
+            plot.mapDatasetToRangeAxis(numDisplayedCriterion, numDisplayedCriterion);
             //for left side axis
             renderer = new XYLineAndShapeRenderer();
-            plot.setRenderer(numCriterion, renderer);
+
+            renderer.setBaseToolTipGenerator(generator);
+            plot.setRenderer(numDisplayedCriterion, renderer);
 
         }
 
 
-        //Reorder labels; getLegendTitle() consider legend items are ordered by policy; it also consider there is only one rendere
-        //TODO consider recoding getLegendTitle
-        final Pattern pattern = Pattern.compile("(.+)(\\[.+])");
-        Iterable<LegendItem> iterable = () -> plot.getLegendItems().iterator();
-        List<LegendItem> sortedItems = StreamSupport.stream(
-                        iterable.spliterator(), false)
-                .sorted(Comparator.comparing(legendItem -> {
-                    Matcher matcher = pattern.matcher(legendItem.getLabel());
-                    matcher.matches();
-                    return matcher.group(2) + matcher.group(1);
-                }))
-                .collect(Collectors.toList());
-        LegendItemCollection sortedLegendCollection = new LegendItemCollection();
-        sortedItems.forEach(sortedLegendCollection::add);
-        plot.setFixedLegendItems(sortedLegendCollection);
+//        //Reorder labels; getLegendTitle() consider legend items are ordered by policy; it also consider there is only one rendere
+//        //TODO consider recoding getLegendTitle
+//        final Pattern pattern = Pattern.compile("(.+)(\\[.+])");
+//        Iterable<LegendItem> iterable = () -> plot.getLegendItems().iterator();
+//        List<LegendItem> sortedItems = StreamSupport.stream(
+//                        iterable.spliterator(), false)
+//                .sorted(Comparator.comparing(legendItem -> {
+//                    Matcher matcher = pattern.matcher(legendItem.getLabel());
+//                    matcher.matches();
+//                    return matcher.group(2) + matcher.group(1);
+//                }))
+//                .collect(Collectors.toList());
+//        LegendItemCollection sortedLegendCollection = new LegendItemCollection();
+//        sortedItems.forEach(sortedLegendCollection::add);
+//        plot.setFixedLegendItems(sortedLegendCollection);
 
 
         // Create the custom legend in an adjoined panel
-        getLegendTitle();
+        getCriteriaLegendTitle(numDisplayedCriteria);
         chart.removeLegend();
         chartPanel = new ChartPanel(chart);
         chartPanel.setAutoscrolls(true);
         chartPanel.setDisplayToolTips(true);
         chartPanel.setMouseZoomable(true);
-
-        XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"),
-                new DecimalFormat("0.00"));
-        renderer.setBaseToolTipGenerator(generator);
-
         return chartPanel;
     }
 
@@ -694,13 +681,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                             targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
                                     + ".xlsx", table);
                     datasheet.put(temporalVariable, table);
-                } catch (NotEvaluableNetworkException e) {
-                    e.printStackTrace();
-                } catch (IncompatibleEvidenceException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (UnexpectedInferenceException e) {
+                } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | IOException |
+                         UnexpectedInferenceException e) {
                     e.printStackTrace();
                 }
             }
@@ -738,8 +720,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 fileOut = new FileOutputStream(targetFilename);
                 hwb.write(fileOut);
                 fileOut.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -804,27 +784,22 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
         return jtable;
     }
+
     // 31/10/2022 -refactored to avoid code repetition
 
-    //    private void initialize() {
-
     /**
-     * Initializes TraceTemporalEvolutionDialex
+     * Initializes TraceTemporalEvolutionDialog
      *
      * @param owner dialog window owner
      */
     private void initialize(Window owner) {
-        // end
         // 24/10/2022
-//		setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + " " + variableOfInterest
-//				.getBaseName());
         if (isByCriterion) {
             setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.ByCriterionTitle.Label"));
         } else {
             setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + " " + variableOfInterest
                     .getBaseName());
         }
-        // end
         setContentPane(getJContentPane());
         pack();
 
@@ -934,7 +909,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             if (isByCriterion) {
                 try {
                     createByCriterionSeries();
-                } catch (InvalidStateException | ImposedPoliciesException e) {
+                } catch (InvalidStateException | ImposedPoliciesException | UnexpectedInferenceException e) {
                     throw new RuntimeException(e);
                 }
                 chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
@@ -1025,12 +1000,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         panel.setLayout(new BorderLayout());
         panel.add(getDisplayTypePanel(), BorderLayout.PAGE_START);
         panel.add(getCheckBoxesPanel(), BorderLayout.CENTER);
-        // 24/20/2022
-//		if (variableOfInterest.getNumStates() <= 1 || isUtility) {
         if ((!isByCriterion) && (variableOfInterest.getNumStates() <= 1 || isUtility)) {
             getCheckBoxesPanel().setVisible(false);
         }
-        // end
         panel.setPreferredSize(new Dimension(150, 450));
         return panel;
     }
@@ -1060,14 +1032,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 jcheckBoxList.add(checkBox);
                 panel.add(checkBox);
             }
-            // 24/10/2022
-//			panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.States.Label")));
             if (isByCriterion) {
                 panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.Criteria.Label")));
             } else {
                 panel.setBorder(new TitledBorder(stringDatabase.getString("TemporalEvolutionResultDialog.States.Label")));
             }
-            // end
 
             checkBoxPanel = new JScrollPane(panel);
             checkBoxPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -1151,7 +1120,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             displayType.add(radioIndividual);
             displayType.add(radioSummatory);
         }
-        // 07/11/2022 adding checks for upfront and discounted values
         if (isByCriterion) {
             //TODO add StringDatabase
             jCheckBoxUpfrontValues = new JCheckBox(stringDatabase.getString("TemporalEvolutionResultDialog.Display.Upfront"));//new JCheckBox("Upfront values");
@@ -1165,8 +1133,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             jCheckBoxDiscounted.setSelected(true);
             displayType.add(jCheckBoxDiscounted);
         }
-        // end
-
 
         return displayType;
     }
@@ -1228,7 +1194,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
                         null);
 
-            } catch (InvalidStateException | ImposedPoliciesException e) {
+            } catch (InvalidStateException | ImposedPoliciesException | UnexpectedInferenceException e) {
                 throw new RuntimeException(e);
             }
         } else
@@ -1299,57 +1265,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
     }
 
-// 07/11/2022 showUtilitySeries() refactored to include discount/no discount option. Also used displaySeries instead of arrayXYSeries
-
-//    /**
-//     * Method that updates utility series. Really similar to "showChartSeriesWithFilter", but in this
-//     * case, the checkboxes are irrelevant and we must know if the display is cumulative or individual
-//     */
-//
-//    private void showUtilitySeries() {
-//
-//        XYSeriesCollection result = new XYSeriesCollection();
-//
-//        if (arrayXYSeries == null) {
-//            createSeries();
-//        }
-//
-//        if (isCumulative) {
-//            for (int i = 0; i < arrayXYSeries.size(); i++) {
-//                String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
-//                XYSeries serie = new XYSeries(nameOfSerie);
-//                double value = 0.0;
-//                double slice = 0;
-//                for (int j = 0; j < arrayXYSeries.get(i).getItemCount(); j++) {
-//                    value += (Double) arrayXYSeries.get(i).getY(j);
-//                    slice = (Double) arrayXYSeries.get(i).getX(j);
-//                    serie.add(slice, value);
-//                }
-//                result.addSeries(serie);
-//            }
-//        } else {
-//            for (int i = 0; i < arrayXYSeries.size(); i++) {
-//                String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
-//                XYSeries serie = null;
-//                try {
-//                    serie = (XYSeries) arrayXYSeries.get(i).clone();
-//                } catch (CloneNotSupportedException e) {
-//                    e.printStackTrace();
-//                }
-//                serie.setKey(nameOfSerie);
-//                result.addSeries(serie);
-//            }
-//        }
-//
-//        chartPanelWithCheckBox.remove(chartPanel);
-//        chartPanel = getChartsPanel(result);
-//        chartPanelWithCheckBox.add(chartPanel, BorderLayout.CENTER);
-//        this.repaint();
-//    }
-
 
     // 07/11/2022 showUtilitySeries() refactored to include discount/no discount option
-//    private void showUtilitySeries() {
 
     /**
      * Method that updates utility series. Really similar to "showChartSeriesWithFilter", but in this
@@ -1358,34 +1275,25 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param isDiscounted true if discounted results are displayed
      */
     private void showUtilitySeries(boolean isDiscounted) {
-// end
         XYSeriesCollection result = new XYSeriesCollection();
 
         if (arrayXYSeries == null) {
             createSeries();
         }
-        // 07/11/2022
         List<XYSeries> displaySeries;
         if (isDiscounted) {
             displaySeries = arrayXYSeriesDiscount;
         } else {
             displaySeries = arrayXYSeries;
         }
-        // end
 
         if (isCumulative) {
-            // 07/11/2022
-//            for (int i = 0; i < arrayXYSeries.size(); i++) {
-//                String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
             for (int i = 0; i < displaySeries.size(); i++) {
                 String nameOfSerie = (String) displaySeries.get(i).getKey();
                 // end
                 XYSeries serie = new XYSeries(nameOfSerie);
                 double value = 0.0;
                 double slice = 0;
-//                for (int j = 0; j < arrayXYSeries.get(i).getItemCount(); j++) {
-//                    value += (Double) arrayXYSeries.get(i).getY(j);
-//                    slice = (Double) arrayXYSeries.get(i).getX(j);
                 for (int j = 0; j < displaySeries.get(i).getItemCount(); j++) {
                     value += (Double) displaySeries.get(i).getY(j);
                     slice = (Double) displaySeries.get(i).getX(j);
@@ -1395,19 +1303,13 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 result.addSeries(serie);
             }
         } else {
-            // 07/11/2022
-//            for (int i = 0; i < arrayXYSeries.size(); i++) {
-//            String nameOfSerie = (String) arrayXYSeries.get(i).getKey();
             for (int i = 0; i < displaySeries.size(); i++) {
                 String nameOfSerie = (String) displaySeries.get(i).getKey();
                 // end
 
                 XYSeries serie = null;
                 try {
-                    // 07/11/2022
-//                    serie = (XYSeries) arrayXYSeries.get(i).clone();
                     serie = (XYSeries) displaySeries.get(i).clone();
-                    // end
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
                 }
@@ -1460,10 +1362,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             }
         }
 
-        List<TablePotential> listOfPotentials = new ArrayList<TablePotential>();
-        // 07/11/2022 adding discounted/no discounted results
+        List<TablePotential> listOfPotentials = new ArrayList<>();
         List<TablePotential> listOfPotentialsDiscount = new ArrayList<>();
-        //End
         for (int slice = 0; slice <= numSlices; slice++) {
             String basename = variableOfInterest.getBaseName();
             Variable variableInSliceJ = null;
@@ -1484,19 +1384,14 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             TablePotential tablePotential = null;
 
             tablePotential = temporalEvolutionResults.get(variableInSliceJ);
-            // 07/11/2022 adding discounted/no discounted results
             TablePotential tablePotentialDiscount = null;
             if (isUtility) {
                 tablePotentialDiscount = temporalEvolutionDiscount.get(variableInSliceJ);
             }
-            // end
 
             if (tablePotential.getValues().length < numberOfCombinations) {
                 double[] values = new double[numberOfCombinations];
-                // 07/11/2022 adding discounted/no discounted results
                 double[] valuesDiscount = new double[numberOfCombinations];
-
-                // end
                 for (int z = 0; z < numberOfCombinations; z++) {
                     values[z] = tablePotential.getValues()[z % temporalEvolutionResults.get(variableInSliceJ)
                             .getValues().length];///(numberOfCombinations/variableOfInterest.getNumStates());
@@ -1508,30 +1403,23 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 }
 
                 tablePotential.setValues(values);
-                // 07/11/2022 adding discounted/no discounted results
                 if (isUtility) {
                     tablePotentialDiscount.setValues(valuesDiscount);
                 }
             }
             listOfPotentials.add(tablePotential);
-            // 07/11/2022 adding discounted/no discounted results necessary??
             if (isUtility) {
                 listOfPotentialsDiscount.add(tablePotentialDiscount);
             }
-            // end
         }
 
         arrayXYSeries = new ArrayList<XYSeries>();
-        // 07/11/2022 adding discounted/no discounted results
         arrayXYSeriesDiscount = new ArrayList<>();
-        // end
 
         double value = 0.0;
         for (int i = 0; i < numberOfCombinations; i++) {
             XYSeries series = null;
-            // 07/11/2022 adding discounted/no discounted results
             XYSeries seriesDiscount = null;
-            // end
             if (isUtility) {
                 String nameOfSerie = "";
                 if (conditioningVariables != null && !conditioningVariables.isEmpty()) {
@@ -1551,9 +1439,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 }
 
                 series = new XYSeries(nameOfSerie);
-                // 07/11/2022 adding discounted/no discounted results
                 seriesDiscount = new XYSeries(nameOfSerie);
-                // end
             } else {
                 String nameOfSerie = "";
                 if (conditioningVariables != null && !conditioningVariables.isEmpty()) {
@@ -1586,17 +1472,14 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     value = listOfPotentials.get(j).getValues()[i];
                     int time = j;
                     series.add(time, value);
-                    // 07/11/2022 adding discounted/no discounted results
                     if (isUtility) {
                         value = listOfPotentialsDiscount.get(j).getValues()[i];
                         seriesDiscount.add(time, value);
                     }
-                    // end
                 }
 
             }
             arrayXYSeries.add(series);
-            // 07/11/2022 adding discounted/no discounted results
             if (isUtility) {
                 arrayXYSeriesDiscount.add(seriesDiscount);
             }
@@ -1604,14 +1487,76 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         }
     }
 
+    // cmyago 24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
+
+    /**
+     * Sorts and formats the temporal evolution by criterion chart legends (stored in <code>legendLabels</code>) and updates the legend panel.
+     *
+     * @param numDisplayedCriteria number of criteria to display (selected in the checkboxes)
+     */
+    private void getCriteriaLegendTitle(int numDisplayedCriteria) {
+        LegendItemCollection legendItems = chart.getPlot().getLegendItems();
+
+        JLabel[] legendLabelsArray = new JLabel[numDisplayedCriteria * decisionSelected.getNumStates()];
+        Iterator<?> iterator = legendItems.iterator();
+        int decisionIndex = 0;
+        int criterionIndex = 0;
+        //Reordering and formatting labels
+        while (iterator.hasNext()) {
+            LegendItem item = (LegendItem) iterator.next();
+            String legendTitle = item.getLabel().substring(0, item.getLabel().indexOf("[") - 1);
+            JLabel itemLegendLabel = makeLegendLabel(legendTitle,
+                    makeImage(item, (Color) chart.getXYPlot().getRenderer(item.getDatasetIndex()).getSeriesPaint(item.getSeriesIndex())));
+            // get metrics from the graphics
+            FontMetrics metrics = itemLegendLabel.getFontMetrics(itemLegendLabel.getFont());
+            // get the height of a line of text in this font and render context
+            int hgt = metrics.getHeight();
+            // get the advance of my text in this font and render context
+            int adv = metrics.stringWidth(itemLegendLabel.getText());
+            // calculate the size of a box to hold the text with some padding.
+            Dimension size = new Dimension(adv + 30, hgt + 10);
+            itemLegendLabel.setMinimumSize(size);
+            itemLegendLabel.setMaximumSize(size);
+            itemLegendLabel.setPreferredSize(size);
+            itemLegendLabel.setToolTipText(itemLegendLabel.getText());
+            legendLabelsArray[criterionIndex + decisionIndex] = itemLegendLabel;
+            decisionIndex += numDisplayedCriteria;
+            if (decisionIndex >= (numDisplayedCriteria * decisionSelected.getNumStates())) {
+                decisionIndex = 0;
+                criterionIndex++;
+            }
+        }
+        legendLabels = new ArrayList<>(Arrays.asList(legendLabelsArray));
+        //Add decision titles
+        for (int i = 0; i < decisionSelected.getNumStates(); i++) {
+            JLabel groupLabel = new JLabel(decisionSelected.getName() + " = " + decisionSelected.getStateName(i));
+            groupLabel.setFont(new Font(groupLabel.getFont().getName(), Font.BOLD, groupLabel.getFont().getSize()));
+            // get metrics from the graphics
+            FontMetrics metrics = groupLabel.getFontMetrics(groupLabel.getFont());
+            // get the height of a line of text in this font and render context
+            int hgt = metrics.getHeight();
+            // get the advance of my text in this font and render context
+            int adv = metrics.stringWidth(groupLabel.getText());
+            // calculate the size of a box to hold the text with some padding.
+            Dimension size = new Dimension(adv + 5, hgt + 10);
+            groupLabel.setMinimumSize(size);
+            groupLabel.setMaximumSize(size);
+            groupLabel.setPreferredSize(size);
+            groupLabel.setToolTipText(groupLabel.getText());
+            legendLabels.add(i * (numDisplayedCriteria + 1), groupLabel);
+        }
+
+        getLegendsPanel();
+    }
+    //cmyago end
+
     /**
      * Gets the LegendTitles and updates the LegendPanel at the end
      */
     private void getLegendTitle() {
         legendLabels = new ArrayList<>();
-        // 24/10/2022 they are supposed to be ordered by policy
+        // They are sorted by policy
         LegendItemCollection legendItemsOld = chart.getPlot().getLegendItems();
-
         int listPointer = 0;
         while (listPointer < legendItemsOld.getItemCount()) {
 
@@ -1621,9 +1566,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             }
 
             boolean isSamePolicy = true;
-            // 24/10/2022
-            if ((isByCriterion) || (isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1)) {
-//			if (isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1) {
+            // cmyago 24/11/2022 temporal evolution by criterion extracted to getCriteriaLegendTitle method
+            if (isIndividual && !isUtility && conditioningVariables != null && conditioningVariables.size() >= 1) {
                 // end
                 JLabel groupLabel = new JLabel(subListTitle);
                 Font font = groupLabel.getFont();
@@ -1662,24 +1606,8 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     if (nameItem2.indexOf('[') != -1) {
                         nameItem2 = nameItem2.substring(0, nameItem2.indexOf('[') - 1);
                     }
-                    // 28/10/2022
-                    //XYPlot#getRenderer() returns the renderer for the primary dataset. When having several criteria there are several datasets
-//                    Image img = makeImage(item, (Color) chart.getXYPlot().getRenderer().getSeriesPaint(listPointer));
-                    Image img;
-                    if (isByCriterion) {
-                        int indexDataset = listPointer % temporalEvolutionByCriterion.size();
-                        int indexPointer = listPointer / temporalEvolutionByCriterion.size();
-                        XYItemRenderer renderer = chart.getXYPlot().getRenderer(indexDataset);
-                        Color color = (Color) renderer.getSeriesPaint(indexPointer);
-                        img = makeImage(item, (Color) chart.getXYPlot().getRenderer(indexDataset).getSeriesPaint(indexPointer));
-                    } else {
-                        img = makeImage(item, (Color) chart.getXYPlot().getRenderer().getSeriesPaint(listPointer));
-                    }
-                    // end
-
-
+                    Image img = makeImage(item, (Color) chart.getXYPlot().getRenderer().getSeriesPaint(listPointer));
                     JLabel itemLegendLabel = makeLegendLabel(nameItem2, img);
-
                     // get metrics from the graphics
                     FontMetrics metrics = itemLegendLabel.getFontMetrics(itemLegendLabel.getFont());
                     // get the height of a line of text in this font and render context
@@ -1711,19 +1639,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
     private XYDataset createDataset() {
         XYSeriesCollection result = new XYSeriesCollection();
         createSeries();
-        // 08/11/2022 adapting to discounted/not discounted results.
-        /* CreateDataset is called in getChartsPanel(createDataset()) at the beginning.
-            By default, utility results are shown discounted.
-         */
-//        for (int i = 0; i < arrayXYSeries.size(); i++) {
-//            result.addSeries(arrayXYSeries.get(i));
-//        }
         if (isUtility) {
             arrayXYSeriesDiscount.forEach(result::addSeries);
         } else {
             arrayXYSeries.forEach(result::addSeries);
         }
-        // end
         return result;
     }
 
@@ -1733,9 +1653,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @return The TablePane
      */
     private JScrollPane getTablePane() {
-        // 24/10/2022
-//		tablePane = new TemporalEvolutionTablePane(temporalEvolution, expandedNetwork, variableOfInterest,
-//				conditioningVariables, numSlices, isUtility, isCumulative);
         if (isByCriterion) {
             tablePane = new TemporalEvolutionTablePane(decisionSelected, markedCheckBoxes, isCumulative, new ArrayList<>(temporalEvolutionByCriterion.keySet()), displaySeries(jCheckBoxDiscounted.isSelected(), jCheckBoxUpfrontValues.isSelected()), numSlices);
         } else if (isUtility) {
@@ -1744,7 +1661,6 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             tablePane = new TemporalEvolutionTablePane(temporalEvolutionResults, expandedNetwork, variableOfInterest,
                     conditioningVariables, numSlices, isUtility, isCumulative);
         }
-        // end
         return tablePane;
     }
 

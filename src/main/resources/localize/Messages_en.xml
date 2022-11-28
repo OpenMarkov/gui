@@ -574,11 +574,26 @@
             <Label value="The select file does exist. Do you want to overwrite it?"/>
         </Text>
     </OverwriteFile>
-    <!-- MID temporal evolution when there is more than one node without policy -->
+    <!-- 28/11/2022 MID temporal evolution when there is more than one node without policy -->
     <DecisionWithoutPolicyWarning>
          <Text>
              <Label value="There are more than one decision node without associated policy"/>
          </Text>
     </DecisionWithoutPolicyWarning>
+    <UnexpectedInferenceException>
+        <TemporalEvolution value="More than one conditioning variable"/>
+    </UnexpectedInferenceException>
+    <!-- 28/11/2022 Text for ProgressMonitor; Message is dependent on its use; To be used with MID and DES (TODO integrate the last ) -->
+    <ProgressMonitor>
+        <ProgressText>
+            <Label value ="Progress..."/>
+        </ProgressText>
+        <Message>
+            <TemporalEvolution value="Temporal evolution"/>
+        </Message>
+        <Note>
+            <TemporalEvolution value="Evaluating"/>
+        </Note>
+    </ProgressMonitor>
 
 </properties>
