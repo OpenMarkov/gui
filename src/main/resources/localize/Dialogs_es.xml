@@ -38,7 +38,7 @@
             <Label value="Tabla"/>
         </Title>
         <Headers>
-            <Criteria value="Criterio"/>
+            <Criterion value="Criterio"/>
         </Headers>
     </TemporalEvolutionTable>
     <TemporalEvolutionChart>
