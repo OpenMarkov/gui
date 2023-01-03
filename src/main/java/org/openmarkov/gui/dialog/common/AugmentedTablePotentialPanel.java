@@ -29,16 +29,26 @@ import java.util.List;
 
 /**
  * This class implements a Table potential table with the following features:
- * <li>Its elements, except the first column, are modifiable.</li> <li>New
- * elements can be added, creating a new key row with empty data.</li> <li>The
+ * <ul>
+ * <li>Its elements, except the first column, are modifiable.
+	* <li>New
+ * elements can be added, creating a new key row with empty data.
+	s* <li>The
  * key data (first column) consist of a key string following of the index of the
- * row and it is used for internal purposes only.</li> <li>The key data is
- * hidden.</li> <li>The information of a row (except the first column) can not
- * be taken up or down.</li> <li>The rows can not be removed.</li> <li>The first
- * editable row is the one that has the values of the potentials.</li> <li>The
+ * row and it is used for internal purposes only.
+	s* <li>The key data is
+ * hidden.
+	s* <li>The information of a row (except the first column) can not
+ * be taken up or down.
+	s* <li>The rows can not be removed.
+	s* <li>The first
+ * editable row is the one that has the values of the potentials.
+	s* <li>The
  * rows between 0 and the first editable row are ocuppied by the values of the
- * states of the parents of the variable.</li> <li>The header of columns is
+ * states of the parents of the variable.
+	s* <li>The header of columns is
  * hidden.</li>
+ * </ul>
  *
  * @author carmenyago Apr/2017
  */
@@ -90,7 +100,7 @@ import java.util.List;
 		valuesTable.setName("PotentialsTablePanel.augmentedValuesTable");
 		valuesTable.setVisible(true);
 		modifiable = true;
-		// Previous-->Ok
+		// Previous--&gt;Ok
 		setTableSpecificListeners();
 
 		setData();
@@ -109,7 +119,7 @@ import java.util.List;
 	 *
 	 * @return the tableModel of valuesTable.
 	 * @see org.openmarkov.gui.component.ValuesTable
-	 * revised-->minor changes
+	 * revised--&gt;minor changes
 	 */
 	@Override protected ValuesTableModel getTableModel() {
 		AugmentedValuesTableModel tableModel = null;
@@ -123,8 +133,12 @@ import java.util.List;
 
 	/**
 	 * Sets a new table model with new data and new columns based on three
-	 * items: <li>list of Potentials of the variable</li> <li>states of the
-	 * variable</li> <li>parents of the variable</li>
+	 * items:
+	 * <ul>
+	 * <li>list of Potentials of the variable
+	 * <li>states of the variable
+	 * <li>parents of the variable
+	 * </ul>
 	 * This method obtains if the node has link restrictions and store it in hasLinkrestriction,
 	 * stores the probNet in ValuesTable
 	 * fills the tableData (tableData consists of headers + data),
@@ -134,7 +148,7 @@ import java.util.List;
 	 * sets the cell renders according to the type of node, and
 	 * in the tableMoel, sets the not editable cells due to links restrictions and uncertainty in columns.
 	 * Finally, this method adjust the size of the cells in valuesTable
-	 * UNCLEAR--> It is necessary to Override??
+	 * UNCLEAR--&gt; It is necessary to Override??
 	 *
 	 * @author carmenyago
 	 */
@@ -173,7 +187,7 @@ import java.util.List;
 
 	/**
 	 * Sets a new table model with new data and new columns in valuesTable
-	 * Only to put and AugmentedValuesTableModel-->Change in values table
+	 * Only to put and AugmentedValuesTableModel--&gt;Change in values table
 	 *
 	 * @param newData    new data for the table
 	 * @param newColumns new columns for the table
@@ -211,7 +225,7 @@ import java.util.List;
 	 * @author carmenyago
 	 * <p>
 	 * Continuous variables have only one state
-	 * tableSize is always >0
+	 * tableSize is always greater than 0
 	 */
 	@Override protected Object[][] createEmptyTable() {
 
@@ -222,13 +236,13 @@ import java.util.List;
 		//CHANGE (minor node by tablePotential
 		firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(tablePotential);
 
-		// The baseIndexForCoordinates is the first editable row-->What for-->UNCLEAR
+		// The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
 		setBaseIndexForCoordinates(firstEditableRow);
 
 		// Number of data elements of tablePotential
 		int tableSize = tablePotential
-				.getTableSize();//-->UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
+				.getTableSize();//--&gt;UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
 
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions = tablePotential.getDimensions()[0];
@@ -236,7 +250,7 @@ import java.util.List;
 		numRows = firstEditableRow + numDimensions;
 		lastEditableRow = numRows - 1;
 
-		/*if (!isTableDeltaPotential) numRows++;*/ //--> UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
+		/*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
 		numColumns = numColumns + tableSize / numDimensions;
 
 		// create the array of arrays
@@ -308,7 +322,7 @@ import java.util.List;
 	 * This method initialises valuesTable and defines that first two columns cannot be selected
 	 *
 	 * @return a new values table.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public ValuesTable getValuesTable() {
 		if (valuesTable == null) {
@@ -322,7 +336,7 @@ import java.util.List;
 	 * This method initialises valuesTableScrollPane.
 	 *
 	 * @return a new values table scroll pane.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	protected JScrollPane getValuesTableScrollPane() {
 		if (valuesTableScrollPane == null) {
@@ -345,7 +359,7 @@ import java.util.List;
 
 	//	/**
 	//	 * Handles an action performed
-	//	 * revised-->not changed
+	//	 * revised--&gt;not changed
 	//	 */
 	//	public void actionPerformed(ActionEvent e) {
 	//		String actionCommand = e.getActionCommand();

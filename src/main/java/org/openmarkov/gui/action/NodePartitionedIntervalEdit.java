@@ -178,7 +178,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 	 * Gets the action realized.
 	 *
 	 * @return the action realized.
-	 * @see <code>StateAction</code>
+	 * @see StateAction
 	 */
 	public StateAction getStateAction() {
 		return stateAction;

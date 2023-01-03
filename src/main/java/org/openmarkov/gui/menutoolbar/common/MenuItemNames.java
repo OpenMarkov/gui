@@ -58,14 +58,20 @@ public class MenuItemNames {
 	 */
 	public static final String FILE_SAVE_EVIDENCE_MENUITEM = FILE_MENU + ".SaveEvidence";
 
+//	/**
+//	 * String database token for the item 'Expand network'.
+//	 */
+//	public static final String EXPAND_NETWORK_MENUITEM = "CostEffectiveness.ExpandNetwork";
+
 	/**
 	 * String database token for the item 'Expand network'.
 	 */
-	public static final String EXPAND_NETWORK_MENUITEM = "CostEffectiveness.ExpandNetwork";
-	/**
-	 * String database token for the item 'Expand network for CE analysis'.
-	 */
-	public static final String EXPAND_NETWORK_CE_MENUITEM = "CostEffectiveness.ExpandNetworkCE";
+	public static final String TEMPORAL_EVOLUTION_BY_CRITERION_MENUITEM = "CostEffectiveness.TemporalEvolutionByCriterion";
+
+//	/**
+//	 * String database token for the item 'Expand network for CE analysis'.
+//	 */
+//	public static final String EXPAND_NETWORK_CE_MENUITEM = "CostEffectiveness.ExpandNetworkCE";
 	/**
 	 * String database token for the item 'File - Network additionalProperties'.
 	 */

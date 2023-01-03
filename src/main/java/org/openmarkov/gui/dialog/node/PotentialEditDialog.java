@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -257,10 +258,15 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             for (Node parent: node.getParents()) {
                 tableColumns *= parent.getVariable().getNumStates();
             }
+			System.out.println(tableColumns);
             // Show small uniform potentials as table potentials. Saves clicks
             if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
                 potentialTypeComboBox.setSelectedItem("Table");
             }
+			// Show small uniform potentials as 'Exact' potentials. Saves clicks
+			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+				potentialTypeComboBox.setSelectedItem("Exact");
+			}
 			potentialTypeComboBox.setEnabled(!readOnly);
 		}
 		return potentialTypeComboBox;
@@ -423,7 +429,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The univariate distribution JComboBox
 	 */
 	protected JComboBox<String> getUnivariateDistrJCombobox() {
 
@@ -445,7 +451,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The univariate distribution parametrization JComboBox
 	 */
 	protected JComboBox<String> getUnivariateDistrParametrizationJCombobox() {
 
@@ -495,7 +501,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return The parametrization ComboBox JLabel
 	 */
 	protected JLabel getParametrizationComboBoxJLabel() {
 		if (lblParametrizationComboBox == null) {
@@ -509,7 +515,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	}
 
 	/**
-	 * @return
+	 * @return True iff it is enabled
 	 */
 	private boolean showUnivariateDistrParametrizationComboBox(String univariateName) {
 		boolean enable = false;
@@ -727,59 +733,31 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		ReorderVariablesDialog reorderVariablesDialog = new ReorderVariablesDialog(this, node);
 		if (reorderVariablesDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			List<Variable> newVariables = reorderVariablesDialog.getReorderVariablesPanel().getVariables();
-
-			//CMI
-			//For Univariate
-			if (getPotentialPanel() instanceof UnivariateDistrPotentialPanel) {
-				Potential potential = DiscretePotentialOperations
-						.reorder((UnivariateDistrPotential) node.getPotentials().get(0), newVariables);
+			PotentialPanel potentialPanelForAction = getPotentialPanel();
+			Potential nodePotential = node.getPotentials().get(0);
+			if (potentialPanelForAction instanceof UnivariateDistrPotentialPanel
+					|| potentialPanelForAction instanceof AugmentedTablePotentialPanel
+					|| potentialPanelForAction instanceof TablePotentialPanel) {
+				Potential potential = nodePotential.reorder(newVariables);
 				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
 				try {
 					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-					// TODO Auto-generated catch block
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
+						| WrongCriterionException e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
 
-			} else if (getPotentialPanel() instanceof AugmentedTablePotentialPanel) {
-				Potential potential = DiscretePotentialOperations
-						.reorder((AugmentedTablePotential) node.getPotentials().get(0), newVariables);
-				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
+			} else if (potentialPanelForAction instanceof ICIPotentialsTablePanel) {
+				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
 				try {
-					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-					// TODO Auto-generated catch block
+					node.getProbNet().doEdit(setPotentialVariables);
+				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
+						| WrongCriterionException e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
-
-			} else
-				//CMF
-
-				if (getPotentialPanel() instanceof TablePotentialPanel) {
-					// if (node.getPotentials().get(0) instanceof
-					// TablePotential) {
-					Potential potential = DiscretePotentialOperations
-							.reorder((TablePotential) node.getPotentials().get(0), newVariables);
-					SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
-					try {
-						node.getProbNet().doEdit(potentialEdit);
-					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					updatePotentialPanel();
-				} else if (getPotentialPanel() instanceof ICIPotentialsTablePanel) {
-					SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
-					try {
-						node.getProbNet().doEdit(setPotentialVariables);
-					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					updatePotentialPanel();
-				}
+			}
 		}
 	}
 

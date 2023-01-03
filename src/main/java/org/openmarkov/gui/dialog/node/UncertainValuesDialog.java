@@ -78,7 +78,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 * @param configuration
 	 * @param potential
 	 * @throws WrongCriterionException
-	 * @wbp.parser.constructor
 	 */
 	public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
 			throws WrongCriterionException {
@@ -133,7 +132,6 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 * @param configuration
 	 * @param potential     - exactDistrPotential for which we will set uncertainty
 	 * @throws WrongCriterionException
-	 * @wbp.parser.constructor
 	 * @author carmenyago -minor changes to the TablePotential method
 	 */
 	public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential)
@@ -275,7 +273,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	/**
 	 * @param uncertainValues
 	 * @param types
-	 * @return
+	 * @return The indexes of uncertain values
 	 */
 	private static int[] getIndexesUncertainValuesOfClasses(List<UncertainValue> uncertainValues,
 			List<Class<? extends ProbDensFunction>> types) {

@@ -121,7 +121,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel node parents table
 	 */
 	protected JLabel getJLabelNodeParentsTable() {
 		if (jLabelNodeParentsTable == null) {
@@ -136,7 +136,6 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 
 	/**
 	 * This method initializes prefixedDataTablePanelParentsTable
-	 *
 	 * @return a new parents table.
 	 */
 	protected PrefixedDataTablePanel getPrefixedDataTablePanelParentsTable() {

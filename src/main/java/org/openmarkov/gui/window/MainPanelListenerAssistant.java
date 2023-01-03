@@ -15,7 +15,6 @@ import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
@@ -24,11 +23,9 @@ import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.TemporalNetOperations;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
@@ -94,9 +91,10 @@ import java.util.List;
  * MainMenu to carry out this task.
  *
  * @author jmendoza
- * @version 1.6 - cyago - Modify saveNetworkActions method to support several ProbModelXML formats
- * @version 1.7 - cyago - 02/02/2019 - Changed actionPerformed to address event nodes
- * @version 1.8 - cyago - 08/10/2020 - Changed actionPerformed. Now event nodes use the same method than Chance nodes
+ * @version 1.6 - cmyago - Modify saveNetworkActions method to support several ProbModelXML formats
+ * @version 1.6.1 - cmyago - 02/02/2019 - Changed actionPerformed to address event nodes
+ * @version 1.6.2 - cmyago - 08/10/2020 - Changed actionPerformed. Now event nodes use the same method than Chance nodes
+ * @version 1.6.3 -cmyago -09/11/2022 added behaviour para "Temporal evolution by criterion" and removed "Expand network"
  */
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
@@ -197,12 +195,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			saveEvidence(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
-		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
-			expandNetwork(getCurrentNetworkPanel().getProbNet(),
-					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
-		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
-			expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
-					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+
+		} else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION)) {
+// Changed behaviour and name from ActionCommands.EXPAND_NETWORK
+//			expandNetwork(getCurrentNetworkPanel().getProbNet(),
+//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
+			this.getCurrentNetworkPanel().temporalEvolution();
+//		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK_CE)) {
+//			expandNetworkCE(getCurrentNetworkPanel().getProbNet(),
+//					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 		} else if (actionCommand.equals(ActionCommands.EXIT_APPLICATION)) {
 			closeApplication();
 		} else if (actionCommand.equals(ActionCommands.CLIPBOARD_COPY)) {
@@ -359,8 +360,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 	/**
 	 * Create a Frame for a Change Language dialog
-	 *
-	 * @return a change language dialog to allow language change
 	 */
 	private void showLanguageChangeDialog() {
 		LanguageDialog.getUniqueInstance(mainPanel.getMainFrame()).setVisible(true);
@@ -632,22 +631,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
 
 	/**
 	 * Saves a network in the file given by
-	 *
 	 * @param networkPanel
-	 * @param fileName     - the file where the network is stored
-	 * @return
+	 * @param fileName	the file where the network is stored
+	 * @return true iff the network could be saved
 	 */
 
 	private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName) {
-		//CMI
-    	/*
-    	return saveNetworkActions(networkPanel, fileName, null);
-    	*/
 		String fileFormat = OpenMarkovPreferences
 				.get(OpenMarkovPreferences.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
 						FileChooser.DEFAULT_FILE_FORMAT);
 		return saveNetworkActions(networkPanel, fileName, fileFormat, null);
-		//CMF
 	}
 
 	/**
@@ -670,7 +663,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * then saves the network.
 	 *
 	 * @param networkPanel network panel that contains the network to be saved.
-	 * @return true if the network has been saved; otherwise, false.
 	 */
 	private void saveOpenNetwork(NetworkPanel networkPanel) {
 		String fileName = networkPanel.getNetworkFile();
@@ -819,8 +811,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * Creates a new network in the workspace. First, it requests the
 	 * additionalProperties of the new network and, if the user accepts the
 	 * dialog box, a new network is created.
-	 *
-	 * @wbp.parser.entryPoint
 	 */
 	private void createNewNetwork() {
 		NetworkPropertiesDialog dialogProperties = new NetworkPropertiesDialog(Utilities.getOwner(mainPanel));
@@ -1102,90 +1092,90 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		networkPanels.add(networkPanel);
 	}
 
-	/**
-	 * expand the network like it would be done in CE analysis to show it in the
-	 * GUI
-	 */
-	private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-		if (!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions()
-				.isCeOptionsShowed()) {
-			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
-			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-				return;
-			}
-		}
-
-		EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
-
-		ProbNet probNetCopy = probNet.deepCopy();
-
-		EvidenceCase evidenceCase = new EvidenceCase();
-		for (Finding finding : evidence.getFindings()) {
-			String baseName = finding.getVariable().getBaseName();
-			int slice = finding.getVariable().getTimeSlice();
-			Variable variable = null;
-			try {
-				variable = probNetCopy.getVariable(baseName, slice);
-				if (variable.getVariableType().equals(VariableType.NUMERIC)) {
-					Finding findingCopy = new Finding(variable, finding.getNumericalValue());
-					findingCopy.setStateIndex(finding.getStateIndex());
-					evidenceCase.addFinding(findingCopy);
-
-				} else if (variable.getVariableType().equals(VariableType.DISCRETIZED) || variable.getVariableType()
-						.equals(VariableType.FINITE_STATES)) {
-					Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
-					evidenceCase.addFinding(findingCopy);
-				}
-			} catch (NodeNotFoundException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"NodeNotFoundException", "Variable " + baseName + " not found."), null);
-				localizedException.showException();
-			} catch (IncompatibleEvidenceException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
-				localizedException.showException();
-			} catch (InvalidStateException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"InvalidStateException", variable.getName(), finding.getState()), null);
-				localizedException.showException();
-			}
-		}
-		double maxX = 0.0;
-		for (Node node : probNetCopy.getNodes()) {
-			if (node.getCoordinateX() > maxX) {
-				maxX = node.getCoordinateX();
-			}
-		}
-		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
-		try {
-			evidenceCase.extendEvidence(expandedNetwork);
-		} catch (IncompatibleEvidenceException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
-			localizedException.showException();
-		} catch (InvalidStateException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"InvalidStateException"), null);
-			localizedException.showException();
-		} catch (WrongCriterionException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"WrongCriterionException", e.getCause()), null);
-			localizedException.showException();
-		}
-		//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
-
-		// TODO apply changes for transitions at cycle start, end or half cycle.
-		TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
-		TemporalNetOperations.transformToID(expandedNetwork);
-
-		String fileName = probNetCopy.getName() + "_expandedCE";
-		expandedNetwork.setName(fileName);
-		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-		networkPanel.setNetworkFile(fileName);
-		networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
-		networkPanels.add(networkPanel);
-	}
+//	/**
+//	 * expand the network like it would be done in CE analysis to show it in the
+//	 * GUI
+//	 */
+//	private void expandNetworkCE(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+//		if (!getCurrentNetworkPanel().getProbNet().getInferenceOptions().getMultiCriteriaOptions()
+//				.isCeOptionsShowed()) {
+//			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+//					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
+//			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+//				return;
+//			}
+//		}
+//
+//		EvidenceCase evidence = new EvidenceCase(preResolutionEvidence);
+//
+//		ProbNet probNetCopy = probNet.deepCopy();
+//
+//		EvidenceCase evidenceCase = new EvidenceCase();
+//		for (Finding finding : evidence.getFindings()) {
+//			String baseName = finding.getVariable().getBaseName();
+//			int slice = finding.getVariable().getTimeSlice();
+//			Variable variable = null;
+//			try {
+//				variable = probNetCopy.getVariable(baseName, slice);
+//				if (variable.getVariableType().equals(VariableType.NUMERIC)) {
+//					Finding findingCopy = new Finding(variable, finding.getNumericalValue());
+//					findingCopy.setStateIndex(finding.getStateIndex());
+//					evidenceCase.addFinding(findingCopy);
+//
+//				} else if (variable.getVariableType().equals(VariableType.DISCRETIZED) || variable.getVariableType()
+//						.equals(VariableType.FINITE_STATES)) {
+//					Finding findingCopy = new Finding(variable, variable.getState(finding.getState()));
+//					evidenceCase.addFinding(findingCopy);
+//				}
+//			} catch (NodeNotFoundException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"NodeNotFoundException", "Variable " + baseName + " not found."), null);
+//				localizedException.showException();
+//			} catch (IncompatibleEvidenceException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+//				localizedException.showException();
+//			} catch (InvalidStateException e) {
+//				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//						"InvalidStateException", variable.getName(), finding.getState()), null);
+//				localizedException.showException();
+//			}
+//		}
+//		double maxX = 0.0;
+//		for (Node node : probNetCopy.getNodes()) {
+//			if (node.getCoordinateX() > maxX) {
+//				maxX = node.getCoordinateX();
+//			}
+//		}
+//		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNetCopy);
+//		try {
+//			evidenceCase.extendEvidence(expandedNetwork);
+//		} catch (IncompatibleEvidenceException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+//			localizedException.showException();
+//		} catch (InvalidStateException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"InvalidStateException"), null);
+//			localizedException.showException();
+//		} catch (WrongCriterionException e) {
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"WrongCriterionException", e.getCause()), null);
+//			localizedException.showException();
+//		}
+//		//            expandedNetwork = CostEffectivenessAnalysis.adaptMIDforCE(expandedNetwork, evidenceCase);
+//
+//		// TODO apply changes for transitions at cycle start, end or half cycle.
+//		TemporalNetOperations.applyDiscountToUtilityNodes(expandedNetwork);
+//		TemporalNetOperations.transformToID(expandedNetwork);
+//
+//		String fileName = probNetCopy.getName() + "_expandedCE";
+//		expandedNetwork.setName(fileName);
+//		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+//		networkPanel.setNetworkFile(fileName);
+//		networkPanel.getEditorPanel().setEvidence(evidenceCase, new ArrayList<EvidenceCase>());
+//		networkPanels.add(networkPanel);
+//	}
 
 	/**
 	 * This method saves the evidence of the current network to a file
@@ -1419,7 +1409,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	protected void monteCarloSimulation(){
 		boolean performInference = true;
 		mainPanel.selecMonteCarloButton(false);
-		
+
 		InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
 				Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.COST_EFFECTIVENESS);
 		ProbNet probNet =getCurrentNetworkPanel().getProbNet();

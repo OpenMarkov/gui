@@ -77,8 +77,6 @@ public class NetworkVariablesPanel extends JPanel {
 
 	/**
 	 * This method initialises this instance.
-	 *
-	 * @wbp.parser.constructor
 	 */
 	public NetworkVariablesPanel() {
 		this.newNetwork = true;

@@ -33,7 +33,7 @@ public abstract class FileChooser extends JFileChooser {
 	/**
 	 * Static field representing the default file format
 	 */
-	public static final String DEFAULT_FILE_FORMAT = "OpenMarkov.0.5.0";
+	public static final String DEFAULT_FILE_FORMAT = "OpenMarkov.0.2";
 	/**
 	 * Static field for serializable class.
 	 */

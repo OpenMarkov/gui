@@ -139,7 +139,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 	/**
 	 * default constructor
 	 *
-	 * @wbp.parser.constructor
+	 *
 	 */
 	public DiscretizeTablePanel(String[] newColumns, Node node) {
 		this(newColumns, new Object[0][0], "s", node);

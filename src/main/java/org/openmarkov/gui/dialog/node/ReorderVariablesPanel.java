@@ -16,6 +16,7 @@ import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
@@ -61,19 +62,27 @@ import java.util.List;
 	 * @param node The node to extract the data from.
 	 */
 	private static Object[][] getData(Node node) {
-		Potential potential = node.getPotentials().get(0);
-		List<Variable> variables = potential.getVariables();
+		Potential nodePotential = node.getPotentials().get(0);
+		List<Variable> variables;
 		//CMI
-		if (node.getPotentials().get(0) instanceof UnivariateDistrPotential) {
-			variables = ((UnivariateDistrPotential) node.getPotentials().get(0)).getAugmentedTable().getVariables();
-		} else if (node.getPotentials().get(0) instanceof AugmentedTablePotential) {
-			variables = ((AugmentedTablePotential) node.getPotentials().get(0)).getAugmentedTable().getVariables();
+		Potential potentialForTakingVariables;
+		if (nodePotential instanceof UnivariateDistrPotential) {
+			potentialForTakingVariables = ((UnivariateDistrPotential) nodePotential).getAugmentedTable();
+		} else if (nodePotential instanceof AugmentedTablePotential) {
+			potentialForTakingVariables = ((AugmentedTablePotential) nodePotential).getAugmentedTable();
+		} else if (nodePotential instanceof ExactDistrPotential) {
+			potentialForTakingVariables = ((ExactDistrPotential)nodePotential).getTablePotential();
+		} else {
+			potentialForTakingVariables = nodePotential;
 		}
+		variables = potentialForTakingVariables.getVariables();
+			
 		//CMF
 		// 26/11/2014
 		// Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
 		// when imposing a policy in a decision node
-		if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) {
+		if (isConditionalProbabilityNotExactDistrPotential(nodePotential) 
+				|| node.hasPolicy()) {
 			variables.remove(0);
 		}
 		Object[][] data = new Object[variables.size()][1];
@@ -82,6 +91,10 @@ import java.util.List;
 			data[i][0] = variables.get(i).getName();
 		}
 		return data;
+	}
+
+	private static boolean isConditionalProbabilityNotExactDistrPotential(Potential potential) {
+		return potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY && !(potential instanceof ExactDistrPotential);
 	}
 
 	protected void defineTableLookAndFeel() {
@@ -131,14 +144,14 @@ import java.util.List;
 		// 26/11/2014
 		// Added node.hasPolicy() to the condition of the if clause when allowing to reorder variables
 		// when imposing a policy in a decision node
-		if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) {
+		if (isConditionalProbabilityNotExactDistrPotential(potential) || node.hasPolicy()) {
 			newVariables.add(0, potential.getVariables().get(0));
 		}
 		return newVariables;
 	}
 
 	/**
-	 * @return
+	 * @return The lisf of edits
 	 */
 	public List<PNEdit> getEdits() {
 		return edits;

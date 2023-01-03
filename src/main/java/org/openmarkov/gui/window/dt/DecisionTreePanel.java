@@ -88,7 +88,7 @@ import java.awt.event.MouseListener;
 	 * @param probNet
 	 * @param depth
 	 * @param branchEvidence
-	 * @return
+	 * @return a decision tree branch with the decision tree built
 	 * @throws NotEvaluableNetworkException
 	 */
 	private static DecisionTreeBranch buildDecisionTree(ProbNet probNet, int depth, EvidenceCase branchEvidence) throws NotEvaluableNetworkException {

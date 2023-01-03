@@ -41,9 +41,8 @@ import java.util.Properties;
 	/**
 	 * <p> This overrides the default <code>load()</code>
 	 * behavior to read from an XML document. </p>
-	 *
 	 * @param reader the reader to read XML from
-	 * @throws <code>IOException</code> - when errors occur reading.
+	 * @throws IOException	when errors occur reading.
 	 */
 	public void load(Reader reader) throws IOException {
 
@@ -65,7 +64,7 @@ import java.util.Properties;
 	 * behavior to read from an XML document. </p>
 	 *
 	 * @param inputStream the input stream
-	 * @throws <code>IOException</code> - when errors occur reading.
+	 * @throws IOException	when errors occur reading.
 	 */
 	public void load(InputStream inputStream) throws IOException {
 
@@ -77,7 +76,7 @@ import java.util.Properties;
 	 * behavior to read from an XML document. </p>
 	 *
 	 * @param xmlDocument the XML document to read
-	 * @throws <code>IOException</code> - when errors occur reading.
+	 * @throws IOException	when errors occur reading.
 	 */
 	public void load(File xmlDocument) throws IOException {
 
@@ -145,7 +144,7 @@ import java.util.Properties;
 	 *
 	 * @param writer the writer to output XML to.
 	 * @param header comment to add at top of file
-	 * @throws <code>IOException</code> - when writing errors occur.
+	 * @throws IOException	when writing errors occur.
 	 */
 	public void store(Writer writer, String header) throws IOException {
 
@@ -178,7 +177,7 @@ import java.util.Properties;
 	 *
 	 * @param out    the output stream.
 	 * @param header comment to add at top of file
-	 * @throws <code>IOException</code> - when writing errors occur.
+	 * @throws IOException	when writing errors occur.
 	 */
 	public void store(OutputStream out, String header) throws IOException {
 
@@ -191,7 +190,7 @@ import java.util.Properties;
 	 *
 	 * @param xmlDocument XML file to output to.
 	 * @param header      comment to add at top of file
-	 * @throws <code>IOException</code> - when writing errors occur.
+	 * @throws IOException	when writing errors occur.
 	 */
 	public void store(File xmlDocument, String header) throws IOException {
 

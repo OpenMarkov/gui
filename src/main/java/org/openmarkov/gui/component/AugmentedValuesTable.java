@@ -35,11 +35,12 @@ import java.util.EventObject;
  * canonical family potential). This table also shows the data in several ways,
  * depending upon the type of user selection:
  * <ul>
- * <Li>Probabilities or states values</li>
+ * <li>Probabilities or states values</li>
  * <li>Probabilistic or Deterministic values allowed</li>
  * <li>All parameters or Only independent parameters</li>
  * <li>TPC or canonical parameters(for the Canonical families)</li>
  * <li>Net or Compound values (for the Canonical families)</li>
+ * </ul>
  *
  * @author carmenyago
  * @version 1 Apr/2017
@@ -76,7 +77,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 
 	/**
 	 * Constructor for ValuesTable
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public AugmentedValuesTable(ValuesTableModel tableModel, final boolean modifiable) {
 		super(tableModel, modifiable);
@@ -139,7 +140,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 * print the NodePotentialTable
 	 * carmenyago only removed the println of the deterministic attribute
 	 *
-	 * @carmenyago revised-->minor changes
+	 * @author carmenyago revised--&gt;minor changes
 	 */
 	@Override public void printTable() {
 		System.out.println("NodePotentialTable: ");
@@ -209,7 +210,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	}
 
 	/**
-	 * UNCLEAR-->Priority list
+	 * UNCLEAR--&gt;Priority list
 	 */
 	@Override public void undoEditHappened(UndoableEditEvent event) {
 		//if (event.getEdit () instanceof AugmentedPotentialValueEdit)
@@ -239,7 +240,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 * @param row    - the row of the edited cell
 	 * @param column - the column of the edited cell
 	 * @param e      - event to pass into shouldSelectCell;
-	 *               revised--> not changed
+	 *               revised--&gt; not changed
 	 */
 	@Override public boolean editCellAt(int row, int column, EventObject e) {
 		boolean result = super.editCellAt(row, column, e);
@@ -255,9 +256,8 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 * If the editor that is handling the editing session is not a JTextComponent, the method does nothing
 	 * If the editor is a JTextComponent then:
 	 * If e is and instance of KeyEvent, ActionEvent or MouseEvent, the method select all the text of the cell
-	 *
-	 * @param e: event which provoked the edition and selection
-	 *           revised --> not changed
+	 * @param e event which provoked the edition and selection
+	 *           revised --&gt; not changed
 	 */
 	private void selectAll(EventObject e) {
 		// Returns the component that is handling the editing session.

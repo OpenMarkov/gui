@@ -9,6 +9,9 @@
             <Label value="Temporal Evolution of:"/>
             <ConditioningVariables value="given the imposed policies"/>
         </Title>
+        <ByCriterionTitle>
+            <Label value="Temporal evolution by criterion"/>
+        </ByCriterionTitle>
         <Legend>
             <Title>
                 <Label value="Legend"/>
@@ -17,18 +20,26 @@
         <States>
             <Label value="States"/>
         </States>
+        <Criteria>
+            <Label value="Criteria"/>
+        </Criteria>
         <Display>
             <Label value="Display"/>
             <Instantaneus value="Instantaneous"/>
             <Accumulate value="Cumulative"/>
             <Individual value="Individual"/>
             <Summatory value="Sum"/>
+            <Upfront value="Include upfront values"/>
+            <Discount value="Discounted values"/>
         </Display>
     </TemporalEvolutionResultDialog>
     <TemporalEvolutionTable>
         <Title>
             <Label value="Table"/>
         </Title>
+        <Headers>
+            <Criterion value="Criterion"/>
+        </Headers>
     </TemporalEvolutionTable>
     <TemporalEvolutionChart>
         <Title>
@@ -418,7 +429,7 @@
         <Type>
             <Title value="Analysis"/>
             <Unicriterion value="Unicriterion"/>
-            <CostEffectiveness value="Cost Effectivenes"/>
+            <CostEffectiveness value="Cost-Effectiveness"/>
         </Type>
         <TableHeader>
             <Criterion value="Criterion"/>
@@ -790,7 +801,7 @@
             <AllRightsReserved>
                 <Text value="All rights reserved"/>
             </AllRightsReserved>
-            <Text value=" (c) UNED - 2008-2012"/>
+            <Text value=" (c) UNED - 2008-2019"/>
         </Copyright>
         <jLabelLogo>
             <BlankSpace>
@@ -1061,5 +1072,15 @@
             <Decision value="One decision"/>
         </Scenario>
     </ScopeSelector>
+	<AddOtherProperty>
+		<Name>
+             <Title value="Add property"/>
+			 <Message value="Property name"/>
+        </Name>
+		<Value>
+             <Title value="Add property"/>
+			 <Message value="Value"/>
+        </Value>
+    </AddOtherProperty>
 </properties>
 

@@ -43,6 +43,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 * table to show the other additionalProperties
 	 */
 	private PrefixedOtherPropertiesTablePanel otherPropertiesTablePanel = null;
+	//private NodeOtherPropertiesKeyTablePanel otherPropertiesTablePanel = null;
 	/**
 	 * Object where all information will be saved.
 	 */
@@ -84,7 +85,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	public Node getNodeProperties() {
 		return nodeProperties;
 	}
-
+	
 	/**
 	 * Set the node additionalProperties in this panel with the provided ones
 	 *
@@ -92,6 +93,7 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 */
 	public void setNodeProperties(final Node nodeProperties) {
 		this.nodeProperties = nodeProperties;
+		otherPropertiesTablePanel.setProperties(nodeProperties);
 	}
 
 	/**
@@ -174,9 +176,15 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 			};
 			// ,
 			otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},
+					stringDatabase.getString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Prefix"),
+					true, nodeProperties);
+			/*otherPropertiesTablePanel = new NodeOtherPropertiesKeyTablePanel(columnNames, new Object[][] {},
+					stringDatabase.getString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Prefix"),
+					true, nodeProperties);*/
+			/*otherPropertiesTablePanel = new PrefixedOtherPropertiesTablePanel(columnNames, new Object[][] {},
 					stringDatabase
 							.getString("NodeOtherPropertiesPanel.OtherPropertiesTablePanel.PropertyIdColumn.Prefix"),
-					true);
+					true);*/
 		}
 		return otherPropertiesTablePanel;
 	}
@@ -194,8 +202,8 @@ public class NodeOtherPropsTablePanel extends JPanel implements ItemListener {
 	 *
 	 * @param properties object from where load the information.
 	 */
-	public void setFieldsFromProperties(Node properties) {
-		// getOtherPropertiesTablePanel()
-		// .setData( additionalProperties.getOtherProperties() );
+	public void setFieldsFromProperties(Node nodeProperties) {
+		getOtherPropertiesTablePanel().setProperties(nodeProperties);
+		///.setData( additionalProperties.getOtherProperties() );
 	}
 }

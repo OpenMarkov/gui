@@ -21,6 +21,8 @@ import java.awt.*;
 
 /**
  * Created by Jorge on 29/07/2015.
+	 * cmyago 20/10/2022 changed call to ScopeSelectorPanel to remove Type (global/one decision) panel; 09/11/2022 implemented "Temporal evolution by criterion"
+ *
  */
 public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 
@@ -31,20 +33,72 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 	private ScopeSelectorPanel scopeSelectorPanel;
 	private Node selectedNode;
 	private EvidenceCase preResolutionEvidence;
+//  Constructor split because now we have two cases: temporal evolution of a selected node and temporal evolution by criterion
+
+//Former constructor.
+
+//	/**
+//	 * Constructor. initialises the instance.
+//	 *
+//	 * @param owner window that owns the dialog.
+//	 */
+//	public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase preResolutionEvidence) {
+//		super(owner);
+//		setMinimumSize(new Dimension(300, 300));
+//		this.setResizable(true);
+//		this.probNet = selectedNode.getProbNet();
+//		this.selectedNode = selectedNode;
+//		this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence.getFindings());;
+//
+//		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet()
+//				.getName());
+//		getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
+//		getComponentsPanel().add(getSlicesPanel());
+//		getComponentsPanel().add(getScopeSelectorPanel());
+//		setLocationRelativeTo(owner);
+//		this.pack();
+//		this.setVisible(true);
+//
+//	}
 
 	/**
-	 * Constructor. initialises the instance.
-	 *
+	 * Constructor. Initialises the instance for displaying probNet associated temporal evolution
 	 * @param owner window that owns the dialog.
+	 * @param probNet network from which an associated temporal evolution is displayed
+	 * @param preResolutionEvidence network pre-resolution evidence
+	 */
+	public TemporalEvolutionDialog(Window owner,ProbNet probNet,  EvidenceCase preResolutionEvidence) {
+		super(owner);
+		this.probNet = probNet;
+		showWindow(owner,probNet,preResolutionEvidence);
+	}
+
+
+	/**
+	 * Constructor. Initialises the instance for displaying selectedNode temporal evolution
+	 * @param owner window that owns the dialog.
+	 * @param selectedNode node whose temporal evolution is displayed
+	 * @param preResolutionEvidence network pre-resolution evidence
 	 */
 	public TemporalEvolutionDialog(Window owner, Node selectedNode, EvidenceCase preResolutionEvidence) {
 		super(owner);
+		this.selectedNode = selectedNode;
+		this.probNet = selectedNode.getProbNet();
+		showWindow(owner,probNet,preResolutionEvidence);
+
+	}
+
+	/**
+	 * Operations for showing temporal evolution dialog
+	 * @param owner window that owns the dialog.
+	 * @param probNet network from which an associated temporal evolution is displayed
+	 * @param preResolutionEvidence network pre-resolution evidence
+	 */
+	private void showWindow(Window owner, ProbNet probNet, EvidenceCase preResolutionEvidence){
 		setMinimumSize(new Dimension(300, 300));
 		this.setResizable(true);
-		this.probNet = selectedNode.getProbNet();
-		this.selectedNode = selectedNode;
-		this.preResolutionEvidence = preResolutionEvidence;
-		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + selectedNode.getProbNet()
+		this.preResolutionEvidence = new EvidenceCase(preResolutionEvidence.getFindings());
+		this.setTitle(stringDatabase.getString("TemporalEvolutionResultDialog.Title.Label") + probNet
 				.getName());
 		getComponentsPanel().setLayout(new BoxLayout(getComponentsPanel(), BoxLayout.PAGE_AXIS));
 		getComponentsPanel().add(getSlicesPanel());
@@ -52,7 +106,6 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 		setLocationRelativeTo(owner);
 		this.pack();
 		this.setVisible(true);
-
 	}
 
 	public JPanel getSlicesPanel() {
@@ -82,12 +135,14 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 		return numSlicesTextField;
 	}
 
-	public ScopeSelectorPanel getScopeSelectorPanel() {
-		if (scopeSelectorPanel == null) {
-			scopeSelectorPanel = new ScopeSelectorPanel(probNet, preResolutionEvidence);
+		public ScopeSelectorPanel getScopeSelectorPanel() {
+			if (scopeSelectorPanel == null) {
+				//20/10/2022 calling scopeSelectorPanel with temporalEvolution flag for not using "type panel" with (global/one decision)
+				//scopeSelectorPanel = new ScopeSelectorPanel(probNet, preResolutionEvidence);
+				scopeSelectorPanel = new ScopeSelectorPanel(probNet, preResolutionEvidence, true);
+			}
+			return scopeSelectorPanel;
 		}
-		return scopeSelectorPanel;
-	}
 
 	@Override protected boolean doOkClickBeforeHide() {
 		try {
@@ -107,12 +162,20 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 			return false;
 		}
 
-        /*
-        Window owner, Node node, EvidenceCase evidence,
-												Variable decisionSelected, List<Finding> scenario
-         */
-		TraceTemporalEvolutionDialog dialog = new TraceTemporalEvolutionDialog(getOwner(), selectedNode,
-				preResolutionEvidence, scopeSelectorPanel.getDecisionSelected());
+//        /*
+//        Window owner, Node node, EvidenceCase evidence,
+//												Variable decisionSelected, List<Finding> scenario
+//         */
+//		TraceTemporalEvolutionDialog dialog = new TraceTemporalEvolutionDialog(getOwner(), selectedNode,
+//				preResolutionEvidence, scopeSelectorPanel.getDecisionSelected());
+		//Temporal evolution by criterion
+		if (selectedNode == null){
+			new TraceTemporalEvolutionDialog(getOwner(), probNet,
+					preResolutionEvidence, scopeSelectorPanel.getDecisionSelected());
+		} else { //Temporal evolution of selected node
+			TraceTemporalEvolutionDialog dialog = new TraceTemporalEvolutionDialog(getOwner(), selectedNode,
+					preResolutionEvidence, scopeSelectorPanel.getDecisionSelected());
+		}
 
 		return super.doOkClickBeforeHide();
 	}

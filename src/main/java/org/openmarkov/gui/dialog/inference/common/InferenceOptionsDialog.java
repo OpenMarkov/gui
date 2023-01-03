@@ -235,7 +235,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		setLocationRelativeTo(owner);
 
 		// Make a working copy of the criteria
-		this.decisionCriteria = new ArrayList<Criterion>();
+		this.decisionCriteria = new ArrayList<>();
 
 		for (Criterion criterion : probNet.getDecisionCriteria()) {
 			this.decisionCriteria.add(criterion.clone());
@@ -324,9 +324,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 	}
 
 	/**
-	 * Get multicriteria options panel
-	 *
-	 * @return
+	 * Get multicriteria options panel	 *
+	 * @return the multi criteria panel
 	 */
 	public JPanel getMulticriteriaPanel() {
 		if (multicriteriaPanel == null) {
@@ -355,9 +354,8 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the Panel in which we have the conversion unit and the panel in which
-	 * we have the multicriteria type to be applied
-	 *
-	 * @return
+	 * we have the multi criteria type to be applied
+	 * @return The units and select panel
 	 */
 	private JPanel getUnitsAndSelectPanels() {
 		JPanel mixedPanel = new JPanel();
@@ -367,7 +365,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 		mixedPanel.add(selectTypePanel);
 
 		unitsPanel = getUnitsPanel();
-		unitsPanel.setPreferredSize(selectTypePanel.getPreferredSize());
+//		unitsPanel.setPreferredSize(selectTypePanel.getPreferredSize());
 		mixedPanel.add(unitsPanel);
 
 		return mixedPanel;
@@ -375,8 +373,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Panel in which we have the Table with the criteria data
-	 *
-	 * @return
+	 * @return The table panel
 	 */
 	private JScrollPane getTablePanel() {
 
@@ -760,19 +757,18 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the Panel with the units
-	 *
-	 * @return
+	 * @return The units panel
 	 */
 	private JPanel getUnitsPanel() {
 		JPanel unitsPanel = new JPanel();
 
 		unitsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		unitsPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Unit.Select")));
+		unitsPanel.setBorder(new TitledBorder(stringDatabase.getString("MulticriteriaDialog.Unit.Title")));
 
-		JLabel unitsLabel = new JLabel(stringDatabase.getString("MulticriteriaDialog.Unit.Title"));
-		unitsPanel.add(unitsLabel, BorderLayout.LINE_START);
-		unitsLabel.setSize(new Dimension(50, 50));
+//		JLabel unitsLabel = new JLabel(stringDatabase.getString("MulticriteriaDialog.Unit.Title"));
+//		unitsPanel.add(unitsLabel, BorderLayout.LINE_START);
+//		unitsLabel.setSize(new Dimension(50, 50));
 
 		existingUnits = new JComboBox<String>();
 
@@ -818,8 +814,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Gets the panel with the selection of the multicriteria type
-	 *
-	 * @return
+	 * @return The select type panel
 	 */
 	private JPanel getSelectTypePanel() {
 		JPanel selectTypePanel = new JPanel();
@@ -884,8 +879,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 
 	/**
 	 * Get temporal options panel
-	 *
-	 * @return
+	 * @return The temporal panel
 	 */
 	public JPanel getTemporalPanel() {
 		if (temporalPanel == null) {

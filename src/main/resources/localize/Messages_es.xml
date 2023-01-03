@@ -566,5 +566,34 @@
             <Label value="El valor introducido no es válido."/>
         </Text>
     </NumberFormatException>
+    <OverwriteFile>
+        <Title>
+            <Label value="Confirmación de sobrescritura"/>
+        </Title>
+        <Text>
+            <Label value="El archivo seleccionado ya existe. ¿Deseas sobreescribirlo?"/>
+        </Text>
+    </OverwriteFile>
+    <!-- 28/11/2022 MID temporal evolution when there is more than one node without policy -->
+    <DecisionWithoutPolicyWarning>
+        <Text>
+            <Label value="Hay más de un nodo de decisión sin política asociada"/>
+        </Text>
+    </DecisionWithoutPolicyWarning>
+    <UnexpectedInferenceException>
+        <TemporalEvolution value="Más de una variable condicionante"/>
+    </UnexpectedInferenceException>
+    <!-- 28/11/2022 Text for ProgressMonitor; Message is dependent on its use; To be used with MID and DES (TODO integrate the last ) -->
+    <ProgressMonitor>
+        <ProgressText>
+            <Label value ="Progreso..."/>
+        </ProgressText>
+        <Message>
+            <TemporalEvolution value="Evolución temporal"/>
+        </Message>
+        <Note>
+            <TemporalEvolution value="Evaluando"/>
+        </Note>
+    </ProgressMonitor>
 </properties>
 

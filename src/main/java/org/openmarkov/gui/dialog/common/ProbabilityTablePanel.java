@@ -112,7 +112,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	/**
 	 * this is a default constructor with no construction parameters
 	 *
-	 * @wbp.parser.constructor
+	 *
 	 */
 	public ProbabilityTablePanel() {
 

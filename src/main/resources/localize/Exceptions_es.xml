@@ -120,5 +120,11 @@
         <message value="Criterio incorrecto: %s."/>
     </WrongCriterionException>
 
+    <NonProjectablePotentialException>
+        <UniformNumeric>
+            <title value="No se puede proyectar el potencial uniforme de la variable numérica."/>
+            <message value="La variable numérica %s no permite proyectar a tabla su potencial uniforme."/>
+        </UniformNumeric>
+    </NonProjectablePotentialException>
 </properties>
 

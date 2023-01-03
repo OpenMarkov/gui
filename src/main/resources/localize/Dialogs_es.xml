@@ -9,6 +9,9 @@
             <Label value="Evolución temporal de:"/>
             <ConditioningVariables value="dadas las políticas impuestas"/>
         </Title>
+        <ByCriterionTitle>
+            <Label value="Evolución temporal por criterio"/>
+        </ByCriterionTitle>
         <Legend>
             <Title>
                 <Label value="Leyenda"/>
@@ -17,18 +20,26 @@
         <States>
             <Label value="Estados"/>
         </States>
+        <Criteria>
+            <Label value="Criterios"/>
+        </Criteria>
         <Display>
             <Label value="Visualización"/>
             <Instantaneus value="Instantaneo"/>
             <Accumulate value="Acumulado"/>
             <Individual value="Individual"/>
             <Summatory value="Suma"/>
+            <Upfront value="Incluye desembolso inicial"/>
+            <Discount value="Discounted values"/>
         </Display>
     </TemporalEvolutionResultDialog>
     <TemporalEvolutionTable>
         <Title>
             <Label value="Tabla"/>
         </Title>
+        <Headers>
+            <Criterion value="Criterio"/>
+        </Headers>
     </TemporalEvolutionTable>
     <TemporalEvolutionChart>
         <Title>
@@ -780,8 +791,7 @@
     </ShortcutsBox>
     <AboutBox>
         <Advertisement>
-            <Text
-                    value="Por favor, visite la pagina web de OpenMarkov (www.openmarkov.org) para obtener las ultimas actualizaciones"/>
+            <Text value="Por favor, visite la pagina web de OpenMarkov (www.openmarkov.org) para obtener las ultimas actualizaciones"/>
         </Advertisement>
         <LineSeparatorImage>
             <URL value="lineSeparator.jpg"/>
@@ -790,7 +800,7 @@
             <AllRightsReserved>
                 <Text value="Todos los derechos reservados"/>
             </AllRightsReserved>
-            <Text value=" (c) UNED - 2008-2012"/>
+            <Text value=" (c) UNED - 2008-2019"/>
         </Copyright>
         <jLabelLogo>
             <BlankSpace>
@@ -1061,5 +1071,15 @@
             <Decision value="Una decisión"/>
         </Scenario>
     </ScopeSelector>
+	<AddOtherProperty>
+		<Name>
+             <Title value="Añadir propiedad"/>
+			 <Message value="Nombre"/>
+        </Name>
+		<Value>
+             <Title value="Añadir propiedad"/>
+			 <Message value="Valor"/>
+        </Value>
+    </AddOtherProperty>
 </properties>
 

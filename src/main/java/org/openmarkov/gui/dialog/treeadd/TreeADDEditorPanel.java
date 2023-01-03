@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>JScrollPane<code> for creating and modifying <code>TreeADDPotential<code>s
+ * <code>JScrollPane</code> for creating and modifying <code>TreeADDPotential</code>s
  *
  * @author jfernandez
  * @author myebra
@@ -334,10 +334,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 
 	/**
 	 * Finds the list of variables that can be added to the potential
-	 *
 	 * @param branch
 	 * @param branchPath
-	 * @return
+	 * @return the list of variables that can be added to the potential
 	 */
 	private List<Variable> possibleRootVariables(TreeADDBranch branch, TreePath branchPath) {
 		List<Variable> possibleRootVariables = new ArrayList<>();
@@ -1207,7 +1206,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 *
 	 * @param path
 	 * @param rootVariable
-	 * @return
+	 * @return true iff the root variable has been previously used
 	 */
 	private boolean isRootVariableUsedBefore(TreePath path, Variable rootVariable) {
 
@@ -1237,6 +1236,9 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		Potential potential = branch.getPotential();
 		ProbNet probNet = node.getProbNet();
 		ProbNet dummyProbNet = new ProbNet();
+		for (Variable var:potential.getVariables()) {
+			dummyProbNet.addNode(var, probNet.getNode(var).getNodeType());
+		}
 		dummyProbNet.addPotential(potential);
 		//CMI 10/04/2020 - As dummyProbNet is a BayesianNetwork, dummyProbNet.addPotential(potential) sets every node of potential as a Chance node.
 		// I change the network type only in the case of DESNets because I don't know if other networks need it or not

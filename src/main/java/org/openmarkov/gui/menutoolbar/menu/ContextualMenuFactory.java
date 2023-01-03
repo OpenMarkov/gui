@@ -236,8 +236,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	/**
 	 * Returns an instance of a pop up menu given the class and some additional
 	 * info
-	 *
-	 * @return
+	 * @return The contextual menu
 	 */
 	public ContextualMenu getContextualMenu(VisualElement selectedElement, EditorPanel panel) {
 		ContextualMenu contextualMenu = null;

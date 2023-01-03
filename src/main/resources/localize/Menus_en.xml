@@ -517,9 +517,9 @@
         <ExpandNetwork>
             <Label value="Expand Network"/>
         </ExpandNetwork>
-        <ExpandNetworkCE>
-            <Label value="Expand Network CE"/>
-        </ExpandNetworkCE>
+<!--        <ExpandNetworkCE>-->
+<!--            <Label value="Expand Network CE"/>-->
+<!--        </ExpandNetworkCE>-->
         <Analysis>
             <Label value="Cost Effectiveness Analysis"/>
         </Analysis>
@@ -529,6 +529,9 @@
             <CumulativeValues value="Cumulative values"/>
             <ValueType value="Value type"/>
         </TemporalEvolution>
+        <TemporalEvolutionByCriterion>
+            <Label value="Temporal evolution by criterion "/>
+        </TemporalEvolutionByCriterion>
     </CostEffectiveness>
     <TreeADD>
         <AddSubtree value="Add subtree"/>

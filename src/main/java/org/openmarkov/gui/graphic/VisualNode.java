@@ -366,8 +366,7 @@ public abstract class VisualNode extends VisualElement {
 
 	/**
 	 * Returns stroke to be used for the contour
-	 *
-	 * @return
+	 * @return The contour stroke
 	 */
 	protected Stroke getContourStroke() {
 		Stroke s = null;

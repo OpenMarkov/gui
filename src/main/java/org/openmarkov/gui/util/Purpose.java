@@ -105,7 +105,7 @@ public class Purpose {
 
 	/**
 	 * This method returns the purpose sited in the specified index in the list.
-	 * If the index is out of range (index < 0 || index > list size) the null is
+	 * If the index is out of range (index &lt; 0 || index &gt; list size) the null is
 	 * returned.
 	 *
 	 * @param index element of the list of purposes.

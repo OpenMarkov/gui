@@ -406,8 +406,7 @@ public class MainPanel extends JPanel {
 
 	/**
 	 * Returns instance of toolbarManager
-	 *
-	 * @return
+	 * @return the toolbar manager
 	 */
 	public ToolbarManager getToolbarManager() {
 		return toolbarManager;

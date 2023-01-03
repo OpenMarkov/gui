@@ -91,7 +91,7 @@ import java.util.List;
 	}
 
 	/**
-	 * @return
+	 * @return The JLabel of the values panel
 	 */
 	protected JLabel getJLabelValuesPanel() {
 		if (jLabelValuesPanel == null) {

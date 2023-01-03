@@ -11,11 +11,7 @@ import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.NoEventNodes;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
@@ -52,7 +48,8 @@ import java.util.List;
  * (edition/inference), - Expansion and contraction of nodes, -
  * Introduction and elimination of evidence - Management of multiple
  * evidence cases.
- * @version 1.3 - cyago - 23/01/2019 - Added DES Network
+ * @version 1.2.1 - cmyago - 23/01/2019 - Added DES Network
+ * @version 1.2.2 - cmyago - 20/10/2022; 09/11/2022 - disabling "Add Finding" for temporal nodes which are not the first in the temporal sequence and implementing "Temporal evolution by criterion"
  */
 public class MainPanelMenuAssistant extends MenuAssistant implements OOSelectionListener, PNUndoableEditListener {
 	/**
@@ -192,7 +189,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_SHOW_EXPECTED_UTILITY, false);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_POLICY, false);
 		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_ACTION, false);
-		setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
+		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, false);
 		setOptionEnabled(ActionCommands.DECISION_TREE, false);
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
 		setOptionEnabled(ActionCommands.NEXT_SLICE_NODE, false);
@@ -228,7 +225,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 
 		checkInferenceOptions();
 
-		setOptionEnabled(ActionCommands.EXPAND_NETWORK, false);
+		setOptionEnabled(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION, false);
 		setOptionEnabled(ActionCommands.NEXT_SLICE_NODE, false);
 
 		updateInferenceButtons();
@@ -764,6 +761,10 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 									workingMode == NetworkPanel.INFERENCE_WORKING_MODE && !visualNode
 											.isPostResolutionFinding()
 							);
+						if (visualNode.getNode().getVariable().isTemporal() &&
+								visualNode.getNode().getParents().stream().anyMatch(node->node.getVariable().getBaseName().equals(visualNode.getNode().getVariable().getBaseName())))
+								canAddFinding = false;
+
 					setText(ActionCommands.NODE_ADD_FINDING, stringDatabase
 							.getString((addOrChange) ? "Inference.AddFinding.Label" : "Inference.ChangeFinding.Label"));
 				}

@@ -25,13 +25,13 @@ import java.awt.event.ActionListener;
  */
 public class AboutBox extends JDialog implements ActionListener {
 	// TODO to be consider to re-write as an standard dialog using the
-	// OpenMarkov dialog resource bundle
+	//  OpenMarkov dialog resource bundle
 	/**
 	 * default id
 	 */
 	private static final long serialVersionUID = -2926600957370532009L;
 	String product = "";
-	String version = "0.3.0-SNAPSHOT";
+	String version = "0.4.0-SNAPSHOT";
 	String copyright = "";
 	String copyright2 = "";
 	String authors = "";

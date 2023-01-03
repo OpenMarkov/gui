@@ -51,7 +51,7 @@ import java.util.List;
 	 * Constructor used by CPTablePanel
 	 * This method creates, initialises, and displays a ValuesTable object for the first potential of the node
 	 * <p>
-	 * When there is no potential NullListPotentialException is showed-->UNCLEAR stop???
+	 * When there is no potential NullListPotentialException is showed--&gt;UNCLEAR stop???
 	 *
 	 * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
 	 * @author carmenyago : adaptation to TableDeltaPotential
@@ -89,7 +89,7 @@ import java.util.List;
 		valuesTable.setVisible(true);
 		modifiable = true;
 
-		// Previous-->Ok
+		// Previous--&gt;Ok
 		setTableSpecificListeners();
 
 		setData();
@@ -108,7 +108,7 @@ import java.util.List;
 	 *
 	 * @return the tableModel of valuesTable.
 	 * @see ValuesTable
-	 * revised-->minor changes
+	 * revised--&gt;minor changes
 	 */
 	@Override protected ValuesTableModel getTableModel() {
 		AugmentedValuesTableModel tableModel = null;
@@ -177,7 +177,7 @@ import java.util.List;
 	 * @author carmenyago
 	 * <p>
 	 * Continuous variables have only one state
-	 * tableSize is always >0
+	 * tableSize is always greater than 0
 	 */
 	@Override protected Object[][] createEmptyTable() {
 
@@ -188,13 +188,13 @@ import java.util.List;
 		//CHANGE (minor node by tablePotential
 		firstEditableRow = tablePotentialsPanelOperations.calculateFirstEditableRow(tablePotential);
 
-		// The baseIndexForCoordinates is the first editable row-->What for-->UNCLEAR
+		// The baseIndexForCoordinates is the first editable row--&gt;What for--&gt;UNCLEAR
 		// The property baseIndexForCoordinates is not Visible. baseIndexForCoordinates= row
 		setBaseIndexForCoordinates(firstEditableRow);
 
 		// Number of data elements of tablePotential
 		int tableSize = tablePotential
-				.getTableSize();//-->UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
+				.getTableSize();//--&gt;UNCLEAR What happens when there is no parent (f.e. when Tree/ADD )
 
 		// Number of states of the variable of the node; if isTableDeltaPotential numDimensions=1
 		int numDimensions = tablePotential.getDimensions()[0];
@@ -202,7 +202,7 @@ import java.util.List;
 		numRows = firstEditableRow + numDimensions;
 		lastEditableRow = numRows - 1;
 
-		/*if (!isTableDeltaPotential) numRows++;*/ //--> UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
+		/*if (!isTableDeltaPotential) numRows++;*/ //--&gt; UNCLEAR Last row with the name of the variable and the state with '1' is REMOVED
 		numColumns = numColumns + tableSize / numDimensions;
 
 		// create the array of arrays
@@ -284,7 +284,7 @@ import java.util.List;
 		 */
 		int startPosition = tablePotentialsPanelOperations.getPotentialStartIndexOfColumn(col, node);
 
-		// gets the configuration of startPosition--> the data position in tablePotential corresponding to
+		// gets the configuration of startPosition--&gt; the data position in tablePotential corresponding to
 		// the beginning of the column
 		// I suppose configuration=[Node Variable, parent_1,----,parent_n]
 		int[] configuration = tablePotential.getConfiguration(startPosition);
@@ -327,7 +327,7 @@ import java.util.List;
 	 * This method initialises valuesTable and defines that first two columns cannot be selected
 	 *
 	 * @return a new values table.
-	 * revised-->not changed
+	 * revised--&gt;not changed
 	 */
 	public ValuesTable getValuesTable() {
 		if (valuesTable == null) {
@@ -365,23 +365,26 @@ import java.util.List;
 	 */
 	@Override protected void doubleClickEvent(MouseEvent e) {
 		String function = null;
+		
 		List<Variable> parameterVariables = ((UnivariateDistrPotential) potential).getParameterVariables();
+		int row = valuesTable.rowAtPoint(e.getPoint());
+		int column = valuesTable.columnAtPoint(e.getPoint());
+		function = (String) valuesTable.getValueAt(row, column);
 		ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parameterVariables,
 				function);
 		expressionDialog.setVisible(true);
 		if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
 			function = expressionDialog.getExpression();
-			int row = valuesTable.rowAtPoint(e.getPoint());
-			int column = valuesTable.columnAtPoint(e.getPoint());
+			//int row = valuesTable.rowAtPoint(e.getPoint());
+			//int column = valuesTable.columnAtPoint(e.getPoint());
 			valuesTable.setValueAt(function, row, column);
 		}
 	}
 
 	/**
 	 * This class overrides the double click listener calling the
-	 *
-	 * @see DoubleClickListener
-	 * revised-->not changed
+	 * @see org.openmarkov.gui.dialog.common.TablePotentialPanel.DoubleClickListener
+	 * revised--&gt;not changed
 	 */
 	private class MouseClickedListener extends MouseAdapter {
 

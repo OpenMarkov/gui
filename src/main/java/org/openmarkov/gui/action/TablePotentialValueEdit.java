@@ -33,7 +33,7 @@ import java.util.List;
  * Only
  *
  * @author mpalacios
- * @version 1.1 28/05/2016 - cyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
+ * @version 1.1 28/05/2016 - cmyago - Eliminated the different treatment of the utility nodes and introduces the behaviour of ExactDistrPotential
  * - adding the attribute getExactDistrPotential
  */
 @SuppressWarnings("serial") public class TablePotentialValueEdit extends SimplePNEdit {
@@ -115,7 +115,7 @@ import java.util.List;
 	 * @param priorityList         the priority lists for potentials update.
 	 * @param notEditablePositions two dimensional array with the information about editable
 	 *                             positions.
-	 *                             cyago added the new initialisation of getExactDistrPotential
+	 *                             cmyago added the new initialisation of getExactDistrPotential
 	 */
 	public TablePotentialValueEdit(Node node, Double newValue, int row, int col, List<Integer> priorityList,
 			Object[][] notEditablePositions) {
@@ -174,9 +174,8 @@ import java.util.List;
 	 * This method fills the new table of tablePotential with the new values calculated after the edition of a cell
 	 * and updates the probNet
 	 * In case the potential is ExactDistrPotential...
-	 *
-	 * @throws <code>DoEditException</code> cyago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
-	 */
+	 * Carmen Yago only eliminated the different treatment for UTILITY role and introduced exactDistrPotential
+	 */	
 	@Override public void doEdit() throws DoEditException {
 		PotentialChangeEdit changePotentialEdit = null;
 		if (!getExactDistrPotential()) {
@@ -266,8 +265,8 @@ import java.util.List;
 	 *
 	 * @return the priority list initialised with the the value edited in the
 	 * last place of the list
-	 * <p>
-	 * revised-->not changed
+	 *
+	 * revised --&gt; not changed
 	 */
 	private List<Integer> getPriorityListInitialization() {
 		for (int i = 0; i < node.getVariable().getNumStates(); i++) {
@@ -325,10 +324,10 @@ import java.util.List;
 
 	/***
 	 * Checks if the position in the table of tablePotential corresponds to an editable cell if there is a priority list
-	 * UNCLEAR--> Have I to change the behaviour; depends on doEdit()
-	 * @param position
+	 * UNCLEAR --&gt; Have I to change the behaviour; depends on doEdit()
+	 * @param position the position
 	 * @return true if the cell is editable
-	 * revised-->not changed
+	 * revised --&gt; not changed
 	 */
 	private boolean isEditablePosition(int position) {
 		boolean editable = false;

@@ -31,6 +31,7 @@ import java.util.List;
 
 /**
  * Created by Jorge on 01/07/2015.
+ * cmyago disabled "type" options (global/one decision) for Temporal Evolution 20/10/2022.
  */
 public class ScopeSelectorPanel extends JPanel {
 
@@ -64,6 +65,19 @@ public class ScopeSelectorPanel extends JPanel {
 		this.setVisible(true);
 		setMaximumSize(new Dimension(300, 300));
 	}
+
+
+	/**
+	 * Creates a ScopeSelectorPanel where scope panel is only shown if the analysis is not temporal evolution.
+	 * @param probNet network from which the temporal evolution of one/some of their nodes is shown
+	 * @param preResolutionEvidence evidence of probNet
+	 * @param isTemporalEvolution if true, scope panel (for global/one decision) is removed because it makes no sense. It is shown otherwise
+	 */
+	public ScopeSelectorPanel(ProbNet probNet, EvidenceCase preResolutionEvidence, boolean isTemporalEvolution) {
+		this(probNet,preResolutionEvidence);
+		if (isTemporalEvolution) mainPanel.remove(scopeTypePanel);
+	}
+
 
 	public JPanel getMainPanel() {
 		mainPanel = new JPanel();

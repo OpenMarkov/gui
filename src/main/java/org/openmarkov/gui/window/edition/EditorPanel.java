@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.window.edition;
 
+import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.AbsorbParentsEdit;
 import org.openmarkov.core.action.AbsorbNodeEdit;
@@ -53,6 +54,7 @@ import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.graphic.VisualState;
+import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
@@ -1843,9 +1845,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 							.getNetworkType(), stringDatabase.getString("NoPropagationCanBeDoneMessage.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);
 		} catch (Exception e) {
-			JOptionPane
-					.showMessageDialog(Utilities.getOwner(this), "Error during inference: " + e.getMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
+			LocalizedException localizedException = new LocalizedException(e);
+			localizedException.showException();
+			LogManager.getLogger().debug(e.getLocalizedMessage());
+
+//			JOptionPane
+//					.showMessageDialog(Utilities.getOwner(this), "Error during inference: " + e.getMessage(), "Error",
+//							JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 		evidenceCasesCompilationState.set(caseNumber, propagationSucceded);
@@ -2033,6 +2039,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         else if(selectedNode == null){
         	new CostEffectivenessDialog(Utilities.getOwner (this), probNet, true, true).setVisible(true);
         }*/
+		else if(selectedNode.size() == 0){
+			new TemporalEvolutionDialog(Utilities.getOwner(this), getNetworkPanel().getProbNet(), preResolutionEvidence);
+		}
+
 	}
 
 	/**

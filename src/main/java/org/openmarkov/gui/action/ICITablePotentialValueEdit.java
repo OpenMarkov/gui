@@ -336,7 +336,7 @@ import java.util.List;
 	 * Retrieves probeNode ICIPotential
 	 *
 	 * @param listPotentials
-	 * @return
+	 * @return this ICI potential
 	 */
 
 	private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
@@ -360,7 +360,7 @@ import java.util.List;
 	/**
 	 * Gets the new value
 	 *
-	 * @return
+	 * @return newValue
 	 */
 	public double getNewValue() {
 		return newValue;
@@ -369,7 +369,7 @@ import java.util.List;
 	/**
 	 * Gets the table-potential of the node
 	 *
-	 * @return
+	 * @return iciPotential
 	 */
 	public ICIPotential getPotential() {
 		return iciPotential;
