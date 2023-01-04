@@ -71,12 +71,11 @@ import java.util.List;
  * hidden.</li>
  * </ul>
  * <p>
- * carmenyago: Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
- * 3. when the potential doesn't exit an exception is raised
  *
  * @author jlgozalo
  * @author myebra
- * @author carmenyago 19/06/2016
+ * @version 2 - cmyago 19/06/2016 - Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
+ * 3. when the potential doesn't exit an exception is raised
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Table") public class TablePotentialPanel
 		extends ProbabilityTablePanel {
