@@ -10,13 +10,30 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.action.UncertainValuesRemoveEdit;
-import org.openmarkov.core.exception.*;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.EvidenceCase;
+import org.openmarkov.core.model.network.Finding;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PolicyType;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.Util;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.gui.component.*;
+import org.openmarkov.gui.component.PotentialsTablePanelOperations;
+import org.openmarkov.gui.component.ValuesTable;
+import org.openmarkov.gui.component.ValuesTableCellRenderer;
+import org.openmarkov.gui.component.ValuesTableModel;
+import org.openmarkov.gui.component.ValuesTableOptimalPolicyCellRenderer;
+import org.openmarkov.gui.component.ValuesTableWithLinkRestrictionCellRenderer;
 import org.openmarkov.gui.dialog.node.UncertainValuesDialog;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.UncertaintyContextualMenu;
@@ -57,8 +74,8 @@ import java.util.List;
  *
  * @author jlgozalo
  * @author myebra
- * @version 2 - cyago 19/06/2016 -  Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
- *  3. when the potential doesn't exit an exception is raised
+ * @version 2 - cmyago 19/06/2016 - Changes: 1. adaptation to the new definition of utility node, 2. removing deterministic features
+ * 3. when the potential doesn't exit an exception is raised
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Table") public class TablePotentialPanel
 		extends ProbabilityTablePanel {
