@@ -8,7 +8,6 @@
 package org.openmarkov.gui.util;
 
 import org.openmarkov.core.model.network.PurposeType;
-import org.openmarkov.gui.graphic.VisualEventNode;
 import org.openmarkov.gui.localize.StringDatabase;
 
 import java.util.ArrayList;
@@ -20,8 +19,8 @@ import java.util.MissingResourceException;
  *
  * @author jmendoza
  * @version 1.1 jlgozalo - fix initial values for fields
- * @version 1.2 - cyago - 08/02/2019 - 25/01/2020 - added purpose "terminal" and initial. Purpose will be moved to core
- * @version 1.3 - cyago - 26/01/2020 keys moved to core because they are core data (used in constrains, network representacion and inference)
+ * @version 1.2 - cmyago - 08/02/2019 - 25/01/2020 - added purpose "terminal" and initial. Purpose will be moved to core
+ * @version 1.3 - cmyago - 26/01/2020 keys moved to core because they are core data (used in constrains, network representacion and inference)
  *
  */
 public class Purpose {

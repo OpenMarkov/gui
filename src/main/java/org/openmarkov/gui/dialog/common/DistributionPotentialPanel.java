@@ -1,15 +1,8 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
+import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
 import org.openmarkov.core.model.network.potential.DistributionTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.TableWithEvents;
@@ -17,7 +10,8 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +20,10 @@ import java.util.Vector;
 /**
  * This class implements the Panel for DistributionTablePotential. This panel has two comboboxed for the distribution and parametrization,
  * and the correspondent TableWithEvents.
- *
- * @version 1.0 - cyago - 24/03/2019
- * @version 1.1 - cyago - 22/04/2021 - Added parametrization for distributions and javadoc
- * @version 1.2 - cyago - 23/05/2022 - Refactored from TimeToEventTablePotentialPanelP to DistributionTablePotentialPanel
+ * @author cmyago
+ * @version 1.0 - cmyago - 24/03/2019
+ * @version 1.1 - cmyago - 22/04/2021 - Added parametrization for distributions and javadoc
+ * @version 1.2 - cmyago - 23/05/2022 - Refactored from TimeToEventTablePotentialPanelP to DistributionTablePotentialPanel
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "DistributionTable")
 public class DistributionPotentialPanel

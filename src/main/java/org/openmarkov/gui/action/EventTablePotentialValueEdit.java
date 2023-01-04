@@ -1,10 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.gui.action;
 
 import net.sourceforge.jeval.EvaluationException;
@@ -13,11 +6,10 @@ import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TableWithFunctions;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 
@@ -33,7 +25,8 @@ import java.util.List;
  * node's <code>Potential</code> values. It is implemented for TablePotential
  * Only
  *
- * @author cyago - copied/adapted from TablePotentialValueEdit
+ * @author cmyago - copied/adapted from TablePotentialValueEdit;
+ * 04/10/2023 FIXME check if it complies with OM wiki
  * @version 1.1 18/05/2022 - Changed to be used with numeric variables
  */
 @SuppressWarnings("serial") public class EventTablePotentialValueEdit extends SimplePNEdit {

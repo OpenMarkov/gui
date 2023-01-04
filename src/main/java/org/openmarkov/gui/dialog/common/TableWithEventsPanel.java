@@ -1,20 +1,18 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-
 package org.openmarkov.gui.dialog.common;
 
 import org.apache.logging.log4j.Logger;
-import org.openmarkov.core.exception.*;
+import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TableWithFunctions;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.gui.component.*;
+import org.openmarkov.gui.component.EventValuesTable;
+import org.openmarkov.gui.component.EventValuesTableCellRenderer;
+import org.openmarkov.gui.component.EventValuesTableModel;
+import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TableWithEventsContextualMenu;
 
@@ -29,8 +27,9 @@ import java.util.List;
 /**
  * This class implements a Table eventTablePotential table.
  * Transition class to be merged with the new structure of tables
- * @version 1.0 - cyago - 24/03/2019
- * @version 1.1 - cyago - 20/08/2022 impossible configuration commented
+ * @author cmyago
+ * @version 1.0 - cmyago - 24/03/2019
+ * @version 1.1 - cmyago - 20/08/2022 impossible configuration commented
  */
 
 public class TableWithEventsPanel
