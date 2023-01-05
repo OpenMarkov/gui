@@ -1,13 +1,3 @@
-/*
- * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
- * Unless required by applicable law or agreed to in writing,
- * this code is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OF ANY KIND.
- */
-/**
- *
- */
-
 package org.openmarkov.gui.component;
 
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
@@ -24,8 +14,8 @@ import java.util.Locale;
 /**
  * This class is used for painting and coloring the table and the headers
  * To be mixed to ValuesTableCellRenderer when Tables change
- * @author cyago
- * @version 1.0 20190901 01/09/2019
+ * @author cmyago
+ * @version 1.0  01/09/2019
  */
 public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 	/**

@@ -27,7 +27,7 @@ import java.util.*;
  * Table to show temporal evolution of temporal variables
  *
  * @author myebra
- * @version 2 cyago - 09/11/2022 - temporal evolution by criterion and discount added
+ * @version 2 cmyago - 09/11/2022 - temporal evolution by criterion and discount added
  */
 @SuppressWarnings("serial")
 public class TemporalEvolutionTablePane extends JScrollPane {

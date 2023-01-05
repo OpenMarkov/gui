@@ -13,35 +13,16 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PolicyType;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
-import org.openmarkov.gui.dialog.common.AugmentedTablePotentialPanel;
-import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.dialog.common.ICIPotentialsTablePanel;
-import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.gui.dialog.common.PanelResizeEvent;
-import org.openmarkov.gui.dialog.common.PanelResizeEventListener;
-import org.openmarkov.gui.dialog.common.PolicyTypePanel;
-import org.openmarkov.gui.dialog.common.PotentialPanel;
-import org.openmarkov.gui.dialog.common.PotentialPanelManager;
-import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
-import org.openmarkov.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.gui.dialog.common.UnivariateDistrPotentialPanel;
+import org.openmarkov.gui.dialog.common.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -61,8 +42,8 @@ import java.util.List;
  * @author mpalacios
  * @author jmendoza
  * @author ibermejo
- * @author cyago - adapted the class to the new utility treatment; minor changes
  * @version 1.2 jlgozalo - set class to use independent panels;
+ * @version 1.3 cmyago 19/06/2016 - adapted the class to the new utility treatment; minor changes
  */
 public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		implements ActionListener, PanelResizeEventListener {

@@ -14,8 +14,8 @@ package org.openmarkov.gui.menutoolbar.common;
  * @author jmendoza
  * @version 1.1 jlgozalo Add help menus (previously to change to dynamic version),
  * ficheros usados recientemente y cambios de lenguaje
- * @version 1.2 cyago  - 03/02/2019 - Event node constants added
- * @version 1.3 cyago 20190815 -25/08/2019 - Added action commands for indicating impossible configurations in TTE potentials
+ * @version 1.2 cmyago  - 03/02/2019 - Event node constants added
+ * @version 1.3 cmyago  -25/08/2019 - Added action commands for indicating impossible configurations in TTE potentials
  */
 public class ActionCommands {
 

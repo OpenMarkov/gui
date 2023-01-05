@@ -17,7 +17,7 @@ import java.awt.geom.*;
  *
  * @author jmendoza
  * @version 1.0
- * @version 1.1 01/01/2020, 08/04/2020 cyago - self-loops implemented
+ * @version 1.1 01/01/2020, 08/04/2020 cmyago - self-loops implemented
  */
 public class VisualArrow extends VisualElement {
 

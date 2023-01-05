@@ -8,13 +8,11 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.action.*;
-import org.openmarkov.core.exception.*;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.StringWithProperties;
-import org.openmarkov.core.model.network.Util;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.exception.ConstraintViolationException;
+import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.action.NodeAgentEdit;
 import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
 import org.openmarkov.gui.constraint.AlwaysObservedPropertyValidator;
@@ -28,12 +26,7 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -42,7 +35,7 @@ import java.util.List;
  *
  * @author jlgozalo
  * @version 1.5 mpalacios
- * @version 1.5.1 cyago - added scheduling behaviour for Event nodes. Provisional feature
+ * @version 1.5.1 cmyago 22/04/2021 - added scheduling behaviour for Event nodes. FIXME Provisional feature. Check whether keeping it or not
  */
 public class NodeDefinitionPanel extends JPanel
 		implements FocusListener, ItemListener, CommentListener, ActionListener {

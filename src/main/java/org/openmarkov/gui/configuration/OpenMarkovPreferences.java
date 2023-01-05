@@ -22,7 +22,7 @@ import java.util.prefs.Preferences;
  * @author jlgozalo
  * @version 1.1 30 Oct 2009 - adding kernel and languages subsets. - adding
  * getInt/setInt methods - adding interface implementation (constants)
- * @version 1.2 - cyago - 07/02/1019 - added event nodes
+ * @version 1.2 - cmyago - 07/02/2019 - added event nodes
  */
 public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	/**

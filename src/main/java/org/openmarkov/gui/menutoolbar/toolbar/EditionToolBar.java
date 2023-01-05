@@ -19,7 +19,7 @@ import java.awt.event.MouseMotionListener;
  * This class implements the edition toolbar of the application.
  *
  * @author jmendoza
- * @verion 1.1 cyago. Event button added
+ * @version 1.1 cmyago - 15/09/2019 Event button added
  */
 public class EditionToolBar extends ToolBarBasic implements MouseMotionListener {
 	/**

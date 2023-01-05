@@ -19,7 +19,7 @@ import java.util.MissingResourceException;
  * @author jmendoza
  * @author jlgozalo
  * @version 1.1 jlgozalo 20/08 add Infinite Positive and Negative icons
- * @version 1.2 cyago 20190821 21/08/2019 added icons related to DESNetwork: the Event node and menu item for simulation
+ * @version 1.2 cmyago 21/08/2019 added icons related to DESNetwork: the Event node and menu item for simulation
  */
 public class IconLoader {
 	/**

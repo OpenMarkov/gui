@@ -220,7 +220,7 @@ public class TableWithEventsPanel
 	 * <p>
 	 * UNCLEAR--> Called in PotentialEditDialog.showFields(Node)
 	 *
-	 * @author cyago
+	 * @author cmyago
 	 */
 	public void setData(Node node) {
 		this.node = node;

@@ -10,8 +10,8 @@ package org.openmarkov.gui.menutoolbar.menu;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.gui.constraint.AbsorbParentsValidator;
 import org.openmarkov.gui.constraint.AbsorbNodeValidator;
+import org.openmarkov.gui.constraint.AbsorbParentsValidator;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
 import org.openmarkov.gui.localize.MenuLocalizer;
@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
  * @author jlgozalo
  * @version 1.2 asaez - Add options for expanding and contracting nodes, setting
  * and deleting findings and policies.
- * @version 1.3 cyago - 03/02/2019- Added the "Add Time To Event" menu item for DESNets.
+ * @version 1.3 cmyago - 03/02/2019- Added the "Add Time To Event" menu item for DESNets.
  */
 public class NodeContextualMenu extends ContextualMenu {
 	/**
