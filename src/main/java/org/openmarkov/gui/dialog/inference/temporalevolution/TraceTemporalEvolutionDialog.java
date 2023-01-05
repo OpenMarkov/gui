@@ -180,7 +180,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * JFreeChart when data is shown
      */
     private JFreeChart chart;
-    //cyago end
+    //end
 
 
     /**
