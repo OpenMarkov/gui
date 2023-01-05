@@ -61,8 +61,8 @@ import java.util.List;
  * @author mpalacios
  * @author jmendoza
  * @author ibermejo
- * @author carmenyago - adapted the class to the new utility treatment; minor changes
  * @version 1.2 jlgozalo - set class to use independent panels;
+ * @version 1.3 cmyago 19/06/2016 - adapted the class to the new utility treatment; minor changes
  */
 public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		implements ActionListener, PanelResizeEventListener {
