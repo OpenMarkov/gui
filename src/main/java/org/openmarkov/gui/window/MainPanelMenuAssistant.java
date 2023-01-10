@@ -155,8 +155,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
 		setOptionEnabled(ActionCommands.SELECT_ALL, false);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, false);
-		//CMI 21/08/2019 Simulate button
-		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
+		//CMI 21/08/2019 Simulate button  -- 07/01/2022 changed for disabling DESnet menu options
+//		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
+		disableMenuOptionsforDESnets();
 		//CMF
 		setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, false);
 		setOptionEnabled(ActionCommands.CHANGE_TO_EDITION_MODE, false);
@@ -201,6 +202,15 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * Disables the menu items and toolbar buttons when any network is opened.
 	 */
 	public void updateOptionsNewNetworkOpen() {
+		//CMI For DESnets
+		if (currentNetworkPanel.getProbNet().getNetworkType() instanceof DESNetworkType){
+			updateOptionsAllNetworkClosed();
+			enableMenuOptionsforDESnets();
+			return;
+		} else{
+			disableMenuOptionsforDESnets();
+		}
+		//CMF
 		int workingMode = NetworkPanel.EDITION_WORKING_MODE;
 		if (!(currentNetworkPanel == null)) {
 			workingMode = currentNetworkPanel.getWorkingMode();
@@ -218,8 +228,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
 		setOptionEnabled(ActionCommands.CHANGE_WORKING_MODE, getEnableWorkingModeButton());
 
-		// CMI 21/08/2019
-		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, getEnableSimulationButton());
+		// CMI 21/08/2019 - simulating button -- 07/01/2022 commented. Changed for setting the complete options for DESnets
+//		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, enableSimulationButton());
 		// CMF
 		setOptionEnabled(ActionCommands.PROPAGATION_OPTIONS, true);
 
@@ -255,17 +265,37 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 				;
 	}
 
-	//CMI 21/08/2019
+	//CMI 21/08/2019 -- 07/01/2022 - commented enableSimulationButton and added method to enable/disable DESnets Options
+
+//	/**
+//	 * This method is used to enabling/disabling the simulation button according to the network loaded
+//	 * Currently it is only enabled when a DESNetwork is loaded.
+//	 * @return true if the simulation button is applicable for the loaded network
+//	 */
+//	private boolean enableSimulationButton() {
+//		NetworkType networkType = currentNetworkPanel.getProbNet()
+//				.getNetworkType();
+//		return networkType instanceof DESNetworkType;
+//	}
 
 	/**
-	 * This method is used to enabling/disabling the simulation button according to the network loaded
-	 * Currently it is only enabled when a DESNetwork is loaded.
-	 * @return true if the simulation button is applicable for the loaded network
+	 *  -- 07/01/2022
+	 * Enables the menu options for using DESnets when having a DESnet in the evaluation version.
+	 * FIXME reformat code in integration
 	 */
-	private boolean getEnableSimulationButton() {
-		NetworkType networkType = currentNetworkPanel.getProbNet()
-				.getNetworkType();
-		return networkType instanceof DESNetworkType;
+	private void enableMenuOptionsforDESnets(){
+		setOptionEnabled(EDITING_ACTION_COMMANDS, true);
+		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, true);
+
+	}
+	/**
+	 *  -- 07/01/2022
+	 * Disables the specific menu options for using DESnets when having a DESnet in the evaluation version.
+	 * FIXME reformat code in integration
+	 */
+	private void disableMenuOptionsforDESnets(){
+		setOptionEnabled(ActionCommands.EVENT_CREATION, false);
+		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, false);
 	}
 	//CMF
 
@@ -377,6 +407,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * @param networkPanel information of the network panel.
 	 */
 	public void updateOptionsNetworkDependent(NetworkPanel networkPanel) {
+
+
 		currentNetworkPanel = networkPanel;
 		ProbNet currentProbNet = currentNetworkPanel.getProbNet();
 		int workingMode = currentNetworkPanel.getWorkingMode();
@@ -400,15 +432,22 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.DECISION_TREE, false);
 		updateInferenceButtons();
 		setOptionEnabled(ActionCommands.DECISION_SHOW_OPTIMAL_STRATEGY, false);
+
+
 		if (workingMode == NetworkPanel.EDITION_WORKING_MODE) {
 			setOptionEnabled(ActionCommands.OBJECT_SELECTION, true);
 			setOptionEnabled(ActionCommands.CHANCE_CREATION, true);
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
+			//CMI 07/01/2023 - for preventing event button enabled?
 			if (currentProbNet.hasConstraint(NoEventNodes.class)){
 				setOptionEnabled(ActionCommands.EVENT_CREATION, false);
 			}
+			else{
+				setOptionEnabled(ActionCommands.EVENT_CREATION, true);
+			}
+			//CMF
 			if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
@@ -473,6 +512,16 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		// OOPN end
 
 		checkInferenceOptions();
+
+
+		//CMI
+		if (currentProbNet.getNetworkType() instanceof DESNetworkType){
+			updateOptionsAllNetworkClosed();
+			enableMenuOptionsforDESnets();
+		} else{
+			disableMenuOptionsforDESnets();
+		}
+		//CMF
 	}
 
 	/**

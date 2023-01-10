@@ -22,7 +22,7 @@ import java.awt.event.MouseMotionListener;
  *
  * @author jmendoza
  * @version 1.2 20100408 jlgozalo Change the order of ZoomIn and ZoomOut buttons
- * @version 1.3 20190821 21/08/2019 cyago added the button for performing a Monte Carlo simulation for DESNetworks
+ * @version 1.3 21/08/2019 cmyago added the button for performing a Monte Carlo simulation for DESNetworks
  */
 public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, MouseMotionListener {
 	/**
