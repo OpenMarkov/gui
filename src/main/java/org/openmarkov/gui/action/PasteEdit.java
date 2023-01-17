@@ -47,12 +47,10 @@ import java.util.List;
 
 	/**
 	 * Generate edits and does them
-	 * carmenyago only adapted the method to the change in utility potentials
 	 *
 	 * @throws DoEditException
 	 * @throws WrongCriterionException
 	 * @throws NonProjectablePotentialException
-	 * @author carmenyago
 	 */
 	public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
 		HashMap<String, String> newVariables = new HashMap<String, String>();
@@ -126,7 +124,7 @@ import java.util.List;
 							potential.replaceVariable(i, variable);
 						}
 					}
-					//carmenyago Commented to adapt the code to the new potentials. Now there isn't utilityVariable
+					//2016 Now there isn't utilityVariable
 					// If the potential is ExactDistrPotential Iset the new childVariable
                     /*
                     if(potential.isUtility())

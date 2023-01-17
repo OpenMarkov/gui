@@ -555,7 +555,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * @param fileName     file where save the network.
 	 * @param saveOptions
 	 * @return true if the network could be saved; otherwise, false.
-	 * @author carmenyago
 	 */
 	private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat,
 			SaveOptions saveOptions) {

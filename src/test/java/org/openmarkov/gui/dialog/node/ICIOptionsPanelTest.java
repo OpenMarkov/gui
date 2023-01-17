@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
  * behavior).
  *
  * @author jlgozalo
- * @author carmenyago -->changed the tablePotential of U for a ExactDistrPotential; minor changes
  * @version 1.0
  */
 public class ICIOptionsPanelTest {

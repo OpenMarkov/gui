@@ -74,7 +74,6 @@ public class FileFilterAll extends FileFilterBasic {
 
 	/**
 	 * @return the fileDescription used to match the filter with the proper Reader/Writer
-	 * @author carmenyago
 	 */
 	public String getFileDescription() {
 		return fileDescription;
@@ -84,7 +83,6 @@ public class FileFilterAll extends FileFilterBasic {
 	 * Sets the fileDescripion used to match the filter with the proper Reader/Writer
 	 *
 	 * @param fileDescription the fileDescription used to match the filter with the proper Reader/Writer
-	 * @author carmenyago
 	 */
 	public void setFileDescription(String fileDescription) {
 		this.fileDescription = fileDescription;

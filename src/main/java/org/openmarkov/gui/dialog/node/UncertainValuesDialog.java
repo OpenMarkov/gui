@@ -82,14 +82,14 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
 			throws WrongCriterionException {
 		super(owner);
-		//carmenyago this constructor is never called by a utility node
+		//This constructor is never called by a utility node
         /*
         isChanceVariable = !(potential.isUtility());
         */
 		isChanceVariable = true;
 		//
 		distributionTypes = new ArrayList<>();
-		//carmenyago now the variable of the node is always at potential.getVariable(0)
+		//Now the variable of the node is always at potential.getVariable(0)
         /*
         variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
         */
@@ -132,20 +132,19 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
 	 * @param configuration
 	 * @param potential     - exactDistrPotential for which we will set uncertainty
 	 * @throws WrongCriterionException
-	 * @author carmenyago -minor changes to the TablePotential method
 	 */
 	public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential)
 			throws WrongCriterionException {
 		super(owner);
 		TablePotential tablePotential = potential.getTablePotential();
-		//carmenyago this constructor is always called in a utility node
+		//This constructor is always called in a utility node
         /*
         isChanceVariable = !(potential.isUtility());
         */
 		isChanceVariable = false;
 		//
 		distributionTypes = new ArrayList<>();
-		//carmenyago now the variable of the node is always at potential.getVariable(0)
+		//Mow the variable of the node is always at potential.getVariable(0)
         /*
         variable = isChanceVariable ? potential.getVariable(0) : potential.getUtilityVariable();
         */

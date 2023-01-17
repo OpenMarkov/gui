@@ -746,7 +746,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			Variable conditionedVariable = branch.getParentVariables().get(0);
 			potentialVariables.add(conditionedVariable);
-			//carmenyago Empty else
+			//Empty else
         /*    
         } else if (parentTreeADD.isUtility()) {
             // potentialVariables.add(parentTreeADD.getUtilityVariable());
@@ -755,7 +755,6 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		}
 		//
 		UniformPotential newPotential = new UniformPotential(potentialVariables, parentTreeADD.getPotentialRole());
-		//carmenyago There is not utilityVariable any more
         /*
         if (parentTreeADD.getPotentialRole() == PotentialRole.UTILITY) {
             newPotential.setUtilityVariable(parentTreeADD.getUtilityVariable());
@@ -823,7 +822,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 				branchVariables.remove(variable);
 			}
 			UniformPotential newPotential = new UniformPotential(branchVariables, parentTreeADD.getPotentialRole());
-			//carmenyago there is not utilityVariable any more
+			//There is not utilityVariable any more
             /*
             if (parentTreeADD.isUtility()) {
                 newPotential.setUtilityVariable(parentTreeADD.getUtilityVariable());
@@ -884,7 +883,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 				}
 				branch.setStates(branchStates);
 				List<Variable> variables = new ArrayList<Variable>();
-				//carmenyago. parentTreeADD is TreeADDPotential.There is not utilityVariable any more
+				//parentTreeADD is TreeADDPotential.There is not utilityVariable any more
 				//
                 /*
                 if (parentTreeADD.isUtility()) {
@@ -995,7 +994,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		List<Variable> potentialVariables = new ArrayList<Variable>();
 		if (treeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
 			potentialVariables.add(treeADDPotential.getVariables().get(0));
-			//carmenyago Empty else
+			// Empty else
         /*    
         } else if (treeADDPotential.isUtility()) {
             // potentialVariables.add(treeADDPotential.getUtilityVariable());
@@ -1004,7 +1003,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		}
 		//
 		UniformPotential potential = new UniformPotential(potentialVariables, treeADDPotential.getPotentialRole());
-		//carmenyago There is not utilityVariable any more
+		// There is not utilityVariable any more
         /*
         if (treeADDPotential.getPotentialRole() == PotentialRole.UTILITY) {
             potential.setUtilityVariable(treeADDPotential.getUtilityVariable());
@@ -1111,7 +1110,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		}
 		TreeADDPotential newTreeADD = null;
 		List<Variable> newTreeVariables = new ArrayList<Variable>(parentVariables);
-		// carmenyago Now there is not utilityVariable
+		//  Now there is not utilityVariable
        /*
         if (rootTreeADDPotential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
             if((branchingStates != null && branchingStates.length != 0) || partitionedInterval !=  null){
@@ -1236,7 +1235,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		PotentialEditDialog dialog = new PotentialEditDialog(Utilities.getOwner(this), dummy, false);
 		if (dialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			Potential retPotential = dummy.getPotentials().get(0);
-			//carmenyago There is not utilityVariable any more
+			// There is not utilityVariable any more
             /*
             if (potential.isUtility()) {
                 retPotential.setUtilityVariable(parentTreeADD.getUtilityVariable());

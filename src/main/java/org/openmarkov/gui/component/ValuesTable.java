@@ -61,9 +61,7 @@ import java.util.ListIterator;
  * </ul>
  * @author jlgozalo
  * @author mpalacios
- * @author carmenyago
- * value
- * @version 3.0 May 2016 - eliminates the different treatment for the Utility nodes.
+ * @version 3.0 - cmyago - May 2016 - eliminates the different treatment for the Utility nodes.
  * - eliminates the deterministic values
  */
 public class ValuesTable extends KeyTable implements PNUndoableEditListener {
@@ -139,19 +137,19 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * First potential of node
 	 *
-	 * @author carmenyago
+	 *
 	 */
 	protected Potential potential = null;
 	/**
 	 * True if the class of potential is ExactDistrPotential
 	 *
-	 * @author carmenyago
+	 *
 	 */
 	protected boolean isExactDistrPotential = false;
 	/**
 	 * if getExactDistrPotential tablePotential=potential.getTablePotential, if !getExactDistrPotential tablePotential= (tablePotential)potential
 	 *
-	 * @author carmenyago
+	 *
 	 */
 	protected TablePotential tablePotential = null;
 	protected ProbNet probNet;
@@ -173,14 +171,15 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 */
 	private int firstEditableRow = 0;
 
+
 	/**
 	 * Default constructor
 	 *
 	 * @param node       - the node with the TablePotential or ExactDistrPotential
 	 * @param tableModel - the model of the TablePotential or ExactDistrPotential
 	 * @param modifiable - true if the table can be edited and modified
-	 *                   carmenyago added the initialisation of isExactDistrPotentialPanel
-	 * @author carmenyago
+	 *
+	 *
 	 */
 	public ValuesTable(Node node, ValuesTableModel tableModel, final boolean modifiable) {
 		super(tableModel, modifiable, true, true);
@@ -353,7 +352,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	/**
-	 * carmenyago--&gt;UNCLEAR Why changeSelection is called twice
 	 *
 	 * @see javax.swing.JTable#changeSelection(int, int, boolean, boolean)
 	 * revised--&gt;not changed
@@ -390,12 +388,10 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		}
 	}
 
+
 	/**
 	 * check the value to modify in the table and sets
-	 * carmenyago removed the dependency with the utility type, the use of deterministic tables
-	 * and checked if the new can be value converted to a double. She also deleted the use of checkUtilityVariable
 	 *
-	 * @author carmenyago
 	 */
 	public void setValueAt(Object newValue, int row, int col) {
 
@@ -442,7 +438,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * Check if newValue is a String or a Double
 	 *
 	 * @param newValue - new value to validate
-	 * @author carmenyago
 	 */
 	protected boolean castValue(Object newValue) {
 
@@ -674,9 +669,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 
 	/**
 	 * print the NodePotentialTable
-	 * carmenyago only removed the println of the deterministic attribute
 	 *
-	 * @author carmenyago minor changes
 	 */
 	public void printTable() {
 		System.out.println("NodePotentialTable: ");
@@ -711,8 +704,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * Updates the table if the edited column has uncertainty
 	 *
-	 * @param edit carmenyago changed the use of Chance and Utility variables
-	 * @author carmenyago
+	 * @param edit
 	 */
 	private void uncertainValuesEditHappened(UncertainValuesEdit edit) {
 		boolean isChance;
@@ -746,8 +738,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * Sets the values in the edited column
 	 *
 	 * @param edit - context for changing the
-	 *             carmenyago only changed the use of UTILITY role; minor changes
-	 * @author carmenyago
 	 */
 	public void tablePotentialValueEditHappened(TablePotentialValueEdit edit) {
 		int position = 0;
@@ -778,9 +768,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	}
 
 	/**
-	 * carmenyago only changed the role dependency
 	 *
-	 * @author carmenyago
 	 */
 	public void undoEditHappened(UndoableEditEvent event) {
 		if (event.getEdit() instanceof TablePotentialValueEdit) {

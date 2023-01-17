@@ -320,8 +320,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	/**
 	 * @return An integer indicating the button clicked by the user when closing
 	 * this dialog
-	 * @author carmenyago
-	 * carmenyago only changed the treatment of the utility potentials
 	 */
 	public int requestValues() {
 		// Shows the potentials' options table

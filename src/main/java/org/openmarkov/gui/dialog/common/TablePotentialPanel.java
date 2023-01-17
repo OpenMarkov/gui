@@ -98,7 +98,6 @@ import java.util.List;
 	 * First potential of node;  its class  should be  org.openmarkov.core.model.network.potential.TablePotential or
 	 * org.openmarkov.core.model.network.potential.TableDeltaPotential
 	 *
-	 * @author carmenyago
 	 */
 	protected Potential potential = null;
 
@@ -106,7 +105,6 @@ import java.util.List;
 	 * When potential is an instance of TablePotential, tablePotential is potential casted as TablePotential
 	 * When potential is an instance of TableDeltaPotential, tablePotential=(TablePotential)potential.getTablePotential()
 	 *
-	 * @author carmenyago
 	 */
 
 	protected TablePotential tablePotential = null;
@@ -114,14 +112,12 @@ import java.util.List;
 	/**
 	 * True if class of zeroPotential is org.openmarkov.core.model.network.potential.TableDeltaPotential
 	 *
-	 * @author carmenyago
 	 */
 	protected boolean isExactDistrPotential = false;
 
 	/**
 	 * True if some parent has a link restriction to the node
 	 *
-	 * @author carmenyago
 	 */
 	protected boolean hasLinkRestriction;
 
@@ -158,7 +154,7 @@ import java.util.List;
 	 * If it is not TableDeltaPotential or TablePotential it cast to TablePotential
 	 *
 	 * @param node : node whose first potential is a TablePotential or a TableDeltaPotential
-	 * @author carmenyago : adaptation to TableDeltaPotential
+	 * Adaptation from TableDeltaPotential
 	 */
 	public TablePotentialPanel(Node node) {
 		super();
@@ -212,8 +208,6 @@ import java.util.List;
 	 *
 	 * @param newData    new data for the table
 	 * @param newColumns new columns for the table
-	 * @author carmenyago
-	 * revised--&gt; minor changes
 	 * Previously named setData; I find this name confusing because coincides with setData()
 	 */
 	public void setDataInValuesTable(Object[][] newData, String[] newColumns) {
@@ -246,7 +240,6 @@ import java.util.List;
 	 * <p>
 	 * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
 	 *
-	 * @author carmenyago
 	 */
 	public void setData(Node node) {
 		this.node = node;
@@ -281,7 +274,7 @@ import java.util.List;
 	 * in the tableMoel, sets the not editable cells due to links restrictions and uncertainty in columns.
 	 * Finally, this method adjust the size of the cells in valuesTable
 	 *
-	 * @author carmenyago
+
 	 */
 	// Using node sets in variable node
 	// What to do with the exception
@@ -334,7 +327,6 @@ import java.util.List;
 	 *
 	 * @return Boolean array that represents the columns (true = the column has
 	 * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
-	 * @author carmenyago
 	 */
 	protected boolean[] getUncertaintyInColumns() {
 
@@ -365,7 +357,7 @@ import java.util.List;
 	 * calculate the number of rows of the table based on the parents and  states of the node variable
 	 * Last row with the name of the variable when TablePotential REMOVED
 	 *
-	 * @author carmenyago
+	 *
 	 */
 	protected int howManyRows(Node n) {
 		return n.getParents().size() + n.getVariable().getStates().length;
@@ -376,7 +368,7 @@ import java.util.List;
 	 * Considers the potential is not null
 	 *
 	 * @return the table data to be set
-	 * @author carmenyago
+	 *
 	 */
 	protected Object[][] convertListPotentialsToTableFormat() {
 		Object[][] values = null;
@@ -406,7 +398,7 @@ import java.util.List;
 	 * Considers the potential is not null
 	 * UNCLEAR --&gt; setBaseIndexForCoordinates
 	 *
-	 * @author carmenyago
+	 *
 	 * <p>
 	 * Continuous variables have only one state
 	 * tableSize is always greater than 0
@@ -459,7 +451,7 @@ import java.util.List;
 	 * the parents of the node
 	 *
 	 * @param oldValues - the table that is being modified
-	 * @author carmenyago
+	 *
 	 */
 	protected Object[][] setParentsNameInUpperLeftCornerArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
@@ -477,7 +469,7 @@ import java.util.List;
 	 *
 	 * @param oldValues - the table that is being modified.
 	 *                     oldValues !=null and oldValues.lenght is always &gt; 0
-	 * @author carmenyago
+	 *
 	 */
 	protected Object[][] setParentsStatesInTopArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
@@ -515,7 +507,7 @@ import java.util.List;
 	 * is a utility node)
 	 *
 	 * @param oldValues - the table that is being modified
-	 * @author carmenyago
+	 *
 	 */
 	protected Object[][] setNodeStatesInLeftArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
@@ -573,7 +565,7 @@ import java.util.List;
 	 * This method calculates the number of data cells and stores it in the attribute positions.
 	 * The number of data cell is the product of the number of states of all variables
 	 *
-	 * @author carmenyago
+	 *
 	 * minor changes
 	 */
 	protected int setNumberOfPostions() {
@@ -632,7 +624,7 @@ import java.util.List;
 	 *         information about the editable positions.
 	 *
 	 * UNCLEAR--&gt; Can a utility Node have nodes with restriction and what to do?
-	 * @author carmenyago
+	 *
 	 *
 	 */
 	protected Object[][] getNotEditablePositions() {
@@ -675,7 +667,7 @@ import java.util.List;
 	 * @return An evidence case object
 	 * @throws InvalidStateException
 	 * @throws IncompatibleEvidenceException
-	 * @author carmenyago
+	 *
 	 */
 	protected EvidenceCase getConfiguration(int col) throws InvalidStateException, IncompatibleEvidenceException {
 
@@ -964,7 +956,7 @@ import java.util.List;
 	 * NodeType.DECISION + policyType.OPTIMAL +!potential.isUtility()
 	 *
 	 * @param uncertaintyInColumns
-	 * @author carmenyago
+	 *
 	 */
 	protected void setCellRenderers(boolean[] uncertaintyInColumns) {
 

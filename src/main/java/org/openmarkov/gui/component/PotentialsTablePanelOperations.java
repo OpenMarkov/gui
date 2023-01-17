@@ -28,8 +28,7 @@ import java.util.List;
  *
  * @author jlgozalo
  * @author marias
- * @author carmenyago
- * @version 2.0 27/05/2016 by carmenyago
+ * @version 2.0 cmyago - 27/05/2016
  */
 public class PotentialsTablePanelOperations implements TableMethods {
 
@@ -38,8 +37,6 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * The first editable row equals the number of parents of the node
 	 *
 	 * @param node - node with contains the potentials
-	 *             carmenyago removed the dependency from the NodeType
-	 * @author carmenyago
 	 */
 	@Override public int calculateFirstEditableRow(Node node) {
 		try {
@@ -57,10 +54,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * This method calculates the last editable row of the table.
 	 * The last editable row is (number_of_parents of the node + number_of_states of the variable node)
 	 * <p>
-	 * carmenyago removed the dependence with NodeType
-	 *
 	 * @param node node who "owns" the table
-	 * @author carmenyago
 	 */
 	@Override public int calculateLastEditableRow(Node node) {
 		try {
@@ -87,8 +81,6 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param listPotentials - the list of potentials to check
 	 * @throws NullListPotentialsException if listPotentials is null
 	 * @throws NullPotentialException      if listPotentials is empty
-	 * carmenyago simplified the method
-	 * @author carmenyago
 	 */
 	public void checkIfNoPotential(List<Potential> listPotentials)
 			throws NullListPotentialsException, NullPotentialException {
@@ -207,7 +199,6 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param column - the index of a column
 	 * @param node   - the node with the potential
 	 * @return index of the potential.
-	 * @author carmenyago
 	 */
 	public int getPotentialStartIndexOfColumn(int column, Node node) {
 		/*

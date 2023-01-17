@@ -292,8 +292,6 @@ import java.util.List;
 	 *
 	 * @param properties - node properties
 	 * @return the table data to be set
-	 * carmenyago only changed the catch sentence
-	 * @author carmenyago
 	 */
 	protected Object[][] convertListPotentialsToCanonicalTableFormat(Node properties) {
 		Object[][] values = null;
@@ -304,7 +302,6 @@ import java.util.List;
 			values = setCanonicalTable(values, properties);
 
 			setPosition(getNumberOfPostions(properties.getPotentials()));
-			//carmenyago
         /*
         } catch (NullListPotentialsException ex) {
             values = setBlankCanonicalTable(properties);
