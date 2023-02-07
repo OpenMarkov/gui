@@ -244,7 +244,7 @@
     </ZoomValues>
     <NetworkURLValues>
         <Title>
-            <Label value="URL. (Su directorio raíz será establecido como el último usado)"/>
+            <Label value="URL de la red."/>
         </Title>
     </NetworkURLValues>
     <NetworkAdvancedPanel>
@@ -1025,7 +1025,7 @@
     </SelectZoom>
     <SelectNetworkURL>
         <Title>
-            <Label value="URL de la red"/>
+            <Label value="Abrir archivo desde URL"/>
         </Title>
     </SelectNetworkURL>
     <NetworkAgentsDialog>
