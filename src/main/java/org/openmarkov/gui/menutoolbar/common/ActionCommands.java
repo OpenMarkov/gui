@@ -417,10 +417,10 @@ public class ActionCommands {
 	 */
 	public static final String SENSITIVITY_ANALYSIS = "Tools.SensitivityAnalysis";
 
-//	/**
-//	 * Action invoked when the user wants to expand the network.
-//	 */
-//	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
+	/**
+	 * Action invoked when the user wants to expand the network.
+	 */
+	public static final String EXPAND_NETWORK = "CostEffectiveness.ExpandNetwork";
 
 	/**
 	 * Action invoked when the user wants to display the temporal evolution by criterion.
