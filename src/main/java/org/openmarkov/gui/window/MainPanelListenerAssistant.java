@@ -8,27 +8,20 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.apache.logging.log4j.LogManager;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
+import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalNetOperations;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
+import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.configuration.LastOpenFiles;
@@ -82,6 +75,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 //TODO: remove just because reference to cost-effectiveness was removed
 //import org.openmarkov.costeffectiveness.id.inference.VariableEliminationCE;
 
@@ -91,7 +85,8 @@ import java.util.List;
  *
  * @author jmendoza
  * @version 1.6 - cmyago - Modify saveNetworkActions method to support several ProbModelXML formats
- * @version 1.6.1 -cmyago -09/11/2022 added behaviour para "Temporal evolution by criterion" and removed "Expand network"
+ * @version 1.6.1 -cmyago -09/11/2022 added behaviour para "Temporal evolution by criterion" and removed "Expand network" and "Expand network CE"
+ * @version 1.6.2 -cmyago -26/02/2022 readed behaviour for "Expand network" (fixing regression)
  */
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
@@ -192,9 +187,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			saveEvidence(getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.NETWORK_PROPERTIES)) {
 			getCurrentNetworkPanel().changeNetworkProperties();
-
+		} else if (actionCommand.equals(ActionCommands.EXPAND_NETWORK)) {
+			expandNetwork(getCurrentNetworkPanel().getProbNet(),
+					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 		} else if (actionCommand.equals(ActionCommands.TEMPORAL_EVOLUTION_BY_CRITERION)) {
-// Changed behaviour and name from ActionCommands.EXPAND_NETWORK
 //			expandNetwork(getCurrentNetworkPanel().getProbNet(),
 //					getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 			this.getCurrentNetworkPanel().temporalEvolution();
@@ -1071,12 +1067,39 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			return;
 		}
 
-		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+		LogManager.getLogger().debug("Expanding");
+		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet.deepCopy());
 		String fileName = probNet.getName() + "_expanded";
 		expandedNetwork.setName(fileName);
+
+
+		LogManager.getLogger().debug("Extending pre-resolution evidence");
+		// Extend pre-resolution evidence
+		expandedNetwork = TaskUtilities.extendPreResolutionEvidence(expandedNetwork, preResolutionEvidence);
+		LogManager.getLogger().debug("Applying discounts");
+		// Apply discounts
+		expandedNetwork = TaskUtilities.applyDiscounts(expandedNetwork, true);
+		LogManager.getLogger().debug("Scaling");
+		// Scale utilities for unicriterion
+		expandedNetwork = TaskUtilities.scaleUtilitiesUnicriterion(expandedNetwork);
+		LogManager.getLogger().debug("Discretizing non-observerd numeric variables");
+		// Discretize non-observed numeric variables
+		expandedNetwork = TaskUtilities.discretizeNonObservedNumericVariables(expandedNetwork, preResolutionEvidence);
+
+		//CMI
+
+		List<Node>  temporalNodes = expandedNetwork.getNodes().stream().filter(node -> node.getVariable().isTemporal()).collect(Collectors.toList());
+
+		temporalNodes.forEach(node -> {node.getVariable().setTimeSlice(Integer.MIN_VALUE);});
+		try {
+			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+		} catch (ConstraintViolationException e) {
+			throw new RuntimeException(e);
+		}
+		//CMF
 		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+		networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<>());
 		networkPanel.setNetworkFile(fileName);
-		networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
 		networkPanels.add(networkPanel);
 	}
 
