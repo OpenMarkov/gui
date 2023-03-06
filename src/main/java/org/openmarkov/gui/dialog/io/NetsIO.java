@@ -136,9 +136,7 @@ public class NetsIO {
 			IllegalAccessException, InstantiationException {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
-		//CMI
 		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension, fileFormat);
-		//CMF
 		try {
 			probNetWriter.writeProbNet(fileName, network, evidence);
 			/*
@@ -160,9 +158,7 @@ public class NetsIO {
 		}
 	}
 
-	//CMF
 
-	//CMI
 
 	//	/**
 	//	 * Saves a network in a file.
@@ -198,8 +194,6 @@ public class NetsIO {
 
 		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);
 	}
-
-	//CMF
 
 	private static String getFileExtension(String fileName) {
 
