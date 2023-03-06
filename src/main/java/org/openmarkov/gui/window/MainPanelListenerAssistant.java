@@ -86,7 +86,7 @@ import java.util.stream.Collectors;
  * @author jmendoza
  * @version 1.6 - cmyago - Modify saveNetworkActions method to support several ProbModelXML formats
  * @version 1.6.1 -cmyago -09/11/2022 added behaviour para "Temporal evolution by criterion" and removed "Expand network" and "Expand network CE"
- * @version 1.6.2 -cmyago -26/02/2022 readed behaviour for "Expand network" (fixing regression)
+ * @version 1.6.2 -cmyago -26/02/2023 re-added behaviour for "Expand network" (fixing regression)
  */
 public class MainPanelListenerAssistant extends WindowAdapter
 		implements ActionListener, MDIListener, PropertyNames, ComponentListener {
@@ -462,7 +462,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
-	//CMI
 	//    /**
 	//     * Saves a network in a file and makes the rest of actions in the
 	//     * environment (menus, messages, etc.).
@@ -541,7 +540,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
-	//CMF
 
 	/**
 	 * Saves a network in a file considering the file format chosen. Also it makes the rest of actions in the
@@ -565,7 +563,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 					.getProbNet() instanceof OOPNet) {
 				((OOPNet) networkPanel.getProbNet()).fillClassList();
 			}
-			//CMI
+
 /*
             NetsIO.saveNetworkFile(networkPanel.getProbNet(),
                     networkPanel.getEditorPanel().getEvidence(),
@@ -574,13 +572,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			NetsIO.saveNetworkFile(networkPanel.getProbNet(), networkPanel.getEditorPanel().getEvidence(), fileName,
 					fileFormat);
 
-			//CMF
 			// networkPanel.getNetwork().backupProbNet.saveToFile( fileName );
 			networkPanel.setModified(false);
 			networkPanel.setNetworkFile(fileName);
-			//CMI
 			networkPanel.setNetworkFileFormat(fileFormat);
-			//CMF
 			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkSaved();
 			lastOpenFiles.setLastFileName(fileName);
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getDirectoryFileName(fileName),
@@ -671,11 +666,15 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			in.close();
 			out.close();
 		} catch (IOException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"WriterException", stringDatabase.getString("NetworkBackupError.Text.Label")), null);
-			localizedException.showException();
-//			mainPanel.getMessageWindow().getNormalMessageStream()
-//					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+//			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+//					"WriterException", stringDatabase.getString("NetworkBackupError.Text.Label")), null);
+//			localizedException.showException();
+////			mainPanel.getMessageWindow().getNormalMessageStream()
+////					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+						mainPanel.getMessageWindow().getNormalMessageStream()
+					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
+
+
 		}
 		mainPanel.getMessageWindow().getNormalMessageStream()
 				.println(stringDatabase.getString("NetworkBackup.Text.Label"));
@@ -700,7 +699,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 */
 	private boolean saveNetworkAs(NetworkPanel networkPanel) {
 		String fileName = networkPanel.getNetworkFile();
-		//CMI
         /*
         fileName = requestNetworkFileToSave((fileName != null) ? fileName
                 : networkPanel.getProbNet().getName());
@@ -710,7 +708,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				(fileName != null) ? fileName : networkPanel.getProbNet().getName());
 		fileName = fileNameAndFormat.get(0);
 		fileFormat = fileNameAndFormat.get(1);
-		//CMF
 		SaveOptions saveOptions = null;
 		if (fileName != null) {
 			networkPanel.setNetworkFile(fileName);
@@ -724,15 +721,12 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				saveOptions.setVisible(true);
 			}
 		}
-		//CMI
         /*
         return (fileName != null) ? saveNetworkActions(networkPanel, fileName, saveOptions) : false;
         */
 		return (fileName != null) ? saveNetworkActions(networkPanel, fileName, fileFormat, saveOptions) : false;
-		//CMF
 	}
 
-	//CMI
 
 	/**
 	 * It asks the user to choose a file by means of a save-file dialog box.
@@ -755,7 +749,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 		return filename;
 	}
-	//CMF
 
 	/**
 	 * @param suggestedFileName
@@ -1057,49 +1050,47 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		}
 	}
 
+
 	/**
 	 * Creates an expanded network from current network
+	 * @param probNet the network to be expanded
+	 * @param preResolutionEvidence evidence to be added and propagated in the expanded network
 	 */
 	private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+		NetworkPanel networkPanelMID = getCurrentNetworkPanel();
+		String path = (new File(networkPanelMID.getNetworkFile())).getParent();
 		InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
 				Utilities.getOwner(mainPanel), null);
+		costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
 		if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
 			return;
 		}
+//		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
+//		String fileName = probNet.getName() + "_expanded";
+//
+//		expandedNetwork.setName(fileName);
+		String networkName = probNet.getName();
+		//Expanded ID has midname_extended.pgmx
+		String fileName = networkName.substring (0,networkName.lastIndexOf('.'));
 
-		LogManager.getLogger().debug("Expanding");
-		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet.deepCopy());
-		String fileName = probNet.getName() + "_expanded";
-		expandedNetwork.setName(fileName);
+		fileName =  fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName");
 
-
-		LogManager.getLogger().debug("Extending pre-resolution evidence");
-		// Extend pre-resolution evidence
-		expandedNetwork = TaskUtilities.extendPreResolutionEvidence(expandedNetwork, preResolutionEvidence);
-		LogManager.getLogger().debug("Applying discounts");
-		// Apply discounts
-		expandedNetwork = TaskUtilities.applyDiscounts(expandedNetwork, true);
-		LogManager.getLogger().debug("Scaling");
-		// Scale utilities for unicriterion
-		expandedNetwork = TaskUtilities.scaleUtilitiesUnicriterion(expandedNetwork);
-		LogManager.getLogger().debug("Discretizing non-observerd numeric variables");
-		// Discretize non-observed numeric variables
-		expandedNetwork = TaskUtilities.discretizeNonObservedNumericVariables(expandedNetwork, preResolutionEvidence);
-
-		//CMI
-
-		List<Node>  temporalNodes = expandedNetwork.getNodes().stream().filter(node -> node.getVariable().isTemporal()).collect(Collectors.toList());
-
-		temporalNodes.forEach(node -> {node.getVariable().setTimeSlice(Integer.MIN_VALUE);});
+		ProbNet expandedNetwork= null;
 		try {
-			expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+			expandedNetwork = TemporalNetOperations.expandNetwork(probNet,preResolutionEvidence,fileName);
 		} catch (ConstraintViolationException e) {
-			throw new RuntimeException(e);
+			return;
+//			throw new RuntimeException(e);
 		}
-		//CMF
 		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-		networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<>());
-		networkPanel.setNetworkFile(fileName);
+		//If enabled "save" tries to create the .bak file and throws an exception
+		mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, false);
+
+//		networkPanel.setNetworkFile(fileName );
+
+		//Stores the full path
+		networkPanel.setNetworkFile(path+File.separator + fileName );
+		networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
 		networkPanels.add(networkPanel);
 	}
 
