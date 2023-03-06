@@ -548,7 +548,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		if (showingAllParameters) {
 			// I suppose variable is != null and has a name
 
-			//CMI Bug #280
+			//Bug #280
 			/*
 			 * The commented code creates a RowFilter that filters the rows containing the name of the variable.
 			 * Is it necessary in some case?
@@ -593,7 +593,6 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 			//                this.setRowSorter (null);
 			//         }
 			this.setRowSorter(null);
-			//CMF
 		} else {
 			int lastRow = getModel().getRowCount() - 1 - 1;
 			lastRow = (lastRow < 0 ? 0 : lastRow);
