@@ -1073,7 +1073,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		//Expanded ID has midname_extended.pgmx
 		String fileName = networkName.substring (0,networkName.lastIndexOf('.'));
 
-		fileName =  fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName");
+		fileName =  fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") +".pgmx";
 
 		ProbNet expandedNetwork= null;
 		try {
