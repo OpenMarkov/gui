@@ -39,12 +39,10 @@ public abstract class FileChooser extends JFileChooser {
 	 */
 	private static final long serialVersionUID = 9076351651764305920L;
 
-	//CMI
 	/**
 	 * Directory where the dialog box searchs the files.
 	 */
 	private static String directoryPath = System.getProperty("user.home");
-	//CMF
 
 	/**
 	 * Creates a new file chooser that starts in the current directory,
@@ -95,7 +93,6 @@ public abstract class FileChooser extends JFileChooser {
 
 	}
 
-	//CMI
 	//
 	//	public void setFileFilter(String extension) {
 	//		for(FileFilter filter : getChoosableFileFilters())
@@ -136,9 +133,7 @@ public abstract class FileChooser extends JFileChooser {
 			}
 		}
 	}
-	//CMF
 
-	//CMI -- New method
 
 	/**
 	 * Extracts the version of a pgmx file and concatenate it to the String "OpenMarkov" for having the description of the file
@@ -159,5 +154,4 @@ public abstract class FileChooser extends JFileChooser {
 		return "OpenMarkov.".concat(version);
 
 	}
-	//CMF
 }

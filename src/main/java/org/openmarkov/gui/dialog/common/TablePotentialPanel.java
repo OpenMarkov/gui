@@ -588,7 +588,7 @@ import java.util.List;
 	 * @param stateIndices - indexes of the states
 	 * @return an array containing the row at the first position and the column
 	 * at the second position.
-	 * revised--&gt; only changed the code between CMI, CMF
+	 * revised--&gt;
 	 */
 	protected int[] getRowAndColumnForStateCombination(int[] stateIndices, TablePotential potential) {
 		int numStates = node.getVariable().getNumStates();
@@ -629,10 +629,9 @@ import java.util.List;
 	 */
 	protected Object[][] getNotEditablePositions() {
 		Object[][] notEditablePositions = createEmptyTable();
-		//CMI Bug #162 Applying restriction to utility Nodes
+		//Bug #162 Applying restriction to utility Nodes
 		//if (!isTableDeltaPotential && hasLinkRestriction){
 		if (hasLinkRestriction) {
-			//CMF
 			List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
 					.getStateCombinationsWithLinkRestriction(node);
 

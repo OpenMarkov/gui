@@ -491,6 +491,7 @@
         <EndOfCycle value="End of cycle"/>
         <ExpandNetwork>
             <Label value="Expand Network"/>
+            <FileName value="_extended"/>
         </ExpandNetwork>
 <!--        <ExpandNetworkCE>-->
 <!--            <Label value="Expand Network CE"/>-->

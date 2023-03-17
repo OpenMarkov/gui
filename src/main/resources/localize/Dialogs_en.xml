@@ -312,7 +312,6 @@
         <OpenMarkov>
             <Description value="OpenMarkov file"/>
         </OpenMarkov>
-        <!-- CMI -->
         <OpenMarkov.0.2>
             <Description value="OpenMarkov file ProbModel 0.2"/>
         </OpenMarkov.0.2>
@@ -320,8 +319,6 @@
         <OpenMarkov.0.5>
             <Description value="OpenMarkov file ProbModel 0.5"/>
         </OpenMarkov.0.5>
-
-        <!-- CMF -->
     </FileExtension>
     <LanguageDialog>
         <Title>
