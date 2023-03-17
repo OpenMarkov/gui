@@ -156,7 +156,13 @@ public class NetsIO {
 			 * CanNotWriteNetworkToFileException(fileName); }
 			 */
 		} catch (WriterException ex) {
-			throw new OpenMarkovException(OpenMarkovExceptionConstants.CanNotWriteNetworkToFileException, fileName);
+			if (fileExtension.equals("elv") && ex.getToken().equals("Network type unknown: neither Bayesian or IDiagram.")){
+				new File(fileName).delete();
+				throw new OpenMarkovException(OpenMarkovExceptionConstants.CanNotWriteNetworkToFileException, network.getNetworkType().toString().toLowerCase().replaceAll("_"," ")+" cannot be saved in elv format.");
+			}else{
+				throw new OpenMarkovException(OpenMarkovExceptionConstants.CanNotWriteNetworkToFileException, fileName);
+			}
+
 		}
 	}
 

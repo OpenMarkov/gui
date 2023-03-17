@@ -601,8 +601,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //					stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
 //					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (OpenMarkovException e) {
-			LocalizedException someBadThingHappenedException = new LocalizedException(new OpenMarkovException(
-					"GenericException", stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage()), null);
+			LocalizedException someBadThingHappenedException = new LocalizedException(e, null);
 			someBadThingHappenedException.showException();
 //			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //					stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
