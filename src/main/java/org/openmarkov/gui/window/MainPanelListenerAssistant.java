@@ -295,7 +295,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 		//            showCostEffectivenessSensitivityResults(probNet,
 		//                    getCurrentNetworkPanel().getEditorPanel().getPreResolutionEvidence());
 		//        }
-		 else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
+		else if (actionCommand.equals(ActionCommands.CONFIGURATION)) {
 			showUserConfigurationDialog();
 		} else if (actionCommand.equals(ActionCommands.PROPAGATION_OPTIONS)) {
 			setPropagationOptions();
@@ -305,7 +305,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			showLanguageChangeDialog();
 		} else if (actionCommand.equals(ActionCommands.HELP_SHORTCUTS)) {
 			showShortcuts();
-		 } else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
+		} else if (actionCommand.equals(ActionCommands.HELP_ABOUT)) {
 			showAbout();
 		} else if (actionCommand.equals(ActionCommands.INVERT_LINK_AND_UPDATE_POTENTIALS)) {
 			this.getCurrentNetworkPanel().invertLinkAndUpdatePotentials();
@@ -415,17 +415,17 @@ public class MainPanelListenerAssistant extends WindowAdapter
 					.showConfirmDialog(Utilities.getOwner(mainPanel), message, title, JOptionPane.YES_NO_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 			switch (response) {
-			case JOptionPane.YES_OPTION: {
-				canClose = saveNetwork(networkPanel);
-				break;
-			}
-			case JOptionPane.NO_OPTION: {
-				canClose = true;
-				break;
-			}
-			default: {
-				return false;
-			}
+				case JOptionPane.YES_OPTION: {
+					canClose = saveNetwork(networkPanel);
+					break;
+				}
+				case JOptionPane.NO_OPTION: {
+					canClose = true;
+					break;
+				}
+				default: {
+					return false;
+				}
 			}
 		}
 		if (canClose) {
@@ -551,7 +551,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	 * @return true if the network could be saved; otherwise, false.
 	 */
 	private boolean saveNetworkActions(NetworkPanel networkPanel, String fileName, String fileFormat,
-			SaveOptions saveOptions) {
+									   SaveOptions saveOptions) {
 		boolean result = false;
 		mainPanel.getMessageWindow().getNormalMessageStream()
 				.println(stringDatabase.getString("SavingNetwork.Text.Label") + " " + fileName);
@@ -610,7 +610,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 	/**
 	 * Saves a network in the file given by
 	 * @param networkPanel
-	 * @param fileName	the file where the network is stored
+	 * @param fileName    the file where the network is stored
 	 * @return true iff the network could be saved
 	 */
 
@@ -670,7 +670,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //			localizedException.showException();
 ////			mainPanel.getMessageWindow().getNormalMessageStream()
 ////					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
-						mainPanel.getMessageWindow().getNormalMessageStream()
+			mainPanel.getMessageWindow().getNormalMessageStream()
 					.println(stringDatabase.getString("NetworkBackupError.Text.Label"));
 
 
@@ -909,189 +909,222 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				}
 			} catch (Exception e) {
 				mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"ParserException", stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage()), null);
+
+				OpenMarkovException OE;
+				String ErrorText = stringDatabase.getString("ErrorLoadingNetwork.Text.Label");
+				String token = null;
+				String[] attributes = null;
+
+				try{
+					token=((OpenMarkovException) e).getToken();
+				}catch (Exception ex){
+
+				}
+
+				try{
+					attributes=((OpenMarkovException) e).getAttributes();
+				}catch (Exception ex){
+
+				}
+
+
+				if (e.getMessage()!=null){
+
+					OE = new OpenMarkovException("ParserException",ErrorText + ": " + e.getMessage());
+
+				} else if (token!=null){
+
+					OE = new OpenMarkovException("ParserException",ErrorText + ": \n" + token +
+							((attributes[0]!=null)? " :: "+attributes[0] : ""));
+
+				}else{
+
+					OE = new OpenMarkovException("ParserException",ErrorText + ": " + e.toString());
+
+				}
+
+				LocalizedException localizedException = new LocalizedException(OE);
 				localizedException.showException();
 //				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //						stringDatabase.getString("ErrorLoadingNetwork.Text.Label") + ": " + e.getMessage(),
 //						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 //				e.printStackTrace();
+				}
 			}
 		}
-	}
 
-	public void openNetwork(ProbNet probNet) {
-		NetworkPanel newNetworkPanel = createNewFrame(probNet);
-		networkPanels.add(newNetworkPanel);
-	}
+		public void openNetwork(ProbNet probNet) {
+			NetworkPanel newNetworkPanel = createNewFrame(probNet);
+			networkPanels.add(newNetworkPanel);
+		}
 
-	/**
-	 * Open a network from a URL.
-	 */
-	//TODO: generalize... It's almost the same as openNetwork...
-	public void openNetworkURL() {
-		URL url = requestURLFileToOpen();
-		ProbNet netReadFromURL;
-		NetworkPanel networkPanel;
-		if (url != null) {
-			String urlFile = url.getFile();
-			try {
-				mainPanel.getMessageWindow().getNormalMessageStream()
-						.println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
-				ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
-				netReadFromURL = probNetInfo.getProbNet();
-				netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
-				netReadFromURL.getPNESupport().setWithUndo(true);
-				netReadFromURL.setName(new File(urlFile).getName());
-				networkPanel = createNewFrame(netReadFromURL);
-				networkPanel.setNetworkFile(urlFile);
-				List<EvidenceCase> evidence = probNetInfo.getEvidence();
-				if (evidence != null && !evidence.isEmpty()) {
-					EvidenceCase preResolutionEvidence = evidence.get(0);
-					evidence.remove(0);
-					networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
-				}
-				networkPanels.add(networkPanel);
-				lastOpenFiles.setLastFileName(urlFile);
-				// If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
-				mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
-				mainPanel.getMessageWindow().getNormalMessageStream()
-						.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
-				mainPanel.getMainMenu().rechargeLastOpenFiles();
+		/**
+		 * Open a network from a URL.
+		 */
+		//TODO: generalize... It's almost the same as openNetwork...
+		public void openNetworkURL() {
+			URL url = requestURLFileToOpen();
+			ProbNet netReadFromURL;
+			NetworkPanel networkPanel;
+			if (url != null) {
+				String urlFile = url.getFile();
+				try {
+					mainPanel.getMessageWindow().getNormalMessageStream()
+							.println(stringDatabase.getString("LoadingNetworkURL.Text.Label") + " " + url);
+					ProbNetInfo probNetInfo = NetsIO.openNetworkURL(url);
+					netReadFromURL = probNetInfo.getProbNet();
+					netReadFromURL.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
+					netReadFromURL.getPNESupport().setWithUndo(true);
+					netReadFromURL.setName(new File(urlFile).getName());
+					networkPanel = createNewFrame(netReadFromURL);
+					networkPanel.setNetworkFile(urlFile);
+					List<EvidenceCase> evidence = probNetInfo.getEvidence();
+					if (evidence != null && !evidence.isEmpty()) {
+						EvidenceCase preResolutionEvidence = evidence.get(0);
+						evidence.remove(0);
+						networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, evidence);
+					}
+					networkPanels.add(networkPanel);
+					lastOpenFiles.setLastFileName(urlFile);
+					// If the file was opened from a URL, the 'save' and 'save and reopen' buttons have to be disabled
+					mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(true);
+					mainPanel.getMessageWindow().getNormalMessageStream()
+							.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
+					mainPanel.getMainMenu().rechargeLastOpenFiles();
 
-				if (netReadFromURL.getShowCommentWhenOpening()) {
-					CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
+					if (netReadFromURL.getShowCommentWhenOpening()) {
+						CommentHTMLScrollPane commentHTMLScrollPaneNetworkComment = new CommentHTMLScrollPane();
 
-					commentHTMLScrollPaneNetworkComment.setEditable(false);
-					commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromURL.getComment());
-					commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
-					JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
-							JOptionPane.INFORMATION_MESSAGE);
-					JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
-							stringDatabase.getString("NetworkCommentWindow.Title.Label"));
-					networkMessageDialog.setResizable(true);
-					networkMessageDialog.setMinimumSize(new Dimension(500, 300));
-					networkMessageDialog.setVisible(true);
-				}
-			} catch (Exception e) {
-				mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"ParserException", stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage()), null);
-				localizedException.showException();
+						commentHTMLScrollPaneNetworkComment.setEditable(false);
+						commentHTMLScrollPaneNetworkComment.setCommentHTMLTextPaneText(netReadFromURL.getComment());
+						commentHTMLScrollPaneNetworkComment.setPreferredSize(new Dimension(500, 300));
+						JOptionPane networkMessagePane = new JOptionPane(commentHTMLScrollPaneNetworkComment,
+								JOptionPane.INFORMATION_MESSAGE);
+						JDialog networkMessageDialog = networkMessagePane.createDialog(Utilities.getOwner(mainPanel),
+								stringDatabase.getString("NetworkCommentWindow.Title.Label"));
+						networkMessageDialog.setResizable(true);
+						networkMessageDialog.setMinimumSize(new Dimension(500, 300));
+						networkMessageDialog.setVisible(true);
+					}
+				} catch (Exception e) {
+					mainPanel.getMessageWindow().getErrorMessageStream().println(e.getMessage());
+					LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+							"ParserException", stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage()), null);
+					localizedException.showException();
 //				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //						stringDatabase.getString("ErrorLoadingNetworkURL.Text.Label") + ": " + e.getMessage(),
 //						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 //				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * It asks the user to choose a file by means of a open-file dialog box.
-	 *
-	 * @return complete path of the file, or null if the user selects cancel.
-	 */
-	private String requestNetworkFileToOpen() {
-		NetworkFileChooser fileChooser = new NetworkFileChooser();
-		fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title.Label"));
-		String fileName = null;
-		if (fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
-			fileName = fileChooser.getSelectedFile().getAbsolutePath();
-		}
-		return fileName;
-	}
-
-	/**
-	 * It asks the user to choose a file by means of a open-file dialog box.
-	 *
-	 * @return complete path of the file, or null if the user selects cancel.
-	 */
-	private URL requestURLFileToOpen() {
-		URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
-		if (urlNetworkChooserDialog.requestNetworkURL() == SelectZoomDialog.OK_BUTTON) {
-			return urlNetworkChooserDialog.getNetworkURL();
-		} else {
-			return null;
-		}
-
-	}
-
-	/**
-	 * Closes the current network frame.
-	 *
-	 * @return true if the network has been closed; otherwise, false.
-	 */
-	private boolean closeCurrentNetwork() {
-		boolean canClose = true;
-		if (getCurrentNetworkPanel() != null) {
-			canClose = networkCanBeClosed(getCurrentNetworkPanel());
-			if (canClose) {
-				mainPanel.getMdi().closeCurrentFrame();
-				if (networkPanels.size() == 0) {
-					mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
-					mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
 				}
 			}
 		}
-		return canClose;
-	}
 
-	/**
-	 * Process that executes when the user is trying to close the application.
-	 */
-	private void closeApplication() {
-		boolean allClosed = true;
-		while (allClosed && networkPanels.size() > 0) {
-			allClosed = closeCurrentNetwork();
+		/**
+		 * It asks the user to choose a file by means of a open-file dialog box.
+		 *
+		 * @return complete path of the file, or null if the user selects cancel.
+		 */
+		private String requestNetworkFileToOpen() {
+			NetworkFileChooser fileChooser = new NetworkFileChooser();
+			fileChooser.setDialogTitle(stringDatabase.getString("OpenNetwork.Title.Label"));
+			String fileName = null;
+			if (fileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+				fileName = fileChooser.getSelectedFile().getAbsolutePath();
+			}
+			return fileName;
 		}
-		if (allClosed) {
-			System.exit(0);
+
+		/**
+		 * It asks the user to choose a file by means of a open-file dialog box.
+		 *
+		 * @return complete path of the file, or null if the user selects cancel.
+		 */
+		private URL requestURLFileToOpen() {
+			URLNetworkChooserDialog urlNetworkChooserDialog = new URLNetworkChooserDialog(Utilities.getOwner(mainPanel));
+			if (urlNetworkChooserDialog.requestNetworkURL() == SelectZoomDialog.OK_BUTTON) {
+				return urlNetworkChooserDialog.getNetworkURL();
+			} else {
+				return null;
+			}
+
 		}
-	}
+
+		/**
+		 * Closes the current network frame.
+		 *
+		 * @return true if the network has been closed; otherwise, false.
+		 */
+		private boolean closeCurrentNetwork() {
+			boolean canClose = true;
+			if (getCurrentNetworkPanel() != null) {
+				canClose = networkCanBeClosed(getCurrentNetworkPanel());
+				if (canClose) {
+					mainPanel.getMdi().closeCurrentFrame();
+					if (networkPanels.size() == 0) {
+						mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
+						mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
+					}
+				}
+			}
+			return canClose;
+		}
+
+		/**
+		 * Process that executes when the user is trying to close the application.
+		 */
+		private void closeApplication() {
+			boolean allClosed = true;
+			while (allClosed && networkPanels.size() > 0) {
+				allClosed = closeCurrentNetwork();
+			}
+			if (allClosed) {
+				System.exit(0);
+			}
+		}
 
 
-	/**
-	 * Creates an expanded network from current network
-	 * @param probNet the network to be expanded
-	 * @param preResolutionEvidence evidence to be added and propagated in the expanded network
-	 */
-	private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
-		NetworkPanel networkPanelMID = getCurrentNetworkPanel();
-		String path = (new File(networkPanelMID.getNetworkFile())).getParent();
-		InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-				Utilities.getOwner(mainPanel), null);
-		costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
-		if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-			return;
-		}
+		/**
+		 * Creates an expanded network from current network
+		 * @param probNet the network to be expanded
+		 * @param preResolutionEvidence evidence to be added and propagated in the expanded network
+		 */
+		private void expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence) {
+			NetworkPanel networkPanelMID = getCurrentNetworkPanel();
+			String path = (new File(networkPanelMID.getNetworkFile())).getParent();
+			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+					Utilities.getOwner(mainPanel), null);
+			costEffectivenessDialog.getMulticriteriaPanel().setEnabled(false);
+			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+				return;
+			}
 //		ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet);
 //		String fileName = probNet.getName() + "_expanded";
 //
 //		expandedNetwork.setName(fileName);
-		String networkName = probNet.getName();
-		//Expanded ID has midname_extended.pgmx
-		String fileName = networkName.substring (0,networkName.lastIndexOf('.'));
+			String networkName = probNet.getName();
+			//Expanded ID has midname_extended.pgmx
+			String fileName = networkName.substring (0,networkName.lastIndexOf('.'));
 
-		fileName =  fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") +".pgmx";
+			fileName =  fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") +".pgmx";
 
-		ProbNet expandedNetwork= null;
-		try {
-			expandedNetwork = TemporalNetOperations.expandNetwork(probNet,preResolutionEvidence,fileName);
-		} catch (ConstraintViolationException e) {
-			return;
+			ProbNet expandedNetwork= null;
+			try {
+				expandedNetwork = TemporalNetOperations.expandNetwork(probNet,preResolutionEvidence,fileName);
+			} catch (ConstraintViolationException e) {
+				return;
 //			throw new RuntimeException(e);
-		}
-		NetworkPanel networkPanel = createNewFrame(expandedNetwork);
-		//If enabled "save" tries to create the .bak file and throws an exception
-		mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, false);
+			}
+			NetworkPanel networkPanel = createNewFrame(expandedNetwork);
+			//If enabled "save" tries to create the .bak file and throws an exception
+			mainPanel.getMainPanelMenuAssistant().setOptionEnabled(ActionCommands.SAVE_OPEN_NETWORK, false);
 
 //		networkPanel.setNetworkFile(fileName );
 
-		//Stores the full path
-		networkPanel.setNetworkFile(path+File.separator + fileName );
-		networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
-		networkPanels.add(networkPanel);
-	}
+			//Stores the full path
+			networkPanel.setNetworkFile(path+File.separator + fileName );
+			networkPanel.getEditorPanel().setEvidence(preResolutionEvidence, new ArrayList<EvidenceCase>());
+			networkPanels.add(networkPanel);
+		}
 
 //	/**
 //	 * expand the network like it would be done in CE analysis to show it in the
@@ -1178,407 +1211,407 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //		networkPanels.add(networkPanel);
 //	}
 
-	/**
-	 * This method saves the evidence of the current network to a file
-	 *
-	 * @param currentNetworkPanel
-	 */
-	private void saveEvidence(NetworkPanel currentNetworkPanel) {
-		// TODO Implement
-		List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
-		evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
-		JFileChooser fileChooser = new JFileChooser();
-		File currentDirectory = new File(OpenMarkovPreferences
-				.get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
-		fileChooser.setCurrentDirectory(currentDirectory);
-		String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
-		fileChooser.setSelectedFile(new File(suggestedFileName));
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
-			// save the selected file
-			System.out.println("Save evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+		/**
+		 * This method saves the evidence of the current network to a file
+		 *
+		 * @param currentNetworkPanel
+		 */
+		private void saveEvidence(NetworkPanel currentNetworkPanel) {
+			// TODO Implement
+			List<EvidenceCase> evidence = currentNetworkPanel.getEditorPanel().getEvidence();
+			evidence.add(0, currentNetworkPanel.getEditorPanel().getPreResolutionEvidence());
+			JFileChooser fileChooser = new JFileChooser();
+			File currentDirectory = new File(OpenMarkovPreferences
+					.get(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, OpenMarkovPreferences.OPENMARKOV_DIRECTORIES, "."));
+			fileChooser.setCurrentDirectory(currentDirectory);
+			String suggestedFileName = currentNetworkPanel.getTitle().replaceFirst("^*", "");
+			fileChooser.setSelectedFile(new File(suggestedFileName));
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			if (fileChooser.showSaveDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION) {
+				// save the selected file
+				System.out.println("Save evidence file " + fileChooser.getSelectedFile().getAbsolutePath());
+			}
 		}
-	}
 
-	/**
-	 * This method tries to load evidence into the current network
-	 *
-	 * @param currentNetworkPanel
-	 */
-	private void loadEvidence(NetworkPanel currentNetworkPanel) {
-		FileChooser evidenceFileChooser = new DBReaderFileChooser();
-		evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
-		// Set last used evidence format as default
-		String lastFileFilter = OpenMarkovPreferences
-				.get(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
-						"xls");
-		evidenceFileChooser.setFileFilter(lastFileFilter);
-		if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
-			// load the selected file
-			System.out.println("Load evidence file " + evidenceFileChooser.getSelectedFile().getAbsolutePath());
-			CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
-			CaseDatabaseReader caseDbReader = caseDbManager
-					.getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
-			ProbNet currentNet = currentNetworkPanel.getProbNet();
-			try {
-				CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
-				List<Variable> variables = caseDatabase.getVariables();
-				int[][] cases = caseDatabase.getCases();
-				for (int i = 0; i < cases.length; ++i) {
-					EvidenceCase newEvidenceCase = new EvidenceCase();
-					for (int j = 0; j < cases[i].length; ++j) {
-						Variable variable = null;
-						try {
-							// Ignore missing values
-							if (!variables.get(j).getStateName(cases[i][j]).isEmpty() && !variables.get(j)
-									.getStateName(cases[i][j]).equals("?")) {
-								variable = currentNet.getVariable(variables.get(j).getName());
-								try {
-									newEvidenceCase.addFinding(new Finding(variable,
-											variable.getStateIndex(variables.get(j).getStateName(cases[i][j]))));
-								} catch (InvalidStateException e) {
-									LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-											"InvalidStateException", stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
-											.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label")), null);
-									localizedException.showException();
+		/**
+		 * This method tries to load evidence into the current network
+		 *
+		 * @param currentNetworkPanel
+		 */
+		private void loadEvidence(NetworkPanel currentNetworkPanel) {
+			FileChooser evidenceFileChooser = new DBReaderFileChooser();
+			evidenceFileChooser.setDialogTitle(stringDatabase.getString("LoadEvidence.Title.Label"));
+			// Set last used evidence format as default
+			String lastFileFilter = OpenMarkovPreferences
+					.get(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+							"xls");
+			evidenceFileChooser.setFileFilter(lastFileFilter);
+			if ((evidenceFileChooser.showOpenDialog(Utilities.getOwner(mainPanel)) == JFileChooser.APPROVE_OPTION)) {
+				// load the selected file
+				System.out.println("Load evidence file " + evidenceFileChooser.getSelectedFile().getAbsolutePath());
+				CaseDatabaseManager caseDbManager = new CaseDatabaseManager();
+				CaseDatabaseReader caseDbReader = caseDbManager
+						.getReader(FilenameUtils.getExtension(evidenceFileChooser.getSelectedFile().getName()));
+				ProbNet currentNet = currentNetworkPanel.getProbNet();
+				try {
+					CaseDatabase caseDatabase = caseDbReader.load(evidenceFileChooser.getSelectedFile().getAbsolutePath());
+					List<Variable> variables = caseDatabase.getVariables();
+					int[][] cases = caseDatabase.getCases();
+					for (int i = 0; i < cases.length; ++i) {
+						EvidenceCase newEvidenceCase = new EvidenceCase();
+						for (int j = 0; j < cases[i].length; ++j) {
+							Variable variable = null;
+							try {
+								// Ignore missing values
+								if (!variables.get(j).getStateName(cases[i][j]).isEmpty() && !variables.get(j)
+										.getStateName(cases[i][j]).equals("?")) {
+									variable = currentNet.getVariable(variables.get(j).getName());
+									try {
+										newEvidenceCase.addFinding(new Finding(variable,
+												variable.getStateIndex(variables.get(j).getStateName(cases[i][j]))));
+									} catch (InvalidStateException e) {
+										LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+												"InvalidStateException", stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
+												.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label")), null);
+										localizedException.showException();
 
 //									JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //											stringDatabase.getString("LoadEvidence.Error.InvalidState.Text") + e
 //													.getMessage(), stringDatabase.getString("ErrorWindow.Title.Label"),
 //											JOptionPane.ERROR_MESSAGE);
+									}
 								}
-							}
-						} catch (NodeNotFoundException e) {
-							LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-									"NodeNotFoundException", stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") +
-									": " + variables.get(j).getName()), null);
-							localizedException.showException();
+							} catch (NodeNotFoundException e) {
+								LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+										"NodeNotFoundException", stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") +
+										": " + variables.get(j).getName()), null);
+								localizedException.showException();
 //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
 //											+ variables.get(j).getName(),
 //									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-						} catch (IncompatibleEvidenceException e) {
-							LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-									"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
-							localizedException.showException();
+							} catch (IncompatibleEvidenceException e) {
+								LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+										"IncompatibleEvidenceException", "Conflict in evidence variables."), null);
+								localizedException.showException();
 //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //									stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
 //									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+							}
 						}
+						currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
 					}
-					currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);
-				}
-				// save format extension in preferences
-				OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
-						((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
-						OpenMarkovPreferences.OPENMARKOV_FORMATS);
-				OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
-						getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
-						OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
-			} catch (IOException e) {
-				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-						"ParserException", stringDatabase.getString("LoadEvidence.Error.Text")), null);
-				localizedException.showException();
+					// save format extension in preferences
+					OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_LOADED_EVIDENCE_FORMAT,
+							((FileFilterBasic) evidenceFileChooser.getFileFilter()).getFilterExtension(),
+							OpenMarkovPreferences.OPENMARKOV_FORMATS);
+					OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY,
+							getDirectoryFileName(evidenceFileChooser.getSelectedFile().getAbsolutePath()),
+							OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
+				} catch (IOException e) {
+					LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+							"ParserException", stringDatabase.getString("LoadEvidence.Error.Text")), null);
+					localizedException.showException();
 //				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //						stringDatabase.getString("LoadEvidence.Error.Text"),
 //						stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 //				e.printStackTrace();
+				}
 			}
 		}
-	}
 
-	/**
-	 * This method undoes the last operation on the actual network.
-	 */
-	private void undo() {
-		try {
-			undoRedo(true);
-		} catch (CannotUndoException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"UndoException", stringDatabase.getString("CannotUndo.Text.Label")), null);
-			localizedException.showException();
+		/**
+		 * This method undoes the last operation on the actual network.
+		 */
+		private void undo() {
+			try {
+				undoRedo(true);
+			} catch (CannotUndoException e) {
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"UndoException", stringDatabase.getString("CannotUndo.Text.Label")), null);
+				localizedException.showException();
 //			JOptionPane
 //					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotUndo.Text.Label"),
 //							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			}
 		}
-	}
 
-	/**
-	 * This method re-does the last undone operation on the actual network.
-	 */
-	private void redo() {
-		try {
-			undoRedo(false);
-		} catch (CannotRedoException e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"RedoException", stringDatabase.getString("CannotRedo.Text.Label")), null);
-			localizedException.showException();
+		/**
+		 * This method re-does the last undone operation on the actual network.
+		 */
+		private void redo() {
+			try {
+				undoRedo(false);
+			} catch (CannotRedoException e) {
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"RedoException", stringDatabase.getString("CannotRedo.Text.Label")), null);
+				localizedException.showException();
 //			JOptionPane
 //					.showMessageDialog(Utilities.getOwner(mainPanel), stringDatabase.getString("CannotRedo.Text.Label"),
 //							stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
-	 * This method undoes or re-does an operation on the actual network.
-	 *
-	 * @param undoOperation - if true, an undo must be performed; if false, a redo will be
-	 *                      performed.
-	 * @throws CannotUndoException - if undo can't be performed.
-	 * @throws CannotRedoException - if redo can't be performed.
-	 */
-	private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
-		NetworkPanel networkPanel = null;
-		networkPanel = getCurrentNetworkPanel();
-		if (undoOperation) {
-			networkPanel.undo();
-			networkPanel.repaint();
-		} else {
-			networkPanel.redo();
-			networkPanel.repaint();
-		}
-	}
-
-	/**
-	 * This method activates an edition option for the current network.
-	 *
-	 * @param newEditionMode new edition mode to set.
-	 */
-	private void activateEditionMode(String newEditionMode) {
-		NetworkPanel networkPanel = null;
-		networkPanel = getCurrentNetworkPanel();
-		networkPanel.setEditionMode(newEditionMode);
-		mainPanel.getMainPanelMenuAssistant().setEditionOption(newEditionMode, networkPanel.isThereDataStored());
-	}
-
-	/**
-	 * This method establishes the network working mode (edition or inference),
-	 * by setting the opposite to the current one.
-	 */
-	private void setNewWorkingMode() {
-		int currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
-		int newWorkingMode;
-		boolean performInference = true;
-		if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
-			newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
-
-			// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
-			InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
-					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-
-			if (dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-				newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
-				performInference = false;
 			}
-			// Set as launched
-			//getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
-
-		} else {
-			newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
 		}
-		mainPanel.setToolBarPanel(newWorkingMode);
-		mainPanel.changeWorkingModeButton(newWorkingMode);
-		if (getNetworkPanels().size() > 0) {
-			getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
-		}
-		getCurrentNetworkPanel().setSelectedAllObjects(false);
-		mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
 
-		if (performInference) {
-			if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
-
-				getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
-				mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+		/**
+		 * This method undoes or re-does an operation on the actual network.
+		 *
+		 * @param undoOperation - if true, an undo must be performed; if false, a redo will be
+		 *                      performed.
+		 * @throws CannotUndoException - if undo can't be performed.
+		 * @throws CannotRedoException - if redo can't be performed.
+		 */
+		private void undoRedo(boolean undoOperation) throws CannotUndoException, CannotRedoException {
+			NetworkPanel networkPanel = null;
+			networkPanel = getCurrentNetworkPanel();
+			if (undoOperation) {
+				networkPanel.undo();
+				networkPanel.repaint();
 			} else {
-				// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
-				//TODO: has the following piece of code sense with the task scenario?
-				//TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
-				//if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
-				//    getCurrentNetworkPanel().setInferenceAlgorithm(null);
-				//}
+				networkPanel.redo();
+				networkPanel.repaint();
 			}
 		}
-		getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
-		mainPanel.adaptToolBarSize();
-	}
 
-	/**
-	 * This method establishes the new expansion threshold of the network.
-	 *
-	 * @param newValue new value for expansion threshold
-	 */
-	private void setNewExpansionThreshold(Double newValue) {
-		getCurrentNetworkPanel().setExpansionThreshold(newValue);
-		getCurrentNetworkPanel().setSelectedAllNodes(false);
-		mainPanel.getMainPanelMenuAssistant()
-				.updateOptionsNewWorkingMode(NetworkPanel.INFERENCE_WORKING_MODE, getCurrentNetworkPanel());
-		getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.INFERENCE_WORKING_MODE);
-	}
-
-	/**
-	 * This method responds to the navigation among the evidence cases option
-	 * selected by the user.
-	 *
-	 * @param command the Action Command corresponding to the selected option
-	 */
-	private void evidenceCasesNavigationOption(String command) {
-		if (command.equals("CREATE_NEW_EVIDENCE_CASE")) {
-			getCurrentNetworkPanel().createNewEvidenceCase();
-		} else if (command.equals("GO_TO_FIRST_EVIDENCE_CASE")) {
-			getCurrentNetworkPanel().goToFirstEvidenceCase();
-		} else if (command.equals("GO_TO_PREVIOUS_EVIDENCE_CASE")) {
-			getCurrentNetworkPanel().goToPreviousEvidenceCase();
-		} else if (command.equals("GO_TO_NEXT_EVIDENCE_CASE")) {
-			getCurrentNetworkPanel().goToNextEvidenceCase();
-		} else if (command.equals("GO_TO_LAST_EVIDENCE_CASE")) {
-			getCurrentNetworkPanel().goToLastEvidenceCase();
-		} else if (command.equals("CLEAR_OUT_ALL_EVIDENCE_CASES")) {
-			getCurrentNetworkPanel().clearOutAllEvidenceCases();
+		/**
+		 * This method activates an edition option for the current network.
+		 *
+		 * @param newEditionMode new edition mode to set.
+		 */
+		private void activateEditionMode(String newEditionMode) {
+			NetworkPanel networkPanel = null;
+			networkPanel = getCurrentNetworkPanel();
+			networkPanel.setEditionMode(newEditionMode);
+			mainPanel.getMainPanelMenuAssistant().setEditionOption(newEditionMode, networkPanel.isThereDataStored());
 		}
-		mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
-		mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
-	}
 
-	/**
-	 * This method sets the inference options.
-	 */
-	private void setPropagationOptions() {
-		getCurrentNetworkPanel().setInferenceOptions();
-		mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
-	}
+		/**
+		 * This method establishes the network working mode (edition or inference),
+		 * by setting the opposite to the current one.
+		 */
+		private void setNewWorkingMode() {
+			int currentWorkingMode = getCurrentNetworkPanel().getWorkingMode();
+			int newWorkingMode;
+			boolean performInference = true;
+			if (currentWorkingMode == NetworkPanel.EDITION_WORKING_MODE) {
+				newWorkingMode = NetworkPanel.INFERENCE_WORKING_MODE;
 
-	/**
-	 * This method sets the multicriteria options
-	 *
-	 * @param networkPanel
-	 */
-	private void setInferenceOptions(NetworkPanel networkPanel) {
-		InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
-				Utilities.getOwner(mainPanel), null);
-		//MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
-	}
+				// Show multicriteria dialog if the probnet has at least two criteria and have utility nodes
+				InferenceOptionsDialog dialog = new InferenceOptionsDialog(getCurrentNetworkPanel().getProbNet(),
+						Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
 
-	/**
-	 * Sets the mode of painting the nodes.
-	 *
-	 * @param byTitle if true, then the texts that appear into the nodes will be
-	 *                their titles; if false, these texts will be their name.
-	 */
-	private void activateByTitle(boolean byTitle) {
-		NetworkPanel actualNetwork = null;
-		actualNetwork = getCurrentNetworkPanel();
-		if (actualNetwork.getByTitle() != byTitle) {
-			actualNetwork.setByTitle(byTitle);
-			mainPanel.getMainPanelMenuAssistant().setByTitle(byTitle);
-		}
-	}
+				if (dialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+					newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
+					performInference = false;
+				}
+				// Set as launched
+				//getCurrentNetworkPanel().getProbNet().getInferenceOptions().setLaunchedBefore(performInference);
 
-	/**
-	 * This method restores (if minimized) and shows the message window.
-	 */
-	private void showMessageWindow() {
-		if (!mainPanel.getMessageWindow().isVisible()) {
-			mainPanel.getMdi().createNewFrame(mainPanel.getMessageWindow(), false);
-			mainPanel.getMessageWindow().setVisible(true);
-		} else {
-			mainPanel.getMdi().selectFrame(mainPanel.getMessageWindow());
-		}
-	}
-
-	/**
-	 * This method increments the zoom of the current panel.
-	 *
-	 * @param frameContentPanel network whose zoom will be changed.
-	 */
-	private void incrementZoom(FrameContentPanel frameContentPanel) {
-		setZoom(false, frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
-	}
-
-	/**
-	 * This method decrements the zoom of the current panel.
-	 *
-	 * @param frameContentPanel network whose zoom will be changed.
-	 */
-	private void decrementZoom(FrameContentPanel frameContentPanel) {
-		setZoom(false, frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
-	}
-
-	/**
-	 * Sets the zoom of the current panel and updates the menu and the toolbar.
-	 *
-	 * @param dialogBox         if true, the parameter 'value' is ignored and this value is
-	 *                          requested to user.
-	 * @param frameContentPanel network whose zoom will be changed.
-	 * @param value             new zoom value.
-	 */
-	private void setZoom(boolean dialogBox, FrameContentPanel frameContentPanel, double value) {
-		double newZoom = 0.0;
-		if (dialogBox) {
-			requestZoomToUser(Utilities.getOwner(mainPanel), frameContentPanel);
-		} else {
-			frameContentPanel.setZoom(value);
-		}
-		newZoom = frameContentPanel.getZoom();
-		mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
-	}
-
-	/**
-	 * This method requests to the user a new value of zoom for the actual
-	 * network.
-	 *
-	 * @param owner window that owns the dialog box.
-	 */
-	public void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
-		SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
-		if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == SelectZoomDialog.OK_BUTTON) {
-			frameContentPanel.setZoom(dialogZoom.getZoom());
-		}
-	}
-
-	/**
-	 * Returns current list of opened network panels
-	 *
-	 * @return current list of opened network panels
-	 */
-	public List<NetworkPanel> getNetworkPanels() {
-		return networkPanels;
-	}
-
-	public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
-		// TODO Auto-generated method stub
-	}
-
-	public void frameOpened(FrameContentPanel contentPanel) {
-		// TODO Auto-generated method stub
-	}
-
-	private void showDecisionTree(ProbNet probNet) {
-		try {
-			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-					Utilities.getOwner(mainPanel));
-			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-				return;
-			} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
-					== MulticriteriaOptions.Type.UNICRITERION){
-				// Do something for show unicriterion decision tree
-			} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
-					== MulticriteriaOptions.Type.COST_EFFECTIVENESS){
-				// Do something for show cost-effectiveness decision tree
+			} else {
+				newWorkingMode = NetworkPanel.EDITION_WORKING_MODE;
 			}
-			DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
-			mainPanel.getMdi().createNewFrame(decisionTree);
-			mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
-		} catch (OutOfMemoryError e) {
-			LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-					"OutOfMemoryException", stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label")), null);
-			localizedException.showException();
+			mainPanel.setToolBarPanel(newWorkingMode);
+			mainPanel.changeWorkingModeButton(newWorkingMode);
+			if (getNetworkPanels().size() > 0) {
+				getCurrentNetworkPanel().setWorkingMode(newWorkingMode);
+			}
+			getCurrentNetworkPanel().setSelectedAllObjects(false);
+			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(getCurrentNetworkPanel());
+
+			if (performInference) {
+				if (newWorkingMode == NetworkPanel.INFERENCE_WORKING_MODE) {
+
+					getCurrentNetworkPanel().updateIndividualProbabilitiesAndUtilities();
+					mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
+				} else {
+					// getCurrentNetworkPanel().removeAllFindings(); //Suppressed the elimination of findings on returning to Edition Mode
+					//TODO: has the following piece of code sense with the task scenario?
+					//TODO: review inferenceAlgorithm variable in EditorPanel, specially in removeNodeEvidenceInAllCases
+					//if (getCurrentNetworkPanel().getInferenceAlgorithm() != null) {
+					//    getCurrentNetworkPanel().setInferenceAlgorithm(null);
+					//}
+				}
+			}
+			getCurrentNetworkPanel().updateNodesExpansionState(newWorkingMode);
+			mainPanel.adaptToolBarSize();
+		}
+
+		/**
+		 * This method establishes the new expansion threshold of the network.
+		 *
+		 * @param newValue new value for expansion threshold
+		 */
+		private void setNewExpansionThreshold(Double newValue) {
+			getCurrentNetworkPanel().setExpansionThreshold(newValue);
+			getCurrentNetworkPanel().setSelectedAllNodes(false);
+			mainPanel.getMainPanelMenuAssistant()
+					.updateOptionsNewWorkingMode(NetworkPanel.INFERENCE_WORKING_MODE, getCurrentNetworkPanel());
+			getCurrentNetworkPanel().updateNodesExpansionState(NetworkPanel.INFERENCE_WORKING_MODE);
+		}
+
+		/**
+		 * This method responds to the navigation among the evidence cases option
+		 * selected by the user.
+		 *
+		 * @param command the Action Command corresponding to the selected option
+		 */
+		private void evidenceCasesNavigationOption(String command) {
+			if (command.equals("CREATE_NEW_EVIDENCE_CASE")) {
+				getCurrentNetworkPanel().createNewEvidenceCase();
+			} else if (command.equals("GO_TO_FIRST_EVIDENCE_CASE")) {
+				getCurrentNetworkPanel().goToFirstEvidenceCase();
+			} else if (command.equals("GO_TO_PREVIOUS_EVIDENCE_CASE")) {
+				getCurrentNetworkPanel().goToPreviousEvidenceCase();
+			} else if (command.equals("GO_TO_NEXT_EVIDENCE_CASE")) {
+				getCurrentNetworkPanel().goToNextEvidenceCase();
+			} else if (command.equals("GO_TO_LAST_EVIDENCE_CASE")) {
+				getCurrentNetworkPanel().goToLastEvidenceCase();
+			} else if (command.equals("CLEAR_OUT_ALL_EVIDENCE_CASES")) {
+				getCurrentNetworkPanel().clearOutAllEvidenceCases();
+			}
+			mainPanel.getMainPanelMenuAssistant().updateOptionsEvidenceCasesNavigation(getCurrentNetworkPanel());
+			mainPanel.getMainPanelMenuAssistant().updateOptionsPropagationTypeDependent(getCurrentNetworkPanel());
+		}
+
+		/**
+		 * This method sets the inference options.
+		 */
+		private void setPropagationOptions() {
+			getCurrentNetworkPanel().setInferenceOptions();
+			mainPanel.getMainPanelMenuAssistant().updatePropagateEvidenceButton();
+		}
+
+		/**
+		 * This method sets the multicriteria options
+		 *
+		 * @param networkPanel
+		 */
+		private void setInferenceOptions(NetworkPanel networkPanel) {
+			InferenceOptionsDialog dialog = new InferenceOptionsDialog(networkPanel.getProbNet(),
+					Utilities.getOwner(mainPanel), null);
+			//MulticriteriaDialog dialog = new MulticriteriaDialog(networkPanel.getProbNet(), Utilities.getOwner(mainPanel));
+		}
+
+		/**
+		 * Sets the mode of painting the nodes.
+		 *
+		 * @param byTitle if true, then the texts that appear into the nodes will be
+		 *                their titles; if false, these texts will be their name.
+		 */
+		private void activateByTitle(boolean byTitle) {
+			NetworkPanel actualNetwork = null;
+			actualNetwork = getCurrentNetworkPanel();
+			if (actualNetwork.getByTitle() != byTitle) {
+				actualNetwork.setByTitle(byTitle);
+				mainPanel.getMainPanelMenuAssistant().setByTitle(byTitle);
+			}
+		}
+
+		/**
+		 * This method restores (if minimized) and shows the message window.
+		 */
+		private void showMessageWindow() {
+			if (!mainPanel.getMessageWindow().isVisible()) {
+				mainPanel.getMdi().createNewFrame(mainPanel.getMessageWindow(), false);
+				mainPanel.getMessageWindow().setVisible(true);
+			} else {
+				mainPanel.getMdi().selectFrame(mainPanel.getMessageWindow());
+			}
+		}
+
+		/**
+		 * This method increments the zoom of the current panel.
+		 *
+		 * @param frameContentPanel network whose zoom will be changed.
+		 */
+		private void incrementZoom(FrameContentPanel frameContentPanel) {
+			setZoom(false, frameContentPanel, frameContentPanel.getZoom() + zoomChangeValue);
+		}
+
+		/**
+		 * This method decrements the zoom of the current panel.
+		 *
+		 * @param frameContentPanel network whose zoom will be changed.
+		 */
+		private void decrementZoom(FrameContentPanel frameContentPanel) {
+			setZoom(false, frameContentPanel, frameContentPanel.getZoom() - zoomChangeValue);
+		}
+
+		/**
+		 * Sets the zoom of the current panel and updates the menu and the toolbar.
+		 *
+		 * @param dialogBox         if true, the parameter 'value' is ignored and this value is
+		 *                          requested to user.
+		 * @param frameContentPanel network whose zoom will be changed.
+		 * @param value             new zoom value.
+		 */
+		private void setZoom(boolean dialogBox, FrameContentPanel frameContentPanel, double value) {
+			double newZoom = 0.0;
+			if (dialogBox) {
+				requestZoomToUser(Utilities.getOwner(mainPanel), frameContentPanel);
+			} else {
+				frameContentPanel.setZoom(value);
+			}
+			newZoom = frameContentPanel.getZoom();
+			mainPanel.getMainPanelMenuAssistant().setZoom(newZoom);
+		}
+
+		/**
+		 * This method requests to the user a new value of zoom for the actual
+		 * network.
+		 *
+		 * @param owner window that owns the dialog box.
+		 */
+		public void requestZoomToUser(Window owner, FrameContentPanel frameContentPanel) {
+			SelectZoomDialog dialogZoom = new SelectZoomDialog(owner);
+			if (dialogZoom.requestZoom(frameContentPanel.getZoom()) == SelectZoomDialog.OK_BUTTON) {
+				frameContentPanel.setZoom(dialogZoom.getZoom());
+			}
+		}
+
+		/**
+		 * Returns current list of opened network panels
+		 *
+		 * @return current list of opened network panels
+		 */
+		public List<NetworkPanel> getNetworkPanels() {
+			return networkPanels;
+		}
+
+		public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
+			// TODO Auto-generated method stub
+		}
+
+		public void frameOpened(FrameContentPanel contentPanel) {
+			// TODO Auto-generated method stub
+		}
+
+		private void showDecisionTree(ProbNet probNet) {
+			try {
+				InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+						Utilities.getOwner(mainPanel));
+				if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+					return;
+				} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
+						== MulticriteriaOptions.Type.UNICRITERION){
+					// Do something for show unicriterion decision tree
+				} else if (costEffectivenessDialog.getMulticriteriaOptions().getMulticriteriaType()
+						== MulticriteriaOptions.Type.COST_EFFECTIVENESS){
+					// Do something for show cost-effectiveness decision tree
+				}
+				DecisionTreeWindow decisionTree = new DecisionTreeWindow(probNet);
+				mainPanel.getMdi().createNewFrame(decisionTree);
+				mainPanel.getMainPanelMenuAssistant().updateOptionsDecisionTree(decisionTree);
+			} catch (OutOfMemoryError e) {
+				LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
+						"OutOfMemoryException", stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label")), null);
+				localizedException.showException();
 //			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //					stringDatabase.getString("ExceptionNotEnoughMemory.Text.Label"),
 //					stringDatabase.getString("ExceptionNotEnoughMemory.Title.Label"), JOptionPane.ERROR_MESSAGE);
+			}
 		}
-	}
 
-	private void showOptimalStrategy(NetworkPanel networkPanel) {
+		private void showOptimalStrategy(NetworkPanel networkPanel) {
         /*
         22/10/2014
         Solving issue 195
@@ -1588,36 +1621,36 @@ public class MainPanelListenerAssistant extends WindowAdapter
         was not being calculated. Now, if the network is modified, we set the algorithm to null, as when
         the mode is changed from inference to edition.
          */
-		if (networkPanel.getModified()) {
-			//TODO: revise this piece of code under the new task paradigm
-			//networkPanel.setInferenceAlgorithm(null);
-		}
-
-		ProbNet probNet = networkPanel.getProbNet();
-		InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
-				Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
-		if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
-			return;
-		}
-		if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
-			DANEvaluation eval = null;
-			try {
-				eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
-			} catch (NotEvaluableNetworkException e1) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						"An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
+			if (networkPanel.getModified()) {
+				//TODO: revise this piece of code under the new task paradigm
+				//networkPanel.setInferenceAlgorithm(null);
 			}
-			StrategyTree strategyTree = null;
-			strategyTree = eval.getUtility().strategyTrees[0];
 
-			try {
-				//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-				strategyTree.pruneAndGraftNode("OD");
-				OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
-						probNet, strategyTree);
-				optimalStrategyDialog.setVisible(true);
-			} catch (IncompatibleEvidenceException e) {
+			ProbNet probNet = networkPanel.getProbNet();
+			InferenceOptionsDialog costEffectivenessDialog = new InferenceOptionsDialog(probNet,
+					Utilities.getOwner(mainPanel), MulticriteriaOptions.Type.UNICRITERION);
+			if (costEffectivenessDialog.getSelectedButton() == InferenceOptionsDialog.CANCEL_BUTTON) {
+				return;
+			}
+			if (networkPanel.getProbNet().getNetworkType().equals(DecisionAnalysisNetworkType.getUniqueInstance())) {
+				DANEvaluation eval = null;
+				try {
+					eval = new DANDecompositionIntoSymmetricDANsEvaluation(probNet,networkPanel.getEditorPanel().getPreResolutionEvidence());
+				} catch (NotEvaluableNetworkException e1) {
+					JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+							"An error occurred when trying to show the optimal strategy: " + e1.getMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				StrategyTree strategyTree = null;
+				strategyTree = eval.getUtility().strategyTrees[0];
+
+				try {
+					//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+					strategyTree.pruneAndGraftNode("OD");
+					OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
+							probNet, strategyTree);
+					optimalStrategyDialog.setVisible(true);
+				} catch (IncompatibleEvidenceException e) {
                 LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
                         "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
                 localizedException.showException();
@@ -1625,90 +1658,90 @@ public class MainPanelListenerAssistant extends WindowAdapter
                 LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
                         "IncompatibleEvidenceException", "An error occurred when trying to show the optimal strategy"), null);
                 localizedException.showException();
-			}
-
-			// MID or ID
-		} else {
-
-			VEOptimalIntervention veOptimalStrategy = null;
-			try {
-				veOptimalStrategy = new VEOptimalIntervention(probNet,
-						networkPanel.getEditorPanel().getPreResolutionEvidence());
-			} catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						"An error occurred when trying to show the optimal strategy: " + e.getMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-
-			try {
-				//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
-				OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
-						probNet, veOptimalStrategy);
-				optimalStrategyDialog.setVisible(true);
-			} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-						"An error occurred when trying to show the optimal strategy", "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		}
-
-	}
-
-	/**
-	 * @param buffer    <code>StringBuffer</code>
-	 * @param mainPanel <code>MainPanel</code>
-	 */
-	private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
-		JFrame frame = new JFrame("Cost-Effectiveness analysis");
-		String text = buffer.toString();
-		JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
-		frame.getContentPane().add(textArea, BorderLayout.CENTER);
-		JScrollPane scroll = new JScrollPane(textArea);
-		frame.getContentPane().add(scroll, BorderLayout.CENTER);
-		textArea.setText(text);
-		frame.setLocationRelativeTo(mainPanel);
-		frame.pack();
-		frame.setVisible(true);
-	}
-
-	/**
-	 * @param text <code>String</code>
-	 * @return <code>int</code>
-	 */
-	private int getMaxCharsInALine(String text) {
-		int maxLengthLine = 0;
-		if (text != null) {
-			int position = 0;
-			int nextEndLine;
-			int textLength = text.length();
-			do {
-				nextEndLine = text.indexOf('\n', position);
-				if (nextEndLine > 0) {
-					int lengthLine = nextEndLine - position;
-					if (lengthLine > maxLengthLine) {
-						maxLengthLine = lengthLine;
-					}
-					position = nextEndLine + 1;
 				}
-			} while (nextEndLine != -1 && position < textLength);
+
+				// MID or ID
+			} else {
+
+				VEOptimalIntervention veOptimalStrategy = null;
+				try {
+					veOptimalStrategy = new VEOptimalIntervention(probNet,
+							networkPanel.getEditorPanel().getPreResolutionEvidence());
+				} catch (NotEvaluableNetworkException | IncompatibleEvidenceException e) {
+					JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+							"An error occurred when trying to show the optimal strategy: " + e.getMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+				try {
+					//OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel), probNet, inferenceAlgorithm);
+					OptimalStrategyDialog optimalStrategyDialog = new OptimalStrategyDialog(Utilities.getOwner(mainPanel),
+							probNet, veOptimalStrategy);
+					optimalStrategyDialog.setVisible(true);
+				} catch (IncompatibleEvidenceException | UnexpectedInferenceException e) {
+					JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+							"An error occurred when trying to show the optimal strategy", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+
 		}
-		return maxLengthLine;
-	}
 
-	public void componentResized(ComponentEvent e) {
-		mainPanel.adaptToolBarSize();
-	}
+		/**
+		 * @param buffer    <code>StringBuffer</code>
+		 * @param mainPanel <code>MainPanel</code>
+		 */
+		private void showTextWindow(StringBuilder buffer, MainPanel mainPanel) {
+			JFrame frame = new JFrame("Cost-Effectiveness analysis");
+			String text = buffer.toString();
+			JTextArea textArea = new JTextArea(40, getMaxCharsInALine(text));
+			frame.getContentPane().add(textArea, BorderLayout.CENTER);
+			JScrollPane scroll = new JScrollPane(textArea);
+			frame.getContentPane().add(scroll, BorderLayout.CENTER);
+			textArea.setText(text);
+			frame.setLocationRelativeTo(mainPanel);
+			frame.pack();
+			frame.setVisible(true);
+		}
 
-	@Override public void componentMoved(ComponentEvent e) {
+		/**
+		 * @param text <code>String</code>
+		 * @return <code>int</code>
+		 */
+		private int getMaxCharsInALine(String text) {
+			int maxLengthLine = 0;
+			if (text != null) {
+				int position = 0;
+				int nextEndLine;
+				int textLength = text.length();
+				do {
+					nextEndLine = text.indexOf('\n', position);
+					if (nextEndLine > 0) {
+						int lengthLine = nextEndLine - position;
+						if (lengthLine > maxLengthLine) {
+							maxLengthLine = lengthLine;
+						}
+						position = nextEndLine + 1;
+					}
+				} while (nextEndLine != -1 && position < textLength);
+			}
+			return maxLengthLine;
+		}
 
-	}
+		public void componentResized(ComponentEvent e) {
+			mainPanel.adaptToolBarSize();
+		}
 
-	@Override public void componentShown(ComponentEvent e) {
+		@Override public void componentMoved(ComponentEvent e) {
 
-	}
+		}
 
-	@Override public void componentHidden(ComponentEvent e) {
+		@Override public void componentShown(ComponentEvent e) {
 
-	}
+		}
+
+		@Override public void componentHidden(ComponentEvent e) {
+
+		}
 
 }
