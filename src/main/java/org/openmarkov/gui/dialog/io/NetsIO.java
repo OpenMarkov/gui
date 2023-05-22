@@ -12,12 +12,12 @@ import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
 import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WriterException;
-import org.openmarkov.core.io.ProbNetInfo;
-import org.openmarkov.core.io.ProbNetReader;
-import org.openmarkov.core.io.ProbNetWriter;
-import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.io.ProbNetInfo;
+import org.openmarkov.io.ProbNetReader;
+import org.openmarkov.io.ProbNetWriter;
+import org.openmarkov.io.format.annotation.FormatManager;
 
 import java.io.File;
 import java.net.URL;
