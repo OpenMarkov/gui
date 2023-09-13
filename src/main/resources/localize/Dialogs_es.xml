@@ -144,6 +144,9 @@
         <jRadioButtonTPC>
             <Text value="Tabla completa"/>
         </jRadioButtonTPC>
+        <LeakColumn>
+            <Text value="Otras"/>
+        </LeakColumn>
         <jRadioButtonOptimal>
             <Text value="Política óptima"/>
         </jRadioButtonOptimal>

@@ -18,6 +18,7 @@ import org.openmarkov.gui.component.ICIValuesTableCellRenderer;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.dialog.node.ICIOptionsPanel;
+import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +58,13 @@ import java.util.List;
 	/**
 	 * Pseudo-util class with common operations used  in potential tables
 	 */
+
+	/**
+	 * "Leak" name.
+	 */
+
+	protected StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+
 	private PotentialsTablePanelOperations tablePotentialsPanelOperations;
 
 	public ICIPotentialsTablePanel(Node node) {
@@ -397,7 +405,7 @@ import java.util.List;
 		// Leaky parent
 		// Header
 
-		values[0][lastColumn] = "Leak";
+		values[0][lastColumn] = stringDatabase.getString("NodeProbsValuesTablePanel.LeakColumn.Text");
 		values[1][lastColumn] = "--";
 		double[] leakyParameters = iciPotential.getLeakyParameters();
 		for (int i = 0; i < leakyParameters.length; ++i) {
