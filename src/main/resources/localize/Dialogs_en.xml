@@ -431,11 +431,11 @@
             <CostEffectiveness value="Cost-Effectiveness"/>
         </Type>
         <TableHeader>
-            <Criterion value="Criterion"/>
+            <Criterion value="Criterion (in the model)"/>
             <Scale value="Scale"/>
-            <Use value="Role"/>
+            <Use value="Role (in the analysis)"/>
             <Discount value="Discount"/>
-            <Unit value="Units"/>
+            <Unit value="Period"/>
         </TableHeader>
         <Unit>
             <Title value="Unit"/>

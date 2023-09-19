@@ -426,19 +426,19 @@
     </NodePropertiesDialog>
     <MulticriteriaDialog>
         <Title>
-            <Label value="Selección de multi criterio"/>
+            <Label value="Selección de criterios"/>
         </Title>
         <Type>
             <Title value="Análisis"/>
             <Unicriterion value="Unicriterio"/>
-            <CostEffectiveness value="Coste Efectividad"/>
+            <CostEffectiveness value="Coste-efectividad"/>
         </Type>
         <TableHeader>
-            <Criterion value="Criterio"/>
+            <Criterion value="Criterio (en el modelo)"/>
             <Scale value="Escala"/>
-            <Use value="Rol"/>
+            <Use value="Rol (en el análisis)"/>
             <Discount value="Descuento"/>
-            <Unit value="Unidades"/>
+            <Unit value="Período"/>
         </TableHeader>
         <Unit>
             <Title value="Unidad"/>

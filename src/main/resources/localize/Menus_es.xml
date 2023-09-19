@@ -487,8 +487,8 @@
         <Cost value="Coste"/>
         <Effectiveness value="Efectividad"/>
         <BeginningOfCycle value="Inicio del ciclo"/>
-        <HalfCycle value="Mitad de ciclo"/>
-        <EndOfCycle value="Final de ciclo"/>
+        <HalfCycle value="Mitad del ciclo"/>
+        <EndOfCycle value="Final del ciclo"/>
         <ExpandNetwork>
             <Label value="Expandir red"/>
             <FileName value="_extendida"/>
