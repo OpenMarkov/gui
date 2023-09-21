@@ -67,7 +67,7 @@ import java.util.List;
 			setFileFilter("OpenMarkov");
 		} else {
 			setFileFilter(OpenMarkovPreferences
-					.get(OpenMarkovPreferences.LAST_OPENED_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
+					.get(FileChooser.DEFAULT_FILE_FORMAT, OpenMarkovPreferences.OPENMARKOV_FORMATS,
 							FileChooser.DEFAULT_FILE_FORMAT));
 		}
 	}
