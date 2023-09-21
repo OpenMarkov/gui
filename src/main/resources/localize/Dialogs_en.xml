@@ -319,9 +319,9 @@
             <Description value="OpenMarkov file ProbModel 0.2"/>
         </OpenMarkov.0.2>
 
-        <OpenMarkov.0.5>
-            <Description value="OpenMarkov file ProbModel 0.5"/>
-        </OpenMarkov.0.5>
+        <OpenMarkov.1.0>
+            <Description value="OpenMarkov file ProbModel 1.0"/>
+        </OpenMarkov.1.0>
     </FileExtension>
     <LanguageDialog>
         <Title>
