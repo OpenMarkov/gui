@@ -178,7 +178,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			saveNetworkAs(getCurrentNetworkPanel());
 			// If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
 			// but this is not longer the scenario
-			mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
+			//mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
 		} else if (actionCommand.equals(ActionCommands.CLOSE_NETWORK)) {
 			closeCurrentNetwork();
 		} else if (actionCommand.equals(ActionCommands.LOAD_EVIDENCE)) {
@@ -887,7 +887,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
 							OpenMarkovPreferences.OPENMARKOV_DIRECTORIES);
 					// If the file was opened from a URL, the 'save' and 'save and reopen' button are disabled,
 					// but it is not longer the scenario
-					mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
+					//mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkOpenedURL(false);
 				}
 				mainPanel.getMessageWindow().getNormalMessageStream()
 						.println(stringDatabase.getString("NetworkLoaded.Text.Label"));
