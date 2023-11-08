@@ -12,15 +12,11 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 @SuppressWarnings("serial") @PotentialPanelPlugin(potentialType = "Function") public class FunctionPotentialPanel
@@ -30,28 +26,16 @@ import java.util.List;
 	 * Panel with the function
 	 */
 
-	protected JTextArea functionTextArea = null;
-	/**
-	 *
-	 */
-	protected String function;
-	/**
-	 * Variables list
-	 */
 
-	protected List<Variable> variables;
-	/**
-	 * Parents list
-	 */
-	protected List<Variable> parents;
-	private JPanel functionPanel;
+	protected FunctionPanel functionPanel;
+
 	private Node node = null;
 	private FunctionPotential potential = null;
 
 	public FunctionPotentialPanel(Node node) {
 		super();
-		initComponents();
 		setData(node);
+		initComponents();
 	}
 
 	private void initComponents() {
@@ -61,48 +45,23 @@ import java.util.List;
 		northPanel.setBorder(new TitledBorder("Function"));
 		northPanel.setPreferredSize(new Dimension(800, 100));
 		// String function= (potential.getCovariates()==null)?null:potential.getCovariates()[0];
-		functionPanel = new JPanel();
-		functionPanel.setLayout(new BorderLayout());
-		functionPanel.setPreferredSize(new Dimension(750, 50));
-		functionPanel.setBorder(new LineBorder(UIManager.getColor("Table.dropLineColor"), 1, false));
-		functionPanel.add(getFunctionTextArea());
-		functionTextArea.addMouseListener(new FunctionTextAreaMouseListener());
-
+		List variables = node.getPotentials().get(0).getVariables();
+		functionPanel = new FunctionPanel(variables.subList(1,variables.size()), ((FunctionPotential) potential).getFunction());
 		northPanel.add(functionPanel, BorderLayout.NORTH);
 		add(northPanel, BorderLayout.NORTH);
 	}
 
-	protected JTextArea getFunctionTextArea() {
-		if (functionTextArea == null) {
-			functionTextArea = new JTextArea();
-			//CMI
-//			functionTextArea.setEditable(false);
-			functionTextArea.setEditable(true);
-			//CMF
-		}
-		return functionTextArea;
-	}
 
-	@Override public void setData(Node node) {
+	@Override
+	public void setData(Node node) {
 		this.node = node;
-		this.potential = (FunctionPotential) this.node.getPotentials().get(0);
-		this.variables = potential.getVariables();
-		this.parents = variables.subList(1, variables.size());
-		this.function = potential.getFunction();
-		if (function == null) {
-			function = FunctionPotential.DEFAULT_FUNCTION;
-		}
-		functionTextArea.setText(function);
-	}
-
-	public String getFunction() {
-		return function;
+		this.potential = (FunctionPotential) node.getPotentials().get(0);
 	}
 
 	public boolean saveChanges() {
 		FunctionPotential newPotential = (FunctionPotential) this.potential.copy();
 
-		newPotential.setFunction(function);
+		newPotential.setFunction(functionPanel.getFunction());
 
 		PotentialChangeEdit potentialChangeEdit = new PotentialChangeEdit(node.getProbNet(), this.potential,
 				newPotential);
@@ -116,19 +75,6 @@ import java.util.List;
 
 	@Override public void close() {
 
-	}
-
-	private class FunctionTextAreaMouseListener extends MouseAdapter {
-		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() >= 1) {
-				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null, parents, function);
-				expressionDialog.setVisible(true);
-				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
-					function = expressionDialog.getExpression();
-					functionTextArea.setText(function);
-				}
-			}
-		}
 	}
 
 }
