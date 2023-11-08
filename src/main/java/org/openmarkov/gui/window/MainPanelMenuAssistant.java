@@ -12,7 +12,6 @@ import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.constraint.NoEventNodes;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -286,7 +285,9 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	private void enableMenuOptionsforDESnets(){
 		setOptionEnabled(EDITING_ACTION_COMMANDS, true);
 		setOptionEnabled(ActionCommands.MC_SIMULATE_NETWORK, true);
-
+		setOptionEnabled(ActionCommands.SAVEAS_NETWORK,true);
+		//20/03/2023; Zoom enabled
+		setOptionEnabled(VIEWING_ACTION_COMMANDS, true);
 	}
 	/**
 	 *  -- 07/01/2022
@@ -349,9 +350,17 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	public void updateOptionsNetworkModified(boolean canUndo, boolean canRedo) {
 		// updateUndoRedo(undoManager);
 		// changed by mpalacios
-		updateInferenceButtons();
-		checkInferenceOptions();
-		updateUndoRedo(canUndo, canRedo);
+		//CMI 10/01/2023 setting options for DESnets FIXME provisional
+		if (!(currentNetworkPanel.getProbNet().getNetworkType() instanceof DESNetworkType)) {
+		//CMF
+			updateInferenceButtons();
+			checkInferenceOptions();
+			updateUndoRedo(canUndo, canRedo);
+		//CMI 10/01/2023 setting options for DESnets
+		} else{
+			enableMenuOptionsforDESnets();
+		}
+		//CMF
 		// If the network has been opened from a URL the save button has to remain disabled
 		setOptionEnabled(ActionCommands.SAVE_NETWORK, !networkOpenedURL);
 
@@ -440,14 +449,6 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 			setOptionEnabled(ActionCommands.LINK_CREATION, true);
 			setOptionEnabled(ActionCommands.CHANGE_TO_INFERENCE_MODE, true);
 			setOptionEnabled(INFERENCE_ACTION_COMMANDS, false);
-			//CMI 07/01/2023 - for preventing event button enabled?
-			if (currentProbNet.hasConstraint(NoEventNodes.class)){
-				setOptionEnabled(ActionCommands.EVENT_CREATION, false);
-			}
-			else{
-				setOptionEnabled(ActionCommands.EVENT_CREATION, true);
-			}
-			//CMF
 			if (!currentProbNet.hasConstraint(OnlyChanceNodes.class)) {
 				setOptionEnabled(ActionCommands.DECISION_CREATION, true);
 				setOptionEnabled(ActionCommands.UTILITY_CREATION, true);
@@ -514,8 +515,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		checkInferenceOptions();
 
 
-		//CMI
-		if (currentProbNet.getNetworkType() instanceof DESNetworkType){
+		//CMI 10/01/2023 - provisional options in toolbar
+ 		if (currentProbNet.getNetworkType() instanceof DESNetworkType){
 			updateOptionsAllNetworkClosed();
 			enableMenuOptionsforDESnets();
 		} else{

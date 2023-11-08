@@ -8,24 +8,13 @@
 package org.openmarkov.gui.window;
 
 import org.apache.commons.io.FilenameUtils;
-import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.io.database.CaseDatabase;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.plugin.CaseDatabaseManager;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.TemporalNetOperations;
-import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
@@ -40,14 +29,7 @@ import org.openmarkov.gui.dialog.ShortcutsBox;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
 import org.openmarkov.gui.dialog.configuration.PreferencesDialog;
 import org.openmarkov.gui.dialog.inference.common.InferenceOptionsDialog;
-import org.openmarkov.gui.dialog.io.DBReaderFileChooser;
-import org.openmarkov.gui.dialog.io.FileChooser;
-import org.openmarkov.gui.dialog.io.FileFilterAll;
-import org.openmarkov.gui.dialog.io.FileFilterBasic;
-import org.openmarkov.gui.dialog.io.NetsIO;
-import org.openmarkov.gui.dialog.io.NetworkFileChooser;
-import org.openmarkov.gui.dialog.io.SaveOptions;
-import org.openmarkov.gui.dialog.io.URLNetworkChooserDialog;
+import org.openmarkov.gui.dialog.io.*;
 import org.openmarkov.gui.dialog.network.NetworkPropertiesDialog;
 import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.gui.localize.LocalizedException;
@@ -62,20 +44,15 @@ import org.openmarkov.gui.window.mdi.FrameContentPanel;
 import org.openmarkov.gui.window.mdi.MDIListener;
 import org.openmarkov.gui.window.message.MessageWindow;
 import org.openmarkov.inference.DES.DESInference;
-import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANDecompositionIntoSymmetricDANsEvaluation;
+import org.openmarkov.inference.decompositionIntoSymmetricDANs.evaluation.DANEvaluation;
 import org.openmarkov.inference.variableElimination.tasks.VEOptimalIntervention;
 
 import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -1425,8 +1402,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
 				new Thread(() -> {
 					try {
 						new DESInference(probNet, simulationProgressMonitor);
-					} catch (NotEvaluableNetworkException e) {
+					//26/08/2023 added IOException, InvalidStateException for data files
+					} catch (NotEvaluableNetworkException | IOException | InvalidStateException e) {
+						//FIXME - change behaviour?
 						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 				}).start();
 		}
