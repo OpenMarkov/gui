@@ -16,6 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
 
 /**
  * Panel with the options/parameters for Monte Carlo Simulations.
@@ -23,6 +24,7 @@ import java.awt.event.ActionListener;
  * and those which determine how this simulation is logged (log options)
  * @version 1.0 cyago - 04/01/2019 - In this version Monte Carlo options is only used for DESNets
  * @version 1.1 cyago - 24/04/2021 - Added support for an input file
+ * @version 1.2 cyago - 16/08/2023 - Keeping data from previous simulation
  */
 public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
@@ -36,10 +38,10 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 */
 	private MonteCarloOptions monteCarloOptions;
 
-	/**
-	 * JPanel when the Monte Carlo simulation options are depicted
-	 */
-	private JPanel monteCarloOptionsPanel;
+//	/**
+//	 * JPanel when the Monte Carlo simulation options are depicted
+//	 */
+//	private JPanel monteCarloOptionsPanel;
 
 	/**
 	 * Label for number of series of simulations
@@ -67,34 +69,15 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private JPanel desNetLogOptionsPanel;
 
 
-
-
 	/**
 	 * JCHeckBox for setting the "only summary" option.  When checked, only a summary of the simulations is recorded
 	 */
 	private JCheckBox resultsPerSeriesCheckBox;
 
 	/**
-	 * JCHeckBox for setting the "state log" option. When checked, the states of the patient are logged
-	 */
-	private JCheckBox stateLogCheckBox;
-
-	/**
-	 * JCHeckBox for setting the "event log" option. When checked, every event is logged
-	 */
-	private JCheckBox eventLogCheckBox;
-
-	/**
-	 * JCHeckBox for setting the "events queue" option. When checked the events queue is logged for every event happened
-	 */
-	private JCheckBox scheduledEventsCheckBox;
-
-
-	/**
 	 * JCHeckBox for setting the "detailed textual log option"
 	 */
 	private JCheckBox textualLogCheckBox;
-
 
 
 	//Statistics Panel
@@ -127,9 +110,18 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	/**
 	 * JButton for setting the input File
 	 */
-	private JButton inputFileJButton = null;
+	private JButton addInputFileJButton = null;
+
+	//26/08/2023
+	private JButton clearInputFileJButton = null;
+
+	//26/08/2023 Path will be used because File is considered legacy code
+	//https://www.baeldung.com/java-path-vs-file
+	private Path inputFile = null;
+
+
 	/**
-	 * JLabel of the JButton for setting the input File
+	 * JTextField of the JButton for setting the input File
 	 */
 	private JTextField inputFileJTextField = null;
 
@@ -174,14 +166,6 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * @return  the monteCarloOptions set in this panel
 	 */
 	public MonteCarloOptions getMonteCarloOptions() {
-		extractMonteCarloOptions();
-		return monteCarloOptions;
-	}
-
-	/**
-	 * This method extract the options set in the panel and stares them in the monteCarloOptions object
-	 */
-	private void extractMonteCarloOptions() {
 		this.monteCarloOptions.setNumSeries(Integer.parseInt(numSeriesTextField.getText()));
 		this.monteCarloOptions.setNumSimulations(Integer.parseInt(numSimulationsTextField.getText()));
 		this.monteCarloOptions.setResultsToExcel(resultsPerSeriesCheckBox.isSelected());
@@ -190,6 +174,9 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 		this.monteCarloOptions.setTrimmedMean(trimmedMeanCheckBox.isSelected());
 		this.monteCarloOptions.setMedian(medianCheckBox.isSelected());
 		this.monteCarloOptions.setSum(sumCheckBox.isSelected());
+		//26/08/2023 - set inputFile options
+		this.monteCarloOptions.setInputFilePath(inputFile);
+		return monteCarloOptions;
 	}
 
 
@@ -275,12 +262,11 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	private JCheckBox getTextualLogCheckBox() {
 		if (textualLogCheckBox == null) {
 			//TODO use stringDatabase
-			textualLogCheckBox = new JCheckBox("Detailed Textual Log", monteCarloOptions.isTextualLog());
+			textualLogCheckBox = new JCheckBox("Generate evaluation algorithm trace", monteCarloOptions.isTextualLog());
 		}
 
 		return textualLogCheckBox;
 	}
-
 
 
 	/**
@@ -289,10 +275,11 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 */
 	private JCheckBox getJCheckBoxExcelResultsPerSeries() {
 		if (resultsPerSeriesCheckBox == null) {
-			//TODO use stringDatabase
+			//FIXME use stringDatabase
 			resultsPerSeriesCheckBox = new JCheckBox("Results Per Series (.xlsx file)",monteCarloOptions.isResultsToExcel());
-
 		}
+		//FIXME 13/01/2023 Provisional for paper .jar
+		resultsPerSeriesCheckBox.setEnabled(false);
 		return resultsPerSeriesCheckBox;
 	}
 
@@ -377,11 +364,13 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 */
 	private JPanel getInputFileJPanel(){
 		if (inputFileJPanel == null) {
+			inputFile = monteCarloOptions.getInputFilePath();
 			inputFileJPanel = new JPanel();
 			inputFileJPanel.setBorder( new TitledBorder("DES Input File"));
 			inputFileJPanel.setLayout(new BorderLayout(0,5));
 			inputFileJPanel.add(getJButtonAddInputFile(), BorderLayout.NORTH);
-			inputFileJPanel.add(getJTextFieldInputFile(), BorderLayout.SOUTH);
+			inputFileJPanel.add(getJTextFieldInputFile(), BorderLayout.EAST);
+			inputFileJPanel.add(getJButtonClearInputFile(), BorderLayout.WEST);
 
 		}
 		return inputFileJPanel;
@@ -392,24 +381,46 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 	 * @return the JButton to select the simulation input file
 	 */
 	private JButton getJButtonAddInputFile() {
-		if (inputFileJButton==null) {
-			inputFileJButton = new JButton("Add Input File");
-			inputFileJButton.setActionCommand("AddInputFile");
-			inputFileJButton.addActionListener(this);
+		if (addInputFileJButton ==null) {
+			addInputFileJButton = new JButton("Add Input File");
+			addInputFileJButton.setActionCommand("AddInputFile");
+			addInputFileJButton.addActionListener(this);
 		}
-		return inputFileJButton;
+		return addInputFileJButton;
 	}
 
+
 	/**
-	 * This method returns the JLabel for selecting the simulation input file
-	 * @return the JLabel to select the simulation input file
+	 * This method returns the JButton for clearing the JText with the input data file
+	 * @return the JButton to clear input file name
+	 */
+	private JButton getJButtonClearInputFile() {
+		if (clearInputFileJButton  ==null) {
+			clearInputFileJButton = new JButton("Clear");
+			clearInputFileJButton.setActionCommand("ClearInputFile");
+			clearInputFileJButton.addActionListener(this);
+			if (inputFile == null) clearInputFileJButton.setEnabled(false);
+		}
+		return clearInputFileJButton;
+	}
+
+
+
+
+	/**
+	 * This method returns the JTextField for selecting the simulation input file
+	 * @return the JTextField to select the simulation input file
 	 */
 	private JTextField getJTextFieldInputFile() {
 		if (inputFileJTextField ==null){
 			inputFileJTextField = new JTextField();
-			inputFileJTextField.setText("");
 //			inputFileJTextField.setVisible(false);
 			inputFileJTextField.setEnabled(false);
+			if (inputFile == null){
+				inputFileJTextField.setText("");
+			} else {
+				inputFileJTextField.setText(inputFile.toString());
+			}
 
 		}
 		return inputFileJTextField;
@@ -423,17 +434,25 @@ public class MonteCarloOptionsPanel extends JPanel implements ActionListener {
 
 		JFileChooser fileChooser = new JFileChooser(".\\DESNetFiles\\InputFile") ;
 
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.xlsx", "xlsx");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.csv", "csv");
 		fileChooser.setFileFilter(filter);
 
 		//Handle open button action.
 		if (e.getActionCommand() == "AddInputFile") {
 			int returnVal = fileChooser.showOpenDialog(MonteCarloOptionsPanel.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				monteCarloOptions.setInputFile(fileChooser.getSelectedFile());
-					inputFileJTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+				inputFile= fileChooser.getSelectedFile().toPath();
+				inputFileJTextField.setText(inputFile.toString());
+				clearInputFileJButton.setEnabled(true);
 
 			}
+		}
+
+		if (e.getActionCommand() == "ClearInputFile") {
+			inputFile = null;
+			inputFileJTextField.setText("");
+			clearInputFileJButton.setEnabled(false);
+
 		}
 	}
 
