@@ -7,15 +7,8 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.UniformPotential;
@@ -807,7 +800,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 					for (Variable variable : parentTreeADD.getVariables()) {
 						if (variable.getName().equals(variableName)) {
 							newVariables.add(variable);
-						}
+							//CMI 18/03/2023 -- for self-loop in DESnets; avoiding self-loop variable added twice; normal behaviour not affected
+						break;
+						//CMF
+					}
 					}
 				}
 			}
