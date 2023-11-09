@@ -21,6 +21,7 @@ import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
 import org.openmarkov.gui.dialog.common.*;
 
@@ -239,7 +240,9 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
             for (Node parent: node.getParents()) {
                 tableColumns *= parent.getVariable().getNumStates();
             }
-			System.out.println(tableColumns);
+			//CMI 11/01/2023 - commented; FIXME ask for removal
+//			System.out.println(tableColumns);
+			//CMF
             // Show small uniform potentials as table potentials. Saves clicks
             if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
                 potentialTypeComboBox.setSelectedItem("Table");
@@ -753,6 +756,11 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 * @return true if the ReorderVariableButton should be enabled
 	 */
 	private boolean enableReorderVariableButton() {
+		//CMI 10/01/2023 - FIXME provisional; Reorder variables button disabled for DESnets;
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType){
+			return false;
+		}
+		//CMF
 		boolean enable = false;
 		// We retrieve the necessary data from the node
 		Potential potential = node.getPotentials().get(0);
