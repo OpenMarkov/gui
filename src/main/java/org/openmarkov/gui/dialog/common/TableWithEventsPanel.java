@@ -3,16 +3,14 @@ package org.openmarkov.gui.dialog.common;
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TableWithFunctions;
-import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.gui.component.EventValuesTable;
-import org.openmarkov.gui.component.EventValuesTableCellRenderer;
-import org.openmarkov.gui.component.EventValuesTableModel;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
+import org.openmarkov.gui.component.TableWithEventsCellRenderer;
+import org.openmarkov.gui.component.TableWithEventsModel;
+import org.openmarkov.gui.component.ValuesTableWithEvents;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.menu.TableWithEventsContextualMenu;
 
@@ -30,6 +28,7 @@ import java.util.List;
  * @author cmyago
  * @version 1.0 - cmyago - 24/03/2019
  * @version 1.1 - cmyago - 20/08/2022 impossible configuration commented
+ * @version 2 - cmyago - 29/08/2023 impossible configuration commented; doble click listener commented
  */
 
 public class TableWithEventsPanel
@@ -38,7 +37,7 @@ public class TableWithEventsPanel
 	/**
 	 * JTable where show the values.
 	 */
-	protected EventValuesTable eventValuesTable = null;
+	protected ValuesTableWithEvents valuesTableWithEvents = null;
 	/**
 	 * Indicates if the data of the table is modifiable.
 	 */
@@ -85,19 +84,16 @@ public class TableWithEventsPanel
 	protected List<Variable> functionParameters = null;
 
 
-
+	/**
+	 * True if functions are allowed
+	 */
+	private  boolean hasFunctions = true;
 
 	/**
 	 * Variables of the TablePotential of EventTablePotential
 	 */
 	protected List<Variable> tableVariables = null;
 
-
-	/**
-	 * True if some parent has a link restriction to the node
-	 *
-	 */
-	protected boolean hasLinkRestriction;
 
 
 
@@ -115,10 +111,10 @@ public class TableWithEventsPanel
 	protected TableWithEventsContextualMenu tableWithEventsContextualMenu;
 
 
-    /**
-     *
-     */
-    protected boolean[] impossibleColumns;
+//    /**
+//     *
+//     */
+//    protected boolean[] impossibleColumns;
 
 
 
@@ -128,8 +124,9 @@ public class TableWithEventsPanel
 
 
 
-	public TableWithEventsPanel(Node node, TableWithEvents tableWithEvents) {
+	public TableWithEventsPanel(Node node, TableWithEvents tableWithEvents, boolean hasFunctions ) {
 		this(node, tableWithEvents,null);
+		this.hasFunctions = hasFunctions;
 
 	}
 
@@ -159,9 +156,9 @@ public class TableWithEventsPanel
         tableVariables = tableWithEvents.getTableVariables();
 
 
-		eventValuesTable = new EventValuesTable(node,tableWithEvents,  new EventValuesTableModel(data, columns, firstEditableRow), modifiable);
-        eventValuesTable.setName("EventPotentialsTablePanel.eventValuesTable");
-        eventValuesTable.setVisible(true);
+		valuesTableWithEvents = new ValuesTableWithEvents(node,tableWithEvents,  new TableWithEventsModel(data, columns, firstEditableRow), modifiable);
+        valuesTableWithEvents.setName("EventPotentialsTablePanel.valuesTableWithEvents");
+        valuesTableWithEvents.setVisible(true);
 
 
 
@@ -182,7 +179,7 @@ public class TableWithEventsPanel
 
 
 	/**
-	 * Sets a new table model with new data and new columns in eventValuesTable
+	 * Sets a new table model with new data and new columns in valuesTableWithEvents
 	 *
 	 * @param newData    new data for the table
 	 * @param newColumns new columns for the table
@@ -197,21 +194,21 @@ public class TableWithEventsPanel
 		// Table columns
 		columns = newColumns.clone();
 
-		// resets the eventValuesTableModel
-		eventValuesTable.resetModel();
+		// resets the tableWithEventsModel
+		valuesTableWithEvents.resetModel();
 
-		// Sets the eventValuesTable eventValuesTableModel with columns, data
-		eventValuesTable.setModel(new EventValuesTableModel(data, columns, firstEditableRow));
+		// Sets the valuesTableWithEvents tableWithEventsModel with columns, data
+		valuesTableWithEvents.setModel(new TableWithEventsModel(data, columns, firstEditableRow));
 
 		// Initialises a false an array which tells which data are modified
-		eventValuesTable.initializeDataModified(false);
+		valuesTableWithEvents.initializeDataModified(false);
 
-		eventValuesTable.setLastEditableRow(lastEditableRow);
+		valuesTableWithEvents.setLastEditableRow(lastEditableRow);
 
 		//show/hide rows based on the showingAllParameters attribute using a RowFilter mechanism.
-		eventValuesTable.setShowingAllParameters(true);
+		valuesTableWithEvents.setShowingAllParameters(true);
 
-		eventValuesTable.setNodeType(node.getNodeType());
+		valuesTableWithEvents.setNodeType(node.getNodeType());
 	}
 
 	/**
@@ -224,16 +221,15 @@ public class TableWithEventsPanel
 	 */
 	public void setData(Node node) {
 		this.node = node;
-
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+//		try {
+//			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+//					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+//			return;
+//		}
 		setData();
 	}
 
@@ -242,94 +238,85 @@ public class TableWithEventsPanel
 	 * items: <li>list of Potentials of the variable</li> <li>states of the
 	 * variable</li> <li>parents of the variable</li>
 	 * This method obtains if the node has link restrictions and store it in hasLinkrestriction,
-	 * stores the probNet in EventValuesTable
+	 * stores the probNet in ValuesTableWithEvents
 	 * fills the tableData (tableData consists of headers + data),
 	 * sets the columns name in a Excel mode (A,B,C,...AA,AB...),
-	 * sets the eventValuesTableModel in eventValuesTable( tableData + column names),
+	 * sets the tableWithEventsModel in valuesTableWithEvents( tableData + column names),
 	 * sets uncertaintyInColumns with the columns with uncertainty,
 	 * sets the cell renders according to the type of node, and
-	 * in the tableMoel, sets the not editable cells due to links restrictions and uncertainty in columns.
-	 * Finally, this method adjust the size of the cells in eventValuesTable
+	 * in the tableModel, sets the not editable cells due to links restrictions and uncertainty in columns.
+	 * Finally, this method adjust the size of the cells in valuesTableWithEvents
 	 *
-	 * @author cyago
+	 *
 	 */
 	// Using node sets in variable node
 	// What to do with the exception
 	public void setData() {
 
-		// true
-		hasLinkRestriction = LinkRestrictionPotentialOperations.hasLinkRestriction(node);
 		// Sets the probNet in the table
 
-		eventValuesTable.setData(node);
+		valuesTableWithEvents.setData(node);
 
 		Object[][] tableData = null;
 		String[] newColumns = null;
 
-		// tableData contains the table to be displayed in EventValuesTable
+		// tableData contains the table to be displayed in ValuesTableWithEvents
 		tableData = convertListPotentialsToTableFormat();
 
 		// Sets the column names in Excel style: A, B, C,....AA,AB...
 		// These column names aren't displayed
-		newColumns = EventValuesTable.getColumnsIdsSpreadSheetStyle(tableData[0].length);
+		newColumns = ValuesTableWithEvents.getColumnsIdsSpreadSheetStyle(tableData[0].length);
 
 
-		//Sets the table model in eventValuesTable
+		//Sets the table model in valuesTableWithEvents
 		setDataInValuesTable(tableData, newColumns);
-        impossibleColumns= getImpossibleColumns();
+//        impossibleColumns= getImpossibleColumns();
 
         // set the Cell Renders according to NodeType (a different renderer for some DECISON nodes) and the uncertainty
-		setCellRenderers(impossibleColumns);
+//		setCellRenderers(impossibleColumns);
+		setCellRenderers();
 
 
 		// Establish the column width
-		eventValuesTable.fitColumnsWidthToContent();
+		valuesTableWithEvents.fitColumnsWidthToContent();
 	}
 
-	/**
-	 * Sets the columns that have uncertainty a true in a boolean array
-	 * To do that, this method extracts the uncertainty for every column configuration (parents state set)
-	 * <p>
-	 * UNCLEAR-->When we reach this method eventTablePotential!=null
-	 *
-	 * @return Boolean array that represents the columns (true = the column has
-	 * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
-	 * @author carmenyago
-	 */
-	protected boolean[] getImpossibleColumns() {
+//	/**
+//	 * Sets the columns that have uncertainty a true in a boolean array
+//	 * To do that, this method extracts the uncertainty for every column configuration (parents state set)
+//	 * <p>
+//	 * UNCLEAR-->When we reach this method eventTablePotential!=null
+//	 *
+//	 * @return Boolean array that represents the columns (true = the column has
+//	 * an uncertainty, false = the column has not an uncertainty). This array only contains the data columns
+//	 * @author carmenyago
+//	 */
+//	protected boolean[] getImpossibleColumns() {
+//
+//		int size = valuesTableWithEvents.getColumnCount();
+//
+//		// Column 0 contains the name of the states
+//		boolean[] newImpossibleColumns = new boolean[size - 1];
+//
+//		for (int i = 1; i < size; i++) {
+//			boolean isImpossible = false;
+//			try {
+//				// Returns an evidence case with one finding for every parent variable and its state in the column
+//				Configuration configuration = getConfiguration(i);
+//				// If the column configuration has uncertainty hasUncertainty= true
+////				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
+//			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+//				e.printStackTrace();
+//				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
+//						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+//			}
+//			// Indicates whether this column has uncertainty or not
+//			newImpossibleColumns[i - 1] = isImpossible;
+//		}
+//		return newImpossibleColumns;
+//	}
 
-		int size = eventValuesTable.getColumnCount();
 
-		// Column 0 contains the name of the states
-		boolean[] newImpossibleColumns = new boolean[size - 1];
-
-		for (int i = 1; i < size; i++) {
-			boolean isImpossible = false;
-			try {
-				// Returns an evidence case with one finding for every parent variable and its state in the column
-				Configuration configuration = getConfiguration(i);
-				// If the column configuration has uncertainty hasUncertainty= true
-//				isImpossible = tableWithEvents.isImpossibleConfiguration(configuration);
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-			// Indicates whether this column has uncertainty or not
-			newImpossibleColumns[i - 1] = isImpossible;
-		}
-		return newImpossibleColumns;
-	}
-
-	/**
-	 * calculate the number of rows of the table based on the parents and  states of the node variable
-	 * Last row with the name of the variable when TablePotential REMOVED
-	 *
-	 * @author carmenyago
-	 */
-	protected int howManyRows(Node n) {
-		return n.getParents().size() + n.getVariable().getStates().length;
-	}
 
 	/**
 	 * Creates an array[number_of_rows][number_of_columns] with the objects displayed in the cells of valueTable
@@ -366,7 +353,7 @@ public class TableWithEventsPanel
 	}
 
 	/**
-	 * Creates and empty array of empty objects with the [number_of_rows][number_of_columns] of the eventValuesTable
+	 * Creates and empty array of empty objects with the [number_of_rows][number_of_columns] of the valuesTableWithEvents
 	 * Considers the eventTablePotential is not null
 	 * UNCLEAR --> setBaseIndexForCoordinates
 	 *
@@ -498,7 +485,7 @@ public class TableWithEventsPanel
 	 *
 	 * @param oldValues
 	 * @return an array filled with the date table from tablePotential or tableDeltaPotential filled with the data values
-	 * from tablePotential or tableDeltaPotential in the correct positions to be displayed by EventValuesTable
+	 * from tablePotential or tableDeltaPotential in the correct positions to be displayed by ValuesTableWithEvents
 	 */
 	protected Object[][] setPotentialDataInCentreArea(Object[][] oldValues) {
 		Object[][] values = oldValues;
@@ -577,7 +564,7 @@ public class TableWithEventsPanel
 	}
 
 	/**
-	 * Calculates the position on eventValuesTable for a state combination
+	 * Calculates the position on valuesTableWithEvents for a state combination
 	 *
 	 * @param stateIndices - indexes of the states
 	 * @return an array containing the row at the first position and the column
@@ -609,41 +596,10 @@ public class TableWithEventsPanel
 		return new int[] { row, column };
 	}
 
-	/****
-	 * Calculates the positions of the table which are not editable due to a
-	 * link restriction or uncertainty in the columns.
-	 * If the position is not editable the position in the return array is set to 1, otherwise it contains a null value.
-	 *
-	 * @return a two dimensional array with the size of the table containing the
-	 *         information about the editable positions.
-	 *
-	 * UNCLEAR--> Can a utility Node have nodes with restriction and what to do?
-	 * @author carmenyago
-	 *
-	 */
-	protected Object[][] getNotEditablePositions() {
-		Object[][] notEditablePositions = createEmptyTable();
-		//CMI Bug #162 Applying restriction to utility Nodes
-		//if (!isTableDeltaPotential && hasLinkRestriction){
-		if (hasLinkRestriction) {
-			//CMF
-			List<int[]> statesWithRestriction = LinkRestrictionPotentialOperations
-					.getStateCombinationsWithLinkRestriction(node);
-
-			for (int[] state : statesWithRestriction) {
-				int[] position = getRowAndColumnForStateCombination(state, tablePotential);
-				int row = position[0];
-				int column = position[1];
-				notEditablePositions[row][column] = 1;
-			}
-		}
-
-		return notEditablePositions;
-	}
 
 	/**
 	 * This method generates the evidenceCase based on the column selected on
-	 * the <code>eventValuesTable</code> object.
+	 * the <code>valuesTableWithEvents</code> object.
 	 * The evidence case has a finding for every parent of the node and its state in column
 	 * <p>
 	 * UNCLEAR When is the parents list reordered???
@@ -708,14 +664,14 @@ public class TableWithEventsPanel
 
 
 	/**
-	 * This method initialises eventValuesTable and defines that first two columns cannot be selected
+	 * This method initialises valuesTableWithEvents and defines that first two columns cannot be selected
 	 *
 	 * @return a new values table.
 	 * revised-->not changed
 	 */
-	public EventValuesTable getEventValuesTable() {
+	public ValuesTableWithEvents getEventValuesTable() {
 
-		return eventValuesTable;
+		return valuesTableWithEvents;
 	}
 
 	/**
@@ -742,18 +698,18 @@ public class TableWithEventsPanel
 	}
 
 	/**
-	 * This method returns the eventValuesTableModel of eventValuesTable. If eventValuesTable has not a eventValuesTableModel, this method creates one.
+	 * This method returns the tableWithEventsModel of valuesTableWithEvents. If valuesTableWithEvents has not a tableWithEventsModel, this method creates one.
 	 *
-	 * @return the eventValuesTableModel of eventValuesTable.
-	 * @see EventValuesTable
+	 * @return the tableWithEventsModel of valuesTableWithEvents.
+	 * @see ValuesTableWithEvents
 	 * revised-->minor changes
 	 */
-	protected EventValuesTableModel getTableModel() {
-		EventValuesTableModel tableModel = null;
-		if ((eventValuesTable == null) || (eventValuesTable.getEventValuesTableModel() == null))
-			tableModel = new EventValuesTableModel(data, columns, firstEditableRow);
+	protected TableWithEventsModel getTableModel() {
+		TableWithEventsModel tableModel = null;
+		if ((valuesTableWithEvents == null) || (valuesTableWithEvents.getEventValuesTableModel() == null))
+			tableModel = new TableWithEventsModel(data, columns, firstEditableRow);
 		else
-			tableModel = (EventValuesTableModel) eventValuesTable.getModel();
+			tableModel = (TableWithEventsModel) valuesTableWithEvents.getModel();
 
 		return tableModel;
 	}
@@ -765,122 +721,151 @@ public class TableWithEventsPanel
 	 */
 	public void setShowAllParameters(boolean showAllParameters) {
 		this.showAllParameters = showAllParameters;
-		eventValuesTable.setShowingAllParameters(showAllParameters);
+		valuesTableWithEvents.setShowingAllParameters(showAllParameters);
 	}
+
+//	/**
+//	 * Handles an action performed
+//	 */
+//	public void actionPerformed(ActionEvent e) {
+//		String actionCommand = e.getActionCommand();
+//		if (actionCommand.equals(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION) ) {
+//            try {
+//                setImpossibleColumn();
+//            } catch (WrongCriterionException ex) {
+//                ex.printStackTrace();
+//            }
+//
+//        } else if (actionCommand.equals(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION)) {
+//            try {
+//                unSetImpossibleColumn();
+//            } catch (WrongCriterionException ex) {
+//                 ex.printStackTrace();
+//            }
+//         } else if (actionCommand.equals(ActionCommands.ADD_FUNCTION)){
+//			try{
+//				String functionString = valuesTableWithEvents.getValueAt(selectedRow,selectedColumn).toString();
+//
+//				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null,functionParameters , functionString);
+//				expressionDialog.setVisible(true);
+//				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
+//					functionString = expressionDialog.getExpression();
+//					valuesTableWithEvents.setValueAt(functionString,selectedRow,selectedColumn);
+//
+//				}
+//
+//
+//			}catch(Exception ex){
+//				ex.printStackTrace();
+//			}
+//		}
+//
+//	}
 
 	/**
 	 * Handles an action performed
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
-		if (actionCommand.equals(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION) ) {
-            try {
-                setImpossibleColumn();
-            } catch (WrongCriterionException ex) {
-                ex.printStackTrace();
-            }
-
-        } else if (actionCommand.equals(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION)) {
-            try {
-                unSetImpossibleColumn();
-            } catch (WrongCriterionException ex) {
-                 ex.printStackTrace();
-            }
-         } else if (actionCommand.equals(ActionCommands.ADD_FUNCTION)){
+		//29/08/2023 There will be more action commands (PSA)
+		if (actionCommand.equals(ActionCommands.ADD_FUNCTION)){
 			try{
-				String functionString = eventValuesTable.getValueAt(selectedRow,selectedColumn).toString();
+				String functionString = valuesTableWithEvents.getValueAt(selectedRow,selectedColumn).toString();
 
 				ArithmeticExpressionDialog expressionDialog = new ArithmeticExpressionDialog(null,functionParameters , functionString);
 				expressionDialog.setVisible(true);
 				if (expressionDialog.getSelectedButton() == OkCancelHorizontalDialog.OK_BUTTON) {
 					functionString = expressionDialog.getExpression();
-					eventValuesTable.setValueAt(functionString,selectedRow,selectedColumn);
+					valuesTableWithEvents.setValueAt(functionString,selectedRow,selectedColumn);
 
 				}
 
 
 			}catch(Exception ex){
 				ex.printStackTrace();
+				throw new RuntimeException(ex);
 			}
 		}
 
 	}
 
 
-
-	protected void  setImpossibleColumn() throws WrongCriterionException {
-		// Generates the evidenceCase based on the column
-		// selected on the JTable object
-
-        eventValuesTable.getImpossibleConfigurations().add( getConfigurationFromSelectedColumn());
-        impossibleColumns[selectedColumn -1] = true;
-
-        if (selectedColumn > 0) {
-					(
-							(EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
-					).setMark(selectedColumn - 1);
-					getEventValuesTable().repaint();
-				}
-
-
-	}
-
-
-    protected void  unSetImpossibleColumn() throws WrongCriterionException {
-        // Generates the evidenceCase based on the column
-        // selected on the JTable object
-
-        Configuration impossibleConfiguration= new Configuration(getConfigurationFromSelectedColumn());
-        eventValuesTable.getImpossibleConfigurations().remove(impossibleConfiguration);
-        impossibleColumns[selectedColumn -1] = false;
-
-        if (selectedColumn > 0) {
-            (
-                    (EventValuesTableCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
-            ).setUnMark(selectedColumn - 1);
-            getEventValuesTable().repaint();
-        }
-
-
-    }
-
-
-
-
-
-
-	/**
-	 * Handles the double click in a cell
-	 *
-	 * @param evt
-	 */
-	protected void doubleClickEvent(MouseEvent evt) {
-//	    //TODO copy from Uncertaninty menu
-//		if (node.getPotentials().size() > 0 && node.getPotentials().get(0) instanceof TablePotential) {
-//			TablePotential tablePotential = (TablePotential) node.getPotentials().get(0);
+//	protected void  setImpossibleColumn() throws WrongCriterionException {
+//		// Generates the evidenceCase based on the column
+//		// selected on the JTable object
 //
-//			EvidenceCase configuration1 = null;
-//            EvidenceCase configuration2 = null;
-//			int selectedColumn = eventValuesTable.columnAtPoint(evt.getPoint());
-//			try {
-//                configuration1 = getEvidenceCaseFromSelectedColumn();
-//				configuration2 = getConfiguration(selectedColumn);
-//			} catch (InvalidStateException | IncompatibleEvidenceException e) {
-//				e.printStackTrace();
-//			}
-////			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
-////			if (hasUncertainty) {
-////				try {
-////					showUncertaintyDialog();
-////				} catch (WrongCriterionException e1) {
-////					e1.printStackTrace();
-////					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-////							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-////				}
-////			}
-//		}
-	}
+//        valuesTableWithEvents.getImpossibleConfigurations().add( getConfigurationFromSelectedColumn());
+//        impossibleColumns[selectedColumn -1] = true;
+//
+//        if (selectedColumn > 0) {
+//					(
+//							(TableWithEventsCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
+//					).setMark(selectedColumn - 1);
+//					getEventValuesTable().repaint();
+//				}
+//
+//
+//	}
 
+
+//    protected void  unSetImpossibleColumn() throws WrongCriterionException {
+//        // Generates the evidenceCase based on the column
+//        // selected on the JTable object
+//
+//        Configuration impossibleConfiguration= new Configuration(getConfigurationFromSelectedColumn());
+//        valuesTableWithEvents.getImpossibleConfigurations().remove(impossibleConfiguration);
+//        impossibleColumns[selectedColumn -1] = false;
+//
+//        if (selectedColumn > 0) {
+//            (
+//                    (TableWithEventsCellRenderer) getEventValuesTable().getDefaultRenderer(Double.class)
+//            ).setUnMark(selectedColumn - 1);
+//            getEventValuesTable().repaint();
+//        }
+//
+//
+//    }
+
+
+//	/**
+//	 * This method initialises uncertaintyContextualMenu.
+//	 *
+//	 * @return the node contextual menu.
+//	 * revised-->not changed
+//	 */
+//	protected TableWithEventsContextualMenu getTableWithEventsContextualMenu(int row, int column) {
+//// TODO Check if it is necessary to maintain the object created
+////		if (tableWithEventsContextualMenu == null) {
+////			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this);
+////			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
+////		}
+////		return tableWithEventsContextualMenu;
+//
+//		if (valuesTableWithEvents.isCellEditable(row,column)){
+//			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this);
+//			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
+//
+//		} else {
+//			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this, false);
+//			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
+//		}
+//
+////		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getConfigurationFromSelectedColumn());
+////		if (isImpossible) {
+////				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
+////						.setEnabled(false);
+////				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
+////						.setEnabled(true);
+////
+////		} else {
+//		tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
+//				.setEnabled(true);
+//		tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
+//				.setEnabled(false);
+////		}
+//
+//		return tableWithEventsContextualMenu;
+//	}
 
 
 	/**
@@ -890,57 +875,49 @@ public class TableWithEventsPanel
 	 * revised-->not changed
 	 */
 	protected TableWithEventsContextualMenu getTableWithEventsContextualMenu(int row, int column) {
-// TODO Check if it is necessary to maintain the object created
-//		if (tableWithEventsContextualMenu == null) {
-//			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this);
-//			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
-//		}
-//		return tableWithEventsContextualMenu;
 
-		if (eventValuesTable.isCellEditable(row,column)){
+		if (valuesTableWithEvents.isCellEditable(row,column)){
 			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this);
-			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
-
-		} else {
-			tableWithEventsContextualMenu = new TableWithEventsContextualMenu(this, false);
-			tableWithEventsContextualMenu.setName("impossibleConfigurationContextualMenu");
 		}
-
-//		boolean isImpossible = tableWithEvents.isImpossibleConfiguration(getConfigurationFromSelectedColumn());
-//		if (isImpossible) {
-//				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
-//						.setEnabled(false);
-//				tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
-//						.setEnabled(true);
-//
-//		} else {
-			tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.SET_IMPOSSIBLE_CONFIGURATION.toString())
-						.setEnabled(true);
-			tableWithEventsContextualMenu.getJComponentActionCommand(ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION.toString())
-						.setEnabled(false);
-//		}
-
 		return tableWithEventsContextualMenu;
 	}
 
 
 
 
+
+//	/**
+//	 * Currently only with Chance and event nodes and no link restrictions
+//	 * If extended to Decision and Utility nodes then look at TablePotentialPanel
+//	 *
+//	 * @param impossibleColumns
+//	 */
+//	protected void setCellRenderers(boolean[] impossibleColumns) {
+//
+//		TableCellRenderer cellRenderer = null;
+//
+//		// Creates the TableCellRenderer distinguishing if the node has or not link restrictions
+//		cellRenderer = new TableWithEventsCellRenderer(firstEditableRow, impossibleColumns);
+//		cellRenderer = new TableWithEventsCellRenderer(firstEditableRow);
+//		valuesTableWithEvents.setDefaultRenderer(Double.class, cellRenderer);
+//		valuesTableWithEvents.setDefaultRenderer(String.class, cellRenderer);
+//	}
+
 	/**
 	 * Currently only with Chance and event nodes and no link restrictions
 	 * If extended to Decision and Utility nodes then look at TablePotentialPanel
 	 *
-	 * @param impossibleColumns
 	 */
-	protected void setCellRenderers(boolean[] impossibleColumns) {
+	protected void setCellRenderers() {
 
 		TableCellRenderer cellRenderer = null;
-
 		// Creates the TableCellRenderer distinguishing if the node has or not link restrictions
-		cellRenderer = new EventValuesTableCellRenderer(firstEditableRow, impossibleColumns);
-		eventValuesTable.setDefaultRenderer(Double.class, cellRenderer);
-		eventValuesTable.setDefaultRenderer(String.class, cellRenderer);
+		cellRenderer = new TableWithEventsCellRenderer(firstEditableRow);
+		valuesTableWithEvents.setDefaultRenderer(Double.class, cellRenderer);
+		valuesTableWithEvents.setDefaultRenderer(String.class, cellRenderer);
 	}
+
+
 
 	/**
 	 * Method to define the specific listeners in this table (not defined in the
@@ -948,34 +925,35 @@ public class TableWithEventsPanel
 	 * when the user do right click on the table.
 	 */
 	protected void setTableSpecificListeners() {
-		eventValuesTable.addMouseListener(new MouseAdapter() {
+		valuesTableWithEvents.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				int row = eventValuesTable.rowAtPoint(e.getPoint());
-				int column = eventValuesTable.columnAtPoint(e.getPoint());
+				int row = valuesTableWithEvents.rowAtPoint(e.getPoint());
+				int column = valuesTableWithEvents.columnAtPoint(e.getPoint());
 				selectedColumn = column;
 				selectedRow =row;
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					eventValuesTable
+					valuesTableWithEvents
 							.editCellAt(row, column,
 									e);
 				}
 				if (SwingUtilities.isRightMouseButton(e)) {
 
-                    int selectedColumn = eventValuesTable.columnAtPoint(e.getPoint());
+                    int selectedColumn = valuesTableWithEvents.columnAtPoint(e.getPoint());
 					if ((row > -1) && (column > 0) && !isReadOnly()) {
 //						if (getTableWithEventsContextualMenu() != null) {
 //							updateContextualMenuOptions();
-//							getTableWithEventsContextualMenu().show(eventValuesTable, e.getX(), e.getY());
+//							getTableWithEventsContextualMenu().show(valuesTableWithEvents, e.getX(), e.getY());
 //
 //                        }
-						getTableWithEventsContextualMenu(row, column).show(eventValuesTable, e.getX(), e.getY());
+						if (hasFunctions)
+							getTableWithEventsContextualMenu(row, column).show(valuesTableWithEvents, e.getX(), e.getY());
 
 					}
 				}
 			}
 
 		});
-		eventValuesTable.addMouseListener(new DoubleClickListener());
+//		valuesTableWithEvents.addMouseListener(new DoubleClickListener());
 	}
 
 
@@ -989,6 +967,33 @@ public class TableWithEventsPanel
 	@Override public void close() {
 		getEventValuesTable().close();
 	}
+
+//	/**
+//	 * This method sets the attributes this.readOnly= readOnly and modifiable = !readOnly to indicate
+//	 * if the table is read only (readOnly=true) or editable (readOnly = false).
+//	 * It also changes the cell renderer according to readOnly
+//	 *
+//	 * @param readOnly - if true, all the table cells become not editable, if false the data cells become editable
+//	 *                 revised-->minor changes; only changed the call to getUncertaintyInColumns
+//	 */
+//	@Override public void setReadOnly(boolean readOnly) {
+//		boolean wasReadOnly = super.isReadOnly();
+//		super.setReadOnly(readOnly);
+//		/*
+//		The read only attribute is set after the constructor is invoked and then,
+//		after the setData(node) method is called. Thus, the cell renderer may need to be changed.
+//		This is the case if the new read only value is different from the previous one.
+//		 */
+//		if (wasReadOnly != readOnly) {
+//			if (node.getPotentials() != null) {
+//			    setCellRenderers(impossibleColumns);
+//			} else {
+//				setCellRenderers(impossibleColumns);
+//			}
+//		}
+//		getEventValuesTable().setModifiable(!readOnly);
+//	}
+
 
 	/**
 	 * This method sets the attributes this.readOnly= readOnly and modifiable = !readOnly to indicate
@@ -1007,29 +1012,28 @@ public class TableWithEventsPanel
 		This is the case if the new read only value is different from the previous one.
 		 */
 		if (wasReadOnly != readOnly) {
-			if (node.getPotentials() != null) {
-			    setCellRenderers(impossibleColumns);
-			} else {
-				setCellRenderers(impossibleColumns);
-			}
+			setCellRenderers();
 		}
 		getEventValuesTable().setModifiable(!readOnly);
 	}
 
-	/**
-	 * This class overrides the double click listener calling the
-	 *
-	 * @see DoubleClickListener
-	 * revised-->not changed
-	 */
-	public class DoubleClickListener extends MouseAdapter {
 
-		@Override public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
-				doubleClickEvent(e);
-			}
-		}
-	}
+
+
+//	/**
+//	 * This class overrides the double click listener calling the
+//	 *
+//	 * @see DoubleClickListener
+//	 * revised-->not changed
+//	 */
+//	public class DoubleClickListener extends MouseAdapter {
+//
+//		@Override public void mouseClicked(MouseEvent e) {
+//			if (e.getClickCount() == 2) {
+//				doubleClickEvent(e);
+//			}
+//		}
+//	}
 
 }
 

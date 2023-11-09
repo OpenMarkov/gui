@@ -23,10 +23,11 @@ import java.util.Vector;
  * @author cmyago
  * @version 1.0 - cmyago - 24/03/2019
  * @version 1.1 - cmyago - 22/04/2021 - Added parametrization for distributions and javadoc
- * @version 1.2 - cmyago - 23/05/2022 - Refactored from TimeToEventTablePotentialPanelP to DistributionTablePotentialPanel
+ * @version 1.2 - cmyago - 23/05/2022 - Refactored from TimeToEventTablePotentialPanel to DistributionTablePotentialPanel FIXME refactor assotiated classes
+ * @version 1.2.1  - cmyago - 17/01/2023 corrected listener and UniformPotential issues.
  */
 @SuppressWarnings("serial") @PotentialPanelPlugin( potentialType = "DistributionTable")
-public class DistributionPotentialPanel
+public class DistributionTablePotentialPanel
 		extends ProbabilityTablePanel implements ItemListener{
 
 	private JPanel jDistributionAndParametrization;
@@ -47,11 +48,11 @@ public class DistributionPotentialPanel
 	protected ProbDensFunction distribution;
 
 	/**
-	 * Creates a DistributionPotentialPanel for eventNode. If eventNode stores a DistributionTablePotential, this is displayed.
+	 * Creates a DistributionTablePotentialPanel for eventNode. If eventNode stores a DistributionTablePotential, this is displayed.
 	 * Otherwise an Exact distribution is displayed.
 	 * @param eventNode - event node which contains the DistributionTablePotential
 	 */
-	public DistributionPotentialPanel(Node eventNode)
+	public DistributionTablePotentialPanel(Node eventNode)
 	{
 		super();
 		this.node = eventNode;
@@ -59,7 +60,13 @@ public class DistributionPotentialPanel
 
         this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
-        tteTablePotential = (DistributionTablePotential) eventNode.getPotentials().get(0);
+		//15/11/2023 -FIXME when creating the potential for first time a UniformPotential is created
+		if (!(eventNode.getPotentials().get(0) instanceof DistributionTablePotential)) {
+			tteTablePotential = new DistributionTablePotential(eventNode.getPotentials().get(0).getVariables());
+			node.setPotential(tteTablePotential);
+		}
+		else
+			tteTablePotential = (DistributionTablePotential) eventNode.getPotentials().get(0);
         tableWithEvents =  tteTablePotential.getTableWithEvents();
 
         setLayout(new BorderLayout());
@@ -68,7 +75,7 @@ public class DistributionPotentialPanel
 		this.add( getTableWithEventsPanel(),BorderLayout.CENTER);
 
 //		jsP = new JScrollPane();
-//		jsP.setName("DistributionPotentialPanel.jsP");
+//		jsP.setName("DistributionTablePotentialPanel.jsP");
 
 		repaint();
 
@@ -83,6 +90,7 @@ public class DistributionPotentialPanel
 	@Override
 	public void close() {
 
+		getTableWithEventsPanel().close();
 	}
 
 	/**
@@ -121,15 +129,11 @@ public class DistributionPotentialPanel
 	 * @param selectedDistribution distribution whose parametrizations are shown
 	 */
 	private void populateJcParametrization(String selectedDistribution){
-		try {
 			parametrizedFunctionManager = ParametrizedFunctionManager.getUniqueInstance();
 			Map<String, List<String>> distributionsMap = parametrizedFunctionManager.getDistributionsMap();
 			List<String> parametrizations = distributionsMap.get(selectedDistribution);
-			jcParametrization.setModel( new DefaultComboBoxModel(new Vector<String>( parametrizations )) );
+			jcParametrization.setModel( new DefaultComboBoxModel(new Vector<>( parametrizations )) );
 			jcParametrization.setSelectedItem(tteTablePotential.getParametrizationName());
-		}catch (Exception e){
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -195,7 +199,7 @@ public class DistributionPotentialPanel
 
 
 	/**
-	 * Changes the timeToEventPotential and DistributionPotentialPanel according to the new selected distribution
+	 * Changes the timeToEventPotential and DistributionTablePotentialPanel according to the new selected distribution
 	 * or the new selected parametrization
 	 * @param e jcDistribution with the new selected distribution or jcParametrization with the new selected parametrization
 	 */
@@ -215,6 +219,7 @@ public class DistributionPotentialPanel
 			}
 		}
 		//Change table
+		tableWithEventsPanel.close();
 		this.remove(tableWithEventsPanel);
 		tableWithEventsPanel = null;
 		tteTablePotential.changeDistribution(sDistribution,sParametrization);

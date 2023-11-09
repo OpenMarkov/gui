@@ -12,12 +12,9 @@ package org.openmarkov.gui.component;
 
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TableWithEvents;
 import org.openmarkov.core.model.network.potential.TableWithFunctions;
 import org.openmarkov.gui.action.EventTablePotentialValueEdit;
 import org.openmarkov.gui.dialog.common.KeyTable;
@@ -32,8 +29,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.EventObject;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * This table implementation is responsible for the graphical and data model
@@ -41,9 +40,11 @@ import java.util.List;
  *
  * Transition class to be merged with the new structure of tables
  * @author cyago
- * @version 1.0 - 24/03/2019 - cyago; adapted/copied from ValuesTable
+ * @version 1.0 - 24/03/2019 - cmyago; adapted/copied from ValuesTable
+ * @version 2.0 - 29/08/2023 - cmyago; refactored to ValuesTableWithEvents (from EventValuesTable); impossible configurations commented
+ *
  */
-public class EventValuesTable extends KeyTable implements PNUndoableEditListener {
+public class ValuesTableWithEvents extends KeyTable implements PNUndoableEditListener {
 	/**
 	 * first editable Column
 	 */
@@ -59,9 +60,9 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	/**
 	 * table model
 	 */
-	protected EventValuesTableModel eventValuesTableModel;
+	protected TableWithEventsModel tableWithEventsModel;
 	/**
-	 * Boolean array with the rows and columns of the eventValuesTableModel.
+	 * Boolean array with the rows and columns of the tableWithEventsModel.
 	 * Each cell of the array is true if the data has been modified
 	 * boolean data model (to know if a value has been changed)
 	 */
@@ -69,7 +70,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	/**
 	 * Table Row Sorter/Filter
 	 */
-	protected TableRowSorter<EventValuesTableModel> tableRowSorter = null;
+	protected TableRowSorter<TableWithEventsModel> tableRowSorter = null;
 	/**
 	 * type of node for this variable
 	 */
@@ -113,7 +114,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	protected TablePotential tablePotential = null;
 	protected TableWithFunctions tableWithFunctions = null;
 
-	private ArrayList<Configuration> impossibleConfigurations;
+//	private ArrayList<Configuration> impossibleConfigurations;
 
 
 	protected ProbNet probNet;
@@ -139,13 +140,13 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * Default constructor
 	 *
 	 * @param node       - the node with the EvemtTablePotential
-	 * @param eventValuesTableModel - the model of the EventTablePotential
+	 * @param tableWithEventsModel - the model of the EventTablePotential
 	 * @param modifiable - true if the table can be edited and modified
 	 */
-	public EventValuesTable(Node node, EventValuesTableModel eventValuesTableModel, final boolean modifiable) {
-		super(eventValuesTableModel, modifiable, true, true);
+	public ValuesTableWithEvents(Node node, TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
+		super(tableWithEventsModel, modifiable, true, true);
 		node.getProbNet().getPNESupport().addUndoableEditListener(this);
-		this.eventValuesTableModel = eventValuesTableModel;
+		this.tableWithEventsModel = tableWithEventsModel;
 		this.node = node;
 		this.probNet = node.getProbNet();
 		try {
@@ -159,11 +160,11 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 
 		tablePotential = tableWithEvents.getTablePotential();
 		tableWithFunctions = tableWithEvents.getTableWithFunctions();
-		setImpossibleConfigurations(tableWithEvents.getImpossibleConfigurations());
+//		setImpossibleConfigurations(tableWithEvents.getImpossibleConfigurations());
 		//
 		if (modifiable) {
-			int numRowsModel = eventValuesTableModel.getRowCount();
-			int numColumsModel = eventValuesTableModel.getColumnCount();
+			int numRowsModel = tableWithEventsModel.getRowCount();
+			int numColumsModel = tableWithEventsModel.getColumnCount();
 			this.dataModified = new boolean[numRowsModel][numColumsModel];
 			initializeDataModified(false);
 		}
@@ -174,13 +175,13 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * Default constructor
 	 *
 	 * @param node       - the node with the EventTablePotential
-	 * @param eventValuesTableModel - the model of the EventTablePotential
+	 * @param tableWithEventsModel - the model of the EventTablePotential
 	 * @param modifiable - true if the table can be edited and modified
 	 */
-	public EventValuesTable(Node node, TableWithEvents tableWithEvents, EventValuesTableModel eventValuesTableModel, final boolean modifiable) {
-		super(eventValuesTableModel, modifiable, true, true);
+	public ValuesTableWithEvents(Node node, TableWithEvents tableWithEvents, TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
+		super(tableWithEventsModel, modifiable, true, true);
 		node.getProbNet().getPNESupport().addUndoableEditListener(this);
-		this.eventValuesTableModel = eventValuesTableModel;
+		this.tableWithEventsModel = tableWithEventsModel;
 		this.node = node;
 		this.probNet = node.getProbNet();
 		try {
@@ -193,11 +194,11 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		//Adding the initialisation of getEventTablePotential
 
 		tablePotential = this.tableWithEvents.getTablePotential();
-		setImpossibleConfigurations(this.tableWithEvents.getImpossibleConfigurations());
+//		setImpossibleConfigurations(this.tableWithEvents.getImpossibleConfigurations());
 		//
 		if (modifiable) {
-			int numRowsModel = eventValuesTableModel.getRowCount();
-			int numColumsModel = eventValuesTableModel.getColumnCount();
+			int numRowsModel = tableWithEventsModel.getRowCount();
+			int numColumsModel = tableWithEventsModel.getColumnCount();
 			this.dataModified = new boolean[numRowsModel][numColumsModel];
 			initializeDataModified(false);
 		}
@@ -215,12 +216,12 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	/**
 	 * Constructor for ValuesTable
 	 */
-	public EventValuesTable(EventValuesTableModel eventValuesTableModel, final boolean modifiable) {
-		super(eventValuesTableModel, modifiable, true, true);
-		this.eventValuesTableModel = eventValuesTableModel;
+	public ValuesTableWithEvents(TableWithEventsModel tableWithEventsModel, final boolean modifiable) {
+		super(tableWithEventsModel, modifiable, true, true);
+		this.tableWithEventsModel = tableWithEventsModel;
 		if (modifiable) {
-			int numRowsModel = eventValuesTableModel.getRowCount();
-			int numColumsModel = eventValuesTableModel.getColumnCount();
+			int numRowsModel = tableWithEventsModel.getRowCount();
+			int numColumsModel = tableWithEventsModel.getColumnCount();
 			this.dataModified = new boolean[numRowsModel][numColumsModel];
 			initializeDataModified(false);
 		}
@@ -273,8 +274,8 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 */
 	public boolean[][] getDataModified() {
 		if (dataModified == null) {
-			int numRowsModel = eventValuesTableModel.getRowCount();
-			int numColumsModel = eventValuesTableModel.getColumnCount();
+			int numRowsModel = tableWithEventsModel.getRowCount();
+			int numColumsModel = tableWithEventsModel.getColumnCount();
 			dataModified = new boolean[numRowsModel][numColumsModel];
 		}
 		return dataModified;
@@ -288,12 +289,12 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * revised--> not changed
 	 */
 	public void initializeDataModified(boolean isModified) {
-		if (eventValuesTableModel != null) {
+		if (tableWithEventsModel != null) {
 			if (dataModified == null) {
 				getDataModified();
 			}
-			for (int i = 0; i < eventValuesTableModel.getRowCount(); i++) {
-				for (int j = 0; j < eventValuesTableModel.getColumnCount(); j++) {
+			for (int i = 0; i < tableWithEventsModel.getRowCount(); i++) {
+				for (int j = 0; j < tableWithEventsModel.getColumnCount(); j++) {
 					dataModified[i][j] = isModified;
 				}
 			}
@@ -323,16 +324,16 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 * revised-> not changed
 	 */
 	public void resetModel() {
-		eventValuesTableModel = null;
+		tableWithEventsModel = null;
 		dataModified = null;
 	}
 
 	/**
-	 * Gets the eventValuesTableModel attribute
+	 * Gets the tableWithEventsModel attribute
 	 * revised-->not changed
 	 */
-	public EventValuesTableModel getEventValuesTableModel() {
-		return this.eventValuesTableModel;
+	public TableWithEventsModel getEventValuesTableModel() {
+		return this.tableWithEventsModel;
 	}
 
 	/**
@@ -344,10 +345,10 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 *                                  <p>
 	 *                                  revised-->not changed
 	 */
-	public void setModel(EventValuesTableModel newDataModel) throws IllegalArgumentException {
+	public void setModel(TableWithEventsModel newDataModel) throws IllegalArgumentException {
 		super.setModel(newDataModel);
-		this.eventValuesTableModel = newDataModel;
-		tableRowSorter = new TableRowSorter<EventValuesTableModel>(((EventValuesTableModel) getModel()));
+		this.tableWithEventsModel = newDataModel;
+		tableRowSorter = new TableRowSorter<TableWithEventsModel>(((TableWithEventsModel) getModel()));
 		// not display the last row where the cells has states and not values
 		// and it is only required when displaying states values
 	}
@@ -546,7 +547,7 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 	 */
 	public void setShowingAllParameters(boolean showingAllParameters) {
 		this.showingAllParameters = showingAllParameters;
-		tableRowSorter = new TableRowSorter<EventValuesTableModel>(((EventValuesTableModel) getModel()));
+		tableRowSorter = new TableRowSorter<TableWithEventsModel>(((TableWithEventsModel) getModel()));
 		if (showingAllParameters) {
 			this.setRowSorter(null);
 		} else {
@@ -614,12 +615,12 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		} else {
 			System.out.println("    variable = not defined yet");
 		}
-		if (eventValuesTableModel != null) {
-			System.out.println("    eventValuesTableModel.firstEditableRow = " + eventValuesTableModel.getFirstEditableRow());
-			System.out.println("    eventValuesTableModel.rowCount = " + eventValuesTableModel.getRowCount());
-			System.out.println("    eventValuesTableModel.columnCount = " + eventValuesTableModel.getColumnCount());
+		if (tableWithEventsModel != null) {
+			System.out.println("    tableWithEventsModel.firstEditableRow = " + tableWithEventsModel.getFirstEditableRow());
+			System.out.println("    tableWithEventsModel.rowCount = " + tableWithEventsModel.getRowCount());
+			System.out.println("    tableWithEventsModel.columnCount = " + tableWithEventsModel.getColumnCount());
 		} else {
-			System.out.println("    eventValuesTableModel.firstEditableRow = not eventValuesTableModel yet");
+			System.out.println("    tableWithEventsModel.firstEditableRow = not tableWithEventsModel yet");
 		}
 		System.out.println("    lastEditableRow = " + lastEditableRow);
 		System.out.println("    usingGeneralPotencial = " + isUsingGeneralPotential());
@@ -830,11 +831,11 @@ public class EventValuesTable extends KeyTable implements PNUndoableEditListener
 		}
 	}
 
-	public ArrayList<Configuration> getImpossibleConfigurations() {
-		return impossibleConfigurations;
-	}
-
-	public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
-		this.impossibleConfigurations = impossibleConfigurations;
-	}
+//	public ArrayList<Configuration> getImpossibleConfigurations() {
+//		return impossibleConfigurations;
+//	}
+//
+//	public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
+//		this.impossibleConfigurations = impossibleConfigurations;
+//	}
 }

@@ -10,12 +10,13 @@ package org.openmarkov.gui.component;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * EventValuesTableModel defines the basic behavior of the Table Model for EventTablePotential
+ * TableWithEventsModel defines the basic behavior of the Table Model for EventTablePotential
  * * Transition class to be merged with the new structure of tables
  * @author cyago
  * @version 1.0 - 24/03/2019
+ * @version 2.0 - 29/08/2023 - cmyago; refactored to TableWithEventsModel (from EventValuesTableModel)
  */
-public class EventValuesTableModel extends DefaultTableModel {
+public class TableWithEventsModel extends DefaultTableModel {
 	/**
 	 * calculated serial ID
 	 */
@@ -32,14 +33,14 @@ public class EventValuesTableModel extends DefaultTableModel {
 	/**
 	 * constructor
 	 */
-	public EventValuesTableModel() {
+	public TableWithEventsModel() {
 		super();
 	}
 
 	/**
 	 * constructor
 	 */
-	public EventValuesTableModel(Object[][] data, String[] columns, int firstEditableRow) {
+	public TableWithEventsModel(Object[][] data, String[] columns, int firstEditableRow) {
 		super(data, columns);
 		this.firstEditableRow = firstEditableRow;
 		this.notEditablePositions = new Object[0][0];

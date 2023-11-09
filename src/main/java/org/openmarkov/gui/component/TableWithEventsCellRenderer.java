@@ -16,8 +16,9 @@ import java.util.Locale;
  * To be mixed to ValuesTableCellRenderer when Tables change
  * @author cmyago
  * @version 1.0  01/09/2019
+ * @version 2.0 - 29/08/2023 - cmyago; refactored to ValuesTableWithEventsCellRenderer (from EventValuesTableCellRenderer):impossible configurations commented
  */
-public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
+public class TableWithEventsCellRenderer extends DefaultTableCellRenderer {
 	/**
 	 * first color to use in header rows
 	 */
@@ -53,21 +54,47 @@ public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 	private JLabel jImpossibleColumnIcon;
 	private IconLoader iconLoader;
 
-	/**
-	 * constructor for the renderer
-	 *
-	 * @param firstEditableRow     value of the first editable row
-	 * @param impossibleColumns boolean array with the columns with (1)/without (0) mark. The
-	 *                             array only has to contain indexes for the editables columns
-	 */
-	public EventValuesTableCellRenderer(int firstEditableRow, boolean[] impossibleColumns) {
-		this.impossibleColumns = impossibleColumns;
-		this.firstEditableRow = firstEditableRow;
+//	/**
+//	 * constructor for the renderer
+//	 *
+//	 * @param firstEditableRow     value of the first editable row
+//	 * @param impossibleColumns boolean array with the columns with (1)/without (0) mark. The
+//	 *                             array only has to contain indexes for the editables columns
+//	 */
+//	public TableWithEventsCellRenderer(int firstEditableRow, boolean[] impossibleColumns) {
+//		this.impossibleColumns = impossibleColumns;
+//		this.firstEditableRow = firstEditableRow;
+//	}
+
+	public TableWithEventsCellRenderer(int firstEditableRow) {
+		this.firstEditableRow = firstEditableRow;;
 	}
 
-	public EventValuesTableCellRenderer(int firstEditableRow) {
-		this(firstEditableRow, null);
-	}
+//	/**
+//	 * headers rows are displayed in a gray background color with red and blue
+//	 * foreground alternatively non headers rows are displayed in an alternative
+//	 * cyan and light gray background color with black foreground color the
+//	 * first two column are in gray
+//	 */
+//	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+//			int row, int column) {
+//		setHorizontalAlignment(SwingConstants.CENTER);
+//		setCellFonts(table, value, isSelected, hasFocus, row, column);
+//		setCellColors(table, value, isSelected, hasFocus, row, column);
+//		setCellBorders(table, value, isSelected, hasFocus, row, column);
+//		setMinimumSize(table, value, isSelected, hasFocus, row, column);
+//		if (value instanceof Double) {
+//			value = formatter.format((Double) value);
+//		}
+//		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && (row >= firstEditableRow) && impossibleColumns != null
+//				&& impossibleColumns[column - 1]) {
+//			setImpossibleColumn().setText(value.toString());
+//			return setImpossibleColumn();
+//		} else {
+//			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//		}
+//	}
+
 
 	/**
 	 * headers rows are displayed in a gray background color with red and blue
@@ -76,23 +103,26 @@ public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * first two column are in gray
 	 */
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+												   int row, int column) {
 		setHorizontalAlignment(SwingConstants.CENTER);
 		setCellFonts(table, value, isSelected, hasFocus, row, column);
 		setCellColors(table, value, isSelected, hasFocus, row, column);
 		setCellBorders(table, value, isSelected, hasFocus, row, column);
 		setMinimumSize(table, value, isSelected, hasFocus, row, column);
 		if (value instanceof Double) {
-			value = formatter.format((Double) value);
+			value = formatter.format(value);
 		}
-		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && (row >= firstEditableRow) && impossibleColumns != null
-				&& impossibleColumns[column - 1]) {
-			setImpossibleColumn().setText(value.toString());
-			return setImpossibleColumn();
-		} else {
-			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		}
+//		if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) && (row >= firstEditableRow) && impossibleColumns != null
+//				&& impossibleColumns[column - 1]) {
+//			setImpossibleColumn().setText(value.toString());
+//			return setImpossibleColumn();
+//		} else {
+//			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//		}
+		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
+
+
 
 	private void setMinimumSize(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 	}
@@ -213,6 +243,32 @@ public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 
 	// ESCA-JAVA0173: not considering unused parameters for the method.
 
+//	/**
+//	 * set cell borders
+//	 *
+//	 * @param table      - table where the cell is located
+//	 * @param value      - the value of the cell in edition
+//	 * @param isSelected - true if the cell is selected by the user
+//	 * @param hasFocus   - true if the cell has the focus by the user
+//	 * @param row        - row of the cell
+//	 * @param column     - column of the cell
+//	 */
+//	private void setCellBorders(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+//		setBorder(new LineBorder(Color.BLACK, 5));
+//		if (hasFocus) {
+//			if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
+//				setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+//				setImpossibleColumn().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+//			} else {
+//				setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+//				setImpossibleColumn().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+//			}
+//		} else {
+//			setImpossibleColumn().setBorder(noFocusBorder);
+//		}
+//	}
+
+
 	/**
 	 * set cell borders
 	 *
@@ -226,15 +282,7 @@ public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 	private void setCellBorders(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		setBorder(new LineBorder(Color.BLACK, 5));
 		if (hasFocus) {
-			if ((column >= ValuesTable.FIRST_EDITABLE_COLUMN) & (row >= firstEditableRow)) {
-				setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-				setImpossibleColumn().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-			} else {
-				setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-				setImpossibleColumn().setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
-			}
-		} else {
-			setImpossibleColumn().setBorder(noFocusBorder);
+			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
 		}
 	}
 
@@ -252,39 +300,39 @@ public class EventValuesTableCellRenderer extends DefaultTableCellRenderer {
 		this.firstEditableRow = firstEditableRow;
 	}
 
-	/**
-	 * @param column index of the column to mark
-	 */
-	public void setMark(int column) {
-		if (column < impossibleColumns.length) {
-			impossibleColumns[column] = true;
-		}
-	}
+//	/**
+//	 * @param column index of the column to mark
+//	 */
+//	public void setMark(int column) {
+//		if (column < impossibleColumns.length) {
+//			impossibleColumns[column] = true;
+//		}
+//	}
 
-	/**
-	 * @param column index of the column to unmark
-	 */
-	public void setUnMark(int column) {
-		if (column < impossibleColumns.length) {
-			impossibleColumns[column] = false;
-		}
-	}
+//	/**
+//	 * @param column index of the column to unmark
+//	 */
+//	public void setUnMark(int column) {
+//		if (column < impossibleColumns.length) {
+//			impossibleColumns[column] = false;
+//		}
+//	}
 
-	protected JLabel setImpossibleColumn() {
-		if (jImpossibleColumnIcon == null) {
-			iconLoader = new IconLoader();
-			jImpossibleColumnIcon = new JLabel();
-			jImpossibleColumnIcon.setName("jUncertaintyIcon");
-			jImpossibleColumnIcon.setOpaque(true);
-			jImpossibleColumnIcon.setIcon(iconLoader.load(IconLoader.ICON_UNCERTAINTY));
-			jImpossibleColumnIcon.setText("Impossible Configuration");
-			jImpossibleColumnIcon.setHorizontalAlignment(SwingConstants.RIGHT);
-			jImpossibleColumnIcon.setHorizontalTextPosition(SwingConstants.LEFT);
-			jImpossibleColumnIcon.setIconTextGap(0);
-			jImpossibleColumnIcon.setBackground(Color.PINK);
-		}
-		return jImpossibleColumnIcon;
-	}
+//	protected JLabel setImpossibleColumn() {
+//		if (jImpossibleColumnIcon == null) {
+//			iconLoader = new IconLoader();
+//			jImpossibleColumnIcon = new JLabel();
+//			jImpossibleColumnIcon.setName("jUncertaintyIcon");
+//			jImpossibleColumnIcon.setOpaque(true);
+//			jImpossibleColumnIcon.setIcon(iconLoader.load(IconLoader.ICON_UNCERTAINTY));
+//			jImpossibleColumnIcon.setText("Impossible Configuration");
+//			jImpossibleColumnIcon.setHorizontalAlignment(SwingConstants.RIGHT);
+//			jImpossibleColumnIcon.setHorizontalTextPosition(SwingConstants.LEFT);
+//			jImpossibleColumnIcon.setIconTextGap(0);
+//			jImpossibleColumnIcon.setBackground(Color.PINK);
+//		}
+//		return jImpossibleColumnIcon;
+//	}
 
 
 

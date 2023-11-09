@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
  * @author cyago
  * @version 1.0 20190825 - 25/08/2019 only contains the items "Set impossible configuration" and "Unset impossible configuration"
  * @version 1.1 20191214 - 14/12/2019 added the possibility of typing a function
+ * @version 2 - 29/08/2023 impossible configuration commented
  *
  */
 public class TableWithEventsContextualMenu extends ContextualMenu {
@@ -31,20 +32,19 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 	 * Static field for serializable class.
 	 */
 	private static final long serialVersionUID = 8556550568033250304L;
-	/**
-	 * Object that represents the item 'Set'.
-	 */
-	private JMenuItem setImpossibleMenuItem = null;
-	/**
-	 * Object that represents the item 'Unset'.
-	 */
-	private JMenuItem unsetImpossibleMenuItem = null;
+//	/**
+//	 * Object that represents the item 'Set'.
+//	 */
+//	private JMenuItem setImpossibleMenuItem = null;
+//	/**
+//	 * Object that represents the item 'Unset'.
+//	 */
+//	private JMenuItem unsetImpossibleMenuItem = null;
 
 	/**
 	 * Selected to introduce a formula instead of a number
 	 */
 	private JMenuItem addFunctionMenuItem = null;
-
 
 
 	public TableWithEventsContextualMenu(ActionListener newListener) {
@@ -54,7 +54,8 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 
 	public TableWithEventsContextualMenu(ActionListener newListener, boolean setAddFunction) {
 		super(newListener);
-		initialize(setAddFunction);
+//		initialize(setAddFunction);
+		initialize(true);
 	}
 
 	/**
@@ -62,8 +63,8 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 	 */
 	private void initialize(boolean setAddFunction) {
 
-		add(getSetImpossibleMenuItem());
-		add(getUnsetImpossibleMenuItem());
+//		add(getSetImpossibleMenuItem());
+//		add(getUnsetImpossibleMenuItem());
 		if (setAddFunction) {
 			add(getAddFunctionMenuItem());
 		}
@@ -71,43 +72,43 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 
 
 
-	/**
-	 * This method initializes assignMenuItem.
-	 *
-	 * @return a new 'Assign' menu item.
-	 */
-	private JMenuItem getSetImpossibleMenuItem() {
+//	/**
+//	 * This method initializes assignMenuItem.
+//	 *
+//	 * @return a new 'Assign' menu item.
+//	 */
+//	private JMenuItem getSetImpossibleMenuItem() {
+//
+//		if (setImpossibleMenuItem == null) {
+//			//TODO Use new unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
+//			//					ActionCommands.UNCERTAINTY_REMOVE);
+//			setImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.SET_IMPOSSIBLE_CONFIGURATION_MENUITEM,
+//					ActionCommands.SET_IMPOSSIBLE_CONFIGURATION);
+//			setImpossibleMenuItem.addActionListener(listener);
+//		}
+//
+//		return setImpossibleMenuItem;
+//
+//	}
 
-		if (setImpossibleMenuItem == null) {
-			//TODO Use new unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
-			//					ActionCommands.UNCERTAINTY_REMOVE);
-			setImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.SET_IMPOSSIBLE_CONFIGURATION_MENUITEM,
-					ActionCommands.SET_IMPOSSIBLE_CONFIGURATION);
-			setImpossibleMenuItem.addActionListener(listener);
-		}
 
-		return setImpossibleMenuItem;
-
-	}
-
-
-	/**
-	 * This method initializes UnsetImpossibleMenuItem.
-	 *
-	 * @return a new 'Unset Impossible Configuration' menu item.
-	 */
-	private JMenuItem getUnsetImpossibleMenuItem() {
-		//TODO Use new unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
-		//					ActionCommands.UNCERTAINTY_REMOVE)
-		if (unsetImpossibleMenuItem == null) {
-			unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNSET_IMPOSSIBLE_CONFIGURATION_MENUITEM	,
-					ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION);
-			unsetImpossibleMenuItem.addActionListener(listener);
-		}
-
-		return unsetImpossibleMenuItem;
-
-	}
+//	/**
+//	 * This method initializes UnsetImpossibleMenuItem.
+//	 *
+//	 * @return a new 'Unset Impossible Configuration' menu item.
+//	 */
+//	private JMenuItem getUnsetImpossibleMenuItem() {
+//		//TODO Use new unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNCERTAINTY_REMOVE_MENUITEM,
+//		//					ActionCommands.UNCERTAINTY_REMOVE)
+//		if (unsetImpossibleMenuItem == null) {
+//			unsetImpossibleMenuItem = new LocalizedMenuItem(MenuItemNames.UNSET_IMPOSSIBLE_CONFIGURATION_MENUITEM	,
+//					ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION);
+//			unsetImpossibleMenuItem.addActionListener(listener);
+//		}
+//
+//		return unsetImpossibleMenuItem;
+//
+//	}
 
 	/**
 	 * This method initializes AddFunctionMenuItem.
@@ -128,6 +129,32 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 
 
 
+//	/**
+//	 * Returns the component that corresponds to an action command.
+//	 *
+//	 * @param actionCommand action command that identifies the component.
+//	 * @return a components identified by the action command.
+//	 */
+//	@Override public JComponent getJComponentActionCommand(String actionCommand) {
+//
+//		JComponent component = null;
+//
+//        switch (actionCommand) {
+//            case ActionCommands.SET_IMPOSSIBLE_CONFIGURATION:
+//                component = setImpossibleMenuItem;
+//                break;
+//            case ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION:
+//                component = unsetImpossibleMenuItem;
+//                break;
+//			case ActionCommands.ADD_FUNCTION:
+//				component = unsetImpossibleMenuItem;
+//				break;
+//        }
+//
+//		return component;
+//
+//	}
+
 	/**
 	 * Returns the component that corresponds to an action command.
 	 *
@@ -138,17 +165,11 @@ public class TableWithEventsContextualMenu extends ContextualMenu {
 
 		JComponent component = null;
 
-        switch (actionCommand) {
-            case ActionCommands.SET_IMPOSSIBLE_CONFIGURATION:
-                component = setImpossibleMenuItem;
-                break;
-            case ActionCommands.UNSET_IMPOSSIBLE_CONFIGURATION:
-                component = unsetImpossibleMenuItem;
-                break;
+		switch (actionCommand) {
 			case ActionCommands.ADD_FUNCTION:
-				component = unsetImpossibleMenuItem;
+				component = addFunctionMenuItem;
 				break;
-        }
+		}
 
 		return component;
 
