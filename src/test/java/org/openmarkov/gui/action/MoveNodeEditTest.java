@@ -7,8 +7,10 @@
 
 package org.openmarkov.gui.action;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -18,10 +20,11 @@ import org.openmarkov.gui.graphic.VisualChanceNode;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the action of undoing the movement of nodes.
@@ -52,7 +55,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");

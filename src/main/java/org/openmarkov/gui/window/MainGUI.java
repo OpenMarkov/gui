@@ -61,6 +61,36 @@ import java.awt.*;
 		// loading the application
 		splash.splashScreenDestroy();
 	}
+	
+	
+	public void oldMainGUI() {
+
+		/*
+		 * Splash Screen panel
+		 */
+		SplashScreenLoader splash = new SplashScreenLoader();
+
+		configureUI();
+		splash.splashScreenInit();
+
+		splash.getSplash().setProgress("Loading OpenMarkov preferences", 0);
+		doReadPreferences();
+		splash.doingWork();
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setTitle("OpenMarkov");
+		setName("MainGUI");
+		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+		setSize(screenPortionSize(screenInsets));
+		setLocation(screenInsets.left, screenInsets.top);
+		splash.getSplash().setProgress("Loading Resources", 25);
+		// TODO here will be the plug-in loaders in future
+		setIconImage(OpenMarkovLogoIcon.getUniqueInstance().getOpenMarkovLogoIconImage16());
+		splash.getSplash().setProgress("Loading Main Panel", 50);
+		setContentPane(getMainPanel());
+		splash.getSplash().setProgress("Completed", 100);
+		// loading the application
+		splash.splashScreenDestroy();
+	}
 
 	/**
 	 * This method sets and configures the UI manager.

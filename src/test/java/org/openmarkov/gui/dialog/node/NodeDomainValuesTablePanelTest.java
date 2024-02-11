@@ -7,11 +7,14 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.model.network.State;
 
-import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the NodeDiscretizeValuesTablePanel class (not the visual
@@ -24,7 +27,7 @@ public class NodeDomainValuesTablePanelTest {
 
 	NodeDomainValuesTablePanel panel = null;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		panel = new NodeDomainValuesTablePanel(false);
 
 	}

@@ -7,9 +7,9 @@
 
 package org.openmarkov.gui.window.edition;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is used to test the class {@link Zoom}.

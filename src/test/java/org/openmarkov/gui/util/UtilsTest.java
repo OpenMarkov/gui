@@ -7,12 +7,15 @@
 
 package org.openmarkov.gui.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Util;
 
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the CommonNodePropertiesDialog class (not the visual
@@ -23,7 +26,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class UtilsTest {
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 	}
 
 	/**

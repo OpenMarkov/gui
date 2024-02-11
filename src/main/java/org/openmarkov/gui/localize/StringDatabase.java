@@ -10,6 +10,7 @@ package org.openmarkov.gui.localize;
 import org.apache.commons.io.FilenameUtils;
 import org.openmarkov.gui.component.LastRecentFilesMenuItem;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
+import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
 import org.openmarkov.gui.menutoolbar.toolbar.ZoomComboBox;
 import org.openmarkov.gui.window.mdi.MDIMenu;
 import org.openmarkov.gui.window.message.NonEditableTextArea;
@@ -23,16 +24,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.List;
 
 /**
  * This class creates new string resources with the recorded language.
@@ -159,10 +165,13 @@ public class StringDatabase {
 	 * @param resourceFile file that contains the resource strings.
 	 * @return a resource bundle linked to the file.
 	 */
+	/*
 	public StringBundle getBundle(String resourceFile) {
 		StringBundle stringBundle = null;
 		XMLResourceBundle bundle = null;
-		String file = "localize/" + resourceFile;
+		// TODO: Manolo
+		//String file = "localize/" + resourceFile;
+		String file = "/localize/" + resourceFile;
 		try {
 			bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
 		} catch (MissingResourceException e) {
@@ -180,8 +189,52 @@ public class StringDatabase {
 		stringBundle = new StringBundle(bundle);
 		return stringBundle;
 	}
-
+	*/
+/*	
+	public StringBundle getStringBundle(ResourceBundle resourceBundle) {
+		StringBundle stringBundle = null;
+		XMLResourceBundle bundle = null;
+		// TODO: Manolo
+		//String file = "localize/" + resourceFile;
+		String file = "/localize/" + resourceFile;
+		try {
+			bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
+		} catch (MissingResourceException e) {
+			System.out.println("WARNING: Resource bundle " + resourceFile + " could not be found for locale '" + locale
+					+ "'. English will be used instead");
+			setLanguage("en");
+			try {
+				bundle = (XMLResourceBundle) createXMLResourceBundle(file, locale);
+			} catch (MissingResourceException e1) {
+				throw new MissingResourceException(
+						"Any of the " + resourceFile.toLowerCase() + " resource string files is missing",
+						StringDatabase.class.getName(), getLocale().getLanguage());
+			}
+		}
+		stringBundle = new StringBundle(bundle);
+		return stringBundle;
+	}
+	*/
+	
 	public Map<String, StringBundle> getAllBundles() {
+		
+		Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
+		Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
+		for (LocalizeResourcesProvider provider: providers) {
+			Class<? extends LocalizeResourcesProvider> kk = provider.getClass();
+			Map<String, StringBundle> auxMap = provider.getBundlesMap(locale);
+			for (String key : auxMap.keySet()) {
+				bundlesMap.put(key, auxMap.get(key));
+			}						
+		}		
+		return bundlesMap;
+	}
+
+	/*
+	public Map<String, StringBundle> oldGetAllBundles() {
+		
+		Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
+		
 		Map<String, StringBundle> bundleMap = new LinkedHashMap<>();
 		String localeSuffix = "_" + locale.getLanguage();
 		String classPath = System.getProperty("java.class.path", ".");
@@ -228,6 +281,7 @@ public class StringDatabase {
 		}
 		return bundleMap;
 	}
+	*/
 
 	/**
 	 * @param file
@@ -235,11 +289,12 @@ public class StringDatabase {
 	 * @return An instance of ResourceBundle considering that properties files
 	 * are in XML format.
 	 */
-	public ResourceBundle createXMLResourceBundle(String file, Locale locale) {
+	/*
+	public ResourceBundle oldCreateXMLResourceBundle(String file, Locale locale) {
 		ResourceBundle bundle;
 		bundle = ResourceBundle.getBundle(file, locale, new ResourceBundle.Control() {
 			public java.util.List<String> getFormats(String baseName) {
-				if (baseName == null)
+			if (baseName == null)
 					throw new NullPointerException();
 				return Arrays.asList("xml");
 			}
@@ -278,6 +333,17 @@ public class StringDatabase {
 		});
 		return bundle;
 	}
+	*/
+	
+	
+	public ResourceBundle createXMLResourceBundle(String file, Locale locale) {
+		ResourceBundle bundle;
+		bundle = ResourceBundle.getBundle(file, locale);
+		return bundle;
+			
+	}
+
+
 
 	// This methods allows classes to register for LocaleChangeEvent
 	public void addLocaleChangeListener(LocaleChangeListener listener) {
@@ -419,7 +485,8 @@ public class StringDatabase {
 		}
 		return value;
 	}
-
+	
+	
 	public String getString(String bundle, String key) {
 		String value = bundles.get(bundle).getString(key);
 		if (value == null) {

@@ -7,11 +7,16 @@
 
 package org.openmarkov.gui.component;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmarkov.gui.dialog.common.KeyTable;
 
-import static org.junit.Assert.*;
 
 /**
  * This class tests the class {@link org.openmarkov.gui.component.DiscretizeTableModel}.
@@ -39,7 +44,7 @@ public class DiscretizeTableModelTest {
 	/**
 	 * Creates a new discretizeTableModel for all tests.
 	 */
-	@Before public void setUp() {
+	@BeforeAll public void setUp() {
 		Object[][] data = new Object[2][7];
 		data[0][0] = "i0";
 		data[0][1] = "first interval";

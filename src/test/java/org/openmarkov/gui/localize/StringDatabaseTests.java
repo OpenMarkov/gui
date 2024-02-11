@@ -7,13 +7,13 @@
 
 package org.openmarkov.gui.localize;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.MissingResourceException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests the classes
@@ -29,7 +29,7 @@ public class StringDatabaseTests {
 
 	StringDatabase stringDatabase = null;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 		stringDatabase = StringDatabase.getUniqueInstance();
 	}
 

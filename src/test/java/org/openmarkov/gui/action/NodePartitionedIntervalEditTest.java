@@ -7,8 +7,12 @@
 
 package org.openmarkov.gui.action;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.model.network.Node;
@@ -19,7 +23,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
-import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the action of undoing the changes in the node's name of nodes.
@@ -51,7 +54,7 @@ public class NodePartitionedIntervalEditTest {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");

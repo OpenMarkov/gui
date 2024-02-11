@@ -7,7 +7,10 @@
 
 package org.openmarkov.gui.dialog.link;
 
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -24,7 +27,7 @@ public class LinkRestrictionPanelTest {
 	private Variable varA, varB;
 	private State[] stateA, stateB;
 
-	@Before public void setUp() throws Exception {
+	@BeforeAll public void setUp() throws Exception {
 
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };

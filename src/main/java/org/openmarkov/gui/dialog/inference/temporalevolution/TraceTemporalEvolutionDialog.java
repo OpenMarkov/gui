@@ -11,7 +11,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jfree.chart.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+//import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
@@ -574,7 +580,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         XYPlot plot = chart.getXYPlot();
         XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"),
                 new DecimalFormat("0.00"));
-        renderer.setBaseToolTipGenerator(generator);
+        // TODO Manolo> When migrating to JFreeChart 1.5, I have replaced the call to the method setBaseToolTipGenerator by the new method setDefaultToolTipGenerator  
+        //renderer.setBaseToolTipGenerator(generator);
+        renderer.setDefaultToolTipGenerator(generator);
         plot.setRenderer(renderer);
         plot.setDomainGridlinesVisible(true);
         plot.setRangeGridlinesVisible(true);
@@ -598,7 +606,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             //for left side axis
             renderer = new XYLineAndShapeRenderer();
 
-            renderer.setBaseToolTipGenerator(generator);
+         // TODO Manolo> When migrating to JFreeChart 1.5, I have replaced the call to the method setBaseToolTipGenerator by the new method setDefaultToolTipGenerator  
+            //renderer.setBaseToolTipGenerator(generator);
+            renderer.setDefaultToolTipGenerator(generator);
             plot.setRenderer(numDisplayedCriterion, renderer);
 
         }
@@ -990,7 +1000,9 @@ public class TraceTemporalEvolutionDialog extends JDialog {
 
         XYToolTipGenerator generator = new StandardXYToolTipGenerator("{0}: ({1}, {2})", new DecimalFormat("0.00"),
                 new DecimalFormat("0.00"));
-        renderer.setBaseToolTipGenerator(generator);
+     // TODO Manolo> When migrating to JFreeChart 1.5, I have replaced the call to the method setBaseToolTipGenerator by the new method setDefaultToolTipGenerator  
+        //renderer.setBaseToolTipGenerator(generator);
+        renderer.setDefaultToolTipGenerator(generator);
 
         return chartPanel;
     }
@@ -1701,7 +1713,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                     for (int i = 0; i < chart.getSubtitleCount(); i++) {
                         chart.getSubtitle(0).setVisible(true);
                     }
-                    ChartUtilities.saveChartAsPNG(new File(filename), chart, 1024, 768);
+                    ChartUtils.saveChartAsPNG(new File(filename), chart, 1024, 768);
                     for (int i = 0; i < chart.getSubtitleCount(); i++) {
                         chart.getSubtitle(0).setVisible(false);
                     }

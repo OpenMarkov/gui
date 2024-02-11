@@ -38,11 +38,25 @@ public class SplashScreenLoader {
 	/**
 	 * This method draws on the splash screen.
 	 */
-	public void splashScreenInit() {
+	public void originalSplashScreenInit() {
 
 		// TODO externalize to OpenMarkov Properties the string for the icon
 
 		URL url = this.getClass().getClassLoader().getResource(logoFile);
+		ImageIcon myImage = new ImageIcon(url);
+		splash = new SplashScreen(myImage);
+		splash.setLocationRelativeTo(null);
+		splash.setProgressMax(100);
+		splash.setScreenVisible(true);
+
+	}
+	
+	
+	public void splashScreenInit() {
+
+		// TODO externalize to OpenMarkov Properties the string for the icon
+
+		URL url = this.getClass().getResource("/"+logoFile);
 		ImageIcon myImage = new ImageIcon(url);
 		splash = new SplashScreen(myImage);
 		splash.setLocationRelativeTo(null);

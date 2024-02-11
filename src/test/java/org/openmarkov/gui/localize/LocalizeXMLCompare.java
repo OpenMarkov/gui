@@ -14,9 +14,9 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.located.LocatedJDOMFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,34 +30,29 @@ public class LocalizeXMLCompare {
 	private List<String> englishFiles;
 	private List<String> spanishFiles;
 
-	@Before public void setUp() {
-		try {
-			englishFiles = new ArrayList<>();
-			spanishFiles = new ArrayList<>();
-			List<String> files = IOUtils
-					.readLines(this.getClass().getClassLoader().getResourceAsStream("localize/"), Charsets.UTF_8);
+	@BeforeAll public void setUp() {
+		englishFiles = new ArrayList<>();
+		spanishFiles = new ArrayList<>();
+		List<String> files = IOUtils
+				.readLines(this.getClass().getClassLoader().getResourceAsStream("localize/"), Charsets.UTF_8);
 
-			Set<String> mainNames = new HashSet<>();
-			int languageCodePlusExtensionLenght = 7;
-			for (String file : files) {
-				// We only get the XML localization files
-				if (file.substring(file.length() - 3).equalsIgnoreCase("XML")) {
-					String fileWithoutLang = file.substring(0, file.length() - languageCodePlusExtensionLenght);
-					mainNames.add(fileWithoutLang);
-				} else {
-					continue;
-				}
+		Set<String> mainNames = new HashSet<>();
+		int languageCodePlusExtensionLenght = 7;
+		for (String file : files) {
+			// We only get the XML localization files
+			if (file.substring(file.length() - 3).equalsIgnoreCase("XML")) {
+				String fileWithoutLang = file.substring(0, file.length() - languageCodePlusExtensionLenght);
+				mainNames.add(fileWithoutLang);
+			} else {
+				continue;
 			}
+		}
 
-			Iterator<String> iter = mainNames.iterator();
-			while (iter.hasNext()) {
-				String fileName = iter.next();
-				englishFiles.add(fileName + "_en.xml");
-				spanishFiles.add(fileName + "_es.xml");
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
+		Iterator<String> iter = mainNames.iterator();
+		while (iter.hasNext()) {
+			String fileName = iter.next();
+			englishFiles.add(fileName + "_en.xml");
+			spanishFiles.add(fileName + "_es.xml");
 		}
 	}
 
@@ -66,7 +61,7 @@ public class LocalizeXMLCompare {
 			checkSameFiles();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			Assert.assertTrue(false);
+			Assertions.assertTrue(false);
 
 		}
 	}
@@ -75,7 +70,7 @@ public class LocalizeXMLCompare {
 		if (englishFiles.size() != spanishFiles.size()) {
 			throw new Exception("There is not the same number of files for both languages.");
 		}
-		//Assert.assertEquals(englishFiles.size(), spanishFiles.size());
+		//Assertions.assertEquals(englishFiles.size(), spanishFiles.size());
 		int languageCodePlusExtensionLenght = 7;
 		for (int i = 0; i < englishFiles.size(); i++) {
 			String englishFileWithoutLang = englishFiles.get(i)
@@ -100,7 +95,7 @@ public class LocalizeXMLCompare {
 				System.out.println(
 						"There is a difference between the XMLs '" + englishXML + "' and '" + spanishXML + "'." + e
 								.getMessage());
-				Assert.assertTrue(false);
+				Assertions.assertTrue(false);
 			}
 		}
 

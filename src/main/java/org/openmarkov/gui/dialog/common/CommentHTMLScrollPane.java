@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.common;
 
 import com.hexidec.ekit.EkitCore;
-import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
+import com.hexidec.ekit.compoment.*;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.localize.StringDatabase;
 

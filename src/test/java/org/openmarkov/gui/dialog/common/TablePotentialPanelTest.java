@@ -7,8 +7,10 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -21,10 +23,11 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TablePotentialPanelTest extends TablePotentialPanel {
 
@@ -34,7 +37,7 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 		super(probNet.getNode("E"));
 	}
 
-	@BeforeClass public static void setUp() throws Exception {
+	@BeforeAll public static void setUp() throws Exception {
 		probNet = buildpotential_panel_reordered_pgmx();
 	}
 

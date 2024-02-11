@@ -7,11 +7,14 @@
 
 package org.openmarkov.gui.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.openmarkov.gui.localize.StringDatabase;
 
-import static org.junit.Assert.assertEquals;
 
 /**
  * This class tests the class {@link Purpose}.
@@ -22,7 +25,7 @@ public class PurposeTest {
 	/**
 	 * This method initializes the language to English.
 	 */
-	@Before public void setUp() {
+	@BeforeAll public void setUp() {
 		StringDatabase.getUniqueInstance().setLanguage("en");
 	}
 
