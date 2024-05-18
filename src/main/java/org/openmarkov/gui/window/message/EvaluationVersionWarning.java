@@ -18,7 +18,7 @@ import java.util.Scanner;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class EvaluationVersionWarning {
-    private static final LocalDate END_OF_LIFE = LocalDate.of(2024, 06, 1);
+    private static final LocalDate END_OF_LIFE = LocalDate.of(2025, 06, 1);
 
     public static boolean show() {
 
