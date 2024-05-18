@@ -8,7 +8,6 @@ package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.FunctionPotential;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -43,7 +42,7 @@ public class FunctionPanel
 	 */
 	protected List<Variable> functionVariables;
 	private Node node = null;
-	private FunctionPotential potential = null;
+//	private FunctionPotential potential = null;
 
 	public FunctionPanel(List<Variable> functionVariables, String function) {
 		super();
@@ -70,6 +69,16 @@ public class FunctionPanel
 
 	public String getFunction() {
 		return function;
+	}
+
+	/**
+	 * Sets a valid function in the text area
+	 * @param functionStr valid function for variables
+	 */
+	public void setFunction(String functionStr){
+		function = functionStr;
+		functionTextArea.setText(function);
+
 	}
 
 	private class FunctionTextAreaMouseListener extends MouseAdapter {
