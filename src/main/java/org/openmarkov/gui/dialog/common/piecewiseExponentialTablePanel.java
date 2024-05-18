@@ -4,10 +4,10 @@ package org.openmarkov.gui.dialog.common;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 
-public class LifeTablePanel extends KeyTablePanel {
+public class piecewiseExponentialTablePanel extends KeyTablePanel {
 
 
-    public LifeTablePanel(Object[][] data) {
+    public piecewiseExponentialTablePanel(Object[][] data) {
         //KeyTablePanel always consider that the first column of Key Table is hidden.
         //The method can be overridden but KeyTable always considers the first column as not editable
         super(new String[] {"Hidden","Time","Probability"}, data, true, true,true);
