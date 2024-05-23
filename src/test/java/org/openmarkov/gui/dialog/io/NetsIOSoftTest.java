@@ -8,6 +8,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.model.network.ProbNet;
@@ -36,6 +37,7 @@ public class NetsIOSoftTest {
         urlsToTest.add("https://bitbucket.org/cisiad/org.probmodelxml.networks/raw/master/pomdp/Dec-POMDP-wireless-network.pgmx");
     }
 
+    @Ignore("Ignored because a deprecated network")
     @Test
     public void testURLConnection() throws Exception {
         for (String urlString : urlsToTest) {
