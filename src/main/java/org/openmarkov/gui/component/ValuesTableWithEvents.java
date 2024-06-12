@@ -646,10 +646,12 @@ public class ValuesTableWithEvents extends KeyTable implements PNUndoableEditLis
 		int columnPosition = edit.getColumnPosition();
 		TablePotential tablePotential = edit.getTablePotential();
 		TableWithFunctions tableWithFunctions = edit.getTableWithEvents().getTableWithFunctions();
-		if ((getNodeType()==NodeType.EVENT) || (getNodeType()==NodeType.UTILITY)){
-
+		//12/06/2024 DistributionTablePotential can be associated with any Event or Numeric variable
+//		if (
+//				(getNodeType()==NodeType.EVENT) || (getNodeType()==NodeType.UTILITY)){
+		if (getVariable().getVariableType() ==VariableType.EVENT
+				|| getVariable().getVariableType() ==VariableType.NUMERIC){
 			int potentialSelected = edit.getPotentialSelected();
-
 			rowPosition = edit.getRowPosition(position);
 			columnPosition = edit.getColumnPosition();
 			try {
