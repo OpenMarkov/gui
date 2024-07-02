@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -38,6 +39,7 @@ public class NetsIOSoftTest {
         urlsToTest.add("https://bitbucket.org/cisiad/org.probmodelxml.networks/raw/master/pomdp/Dec-POMDP-wireless-network.pgmx");
     }
 
+    @Disabled("Ignored because a deprecated network")
     @Test
     public void testURLConnection() throws Exception {
         for (String urlString : urlsToTest) {
