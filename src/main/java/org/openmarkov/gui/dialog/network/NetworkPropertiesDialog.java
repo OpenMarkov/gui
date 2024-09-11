@@ -71,7 +71,7 @@ public class NetworkPropertiesDialog extends OkCancelHorizontalDialog implements
 	private boolean newNetwork = false;
 
 	/**
-	 * This method initializes this instance.
+	 * This method initialises this instance.
 	 *
 	 * @param owner window that owns the dialog.
 	 */
