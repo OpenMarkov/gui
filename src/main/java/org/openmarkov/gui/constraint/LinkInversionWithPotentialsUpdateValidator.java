@@ -24,7 +24,9 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SameAsPrevious;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 
-/**
+import java.util.List;
+
+/******
  * This class validates if a link can be inverted arc-reversal style
  *
  * @author iagoparís - summer
@@ -55,7 +57,7 @@ public class LinkInversionWithPotentialsUpdateValidator {
 		// Make a probNet copy in order to not change the original network.
 		ProbNet probNet = node1.getProbNet();
 		ProbNet newProbNet = probNet.copy();
-		
+
 		// Remove and create the links related to arc inversion.
 		Variable variable1 = node1.getVariable();
 		Variable variable2 = node2.getVariable();
@@ -72,13 +74,13 @@ public class LinkInversionWithPotentialsUpdateValidator {
 		PNConstraint noCycle = new NoCycle();
 		return noCycle.checkProbNet(newProbNet);
 	}
-	
-	/** 
+
+	/**
 	 * A node is valid when is a chance node and it contains a valid potential type.
 	 * @return boolean
 	 */
 	private static boolean validNode(Node node) {
-		
+
 		boolean validNode = false;
 		if (node.getNodeType() == NodeType.CHANCE) {
 			List<Potential> potentials = node.getPotentials();
@@ -87,12 +89,12 @@ public class LinkInversionWithPotentialsUpdateValidator {
 		return validNode;
 	}
 
-	/** 
+	/**
 	 * A potential is valid when can be projected to a TablePotential.
 	 * @return boolean
 	 */
 	private static boolean validPotentialType(Potential potential) {
-		
+
 		return (!(potential instanceof AugmentedTable ||
 				potential instanceof AugmentedTablePotential ||
 				potential instanceof BinomialPotential ||
@@ -100,5 +102,34 @@ public class LinkInversionWithPotentialsUpdateValidator {
 				potential instanceof SameAsPrevious ||
 				potential instanceof UnivariateDistrPotential));
 	}
+
+    /**
+     *
+     * @param node1
+     * @param node2
+     * @return boolean
+     */
+    private static boolean validPotentials(Node node1, Node node2) {
+
+        boolean validPotentials = false;
+        if (node1.getNodeType() == NodeType.CHANCE && node2.getNodeType() == NodeType.CHANCE) {
+            List<Potential> potentials1 = node1.getPotentials();
+            List<Potential> potentials2 = node2.getPotentials();
+            if (!potentials1.isEmpty() && !potentials1.isEmpty()) {
+                validPotentials = validPotential(potentials1.get(0)) && validPotential(potentials2.get(0));
+            }
+        }
+        return validPotentials;
+    }
+
+    private static boolean validPotential(Potential potential) {
+
+        return (!(potential instanceof AugmentedTable ||
+                potential instanceof AugmentedTablePotential ||
+                potential instanceof BinomialPotential ||
+                potential instanceof FunctionPotential ||
+                potential instanceof SameAsPrevious ||
+                potential instanceof UnivariateDistrPotential));
+    }
 
 }
