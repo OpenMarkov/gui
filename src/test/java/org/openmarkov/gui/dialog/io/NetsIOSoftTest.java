@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.io.ProbNetInfo;
+import org.openmarkov.core.io.ProbNetInfo;
 
 import java.net.URL;
 import java.util.ArrayList;

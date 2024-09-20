@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.io.format.annotation.FormatManager;
+import org.openmarkov.core.io.format.annotation.FormatManager;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
