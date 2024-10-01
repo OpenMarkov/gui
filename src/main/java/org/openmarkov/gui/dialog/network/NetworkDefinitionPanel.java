@@ -339,7 +339,8 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 					ChangeNetworkTypeEdit changeNetworkType = new ChangeNetworkTypeEdit(probNet, selectedNetworkType);
 					try {
 						probNet.doEdit(changeNetworkType);
-						parent.getNetworkAdvancedPanel().update(probNet);
+						parent.update(probNet);
+						//parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
 					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
 						e.printStackTrace();
 						JOptionPane
