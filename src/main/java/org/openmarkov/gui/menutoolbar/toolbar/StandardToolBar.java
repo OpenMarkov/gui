@@ -335,7 +335,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 			sensAnalysisButton.setIcon(iconLoader.load(IconLoader.ICON_SENS_ANALYSIS));
 			sensAnalysisButton.setActionCommand(ActionCommands.SENSITIVITY_ANALYSIS);
 			sensAnalysisButton.setFocusable(false);
-			sensAnalysisButton.setToolTipText(stringDatabase.getString("SensitivityAnalysis.Label"));
+			sensAnalysisButton.setToolTipText(stringDatabase.getString("SensitivityAnalysis.ToolTip.Label"));
 			sensAnalysisButton.addActionListener(listener);
 			sensAnalysisButton.addMouseMotionListener(this);
 			sensAnalysisButton.setEnabled(false);
