@@ -151,5 +151,10 @@
             <Label value="Mostrar estrategia óptima"/>
         </ToolTip>
     </ShowOptimalStrategy>
+    <SensitivityAnalysis>
+        <ToolTip>
+            <Label value="Análisis de sensibilidad"/>
+        </ToolTip>
+    </SensitivityAnalysis>
 </properties>
 
