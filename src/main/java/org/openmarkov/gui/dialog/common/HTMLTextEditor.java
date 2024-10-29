@@ -7,11 +7,22 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import com.hexidec.ekit.EkitCore;
-import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
-import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
+//import com.hexidec.ekit.EkitCore;
+//import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
+//import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.gui.localize.StringDatabase;
+
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.HTMLEditor;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +47,7 @@ public class HTMLTextEditor extends JDialog {
 
 	private JToolBar jToolBarEditorHTML = null;
 
-	private EkitCore ekitCoreEditorHTMLPanel = null;
+	//private EkitCore ekitCoreEditorHTMLPanel = null;
 
 	private JButton jButtonAcceptHTML = null;
 
@@ -55,8 +66,13 @@ public class HTMLTextEditor extends JDialog {
 	 */
 	private String commentText = "";
 
-	private ExtendedHTMLEditorKit extendedHTMLEditorKit = null;
-	private ExtendedHTMLDocument extendedHTMLDocument = null;
+	//private ExtendedHTMLEditorKit extendedHTMLEditorKit = null;
+	//private ExtendedHTMLDocument extendedHTMLDocument = null;
+
+	private HTMLEditor editor;
+
+	private JFXPanel jfxPanel;
+
 
 	/**
 	 * HTMLTextEditor dialog constructor
@@ -84,6 +100,13 @@ public class HTMLTextEditor extends JDialog {
 		this.setModal(true);
 		this.setVisible(false);
 		this.setTitle(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.Title.Text"));
+
+		jfxPanel = getJfxPanel();
+		Platform.runLater(() -> {
+			editor = initFX(jfxPanel);
+		});
+		Platform.setImplicitExit(false);
+
 		this.setContentPane(getJContentPane());
 		this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().
 				getOpenMarkovLogoIconImage16());
@@ -101,12 +124,37 @@ public class HTMLTextEditor extends JDialog {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
 			jContentPane.setSize(new Dimension(600, 300));
-			jContentPane.add(getEkitCoreEditorHTMLPanel(), null);
-			jContentPane.add(getJToolBarEditorHTML(), null);
+
+			jfxPanel.setBounds(new Rectangle(0, 0, 619, 220));
+			jContentPane.add(jfxPanel,null);
+
+
 			jContentPane.add(getJButtonAcceptHTML(), null);
 			jContentPane.add(getJButtonCancelHTML(), null);
 		}
 		return jContentPane;
+	}
+
+	private JFXPanel getJfxPanel(){
+
+		final JFXPanel fxPanel = new JFXPanel() {
+
+			@Override
+			public Dimension getPreferredSize() {
+				return new Dimension(2, 220);
+			}
+		};
+
+		return fxPanel;
+	}
+	private HTMLEditor initFX(JFXPanel fxPanel) {
+		StackPane root = new StackPane();
+		Scene scene = new Scene(root);
+		editor = new HTMLEditor();
+		editor.setHtmlText(updateComment);
+		root.getChildren().add(editor);
+		fxPanel.setScene(scene);
+		return editor;
 	}
 
 	/**
@@ -114,7 +162,7 @@ public class HTMLTextEditor extends JDialog {
 	 *
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getEkitCoreEditorHTMLPanel() {
+	/*private JPanel getEkitCoreEditorHTMLPanel() {
 		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
         /*
         Country is used in Locale.java just to set the LocaleExtensions as
@@ -122,7 +170,7 @@ public class HTMLTextEditor extends JDialog {
         But it cannot be set up as null or empty. So we will not use the "real country"
         but just the same string as the language.
          */
-		String sCountry = StringDatabase.getUniqueInstance().getLanguage();
+		/*String sCountry = StringDatabase.getUniqueInstance().getLanguage();
 
 		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
 		if (ekitCoreEditorHTMLPanel == null) {
@@ -132,21 +180,21 @@ public class HTMLTextEditor extends JDialog {
 			ekitCoreEditorHTMLPanel.setVisible(true);
 		}
 		return ekitCoreEditorHTMLPanel;
-	}
+	}*/
 
 	/**
 	 * This method initialises jToolBarEditorHTML
 	 *
 	 * @return javax.swing.JToolBar
 	 */
-	private JToolBar getJToolBarEditorHTML() {
+	/*private JToolBar getJToolBarEditorHTML() {
 
 		if (jToolBarEditorHTML == null) {
 			jToolBarEditorHTML = ekitCoreEditorHTMLPanel.getToolBar(true);
 			jToolBarEditorHTML.setBounds(new Rectangle(1, 1, 617, 30));
 		}
 		return jToolBarEditorHTML;
-	}
+	}*/
 
 	/**
 	 * This method initialises jButtonAcceptHTML
@@ -164,9 +212,10 @@ public class HTMLTextEditor extends JDialog {
 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					//update the commentText
-					commentText = ekitCoreEditorHTMLPanel.getDocumentBody();
-					extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
-					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
+
+					commentText = editor.getHtmlText();
+					/*extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
+					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();*/
 					setVisible(false);
 					okButton = true;
 				}
@@ -192,8 +241,8 @@ public class HTMLTextEditor extends JDialog {
 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 
-					extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
-					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();
+					/*extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
+					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();*/
 					setVisible(false);
 				}
 			});
@@ -217,20 +266,20 @@ public class HTMLTextEditor extends JDialog {
 	 *
 	 * @return extendedHTMLEditorKit
 	 */
-	public ExtendedHTMLEditorKit getExtendedHTMLEditorKit() {
+	/*public ExtendedHTMLEditorKit getExtendedHTMLEditorKit() {
 
 		return extendedHTMLEditorKit;
-	}
+	}*/
 
 	/**
 	 * Return an object to set the Document of JTextPane
 	 *
 	 * @return extendedHTMLDocument
 	 */
-	public ExtendedHTMLDocument getEextendedHTMLDocument() {
+	/*public ExtendedHTMLDocument getEextendedHTMLDocument() {
 
 		return extendedHTMLDocument;
-	}
+	}*/
 
 	public boolean getOkButtonStatus() {
 		return okButton;

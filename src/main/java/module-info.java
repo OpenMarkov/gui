@@ -14,9 +14,13 @@ module org.openmarkov.gui {
 	requires org.apache.poi.poi;
 	requires org.apache.poi.ooxml;
 	requires org.jfree.jfreechart;
-	requires com.hexidec.ekit;
+	//requires com.hexidec.ekit;
 	requires java.base;
-	
+	requires javafx.base;
+	requires javafx.graphics;
+	requires javafx.web;
+	requires javafx.swing;
+
 	exports org.openmarkov.gui.action;
 	exports org.openmarkov.gui.localize;
 	exports org.openmarkov.gui.window;

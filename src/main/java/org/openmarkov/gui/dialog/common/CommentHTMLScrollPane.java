@@ -7,13 +7,11 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import com.hexidec.ekit.EkitCore;
-import com.hexidec.ekit.compoment.*;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
-import javax.swing.text.StyledEditorKit;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,6 +43,9 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	private boolean isChanged = false;
 	private boolean isEmpty = true;
 	private boolean isEditable = true;
+
+	private String preSetComment = StringDatabase.getUniqueInstance().getString("CommentHTMLScrollPane.jTextPaneCommentHTML.Text");
+
 	/**
 	 * Double Click Selector for the HTML Comment area
 	 */
@@ -115,21 +116,19 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	 * @param text the text to put in the comment
 	 */
 	public void setCommentHTMLTextPaneText(String text) {
-		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
         /*
         Country is used in Locale.java just to set the LocaleExtensions as
         LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
         But it cannot be set up as null or empty. So we will not use the "real country"
         but just the same string as the language.
          */
-		String sCountry = StringDatabase.getUniqueInstance().getLanguage();
 
 		// creates the HTML object
-		EkitCore ekitCoreEditorHTML = new EkitCore(null, null, text, null, null, true, false, true, true, sLanguage,
-				sCountry, false, false, true, false, EkitCore.TOOLBAR_DEFAULT_SINGLE);
+		HTMLEditorKit editorKit = new HTMLEditorKit();
 		try {
-			getJTextPaneCommentHTML().setEditorKit((StyledEditorKit) ekitCoreEditorHTML.gethtmlKit());
-			getJTextPaneCommentHTML().setDocument(ekitCoreEditorHTML.getExtendedHtmlDoc());
+			getJTextPaneCommentHTML().setEditorKit(editorKit);
+			getJTextPaneCommentHTML().setContentType("text/html");
+
 			getJTextPaneCommentHTML().setText(text);
 			getJTextPaneCommentHTML().setCaretPosition(0);
 		} catch (IllegalArgumentException ex) {
@@ -156,11 +155,6 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	 *
 	 * @param doc - the HTML document to put in the hTMLTextEditor
 	 */
-	public void setCommentHTMLText(ExtendedHTMLDocument doc) {
-		jTextPaneCommentHTML.setEditorKit(getHTMLTextEditor().getExtendedHTMLEditorKit());
-		jTextPaneCommentHTML.setDocument(doc);
-		jTextPaneCommentHTML.setText(hTMLTextEditor.getCommentText());
-	}
 
 	/**
 	 * initialize the HTMLTextEditor component
@@ -178,14 +172,12 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		// TODO Auto-generated method stub
 		if ((e.getClickCount() == 2) && (isEditable)) {
 			try {
-				String comment = jTextPaneCommentHTML.getText() != null ? jTextPaneCommentHTML.getText() : "";
+				String comment = jTextPaneCommentHTML.getText() != null && !jTextPaneCommentHTML.getText().equals(preSetComment) ? jTextPaneCommentHTML.getText() : "";
 				hTMLTextEditor = new HTMLTextEditor(null, comment);
 				hTMLTextEditor.setTitle(title);
 				hTMLTextEditor.setVisible(true);
 				if (hTMLTextEditor.getOkButtonStatus()) {
-					jTextPaneCommentHTML.setEditorKit((StyledEditorKit) hTMLTextEditor.getExtendedHTMLEditorKit());
-					jTextPaneCommentHTML.setDocument(hTMLTextEditor.getEextendedHTMLDocument());
-					jTextPaneCommentHTML.setText(hTMLTextEditor.getCommentText());
+					setCommentHTMLTextPaneText(hTMLTextEditor.getCommentText());
 					isChanged = true;
 					isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("[\r\n]", "").equals("");
 					notifyCommentChanged();
