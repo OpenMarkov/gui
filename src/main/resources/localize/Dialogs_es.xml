@@ -364,8 +364,11 @@
         <ProbModelXML>
             <Description value="Fichero ProbModelXML"/>
         </ProbModelXML>
+        <OldExcel>
+            <Description value="Fichero Excel 97-2003" />
+        </OldExcel>
         <Excel>
-            <Description value="Fichero Excel"/>
+            <Description value="Fichero Excel" />
         </Excel>
         <WekaDB>
             <Description value="Fichero de BBDD de Weka"/>
