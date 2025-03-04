@@ -385,8 +385,11 @@
         <ProbModelXML>
             <Description value="ProbModelXML file" />
         </ProbModelXML>
+        <OldExcel>
+            <Description value="Excel 97-2003 file" />
+        </OldExcel>
         <Excel>
-            <Description value="Excel files" />
+            <Description value="Excel file" />
         </Excel>
         <WekaDB>
             <Description value="Weka DB file" />

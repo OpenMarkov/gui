@@ -9,16 +9,14 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.action.ChangeNetworkTypeEdit;
 import org.openmarkov.core.action.NetworkCommentEdit;
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
+import org.openmarkov.gui.localize.LocalizedException;
 import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
@@ -349,15 +347,11 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 										JOptionPane.ERROR_MESSAGE);
 					} catch (DoEditException e) {
 						// TODO maintain comboBox with the current probNet
+						// TODO temporal change in exception management
 						e.printStackTrace();
-						// if (!newNetwork){
-						JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
-						// It cannot be done the change selected so combobox
-						// selection must be same
-						jComboBoxNetworkTypes.setSelectedItem(stringDatabase.getString(
-								"NetworkDefinitionPanel.NetworkTypes.Items." + probNet.getNetworkType().toString()
-										.toString()));
-						// }
+
+						LocalizedException localizedException = new LocalizedException(new OpenMarkovException(e));
+						localizedException.showException();
 					}
 				}
 			}
