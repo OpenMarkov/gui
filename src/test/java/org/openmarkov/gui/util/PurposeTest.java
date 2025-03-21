@@ -9,9 +9,7 @@ package org.openmarkov.gui.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.gui.localize.StringDatabase;
 
@@ -21,11 +19,12 @@ import org.openmarkov.gui.localize.StringDatabase;
  *
  * @author jmendoza
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class PurposeTest {
 	/**
 	 * This method initializes the language to English.
 	 */
-	@BeforeAll public void setUp() {
+	@BeforeEach public void setUp() {
 		StringDatabase.getUniqueInstance().setLanguage("en");
 	}
 

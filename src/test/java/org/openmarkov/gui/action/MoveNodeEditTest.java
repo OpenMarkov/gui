@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.action;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -31,6 +29,7 @@ import java.util.ArrayList;
  *
  * @author mpalacios
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class MoveNodeEditTest {
 	/**
 	 * Network for testing.
@@ -55,7 +54,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");

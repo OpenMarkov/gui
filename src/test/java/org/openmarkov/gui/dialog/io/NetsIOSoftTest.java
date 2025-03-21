@@ -7,23 +7,20 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import org.junit.jupiter.api.Disabled;
 import org.openmarkov.core.io.ProbNetInfo;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class NetsIOSoftTest {
 
     ArrayList<String> urlsToTest = new ArrayList<>();
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         // BN
         urlsToTest.add("https://bitbucket.org/cisiad/org.probmodelxml.networks/raw/master/bn/BN-asia.pgmx");

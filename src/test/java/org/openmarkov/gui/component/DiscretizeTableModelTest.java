@@ -12,9 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openmarkov.gui.dialog.common.KeyTable;
 
 
@@ -24,6 +22,7 @@ import org.openmarkov.gui.dialog.common.KeyTable;
  * @author jlgozalo
  * @version 1.0 Agosto/09
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class DiscretizeTableModelTest {
 	/**
 	 * constant definition of the columns
@@ -44,7 +43,7 @@ public class DiscretizeTableModelTest {
 	/**
 	 * Creates a new discretizeTableModel for all tests.
 	 */
-	@BeforeAll public void setUp() {
+	@BeforeEach public void setUp() {
 		Object[][] data = new Object[2][7];
 		data[0][0] = "i0";
 		data[0][1] = "first interval";

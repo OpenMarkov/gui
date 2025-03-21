@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.loader;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.gui.loader.element.IconLoader;
 
@@ -27,6 +25,8 @@ import java.util.MissingResourceException;
  * @author jlgozalo
  * @version 1.1 jlgozalo add test for Infinite Positive and negative icons
  */
+
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class IconLoaderTest {
 	/**
 	 * Common object for all tests.
@@ -36,7 +36,7 @@ public class IconLoaderTest {
 	/**
 	 * Creates a new icon loader for all tests.
 	 */
-	@BeforeAll public void setUp() {
+	@BeforeEach public void setUp() {
 		this.loader = new IconLoader();
 	}
 

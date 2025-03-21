@@ -8,7 +8,9 @@
 package org.openmarkov.gui.localize;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,11 +27,12 @@ import java.util.MissingResourceException;
  * @version 1.1 jlgozalo. modified as MissingErrorExpectedException is not longer
  * required
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class StringDatabaseTests {
 
 	StringDatabase stringDatabase = null;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 		stringDatabase = StringDatabase.getUniqueInstance();
 	}
 

@@ -7,9 +7,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -33,6 +31,7 @@ import java.util.ArrayList;
  * @author jlgozalo
  * @version 1.0
  */
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class ICIOptionsPanelTest {
 
 	ICIOptionsPanel panel = null;
@@ -44,7 +43,7 @@ public class ICIOptionsPanelTest {
 	private Variable U;
 	private Variable D;
 
-	@BeforeAll public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws Exception {
 
 		panel = new ICIOptionsPanel(false);
 

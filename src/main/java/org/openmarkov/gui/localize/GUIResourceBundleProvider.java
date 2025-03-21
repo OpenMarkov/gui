@@ -35,6 +35,10 @@ public class GUIResourceBundleProvider implements LocalizeResourcesProvider {
 	public URL auxGetResource(String infix) {
 		return this.getClass().getResource(infix);
 	}
-
-
+	
+	@Override public Class<? extends LocalizeResourcesProvider> auxClass() {
+		return GUIResourceBundleProvider.class;
+	}
+	
+	
 }

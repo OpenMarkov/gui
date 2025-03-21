@@ -167,8 +167,7 @@
             </Columns>
         </ValuesTable>
         <jTextAreaLabelNodeValuesComment>
-            <Text
-                    value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Valores:"/>
@@ -202,111 +201,86 @@
     </NodeOtherPropertiesPanel>
     <NetworkPropertiesDialog>
         <OtherPropertiesTab>
-            <Label value="Otras prop." />
+            <Label value="Otras prop."/>
         </OtherPropertiesTab>
         <VariablesTab>
-            <Label value="Variables" />
+            <Label value="Variables"/>
         </VariablesTab>
         <Advanced>
-            <Label value="Avanzadas" />
+            <Label value="Avanzadas"/>
         </Advanced>
         <DefinitionTab>
-            <Label value="Definición" />
+            <Label value="Definición"/>
         </DefinitionTab>
         <Title>
-            <Label value="Propiedades de la red" />
+            <Label value="Propiedades de la red"/>
         </Title>
         <DecisionCriteriaTab>
-        	<Label value="Criterios de decisión"></Label></DecisionCriteriaTab>
+            <Label value="Criterios de decisión"></Label>
+        </DecisionCriteriaTab>
         <AgentsTab>
-        	<Label value="Agentes"></Label></AgentsTab>
+            <Label value="Agentes"></Label>
+        </AgentsTab>
         <TemporalOptionsTab>
-        	<Label value="Opciones temporales"></Label></TemporalOptionsTab></NetworkPropertiesDialog><NetworkDefinitionPanel>
+            <Label value="Opciones temporales"></Label>
+        </TemporalOptionsTab>
+    </NetworkPropertiesDialog>
+    <NetworkDefinitionPanel>
         <NetworkTypes>
             <Items>
-                <InfluenceDiagram value="Diagrama de influencia" />
-                <POMDP value="POMDP" />
-                <TuningNetwork value="Red de ajustes" />
-                <MarkovNetwork value="Red de Markov" />
-                <DAN value="Red de análisis de decisiones" />
-                <DBN value="Red bayesiana dinámica" />
-                <DynamicLIMID value="LIMID dinámico" />
-                <LIMID value="LIMID" />
-                <OOBN value="OOBN" />
-                <BayesianNetwork value="Red bayesiana" />
-                <DEC_POMDP value="Dec-POMDP" />
-                <MDP value="Proceso de decisión de Markov" />
-                <MID value="MID" />
-                <MPAD value="MPAD" />
+                <InfluenceDiagram value="Diagrama de influencia"/>
+                <POMDP value="POMDP"/>
+                <TuningNetwork value="Red de ajustes"/>
+                <MarkovNetwork value="Red de Markov"/>
+                <DAN value="Red de análisis de decisiones"/>
+                <DBN value="Red bayesiana dinámica"/>
+                <DynamicLIMID value="LIMID dinámico"/>
+                <LIMID value="LIMID"/>
+                <OOBN value="OOBN"/>
+                <BayesianNetwork value="Red bayesiana"/>
+                <DEC_POMDP value="Dec-POMDP"/>
+                <MDP value="Proceso de decisión de Markov"/>
+                <MID value="MID"/>
+                <MPAD value="MPAD"/>
             </Items>
-            <Mnemonic value="t" />
-            <Text value="Tipo de red:" />
+            <Mnemonic value="t"/>
+            <Text value="Tipo de red:"/>
         </NetworkTypes>
         <CommentHTMLScrollPaneNetworkDefinition>
-            <Text value="Comentario para red {0}" />
+            <Text value="Comentario para red {0}"/>
         </CommentHTMLScrollPaneNetworkDefinition>
         <NetworkDefinitionComment>
-            <Mnemonic value="c" />
-            <Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :" />
+            <Mnemonic value="c"/>
+            <Text value="Comentario&#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
         </NetworkDefinitionComment>
         <NetworkName>
-            <Text value="Nombre de la red:" />
+            <Text value="Nombre de la red:"/>
         </NetworkName>
         <IsObjectOriented>
-            <Text value="Orientada a objetos" />
+            <Text value="Orientada a objetos"/>
         </IsObjectOriented>
         <ShowComment>
-            <Text value="Mostrar el comentario al abrir la red" />
+            <Text value="Mostrar el comentario al abrir la red"/>
         </ShowComment>
-    </NetworkDefinitionPanel><NetworkVariablesPanel>
+    </NetworkDefinitionPanel>
+    <NetworkVariablesPanel>
         <jLabelDefaultStates>
-            <Text value="Estados por defecto:" />
+            <Text value="Estados por defecto:"/>
         </jLabelDefaultStates>
         <ConstraintVariableType>
             <items>
-                <discreteandcontinuous value="Discretas y continuas" />
+                <discreteandcontinuous value="Discretas y continuas"/>
             </items>
             <Items>
-                <onlydiscrete value="Sólo Discretas" />
-                <onlycontinuous value="Sólo Continuas" />
+                <onlydiscrete value="Sólo Discretas"/>
+                <onlycontinuous value="Sólo Continuas"/>
             </Items>
         </ConstraintVariableType>
         <jLabelVariablesType>
-            <Text value="Tipo de variable:" />
+            <Text value="Tipo de variable:"/>
         </jLabelVariablesType>
-    </NetworkVariablesPanel><NetworkDecisionCriteriaPanel>
-	<DecisionCriteria>
-		<Text value="Criterios de decisión"></Text>
-		<ValuesTable>
-			<Columns>
-				<Id>
-					<Prefix value="a"></Prefix>
-					<Text value="Id"></Text></Id>
-				<Name>
-					<Text value="Criterio"></Text></Name>
-				<Unit>
-					<Text value="Unidad"></Text></Unit></Columns></ValuesTable></DecisionCriteria></NetworkDecisionCriteriaPanel><NetworkAgentsPanel>
-	<Agents>
-		<Text value="Agentes"></Text></Agents></NetworkAgentsPanel><NetworkAgentsDialog>
-        <Title>
-            <Label value="Agentes" />
-        </Title>
-    </NetworkAgentsDialog><NetworkTemporalOptionsPanel>
-	<TemporalOptions>
-		<Title value="Opciones temporales"></Title>
-		<Label value="Duración del ciclo"></Label>
-		<Unit>
-			<DAY value="dias"></DAY>
-			<WEEK value="semanas"></WEEK>
-			<MONTH value="meses"></MONTH>
-			<YEAR value="años"></YEAR>
-			<HOUR value="horas"></HOUR>
-			<MINUTE value="minutos"></MINUTE>
-			<SECOND value="segundos"></SECOND>
-			<MILISECOND value="milisegundos"></MILISECOND></Unit>
-		<DiscountUnit>
-			<YEAR value="por año"></YEAR>
-			<CYCLE value="por ciclo"></CYCLE></DiscountUnit></TemporalOptions></NetworkTemporalOptionsPanel><NodePotentialTable>
+    </NetworkVariablesPanel>
+    <NodePotentialTable>
         <Msg>
             <AllowAgainValuesToModified>
                 <Text
@@ -335,6 +309,76 @@
             </SummaOfProbabilitiesHigherThanOne>
         </Msg>
     </NodePotentialTable>
+    <NetworkDecisionCriteriaPanel>
+        <DecisionCriteria>
+            <Text value="Criterios de decisión"></Text>
+            <ValuesTable>
+                <Columns>
+                    <Id>
+                        <Prefix value="a"></Prefix>
+                        <Text value="Id"></Text>
+                    </Id>
+                    <Name>
+                        <Text value="Criterio"></Text>
+                    </Name>
+                    <Unit>
+                        <Text value="Unidad"></Text>
+                    </Unit>
+                </Columns>
+            </ValuesTable>
+        </DecisionCriteria>
+    </NetworkDecisionCriteriaPanel>
+    <NetworkAgentsPanel>
+        <Agents>
+            <Text value="Agentes"></Text>
+        </Agents>
+    </NetworkAgentsPanel>
+    <NetworkTemporalOptionsPanel>
+        <TemporalOptions>
+            <Title value="Opciones temporales"></Title>
+            <Label value="Duración del ciclo"></Label>
+            <Unit>
+                <DAY value="dias"></DAY>
+                <WEEK value="semanas"></WEEK>
+                <MONTH value="meses"></MONTH>
+                <YEAR value="años"></YEAR>
+                <HOUR value="horas"></HOUR>
+                <MINUTE value="minutos"></MINUTE>
+                <SECOND value="segundos"></SECOND>
+                <MILISECOND value="milisegundos"></MILISECOND>
+            </Unit>
+            <DiscountUnit>
+                <YEAR value="por año"></YEAR>
+                <CYCLE value="por ciclo"></CYCLE>
+            </DiscountUnit>
+        </TemporalOptions>
+    </NetworkTemporalOptionsPanel>
+    <NetworkOtherPropertiesPanel>
+        <OtherPropertiesTablePanel>
+            <PropertyIdColumn>
+                <Label value="Id"/>
+                <Prefix value="Prop_"/>
+            </PropertyIdColumn>
+            <PropertyTypeColumn>
+                <Label value="TipoObjeto"/>
+            </PropertyTypeColumn>
+            <PropertyNameColumn>
+                <Label value="Propiedad"/>
+            </PropertyNameColumn>
+            <PropertyValueColumn>
+                <Label value="Valor"/>
+            </PropertyValueColumn>
+        </OtherPropertiesTablePanel>
+        <jLabelOtherPropertiesTable>
+            <Text value="Tabla de propiedades:"/>
+        </jLabelOtherPropertiesTable>
+        <jLabelOtherPropertiesTable value="Otras propiedades:"/>
+    </NetworkOtherPropertiesPanel>
+    <NetworkAgentsDialog>
+        <Title>
+            <Label value="Agentes"/>
+        </Title>
+    </NetworkAgentsDialog>
     <HTMLTextEditor>
         <jButtonCancelHTML>
             <Text value="Cancelar"/>
@@ -356,7 +400,6 @@
             <Label value="URL de la red."/>
         </Title>
     </NetworkURLValues>
-
     <FileExtension>
         <CSV>
             <Description value="Fichero CSV"/>
@@ -365,10 +408,10 @@
             <Description value="Fichero ProbModelXML"/>
         </ProbModelXML>
         <OldExcel>
-            <Description value="Fichero Excel 97-2003" />
+            <Description value="Fichero Excel 97-2003"/>
         </OldExcel>
         <Excel>
-            <Description value="Fichero Excel" />
+            <Description value="Fichero Excel"/>
         </Excel>
         <WekaDB>
             <Description value="Fichero de BBDD de Weka"/>
@@ -389,11 +432,12 @@
         <OpenMarkov.0.2>
             <Description value="Fichero de OpenMarkov. ProbModel 0.2"/>
         </OpenMarkov.0.2>
-
+        <OpenMarkov.0.5>
+            <Description value="Fichero de OpenMarkov. ProbModel 0.5"/>
+        </OpenMarkov.0.5>
         <OpenMarkov.1.0>
             <Description value="Fichero de OpenMarkov. ProbModel 1.0"/>
         </OpenMarkov.1.0>
-
         <!-- CMF -->
     </FileExtension>
     <LanguageDialog>
@@ -413,11 +457,9 @@
             <Text value="Aplicar"/>
         </jButtonApply>
         <jTextAreaInstructions>
-            <Text
-                    value="Seleccione uno de los idiomas de la lista desplegable y pulse el boton Aceptar para cambiar el idioma de visualización de las ventanas de la aplicación OpenMarkov."/>
+            <Text value="Seleccione uno de los idiomas de la lista desplegable y pulse el boton Aceptar para cambiar el idioma de visualización de las ventanas de la aplicación OpenMarkov."/>
         </jTextAreaInstructions>
     </LanguageDialog>
-
     <NodePropertiesDialog>
         <DiscreteValuesTab>
             <Title>
@@ -627,8 +669,7 @@
             <Text value="Estados: "/>
         </jLabelValuesPanel>
         <jTextAreaLabelNodeValuesComment>
-            <Text
-                    value="Comentario &#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
+            <Text value="Comentario &#xD;&#xA;(Pulse dos veces para&#xD;&#xA;añadir o modificar) :"/>
         </jTextAreaLabelNodeValuesComment>
         <jLabelStatesValues>
             <Text value="Dominios estándar:"/>
@@ -746,7 +787,7 @@
         <ShortcutRowTitle value="Atajo"/>
         <FunctionRowTitle value="Función"/>
 
-        <SpecificTableTitle value ="Atajos específicos"/>
+        <SpecificTableTitle value="Atajos específicos"/>
         <Specific>
             <OpenTable>
                 <Shortcut value="Alt + [Ctrl] + click en nodo de azar/utilidad"/>
@@ -779,7 +820,7 @@
         </Specific>
 
 
-        <CommonTableTitle value ="Atajos genéricos"/>
+        <CommonTableTitle value="Atajos genéricos"/>
         <Common>
             <New>
                 <Shortcut value="Ctrl + N"/>
@@ -880,28 +921,6 @@
     <DiscretizeTable>
         <ToolTipText value="Intervalos discretizados"/>
     </DiscretizeTable>
-
-    <NetworkOtherPropertiesPanel>
-        <OtherPropertiesTablePanel>
-            <PropertyIdColumn>
-                <Label value="Id"/>
-                <Prefix value="Prop_"/>
-            </PropertyIdColumn>
-            <PropertyTypeColumn>
-                <Label value="TipoObjeto"/>
-            </PropertyTypeColumn>
-            <PropertyNameColumn>
-                <Label value="Propiedad"/>
-            </PropertyNameColumn>
-            <PropertyValueColumn>
-                <Label value="Valor"/>
-            </PropertyValueColumn>
-        </OtherPropertiesTablePanel>
-        <jLabelOtherPropertiesTable>
-            <Text value="Tabla de propiedades:"/>
-        </jLabelOtherPropertiesTable>
-        <jLabelOtherPropertiesTable value="Otras propiedades:"/>
-    </NetworkOtherPropertiesPanel>
     <OpenMarkovFileExtension>
         <Description value="Fichero de OpenMarkov"/>
     </OpenMarkovFileExtension>
@@ -1006,8 +1025,7 @@
     </AddFindingDialog>
     <CommentHTMLScrollPane>
         <jTextPaneCommentHTML>
-            <Text
-                    value="&lt;&lt;Pulse dos veces para incluir/modificar comentario&gt;&gt;"/>
+            <Text value="&lt;&lt;Pulse dos veces para incluir/modificar comentario&gt;&gt;"/>
         </jTextPaneCommentHTML>
     </CommentHTMLScrollPane>
     <DecisionCriteria>
@@ -1021,7 +1039,6 @@
             <Label value="Relacion"/>
         </Title>
     </NodeRelation>
-
     <SelectZoom>
         <Title>
             <Label value="Seleccionar zoom"/>
@@ -1032,7 +1049,6 @@
             <Label value="Abrir archivo desde URL"/>
         </Title>
     </SelectNetworkURL>
-
     <OtherProperties>
         <Title>
             <Label value="Otras propiedades"/>
@@ -1069,17 +1085,15 @@
             <Decision value="Una decisión"/>
         </Scenario>
     </ScopeSelector>
-	<AddOtherProperty>
-		<Name>
-             <Title value="Añadir propiedad"/>
-			 <Message value="Nombre"/>
+    <AddOtherProperty>
+        <Name>
+            <Title value="Añadir propiedad"/>
+            <Message value="Nombre"/>
         </Name>
-		<Value>
-             <Title value="Añadir propiedad"/>
-			 <Message value="Valor"/>
+        <Value>
+            <Title value="Añadir propiedad"/>
+            <Message value="Valor"/>
         </Value>
     </AddOtherProperty>
-
-
-	</properties>
+</properties>
 
