@@ -867,12 +867,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			try {
 				mainPanel.getMessageWindow().getNormalMessageStream()
 						.println(stringDatabase.getString("LoadingNetwork.Text.Label") + " " + fileName);
+				//TODO Performance issue here on first call
 				ProbNetInfo probNetInfo = NetsIO.openNetworkFile(fileName);
 				netReadFromFile = probNetInfo.getProbNet();
 				netReadFromFile.getPNESupport().addUndoableEditListener(mainPanel.getMainPanelMenuAssistant());
 				netReadFromFile.getPNESupport().setWithUndo(true);
 				netReadFromFile.setName(new File(fileName).getName());
+				//TODO Performance issue here on first call
+				var now = java.time.Instant.now();
 				networkPanel = createNewFrame(netReadFromFile);
+				System.out.println("Total: "+java.time.Duration.between(now, java.time.Instant.now()));
 				networkPanel.setNetworkFile(fileName);
 				List<EvidenceCase> evidence = probNetInfo.getEvidence();
 				if (evidence != null && !evidence.isEmpty()) {
