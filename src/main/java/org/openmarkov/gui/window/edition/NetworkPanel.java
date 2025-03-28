@@ -201,7 +201,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	private void refreshContainerTitle() {
 		String newTitle = "";
 		if (modified) {
-			newTitle = "*";
+			newTitle = "* ";
 		}
 		newTitle += (getProbNet().getName() == null) ?
 				StringDatabase.getUniqueInstance().getString("InternalFrame.Title.Label") :

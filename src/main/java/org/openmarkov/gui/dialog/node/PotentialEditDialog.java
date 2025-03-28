@@ -581,7 +581,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		if (!previouslySelectedPotentialType.equals(potentialType)) {
 			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType);
 			try {
-				node.getProbNet().doEdit(setPotentialEdit);
+				node.getProbNet().innerEdit(setPotentialEdit);
 			} catch (ConstraintViolationException e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
