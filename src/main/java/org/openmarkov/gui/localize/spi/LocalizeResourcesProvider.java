@@ -227,8 +227,8 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
         File localizationFile;
         try {
             localizationFile = new File(bundleFile.toURI());
-        } catch (URISyntaxException ignore) {
-            throw new IllegalStateException("Sorcery happened, localization file " + bundleFile + " could not be located");
+        } catch (URISyntaxException ioException) {
+            throw new IllegalStateException("Sorcery happened, localization file " + bundleFile + " could not be located due to:"+System.lineSeparator()+ioException);
         }
         if (localizationFile.isFile()) {
             addBundleSource.accept(new BundleSource.FileSource(localizationFile));
@@ -237,9 +237,9 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                 files.filter(file -> file.toFile().isFile())
                      .map(file -> (BundleSource) new BundleSource.FileSource(file.toFile()))
                      .forEach(addBundleSource);
-            } catch (IOException ignore) {
+            } catch (IOException ioException) {
                 throw new IllegalStateException("Sorcery happened, localization file " + bundleFile
-                                                        + " could not be accesed, while it was previously used");
+                                                        + " could not be accesed, while it was previously used, this is due to:"+System.lineSeparator()+ioException);
             }
         }
     }
@@ -260,9 +260,9 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                        .filter(entry -> entry.getName().startsWith(askedEntries))
                        .map(entry -> new BundleSource.JarSource(jarFile, entry))
                        .forEach(addBundleSource);
-        } catch (IOException ignore) {
+        } catch (IOException ioException) {
             throw new IllegalStateException("Sorcery happened, localization file in jar " + bundleFile
-                                                    + " could not be located");
+                                                    + " could not be located due to:"+System.lineSeparator()+ioException);
         }
     }
     
