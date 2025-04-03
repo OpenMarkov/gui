@@ -3,6 +3,7 @@ module org.openmarkov.gui {
 	requires java.prefs;
 	requires org.apache.commons.io;
 	requires org.jdom2;
+	requires org.openmarkov.annotation_processing;
 	requires org.openmarkov.core;
 	requires org.openmarkov.plugin;
 	requires org.openmarkov.io;
@@ -16,13 +17,14 @@ module org.openmarkov.gui {
 	requires org.jfree.jfreechart;
 
 	//requires com.hexidec.ekit;
-	requires java.base;
-	requires javafx.base;
+    requires javafx.base;
 	requires javafx.graphics;
 	requires javafx.web;
 	requires javafx.swing;
-
-	exports org.openmarkov.gui.action;
+    requires org.jetbrains.annotations;
+    
+    
+    exports org.openmarkov.gui.action;
 	exports org.openmarkov.gui.localize;
 	exports org.openmarkov.gui.window;
 	exports org.openmarkov.gui.dialog.inference.common;

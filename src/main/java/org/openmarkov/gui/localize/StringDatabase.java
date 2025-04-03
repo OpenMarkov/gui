@@ -14,6 +14,8 @@ import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
 import org.openmarkov.gui.menutoolbar.toolbar.ZoomComboBox;
 import org.openmarkov.gui.window.mdi.MDIMenu;
 import org.openmarkov.gui.window.message.NonEditableTextArea;
+import org.openmarkov.plugin.Filter;
+import org.openmarkov.plugin.PluginLoader;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -22,23 +24,13 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.List;
 
 /**
  * This class creates new string resources with the recorded language.
@@ -217,16 +209,24 @@ public class StringDatabase {
 	*/
 	
 	public Map<String, StringBundle> getAllBundles() {
-		
-		Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
+		//Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
+		Iterable<LocalizeResourcesProvider> providers = new PluginLoader()
+				.loadAllPlugins(Filter.filter().toImplement(LocalizeResourcesProvider.class))
+				.stream()
+				.map(c-> {
+                    try {
+                        return (LocalizeResourcesProvider) c.getDeclaredConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                             NoSuchMethodException e) {
+						return null;
+                    }
+                })
+				.filter(Objects::nonNull)
+				.toList();
 		Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
 		for (LocalizeResourcesProvider provider: providers) {
-			Class<? extends LocalizeResourcesProvider> kk = provider.getClass();
-			Map<String, StringBundle> auxMap = provider.getBundlesMap(locale);
-			for (String key : auxMap.keySet()) {
-				bundlesMap.put(key, auxMap.get(key));
-			}						
-		}		
+            bundlesMap.putAll(provider.getBundlesMap(this.locale));
+		}
 		return bundlesMap;
 	}
 
@@ -340,7 +340,7 @@ public class StringDatabase {
 		ResourceBundle bundle;
 		bundle = ResourceBundle.getBundle(file, locale);
 		return bundle;
-			
+		
 	}
 
 
@@ -470,30 +470,22 @@ public class StringDatabase {
 			}
 		}
 	}
-
-	public String getString(String key) {
-		Iterator<StringBundle> bundleIterator = bundles.values().iterator();
-		boolean found = false;
-		String value = null;
-		while (!found && bundleIterator.hasNext()) {
-			StringBundle bundle = bundleIterator.next();
-			value = bundle.getString(key);
-			found = value != null;
-		}
-		if (value == null) {
-			value = ">>> " + key + " <<<";
-		}
-		return value;
-	}
-	
-	
-	public String getString(String bundle, String key) {
-		String value = bundles.get(bundle).getString(key);
-		if (value == null) {
-			value = ">>> " + key + " <<<";
-		}
-		return value;
-	}
+    
+    public String getString(String key) {
+		var stackTrace = Thread.currentThread().getStackTrace();
+        for (StringBundle bundle : this.bundles.values()) {
+            String value = bundle.getString(key);
+            if (value != null)
+                return value;
+        }
+        return ">>> " + key + " <<<";
+    }
+    
+    
+    public String getString(String bundle, String key) {
+        String value = this.bundles.get(bundle).getString(key);
+        return value != null ? value : ">>> " + key + " <<<";
+    }
 
 	/**
 	 * This method returns the requested string resource, replacing each '~' by

@@ -39,16 +39,7 @@ public class ImageLoader {
      * @throws MissingResourceException if the resource doesn't exist.
      */
     public ImageIcon load(String imageName) throws MissingResourceException {
-        var resourcesDir = ImageLoader.class.getProtectionDomain().getCodeSource().getLocation();
-        String resourcesDirFile = resourcesDir.getFile().substring(1);
-        var imageLocation = Path.of(resourcesDirFile).resolve(RESOURCE_IMAGES_PATH).resolve(imageName);
-        //URL icon = this.getClass().getClassLoader().getResource(RESOURCE_IMAGES_PATH + imageName);
-        if (!imageLocation.toFile().exists()) {
-            throw new MissingResourceException(
-                    StringDatabase.getUniqueInstance().getString("ImageResourceNotExists.Text.Label") + " "
-                            + RESOURCE_IMAGES_PATH + imageName, getClass().getName(), imageName);
-        }
-        return new ImageIcon(imageLocation.toString());
+        return new ImageIcon(ImageLoader.class.getResource(imageName));
     }
     
     

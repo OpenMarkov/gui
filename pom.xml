@@ -13,6 +13,13 @@
     <version>0.3.0-SNAPSHOT</version>
 
     <dependencies>
+        <!--TODO: Remove me-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.inference</artifactId>
@@ -23,6 +30,13 @@
             <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.io</artifactId>
             <version>0.3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmarkov</groupId>
+            <artifactId>org.openmarkov.annotation_processing</artifactId>
+            <version>0.3.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

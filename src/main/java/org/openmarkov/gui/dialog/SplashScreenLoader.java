@@ -22,7 +22,7 @@ public class SplashScreenLoader {
 	/**
 	 * the logo file
 	 */
-	private final String logoFile = "images/OpenMarkovSplash.jpg";
+	private final String logoFile = "/images/OpenMarkovSplash.jpg";
 	private SplashScreen splash;
 
 	/**
@@ -56,7 +56,7 @@ public class SplashScreenLoader {
 
 		// TODO externalize to OpenMarkov Properties the string for the icon
 
-		URL url = this.getClass().getResource("/"+logoFile);
+		URL url = this.getClass().getResource(logoFile);
 		ImageIcon myImage = new ImageIcon(url);
 		splash = new SplashScreen(myImage);
 		splash.setLocationRelativeTo(null);

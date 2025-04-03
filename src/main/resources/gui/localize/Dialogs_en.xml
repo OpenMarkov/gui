@@ -869,7 +869,7 @@
             <Text value="Please visit OpenMarkov's web page (www.openmarkov.org) for the latest updates"/>
         </Advertisement>
         <LineSeparatorImage>
-            <URL value="lineSeparator.jpg"/>
+            <URL value="/images/lineSeparator.jpg"/>
         </LineSeparatorImage>
         <Copyright>
             <AllRightsReserved>
@@ -886,7 +886,7 @@
             <Text value="J.Diaz; M.Calleja &amp; others"/>
         </Authors>
         <OpenMarkovLogoImage>
-            <URL value="OpenMarkovSplash.jpg"/>
+            <URL value="/images/OpenMarkovSplash.jpg"/>
         </OpenMarkovLogoImage>
         <OK>
             <Text value="OK"/>

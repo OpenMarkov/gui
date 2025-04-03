@@ -19,8 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -34,7 +32,7 @@ public class LocalizeXMLCompare {
         englishFiles = new ArrayList<>();
         spanishFiles = new ArrayList<>();
         
-        InputStream localizeDirStream = new GUIResourceBundleProvider().getResourceAsStreamFromResourcesRoot("gui/localize");
+        InputStream localizeDirStream = new GUIResourceBundleProvider().getResourceAsStream("gui/localize");
         List<String> files = IOUtils.readLines(localizeDirStream, Charsets.UTF_8);
         Set<String> mainNames = new HashSet<>();
         int languageCodePlusExtensionLenght = 7;
@@ -144,7 +142,7 @@ public class LocalizeXMLCompare {
     
     private Document getXMLDocument(String xmlDocument) {
         // Get file if not included.
-        InputStream stream = new GUIResourceBundleProvider().getResourceAsStreamFromResourcesRoot("gui/localize/"+xmlDocument);
+        InputStream stream = new GUIResourceBundleProvider().getResourceAsStream("gui/localize/"+xmlDocument);
         
         // Get root element.
         SAXBuilder builder = new SAXBuilder();
