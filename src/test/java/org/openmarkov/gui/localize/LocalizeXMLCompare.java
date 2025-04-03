@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.localize;
 
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -18,39 +16,42 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LocalizeXMLCompare {
     private List<String> englishFiles;
     private List<String> spanishFiles;
+    private LocalizeResourcesProvider resourceBundleProvider;
+    
+    
+    private static final int LANGUAGE_CODE_PLUS_EXTENSION_LENGHT = 7;
     
     @BeforeEach public void setUp() {
-        englishFiles = new ArrayList<>();
-        spanishFiles = new ArrayList<>();
+        this.englishFiles = new ArrayList<>();
+        this.spanishFiles = new ArrayList<>();
         
-        InputStream localizeDirStream = new GUIResourceBundleProvider().getResourceAsStream("gui/localize");
-        List<String> files = IOUtils.readLines(localizeDirStream, Charsets.UTF_8);
-        Set<String> mainNames = new HashSet<>();
-        int languageCodePlusExtensionLenght = 7;
-        for (String file : files) {
-            // We only get the XML localization files
-            if (file.substring(file.length() - 3).equalsIgnoreCase("XML")) {
-                String fileWithoutLang = file.substring(0, file.length() - languageCodePlusExtensionLenght);
-                mainNames.add(fileWithoutLang);
-            } else {
+        this.resourceBundleProvider = new GUIResourceBundleProvider();
+        var localizeDir = this.resourceBundleProvider.getClass().getResource(
+                this.resourceBundleProvider.getRootOfResources() + "/localize");
+        
+        File[] localizeDirFiles = new File(localizeDir.getFile().substring(1)).listFiles();
+        var files = Arrays.stream(localizeDirFiles).map(File::getName);
+        
+        for (String file : files.toList()) {
+            boolean isXMLFile = file.toLowerCase().endsWith("xml");
+            if (!isXMLFile)
                 continue;
-            }
-        }
-        
-        Iterator<String> iter = mainNames.iterator();
-        while (iter.hasNext()) {
-            String fileName = iter.next();
-            englishFiles.add(fileName + "_en.xml");
-            spanishFiles.add(fileName + "_es.xml");
+            String fileWithoutLang = file.substring(0, file.length() - LocalizeXMLCompare.LANGUAGE_CODE_PLUS_EXTENSION_LENGHT);
+            this.englishFiles.add(fileWithoutLang + "_en.xml");
+            this.spanishFiles.add(fileWithoutLang + "_es.xml");
         }
     }
     
@@ -90,8 +91,8 @@ public class LocalizeXMLCompare {
                 checkStructure(englishXML, spanishXML);
             } catch (Exception e) {
                 System.out.println(
-                        "There is a difference between the XMLs '" + englishXML + "' and '" + spanishXML + "'." + e
-                                .getMessage());
+                        "There is a difference between the XMLs '" + englishXML + "' and '" + spanishXML + "'." + System.lineSeparator());
+                e.printStackTrace();
                 Assertions.assertTrue(false);
             }
         }
@@ -142,7 +143,8 @@ public class LocalizeXMLCompare {
     
     private Document getXMLDocument(String xmlDocument) {
         // Get file if not included.
-        InputStream stream = new GUIResourceBundleProvider().getResourceAsStream("gui/localize/"+xmlDocument);
+        InputStream stream = this.resourceBundleProvider.getClass().getResourceAsStream(
+                this.resourceBundleProvider.getRootOfResources() + "/localize/" + xmlDocument);
         
         // Get root element.
         SAXBuilder builder = new SAXBuilder();

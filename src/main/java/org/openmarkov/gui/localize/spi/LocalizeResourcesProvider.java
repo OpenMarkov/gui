@@ -163,7 +163,10 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
      */
     @NotNull String getRootOfResources();
     
-    default StackTraceElement getModuleName(){
+    // Override to avoid other implementors to just implementing returning null, as this method is never used nor was
+    // ever implemented.
+    @Override
+    default @Nullable ResourceBundle getBundle(String baseName, Locale locale) {
         return null;
     }
     
@@ -261,21 +264,6 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
             throw new IllegalStateException("Sorcery happened, localization file in jar " + bundleFile
                                                     + " could not be located");
         }
-    }
-    
-    /**
-     * Finds a resource with a given name just as {@link Class#getResourceAsStream(String)}, but over the class that
-     * implements LocalizeResourcesProvider.
-     *
-     * @return a resource with a given name.<p>It might be null if the resource doesn't exist.
-     */
-    default @Nullable InputStream getResourceAsStream(@NotNull String resourceName) {
-        return this.getClass().getResourceAsStream(resourceName);
-    }
-    
-    @Override
-    default @Nullable ResourceBundle getBundle(String baseName, Locale locale) {
-        return null;
     }
     
 }
