@@ -3,7 +3,6 @@ module org.openmarkov.gui {
 	requires java.prefs;
 	requires org.apache.commons.io;
 	requires org.jdom2;
-	requires org.openmarkov.annotation_processing;
 	requires org.openmarkov.core;
 	requires org.openmarkov.plugin;
 	requires org.openmarkov.io;
