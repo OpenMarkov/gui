@@ -20,6 +20,7 @@ module org.openmarkov.gui {
 	requires javafx.graphics;
 	requires javafx.web;
 	requires javafx.swing;
+	requires org.openmarkov.annotation_processing;
     requires org.jetbrains.annotations;
     
     
