@@ -22,6 +22,12 @@
 
         <dependency>
             <groupId>org.openmarkov</groupId>
+            <artifactId>org.openmarkov.annotation_processing</artifactId>
+            <version>0.3.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.inference</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
@@ -30,12 +36,6 @@
             <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.io</artifactId>
             <version>0.3.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openmarkov</groupId>
-            <artifactId>org.openmarkov.annotation_processing</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <!--
         <dependency>
