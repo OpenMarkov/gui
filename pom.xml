@@ -24,6 +24,7 @@
             <groupId>org.openmarkov</groupId>
             <artifactId>org.openmarkov.annotation_processing</artifactId>
             <version>0.3.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
