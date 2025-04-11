@@ -873,7 +873,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		Boolean alreadyModifiedNetwork = networkPanel.getModified();
 		if (!requestNetworkProperties(Utilities.getOwner(this), probNet)) {
 			probNet.getPNESupport().undoAndDelete();
-			if (!alreadyModifiedNetwork) {
+ 			if (!alreadyModifiedNetwork) {
 				setNetworkChangedWithOutEdit(false);
 				setSelectedAllNodes(false);
 				repaint();

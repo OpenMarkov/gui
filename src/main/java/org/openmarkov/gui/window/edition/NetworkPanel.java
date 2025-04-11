@@ -9,6 +9,7 @@ package org.openmarkov.gui.window.edition;
 
 import org.openmarkov.core.action.CloseParenthesisEdit;
 import org.openmarkov.core.action.OpenParenthesisEdit;
+import org.openmarkov.core.action.PNESupport;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
@@ -668,7 +669,13 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	}
 
 	public void undoEditHappened(UndoableEditEvent event) {
-		setModified(true);
+
+		if (((PNESupport) event.getSource()).getUndoManager().getEditsSize() > 0){
+			setModified(true);
+		}else{
+			setModified(false);
+		}
+
 		repaint();
 	}
 
