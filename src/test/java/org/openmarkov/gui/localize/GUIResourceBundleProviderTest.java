@@ -14,4 +14,5 @@ class GUIResourceBundleProviderTest {
         String databaseResolution = StringDatabase.getUniqueInstance().getString("Add.Text.Label");
         Assertions.assertEquals(bindingResolution, databaseResolution);
     }
+    
 }
