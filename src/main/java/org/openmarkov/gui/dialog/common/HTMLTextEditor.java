@@ -10,19 +10,9 @@ package org.openmarkov.gui.dialog.common;
 //import com.hexidec.ekit.EkitCore;
 //import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
 //import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
+
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
 import org.openmarkov.gui.localize.StringDatabase;
-
-import javafx.scene.layout.StackPane;
-import javafx.scene.web.HTMLEditor;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,18 +24,18 @@ import java.awt.*;
  * @version 1.1 jlgozalo - javadocs, undo variables and localize methods
  */
 public class HTMLTextEditor extends JDialog {
+	
+	//private HTMLEditor editor;
+	//private JFXPanel jfxPanel;
 
-	/**
-	 * ToolBar elements for the dialog
-	 */
-	public static final String TOOLBAR_OPENMARKOV_SINGLE = "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
+	private SimpleHTMLEditor htmlEditor;
+	
 	/**
 	 * serial version id
 	 */
 	private static final long serialVersionUID = 7066844472238575449L;
 	private JPanel jContentPane = null;
 
-	private JToolBar jToolBarEditorHTML = null;
 
 	//private EkitCore ekitCoreEditorHTMLPanel = null;
 
@@ -69,9 +59,7 @@ public class HTMLTextEditor extends JDialog {
 	//private ExtendedHTMLEditorKit extendedHTMLEditorKit = null;
 	//private ExtendedHTMLDocument extendedHTMLDocument = null;
 
-	private HTMLEditor editor;
 
-	private JFXPanel jfxPanel;
 
 
 	/**
@@ -80,19 +68,17 @@ public class HTMLTextEditor extends JDialog {
 	 * @param owner         The frame where the dialog belongs to
 	 * @param updateComment the comment to update
 	 */
-	public HTMLTextEditor(Frame owner, final String updateComment) {
-
+	public HTMLTextEditor(final Frame owner, final String updateComment) {
 		super(owner);
-
 		this.updateComment = updateComment;
 		this.commentText = this.updateComment; //to be used for undo
-		initialize();
+		initialize(owner, updateComment);
 	}
 
 	/**
 	 * initialises the dialog
 	 */
-	private void initialize() {
+	private void initialize(final Frame owner, final String updateComment) {
 
 		this.setSize(636, 321);
 		this.setLocation(new Point(240, 250));
@@ -101,13 +87,16 @@ public class HTMLTextEditor extends JDialog {
 		this.setVisible(false);
 		this.setTitle(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.Title.Text"));
 
+		/*
 		jfxPanel = getJfxPanel();
 		Platform.runLater(() -> {
 			editor = initFX(jfxPanel);
 		});
 		Platform.setImplicitExit(false);
+		*/
+        this.htmlEditor = new SimpleHTMLEditor(owner, updateComment);
 
-		this.setContentPane(getJContentPane());
+		this.setContentPane(createContentPane());
 		this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().
 				getOpenMarkovLogoIconImage16());
 
@@ -118,23 +107,22 @@ public class HTMLTextEditor extends JDialog {
 	 *
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJContentPane() {
-
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(null);
-			jContentPane.setSize(new Dimension(600, 300));
-
-			jfxPanel.setBounds(new Rectangle(0, 0, 619, 220));
-			jContentPane.add(jfxPanel,null);
-
-
-			jContentPane.add(getJButtonAcceptHTML(), null);
-			jContentPane.add(getJButtonCancelHTML(), null);
-		}
+	private JPanel createContentPane() {
+		jContentPane = new JPanel();
+		jContentPane.setLayout(new BorderLayout());
+		
+		jContentPane.add(this.htmlEditor, BorderLayout.CENTER);
+		
+		var confirmationPanel = new JPanel();
+		confirmationPanel.setLayout(new FlowLayout());
+		confirmationPanel.add(getJButtonAcceptHTML());
+		confirmationPanel.add(getJButtonCancelHTML());
+		
+		jContentPane.add(confirmationPanel, BorderLayout.PAGE_END);
 		return jContentPane;
 	}
 
+	/*
 	private JFXPanel getJfxPanel(){
 
 		final JFXPanel fxPanel = new JFXPanel() {
@@ -156,45 +144,8 @@ public class HTMLTextEditor extends JDialog {
 		fxPanel.setScene(scene);
 		return editor;
 	}
+	*/
 
-	/**
-	 * This method initialises ekitCoreEditorHTMLPanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	/*private JPanel getEkitCoreEditorHTMLPanel() {
-		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
-        /*
-        Country is used in Locale.java just to set the LocaleExtensions as
-        LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
-        But it cannot be set up as null or empty. So we will not use the "real country"
-        but just the same string as the language.
-         */
-		/*String sCountry = StringDatabase.getUniqueInstance().getLanguage();
-
-		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
-		if (ekitCoreEditorHTMLPanel == null) {
-			ekitCoreEditorHTMLPanel = new EkitCore(null, null, updateComment, null, null, true, false, true, true,
-					sLanguage, sCountry, false, false, true, false, toolbar);
-			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
-			ekitCoreEditorHTMLPanel.setVisible(true);
-		}
-		return ekitCoreEditorHTMLPanel;
-	}*/
-
-	/**
-	 * This method initialises jToolBarEditorHTML
-	 *
-	 * @return javax.swing.JToolBar
-	 */
-	/*private JToolBar getJToolBarEditorHTML() {
-
-		if (jToolBarEditorHTML == null) {
-			jToolBarEditorHTML = ekitCoreEditorHTMLPanel.getToolBar(true);
-			jToolBarEditorHTML.setBounds(new Rectangle(1, 1, 617, 30));
-		}
-		return jToolBarEditorHTML;
-	}*/
 
 	/**
 	 * This method initialises jButtonAcceptHTML
@@ -202,7 +153,6 @@ public class HTMLTextEditor extends JDialog {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButtonAcceptHTML() {
-
 		if (jButtonAcceptHTML == null) {
 			jButtonAcceptHTML = new JButton();
 			jButtonAcceptHTML.setBounds(new Rectangle(183, 258, 106, 21));
@@ -213,7 +163,7 @@ public class HTMLTextEditor extends JDialog {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					//update the commentText
 
-					commentText = editor.getHtmlText();
+					commentText = htmlEditor.getHTMLContent();
 					/*extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
 					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();*/
 					setVisible(false);
@@ -257,10 +207,25 @@ public class HTMLTextEditor extends JDialog {
 	 * @return String with the Text
 	 */
 	public String getCommentText() {
-
 		return commentText;
 	}
 
+
+
+	public boolean getOkButtonStatus() {
+		return okButton;
+	}
+	
+	
+	
+	
+	/**
+	 * ToolBar elements for the dialog
+	 */
+	public static final String TOOLBAR_OPENMARKOV_SINGLE = "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
+	
+	private JToolBar jToolBarEditorHTML = null;
+	
 	/**
 	 * Return an object to set the EditorKit of JTextPane
 	 *
@@ -270,7 +235,7 @@ public class HTMLTextEditor extends JDialog {
 
 		return extendedHTMLEditorKit;
 	}*/
-
+	
 	/**
 	 * Return an object to set the Document of JTextPane
 	 *
@@ -280,9 +245,45 @@ public class HTMLTextEditor extends JDialog {
 
 		return extendedHTMLDocument;
 	}*/
+	
+	/**
+	 * This method initialises ekitCoreEditorHTMLPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
+	/*private JPanel getEkitCoreEditorHTMLPanel() {
+		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
+        /*
+        Country is used in Locale.java just to set the LocaleExtensions as
+        LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
+        But it cannot be set up as null or empty. So we will not use the "real country"
+        but just the same string as the language.
+         */
+		/*String sCountry = StringDatabase.getUniqueInstance().getLanguage();
 
-	public boolean getOkButtonStatus() {
-		return okButton;
-	}
+		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
+		if (ekitCoreEditorHTMLPanel == null) {
+			ekitCoreEditorHTMLPanel = new EkitCore(null, null, updateComment, null, null, true, false, true, true,
+					sLanguage, sCountry, false, false, true, false, toolbar);
+			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
+			ekitCoreEditorHTMLPanel.setVisible(true);
+		}
+		return ekitCoreEditorHTMLPanel;
+	}*/
+	
+	/**
+	 * This method initialises jToolBarEditorHTML
+	 *
+	 * @return javax.swing.JToolBar
+	 */
+	/*private JToolBar getJToolBarEditorHTML() {
 
+		if (jToolBarEditorHTML == null) {
+			jToolBarEditorHTML = ekitCoreEditorHTMLPanel.getToolBar(true);
+			jToolBarEditorHTML.setBounds(new Rectangle(1, 1, 617, 30));
+		}
+		return jToolBarEditorHTML;
+	}*/
+	
+	
 }
