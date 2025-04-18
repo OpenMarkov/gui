@@ -13,8 +13,9 @@ public class GUIResourceBundleProvider implements LocalizeResourcesProvider {
     }
     
     //This is only set here so it will be compiled to verify the 'BindXML' works.
+    /*
     private void doNotUse(){
         Localize.Add.Text.Label.stringify();
-    }
+    }*/
     
 }
