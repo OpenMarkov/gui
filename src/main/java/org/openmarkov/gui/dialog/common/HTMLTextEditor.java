@@ -16,6 +16,7 @@ import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * initialises a HTML Editor for the different comments in EditNodeDialog
@@ -25,152 +26,102 @@ import java.awt.*;
  */
 public class HTMLTextEditor extends JDialog {
 	
-	//private HTMLEditor editor;
-	//private JFXPanel jfxPanel;
-
+	private static final int INITIAL_WIDTH_MIN = 500;
+	private static final int INITIAL_WIDTH_MAX = 1200;
+	private static final int INITIAL_HEIGHT_MIN = 325;
+	private static final int INITIAL_HEIGHT_MAX = 500;
 	private SimpleHTMLEditor htmlEditor;
 	
-	/**
-	 * serial version id
-	 */
+	@Serial
 	private static final long serialVersionUID = 7066844472238575449L;
-	private JPanel jContentPane = null;
-
-
-	//private EkitCore ekitCoreEditorHTMLPanel = null;
-
-	private JButton jButtonAcceptHTML = null;
-
-	private JButton jButtonCancelHTML = null;
-
-	private boolean okButton = false;
-
-	/**
-	 * Document with the new comment to modify
-	 */
-	private String updateComment = "";
-
-	/**
+	
+    
+    private boolean okButton = false;
+	
+    /**
 	 * Document to keep the original document text for undo
-	 * and the new one if it is accepted after the edition
+	 * and the new one if it is accepted after the edition.
+	 * <p>
+	 * TODO: Previous comment can be misleading, as it doesn't
+	 *  clarify if it holds the new comment or the previous
+	 *  comment, although the Ok button updates this, meaning
+	 *  is likely to hold the new comment rather than the old one.
 	 */
 	private String commentText = "";
-
-	//private ExtendedHTMLEditorKit extendedHTMLEditorKit = null;
-	//private ExtendedHTMLDocument extendedHTMLDocument = null;
-
-
-
-
+	
 	/**
 	 * HTMLTextEditor dialog constructor
 	 *
 	 * @param owner         The frame where the dialog belongs to
 	 * @param updateComment the comment to update
 	 */
+	
+	//TODO: owner is always null.
 	public HTMLTextEditor(final Frame owner, final String updateComment) {
 		super(owner);
-		this.updateComment = updateComment;
-		this.commentText = this.updateComment; //to be used for undo
-		initialize(owner, updateComment);
+        this.commentText = updateComment; //to be used for undo
+        this.initialize(owner, updateComment);
 	}
 
 	/**
-	 * initialises the dialog
+	 * Initializes the dialog
 	 */
-	private void initialize(final Frame owner, final String updateComment) {
-
-		this.setSize(636, 321);
+	private void initialize(Frame owner, final String updateComment) {
+		//this.setLocation(owner.getLocation());
 		this.setLocation(new Point(240, 250));
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setModal(true);
+        this.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
+		
 		this.setVisible(false);
 		this.setTitle(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.Title.Text"));
+		
+        this.htmlEditor = new SimpleHTMLEditor(updateComment);
 
-		/*
-		jfxPanel = getJfxPanel();
-		Platform.runLater(() -> {
-			editor = initFX(jfxPanel);
-		});
-		Platform.setImplicitExit(false);
-		*/
-        this.htmlEditor = new SimpleHTMLEditor(owner, updateComment);
-
-		this.setContentPane(createContentPane());
+		this.setContentPane(this.createContentPane());
 		this.setIconImage(OpenMarkovLogoIcon.getUniqueInstance().
 				getOpenMarkovLogoIconImage16());
-
+		this.pack();
+		int initialWidth = this.getSize().width;
+		initialWidth = Math.max(HTMLTextEditor.INITIAL_WIDTH_MIN, initialWidth);
+		initialWidth = Math.min(HTMLTextEditor.INITIAL_WIDTH_MAX, initialWidth);
+		int initialHeight = this.getSize().height;
+		initialHeight = Math.max(HTMLTextEditor.INITIAL_HEIGHT_MIN, initialHeight);
+		initialHeight = Math.min(HTMLTextEditor.INITIAL_HEIGHT_MAX, initialHeight);
+		this.setSize(new Dimension(initialWidth, initialHeight));
+		this.htmlEditor.focusOnEditor();
+		this.setMinimumSize(this.htmlEditor.minimumDimensions());
 	}
 
 	/**
-	 * This method initialises jContentPane
+	 * This method initializes the contents of the panel.
 	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel createContentPane() {
-		jContentPane = new JPanel();
+        JPanel jContentPane = new JPanel();
 		jContentPane.setLayout(new BorderLayout());
-		
 		jContentPane.add(this.htmlEditor, BorderLayout.CENTER);
-		
 		var confirmationPanel = new JPanel();
 		confirmationPanel.setLayout(new FlowLayout());
-		confirmationPanel.add(getJButtonAcceptHTML());
-		confirmationPanel.add(getJButtonCancelHTML());
-		
+		confirmationPanel.add(this.createOkButtonUI());
+		confirmationPanel.add(this.createCancelButtonUI());
 		jContentPane.add(confirmationPanel, BorderLayout.PAGE_END);
 		return jContentPane;
 	}
-
-	/*
-	private JFXPanel getJfxPanel(){
-
-		final JFXPanel fxPanel = new JFXPanel() {
-
-			@Override
-			public Dimension getPreferredSize() {
-				return new Dimension(2, 220);
-			}
-		};
-
-		return fxPanel;
-	}
-	private HTMLEditor initFX(JFXPanel fxPanel) {
-		StackPane root = new StackPane();
-		Scene scene = new Scene(root);
-		editor = new HTMLEditor();
-		editor.setHtmlText(updateComment);
-		root.getChildren().add(editor);
-		fxPanel.setScene(scene);
-		return editor;
-	}
-	*/
-
 
 	/**
 	 * This method initialises jButtonAcceptHTML
 	 *
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButtonAcceptHTML() {
-		if (jButtonAcceptHTML == null) {
-			jButtonAcceptHTML = new JButton();
-			jButtonAcceptHTML.setBounds(new Rectangle(183, 258, 106, 21));
-			jButtonAcceptHTML
-					.setText(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonAcceptHTML.Text"));
-			jButtonAcceptHTML.addActionListener(new java.awt.event.ActionListener() {
-
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//update the commentText
-
-					commentText = htmlEditor.getHTMLContent();
-					/*extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
-					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();*/
-					setVisible(false);
-					okButton = true;
-				}
-			});
-		}
+	private JButton createOkButtonUI() {
+		JButton jButtonAcceptHTML = new JButton(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonAcceptHTML.Text"));
+		jButtonAcceptHTML.addActionListener(e -> {
+            //update the commentText
+            this.commentText = this.htmlEditor.getHTMLContent();
+            this.setVisible(false);
+            this.okButton = true;
+        });
 		return jButtonAcceptHTML;
 	}
 
@@ -179,25 +130,9 @@ public class HTMLTextEditor extends JDialog {
 	 *
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButtonCancelHTML() {
-
-		if (jButtonCancelHTML == null) {
-			jButtonCancelHTML = new JButton();
-			jButtonCancelHTML.setBounds(new Rectangle(306, 258, 106, 21));
-			jButtonCancelHTML
-					.setText(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonCancelHTML.Text"));
-			// setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			jButtonCancelHTML.addActionListener(new java.awt.event.ActionListener() {
-
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					/*extendedHTMLEditorKit = ekitCoreEditorHTMLPanel.gethtmlKit();
-					extendedHTMLDocument = ekitCoreEditorHTMLPanel.getExtendedHtmlDoc();*/
-					setVisible(false);
-				}
-			});
-
-		}
+	private JButton createCancelButtonUI() {
+        JButton jButtonCancelHTML = new JButton(StringDatabase.getUniqueInstance().getString("HTMLTextEditor.jButtonCancelHTML.Text"));
+		jButtonCancelHTML.addActionListener(e -> this.setVisible(false));
 		return jButtonCancelHTML;
 	}
 
@@ -206,13 +141,13 @@ public class HTMLTextEditor extends JDialog {
 	 *
 	 * @return String with the Text
 	 */
-	public String getCommentText() {
+	public final String getCommentText() {
 		return commentText;
 	}
 
 
 
-	public boolean getOkButtonStatus() {
+	public final boolean getOkButtonStatus() {
 		return okButton;
 	}
 	
@@ -223,67 +158,6 @@ public class HTMLTextEditor extends JDialog {
 	 * ToolBar elements for the dialog
 	 */
 	public static final String TOOLBAR_OPENMARKOV_SINGLE = "CT|CP|PS|SP|UN|RE|SP|BL|IT|UD|SP|UC|SP|SR|SP|FO";
-	
-	private JToolBar jToolBarEditorHTML = null;
-	
-	/**
-	 * Return an object to set the EditorKit of JTextPane
-	 *
-	 * @return extendedHTMLEditorKit
-	 */
-	/*public ExtendedHTMLEditorKit getExtendedHTMLEditorKit() {
 
-		return extendedHTMLEditorKit;
-	}*/
-	
-	/**
-	 * Return an object to set the Document of JTextPane
-	 *
-	 * @return extendedHTMLDocument
-	 */
-	/*public ExtendedHTMLDocument getEextendedHTMLDocument() {
-
-		return extendedHTMLDocument;
-	}*/
-	
-	/**
-	 * This method initialises ekitCoreEditorHTMLPanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	/*private JPanel getEkitCoreEditorHTMLPanel() {
-		String sLanguage = StringDatabase.getUniqueInstance().getLanguage();
-        /*
-        Country is used in Locale.java just to set the LocaleExtensions as
-        LocaleExtensions.CALENDAR_JAPANESE or LocaleExtensions.NUMBER_THAI
-        But it cannot be set up as null or empty. So we will not use the "real country"
-        but just the same string as the language.
-         */
-		/*String sCountry = StringDatabase.getUniqueInstance().getLanguage();
-
-		String toolbar = EkitCore.TOOLBAR_DEFAULT_SINGLE;
-		if (ekitCoreEditorHTMLPanel == null) {
-			ekitCoreEditorHTMLPanel = new EkitCore(null, null, updateComment, null, null, true, false, true, true,
-					sLanguage, sCountry, false, false, true, false, toolbar);
-			ekitCoreEditorHTMLPanel.setBounds(new Rectangle(2, 34, 619, 220));
-			ekitCoreEditorHTMLPanel.setVisible(true);
-		}
-		return ekitCoreEditorHTMLPanel;
-	}*/
-	
-	/**
-	 * This method initialises jToolBarEditorHTML
-	 *
-	 * @return javax.swing.JToolBar
-	 */
-	/*private JToolBar getJToolBarEditorHTML() {
-
-		if (jToolBarEditorHTML == null) {
-			jToolBarEditorHTML = ekitCoreEditorHTMLPanel.getToolBar(true);
-			jToolBarEditorHTML.setBounds(new Rectangle(1, 1, 617, 30));
-		}
-		return jToolBarEditorHTML;
-	}*/
-	
 	
 }
