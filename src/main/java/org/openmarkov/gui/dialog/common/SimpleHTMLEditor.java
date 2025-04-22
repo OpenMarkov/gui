@@ -23,7 +23,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * TODO: Document this class
+ * This Panel contains both a text area where an user can create and see Styled Documents in HTML format, allowing them
+ * to forget specifics on how to create an HTML document.
+ * <p>
+ * Among the utilities it offers, a toolbar with buttons and other elements is provided to allow the user to modify the
+ * document.
  *
  * @author jrico
  */
@@ -31,15 +35,19 @@ public final class SimpleHTMLEditor extends JPanel {
     
     private static final int EDITOR_DIMENSION_MIN_HEIGHT = 300;
     private static final float UI_BUTTONS_FONT_SIZE = 14.0f;
-    private static final List<String> FONT_SIZES = IntStream.rangeClosed(0,120).filter(n->n%2==0 && n>0).mapToObj(String::valueOf).toList();
+    private static final List<String> FONT_SIZES = IntStream.rangeClosed(0, 120)
+                                                            .filter(n -> n % 2 == 0 && n > 0)
+                                                            .mapToObj(String::valueOf)
+                                                            .toList();
     private static final int DEFAULT_FONT_SIZE_SELECTION = 12;
     
     private final JEditorPane editorPane;
     private final JToolBar toolBar;
     
+    /**
+     * Creates an HTML Editor with an initial content.
+     */
     public SimpleHTMLEditor(String initialHTMLContent) {
-        this.setSize(800, 600);
-        
         this.editorPane = new JEditorPane();
         HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
         this.editorPane.setContentType("text/html");
@@ -47,10 +55,7 @@ public final class SimpleHTMLEditor extends JPanel {
         this.editorPane.setText(initialHTMLContent);
         this.editorPane.setCaretPosition(0);
         this.editorPane.setEditable(true);
-        ClickOnHyperlinkAction clickOnHyperlinkAction = new ClickOnHyperlinkAction(this.editorPane);
-        this.editorPane.addMouseListener(clickOnHyperlinkAction);
-        this.editorPane.addMouseMotionListener(clickOnHyperlinkAction);
-        this.editorPane.addKeyListener(clickOnHyperlinkAction);
+        new OpenHyperlinkOnSelectionAction(this.editorPane).setAsListenerOnEditor();
         
         this.toolBar = new JToolBar();
         this.toolBar.setRollover(true);
@@ -58,7 +63,21 @@ public final class SimpleHTMLEditor extends JPanel {
         
         var commonComponents = new CommonComponents(this, this.editorPane, htmlEditorKit, this.toolBar);
         
-        JButton copyUI = SimpleHTMLEditor.createJButton("\uD83D\uDDD2");
+        this.addToolBarUIComponents(commonComponents);
+        
+        this.setLayout(new BorderLayout());
+        this.add(this.toolBar, BorderLayout.PAGE_START);
+        this.add(new JScrollPane(this.editorPane), BorderLayout.CENTER);
+    }
+    
+    /**
+     * Creates and adds the elements like buttons over the toolbar.
+     * @param commonComponents Common elements every component should have access to.
+     */
+    @SuppressWarnings("OverlyLongMethod")
+    private void addToolBarUIComponents(CommonComponents commonComponents) {
+        URL copyIconImageURL = Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/copybutton.png"));
+        JButton copyUI = new JButton(new ImageIcon(copyIconImageURL));
         copyUI.addActionListener(new DefaultEditorKit.CopyAction());
         
         JButton cutUI = SimpleHTMLEditor.createJButton("✂");
@@ -68,7 +87,7 @@ public final class SimpleHTMLEditor extends JPanel {
         
         URL iconResource = Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/hyperlink_add.png"));
         JButton addHyperlinkUI = new JButton(new ImageIcon(iconResource));
-        addHyperlinkUI.addActionListener(new SimpleHTMLEditor.AddHyperlinkAction());
+        addHyperlinkUI.addActionListener(new AddHyperlinkAction());
         
         JButton makeBoldUI = SimpleHTMLEditor.createMakeBoldUI(commonComponents);
         JButton makeItalicUI = SimpleHTMLEditor.createMakeItalicUI(commonComponents);
@@ -105,50 +124,83 @@ public final class SimpleHTMLEditor extends JPanel {
             boolean isSelection = e.getDot() != e.getMark();
             componentsRequiringSelection.forEach(component -> component.setEnabled(isSelection));
         });
-        
-        this.setLayout(new BorderLayout());
-        this.add(this.toolBar, BorderLayout.PAGE_START);
-        this.add(new JScrollPane(this.editorPane), BorderLayout.CENTER);
     }
     
-    private static @NotNull JButton createJButton(String contents){
+    /**
+     * Helper method that sets common parameters to all {@link JButton}s that contain just texts.
+     * <p>
+     * Currently, it only sets a common Font size to all of them, and said font size is specified in
+     * {@link SimpleHTMLEditor#UI_BUTTONS_FONT_SIZE}.
+     *
+     * @return a new {@link JButton}s with common parameters set.
+     */
+    private static @NotNull JButton createJButton(String contents) {
         JButton button = new JButton(contents);
-        button.setFont(button.getFont().deriveFont(UI_BUTTONS_FONT_SIZE));
+        button.setFont(button.getFont().deriveFont(SimpleHTMLEditor.UI_BUTTONS_FONT_SIZE));
         return button;
     }
     
-    
+    /**
+     * Creates a small vertical separator for separating buttons in a UI that acts like a {@link FlowLayout} with a
+     * Horizontal setting.
+     *
+     * @return a small vertical separator for separating buttons in a UI that acts like a {@link FlowLayout} with a
+     *         Horizontal setting.
+     */
     private static @NotNull JSeparator createVerticalSeparator() {
         JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
         separator1.setMaximumSize(new Dimension(3, 10));
         return separator1;
     }
     
-    
+    /**
+     * Returns the document as an HTML raw {@link String}.
+     *
+     * @return the document as an HTML raw {@link String}.
+     */
     public String getHTMLContent() {
         return this.editorPane.getText();
     }
     
+    /**
+     * Sets the focus on the editing text area.
+     */
     public void focusOnEditor() {
         this.editorPane.requestFocus(false);
     }
     
+    /**
+     * Returns the minimum {@link Dimension}s this {@link JPanel} should have to show all of its contents.
+     *
+     * @return the minimum {@link Dimension}s this {@link JPanel} should have to show all of its contents.
+     */
     public Dimension minimumDimensions() {
         return new Dimension(this.toolBar.getWidth(), this.toolBar.getHeight() + SimpleHTMLEditor.EDITOR_DIMENSION_MIN_HEIGHT);
     }
     
+    /**
+     * Common components the UI elements should have access to when triggering actions or when being built.
+     */
     private record CommonComponents(JPanel frame, JEditorPane editorPane, HTMLEditorKit htmlEditorKit,
                                     JToolBar toolBar) {
+        
+        /**
+         * Returns the focus to the text editor area.
+         */
         public void returnFocusToEditor() {
             this.editorPane.requestFocus(false);
         }
     }
     
-    
+    /**
+     * Creates a {@link JButton} than once pressed, it turns the current selected paragraph(s) to match said alignment.
+     *
+     * @return a {@link JButton} than once pressed, it turns the current selected paragraph(s) to match said alignment.
+     */
     private static JButton createAlignmentUI(CommonComponents commonComponents, int alignment, String actionName, String resourceImage) {
         URL iconResource = Objects.requireNonNull(SimpleHTMLEditor.class.getResource(resourceImage));
         JButton setAlignmentUI = new JButton(new ImageIcon(iconResource));
-        StyledEditorKit.AlignmentAction alignmentAction = new StyledEditorKit.AlignmentAction(actionName, alignment);
+        ActionListener alignmentAction = new StyledEditorKit.AlignmentAction(actionName, alignment);
         setAlignmentUI.addActionListener(e -> {
             alignmentAction.actionPerformed(e);
             commonComponents.returnFocusToEditor();
@@ -156,6 +208,13 @@ public final class SimpleHTMLEditor extends JPanel {
         return setAlignmentUI;
     }
     
+    /**
+     * Creates a {@link JButton} than once pressed, it shows a dialog for the user to choose a {@link Color}, and if
+     * chosen, it sets the current selected text to match said {@link Color}.
+     *
+     * @return a {@link JButton} than once pressed, it shows a dialog for the user to choose a {@link Color}, and if
+     *         chosen, it sets the current selected text to match said {@link Color}.
+     */
     private static JButton createChangeForegroundColorUI(CommonComponents commonComponents) {
         JColorChooser colorChooser = new JColorChooser();
         var foregroundColorButton = new JButton(new ImageIcon(Objects.requireNonNull(SimpleHTMLEditor.class.getResource("/htmleditor/changecolor.png"))));
@@ -169,6 +228,14 @@ public final class SimpleHTMLEditor extends JPanel {
         return foregroundColorButton;
     }
     
+    /**
+     * Creates a {@link JComboBox} containing all {@link Font}s the user has installed, and when selecting a letter
+     * font, changes the currently selected text of the panel to said letter font.
+     *
+     * @return a {@link JComboBox} containing all {@link Font}s the user has installed, and when selecting a letter
+     *         font, changes the currently selected text of the panel to said letter font.
+     */
+    @SuppressWarnings("ZeroLengthArrayAllocation")
     private static JComboBox<String> createChangeFamilyFontUI(CommonComponents commonComponents) {
         var fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
         var fontNames = Arrays.stream(fonts).map(Font::getName).toList().toArray(new String[0]);
@@ -182,9 +249,16 @@ public final class SimpleHTMLEditor extends JPanel {
         return fontNameBox;
     }
     
+    /**
+     * Creates a {@link JButton} than once pressed, it turns the current selected text to bold (Or removes said style if
+     * already applied).
+     *
+     * @return a {@link JButton} than once pressed, it turns the current selected text to bold (Or removes said style if
+     *         already applied).
+     */
     private static JButton createMakeBoldUI(CommonComponents commonComponents) {
         JButton boldButton = SimpleHTMLEditor.createJButton("B");
-        StyledEditorKit.BoldAction boldAction = new StyledEditorKit.BoldAction();
+        ActionListener boldAction = new StyledEditorKit.BoldAction();
         boldButton.setFont(boldButton.getFont().deriveFont(Font.BOLD));
         boldButton.addActionListener(e -> {
             boldAction.actionPerformed(e);
@@ -193,10 +267,17 @@ public final class SimpleHTMLEditor extends JPanel {
         return boldButton;
     }
     
+    /**
+     * Creates a {@link JButton} than once pressed, it turns the current selected text to italic (Or removes said style
+     * if already applied).
+     *
+     * @return a {@link JButton} than once pressed, it turns the current selected text to italic (Or removes said style
+     *         if already applied).
+     */
     private static JButton createMakeItalicUI(CommonComponents commonComponents) {
         JButton italicButton = SimpleHTMLEditor.createJButton("I");
         italicButton.setFont(italicButton.getFont().deriveFont(Font.ITALIC));
-        StyledEditorKit.ItalicAction italicAction = new StyledEditorKit.ItalicAction();
+        ActionListener italicAction = new StyledEditorKit.ItalicAction();
         italicButton.addActionListener(e -> {
             italicAction.actionPerformed(e);
             commonComponents.returnFocusToEditor();
@@ -204,12 +285,20 @@ public final class SimpleHTMLEditor extends JPanel {
         return italicButton;
     }
     
+    /**
+     * Creates a {@link JButton} than once pressed, it turns the current selected text to understrike (Or removes said
+     * style if already applied).
+     *
+     * @return a {@link JButton} than once pressed, it turns the current selected text to understrike (Or removes said
+     *         style if already applied).
+     */
     private static JButton createMakeUnderStrikedUI(CommonComponents commonComponents) {
         JButton understrikeButton = SimpleHTMLEditor.createJButton("U");
+        @SuppressWarnings("unchecked")
         Map<TextAttribute, Object> attrs = (Map<TextAttribute, Object>) understrikeButton.getFont().getAttributes();
         attrs.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
         understrikeButton.setFont(understrikeButton.getFont().deriveFont(attrs));
-        StyledEditorKit.UnderlineAction underlineAction = new StyledEditorKit.UnderlineAction();
+        ActionListener underlineAction = new StyledEditorKit.UnderlineAction();
         understrikeButton.addActionListener(e -> {
             underlineAction.actionPerformed(e);
             commonComponents.returnFocusToEditor();
@@ -217,12 +306,20 @@ public final class SimpleHTMLEditor extends JPanel {
         return understrikeButton;
     }
     
+    /**
+     * Creates a {@link JComboBox} containing letter sizes, and when selecting a letter size, it resizes the current
+     * selected text of the panel to said letter size.
+     *
+     * @return a {@link JComboBox} containing letter sizes, and when selecting a letter size, it resizes the current
+     * selected text of the panel to said letter size.
+     */
+    @SuppressWarnings({"ZeroLengthArrayAllocation", "DuplicateStringLiteralInspection"})
     private static JComboBox<String> createChangeFontSizeUI(CommonComponents commonComponents) {
         var sizes = SimpleHTMLEditor.FONT_SIZES.stream().map(size -> size + " px.")
                                                .toList();
         JComboBox<String> fontSizeBox = new JComboBox<>(sizes.toArray(new String[0]));
         var defaultFontSizeIndex = SimpleHTMLEditor.FONT_SIZES.indexOf(String.valueOf(SimpleHTMLEditor.DEFAULT_FONT_SIZE_SELECTION));
-        if (defaultFontSizeIndex>=0){
+        if (defaultFontSizeIndex >= 0) {
             fontSizeBox.setSelectedIndex(defaultFontSizeIndex);
         }
         SimpleHTMLEditor.packComboBox(fontSizeBox);
@@ -239,33 +336,52 @@ public final class SimpleHTMLEditor extends JPanel {
     }
     
     
-    private static <T> Stream<T> getItemToStream(int count, IntFunction<? extends T> give) {
+    /**
+     * Turns a function that gets an element by its index into a {@link Stream} filled with the results of said
+     * function.
+     * <p>
+     * To do so, it requires knowing the count of elements, as it the function returns a {@code null}, it is impossible
+     * to know if the getter has reached the end of a collection and is returning null because there are no more
+     * elements, or because the current element is actually {@code null}.
+     *
+     * @return Turns the results of the function into a Stream over these results.
+     */
+    private static <T> Stream<T> itemGetterToStream(int count, IntFunction<? extends T> give) {
         return IntStream.range(0, count).mapToObj(give);
     }
     
     /**
      * Packs a combo box to the smallest size of its contained elements.
      */
+    @SuppressWarnings("MagicNumber")
     private static void packComboBox(JComboBox<?> comboBox) {
         FontMetrics fm = comboBox.getFontMetrics(comboBox.getFont());
-        int maxWidth = SimpleHTMLEditor.getItemToStream(comboBox.getItemCount(), comboBox::getItemAt)
-                                       .map(Object::toString)
-                                       .mapToInt(fm::stringWidth)
-                                       .max()
-                                       .orElse(0);
+        int maxWidth = SimpleHTMLEditor
+                .itemGetterToStream(comboBox.getItemCount(), comboBox::getItemAt)
+                .map(Object::toString)
+                .mapToInt(fm::stringWidth)
+                .max()
+                .orElse(0);
         comboBox.setMaximumSize(new Dimension(maxWidth + 30, comboBox.getPreferredSize().height));
     }
     
+    /**
+     * This action opens a dialog to request an URL, and if indicated, it sets said URL as an hyperlink over the
+     * currently selected text.
+     */
     static class AddHyperlinkAction extends StyledEditorKit.StyledTextAction {
         
+        /**
+         * Default constructor setting the action name as 'hyperlink-add'.
+         */
         public AddHyperlinkAction() {
             super("hyperlink-add");
         }
         
         @Override
         public final void actionPerformed(ActionEvent e) {
-            JEditorPane editorPane = getEditor(e);
-            if (editorPane==null){
+            JEditorPane editorPane = this.getEditor(e);
+            if (editorPane == null) {
                 return;
             }
             int start = editorPane.getSelectionStart();
@@ -312,52 +428,101 @@ public final class SimpleHTMLEditor extends JPanel {
         }
     }
     
-    static class ClickOnHyperlinkAction implements MouseListener, MouseMotionListener, KeyListener{
+    /**
+     * This class allows users to open hyperlinks.
+     * <p>
+     * To open a link, the user has to place it's mouse over the hyperlink and to hold the 'Control' key, in which
+     * conditions its cursor turns into a {@link Cursor#HAND_CURSOR} and can click to open said hyperlink in their
+     * Browser.
+     * <p>
+     * For this to work, an instance of {@link OpenHyperlinkOnSelectionAction} has to be added as a
+     * {@link MouseListener}, a {@link MouseMotionListener} and a {@link KeyListener} on the {@link JEditorPane}.
+     */
+    @SuppressWarnings("ListenerMayUseAdapter")
+    static class OpenHyperlinkOnSelectionAction implements MouseListener, MouseMotionListener, KeyListener {
         
-        private boolean holdsControl = false;
-        private Point2D mouseLocation = new Point(0,0);
-        private JEditorPane editorPane;
+        private static final String HREF_ATTRIBUTE = "href=";
+        private static final Cursor HOVERING_CURSOR = new Cursor(Cursor.HAND_CURSOR);
+        private static final int KEY_TO_HOLD_FOR_OPENING_URL = KeyEvent.VK_CONTROL;
         
-        ClickOnHyperlinkAction(JEditorPane editorPane) {
+        private final JEditorPane editorPane;
+        private boolean holdsKeyForOpeningUrl = false;
+        private Point2D mouseLocation = new Point(0, 0);
+        private Optional<String> lastTooltipShown = Optional.empty();
+        
+        /**
+         * @param editorPane The panel it keeps track of whether a URL is or not selected to open it.
+         */
+        OpenHyperlinkOnSelectionAction(final JEditorPane editorPane) {
             this.editorPane = editorPane;
         }
         
+        /**
+         * Sets itself as a {@link MouseListener}, a {@link MouseMotionListener} and a {@link KeyListener} on the
+         * {@link OpenHyperlinkOnSelectionAction#editorPane},
+         * allowing to track all the events required by this class.
+         */
+        public final void setAsListenerOnEditor() {
+            this.editorPane.addMouseListener(this);
+            this.editorPane.addMouseMotionListener(this);
+            this.editorPane.addKeyListener(this);
+        }
+        
         @Override public void keyTyped(KeyEvent e) {
-        
         }
+        
         @Override public void mousePressed(MouseEvent e) {
-        
         }
+        
         @Override public void mouseReleased(MouseEvent e) {
-        
         }
+        
         @Override public void mouseEntered(MouseEvent e) {
+        }
         
-        }
-        @Override public void mouseExited(MouseEvent e) {
-            this.holdsControl=false;
-        }
         @Override public void mouseDragged(MouseEvent e) {
-        
         }
         
+        /**
+         * When the window loses focus, it is impossible to know whether the user presses or releases
+         * {@link OpenHyperlinkOnSelectionAction#KEY_TO_HOLD_FOR_OPENING_URL}, so it is set as the key wasn't pressed.
+         * @param e the event to be processed
+         */
+        @Override public final void mouseExited(MouseEvent e) {
+            this.holdsKeyForOpeningUrl = false;
+        }
         
+        /**
+         * Updates {@link OpenHyperlinkOnSelectionAction#holdsKeyForOpeningUrl} to keep track of when the key for opening
+         * the {@link URL} is pressed, setting it to true.
+         */
         @Override public final void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_CONTROL){
-                this.holdsControl = true;
+            if (e.getKeyCode() == OpenHyperlinkOnSelectionAction.KEY_TO_HOLD_FOR_OPENING_URL) {
+                this.holdsKeyForOpeningUrl = true;
             }
-            this.checkSetCursor();
+            this.onHoveringOnHREF();
         }
         
+        /**
+         * Updates {@link OpenHyperlinkOnSelectionAction#holdsKeyForOpeningUrl} to keep track of when the key for opening
+         * the {@link URL} is released, setting it to false.
+         */
         @Override public final void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_CONTROL){
-                this.holdsControl = false;
+            if (e.getKeyCode() == OpenHyperlinkOnSelectionAction.KEY_TO_HOLD_FOR_OPENING_URL) {
+                this.holdsKeyForOpeningUrl = false;
+                //If is showing a tool tip
+                if (this.lastTooltipShown.isPresent()){
+                    this.editorPane.setCursor(Cursor.getDefaultCursor());
+                }
             }
-            this.checkSetCursor();
+            this.onHoveringOnHREF();
         }
         
-        @Override public void mouseClicked(MouseEvent e) {
-            getHREFOfSelectedElement().ifPresent(href->{
+        @Override public final void mouseClicked(MouseEvent e) {
+            if (!this.holdsKeyForOpeningUrl) {
+                return;
+            }
+            this.getHREFOfSelectedElement().ifPresent(href -> {
                 try {
                     Desktop.getDesktop().browse(href);
                 } catch (IOException ex) {
@@ -367,37 +532,71 @@ public final class SimpleHTMLEditor extends JPanel {
             
         }
         
-        @Override public void mouseMoved(MouseEvent e) {
-            this.mouseLocation= new Point(e.getX(), e.getY());
-            this.checkSetCursor();
+        /**
+         * Updates {@link OpenHyperlinkOnSelectionAction#mouseLocation} to keep track of where the mouse is positioned.
+         */
+        @Override public final void mouseMoved(MouseEvent e) {
+            this.mouseLocation = new Point(e.getX(), e.getY());
+            if (this.getHREFOfSelectedElement().isPresent()) {
+                this.onHoveringOnHREF();
+            } else {
+                if (this.lastTooltipShown.isPresent() && this.lastTooltipShown.get()
+                                                                              .equals(this.editorPane.getToolTipText())) {
+                    this.editorPane.setToolTipText(null);
+                }
+                this.lastTooltipShown = Optional.empty();
+            }
         }
         
-        private void checkSetCursor(){
-            getHREFOfSelectedElement().ifPresent(ignored->{
-                this.editorPane.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        /**
+         * Takes certain actions when the user is hovering a valid URL:
+         * <ul>
+         * <li>
+         * If holding the {@link OpenHyperlinkOnSelectionAction#KEY_TO_HOLD_FOR_OPENING_URL} key, then the cursor is
+         * set to {@link OpenHyperlinkOnSelectionAction#HOVERING_CURSOR}.
+         * </li>
+         * <li>
+         * It sets a tooltip telling the HREF to open.
+         * </li>
+         * </ul>
+         *
+         * @see OpenHyperlinkOnSelectionAction#getHREFOfSelectedElement()
+         */
+        private void onHoveringOnHREF() {
+            this.getHREFOfSelectedElement().ifPresent(url -> {
+                if (this.holdsKeyForOpeningUrl) {
+                    this.editorPane.setCursor(OpenHyperlinkOnSelectionAction.HOVERING_CURSOR);
+                }
+                String newTooltip = "<html>Control + Click to open:<br>" + url + "</html>";
+                String currentTooltip = this.editorPane.getToolTipText();
+                if (!newTooltip.equals(currentTooltip)) {
+                    this.editorPane.setToolTipText(newTooltip);
+                    this.lastTooltipShown=Optional.of(newTooltip);
+                }
             });
         }
         
+        /**
+         * @return If the user has holds the 'Control' key and its mouse is over an element with a 'href' pointing to a
+         *         valid {@link URL}, it returns said {@link URL} as a {@link URI}, in any other case, it returns
+         *         {@link Optional#empty()}.
+         */
         private Optional<URI> getHREFOfSelectedElement() {
-            if (!this.holdsControl){
-                return Optional.empty();
-            }
-            if (!(this.editorPane.getDocument() instanceof StyledDocument)) {
+            if (!(this.editorPane.getDocument() instanceof StyledDocument doc)) {
                 return Optional.empty();
             }
             int pos = this.editorPane.viewToModel2D(this.mouseLocation);
-            StyledDocument doc = (StyledDocument) this.editorPane.getDocument();
             Element element = doc.getCharacterElement(pos);
             AttributeSet attributes = element.getAttributes();
             Object attributeA = attributes.getAttribute(HTML.Tag.A);
             Object attributeHREF = attributes.getAttribute(HTML.Tag.HTML);
             Object attributeWithLink = Optional.ofNullable(attributeA).orElse(attributeHREF);
-            if (attributeWithLink==null){
+            if (attributeWithLink == null) {
                 return Optional.empty();
             }
             String href = attributeWithLink.toString();
-            if (href.startsWith("href=")){
-                href=href.substring("href=".length());
+            if (href.startsWith(OpenHyperlinkOnSelectionAction.HREF_ATTRIBUTE)) {
+                href = href.substring(OpenHyperlinkOnSelectionAction.HREF_ATTRIBUTE.length());
             }
             try {
                 return Optional.of(new URL(href).toURI());

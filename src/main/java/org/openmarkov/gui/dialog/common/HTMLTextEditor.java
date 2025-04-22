@@ -23,6 +23,7 @@ import java.io.Serial;
  *
  * @author Alberto Manuel Ruiz Lafuente UCLM 2008
  * @version 1.1 jlgozalo - javadocs, undo variables and localize methods
+ * @version 1.2 jrico - Replaced JavaFX's HTMLEditor with the custom implementation of {@link SimpleHTMLEditor}.
  */
 public class HTMLTextEditor extends JDialog {
 	
