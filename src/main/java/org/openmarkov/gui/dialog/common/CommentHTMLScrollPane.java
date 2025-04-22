@@ -44,8 +44,6 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	private boolean isEmpty = true;
 	private boolean isEditable = true;
 
-	private String preSetComment = StringDatabase.getUniqueInstance().getString("CommentHTMLScrollPane.jTextPaneCommentHTML.Text");
-
 	/**
 	 * Double Click Selector for the HTML Comment area
 	 */
@@ -101,9 +99,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 			jTextPaneCommentHTML = new JTextPane();
 			jTextPaneCommentHTML.setEditable(false);
 			jTextPaneCommentHTML.setSize(new Dimension(HTML_COMMENT_WIDTH, HTML_COMMENT_HEIGHT));
-			// only to put an initial value just in case
-			jTextPaneCommentHTML.setText(
-					StringDatabase.getUniqueInstance().getString("CommentHTMLScrollPane.jTextPaneCommentHTML.Text"));
+			jTextPaneCommentHTML.setText("");
 			jTextPaneCommentHTML.addMouseListener(doubleClickSelector);
 			jTextPaneCommentHTML.addMouseListener(this);
 		}
@@ -172,7 +168,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		// TODO Auto-generated method stub
 		if ((e.getClickCount() == 2) && (isEditable)) {
 			try {
-				String comment = jTextPaneCommentHTML.getText() != null && !jTextPaneCommentHTML.getText().equals(preSetComment) ? jTextPaneCommentHTML.getText() : "";
+				String comment = jTextPaneCommentHTML.getText()!=null?jTextPaneCommentHTML.getText():"";
 				hTMLTextEditor = new HTMLTextEditor(null, comment);
 				hTMLTextEditor.setTitle(title);
 				hTMLTextEditor.setVisible(true);
