@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <Edit>
+        <StringWithoutParameters>
+            <Label value="Esta cadena no tiene ningún parámetro"/>
+        </StringWithoutParameters>
+    </Edit>
+    <BUNDLEFILE>
+        <Text value="Español"/>
+    </BUNDLEFILE>
+</properties>
+

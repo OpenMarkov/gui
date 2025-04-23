@@ -472,7 +472,6 @@ public class StringDatabase {
 	}
     
     public String getString(String key) {
-		var stackTrace = Thread.currentThread().getStackTrace();
         for (StringBundle bundle : this.bundles.values()) {
             String value = bundle.getString(key);
             if (value != null)

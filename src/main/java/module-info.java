@@ -1,4 +1,4 @@
-import org.openmarkov.gui.localize.nls.GUIResourceBundleProvider;
+import org.openmarkov.gui.localize.GUIResourceBundleProvider;
 
 module org.openmarkov.gui {
     
@@ -21,6 +21,7 @@ module org.openmarkov.gui {
     requires org.jetbrains.annotations;
     requires java.desktop;
     requires java.prefs;
+    requires jeval;
     
     
     exports org.openmarkov.gui.action;
@@ -44,7 +45,6 @@ module org.openmarkov.gui {
 	provides org.openmarkov.gui.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;
 	
 	opens icons;
-    exports org.openmarkov.gui.localize.nls;
     
     
 }

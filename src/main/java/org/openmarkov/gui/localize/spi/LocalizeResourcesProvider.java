@@ -2,7 +2,6 @@ package org.openmarkov.gui.localize.spi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.annotation_processing.localization_bindings.BindXML;
 import org.openmarkov.gui.localize.StringBundle;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.localize.XMLResourceBundle;

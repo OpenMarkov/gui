@@ -333,10 +333,6 @@
             <Mnemonic value="a"/>
             <Label value="Acerca de..."/>
         </About>
-        <Help>
-            <Label value="Ayuda"/>
-            <Mnemonic value="a"/>
-        </Help>
         <Label value="Ayuda"/>
         <Mnemonic value="a"/>
     </Help>

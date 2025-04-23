@@ -97,7 +97,7 @@ import java.util.Map;
 				ed1.setCaretPosition(0);
 				ed1.setEditable(false);
 				JScrollPane scrollPane = new JScrollPane(ed1);
-				JDialog helpDialog = new JDialog(null, stringDatabase.getString("Help.Help.Label"),
+				JDialog helpDialog = new JDialog(null, stringDatabase.getString("Help.Label"),
 						ModalityType.APPLICATION_MODAL);
 				helpDialog.add(scrollPane);
 				helpDialog.setSize(600, 600);
@@ -118,7 +118,7 @@ import java.util.Map;
 		expressionPanel.setLayout(new BorderLayout());
 		JPanel helpPanel = new JPanel();
 		helpPanel.setLayout(new BorderLayout());
-		helpButton = new JButton(stringDatabase.getString("Help.Help.Label"));
+		helpButton = new JButton(stringDatabase.getString("Help.Label"));
 		helpButton.setMaximumSize(new Dimension(40, 20));
 		helpPanel.add(helpButton, BorderLayout.LINE_END);
 		expressionPanel.add(helpPanel, BorderLayout.NORTH);
