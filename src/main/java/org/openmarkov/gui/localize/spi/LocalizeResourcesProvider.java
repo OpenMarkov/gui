@@ -252,7 +252,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
      * source.
      */
     private static void addBundlesOfJar(@NotNull URL bundleFile, @NotNull Consumer<? super BundleSource> addBundleSource) {
-        String fileName = bundleFile.toString().substring("jar:file:/".length());
+        String fileName = bundleFile.toString().substring("jar:file:".length());
         int entrySeparatorIndex = fileName.indexOf('!');
         try (JarFile jarFile = new JarFile(fileName.substring(0, entrySeparatorIndex))) {
             String askedEntries = fileName.substring(entrySeparatorIndex + 2);

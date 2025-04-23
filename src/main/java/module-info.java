@@ -1,3 +1,5 @@
+import org.openmarkov.gui.localize.nls.GUIResourceBundleProvider;
+
 module org.openmarkov.gui {
     
     requires org.apache.commons.io;
@@ -39,9 +41,10 @@ module org.openmarkov.gui {
 	exports org.openmarkov.gui.localize.spi;
 	
 	uses org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
-	provides org.openmarkov.gui.localize.spi.LocalizeResourcesProvider with org.openmarkov.gui.localize.GUIResourceBundleProvider;
+	provides org.openmarkov.gui.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;
 	
 	opens icons;
-	
-	
+    exports org.openmarkov.gui.localize.nls;
+    
+    
 }

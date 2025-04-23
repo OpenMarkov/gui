@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.gui.localize.nls.GUIResourceBundleProvider;
 import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
 
 import java.io.File;
