@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GUIResourceBundleProviderTest {
     
-	/*
+	
     @Test
     void testBindings() {
-        String bindingResolution = org.openmarkov.gui.localize.Localize.Add.Text.Label.stringify();
-        String databaseResolution = StringDatabase.getUniqueInstance().getString("Add.Text.Label");
+        String bindingResolution = org.openmarkov.gui.localize.Nls.Buttons.Add.Text.Label.stringify();
+        String databaseResolution = StringDatabase.getUniqueInstance().getString("Buttons", "Add.Text.Label");
         Assertions.assertEquals(bindingResolution, databaseResolution);
-    }*/
+    }
     
 }
