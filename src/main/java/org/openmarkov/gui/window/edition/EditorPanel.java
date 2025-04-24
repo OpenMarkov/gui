@@ -130,6 +130,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * Object Dialog for potentials edition
 	 */
 	PotentialEditDialog potentialsDialog = null;
+
+	AddFindingDialog addFindingDialog = null;
 	/****
 	 * Dialog for link restriction edition
 	 */
@@ -1194,23 +1196,39 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * This method adds a finding in a node.
 	 */
 	public void addFinding() {
-		setPropagationActive(isAutomaticPropagation());
-		Graphics2D g = (Graphics2D) getGraphics();
-		VisualNode node = null;
-		List<VisualNode> selectedNode = visualNetwork.getSelectedNodes();
-		if (selectedNode.size() == 1) {
-			node = selectedNode.get(0);
-			EvidenceCase currentEvidence = (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) ?
-					getCurrentEvidenceCase() :
-					preResolutionEvidence;
-			Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
-			AddFindingDialog nodeAddFinding = new AddFindingDialog(Utilities.getOwner(this), node, finding, g, this);
-			nodeAddFinding.setVisible(true);
+		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
+		VisualNode node = selectedNodes.get(0);
+		EvidenceCase currentEvidence = (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE) ?
+				getCurrentEvidenceCase() :
+				preResolutionEvidence;
+		Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
+
+		if(requestAddFinding(Utilities.getOwner(this), node, finding)){
+			Variable variable = node.getNode().getVariable();
+			if (variable.getVariableType() == VariableType.FINITE_STATES) {
+				String selectedState = addFindingDialog.getSelectedState();
+
+				//TODO exception handled poorly
+                try {
+                    this.setNewFinding(node, new Finding(variable, variable.getState(selectedState)), false);
+                } catch (InvalidStateException e) {
+                    throw new RuntimeException(e);
+                }
+
+            } else {
+				double evidenceValue = addFindingDialog.getEvidenceValue();
+				this.setNewFinding(node, new Finding(variable, evidenceValue), false);
+			}
 		}
 		repaint();
 		setSelectedAllNodes(false);
 		networkPanel.getMainPanel().getInferenceToolBar().setCurrentEvidenceCaseName(currentCase);
 		networkPanel.getMainPanel().getMainPanelMenuAssistant().updateOptionsFindingsDependent(networkPanel);
+	}
+
+	private boolean requestAddFinding(Window owner, VisualNode node, Finding finding){
+		addFindingDialog = new AddFindingDialog(owner,node,finding);
+		return (addFindingDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
 
 	/**

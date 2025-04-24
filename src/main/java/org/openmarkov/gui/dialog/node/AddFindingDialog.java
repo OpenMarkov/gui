@@ -8,11 +8,8 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.PartitionedInterval;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.localize.StringDatabase;
 import org.openmarkov.gui.window.edition.EditorPanel;
@@ -30,7 +27,7 @@ import java.awt.event.ActionListener;
  * @author asaez
  * @version 1.0
  */
-public class AddFindingDialog extends JDialog implements ActionListener {
+public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog implements ActionListener {
 	private static final long serialVersionUID = 5618641549380924577L;
 	/**
 	 * Object where the finding will be set.
@@ -48,38 +45,89 @@ public class AddFindingDialog extends JDialog implements ActionListener {
 
 	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
 
+	private Finding finding;
+
 	/**
-	 * This method initialises this instance.
+	 * Constructor. initialises the instance.
 	 *
-	 * @param owner       window that owns this dialog.
+	 * @param owner window that owns the dialog.
 	 * @param visualNode  the node to which this dialog is associated.
-	 * @param finding
-	 * @param g           the graphics context in which to paint.
-	 * @param editorPanel the editor panel that called this dialog.
+	 * @param finding    the assigned finding
 	 */
-	public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, Graphics2D g,
-			EditorPanel editorPanel) {
+	public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding) {
+		super(owner);
 		this.visualNode = visualNode;
-		this.editorPanel = editorPanel;
-		this.buttonGroup = new ButtonGroup();
+		this.finding = finding;
+		initialize();
+		setMinimumSize(new Dimension(260, getHeight()));
+		int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
+		int posY = owner.getY() + (owner.getHeight() - this.getHeight()) / 2;
+		this.setLocation(posX, posY);
+		setModal(true);
+		setIconImage(null);
+
+	}
+
+
+	@Override public void actionPerformed(ActionEvent actionEvent) {
+		String command = actionEvent.getActionCommand();
+		try {
+			if (command.equals(stringDatabase.getString("AddFindingDialog.OKButton.Label"))) {
+				Variable variable = visualNode.getNode().getVariable();
+				if (variable.getVariableType() == VariableType.FINITE_STATES) {
+					String selectedState = buttonGroup.getSelection().getActionCommand();
+					editorPanel
+							.setNewFinding(visualNode, new Finding(variable, variable.getState(selectedState)), false);
+				} else {
+					double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
+					editorPanel.setNewFinding(visualNode, new Finding(variable, evidenceValue), false);
+				}
+			}
+			setVisible(false);
+		} catch (InvalidStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public int requestValues() {
+
+		setVisible(true);
+
+		return selectedButton;
+	}
+
+	protected void initialize() {
+
+		setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
+		configureComponentsPanel();
+
+
+		pack();
+
+	}
+
+
+	private void configureComponentsPanel() {
+		getComponentsPanel().add(getPrincipalPanel());
+	}
+
+
+	private JPanel getPrincipalPanel() {
 		JPanel principalPanel = new JPanel();
 		JPanel textPanel = new JPanel();
+		this.buttonGroup = new ButtonGroup();
 		JPanel radioButtonsPanel = new JPanel();
-		JPanel buttonsPanel = new JPanel();
-		JButton okButton = new JButton(stringDatabase.getString("AddFindingDialog.OKButton.Label"));
-		JButton cancelButton = new JButton(stringDatabase.getString("AddFindingDialog.CancelButton.Label"));
-		okButton.addActionListener(this);
-		cancelButton.addActionListener(this);
-		setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
-		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(principalPanel, BorderLayout.CENTER);
+
 		principalPanel.setLayout(new BorderLayout());
 		textPanel.setLayout(new GridLayout(3, 1));
 		textPanel.add(new JLabel(""));
 		textPanel.add(new JLabel(visualNode.getNode().getName(), SwingConstants.CENTER));
 		textPanel.add(new JLabel(""));
 		principalPanel.add(textPanel, BorderLayout.NORTH);
+
 		Variable variable = visualNode.getNode().getVariable();
+
 		if (variable.getVariableType() == VariableType.FINITE_STATES) {
 			State[] states = variable.getStates();
 			radioButtonsPanel.setLayout(new GridLayout(states.length, 1));
@@ -117,36 +165,22 @@ public class AddFindingDialog extends JDialog implements ActionListener {
 			namelessPanel.add(evidenceSpinner);
 			principalPanel.add(namelessPanel, BorderLayout.CENTER);
 		}
-		buttonsPanel.add(okButton);
-		buttonsPanel.add(cancelButton);
-		principalPanel.add(buttonsPanel, BorderLayout.SOUTH);
-		pack();
-		setMinimumSize(new Dimension(260, getHeight()));
-		int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
-		int posY = owner.getY() + (owner.getHeight() - this.getHeight()) / 2;
-		this.setLocation(posX, posY);
-		setModal(true);
-		setIconImage(null);
+
+		return principalPanel;
 	}
 
-	@Override public void actionPerformed(ActionEvent actionEvent) {
-		String command = actionEvent.getActionCommand();
-		try {
-			if (command.equals(stringDatabase.getString("AddFindingDialog.OKButton.Label"))) {
-				Variable variable = visualNode.getNode().getVariable();
-				if (variable.getVariableType() == VariableType.FINITE_STATES) {
-					String selectedState = buttonGroup.getSelection().getActionCommand();
-					editorPanel
-							.setNewFinding(visualNode, new Finding(variable, variable.getState(selectedState)), false);
-				} else {
-					double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
-					editorPanel.setNewFinding(visualNode, new Finding(variable, evidenceValue), false);
-				}
-			}
-			setVisible(false);
-		} catch (InvalidStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String getSelectedState(){
+
+		String selectedState = buttonGroup.getSelection().getActionCommand();
+
+		return selectedState;
 	}
+	public double getEvidenceValue(){
+
+		double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
+
+		return evidenceValue;
+	}
+
+
 }
