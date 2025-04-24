@@ -3,12 +3,9 @@ package org.openmarkov.gui.localize;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class GUIResourceBundleProviderTest {
     
-	
+    
     @Test
     void testBindings() {
         String bindingResolution = org.openmarkov.gui.localize.Nls.Buttons.Add.Text.Label.stringify();
