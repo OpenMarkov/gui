@@ -4,7 +4,9 @@
         <StringWithoutParameters>
             <Label value="Esta cadena no tiene ningún parámetro"/>
         </StringWithoutParameters>
+        <StringWithParameters value="Esta cadena tiene un parámetro cuyo valor es: {parameter}"/>
     </Edit>
+    <AStringInTopLevel value="Esta cadena es hija de la raíz"/>
     <BUNDLEFILE>
         <Text value="Español"/>
     </BUNDLEFILE>

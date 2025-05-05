@@ -33,8 +33,8 @@ import org.openmarkov.core.inference.tasks.TemporalEvolution;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.localize.StringDatabase;
-import org.openmarkov.inference.temporalevaluation.tasks.MIDTemporalEvolution;
-import org.openmarkov.inference.variableElimination.tasks.VETemporalEvolution;
+import org.openmarkov.inference.algorithm.temporalevaluation.tasks.MIDTemporalEvolution;
+import org.openmarkov.inference.algorithm.variableElimination.tasks.VETemporalEvolution;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

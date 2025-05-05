@@ -62,10 +62,10 @@ import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.MainPanelMenuAssistant;
 import org.openmarkov.gui.window.edition.mode.EditionMode;
 import org.openmarkov.gui.window.edition.mode.EditionModeManager;
-import org.openmarkov.inference.dlimidevaluation.StrategyManager;
-import org.openmarkov.inference.variableElimination.tasks.VEEvaluation;
-import org.openmarkov.inference.variableElimination.tasks.VEExpectedUtilityDecision;
-import org.openmarkov.inference.variableElimination.tasks.VEPropagation;
+import org.openmarkov.inference.algorithm.dlimidevaluation.StrategyManager;
+import org.openmarkov.inference.algorithm.variableElimination.tasks.VEEvaluation;
+import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUtilityDecision;
+import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
 
 import javax.swing.*;
 import javax.swing.undo.CannotRedoException;
