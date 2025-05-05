@@ -110,7 +110,7 @@ import java.awt.event.ActionListener;
 		newPotential.setComment(oldPotential.getComment());
 		PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		try {
-			probNet.doEdit(edit);
+			probNet.innerEdit(edit);
 		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}

@@ -995,7 +995,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 					// change its color
 					((VisualDecisionNode) visualNode).setHasPolicy(true);
 					//networkChanged = true;
-					setNetworkChangedWithOutEdit(true);
+					//setNetworkChangedWithOutEdit(true);
 				} else { // if user cancels policy imposition then no potential is
 					// restored to the node
 					List<Potential> noPolicy = new ArrayList<Potential>();

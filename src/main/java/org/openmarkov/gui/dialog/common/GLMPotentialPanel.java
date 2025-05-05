@@ -167,7 +167,7 @@ import java.awt.event.ActionListener;
 		PotentialChangeEdit potentialChangeEdit = new PotentialChangeEdit(node.getProbNet(), this.potential,
 				newPotential);
 		try {
-			node.getProbNet().doEdit(potentialChangeEdit);
+			node.getProbNet().innerEdit(potentialChangeEdit);
 		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
 			e.printStackTrace();
 		}
