@@ -16,7 +16,8 @@ import java.io.PrintStream;
  * @version 1.1 jlgozalo - adding exceptions for code quality checking
  */
 public class StandardStream extends PrintStream {
-
+	
+	protected final PrintStream originalOut;
 	/**
 	 * Object where to write messages.
 	 */
@@ -26,11 +27,13 @@ public class StandardStream extends PrintStream {
 	 * Constructor that links this object with the text area.
 	 *
 	 * @param newMessageArea area where the messages are written.
+	 * @param out
 	 */
-	public StandardStream(MessageArea newMessageArea) {
+	public StandardStream(MessageArea newMessageArea, PrintStream out) {
 
 		// ESCA-JAVA0266: use of System.out allowed in this point
 		super(System.out);
+        this.originalOut = out;
 		messageArea = newMessageArea;
 	}
 
@@ -43,9 +46,18 @@ public class StandardStream extends PrintStream {
 	 * @param x the string to be printed.
 	 */
 	@Override public void print(String x) {
-
+		this.originalOut.print(x);
 	}
-
+	
+	/**
+	 * Prints a string and then terminates the line.
+	 *
+	 * @param x the string to be printed.
+	 */
+	@Override public void println(String x) {
+		print(x+ System.lineSeparator());
+	}
+	
 	/**
 	 * Terminate the current line by writing the line separator string. The line
 	 * separator string is defined by the system property line.separator.
@@ -185,7 +197,6 @@ public class StandardStream extends PrintStream {
 	 * Prints an object and then terminates the line.
 	 */
 	@Override public void println(Object x) {
-
 		if (x == null) {
 			println("null");
 		} else {
@@ -193,14 +204,5 @@ public class StandardStream extends PrintStream {
 		}
 	}
 
-	/**
-	 * Prints a string and then terminates the line.
-	 *
-	 * @param x the string to be printed.
-	 */
-	@Override public void println(String x) {
 
-		print(x);
-		println();
-	}
 }

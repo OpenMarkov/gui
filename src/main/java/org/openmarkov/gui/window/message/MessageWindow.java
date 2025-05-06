@@ -97,8 +97,8 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 		this.add(getTopPanel(), BorderLayout.NORTH);
 		this.add(getScrollPane(), BorderLayout.CENTER);
 
-		normalMessageStream = new StandardStreamOut(textArea);
-		errorMessageStream = new StandardStreamErr(textArea);
+		normalMessageStream = new StandardStreamOut(textArea, System.out);
+		errorMessageStream = new StandardStreamErr(textArea, System.err);
 		System.setOut(normalMessageStream);
 		System.setErr(errorMessageStream);
 	}

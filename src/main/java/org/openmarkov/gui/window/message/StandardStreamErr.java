@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.message;
 
+import java.io.PrintStream;
+
 /**
  * This class forwards the character stream to the text area as error messages.
  *
@@ -19,10 +21,10 @@ public class StandardStreamErr extends StandardStream {
 	 * Default constructor.
 	 *
 	 * @param newMessageArea area where the messages are written.
+	 * @param err
 	 */
-	public StandardStreamErr(MessageArea newMessageArea) {
-
-		super(newMessageArea);
+	public StandardStreamErr(MessageArea newMessageArea, PrintStream err) {
+		super(newMessageArea, err);
 	}
 
 	/**
@@ -31,7 +33,7 @@ public class StandardStreamErr extends StandardStream {
 	 * @param x the string to be printed.
 	 */
 	@Override public void print(String x) {
-
+		this.originalOut.print(x);
 		messageArea.writeErrorMessage(x);
 	}
 

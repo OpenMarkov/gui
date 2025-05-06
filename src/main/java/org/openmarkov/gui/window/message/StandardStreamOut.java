@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.window.message;
 
+import java.io.PrintStream;
+
 /**
  * This class forwards the character stream to the text area as normal messages.
  *
@@ -16,13 +18,13 @@ package org.openmarkov.gui.window.message;
 public class StandardStreamOut extends StandardStream {
 
 	/**
-	 * Default constructor.
-	 *
-	 * @param newMessageArea area where the messages are written.
-	 */
-	public StandardStreamOut(MessageArea newMessageArea) {
-
-		super(newMessageArea);
+     * Default constructor.
+     *
+     * @param newMessageArea area where the messages are written.
+     * @param out
+     */
+	public StandardStreamOut(MessageArea newMessageArea, PrintStream out) {
+		super(newMessageArea, out);
 	}
 
 	/**
@@ -31,7 +33,7 @@ public class StandardStreamOut extends StandardStream {
 	 * @param x the string to be printed.
 	 */
 	@Override public void print(String x) {
-
+		this.originalOut.print(x);
 		messageArea.writeInformationMessage(x);
 	}
 
