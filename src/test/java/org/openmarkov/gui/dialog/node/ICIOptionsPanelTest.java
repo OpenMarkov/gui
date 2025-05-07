@@ -138,8 +138,8 @@ public class ICIOptionsPanelTest {
 		pU.getTablePotential().values[3] = 4;
 		//CMF
 		simpleProbNet = new ProbNet();
-		simpleProbNet.addConstraint(new NoCycle(), true);
-		simpleProbNet.addConstraint(new OnlyDirectedLinks(), true);
+		simpleProbNet.addConstraint(new NoCycle());
+		simpleProbNet.addConstraint(new OnlyDirectedLinks());
 		// add potentials and variables
 		simpleProbNet.addPotential(pA); // add variable and potential
 		simpleProbNet.addNode(D, NodeType.DECISION);
