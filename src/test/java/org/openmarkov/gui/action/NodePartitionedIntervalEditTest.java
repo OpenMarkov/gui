@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.test.TestSpeed;
 
 
 /**
@@ -87,6 +88,7 @@ public class NodePartitionedIntervalEditTest {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
+	@Tag(TestSpeed.SLOW)
 	@Test public final void testUndoRedo() throws Exception {
 
 		assertEquals(node1.getVariable().getPartitionedInterval().

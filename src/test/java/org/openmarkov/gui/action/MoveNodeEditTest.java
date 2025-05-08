@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.graphic.VisualChanceNode;
 import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualNode;
@@ -90,6 +91,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
+	@Tag(TestSpeed.SLOW)
 	@Test public final void testUndoRedo() throws Exception {
 
 		assertEquals(node1.getCoordinateX(), 21.0, 0.1);

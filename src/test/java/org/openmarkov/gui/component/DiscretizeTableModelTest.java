@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.dialog.common.KeyTable;
 
 
@@ -89,6 +90,7 @@ public class DiscretizeTableModelTest {
 	/**
 	 * This method tests the method getColumnClass
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testIsCellEditable() {
 		assertFalse(this.discretizeTable.isCellEditable(0, COLUMN_ID));
 		assertTrue(this.discretizeTable.isCellEditable(0, COLUMN_INTERVAL_NAME));

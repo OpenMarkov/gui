@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.*;
 
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.localize.StringDatabase;
 
 
@@ -84,6 +85,7 @@ public class PurposeTest {
 	/**
 	 * This method checks that all the purposes correspond to their index.
 	 */
+	@Tag(TestSpeed.SLOW)
 	@Test public final void testGetIndex() {
 		assertEquals(Purpose.getIndex(""), 0);
 		assertEquals(Purpose.getIndex("cost"), 1);

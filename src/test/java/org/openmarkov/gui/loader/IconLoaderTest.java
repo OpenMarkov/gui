@@ -9,6 +9,7 @@ package org.openmarkov.gui.loader;
 
 import org.junit.jupiter.api.*;
 
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.loader.element.IconLoader;
 
 import javax.swing.*;
@@ -45,6 +46,7 @@ public class IconLoaderTest {
 	 *
 	 * @throws MissingResourceException if any icon doesn't exist.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testLoad() throws MissingResourceException {
 		Icon icon;
 

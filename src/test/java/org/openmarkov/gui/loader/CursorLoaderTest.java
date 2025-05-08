@@ -7,7 +7,9 @@
 
 package org.openmarkov.gui.loader;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.loader.element.CursorLoader;
 
 import java.awt.*;
@@ -39,6 +41,7 @@ public class CursorLoaderTest {
     /**
      * test to verify OK
      */
+    @Tag(TestSpeed.MEDIUM)
     @Test public void testLoadOK() {
         Cursor cursor = CursorLoader.CURSOR_DEFAULT;
         Cursor newCursor = new Cursor(Cursor.DEFAULT_CURSOR);

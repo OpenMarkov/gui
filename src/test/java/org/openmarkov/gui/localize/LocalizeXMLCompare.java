@@ -12,10 +12,8 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.located.LocatedJDOMFactory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
+import org.openmarkov.core.test.TestSpeed;
 import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
 
 import java.io.File;
@@ -83,6 +81,7 @@ public class LocalizeXMLCompare {
         }
     }
     
+    @Tag(TestSpeed.SLOW)
     @Test public void checkSameStructure() {
         for (int i = 0; i < englishFiles.size(); i++) {
             String englishXML = englishFiles.get(i);
