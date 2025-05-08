@@ -109,7 +109,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         newPotential.setComment(oldPotential.getComment());
         PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
         try {
-            probNet.innerEdit(edit);
+            probNet.doEdit(edit);
         } catch (ConstraintViolationException
 //                | CanNotDoEditException
                 | NonProjectablePotentialException
