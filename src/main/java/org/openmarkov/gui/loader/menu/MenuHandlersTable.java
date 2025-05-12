@@ -102,7 +102,7 @@ public class MenuHandlersTable {
 		if (mih == null) {
 			try {
 				Class<?> classOfHandler = Class.forName(sName);
-				MenuItemHandler newHandler = (MenuItemHandler) classOfHandler.newInstance();
+				MenuItemHandler newHandler = (MenuItemHandler) classOfHandler.getDeclaredConstructor().newInstance();
 				registerMenuItemHandler(sName, newHandler);
 				mih = newHandler;
 			} catch (Exception ex) {

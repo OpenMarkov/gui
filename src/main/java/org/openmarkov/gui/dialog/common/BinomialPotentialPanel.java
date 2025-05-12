@@ -92,7 +92,7 @@ import java.awt.*;
 
 				double thetaValue = oldPotential.gettheta();
 				if ((thetaValue >= 0) && (thetaValue <= 1.00)) {
-					thetaTextField.setText((new Double(thetaValue)).toString());
+					thetaTextField.setText(String.valueOf(thetaValue));
 				}
 
 			}

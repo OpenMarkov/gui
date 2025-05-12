@@ -59,14 +59,14 @@ import java.util.Properties;
 		Properties properties = System.getProperties();
 		String osName = properties.getProperty("os.name");
 		if (osName.toLowerCase().contains("windows")) {
-			componentVariables.put("windows", new Boolean(true));
+			componentVariables.put("windows", Boolean.TRUE);
 		} else {
-			componentVariables.put("windows", new Boolean(false));
+			componentVariables.put("windows", Boolean.FALSE);
 		}
 		if (osName.toLowerCase().contains("linux") || osName.toLowerCase().contains("unix")) {
-			componentVariables.put("unix", new Boolean(true));
+			componentVariables.put("unix", Boolean.TRUE);
 		} else {
-			componentVariables.put("unix", new Boolean(false));
+			componentVariables.put("unix", Boolean.FALSE);
 		}
 
 		String netsPath = initialPath + "openmarkov\\nets\\";

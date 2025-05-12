@@ -133,13 +133,12 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		for (ZoomMenuToolBar menu : zoomMenus) {
 			menu.setZoom(value);
 		}
-		Double dd = new Double(value);
-		if (dd.equals(Zoom.MIN_VALUE)) {
+		if (value == Zoom.MIN_VALUE) {
 			setOptionEnabled(ActionCommands.ZOOM_OUT, false);
 		} else {
 			setOptionEnabled(ActionCommands.ZOOM_OUT, true);
 		}
-		if (dd.equals(Zoom.MAX_VALUE)) {
+		if (value == Zoom.MAX_VALUE) {
 			setOptionEnabled(ActionCommands.ZOOM_IN, false);
 		} else {
 			setOptionEnabled(ActionCommands.ZOOM_IN, true);

@@ -20,6 +20,7 @@ import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.io.format.annotation.FormatManager;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,8 +133,8 @@ public class NetsIO {
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
-			IllegalAccessException, InstantiationException {
+            throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
+            IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
 		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension, fileFormat);
@@ -195,8 +196,8 @@ public class NetsIO {
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, String fileName, String fileFormat)
-			throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
-			IllegalAccessException, InstantiationException {
+            throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
+            IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
 		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);
 	}

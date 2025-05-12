@@ -551,12 +551,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * @param value new zoom.
 	 */
 	public void setZoom(double value) {
-		Dimension newDimension = null;
-		Double dd = new Double(zoom.getZoom());
-		Double dd1 = new Double(value);
-		if (dd.compareTo(dd1) != 0) { // jlgozalo. 24/08 fix condition to !=
+		if (Double.compare(zoom.getZoom(), value)!= 0) { // jlgozalo. 24/08 fix condition to !=
 			zoom.setZoom(value);
-			newDimension = new Dimension((int) Math.round(getNewWidth()), (int) Math.round(getNewHeight()));
+			Dimension newDimension = new Dimension((int) Math.round(getNewWidth()), (int) Math.round(getNewHeight()));
 			setPreferredSize(newDimension);
 			setSize(newDimension);
 			adjustPanelDimension();

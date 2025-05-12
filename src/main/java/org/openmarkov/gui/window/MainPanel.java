@@ -37,7 +37,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * Object that allows to access some private methods for this.
 	 */
-	private static MainPanel mainPanel = null;
+	private static MainPanel MAIN_PANEL = null;
 	/**
 	 * Object that manages the MultiDocument Interface.
 	 */
@@ -93,8 +93,8 @@ public class MainPanel extends JPanel {
 	 */
 	public MainPanel(JFrame parentFrame) {
 
-		mainPanel = this;
-		mainPanel.setName("MainPanel");
+		MAIN_PANEL = this;
+		MAIN_PANEL.setName("MainPanel");
 		mainFrame = parentFrame;
 		mainFrame.setName(parentFrame.getName());
 		toolbarManager = new ToolbarManager(this);
@@ -110,11 +110,11 @@ public class MainPanel extends JPanel {
 	 */
 	public static MainPanel getUniqueInstance(JFrame parentFrame) {
 
-		if (mainPanel == null) {
+		if (MAIN_PANEL == null) {
 			new MainPanel(parentFrame);
 		}
 
-		return mainPanel;
+		return MAIN_PANEL;
 
 	}
 
@@ -261,15 +261,15 @@ public class MainPanel extends JPanel {
 	 */
 	protected void setToolBarPanel(int barType) {
 		if (barType == NetworkPanel.EDITION_WORKING_MODE) {
-			mainPanel.getToolBarPanel().remove(mainPanel.getInferenceToolBar());
-			mainPanel.getToolBarPanel().add(mainPanel.getEditionToolBar(), 1);
+			MAIN_PANEL.getToolBarPanel().remove(MAIN_PANEL.getInferenceToolBar());
+			MAIN_PANEL.getToolBarPanel().add(MAIN_PANEL.getEditionToolBar(), 1);
 		} else {
-			mainPanel.getToolBarPanel().remove(mainPanel.getEditionToolBar());
-			mainPanel.getInferenceToolBar().setExpansionThreshold(getMainPanelListenerAssistant().
+			MAIN_PANEL.getToolBarPanel().remove(MAIN_PANEL.getEditionToolBar());
+			MAIN_PANEL.getInferenceToolBar().setExpansionThreshold(getMainPanelListenerAssistant().
 					getCurrentNetworkPanel().getExpansionThreshold());
-			mainPanel.getToolBarPanel().add(mainPanel.getInferenceToolBar(), 1);
+			MAIN_PANEL.getToolBarPanel().add(MAIN_PANEL.getInferenceToolBar(), 1);
 		}
-		mainPanel.initialize();
+		MAIN_PANEL.initialize();
 
 	}
 
@@ -370,7 +370,7 @@ public class MainPanel extends JPanel {
 	public MainPanelListenerAssistant getMainPanelListenerAssistant() {
 
 		if (mainPanelListenerAssistant == null) {
-			mainPanelListenerAssistant = new MainPanelListenerAssistant(this.mainPanel);
+			mainPanelListenerAssistant = new MainPanelListenerAssistant(MainPanel.MAIN_PANEL);
 		}
 
 		return mainPanelListenerAssistant;

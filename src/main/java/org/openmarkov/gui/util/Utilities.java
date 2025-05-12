@@ -58,7 +58,7 @@ public class Utilities {
 	 */
 	public static boolean noMouseModifiers(MouseEvent e) {
 
-		return ((e.getModifiers() & 0xF) == 0);
+		return ((e.getModifiersEx() & 0xF) == 0);
 
 	}
 

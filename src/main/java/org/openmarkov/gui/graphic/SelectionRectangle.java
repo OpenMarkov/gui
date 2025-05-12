@@ -157,13 +157,13 @@ public class SelectionRectangle {
 	 */
 	public void paint(Graphics2D g) {
 
-		Double aPoint = new Double(w);
-		Double bPoint = new Double(h);
+		double width = this.w;
+		double height = this.h;
 		g.setStroke(DASHED_STROKE);
 		g.setPaint(FOREGROUND_COLOR);
 
-		if (!(aPoint.equals(0) && bPoint.equals(0))) {
-			g.draw(rectangleSelection);
+		if (!(width == 0.0 && height == 0.0)) {
+			g.draw(this.rectangleSelection);
 		}
 
 	}

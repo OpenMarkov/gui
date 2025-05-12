@@ -264,7 +264,7 @@ import java.util.EventObject;
 		} else {
 			threshold = cep.getThreshold(intervalIndex - 1);
 		}
-		return new Double(Util.roundWithSignificantFigures(threshold, DEFAULT_NUM_DECIMALS)).toString();
+		return String.valueOf(Util.roundWithSignificantFigures(threshold, DEFAULT_NUM_DECIMALS));
 	}
 
 	/**
@@ -283,7 +283,7 @@ import java.util.EventObject;
 		if (threshold == Double.POSITIVE_INFINITY) {
 			lambdaRight = "+\u221E"; // +Inifinite
 		} else {
-			lambdaRight = new Double(Util.roundWithSignificantFigures(threshold, DEFAULT_NUM_DECIMALS)).toString();
+			lambdaRight = String.valueOf(Util.roundWithSignificantFigures(threshold, DEFAULT_NUM_DECIMALS));
 		}
 		return lambdaRight;
 	}

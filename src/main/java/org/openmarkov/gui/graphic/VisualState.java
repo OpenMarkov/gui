@@ -300,10 +300,10 @@ public class VisualState extends VisualElement {
 	 */
 	private void paintNotCompiled(Double x, Double y, Graphics2D g) {
 		Double aux1 = x;
-		int aux2 = new Double(InnerBox.BAR_FULL_LENGTH / 20).intValue();
+		int aux2 = Double.valueOf(InnerBox.BAR_FULL_LENGTH / 20).intValue();
 		while (aux1 < (x + InnerBox.BAR_FULL_LENGTH)) {
-			g.drawLine(aux1.intValue() + (aux2 / 2), new Double(y + InnerBox.BAR_HEIGHT / 2).intValue(),
-					aux1.intValue() + aux2 + (aux2 / 2), new Double(y + InnerBox.BAR_HEIGHT / 2).intValue());
+			g.drawLine(aux1.intValue() + (aux2 / 2), Double.valueOf(y + InnerBox.BAR_HEIGHT / 2).intValue(),
+					aux1.intValue() + aux2 + (aux2 / 2), Double.valueOf(y + InnerBox.BAR_HEIGHT / 2).intValue());
 			aux1 += (aux2 * 2);
 		}
 	}
@@ -383,14 +383,14 @@ public class VisualState extends VisualElement {
 		if (getVisualNode().getVisualNetwork().isPropagationActive()) {
 			for (int i = 0; i < stateValues.size(); i++) {
 				g.setPaint(Color.BLACK);
-				g.drawLine(new Double(xBar - 1).intValue(),
-						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
-						new Double(xBar - 1).intValue(),
-						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue());
-				g.drawLine(new Double(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
-						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
-						new Double(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
-						new Double(yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue());
+				g.drawLine(Double.valueOf(xBar - 1).intValue(),
+						 Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
+						 Double.valueOf(xBar - 1).intValue(),
+						 Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue());
+				g.drawLine( Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
+						 Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) - 1).intValue(),
+						 Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
+						 Double.valueOf(yFirstBar + (i * InnerBox.BAR_HEIGHT) + InnerBox.BAR_HEIGHT).intValue());
 				setColorCaseDependent(i, g);
 				double barLength = 0.0;
 				if (isNumeric) {
@@ -417,11 +417,11 @@ public class VisualState extends VisualElement {
 			}
 		} else {
 			g.setPaint(Color.BLACK);
-			g.drawLine(new Double(xBar - 1).intValue(), new Double(yFirstBar - 1).intValue(),
-					new Double(xBar - 1).intValue(), new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
-			g.drawLine(new Double(xBar + InnerBox.BAR_FULL_LENGTH).intValue(), new Double(yFirstBar - 1).intValue(),
-					new Double(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
-					new Double(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
+			g.drawLine( Double.valueOf(xBar - 1).intValue(),  Double.valueOf(yFirstBar - 1).intValue(),
+					 Double.valueOf(xBar - 1).intValue(),  Double.valueOf(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
+			g.drawLine( Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),  Double.valueOf(yFirstBar - 1).intValue(),
+					 Double.valueOf(xBar + InnerBox.BAR_FULL_LENGTH).intValue(),
+					 Double.valueOf(yFirstBar + InnerBox.BAR_HEIGHT).intValue());
 			if (getVisualNode().hasAnyFinding()) {
 				if (evidence.get(currentStateValue)) {
 					setColorCaseDependent(currentStateValue, g);
