@@ -8,13 +8,12 @@
 package org.openmarkov.gui.menutoolbar.plugin;
 
 import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.gui.localize.LocalizedException;
+import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.gui.menutoolbar.toolbar.ToolBarBasic;
 import org.openmarkov.gui.window.MainPanel;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 
-import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -16,7 +16,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.gui.dialog.common.CPTablePanel;
 import org.openmarkov.gui.dialog.common.ICIPotentialsTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

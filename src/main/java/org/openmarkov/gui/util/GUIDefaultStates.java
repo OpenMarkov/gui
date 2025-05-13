@@ -9,7 +9,7 @@ package org.openmarkov.gui.util;
 
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import java.util.ArrayList;
 

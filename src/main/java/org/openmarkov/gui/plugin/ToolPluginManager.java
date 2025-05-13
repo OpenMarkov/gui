@@ -8,7 +8,7 @@
 package org.openmarkov.gui.plugin;
 
 import org.openmarkov.gui.localize.LocalizedMenuItem;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.plugin.PluginLoader;
 import org.openmarkov.plugin.service.FilterIF;
 import org.openmarkov.plugin.service.PluginLoaderIF;

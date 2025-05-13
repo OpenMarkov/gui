@@ -11,7 +11,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import java.awt.*;
 import java.text.MessageFormat;

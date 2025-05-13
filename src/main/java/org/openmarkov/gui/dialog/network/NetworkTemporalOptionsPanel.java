@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.CycleLength.Unit;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 /**
  * Panel to set network temporal options.

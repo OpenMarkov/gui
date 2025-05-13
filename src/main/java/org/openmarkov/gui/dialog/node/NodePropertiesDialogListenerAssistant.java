@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

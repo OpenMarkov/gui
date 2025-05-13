@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

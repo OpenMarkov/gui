@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.localize;
 
+import org.openmarkov.core.localize.StringDatabase;
+
 /**
  * Wrapper class for GUI localization
  *

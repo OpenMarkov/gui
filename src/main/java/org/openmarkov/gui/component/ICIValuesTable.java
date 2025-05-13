@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.gui.action.ICITablePotentialValueEdit;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;

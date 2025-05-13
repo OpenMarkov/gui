@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.ProbNetOperations;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

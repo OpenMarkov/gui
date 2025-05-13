@@ -18,7 +18,7 @@ import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.oopn.VisualOONetwork;
 import org.openmarkov.gui.oopn.VisualReferenceLink;

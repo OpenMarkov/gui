@@ -12,7 +12,7 @@ import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.PotentialPanelPlugin;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

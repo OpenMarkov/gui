@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
 import org.openmarkov.gui.util.Utilities;
 

@@ -12,8 +12,8 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.localize.LocalizedException;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;

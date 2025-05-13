@@ -14,7 +14,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.located.LocatedJDOMFactory;
 import org.junit.jupiter.api.*;
 import org.openmarkov.core.test.TestSpeed;
-import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
+import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
 
 import java.io.File;
 import java.io.IOException;

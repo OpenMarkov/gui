@@ -20,7 +20,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.gui.action.LinkRestrictionPotentialValueEdit;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;

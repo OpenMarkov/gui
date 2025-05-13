@@ -20,7 +20,7 @@ import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.gui.dialog.common.PolicyTypePanel;
 import org.openmarkov.gui.dialog.common.PotentialPanel;
 import org.openmarkov.gui.dialog.common.TablePotentialPanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import java.awt.*;
 import java.util.ArrayList;

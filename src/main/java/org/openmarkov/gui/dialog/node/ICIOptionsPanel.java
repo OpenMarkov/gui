@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

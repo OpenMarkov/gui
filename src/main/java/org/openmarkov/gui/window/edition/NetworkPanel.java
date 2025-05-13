@@ -20,7 +20,7 @@ import org.openmarkov.gui.graphic.SelectionListener;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenuFactory;
 import org.openmarkov.gui.oopn.VisualOONetwork;
 import org.openmarkov.gui.window.MainPanel;

@@ -17,7 +17,7 @@ import org.openmarkov.gui.component.RevelationArcDiscretizeTablePanel;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.gui.dialog.common.PrefixedKeyTablePanel;
 import org.openmarkov.gui.dialog.common.SelectableKeyTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

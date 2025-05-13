@@ -24,7 +24,7 @@ import org.openmarkov.gui.action.NodePartitionedIntervalEdit;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.dialog.common.KeyTablePanel;
 import org.openmarkov.gui.loader.element.IconLoader;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
 import javax.swing.*;

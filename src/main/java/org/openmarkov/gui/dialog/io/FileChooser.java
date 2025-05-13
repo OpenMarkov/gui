@@ -8,7 +8,7 @@
 package org.openmarkov.gui.dialog.io;
 
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

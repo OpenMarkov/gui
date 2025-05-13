@@ -14,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 /**
  * Panel to set network decision criteria.

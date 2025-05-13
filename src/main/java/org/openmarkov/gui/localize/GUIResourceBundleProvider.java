@@ -2,7 +2,7 @@ package org.openmarkov.gui.localize;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.annotation_processing.localization_bindings.BindLocalizations;
-import org.openmarkov.gui.localize.spi.LocalizeResourcesProvider;
+import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
 
 @BindLocalizations(filePath = "gui/localize/Menus_en.xml", fileIsDirectoryChild = true)
 public class GUIResourceBundleProvider implements LocalizeResourcesProvider {

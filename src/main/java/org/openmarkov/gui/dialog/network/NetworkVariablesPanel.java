@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.constraint.OnlyContinuousVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
 import javax.swing.*;

@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

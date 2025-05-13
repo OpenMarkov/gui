@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.util;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import java.util.ArrayList;
 import java.util.MissingResourceException;

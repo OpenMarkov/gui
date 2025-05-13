@@ -8,8 +8,8 @@
 package org.openmarkov.gui.configuration;
 
 import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.gui.localize.LocalizedException;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

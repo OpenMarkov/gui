@@ -11,7 +11,7 @@ import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.window.edition.EditorPanel;
 
 import javax.swing.*;

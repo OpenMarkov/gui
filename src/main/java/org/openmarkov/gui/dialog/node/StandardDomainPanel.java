@@ -8,7 +8,7 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

@@ -7,9 +7,10 @@
 
 package org.openmarkov.gui.menutoolbar.menu;
 
-import org.openmarkov.gui.localize.LocaleChangeEvent;
-import org.openmarkov.gui.localize.LocaleChangeListener;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.LocaleChangeEvent;
+import org.openmarkov.core.localize.LocaleChangeListener;
+import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.localize.UpdateLocalizationInComponents;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 
@@ -100,8 +101,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * menus, and strings in the component to the new selected language
 	 */
 	public void processLocaleChange(LocaleChangeEvent event) {
-
-		StringDatabase.getUniqueInstance().allComponentsUpdateSetText(this);
+		UpdateLocalizationInComponents.allComponentsUpdateSetText(this);
 		repaint();
 	}
 

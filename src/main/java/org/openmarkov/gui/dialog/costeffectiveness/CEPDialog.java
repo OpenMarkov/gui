@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.potential.StrategyTree;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

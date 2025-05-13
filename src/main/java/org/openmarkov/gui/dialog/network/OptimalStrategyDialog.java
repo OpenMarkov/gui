@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.treeadd.TreeADDCellRenderer;
 import org.openmarkov.gui.dialog.treeadd.TreeADDEditorPanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

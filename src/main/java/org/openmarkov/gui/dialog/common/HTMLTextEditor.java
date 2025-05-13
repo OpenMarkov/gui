@@ -11,7 +11,7 @@ package org.openmarkov.gui.dialog.common;
 //import com.hexidec.ekit.compoment.ExtendedHTMLDocument;
 //import com.hexidec.ekit.compoment.ExtendedHTMLEditorKit;
 import org.openmarkov.gui.loader.element.OpenMarkovLogoIcon;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 
 import javax.swing.*;

@@ -18,7 +18,7 @@ import org.openmarkov.gui.component.ICIValuesTableCellRenderer;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 import org.openmarkov.gui.component.ValuesTableModel;
 import org.openmarkov.gui.dialog.node.ICIOptionsPanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

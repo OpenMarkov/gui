@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.gui.dialog.CommentListener;
-import org.openmarkov.gui.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit;

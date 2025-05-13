@@ -14,7 +14,6 @@ import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction;
@@ -24,7 +23,7 @@ import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
 import org.openmarkov.gui.component.PotentialsTablePanelOperations;
-import org.openmarkov.gui.localize.LocalizedException;
+import org.openmarkov.core.localize.LocalizedException;
 
 import java.util.List;
 

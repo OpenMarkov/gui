@@ -25,8 +25,8 @@ import org.openmarkov.gui.action.NodeDecisionCriteriaEdit;
 import org.openmarkov.gui.constraint.AlwaysObservedPropertyValidator;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.localize.LocalizedException;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.Purpose;
 
 import javax.swing.*;

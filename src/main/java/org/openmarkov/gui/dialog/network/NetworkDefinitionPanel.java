@@ -16,8 +16,8 @@ import org.openmarkov.core.model.network.type.plugin.NetworkTypeManager;
 import org.openmarkov.core.oopn.OOPNet;
 import org.openmarkov.gui.dialog.CommentListener;
 import org.openmarkov.gui.dialog.common.CommentHTMLScrollPane;
-import org.openmarkov.gui.localize.LocalizedException;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.LocalizedException;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

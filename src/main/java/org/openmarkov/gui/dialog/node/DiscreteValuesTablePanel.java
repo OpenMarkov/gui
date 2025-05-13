@@ -10,7 +10,7 @@ package org.openmarkov.gui.dialog.node;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.dialog.common.PrefixedKeyTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.GUIDefaultStates;
 
 import javax.swing.*;

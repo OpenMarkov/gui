@@ -7,8 +7,6 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.gui.localize.StringDatabase;
-
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

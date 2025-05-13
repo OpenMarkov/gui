@@ -26,7 +26,7 @@ import org.openmarkov.gui.graphic.VisualDecisionNode;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.gui.graphic.VisualUtilityNode;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.common.MenuAssistant;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;

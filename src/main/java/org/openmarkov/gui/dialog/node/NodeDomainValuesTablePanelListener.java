@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.gui.action.PartitionedIntervalEdit;
 import org.openmarkov.gui.component.DiscretizeTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

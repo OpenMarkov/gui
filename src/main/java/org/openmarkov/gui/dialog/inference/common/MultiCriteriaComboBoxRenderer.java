@@ -10,7 +10,7 @@ package org.openmarkov.gui.dialog.inference.common;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.gui.component.ValuesTableCellRenderer;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

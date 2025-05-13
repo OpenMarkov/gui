@@ -8,7 +8,7 @@
 package org.openmarkov.gui.graphic;
 
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.awt.*;

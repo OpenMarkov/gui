@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.menutoolbar.toolbar;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 
 import javax.swing.*;

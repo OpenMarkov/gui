@@ -25,7 +25,7 @@ import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
 import org.openmarkov.gui.localize.LocalizedMenuItem;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.util.Utilities;
 
 import javax.swing.*;

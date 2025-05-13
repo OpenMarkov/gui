@@ -9,7 +9,7 @@
 package org.openmarkov.gui.oopn;
 
 import org.openmarkov.gui.loader.element.IconLoader;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
 import org.openmarkov.gui.menutoolbar.plugin.Toolbar;
 import org.openmarkov.gui.menutoolbar.toolbar.ToolBarBasic;

@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.io;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import java.io.File;
 

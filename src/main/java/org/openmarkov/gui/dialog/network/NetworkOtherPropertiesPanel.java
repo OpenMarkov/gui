@@ -9,7 +9,7 @@ package org.openmarkov.gui.dialog.network;
 
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.dialog.common.PrefixedOtherPropertiesTablePanel;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 

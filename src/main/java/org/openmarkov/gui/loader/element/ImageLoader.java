@@ -7,16 +7,8 @@
 
 package org.openmarkov.gui.loader.element;
 
-import org.openmarkov.gui.localize.StringDatabase;
-
 import javax.swing.*;
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.MissingResourceException;
-import java.util.Objects;
 
 /**
  * This class is used to load icons from a folder.

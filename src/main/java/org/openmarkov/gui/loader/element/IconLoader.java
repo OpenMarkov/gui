@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.loader.element;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import java.net.URL;

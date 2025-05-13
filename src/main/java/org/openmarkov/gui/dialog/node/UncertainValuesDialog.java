@@ -32,7 +32,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.dialog.common.OkCancelHorizontalDialog;
 import org.openmarkov.gui.loader.element.IconLoader;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

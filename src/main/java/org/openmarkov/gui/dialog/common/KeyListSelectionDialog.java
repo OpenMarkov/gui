@@ -7,7 +7,7 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

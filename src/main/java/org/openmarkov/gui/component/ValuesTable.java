@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.gui.action.TablePotentialValueEdit;
 import org.openmarkov.gui.dialog.common.KeyTable;
-import org.openmarkov.gui.localize.StringDatabase;
+import org.openmarkov.core.localize.StringDatabase;
 
 import javax.swing.*;
 import javax.swing.event.UndoableEditEvent;
