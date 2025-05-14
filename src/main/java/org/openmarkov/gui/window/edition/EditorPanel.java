@@ -986,13 +986,11 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				List<Potential> policies = new ArrayList<Potential>();
 				policies.add(policy);
 				node.setPotentials(policies);
-				PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(Utilities.getOwner(this), node, false);
-				imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
-				if (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
+
+				if (requestImposePolicyValues(Utilities.getOwner(this),node)) {
 					// change its color
 					((VisualDecisionNode) visualNode).setHasPolicy(true);
-					//networkChanged = true;
-					//setNetworkChangedWithOutEdit(true);
+
 				} else { // if user cancels policy imposition then no potential is
 					// restored to the node
 					List<Potential> noPolicy = new ArrayList<Potential>();
@@ -1054,6 +1052,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		setSelectedAllNodes(false);
 		repaint();
 	}
+
+	private boolean requestImposePolicyValues(Window owner, Node node) {
+		PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, node, false);
+		imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
+		return (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
+	}
+
 
 	/**
 	 * This method shows the expected utility of a decision node.
@@ -1200,7 +1205,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				preResolutionEvidence;
 		Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
 
-		if(requestAddFinding(Utilities.getOwner(this), node, finding)){
+		if(requestAddFindingValues(Utilities.getOwner(this), node, finding)){
 			Variable variable = node.getNode().getVariable();
 			if (variable.getVariableType() == VariableType.FINITE_STATES) {
 				String selectedState = addFindingDialog.getSelectedState();
@@ -1223,7 +1228,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		networkPanel.getMainPanel().getMainPanelMenuAssistant().updateOptionsFindingsDependent(networkPanel);
 	}
 
-	private boolean requestAddFinding(Window owner, VisualNode node, Finding finding){
+	private boolean requestAddFindingValues(Window owner, VisualNode node, Finding finding){
 		addFindingDialog = new AddFindingDialog(owner,node,finding);
 		return (addFindingDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}

@@ -241,6 +241,39 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			Collections.sort(filteredPotentialNames);
 			potentialTypeComboBox = new JComboBox<>((String[]) filteredPotentialNames.toArray(new String[0]));
 			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
+			//------------------------
+
+			// Compute the number of columns of the conditional probability table
+			int tableColumns = 1;
+			for (Node parent: node.getParents()) {
+				tableColumns *= parent.getVariable().getNumStates();
+			}
+			System.out.println(tableColumns);
+			// Show small uniform potentials as table potentials. Saves clicks
+			if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+
+				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
+                try {
+                    setPotentialEdit.doEdit();
+                } catch (DoEditException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+			// Show small uniform potentials as 'Exact' potentials. Saves clicks
+			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
+
+				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
+				try {
+					setPotentialEdit.doEdit();
+				} catch (DoEditException e) {
+					throw new RuntimeException(e);
+				}
+
+			}
+
+
+			//-----------------------
 			potentialTypeComboBox.setSelectedItem(currentPotentialType);
 			potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
 			potentialTypeComboBox.setName("jComboBoxRelationType");
@@ -249,20 +282,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 					potentialTypeChanged(evt);
 				}
 			});
-            // Compute the number of columns of the conditional probability table
-            int tableColumns = 1;
-            for (Node parent: node.getParents()) {
-                tableColumns *= parent.getVariable().getNumStates();
-            }
-			System.out.println(tableColumns);
-            // Show small uniform potentials as table potentials. Saves clicks
-            if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-                potentialTypeComboBox.setSelectedItem("Table");
-            }
-			// Show small uniform potentials as 'Exact' potentials. Saves clicks
-			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-				potentialTypeComboBox.setSelectedItem("Exact");
-			}
+
 			potentialTypeComboBox.setEnabled(!readOnly);
 		}
 		return potentialTypeComboBox;
