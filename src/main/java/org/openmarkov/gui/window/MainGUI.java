@@ -116,12 +116,7 @@ import java.awt.*;
 	 * LastConnection preference to current Time
 	 */
 	private static void doReadPreferences() {
-
-		final boolean initialised = OpenMarkovPreferences
-				.getBoolean(OpenMarkovPreferencesKeys.INITIALIZED, OpenMarkovPreferences.OPENMARKOV_PREFERENCES, false);
-		if (!initialised) {
-			OpenMarkovPreferences.setDefaultPreferences();
-		}
+		OpenMarkovPreferences.ensurePreferenceAreInitialized();
 		OpenMarkovPreferences
 				.set(OpenMarkovPreferencesKeys.LAST_CONNECTION, Double.toString(System.currentTimeMillis()),
 						OpenMarkovPreferences.OPENMARKOV_PREFERENCES);

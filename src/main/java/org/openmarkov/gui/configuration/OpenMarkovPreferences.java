@@ -51,7 +51,17 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 	private OpenMarkovPreferences() {
 		stringDatabase = StringDatabase.getUniqueInstance();
 	}
-
+	
+	static { OpenMarkovPreferences.ensurePreferenceAreInitialized(); }
+	
+	public static void ensurePreferenceAreInitialized(){
+		final boolean initialised = OpenMarkovPreferences
+				.getBoolean(OpenMarkovPreferencesKeys.INITIALIZED, OpenMarkovPreferences.OPENMARKOV_PREFERENCES, false);
+		if (!initialised) {
+			OpenMarkovPreferences.setDefaultPreferences();
+		}
+	}
+	
 	/**
 	 * get a string <code>Preference</code> with a specific key
 	 *
@@ -281,7 +291,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 //					stringDatabase.getString(ex.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
+	
 	/**
 	 * set the default preferences for OpenMarkov
 	 */
