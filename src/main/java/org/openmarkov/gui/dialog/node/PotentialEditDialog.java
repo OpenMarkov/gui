@@ -241,7 +241,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			Collections.sort(filteredPotentialNames);
 			potentialTypeComboBox = new JComboBox<>((String[]) filteredPotentialNames.toArray(new String[0]));
 			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
-			//------------------------
 
 			// Compute the number of columns of the conditional probability table
 			int tableColumns = 1;
@@ -273,7 +272,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			}
 
 
-			//-----------------------
 			potentialTypeComboBox.setSelectedItem(currentPotentialType);
 			potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
 			potentialTypeComboBox.setName("jComboBoxRelationType");
