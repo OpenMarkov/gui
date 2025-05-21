@@ -8,10 +8,12 @@
 package org.openmarkov.gui.localize;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.localize.StringBundle;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.core.test.TestSpeed;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,6 +75,7 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleButtons() throws MissingResourceException {
 		StringDatabase.getUniqueInstance().setLanguage("en");
 		getStringButtons();
@@ -83,6 +86,7 @@ public class StringDatabaseTests {
 	/**
 	 * This method tests the method getBundleButtons loading a wrong key.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleButtonsWrong() {
 		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");
@@ -121,6 +125,7 @@ public class StringDatabaseTests {
 	/**
 	 * This method tests the method getBundleDialogs loading a wrong key.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleDialogsWrong() {
 
 		stringDatabase.setLanguage("en");
@@ -192,6 +197,7 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleMessages() throws MissingResourceException {
 		stringDatabase.setLanguage("en");
 		getStringMessages();
@@ -231,6 +237,7 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleSelectables() throws MissingResourceException {
 		stringDatabase.setLanguage("en");
 		getStringSelectables();
@@ -271,6 +278,7 @@ public class StringDatabaseTests {
 	 *
 	 * @throws MissingResourceException if any of the strings doesn't exist.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleToolBars() throws MissingResourceException {
 		stringDatabase.setLanguage("en");
 		getStringToolBars();
@@ -281,6 +289,7 @@ public class StringDatabaseTests {
 	/**
 	 * This method tests the method getBundleToolBars loading a wrong key.
 	 */
+	@Tag(TestSpeed.MEDIUM)
 	@Test public final void testGetBundleToolBarsWrong() {
 		stringDatabase.setLanguage("en");
 		String string = stringDatabase.getString("incorrect");

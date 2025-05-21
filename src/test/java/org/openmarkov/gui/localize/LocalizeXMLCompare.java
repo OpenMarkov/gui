@@ -12,9 +12,12 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.located.LocatedJDOMFactory;
-import org.junit.jupiter.api.*;
-import org.openmarkov.core.test.TestSpeed;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
+import org.openmarkov.core.test.TestSpeed;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +28,10 @@ import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class LocalizeXMLCompare {
+    private static final int LANGUAGE_CODE_PLUS_EXTENSION_LENGHT = 7;
     private List<String> englishFiles;
     private List<String> spanishFiles;
     private LocalizeResourcesProvider resourceBundleProvider;
-    
-    
-    private static final int LANGUAGE_CODE_PLUS_EXTENSION_LENGHT = 7;
     
     @BeforeEach public void setUp() {
         this.englishFiles = new ArrayList<>();
@@ -53,13 +54,8 @@ public class LocalizeXMLCompare {
         }
     }
     
-    @Test public void checkFilesNamesAndNumber() {
-        try {
-            checkSameFiles();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            Assertions.assertTrue(false);
-        }
+    @Test public void checkFilesNamesAndNumber() throws Exception {
+        checkSameFiles();
     }
     
     public void checkSameFiles() throws Exception {
@@ -82,38 +78,21 @@ public class LocalizeXMLCompare {
     }
     
     @Tag(TestSpeed.SLOW)
-    @Test public void checkSameStructure() {
+    @Test public void checkSameStructure() throws Exception {
         for (int i = 0; i < englishFiles.size(); i++) {
             String englishXML = englishFiles.get(i);
             String spanishXML = spanishFiles.get(i);
-            try {
-                checkStructure(englishXML, spanishXML);
-            } catch (Exception e) {
-                System.out.println(
-                        "There is a difference between the XMLs '" + englishXML + "' and '" + spanishXML + "'." + System.lineSeparator());
-                e.printStackTrace();
-                Assertions.assertTrue(false);
-            }
+            checkStructure(englishXML, spanishXML);
         }
-        
     }
     
     private void checkStructure(String englishXML, String spanishXML) throws Exception {
-        
         Document englishXMLDocument = getXMLDocument(englishXML);
         Document spanishXMLDocument = getXMLDocument(spanishXML);
         
         Element rootEn = englishXMLDocument.getRootElement();
         Element rootEs = spanishXMLDocument.getRootElement();
-        
-        try {
-            checkElements(rootEn, rootEs);
-        } catch (Exception e) {
-            throw new Exception(
-                    "There is at least one difference in one of the childrens of the label '" + rootEn.getName() + "'"
-                            + e.getMessage());
-        }
-        
+        checkElements(rootEn, rootEs);
     }
     
     private void checkElements(Element rootEn, Element rootEs) throws Exception {
@@ -132,15 +111,11 @@ public class LocalizeXMLCompare {
         for (int i = 0; i < rootEn.getChildren().size(); i++) {
             Element childEN = rootEn.getChildren().get(i);
             Element childES = rootEs.getChildren().get(i);
-            try {
-                checkElements(childEN, childES);
-            } catch (Exception e) {
-                throw new Exception(" -> '" + childEN.getName() + "'" + e.getMessage());
-            }
+            checkElements(childEN, childES);
         }
     }
     
-    private Document getXMLDocument(String xmlDocument) {
+    private Document getXMLDocument(String xmlDocument) throws IOException, JDOMException {
         // Get file if not included.
         InputStream stream = this.resourceBundleProvider.getClass().getResourceAsStream(
                 this.resourceBundleProvider.getRootOfResources() + "/localize/" + xmlDocument);
@@ -148,12 +123,9 @@ public class LocalizeXMLCompare {
         // Get root element.
         SAXBuilder builder = new SAXBuilder();
         builder.setJDOMFactory(new LocatedJDOMFactory());
-        Document document = null;
-        try {
-            document = builder.build(stream);
-        } catch (JDOMException | IOException e) {
-            e.getStackTrace();
-        }
+        
+        Document document = builder.build(stream);
+        
         
         return document;
     }
