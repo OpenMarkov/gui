@@ -8,11 +8,8 @@
 package org.openmarkov.gui.window.edition;
 
 import org.apache.logging.log4j.LogManager;
-import org.openmarkov.core.action.AddNodeEdit;
-import org.openmarkov.core.action.AbsorbParentsEdit;
-import org.openmarkov.core.action.AbsorbNodeEdit;
+import org.openmarkov.core.action.*;
 
-import org.openmarkov.core.action.InvertLinkAndUpdatePotentialsEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
@@ -44,16 +41,7 @@ import org.openmarkov.gui.dialog.node.AddFindingDialog;
 import org.openmarkov.gui.dialog.node.CommonNodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.NodePropertiesDialog;
 import org.openmarkov.gui.dialog.node.PotentialEditDialog;
-import org.openmarkov.gui.graphic.FSVariableBox;
-import org.openmarkov.gui.graphic.InnerBox;
-import org.openmarkov.gui.graphic.NumericVariableBox;
-import org.openmarkov.gui.graphic.SelectionListener;
-import org.openmarkov.gui.graphic.VisualDecisionNode;
-import org.openmarkov.gui.graphic.VisualElement;
-import org.openmarkov.gui.graphic.VisualLink;
-import org.openmarkov.gui.graphic.VisualNetwork;
-import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.gui.graphic.VisualState;
+import org.openmarkov.gui.graphic.*;
 import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.menu.ContextualMenu;
@@ -759,8 +747,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	public void showPotentialDialog(boolean readOnly) {
 		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
 		Node node = selectedNodes.get(0).getNode();
-		// Before showing the dialog, we check if the network was alreday modified
-		Boolean alreadyModifiedNetwork = networkPanel.getModified();
+
 		/*
 		 * Potential oldPotential = node.getPotentials().get(0);
 		 * PotentialEditDialog dialog = new PotentialEditDialog(owner,
@@ -778,13 +765,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			networkChanged = true;
 			removeNodeEvidenceInAllCases(node);
 		} else {
-			probNet.getPNESupport().undoAndDelete();
-			// We restore the network state to not modified, if it was not already modified
-			if (!alreadyModifiedNetwork) {
-				setNetworkChangedWithOutEdit(false);
-				setSelectedAllNodes(false);
-				repaint();
-			}
+			cancelAction();
 		}
 	}
 
@@ -869,14 +850,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 */
 	public void changeNetworkProperties() {
 		// TODO be careful with local pNESupport and extern pNESupport
-		Boolean alreadyModifiedNetwork = networkPanel.getModified();
 		if (!requestNetworkProperties(Utilities.getOwner(this), probNet)) {
-			probNet.getPNESupport().undoAndDelete();
- 			if (!alreadyModifiedNetwork) {
-				setNetworkChangedWithOutEdit(false);
-				setSelectedAllNodes(false);
-				repaint();
-			}
+			cancelAction();
 		}
 	}
 
@@ -987,14 +962,10 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				policies.add(policy);
 				node.setPotentials(policies);
 
-				if (requestImposePolicyValues(Utilities.getOwner(this),node)) {
-					// change its color
-					((VisualDecisionNode) visualNode).setHasPolicy(true);
-
-				} else { // if user cancels policy imposition then no potential is
+				if (!requestImposePolicyValues(Utilities.getOwner(this),visualNode)) {
+					// if user cancels policy imposition then no potential is
 					// restored to the node
-					List<Potential> noPolicy = new ArrayList<Potential>();
-					node.setPotentials(noPolicy);
+					cancelAction();
 				}
 			}
 		}
@@ -1011,15 +982,13 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		if (selectedNode.size() == 1) {
 			visualNode = selectedNode.get(0);
 			if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-				Node node = visualNode.getNode();
+				//Node node = visualNode.getNode();
 				// TODO manage other kind of policy types from the interface
 				// node.setPolicyType(PolicyType.OPTIMAL);
 				// Potential imposedPolicy = node.getPotentials ().get (0);
-				PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(Utilities.getOwner(this), node, false);
-				if (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
-					// change it color
-					((VisualDecisionNode) visualNode).setHasPolicy(true);
-					networkChanged = true;
+				if (!requestImposePolicyValues(Utilities.getOwner(this),visualNode)) {
+					cancelAction();
+
 				}
 			}
 		}
@@ -1036,25 +1005,22 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		if (selectedNode.size() == 1) {
 			visualNode = selectedNode.get(0);
 			if (visualNode.getNode().getNodeType() == NodeType.DECISION) {
-				Node node = visualNode.getNode();
-				List<Potential> noPolicy = new ArrayList<>();
-				node.setPotentials(noPolicy);
-				((VisualDecisionNode) visualNode).setHasPolicy(false);
-			}
+				RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode(),(VisualDecisionNode)visualNode);
+                try {
+					visualNode.getNode().getProbNet().doEdit(removePolicyEdit);
+                } catch (DoEditException | NonProjectablePotentialException | ConstraintViolationException |
+                         WrongCriterionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 		}
-        /*
-        05/11/2014
-        Solving issue #2112
-        https://bitbucket.org/cisiad/org.openmarkov.issues/issue/212/when-a-policy-imposed-is-removed-the-gui
-        */
-		//networkChanged = true;
-		setNetworkChangedWithOutEdit(true);
+		//setNetworkChangedWithOutEdit(true);
 		setSelectedAllNodes(false);
 		repaint();
 	}
 
-	private boolean requestImposePolicyValues(Window owner, Node node) {
-		PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, node, false);
+	private boolean requestImposePolicyValues(Window owner, VisualNode visualNode) {
+		PotentialEditDialog imposePolicyDialog = new PotentialEditDialog(owner, visualNode, false);
 		imposePolicyDialog.setTitle("ImposePolicydialog.Title.Label");
 		return (imposePolicyDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
@@ -1205,22 +1171,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				preResolutionEvidence;
 		Finding finding = currentEvidence.getFinding(node.getNode().getVariable());
 
-		if(requestAddFindingValues(Utilities.getOwner(this), node, finding)){
-			Variable variable = node.getNode().getVariable();
-			if (variable.getVariableType() == VariableType.FINITE_STATES) {
-				String selectedState = addFindingDialog.getSelectedState();
+		if(!requestAddFindingValues(Utilities.getOwner(this), node, finding)){
 
-				//TODO exception handled poorly
-                try {
-                    this.setNewFinding(node, new Finding(variable, variable.getState(selectedState)), false);
-                } catch (InvalidStateException e) {
-                    throw new RuntimeException(e);
-                }
-
-            } else {
-				double evidenceValue = addFindingDialog.getEvidenceValue();
-				this.setNewFinding(node, new Finding(variable, evidenceValue), false);
-			}
+			cancelAction();
 		}
 		repaint();
 		setSelectedAllNodes(false);
@@ -1229,7 +1182,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 	private boolean requestAddFindingValues(Window owner, VisualNode node, Finding finding){
-		addFindingDialog = new AddFindingDialog(owner,node,finding);
+		addFindingDialog = new AddFindingDialog(owner,node,finding,networkPanel,this);
 		return (addFindingDialog.requestValues() == NodePropertiesDialog.OK_BUTTON);
 	}
 
@@ -1246,8 +1199,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 			try {
 				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
 					if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
-						preResolutionEvidence.removeFinding(variable);
-						node.setPreResolutionFinding(false);
+						RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(),preResolutionEvidence,(VisualChanceNode) node,variable);
+						node.getNode().getProbNet().doEdit(removeFindingEdit);
 					}
 				} else {
 					if (node.isPreResolutionFinding()) {
@@ -1266,8 +1219,16 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 						"ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
 								.getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
-			}
-		}
+			} catch (NonProjectablePotentialException e) {
+                throw new RuntimeException(e);
+            } catch (DoEditException e) {
+                throw new RuntimeException(e);
+            } catch (ConstraintViolationException e) {
+                throw new RuntimeException(e);
+            } catch (WrongCriterionException e) {
+                throw new RuntimeException(e);
+            }
+        }
 		if ((propagationActive) && (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
             /*
             23/10/2014
@@ -1685,7 +1646,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *                   set.
 	 */
 	public void toggleFinding(VisualNode visualNode, VisualState state) {
-		setNewFinding(visualNode, new Finding(visualNode.getNode().getVariable(), state.getStateIndex()), true);
+		setNewFinding(visualNode,null, new Finding(visualNode.getNode().getVariable(), state.getStateIndex()), true);
 	}
 
 	/**
@@ -1696,7 +1657,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 * @param finding    a finding.
 	 * @param toggle     a boolean value.
 	 */
-	public void setNewFinding(VisualNode visualNode, Finding finding, boolean toggle) {
+	public void setNewFinding(VisualNode visualNode,Finding previousFinding, Finding finding, boolean toggle) {
 		Variable variable = visualNode.getNode().getVariable();
 
 		boolean isInferenceMode = networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE;
@@ -1719,7 +1680,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				if (isInferenceMode) {
 					visualNode.setPostResolutionFinding(true);
 				} else {
-					visualNode.setPreResolutionFinding(true);
+					AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(),evidenceCase,previousFinding,finding,(VisualChanceNode)visualNode);
+					visualNode.getNode().getProbNet().doEdit(addFindingEdit);
 				}
 			} catch (InvalidStateException exc) {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
@@ -2596,4 +2558,18 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	@Override
 	public void keyTyped(KeyEvent keyEvent) {
 	}
+
+	public void cancelAction(){
+		Boolean alreadyModifiedNetwork = networkPanel.getModified();
+		probNet.getPNESupport().undoAndDelete();
+		// We restore the network state to not modified, if it was not already modified
+		if (!alreadyModifiedNetwork) {
+			setNetworkChangedWithOutEdit(false);
+			setSelectedAllNodes(false);
+			repaint();
+		}
+	}
+
+
+
 }

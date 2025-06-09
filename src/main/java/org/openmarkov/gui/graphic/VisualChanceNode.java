@@ -7,6 +7,8 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.action.VisualChanceNodeFindingChangeListener;
+import org.openmarkov.core.action.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
 import org.openmarkov.gui.window.edition.NetworkPanel;
@@ -21,7 +23,7 @@ import java.awt.geom.RoundRectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public class VisualChanceNode extends VisualNode {
+public class VisualChanceNode extends VisualNode implements VisualChanceNodeFindingChangeListener {
 
 	protected static final BasicStroke OBSERVED_WIDE_STROKE = new BasicStroke(6.0f);
 	protected static final BasicStroke OBSERVED_NORMAL_STROKE = new BasicStroke(3.0f);
@@ -341,4 +343,19 @@ public class VisualChanceNode extends VisualNode {
 		}
 		super.update(numCases);
 	}
+
+	@Override
+	public void onNodeValueChanged() {
+
+		setPreResolutionFinding(true);
+
+	}
+
+	@Override
+	public void removeFinding() {
+
+		setPreResolutionFinding(false);
+
+	}
+
 }

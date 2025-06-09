@@ -7,17 +7,22 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.exception.InvalidStateException;
+import org.openmarkov.core.action.AddFindingEdit;
+import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
+import org.openmarkov.gui.graphic.VisualChanceNode;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
+import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.edition.EditorPanel;
+import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Dialog box to add a finding in a node. The result of using this class is
@@ -27,7 +32,7 @@ import java.awt.event.ActionListener;
  * @author asaez
  * @version 1.0
  */
-public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog implements ActionListener {
+public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog{
 	private static final long serialVersionUID = 5618641549380924577L;
 	/**
 	 * Object where the finding will be set.
@@ -47,6 +52,11 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 
 	private Finding finding;
 
+	private NetworkPanel networkPanel;
+
+	private Finding newFinding;
+	 private Finding previousFinding;
+
 	/**
 	 * Constructor. initialises the instance.
 	 *
@@ -54,10 +64,12 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 	 * @param visualNode  the node to which this dialog is associated.
 	 * @param finding    the assigned finding
 	 */
-	public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding) {
+	public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkPanel networkPanel,EditorPanel editorPanel) {
 		super(owner);
 		this.visualNode = visualNode;
 		this.finding = finding;
+		this.networkPanel = networkPanel;
+		this.editorPanel = editorPanel;
 		initialize();
 		setMinimumSize(new Dimension(260, getHeight()));
 		int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
@@ -68,28 +80,6 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 
 	}
 
-
-	@Override public void actionPerformed(ActionEvent actionEvent) {
-		String command = actionEvent.getActionCommand();
-		try {
-			if (command.equals(stringDatabase.getString("AddFindingDialog.OKButton.Label"))) {
-				Variable variable = visualNode.getNode().getVariable();
-				if (variable.getVariableType() == VariableType.FINITE_STATES) {
-					String selectedState = buttonGroup.getSelection().getActionCommand();
-					editorPanel
-							.setNewFinding(visualNode, new Finding(variable, variable.getState(selectedState)), false);
-				} else {
-					double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
-					editorPanel.setNewFinding(visualNode, new Finding(variable, evidenceValue), false);
-				}
-			}
-			setVisible(false);
-		} catch (InvalidStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public int requestValues() {
 
 		setVisible(true);
@@ -98,7 +88,8 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 	}
 
 	protected void initialize() {
-
+		visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
+		visualNode.getNode().getProbNet().getPNESupport().openParenthesis();
 		setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
 		configureComponentsPanel();
 
@@ -136,13 +127,25 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 				JRadioButton jRadioButton = new JRadioButton(stateName);
 				if (finding != null) {
 					jRadioButton.setSelected(finding.getState().equals(stateName));
+					previousFinding = new Finding(variable,new State(stateName));
 				}
 				radioButtonsPanel.add(jRadioButton);
 				jRadioButton.setActionCommand(stateName);
 				if (i == 0) {
 					jRadioButton.setSelected(true);
-				}
-				buttonGroup.add(jRadioButton);
+                    previousFinding = new Finding(variable,new State(stateName));
+                }
+
+                buttonGroup.add(jRadioButton);
+				jRadioButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        try {
+							newFinding = new Finding(variable, variable.getState(getSelectedState()));
+						} catch (InvalidStateException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+				});
 			}
 			principalPanel.add(radioButtonsPanel, BorderLayout.CENTER);
 		} else {
@@ -182,5 +185,34 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog impl
 		return evidenceValue;
 	}
 
+	@Override
+	protected boolean doOkClickBeforeHide() {
+		Variable variable = visualNode.getNode().getVariable();
+		if(!visualNode.isPreResolutionFinding()){
+			try {
+				newFinding = new Finding(variable, variable.getState(getSelectedState()));
+				editorPanel.setNewFinding(visualNode,null,newFinding,false);
+			} catch (InvalidStateException e) {
+				throw new RuntimeException(e);
+			}
+		}else {
+			try {
+				newFinding = new Finding(variable, variable.getState(getSelectedState()));
+				editorPanel.setNewFinding(visualNode,previousFinding,newFinding,false);
+			} catch (InvalidStateException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+
+
+		visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+
+		return super.doOkClickBeforeHide();
+	}
+
+	@Override protected void doCancelClickBeforeHide() {
+		visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+	}
 
 }

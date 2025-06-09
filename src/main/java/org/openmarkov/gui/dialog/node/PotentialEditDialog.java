@@ -42,6 +42,8 @@ import org.openmarkov.gui.dialog.common.PotentialPanelManager;
 import org.openmarkov.gui.dialog.common.ProbabilityTablePanel;
 import org.openmarkov.gui.dialog.common.TablePotentialPanel;
 import org.openmarkov.gui.dialog.common.UnivariateDistrPotentialPanel;
+import org.openmarkov.gui.graphic.VisualDecisionNode;
+import org.openmarkov.gui.graphic.VisualNode;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -135,6 +137,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 
 	private CommentHTMLScrollPane commentPane;
 
+	private VisualNode visualNode;
+
+	private Potential lastPotential;
+
+	private Boolean hasPolicy;
+
 	/**
 	 * Creates the dialog.
 	 */
@@ -170,6 +178,12 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 	 */
 	public PotentialEditDialog(Window owner, Node node, boolean newElement) {
 		this(owner, node, newElement, false);
+	}
+
+	public PotentialEditDialog(Window owner, VisualNode visualNode, boolean newElement) {
+		this(owner, visualNode.getNode(), newElement, false);
+		this.visualNode = visualNode;
+
 	}
 
 	/**
@@ -241,7 +255,6 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			Collections.sort(filteredPotentialNames);
 			potentialTypeComboBox = new JComboBox<>((String[]) filteredPotentialNames.toArray(new String[0]));
 			String currentPotentialType = node.getPotentials().get(0).getClass().getAnnotation(PotentialType.class).name();
-
 			// Compute the number of columns of the conditional probability table
 			int tableColumns = 1;
 			for (Node parent: node.getParents()) {
@@ -250,24 +263,18 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			System.out.println(tableColumns);
 			// Show small uniform potentials as table potentials. Saves clicks
 			if (currentPotentialType.equals("Uniform") && tableColumns <= 128) {
-
 				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Table");
-                try {
-                    setPotentialEdit.doEdit();
-                } catch (DoEditException e) {
-                    throw new RuntimeException(e);
-                }
+
+				setPotentialEdit.setPotential();
 
             }
 			// Show small uniform potentials as 'Exact' potentials. Saves clicks
 			if (node.getNodeType() == NodeType.UTILITY && currentPotentialType.equals("Uniform") && tableColumns <= 128) {
 
 				SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, "Uniform");
-				try {
-					setPotentialEdit.doEdit();
-				} catch (DoEditException e) {
-					throw new RuntimeException(e);
-				}
+
+				setPotentialEdit.setPotential();
+
 
 			}
 
@@ -277,7 +284,8 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			potentialTypeComboBox.setName("jComboBoxRelationType");
 			potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					potentialTypeChanged(evt);
+
+					potentialTypeChanged();
 				}
 			});
 
@@ -594,20 +602,16 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 		return pnlPolicyType;
 	}
 
-	protected void potentialTypeChanged(ActionEvent evt) {
+	protected void potentialTypeChanged() {
 		String potentialType = (String) potentialTypeComboBox.getSelectedItem();
+		lastPotential = node.getPotentials().get(0);
+		if (node.getNodeType() == NodeType.DECISION)
+			hasPolicy = ((VisualDecisionNode)visualNode).isHasPolicy();
 		if (!previouslySelectedPotentialType.equals(potentialType)) {
-			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType);
-			try {
-				node.getProbNet().doEdit(setPotentialEdit);
-			} catch (ConstraintViolationException e1) {
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
-				revertPotentialTypeChange();
-				potentialTypeComboBox.requestFocus();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
+				//node.getProbNet().doEdit(setPotentialEdit);
+				setPotentialEdit.setPotential();
+
 			updatePotentialPanel();
 			previouslySelectedPotentialType = potentialType;
 			optionPreviouslySelected = potentialTypeComboBox.getSelectedIndex();
@@ -639,6 +643,20 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			String comment = commentPane.isEmpty() ? "" : commentPane.getCommentText();
 			node.getPotentials().get(0).setComment(comment);
 		}
+
+		String potentialType = (String) potentialTypeComboBox.getSelectedItem();
+		SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
+		try {
+			node.getProbNet().doEdit(setPotentialEdit);
+		}catch (ConstraintViolationException e1) {
+			JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
+					stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
+			revertPotentialTypeChange();
+			potentialTypeComboBox.requestFocus();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 		node.getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}

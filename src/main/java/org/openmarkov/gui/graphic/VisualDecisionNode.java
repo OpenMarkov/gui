@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.graphic;
 
+import org.openmarkov.core.action.VisualDecisionNodePolicyChangeListener;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PolicyType;
 import org.openmarkov.gui.configuration.OpenMarkovPreferences;
@@ -22,7 +23,7 @@ import java.awt.geom.Rectangle2D;
  * @author jmendoza
  * @version 1.2 asaez - add expanded representation
  */
-public class VisualDecisionNode extends VisualNode {
+public class VisualDecisionNode extends VisualNode implements VisualDecisionNodePolicyChangeListener {
 
 	/**
 	 * Internal color of the visual node when there is no finding established.
@@ -67,6 +68,8 @@ public class VisualDecisionNode extends VisualNode {
 	 * This attribute indicates if the node has an imposed policy
 	 */
 	private boolean hasPolicy = false;
+
+	private Object oldValue = new Object();
 
 	/**
 	 * Creates a new visual node from a node.
@@ -262,5 +265,17 @@ public class VisualDecisionNode extends VisualNode {
 			innerBox.paint(g);
 		}
 
+	}
+
+	@Override
+	public void onNodeValueChanged() {
+
+		setHasPolicy(true);
+
+	}
+
+	@Override
+	public void removePolicy() {
+		setHasPolicy(false);
 	}
 }
