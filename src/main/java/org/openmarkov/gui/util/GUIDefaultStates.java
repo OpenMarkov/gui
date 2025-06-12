@@ -32,7 +32,7 @@ public class GUIDefaultStates extends DefaultStates {
 	public static String getString(String element) {
 		// try {
 		String newKey = "defaultStates." + element + ".Text";
-		if (StringDatabase.getUniqueInstance().getString(newKey).equals(">>> " + newKey + " <<<"))
+		if (StringDatabase.getUniqueInstance().getString(newKey).equals(StringDatabase.surrondAsUnknown(newKey)))
 			return element;
 		else
 			return StringDatabase.getUniqueInstance().getString(newKey);
