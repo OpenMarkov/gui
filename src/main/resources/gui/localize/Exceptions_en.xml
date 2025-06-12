@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <GenericException>
-        <title value="Error" />
-        <message value="An unexpected error occurred. Please check the log for more information." />
-    </GenericException>
-
     <CanNotWriteNetworkToFileException>
         <title value="Cannot write network to file" />
         <message value="Cannot write network to file: %s" />
