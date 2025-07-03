@@ -1,4 +1,4 @@
-package org.openmarkov.integrationTests.integrationTests.testOpenMarkovException2;
+package org.openmarkov.gui.dialog;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.InvalidNetworkTypeException;
