@@ -40,7 +40,6 @@ import org.openmarkov.gui.dialog.network.OptimalStrategyDialog;
 import org.openmarkov.core.localize.LocalizedException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.menutoolbar.common.ActionCommands;
-import org.openmarkov.gui.plugin.ToolPluginManager;
 import org.openmarkov.gui.util.PropertyNames;
 import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.dt.DecisionTreeWindow;
@@ -330,9 +329,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 			showOptimalStrategy(this.getCurrentNetworkPanel());
 		} else if (actionCommand.equals(ActionCommands.NEXT_SLICE_NODE)) {
 			this.getCurrentNetworkPanel().createNextSliceNode();
-		} else {
-			// TODO - Get ToolPluginManager Exceptions
-			ToolPluginManager.getInstance().processCommand(actionCommand, mainPanel.getMainFrame());
 		}
 	}
 

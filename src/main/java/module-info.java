@@ -25,7 +25,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.window;
     exports org.openmarkov.gui.dialog.inference.common;
     exports org.openmarkov.gui.loader.element;
-    exports org.openmarkov.gui.plugin;
+    exports org.openmarkov.gui.toolplugin;
     exports org.openmarkov.gui.util;
     exports org.openmarkov.gui.dialog.common;
     exports org.openmarkov.gui.window.edition;

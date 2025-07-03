@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+ * Unless required by applicable law or agreed to in writing,
+ * this code is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OF ANY KIND.
+ */
+
+package org.openmarkov.gui.toolplugin;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+
+/**
+ * This interface is to be implemented to create a functionality that can be accessed in the {@code Tools} bar of
+ * OpenMarkov's interface, where you'll find a menu item you can click to trigger the functionality of this {@code tool
+ * plugin}.
+ * <p>
+ * This interface is implemented for some classes in plugin repositories, such as {@code costEffectiveness} or
+ * {@code dbGenerator}.
+ * Hence, the name {@code Tool Plugin}.
+ * <p>
+ * The methods that you can override are:
+ * <ul>
+ *   <li>{@link ToolPlugin#menuOptionText()} this returns the visual text, and it is the same text that will show for
+ *   this {@code tool plugin}'s menu item in the {@code Tools} bar</li>
+ *   <li>{@link ToolPlugin#mnemonic()} this is a shortcut for easily accessing this {@code tool plugin}. You can return
+ *   {@code null} if there is no mnemonic.</li>
+ *   <li>{@link ToolPlugin#showDialog(JFrame)} this is executed when the user clicks on the menu item for this
+ *   {@code tool plugin}.
+ *   It is where you should write how the user interacts with the plugin</li>
+ * </ul>
+ *
+ * @author unknown
+ * @version 1.1 jrico Simplified interface by removing the old of Localization. Added documentation.
+ */
+public interface ToolPlugin {
+    
+    /**
+     * A representative name for this plugin that allows to recognize the plugin.
+     *
+     * @return a representative name for this plugin.
+     */
+    @NotNull String menuOptionText();
+    
+    /**
+     * A mnemonic associated with this ToolPlugin, which might be null to denote there is no mnemonic.
+     *
+     * @return A mnemonic associated with this ToolPlugin.
+     */
+    @Nullable default Character mnemonic() {
+        return null;
+    }
+    
+    /**
+     * This method is called when the user clicks on this Plugin from the {@code Tools} toolbar.
+     * <p>
+     * Most of {@code tool plugin} usually create a dialog where the main execution of the {@code tool plugin} happens.
+     *
+     * @param parent The frame where the menu item the user clicks is located at.
+     */
+    void showDialog(@Nullable JFrame parent);
+    
+    
+}

@@ -19,7 +19,7 @@ import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasic;
 import org.openmarkov.gui.menutoolbar.common.MenuToolBarBasicImpl;
 import org.openmarkov.gui.menutoolbar.common.ZoomMenuToolBar;
 import org.openmarkov.gui.menutoolbar.plugin.ToolbarManager;
-import org.openmarkov.gui.plugin.ToolPluginManager;
+import org.openmarkov.gui.toolplugin.ToolPluginManager;
 import org.openmarkov.gui.window.MainPanel;
 
 import javax.swing.*;
