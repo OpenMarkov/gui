@@ -15,6 +15,7 @@ import org.openmarkov.plugin.service.FilterIF;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.List;
@@ -57,7 +58,9 @@ public final class ToolPluginManager {
                 .stream()
                 .map(toolPluginClass -> {
                     try {
-                        return toolPluginClass.getDeclaredConstructor().newInstance();
+                        Constructor<ToolPlugin> noArgsConstructors = toolPluginClass.getDeclaredConstructor();
+                        noArgsConstructors.setAccessible(true);
+                        return noArgsConstructors.newInstance();
                     } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                              InvocationTargetException e) {
                         throw new RuntimeException(e);
