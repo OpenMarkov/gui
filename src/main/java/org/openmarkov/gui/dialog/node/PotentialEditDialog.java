@@ -609,8 +609,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			hasPolicy = ((VisualDecisionNode)visualNode).isHasPolicy();
 		if (!previouslySelectedPotentialType.equals(potentialType)) {
 			SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, potentialType,lastPotential,hasPolicy,(VisualDecisionNode)visualNode);
-				//node.getProbNet().doEdit(setPotentialEdit);
-				setPotentialEdit.setPotential();
+			setPotentialEdit.setPotential();
 
 			updatePotentialPanel();
 			previouslySelectedPotentialType = potentialType;

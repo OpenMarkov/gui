@@ -1697,10 +1697,6 @@ public class MainMenu extends JMenuBar implements MenuToolBarBasic, ZoomMenuTool
 			helpMenu.setName(MenuItemNames.HELP_MENU);
 			helpMenu.setText(MenuLocalizer.getLabel(MenuItemNames.HELP_MENU));
 			helpMenu.setMnemonic(MenuLocalizer.getMnemonic(MenuItemNames.HELP_MENU).charAt(0));
-			// helpMenu.add(getHelpOpenHelpItem());
-			helpMenu.addSeparator();
-			helpMenu.add(getHelpOpenChangeLanguageItem());
-			helpMenu.addSeparator();
 			helpMenu.add(getHelpOpenShortcutsItem());
 			helpMenu.add(getHelpOpenAboutItem());
 		}

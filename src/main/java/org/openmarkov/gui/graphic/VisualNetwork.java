@@ -18,6 +18,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.oopn.Instance.ParameterArity;
 import org.openmarkov.core.oopn.action.MarkAsInputEdit;
@@ -968,6 +969,79 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void undoableEditHappened(UndoableEditEvent e) {
 
 		constructVisualInfo();
+		visualDecisionNodeRefresh();
+
+	}
+
+	public void visualDecisionNodeRefresh(){
+
+		List<Node> nodesToAdd = null;
+		List<VisualNode> vNodesToDelete = new ArrayList<VisualNode>();
+		List<VisualLink> vLinksToDelete = new ArrayList<VisualLink>();
+		List<Link<Node>> links = null;
+		Node nodeToCheck = null;
+		Link<Node> linkToCheck = null;
+		VisualNode vNode1 = null;
+		VisualNode vNode2 = null;
+		int i = -1;
+		int visualNodesCount = -1;
+
+		nodesToAdd = probNet.getNodes();
+		for (VisualNode vNode : visualNodes) {
+			nodeToCheck = vNode.getNode();
+
+			if (!vNode.getNode().getNodeType().equals(NodeType.DECISION)) {
+				nodesToAdd.remove(nodeToCheck);
+
+			} else {
+				vNodesToDelete.add(vNode);
+			}
+		}
+
+		visualNodes.removeAll(vNodesToDelete);
+		for (Node node : nodesToAdd) {
+			vNode1 = createVisualNode(node);
+			visualNodes.add(vNode1);
+			vNode1.setByTitle(byTitle);
+
+		}
+
+		//links = probNet.backupProbNet.getLinks();
+		links = probNet.getLinks();
+
+		for (VisualLink vLink : visualLinks) {
+			linkToCheck = vLink.getLink();
+			if (links.contains(linkToCheck) && !containsNodeToDelete(linkToCheck, vNodesToDelete)) {
+				links.remove(linkToCheck);
+			} else {
+				vLinksToDelete.add(vLink);
+			}
+		}
+		visualLinks.removeAll(vLinksToDelete);
+		visualNodesCount = visualNodes.size();
+		for (Link<Node> link : links) {
+			i = 0;
+			vNode1 = null;
+			vNode2 = null;
+			while ((i < visualNodesCount) && ((vNode1 == null) || (vNode2 == null))) {
+				if (vNode1 == null) {
+					if (link.getNode1().equals(visualNodes.get(i).getNode())) {
+						vNode1 = visualNodes.get(i);
+					}
+				}
+				if (vNode2 == null) {
+					if (link.getNode2().equals(visualNodes.get(i).getNode())) {
+						vNode2 = visualNodes.get(i);
+					}
+				}
+				i++;
+			}
+			if ((vNode1 != null) && (vNode2 != null)) {
+				visualLinks.add(new VisualLink(link, vNode1, vNode2));
+			}
+		}
+
+
 	}
 
 	public void undoableEditWillHappen(UndoableEditEvent event)
@@ -1000,32 +1074,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 	}
 
 	public void undoEditHappened(UndoableEditEvent event) {
-		//Object p=event.getSource();
-		//ProbNet p2=(ProbNet)p;
-		//if (edit instanceof AddVariableEdit){
-		/*if (edit instanceof AddNodeEdit){
-			
-			
-			String name=((AddVariableEdit)edit).getVariable().getName();
-			Node newNode;
-			try {
-				newNode = pNESupport.getProbNet().getNode(name);
-				nodeWrapper =
-				createNewNonamedNode(newNode, cursorPosition);
-			} catch (NodeNotFoundException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-				//JOptionPane.showMessageDialog(
-					//	Utilities.getOwner(this), e2.getMessage(), stringResource
-						//	.getValuesInAString("ErrorWindow.Title.Label"),
-						//JOptionPane.ERROR_MESSAGE);
-					}
-			
-			}else if (edit instanceof AddLinkEdit){
-			
-				}*/
 
 		constructVisualInfo();
+		visualDecisionNodeRefresh();
 
 	}
 

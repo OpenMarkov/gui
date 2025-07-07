@@ -56,16 +56,15 @@ import org.openmarkov.inference.algorithm.variableElimination.tasks.VEExpectedUt
 import org.openmarkov.inference.algorithm.variableElimination.tasks.VEPropagation;
 
 import javax.swing.*;
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the behaviour of a panel where a network will be
@@ -78,7 +77,7 @@ import java.util.Map;
  * contraction of nodes, - Introduction and elimination of evidence -
  * Management of multiple evidence cases.
  */
-public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
+public class EditorPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener, PNUndoableEditListener {
 	/**
 	 * Static field for serializable class.
 	 */
@@ -222,6 +221,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 		// super();
 		this.networkPanel = networkPanel;
 		this.probNet = networkPanel.getProbNet();
+		this.probNet.getPNESupport().addUndoableEditListener(this);
 		this.visualNetwork = visualNetwork;
 		automaticPropagation = true;
 		propagationActive = true;
@@ -2571,5 +2571,43 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 
 
+	@Override
+	public void undoableEditWillHappen(UndoableEditEvent event) throws ConstraintViolationException, NonProjectablePotentialException, WrongCriterionException {
+		//do nothing
+	}
 
+	@Override
+	public void undoEditHappened(UndoableEditEvent event) {
+		List<Finding> findings = preResolutionEvidence.getFindings();
+		Set<Variable> findingVariables = findings.stream()
+				.map(Finding::getVariable)
+				.collect(Collectors.toSet());
+
+		List<VisualNode> allVisualNodes = visualNetwork.getAllNodes();
+
+		for (VisualNode visualNode : allVisualNodes) {
+			Variable nodeVariable = visualNode.getNode().getVariable();
+			boolean isPreResolution = findingVariables.contains(nodeVariable);
+			visualNode.setPreResolutionFinding(isPreResolution);
+		}
+
+
+
+	}
+
+	@Override
+	public void undoableEditHappened(UndoableEditEvent e) {
+
+
+		for (Finding finding : preResolutionEvidence.getFindings()) {
+			Variable variable = finding.getVariable();
+			for (VisualNode visualNode : visualNetwork.getAllNodes()) {
+				if (variable.getName().equals(visualNode.getNode().getName())) {
+					visualNode.setPreResolutionFinding(true);
+				}
+			}
+		}
+
+
+	}
 }

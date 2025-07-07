@@ -670,7 +670,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 
 	public void undoEditHappened(UndoableEditEvent event) {
 
-		if (((PNESupport) event.getSource()).getUndoManager().getEditsSize() > 0){
+		if (((PNESupport) event.getSource()).getCanUndo()){
 			setModified(true);
 		}else{
 			setModified(false);
