@@ -140,7 +140,7 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog{
 				jRadioButton.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
                         try {
-							newFinding = new Finding(variable, variable.getState(getSelectedState()));
+							newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
 						} catch (InvalidStateException e) {
                             throw new RuntimeException(e);
                         }
@@ -172,9 +172,19 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog{
 		return principalPanel;
 	}
 
-	public String getSelectedState(){
+	public Object getSelectedState(){
 
-		String selectedState = buttonGroup.getSelection().getActionCommand();
+		VariableType variableType = visualNode.getNode().getVariable().getVariableType();
+		Object selectedState;
+
+		if(variableType.equals(VariableType.FINITE_STATES)){
+			selectedState = buttonGroup.getSelection().getActionCommand();
+		}else{
+			selectedState = evidenceSpinner.getValue();
+		}
+
+
+
 
 		return selectedState;
 	}
@@ -188,20 +198,19 @@ public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog{
 	@Override
 	protected boolean doOkClickBeforeHide() {
 		Variable variable = visualNode.getNode().getVariable();
+		if(variable.getVariableType().equals(VariableType.FINITE_STATES)){
+            try {
+                newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
+            } catch (InvalidStateException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+			newFinding = new Finding(variable, (Double)getSelectedState());
+		}
 		if(!visualNode.isPreResolutionFinding()){
-			try {
-				newFinding = new Finding(variable, variable.getState(getSelectedState()));
 				editorPanel.setNewFinding(visualNode,null,newFinding,false);
-			} catch (InvalidStateException e) {
-				throw new RuntimeException(e);
-			}
 		}else {
-			try {
-				newFinding = new Finding(variable, variable.getState(getSelectedState()));
 				editorPanel.setNewFinding(visualNode,previousFinding,newFinding,false);
-			} catch (InvalidStateException e) {
-				throw new RuntimeException(e);
-			}
 		}
 
 
