@@ -17,12 +17,8 @@ import java.awt.*;
 	public ValuesTableOptimalPolicyCellRenderer(int firstEditableRow, boolean[] uncertaintyInColumns,
 			boolean colorGreen) {
 		super(firstEditableRow, uncertaintyInColumns);
-		if (!colorGreen) {
-			cellColor = new java.awt.Color(255, 72, 72);
-		} else {
-			cellColor = new java.awt.Color(80, 220, 95);
-		}
-	}
+        cellColor = new Color(80, 220, 95);
+    }
 
 	@Override protected void setCellColors(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 			int column) {

@@ -969,7 +969,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void undoableEditHappened(UndoableEditEvent e) {
 
 		constructVisualInfo();
-		visualDecisionNodeRefresh();
+		if(getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)
+			visualDecisionNodeRefresh();
 
 	}
 
@@ -1076,7 +1077,8 @@ public class VisualNetwork implements PNUndoableEditListener {
 	public void undoEditHappened(UndoableEditEvent event) {
 
 		constructVisualInfo();
-		visualDecisionNodeRefresh();
+		if(getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)
+			visualDecisionNodeRefresh();
 
 	}
 
