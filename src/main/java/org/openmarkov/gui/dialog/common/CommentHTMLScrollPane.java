@@ -123,10 +123,9 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		try {
 			getJTextPaneCommentHTML().setEditorKit(editorKit);
 			getJTextPaneCommentHTML().setContentType("text/html");
-
 			getJTextPaneCommentHTML().setText(text);
 			getJTextPaneCommentHTML().setCaretPosition(0);
-		} catch (IllegalArgumentException ex) {
+		} catch (IllegalArgumentException ignored) {
 		}
 	}
 
@@ -177,7 +176,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 					isEmpty = hTMLTextEditor.getCommentText().trim().replaceAll("[\r\n]", "").equals("");
 					notifyCommentChanged();
 				}
-			} catch (IllegalArgumentException ex) {
+			} catch (IllegalArgumentException ignored) {
 			}
 		}
 	}

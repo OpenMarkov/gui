@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.StringWithProperties;
 		this.newAgent = agent;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getVariable().setAgent(newAgent);
 	}
 

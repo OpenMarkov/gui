@@ -158,7 +158,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 		changePotentialEdit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		try {
 			probNet.doEdit(changePotentialEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
 			throw new DoEditException(e);
 		}

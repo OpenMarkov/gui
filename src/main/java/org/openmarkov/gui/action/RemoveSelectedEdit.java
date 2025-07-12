@@ -58,7 +58,7 @@ import java.util.List;
 		this.linksToRemove = union(visualNetwork.getSelectedLinks(), visualNetwork.getLinksOfNodes(this.nodesToRemove));
 	}
 
-	@Override public void generateEdits() throws NonProjectablePotentialException, WrongCriterionException {
+	@Override public void generateEdits() {
 		for (VisualLink link : linksToRemove) {
 			try {
 				edits.add(new RemoveLinkEdit(probNet, probNet.getVariable(link.getSourceNode().getNode().getName()),

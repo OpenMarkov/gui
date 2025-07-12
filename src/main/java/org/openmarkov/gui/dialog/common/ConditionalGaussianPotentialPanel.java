@@ -111,7 +111,7 @@ import java.awt.event.ActionListener;
 		PotentialChangeEdit edit = new PotentialChangeEdit(probNet, oldPotential, newPotential);
 		try {
 			probNet.doEdit(edit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 		}
 
@@ -137,9 +137,7 @@ import java.awt.event.ActionListener;
 		}
 	}
 
-	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, NonProjectablePotentialException,
-			WrongCriterionException {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Ignore
 	}
 

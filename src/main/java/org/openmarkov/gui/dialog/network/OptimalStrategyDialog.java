@@ -32,16 +32,9 @@ import java.awt.*;
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();
 		Node dummyNode = new Node(dummyProbNet, new Variable("Global utility"), NodeType.UTILITY);
-		try {
-			dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
-		} catch (NotEvaluableNetworkException e) {
-			JOptionPane.showMessageDialog(owner,
-					StringDatabase.getUniqueInstance().getString("ExceptionNotEvaluableNetwork.Text.Label"),
-					StringDatabase.getUniqueInstance().getString("ExceptionNotEvaluableNetwork.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
-		}
-
-		//VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
+        dummyNode.setPotential(optimalIntervention.getOptimalIntervention());
+        
+        //VEPosteriorValues vePosteriorValues = new VEPosteriorValues(probNet,probNet.getVariables(),preResolutionEvidence,evidenceCase);
 		//individualProbabilities = vePosteriorValues.getPosteriorValues();
 
 		TreeADDEditorPanel treeADDEditorPanel = new TreeADDEditorPanel(cellRenderer, dummyNode);
@@ -64,8 +57,7 @@ import java.awt.*;
 		setResizable(true);
 	}
 
-	public OptimalStrategyDialog(Window owner, ProbNet probNet, StrategyTree optimalStrategyTree)
-			throws IncompatibleEvidenceException, UnexpectedInferenceException {
+	public OptimalStrategyDialog(Window owner, ProbNet probNet, StrategyTree optimalStrategyTree) {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();

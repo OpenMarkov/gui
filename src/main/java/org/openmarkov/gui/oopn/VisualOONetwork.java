@@ -663,7 +663,7 @@ public class VisualOONetwork extends VisualNetwork {
 					visualInstance.getInstance());
 			try {
 				probNet.doEdit(markAsInputEdit);
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | DoEditException e) {
 				e.printStackTrace();
 			}
 		}
@@ -688,7 +688,7 @@ public class VisualOONetwork extends VisualNetwork {
 			InstanceNameEdit instanceNameEdit = new InstanceNameEdit(probNet, selectedInstance, newInstanceName);
 			try {
 				probNet.doEdit(instanceNameEdit);
-			} catch (Exception e1) {
+			} catch (ConstraintViolationException | DoEditException | RuntimeException e1) {
 				// TODO Localize
 				JOptionPane.showMessageDialog(null,
 						"Error while generating instance node.\n" + "Look in the message window for more details",
@@ -715,7 +715,7 @@ public class VisualOONetwork extends VisualNetwork {
 					visualInstance.getInstance(), arity);
 			try {
 				probNet.doEdit(changeParameterArityEdit);
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | DoEditException e) {
 				e.printStackTrace();
 			}
 		}

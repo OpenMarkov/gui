@@ -27,7 +27,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 		this.currentPartitionedInterval = node.getVariable().getPartitionedInterval();
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getVariable().setPartitionedInterval(newPartitionedInterval);
 
 	}

@@ -147,7 +147,7 @@ public class TemporalEvolutionDialog extends OkCancelHorizontalDialog {
 	@Override protected boolean doOkClickBeforeHide() {
 		try {
 			preResolutionEvidence.addFindings(scopeSelectorPanel.getSelectedFindings());
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(),
 					stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence"), JOptionPane.ERROR_MESSAGE);
 			return false;

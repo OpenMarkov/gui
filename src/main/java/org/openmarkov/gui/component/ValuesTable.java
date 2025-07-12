@@ -14,8 +14,6 @@ import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.action.UncertainValuesEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -423,7 +421,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 				priorityList, getTableModel().getNotEditablePositions());
 		try {
 			probNet.doEdit(nodePotentialEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -761,8 +759,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 *
 	 */
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Ignore
 	}
 

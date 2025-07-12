@@ -29,8 +29,7 @@ public class ValidState extends PNConstraint {
 	// Attributes.
 	private String message;
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeStateEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			State state = ((NodeStateEdit) simpleEdit).getNewState();

@@ -99,9 +99,8 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	/**
 	 * initialize the dialog
 	 *
-	 * @throws Exception
 	 */
-	private void initialize() throws Exception {
+	private void initialize() {
 		final GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(
 				groupLayout.createSequentialGroup().addGroup(

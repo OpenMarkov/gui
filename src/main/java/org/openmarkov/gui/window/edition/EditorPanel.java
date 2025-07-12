@@ -13,14 +13,12 @@ import org.openmarkov.core.action.*;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 
 import org.openmarkov.core.exception.NoFindingException;
 import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
@@ -678,8 +676,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
         try {
             AbsorbNodeEdit absorbNode = new AbsorbNodeEdit(probNet, node.getVariable());
             probNet.doEdit(absorbNode);
-        } catch (DoEditException | ConstraintViolationException |
-                WrongCriterionException | NonProjectablePotentialException e) {
+        } catch (DoEditException | ConstraintViolationException e) {
             e.printStackTrace();
         }
 
@@ -708,8 +705,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
      try {
     	 AbsorbParentsEdit absorbParents = new AbsorbParentsEdit(probNet, node);
          probNet.doEdit(absorbParents);
-     } catch (DoEditException | ConstraintViolationException |
-             WrongCriterionException | NonProjectablePotentialException e) {
+     } catch (DoEditException | ConstraintViolationException e) {
          e.printStackTrace();
      }
 
@@ -1008,8 +1004,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				RemovePolicyEdit removePolicyEdit = new RemovePolicyEdit(visualNode.getNode(),(VisualDecisionNode)visualNode);
                 try {
 					visualNode.getNode().getProbNet().doEdit(removePolicyEdit);
-                } catch (DoEditException | NonProjectablePotentialException | ConstraintViolationException |
-                         WrongCriterionException e) {
+                } catch (DoEditException | ConstraintViolationException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -1219,13 +1214,9 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 						"ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
 								.getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
-			} catch (NonProjectablePotentialException e) {
-                throw new RuntimeException(e);
-            } catch (DoEditException e) {
+			} catch (DoEditException e) {
                 throw new RuntimeException(e);
             } catch (ConstraintViolationException e) {
-                throw new RuntimeException(e);
-            } catch (WrongCriterionException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -1683,11 +1674,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 					AddFindingEdit addFindingEdit = new AddFindingEdit(visualNode.getNode(),evidenceCase,previousFinding,finding,(VisualChanceNode)visualNode);
 					visualNode.getNode().getProbNet().doEdit(addFindingEdit);
 				}
-			} catch (InvalidStateException exc) {
-				JOptionPane.showMessageDialog(Utilities.getOwner(this),
-						"ERROR\n" + stringDatabase.getString("ExceptionInvalidState.Text.Label") + "\n\n" + exc
-								.getMessage(), stringDatabase.getString("ExceptionInvalidState.Title.Label"),
-						JOptionPane.ERROR_MESSAGE);
 			} catch (IncompatibleEvidenceException exc) {
 				JOptionPane.showMessageDialog(Utilities.getOwner(this),
 						"ERROR\n" + stringDatabase.getString("ExceptionIncompatibleEvidence.Text.Label") + "\n\n" + exc
@@ -1721,8 +1707,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 					}
 					try {
 						evidenceCase.addFinding(oldFinding);
-					} catch (InvalidStateException e) {/* Not possible */
-					} catch (IncompatibleEvidenceException e) {/* Not possible */
+					} /* Not possible */ catch (IncompatibleEvidenceException e) {/* Not possible */
 					}
 				} else {
 					try {
@@ -2044,11 +2029,6 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				newEvidenceCase.addFinding(currentFindings.get(i));
 			}
 			addNewEvidenceCase(newEvidenceCase);
-		} catch (InvalidStateException exc) {
-			JOptionPane.showMessageDialog(Utilities.getOwner(this),
-					"ERROR\n" + stringDatabase.getString("ExceptionInvalidState.Text.Label") + "\n\n" + exc
-							.getMessage(), stringDatabase.getString("ExceptionInvalidState.Title.Label"),
-					JOptionPane.ERROR_MESSAGE);
 		} catch (IncompatibleEvidenceException exc) {
 			JOptionPane.showMessageDialog(Utilities.getOwner(this),
 					"ERROR\n" + stringDatabase.getString("ExceptionIncompatibleEvidence.Text.Label") + "\n\n" + exc
@@ -2572,7 +2552,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 
 
 	@Override
-	public void undoableEditWillHappen(UndoableEditEvent event) throws ConstraintViolationException, NonProjectablePotentialException, WrongCriterionException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		//do nothing
 	}
 

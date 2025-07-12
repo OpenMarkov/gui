@@ -102,7 +102,7 @@ public class NodeParentsPanel extends JPanel implements ItemListener {
 	 * <p>
 	 * initialize the layout for this panel
 	 */
-	private void initialize() throws Exception {
+	private void initialize() {
 		setPreferredSize(new Dimension(700, 300));
 		final GroupLayout groupLayout = new GroupLayout((JComponent) this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(

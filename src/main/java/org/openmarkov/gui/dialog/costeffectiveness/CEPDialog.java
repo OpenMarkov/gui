@@ -164,14 +164,8 @@ import java.util.EventObject;
 				int column = jtableCEP.columnAtPoint(event.getPoint());
 				if (column == CEPColumns.INTERVENTION.ordinal()) {
 					InterventionDialog interventionDialog = null;
-					try {
-						interventionDialog = new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]);
-					} catch (IncompatibleEvidenceException e) {
-						e.printStackTrace();
-					} catch (UnexpectedInferenceException e) {
-						e.printStackTrace();
-					}
-					interventionDialog.setVisible(true);
+                    interventionDialog = new InterventionDialog(getOwner(), probNet, cep.getStrategyTrees()[row]);
+                    interventionDialog.setVisible(true);
 				}
 			}
 		});

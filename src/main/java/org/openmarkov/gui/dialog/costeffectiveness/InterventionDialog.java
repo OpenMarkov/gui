@@ -23,8 +23,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial") public class InterventionDialog extends OkCancelHorizontalDialog {
 
-	public InterventionDialog(Window owner, ProbNet probNet, StrategyTree strategyTree)
-			throws IncompatibleEvidenceException, UnexpectedInferenceException {
+	public InterventionDialog(Window owner, ProbNet probNet, StrategyTree strategyTree) {
 		super(owner);
 		TreeADDCellRenderer cellRenderer = new TreeADDCellRenderer(probNet);
 		ProbNet dummyProbNet = new ProbNet();

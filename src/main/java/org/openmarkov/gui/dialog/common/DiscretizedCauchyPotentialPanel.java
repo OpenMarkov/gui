@@ -112,9 +112,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
             probNet.doEdit(edit);
         } catch (ConstraintViolationException
 //                | CanNotDoEditException
-                | NonProjectablePotentialException
-                | WrongCriterionException
-                | DoEditException e) {
+                 | DoEditException e) {
             e.printStackTrace();
         }
 
@@ -144,9 +142,7 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
     }
 
     @Override
-    public void undoableEditWillHappen(UndoableEditEvent event)
-            throws ConstraintViolationException, 
-            NonProjectablePotentialException, WrongCriterionException {
+    public void undoableEditWillHappen(UndoableEditEvent event) {
         // Ignore
     }
 

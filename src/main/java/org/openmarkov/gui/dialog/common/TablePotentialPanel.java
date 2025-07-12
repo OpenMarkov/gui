@@ -13,7 +13,6 @@ import org.openmarkov.core.action.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -342,7 +341,7 @@ import java.util.List;
 				EvidenceCase configuration = getConfiguration(i);
 				// If the column configuration has uncertainty hasUncertainty= true
 				hasUncertainty = tablePotential.hasUncertainty(configuration);
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			} catch (IncompatibleEvidenceException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -664,11 +663,10 @@ import java.util.List;
 	 * @param col The column selected. Never is 0 , because the column 0 is the
 	 *            states column
 	 * @return An evidence case object
-	 * @throws InvalidStateException
 	 * @throws IncompatibleEvidenceException
 	 *
 	 */
-	protected EvidenceCase getConfiguration(int col) throws InvalidStateException, IncompatibleEvidenceException {
+	protected EvidenceCase getConfiguration(int col) throws IncompatibleEvidenceException {
 
 		List<Variable> parents = variables.subList(1, potential.getNumVariables());
 
@@ -711,7 +709,7 @@ import java.util.List;
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 		return evi;
@@ -752,7 +750,7 @@ import java.util.List;
 					getValuesTable().repaint();
 					this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 				}
-			} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
+			} catch (ConstraintViolationException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -840,22 +838,15 @@ import java.util.List;
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
-			try {
-				removeUncertainty();
-			} catch (WrongCriterionException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
+			removeUncertainty();
 		}
 	}
 
 	/**
 	 * Method for removing the uncertain values for a certain configuration
 	 *
-	 * @throws WrongCriterionException revised--&gt;minor changes; only changed the call to getNotEditablePositions
 	 */
-	public void removeUncertainty() throws WrongCriterionException {
+	public void removeUncertainty() {
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
 		UncertainValuesRemoveEdit uncertEdit = new UncertainValuesRemoveEdit(node, evidenceCase);
 		try {
@@ -867,7 +858,7 @@ import java.util.List;
 				getValuesTable().repaint();
 				this.getTableModel().setNotEditablePositions(getNotEditablePositions());
 			}
-		} catch (ConstraintViolationException | NonProjectablePotentialException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -913,7 +904,7 @@ import java.util.List;
 			int selectedColumn = valuesTable.columnAtPoint(evt.getPoint());
 			try {
 				configuration = getConfiguration(selectedColumn);
-			} catch (InvalidStateException | IncompatibleEvidenceException e) {
+			} catch (IncompatibleEvidenceException e) {
 				e.printStackTrace();
 			}
 			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);

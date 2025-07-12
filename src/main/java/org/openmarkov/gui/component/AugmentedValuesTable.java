@@ -10,8 +10,6 @@ package org.openmarkov.gui.component;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.AugmentedTable;
 import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
@@ -111,7 +109,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 				priorityList, getTableModel().getNotEditablePositions());
 		try {
 			probNet.doEdit(nodePotentialEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 		}
 	}
@@ -204,8 +202,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	/**
 	 *
 	 */
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Ignore
 	}
 

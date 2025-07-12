@@ -17,11 +17,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.openmarkov.gui.action.OtherPropertyEdit;
-import org.openmarkov.gui.component.DiscretizeTableModel;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -275,7 +272,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 					probNet.doEdit(otherPropertyEdit);
 				}
 				
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e){
+			} catch (ConstraintViolationException | DoEditException e){
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 			}
@@ -302,7 +299,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 				probNet.doEdit(otherPropertyEdit);
 			}
 			
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e){
+		} catch (ConstraintViolationException | DoEditException e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -325,7 +322,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 				probNet.doEdit(otherPropertyEdit);
 			}
 			
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e){
+		} catch (ConstraintViolationException | DoEditException e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -348,7 +345,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 				probNet.doEdit(otherPropertyEdit);
 			}
 			
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e){
+		} catch (ConstraintViolationException | DoEditException e){
 			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
 					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		}
@@ -387,7 +384,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 					probNet.doEdit(otherPropertyEdit);
 				}
 				
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+			} catch (ConstraintViolationException | DoEditException e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
 				String oldName = new ArrayList<>(node.getOtherProperties().keySet()).get(row);

@@ -89,7 +89,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 					null);
 			try {
 				probNet.getPNESupport().doEdit(edit);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -103,7 +103,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 			DecisionCriteriaEdit edit = new DecisionCriteriaEdit(probNet, StateAction.ADD, criterion, null);
 			try {
 				probNet.getPNESupport().doEdit(edit);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

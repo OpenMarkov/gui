@@ -266,12 +266,11 @@ import java.util.List;
 	 * @param col The column selected. Never is 0 , because the column 0 is the
 	 *            states column
 	 * @return An evidence case object
-	 * @throws InvalidStateException
 	 * @throws IncompatibleEvidenceException
 	 * @author carmenyago
 	 */
 	@Override protected EvidenceCase getConfiguration(int col)
-			throws InvalidStateException, IncompatibleEvidenceException {
+			throws IncompatibleEvidenceException {
 
 		List<Variable> parents = variables.subList(1, potential.getNumVariables());
 
@@ -317,7 +316,7 @@ import java.util.List;
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 		return evi;

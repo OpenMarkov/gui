@@ -424,7 +424,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * @param isDiscounted     if true, discounted series are shown
      * @param showUpfront      if true, upfront values are added to time 0
      */
-    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws InvalidStateException, ImposedPoliciesException, UnexpectedInferenceException {
+    private void showByCriterionSeries(boolean[] markedCheckBoxes, boolean isDiscounted, boolean showUpfront) throws UnexpectedInferenceException {
 
         List<XYSeries> result = new ArrayList<>();
         //At least there is one element marked
@@ -479,7 +479,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
      * This method only will be launched at the first time. In later
      * modifications and filters the established series are used to get other combined data
      */
-    private void createByCriterionSeries() throws InvalidStateException, ImposedPoliciesException, UnexpectedInferenceException {
+    private void createByCriterionSeries() throws UnexpectedInferenceException {
         //Only one decision variable; conditioningVariables.size() =1
         arrayXYSeriesUpfront = new ArrayList<>();
         arrayXYSeries = new ArrayList<>();
@@ -691,8 +691,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                             targetFilename.substring(0, targetFilename.length() - 5) + temporalVariable.getBaseName()
                                     + ".xlsx", table);
                     datasheet.put(temporalVariable, table);
-                } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | IOException |
-                         UnexpectedInferenceException e) {
+                } catch (NotEvaluableNetworkException | IncompatibleEvidenceException | IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -919,7 +918,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
             if (isByCriterion) {
                 try {
                     createByCriterionSeries();
-                } catch (InvalidStateException | ImposedPoliciesException | UnexpectedInferenceException e) {
+                } catch (UnexpectedInferenceException e) {
                     throw new RuntimeException(e);
                 }
                 chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
@@ -1206,7 +1205,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 tabbedPane.addTab(stringDatabase.getString("TemporalEvolutionTable.Title.Label"), null, getTablePane(),
                         null);
 
-            } catch (InvalidStateException | ImposedPoliciesException | UnexpectedInferenceException e) {
+            } catch (UnexpectedInferenceException e) {
                 throw new RuntimeException(e);
             }
         } else

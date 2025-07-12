@@ -13,8 +13,6 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -49,10 +47,8 @@ import java.util.List;
 	 * Generate edits and does them
 	 *
 	 * @throws DoEditException
-	 * @throws WrongCriterionException
-	 * @throws NonProjectablePotentialException
-	 */
-	public void doEdit() throws DoEditException, NonProjectablePotentialException, WrongCriterionException {
+     */
+	public void doEdit() throws DoEditException {
 		HashMap<String, String> newVariables = new HashMap<String, String>();
 		ProbNet probNet = visualNetwork.getNetwork();
 		// Gather new node creation edits

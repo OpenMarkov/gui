@@ -12,8 +12,6 @@ import org.openmarkov.core.action.ICIPotentialEdit;
 import org.openmarkov.core.action.SimplePNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
@@ -292,7 +290,7 @@ import java.util.List;
 
 		try {
 			probNet.doEdit(iciPotentialEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
 			throw new DoEditException(e);
 		}

@@ -13,8 +13,6 @@ import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.localize.StringDatabase;
@@ -139,7 +137,7 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 								tableModel.insertRow(newIndex + i, newData[i]);
 								edits.remove(edit);
 								break;
-							} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+							} catch (DoEditException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 								JOptionPane.showMessageDialog(Utilities.getOwner(this), e.getMessage(),
@@ -198,14 +196,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					edits.add(linkEdit);
 					nodes.add(otherNode);
 				} catch (ConstraintViolationException ignore) {
-				} catch (NonProjectablePotentialException | WrongCriterionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-							stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-				}
-
-			}
+				} // TODO Auto-generated catch block
+            
+            
+            }
 
 		}
 		return fillArrayWithNodes(nodes);
@@ -255,16 +249,6 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-		} catch (NonProjectablePotentialException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-		} catch (WrongCriterionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 		} catch (NodeNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

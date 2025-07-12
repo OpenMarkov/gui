@@ -11,8 +11,6 @@ import org.openmarkov.core.action.SetPotentialEdit;
 import org.openmarkov.core.action.SetPotentialVariablesEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PolicyType;
@@ -20,13 +18,10 @@ import org.openmarkov.core.model.network.Util;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManager;
-import org.openmarkov.core.model.network.potential.AugmentedTablePotential;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.UnivariateDistrPotential;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.gui.action.AugmentedPotentialValueEdit;
@@ -764,8 +759,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				SetPotentialEdit potentialEdit = new SetPotentialEdit(node, potential);
 				try {
 					node.getProbNet().doEdit(potentialEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
-						| WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();
@@ -774,8 +768,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 				SetPotentialVariablesEdit setPotentialVariables = new SetPotentialVariablesEdit(node, newVariables);
 				try {
 					node.getProbNet().doEdit(setPotentialVariables);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException
-						| WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException e) {
 					e.printStackTrace();
 				}
 				updatePotentialPanel();

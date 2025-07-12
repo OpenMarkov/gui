@@ -237,7 +237,7 @@ public class VisualState extends VisualElement {
 			double truncatedValue = (Math.rint(value * Math.pow(10, NUMBER_OF_DECIMALS))) / Math
 					.pow(10, NUMBER_OF_DECIMALS);
 			stateValues.set(caseNumber, truncatedValue);
-		} catch (Exception exc) {
+		} catch (RuntimeException exc) {
 			JOptionPane.showMessageDialog(null, "ERROR" + "\n\n" + exc.getMessage(),
 					StringDatabase.getUniqueInstance().getString("ExceptionGeneric.Title.Label"),
 					JOptionPane.ERROR_MESSAGE);

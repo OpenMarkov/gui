@@ -64,7 +64,7 @@ import java.util.List;
 					try {
 						probNet.doEdit(criteriaEdit);
 						//edits.add(criteriaEdit);
-					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+					} catch (ConstraintViolationException | DoEditException e1) {
 						JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 								stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 						dataTable[row][column - 1] = criterionName;
@@ -84,7 +84,7 @@ import java.util.List;
 					try {
 						probNet.doEdit(criterionUnitEdit);
 						//edits.add(criterionUnitEdit);
-					} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+					} catch (DoEditException | ConstraintViolationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -114,7 +114,7 @@ import java.util.List;
 				probNet.doEdit(criteriaEdit);
 				//edits.add(criteriaEdit);
 
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+			} catch (ConstraintViolationException | DoEditException e1) {
 				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 						stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 
@@ -158,7 +158,7 @@ import java.util.List;
 		try {
 			probNet.doEdit(criteriaEdit);
 			//edits.add(criteriaEdit);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -201,7 +201,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -237,7 +237,7 @@ import java.util.List;
 			 * 1, 1);
 			 */
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

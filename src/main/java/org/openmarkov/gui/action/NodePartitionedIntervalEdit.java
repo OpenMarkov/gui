@@ -108,7 +108,7 @@ public class NodePartitionedIntervalEdit extends SimplePNEdit {
 
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 
 		switch (stateAction) {
 		case MODIFY_DELIMITER_INTERVAL:

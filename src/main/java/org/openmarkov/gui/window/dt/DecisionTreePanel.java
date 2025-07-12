@@ -97,12 +97,8 @@ import java.awt.event.MouseListener;
 		if (networkType instanceof InfluenceDiagramType || networkType instanceof DecisionAnalysisNetworkType) {
 			root = new DecisionTreeBranch(probNet);
 			DecompositionGenerateDecisionTree genDT = new DecompositionGenerateDecisionTree(probNet, depth);
-			try {
-				genDT.setPreResolutionEvidence(branchEvidence);
-			} catch (IncompatibleEvidenceException e) {
-				e.printStackTrace();
-			}
-			((DecisionTreeBranch) root).setChild(genDT.getDecisionTree());
+            genDT.setPreResolutionEvidence(branchEvidence);
+            ((DecisionTreeBranch) root).setChild(genDT.getDecisionTree());
 		} 
 		return root;
 	}
@@ -178,7 +174,7 @@ import java.awt.event.MouseListener;
 					newEvi.addFinding(new Finding(branchVariable, branch.getBranchState()));
 				}
 			}
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 		return newEvi;

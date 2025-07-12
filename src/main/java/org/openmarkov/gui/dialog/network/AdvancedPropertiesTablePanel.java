@@ -169,9 +169,7 @@ import java.util.List;
 
 	}
 
-	@Override public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException, NonProjectablePotentialException,
-			WrongCriterionException {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 
 	}

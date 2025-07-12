@@ -24,7 +24,7 @@ import org.openmarkov.core.model.network.Node;
 		this.newDecisionCriteria = decisionCriteria;
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		node.getVariable().setDecisionCriterion(newDecisionCriteria);
 	}
 

@@ -662,8 +662,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		}
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 		repaint();
 	}

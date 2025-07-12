@@ -11,8 +11,6 @@ package org.openmarkov.gui.component;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.State;
@@ -84,7 +82,7 @@ import java.util.ListIterator;
 						row, col, priorityList);
 				try {
 					node.getProbNet().doEdit(nodePotentialEdit);
-				} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+				} catch (ConstraintViolationException | DoEditException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
@@ -120,8 +118,7 @@ import java.util.ListIterator;
 		}
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 	}
 

@@ -988,8 +988,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		 */
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event)
-			throws ConstraintViolationException {
+	public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 	}
 

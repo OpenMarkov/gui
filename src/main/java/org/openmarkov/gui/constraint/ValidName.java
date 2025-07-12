@@ -27,8 +27,7 @@ public class ValidName extends PNConstraint {
 	// Attributes.
 	private String message;
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit)
-			throws NonProjectablePotentialException, WrongCriterionException {
+	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeNameEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((NodeNameEdit) simpleEdit).getNewName();

@@ -968,7 +968,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 					multicriteriaOptions);
 			try {
 				probNet.getPNESupport().doEdit(editMulticriteria);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				e.printStackTrace();
 			}
 		}
@@ -994,7 +994,7 @@ public class InferenceOptionsDialog extends OkCancelHorizontalDialog {
 			TemporalOptionsEdit editTemporal = new TemporalOptionsEdit(probNet, temporalOptions);
 			try {
 				probNet.getPNESupport().doEdit(editTemporal);
-			} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException e) {
 				e.printStackTrace();
 			}
 		}

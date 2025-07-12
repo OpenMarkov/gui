@@ -312,7 +312,7 @@ import java.util.List;
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
-		} catch (InvalidStateException | IncompatibleEvidenceException e) {
+		} catch (IncompatibleEvidenceException e) {
 			e.printStackTrace();
 		}
 		return evi;

@@ -110,7 +110,7 @@ public class OtherPropertyEdit extends SimplePNEdit {
 		this.otherPropertyAction = otherPropertyAction;
 	}
 	
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		switch (otherPropertyAction) {
 		case "ADD":
 			// Copy other properties

@@ -53,7 +53,7 @@ import java.util.List;
 				try {
 					probNet.doEdit(networkAgentEdit);
 					edits.add(networkAgentEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -78,7 +78,7 @@ import java.util.List;
 			try {
 				probNet.doEdit(networkAgentEdit);
 				edits.add(networkAgentEdit);
-			} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+			} catch (DoEditException | ConstraintViolationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -110,7 +110,7 @@ import java.util.List;
 		try {
 			probNet.doEdit(networkAgentEdit);
 			edits.add(networkAgentEdit);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -145,7 +145,7 @@ import java.util.List;
 				valuesTable.getValueAt(selectedRow - 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow - 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow - 1, selectedRow - 1);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -173,7 +173,7 @@ import java.util.List;
 				valuesTable.getValueAt(selectedRow + 1, 1), selectedRow, 1);
 			valuesTable.setValueAt(swap, selectedRow + 1, 1);*/
 			valuesTable.getSelectionModel().setSelectionInterval(selectedRow + 1, selectedRow + 1);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

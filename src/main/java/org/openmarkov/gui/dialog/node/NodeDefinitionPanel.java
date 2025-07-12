@@ -231,7 +231,7 @@ public class NodeDefinitionPanel extends JPanel
 	 * <p>
 	 * initialize the layout for this panel
 	 */
-	private void initialize() throws Exception {
+	private void initialize() {
 		this.getCommentHTMLScrollPaneNodeDefinitionComment();
 		setName("NodeDefinitionPanel");
 		setFocusable(false);
@@ -771,7 +771,7 @@ public class NodeDefinitionPanel extends JPanel
 							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
-				} catch (NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+				} catch (DoEditException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -788,7 +788,7 @@ public class NodeDefinitionPanel extends JPanel
 							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
-				} catch (NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+				} catch (DoEditException e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
 				}
@@ -804,7 +804,7 @@ public class NodeDefinitionPanel extends JPanel
 				try {
 					node.getProbNet().doEdit(timeSliceEdit);
 					// comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e1) {
+				} catch (DoEditException | ConstraintViolationException e1) {
                     /*
                     Fixing issue 203
                     https://bitbucket.org/cisiad/org.openmarkov.issues/issue/203/two-time-related-variables-with-identical
@@ -825,7 +825,7 @@ public class NodeDefinitionPanel extends JPanel
 				try {
 					node.getProbNet().doEdit(nodeAgentEdit);
 					// comboBox.setSelectedIndex(optionSelected);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e1) {
+				} catch (DoEditException | ConstraintViolationException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -839,7 +839,7 @@ public class NodeDefinitionPanel extends JPanel
 						decisionCriteria);
 				try {
 					node.getProbNet().doEdit(nodeDecisionCriteriaEdit);
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e1) {
+				} catch (DoEditException | ConstraintViolationException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -867,7 +867,7 @@ public class NodeDefinitionPanel extends JPanel
 
 					jTextFieldNodeName.setText(node.getName());
 					jTextFieldNodeName.requestFocus();
-				} catch (DoEditException | NonProjectablePotentialException | WrongCriterionException e1) {
+				} catch (DoEditException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, e1.getMessage(), e1.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -961,7 +961,7 @@ public class NodeDefinitionPanel extends JPanel
 		NodeCommentEdit nodeCommentEdit = new NodeCommentEdit(node, comment, "DefinitionComment");
 		try {
 			node.getProbNet().doEdit(nodeCommentEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);
@@ -975,7 +975,7 @@ public class NodeDefinitionPanel extends JPanel
 		NodeAlwaysObservedEdit edit = new NodeAlwaysObservedEdit(this.node, this.jCheckboxAlwaysObserved.isSelected());
 		try {
 			node.getProbNet().doEdit(edit);
-		} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (DoEditException | ConstraintViolationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, e.getMessage(), e.getMessage(), JOptionPane.ERROR_MESSAGE);

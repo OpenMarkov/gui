@@ -69,7 +69,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		this.lastTable = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
 	}
 
-	@Override public void doEdit() throws DoEditException {
+	@Override public void doEdit() {
 		int numStates2 = node2.getVariable().getNumStates();
 		int stateIndex1 = col - 1;
 		int stateIndex2 = numStates2 - row;

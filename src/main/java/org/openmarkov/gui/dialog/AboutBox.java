@@ -140,9 +140,8 @@ public class AboutBox extends JDialog implements ActionListener {
 	/**
 	 * Component initialization.
 	 *
-	 * @throws Exception if any problem on components initialization
 	 */
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		product = stringDatabase.getString("AboutBox.Product.Text");
 		version = stringDatabase.getString("AboutBox.Version.Text") + " " + version;
 		copyright = stringDatabase.getString("AboutBox.Copyright.Text");

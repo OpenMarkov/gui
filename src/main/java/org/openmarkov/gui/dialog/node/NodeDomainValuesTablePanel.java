@@ -14,8 +14,6 @@ import org.openmarkov.core.action.PrecisionEdit;
 import org.openmarkov.core.action.VariableTypeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.DefaultStates;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -891,7 +889,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+				} catch (ConstraintViolationException | DoEditException e1) {
 					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
 							stringDatabase.getString("ConstraintViolationException"), JOptionPane.ERROR_MESSAGE);
 					comboBox.setSelectedIndex(optionDeselected);
@@ -932,7 +930,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 								stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 					}
-				} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+				} catch (ConstraintViolationException | DoEditException e) {
 					comboBox.setSelectedIndex(optionDeselected);
 					comboBox.requestFocus();
 					e.printStackTrace();
@@ -959,7 +957,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 							}
 						}
 						// @@@
-					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e1) {
+					} catch (ConstraintViolationException | DoEditException e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(null, stringDatabase.getString(e1.getMessage()),
 								stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -1034,7 +1032,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 
 					}
 					// @@@
-				} catch (DoEditException | ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+				} catch (DoEditException | ConstraintViolationException e) {
 					e.printStackTrace();
 				}
 				PartitionedInterval newPartitionInterval = node.getVariable().getPartitionedInterval();
@@ -1105,7 +1103,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 					JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 							stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
 				}
-			} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+			} catch (ConstraintViolationException | DoEditException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, stringDatabase.getString(e.getMessage()),
 						stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

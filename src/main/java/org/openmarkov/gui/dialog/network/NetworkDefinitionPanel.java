@@ -309,7 +309,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 		NetworkCommentEdit networkCommentEdit = new NetworkCommentEdit(probNet, comment, getShowComment());
 		try {
 			probNet.doEdit(networkCommentEdit);
-		} catch (ConstraintViolationException | DoEditException | NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 					StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
@@ -339,7 +339,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 						probNet.doEdit(changeNetworkType);
 						parent.update(probNet);
 						//parent.getNetworkAdvancedPanel().update(probNet); SUSTITUIDA POR 342
-					} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException e) {
+					} catch (ConstraintViolationException e) {
 						e.printStackTrace();
 						JOptionPane
 								.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),

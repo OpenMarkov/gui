@@ -64,28 +64,23 @@ public class SplashScreen extends JFrame {
 	/**
 	 * Main initialization method to display visual components
 	 *
-	 * @throws Exception
 	 */
-	void jbInit() throws Exception {
-
-		try {
-			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			this.setUndecorated(true);
-			this.getContentPane().setLayout(new BorderLayout());
-
-			progressBar.setStringPainted(true);
-			progressBar.setForeground(new Color(10, 110, 230));
-			this.getContentPane().add(progressBar, BorderLayout.SOUTH);
-
-			imageLabel.setIcon(imageIcon);
-			this.getContentPane().add(imageLabel, BorderLayout.CENTER);
-
-			this.pack();
-			this.setVisible(true);
-		} catch (Exception ex) {
-			throw ex;
-		}
-	}
+	void jbInit() {
+        
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        this.setUndecorated(true);
+        this.getContentPane().setLayout(new BorderLayout());
+        
+        progressBar.setStringPainted(true);
+        progressBar.setForeground(new Color(10, 110, 230));
+        this.getContentPane().add(progressBar, BorderLayout.SOUTH);
+        
+        imageLabel.setIcon(imageIcon);
+        this.getContentPane().add(imageLabel, BorderLayout.CENTER);
+        
+        this.pack();
+        this.setVisible(true);
+    }
 
 	/**
 	 * States which will be the maximum progress to be displayed

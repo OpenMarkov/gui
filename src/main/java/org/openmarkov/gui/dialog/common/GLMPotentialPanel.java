@@ -168,7 +168,7 @@ import java.awt.event.ActionListener;
 				newPotential);
 		try {
 			node.getProbNet().doEdit(potentialChangeEdit);
-		} catch (ConstraintViolationException | NonProjectablePotentialException | WrongCriterionException | DoEditException e) {
+		} catch (ConstraintViolationException | DoEditException e) {
 			e.printStackTrace();
 		}
 		return true;
