@@ -350,7 +350,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 						// TODO temporal change in exception management
 						e.printStackTrace();
 
-						LocalizedException localizedException = new LocalizedException(new OpenMarkovException(e));
+						LocalizedException localizedException = new LocalizedException(new OpenMarkovException(e.getToken()));
 						localizedException.showException();
 					}
 				}

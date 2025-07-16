@@ -217,7 +217,7 @@ import java.util.List;
 			logger.warn(e.getMessage());
 			LocalizedException exception = new LocalizedException(e);
 			exception.showException();
-			throw new DoEditException(e);
+			throw new DoEditException(e.getToken());
 		}
 	}
 

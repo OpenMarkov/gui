@@ -242,7 +242,7 @@ import java.util.List;
 			probNet.doEdit(changePotentialEdit);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-			throw new DoEditException(e);
+			throw new DoEditException(e.getToken());
 		}
 	}
 

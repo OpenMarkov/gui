@@ -158,7 +158,7 @@ import org.openmarkov.gui.component.PotentialsTablePanelOperations;
 			probNet.doEdit(changePotentialEdit);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-			throw new DoEditException(e);
+			throw new DoEditException(e.getToken());
 		}
 	}
 
