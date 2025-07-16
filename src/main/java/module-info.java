@@ -35,6 +35,7 @@ open module org.openmarkov.gui {
     exports org.openmarkov.gui.configuration;
     exports org.openmarkov.gui.window.mdi;
     exports org.openmarkov.gui.window.dt;
+    exports org.openmarkov.gui.dialog;
     
     uses org.openmarkov.core.localize.spi.LocalizeResourcesProvider;
     provides org.openmarkov.core.localize.spi.LocalizeResourcesProvider with GUIResourceBundleProvider;
