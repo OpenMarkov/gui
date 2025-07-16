@@ -12,15 +12,12 @@ package org.openmarkov.gui.component;
 
 //import java.util.ArrayList;
 
-import org.openmarkov.core.exception.NullListPotentialsException;
-import org.openmarkov.core.exception.NullPotentialException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import javax.swing.*;
-import java.util.List;
 
 
 /**
@@ -39,15 +36,7 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param node - node with contains the potentials
 	 */
 	@Override public int calculateFirstEditableRow(Node node) {
-		try {
-			checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0;
-		}
-		int row = 0;
-		row = node.getPotentials().get(0).getNumVariables() - 1;
-		return row;
+		return node.getPotentials().stream().findFirst().map(p -> p.getNumVariables()-1).orElse(0);
 	}
 
 	/**
@@ -57,40 +46,17 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	 * @param node node who "owns" the table
 	 */
 	@Override public int calculateLastEditableRow(Node node) {
-		try {
-			checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "There is not a valid potential");
+		if(node.getPotentials().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are no potentials");
 			return 0;
 		}
-
-		int row = 0;
 		Potential potential = node.getPotentials().get(0);
-		if (getIsExactDistrPotential(potential))
-			row = potential.getNumVariables() - 1;
-		else
-			// Number of parents + Number of variable states -1
-			row = node.getPotentials().get(0).getNumVariables() - 1 + node.getVariable().getStates().length - 1;
-
-		return row;
-	}
-
-	/**
-	 * This method determines if a list of potentials is empty or not
-	 * @param listPotentials - the list of potentials to check
-	 * @throws NullListPotentialsException if listPotentials is null
-	 * @throws NullPotentialException      if listPotentials is empty
-	 */
-	public void checkIfNoPotential(List<Potential> listPotentials)
-			throws NullListPotentialsException, NullPotentialException {
-
-		if (listPotentials == null)
-			throw new NullListPotentialsException("");
-		if (listPotentials.isEmpty())
-			throw new NullPotentialException("");
-	}
-
+		if (this.getIsExactDistrPotential(potential)) {
+			return potential.getNumVariables() - 1;
+		}
+        return node.getPotentials().get(0).getNumVariables() - 1 + node.getVariable().getStates().length - 1;
+    }
+	
 	/**
 	 * True if the class of the potential is ExactDistrPotential
 	 *
@@ -103,19 +69,14 @@ public class PotentialsTablePanelOperations implements TableMethods {
 	}
 
 	@Override public int getPotentialIndex(int row, int column, Node node) {
-		try {
-			checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "There is not a valid potential");
+		if (node.getPotentials().isEmpty()){
+			JOptionPane.showMessageDialog(null, "There are no potentials");
 			return 0;
 		}
 		// First of all we get the start index of the column
 		int potentialIndex = getPotentialStartIndexOfColumn(column, node);
-
 		// We get the last editable row in the JTable
 		int lastRow = calculateLastEditableRow(node);
-
 		// Then we move a number of positions equals to the row (without the headers)
 		potentialIndex += (lastRow - row);
 		return potentialIndex;
@@ -203,11 +164,9 @@ public class PotentialsTablePanelOperations implements TableMethods {
 		 * This code is here and in getPotentialIndex because this method is used not only in  getPotentialIndex
 		 * but in org.openmarkov.gui.action.TablePotentialValueEdit
 		 */
-		try {
-			checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "There is not a valid potential");
+		
+		if (node.getPotentials().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are no potentials");
 			return 0;
 		}
 

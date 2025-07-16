@@ -86,10 +86,9 @@ public class NodePartitionedIntervalEditTest {
 	/**
 	 * This method undoes and redoes several times the node's name.
 	 *
-	 * @throws Exception if an error occurs.
-	 */
+     */
 	@Tag(TestSpeed.SLOW)
-	@Test public final void testUndoRedo() throws Exception {
+	@Test public final void testUndoRedo() {
 
 		assertEquals(node1.getVariable().getPartitionedInterval().
 				getBelongsToLeftSide(0), false);

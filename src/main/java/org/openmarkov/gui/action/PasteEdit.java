@@ -12,7 +12,6 @@ import org.openmarkov.core.action.AddNodeEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -80,15 +79,12 @@ import java.util.List;
 
 		//Gather link creation edits
 		for (Link<Node> link : clipboardContent.getLinks()) {
-			try {
-				String originalSourceNodeName = link.getNode1().getName();
-				String originalDestinationNodeName = link.getNode2().getName();
-
-				edits.add(new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
-						probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected()));
-			} catch (NodeNotFoundException e) {/* Can not possibly happen */
-			}
-		}
+            String originalSourceNodeName = link.getNode1().getName();
+            String originalDestinationNodeName = link.getNode2().getName();
+            
+            edits.add(new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
+                    probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected()));
+        }
 
 		//Apply link creation edits
 		List<Link<Node>> pastedLinks = new ArrayList<>();

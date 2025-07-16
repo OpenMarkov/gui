@@ -25,7 +25,7 @@ import org.openmarkov.core.model.network.Util;
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class UtilsTest {
 
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() {
 	}
 
 	/**

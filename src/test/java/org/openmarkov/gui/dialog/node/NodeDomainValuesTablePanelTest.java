@@ -26,7 +26,7 @@ public class NodeDomainValuesTablePanelTest {
 
 	NodeDomainValuesTablePanel panel = null;
 
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() {
 		panel = new NodeDomainValuesTablePanel(false);
 
 	}

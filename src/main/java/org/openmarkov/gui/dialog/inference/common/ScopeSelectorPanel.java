@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.inference.common;
 
 import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -130,12 +129,8 @@ public class ScopeSelectorPanel extends JPanel {
 					} else {
 						setScopeType(ScopeType.DECISION);
 						if (decisionSelector != null) {
-							try {
-								decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
-							} catch (NodeNotFoundException e1) {
-								e1.printStackTrace();
-							}
-						}
+                            decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
+                        }
 						if (decisionSelectorPanel != null) {
 							for (Component component : decisionSelectorPanel.getComponents()) {
 								component.setEnabled(true);
@@ -216,12 +211,8 @@ public class ScopeSelectorPanel extends JPanel {
 		decisionSelector.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
 				String itemSelected = (String) ((JComboBox) e.getSource()).getSelectedItem();
-				try {
-					setDecisionSelected(probNet.getVariable(itemSelected));
-				} catch (NodeNotFoundException e1) {
-					e1.printStackTrace();
-				}
-			}
+                setDecisionSelected(probNet.getVariable(itemSelected));
+            }
 		});
 		if (decisionSelector.getItemCount() > 0) {
 			decisionSelector.setSelectedIndex(0);
@@ -234,12 +225,8 @@ public class ScopeSelectorPanel extends JPanel {
 				component.setEnabled(false);
 			}
 		} else {
-			try {
-				decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+            decisionSelected = probNet.getVariable(decisionSelector.getSelectedItem().toString());
+        }
 
 		return decisionSelectorPanel;
 	}

@@ -28,7 +28,7 @@ public class LinkRestrictionPanelTest {
 	private Variable varA, varB;
 	private State[] stateA, stateB;
 
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() {
 
 		stateA = new State[] { new State("A1"), new State("A2"), new State("A3") };
 		stateB = new State[] { new State("B1"), new State("B2") };

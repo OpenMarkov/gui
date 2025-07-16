@@ -89,10 +89,9 @@ public class MoveNodeEditTest {
 	/**
 	 * This method undoes and redoes several times.
 	 *
-	 * @throws Exception if an error occurrs.
-	 */
+     */
 	@Tag(TestSpeed.SLOW)
-	@Test public final void testUndoRedo() throws Exception {
+	@Test public final void testUndoRedo() {
 
 		assertEquals(node1.getCoordinateX(), 21.0, 0.1);
 		assertEquals(node1.getCoordinateY(), 160.0, 0.1);

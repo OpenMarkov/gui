@@ -12,7 +12,6 @@ import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -122,7 +121,7 @@ import java.awt.event.ActionListener;
 		try {
 			TablePotential projectedPotential = newPotential.tableProject(new EvidenceCase(), null).get(0);
 			// TODO update table with projected potential
-		} catch (NonProjectablePotentialException | WrongCriterionException e) {
+		} catch (NonProjectablePotentialException e) {
 			e.printStackTrace();
 		}
 	}

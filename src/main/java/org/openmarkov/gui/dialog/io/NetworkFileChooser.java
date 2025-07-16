@@ -76,7 +76,7 @@ import java.util.List;
 		this(false, true);
 	}
 
-	@Override public int showOpenDialog(Component parent) throws HeadlessException {
+	@Override public int showOpenDialog(Component parent) {
 		int result = super.showOpenDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),
@@ -102,7 +102,7 @@ import java.util.List;
 		return result;
 	}
 
-	@Override public int showSaveDialog(Component parent) throws HeadlessException {
+	@Override public int showSaveDialog(Component parent) {
 		int result = super.showSaveDialog(parent);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			OpenMarkovPreferences.set(OpenMarkovPreferences.LAST_OPEN_DIRECTORY, getSelectedFile().getAbsolutePath(),

@@ -13,8 +13,6 @@ import org.openmarkov.core.action.UncertainValuesRemoveEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -161,14 +159,11 @@ import java.util.List;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
 		// If there is no potential
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		if(node.getPotentials().isEmpty()){
+			JOptionPane.showMessageDialog(this, "There are no potentials");
 			return;
 		}
+		
 		this.node = node;
 		// This panel displays the first potential of the node
 		potential = node.getPotentials().get(0);
@@ -242,14 +237,8 @@ import java.util.List;
 	 */
 	public void setData(Node node) {
 		this.node = node;
-
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		if(node.getPotentials().isEmpty()){
+			JOptionPane.showMessageDialog(this, "There are no potentials");
 			return;
 		}
 		setData();
@@ -403,14 +392,8 @@ import java.util.List;
 	 * tableSize is always greater than 0
 	 */
 	protected Object[][] createEmptyTable() {
-
-		// If there is no potential
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		if(node.getPotentials().isEmpty()){
+			JOptionPane.showMessageDialog(this, "There are no potentials");
 			return null;
 		}
 		int numRows = 0;
@@ -717,10 +700,8 @@ import java.util.List;
 
 	/**
 	 * Creates and shows the UncertainValuesDialog object
-	 *
-	 * @throws WrongCriterionException revised--&gt;minor changes
 	 */
-	public void showUncertaintyDialog() throws WrongCriterionException {
+	public void showUncertaintyDialog() {
 		// Generates the evidenceCase based on the column
 		// selected on the JTable object
 		evidenceCase = getEvidenceCaseFromSelectedColumn();
@@ -830,13 +811,7 @@ import java.util.List;
 		String actionCommand = e.getActionCommand();
 		if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN) || actionCommand
 				.equals(ActionCommands.UNCERTAINTY_EDIT)) {
-			try {
-				showUncertaintyDialog();
-			} catch (WrongCriterionException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-						stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
+			showUncertaintyDialog();
 		} else if (actionCommand.equals(ActionCommands.UNCERTAINTY_REMOVE)) {
 			removeUncertainty();
 		}
@@ -909,13 +884,7 @@ import java.util.List;
 			}
 			boolean hasUncertainty = tablePotential.hasUncertainty(configuration);
 			if (hasUncertainty) {
-				try {
-					showUncertaintyDialog();
-				} catch (WrongCriterionException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-							stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-				}
+				showUncertaintyDialog();
 			}
 		}
 	}

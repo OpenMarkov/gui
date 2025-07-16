@@ -1,15 +1,10 @@
 package org.openmarkov.gui.dialog;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.InvalidNetworkTypeException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.OpenMarkovException2;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.logging.OpenMarkovLogger;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.constraint.DistinctLinks;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +36,15 @@ public class ExceptionDialog {
      */
     public static void show(Exception exception, @Nullable java.awt.Component frame) {
         TitleAndMessage titleAndMessage = getTitleAndMessage(exception);
-        JOptionPane.showMessageDialog(frame, titleAndMessage.message, titleAndMessage.title, JOptionPane.ERROR_MESSAGE);
+        String title = titleAndMessage.title;
+        String message = titleAndMessage.message;
+        if(title != null) {
+            title = title.replace("\\n", "\n");
+        }
+        if(message != null) {
+            message = message.replace("\\n", "\n");
+        }
+        JOptionPane.showMessageDialog(frame, message, title, JOptionPane.ERROR_MESSAGE);
     }
     
     /**

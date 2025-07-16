@@ -15,7 +15,6 @@ import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 
 import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
 import org.openmarkov.core.exception.UnexpectedInferenceException;
@@ -1100,12 +1099,8 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				if (variable.equals(conditionedVariable)) {
 					continue;
 				}
-				try {
-					dummyProbNet.addLink(variable, conditionedVariable, true);
-				} catch (NodeNotFoundException e) {
-					throw new RuntimeException("Node not found: " + e.getMessage());
-				}
-			}
+                dummyProbNet.addLink(variable, conditionedVariable, true);
+            }
 			PotentialEditDialog optimalPolicyDialog = new PotentialEditDialog(Utilities.getOwner(this), dummy, false,
 					true);
 			optimalPolicyDialog.setTitle("OptimalPolicyDialog.Title.Label");

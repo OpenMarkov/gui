@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -62,14 +61,13 @@ import java.util.List;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
 		// If there is no potential
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		
+		
+		if(node.getPotentials().isEmpty()){
+			JOptionPane.showMessageDialog(this, "There are no potentials");
 			return;
 		}
+		
 		this.node = node;
 		potential = node.getPotentials().get(0);
 		//The list of variables of the UnivariateDistrPotential

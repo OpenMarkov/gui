@@ -35,7 +35,7 @@ public class StringDatabaseTests {
 
 	StringDatabase stringDatabase = null;
 
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() {
 		stringDatabase = StringDatabase.getUniqueInstance();
 	}
 

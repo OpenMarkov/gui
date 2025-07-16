@@ -9,9 +9,7 @@ package org.openmarkov.gui.toolplugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.gui.window.MainPanel;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
+import org.openmarkov.plugin.PluginSearch;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Manager class for tool plugins in OpenMarkov.
@@ -55,7 +54,6 @@ public final class ToolPluginManager {
     private ToolPluginManager() {
         this.plugins = ToolPluginManager
                 .findAllToolPlugins()
-                .stream()
                 .map(toolPluginClass -> {
                     try {
                         Constructor<ToolPlugin> noArgsConstructors = toolPluginClass.getDeclaredConstructor();
@@ -85,12 +83,8 @@ public final class ToolPluginManager {
      *
      * @return a list of Plugin Tools classes.
      */
-    private static List<Class<ToolPlugin>> findAllToolPlugins() {
-        FilterIF filter = Filter.filter().toImplement(ToolPlugin.class);
-        return new PluginLoader().loadAllPlugins(filter).stream()
-                                 .map(pluginClass -> (Class<ToolPlugin>) pluginClass)
-                                 .filter(toolPluginClass -> !toolPluginClass.isInterface())
-                                 .toList();
+    private static Stream<Class<ToolPlugin>> findAllToolPlugins() {
+        return PluginSearch.init().childrenOf(ToolPlugin.class).stream();
     }
     
     /**

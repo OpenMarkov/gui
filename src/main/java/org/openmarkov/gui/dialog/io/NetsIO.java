@@ -9,7 +9,6 @@ package org.openmarkov.gui.dialog.io;
 
 import org.apache.commons.io.FileUtils;
 import org.openmarkov.core.exception.OpenMarkovExceptionConstants;
-import org.openmarkov.core.exception.NotRecognisedNetworkFileExtensionException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.WriterException;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -127,14 +126,12 @@ public class NetsIO {
 	 * @param evidence   - list of evidence cases
 	 * @param fileName   - file where the network is going to be saved
 	 * @param fileFormat - the extension and format of file where the network is going to be saved
-	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
 	 * @throws OpenMarkovException          - if an OpenMarkov error has happened
 	 * @throws InstantiationException                     -
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, List<EvidenceCase> evidence, String fileName, String fileFormat)
-            throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
-            IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+			throws OpenMarkovException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		String fileExtension = getFileExtension(fileName);
 		FormatManager formatManager = FormatManager.getInstance();
 		ProbNetWriter probNetWriter = formatManager.getProbNetWriter(fileExtension, fileFormat);
@@ -190,14 +187,12 @@ public class NetsIO {
 	 *
 	 * @param network  - network to save in the file
 	 * @param fileName - file where the network is going to be saved
-	 * @throws NotRecognisedNetworkFileExtensionException - if file extension is not recognised
 	 * @throws OpenMarkovException          - if an I/O error has happened
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
 	public static void saveNetworkFile(ProbNet network, String fileName, String fileFormat)
-            throws NotRecognisedNetworkFileExtensionException, OpenMarkovException,
-            IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+			throws OpenMarkovException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
 		saveNetworkFile(network, new ArrayList<EvidenceCase>(), fileName, fileFormat);
 	}

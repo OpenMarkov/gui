@@ -556,13 +556,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
                      .println(stringDatabase.getString("NetworkSaved.Text.Label"));
             mainPanel.getMainMenu().rechargeLastOpenFiles();
             result = true;
-        } catch (NotRecognisedNetworkFileExtensionException e) {
-            LocalizedException extensionException = new LocalizedException(new OpenMarkovException(
-                    "NotRecognisedNetworkFileExtensionException", stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label") + e.getToken()), null);
-            extensionException.showException();
-//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-//					stringDatabase.getString("CanNotRecognisedFileExtension.Text.Label"),
-//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
         } catch (OpenMarkovException e) {
             LocalizedException someBadThingHappenedException = new LocalizedException(e, null);
             someBadThingHappenedException.showException();
@@ -787,24 +780,16 @@ public class MainPanelListenerAssistant extends WindowAdapter
      */
     public NetworkPanel createNewFrame(ProbNet probNet) {
         NetworkPanel networkPanel = null;
-        try {
-            networkPanel = new NetworkPanel(probNet, mainPanel);
-            mainPanel.getMdi().createNewFrame(networkPanel);
-            networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
-            // networkPanel.addEditionListener( mainPanel
-            // .getMainPanelMenuAssistant() );
-            networkPanel.addSelectionListener(mainPanel.getMainPanelMenuAssistant());
-            mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
-            mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
-            // mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
-            mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
-        } catch (UnsupportedOperationException e) {
-            LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-                    "OpenMarkovException", stringDatabase.getString("ErrorWindow.Title.Label")), null);
-            localizedException.showException();
-//			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel), e.getMessage(),
-//					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-        }
+        networkPanel = new NetworkPanel(probNet, mainPanel);
+        mainPanel.getMdi().createNewFrame(networkPanel);
+        networkPanel.setContextualMenuFactory(mainPanel.getContextualMenuFactory());
+        // networkPanel.addEditionListener( mainPanel
+        // .getMainPanelMenuAssistant() );
+        networkPanel.addSelectionListener(mainPanel.getMainPanelMenuAssistant());
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNewNetworkOpen();
+        mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent(networkPanel);
+        // mainPanel.getMainPanelMenuAssistant().updateNetworkAgents(networkPanel);
+        mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
         return networkPanel;
     }
     
@@ -1238,16 +1223,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                                        .getStateName(cases[i][j]))));
                                 
                             }
-                        } catch (NodeNotFoundException e) {
-                            LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-                                    "NodeNotFoundException", stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") +
-                                    ": " + variables.get(j).getName()), null);
-                            localizedException.showException();
-//							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
-//									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
-//											+ variables.get(j).getName(),
-//									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-                        } catch (IncompatibleEvidenceException e) {
+                        } //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
+                        //									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
+                        //											+ variables.get(j).getName(),
+                        //									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
+                        catch (IncompatibleEvidenceException e) {
                             LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
                                     "IncompatibleEvidenceException", "Conflict in evidence variables."), null);
                             localizedException.showException();

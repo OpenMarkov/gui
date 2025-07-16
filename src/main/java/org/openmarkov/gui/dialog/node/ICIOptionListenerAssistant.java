@@ -9,7 +9,6 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
@@ -109,7 +108,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
 				ArrayList<Potential> potentials = new ArrayList<Potential>();
 				potentials.add(tablePotential);
 				iciNode.setPotentials(potentials);
-			} catch (NonProjectablePotentialException | WrongCriterionException e1) {
+			} catch (NonProjectablePotentialException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e1.getMessage()),

@@ -9,9 +9,6 @@ package org.openmarkov.gui.constraint;
 
 import org.openmarkov.core.action.NodeNameEdit;
 import org.openmarkov.core.action.PNEdit;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -69,13 +66,9 @@ public class ValidName extends PNConstraint {
 	 * @return true if the node exists; otherwise, false.
 	 */
 	public boolean existNode(String name, ProbNet probNet) {
-		try {
-			probNet.getNode(name);
-			return true;
-		} catch (NodeNotFoundException e) {
-			return false;
-		}
-	}
+        probNet.getNode(name);
+        return true;
+    }
 
 	public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
@@ -88,7 +81,7 @@ public class ValidName extends PNConstraint {
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return message;
 	}
 }

@@ -10,8 +10,6 @@ package org.openmarkov.gui.constraint;
 import org.openmarkov.core.action.NodeStateEdit;
 import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.StateAction;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -95,7 +93,7 @@ public class ValidState extends PNConstraint {
 		return true;
 	}
 
-	@Override protected String getMessage() {
+	@Override protected String constraintDescription() {
 		return message;
 	}
 }

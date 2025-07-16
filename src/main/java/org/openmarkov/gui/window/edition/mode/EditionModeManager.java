@@ -6,24 +6,23 @@
  */
 package org.openmarkov.gui.window.edition.mode;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.gui.loader.element.CursorLoader;
 import org.openmarkov.gui.window.edition.EditorPanel;
-import org.openmarkov.plugin.Filter;
-import org.openmarkov.plugin.PluginLoader;
-import org.openmarkov.plugin.service.FilterIF;
+import org.openmarkov.plugin.PluginSearch;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class EditionModeManager {
     private Map<String, EditionState> editionStates;
-    private Map<String, Class<?>> editionModeClasses;
+    private Map<String, Class<EditionMode>> editionModeClasses;
     private EditorPanel editorPanel;
     private ProbNet probNet;
     
@@ -32,11 +31,11 @@ public class EditionModeManager {
         editionModeClasses = new HashMap<>();
         this.editorPanel = editorPanel;
         this.probNet = probNet;
-        for (Class<?> editionModeClass : findAllEditionStates()) {
+        EditionModeManager.findAllEditionStates().forEach(editionModeClass -> {
             EditionState editionState = editionModeClass.getAnnotation(EditionState.class);
-            editionStates.put(editionState.name(), editionState);
-            editionModeClasses.put(editionState.name(), editionModeClass);
-        }
+            this.editionStates.put(editionState.name(), editionState);
+            this.editionModeClasses.put(editionState.name(), editionModeClass);
+        });
     }
     
     public EditionMode getEditionMode(String editionMode) {
@@ -63,8 +62,11 @@ public class EditionModeManager {
      *
      * @return a list with the plugins detected with FormatType annotations.
      */
-    private final List<Class<?>> findAllEditionStates() {
-        return new PluginLoader().loadAllPlugins(Filter.filter().toBeAnnotatedBy(EditionState.class));
+    private static @NotNull Stream<Class<EditionMode>> findAllEditionStates() {
+        return PluginSearch.init()
+                           .annotatedWith(EditionState.class)
+                           .childrenOf(EditionMode.class)
+                .stream();
     }
     
     public Cursor getCursor(String newEditionModeName) {

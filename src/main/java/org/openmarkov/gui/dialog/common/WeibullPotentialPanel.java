@@ -10,7 +10,6 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PotentialChangeEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.GLMPotential.MatrixType;
@@ -180,13 +179,10 @@ import java.util.Map;
 		double[] coefficients = regressionPanel.getCoefficients();
 		Variable timeVariable = null;
 		String selectedTimeVariable = timeVariableComboBox.getSelectedItem().toString();
-		try {
-			timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
-		} catch (NodeNotFoundException e1) {
-			// Ignore
-		}
-
-		double[] uncertaintyMatrix = null;
+        timeVariable = node.getProbNet().getVariable(selectedTimeVariable);
+        
+        
+        double[] uncertaintyMatrix = null;
 		if (uncertaintyCheckBox.isSelected()) {
 			CovarianceTableModel tableModel = (CovarianceTableModel) uncertaintyTable.getModel();
 			int rowCount = tableModel.getRowCount();

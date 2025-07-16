@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.node;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.State;
@@ -76,10 +75,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * @param owner
      * @param configuration
      * @param potential
-     * @throws WrongCriterionException
      */
-    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential)
-            throws WrongCriterionException {
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, TablePotential potential) {
         super(owner);
         //This constructor is never called by a utility node
         /*
@@ -131,10 +128,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      * @param owner
      * @param configuration
      * @param potential     - exactDistrPotential for which we will set uncertainty
-     * @throws WrongCriterionException
      */
-    public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential)
-            throws WrongCriterionException {
+    public UncertainValuesDialog(Window owner, EvidenceCase configuration, ExactDistrPotential potential) {
         super(owner);
         TablePotential tablePotential = potential.getTablePotential();
         //This constructor is always called in a utility node
@@ -353,8 +348,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         return stringDatabase.getString("UncertainValuesDialog.DistributionsTable.Columns." + column + ".Label");
     }
     
-    private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential)
-            throws WrongCriterionException {
+    private void fillDistributionsTableModel(Variable variable, EvidenceCase configuration, TablePotential potential) {
         UncertainValue[] uncertainTable = potential.getUncertainValues();
         TablePotential projectedPotential = null;
         try {

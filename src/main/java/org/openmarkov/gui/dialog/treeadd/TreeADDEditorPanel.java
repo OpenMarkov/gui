@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -1224,14 +1223,10 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			if (variable.equals(conditionedVariable)) {
 				continue;
 			}
-			try {
-				List<Potential> originalPotentials = probNet.getNode(variable).getPotentials();
-				dummyProbNet.getNode(variable).setPotentials(originalPotentials);
-				dummyProbNet.addLink(variable, conditionedVariable, true);
-			} catch (NodeNotFoundException e) {
-				throw new RuntimeException("Node not found: " + e.getMessage());
-			}
-		}
+            List<Potential> originalPotentials = probNet.getNode(variable).getPotentials();
+            dummyProbNet.getNode(variable).setPotentials(originalPotentials);
+            dummyProbNet.addLink(variable, conditionedVariable, true);
+        }
 		PotentialEditDialog dialog = new PotentialEditDialog(Utilities.getOwner(this), dummy, false);
 		if (dialog.requestValues() == NodePropertiesDialog.OK_BUTTON) {
 			Potential retPotential = dummy.getPotentials().get(0);

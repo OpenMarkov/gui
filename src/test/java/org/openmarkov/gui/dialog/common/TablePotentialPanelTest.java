@@ -7,11 +7,9 @@
 
 package org.openmarkov.gui.dialog.common;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Node;
@@ -33,11 +31,11 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 
 	private static ProbNet probNet;
 
-	public TablePotentialPanelTest() throws NodeNotFoundException {
+	public TablePotentialPanelTest() {
 		super(probNet.getNode("E"));
 	}
 
-	@BeforeAll public static void setUp() throws Exception {
+	@BeforeAll public static void setUp() {
 		probNet = buildpotential_panel_reordered_pgmx();
 	}
 
@@ -83,7 +81,7 @@ public class TablePotentialPanelTest extends TablePotentialPanel {
 		return probNet;
 	}
 
-	@Test public void testHowManyRows() throws NodeNotFoundException {
+	@Test public void testHowManyRows() {
 		assertEquals(this.howManyRows(probNet.getNode("E")), 5);
 	}
 

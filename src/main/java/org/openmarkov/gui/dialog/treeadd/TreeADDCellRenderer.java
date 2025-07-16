@@ -7,7 +7,6 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
@@ -166,13 +165,9 @@ public class TreeADDCellRenderer extends JPanel implements TreeCellRenderer {
 		Node node = probNet.getNode(variable);
 		boolean isDummyVariable = false;
 		if (node == null) {
-			try {
-				node = probNet.getNode(variable.getName());
-			} catch (NodeNotFoundException e) {
-				//e.printStackTrace();
-				isDummyVariable = true;
-			}
-		}
+            node = probNet.getNode(variable.getName());
+            
+        }
 		if (!isDummyVariable) {
 			switch (node.getNodeType()) {
 			case CHANCE: {

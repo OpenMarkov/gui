@@ -10,8 +10,6 @@ package org.openmarkov.gui.dialog.network;
 import org.openmarkov.core.action.DecisionCriteriaEdit;
 import org.openmarkov.core.action.StateAction;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.NodeType;

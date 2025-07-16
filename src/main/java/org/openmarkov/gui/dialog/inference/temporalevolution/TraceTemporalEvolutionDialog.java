@@ -230,7 +230,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         //10/11/2022 error message when there is more than one node without policy
         try {
             MIDTemporalEvolution.checkDecision(this.originalProbNet, this.originalProbNet.getNode(decisionSelected));
-        } catch (ImposedPoliciesException e) {
+        } catch (NodesMissingPoliciesException e) {
             JOptionPane.showMessageDialog(owner, stringDatabase.getString("DecisionWithoutPolicyWarning.Text.Label"), stringDatabase.getString("WarningWindow.Title.Label"),
                     JOptionPane.WARNING_MESSAGE);
             return;
@@ -1378,20 +1378,10 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         for (int slice = 0; slice <= numSlices; slice++) {
             String basename = variableOfInterest.getBaseName();
             Variable variableInSliceJ = null;
-
-            try {
-                variableInSliceJ = expandedNetwork.getVariable(basename, slice);
-            } catch (NodeNotFoundException e) {
-                // If the variable not exist, jump to the next slice
-                listOfPotentials.add(null);
-                // 07/11/2022 adding discounted/no discounted results necessary??
-                if (isUtility) {
-                    listOfPotentialsDiscount.add(null);
-                }
-                // end
-                continue;
-            }
-
+            
+            variableInSliceJ = expandedNetwork.getVariable(basename, slice);
+            
+            
             TablePotential tablePotential = null;
 
             tablePotential = temporalEvolutionResults.get(variableInSliceJ);

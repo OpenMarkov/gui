@@ -9,13 +9,9 @@ package org.openmarkov.gui.action;
 
 import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.SimplePNEdit;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.core.localize.LocalizedException;
-import org.openmarkov.core.localize.StringDatabase;
 
-import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,19 +66,10 @@ public class MoveNodeEdit extends SimplePNEdit {
 		Node node = null;
 		int i = 0;
 		for (String name : namesNode) {
-			try {
-				node = probNet.getNode(name);
-				node.setCoordinateX(newPositions.get(i).getX());
-				node.setCoordinateY(newPositions.get(i).getY());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-				logger.warn(e.getMessage());
-				LocalizedException exception = new LocalizedException(e);
-				exception.showException();				
-				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-			i++;
+            node = probNet.getNode(name);
+            node.setCoordinateX(newPositions.get(i).getX());
+            node.setCoordinateY(newPositions.get(i).getY());
+            i++;
 		}
 	}
 
@@ -91,19 +78,10 @@ public class MoveNodeEdit extends SimplePNEdit {
 		int i = 0;
 		Node node = null;
 		for (String name : namesNode) {
-			try {
-				node = probNet.getNode(name);
-				node.setCoordinateX(lastPositions.get(i).getX());
-				node.setCoordinateY(lastPositions.get(i).getY());
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-				logger.warn(e.getMessage());
-				LocalizedException exception = new LocalizedException(e); 
-				exception.showException();
-				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-			i++;
+            node = probNet.getNode(name);
+            node.setCoordinateX(lastPositions.get(i).getX());
+            node.setCoordinateY(lastPositions.get(i).getY());
+            i++;
 		}
 	}
 }

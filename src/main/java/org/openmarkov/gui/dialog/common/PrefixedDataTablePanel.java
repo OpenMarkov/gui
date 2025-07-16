@@ -12,7 +12,6 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.localize.StringDatabase;
@@ -249,14 +248,10 @@ public class PrefixedDataTablePanel extends KeyTablePanel {
 					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
 		} catch (ConstraintViolationException e) {
 			e.printStackTrace();
-		} catch (NodeNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e1.getMessage()),
-					stringDatabase.getString(e1.getMessage()), JOptionPane.ERROR_MESSAGE);
-		}
-
-	}
+		} // TODO Auto-generated catch block
+    
+    
+    }
 
 	// ESCA-JAVA0025:
 

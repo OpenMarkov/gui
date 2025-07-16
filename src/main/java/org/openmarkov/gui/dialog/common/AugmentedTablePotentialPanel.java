@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -75,14 +74,11 @@ import java.util.List;
 		this.tablePotentialsPanelOperations = new PotentialsTablePanelOperations();
 
 		// If there is no potential
-		try {
-			tablePotentialsPanelOperations.checkIfNoPotential(node.getPotentials());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, stringDatabase.getString(e.getMessage()),
-					stringDatabase.getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
+		if (node.getPotentials().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are no potentials");
 			return;
 		}
+		
 		this.node = node;
 		// This panel displays the first potential of the node
 		potential = node.getPotentials().get(0);

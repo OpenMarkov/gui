@@ -10,8 +10,6 @@ package org.openmarkov.gui.dialog.inference.common;
 import org.openmarkov.core.action.MulticriteriaEdit;
 import org.openmarkov.core.action.TemporalOptionsEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.inference.MulticriteriaOptions;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.TransitionTime;

@@ -13,7 +13,6 @@ import org.openmarkov.core.action.PNEdit;
 import org.openmarkov.core.action.PNUndoableEditListener;
 import org.openmarkov.core.exception.ConstraintViolationException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NodeNotFoundException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -1179,12 +1178,9 @@ public class VisualNetwork implements PNUndoableEditListener {
 			if (newLinkSource != null) {
 				if ((newLinkDestination = whatNodeInPosition(point, g)) != null) {
 					if (!newLinkSource.equals(newLinkDestination)) {
-						try {
-							linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),
-									probNet.getVariable(newLinkDestination.getNode().getName()), true);
-						} catch (NodeNotFoundException e1) {/* Cannot happen */
-						}
-					}
+                        linkEdit = new AddLinkEdit(probNet, probNet.getVariable(newLinkSource.getNode().getName()),
+                                probNet.getVariable(newLinkDestination.getNode().getName()), true);
+                    }
 				}
 				newLinkSource = null;
 			}

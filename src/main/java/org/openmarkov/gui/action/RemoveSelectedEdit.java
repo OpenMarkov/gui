@@ -10,20 +10,15 @@ package org.openmarkov.gui.action;
 import org.openmarkov.core.action.CRemoveNodeEdit;
 import org.openmarkov.core.action.CompoundPNEdit;
 import org.openmarkov.core.action.RemoveLinkEdit;
-import org.openmarkov.core.exception.NodeNotFoundException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.WrongCriterionException;
 import org.openmarkov.core.oopn.action.RemoveInstanceEdit;
 import org.openmarkov.core.oopn.action.RemoveReferenceLinkEdit;
 import org.openmarkov.gui.graphic.VisualLink;
 import org.openmarkov.gui.graphic.VisualNetwork;
 import org.openmarkov.gui.graphic.VisualNode;
-import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.gui.oopn.VisualInstance;
 import org.openmarkov.gui.oopn.VisualOONetwork;
 import org.openmarkov.gui.oopn.VisualReferenceLink;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,16 +55,10 @@ import java.util.List;
 
 	@Override public void generateEdits() {
 		for (VisualLink link : linksToRemove) {
-			try {
-				edits.add(new RemoveLinkEdit(probNet, probNet.getVariable(link.getSourceNode().getNode().getName()),
-						probNet.getVariable(link.getDestinationNode().getNode().getName()),
-						link.getLink().isDirected()));
-			} catch (NodeNotFoundException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, StringDatabase.getUniqueInstance().getString(e.getMessage()),
-						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);
-			}
-		}
+            edits.add(new RemoveLinkEdit(probNet, probNet.getVariable(link.getSourceNode().getNode().getName()),
+                    probNet.getVariable(link.getDestinationNode().getNode().getName()),
+                    link.getLink().isDirected()));
+        }
 		for (VisualNode node : nodesToRemove) {
 			edits.add(new CRemoveNodeEdit(probNet, node.getNode()));
 		}

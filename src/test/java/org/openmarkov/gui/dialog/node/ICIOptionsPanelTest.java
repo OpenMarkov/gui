@@ -43,7 +43,7 @@ public class ICIOptionsPanelTest {
 	private Variable U;
 	private Variable D;
 
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() {
 
 		panel = new ICIOptionsPanel(false);
 
@@ -65,9 +65,8 @@ public class ICIOptionsPanelTest {
 	/**
 	 * auxiliary class to create a simple ProbNet
 	 *
-	 * @throws Exception
-	 */
-	public ProbNet createSimpleProbNet() throws Exception {
+     */
+	public ProbNet createSimpleProbNet() {
 
 		ArrayList<Variable> aVariables;
 		ArrayList<Variable> abVariables;
