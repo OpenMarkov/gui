@@ -3,6 +3,7 @@ package org.openmarkov.gui.dialog;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.OpenMarkovException2;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.localize.StringDatabase;
 import org.openmarkov.core.logging.OpenMarkovLogger;
 
@@ -77,7 +78,7 @@ public class ExceptionDialog {
                 String message = (String) getExceptionMessage.invoke(openMarkovException2);
                 return new TitleAndMessage(title, message);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
+                throw new UnreacheableException(ex);
             }
         }
         if (exception instanceof OpenMarkovException openMarkovException) {

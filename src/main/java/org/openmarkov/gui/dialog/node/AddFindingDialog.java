@@ -7,22 +7,15 @@
 
 package org.openmarkov.gui.dialog.node;
 
-import org.openmarkov.core.action.AddFindingEdit;
-import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.gui.dialog.common.OkCancelApplyUndoRedoHorizontalDialog;
-import org.openmarkov.gui.graphic.VisualChanceNode;
 import org.openmarkov.gui.graphic.VisualNode;
 import org.openmarkov.core.localize.StringDatabase;
-import org.openmarkov.gui.util.Utilities;
 import org.openmarkov.gui.window.edition.EditorPanel;
 import org.openmarkov.gui.window.edition.NetworkPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
 /**
  * Dialog box to add a finding in a node. The result of using this class is
@@ -32,196 +25,183 @@ import java.util.List;
  * @author asaez
  * @version 1.0
  */
-public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog{
-	private static final long serialVersionUID = 5618641549380924577L;
-	/**
-	 * Object where the finding will be set.
-	 */
-	protected VisualNode visualNode = null;
-	/**
-	 * Button group that holds the radio buttons that will be shown. There is a
-	 * radio button for each state of the node.
-	 */
-	private ButtonGroup buttonGroup = null;
-
-	private JSpinner evidenceSpinner;
-
-	private EditorPanel editorPanel = null;
-
-	private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
-
-	private Finding finding;
-
-	private NetworkPanel networkPanel;
-
-	private Finding newFinding;
-	 private Finding previousFinding;
-
-	/**
-	 * Constructor. initialises the instance.
-	 *
-	 * @param owner window that owns the dialog.
-	 * @param visualNode  the node to which this dialog is associated.
-	 * @param finding    the assigned finding
-	 */
-	public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkPanel networkPanel,EditorPanel editorPanel) {
-		super(owner);
-		this.visualNode = visualNode;
-		this.finding = finding;
-		this.networkPanel = networkPanel;
-		this.editorPanel = editorPanel;
-		initialize();
-		setMinimumSize(new Dimension(260, getHeight()));
-		int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
-		int posY = owner.getY() + (owner.getHeight() - this.getHeight()) / 2;
-		this.setLocation(posX, posY);
-		setModal(true);
-		setIconImage(null);
-
-	}
-
-	public int requestValues() {
-
-		setVisible(true);
-
-		return selectedButton;
-	}
-
-	protected void initialize() {
-		visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
-		visualNode.getNode().getProbNet().getPNESupport().openParenthesis();
-		setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
-		configureComponentsPanel();
-
-
-		pack();
-
-	}
-
-
-	private void configureComponentsPanel() {
-		getComponentsPanel().add(getPrincipalPanel());
-	}
-
-
-	private JPanel getPrincipalPanel() {
-		JPanel principalPanel = new JPanel();
-		JPanel textPanel = new JPanel();
-		this.buttonGroup = new ButtonGroup();
-		JPanel radioButtonsPanel = new JPanel();
-
-		principalPanel.setLayout(new BorderLayout());
-		textPanel.setLayout(new GridLayout(3, 1));
-		textPanel.add(new JLabel(""));
-		textPanel.add(new JLabel(visualNode.getNode().getName(), SwingConstants.CENTER));
-		textPanel.add(new JLabel(""));
-		principalPanel.add(textPanel, BorderLayout.NORTH);
-
-		Variable variable = visualNode.getNode().getVariable();
-
-		if (variable.getVariableType() == VariableType.FINITE_STATES) {
-			State[] states = variable.getStates();
-			radioButtonsPanel.setLayout(new GridLayout(states.length, 1));
-			for (int i = states.length - 1; i >= 0; i--) {
-				String stateName = states[i].getName();
-				JRadioButton jRadioButton = new JRadioButton(stateName);
-				if (finding != null) {
-					jRadioButton.setSelected(finding.getState().equals(stateName));
-					previousFinding = new Finding(variable,new State(stateName));
-				}
-				radioButtonsPanel.add(jRadioButton);
-				jRadioButton.setActionCommand(stateName);
-				if (i == 0) {
-					jRadioButton.setSelected(true);
-                    previousFinding = new Finding(variable,new State(stateName));
+public class AddFindingDialog extends OkCancelApplyUndoRedoHorizontalDialog {
+    private static final long serialVersionUID = 5618641549380924577L;
+    /**
+     * Object where the finding will be set.
+     */
+    protected VisualNode visualNode = null;
+    /**
+     * Button group that holds the radio buttons that will be shown. There is a
+     * radio button for each state of the node.
+     */
+    private ButtonGroup buttonGroup = null;
+    
+    private JSpinner evidenceSpinner;
+    
+    private EditorPanel editorPanel = null;
+    
+    private StringDatabase stringDatabase = StringDatabase.getUniqueInstance();
+    
+    private Finding finding;
+    
+    private NetworkPanel networkPanel;
+    
+    private Finding newFinding;
+    private Finding previousFinding;
+    
+    /**
+     * Constructor. initialises the instance.
+     *
+     * @param owner      window that owns the dialog.
+     * @param visualNode the node to which this dialog is associated.
+     * @param finding    the assigned finding
+     */
+    public AddFindingDialog(Window owner, VisualNode visualNode, Finding finding, NetworkPanel networkPanel, EditorPanel editorPanel) {
+        super(owner);
+        this.visualNode = visualNode;
+        this.finding = finding;
+        this.networkPanel = networkPanel;
+        this.editorPanel = editorPanel;
+        initialize();
+        setMinimumSize(new Dimension(260, getHeight()));
+        int posX = owner.getX() + (owner.getWidth() - this.getWidth()) / 2;
+        int posY = owner.getY() + (owner.getHeight() - this.getHeight()) / 2;
+        this.setLocation(posX, posY);
+        setModal(true);
+        setIconImage(null);
+        
+    }
+    
+    public int requestValues() {
+        
+        setVisible(true);
+        
+        return selectedButton;
+    }
+    
+    protected void initialize() {
+        visualNode.getNode().getProbNet().getPNESupport().setWithUndo(true);
+        visualNode.getNode().getProbNet().getPNESupport().openParenthesis();
+        setTitle(stringDatabase.getString("AddFindingDialog.Title.Label"));
+        configureComponentsPanel();
+        
+        
+        pack();
+        
+    }
+    
+    
+    private void configureComponentsPanel() {
+        getComponentsPanel().add(getPrincipalPanel());
+    }
+    
+    
+    private JPanel getPrincipalPanel() {
+        JPanel principalPanel = new JPanel();
+        JPanel textPanel = new JPanel();
+        this.buttonGroup = new ButtonGroup();
+        JPanel radioButtonsPanel = new JPanel();
+        
+        principalPanel.setLayout(new BorderLayout());
+        textPanel.setLayout(new GridLayout(3, 1));
+        textPanel.add(new JLabel(""));
+        textPanel.add(new JLabel(visualNode.getNode().getName(), SwingConstants.CENTER));
+        textPanel.add(new JLabel(""));
+        principalPanel.add(textPanel, BorderLayout.NORTH);
+        
+        Variable variable = visualNode.getNode().getVariable();
+        
+        if (variable.getVariableType() == VariableType.FINITE_STATES) {
+            State[] states = variable.getStates();
+            radioButtonsPanel.setLayout(new GridLayout(states.length, 1));
+            for (int i = states.length - 1; i >= 0; i--) {
+                String stateName = states[i].getName();
+                JRadioButton jRadioButton = new JRadioButton(stateName);
+                if (finding != null) {
+                    jRadioButton.setSelected(finding.getState().equals(stateName));
+                    previousFinding = new Finding(variable, new State(stateName));
                 }
-
+                radioButtonsPanel.add(jRadioButton);
+                jRadioButton.setActionCommand(stateName);
+                if (i == 0) {
+                    jRadioButton.setSelected(true);
+                    previousFinding = new Finding(variable, new State(stateName));
+                }
+                
                 buttonGroup.add(jRadioButton);
-				jRadioButton.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        try {
-							newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
-						} catch (InvalidStateException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-				});
-			}
-			principalPanel.add(radioButtonsPanel, BorderLayout.CENTER);
-		} else {
-			PartitionedInterval variableDomain = variable.getPartitionedInterval();
-			double minValue = (variableDomain.isLeftClosed()) ?
-					variableDomain.getMin() :
-					variableDomain.getMin() + variable.getPrecision();
-			double maxValue = (variableDomain.isRightClosed()) ?
-					variableDomain.getMax() :
-					variableDomain.getMax() - variable.getPrecision();
-			double defaultValue = (finding != null) ? finding.getNumericalValue() : minValue;
-			SpinnerNumberModel model = new SpinnerNumberModel(defaultValue, minValue, maxValue,
-					variable.getPrecision());
-			evidenceSpinner = new JSpinner(model);
-			evidenceSpinner.setPreferredSize(new Dimension(100, 20));
-			JLabel valueLabel = new JLabel("Numeric value:");
-			valueLabel.setLabelFor(evidenceSpinner);
-			JPanel namelessPanel = new JPanel();
-			namelessPanel.add(valueLabel);
-			namelessPanel.add(evidenceSpinner);
-			principalPanel.add(namelessPanel, BorderLayout.CENTER);
-		}
-
-		return principalPanel;
-	}
-
-	public Object getSelectedState(){
-
-		VariableType variableType = visualNode.getNode().getVariable().getVariableType();
-		Object selectedState;
-
-		if(variableType.equals(VariableType.FINITE_STATES)){
-			selectedState = buttonGroup.getSelection().getActionCommand();
-		}else{
-			selectedState = evidenceSpinner.getValue();
-		}
-
-
-
-
-		return selectedState;
-	}
-	public double getEvidenceValue(){
-
-		double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
-
-		return evidenceValue;
-	}
-
-	@Override
-	protected boolean doOkClickBeforeHide() {
-		Variable variable = visualNode.getNode().getVariable();
-		if(variable.getVariableType().equals(VariableType.FINITE_STATES)){
-            try {
-                newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
-            } catch (InvalidStateException e) {
-                throw new RuntimeException(e);
+                jRadioButton.addActionListener(evt -> newFinding =
+                        new Finding(variable, variable.getState((String) getSelectedState())));
             }
-        }else{
-			newFinding = new Finding(variable, (Double)getSelectedState());
-		}
-		if(!visualNode.isPreResolutionFinding()){
-				editorPanel.setNewFinding(visualNode,null,newFinding,false);
-		}else {
-				editorPanel.setNewFinding(visualNode,previousFinding,newFinding,false);
-		}
-
-
-
-		visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
-
-		return super.doOkClickBeforeHide();
-	}
-
-	@Override protected void doCancelClickBeforeHide() {
-		visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
-	}
-
+            principalPanel.add(radioButtonsPanel, BorderLayout.CENTER);
+        } else {
+            PartitionedInterval variableDomain = variable.getPartitionedInterval();
+            double minValue = (variableDomain.isLeftClosed()) ?
+                    variableDomain.getMin() :
+                    variableDomain.getMin() + variable.getPrecision();
+            double maxValue = (variableDomain.isRightClosed()) ?
+                    variableDomain.getMax() :
+                    variableDomain.getMax() - variable.getPrecision();
+            double defaultValue = (finding != null) ? finding.getNumericalValue() : minValue;
+            SpinnerNumberModel model = new SpinnerNumberModel(defaultValue, minValue, maxValue,
+                                                              variable.getPrecision());
+            evidenceSpinner = new JSpinner(model);
+            evidenceSpinner.setPreferredSize(new Dimension(100, 20));
+            JLabel valueLabel = new JLabel("Numeric value:");
+            valueLabel.setLabelFor(evidenceSpinner);
+            JPanel namelessPanel = new JPanel();
+            namelessPanel.add(valueLabel);
+            namelessPanel.add(evidenceSpinner);
+            principalPanel.add(namelessPanel, BorderLayout.CENTER);
+        }
+        
+        return principalPanel;
+    }
+    
+    public Object getSelectedState() {
+        
+        VariableType variableType = visualNode.getNode().getVariable().getVariableType();
+        Object selectedState;
+        
+        if (variableType.equals(VariableType.FINITE_STATES)) {
+            selectedState = buttonGroup.getSelection().getActionCommand();
+        } else {
+            selectedState = evidenceSpinner.getValue();
+        }
+        
+        
+        return selectedState;
+    }
+    
+    public double getEvidenceValue() {
+        
+        double evidenceValue = Double.parseDouble(evidenceSpinner.getValue().toString());
+        
+        return evidenceValue;
+    }
+    
+    @Override
+    protected boolean doOkClickBeforeHide() {
+        Variable variable = visualNode.getNode().getVariable();
+        if (variable.getVariableType().equals(VariableType.FINITE_STATES)) {
+            newFinding = new Finding(variable, variable.getState((String) getSelectedState()));
+        } else {
+            newFinding = new Finding(variable, (Double) getSelectedState());
+        }
+        if (!visualNode.isPreResolutionFinding()) {
+            editorPanel.setNewFinding(visualNode, null, newFinding, false);
+        } else {
+            editorPanel.setNewFinding(visualNode, previousFinding, newFinding, false);
+        }
+        
+        
+        visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+        
+        return super.doOkClickBeforeHide();
+    }
+    
+    @Override protected void doCancelClickBeforeHide() {
+        visualNode.getNode().getProbNet().getPNESupport().closeParenthesis();
+    }
+    
 }

@@ -10,14 +10,8 @@ package org.openmarkov.gui.window.edition;
 import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.action.*;
 
-import org.openmarkov.core.exception.ConstraintViolationException;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
+import org.openmarkov.core.exception.*;
 
-import org.openmarkov.core.exception.NoFindingException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnexpectedInferenceException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.inference.annotation.InferenceManager;
 import org.openmarkov.core.inference.tasks.OptimalPolicies;
@@ -59,6 +53,7 @@ import javax.swing.undo.CannotUndoException;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
+import java.lang.UnsupportedOperationException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -685,14 +680,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 
 	private Node getSelectedNode() {
 		List<VisualNode> selectedNodes = visualNetwork.getSelectedNodes();
-        Node node;
         if (selectedNodes.size() == 1) { // Always happens
-            node = selectedNodes.get(0).getNode();
+            return selectedNodes.get(0).getNode();
         } else {
-            throw new RuntimeException();
+            throw new UnreacheableException("There must be at least one selected node in the network.");
         }
-		return node;
-	}
+    }
     
     /**
      * TODO: Fill as desired
@@ -1004,7 +997,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
                 try {
 					visualNode.getNode().getProbNet().doEdit(removePolicyEdit);
                 } catch (DoEditException | ConstraintViolationException e) {
-                    throw new RuntimeException(e);
+                    throw new UnreacheableException(e);
                 }
             }
 		}
@@ -1190,8 +1183,12 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 				if (networkPanel.getWorkingMode() == NetworkPanel.EDITION_WORKING_MODE) {
 					if (node.isPreResolutionFinding() && preResolutionEvidence.getFinding(variable) != null) {
 						RemoveFindingEdit removeFindingEdit = new RemoveFindingEdit(node.getNode(),preResolutionEvidence,(VisualChanceNode) node,variable);
-						node.getNode().getProbNet().doEdit(removeFindingEdit);
-					}
+                        try {
+                            node.getNode().getProbNet().doEdit(removeFindingEdit);
+                        } catch (ConstraintViolationException | DoEditException e) {
+                            throw new UnreacheableException(e);
+                        }
+                    }
 				} else {
 					if (node.isPreResolutionFinding()) {
 						JOptionPane.showMessageDialog(Utilities.getOwner(this),
@@ -1209,11 +1206,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 						"ERROR\n" + stringDatabase.getString("ExceptionNoFinding.Text.Label") + "\n\n" + exc
 								.getMessage(), stringDatabase.getString("ExceptionNoFinding.Title.Label"),
 						JOptionPane.ERROR_MESSAGE);
-			} catch (DoEditException e) {
-                throw new RuntimeException(e);
-            } catch (ConstraintViolationException e) {
-                throw new RuntimeException(e);
-            }
+			}
         }
 		if ((propagationActive) && (networkPanel.getWorkingMode() == NetworkPanel.INFERENCE_WORKING_MODE)) {
             /*

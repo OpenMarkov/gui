@@ -396,11 +396,11 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         if (showUpfront) {
             for (int seriesNumber = 0; seriesNumber < display.size(); seriesNumber++) {
                 //Cannot change values from arrayXYSeriesDiscount and
-                XYSeries xySeriesWithUpfront = null;
+                XYSeries xySeriesWithUpfront;
                 try {
                     xySeriesWithUpfront = (XYSeries) (display.remove(seriesNumber)).clone();
                 } catch (CloneNotSupportedException e) {
-                    throw new RuntimeException(e);
+                    throw new UnreacheableException(e);
                 }
                 XYDataItem firstDataItem = xySeriesWithUpfront.remove(0);
                 //adding atemporal data
@@ -919,7 +919,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                 try {
                     createByCriterionSeries();
                 } catch (UnexpectedInferenceException e) {
-                    throw new RuntimeException(e);
+                    throw new UnreacheableException(e);
                 }
                 chartPanelWithCheckBox.add(getChartsByCriterionPanel(displaySeries(true, true), markedCheckBoxes), BorderLayout.CENTER);
             } else
@@ -1206,7 +1206,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
                         null);
 
             } catch (UnexpectedInferenceException e) {
-                throw new RuntimeException(e);
+                throw new UnreacheableException(e);
             }
         } else
             // end

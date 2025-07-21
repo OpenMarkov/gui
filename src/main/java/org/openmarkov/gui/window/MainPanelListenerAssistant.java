@@ -1062,8 +1062,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         
         fileName = fileName + stringDatabase.getString("CostEffectiveness.ExpandNetwork.FileName") + ".pgmx";
         
-        ProbNet expandedNetwork = null;
-        expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
+        ProbNet expandedNetwork = TemporalNetOperations.expandNetwork(probNet, preResolutionEvidence, fileName);
         
         NetworkPanel networkPanel = createNewFrame(expandedNetwork);
         //If enabled "save" tries to create the .bak file and throws an exception
@@ -1218,10 +1217,10 @@ public class MainPanelListenerAssistant extends WindowAdapter
                                                                                                    .getStateName(cases[i][j])
                                                                                                    .equals("?")) {
                                 variable = currentNet.getVariable(variables.get(j).getName());
-                                newEvidenceCase.addFinding(new Finding(variable,
-                                                                       variable.getStateIndex(variables.get(j)
-                                                                                                       .getStateName(cases[i][j]))));
-                                
+                                int stateIndex = variable.getStateIndex(variables.get(j)
+                                                                                 .getStateName(cases[i][j]));
+                                if (stateIndex == -1) continue;
+                                newEvidenceCase.addFinding(new Finding(variable, stateIndex));
                             }
                         } //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
                         //									stringDatabase.getString("LoadEvidence.Error.UnknownVariable.Text") + ": "
@@ -1234,10 +1233,6 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //							JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //									stringDatabase.getString("LoadEvidence.Error.IncompatibleEvidence.Text"),
 //									stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-                        } catch (InvalidStateException e) {
-                            LocalizedException localizedException = new LocalizedException(new OpenMarkovException(
-                                    "InvalidStateException", variable.getName(), variable.toString()), null);
-                            localizedException.showException();
                         }
                     }
                     currentNetworkPanel.getEditorPanel().addNewEvidenceCase(newEvidenceCase);

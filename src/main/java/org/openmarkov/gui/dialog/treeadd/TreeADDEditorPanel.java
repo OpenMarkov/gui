@@ -7,6 +7,7 @@
 
 package org.openmarkov.gui.dialog.treeadd;
 
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.PartitionedInterval;
@@ -431,7 +432,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			} else if (actionComand.equals(ActionCommands.REMOVE_REFERENCE)) {
 				removeReference(ae, (TreeADDBranch) node, path);
 			} else {
-				throw new RuntimeException("Unexpected menu action found: " + actionComand);
+				throw new UnreacheableException("Unexpected menu action found: " + actionComand);
 			}
 		}
 	}
@@ -739,7 +740,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
 		Potential subPotential = branch.getPotential();
 		if (!(subPotential instanceof TreeADDPotential)) {
-			throw new RuntimeException("Expected TreeADDPotential class, found: " + subPotential.getClass().getName());
+			throw new UnreacheableException("Expected TreeADDPotential class, found: " + subPotential.getClass().getName());
 		}
 		List<Variable> potentialVariables = new ArrayList<Variable>();
 		if (parentTreeADD.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
@@ -842,7 +843,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	 */
 	private void dissociateStates(ActionEvent ae, TreeADDBranch branch, TreePath path) {
 		if (!(branch instanceof TreeADDBranch)) {
-			throw new RuntimeException("Expected TreeADDBranch class, found: " + branch.getClass().getName());
+			throw new UnreacheableException("Expected TreeADDBranch class, found: " + branch.getClass().getName());
 		}
 		Object parentPath = path.getParentPath();
 		TreeADDPotential parentTreeADD = (TreeADDPotential) ((TreePath) parentPath).getLastPathComponent();
@@ -1238,7 +1239,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
             */
 			//
 			if (parentTreeADD.getPotentialRole() != retPotential.getPotentialRole()) {
-				throw new RuntimeException(
+				throw new UnreacheableException(
 						"Expected role " + parentTreeADD.getPotentialRole() + ", found: " + retPotential
 								.getPotentialRole());
 			}
