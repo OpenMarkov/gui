@@ -46,11 +46,6 @@
             <Label value="Gráfico"/>
         </Title>
     </TemporalEvolutionChart>
-    <SaveNetwork>
-        <Title>
-            <Label value="Guardar"/>
-        </Title>
-    </SaveNetwork>
     <Dialog>
         <Close>
             <Label value="Cerrar"/>

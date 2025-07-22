@@ -12,7 +12,6 @@
         <Text value="Proporcione el nuevo criterio de decision"/>
     </AddCriterion>
     <AddState>
-        <Title value="Agregar estado"/>
         <Text value="Proporcione el nuevo estado"/>
     </AddState>
     <CheckMessageWindow>
@@ -198,12 +197,6 @@
             <Label value="Red guardada satisfactoriamente"/>
         </Text>
     </NetworkSaved>
-    <NodeRelation>
-        <Title>
-            <Tooltip value="Relación del nodo"/>
-            <Label value="Relacion"/>
-        </Title>
-    </NodeRelation>
     <ClipboardContentEmpty>
         <Text>
             <Label value="No se puede copiar algo vacío al portapapeles"/>
