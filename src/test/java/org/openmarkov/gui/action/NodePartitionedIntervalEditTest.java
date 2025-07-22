@@ -54,7 +54,7 @@ public class NodePartitionedIntervalEditTest {
 	 *
 	 * @throws Exception if an error occurs.
 	 */
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");

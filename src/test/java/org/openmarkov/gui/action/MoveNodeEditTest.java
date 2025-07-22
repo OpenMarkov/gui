@@ -55,7 +55,7 @@ public class MoveNodeEditTest {
 	 *
 	 * @throws Exception if an error occurrs.
 	 */
-	@BeforeEach public void setUp() throws Exception {
+	@BeforeEach public void setUp() throws org.openmarkov.core.exception.ConstraintViolationException, org.openmarkov.core.exception.DoEditException {
 
 		probNet = new ProbNet(InfluenceDiagramType.getUniqueInstance());
 		probNet.setName("Influence diagram");
