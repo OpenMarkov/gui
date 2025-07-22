@@ -62,7 +62,7 @@ import java.util.ListIterator;
 	/**
 	 * check the value to modify in the table and sets
 	 */
-	public void setValueAt(Object newValue, int row, int col) {
+	@Override public void setValueAt(Object newValue, int row, int col) {
 		Object oldValue = getValueAt(row, col);
 		// TODO Verificar si la ubicación del siguiente código es adecuada
 		if (((Double) newValue).isNaN()) {
@@ -92,7 +92,7 @@ import java.util.ListIterator;
 		} // else it is not required to update values
 	}
 
-	public void undoableEditHappened(UndoableEditEvent arg0) {
+	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
 		int priorityListPosition = 0;
 		UndoableEdit edit = arg0.getEdit();
 		if (edit instanceof ICITablePotentialValueEdit) {
@@ -118,11 +118,11 @@ import java.util.ListIterator;
 		}
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 		int priorityListPosition = 0;
 		UndoableEdit edit = event.getEdit();
 		if (edit instanceof ICITablePotentialValueEdit) {

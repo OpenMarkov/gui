@@ -70,7 +70,7 @@ import java.util.ArrayList;
 	 * This method checks the value to modify in the table and sets the new
 	 * value.
 	 ***/
-	public void setValueAt(Object newValue, int row, int col) {
+	@Override public void setValueAt(Object newValue, int row, int col) {
 		if (newValue != null) {
 			Integer newNumericValue;
 			try {
@@ -110,7 +110,7 @@ import java.util.ArrayList;
 		}
 	}
 
-	public void undoableEditHappened(UndoableEditEvent event) {
+	@Override public void undoableEditHappened(UndoableEditEvent event) {
 		UndoableEdit unEdit = event.getEdit();
 		if (unEdit instanceof LinkRestrictionPotentialValueEdit) {
 			if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
@@ -120,7 +120,7 @@ import java.util.ArrayList;
 		}
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 		if (event.getEdit() instanceof LinkRestrictionPotentialValueEdit) {
 			LinkRestrictionPotentialValueEdit edit = (LinkRestrictionPotentialValueEdit) event.getEdit();
 			super.getModel().setValueAt(edit.getNewValue(), edit.getRowPosition(), edit.getColumnPosition());

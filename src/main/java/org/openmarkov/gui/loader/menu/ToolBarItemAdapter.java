@@ -29,7 +29,7 @@ public class ToolBarItemAdapter implements ToolBarItemHandler {
 	/**
 	 * Called when a ToolBatItem(component) is activated.
 	 */
-	public void itemActivated(JComponent item, ActionEvent event, String sCommand) {
+	@Override public void itemActivated(JComponent item, ActionEvent event, String sCommand) {
 
 		System.out.println("que pasaaaaa");
 	}
@@ -37,14 +37,14 @@ public class ToolBarItemAdapter implements ToolBarItemHandler {
 	/**
 	 * Called when a ToolBatItem(component) is deselected.
 	 */
-	public void itemDeselected(JComponent item, ItemEvent event, String sCommand) {
+	@Override public void itemDeselected(JComponent item, ItemEvent event, String sCommand) {
 
 	}
 
 	/**
 	 * Called when a ToolBatItem(component) is selected.
 	 */
-	public void itemSelected(JComponent item, ItemEvent event, String sCommand) {
+	@Override public void itemSelected(JComponent item, ItemEvent event, String sCommand) {
 
 	}
 }

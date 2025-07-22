@@ -53,13 +53,13 @@ import java.awt.event.ActionListener;
 		JPanel buttonPanel = new JPanel();
 		editMeanButton = new JButton("Edit mean potential");
 		editMeanButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override public void actionPerformed(ActionEvent e) {
 				editMeanPotential();
 			}
 		});
 		editVarianceButton = new JButton("Edit variance potential");
 		editVarianceButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override public void actionPerformed(ActionEvent e) {
 				editVariancePotential();
 			}
 		});

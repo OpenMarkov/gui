@@ -963,7 +963,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
-	public void undoableEditHappened(UndoableEditEvent e) {
+	@Override public void undoableEditHappened(UndoableEditEvent e) {
 
 		constructVisualInfo();
 		if(getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)
@@ -1042,7 +1042,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 
 	}
@@ -1070,7 +1070,7 @@ public class VisualNetwork implements PNUndoableEditListener {
 		return visualNode;
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 
 		constructVisualInfo();
 		if(getWorkingMode() != NetworkPanel.INFERENCE_WORKING_MODE)

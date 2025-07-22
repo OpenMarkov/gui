@@ -178,7 +178,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 			}
 			// special behavior to handle i18n
 			StringDatabase.getUniqueInstance().addLocaleChangeListener(new LocaleChangeListener() {
-				public void processLocaleChange(final LocaleChangeEvent event) {
+				@Override public void processLocaleChange(final LocaleChangeEvent event) {
 					int prevSelectedIndex = jComboBoxLanguages.getSelectedIndex();
 					jComboBoxLanguages.removeAllItems();
 					for (String item : Languages.getStringList()) {
@@ -198,7 +198,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 		if (jButtonAccept == null) {
 			jButtonAccept = new JButton();
 			jButtonAccept.addActionListener(new ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
+				@Override public void actionPerformed(final ActionEvent e) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					stringDatabase.setLanguage(newLanguage);
 					OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
@@ -223,7 +223,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 		if (jButtonCancel == null) {
 			jButtonCancel = new JButton();
 			jButtonCancel.addActionListener(new ActionListener() {
-				public void actionPerformed(final ActionEvent e) {
+				@Override public void actionPerformed(final ActionEvent e) {
 					StringDatabase.getUniqueInstance().setLanguage(oldLanguage);
 					// next line must be re-written to use some Event method
 					// to notify visibility to false instead calling
@@ -245,7 +245,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 		if (jButtonApply == null) {
 			jButtonApply = new JButton();
 			jButtonApply.addActionListener(new ActionListener() {
-				public void actionPerformed(final ActionEvent arg0) {
+				@Override public void actionPerformed(final ActionEvent arg0) {
 					String newLanguage = Languages.getShortNameByIndex(jComboBoxLanguages.getSelectedIndex());
 					StringDatabase.getUniqueInstance().setLanguage(newLanguage);
 					OpenMarkovPreferences.set(OpenMarkovPreferences.PREFERENCE_LANGUAGE, newLanguage,
@@ -279,7 +279,7 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 	 * process a change in the String Resource Locale, settings all the labels
 	 * menus, and strings in the application to the new selected language
 	 */
-	public void processLocaleChange(LocaleChangeEvent event) {
+	@Override public void processLocaleChange(LocaleChangeEvent event) {
 		this.oldLanguage = stringDatabase.getLanguage();
 		UpdateLocalizationInComponents.allComponentsUpdateSetText(this);
 		UpdateLocalizationInComponents.allComponentsUpdateSetText(this.getParent());

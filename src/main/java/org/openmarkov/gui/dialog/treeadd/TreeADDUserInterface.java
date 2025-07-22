@@ -23,8 +23,9 @@ public class TreeADDUserInterface extends BasicTreeUI {
 	 * java.awt.Rectangle, java.awt.Insets, java.awt.Rectangle,
 	 * javax.swing.tree.TreePath, int, boolean, boolean, boolean)
 	 */
-	protected void paintExpandControl(Graphics g, Rectangle clipBounds, Insets insets, Rectangle bounds, TreePath path,
-			int row, boolean isExpanded, boolean hasBeenExpanded, boolean isLeaf) {
+	@Override
+    protected void paintExpandControl(Graphics g, Rectangle clipBounds, Insets insets, Rectangle bounds, TreePath path,
+                                      int row, boolean isExpanded, boolean hasBeenExpanded, boolean isLeaf) {
 		Object value = path.getLastPathComponent();
 		// Draw icons if not a leaf and either hasn't been loaded,
 		// or the model child count is > 0.

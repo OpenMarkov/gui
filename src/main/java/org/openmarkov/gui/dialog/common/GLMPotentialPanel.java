@@ -57,7 +57,7 @@ import java.awt.event.ActionListener;
 		deterministicPanel.add(northPanel, BorderLayout.NORTH);
 		uncertaintyCheckBox = new JCheckBox("Uncertainty");
 		uncertaintyCheckBox.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+			@Override public void stateChanged(ChangeEvent e) {
 				uncertaintyPanel.setVisible(uncertaintyCheckBox.isSelected());
 				notifyPanelResizeEventListeners();
 			}
@@ -133,7 +133,7 @@ import java.awt.event.ActionListener;
 		matrixTypeComboBox.setSelectedItem(currentMatrixType);
 	}
 
-	public boolean saveChanges() {
+	@Override public boolean saveChanges() {
 		GLMPotential newPotential = (GLMPotential) this.potential.copy();
 		String[] covariates = regressionPanel.getCovariates();
 		double[] coefficients = regressionPanel.getCoefficients();

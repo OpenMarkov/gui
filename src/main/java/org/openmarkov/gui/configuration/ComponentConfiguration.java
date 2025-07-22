@@ -52,7 +52,7 @@ import java.util.Properties;
 	}
 
 	// Methods
-	public void generateDefaultConfiguration() {
+	@Override public void generateDefaultConfiguration() {
 		String initialPath = System.getProperty("user.dir");
 		componentVariables.put("initialPath", initialPath + "\\");
 
@@ -90,15 +90,15 @@ import java.util.Properties;
 		componentVariables.put("ioTestDirectory", ioTest);
 	}
 
-	public void setProperty(String name, Object value) {
+	@Override public void setProperty(String name, Object value) {
 		componentVariables.put(name, value);
 	}
 
-	public Object getProperty(String name) {
+	@Override public Object getProperty(String name) {
 		return componentVariables.get(name);
 	}
 
-	public String getComponentName() {
+	@Override public String getComponentName() {
 		return componentName;
 	}
 

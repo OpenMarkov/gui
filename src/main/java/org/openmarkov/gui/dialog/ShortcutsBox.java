@@ -178,7 +178,7 @@ public class ShortcutsBox extends JDialog implements ActionListener {
 	 * Close the dialog on a button event.
 	 * @param actionEvent A possible OK click
 	 */
-	public void actionPerformed(ActionEvent actionEvent) {
+	@Override public void actionPerformed(ActionEvent actionEvent) {
 		// Reusing about box text
 		if (actionEvent.getActionCommand().equals(stringDatabase.getString("AboutBox.OK.Text"))) {
 			this.dispose();

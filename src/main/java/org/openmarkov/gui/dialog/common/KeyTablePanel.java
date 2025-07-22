@@ -350,7 +350,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 	 *
 	 * @param e event information.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource().equals(addValueButton)) {
 			actionPerformedAddValue();
@@ -401,7 +401,7 @@ public class KeyTablePanel extends JPanel implements ActionListener, ListSelecti
 	 *
 	 * @param e selection event information.
 	 */
-	public void valueChanged(ListSelectionEvent e) {
+	@Override public void valueChanged(ListSelectionEvent e) {
 
 		int index = valuesTable.getSelectedRow();
 		int rowCount = valuesTable.getRowCount();

@@ -63,7 +63,7 @@ public class VisualUtilityNode extends VisualNode {
 	 *
 	 * @return the X-coordinate of the upper-left corner of the visual node.
 	 */
-	public double getUpperLeftCornerX(Graphics2D g) {
+	@Override public double getUpperLeftCornerX(Graphics2D g) {
 		Point2D.Double[] points = getPoints(g);
 		return points[1].getX();
 	}
@@ -73,7 +73,7 @@ public class VisualUtilityNode extends VisualNode {
 	 *
 	 * @return the Y-coordinate of the upper-left corner of the visual node.
 	 */
-	public double getUpperLeftCornerY(Graphics2D g) {
+	@Override public double getUpperLeftCornerY(Graphics2D g) {
 		Point2D.Double[] points = getPoints(g);
 		return points[1].getY();
 	}

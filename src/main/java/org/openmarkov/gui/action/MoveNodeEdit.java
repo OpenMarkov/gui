@@ -73,7 +73,7 @@ public class MoveNodeEdit extends SimplePNEdit {
 		}
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		int i = 0;
 		Node node = null;

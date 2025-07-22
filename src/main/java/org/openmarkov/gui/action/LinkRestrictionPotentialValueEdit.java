@@ -80,7 +80,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 	}
 
-	public void redo() {
+	@Override public void redo() {
 		this.setTypicalRedo(false);
 		super.redo();
 		if (!link.hasRestrictions()) {
@@ -91,7 +91,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 		checkRestrictionPotential(newTable);
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		if (!link.hasRestrictions()) {
 			link.initializesRestrictionsPotential();

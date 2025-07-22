@@ -99,7 +99,7 @@ import java.util.EventObject;
 		jButtonClose.setName("jButtonClose");
 		jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
 		jButtonClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 				dispose();
 			}
@@ -138,7 +138,7 @@ import java.util.EventObject;
 				super.doLayout();
 			}
 
-			public boolean getScrollableTracksViewportWidth() {
+			@Override public boolean getScrollableTracksViewportWidth() {
 				return getPreferredSize().width < getParent().getWidth();
 			}
 		};
@@ -159,7 +159,7 @@ import java.util.EventObject;
 				stringDatabase.getString("CostEffectivenessResults.Intervals.InterventionTooltip"));
 
 		jtableCEP.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent event) {
+			@Override public void mouseClicked(MouseEvent event) {
 				int row = jtableCEP.rowAtPoint(event.getPoint());
 				int column = jtableCEP.columnAtPoint(event.getPoint());
 				if (column == CEPColumns.INTERVENTION.ordinal()) {
@@ -284,8 +284,8 @@ import java.util.EventObject;
 
 	private DefaultTableCellRenderer getDoubleCellRenderer() {
 		DefaultTableCellRenderer doubleCellRenderer = new DefaultTableCellRenderer() {
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
+			@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                                     boolean hasFocus, int row, int column) {
 
 				if (value instanceof Double) {
 					value = Util.roundWithSignificantFigures((Double) value, DEFAULT_NUM_DECIMALS);

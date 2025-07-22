@@ -321,7 +321,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 * are selected, and which are the especific selected nodes.
 	 * Also notifies this situation to the menu assistant.
 	 */
-	protected void notifyObjectsSelected() {
+	@Override protected void notifyObjectsSelected() {
 
 		for (SelectionListener listener : selectionListeners) {
 			listener.objectsSelected(getSelectedNodes(), getSelectedLinks());
@@ -570,7 +570,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 * @param diffX X-axis movement.
 	 * @param diffY Y-axis movement.
 	 */
-	public void moveSelectedElements(double diffX, double diffY) {
+	@Override public void moveSelectedElements(double diffX, double diffY) {
 		moveSelectedNodes(diffX, diffY);
 		moveSelectedInstances(diffX, diffY);
 	}
@@ -581,7 +581,7 @@ public class VisualOONetwork extends VisualNetwork {
 	 *
 	 * @return list where are the moved nodes information.
 	 */
-	public List<VisualNode> fillVisualNodesSelected() {
+	@Override public List<VisualNode> fillVisualNodesSelected() {
 
 		List<VisualNode> movedNodes = super.fillVisualNodesSelected();
 
@@ -667,7 +667,7 @@ public class VisualOONetwork extends VisualNetwork {
 		}
 	}
 
-	public void editClass() {
+	@Override public void editClass() {
 		Instance selectedInstance = ((VisualInstance) selectedInstances.toArray()[0]).getInstance();
 		Container openedFrame = MainPanel.getUniqueInstance().getMdi()
 				.getFrameByTitle(selectedInstance.getClassNet().getName());
@@ -678,7 +678,7 @@ public class VisualOONetwork extends VisualNetwork {
 		}
 	}
 
-	public void editInstanceName() {
+	@Override public void editInstanceName() {
 		Instance selectedInstance = ((VisualInstance) selectedInstances.toArray()[0]).getInstance();
 		String newInstanceName = JOptionPane.showInputDialog(null, "Instance Name:", selectedInstance.getName());
 
@@ -719,15 +719,15 @@ public class VisualOONetwork extends VisualNetwork {
 		}
 	}
 
-	public void undoableEditHappened(UndoableEditEvent e) {
+	@Override public void undoableEditHappened(UndoableEditEvent e) {
 		super.undoableEditHappened(e);
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 		super.undoEditHappened(event);
 	}
 
-	protected void clean() {
+	@Override protected void clean() {
 		super.clean();
 		visualInstances.clear();
 		visualReferenceLinks.clear();

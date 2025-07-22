@@ -85,8 +85,8 @@ public class ValuesTableCellRenderer extends DefaultTableCellRenderer {
 	 * cyan and light gray background color with black foreground color the
 	 * first two column are in gray
 	 */
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+	@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                             int row, int column) {
 		setHorizontalAlignment(SwingConstants.CENTER);
 		setCellFonts(table, value, isSelected, hasFocus, row, column);
 		setCellColors(table, value, isSelected, hasFocus, row, column);

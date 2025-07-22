@@ -64,7 +64,7 @@ class PreferencesTableModel extends AbstractTableModel {
 		}
 	}
 
-	public String getColumnName(int column) {
+	@Override public String getColumnName(int column) {
 		switch (column) {
 		case 0:
 			return "Key";
@@ -75,7 +75,7 @@ class PreferencesTableModel extends AbstractTableModel {
 		}
 	}
 
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
+	@Override public boolean isCellEditable(int rowIndex, int columnIndex) {
 		switch (columnIndex) {
 		case 0:
 			return false;
@@ -86,12 +86,12 @@ class PreferencesTableModel extends AbstractTableModel {
 		}
 	}
 
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+	@Override public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		pref.put(keys[rowIndex], aValue.toString());
 		this.syncSave();
 	}
 
-	public Object getValueAt(int row, int column) {
+	@Override public Object getValueAt(int row, int column) {
 		String key = keys[row];
 		if (column == 0)
 			return key;
@@ -99,11 +99,11 @@ class PreferencesTableModel extends AbstractTableModel {
 		return value;
 	}
 
-	public int getColumnCount() {
+	@Override public int getColumnCount() {
 		return 2;
 	}
 
-	public int getRowCount() {
+	@Override public int getRowCount() {
 		return keys.length;
 	}
 

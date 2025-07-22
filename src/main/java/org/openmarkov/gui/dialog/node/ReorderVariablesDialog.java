@@ -76,7 +76,7 @@ import java.awt.*;
 	 *
 	 * @return true if the dialog box can be closed.
 	 */
-	protected boolean doOkClickBeforeHide() {
+	@Override protected boolean doOkClickBeforeHide() {
 		node.getProbNet().getPNESupport().closeParenthesis();
 		return true;
 	}
@@ -85,7 +85,7 @@ import java.awt.*;
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
-	protected void doCancelClickBeforeHide() {
+	@Override protected void doCancelClickBeforeHide() {
 		node.getProbNet().getPNESupport().closeParenthesis();
 		// TODO PNESupport must support more depth levels parenthesis
 		// As current performance edits from ReorderVariablesPanel only be

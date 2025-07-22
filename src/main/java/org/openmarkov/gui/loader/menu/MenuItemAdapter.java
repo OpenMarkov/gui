@@ -34,7 +34,7 @@ public class MenuItemAdapter implements MenuItemHandler {
 	/**
 	 * Called when a JMenuItem is activated.
 	 */
-	public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
+	@Override public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
 
 		System.out.println("Item activado " + item.getName() + " y evento " + event.toString());
 	}
@@ -42,14 +42,14 @@ public class MenuItemAdapter implements MenuItemHandler {
 	/**
 	 * Called when a CheckboxMenuItem is deselected.
 	 */
-	public void itemDeselected(JMenuItem item, ItemEvent event, String sCommand) {
+	@Override public void itemDeselected(JMenuItem item, ItemEvent event, String sCommand) {
 
 	}
 
 	/**
 	 * Called when a CheckboxMenuItem is selected.
 	 */
-	public void itemSelected(JMenuItem item, ItemEvent event, String sCommand) {
+	@Override public void itemSelected(JMenuItem item, ItemEvent event, String sCommand) {
 
 	}
 }

@@ -28,7 +28,7 @@ public class DynamicMenuItemHandler extends MenuItemAdapter {
 	/**
 	 * This method is called when a MenuItem is activated.
 	 */
-	public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
+	@Override public void itemActivated(JMenuItem item, ActionEvent event, String sCommand) {
 
 		System.out.println("Menu item " + item.getName() + " activated dynamically!");
 		System.out.println("Command = '" + sCommand + "'");

@@ -110,7 +110,7 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 
 	}
 
-	public void undo() {
+	@Override public void undo() {
 		super.undo();
 		switch (stateAction) {
 		case ADD:

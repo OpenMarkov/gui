@@ -49,7 +49,7 @@ public class ValuesTableModel extends DefaultTableModel {
 	 * This method determines the default renderer/editor for each cell. First
 	 * column is a String class type and the others are double type.
 	 */
-	public Class<?> getColumnClass(int c) {
+	@Override public Class<?> getColumnClass(int c) {
 		return (c == 0) ? String.class : Double.class;
 	}
 
@@ -60,7 +60,7 @@ public class ValuesTableModel extends DefaultTableModel {
 	 * <li>column with the name of the parents and the values are not editable
 	 * </ul>
 	 */
-	public boolean isCellEditable(int row, int col) {
+	@Override public boolean isCellEditable(int row, int col) {
 		if (row < firstEditableRow) {
 			return false;
 		}

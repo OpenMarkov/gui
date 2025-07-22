@@ -47,7 +47,7 @@ import java.util.List;
 	 *
 	 * @throws DoEditException
      */
-	public void doEdit() throws DoEditException {
+	@Override public void doEdit() throws DoEditException {
 		HashMap<String, String> newVariables = new HashMap<String, String>();
 		ProbNet probNet = visualNetwork.getNetwork();
 		// Gather new node creation edits
@@ -155,7 +155,7 @@ import java.util.List;
 	}
 
 	//@Override
-	public void setSignificant(boolean significant) {
+	@Override public void setSignificant(boolean significant) {
 		// Do nothing
 	}
 
@@ -169,7 +169,7 @@ import java.util.List;
 	}
 
 	// @Override
-	public ProbNet getProbNet() {
+	@Override public ProbNet getProbNet() {
 		return visualNetwork.getNetwork();
 	}
 

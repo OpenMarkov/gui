@@ -299,10 +299,10 @@ import java.awt.event.MouseListener;
 			}
 		}
 
-		public void mousePressed(MouseEvent mouseEvent) { }
-		public void mouseReleased(MouseEvent mouseEvent) { }
-		public void mouseEntered(MouseEvent mouseEvent) { }
-		public void mouseExited(MouseEvent mouseEvent) { }
+		@Override public void mousePressed(MouseEvent mouseEvent) { }
+		@Override public void mouseReleased(MouseEvent mouseEvent) { }
+		@Override public void mouseEntered(MouseEvent mouseEvent) { }
+		@Override public void mouseExited(MouseEvent mouseEvent) { }
 	}
 
 

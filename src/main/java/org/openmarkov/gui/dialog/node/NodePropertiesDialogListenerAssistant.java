@@ -50,7 +50,7 @@ public class NodePropertiesDialogListenerAssistant implements ActionListener, It
 	 *
 	 * @param e event information.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(definitionPanel.getJTextFieldNodeName())) {
 			actionPerformedNodeNameChangeValue();
 		}
@@ -73,7 +73,7 @@ public class NodePropertiesDialogListenerAssistant implements ActionListener, It
 	 *
 	 * @param e event information.
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 	}
 
 	/**

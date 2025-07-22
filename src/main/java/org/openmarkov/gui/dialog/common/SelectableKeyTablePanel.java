@@ -71,7 +71,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 	 *
 	 * @return a new tableModel.
 	 */
-	protected DefaultTableModel getTableModel() {
+	@Override protected DefaultTableModel getTableModel() {
 
 		if (tableModel == null) {
 
@@ -85,7 +85,7 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 	 *
 	 * @param e selection event information.
 	 */
-	public void tableChanged(TableModelEvent e) {
+	@Override public void tableChanged(TableModelEvent e) {
 		int row = e.getFirstRow();
 		int column = e.getColumn();
 		TableModel model = (TableModel) e.getSource();
@@ -114,14 +114,14 @@ public class SelectableKeyTablePanel extends PrefixedKeyTablePanel implements Ta
 
 		}
 
-		public boolean isCellEditable(int row, int col) {
+		@Override public boolean isCellEditable(int row, int col) {
 			if (col == 1) {
 				return true;
 			} else
 				return false;
 		}
 
-		public Class<?> getColumnClass(int c) {
+		@Override public Class<?> getColumnClass(int c) {
 			if (getRowCount() > 0) {
 				return getValueAt(0, c).getClass();
 			} else

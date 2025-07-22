@@ -44,16 +44,16 @@ import java.util.EventObject;
 		colorChooser = new JColorChooser();
 		colorDialog = JColorChooser.createDialog(null, "OpenMarkov colors", false, colorChooser,
 				new ActionListener() { //OK button listener
-					public void actionPerformed(ActionEvent event) {
+					@Override public void actionPerformed(ActionEvent event) {
 						stopCellEditing();
 					}
 				}, new ActionListener() { //Cancel button listener
-					public void actionPerformed(ActionEvent event) {
+					@Override public void actionPerformed(ActionEvent event) {
 						cancelCellEditing();
 					}
 				});
 		colorDialog.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent event) {
+			@Override public void windowClosing(WindowEvent event) {
 				cancelCellEditing();
 			}
 		});
@@ -65,7 +65,7 @@ import java.util.EventObject;
 	 *
 	 * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
 	 */
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+	@Override public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		colorChooser.setColor((Color) value);
 		return panel;
 	}
@@ -81,13 +81,13 @@ import java.util.EventObject;
 		return true;
 	}
 
-	public void cancelCellEditing() {
+	@Override public void cancelCellEditing() {
 		//editing is canceled-hide dialog
 		colorDialog.setVisible(false);
 		super.cancelCellEditing();
 	}
 
-	public boolean stopCellEditing() {
+	@Override public boolean stopCellEditing() {
 		// editing is complete-hide dialog
 		colorDialog.setVisible(false);
 		super.stopCellEditing();
@@ -95,7 +95,7 @@ import java.util.EventObject;
 		return true;
 	}
 
-	public Object getCellEditorValue() {
+	@Override public Object getCellEditorValue() {
 		return colorChooser.getColor();
 	}
 

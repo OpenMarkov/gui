@@ -232,7 +232,7 @@ public class VisualInstance extends VisualElement {
 	 *
 	 * @return center of the node in the screen.
 	 */
-	public Point2D.Double getCenter() {
+	@Override public Point2D.Double getCenter() {
 		return new Point2D.Double(dimensions[0] + dimensions[2] / 2, dimensions[1] + dimensions[3] / 2);
 	}
 
@@ -292,7 +292,7 @@ public class VisualInstance extends VisualElement {
 		return visualSubInstances.get(name);
 	}
 
-	public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
+	@Override public Point2D.Double getCutPoint(Segment segment, Graphics2D g) {
 
 		double radius = dimensions[4] / 2;
 		double left = dimensions[0];

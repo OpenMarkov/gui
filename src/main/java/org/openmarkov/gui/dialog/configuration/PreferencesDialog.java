@@ -341,7 +341,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 *
 	 * @param e event information.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(this.jButtonCancel)) {
 			actionPerformedCancel();
 		} else if (e.getSource().equals(this.jButtonExport)) {
@@ -450,11 +450,11 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 		chooser.setCurrentDirectory(new File("."));
 		// accept all files ending with .xml
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-			public boolean accept(File f) {
+			@Override public boolean accept(File f) {
 				return f.getName().toLowerCase().endsWith(".xml") || f.isDirectory();
 			}
 
-			public String getDescription() {
+			@Override public String getDescription() {
 				return "XML files";
 			}
 		});
@@ -467,7 +467,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 	 * @version 1.0 13 Sep 2009
 	 */
 	class PrefTreeSelectionListener implements TreeSelectionListener {
-		public void valueChanged(TreeSelectionEvent e) {
+		@Override public void valueChanged(TreeSelectionEvent e) {
 			try {
 				PreferenceTreeNode node = (PreferenceTreeNode) e.getPath().getLastPathComponent();
 				Preferences pref = node.getPrefObject();

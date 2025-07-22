@@ -107,7 +107,7 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 			jButtonApply.setMnemonic(
 					stringDatabase.getString("OKCancelApplyHorizontalDialog.jButtonApply.Mnemonic").charAt(0));
 			jButtonApply.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+				@Override public void actionPerformed(ActionEvent e) {
 					if (doOkClickBeforeHide()) {
 						selectedButton = APPLY_BUTTON;
 					}
@@ -131,7 +131,7 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 			jButtonUndo.setMnemonic(
 					stringDatabase.getString("OKCancelApplyHorizontalDialog.jButtonUndo.Mnemonic").charAt(0));
 			jButtonUndo.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+				@Override public void actionPerformed(ActionEvent e) {
 					// TODO set actions
 					System.out.println("Doing something to Undo operation...");
 				}
@@ -154,7 +154,7 @@ public class OkCancelApplyUndoRedoHorizontalDialog extends OkCancelHorizontalDia
 			jButtonRedo.setMnemonic(
 					stringDatabase.getString("OKCancelApplyHorizontalDialog.jButtonRedo.Mnemonic").charAt(0));
 			jButtonRedo.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+				@Override public void actionPerformed(ActionEvent e) {
 					// TODO set actions
 					System.out.println("Doing something to Redo operation...");
 				}

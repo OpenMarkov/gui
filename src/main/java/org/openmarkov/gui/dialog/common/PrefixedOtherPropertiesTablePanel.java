@@ -366,7 +366,7 @@ public class PrefixedOtherPropertiesTablePanel extends KeyTablePanel implements 
 		}
 	}
 	
-	public void tableChanged(TableModelEvent e) {
+	@Override public void tableChanged(TableModelEvent e) {
 		int row = e.getLastRow();
 		e.getSource();
 

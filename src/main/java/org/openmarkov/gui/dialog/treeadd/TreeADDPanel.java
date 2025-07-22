@@ -33,7 +33,7 @@ import java.awt.*;
 		setData(node);
 	}
 
-	public boolean saveChanges() {
+	@Override public boolean saveChanges() {
 		SetPotentialEdit setPotentialEdit = new SetPotentialEdit(node, treeADDController.getTreePotential());
 		try {
 			node.getProbNet().doEdit(setPotentialEdit);
@@ -64,7 +64,7 @@ import java.awt.*;
 	/**
 	 * @param readOnly the readOnly to set
 	 */
-	public void setReadOnly(boolean readOnly) {
+	@Override public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
 		treeADDController.setReadOnly(readOnly);
 	}

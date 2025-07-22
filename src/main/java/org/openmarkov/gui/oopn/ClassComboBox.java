@@ -105,18 +105,18 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 		super.setEnabled(b);
 	}
 
-	public void frameClosed(FrameContentPanel contentPanel) {
+	@Override public void frameClosed(FrameContentPanel contentPanel) {
 		// Remove from list
 		classNames.remove(getClassName(contentPanel.getTitle()));
 		updateComboBoxData(classNames, currentClassName);
 	}
 
-	public void frameSelected(FrameContentPanel contentPanel) {
+	@Override public void frameSelected(FrameContentPanel contentPanel) {
 		currentClassName = getClassName(contentPanel.getTitle());
 		updateComboBoxData(classNames, currentClassName);
 	}
 
-	public void frameTitleChanged(FrameContentPanel contentPanel, String oldTitle, String newTitle) {
+	@Override public void frameTitleChanged(FrameContentPanel contentPanel, String oldTitle, String newTitle) {
 		String oldClassName = getClassName(oldTitle);
 		String newClassName = getClassName(newTitle);
 		if (oldClassName.equals(currentClassName)) {
@@ -128,12 +128,12 @@ public class ClassComboBox extends JComboBox<String> implements MDIListener {
 		this.setSelectedItem(newTitle);
 	}
 
-	public boolean frameClosing(FrameContentPanel contentPanel) {
+	@Override public boolean frameClosing(FrameContentPanel contentPanel) {
 		// Do nothing
 		return true;
 	}
 
-	public void frameOpened(FrameContentPanel contentPanel) {
+	@Override public void frameOpened(FrameContentPanel contentPanel) {
 		//No need to add here as setTitle adds it before reaching here
 		//this.addItem(contentPanel.getTitle());
 	}

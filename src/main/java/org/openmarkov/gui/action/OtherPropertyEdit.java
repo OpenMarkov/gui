@@ -241,7 +241,7 @@ public class OtherPropertyEdit extends SimplePNEdit {
 		return node;
 	}
 	
-	public ProbNet getProbNet() {
+	@Override public ProbNet getProbNet() {
 		return probNet;
 	}
 

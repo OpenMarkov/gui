@@ -125,7 +125,7 @@ public class NumericVariableBox extends InnerBox {
 	 *
 	 * @param numCases Number of evidence cases in memory.
 	 */
-	public void update(int numCases) {
+	@Override public void update(int numCases) {
 		PartitionedInterval domain = visualNode.getNode().getVariable().getPartitionedInterval();
 		setMinValue(domain.getMin());
 		setMaxValue(domain.getMax());
@@ -156,7 +156,7 @@ public class NumericVariableBox extends InnerBox {
 	 *
 	 * @return the number of visual states of this inner box.
 	 */
-	public int getNumStates() {
+	@Override public int getNumStates() {
 		return 1;
 	}
 
@@ -165,7 +165,7 @@ public class NumericVariableBox extends InnerBox {
 	 *
 	 * @return shape of the innerBox.
 	 */
-	public Shape getShape(Graphics2D g) {
+	@Override public Shape getShape(Graphics2D g) {
 		double innerNodeHeight = getInnerBoxHeight(g);
 		return new Rectangle2D.Double(visualNode.getUpperLeftCornerX(g) + INTERNAL_MARGIN,
 				visualNode.getUpperLeftCornerY(g) + visualNode.getTextHeight(g) + INTERNAL_MARGIN, BOX_WIDTH,
@@ -177,7 +177,7 @@ public class NumericVariableBox extends InnerBox {
 	 *
 	 * @param g graphics object where paint the node.
 	 */
-	public void paint(Graphics2D g) {
+	@Override public void paint(Graphics2D g) {
 		Shape shape = getShape(g);
 		g.setPaint(BACKGROUND_COLOR);
 		g.fill(shape);
@@ -225,7 +225,7 @@ public class NumericVariableBox extends InnerBox {
 	 * @param g graphics object.
 	 * @return the height of the innerBox.
 	 */
-	public double getInnerBoxHeight(Graphics2D g) {
+	@Override public double getInnerBoxHeight(Graphics2D g) {
 		double innerBoxHeight = 0.0;
 		if (visualNode.getVisualNetwork().isPropagationActive()) {
 			innerBoxHeight = INTERNAL_MARGIN * 2 + STATES_VERTICAL_SEPARATION + SCALE_VERTICAL_SEPARATION

@@ -14,7 +14,7 @@ import java.awt.event.MouseListener;
 
 public class DecisionTreeUI extends BasicTreeUI {
 
-	protected java.awt.event.MouseListener createMouseListener() {
+	@Override protected java.awt.event.MouseListener createMouseListener() {
 		return new ZoomMouseListener(super.createMouseListener());
 	}
 

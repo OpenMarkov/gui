@@ -286,7 +286,7 @@ public class TemporalEvolutionTablePane extends JScrollPane {
     }
 
     public class NonEditableModel extends DefaultTableModel {
-        public boolean isCellEditable(int row, int column) {
+        @Override public boolean isCellEditable(int row, int column) {
             return false;
         }
     }

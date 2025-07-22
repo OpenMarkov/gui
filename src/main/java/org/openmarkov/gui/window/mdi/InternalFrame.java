@@ -83,7 +83,7 @@ public class InternalFrame extends JInternalFrame implements FrameContentPanelCo
 	 * @return -1 if this object is less than o; 1 if it is greater; or 0 if it
 	 * is equals than o.
 	 */
-	public int compareTo(InternalFrame o) {
+	@Override public int compareTo(InternalFrame o) {
 		return creationInstant.compareTo(o.getCreationInstant());
 	}
 

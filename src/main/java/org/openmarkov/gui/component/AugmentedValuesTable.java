@@ -120,7 +120,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	 * @param newValue - new value to validate
 	 * @author carmenyago
 	 */
-	protected boolean castValue(Object newValue) {
+	@Override protected boolean castValue(Object newValue) {
 
 		if (newValue instanceof String)
 			try {
@@ -202,7 +202,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 	/**
 	 *
 	 */
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Ignore
 	}
 
@@ -281,7 +281,7 @@ public class AugmentedValuesTable extends ValuesTable implements PNUndoableEditL
 		// we use the invokeLater()
 		if (e instanceof MouseEvent && isSelectAllForMouseEvent) {
 			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+				@Override public void run() {
 					((JTextComponent) editor).selectAll();
 				}
 			});

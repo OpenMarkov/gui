@@ -301,7 +301,7 @@ public class NetworkDefinitionPanel extends JPanel implements CommentListener {
 		return true;
 	}
 
-	public void commentHasChanged() {
+	@Override public void commentHasChanged() {
 		// check if the comment is empty
 		String comment = getCommentHTMLScrollPaneNetworkDefinition().isEmpty() ?
 				"" :

@@ -47,11 +47,11 @@ public class TreeADDModel implements TreeModel {
 	/**
 	 *
 	 */
-	public Object getRoot() {
+	@Override public Object getRoot() {
 		return treeADDPotentialRoot;
 	}
 
-	public int getChildCount(Object node) {
+	@Override public int getChildCount(Object node) {
 		if (isLeaf(node)) {
 			return 0;
 		} else if (node instanceof TreeADDPotential) {
@@ -63,15 +63,15 @@ public class TreeADDModel implements TreeModel {
 		return 0;
 	}
 
-	public boolean isLeaf(Object node) {
+	@Override public boolean isLeaf(Object node) {
 		return !(node instanceof TreeADDPotential) && !(node instanceof TreeADDBranch);
 	}
 
-	public void addTreeModelListener(TreeModelListener listener) {
+	@Override public void addTreeModelListener(TreeModelListener listener) {
 		treeModelListeners.add(listener);
 	}
 
-	public void removeTreeModelListener(TreeModelListener listener) {
+	@Override public void removeTreeModelListener(TreeModelListener listener) {
 		treeModelListeners.remove(listener);
 	}
 
@@ -85,7 +85,7 @@ public class TreeADDModel implements TreeModel {
 	 */
 	//if parent is a TreeADD the child must be a potential a tablePotential or a treeADDPotential (subtree)	
 	//if parent is branch it returns a potential that could be a treeADDPotential or a TablePotential
-	public Object getChild(Object parent, int index) {
+	@Override public Object getChild(Object parent, int index) {
 		if (isLeaf(parent)) {
 			return null;
 		}
@@ -107,7 +107,7 @@ public class TreeADDModel implements TreeModel {
 	 * @param objChild	It is usually a TreeADDBranch
 	 */
 	//parent must be a treeADD and child a treeADD or a potential
-	public int getIndexOfChild(Object parent, Object objChild) {
+	@Override public int getIndexOfChild(Object parent, Object objChild) {
 		if (parent == null || objChild == null) {
 			return -1;//If either parent or child is null, returns -1
 		}
@@ -226,7 +226,7 @@ public class TreeADDModel implements TreeModel {
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)
 	 */
-	public void valueForPathChanged(TreePath path, Object newValue) {
+	@Override public void valueForPathChanged(TreePath path, Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 }

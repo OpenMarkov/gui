@@ -102,7 +102,7 @@ public class SplashScreen extends JFrame {
 		final int theProgress = progress;
 		SwingUtilities.invokeLater(new Runnable() {
 
-			public void run() {
+			@Override public void run() {
 
 				progressBar.setValue(theProgress);
 			}
@@ -122,7 +122,7 @@ public class SplashScreen extends JFrame {
 		setProgress(progress);
 		SwingUtilities.invokeLater(new Runnable() {
 
-			public void run() {
+			@Override public void run() {
 
 				progressBar.setValue(theProgress);
 				progressBar.setString(theMessage);
@@ -140,7 +140,7 @@ public class SplashScreen extends JFrame {
 		final boolean boo = b;
 		SwingUtilities.invokeLater(new Runnable() {
 
-			public void run() {
+			@Override public void run() {
 
 				setVisible(boo);
 			}

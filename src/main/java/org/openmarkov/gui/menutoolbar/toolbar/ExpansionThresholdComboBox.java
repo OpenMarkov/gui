@@ -87,7 +87,7 @@ public class ExpansionThresholdComboBox extends JComboBox implements ItemListene
 	 *
 	 * @param e event information.
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 		double newValue = (Double) e.getItem();
 		if (!(newValue == currentValue)) {
 			setExpansionThreshold(newValue);

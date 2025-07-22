@@ -121,7 +121,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 	 *
 	 * @param e event information.
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 		String newActionCommand;
 		Integer zoomValue;
 		if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -158,7 +158,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 	 *
 	 * @param e event information.
 	 */
-	public void keyPressed(KeyEvent e) {
+	@Override public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			getEditor().setItem(oldValue);
 			getRootPane().requestFocusInWindow();
@@ -170,7 +170,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 	 *
 	 * @param e event information.
 	 */
-	public void keyReleased(KeyEvent e) {
+	@Override public void keyReleased(KeyEvent e) {
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class ZoomComboBox extends JComboBox<String> implements ItemListener, Key
 	 *
 	 * @param e event information.
 	 */
-	public void keyTyped(KeyEvent e) {
+	@Override public void keyTyped(KeyEvent e) {
 	}
 
 	/**

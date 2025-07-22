@@ -351,7 +351,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 	/**
 	 *
 	 */
-	public void actionPerformed(ActionEvent ae) {
+	@Override public void actionPerformed(ActionEvent ae) {
 		String actionComand = ae.getActionCommand();
 		TreePath path = jTree.getPathForLocation(xx, yy);
 		if (path != null) {
@@ -1356,11 +1356,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			this.treeADDEditorPanel = treeADDEditorPanel;
 		}
 
-		public void treeExpanded(TreeExpansionEvent event) {
+		@Override public void treeExpanded(TreeExpansionEvent event) {
 			treeADDEditorPanel.treeExpanded(event);
 		}
 
-		public void treeCollapsed(TreeExpansionEvent event) {
+		@Override public void treeCollapsed(TreeExpansionEvent event) {
 			// Ignore
 		}
 	}
@@ -1375,11 +1375,11 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			this.treeADDEditorPanel = treeADDEditorPanel;
 		}
 
-		public void treeWillExpand(TreeExpansionEvent event) {
+		@Override public void treeWillExpand(TreeExpansionEvent event) {
 			// Ignore
 		}
 
-		public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+		@Override public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
 			treeADDEditorPanel.treeWillCollapse(event);
 		}
 	}
@@ -1395,7 +1395,7 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			this.treeADDEditorPanel = adaptee;
 		}
 
-		public void mouseClicked(MouseEvent e) {
+		@Override public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				treeADDEditorPanel.xx = e.getX();
 				treeADDEditorPanel.yy = e.getY();
@@ -1403,13 +1403,13 @@ public class TreeADDEditorPanel extends JScrollPane implements ActionListener {
 			}
 		}
 
-		public void mouseReleased(MouseEvent e) {
+		@Override public void mouseReleased(MouseEvent e) {
 			if (e.isPopupTrigger()) {
 				showContextualMenu(e);
 			}
 		}
 
-		public void mousePressed(MouseEvent e) {
+		@Override public void mousePressed(MouseEvent e) {
 			if (e.isPopupTrigger()) {
 				showContextualMenu(e);
 			}

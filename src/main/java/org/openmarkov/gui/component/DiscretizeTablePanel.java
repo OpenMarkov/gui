@@ -1041,7 +1041,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		return keyPrefix + index;
 	}
 
-	public void tableChanged(TableModelEvent tableEvent) {
+	@Override public void tableChanged(TableModelEvent tableEvent) {
 		int column = tableEvent.getColumn();
 		int row = tableEvent.getLastRow();
 		// We save the index of the modified state
@@ -1160,7 +1160,7 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		getButtonPanel().setVisible(b);
 	}
 
-	public void mouseClicked(MouseEvent e) {
+	@Override public void mouseClicked(MouseEvent e) {
 		int row = valuesTable.rowAtPoint(e.getPoint());
 		int column = valuesTable.columnAtPoint(e.getPoint());
 		Variable variable = node.getVariable();
@@ -1186,16 +1186,16 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 		}
 	}
 
-	public void mouseEntered(MouseEvent e) {
+	@Override public void mouseEntered(MouseEvent e) {
 	}
 
-	public void mouseExited(MouseEvent e) {
+	@Override public void mouseExited(MouseEvent e) {
 	}
 
-	public void mousePressed(MouseEvent e) {
+	@Override public void mousePressed(MouseEvent e) {
 	}
 
-	public void mouseReleased(MouseEvent e) {
+	@Override public void mouseReleased(MouseEvent e) {
 	}
 
 	// @ 2014/11/18. Issue 145.
@@ -1265,8 +1265,8 @@ public class DiscretizeTablePanel extends KeyTablePanel implements TableModelLis
 			super(items);
 		}
 
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
+		@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                                 int row, int column) {
 			if (isSelected) {
 				setForeground(table.getSelectionForeground());
 				super.setBackground(table.getSelectionBackground());

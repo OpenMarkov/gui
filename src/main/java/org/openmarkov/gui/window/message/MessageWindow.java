@@ -203,7 +203,7 @@ public class MessageWindow extends FrameContentPanel implements ActionListener {
 	 *
 	 * @param e event information.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource().equals(buttonClear)) {
 			textArea.setText("");

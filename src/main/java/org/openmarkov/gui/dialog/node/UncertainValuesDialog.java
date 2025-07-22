@@ -463,7 +463,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
      *
      * @return true if the dialog box can be closed.
      */
-    protected boolean doOkClickBeforeHide() {
+    @Override protected boolean doOkClickBeforeHide() {
         TableCellEditor currentEditor = distributionTable.getCellEditor();
         
         if (currentEditor != null) {
@@ -699,7 +699,7 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
     }
     
     public class DistributionsTableListener implements TableModelListener {
-        public void tableChanged(TableModelEvent e) {
+        @Override public void tableChanged(TableModelEvent e) {
             if (e.getColumn() == DISTRIBUTION_COLUMN_INDEX) {
                 int selectedRow = distributionTable.getSelectedRow();
                 String distributionType = distributionTableModel.getValueAt(selectedRow, DISTRIBUTION_COLUMN_INDEX)
@@ -778,8 +778,8 @@ public class UncertainValuesDialog extends OkCancelHorizontalDialog {
         
         private static final long serialVersionUID = 1L;
         
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-                                                       int row, int column) {
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                                 int row, int column) {
             setBackground((row == 1) ? Color.gray : Color.white);
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }

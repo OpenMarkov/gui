@@ -235,7 +235,7 @@ import java.util.List;
 	 * UNCLEAR--&gt; Called in PotentialEditDialog.showFields(Node)
 	 *
 	 */
-	public void setData(Node node) {
+	@Override public void setData(Node node) {
 		this.node = node;
 		if(node.getPotentials().isEmpty()){
 			JOptionPane.showMessageDialog(this, "There are no potentials");
@@ -807,7 +807,7 @@ import java.util.List;
 	 * Handles an action performed
 	 * revised--&gt;not changed
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		if (actionCommand.equals(ActionCommands.UNCERTAINTY_ASSIGN) || actionCommand
 				.equals(ActionCommands.UNCERTAINTY_EDIT)) {
@@ -964,7 +964,7 @@ import java.util.List;
 	 */
 	protected void setTableSpecificListeners() {
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent e) {
+			@Override public void mouseClicked(java.awt.event.MouseEvent e) {
 				int row = valuesTable.rowAtPoint(e.getPoint());
 				int col = valuesTable.columnAtPoint(e.getPoint());
 				selectedColumn = col;

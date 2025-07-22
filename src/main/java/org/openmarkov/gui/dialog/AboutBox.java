@@ -218,7 +218,7 @@ public class AboutBox extends JDialog implements ActionListener {
 	 *
 	 * @param actionEvent ActionEvent
 	 */
-	public void actionPerformed(ActionEvent actionEvent) {
+	@Override public void actionPerformed(ActionEvent actionEvent) {
 		if (actionEvent.getActionCommand().equals(stringDatabase.getString("AboutBox.OK.Text"))) {
 			this.setVisible(false);
 		}

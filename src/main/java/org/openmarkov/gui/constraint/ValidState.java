@@ -27,7 +27,7 @@ public class ValidState extends PNConstraint {
 	// Attributes.
 	private String message;
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeStateEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			State state = ((NodeStateEdit) simpleEdit).getNewState();
@@ -82,7 +82,7 @@ public class ValidState extends PNConstraint {
 		return false;
 	}
 
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			String name = variable.getName();

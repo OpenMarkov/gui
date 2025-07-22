@@ -63,11 +63,11 @@ public class NodeDomainValuesTablePanelListener
 		return panel;
 	}
 
-	public void actionPerformed(ActionEvent event) {
+	@Override public void actionPerformed(ActionEvent event) {
 	}
 
 	// button initially selected down
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 		getPanel().getDiscretizedStatesPanel().getNegativeInfinityButton().setVisible(false);
 		getPanel().getDiscretizedStatesPanel().getNegativeInfinityButton().setEnabled(false);
 		getPanel().getDiscretizedStatesPanel().getPositiveInfinityButton().setVisible(false);
@@ -162,7 +162,7 @@ public class NodeDomainValuesTablePanelListener
 		}
 	}
 
-	public void focusGained(FocusEvent e) {
+	@Override public void focusGained(FocusEvent e) {
 		if (e.getSource().equals(getPanel().getJFormattedTextFieldPrecision())) {
 			System.out.println("precision focus gained");
 			getPanel().getJFormattedTextFieldPrecision().selectAll();
@@ -171,7 +171,7 @@ public class NodeDomainValuesTablePanelListener
 		}
 	}
 
-	public void focusLost(FocusEvent evt) {
+	@Override public void focusLost(FocusEvent evt) {
 		if (evt.getSource().equals(getPanel().getJFormattedTextFieldPrecision())) {
 			PrecisionEdit precisionEdit = new PrecisionEdit(getPanel().getNode(),
 					((Double) getPanel().getJFormattedTextFieldPrecision().getValue()).doubleValue());
@@ -195,7 +195,7 @@ public class NodeDomainValuesTablePanelListener
 		}
 	}
 
-	public void propertyChange(PropertyChangeEvent evt) {
+	@Override public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource().equals(getPanel().getJFormattedTextFieldPrecision())) {
 			PrecisionEdit precisionEdit = new PrecisionEdit(panel.getNode(),
 					(Double) getPanel().getJFormattedTextFieldPrecision().getValue());

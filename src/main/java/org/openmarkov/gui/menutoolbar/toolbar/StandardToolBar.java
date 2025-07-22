@@ -242,7 +242,7 @@ public class StandardToolBar extends ToolBarBasic implements ZoomMenuToolBar, Mo
 	 *
 	 * @param value new value of zoom.
 	 */
-	public void setZoom(double value) {
+	@Override public void setZoom(double value) {
 		zoomComboBox.setZoom(value);
 	}
 

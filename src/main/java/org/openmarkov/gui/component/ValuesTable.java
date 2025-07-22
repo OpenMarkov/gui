@@ -391,7 +391,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * check the value to modify in the table and sets
 	 *
 	 */
-	public void setValueAt(Object newValue, int row, int col) {
+	@Override public void setValueAt(Object newValue, int row, int col) {
 
 		Object oldValue = getValueAt(row, col);
 		// The new value has to be transformed to double
@@ -689,7 +689,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		System.out.println("    showingTPCvalues = " + isShowingTPCvalues());
 	}
 
-	public void undoableEditHappened(UndoableEditEvent event) {
+	@Override public void undoableEditHappened(UndoableEditEvent event) {
 		UndoableEdit edit = event.getEdit();
 		if (edit instanceof TablePotentialValueEdit) {
 			tablePotentialValueEditHappened((TablePotentialValueEdit) edit);
@@ -759,14 +759,14 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	/**
 	 *
 	 */
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// Ignore
 	}
 
 	/**
 	 *
 	 */
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 		if (event.getEdit() instanceof TablePotentialValueEdit) {
 			TablePotentialValueEdit edit = (TablePotentialValueEdit) event.getEdit();
 			TablePotential editPotential = edit.getPotential();
@@ -794,7 +794,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 	 * @param column - the column of the edited cell
 	 * @param e      - event to pass into shouldSelectCell;
 	 */
-	public boolean editCellAt(int row, int column, EventObject e) {
+	@Override public boolean editCellAt(int row, int column, EventObject e) {
 		boolean result = super.editCellAt(row, column, e);
 		if (isSelectAllForMouseEvent || isSelectAllForActionEvent || isSelectAllForKeyEvent) {
 			selectAll(e);
@@ -833,7 +833,7 @@ public class ValuesTable extends KeyTable implements PNUndoableEditListener {
 		// we use the invokeLater()
 		if (e instanceof MouseEvent && isSelectAllForMouseEvent) {
 			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+				@Override public void run() {
 					((JTextComponent) editor).selectAll();
 				}
 			});

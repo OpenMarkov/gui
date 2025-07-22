@@ -273,7 +273,7 @@ public class KeyTable extends JTable {
 		}
 	}
 
-	public void setValueAt(Object newValue, int row, int col) {
+	@Override public void setValueAt(Object newValue, int row, int col) {
 		Object oldValue = getValueAt(row, col);
 		if (!newValue.equals(oldValue)) {
 			super.getModel().setValueAt(newValue, row, col);

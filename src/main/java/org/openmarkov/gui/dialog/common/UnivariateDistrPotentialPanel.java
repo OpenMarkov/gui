@@ -310,7 +310,7 @@ import java.util.List;
 	 *
 	 * @return Evidence case
 	 */
-	public EvidenceCase getEvidenceCaseFromSelectedColumn() {
+	@Override public EvidenceCase getEvidenceCaseFromSelectedColumn() {
 		EvidenceCase evi = null;
 		try {
 			evi = getConfiguration(selectedColumn);
@@ -326,7 +326,7 @@ import java.util.List;
 	 * @return a new values table.
 	 * revised--&gt;not changed
 	 */
-	public ValuesTable getValuesTable() {
+	@Override public ValuesTable getValuesTable() {
 		if (valuesTable == null) {
 			valuesTable = new AugmentedValuesTable(node, getTableModel(), modifiable);
 			valuesTable.setName("PotentialsTablePanel.valuesTable");

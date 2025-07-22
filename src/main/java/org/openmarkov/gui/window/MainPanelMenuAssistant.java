@@ -588,7 +588,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * @param selectedNodes list of selected nodes.
 	 * @param selectedLinks list of selected links.
 	 */
-	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks) {
+	@Override public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks) {
 		boolean canCut = false;
 		boolean canCopy = false;
 		boolean canRemove = false;
@@ -777,8 +777,8 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 	 * @param selectedInstances      list of selected instances.
 	 * @param selectedReferenceLinks list of selected reference links
 	 */
-	public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks,
-			List<VisualInstance> selectedInstances, List<VisualReferenceLink> selectedReferenceLinks) {
+	@Override public void objectsSelected(List<VisualNode> selectedNodes, List<VisualLink> selectedLinks,
+                                          List<VisualInstance> selectedInstances, List<VisualReferenceLink> selectedReferenceLinks) {
 		boolean canCut = false;
 		boolean canCopy = false;
 		boolean canRemove = false;
@@ -973,7 +973,7 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		setOptionEnabled(ActionCommands.CLIPBOARD_PASTE, false);
 	}
 
-	public void undoableEditHappened(UndoableEditEvent e) {
+	@Override public void undoableEditHappened(UndoableEditEvent e) {
 		ProbNet probNet = currentNetworkPanel.getProbNet();
 		// update menu options and network agents when network type has been
 		// modified
@@ -988,11 +988,11 @@ public class MainPanelMenuAssistant extends MenuAssistant implements OOSelection
 		 */
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 		updateOptionsNetworkModified(((PNESupport) event.getSource()).getCanUndo(),
 				((PNESupport) event.getSource()).getCanRedo());
 		/*

@@ -294,7 +294,7 @@ public abstract class ProbabilityTablePanel extends PotentialPanel implements Ac
 	}
 
 	// @Override
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 
 	}

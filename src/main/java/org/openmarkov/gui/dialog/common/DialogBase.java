@@ -57,7 +57,7 @@ public class DialogBase extends JDialog {
 		});
 		ActionListener listener = new ActionListener() {
 
-			public void actionPerformed(ActionEvent evt) {
+			@Override public void actionPerformed(ActionEvent evt) {
 
 				if (jButtonCancel != null) {
 					jButtonCancel.doClick();

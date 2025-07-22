@@ -192,7 +192,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param actionCommand action command that identifies the option.
 	 * @param b             true to enable the option, false to disable.
 	 */
-	public void setOptionEnabled(String actionCommand, boolean b) {
+	@Override public void setOptionEnabled(String actionCommand, boolean b) {
 
 		menuAssistant.setOptionEnabled(actionCommand, b);
 	}
@@ -204,7 +204,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param actionCommand action command that identifies the option.
 	 * @param b             true to select the option, false to unselect.
 	 */
-	public void setOptionSelected(String actionCommand, boolean b) {
+	@Override public void setOptionSelected(String actionCommand, boolean b) {
 
 		menuAssistant.setOptionSelected(actionCommand, b);
 	}
@@ -217,7 +217,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param text          text to add to the label of the options. If null, nothing is
 	 *                      added.
 	 */
-	public void addOptionText(String actionCommand, String text) {
+	@Override public void addOptionText(String actionCommand, String text) {
 
 		menuAssistant.addOptionText(actionCommand, text);
 	}
@@ -228,7 +228,7 @@ public class ContextualMenuFactory implements MenuToolBarBasic {
 	 * @param actionCommand action command that identifies the option.
 	 * @param text          text to set to the Item.
 	 */
-	public void setText(String actionCommand, String text) {
+	@Override public void setText(String actionCommand, String text) {
 
 		menuAssistant.setText(actionCommand, text);
 	}

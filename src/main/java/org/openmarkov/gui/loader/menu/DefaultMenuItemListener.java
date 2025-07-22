@@ -29,7 +29,7 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 	/**
 	 * Dispatch check/uncheck events from CheckboxMenuItems.
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 
 		Object oSource = e.getSource();
 		if (oSource instanceof JMenuItem) {
@@ -49,7 +49,7 @@ public class DefaultMenuItemListener implements ActionListener, ItemListener {
 	 * When a MenuItem is activated, this method finds and calls the MenuItem's
 	 * MenuItemHandler.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 
 		Object oSource = e.getSource();
 		if (oSource instanceof JMenuItem) {

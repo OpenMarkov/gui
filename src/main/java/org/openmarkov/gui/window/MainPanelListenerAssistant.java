@@ -142,7 +142,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param e menu event information.
      */
-    public void actionPerformed(ActionEvent e) {
+    @Override public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals(ActionCommands.NEW_NETWORK)) {
             createNewNetwork();
@@ -428,7 +428,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      * @return true, if the frame that contents the panel can be closed;
      * otherwise, false.
      */
-    public boolean frameClosing(FrameContentPanel contentPanel) {
+    @Override public boolean frameClosing(FrameContentPanel contentPanel) {
         contentPanel.close();
         if (NetworkPanel.class.isAssignableFrom(contentPanel.getClass())) {
             return networkCanBeClosed((NetworkPanel) contentPanel);
@@ -442,7 +442,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param contentPanel content panel of the frame that has been closed.
      */
-    public void frameClosed(FrameContentPanel contentPanel) {
+    @Override public void frameClosed(FrameContentPanel contentPanel) {
         if (networkPanels.size() == 0) {
             mainPanel.setToolBarPanel(NetworkPanel.EDITION_WORKING_MODE);
             mainPanel.getMainPanelMenuAssistant().updateOptionsAllNetworkClosed();
@@ -515,7 +515,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
      *
      * @param contentPanel content panel of the frame that has been selected.
      */
-    public void frameSelected(FrameContentPanel contentPanel) {
+    @Override public void frameSelected(FrameContentPanel contentPanel) {
         if (contentPanel instanceof NetworkPanel) {
             mainPanel.getMainPanelMenuAssistant().updateOptionsNetworkDependent((NetworkPanel) contentPanel);
             mainPanel.getInferenceToolBar().setCurrentEvidenceCaseName(getCurrentNetworkPanel().getCurrentCase());
@@ -1513,11 +1513,11 @@ public class MainPanelListenerAssistant extends WindowAdapter
         return networkPanels;
     }
     
-    public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
+    @Override public void frameTitleChanged(FrameContentPanel contentPanel, String oldName, String newName) {
         // TODO Auto-generated method stub
     }
     
-    public void frameOpened(FrameContentPanel contentPanel) {
+    @Override public void frameOpened(FrameContentPanel contentPanel) {
         // TODO Auto-generated method stub
     }
     
@@ -1655,7 +1655,7 @@ public class MainPanelListenerAssistant extends WindowAdapter
         return maxLengthLine;
     }
     
-    public void componentResized(ComponentEvent e) {
+    @Override public void componentResized(ComponentEvent e) {
         mainPanel.adaptToolBarSize();
     }
     

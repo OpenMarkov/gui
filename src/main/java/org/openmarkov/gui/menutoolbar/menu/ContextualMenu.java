@@ -63,7 +63,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * @param actionCommand action command that identifies the option.
 	 * @param b             true to enable the option, false to disable.
 	 */
-	public void setOptionEnabled(String actionCommand, boolean b) {
+	@Override public void setOptionEnabled(String actionCommand, boolean b) {
 
 		MenuToolBarBasicImpl.setOptionEnabled(getJComponentActionCommand(actionCommand), b);
 	}
@@ -75,7 +75,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * @param actionCommand action command that identifies the option.
 	 * @param b             true to select the option, false to unselect.
 	 */
-	public void setOptionSelected(String actionCommand, boolean b) {
+	@Override public void setOptionSelected(String actionCommand, boolean b) {
 
 		MenuToolBarBasicImpl.setOptionSelected(getJComponentActionCommand(actionCommand), b);
 
@@ -92,7 +92,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * @param text          text to add to the label of the options. If null, nothing is
 	 *                      added.
 	 */
-	public void addOptionText(String actionCommand, String text) {
+	@Override public void addOptionText(String actionCommand, String text) {
 
 	}
 
@@ -100,7 +100,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * process a change in the String Resource Locale, settings all the labels
 	 * menus, and strings in the component to the new selected language
 	 */
-	public void processLocaleChange(LocaleChangeEvent event) {
+	@Override public void processLocaleChange(LocaleChangeEvent event) {
 		UpdateLocalizationInComponents.allComponentsUpdateSetText(this);
 		repaint();
 	}
@@ -111,7 +111,7 @@ public abstract class ContextualMenu extends JPopupMenu implements MenuToolBarBa
 	 * @param actionCommand action command that identifies the option.
 	 * @param text          text to add to the label.
 	 */
-	public void setText(String actionCommand, String text) {
+	@Override public void setText(String actionCommand, String text) {
 
 		JComponent component = getJComponentActionCommand(actionCommand);
 		MenuToolBarBasicImpl.setText(component, text);

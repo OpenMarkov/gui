@@ -39,11 +39,11 @@ import java.util.prefs.Preferences;
 		return pref;
 	}
 
-	public boolean isLeaf() {
+	@Override public boolean isLeaf() {
 		return ((childrenNames == null) || (childrenNames.length == 0));
 	}
 
-	public int getChildCount() {
+	@Override public int getChildCount() {
 		return childrenNames.length;
 	}
 
@@ -70,7 +70,7 @@ import java.util.prefs.Preferences;
 		}
 	}
 
-	public TreeNode getChildAt(int childIndex) {
+	@Override public TreeNode getChildAt(int childIndex) {
 		if (childIndex < childrenNames.length) {
 			try {
 				PreferenceTreeNode child = new PreferenceTreeNode(pref.node(childrenNames[childIndex]));

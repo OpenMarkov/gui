@@ -53,7 +53,7 @@ import java.util.List;
     /**
 	 * Invoked when the button 'remove' is pressed.
 	 */
-	protected void actionPerformedRemoveValue() {
+	@Override protected void actionPerformedRemoveValue() {
 		super.actionPerformedRemoveValue();
 		notifyActionListeners(new ActionEvent(this, 2, "Remove"));
 	}
@@ -61,7 +61,7 @@ import java.util.List;
     /**
 	 * Invoked when the button 'up' is pressed.
 	 */
-	protected void actionPerformedUpValue() {
+	@Override protected void actionPerformedUpValue() {
 		super.actionPerformedUpValue();
 		notifyActionListeners(new ActionEvent(this, 3, "Up"));
 	}
@@ -69,7 +69,7 @@ import java.util.List;
     /**
 	 * Invoked when the button 'down' is pressed.
 	 */
-	protected void actionPerformedDownValue() {
+	@Override protected void actionPerformedDownValue() {
 		super.actionPerformedDownValue();
 		notifyActionListeners(new ActionEvent(this, 4, "Down"));
 	}
@@ -118,7 +118,7 @@ import java.util.List;
 		return covariates;
 	}
 
-	public void valueChanged(ListSelectionEvent e) {
+	@Override public void valueChanged(ListSelectionEvent e) {
 		super.valueChanged(e);
 		int row = valuesTable.getSelectedRow();
 		if (row >= 0 && row < tableModel.getRowCount()) {

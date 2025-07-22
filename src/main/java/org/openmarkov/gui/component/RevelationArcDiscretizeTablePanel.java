@@ -55,12 +55,12 @@ import java.awt.event.MouseEvent;
 	 * Method to define the specific listeners in this table (not defined in the
 	 * common KeyTable hierarchy
 	 */
-	protected void defineTableSpecificListeners() {
+	@Override protected void defineTableSpecificListeners() {
 
 		valuesTable.addMouseListener(this);
 	}
 
-	public void setPartitionedInterval() {
+	@Override public void setPartitionedInterval() {
 
 		int subIntervals = 0;
 		for (PartitionedInterval partitionInterval : link.getRevealingIntervals()) {
@@ -127,7 +127,7 @@ import java.awt.event.MouseEvent;
 	/****
 	 * Invoked when the table cells are edited
 	 */
-	public void tableChanged(TableModelEvent arg0) {
+	@Override public void tableChanged(TableModelEvent arg0) {
 		int column = arg0.getColumn();
 		int row = arg0.getLastRow();
 		int numRows = ((DiscretizeTableModel) arg0.getSource()).getRowCount();
@@ -188,7 +188,7 @@ import java.awt.event.MouseEvent;
 
 	}
 
-	public void mouseClicked(MouseEvent e) {
+	@Override public void mouseClicked(MouseEvent e) {
 		int fila = valuesTable.rowAtPoint(e.getPoint());
 		int columna = valuesTable.columnAtPoint(e.getPoint());
 		if ((fila > -1) && (columna > -1)) {

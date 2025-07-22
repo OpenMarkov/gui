@@ -79,7 +79,7 @@ import java.util.Map;
 		deterministicPanel.add(centerPanel, BorderLayout.CENTER);
 		uncertaintyCheckBox = new JCheckBox("Uncertainty");
 		uncertaintyCheckBox.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+			@Override public void stateChanged(ChangeEvent e) {
 				uncertaintyPanel.setVisible(uncertaintyCheckBox.isSelected());
 				notifyPanelResizeEventListeners();
 			}
@@ -173,7 +173,7 @@ import java.util.Map;
 		return variable.isTemporal();
 	}
 
-	public boolean saveChanges() {
+	@Override public boolean saveChanges() {
 		WeibullHazardPotential oldPotential = (WeibullHazardPotential) this.node.getPotentials().get(0);
 		String[] covariates = regressionPanel.getCovariates();
 		double[] coefficients = regressionPanel.getCoefficients();

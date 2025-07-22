@@ -46,14 +46,14 @@ public class DiscretizedCauchyPotentialPanel extends PotentialPanel implements P
         JPanel buttonPanel = new JPanel();
         editMedianButton = new JButton("Edit median potential");
         editMedianButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
+            @Override public void actionPerformed(ActionEvent e)
             {
                 editMedianPotential();
             }
         });
         editScaleButton = new JButton("Edit scale potential");
         editScaleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
+            @Override public void actionPerformed(ActionEvent e)
             {
                 editScalePotential();
             }

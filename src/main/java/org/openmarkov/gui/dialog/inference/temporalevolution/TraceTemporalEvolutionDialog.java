@@ -855,7 +855,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         jButtonSaveReport.setName("jButtonSaveReport");
         jButtonSaveReport.setText(stringDatabase.getString("Dialog.SaveReport.Label"));
         jButtonSaveReport.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override public void actionPerformed(ActionEvent e) {
                 saveReport();
             }
         });
@@ -864,7 +864,7 @@ public class TraceTemporalEvolutionDialog extends JDialog {
         jButtonClose.setName("jButtonClose");
         jButtonClose.setText(stringDatabase.getString("Dialog.Close.Label"));
         jButtonClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 dispose();
             }

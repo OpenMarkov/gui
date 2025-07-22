@@ -28,8 +28,8 @@ public class ColorTableCellRenderer extends JPanel implements TableCellRenderer 
 	/* (non-Javadoc)
 	 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 	 */
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+	@Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                             int row, int column) {
 
 		setBackground((Color) value);
 		if (hasFocus) {

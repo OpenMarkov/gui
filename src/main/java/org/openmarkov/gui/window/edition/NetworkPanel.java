@@ -588,7 +588,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 *
 	 * @return actual value of zoom.
 	 */
-	public double getZoom() {
+	@Override public double getZoom() {
 		return editorPanel.getZoom();
 	}
 
@@ -597,7 +597,7 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 	 *
 	 * @param value new zoom.
 	 */
-	public void setZoom(double value) {
+	@Override public void setZoom(double value) {
 		editorPanel.setZoom(value);
 	}
 
@@ -655,19 +655,19 @@ public class NetworkPanel extends FrameContentPanel implements PNUndoableEditLis
 		editorPanel.setSelectedAllObjects(selected);
 	}
 
-	public void undoableEditHappened(UndoableEditEvent arg0) {
+	@Override public void undoableEditHappened(UndoableEditEvent arg0) {
 		if (!arg0.getEdit().getClass().equals(OpenParenthesisEdit.class) &&
 				!arg0.getEdit().getClass().equals(CloseParenthesisEdit.class) ) {
 			setModified(true);
 		}
 	}
 
-	public void undoableEditWillHappen(UndoableEditEvent event) {
+	@Override public void undoableEditWillHappen(UndoableEditEvent event) {
 		// TODO Auto-generated method stub
 		repaint();
 	}
 
-	public void undoEditHappened(UndoableEditEvent event) {
+	@Override public void undoEditHappened(UndoableEditEvent event) {
 
 		if (((PNESupport) event.getSource()).getCanUndo()){
 			setModified(true);

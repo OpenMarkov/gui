@@ -745,7 +745,7 @@ public class NodeDefinitionPanel extends JPanel
 	 *
 	 * @param e event information.
 	 */
-	@SuppressWarnings("unchecked") public void itemStateChanged(ItemEvent e) {
+	@Override @SuppressWarnings("unchecked") public void itemStateChanged(ItemEvent e) {
 		int optionDeselected = 0;
 		ItemSelectable itemSelectable = e.getItemSelectable();
 		Object selected[] = itemSelectable.getSelectedObjects();
@@ -852,7 +852,7 @@ public class NodeDefinitionPanel extends JPanel
 	 *
 	 * @param e - event information
 	 */
-	public void focusLost(FocusEvent e) {
+	@Override public void focusLost(FocusEvent e) {
 		if (e.getSource().equals(this.jTextFieldNodeName)) {
 			// actionPerformedNodeNameChangeValue();
 			if (!node.getName().equals(this.jTextFieldNodeName.getText())) {
@@ -881,7 +881,7 @@ public class NodeDefinitionPanel extends JPanel
 	 *
 	 * @param e - event information
 	 */
-	public void focusGained(FocusEvent e) {
+	@Override public void focusGained(FocusEvent e) {
 		if (e.getSource().equals(this.jTextFieldNodeName)) {
 			this.getJTextFieldNodeName().selectAll();
 		}
@@ -951,7 +951,7 @@ public class NodeDefinitionPanel extends JPanel
 		return true;
 	}
 
-	public void commentHasChanged() {
+	@Override public void commentHasChanged() {
 
 		// check if the comment is empty
 		String comment = getCommentHTMLScrollPaneNodeDefinitionComment().isEmpty() ?
@@ -982,7 +982,7 @@ public class NodeDefinitionPanel extends JPanel
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(this.jCheckboxAlwaysObserved)) {
 			alwaysObservedPropertyHasChanged();
 		}

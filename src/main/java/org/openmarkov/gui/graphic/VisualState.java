@@ -317,7 +317,7 @@ public class VisualState extends VisualElement {
 	 * @param g graphics object where paint the node.
 	 * @return shape of the State.
 	 */
-	public Shape getShape(Graphics2D g) {
+	@Override public Shape getShape(Graphics2D g) {
 		Double x = visualNode.getUpperLeftCornerX(g) + InnerBox.INTERNAL_MARGIN + InnerBox.STATES_INDENT - 1;
 		Double w = InnerBox.BOX_WIDTH - (InnerBox.STATES_INDENT * 2) + 1;
 		Double y = 0.0;
@@ -344,7 +344,7 @@ public class VisualState extends VisualElement {
 	 *
 	 * @param g graphics object where paint the node.
 	 */
-	public void paint(Graphics2D g) {
+	@Override public void paint(Graphics2D g) {
 		Double xName = 0.0;
 		Double xBar = 0.0;
 		Double xValue = 0.0;

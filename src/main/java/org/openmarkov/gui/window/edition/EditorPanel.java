@@ -346,7 +346,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseClicked(MouseEvent e) {
+	@Override public void mouseClicked(MouseEvent e) {
 	}
 
 	/**
@@ -354,7 +354,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mousePressed(MouseEvent e) {
+	@Override public void mousePressed(MouseEvent e) {
 		// requestFocusInWindow(); Activate if nodes can't be moved by arrows.
 		Graphics2D g = (Graphics2D) getGraphics();
 		cursorPosition.setLocation(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
@@ -444,7 +444,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseDragged(MouseEvent e) {
+	@Override public void mouseDragged(MouseEvent e) {
 		Graphics2D g = (Graphics2D) getGraphics();
 		Point2D.Double point = new Point2D.Double(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
 		double diffX = point.getX() - cursorPosition.getX();
@@ -458,7 +458,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseReleased(MouseEvent e) {
+	@Override public void mouseReleased(MouseEvent e) {
 		Graphics2D g = (Graphics2D) getGraphics();
 		Point2D.Double position = new Point2D.Double(zoom.screenToPanel(e.getX()), zoom.screenToPanel(e.getY()));
 		editionMode.mouseReleased(e, position, g);
@@ -469,7 +469,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseEntered(MouseEvent e) {
+	@Override public void mouseEntered(MouseEvent e) {
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseExited(MouseEvent e) {
+	@Override public void mouseExited(MouseEvent e) {
 	}
 
 	/**
@@ -486,7 +486,7 @@ public class EditorPanel extends JPanel implements MouseListener, MouseMotionLis
 	 *
 	 * @param e mouse event information.
 	 */
-	public void mouseMoved(MouseEvent e) {
+	@Override public void mouseMoved(MouseEvent e) {
 	}
 
 	/**

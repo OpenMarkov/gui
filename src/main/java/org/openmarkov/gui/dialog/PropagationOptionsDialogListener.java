@@ -50,7 +50,7 @@ public class PropagationOptionsDialogListener implements ActionListener {
 	 *
 	 * @param actionEvent event information.
 	 */
-	public void actionPerformed(ActionEvent actionEvent) {
+	@Override public void actionPerformed(ActionEvent actionEvent) {
 		String command = actionEvent.getActionCommand();
 		String inferenceType = automaticPropagationOptionsDialog.getButtonGroup().getSelection().getActionCommand();
 		StringDatabase stringDatabase = StringDatabase.getUniqueInstance();

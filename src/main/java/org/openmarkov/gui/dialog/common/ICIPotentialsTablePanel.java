@@ -181,7 +181,7 @@ import java.util.List;
      *
      * @param properties Node properties
      */
-    public void setData(Node properties) {
+    @Override public void setData(Node properties) {
         this.node = properties;
         iciValuesTable.setData(node);
         Object[][] tableData = null;

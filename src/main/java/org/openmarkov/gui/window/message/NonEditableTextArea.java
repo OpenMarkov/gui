@@ -75,7 +75,7 @@ public class NonEditableTextArea extends JTextPane implements MessageArea {
 	 *
 	 * @param message text to write.
 	 */
-	public void writeInformationMessage(String message) {
+	@Override public void writeInformationMessage(String message) {
 
 		StyleConstants.setForeground(attributeSet, normalMessageColor);
 		// ESCA-JAVA0008: allows an empty catch block in the method
@@ -90,7 +90,7 @@ public class NonEditableTextArea extends JTextPane implements MessageArea {
 	 *
 	 * @param message text to write.
 	 */
-	public void writeErrorMessage(String message) {
+	@Override public void writeErrorMessage(String message) {
 
 		StyleConstants.setForeground(attributeSet, errorMessageColor);
 		// ESCA-JAVA0008: allows an empty catch block in the method

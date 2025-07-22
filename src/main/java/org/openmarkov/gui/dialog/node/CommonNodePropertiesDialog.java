@@ -91,7 +91,7 @@ public class CommonNodePropertiesDialog extends NodePropertiesDialog {
 
 	}
 
-	public void stateChanged(ChangeEvent e) {
+	@Override public void stateChanged(ChangeEvent e) {
 		/*JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
 		int index = sourceTabbedPane.getSelectedIndex();
 		System.out.println ("Tab changed to: " +

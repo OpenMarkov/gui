@@ -136,7 +136,7 @@ import java.awt.event.ItemListener;
 		buttonGroupRelationType.add(getJRadioButtonOptimalType());
 	}
 
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 		if (e.getItem().equals(getJRadioButtonProbabilisticType())) {
 			itemStateChangedProbabilisticType(e);
 		}

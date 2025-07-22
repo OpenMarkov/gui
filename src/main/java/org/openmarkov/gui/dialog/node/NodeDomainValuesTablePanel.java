@@ -838,7 +838,7 @@ public class NodeDomainValuesTablePanel extends JPanel implements ItemListener, 
 		return jComboBoxNodeVariableType;
 	}
 
-	@SuppressWarnings("unchecked") public void itemStateChanged(ItemEvent itemEvent) {
+	@Override @SuppressWarnings("unchecked") public void itemStateChanged(ItemEvent itemEvent) {
 		int optionDeselected = 0;
 		ItemSelectable itemSelectable = itemEvent.getItemSelectable();
 		Object selected[] = itemSelectable.getSelectedObjects();

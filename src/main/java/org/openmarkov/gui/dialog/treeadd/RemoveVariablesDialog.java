@@ -80,7 +80,7 @@ import java.awt.*;
 	 *
 	 * @return true if the dialog box can be closed.
 	 */
-	protected boolean doOkClickBeforeHide() {
+	@Override protected boolean doOkClickBeforeHide() {
 		return true;
 	}
 
@@ -88,7 +88,7 @@ import java.awt.*;
 	 * This method carries out the actions when the user press the Cancel button
 	 * before hide the dialog.
 	 */
-	protected void doCancelClickBeforeHide() {
+	@Override protected void doCancelClickBeforeHide() {
 
 	}
 }

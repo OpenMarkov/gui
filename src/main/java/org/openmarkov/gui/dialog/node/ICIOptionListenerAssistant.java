@@ -55,7 +55,7 @@ public class ICIOptionListenerAssistant implements ItemListener {
 		return ((ICIPotentialsTablePanel) parentPanel).getNode();
 	}
 
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 		// to identify what is the panel container it could be CPTTablePanel or
 		// ICIPotentialsTablePanel
 		this.parentPanel = iciOptionPanel.getParent();

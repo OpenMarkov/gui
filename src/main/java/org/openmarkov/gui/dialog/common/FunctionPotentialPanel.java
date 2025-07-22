@@ -94,7 +94,7 @@ import java.util.List;
 		return function;
 	}
 
-	public boolean saveChanges() {
+	@Override public boolean saveChanges() {
 		FunctionPotential newPotential = (FunctionPotential) this.potential.copy();
 
 		newPotential.setFunction(function);

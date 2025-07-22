@@ -24,7 +24,7 @@ public class ValidName extends PNConstraint {
 	// Attributes.
 	private String message;
 
-	public boolean checkEdit(ProbNet probNet, PNEdit edit) {
+	@Override public boolean checkEdit(ProbNet probNet, PNEdit edit) {
 		List<PNEdit> edits = UtilConstraints.getSimpleEditsByType(edit, NodeNameEdit.class);
 		for (PNEdit simpleEdit : edits) {
 			String name = ((NodeNameEdit) simpleEdit).getNewName();
@@ -70,7 +70,7 @@ public class ValidName extends PNConstraint {
         return true;
     }
 
-	public boolean checkProbNet(ProbNet probNet) {
+	@Override public boolean checkProbNet(ProbNet probNet) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			String name = variable.getName();

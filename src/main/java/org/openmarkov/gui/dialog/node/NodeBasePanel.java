@@ -86,6 +86,6 @@ public class NodeBasePanel extends JPanel implements ItemListener {
 	 *
 	 * @param e event information.
 	 */
-	public void itemStateChanged(ItemEvent e) {
+	@Override public void itemStateChanged(ItemEvent e) {
 	}
 }

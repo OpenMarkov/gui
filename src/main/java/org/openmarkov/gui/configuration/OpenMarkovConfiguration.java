@@ -98,7 +98,7 @@ public class OpenMarkovConfiguration implements DefaultConfiguration, Serializab
 	/**
 	 * Generates a default configuration for each component.
 	 */
-	public void generateDefaultConfiguration() {
+	@Override public void generateDefaultConfiguration() {
 		configurations = createConfigurationObjects();
 	}
 

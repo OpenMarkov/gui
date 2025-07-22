@@ -21,7 +21,7 @@ package org.openmarkov.gui.component;
 	 * This method determines the default renderer/editor for each cell. First
 	 * column is a String class type and the others are integer type.
 	 */
-	public Class<?> getColumnClass(int c) {
+	@Override public Class<?> getColumnClass(int c) {
 
 		Integer integerExample = 0;
 		String stringExample = "";
@@ -33,7 +33,7 @@ package org.openmarkov.gui.component;
 		}
 	}
 
-	public boolean isCellEditable(int row, int col) {
+	@Override public boolean isCellEditable(int row, int col) {
 		return false;
 	}
 

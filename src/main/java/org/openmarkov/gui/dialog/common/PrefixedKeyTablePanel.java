@@ -333,7 +333,7 @@ public class PrefixedKeyTablePanel extends KeyTablePanel implements TableModelLi
 
 	}
 
-	public void tableChanged(TableModelEvent e) {
+	@Override public void tableChanged(TableModelEvent e) {
 		int row = e.getLastRow();
 
 		if (e.getType() != TableModelEvent.DELETE && e.getType() != TableModelEvent.INSERT && renameAction) {

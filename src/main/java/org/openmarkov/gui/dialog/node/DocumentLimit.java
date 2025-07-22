@@ -51,7 +51,7 @@ public class DocumentLimit extends PlainDocument {
 	 * Method that is called by the editor each time that the user introduce a
 	 * character. The method check that is not over the limit.
 	 */
-	public void insertString(int arg0, String arg1, javax.swing.text.AttributeSet arg2) throws BadLocationException {
+	@Override public void insertString(int arg0, String arg1, javax.swing.text.AttributeSet arg2) throws BadLocationException {
 
 		if ((editor.getText().length() + arg1.length()) > this.maxCharNumber)
 			return;

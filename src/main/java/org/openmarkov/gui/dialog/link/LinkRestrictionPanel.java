@@ -152,7 +152,7 @@ import java.util.List;
 		setCellRenderers();
 		valuesTable.addMouseListener(new java.awt.event.MouseAdapter() {
 
-			public void mouseClicked(java.awt.event.MouseEvent e) {
+			@Override public void mouseClicked(java.awt.event.MouseEvent e) {
 
 				int row = valuesTable.rowAtPoint(e.getPoint());
 				int column = valuesTable.columnAtPoint(e.getPoint());

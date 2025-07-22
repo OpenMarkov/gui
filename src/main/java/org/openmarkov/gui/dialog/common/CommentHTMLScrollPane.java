@@ -47,7 +47,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 	 * Double Click Selector for the HTML Comment area
 	 */
 	private MouseListener doubleClickSelector = new MouseAdapter() {
-		public void mouseClicked(MouseEvent e) {
+		@Override public void mouseClicked(MouseEvent e) {
 		}
 	};
 
@@ -162,7 +162,7 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		return hTMLTextEditor;
 	}
 
-	public void mouseClicked(MouseEvent e) {
+	@Override public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if ((e.getClickCount() == 2) && (isEditable)) {
 			try {
@@ -187,19 +187,19 @@ public class CommentHTMLScrollPane extends JScrollPane implements MouseListener 
 		}
 	}
 
-	public void mouseEntered(MouseEvent e) {
+	@Override public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
 
-	public void mouseExited(MouseEvent e) {
+	@Override public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
 
-	public void mousePressed(MouseEvent e) {
+	@Override public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
 
-	public void mouseReleased(MouseEvent e) {
+	@Override public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
 

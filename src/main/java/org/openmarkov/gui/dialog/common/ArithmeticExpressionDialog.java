@@ -64,7 +64,7 @@ import java.util.Map;
 		}
 		variableList.setModel(variableListModel);
 		variableList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			@Override public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				if (e.getClickCount() > 1) {
 					insertTextInExpression("{" + variableList.getSelectedValue() + "}");
@@ -80,7 +80,7 @@ import java.util.Map;
 
 		functionList.setModel(functionListModel);
 		functionList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			@Override public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				if (e.getClickCount() > 1) {
 					insertTextInExpression(functionList.getSelectedValue() + "()");
@@ -91,7 +91,7 @@ import java.util.Map;
 
 		helpButton.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
+			@Override public void actionPerformed(ActionEvent e) {
 				JEditorPane ed1 = new JEditorPane("text/html",
 						stringDatabase.getString("ArithmeticExpressionEvaluator.Help"));
 				ed1.setCaretPosition(0);

@@ -212,7 +212,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameClosing(InternalFrameEvent e) {
+	@Override public void internalFrameClosing(InternalFrameEvent e) {
 		JInternalFrame frame = e.getInternalFrame();
 		try {
 			desktopPane.selectFrame(frame);
@@ -231,7 +231,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameOpened(InternalFrameEvent e) {
+	@Override public void internalFrameOpened(InternalFrameEvent e) {
 		JInternalFrame frame = e.getInternalFrame();
 		if (desktopPane.getInternalFramesNumber() > 0) {
 			mdiMenu.enableMenuItems();
@@ -246,7 +246,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameActivated(InternalFrameEvent e) {
+	@Override public void internalFrameActivated(InternalFrameEvent e) {
 		JInternalFrame frame = e.getInternalFrame();
 		notifyFrameSelected(frame);
 		mdiMenu.selectMenuItemByPanel((JPanel) frame.getContentPane());
@@ -258,7 +258,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameClosed(InternalFrameEvent e) {
+	@Override public void internalFrameClosed(InternalFrameEvent e) {
 		JInternalFrame frame = e.getInternalFrame();
 		mdiMenu.removePanelMenuItem((JPanel) frame.getContentPane());
 		if (desktopPane.getInternalFramesNumber() == 0) {
@@ -272,7 +272,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameDeiconified(InternalFrameEvent e) {
+	@Override public void internalFrameDeiconified(InternalFrameEvent e) {
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameDeactivated(InternalFrameEvent e) {
+	@Override public void internalFrameDeactivated(InternalFrameEvent e) {
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e event information.
 	 */
-	public void internalFrameIconified(InternalFrameEvent e) {
+	@Override public void internalFrameIconified(InternalFrameEvent e) {
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param e menu event information.
 	 */
-	public void actionPerformed(ActionEvent e) {
+	@Override public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
 		try {
 			if (actionCommand.equals(MDIMenu.WINDOW_MINIMIZEALL_MENUITEM)) {
@@ -324,7 +324,7 @@ public class MDI extends JPanel implements FrameTitleListener, InternalFrameList
 	 *
 	 * @param frame frame whose title has been changed.
 	 */
-	public void titleChanged(JInternalFrame frame, String oldTitle, String newTitle) {
+	@Override public void titleChanged(JInternalFrame frame, String oldTitle, String newTitle) {
 		FrameContentPanel panel = (FrameContentPanel) frame.getContentPane();
 		mdiMenu.modifyPanelMenuItem(panel, panel.getTitle());
 		notifyFrameTitleChanged(frame, oldTitle, newTitle);

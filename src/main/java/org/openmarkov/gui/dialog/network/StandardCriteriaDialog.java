@@ -75,7 +75,7 @@ public class StandardCriteriaDialog extends OkCancelApplyUndoRedoHorizontalDialo
 	 *
 	 * @return true if the dialog box can be closed.
 	 */
-	protected boolean doOkClickBeforeHide() {
+	@Override protected boolean doOkClickBeforeHide() {
 
 		// This must be a single operation
 		probNet.getPNESupport().openParenthesis();

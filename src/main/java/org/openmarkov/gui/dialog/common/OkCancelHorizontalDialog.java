@@ -112,7 +112,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			jButtonOK.setMnemonic(stringDatabase.getString("OKCancelHorizontalDialog.jButtonOK.Mnemonic").charAt(0));
 			jButtonOK.addActionListener(new ActionListener() {
 
-				public void actionPerformed(ActionEvent e) {
+				@Override public void actionPerformed(ActionEvent e) {
 					if (doOkClickBeforeHide()) {
 						selectedButton = OK_BUTTON;
 						dispose();
@@ -140,7 +140,7 @@ public class OkCancelHorizontalDialog extends BottomPanelButtonDialog {
 			setCancelButton(jButtonCancel);
 			jButtonCancel.addActionListener(new ActionListener() {
 
-				public void actionPerformed(ActionEvent e) {
+				@Override public void actionPerformed(ActionEvent e) {
 					doCancelClickBeforeHide();
 					selectedButton = CANCEL_BUTTON;
 					setVisible(false);

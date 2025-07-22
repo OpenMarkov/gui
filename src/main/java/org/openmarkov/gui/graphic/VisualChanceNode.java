@@ -151,7 +151,7 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 *
 	 * @return the X-coordinate of the upper-left corner of the visual node.
 	 */
-	public double getUpperLeftCornerX(Graphics2D g) {
+	@Override public double getUpperLeftCornerX(Graphics2D g) {
 		double[] dims = getNodeDimensions(g);
 		return dims[0];
 	}
@@ -161,7 +161,7 @@ public class VisualChanceNode extends VisualNode implements VisualChanceNodeFind
 	 *
 	 * @return the Y-coordinate of the upper-left corner of the visual node.
 	 */
-	public double getUpperLeftCornerY(Graphics2D g) {
+	@Override public double getUpperLeftCornerY(Graphics2D g) {
 		double[] dims = getNodeDimensions(g);
 		return dims[1];
 	}

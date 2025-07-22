@@ -278,7 +278,7 @@ public class PotentialEditDialog extends OkCancelApplyUndoRedoHorizontalDialog
 			potentialTypeComboBox.setBorder(new LineBorder(UIManager.getColor("List.dropLineColor"), 1, false));
 			potentialTypeComboBox.setName("jComboBoxRelationType");
 			potentialTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				@Override public void actionPerformed(java.awt.event.ActionEvent evt) {
 
 					potentialTypeChanged();
 				}
