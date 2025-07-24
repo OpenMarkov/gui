@@ -73,7 +73,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		String result = "";
 		try {
 			result = preferences.get(key, defaultValue);
-		} catch (NullPointerException ex) {
+		} catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
 			LocalizedException preferencesException = new LocalizedException(
 					new OpenMarkovException("Preferences", stringDatabase.getString(ex.getMessage() + "wrong access to " + key)), null);
 			preferencesException.showException();
@@ -82,16 +82,6 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 //			ex.printStackTrace();
 //			JOptionPane.showMessageDialog(null, stringDatabase.getString(ex.getMessage() + "wrong access to " + key),
 //					stringDatabase.getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
-		} catch (Exception ex) {
-			LocalizedException preferencesException = new LocalizedException(
-					new OpenMarkovException("Preferences", stringDatabase.getString(ex.getMessage() + "unexpected exception accessing key" + key)),null);
-			preferencesException.showException();
-//			System.out.println("unexpected exception accesing key" + key);
-//			ex.printStackTrace();
-//			JOptionPane.showMessageDialog(null,
-//					stringDatabase.getString(ex.getMessage() + "unexpected exception accesing key" + key),
-//					stringDatabase.getString(ex.getMessage() + "unexpected exception accesing key" + key),
-//					JOptionPane.ERROR_MESSAGE);
 		}
 		return result;
 	}
@@ -108,7 +98,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		boolean result = false;
 		try {
 			result = preferences.getBoolean(key, defaultBoolean);
-		} catch (NullPointerException ex) {
+		} catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
 			LocalizedException preferencesException = new LocalizedException(new OpenMarkovException(
 					"Preferences", stringDatabase.getString(ex.getMessage() + "wrong access to " + key)), null);
 			preferencesException.showException();
@@ -116,15 +106,6 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 //			ex.printStackTrace();
 //			JOptionPane.showMessageDialog(null, stringDatabase.getString(ex.getMessage() + "wrong access to " + key),
 //					stringDatabase.getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
-		} catch (Exception ex) {
-			LocalizedException preferencesException = new LocalizedException(new OpenMarkovException(
-					"Preferences", stringDatabase.getString(ex.getMessage() + "unexpected exception accessing key" + key)), null);
-			preferencesException.showException();
-//			System.out.println("unexpected exception accesing key" + key);
-//			ex.printStackTrace();
-//			JOptionPane.showMessageDialog(null,
-//					stringDatabase.getString(ex.getMessage() + "unexpected exception accesing key" + key),
-//					JOptionPane.ERROR_MESSAGE);
 		}
 		return result;
 	}
@@ -141,22 +122,12 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 		int result = 0;
 		try {
 			result = preferences.getInt(key, defaultInteger);
-		} catch (NullPointerException ex) {
+		} catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
 
 			System.out.println("wrong access to " + key);
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, stringDatabase.getString(ex.getMessage() + "wrong access to " + key),
 					stringDatabase.getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
-		} catch (Exception ex) {
-			LocalizedException preferencesException = new LocalizedException(new OpenMarkovException(
-					"Preferences", stringDatabase.getString(ex.getMessage() + "unexpected exception accessing key" + key)),null);
-			preferencesException.showException();
-//			System.out.println("unexpected exception accesing key" + key);
-//			ex.printStackTrace();
-//			JOptionPane.showMessageDialog(null,
-//					stringDatabase.getString(ex.getMessage() + "unexpected exception accessing key" + key),
-//					stringDatabase.getString(ex.getMessage() + "unexpected exception accessing key" + key),
-//					JOptionPane.ERROR_MESSAGE);
 		}
 		return result;
 	}
@@ -180,7 +151,7 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 			greenParam = child.getInt("GREEN", defaultColor.getGreen());
 			blueParam = child.getInt("BLUE", defaultColor.getBlue());
 			result = new Color(redParam, greenParam, blueParam);
-		} catch (NullPointerException ex) {
+		} catch (NullPointerException | IllegalStateException | IllegalArgumentException ex) {
 			LocalizedException preferencesException = new LocalizedException(new OpenMarkovException(
 					"Preferences", stringDatabase.getString(ex.getMessage() + "wrong access to " + key)),null);
 			preferencesException.showException();
@@ -189,17 +160,6 @@ public class OpenMarkovPreferences implements OpenMarkovPreferencesKeys {
 //			ex.printStackTrace();
 //			JOptionPane.showMessageDialog(null, stringDatabase.getString(ex.getMessage() + "wrong access to " + key),
 //					stringDatabase.getString(ex.getMessage() + "wrong access to " + key), JOptionPane.ERROR_MESSAGE);
-		} catch (Exception ex) {
-			LocalizedException preferencesException = new LocalizedException(new OpenMarkovException(
-					"Preferences", stringDatabase.getString(ex.getMessage() + "wrong access to " + key)),null);
-			preferencesException.showException();
-
-//			System.out.println("unexpected exception accesing key" + key);
-//			ex.printStackTrace();
-//			JOptionPane.showMessageDialog(null,
-//					stringDatabase.getString("unexpected exception accesing key" + key + ex.getMessage()),
-//					stringDatabase.getString("unexpected exception accesing key" + key + ex.getMessage()),
-//					JOptionPane.ERROR_MESSAGE);
 		}
 		return result;
 	}

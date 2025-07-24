@@ -87,26 +87,19 @@ public class CursorLoader {
 	 * @return a reference to the cursor resource.
 	 */
 	private static Cursor load(String cursorName) {
-		try {
 			Toolkit tk = java.awt.Toolkit.getDefaultToolkit();
 			String path = CURSORS_PATH + cursorName;
 			URL resource = CursorLoader.class.getClassLoader().getResource(path);
 			Image image = null;
 			if (resource == null) {
 				return null;
-			} else {
-				image = tk.getImage(resource);
-				if (image == null) {
-					System.err.println(StringDatabase.getUniqueInstance()
-							.getFormattedString("CursorResourceNotExists.Text.Label", CURSORS_PATH + cursorName));
-					return null;
-				}
-				return tk.createCustomCursor(image, new Point(0, 0), "");
 			}
-		} catch (Exception ex) {
-			System.err.println(StringDatabase.getUniqueInstance()
-					.getFormattedString("CursorResourceNotExists.Text.Label", CURSORS_PATH + cursorName));
-			return null;
-		}
-	}
+        image = tk.getImage(resource);
+        if (image == null) {
+            System.err.println(StringDatabase.getUniqueInstance()
+                    .getFormattedString("CursorResourceNotExists.Text.Label", CURSORS_PATH + cursorName));
+            return null;
+        }
+        return tk.createCustomCursor(image, new Point(0, 0), "");
+    }
 }

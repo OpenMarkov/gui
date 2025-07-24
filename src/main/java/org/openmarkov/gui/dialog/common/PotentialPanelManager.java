@@ -8,10 +8,12 @@
 package org.openmarkov.gui.dialog.common;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.plugin.PluginSearch;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -49,20 +51,17 @@ public class PotentialPanelManager {
      * @return a new Potential instance given the parameters.
      */
     public final PotentialPanel getPotentialPanel(String potentialType, Node node) {
-        PotentialPanel instance = null;
-        if (potentialPanelClasses.get(potentialType) != null) {
-            try {
-                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialType)
-                                                                                         .getConstructor(Node.class);
-                instance = constructor.newInstance(node);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (potentialPanelClasses.get(potentialType) == null) {
+            return new EmptyPotentialPanel(node);
         }
-        if (instance == null) {
-            instance = new EmptyPotentialPanel(node);
+        try {
+            Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialType)
+                                                                                     .getConstructor(Node.class);
+            return constructor.newInstance(node);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new UnreacheableException(e);
         }
-        return instance;
     }
     
     /**
@@ -73,29 +72,23 @@ public class PotentialPanelManager {
      * @return a new Potential instance given the parameters.
      */
     public final PotentialPanel getPotentialPanel(String potentialType, String potentialFamily, Node node) {
-        PotentialPanel instance = null;
-        if (potentialPanelClasses.get(potentialFamily) != null) {
-            try {
-                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialFamily)
-                                                                                         .getConstructor(Node.class);
-                instance = constructor.newInstance(node);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         if (potentialPanelClasses.get(potentialType) != null) {
             try {
                 Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialType)
                                                                                          .getConstructor(Node.class);
-                instance = constructor.newInstance(node);
-            } catch (Exception e) {
-                e.printStackTrace();
+                return constructor.newInstance(node);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
             }
         }
-        if (instance == null) {
-            instance = new EmptyPotentialPanel(node);
+        if (potentialPanelClasses.get(potentialFamily) != null) {
+            try {
+                Constructor<? extends PotentialPanel> constructor = potentialPanelClasses.get(potentialFamily)
+                                                                                         .getConstructor(Node.class);
+                return constructor.newInstance(node);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
+            }
         }
-        return instance;
+        return new EmptyPotentialPanel(node);
     }
     
     /**
@@ -116,6 +109,6 @@ public class PotentialPanelManager {
         return PluginSearch.init()
                            .annotatedWith(PotentialPanelPlugin.class)
                            .childrenOf(PotentialPanel.class)
-                .stream();
+                           .stream();
     }
 }

@@ -30,94 +30,93 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("serial") public class PasteEdit extends CompoundEdit implements PNEdit {
-	private SelectedContent clipboardContent;
-	private SelectedContent pastedContent;
-	private VisualNetwork visualNetwork;
-
-	public PasteEdit(VisualNetwork visualNetwork, SelectedContent clipboardContent) {
-		this.clipboardContent = clipboardContent;
-		this.visualNetwork = visualNetwork;
-		this.pastedContent = null;
-	}
-
-	// Methods
-
-	/**
-	 * Generate edits and does them
-	 *
-	 * @throws DoEditException
+    private SelectedContent clipboardContent;
+    private SelectedContent pastedContent;
+    private VisualNetwork visualNetwork;
+    
+    public PasteEdit(VisualNetwork visualNetwork, SelectedContent clipboardContent) {
+        this.clipboardContent = clipboardContent;
+        this.visualNetwork = visualNetwork;
+        this.pastedContent = null;
+    }
+    
+    // Methods
+    
+    /**
+     * Generate edits and does them
+     *
+     * @throws DoEditException
      */
-	@Override public void doEdit() throws DoEditException {
-		HashMap<String, String> newVariables = new HashMap<String, String>();
-		ProbNet probNet = visualNetwork.getNetwork();
-		// Gather new node creation edits
-		for (Node node : clipboardContent.getNodes()) {
-			String oldName = node.getName();
-			String newName = oldName;
-			while (probNet.containsVariable(newName)) {
-				newName += "'";
-			}
-			Variable variable = new Variable(node.getVariable());
-			variable.setName(newName);
-			newVariables.put(oldName, newName);
-
-			Point2D.Double position = new Point2D.Double(node.getCoordinateX() + 3.0, node.getCoordinateY());
-			edits.add(new AddNodeEdit(probNet, variable, node.getNodeType(), position));
-
-		}
-
-		// Apply node generation edits
-		ArrayList<Node> pastedNodes = new ArrayList<Node>();
-		for (UndoableEdit edit : edits) {
-			try {
-				probNet.doEdit(((PNEdit) edit));
-				pastedNodes.add(((AddNodeEdit) edit).getNode());
-			} catch (ConstraintViolationException e) {
-				e.printStackTrace();
-			}
-		}
-
-		//Gather link creation edits
-		for (Link<Node> link : clipboardContent.getLinks()) {
+    @Override public void doEdit() throws DoEditException {
+        HashMap<String, String> newVariables = new HashMap<String, String>();
+        ProbNet probNet = visualNetwork.getNetwork();
+        // Gather new node creation edits
+        for (Node node : clipboardContent.getNodes()) {
+            String oldName = node.getName();
+            String newName = oldName;
+            while (probNet.containsVariable(newName)) {
+                newName += "'";
+            }
+            Variable variable = new Variable(node.getVariable());
+            variable.setName(newName);
+            newVariables.put(oldName, newName);
+            
+            Point2D.Double position = new Point2D.Double(node.getCoordinateX() + 3.0, node.getCoordinateY());
+            edits.add(new AddNodeEdit(probNet, variable, node.getNodeType(), position));
+            
+        }
+        
+        // Apply node generation edits
+        ArrayList<Node> pastedNodes = new ArrayList<Node>();
+        for (UndoableEdit edit : edits) {
+            try {
+                probNet.doEdit(((PNEdit) edit));
+                pastedNodes.add(((AddNodeEdit) edit).getNode());
+            } catch (ConstraintViolationException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        //Gather link creation edits
+        for (Link<Node> link : clipboardContent.getLinks()) {
             String originalSourceNodeName = link.getNode1().getName();
             String originalDestinationNodeName = link.getNode2().getName();
             
             edits.add(new AddLinkEdit(probNet, probNet.getVariable(newVariables.get(originalSourceNodeName)),
-                    probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected()));
+                                      probNet.getVariable(newVariables.get(originalDestinationNodeName)), link.isDirected()));
         }
-
-		//Apply link creation edits
-		List<Link<Node>> pastedLinks = new ArrayList<>();
-		for (UndoableEdit edit : edits) {
-			if (edit instanceof AddLinkEdit) {
-				AddLinkEdit linkEdit = ((AddLinkEdit) edit);
-				try {
-					probNet.doEdit(linkEdit);
-					pastedLinks.add(linkEdit.getLink());
-				} catch (ConstraintViolationException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		super.end();
-		pastedContent = new SelectedContent(pastedNodes, pastedLinks);
-
-		//Replace potentials to already created nodes with copies of copied nodes
-		for (Node originalNode : clipboardContent.getNodes()) {
-			ArrayList<Potential> newPotentials = new ArrayList<Potential>();
-			try {
-				Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
-				for (Potential originalPotential : originalNode.getPotentials()) {
-					Potential potential = originalPotential.copy();
-					for (int i = 0; i < potential.getNumVariables(); ++i) {
-						String variableName = potential.getVariable(i).getName();
-						if (newVariables.containsKey(variableName)) {
-							Variable variable = probNet.getVariable(newVariables.get(variableName));
-							potential.replaceVariable(i, variable);
-						}
-					}
-					//2016 Now there isn't utilityVariable
-					// If the potential is ExactDistrPotential Iset the new childVariable
+        
+        //Apply link creation edits
+        List<Link<Node>> pastedLinks = new ArrayList<>();
+        for (UndoableEdit edit : edits) {
+            if (edit instanceof AddLinkEdit) {
+                AddLinkEdit linkEdit = ((AddLinkEdit) edit);
+                try {
+                    probNet.doEdit(linkEdit);
+                    pastedLinks.add(linkEdit.getLink());
+                } catch (ConstraintViolationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        super.end();
+        pastedContent = new SelectedContent(pastedNodes, pastedLinks);
+        
+        //Replace potentials to already created nodes with copies of copied nodes
+        for (Node originalNode : clipboardContent.getNodes()) {
+            ArrayList<Potential> newPotentials = new ArrayList<Potential>();
+            Node newNode = probNet.getNode(newVariables.get(originalNode.getName()));
+            for (Potential originalPotential : originalNode.getPotentials()) {
+                Potential potential = originalPotential.copy();
+                for (int i = 0; i < potential.getNumVariables(); ++i) {
+                    String variableName = potential.getVariable(i).getName();
+                    if (newVariables.containsKey(variableName)) {
+                        Variable variable = probNet.getVariable(newVariables.get(variableName));
+                        potential.replaceVariable(i, variable);
+                    }
+                }
+                //2016 Now there isn't utilityVariable
+                // If the potential is ExactDistrPotential Iset the new childVariable
                     /*
                     if(potential.isUtility())
                     {
@@ -128,49 +127,45 @@ import java.util.List;
                     	}
                     }
                     */
-
-					if (potential instanceof ExactDistrPotential) {
-						Variable child = ((ExactDistrPotential) potential).getChildVariable();
-						if (newVariables.containsKey(child.getName())) {
-							((ExactDistrPotential) potential)
-									.setChildVariable(probNet.getVariable(newVariables.get(child.getName())));
-						}
-
-					}
-
-					//
-					newPotentials.add(potential);
-				}
-				newNode.setPotentials(newPotentials);
-				// Copy comment too!
-				newNode.setComment(originalNode.getComment());
-				newNode.setRelevance(originalNode.getRelevance());
-				newNode.setPurpose(originalNode.getPurpose());
-				newNode.additionalProperties = new LinkedHashMap<String, String>(originalNode.additionalProperties);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
-
-	//@Override
-	@Override public void setSignificant(boolean significant) {
-		// Do nothing
-	}
-
-	/**
-	 * Returns the pasted content.
-	 *
-	 * @return the pastedContent.
-	 */
-	public SelectedContent getPastedContent() {
-		return pastedContent;
-	}
-
-	// @Override
-	@Override public ProbNet getProbNet() {
-		return visualNetwork.getNetwork();
-	}
-
+                
+                if (potential instanceof ExactDistrPotential) {
+                    Variable child = ((ExactDistrPotential) potential).getChildVariable();
+                    if (newVariables.containsKey(child.getName())) {
+                        ((ExactDistrPotential) potential)
+                                .setChildVariable(probNet.getVariable(newVariables.get(child.getName())));
+                    }
+                    
+                }
+                
+                //
+                newPotentials.add(potential);
+            }
+            newNode.setPotentials(newPotentials);
+            // Copy comment too!
+            newNode.setComment(originalNode.getComment());
+            newNode.setRelevance(originalNode.getRelevance());
+            newNode.setPurpose(originalNode.getPurpose());
+            newNode.additionalProperties = new LinkedHashMap<String, String>(originalNode.additionalProperties);
+        }
+    }
+    
+    //@Override
+    @Override public void setSignificant(boolean significant) {
+        // Do nothing
+    }
+    
+    /**
+     * Returns the pasted content.
+     *
+     * @return the pastedContent.
+     */
+    public SelectedContent getPastedContent() {
+        return pastedContent;
+    }
+    
+    // @Override
+    @Override public ProbNet getProbNet() {
+        return visualNetwork.getNetwork();
+    }
+    
 }

@@ -65,6 +65,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -562,7 +563,8 @@ public class MainPanelListenerAssistant extends WindowAdapter
 //			JOptionPane.showMessageDialog(Utilities.getOwner(mainPanel),
 //					stringDatabase.getString("ErrorSavingNetwork.Text.Label") + ": " + e.getMessage(),
 //					stringDatabase.getString("ErrorWindow.Title.Label"), JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException |
+                 NoSuchMethodException e) {
             LocalizedException someBadThingHappenedException = new LocalizedException(new OpenMarkovException(
                     "GenericException", stringDatabase.getString("Generic I/O error")), null);
             someBadThingHappenedException.showException();

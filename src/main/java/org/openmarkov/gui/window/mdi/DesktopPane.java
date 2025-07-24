@@ -69,7 +69,7 @@ public class DesktopPane extends JDesktopPane {
 		return frame;
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Closes the current internal frame and selects the previous one (if
@@ -104,7 +104,7 @@ public class DesktopPane extends JDesktopPane {
 		return frames;
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Minimizes a frame in the desktoppane.
@@ -122,7 +122,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Restores a frame in the desktoppane.
@@ -140,7 +140,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Minimizes all the internal frames in the desktoppane.
@@ -160,7 +160,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Restores all the minimized internal frames in the desktoppane.
@@ -180,7 +180,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * All the internal frames will be resized to the same size and will be
@@ -224,7 +224,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * All the internal frames will be resized and moved in order to they take
@@ -278,7 +278,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Unselects the actual internal frame and selects the next to it. If the
@@ -327,7 +327,7 @@ public class DesktopPane extends JDesktopPane {
 		return previousFrame;
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Unselects the actual internal frame and selects the previous to it. If
@@ -356,7 +356,7 @@ public class DesktopPane extends JDesktopPane {
 		return getAllFrames().length;
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Selects the internal frame passed as parameter.
@@ -372,7 +372,7 @@ public class DesktopPane extends JDesktopPane {
 		}
 	}
 
-	// ESCA-JAVA0126: allows unchecked exception UnsupportedOperationException
+	// ESCA-JAVA0126: allows unchecked exception NotSupportedOperationException
 
 	/**
 	 * Selects the internal frame whose content panel is passed as parameter.

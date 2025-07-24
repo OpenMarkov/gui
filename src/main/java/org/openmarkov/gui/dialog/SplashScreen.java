@@ -53,12 +53,7 @@ public class SplashScreen extends JFrame {
 	public SplashScreen(ImageIcon imageIcon) {
 		this.logger = LogManager.getLogger(SplashScreen.class);
 		this.imageIcon = imageIcon;
-		try {
 			jbInit();
-		} catch (Exception ex) {
-			//ExceptionsHandler.handleException(ex, null, true);
-			logger.info(ex);
-		}
 	}
 
 	/**

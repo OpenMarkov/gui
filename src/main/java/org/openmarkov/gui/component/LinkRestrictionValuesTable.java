@@ -79,7 +79,7 @@ import java.util.ArrayList;
 						.equals(Integer.valueOf(COMPATIBILITY_VALUE))) {
 					newValue = Integer.parseInt(INCOMPATIBILITY_VALUE);
 				}
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, StringDatabase.getUniqueInstance().getString(e.getMessage()),
 						StringDatabase.getUniqueInstance().getString(e.getMessage()), JOptionPane.ERROR_MESSAGE);

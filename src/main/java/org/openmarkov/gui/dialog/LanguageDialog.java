@@ -66,12 +66,8 @@ public class LanguageDialog extends JDialog implements LocaleChangeListener {
 		this.logger = LogManager.getLogger(LanguageDialog.class);
 		this.oldLanguage = stringDatabase.getLanguage();
 		stringDatabase.addLocaleChangeListener(this);
-		try {
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			initialize();
-		} catch (Exception e) {
-			logger.fatal(e);
-		}
 	}
 
 	/**

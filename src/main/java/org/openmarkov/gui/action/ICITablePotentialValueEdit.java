@@ -338,17 +338,7 @@ import java.util.List;
 	 */
 
 	private ICIPotential getThisICIPotential(List<Potential> listPotentials) {
-
-		ICIPotential aPotential = null;
-		try {
-			aPotential = ((ICIPotential) listPotentials.get(0));
-		} catch (Exception ex) {
-			//ExceptionsHandler.handleException(
-			//ex, "no Potential.get(0) !!!", false );
-			logger.error("no Potential.get(0) !!!");
-
-		}
-		return aPotential;
+        return ((ICIPotential) listPotentials.get(0));
 	}
 
 	public boolean getLeakyFlag() {

@@ -8,7 +8,6 @@
 package org.openmarkov.gui.dialog.treeadd;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.UnsupportedOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
